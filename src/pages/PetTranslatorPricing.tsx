@@ -17,7 +17,7 @@ const PetTranslatorPricing = () => {
       priceId: 'price_1SQDNZ0QTWhd4oRpHRPIDTTW',
       productId: 'prod_TMxIAIiKlSWTef',
       features: [
-        'Unlimited translations',
+        '5 translations per month',
         'Emotion tracker',
         '1 pet profile',
         'Basic behavior insights',
@@ -76,9 +76,19 @@ const PetTranslatorPricing = () => {
     <div className="container mx-auto px-4 py-16">
       <div className="text-center mb-12">
         <h1 className="text-4xl font-bold mb-4">Choose Your Plan</h1>
-        <p className="text-xl text-muted-foreground">
+        <p className="text-xl text-muted-foreground mb-8">
           Unlock the power of AI pet translation
         </p>
+        
+        <div className="max-w-3xl mx-auto text-left bg-card border rounded-lg p-6 mb-8">
+          <h2 className="text-xl font-semibold mb-4 text-center">How It Works</h2>
+          <div className="space-y-3 text-sm text-muted-foreground">
+            <p><strong className="text-foreground">🎤 Record Your Pet:</strong> Simply record your pet's sounds - barks, meows, chirps, or any vocalization. Our AI works with dogs, cats, birds, and other pets.</p>
+            <p><strong className="text-foreground">🧠 AI Analysis:</strong> Our advanced AI analyzes the audio patterns, frequency, and tone to understand your pet's emotional state and intent.</p>
+            <p><strong className="text-foreground">💬 Get Translation:</strong> Receive a detailed translation including what your pet is trying to communicate, their emotional state (happy, anxious, hungry, etc.), and a confidence score.</p>
+            <p><strong className="text-foreground">📊 Track Patterns:</strong> With a subscription, track your pet's mood over time and get insights into their behavior patterns.</p>
+          </div>
+        </div>
       </div>
 
       <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto mb-12">
