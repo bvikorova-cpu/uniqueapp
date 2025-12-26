@@ -54,7 +54,7 @@ export const useSubscription = () => {
       const { data: { user } } = await supabase.auth.getUser();
       
       if (!user) {
-        setLimits(SUBSCRIPTION_LIMITS.free);
+        setLimits(SUBSCRIPTION_LIMITS.basic);
         setLoading(false);
         return;
       }
