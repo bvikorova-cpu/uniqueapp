@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { withRateLimit, RATE_LIMITS } from "../_shared/rate-limit.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -11,6 +12,10 @@ serve(async (req) => {
   }
 
   try {
+    // Rate limit check
+    const rateLimitResponse = await withRateLimit(req, RATE_LIMITS.ai_generation, corsHeaders);
+    if (rateLimitResponse) return rateLimitResponse;
+
     const { description } = await req.json();
     const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
 
