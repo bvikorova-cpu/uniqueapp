@@ -1,23 +1,32 @@
-// This project uses the automatic JSX runtime, so React doesn't need to be imported in every file.
-// However, many files still reference types like `React.KeyboardEvent`.
-// In TS, the `React` namespace isn't global by default with the new runtime.
-// This file provides a minimal global `React.*` namespace for common event types
-// to prevent build-time type errors without requiring per-file imports.
+// Global React namespace for legacy code compatibility
+// This allows using React.KeyboardEvent etc. without explicit imports
 
-import type * as ReactTypes from "react";
+import type {
+  KeyboardEvent as ReactKeyboardEvent,
+  MouseEvent as ReactMouseEvent,
+  FormEvent as ReactFormEvent,
+  ChangeEvent as ReactChangeEvent,
+  ReactNode as ReactReactNode,
+  FC as ReactFC,
+  RefObject as ReactRefObject,
+  Dispatch as ReactDispatch,
+  SetStateAction as ReactSetStateAction,
+  CSSProperties as ReactCSSProperties,
+} from "react";
 
 export {};
 
 declare global {
   namespace React {
-    // Commonly used event types across the codebase
-    type KeyboardEvent<T = Element> = ReactTypes.KeyboardEvent<T>;
-    type MouseEvent<T = Element, E = globalThis.MouseEvent> = ReactTypes.MouseEvent<T, E>;
-    type FormEvent<T = Element> = ReactTypes.FormEvent<T>;
-    type ChangeEvent<T = Element> = ReactTypes.ChangeEvent<T>;
-
-    // Useful base types (often referenced in props)
-    type ReactNode = ReactTypes.ReactNode;
-    type FC<P = {}> = ReactTypes.FC<P>;
+    export type KeyboardEvent<T = Element> = ReactKeyboardEvent<T>;
+    export type MouseEvent<T = Element, E = globalThis.MouseEvent> = ReactMouseEvent<T, E>;
+    export type FormEvent<T = Element> = ReactFormEvent<T>;
+    export type ChangeEvent<T = Element> = ReactChangeEvent<T>;
+    export type ReactNode = ReactReactNode;
+    export type FC<P = {}> = ReactFC<P>;
+    export type RefObject<T> = ReactRefObject<T>;
+    export type Dispatch<A> = ReactDispatch<A>;
+    export type SetStateAction<S> = ReactSetStateAction<S>;
+    export type CSSProperties = ReactCSSProperties;
   }
 }
