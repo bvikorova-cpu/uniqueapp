@@ -7,6 +7,14 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+const ESCROW_HOLD_DAYS = 7;
+const COMMISSION_RATE = 0.10; // 10% commission like bazaar
+
+const logStep = (step: string, details?: unknown) => {
+  const detailsStr = details ? ` - ${JSON.stringify(details)}` : '';
+  console.log(`[AUCTION-PAYMENT] ${step}${detailsStr}`);
+};
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -18,6 +26,8 @@ serve(async (req) => {
   );
 
   try {
+    logStep("Starting auction payment with escrow");
+
     const authHeader = req.headers.get("Authorization")!;
     const token = authHeader.replace("Bearer ", "");
     const { data } = await supabaseClient.auth.getUser(token);
@@ -25,6 +35,7 @@ serve(async (req) => {
     if (!user?.email) throw new Error("User not authenticated");
 
     const { auctionId, paymentType } = await req.json(); // paymentType: 'bid' or 'buyout'
+    logStep("Request data", { auctionId, paymentType, userId: user.id });
 
     // Get auction details
     const { data: auction, error: auctionError } = await supabaseClient
@@ -36,6 +47,8 @@ serve(async (req) => {
     if (auctionError || !auction) throw new Error("Auction not found");
     if (!auction.is_active) throw new Error("Auction is not active");
 
+    logStep("Auction found", { title: auction.title, currentPrice: auction.current_price });
+
     let totalAmount;
     if (paymentType === 'buyout') {
       if (!auction.buyout_price) throw new Error("Buyout not available");
@@ -44,8 +57,11 @@ serve(async (req) => {
       totalAmount = Number(auction.current_price);
     }
 
-    const platformFee = 0.50; // Fixed €0.50 fee
-    const sellerAmount = totalAmount - platformFee;
+    // Calculate commission (10%)
+    const commissionAmount = totalAmount * COMMISSION_RATE;
+    const sellerPayout = totalAmount - commissionAmount;
+
+    logStep("Commission calculated", { totalAmount, commissionAmount, sellerPayout });
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
       apiVersion: "2025-08-27.basil",
@@ -67,32 +83,54 @@ serve(async (req) => {
             unit_amount: Math.round(totalAmount * 100),
             product_data: {
               name: auction.title,
-              description: `Auction ${paymentType}: ${auction.title}`,
+              description: `Auction ${paymentType}: ${auction.title} (with ${ESCROW_HOLD_DAYS}-day buyer protection)`,
             },
           },
           quantity: 1,
         },
       ],
       mode: "payment",
+      payment_intent_data: {
+        capture_method: "automatic",
+        metadata: {
+          auction_id: auctionId,
+          escrow_enabled: "true",
+        },
+      },
       success_url: `${req.headers.get("origin")}/auction?payment=success&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${req.headers.get("origin")}/auction?payment=canceled`,
       client_reference_id: user.id,
       metadata: {
-        item_id: auctionId,
+        auction_id: auctionId,
         item_type: "auction",
         payment_type: paymentType,
         seller_id: auction.user_id,
-        platform_fee: platformFee.toString(),
-        seller_amount: sellerAmount.toString(),
+        winner_id: user.id,
+        amount: totalAmount.toString(),
+        commission_amount: commissionAmount.toString(),
+        seller_payout: sellerPayout.toString(),
+        escrow_enabled: "true",
+        escrow_days: ESCROW_HOLD_DAYS.toString(),
       },
     });
 
-    return new Response(JSON.stringify({ url: session.url }), {
+    logStep("Checkout session created with escrow", { sessionId: session.id });
+
+    // Update auction with session ID
+    await supabaseClient
+      .from("auction_items")
+      .update({ stripe_session_id: session.id })
+      .eq("id", auctionId);
+
+    return new Response(JSON.stringify({ 
+      url: session.url,
+      escrowDays: ESCROW_HOLD_DAYS,
+    }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
     });
   } catch (error) {
-    console.error("Error in create-auction-payment:", error);
+    logStep("ERROR", { error: error instanceof Error ? error.message : error });
     const errorMessage = error instanceof Error ? error.message : "Unknown error";
     return new Response(JSON.stringify({ error: errorMessage }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },

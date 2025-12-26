@@ -1,5 +1,17 @@
 project_id = "jufrdzeonywluwutvyxz"
 
+[functions.auction-stripe-webhook]
+verify_jwt = false
+
+[functions.auction-mark-shipped]
+verify_jwt = true
+
+[functions.auction-confirm-delivery]
+verify_jwt = true
+
+[functions.auction-auto-release-escrow]
+verify_jwt = false
+
 [functions.create-astrology-checkout]
 verify_jwt = true
 

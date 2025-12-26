@@ -1359,6 +1359,71 @@ export type Database = {
           },
         ]
       }
+      auction_escrow: {
+        Row: {
+          amount: number
+          auction_id: string
+          auto_release_at: string
+          commission_amount: number
+          created_at: string
+          held_at: string | null
+          id: string
+          refunded_at: string | null
+          released_at: string | null
+          seller_id: string
+          seller_payout: number
+          status: string
+          stripe_payment_intent_id: string | null
+          stripe_transfer_id: string | null
+          updated_at: string
+          winner_id: string
+        }
+        Insert: {
+          amount: number
+          auction_id: string
+          auto_release_at: string
+          commission_amount?: number
+          created_at?: string
+          held_at?: string | null
+          id?: string
+          refunded_at?: string | null
+          released_at?: string | null
+          seller_id: string
+          seller_payout: number
+          status?: string
+          stripe_payment_intent_id?: string | null
+          stripe_transfer_id?: string | null
+          updated_at?: string
+          winner_id: string
+        }
+        Update: {
+          amount?: number
+          auction_id?: string
+          auto_release_at?: string
+          commission_amount?: number
+          created_at?: string
+          held_at?: string | null
+          id?: string
+          refunded_at?: string | null
+          released_at?: string | null
+          seller_id?: string
+          seller_payout?: number
+          status?: string
+          stripe_payment_intent_id?: string | null
+          stripe_transfer_id?: string | null
+          updated_at?: string
+          winner_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "auction_escrow_auction_id_fkey"
+            columns: ["auction_id"]
+            isOneToOne: false
+            referencedRelation: "auction_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       auction_items: {
         Row: {
           buyout_price: number | null
@@ -1366,12 +1431,17 @@ export type Database = {
           condition: string
           created_at: string
           current_price: number
+          delivered_at: string | null
           description: string
           ends_at: string
+          escrow_status: string | null
           id: string
           image_url: string | null
           is_active: boolean | null
+          paid_at: string | null
+          shipped_at: string | null
           starting_price: number
+          stripe_session_id: string | null
           title: string
           updated_at: string
           user_id: string
@@ -1383,12 +1453,17 @@ export type Database = {
           condition: string
           created_at?: string
           current_price: number
+          delivered_at?: string | null
           description: string
           ends_at: string
+          escrow_status?: string | null
           id?: string
           image_url?: string | null
           is_active?: boolean | null
+          paid_at?: string | null
+          shipped_at?: string | null
           starting_price: number
+          stripe_session_id?: string | null
           title: string
           updated_at?: string
           user_id: string
@@ -1400,12 +1475,17 @@ export type Database = {
           condition?: string
           created_at?: string
           current_price?: number
+          delivered_at?: string | null
           description?: string
           ends_at?: string
+          escrow_status?: string | null
           id?: string
           image_url?: string | null
           is_active?: boolean | null
+          paid_at?: string | null
+          shipped_at?: string | null
           starting_price?: number
+          stripe_session_id?: string | null
           title?: string
           updated_at?: string
           user_id?: string
