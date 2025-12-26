@@ -2270,6 +2270,8 @@ export type Database = {
           created_at: string
           free_messages_used: number | null
           id: string
+          monthly_messages_reset_at: string | null
+          monthly_messages_used: number | null
           stripe_customer_id: string | null
           stripe_subscription_id: string | null
           subscription_end: string | null
@@ -2282,6 +2284,8 @@ export type Database = {
           created_at?: string
           free_messages_used?: number | null
           id?: string
+          monthly_messages_reset_at?: string | null
+          monthly_messages_used?: number | null
           stripe_customer_id?: string | null
           stripe_subscription_id?: string | null
           subscription_end?: string | null
@@ -2294,6 +2298,8 @@ export type Database = {
           created_at?: string
           free_messages_used?: number | null
           id?: string
+          monthly_messages_reset_at?: string | null
+          monthly_messages_used?: number | null
           stripe_customer_id?: string | null
           stripe_subscription_id?: string | null
           subscription_end?: string | null
@@ -28931,6 +28937,7 @@ export type Database = {
         Args: { buyer_id: string; listing_id: string }
         Returns: undefined
       }
+      reset_best_friend_monthly_messages: { Args: never; Returns: undefined }
       spend_brain_duel_credits: {
         Args: { p_amount: number; p_user_id: string }
         Returns: undefined

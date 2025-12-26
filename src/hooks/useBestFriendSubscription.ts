@@ -5,6 +5,8 @@ export interface BestFriendSubscription {
   subscribed: boolean;
   freeMessagesUsed: number;
   freeMessagesLimit: number;
+  monthlyMessagesUsed: number;
+  monthlyMessagesLimit: number;
   loading: boolean;
 }
 
@@ -13,6 +15,8 @@ export function useBestFriendSubscription() {
     subscribed: false,
     freeMessagesUsed: 0,
     freeMessagesLimit: 5,
+    monthlyMessagesUsed: 0,
+    monthlyMessagesLimit: 1000,
     loading: true,
   });
 
@@ -32,6 +36,8 @@ export function useBestFriendSubscription() {
         subscribed: data?.subscribed || false,
         freeMessagesUsed: data?.free_messages_used || 0,
         freeMessagesLimit: 5,
+        monthlyMessagesUsed: data?.monthly_messages_used || 0,
+        monthlyMessagesLimit: 1000,
         loading: false,
       });
     } catch (err: any) {

@@ -19,7 +19,7 @@ serve(async (req) => {
     await supabase
       .from("best_friend_subscriptions")
       .upsert(
-        { user_id: userId, free_messages_used: 0 },
+        { user_id: userId, free_messages_used: 0, monthly_messages_used: 0, monthly_messages_reset_at: new Date().toISOString() },
         { onConflict: "user_id", ignoreDuplicates: true }
       );
 
@@ -37,6 +37,7 @@ serve(async (req) => {
     return new Response(JSON.stringify({
       subscribed: isSubscribed,
       free_messages_used: subData.free_messages_used || 0,
+      monthly_messages_used: subData.monthly_messages_used || 0,
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
