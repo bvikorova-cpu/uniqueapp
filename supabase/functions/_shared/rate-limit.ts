@@ -1,117 +1,162 @@
 /**
- * Rate limiting utilities for edge functions
+ * Database-backed rate limiting utilities for edge functions
+ * Uses Supabase check_rate_limit RPC function for distributed rate limiting
  */
 
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
 export interface RateLimitConfig {
+  action: string;
   maxRequests: number;
-  windowMs: number;
-  keyPrefix?: string;
+  windowMinutes: number;
 }
 
 export interface RateLimitResult {
   allowed: boolean;
   remaining: number;
-  resetAt: number;
+  resetAt: Date;
+  currentCount: number;
 }
 
-/**
- * In-memory rate limiter (for single instance)
- * For production, use Redis or database-backed rate limiting
- */
-const rateLimitStore = new Map<string, { count: number; resetAt: number }>();
+// Default rate limit configurations
+export const RATE_LIMITS: Record<string, RateLimitConfig> = {
+  checkout: { action: "checkout", maxRequests: 10, windowMinutes: 60 },
+  ai_generation: { action: "ai_generation", maxRequests: 20, windowMinutes: 60 },
+  api_call: { action: "api_call", maxRequests: 100, windowMinutes: 60 },
+  login: { action: "login", maxRequests: 5, windowMinutes: 15 },
+  signup: { action: "signup", maxRequests: 3, windowMinutes: 60 },
+  password_reset: { action: "password_reset", maxRequests: 3, windowMinutes: 60 },
+  file_upload: { action: "file_upload", maxRequests: 50, windowMinutes: 60 },
+  message_send: { action: "message_send", maxRequests: 100, windowMinutes: 60 },
+};
 
 /**
- * Check rate limit for a given key
+ * Get identifier from request (user ID or IP)
  */
-export function checkRateLimit(
-  key: string,
-  config: RateLimitConfig
-): RateLimitResult {
-  const now = Date.now();
-  const fullKey = config.keyPrefix ? `${config.keyPrefix}:${key}` : key;
-  
-  const existing = rateLimitStore.get(fullKey);
-  
-  if (!existing || existing.resetAt < now) {
-    // New window
-    rateLimitStore.set(fullKey, {
-      count: 1,
-      resetAt: now + config.windowMs,
-    });
-    
-    return {
-      allowed: true,
-      remaining: config.maxRequests - 1,
-      resetAt: now + config.windowMs,
-    };
+export function getIdentifier(req: Request, userId?: string): string {
+  if (userId) {
+    return `user:${userId}`;
   }
-  
-  if (existing.count >= config.maxRequests) {
-    return {
-      allowed: false,
-      remaining: 0,
-      resetAt: existing.resetAt,
-    };
-  }
-  
-  existing.count++;
-  
-  return {
-    allowed: true,
-    remaining: config.maxRequests - existing.count,
-    resetAt: existing.resetAt,
-  };
-}
 
-/**
- * Get rate limit key from request
- */
-export function getRateLimitKey(req: Request): string {
-  // Try to get user ID from auth header
-  const authHeader = req.headers.get("Authorization");
-  if (authHeader) {
-    // Hash the token to use as key
-    return `auth:${hashString(authHeader)}`;
-  }
-  
-  // Fall back to IP address
   const forwardedFor = req.headers.get("x-forwarded-for");
-  const ip = forwardedFor?.split(",")[0]?.trim() || "unknown";
-  
+  const realIp = req.headers.get("x-real-ip");
+  const cfConnectingIp = req.headers.get("cf-connecting-ip");
+
+  const ip = forwardedFor?.split(",")[0]?.trim() || realIp || cfConnectingIp || "unknown";
   return `ip:${ip}`;
 }
 
 /**
- * Simple string hash for rate limit keys
+ * Check rate limit using database RPC function
  */
-function hashString(str: string): string {
-  let hash = 0;
-  for (let i = 0; i < str.length; i++) {
-    const char = str.charCodeAt(i);
-    hash = ((hash << 5) - hash) + char;
-    hash = hash & hash;
-  }
-  return Math.abs(hash).toString(36);
-}
+export async function checkRateLimit(
+  identifier: string,
+  config: RateLimitConfig
+): Promise<RateLimitResult> {
+  try {
+    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
-/**
- * Clean up expired rate limit entries
- */
-export function cleanupRateLimitStore(): void {
-  const now = Date.now();
-  for (const [key, value] of rateLimitStore.entries()) {
-    if (value.resetAt < now) {
-      rateLimitStore.delete(key);
+    const supabase = createClient(supabaseUrl, supabaseKey);
+
+    const { data, error } = await supabase.rpc("check_rate_limit", {
+      p_identifier: identifier,
+      p_action_name: config.action,
+      p_max_requests: config.maxRequests,
+      p_window_minutes: config.windowMinutes,
+    });
+
+    if (error) {
+      console.error("Rate limit check error:", error);
+      return {
+        allowed: true,
+        remaining: config.maxRequests,
+        resetAt: new Date(Date.now() + config.windowMinutes * 60 * 1000),
+        currentCount: 0,
+      };
     }
+
+    const result = data?.[0] || data;
+
+    return {
+      allowed: result?.allowed ?? true,
+      remaining: result?.remaining ?? config.maxRequests,
+      resetAt: new Date(result?.reset_at || Date.now() + config.windowMinutes * 60 * 1000),
+      currentCount: result?.current_count ?? 0,
+    };
+  } catch (err) {
+    console.error("Rate limit error:", err);
+    return {
+      allowed: true,
+      remaining: config.maxRequests,
+      resetAt: new Date(Date.now() + config.windowMinutes * 60 * 1000),
+      currentCount: 0,
+    };
   }
 }
 
 /**
- * Rate limit headers for response
+ * Rate limit exceeded response
  */
-export function getRateLimitHeaders(result: RateLimitResult): Record<string, string> {
+export function rateLimitExceededResponse(
+  result: RateLimitResult,
+  corsHeaders: Record<string, string>
+): Response {
+  const retryAfter = Math.ceil((result.resetAt.getTime() - Date.now()) / 1000);
+
+  return new Response(
+    JSON.stringify({
+      error: "Rate limit exceeded",
+      code: "RATE_LIMIT_EXCEEDED",
+      retryAfter,
+      resetAt: result.resetAt.toISOString(),
+    }),
+    {
+      status: 429,
+      headers: {
+        ...corsHeaders,
+        "Content-Type": "application/json",
+        "Retry-After": retryAfter.toString(),
+        "X-RateLimit-Limit": result.currentCount.toString(),
+        "X-RateLimit-Remaining": "0",
+        "X-RateLimit-Reset": Math.ceil(result.resetAt.getTime() / 1000).toString(),
+      },
+    }
+  );
+}
+
+/**
+ * Add rate limit headers to response
+ */
+export function addRateLimitHeaders(
+  headers: Record<string, string>,
+  result: RateLimitResult,
+  config: RateLimitConfig
+): Record<string, string> {
   return {
+    ...headers,
+    "X-RateLimit-Limit": config.maxRequests.toString(),
     "X-RateLimit-Remaining": result.remaining.toString(),
-    "X-RateLimit-Reset": Math.ceil(result.resetAt / 1000).toString(),
+    "X-RateLimit-Reset": Math.ceil(result.resetAt.getTime() / 1000).toString(),
   };
+}
+
+/**
+ * Middleware-style rate limit check
+ * Returns Response if rate limit exceeded, null if allowed
+ */
+export async function withRateLimit(
+  req: Request,
+  config: RateLimitConfig,
+  corsHeaders: Record<string, string>,
+  userId?: string
+): Promise<Response | null> {
+  const identifier = getIdentifier(req, userId);
+  const result = await checkRateLimit(identifier, config);
+
+  if (!result.allowed) {
+    return rateLimitExceededResponse(result, corsHeaders);
+  }
+
+  return null;
 }
