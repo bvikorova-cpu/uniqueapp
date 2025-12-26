@@ -1,6 +1,7 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
+import { withRateLimit, RATE_LIMITS } from "../_shared/rate-limit.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -24,6 +25,10 @@ serve(async (req) => {
     const { data: userData } = await supabaseClient.auth.getUser(token);
     const user = userData.user;
     if (!user) throw new Error('Not authenticated');
+
+    // Rate limit check
+    const rateLimitResponse = await withRateLimit(req, RATE_LIMITS.ai_generation, corsHeaders, user.id);
+    if (rateLimitResponse) return rateLimitResponse;
 
     const { type, data } = await req.json();
     const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");

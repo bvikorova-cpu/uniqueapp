@@ -1,5 +1,6 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { withRateLimit, RATE_LIMITS, getIdentifier } from "../_shared/rate-limit.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -12,6 +13,10 @@ serve(async (req) => {
   }
 
   try {
+    // Rate limit check (no auth required for kids chat)
+    const rateLimitResponse = await withRateLimit(req, RATE_LIMITS.ai_generation, corsHeaders);
+    if (rateLimitResponse) return rateLimitResponse;
+
     const { messages, characterName, characterPersonality } = await req.json();
     
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
