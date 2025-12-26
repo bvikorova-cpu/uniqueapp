@@ -31,9 +31,9 @@ serve(async (req) => {
       isPremium = false 
     } = await req.json();
 
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) {
-      throw new Error("LOVABLE_API_KEY is not configured");
+    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
+    if (!OPENAI_API_KEY) {
+      throw new Error("OPENAI_API_KEY is not configured");
     }
 
     // Check and deduct credits
@@ -63,14 +63,14 @@ serve(async (req) => {
     const backstoryPrompt = `Create a compelling backstory for a ${category} character named "${name}". Description: ${description}. 
     Write 2-3 paragraphs that cover their origin, motivation, and what makes them unique. Be creative and engaging.`;
 
-    const backstoryResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+    const backstoryResponse = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+        'Authorization': `Bearer ${OPENAI_API_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'google/gemini-2.5-flash',
+        model: 'gpt-4o-mini',
         messages: [
           { role: 'user', content: backstoryPrompt }
         ],
@@ -87,18 +87,18 @@ serve(async (req) => {
     // Generate character image
     const imagePrompt = `A highly detailed ${isPremium ? 'premium quality' : 'high quality'} ${category} character named ${name}. ${description}. Full body, dynamic pose, professional character design, vibrant colors, detailed costume and features.`;
 
-    const imageResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+    const imageResponse = await fetch('https://api.openai.com/v1/images/generations', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+        'Authorization': `Bearer ${OPENAI_API_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'google/gemini-2.5-flash-image',
-        messages: [
-          { role: 'user', content: imagePrompt }
-        ],
-        modalities: ['image', 'text']
+        model: 'dall-e-3',
+        prompt: imagePrompt,
+        n: 1,
+        size: '1024x1024',
+        response_format: 'b64_json'
       }),
     });
 
@@ -107,7 +107,7 @@ serve(async (req) => {
     }
 
     const imageData = await imageResponse.json();
-    const imageBase64 = imageData.choices[0].message.images[0].image_url.url;
+    const imageBase64 = `data:image/png;base64,${imageData.data[0].b64_json}`;
 
     // Generate random stats
     const generateStat = () => Math.floor(Math.random() * (isPremium ? 100 : 80)) + (isPremium ? 50 : 20);

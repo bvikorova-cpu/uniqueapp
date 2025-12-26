@@ -64,9 +64,9 @@ serve(async (req) => {
 
     // Start background task for generating all panoramas
     const backgroundTask = async () => {
-      const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-      if (!LOVABLE_API_KEY) {
-        console.error('LOVABLE_API_KEY not configured');
+      const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
+      if (!OPENAI_API_KEY) {
+        console.error('OPENAI_API_KEY not configured');
         return;
       }
 
@@ -85,17 +85,19 @@ The image should be suitable for VR/360° viewing with proper equirectangular pr
 Include architectural details, magical decorations, royal furnishings, and enchanting ambiance that matches Disney castle aesthetics.
 Ultra high resolution, professional theme park photography quality.`;
 
-          // Call Lovable AI
-          const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+          // Call OpenAI API
+          const aiResponse = await fetch('https://api.openai.com/v1/images/generations', {
             method: 'POST',
             headers: {
-              'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+              'Authorization': `Bearer ${OPENAI_API_KEY}`,
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              model: 'google/gemini-2.5-flash-image',
-              messages: [{ role: 'user', content: prompt }],
-              modalities: ['image', 'text']
+              model: 'dall-e-3',
+              prompt: prompt,
+              n: 1,
+              size: '1792x1024',
+              response_format: 'b64_json'
             })
           });
 
@@ -110,17 +112,16 @@ Ultra high resolution, professional theme park photography quality.`;
           }
 
           const data = await aiResponse.json();
-          const imageUrl = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+          const base64Image = data.data?.[0]?.b64_json;
           
-          if (!imageUrl) {
-            console.error(`No image URL for ${room.room_name}`);
+          if (!base64Image) {
+            console.error(`No image data for ${room.room_name}`);
             failCount++;
             continue;
           }
 
           // Upload to storage
-          const base64Data = imageUrl.split(',')[1];
-          const binaryData = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0));
+          const binaryData = Uint8Array.from(atob(base64Image), c => c.charCodeAt(0));
           
           // Sanitize filename - remove special characters and accents
           const sanitize = (str: string) => str

@@ -42,7 +42,6 @@ serve(async (req) => {
     }
 
     const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
-    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     
     if (!OPENAI_API_KEY) {
       throw new Error('OPENAI_API_KEY not configured');
@@ -132,39 +131,37 @@ serve(async (req) => {
       }
     }
 
-    // Generate anti-aging tips using Lovable AI
+    // Generate anti-aging tips using OpenAI
     let antiAgingTips = 'Maintain a healthy lifestyle with proper nutrition, regular exercise, good sleep, and stress management.';
     
-    if (LOVABLE_API_KEY) {
-      try {
-        const tipsResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${LOVABLE_API_KEY}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            model: 'google/gemini-2.5-flash',
-            messages: [
-              {
-                role: 'system',
-                content: 'You are an expert in healthy aging and anti-aging strategies. Provide practical, evidence-based advice.'
-              },
-              {
-                role: 'user',
-                content: `Provide 5 key anti-aging tips to maintain youthful appearance and health over the next ${yearsForward} years. Include diet, exercise, skincare, lifestyle and mental health advice. Keep it under 200 words, actionable and motivating.`
-              }
-            ],
-          }),
-        });
+    try {
+      const tipsResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${OPENAI_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'gpt-4o-mini',
+          messages: [
+            {
+              role: 'system',
+              content: 'You are an expert in healthy aging and anti-aging strategies. Provide practical, evidence-based advice.'
+            },
+            {
+              role: 'user',
+              content: `Provide 5 key anti-aging tips to maintain youthful appearance and health over the next ${yearsForward} years. Include diet, exercise, skincare, lifestyle and mental health advice. Keep it under 200 words, actionable and motivating.`
+            }
+          ],
+        }),
+      });
 
-        if (tipsResponse.ok) {
-          const tipsData = await tipsResponse.json();
-          antiAgingTips = tipsData.choices[0].message.content;
-        }
-      } catch (e) {
-        console.error('Tips generation error:', e);
+      if (tipsResponse.ok) {
+        const tipsData = await tipsResponse.json();
+        antiAgingTips = tipsData.choices[0].message.content;
       }
+    } catch (e) {
+      console.error('Tips generation error:', e);
     }
 
     const { data: progression, error: progError } = await supabase
