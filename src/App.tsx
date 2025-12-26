@@ -115,6 +115,7 @@ import {
   HomeDecorMarketplace,
   HomeDecorSubscription,
   StockContentLibrary,
+  CouponMarketplace,
   Education,
   CourseDetail,
   GenerateCourses,
@@ -366,6 +367,7 @@ const App = () => {
                         <Route path="/fit-slim" element={<FitSlim />} />
                         <Route path="/marketplace" element={<Marketplace />} />
                         <Route path="/bazaar" element={<Bazaar />} />
+                        <Route path="/coupon-marketplace" element={<CouponMarketplace />} />
                         <Route path="/referral" element={<Referral />} />
                         <Route path="/games" element={<Games />} />
                         <Route path="/jobs" element={<Jobs />} />
