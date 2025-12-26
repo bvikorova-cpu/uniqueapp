@@ -252,8 +252,8 @@ const BestFriend = () => {
                 <h3 className="font-semibold text-sm">💰 Pricing:</h3>
                 <ul className="text-sm text-muted-foreground space-y-1">
                   <li>• <strong>Free Trial:</strong> 5 messages to try it out</li>
-                  <li>• <strong>Premium:</strong> €15/month for unlimited conversations</li>
-                  <li>• All chat history is automatically saved</li>
+                  <li>• <strong>Premium:</strong> €15/month for 1000 messages</li>
+                  <li>• <strong>Extra:</strong> +100 messages for €2</li>
                   <li>• Cancel anytime through customer portal</li>
                 </ul>
               </div>
@@ -376,15 +376,15 @@ const BestFriend = () => {
                 Subscribe to Continue
               </DialogTitle>
               <DialogDescription>
-                You've used all your free messages. Subscribe for just €15/month to enjoy unlimited conversations with your best friend.
+                You've used all your free messages. Subscribe for just €15/month to enjoy 1000 conversations with your best friend.
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-4 py-4">
               <div className="flex items-start gap-3">
                 <Heart className="w-5 h-5 text-destructive mt-0.5" />
                 <div>
-                  <p className="font-medium">Unlimited Conversations</p>
-                  <p className="text-sm text-muted-foreground">Chat as much as you want</p>
+                  <p className="font-medium">1000 Messages/Month</p>
+                  <p className="text-sm text-muted-foreground">Reset every billing period</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
@@ -397,7 +397,7 @@ const BestFriend = () => {
               <div className="flex items-start gap-3">
                 <CreditCard className="w-5 h-5 text-success mt-0.5" />
                 <div>
-                  <p className="font-medium">Just €15/month</p>
+                  <p className="font-medium">€15/month + €2/100 extra</p>
                   <p className="text-sm text-muted-foreground">Cancel anytime</p>
                 </div>
               </div>

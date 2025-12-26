@@ -47,7 +47,7 @@ serve(async (req) => {
         if (!subData) {
           const { data: newSub } = await supabase
             .from('psychology_subscriptions')
-            .insert({ user_id: user.id, free_messages_used: 0 })
+            .insert({ user_id: user.id, free_messages_used: 0, monthly_messages_used: 0, monthly_messages_reset_at: new Date().toISOString() })
             .select()
             .single();
           subData = newSub;
@@ -56,6 +56,25 @@ serve(async (req) => {
         const isSubscribed = subData?.subscription_status === 'active' && 
                             subData?.subscription_end && 
                             new Date(subData.subscription_end) > new Date();
+
+        const bonusMessages = subData?.bonus_messages || 0;
+        const MONTHLY_MESSAGE_LIMIT = 1000;
+        let monthlyMessagesUsed = subData?.monthly_messages_used || 0;
+        const monthlyResetAt = subData?.monthly_messages_reset_at ? new Date(subData.monthly_messages_reset_at) : new Date();
+        
+        // Check if we need to reset monthly counter
+        const oneMonthAgo = new Date();
+        oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+        
+        if (monthlyResetAt < oneMonthAgo) {
+          monthlyMessagesUsed = 0;
+          await supabase
+            .from('psychology_subscriptions')
+            .update({ monthly_messages_used: 0, monthly_messages_reset_at: new Date().toISOString() })
+            .eq('user_id', user.id);
+        }
+
+        const totalAvailableMessages = MONTHLY_MESSAGE_LIMIT + bonusMessages;
 
         if (!isSubscribed) {
           const freeMessagesUsed = subData?.free_messages_used || 0;
@@ -77,6 +96,27 @@ serve(async (req) => {
           await supabase
             .from('psychology_subscriptions')
             .update({ free_messages_used: freeMessagesUsed + 1 })
+            .eq('user_id', user.id);
+        } else {
+          // Check monthly limit for subscribers
+          if (monthlyMessagesUsed >= totalAvailableMessages) {
+            return new Response(
+              JSON.stringify({ 
+                error: `Message limit (${totalAvailableMessages}) reached. You can purchase additional messages.`,
+                monthlyLimitReached: true,
+                canPurchaseMore: true
+              }), 
+              {
+                status: 402,
+                headers: { ...corsHeaders, "Content-Type": "application/json" },
+              }
+            );
+          }
+
+          // Increment monthly messages used
+          await supabase
+            .from('psychology_subscriptions')
+            .update({ monthly_messages_used: monthlyMessagesUsed + 1 })
             .eq('user_id', user.id);
         }
       }

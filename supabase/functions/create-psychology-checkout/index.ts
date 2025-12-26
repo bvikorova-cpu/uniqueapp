@@ -4,8 +4,8 @@ import { createCheckoutHandler } from "../_shared/checkout.ts";
 serve(createCheckoutHandler({
   functionName: "create-psychology-checkout",
   productName: "Psychology Premium",
-  productDescription: "Unlimited conversations with your AI psychologist",
-  priceAmount: 500,
+  productDescription: "1000 conversations per month with your AI psychologist",
+  priceAmount: 1500,
   currency: "eur",
   mode: "subscription",
   recurringInterval: "month",

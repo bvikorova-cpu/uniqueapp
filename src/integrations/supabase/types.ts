@@ -2267,6 +2267,7 @@ export type Database = {
       }
       best_friend_subscriptions: {
         Row: {
+          bonus_messages: number | null
           created_at: string
           free_messages_used: number | null
           id: string
@@ -2281,6 +2282,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          bonus_messages?: number | null
           created_at?: string
           free_messages_used?: number | null
           id?: string
@@ -2295,6 +2297,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          bonus_messages?: number | null
           created_at?: string
           free_messages_used?: number | null
           id?: string
@@ -21429,9 +21432,12 @@ export type Database = {
       }
       psychology_subscriptions: {
         Row: {
+          bonus_messages: number | null
           created_at: string
           free_messages_used: number | null
           id: string
+          monthly_messages_reset_at: string | null
+          monthly_messages_used: number | null
           stripe_customer_id: string | null
           stripe_subscription_id: string | null
           subscription_end: string | null
@@ -21441,9 +21447,12 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          bonus_messages?: number | null
           created_at?: string
           free_messages_used?: number | null
           id?: string
+          monthly_messages_reset_at?: string | null
+          monthly_messages_used?: number | null
           stripe_customer_id?: string | null
           stripe_subscription_id?: string | null
           subscription_end?: string | null
@@ -21453,9 +21462,12 @@ export type Database = {
           user_id: string
         }
         Update: {
+          bonus_messages?: number | null
           created_at?: string
           free_messages_used?: number | null
           id?: string
+          monthly_messages_reset_at?: string | null
+          monthly_messages_used?: number | null
           stripe_customer_id?: string | null
           stripe_subscription_id?: string | null
           subscription_end?: string | null
@@ -28938,6 +28950,7 @@ export type Database = {
         Returns: undefined
       }
       reset_best_friend_monthly_messages: { Args: never; Returns: undefined }
+      reset_psychology_monthly_messages: { Args: never; Returns: undefined }
       spend_brain_duel_credits: {
         Args: { p_amount: number; p_user_id: string }
         Returns: undefined

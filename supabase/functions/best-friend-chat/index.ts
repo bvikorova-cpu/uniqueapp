@@ -57,6 +57,7 @@ serve(async (req) => {
     const isSubscribed = subData?.subscription_status === 'active' && 
                         new Date(subData?.subscription_end) > new Date();
     const freeMessagesUsed = subData?.free_messages_used || 0;
+    const bonusMessages = subData?.bonus_messages || 0;
     
     // Monthly limit for premium subscribers (1000 messages/month)
     const MONTHLY_MESSAGE_LIMIT = 1000;
@@ -75,6 +76,9 @@ serve(async (req) => {
         .eq('user_id', user.id);
     }
 
+    // Total available messages = monthly limit + bonus messages
+    const totalAvailableMessages = MONTHLY_MESSAGE_LIMIT + bonusMessages;
+
     // Check limits
     if (!isSubscribed && freeMessagesUsed >= 5) {
       return new Response(JSON.stringify({ 
@@ -86,10 +90,11 @@ serve(async (req) => {
       });
     }
     
-    if (isSubscribed && monthlyMessagesUsed >= MONTHLY_MESSAGE_LIMIT) {
+    if (isSubscribed && monthlyMessagesUsed >= totalAvailableMessages) {
       return new Response(JSON.stringify({ 
-        error: `Monthly message limit (${MONTHLY_MESSAGE_LIMIT}) reached. Your limit resets next month.`,
-        monthlyLimitReached: true 
+        error: `Message limit (${totalAvailableMessages}) reached. You can purchase additional messages.`,
+        monthlyLimitReached: true,
+        canPurchaseMore: true
       }), {
         status: 402,
         headers: { ...corsHeaders, "Content-Type": "application/json" },

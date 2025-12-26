@@ -38,6 +38,7 @@ serve(async (req) => {
       subscribed: isSubscribed,
       free_messages_used: subData.free_messages_used || 0,
       monthly_messages_used: subData.monthly_messages_used || 0,
+      bonus_messages: subData.bonus_messages || 0,
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });

@@ -5,6 +5,9 @@ export interface PsychologySubscription {
   subscribed: boolean;
   freeMessagesUsed: number;
   freeMessagesLimit: number;
+  monthlyMessagesUsed: number;
+  monthlyMessagesLimit: number;
+  bonusMessages: number;
   loading: boolean;
 }
 
@@ -13,6 +16,9 @@ export function usePsychologySubscription() {
     subscribed: false,
     freeMessagesUsed: 0,
     freeMessagesLimit: 5,
+    monthlyMessagesUsed: 0,
+    monthlyMessagesLimit: 1000,
+    bonusMessages: 0,
     loading: true,
   });
 
@@ -32,6 +38,9 @@ export function usePsychologySubscription() {
         subscribed: data?.subscribed || false,
         freeMessagesUsed: data?.free_messages_used || 0,
         freeMessagesLimit: 5,
+        monthlyMessagesUsed: data?.monthly_messages_used || 0,
+        monthlyMessagesLimit: 1000,
+        bonusMessages: data?.bonus_messages || 0,
         loading: false,
       });
     } catch (err: any) {
@@ -50,6 +59,20 @@ export function usePsychologySubscription() {
       }
     } catch (error) {
       console.error('Error creating checkout:', error);
+      throw error;
+    }
+  };
+
+  const purchaseMessages = async () => {
+    try {
+      const { data, error } = await supabase.functions.invoke('purchase-psychology-messages');
+
+      if (error) throw error;
+      if (data?.url) {
+        window.open(data.url, '_blank');
+      }
+    } catch (error) {
+      console.error('Error purchasing messages:', error);
       throw error;
     }
   };
@@ -78,6 +101,7 @@ export function usePsychologySubscription() {
     subscription,
     refresh: checkSubscription,
     createCheckout,
+    purchaseMessages,
     manageSubscription,
   };
 }
