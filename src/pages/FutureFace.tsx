@@ -319,6 +319,28 @@ const FutureFace = () => {
                 <p className="text-muted-foreground text-xs sm:text-base hidden sm:block">View your future with healthy vs unhealthy lifestyle</p>
               </div>
             </div>
+
+            {/* Detailed Description */}
+            <div className="mt-8 pt-6 border-t border-primary/10">
+              <h4 className="font-semibold text-lg mb-4 text-primary">About Future Face Technology</h4>
+              <div className="space-y-4 text-muted-foreground text-sm leading-relaxed">
+                <p>
+                  <strong className="text-foreground">What is Future Face?</strong> Future Face is an advanced AI-powered age progression tool that uses cutting-edge machine learning algorithms to predict how your face will age over the next 10 to 50 years. Our technology analyzes facial features, skin texture, bone structure, and aging patterns to create photorealistic representations of your future self.
+                </p>
+                <p>
+                  <strong className="text-foreground">How does it work?</strong> Simply upload a clear selfie photo of your face. Our AI processes the image, identifying key facial landmarks and features. It then applies scientifically-backed aging models that account for natural changes in skin elasticity, wrinkle formation, fat redistribution, and bone density changes that occur over time.
+                </p>
+                <p>
+                  <strong className="text-foreground">Healthy vs Unhealthy Comparison (Premium):</strong> The premium feature shows you two possible futures - one where you maintain a healthy lifestyle (proper nutrition, exercise, skincare, adequate sleep, no smoking) and another showing the effects of unhealthy habits (poor diet, lack of exercise, sun damage, smoking, stress). This powerful visual comparison serves as motivation for making better lifestyle choices today.
+                </p>
+                <p>
+                  <strong className="text-foreground">Who can use it?</strong> Future Face is designed for individuals curious about their aging process, health-conscious people seeking motivation, wellness coaches, dermatologists, and corporate wellness programs. It's also popular for entertainment purposes at events and parties.
+                </p>
+                <p>
+                  <strong className="text-foreground">Privacy & Security:</strong> Your photos are processed securely and are never stored permanently. We use end-to-end encryption and comply with GDPR regulations. Your images are deleted from our servers within 24 hours of processing.
+                </p>
+              </div>
+            </div>
           </CardContent>
         </Card>
 
