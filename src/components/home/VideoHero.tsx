@@ -65,8 +65,8 @@ export const VideoHero = ({
         <source src={videoSrc} type="video/mp4" />
       </video>
 
-      {/* Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/40 to-background" />
+      {/* Overlay - lighter for better image visibility */}
+      <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-background/20 to-background/60" />
 
       {/* Content */}
       <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-4">
