@@ -5,7 +5,7 @@ serve(createCheckoutHandler({
   functionName: "create-best-friend-checkout",
   productName: "Best Friend Premium",
   productDescription: "Unlimited conversations with your AI best friend",
-  priceAmount: 500,
+  priceAmount: 1500,
   currency: "eur",
   mode: "subscription",
   recurringInterval: "month",
