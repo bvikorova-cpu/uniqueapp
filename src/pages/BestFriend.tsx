@@ -303,10 +303,20 @@ const BestFriend = () => {
                   {messagesLeft} free {messagesLeft === 1 ? 'message' : 'messages'} remaining
                 </span>
               </div>
-              <Button onClick={handleSubscribe} className="gap-2">
-                <Crown className="w-4 h-4" />
-                Subscribe for €15/month
-              </Button>
+              <div className="flex flex-col sm:flex-row gap-2">
+                <Button onClick={handleSubscribe} className="gap-2">
+                  <Crown className="w-4 h-4" />
+                  Subscribe for €15/month
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => purchaseMessages()}
+                  className="gap-2"
+                >
+                  <CreditCard className="w-4 h-4" />
+                  +100 messages for €2
+                </Button>
+              </div>
             </div>
           )}
         </div>
