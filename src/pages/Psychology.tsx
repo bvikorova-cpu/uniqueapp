@@ -28,7 +28,7 @@ const Psychology = () => {
   const [loadingHistory, setLoadingHistory] = useState(true);
   const [showSubscriptionDialog, setShowSubscriptionDialog] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const { subscription, refresh: refreshSubscription, createCheckout, manageSubscription } = usePsychologySubscription();
+  const { subscription, refresh: refreshSubscription, createCheckout, manageSubscription, purchaseMessages } = usePsychologySubscription();
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -258,25 +258,47 @@ const Psychology = () => {
             </p>
           </div>
           
-          {!subscription.subscribed && messagesLeft !== null && (
-            <div className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-warning/10 border border-warning rounded-lg">
-              <Sparkles className="w-4 h-4 text-warning" />
-              <span className="text-sm text-warning">
-                {messagesLeft} free {messagesLeft === 1 ? 'message' : 'messages'} remaining
-              </span>
+          {subscription.subscribed && (
+            <div className="mt-4 space-y-3">
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-success/10 border border-success rounded-lg">
+                <Crown className="w-4 h-4 text-success" />
+                <span className="text-sm text-success">
+                  Premium Active • {subscription.monthlyMessagesUsed}/{subscription.monthlyMessagesLimit} messages
+                  {subscription.bonusMessages > 0 && ` (+${subscription.bonusMessages} bonus)`}
+                </span>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={manageSubscription}
+                  className="ml-2"
+                >
+                  Manage
+                </Button>
+              </div>
+              <div className="flex gap-2 justify-center">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => purchaseMessages()}
+                  className="gap-2"
+                >
+                  <CreditCard className="w-4 h-4" />
+                  +100 messages for €2
+                </Button>
+              </div>
             </div>
           )}
-          {subscription.subscribed && (
-            <div className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-success/10 border border-success rounded-lg">
-              <Crown className="w-4 h-4 text-success" />
-              <span className="text-sm text-success">Premium Active</span>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={manageSubscription}
-                className="ml-2"
-              >
-                Manage
+          {!subscription.subscribed && (
+            <div className="mt-4 flex flex-col items-center gap-3">
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-warning/10 border border-warning rounded-lg">
+                <Sparkles className="w-4 h-4 text-warning" />
+                <span className="text-sm text-warning">
+                  {messagesLeft} free {messagesLeft === 1 ? 'message' : 'messages'} remaining
+                </span>
+              </div>
+              <Button onClick={handleSubscribe} className="gap-2">
+                <Crown className="w-4 h-4" />
+                Subscribe for €15/month
               </Button>
             </div>
           )}
