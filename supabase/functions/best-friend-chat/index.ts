@@ -51,17 +51,45 @@ serve(async (req) => {
     if (!subData) {
       await supabase
         .from('best_friend_subscriptions')
-        .insert({ user_id: user.id, free_messages_used: 0 });
+        .insert({ user_id: user.id, free_messages_used: 0, monthly_messages_used: 0, monthly_messages_reset_at: new Date().toISOString() });
     }
 
     const isSubscribed = subData?.subscription_status === 'active' && 
                         new Date(subData?.subscription_end) > new Date();
     const freeMessagesUsed = subData?.free_messages_used || 0;
+    
+    // Monthly limit for premium subscribers (1000 messages/month)
+    const MONTHLY_MESSAGE_LIMIT = 1000;
+    let monthlyMessagesUsed = subData?.monthly_messages_used || 0;
+    const monthlyResetAt = subData?.monthly_messages_reset_at ? new Date(subData.monthly_messages_reset_at) : new Date();
+    
+    // Check if we need to reset monthly counter (new billing period)
+    const oneMonthAgo = new Date();
+    oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+    
+    if (monthlyResetAt < oneMonthAgo) {
+      monthlyMessagesUsed = 0;
+      await supabase
+        .from('best_friend_subscriptions')
+        .update({ monthly_messages_used: 0, monthly_messages_reset_at: new Date().toISOString() })
+        .eq('user_id', user.id);
+    }
 
+    // Check limits
     if (!isSubscribed && freeMessagesUsed >= 5) {
       return new Response(JSON.stringify({ 
         error: "Free message limit reached. Please subscribe to continue.",
         requiresSubscription: true 
+      }), {
+        status: 402,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    
+    if (isSubscribed && monthlyMessagesUsed >= MONTHLY_MESSAGE_LIMIT) {
+      return new Response(JSON.stringify({ 
+        error: `Monthly message limit (${MONTHLY_MESSAGE_LIMIT}) reached. Your limit resets next month.`,
+        monthlyLimitReached: true 
       }), {
         status: 402,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -133,11 +161,17 @@ Be authentic, sincere, and genuinely interested in how the user is doing. Rememb
         content: userMessage.content,
       });
 
-      // Update free messages count
+      // Update message counts
       if (!isSubscribed) {
         await supabase
           .from('best_friend_subscriptions')
           .update({ free_messages_used: (freeMessagesUsed + 1) })
+          .eq('user_id', user.id);
+      } else {
+        // Update monthly messages count for subscribers
+        await supabase
+          .from('best_friend_subscriptions')
+          .update({ monthly_messages_used: (monthlyMessagesUsed + 1) })
           .eq('user_id', user.id);
       }
     }
