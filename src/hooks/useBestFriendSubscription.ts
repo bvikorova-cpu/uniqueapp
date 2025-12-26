@@ -65,6 +65,11 @@ export function useBestFriendSubscription() {
 
   const purchaseMessages = async () => {
     try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        throw new Error('Please sign in to purchase messages');
+      }
+
       const { data, error } = await supabase.functions.invoke('purchase-best-friend-messages');
 
       if (error) throw error;
