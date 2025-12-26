@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
+import { withRateLimit, RATE_LIMITS, addRateLimitHeaders, getIdentifier, checkRateLimit } from "../_shared/rate-limit.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -23,6 +24,19 @@ serve(async (req) => {
     const { data } = await supabaseClient.auth.getUser(token);
     const user = data.user;
     if (!user?.email) throw new Error("User not authenticated");
+
+    // Rate limiting check
+    const rateLimitResponse = await withRateLimit(
+      req,
+      RATE_LIMITS.checkout,
+      corsHeaders,
+      user.id
+    );
+    if (rateLimitResponse) return rateLimitResponse;
+
+    // Get rate limit result for headers
+    const identifier = getIdentifier(req, user.id);
+    const rateLimitResult = await checkRateLimit(identifier, RATE_LIMITS.checkout);
 
     const { package: packageType } = await req.json();
 
@@ -65,14 +79,21 @@ serve(async (req) => {
       },
     });
 
+    const responseHeaders = addRateLimitHeaders(
+      { ...corsHeaders, "Content-Type": "application/json" },
+      rateLimitResult,
+      RATE_LIMITS.checkout
+    );
+
     return new Response(
       JSON.stringify({ url: session.url }),
       {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: responseHeaders,
         status: 200,
       }
     );
   } catch (error) {
+    console.error("Purchase IQ credits error:", error);
     return new Response(
       JSON.stringify({ error: error instanceof Error ? error.message : "Unknown error" }),
       {
