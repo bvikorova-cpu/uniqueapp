@@ -225,23 +225,6 @@ const FutureFace = () => {
       icon: Users,
       color: 'from-green-500 to-emerald-500'
     },
-    {
-      id: 'corporate',
-      name: 'Corporate Wellness',
-      price: '€499/mo',
-      priceId: 'price_1SQMCJGaXSfGtYFtIXBEUX31',
-      description: 'Monthly subscription',
-      features: [
-        'Unlimited employees',
-        'Wellness dashboard',
-        'Health motivation tool',
-        'Analytics & reporting',
-        'Priority support',
-        'Custom branding'
-      ],
-      icon: Building2,
-      color: 'from-orange-500 to-red-500'
-    }
   ];
 
   if (!isAuthenticated) {
