@@ -19,7 +19,8 @@ export default defineConfig(({ mode }) => ({
       manifest: {
         name: "Unique - Sociálna sieť",
         short_name: "Unique",
-        description: "Tvoja jedinečná sociálna sieť. Zdieľaj, spájaj sa a objavuj nových priateľov.",
+        description:
+          "Tvoja jedinečná sociálna sieť. Zdieľaj, spájaj sa a objavuj nových priateľov.",
         start_url: "/",
         display: "standalone",
         background_color: "#ffffff",
@@ -47,6 +48,11 @@ export default defineConfig(({ mode }) => ({
         ],
       },
       workbox: {
+        // Ensure users don't get stuck on an old cached build (common cause of "live" showing old UI)
+        skipWaiting: true,
+        clientsClaim: true,
+        cleanupOutdatedCaches: true,
+
         globPatterns: ["**/*.{js,css,html,ico,png,svg,woff2}"],
         runtimeCaching: [
           {
@@ -56,7 +62,7 @@ export default defineConfig(({ mode }) => ({
               cacheName: "supabase-api-cache",
               expiration: {
                 maxEntries: 100,
-                maxAgeSeconds: 60 * 60 * 24, // 24 hours
+                maxAgeSeconds: 60 * 5, // 5 minutes (avoid stale app data)
               },
               cacheableResponse: {
                 statuses: [0, 200],
