@@ -6900,6 +6900,33 @@ export type Database = {
         }
         Relationships: []
       }
+      coupon_marketplace_access: {
+        Row: {
+          amount: number
+          created_at: string
+          id: string
+          paid_at: string
+          stripe_session_id: string | null
+          user_id: string
+        }
+        Insert: {
+          amount?: number
+          created_at?: string
+          id?: string
+          paid_at?: string
+          stripe_session_id?: string | null
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          id?: string
+          paid_at?: string
+          stripe_session_id?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       coupon_messages: {
         Row: {
           coupon_id: string

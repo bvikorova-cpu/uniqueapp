@@ -82,6 +82,9 @@ const CouponMarketplace = () => {
   const [coupons, setCoupons] = useState<CouponListing[]>([]);
   const [myOrders, setMyOrders] = useState<CouponOrder[]>([]);
   const [activeTab, setActiveTab] = useState("browse");
+  const [hasAccess, setHasAccess] = useState<boolean | null>(null);
+  const [isCheckingAccess, setIsCheckingAccess] = useState(true);
+  const [isPurchasingAccess, setIsPurchasingAccess] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -97,16 +100,115 @@ const CouponMarketplace = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    loadCoupons();
     checkCurrentUser();
-    checkPaymentStatus();
+    checkAccessStatus();
   }, []);
+
+  useEffect(() => {
+    if (hasAccess) {
+      loadCoupons();
+      checkPaymentStatus();
+    }
+  }, [hasAccess]);
 
   useEffect(() => {
     if (currentUserId && activeTab === "my-orders") {
       loadMyOrders();
     }
   }, [currentUserId, activeTab]);
+
+  const checkAccessStatus = async () => {
+    setIsCheckingAccess(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        setHasAccess(false);
+        setIsCheckingAccess(false);
+        return;
+      }
+
+      // Check URL for access payment success
+      const urlParams = new URLSearchParams(window.location.search);
+      const accessStatus = urlParams.get('access');
+      const sessionId = urlParams.get('session_id');
+
+      if (accessStatus === 'success' && sessionId) {
+        const { data, error } = await supabase.functions.invoke('coupon-marketplace-access', {
+          body: { action: 'verify', sessionId },
+          headers: { Authorization: `Bearer ${session.access_token}` }
+        });
+
+        if (!error && data?.hasAccess) {
+          setHasAccess(true);
+          toast({
+            title: "Welcome! 🎉",
+            description: "You now have lifetime access to the Coupon Marketplace!",
+          });
+          window.history.replaceState({}, '', window.location.pathname);
+          setIsCheckingAccess(false);
+          return;
+        }
+      } else if (accessStatus === 'cancelled') {
+        toast({
+          title: "Payment cancelled",
+          description: "Access purchase was cancelled.",
+          variant: "destructive",
+        });
+        window.history.replaceState({}, '', window.location.pathname);
+      }
+
+      // Check existing access
+      const { data, error } = await supabase.functions.invoke('coupon-marketplace-access', {
+        body: { action: 'check' },
+        headers: { Authorization: `Bearer ${session.access_token}` }
+      });
+
+      if (error) throw error;
+      setHasAccess(data?.hasAccess || false);
+    } catch (error) {
+      console.error('Error checking access:', error);
+      setHasAccess(false);
+    } finally {
+      setIsCheckingAccess(false);
+    }
+  };
+
+  const handlePurchaseAccess = async () => {
+    setIsPurchasingAccess(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        toast({
+          title: "Login Required",
+          description: "Please log in to purchase access",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const { data, error } = await supabase.functions.invoke('coupon-marketplace-access', {
+        body: { action: 'purchase' },
+        headers: { Authorization: `Bearer ${session.access_token}` }
+      });
+
+      if (error) throw error;
+
+      if (data?.url) {
+        window.location.href = data.url;
+      }
+    } catch (error) {
+      console.error('Error purchasing access:', error);
+      toast({
+        title: "Error",
+        description: "Failed to initiate payment. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsPurchasingAccess(false);
+    }
+  };
 
   const checkPaymentStatus = async () => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -480,6 +582,141 @@ const CouponMarketplace = () => {
       });
     }
   };
+
+  // Loading state
+  if (isCheckingAccess) {
+    return (
+      <div className="min-h-screen bg-background pt-16 sm:pt-20 pb-12 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Checking access...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Paywall - No access
+  if (!hasAccess) {
+    return (
+      <div className="min-h-screen bg-background pt-16 sm:pt-20 pb-12">
+        <div className="container mx-auto px-3 sm:px-4 max-w-3xl">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center"
+          >
+            <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full mb-6">
+              <Ticket className="w-4 h-4" />
+              <span className="text-sm font-medium">Exclusive Marketplace</span>
+            </div>
+            <h1 className="text-3xl sm:text-5xl font-bold mb-4">
+              Coupon{" "}
+              <span className="bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent">
+                Marketplace
+              </span>
+            </h1>
+            <p className="text-lg text-muted-foreground max-w-xl mx-auto mb-8">
+              Get lifetime access to buy and sell unused coupons, gift cards, and vouchers. Save money or earn from coupons you won't use!
+            </p>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+          >
+            <Card className="border-2 border-primary/20 bg-gradient-to-br from-card to-primary/5 overflow-hidden">
+              <CardContent className="p-8 text-center">
+                <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Crown className="w-10 h-10 text-primary" />
+                </div>
+                <h2 className="text-2xl font-bold mb-2">Lifetime Access</h2>
+                <div className="flex items-center justify-center gap-2 mb-6">
+                  <span className="text-5xl font-bold text-primary">€1</span>
+                  <span className="text-muted-foreground">one-time payment</span>
+                </div>
+                
+                <ul className="text-left space-y-3 mb-8 max-w-sm mx-auto">
+                  <li className="flex items-center gap-3">
+                    <Shield className="w-5 h-5 text-green-500 flex-shrink-0" />
+                    <span>Buy coupons at discounted prices</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <Store className="w-5 h-5 text-blue-500 flex-shrink-0" />
+                    <span>Sell your unused coupons & gift cards</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <Zap className="w-5 h-5 text-yellow-500 flex-shrink-0" />
+                    <span>Save up to 50% on purchases</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <Star className="w-5 h-5 text-purple-500 flex-shrink-0" />
+                    <span>Escrow protection on all transactions</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <Gift className="w-5 h-5 text-pink-500 flex-shrink-0" />
+                    <span>Lifetime access - pay once, use forever</span>
+                  </li>
+                </ul>
+
+                {!currentUserId ? (
+                  <div className="space-y-3">
+                    <p className="text-sm text-muted-foreground">You need to be logged in to purchase access</p>
+                    <Button asChild size="lg" className="w-full max-w-xs">
+                      <a href="/auth">Log In to Continue</a>
+                    </Button>
+                  </div>
+                ) : (
+                  <Button 
+                    size="lg" 
+                    className="w-full max-w-xs gap-2"
+                    onClick={handlePurchaseAccess}
+                    disabled={isPurchasingAccess}
+                  >
+                    {isPurchasingAccess ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                        Processing...
+                      </>
+                    ) : (
+                      <>
+                        <Ticket className="w-5 h-5" />
+                        Get Access for €1
+                      </>
+                    )}
+                  </Button>
+                )}
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          {/* Preview of features */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="mt-8 grid sm:grid-cols-3 gap-4"
+          >
+            <div className="bg-card border rounded-xl p-4 text-center">
+              <Percent className="w-8 h-8 text-green-500 mx-auto mb-2" />
+              <h3 className="font-semibold">Save Money</h3>
+              <p className="text-sm text-muted-foreground">Get coupons below face value</p>
+            </div>
+            <div className="bg-card border rounded-xl p-4 text-center">
+              <Tag className="w-8 h-8 text-blue-500 mx-auto mb-2" />
+              <h3 className="font-semibold">Earn Cash</h3>
+              <p className="text-sm text-muted-foreground">Sell your unused coupons</p>
+            </div>
+            <div className="bg-card border rounded-xl p-4 text-center">
+              <Shield className="w-8 h-8 text-purple-500 mx-auto mb-2" />
+              <h3 className="font-semibold">100% Secure</h3>
+              <p className="text-sm text-muted-foreground">Protected transactions</p>
+            </div>
+          </motion.div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background pt-16 sm:pt-20 pb-12">
