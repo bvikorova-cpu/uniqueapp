@@ -55,7 +55,7 @@ export const VideoHero = ({
       {/* Video Background */}
       <video
         ref={videoRef}
-        className="absolute inset-0 w-full h-full object-cover"
+        className="absolute inset-0 h-full w-full object-cover brightness-110 saturate-110"
         autoPlay
         muted
         loop
@@ -66,7 +66,7 @@ export const VideoHero = ({
       </video>
 
       {/* Overlay - lighter for better image visibility */}
-      <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-background/20 to-background/60" />
+      <div className="absolute inset-0 bg-gradient-to-b from-background/15 via-background/10 to-background/45" />
 
       {/* Content */}
       <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-4">
