@@ -51,45 +51,41 @@ serve(async (req) => {
       }
     }
 
-    // Generate coloring page using Lovable AI
-    const lovableApiKey = Deno.env.get("LOVABLE_API_KEY");
-    if (!lovableApiKey) throw new Error("LOVABLE_API_KEY not set");
+    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
+    if (!OPENAI_API_KEY) throw new Error("OPENAI_API_KEY not set");
 
     const coloringPrompt = `Generate a simple black and white line art coloring page suitable for children. 
 The image should have clear, bold outlines with no shading or colors, ready to be printed and colored.
 Theme: ${prompt}
 Style: Simple, child-friendly, clean lines, suitable for ages 4-10, educational`;
 
-    console.log("Calling Lovable AI with prompt:", coloringPrompt);
+    console.log("Calling OpenAI DALL-E with prompt:", coloringPrompt);
 
-    const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const aiResponse = await fetch("https://api.openai.com/v1/images/generations", {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${lovableApiKey}`,
+        "Authorization": `Bearer ${OPENAI_API_KEY}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash-image-preview",
-        messages: [
-          {
-            role: "user",
-            content: coloringPrompt
-          }
-        ],
-        modalities: ["image", "text"]
+        model: "dall-e-3",
+        prompt: coloringPrompt,
+        n: 1,
+        size: "1024x1024",
+        response_format: "b64_json"
       })
     });
 
     if (!aiResponse.ok) {
       const errorText = await aiResponse.text();
-      console.error("AI API error:", errorText);
+      console.error("OpenAI API error:", errorText);
       throw new Error(`Failed to generate image: ${aiResponse.statusText}`);
     }
 
     const aiData = await aiResponse.json();
-    const imageUrl = aiData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+    const base64Image = aiData.data?.[0]?.b64_json;
     
-    if (!imageUrl) {
+    if (!base64Image) {
       console.error("No image in response:", JSON.stringify(aiData));
       throw new Error("No image generated");
     }
@@ -97,8 +93,7 @@ Style: Simple, child-friendly, clean lines, suitable for ages 4-10, educational`
     console.log("Image generated successfully, uploading to storage...");
 
     // Convert base64 to blob and upload to Supabase storage
-    const base64Data = imageUrl.split(',')[1];
-    const blob = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0));
+    const blob = Uint8Array.from(atob(base64Image), c => c.charCodeAt(0));
     
     const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.png`;
     const filePath = `teacher-coloring/${user.id}/${fileName}`;

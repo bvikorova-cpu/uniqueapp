@@ -36,9 +36,9 @@ serve(async (req) => {
       throw new Error("Missing required fields");
     }
 
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) {
-      throw new Error("LOVABLE_API_KEY is not configured");
+    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
+    if (!OPENAI_API_KEY) {
+      throw new Error("OPENAI_API_KEY is not configured");
     }
 
     const systemPrompt = `You are a friendly science teacher for kids aged 6-12. 
@@ -63,14 +63,14 @@ Observations: ${observations}
 
 Please analyze this science experiment and help me understand what happened!`;
 
-    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        Authorization: `Bearer ${OPENAI_API_KEY}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
+        model: "gpt-4o-mini",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt }
@@ -83,11 +83,8 @@ Please analyze this science experiment and help me understand what happened!`;
       if (response.status === 429) {
         throw new Error("Too many requests. Please try again in a moment.");
       }
-      if (response.status === 402) {
-        throw new Error("AI credits depleted. Please add more credits to continue.");
-      }
       const errorText = await response.text();
-      console.error("AI gateway error:", response.status, errorText);
+      console.error("OpenAI API error:", response.status, errorText);
       throw new Error("Failed to get AI response");
     }
 
@@ -113,7 +110,6 @@ Please analyze this science experiment and help me understand what happened!`;
           }, { onConflict: 'user_id' });
       } catch (usageError) {
         console.error("Error updating usage:", usageError);
-        // Don't fail the request if usage update fails
       }
     }
 

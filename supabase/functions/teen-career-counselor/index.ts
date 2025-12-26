@@ -12,7 +12,6 @@ serve(async (req) => {
   }
 
   try {
-    // First authenticate with anon key
     const supabaseAuth = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_ANON_KEY") ?? ""
@@ -24,7 +23,6 @@ serve(async (req) => {
     const user = userData.user;
     if (!user) throw new Error("Unauthorized");
 
-    // Use service role for database operations to bypass RLS
     const supabaseClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
@@ -32,7 +30,6 @@ serve(async (req) => {
 
     const { interests, strengths, goals } = await req.json();
 
-    // Check usage limits
     let { data: usage, error: usageError } = await supabaseClient
       .from("teen_career_counselor_usage")
       .select("*")
@@ -40,7 +37,6 @@ serve(async (req) => {
       .single();
 
     if (usageError && usageError.code === "PGRST116") {
-      // Create new usage record
       const { data: newUsage, error: insertError } = await supabaseClient
         .from("teen_career_counselor_usage")
         .insert({ user_id: user.id })
@@ -53,7 +49,6 @@ serve(async (req) => {
       throw usageError;
     }
 
-    // Check if user can generate
     const hasFreeTrial = usage.free_generations_used < 1;
     const hasPaidGenerations = usage.paid_generations > 0;
 
@@ -70,9 +65,9 @@ serve(async (req) => {
       );
     }
     
-    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-    if (!LOVABLE_API_KEY) {
-      throw new Error('LOVABLE_API_KEY is not configured');
+    const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
+    if (!OPENAI_API_KEY) {
+      throw new Error('OPENAI_API_KEY is not configured');
     }
 
     const systemPrompt = `You are an expert career counselor specializing in helping teenagers (13-18 years old) explore career paths. 
@@ -96,14 +91,14 @@ ${goals ? `Career Goals: ${goals}` : ''}
 
 Please provide comprehensive career guidance tailored to their profile.`;
 
-    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+        'Authorization': `Bearer ${OPENAI_API_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'google/gemini-2.5-flash',
+        model: 'gpt-4o-mini',
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userPrompt }
@@ -113,14 +108,13 @@ Please provide comprehensive career guidance tailored to their profile.`;
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('AI gateway error:', response.status, errorText);
-      throw new Error(`AI gateway error: ${response.status}`);
+      console.error('OpenAI API error:', response.status, errorText);
+      throw new Error(`OpenAI API error: ${response.status}`);
     }
 
     const aiData = await response.json();
     const guidance = aiData.choices[0].message.content;
 
-    // Deduct usage after successful generation
     if (hasFreeTrial) {
       await supabaseClient
         .from("teen_career_counselor_usage")

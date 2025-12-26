@@ -49,15 +49,18 @@ serve(async (req) => {
 
     console.log("Creating universe with AI...");
 
+    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
+    if (!OPENAI_API_KEY) throw new Error("OPENAI_API_KEY not configured");
+
     // Call AI to generate universe
-    const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const aiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${Deno.env.get("LOVABLE_API_KEY")}`,
+        Authorization: `Bearer ${OPENAI_API_KEY}`,
       },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
+        model: "gpt-4o-mini",
         messages: [
           {
             role: "system",
@@ -77,17 +80,16 @@ Generate a JSON response with:
 }`,
           },
         ],
+        response_format: { type: "json_object" }
       }),
     });
 
     if (!aiResponse.ok) {
-      throw new Error(`AI API error: ${aiResponse.statusText}`);
+      throw new Error(`OpenAI API error: ${aiResponse.statusText}`);
     }
 
     const aiData = await aiResponse.json();
-    const universeData = JSON.parse(
-      aiData.choices[0].message.content.replace(/```json\n?|\n?```/g, "").trim()
-    );
+    const universeData = JSON.parse(aiData.choices[0].message.content);
 
     // Save to database
     const { data: universe, error: dbError } = await supabaseClient
