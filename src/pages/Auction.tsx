@@ -434,46 +434,119 @@ const Auction = () => {
               Buy and sell products at auction
             </p>
             
-            {/* Detailed Description */}
-            <div className="bg-card/50 rounded-lg p-4 sm:p-6 mb-4 sm:mb-6 space-y-2 sm:space-y-3 border border-border/50">
-              <h2 className="text-base sm:text-xl font-semibold mb-2 sm:mb-3">About Our Auction Platform</h2>
-              <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-                Welcome to our comprehensive online auction marketplace where you can buy and sell items 
-                through competitive bidding or instant purchase.
-              </p>
+            {/* Detailed Description - How It Works */}
+            <div className="bg-card/50 rounded-lg p-4 sm:p-6 mb-4 sm:mb-6 border border-border/50">
+              <h2 className="text-lg sm:text-xl font-semibold mb-4 flex items-center gap-2">
+                <span className="text-2xl">📋</span> How It Works?
+              </h2>
               
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mt-3 sm:mt-4">
-                <div className="space-y-2">
-                  <h3 className="font-semibold text-sm">🎯 For Sellers:</h3>
-                  <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
-                    <li>Create auctions with up to 3 photos</li>
-                    <li>Set starting price and optional "Buy Now" price</li>
-                    <li>Choose auction duration (hours/days)</li>
-                    <li>Real-time bid notifications</li>
-                    <li>Automatic commission calculation</li>
-                    <li>Track all your active listings</li>
+              {/* Step by Step Guide */}
+              <div className="space-y-4 mb-6">
+                <h3 className="font-semibold text-sm text-primary">Step-by-Step Guide:</h3>
+                <div className="grid gap-3">
+                  <div className="flex items-start gap-3 p-3 bg-background/50 rounded-lg">
+                    <span className="bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold flex-shrink-0">1</span>
+                    <div>
+                      <p className="font-medium text-sm">Create Your Auction</p>
+                      <p className="text-xs text-muted-foreground">Click "Create Auction" button and fill in the item details including title, description, and photos.</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3 p-3 bg-background/50 rounded-lg">
+                    <span className="bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold flex-shrink-0">2</span>
+                    <div>
+                      <p className="font-medium text-sm">Set Pricing & Duration</p>
+                      <p className="text-xs text-muted-foreground">Choose a starting bid price, optional "Buy Now" price, and select how long the auction should run (hours/days).</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3 p-3 bg-background/50 rounded-lg">
+                    <span className="bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold flex-shrink-0">3</span>
+                    <div>
+                      <p className="font-medium text-sm">Buyers Place Bids</p>
+                      <p className="text-xs text-muted-foreground">Interested buyers can place competitive bids. Each new bid must be higher than the current price.</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3 p-3 bg-background/50 rounded-lg">
+                    <span className="bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold flex-shrink-0">4</span>
+                    <div>
+                      <p className="font-medium text-sm">Auction Ends</p>
+                      <p className="text-xs text-muted-foreground">When time runs out, the highest bidder wins. Alternatively, buyers can use "Buy Now" to purchase immediately.</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3 p-3 bg-background/50 rounded-lg">
+                    <span className="bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold flex-shrink-0">5</span>
+                    <div>
+                      <p className="font-medium text-sm">Secure Payment</p>
+                      <p className="text-xs text-muted-foreground">Winner pays securely through Stripe. The seller receives payment after commission deduction.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Features Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                <div className="space-y-3">
+                  <h3 className="font-semibold text-sm text-primary flex items-center gap-2">
+                    <span>🎯</span> For Sellers:
+                  </h3>
+                  <ul className="text-xs text-muted-foreground space-y-2 list-none">
+                    <li className="flex items-center gap-2"><span className="text-green-500">✓</span> Upload up to 3 high-quality photos per auction</li>
+                    <li className="flex items-center gap-2"><span className="text-green-500">✓</span> Set starting bid price to attract buyers</li>
+                    <li className="flex items-center gap-2"><span className="text-green-500">✓</span> Add optional "Buy Now" price for instant sales</li>
+                    <li className="flex items-center gap-2"><span className="text-green-500">✓</span> Choose auction duration (1h to 7 days)</li>
+                    <li className="flex items-center gap-2"><span className="text-green-500">✓</span> Track bids in real-time</li>
+                    <li className="flex items-center gap-2"><span className="text-green-500">✓</span> Automatic commission calculation</li>
                   </ul>
                 </div>
                 
-                <div className="space-y-2">
-                  <h3 className="font-semibold text-sm">🛍️ For Buyers:</h3>
-                  <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
-                    <li>Place competitive bids on items</li>
-                    <li>Buy instantly with "Buy Now" option</li>
-                    <li>View detailed item photos and descriptions</li>
-                    <li>Track remaining auction time</li>
-                    <li>Get notifications when outbid</li>
-                    <li>Secure Stripe payment processing</li>
+                <div className="space-y-3">
+                  <h3 className="font-semibold text-sm text-primary flex items-center gap-2">
+                    <span>🛍️</span> For Buyers:
+                  </h3>
+                  <ul className="text-xs text-muted-foreground space-y-2 list-none">
+                    <li className="flex items-center gap-2"><span className="text-green-500">✓</span> Browse all active auctions</li>
+                    <li className="flex items-center gap-2"><span className="text-green-500">✓</span> Place competitive bids</li>
+                    <li className="flex items-center gap-2"><span className="text-green-500">✓</span> Use "Buy Now" to skip bidding</li>
+                    <li className="flex items-center gap-2"><span className="text-green-500">✓</span> View detailed item photos & descriptions</li>
+                    <li className="flex items-center gap-2"><span className="text-green-500">✓</span> Track remaining auction time</li>
+                    <li className="flex items-center gap-2"><span className="text-green-500">✓</span> Secure Stripe payment processing</li>
                   </ul>
                 </div>
               </div>
-              
-              <p className="text-xs text-muted-foreground mt-4 pt-4 border-t border-border/50">
-                💡 <strong>How it works:</strong> Sellers create auctions with photos and details. Buyers can either 
-                place incremental bids or purchase instantly at the "Buy Now" price. The highest bidder when the 
-                auction ends wins the item. All transactions are processed securely through Stripe with automatic 
-                commission handling.
-              </p>
+
+              {/* Commission & Pricing */}
+              <div className="bg-background/50 rounded-lg p-4 mb-4">
+                <h3 className="font-semibold text-sm mb-3 flex items-center gap-2">
+                  <span>💰</span> Commission & Pricing
+                </h3>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+                  <div className="text-center p-3 bg-card rounded-lg border">
+                    <p className="font-bold text-lg text-primary">3%</p>
+                    <p className="text-muted-foreground">Basic Commission</p>
+                  </div>
+                  <div className="text-center p-3 bg-card rounded-lg border">
+                    <p className="font-bold text-lg text-green-500">0%</p>
+                    <p className="text-muted-foreground">Premium Commission</p>
+                  </div>
+                  <div className="text-center p-3 bg-card rounded-lg border">
+                    <p className="font-bold text-lg">Unlimited</p>
+                    <p className="text-muted-foreground">Premium Listings</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Tips */}
+              <div className="bg-amber-500/10 border border-amber-500/20 rounded-lg p-4">
+                <h3 className="font-semibold text-sm mb-2 flex items-center gap-2">
+                  <span>💡</span> Tips for Success
+                </h3>
+                <ul className="text-xs text-muted-foreground space-y-1">
+                  <li>• Use clear, well-lit photos showing item from multiple angles</li>
+                  <li>• Write detailed descriptions including condition, size, and any defects</li>
+                  <li>• Set competitive starting prices to attract more bidders</li>
+                  <li>• Consider adding a "Buy Now" option for impatient buyers</li>
+                  <li>• Choose peak hours for auction end times (evenings work best)</li>
+                </ul>
+              </div>
             </div>
             
             {limits.auctionListingsPerMonth !== -1 && (
