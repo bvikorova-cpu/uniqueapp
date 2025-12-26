@@ -124,6 +124,7 @@ export const MyProperties = lazy(() => import("@/pages/MyProperties"));
 export const HomeDecorMarketplace = lazy(() => import("@/pages/HomeDecorMarketplace"));
 export const HomeDecorSubscription = lazy(() => import("@/pages/HomeDecorSubscription"));
 export const StockContentLibrary = lazy(() => import("@/pages/StockContentLibrary"));
+export const CouponMarketplace = lazy(() => import("@/pages/CouponMarketplace"));
 
 // Education
 export const Education = lazy(() => import("@/pages/Education"));
