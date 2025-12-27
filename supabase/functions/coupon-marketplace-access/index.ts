@@ -65,14 +65,17 @@ serve(async (req) => {
               currency: "eur",
               product_data: {
                 name: "Coupon Marketplace Access",
-                description: "One-time entry fee for lifetime access to the Coupon Marketplace",
+                description: "Monthly subscription for Coupon Marketplace access",
               },
               unit_amount: 100, // 1 EUR in cents
+              recurring: {
+                interval: "month",
+              },
             },
             quantity: 1,
           },
         ],
-        mode: "payment",
+        mode: "subscription",
         success_url: `${req.headers.get("origin")}/coupon-marketplace?access=success&session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${req.headers.get("origin")}/coupon-marketplace?access=cancelled`,
         metadata: {
