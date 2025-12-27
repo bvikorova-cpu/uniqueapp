@@ -617,8 +617,13 @@ const CouponMarketplace = () => {
                 Marketplace
               </span>
             </h1>
-            <p className="text-lg text-muted-foreground max-w-xl mx-auto mb-8">
-              Subscribe to buy and sell unused coupons, gift cards, and vouchers. Save money or earn from coupons you won't use!
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-4">
+              Join our exclusive marketplace where members buy and sell unused coupons, gift cards, and promotional vouchers at discounted prices.
+            </p>
+            <p className="text-base text-muted-foreground max-w-2xl mx-auto mb-8">
+              Have a coupon you won't use? Sell it and earn money! Looking for deals? Buy coupons from others at 10-50% off face value. 
+              Our secure escrow system protects both buyers and sellers on every transaction. Perfect for shoppers who want to save 
+              and for anyone with unused gift cards, store credits, or promotional codes gathering dust.
             </p>
           </motion.div>
 
