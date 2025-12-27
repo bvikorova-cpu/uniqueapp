@@ -196,7 +196,9 @@ const CouponMarketplace = () => {
       if (error) throw error;
 
       if (data?.url) {
-        window.location.href = data.url;
+        // Prefer opening in a new tab (mobile browsers / in-app webviews can block redirects)
+        const win = window.open(data.url, "_blank", "noopener,noreferrer");
+        if (!win) window.location.href = data.url;
       }
     } catch (error) {
       console.error('Error purchasing access:', error);
