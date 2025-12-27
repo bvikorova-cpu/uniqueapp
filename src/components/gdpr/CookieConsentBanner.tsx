@@ -32,21 +32,43 @@ export function CookieConsentBanner() {
     personalization: false,
   });
 
+  const safeGet = (key: string) => {
+    try {
+      if (typeof window === "undefined") return null;
+      return window.localStorage.getItem(key);
+    } catch {
+      return null;
+    }
+  };
+
+  const safeSet = (key: string, value: string) => {
+    try {
+      if (typeof window === "undefined") return;
+      window.localStorage.setItem(key, value);
+    } catch {
+      // ignore storage errors (e.g., blocked third-party storage)
+    }
+  };
+
   useEffect(() => {
-    const consent = localStorage.getItem(CONSENT_KEY);
+    const consent = safeGet(CONSENT_KEY);
     if (!consent) {
       setShowBanner(true);
     } else {
-      const saved = localStorage.getItem(PREFERENCES_KEY);
+      const saved = safeGet(PREFERENCES_KEY);
       if (saved) {
-        setPreferences(JSON.parse(saved));
+        try {
+          setPreferences(JSON.parse(saved));
+        } catch {
+          // ignore malformed JSON
+        }
       }
     }
   }, []);
 
   const saveConsent = (prefs: CookiePreferences) => {
-    localStorage.setItem(CONSENT_KEY, new Date().toISOString());
-    localStorage.setItem(PREFERENCES_KEY, JSON.stringify(prefs));
+    safeSet(CONSENT_KEY, new Date().toISOString());
+    safeSet(PREFERENCES_KEY, JSON.stringify(prefs));
     setPreferences(prefs);
     setShowBanner(false);
     setShowSettings(false);
