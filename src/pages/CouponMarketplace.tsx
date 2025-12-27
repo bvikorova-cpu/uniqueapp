@@ -616,7 +616,7 @@ const CouponMarketplace = () => {
               </span>
             </h1>
             <p className="text-lg text-muted-foreground max-w-xl mx-auto mb-8">
-              Get lifetime access to buy and sell unused coupons, gift cards, and vouchers. Save money or earn from coupons you won't use!
+              Subscribe to buy and sell unused coupons, gift cards, and vouchers. Save money or earn from coupons you won't use!
             </p>
           </motion.div>
 
@@ -630,10 +630,10 @@ const CouponMarketplace = () => {
                 <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
                   <Crown className="w-10 h-10 text-primary" />
                 </div>
-                <h2 className="text-2xl font-bold mb-2">Lifetime Access</h2>
+                <h2 className="text-2xl font-bold mb-2">Monthly Subscription</h2>
                 <div className="flex items-center justify-center gap-2 mb-6">
                   <span className="text-5xl font-bold text-primary">€1</span>
-                  <span className="text-muted-foreground">one-time payment</span>
+                  <span className="text-muted-foreground">per month</span>
                 </div>
                 
                 <ul className="text-left space-y-3 mb-8 max-w-sm mx-auto">
@@ -654,8 +654,8 @@ const CouponMarketplace = () => {
                     <span>Escrow protection on all transactions</span>
                   </li>
                   <li className="flex items-center gap-3">
-                    <Gift className="w-5 h-5 text-pink-500 flex-shrink-0" />
-                    <span>Lifetime access - pay once, use forever</span>
+                    <Calendar className="w-5 h-5 text-pink-500 flex-shrink-0" />
+                    <span>Cancel anytime - no long-term commitment</span>
                   </li>
                 </ul>
 
@@ -681,7 +681,7 @@ const CouponMarketplace = () => {
                     ) : (
                       <>
                         <Ticket className="w-5 h-5" />
-                        Get Access for €1
+                        Subscribe for €1/month
                       </>
                     )}
                   </Button>
