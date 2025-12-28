@@ -6617,6 +6617,117 @@ export type Database = {
         }
         Relationships: []
       }
+      content_moderation: {
+        Row: {
+          ai_categories: Json | null
+          ai_recommendation:
+            | Database["public"]["Enums"]["moderation_status"]
+            | null
+          ai_score: number | null
+          content_id: string
+          content_type: Database["public"]["Enums"]["content_type_mod"]
+          created_at: string | null
+          final_status: Database["public"]["Enums"]["moderation_status"] | null
+          id: string
+          notes: string | null
+          original_text: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          ai_categories?: Json | null
+          ai_recommendation?:
+            | Database["public"]["Enums"]["moderation_status"]
+            | null
+          ai_score?: number | null
+          content_id: string
+          content_type: Database["public"]["Enums"]["content_type_mod"]
+          created_at?: string | null
+          final_status?: Database["public"]["Enums"]["moderation_status"] | null
+          id?: string
+          notes?: string | null
+          original_text?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          ai_categories?: Json | null
+          ai_recommendation?:
+            | Database["public"]["Enums"]["moderation_status"]
+            | null
+          ai_score?: number | null
+          content_id?: string
+          content_type?: Database["public"]["Enums"]["content_type_mod"]
+          created_at?: string | null
+          final_status?: Database["public"]["Enums"]["moderation_status"] | null
+          id?: string
+          notes?: string | null
+          original_text?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      content_reports: {
+        Row: {
+          assigned_to: string | null
+          content_id: string
+          content_type: Database["public"]["Enums"]["content_type_mod"]
+          created_at: string | null
+          description: string | null
+          evidence_urls: string[] | null
+          id: string
+          priority: number | null
+          reported_user_id: string
+          reporter_id: string
+          resolution_notes: string | null
+          resolved_at: string | null
+          status: Database["public"]["Enums"]["moderation_status"] | null
+          updated_at: string | null
+          violation_type: Database["public"]["Enums"]["violation_type"]
+        }
+        Insert: {
+          assigned_to?: string | null
+          content_id: string
+          content_type: Database["public"]["Enums"]["content_type_mod"]
+          created_at?: string | null
+          description?: string | null
+          evidence_urls?: string[] | null
+          id?: string
+          priority?: number | null
+          reported_user_id: string
+          reporter_id: string
+          resolution_notes?: string | null
+          resolved_at?: string | null
+          status?: Database["public"]["Enums"]["moderation_status"] | null
+          updated_at?: string | null
+          violation_type: Database["public"]["Enums"]["violation_type"]
+        }
+        Update: {
+          assigned_to?: string | null
+          content_id?: string
+          content_type?: Database["public"]["Enums"]["content_type_mod"]
+          created_at?: string | null
+          description?: string | null
+          evidence_urls?: string[] | null
+          id?: string
+          priority?: number | null
+          reported_user_id?: string
+          reporter_id?: string
+          resolution_notes?: string | null
+          resolved_at?: string | null
+          status?: Database["public"]["Enums"]["moderation_status"] | null
+          updated_at?: string | null
+          violation_type?: Database["public"]["Enums"]["violation_type"]
+        }
+        Relationships: []
+      }
       conversation_participants: {
         Row: {
           conversation_id: string
@@ -17619,6 +17730,56 @@ export type Database = {
         }
         Relationships: []
       }
+      moderation_actions: {
+        Row: {
+          action_type: Database["public"]["Enums"]["moderation_action"]
+          created_at: string | null
+          duration_hours: number | null
+          expires_at: string | null
+          id: string
+          is_active: boolean | null
+          moderator_id: string
+          reason: string
+          related_content_id: string | null
+          related_report_id: string | null
+          user_id: string
+        }
+        Insert: {
+          action_type: Database["public"]["Enums"]["moderation_action"]
+          created_at?: string | null
+          duration_hours?: number | null
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          moderator_id: string
+          reason: string
+          related_content_id?: string | null
+          related_report_id?: string | null
+          user_id: string
+        }
+        Update: {
+          action_type?: Database["public"]["Enums"]["moderation_action"]
+          created_at?: string | null
+          duration_hours?: number | null
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          moderator_id?: string
+          reason?: string
+          related_content_id?: string | null
+          related_report_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "moderation_actions_related_report_id_fkey"
+            columns: ["related_report_id"]
+            isOneToOne: false
+            referencedRelation: "content_reports"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       mood_logs: {
         Row: {
           created_at: string
@@ -23919,6 +24080,33 @@ export type Database = {
         }
         Relationships: []
       }
+      shadowbanned_users: {
+        Row: {
+          id: string
+          is_active: boolean | null
+          reason: string
+          shadowbanned_at: string | null
+          shadowbanned_by: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          is_active?: boolean | null
+          reason: string
+          shadowbanned_at?: string | null
+          shadowbanned_by: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          is_active?: boolean | null
+          reason?: string
+          shadowbanned_at?: string | null
+          shadowbanned_by?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       shopping_wishlist: {
         Row: {
           affiliate_link: string | null
@@ -27927,6 +28115,42 @@ export type Database = {
         }
         Relationships: []
       }
+      user_warnings: {
+        Row: {
+          acknowledged: boolean | null
+          acknowledged_at: string | null
+          created_at: string | null
+          id: string
+          issued_by: string
+          reason: string
+          related_content_id: string | null
+          user_id: string
+          warning_level: number | null
+        }
+        Insert: {
+          acknowledged?: boolean | null
+          acknowledged_at?: string | null
+          created_at?: string | null
+          id?: string
+          issued_by: string
+          reason: string
+          related_content_id?: string | null
+          user_id: string
+          warning_level?: number | null
+        }
+        Update: {
+          acknowledged?: boolean | null
+          acknowledged_at?: string | null
+          created_at?: string | null
+          id?: string
+          issued_by?: string
+          reason?: string
+          related_content_id?: string | null
+          user_id?: string
+          warning_level?: number | null
+        }
+        Relationships: []
+      }
       verified_users: {
         Row: {
           badge_type: string
@@ -29146,6 +29370,7 @@ export type Database = {
         Args: { conversation_id: string; user_id: string }
         Returns: boolean
       }
+      is_shadowbanned: { Args: { _user_id: string }; Returns: boolean }
       is_vip_user: { Args: { user_id_param: string }; Returns: boolean }
       process_influencer_withdrawal: {
         Args: {
@@ -29234,6 +29459,13 @@ export type Database = {
         | "cv"
         | "cover_letter"
         | "business_document"
+      content_type_mod:
+        | "post"
+        | "comment"
+        | "message"
+        | "profile"
+        | "image"
+        | "video"
       item_rarity: "common" | "rare" | "epic" | "legendary"
       job_category:
         | "it_software"
@@ -29251,6 +29483,18 @@ export type Database = {
       job_type: "full_time" | "part_time" | "contract" | "internship" | "remote"
       megatalent_tier: "premium" | "top_premium"
       mentor_area: "career" | "fitness" | "mindset" | "relationships"
+      moderation_action:
+        | "warning"
+        | "content_removed"
+        | "shadowban"
+        | "temp_ban"
+        | "permanent_ban"
+      moderation_status:
+        | "pending"
+        | "approved"
+        | "rejected"
+        | "hidden"
+        | "deleted"
       mood_type: "very_bad" | "bad" | "neutral" | "good" | "very_good"
       occasion_type:
         | "casual"
@@ -29353,6 +29597,18 @@ export type Database = {
         | "approved"
         | "rejected"
         | "requires_resubmission"
+      violation_type:
+        | "violence"
+        | "hate_speech"
+        | "child_safety"
+        | "spam"
+        | "fraud"
+        | "adult_content"
+        | "drugs"
+        | "harassment"
+        | "misinformation"
+        | "copyright"
+        | "other"
       zodiac_sign:
         | "aries"
         | "taurus"
@@ -29526,6 +29782,14 @@ export const Constants = {
         "cover_letter",
         "business_document",
       ],
+      content_type_mod: [
+        "post",
+        "comment",
+        "message",
+        "profile",
+        "image",
+        "video",
+      ],
       item_rarity: ["common", "rare", "epic", "legendary"],
       job_category: [
         "it_software",
@@ -29544,6 +29808,20 @@ export const Constants = {
       job_type: ["full_time", "part_time", "contract", "internship", "remote"],
       megatalent_tier: ["premium", "top_premium"],
       mentor_area: ["career", "fitness", "mindset", "relationships"],
+      moderation_action: [
+        "warning",
+        "content_removed",
+        "shadowban",
+        "temp_ban",
+        "permanent_ban",
+      ],
+      moderation_status: [
+        "pending",
+        "approved",
+        "rejected",
+        "hidden",
+        "deleted",
+      ],
       mood_type: ["very_bad", "bad", "neutral", "good", "very_good"],
       occasion_type: [
         "casual",
@@ -29651,6 +29929,19 @@ export const Constants = {
         "approved",
         "rejected",
         "requires_resubmission",
+      ],
+      violation_type: [
+        "violence",
+        "hate_speech",
+        "child_safety",
+        "spam",
+        "fraud",
+        "adult_content",
+        "drugs",
+        "harassment",
+        "misinformation",
+        "copyright",
+        "other",
       ],
       zodiac_sign: [
         "aries",
