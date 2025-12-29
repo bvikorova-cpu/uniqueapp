@@ -33,7 +33,7 @@ export const useModerationQueue = () => {
       const { data, error } = await supabase
         .from("content_moderation")
         .select("*")
-        .eq("status", "pending")
+        .is("final_status", null)
         .order("created_at", { ascending: false });
 
       if (error) throw error;
