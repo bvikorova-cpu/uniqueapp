@@ -33,6 +33,7 @@ import WallVideos from "./wall/WallVideos";
 import WallEvents from "./wall/WallEvents";
 import WallSaved from "./wall/WallSaved";
 import WallTrending from "./wall/WallTrending";
+import WallInfo from "./wall/WallInfo";
 
 interface Post {
   id: string;
@@ -520,6 +521,8 @@ const Feed = () => {
         return <WallSaved />;
       case '/wall/trending':
         return <WallTrending />;
+      case '/wall/info':
+        return <WallInfo />;
       default:
         // Default Feed content
         return (
