@@ -11,6 +11,7 @@ import {
   Bookmark,
   TrendingUp,
   Sparkles,
+  Info,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { AnimationToggle } from "./AnimationToggle";
@@ -30,6 +31,7 @@ export function WallTopNav({ currentPath }: WallTopNavProps) {
     { icon: Video, label: "Videos", path: "/wall/videos" },
     { icon: Bookmark, label: "Saved", path: "/wall/saved" },
     { icon: TrendingUp, label: "Trending", path: "/wall/trending" },
+    { icon: Info, label: "Info", path: "/wall/info" },
   ];
 
   return (
