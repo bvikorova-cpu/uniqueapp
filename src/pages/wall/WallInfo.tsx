@@ -203,6 +203,124 @@ export default function WallInfo() {
       ],
     },
     {
+      title: "Messenger AI Features",
+      icon: <MessageCircle className="h-5 w-5" />,
+      features: [
+        {
+          name: "AI Smart Reply",
+          description: "Get AI-generated smart reply suggestions based on conversation context. Costs 1 credit per use.",
+          icon: <Zap className="h-4 w-4" />,
+        },
+        {
+          name: "Conversation Summarizer",
+          description: "Summarize long conversations with AI to get key points, decisions, and action items. Costs 5 credits.",
+          icon: <MessageSquare className="h-4 w-4" />,
+        },
+        {
+          name: "Real-time Messaging",
+          description: "Send and receive messages instantly with real-time updates and typing indicators.",
+          icon: <MessageCircle className="h-4 w-4" />,
+        },
+        {
+          name: "Message Reactions",
+          description: "React to messages with emojis to express your feelings quickly.",
+          icon: <ThumbsUp className="h-4 w-4" />,
+        },
+        {
+          name: "Voice Messages",
+          description: "Record and send voice messages when typing is not convenient.",
+          icon: <Zap className="h-4 w-4" />,
+        },
+        {
+          name: "Media Sharing",
+          description: "Share photos, videos, and files directly in conversations.",
+          icon: <Image className="h-4 w-4" />,
+        },
+        {
+          name: "Message Search",
+          description: "Search through your conversation history to find specific messages.",
+          icon: <Search className="h-4 w-4" />,
+        },
+        {
+          name: "Read Receipts",
+          description: "See when your messages have been read by the recipient.",
+          icon: <Eye className="h-4 w-4" />,
+        },
+      ],
+    },
+    {
+      title: "Creator Features",
+      icon: <Star className="h-5 w-5" />,
+      features: [
+        {
+          name: "Creator Profiles",
+          description: "Set up a creator profile to share exclusive content with your subscribers.",
+          icon: <UserPlus className="h-4 w-4" />,
+        },
+        {
+          name: "Subscription Tiers",
+          description: "Create different subscription tiers with varying benefits and pricing.",
+          icon: <Star className="h-4 w-4" />,
+        },
+        {
+          name: "Exclusive Content",
+          description: "Post exclusive content visible only to your paying subscribers.",
+          icon: <Lock className="h-4 w-4" />,
+        },
+        {
+          name: "Creator Messaging",
+          description: "Direct messaging with subscribers for personalized interactions.",
+          icon: <MessageCircle className="h-4 w-4" />,
+        },
+        {
+          name: "Analytics Dashboard",
+          description: "View detailed analytics about your content performance and subscriber growth.",
+          icon: <TrendingUp className="h-4 w-4" />,
+        },
+        {
+          name: "Earnings Tracking",
+          description: "Track your earnings from subscriptions and tips in real-time.",
+          icon: <Zap className="h-4 w-4" />,
+        },
+      ],
+    },
+    {
+      title: "Groups & Pages",
+      icon: <Users className="h-5 w-5" />,
+      features: [
+        {
+          name: "Create Groups",
+          description: "Create public or private groups for communities with shared interests.",
+          icon: <Users className="h-4 w-4" />,
+        },
+        {
+          name: "Group Management",
+          description: "Manage group members, roles, and permissions as an admin.",
+          icon: <Lock className="h-4 w-4" />,
+        },
+        {
+          name: "Group Discussions",
+          description: "Post and engage in discussions within your groups.",
+          icon: <MessageCircle className="h-4 w-4" />,
+        },
+        {
+          name: "Create Pages",
+          description: "Create pages for businesses, brands, or public figures.",
+          icon: <FileImage className="h-4 w-4" />,
+        },
+        {
+          name: "Page Insights",
+          description: "View analytics and insights for your page's reach and engagement.",
+          icon: <TrendingUp className="h-4 w-4" />,
+        },
+        {
+          name: "Page Followers",
+          description: "Build a following for your page separate from personal connections.",
+          icon: <UserPlus className="h-4 w-4" />,
+        },
+      ],
+    },
+    {
       title: "Privacy & Security Features",
       icon: <Lock className="h-5 w-5" />,
       features: [
