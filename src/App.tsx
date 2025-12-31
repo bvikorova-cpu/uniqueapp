@@ -355,6 +355,7 @@ const App = () => {
                         <Route path="/wall/events/:eventId" element={<EventDetail />} />
                         <Route path="/wall/saved" element={<Wall />} />
                         <Route path="/wall/trending" element={<Wall />} />
+                        <Route path="/wall/info" element={<Wall />} />
                         <Route path="/post/:id" element={<PostDetail />} />
                         <Route path="/messenger" element={<Messenger />} />
                         <Route path="/megatalent" element={<Megatalent />} />
