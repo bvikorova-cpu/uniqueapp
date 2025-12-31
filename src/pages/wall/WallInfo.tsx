@@ -10,7 +10,8 @@ import {
   Image, 
   Video, 
   Smile, 
-  MapPin, 
+  MapPin,
+  Clock,
   Hash, 
   AtSign,
   Users,
@@ -200,6 +201,31 @@ export default function WallInfo() {
           description: "Enhance your photos with AI-powered filters and improvements.",
           icon: <Camera className="h-4 w-4" />,
         },
+        {
+          name: "AI Mood Analysis",
+          description: "AI analyzes your posts and mood logs to detect emotional patterns and provide insights about your wellbeing.",
+          icon: <Heart className="h-4 w-4" />,
+        },
+        {
+          name: "Time Capsule Messages",
+          description: "Write messages to your future self. Schedule delivery for any date and receive emotional reminders from the past.",
+          icon: <Calendar className="h-4 w-4" />,
+        },
+        {
+          name: "AI Mood Trends",
+          description: "Track your emotional journey over time with AI-generated trend analysis, patterns, and personalized recommendations.",
+          icon: <TrendingUp className="h-4 w-4" />,
+        },
+        {
+          name: "Journal with AI Insights",
+          description: "Write private journal entries and get AI-powered emotional analysis and supportive feedback.",
+          icon: <FileImage className="h-4 w-4" />,
+        },
+        {
+          name: "AI Voice Messages",
+          description: "Generate AI voice responses and audio content for a more personal touch.",
+          icon: <Zap className="h-4 w-4" />,
+        },
       ],
     },
     {
@@ -285,38 +311,110 @@ export default function WallInfo() {
       ],
     },
     {
-      title: "Groups & Pages",
+      title: "Groups",
       icon: <Users className="h-5 w-5" />,
       features: [
         {
           name: "Create Groups",
-          description: "Create public or private groups for communities with shared interests.",
+          description: "Create public or private groups for communities with shared interests. Name, description, and privacy settings.",
           icon: <Users className="h-4 w-4" />,
         },
         {
+          name: "Join & Discover Groups",
+          description: "Search and discover groups by name, browse popular groups, and join with one click.",
+          icon: <Search className="h-4 w-4" />,
+        },
+        {
           name: "Group Management",
-          description: "Manage group members, roles, and permissions as an admin.",
+          description: "Manage group members, assign admin roles, and moderate content as group admin.",
           icon: <Lock className="h-4 w-4" />,
         },
         {
           name: "Group Discussions",
-          description: "Post and engage in discussions within your groups.",
+          description: "Post and engage in discussions within your groups, share media, and interact with members.",
           icon: <MessageCircle className="h-4 w-4" />,
         },
         {
+          name: "Member Count & Stats",
+          description: "View member counts, activity statistics, and group growth over time.",
+          icon: <TrendingUp className="h-4 w-4" />,
+        },
+        {
+          name: "Leave Groups",
+          description: "Leave any group you've joined with a single click.",
+          icon: <UserPlus className="h-4 w-4" />,
+        },
+      ],
+    },
+    {
+      title: "Pages",
+      icon: <FileImage className="h-5 w-5" />,
+      features: [
+        {
           name: "Create Pages",
-          description: "Create pages for businesses, brands, or public figures.",
+          description: "Create pages for businesses, brands, artists, or public figures with custom categories.",
           icon: <FileImage className="h-4 w-4" />,
         },
         {
+          name: "Page Categories",
+          description: "Choose from categories: Business, Entertainment, Community, Artist, Brand, Public Figure, and more.",
+          icon: <Filter className="h-4 w-4" />,
+        },
+        {
           name: "Page Insights",
-          description: "View analytics and insights for your page's reach and engagement.",
+          description: "View analytics and insights for your page's reach, followers, and engagement metrics.",
           icon: <TrendingUp className="h-4 w-4" />,
         },
         {
           name: "Page Followers",
           description: "Build a following for your page separate from personal connections.",
           icon: <UserPlus className="h-4 w-4" />,
+        },
+        {
+          name: "Page Posts",
+          description: "Share updates, announcements, and content as your page identity.",
+          icon: <MessageSquare className="h-4 w-4" />,
+        },
+        {
+          name: "Discover Pages",
+          description: "Search and discover pages by name, browse by category, and follow pages you're interested in.",
+          icon: <Search className="h-4 w-4" />,
+        },
+      ],
+    },
+    {
+      title: "Events",
+      icon: <Calendar className="h-5 w-5" />,
+      features: [
+        {
+          name: "Create Events",
+          description: "Create public events with title, description, location, date and time settings.",
+          icon: <Calendar className="h-4 w-4" />,
+        },
+        {
+          name: "Event RSVP",
+          description: "RSVP to events as 'Going' or 'Interested' to let organizers know you're attending.",
+          icon: <ThumbsUp className="h-4 w-4" />,
+        },
+        {
+          name: "Upcoming Events",
+          description: "Discover upcoming events in your network and community.",
+          icon: <Clock className="h-4 w-4" />,
+        },
+        {
+          name: "My Events",
+          description: "View and manage events you've created, see attendee counts and responses.",
+          icon: <Star className="h-4 w-4" />,
+        },
+        {
+          name: "Event Details",
+          description: "View full event details including location, time, description, and attendee list.",
+          icon: <Eye className="h-4 w-4" />,
+        },
+        {
+          name: "Event Reminders",
+          description: "Get notifications for upcoming events you've RSVPed to.",
+          icon: <Bell className="h-4 w-4" />,
         },
       ],
     },
@@ -354,11 +452,6 @@ export default function WallInfo() {
           name: "Media Gallery",
           description: "View all your uploaded photos and videos in a beautiful gallery format.",
           icon: <FileImage className="h-4 w-4" />,
-        },
-        {
-          name: "Events",
-          description: "Create and discover events, RSVP, and see who's attending.",
-          icon: <Calendar className="h-4 w-4" />,
         },
         {
           name: "Videos Section",
@@ -444,16 +537,6 @@ export default function WallInfo() {
           </Card>
         ))}
       </div>
-
-      <Card className="mt-6">
-        <CardContent className="p-6 text-center">
-          <Sparkles className="h-8 w-8 text-primary mx-auto mb-3" />
-          <h3 className="font-bold text-lg mb-2">More Features Coming Soon!</h3>
-          <p className="text-muted-foreground text-sm">
-            We're constantly improving Wall with new features. Stay tuned for updates!
-          </p>
-        </CardContent>
-      </Card>
     </div>
   );
 }
