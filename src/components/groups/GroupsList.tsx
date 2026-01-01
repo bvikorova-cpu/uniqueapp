@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useGroups } from "@/hooks/useGroups";
 import { GroupCard } from "./GroupCard";
 import { CreateGroupDialog } from "@/components/wall/CreateGroupDialog";
+import { SuggestedGroups } from "./SuggestedGroups";
 import { Input } from "@/components/ui/input";
 import { Search, Users } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -68,6 +69,9 @@ export const GroupsList = () => {
           className="pl-10 glass-card"
         />
       </div>
+
+      {/* Suggestions */}
+      <SuggestedGroups />
 
       {/* Groups Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

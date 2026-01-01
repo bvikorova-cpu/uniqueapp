@@ -19,6 +19,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { usePages } from "@/hooks/usePages";
+import { CoverImageUpload } from "@/components/shared/CoverImageUpload";
 
 const CATEGORIES = [
   "Business",
@@ -36,19 +37,21 @@ export const CreatePageDialog = () => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
+  const [coverImage, setCoverImage] = useState<string | undefined>();
   const { createPage } = usePages();
 
   const handleCreate = () => {
     if (!name) return;
 
     createPage(
-      { name, description, category },
+      { name, description, category, coverImage },
       {
         onSuccess: () => {
           setOpen(false);
           setName("");
           setDescription("");
           setCategory("");
+          setCoverImage(undefined);
         },
       }
     );
@@ -62,11 +65,19 @@ export const CreatePageDialog = () => {
           Create Page
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle>Create Page</DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
+          <div>
+            <Label>Cover Image</Label>
+            <CoverImageUpload
+              value={coverImage}
+              onChange={setCoverImage}
+              folder="pages"
+            />
+          </div>
           <div>
             <Label htmlFor="name">Page Name</Label>
             <Input

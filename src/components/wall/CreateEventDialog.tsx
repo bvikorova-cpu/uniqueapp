@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useEvents } from "@/hooks/useEvents";
+import { CoverImageUpload } from "@/components/shared/CoverImageUpload";
 
 export const CreateEventDialog = () => {
   const [open, setOpen] = useState(false);
@@ -20,6 +21,7 @@ export const CreateEventDialog = () => {
   const [location, setLocation] = useState("");
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
+  const [coverImage, setCoverImage] = useState<string | undefined>();
   const { createEvent } = useEvents();
 
   const handleCreate = () => {
@@ -32,7 +34,7 @@ export const CreateEventDialog = () => {
         location,
         start_time: startTime,
         end_time: endTime,
-        cover_image: null,
+        cover_image: coverImage || null,
         is_public: true,
         max_attendees: null,
       },
@@ -44,6 +46,7 @@ export const CreateEventDialog = () => {
           setLocation("");
           setStartTime("");
           setEndTime("");
+          setCoverImage(undefined);
         },
       }
     );
@@ -57,11 +60,19 @@ export const CreateEventDialog = () => {
           Create Event
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Create Event</DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
+          <div>
+            <Label>Cover Image</Label>
+            <CoverImageUpload
+              value={coverImage}
+              onChange={setCoverImage}
+              folder="events"
+            />
+          </div>
           <div>
             <Label htmlFor="title">Event Title</Label>
             <Input

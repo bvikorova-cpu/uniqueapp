@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { usePages } from "@/hooks/usePages";
 import { PageCard } from "./PageCard";
 import { CreatePageDialog } from "./CreatePageDialog";
+import { SuggestedPages } from "./SuggestedPages";
 import { Input } from "@/components/ui/input";
 import { Search, FileText } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -69,6 +70,9 @@ export const PagesList = () => {
           className="pl-10 glass-card"
         />
       </div>
+
+      {/* Suggestions */}
+      <SuggestedPages />
 
       {/* Pages Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
