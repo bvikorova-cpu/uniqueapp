@@ -13,25 +13,28 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { useGroups } from "@/hooks/useGroups";
+import { CoverImageUpload } from "@/components/shared/CoverImageUpload";
 
 export const CreateGroupDialog = () => {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [isPrivate, setIsPrivate] = useState(false);
+  const [coverImage, setCoverImage] = useState<string | undefined>();
   const { createGroup } = useGroups();
 
   const handleCreate = () => {
     if (!name) return;
 
     createGroup(
-      { name, description, isPrivate },
+      { name, description, isPrivate, coverImage },
       {
         onSuccess: () => {
           setOpen(false);
           setName("");
           setDescription("");
           setIsPrivate(false);
+          setCoverImage(undefined);
         },
       }
     );
@@ -45,11 +48,19 @@ export const CreateGroupDialog = () => {
           Create Group
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle>Create Group</DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
+          <div>
+            <Label>Cover Image</Label>
+            <CoverImageUpload
+              value={coverImage}
+              onChange={setCoverImage}
+              folder="groups"
+            />
+          </div>
           <div>
             <Label htmlFor="name">Group Name</Label>
             <Input
