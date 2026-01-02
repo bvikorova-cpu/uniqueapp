@@ -69,10 +69,17 @@ export const usePages = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      const { error } = await supabase.from("page_followers").insert({
-        page_id: pageId,
-        user_id: user.id,
-      });
+      // Use upsert to avoid duplicate key errors
+      const { error } = await supabase.from("page_followers").upsert(
+        {
+          page_id: pageId,
+          user_id: user.id,
+        },
+        {
+          onConflict: "page_id,user_id",
+          ignoreDuplicates: true,
+        }
+      );
 
       if (error) throw error;
     },

@@ -2,6 +2,7 @@ import { Users, Lock } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useNavigate } from "react-router-dom";
 
 interface GroupCardProps {
   group: {
@@ -20,10 +21,18 @@ interface GroupCardProps {
 }
 
 export const GroupCard = ({ group, onJoin, onLeave, isMember }: GroupCardProps) => {
+  const navigate = useNavigate();
   const memberCount = group.members_count || 0;
 
+  const handleCardClick = () => {
+    navigate(`/wall/groups/${group.id}`);
+  };
+
   return (
-    <div className="glass-post-card overflow-hidden hover:scale-[1.02] transition-all duration-500">
+    <div 
+      className="glass-post-card overflow-hidden hover:scale-[1.02] transition-all duration-500 cursor-pointer"
+      onClick={handleCardClick}
+    >
       {/* Cover Image */}
       <div 
         className="h-32 bg-gradient-to-r from-primary/20 via-accent/20 to-primary/20 relative"
@@ -64,7 +73,10 @@ export const GroupCard = ({ group, onJoin, onLeave, isMember }: GroupCardProps) 
         )}
 
         <Button
-          onClick={() => isMember ? onLeave(group.id) : onJoin(group.id)}
+          onClick={(e) => {
+            e.stopPropagation();
+            isMember ? onLeave(group.id) : onJoin(group.id);
+          }}
           variant={isMember ? "outline" : "default"}
           className="w-full"
         >
