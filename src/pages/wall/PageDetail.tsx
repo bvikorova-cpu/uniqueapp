@@ -82,10 +82,16 @@ export default function PageDetail() {
       if (!user || !pageId) throw new Error("Not authenticated");
       const { error } = await supabase
         .from("page_followers")
-        .insert({
-          page_id: pageId,
-          user_id: user.id,
-        });
+        .upsert(
+          {
+            page_id: pageId,
+            user_id: user.id,
+          },
+          {
+            onConflict: "page_id,user_id",
+            ignoreDuplicates: true,
+          }
+        );
       if (error) throw error;
     },
     onSuccess: () => {

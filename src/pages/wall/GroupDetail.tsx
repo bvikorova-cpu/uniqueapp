@@ -102,11 +102,17 @@ export default function GroupDetail() {
       if (!user || !groupId) throw new Error("Not authenticated");
       const { error } = await supabase
         .from("group_members")
-        .insert({
-          group_id: groupId,
-          user_id: user.id,
-          role: "member",
-        });
+        .upsert(
+          {
+            group_id: groupId,
+            user_id: user.id,
+            role: "member",
+          },
+          {
+            onConflict: "group_id,user_id",
+            ignoreDuplicates: true,
+          }
+        );
       if (error) throw error;
     },
     onSuccess: () => {

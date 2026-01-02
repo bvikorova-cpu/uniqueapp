@@ -2,6 +2,7 @@ import { Heart, Users } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useNavigate } from "react-router-dom";
 
 interface PageCardProps {
   page: {
@@ -21,10 +22,18 @@ interface PageCardProps {
 }
 
 export const PageCard = ({ page, onFollow, onUnfollow, isFollowing }: PageCardProps) => {
+  const navigate = useNavigate();
   const followerCount = page.follower_count || 0;
 
+  const handleCardClick = () => {
+    navigate(`/wall/pages/${page.id}`);
+  };
+
   return (
-    <div className="glass-post-card overflow-hidden hover:scale-[1.02] transition-all duration-500">
+    <div 
+      className="glass-post-card overflow-hidden hover:scale-[1.02] transition-all duration-500 cursor-pointer"
+      onClick={handleCardClick}
+    >
       {/* Cover Image */}
       <div 
         className="h-32 bg-gradient-to-r from-accent/20 via-primary/20 to-accent/20 relative"
@@ -65,7 +74,10 @@ export const PageCard = ({ page, onFollow, onUnfollow, isFollowing }: PageCardPr
         )}
 
         <Button
-          onClick={() => isFollowing ? onUnfollow(page.id) : onFollow(page.id)}
+          onClick={(e) => {
+            e.stopPropagation();
+            isFollowing ? onUnfollow(page.id) : onFollow(page.id);
+          }}
           variant={isFollowing ? "outline" : "default"}
           className="w-full"
         >
