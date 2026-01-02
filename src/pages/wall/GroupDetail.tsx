@@ -7,8 +7,10 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import type { Group, GroupMember } from "@/types/database";
+import { CoverImageUpload } from "@/components/shared/CoverImageUpload";
 import { 
   ArrowLeft, 
   Users, 
@@ -16,9 +18,39 @@ import {
   Image as ImageIcon,
   Send,
   UserPlus,
-  Shield
+  Shield,
+  Camera,
+  Heart,
+  MessageCircle,
+  Share2,
+  MoreHorizontal,
+  Globe,
+  Lock,
+  Sparkles,
+  Calendar,
+  ImagePlus,
+  Video,
+  Smile,
+  MapPin,
+  Bell,
+  BellOff,
+  Crown,
+  Star
 } from "lucide-react";
 import { format } from "date-fns";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 export default function GroupDetail() {
   const { groupId } = useParams();
@@ -26,6 +58,10 @@ export default function GroupDetail() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [postContent, setPostContent] = useState("");
+  const [postImage, setPostImage] = useState<string | undefined>();
+  const [isEditingCover, setIsEditingCover] = useState(false);
+  const [newCoverImage, setNewCoverImage] = useState<string | undefined>();
+  const [inviteEmail, setInviteEmail] = useState("");
 
   const { data: user } = useQuery({
     queryKey: ["current-user"],
@@ -35,14 +71,15 @@ export default function GroupDetail() {
     },
   });
 
-  const { data: group } = useQuery({
+  const { data: group, isLoading: isLoadingGroup } = useQuery({
     queryKey: ["group", groupId],
     queryFn: async () => {
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from("groups")
-        .select("*, profiles(*)")
+        .select("*")
         .eq("id", groupId)
         .single();
+      if (error) throw error;
       return data;
     },
     enabled: !!groupId,
@@ -57,7 +94,7 @@ export default function GroupDetail() {
         .select("*")
         .eq("group_id", groupId)
         .eq("user_id", user.id)
-        .single();
+        .maybeSingle();
       return data;
     },
     enabled: !!user && !!groupId,
@@ -86,13 +123,19 @@ export default function GroupDetail() {
   const { data: posts = [] } = useQuery({
     queryKey: ["group-posts", groupId],
     queryFn: async () => {
-      const { data, error } = await (supabase
+      const { data } = await (supabase
         .from("posts") as any)
-        .select("id, content, created_at, user_id, image_url, likes_count, comments_count, shares_count")
+        .select(`
+          *,
+          profiles:user_id (
+            id,
+            display_name,
+            avatar_url
+          )
+        `)
         .eq("group_id", groupId)
         .order("created_at", { ascending: false });
-      if (error) throw error;
-      return data as any[];
+      return data || [];
     },
     enabled: !!groupId,
   });
@@ -103,15 +146,8 @@ export default function GroupDetail() {
       const { error } = await supabase
         .from("group_members")
         .upsert(
-          {
-            group_id: groupId,
-            user_id: user.id,
-            role: "member",
-          },
-          {
-            onConflict: "group_id,user_id",
-            ignoreDuplicates: true,
-          }
+          { group_id: groupId, user_id: user.id, role: "member" },
+          { onConflict: "group_id,user_id", ignoreDuplicates: true }
         );
       if (error) throw error;
     },
@@ -149,13 +185,34 @@ export default function GroupDetail() {
           user_id: user.id,
           content: postContent,
           group_id: groupId,
+          image_url: postImage || null,
         });
       if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["group-posts"] });
       setPostContent("");
+      setPostImage(undefined);
       toast({ title: "Post created!" });
+    },
+    onError: (error: Error) => {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+    },
+  });
+
+  const updateCoverMutation = useMutation({
+    mutationFn: async (coverImage: string) => {
+      const { error } = await supabase
+        .from("groups")
+        .update({ cover_image: coverImage })
+        .eq("id", groupId);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["group", groupId] });
+      setIsEditingCover(false);
+      setNewCoverImage(undefined);
+      toast({ title: "Cover image updated!" });
     },
   });
 
@@ -185,155 +242,430 @@ export default function GroupDetail() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["group-members"] });
-      toast({ title: "Member promoted to admin" });
+      toast({ title: "Member promoted to admin!" });
     },
   });
 
-  if (!group) return null;
+  // Loading state
+  if (isLoadingGroup) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary" />
+      </div>
+    );
+  }
+
+  // Group not found
+  if (!group) {
+    return (
+      <div className="max-w-4xl mx-auto px-4 py-8 text-center">
+        <h1 className="text-2xl font-bold mb-4">Group not found</h1>
+        <Button onClick={() => navigate("/wall/groups")}>
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Back to Groups
+        </Button>
+      </div>
+    );
+  }
 
   const isAdmin = membership?.role === "admin";
   const isMember = !!membership;
+  const memberCount = members.length;
+  const adminCount = members.filter((m: any) => m.role === "admin").length;
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-4 space-y-4">
-      <Button
-        variant="ghost"
-        onClick={() => navigate("/wall/groups")}
-        className="mb-4"
-      >
-        <ArrowLeft className="h-4 w-4 mr-2" />
-        Back to Groups
-      </Button>
+    <div className="min-h-screen bg-background">
+      {/* Back Button - Fixed */}
+      <div className="fixed top-20 left-4 z-50">
+        <Button
+          variant="secondary"
+          size="sm"
+          onClick={() => navigate("/wall/groups")}
+          className="shadow-lg"
+        >
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Back
+        </Button>
+      </div>
 
-      <Card className="overflow-hidden">
-        {group.cover_image && (
-          <div className="h-48 bg-gradient-to-r from-primary/20 to-primary/10 relative">
-            <img
-              src={group.cover_image}
-              alt={group.name}
-              className="w-full h-full object-cover"
-            />
-          </div>
-        )}
+      {/* Cover Section */}
+      <div className="relative">
+        <div 
+          className="h-48 md:h-64 bg-gradient-to-r from-primary/30 via-accent/30 to-primary/30 relative group"
+          style={group.cover_image ? { 
+            backgroundImage: `url(${group.cover_image})`, 
+            backgroundSize: 'cover',
+            backgroundPosition: 'center'
+          } : {}}
+        >
+          {/* Cover overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
+          
+          {/* Edit cover button for admins */}
+          {isAdmin && (
+            <Dialog open={isEditingCover} onOpenChange={setIsEditingCover}>
+              <DialogTrigger asChild>
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity"
+                >
+                  <Camera className="h-4 w-4 mr-2" />
+                  Edit Cover
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Update Cover Image</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4">
+                  <CoverImageUpload
+                    value={newCoverImage}
+                    onChange={setNewCoverImage}
+                    folder="groups"
+                  />
+                  <Button 
+                    onClick={() => newCoverImage && updateCoverMutation.mutate(newCoverImage)}
+                    disabled={!newCoverImage}
+                    className="w-full"
+                  >
+                    Save Cover
+                  </Button>
+                </div>
+              </DialogContent>
+            </Dialog>
+          )}
+        </div>
 
-        <div className="p-6">
-          <div className="flex items-start justify-between mb-4">
-            <div className="flex items-center gap-4">
-              <Avatar className="h-20 w-20">
+        {/* Group Info Overlay */}
+        <div className="max-w-4xl mx-auto px-4 -mt-16 relative z-10">
+          <Card className="p-6">
+            <div className="flex flex-col md:flex-row md:items-start gap-4">
+              {/* Group Avatar */}
+              <Avatar className="h-24 w-24 border-4 border-background shadow-xl">
                 <AvatarImage src={group.cover_image} />
-                <AvatarFallback className="text-2xl">{group.name[0]}</AvatarFallback>
+                <AvatarFallback className="text-3xl bg-primary/20 text-primary">
+                  {group.name.charAt(0).toUpperCase()}
+                </AvatarFallback>
               </Avatar>
-              <div>
-                <h1 className="text-3xl font-bold">{group.name}</h1>
-                <p className="text-muted-foreground">
-                  {group.is_private ? "Private" : "Public"} Group · {members.length} members
-                </p>
+
+              {/* Group Details */}
+              <div className="flex-1">
+                <div className="flex items-start justify-between flex-wrap gap-4">
+                  <div>
+                    <h1 className="text-2xl md:text-3xl font-bold flex items-center gap-2">
+                      {group.name}
+                      {group.is_private ? (
+                        <Lock className="h-5 w-5 text-muted-foreground" />
+                      ) : (
+                        <Globe className="h-5 w-5 text-muted-foreground" />
+                      )}
+                    </h1>
+                    <div className="flex items-center gap-4 mt-2 text-muted-foreground">
+                      <span className="flex items-center gap-1">
+                        <Users className="h-4 w-4" />
+                        {memberCount} members
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <Shield className="h-4 w-4" />
+                        {adminCount} admins
+                      </span>
+                      <Badge variant={group.is_private ? "secondary" : "outline"}>
+                        {group.is_private ? "Private" : "Public"}
+                      </Badge>
+                    </div>
+                    {group.description && (
+                      <p className="mt-3 text-muted-foreground">{group.description}</p>
+                    )}
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="flex gap-2">
+                    {!isMember ? (
+                      <Button onClick={() => joinMutation.mutate()}>
+                        <UserPlus className="h-4 w-4 mr-2" />
+                        Join Group
+                      </Button>
+                    ) : (
+                      <>
+                        <Button variant="outline" size="icon">
+                          <Bell className="h-4 w-4" />
+                        </Button>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="outline" size="icon">
+                              <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            {isAdmin && (
+                              <DropdownMenuItem>
+                                <Settings className="h-4 w-4 mr-2" />
+                                Group Settings
+                              </DropdownMenuItem>
+                            )}
+                            <DropdownMenuItem 
+                              className="text-destructive"
+                              onClick={() => leaveMutation.mutate()}
+                            >
+                              Leave Group
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </>
+                    )}
+                  </div>
+                </div>
+
+                {/* Quick Stats */}
+                <div className="flex gap-6 mt-4 pt-4 border-t">
+                  <div className="text-center">
+                    <p className="text-2xl font-bold text-primary">{posts.length}</p>
+                    <p className="text-xs text-muted-foreground">Posts</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-2xl font-bold text-primary">{memberCount}</p>
+                    <p className="text-xs text-muted-foreground">Members</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-2xl font-bold text-primary">
+                      {format(new Date(group.created_at), "yyyy")}
+                    </p>
+                    <p className="text-xs text-muted-foreground">Created</p>
+                  </div>
+                </div>
               </div>
             </div>
+          </Card>
+        </div>
+      </div>
 
-            <div className="flex gap-2">
-              {!isMember ? (
-                <Button onClick={() => joinMutation.mutate()}>
-                  <UserPlus className="h-4 w-4 mr-2" />
-                  Join Group
-                </Button>
-              ) : (
-                <>
-                  {isAdmin && (
-                    <Button variant="outline">
-                      <Settings className="h-4 w-4 mr-2" />
-                      Settings
-                    </Button>
-                  )}
-                  <Button variant="outline" onClick={() => leaveMutation.mutate()}>
-                    Leave Group
-                  </Button>
-                </>
-              )}
-            </div>
-          </div>
+      {/* Main Content */}
+      <div className="max-w-4xl mx-auto px-4 py-6">
+        <Tabs defaultValue="posts" className="w-full">
+          <TabsList className="w-full justify-start mb-6">
+            <TabsTrigger value="posts">Posts</TabsTrigger>
+            <TabsTrigger value="members">Members</TabsTrigger>
+            <TabsTrigger value="media">Media</TabsTrigger>
+            <TabsTrigger value="about">About</TabsTrigger>
+            {isAdmin && <TabsTrigger value="admin">Admin</TabsTrigger>}
+          </TabsList>
 
-          {group.description && (
-            <p className="text-muted-foreground mb-6">{group.description}</p>
-          )}
-
-          <Tabs defaultValue="posts" className="w-full">
-            <TabsList>
-              <TabsTrigger value="posts">Posts</TabsTrigger>
-              <TabsTrigger value="members">Members</TabsTrigger>
-              {isAdmin && <TabsTrigger value="admin">Admin</TabsTrigger>}
-            </TabsList>
-
-            <TabsContent value="posts" className="mt-6 space-y-4">
-              {isMember && (
-                <Card className="p-4">
-                  <div className="flex gap-3">
-                    <Avatar>
-                      <AvatarFallback>
-                        {user?.email?.[0].toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1 space-y-3">
-                      <Textarea
-                        value={postContent}
-                        onChange={(e) => setPostContent(e.target.value)}
-                        placeholder="What's on your mind?"
-                        rows={3}
-                      />
-                      <div className="flex justify-between items-center">
-                        <Button variant="ghost" size="sm">
-                          <ImageIcon className="h-4 w-4 mr-2" />
-                          Photo
-                        </Button>
+          {/* Posts Tab */}
+          <TabsContent value="posts" className="space-y-6">
+            {/* Create Post - Only for members */}
+            {isMember && (
+              <Card className="p-4">
+                <div className="flex gap-3">
+                  <Avatar>
+                    <AvatarFallback className="bg-primary/10 text-primary">
+                      {user?.email?.[0].toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="flex-1 space-y-3">
+                    <Textarea
+                      value={postContent}
+                      onChange={(e) => setPostContent(e.target.value)}
+                      placeholder="What's on your mind?"
+                      rows={3}
+                      className="resize-none"
+                    />
+                    
+                    {/* Post Image Preview */}
+                    {postImage && (
+                      <div className="relative">
+                        <img src={postImage} alt="Post" className="rounded-lg max-h-64 object-cover" />
                         <Button
-                          onClick={() => createPostMutation.mutate()}
-                          disabled={!postContent.trim()}
+                          size="sm"
+                          variant="destructive"
+                          className="absolute top-2 right-2"
+                          onClick={() => setPostImage(undefined)}
                         >
-                          <Send className="h-4 w-4 mr-2" />
-                          Post
+                          Remove
                         </Button>
                       </div>
+                    )}
+                    
+                    <div className="flex justify-between items-center">
+                      <div className="flex gap-2">
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button variant="ghost" size="sm">
+                              <ImagePlus className="h-4 w-4 mr-2" />
+                              Photo
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent>
+                            <DialogHeader>
+                              <DialogTitle>Add Photo</DialogTitle>
+                            </DialogHeader>
+                            <CoverImageUpload
+                              value={postImage}
+                              onChange={setPostImage}
+                              folder="posts"
+                            />
+                          </DialogContent>
+                        </Dialog>
+                        <Button variant="ghost" size="sm">
+                          <Video className="h-4 w-4 mr-2" />
+                          Video
+                        </Button>
+                        <Button variant="ghost" size="sm">
+                          <Smile className="h-4 w-4 mr-2" />
+                          Feeling
+                        </Button>
+                      </div>
+                      <Button
+                        onClick={() => createPostMutation.mutate()}
+                        disabled={!postContent.trim()}
+                      >
+                        <Send className="h-4 w-4 mr-2" />
+                        Post
+                      </Button>
                     </div>
                   </div>
-                </Card>
-              )}
+                </div>
+              </Card>
+            )}
 
+            {/* Posts Feed */}
+            {posts.length === 0 ? (
+              <Card className="p-12 text-center">
+                <Sparkles className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+                <h3 className="text-lg font-semibold mb-2">No posts yet</h3>
+                <p className="text-muted-foreground">
+                  {isMember ? "Be the first to post something!" : "Join the group to see and create posts."}
+                </p>
+              </Card>
+            ) : (
               <div className="space-y-4">
                 {posts.map((post: any) => (
                   <Card key={post.id} className="p-4">
                     <div className="flex gap-3">
                       <Avatar>
                         <AvatarImage src={post.profiles?.avatar_url} />
-                        <AvatarFallback>
+                        <AvatarFallback className="bg-primary/10 text-primary">
                           {post.profiles?.display_name?.[0] || "U"}
                         </AvatarFallback>
                       </Avatar>
                       <div className="flex-1">
-                        <div className="flex items-center gap-2">
-                          <span className="font-semibold">
-                            {post.profiles?.display_name || "User"}
-                          </span>
-                          <span className="text-xs text-muted-foreground">
-                            {format(new Date(post.created_at), "PPp")}
-                          </span>
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <span className="font-semibold">
+                              {post.profiles?.display_name || "User"}
+                            </span>
+                            <span className="text-xs text-muted-foreground ml-2">
+                              {format(new Date(post.created_at), "PPp")}
+                            </span>
+                          </div>
+                          <Button variant="ghost" size="icon">
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
                         </div>
-                        <p className="mt-2">{post.content}</p>
+                        <p className="mt-2 whitespace-pre-wrap">{post.content}</p>
+                        
+                        {post.image_url && (
+                          <img 
+                            src={post.image_url} 
+                            alt="Post" 
+                            className="mt-3 rounded-lg max-h-96 object-cover w-full"
+                          />
+                        )}
+                        
+                        {/* Post Actions */}
+                        <div className="flex items-center gap-4 mt-4 pt-3 border-t">
+                          <Button variant="ghost" size="sm" className="flex-1">
+                            <Heart className="h-4 w-4 mr-2" />
+                            Like
+                          </Button>
+                          <Button variant="ghost" size="sm" className="flex-1">
+                            <MessageCircle className="h-4 w-4 mr-2" />
+                            Comment
+                          </Button>
+                          <Button variant="ghost" size="sm" className="flex-1">
+                            <Share2 className="h-4 w-4 mr-2" />
+                            Share
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   </Card>
                 ))}
               </div>
-            </TabsContent>
+            )}
+          </TabsContent>
 
-            <TabsContent value="members" className="mt-6">
-              <div className="space-y-3">
-                {members.map((member: any) => (
+          {/* Members Tab */}
+          <TabsContent value="members" className="space-y-4">
+            {/* Invite Section - Only for admins */}
+            {isAdmin && (
+              <Card className="p-4">
+                <h3 className="font-semibold mb-3 flex items-center gap-2">
+                  <UserPlus className="h-4 w-4" />
+                  Invite Members
+                </h3>
+                <div className="flex gap-2">
+                  <Input
+                    value={inviteEmail}
+                    onChange={(e) => setInviteEmail(e.target.value)}
+                    placeholder="Enter email or username..."
+                    className="flex-1"
+                  />
+                  <Button>
+                    <Send className="h-4 w-4 mr-2" />
+                    Invite
+                  </Button>
+                </div>
+              </Card>
+            )}
+
+            {/* Admins Section */}
+            <div>
+              <h3 className="font-semibold mb-3 flex items-center gap-2">
+                <Crown className="h-4 w-4 text-yellow-500" />
+                Admins ({adminCount})
+              </h3>
+              <div className="grid gap-2">
+                {members.filter((m: any) => m.role === "admin").map((member: any) => (
                   <Card key={member.id} className="p-4">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <Avatar>
                           <AvatarImage src={member.profiles?.avatar_url} />
-                          <AvatarFallback>
+                          <AvatarFallback className="bg-yellow-500/10 text-yellow-600">
+                            {member.profiles?.display_name?.[0] || "A"}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <p className="font-semibold flex items-center gap-2">
+                            {member.profiles?.display_name || "Admin"}
+                            <Shield className="h-3 w-3 text-yellow-500" />
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            Joined {format(new Date(member.joined_at), "PP")}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            </div>
+
+            {/* Members Section */}
+            <div>
+              <h3 className="font-semibold mb-3 flex items-center gap-2">
+                <Users className="h-4 w-4" />
+                Members ({members.filter((m: any) => m.role === "member").length})
+              </h3>
+              <div className="grid gap-2">
+                {members.filter((m: any) => m.role === "member").map((member: any) => (
+                  <Card key={member.id} className="p-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <Avatar>
+                          <AvatarImage src={member.profiles?.avatar_url} />
+                          <AvatarFallback className="bg-primary/10 text-primary">
                             {member.profiles?.display_name?.[0] || "U"}
                           </AvatarFallback>
                         </Avatar>
@@ -342,57 +674,145 @@ export default function GroupDetail() {
                             {member.profiles?.display_name || "User"}
                           </p>
                           <p className="text-xs text-muted-foreground">
-                            {member.role === "admin" && (
-                              <span className="flex items-center gap-1">
-                                <Shield className="h-3 w-3" />
-                                Admin
-                              </span>
-                            )}
-                            {member.role === "member" && "Member"}
+                            Joined {format(new Date(member.joined_at), "PP")}
                           </p>
                         </div>
                       </div>
                       {isAdmin && member.user_id !== user?.id && (
-                        <div className="flex gap-2">
-                          {member.role === "member" && (
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => makeAdminMutation.mutate(member.user_id)}
-                            >
-                              Make Admin
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon">
+                              <MoreHorizontal className="h-4 w-4" />
                             </Button>
-                          )}
-                          <Button
-                            size="sm"
-                            variant="destructive"
-                            onClick={() => removeMemberMutation.mutate(member.user_id)}
-                          >
-                            Remove
-                          </Button>
-                        </div>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem onClick={() => makeAdminMutation.mutate(member.user_id)}>
+                              <Shield className="h-4 w-4 mr-2" />
+                              Make Admin
+                            </DropdownMenuItem>
+                            <DropdownMenuItem 
+                              className="text-destructive"
+                              onClick={() => removeMemberMutation.mutate(member.user_id)}
+                            >
+                              Remove Member
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
                       )}
                     </div>
                   </Card>
                 ))}
               </div>
-            </TabsContent>
+            </div>
+          </TabsContent>
 
-            {isAdmin && (
-              <TabsContent value="admin" className="mt-6">
-                <Card className="p-6">
-                  <h3 className="text-lg font-semibold mb-4">Group Settings</h3>
-                  <div className="space-y-4">
+          {/* Media Tab */}
+          <TabsContent value="media">
+            <Card className="p-12 text-center">
+              <ImageIcon className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+              <h3 className="text-lg font-semibold mb-2">Media Gallery</h3>
+              <p className="text-muted-foreground">
+                Photos and videos shared in this group will appear here.
+              </p>
+            </Card>
+          </TabsContent>
+
+          {/* About Tab */}
+          <TabsContent value="about">
+            <Card className="p-6 space-y-6">
+              <div>
+                <h3 className="text-lg font-semibold mb-3">About this group</h3>
+                <p className="text-muted-foreground">
+                  {group.description || "No description provided."}
+                </p>
+              </div>
+              
+              <div className="grid gap-4">
+                <div className="flex items-center gap-3">
+                  {group.is_private ? (
+                    <Lock className="h-5 w-5 text-muted-foreground" />
+                  ) : (
+                    <Globe className="h-5 w-5 text-muted-foreground" />
+                  )}
+                  <div>
+                    <p className="font-medium">{group.is_private ? "Private" : "Public"}</p>
                     <p className="text-sm text-muted-foreground">
-                      Admin controls coming soon...
+                      {group.is_private 
+                        ? "Only members can see posts and who's in the group."
+                        : "Anyone can see posts and who's in the group."}
                     </p>
                   </div>
-                </Card>
-              </TabsContent>
-            )}
-          </Tabs>
-        </div>
-      </Card>
+                </div>
+                
+                <div className="flex items-center gap-3">
+                  <Calendar className="h-5 w-5 text-muted-foreground" />
+                  <div>
+                    <p className="font-medium">Created</p>
+                    <p className="text-sm text-muted-foreground">
+                      {format(new Date(group.created_at), "PPPP")}
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-3">
+                  <Users className="h-5 w-5 text-muted-foreground" />
+                  <div>
+                    <p className="font-medium">{memberCount} Members</p>
+                    <p className="text-sm text-muted-foreground">
+                      {adminCount} admins · {memberCount - adminCount} members
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </Card>
+          </TabsContent>
+
+          {/* Admin Tab */}
+          {isAdmin && (
+            <TabsContent value="admin">
+              <Card className="p-6">
+                <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                  <Settings className="h-5 w-5" />
+                  Group Settings
+                </h3>
+                <div className="space-y-4">
+                  <div className="p-4 bg-muted/50 rounded-lg">
+                    <h4 className="font-medium mb-2">🎨 Unique Feature: Group Themes</h4>
+                    <p className="text-sm text-muted-foreground mb-3">
+                      Customize your group's look with unique themes and colors!
+                    </p>
+                    <Button variant="outline" size="sm">
+                      <Sparkles className="h-4 w-4 mr-2" />
+                      Customize Theme
+                    </Button>
+                  </div>
+                  
+                  <div className="p-4 bg-muted/50 rounded-lg">
+                    <h4 className="font-medium mb-2">🏆 Unique Feature: Group Achievements</h4>
+                    <p className="text-sm text-muted-foreground mb-3">
+                      Enable achievements and badges for active members!
+                    </p>
+                    <Button variant="outline" size="sm">
+                      <Star className="h-4 w-4 mr-2" />
+                      Manage Achievements
+                    </Button>
+                  </div>
+                  
+                  <div className="p-4 bg-muted/50 rounded-lg">
+                    <h4 className="font-medium mb-2">🎭 Unique Feature: Anonymous Mode</h4>
+                    <p className="text-sm text-muted-foreground mb-3">
+                      Allow members to post anonymously for sensitive topics!
+                    </p>
+                    <Button variant="outline" size="sm">
+                      Enable Anonymous Posts
+                    </Button>
+                  </div>
+                </div>
+              </Card>
+            </TabsContent>
+          )}
+        </Tabs>
+      </div>
     </div>
   );
 }
