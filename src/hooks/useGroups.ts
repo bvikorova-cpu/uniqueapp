@@ -105,11 +105,18 @@ export const useGroups = () => {
         throw new Error("Not authenticated");
       }
 
-      const { error } = await supabase.from("group_members").insert({
-        group_id: groupId,
-        user_id: user.id,
-        role: "member",
-      });
+      // Use upsert to avoid duplicate key errors if the user is already a member
+      const { error } = await supabase.from("group_members").upsert(
+        {
+          group_id: groupId,
+          user_id: user.id,
+          role: "member",
+        },
+        {
+          onConflict: "group_id,user_id",
+          ignoreDuplicates: true,
+        }
+      );
 
       if (error) {
         console.error("Error joining group:", error);
