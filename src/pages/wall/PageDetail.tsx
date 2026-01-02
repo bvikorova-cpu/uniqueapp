@@ -76,7 +76,7 @@ export default function PageDetail() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("pages")
-        .select("*, profiles(*)")
+        .select("*")
         .eq("id", pageId)
         .single();
       if (error) throw error;

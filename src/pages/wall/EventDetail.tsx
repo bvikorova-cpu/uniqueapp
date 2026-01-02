@@ -76,7 +76,7 @@ export default function EventDetail() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("events")
-        .select("*, profiles(*)")
+        .select("*")
         .eq("id", eventId)
         .single();
       if (error) throw error;
