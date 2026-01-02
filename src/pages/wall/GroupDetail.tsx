@@ -538,13 +538,13 @@ export default function GroupDetail() {
                       </div>
                     )}
 
-                    <div className="flex items-center justify-between">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
                       {/* Icon-only action buttons */}
-                      <div className="flex gap-1">
+                      <div className="flex gap-0.5">
                         <Dialog>
                           <DialogTrigger asChild>
-                            <Button variant="ghost" size="icon" className="h-9 w-9 text-green-600 hover:bg-green-50">
-                              <ImagePlus className="h-5 w-5" />
+                            <Button variant="ghost" size="icon" className="h-8 w-8 text-green-600 hover:bg-green-50">
+                              <ImagePlus className="h-4 w-4" />
                             </Button>
                           </DialogTrigger>
                           <DialogContent>
@@ -557,49 +557,49 @@ export default function GroupDetail() {
 
                         <Dialog>
                           <DialogTrigger asChild>
-                            <Button variant="ghost" size="icon" className="h-9 w-9 text-red-500 hover:bg-red-50">
-                              <Video className="h-5 w-5" />
+                            <Button variant="ghost" size="icon" className="h-8 w-8 text-red-500 hover:bg-red-50">
+                              <Video className="h-4 w-4" />
                             </Button>
                           </DialogTrigger>
                           <DialogContent>
                             <DialogHeader>
                               <DialogTitle>Add Video</DialogTitle>
                             </DialogHeader>
-                            <p className="text-sm text-muted-foreground">Video upload coming soon! You can paste a video URL in your post.</p>
+                            <p className="text-sm text-muted-foreground">Video upload coming soon!</p>
                           </DialogContent>
                         </Dialog>
 
                         <Button
                           variant="ghost"
                           size="icon"
-                          className={`h-9 w-9 text-yellow-500 hover:bg-yellow-50 ${showEmojiPicker ? "bg-yellow-100" : ""}`}
+                          className={`h-8 w-8 text-yellow-500 hover:bg-yellow-50 ${showEmojiPicker ? "bg-yellow-100" : ""}`}
                           onClick={() => {
                             setShowEmojiPicker(!showEmojiPicker);
                             setShowLocationInput(false);
                           }}
                         >
-                          <Smile className="h-5 w-5" />
+                          <Smile className="h-4 w-4" />
                         </Button>
 
                         <Button
                           variant="ghost"
                           size="icon"
-                          className={`h-9 w-9 text-blue-500 hover:bg-blue-50 ${showLocationInput ? "bg-blue-100" : ""}`}
+                          className={`h-8 w-8 text-blue-500 hover:bg-blue-50 ${showLocationInput ? "bg-blue-100" : ""}`}
                           onClick={() => {
                             setShowLocationInput(!showLocationInput);
                             setShowEmojiPicker(false);
                           }}
                         >
-                          <MapPin className="h-5 w-5" />
+                          <MapPin className="h-4 w-4" />
                         </Button>
 
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="h-9 w-9 text-purple-500 hover:bg-purple-50"
+                          className="h-8 w-8 text-purple-500 hover:bg-purple-50"
                           onClick={() => toast({ title: "Tag friends", description: "Coming soon!" })}
                         >
-                          <UserPlus className="h-5 w-5" />
+                          <UserPlus className="h-4 w-4" />
                         </Button>
                       </div>
 
@@ -611,9 +611,9 @@ export default function GroupDetail() {
                         }}
                         disabled={!postContent.trim()}
                         size="sm"
+                        className="shrink-0"
                       >
-                        <Send className="h-4 w-4 mr-1" />
-                        Post
+                        <Send className="h-4 w-4" />
                       </Button>
                     </div>
                   </div>
