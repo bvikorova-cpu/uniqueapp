@@ -274,34 +274,30 @@ export default function GroupDetail() {
   const adminCount = members.filter((m: any) => m.role === "admin").length;
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Back Button - Fixed */}
-      <div className="fixed top-20 left-4 z-50">
+    <div className="min-h-screen bg-background pb-20">
+      {/* Cover Section */}
+      <div className="relative">
+        {/* Back Button */}
         <Button
           variant="secondary"
           size="sm"
           onClick={() => navigate("/wall/groups")}
-          className="shadow-lg"
+          className="absolute top-4 left-4 z-20 shadow-lg"
         >
           <ArrowLeft className="h-4 w-4 mr-2" />
           Back
         </Button>
-      </div>
 
-      {/* Cover Section */}
-      <div className="relative">
         <div 
-          className="h-48 md:h-64 bg-gradient-to-r from-primary/30 via-accent/30 to-primary/30 relative group"
+          className="h-40 md:h-56 bg-gradient-to-br from-primary/20 via-accent/20 to-secondary/20 relative group"
           style={group.cover_image ? { 
             backgroundImage: `url(${group.cover_image})`, 
             backgroundSize: 'cover',
             backgroundPosition: 'center'
           } : {}}
         >
-          {/* Cover overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
           
-          {/* Edit cover button for admins */}
           {isAdmin && (
             <Dialog open={isEditingCover} onOpenChange={setIsEditingCover}>
               <DialogTrigger asChild>
@@ -336,119 +332,112 @@ export default function GroupDetail() {
             </Dialog>
           )}
         </div>
+      </div>
 
-        {/* Group Info Overlay */}
-        <div className="max-w-4xl mx-auto px-4 -mt-16 relative z-10">
-          <Card className="p-6">
-            <div className="flex flex-col md:flex-row md:items-start gap-4">
-              {/* Group Avatar */}
-              <Avatar className="h-24 w-24 border-4 border-background shadow-xl">
-                <AvatarImage src={group.cover_image} />
-                <AvatarFallback className="text-3xl bg-primary/20 text-primary">
-                  {group.name.charAt(0).toUpperCase()}
-                </AvatarFallback>
-              </Avatar>
+      {/* Group Info Card */}
+      <div className="max-w-2xl mx-auto px-4 -mt-12 relative z-10">
+        <Card className="p-5 text-center">
+          {/* Centered Avatar */}
+          <div className="flex justify-center -mt-14 mb-3">
+            <Avatar className="h-20 w-20 border-4 border-background shadow-xl">
+              <AvatarImage src={group.cover_image} />
+              <AvatarFallback className="text-2xl bg-primary/20 text-primary">
+                {group.name.charAt(0).toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+          </div>
 
-              {/* Group Details */}
-              <div className="flex-1">
-                <div className="flex items-start justify-between flex-wrap gap-4">
-                  <div>
-                    <h1 className="text-2xl md:text-3xl font-bold flex items-center gap-2">
-                      {group.name}
-                      {group.is_private ? (
-                        <Lock className="h-5 w-5 text-muted-foreground" />
-                      ) : (
-                        <Globe className="h-5 w-5 text-muted-foreground" />
-                      )}
-                    </h1>
-                    <div className="flex items-center gap-4 mt-2 text-muted-foreground">
-                      <span className="flex items-center gap-1">
-                        <Users className="h-4 w-4" />
-                        {memberCount} members
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Shield className="h-4 w-4" />
-                        {adminCount} admins
-                      </span>
-                      <Badge variant={group.is_private ? "secondary" : "outline"}>
-                        {group.is_private ? "Private" : "Public"}
-                      </Badge>
-                    </div>
-                    {group.description && (
-                      <p className="mt-3 text-muted-foreground">{group.description}</p>
+          {/* Group Name & Privacy */}
+          <h1 className="text-xl font-bold flex items-center justify-center gap-2">
+            {group.name}
+            {group.is_private ? (
+              <Lock className="h-4 w-4 text-muted-foreground" />
+            ) : (
+              <Globe className="h-4 w-4 text-muted-foreground" />
+            )}
+          </h1>
+
+          {/* Members & Admins */}
+          <div className="flex items-center justify-center gap-4 mt-2 text-sm text-muted-foreground">
+            <span className="flex items-center gap-1">
+              <Users className="h-4 w-4" />
+              {memberCount} members
+            </span>
+            <span className="flex items-center gap-1">
+              <Shield className="h-4 w-4" />
+              {adminCount} admins
+            </span>
+            <Badge variant={group.is_private ? "secondary" : "outline"} className="text-xs">
+              {group.is_private ? "Private" : "Public"}
+            </Badge>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex justify-center gap-2 mt-4">
+            {!isMember ? (
+              <Button onClick={() => joinMutation.mutate()} size="sm">
+                <UserPlus className="h-4 w-4 mr-2" />
+                Join Group
+              </Button>
+            ) : (
+              <>
+                <Button variant="outline" size="icon" className="h-9 w-9">
+                  <Bell className="h-4 w-4" />
+                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" size="icon" className="h-9 w-9">
+                      <MoreHorizontal className="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    {isAdmin && (
+                      <DropdownMenuItem>
+                        <Settings className="h-4 w-4 mr-2" />
+                        Group Settings
+                      </DropdownMenuItem>
                     )}
-                  </div>
+                    <DropdownMenuItem 
+                      className="text-destructive"
+                      onClick={() => leaveMutation.mutate()}
+                    >
+                      Leave Group
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </>
+            )}
+          </div>
 
-                  {/* Action Buttons */}
-                  <div className="flex gap-2">
-                    {!isMember ? (
-                      <Button onClick={() => joinMutation.mutate()}>
-                        <UserPlus className="h-4 w-4 mr-2" />
-                        Join Group
-                      </Button>
-                    ) : (
-                      <>
-                        <Button variant="outline" size="icon">
-                          <Bell className="h-4 w-4" />
-                        </Button>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="outline" size="icon">
-                              <MoreHorizontal className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            {isAdmin && (
-                              <DropdownMenuItem>
-                                <Settings className="h-4 w-4 mr-2" />
-                                Group Settings
-                              </DropdownMenuItem>
-                            )}
-                            <DropdownMenuItem 
-                              className="text-destructive"
-                              onClick={() => leaveMutation.mutate()}
-                            >
-                              Leave Group
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </>
-                    )}
-                  </div>
-                </div>
-
-                {/* Quick Stats */}
-                <div className="flex gap-6 mt-4 pt-4 border-t">
-                  <div className="text-center">
-                    <p className="text-2xl font-bold text-primary">{posts.length}</p>
-                    <p className="text-xs text-muted-foreground">Posts</p>
-                  </div>
-                  <div className="text-center">
-                    <p className="text-2xl font-bold text-primary">{memberCount}</p>
-                    <p className="text-xs text-muted-foreground">Members</p>
-                  </div>
-                  <div className="text-center">
-                    <p className="text-2xl font-bold text-primary">
-                      {format(new Date(group.created_at), "yyyy")}
-                    </p>
-                    <p className="text-xs text-muted-foreground">Created</p>
-                  </div>
-                </div>
-              </div>
+          {/* Quick Stats */}
+          <div className="flex justify-center gap-8 mt-4 pt-4 border-t">
+            <div className="text-center">
+              <p className="text-xl font-bold text-primary">{posts.length}</p>
+              <p className="text-xs text-muted-foreground">Posts</p>
             </div>
-          </Card>
-        </div>
+            <div className="text-center">
+              <p className="text-xl font-bold text-primary">{memberCount}</p>
+              <p className="text-xs text-muted-foreground">Members</p>
+            </div>
+            <div className="text-center">
+              <p className="text-xl font-bold text-primary">
+                {format(new Date(group.created_at), "yyyy")}
+              </p>
+              <p className="text-xs text-muted-foreground">Created</p>
+            </div>
+          </div>
+        </Card>
       </div>
 
       {/* Main Content */}
-      <div className="max-w-4xl mx-auto px-4 py-6">
+      <div className="max-w-2xl mx-auto px-4 py-4">
         <Tabs defaultValue="posts" className="w-full">
-          <TabsList className="w-full justify-start mb-6">
-            <TabsTrigger value="posts">Posts</TabsTrigger>
-            <TabsTrigger value="members">Members</TabsTrigger>
-            <TabsTrigger value="media">Media</TabsTrigger>
-            <TabsTrigger value="about">About</TabsTrigger>
-            {isAdmin && <TabsTrigger value="admin">Admin</TabsTrigger>}
+          <TabsList className="w-full grid grid-cols-4 md:grid-cols-5 mb-4">
+            <TabsTrigger value="posts" className="text-xs">Posts</TabsTrigger>
+            <TabsTrigger value="members" className="text-xs">Members</TabsTrigger>
+            <TabsTrigger value="media" className="text-xs">Media</TabsTrigger>
+            <TabsTrigger value="about" className="text-xs">About</TabsTrigger>
+            {isAdmin && <TabsTrigger value="admin" className="text-xs">Admin</TabsTrigger>}
           </TabsList>
 
           {/* Posts Tab */}
