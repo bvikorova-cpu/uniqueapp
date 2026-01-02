@@ -59,9 +59,13 @@ export default function GroupDetail() {
   const queryClient = useQueryClient();
   const [postContent, setPostContent] = useState("");
   const [postImage, setPostImage] = useState<string | undefined>();
+  const [postLocation, setPostLocation] = useState<string | undefined>();
+  const [postFeeling, setPostFeeling] = useState<string | undefined>();
   const [isEditingCover, setIsEditingCover] = useState(false);
   const [newCoverImage, setNewCoverImage] = useState<string | undefined>();
   const [inviteEmail, setInviteEmail] = useState("");
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [showLocationInput, setShowLocationInput] = useState(false);
 
   const { data: user } = useQuery({
     queryKey: ["current-user"],
@@ -452,38 +456,95 @@ export default function GroupDetail() {
                     </AvatarFallback>
                   </Avatar>
 
-                  {/* min-w-0 prevents the textarea/actions from overflowing on mobile */}
                   <div className="flex-1 min-w-0 space-y-3">
                     <Textarea
                       value={postContent}
                       onChange={(e) => setPostContent(e.target.value)}
                       placeholder="What's on your mind?"
-                      rows={3}
+                      rows={2}
                       className="resize-none w-full"
                     />
 
-                    {/* Post Image Preview */}
-                    {postImage && (
-                      <div className="relative">
-                        <img src={postImage} alt="Post" className="rounded-lg max-h-64 object-cover w-full" />
-                        <Button
-                          size="sm"
-                          variant="destructive"
-                          className="absolute top-2 right-2"
-                          onClick={() => setPostImage(undefined)}
-                        >
-                          Remove
+                    {/* Location / Feeling badges */}
+                    {(postLocation || postFeeling) && (
+                      <div className="flex flex-wrap gap-2">
+                        {postLocation && (
+                          <Badge variant="secondary" className="gap-1">
+                            <MapPin className="h-3 w-3" />
+                            {postLocation}
+                            <button onClick={() => setPostLocation(undefined)} className="ml-1 hover:text-destructive">×</button>
+                          </Badge>
+                        )}
+                        {postFeeling && (
+                          <Badge variant="secondary" className="gap-1">
+                            {postFeeling}
+                            <button onClick={() => setPostFeeling(undefined)} className="ml-1 hover:text-destructive">×</button>
+                          </Badge>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Location Input */}
+                    {showLocationInput && (
+                      <div className="flex gap-2">
+                        <Input
+                          placeholder="Enter location..."
+                          className="flex-1"
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                              setPostLocation((e.target as HTMLInputElement).value);
+                              setShowLocationInput(false);
+                            }
+                          }}
+                        />
+                        <Button size="sm" variant="ghost" onClick={() => setShowLocationInput(false)}>
+                          Cancel
                         </Button>
                       </div>
                     )}
 
-                    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                      <div className="flex flex-wrap gap-2">
+                    {/* Emoji Picker */}
+                    {showEmojiPicker && (
+                      <div className="flex flex-wrap gap-2 p-2 bg-muted/50 rounded-lg">
+                        {["😊 Happy", "😢 Sad", "😍 In Love", "🤔 Thoughtful", "😎 Cool", "🎉 Celebrating", "😴 Tired", "🔥 Motivated", "💪 Strong", "🙏 Grateful", "😋 Hungry", "🥳 Excited"].map((feeling) => (
+                          <Button
+                            key={feeling}
+                            size="sm"
+                            variant="ghost"
+                            className="text-sm"
+                            onClick={() => {
+                              setPostFeeling(feeling);
+                              setShowEmojiPicker(false);
+                            }}
+                          >
+                            {feeling}
+                          </Button>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Post Image Preview */}
+                    {postImage && (
+                      <div className="relative">
+                        <img src={postImage} alt="Post" className="rounded-lg max-h-48 object-cover w-full" />
+                        <Button
+                          size="icon"
+                          variant="destructive"
+                          className="absolute top-2 right-2 h-6 w-6"
+                          onClick={() => setPostImage(undefined)}
+                        >
+                          ×
+                        </Button>
+                      </div>
+                    )}
+
+                    <div className="flex items-center justify-between">
+                      {/* Icon-only action buttons */}
+                      <div className="flex gap-1">
                         <Dialog>
                           <DialogTrigger asChild>
-                            <Button variant="ghost" size="sm" className="shrink-0">
-                              <ImagePlus className="h-4 w-4 mr-2" />
-                              Photo
+                            <Button variant="ghost" size="icon" className="h-9 w-9 text-green-600 hover:bg-green-50">
+                              <ImagePlus className="h-5 w-5" />
                             </Button>
                           </DialogTrigger>
                           <DialogContent>
@@ -494,23 +555,64 @@ export default function GroupDetail() {
                           </DialogContent>
                         </Dialog>
 
-                        <Button variant="ghost" size="sm" className="shrink-0">
-                          <Video className="h-4 w-4 mr-2" />
-                          Video
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button variant="ghost" size="icon" className="h-9 w-9 text-red-500 hover:bg-red-50">
+                              <Video className="h-5 w-5" />
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent>
+                            <DialogHeader>
+                              <DialogTitle>Add Video</DialogTitle>
+                            </DialogHeader>
+                            <p className="text-sm text-muted-foreground">Video upload coming soon! You can paste a video URL in your post.</p>
+                          </DialogContent>
+                        </Dialog>
+
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className={`h-9 w-9 text-yellow-500 hover:bg-yellow-50 ${showEmojiPicker ? "bg-yellow-100" : ""}`}
+                          onClick={() => {
+                            setShowEmojiPicker(!showEmojiPicker);
+                            setShowLocationInput(false);
+                          }}
+                        >
+                          <Smile className="h-5 w-5" />
                         </Button>
 
-                        <Button variant="ghost" size="sm" className="shrink-0">
-                          <Smile className="h-4 w-4 mr-2" />
-                          Feeling
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className={`h-9 w-9 text-blue-500 hover:bg-blue-50 ${showLocationInput ? "bg-blue-100" : ""}`}
+                          onClick={() => {
+                            setShowLocationInput(!showLocationInput);
+                            setShowEmojiPicker(false);
+                          }}
+                        >
+                          <MapPin className="h-5 w-5" />
+                        </Button>
+
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-9 w-9 text-purple-500 hover:bg-purple-50"
+                          onClick={() => toast({ title: "Tag friends", description: "Coming soon!" })}
+                        >
+                          <UserPlus className="h-5 w-5" />
                         </Button>
                       </div>
 
                       <Button
-                        onClick={() => createPostMutation.mutate()}
+                        onClick={() => {
+                          createPostMutation.mutate();
+                          setPostLocation(undefined);
+                          setPostFeeling(undefined);
+                        }}
                         disabled={!postContent.trim()}
-                        className="sm:self-auto self-end"
+                        size="sm"
                       >
-                        <Send className="h-4 w-4 mr-2" />
+                        <Send className="h-4 w-4 mr-1" />
                         Post
                       </Button>
                     </div>
