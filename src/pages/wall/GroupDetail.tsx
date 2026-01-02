@@ -444,26 +444,28 @@ export default function GroupDetail() {
           <TabsContent value="posts" className="space-y-6">
             {/* Create Post - Only for members */}
             {isMember && (
-              <Card className="p-4">
+              <Card className="p-4 overflow-hidden">
                 <div className="flex gap-3">
-                  <Avatar>
+                  <Avatar className="shrink-0">
                     <AvatarFallback className="bg-primary/10 text-primary">
                       {user?.email?.[0].toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
-                  <div className="flex-1 space-y-3">
+
+                  {/* min-w-0 prevents the textarea/actions from overflowing on mobile */}
+                  <div className="flex-1 min-w-0 space-y-3">
                     <Textarea
                       value={postContent}
                       onChange={(e) => setPostContent(e.target.value)}
                       placeholder="What's on your mind?"
                       rows={3}
-                      className="resize-none"
+                      className="resize-none w-full"
                     />
-                    
+
                     {/* Post Image Preview */}
                     {postImage && (
                       <div className="relative">
-                        <img src={postImage} alt="Post" className="rounded-lg max-h-64 object-cover" />
+                        <img src={postImage} alt="Post" className="rounded-lg max-h-64 object-cover w-full" />
                         <Button
                           size="sm"
                           variant="destructive"
@@ -474,12 +476,12 @@ export default function GroupDetail() {
                         </Button>
                       </div>
                     )}
-                    
-                    <div className="flex justify-between items-center">
-                      <div className="flex gap-2">
+
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                      <div className="flex flex-wrap gap-2">
                         <Dialog>
                           <DialogTrigger asChild>
-                            <Button variant="ghost" size="sm">
+                            <Button variant="ghost" size="sm" className="shrink-0">
                               <ImagePlus className="h-4 w-4 mr-2" />
                               Photo
                             </Button>
@@ -488,25 +490,25 @@ export default function GroupDetail() {
                             <DialogHeader>
                               <DialogTitle>Add Photo</DialogTitle>
                             </DialogHeader>
-                            <CoverImageUpload
-                              value={postImage}
-                              onChange={setPostImage}
-                              folder="posts"
-                            />
+                            <CoverImageUpload value={postImage} onChange={setPostImage} folder="posts" />
                           </DialogContent>
                         </Dialog>
-                        <Button variant="ghost" size="sm">
+
+                        <Button variant="ghost" size="sm" className="shrink-0">
                           <Video className="h-4 w-4 mr-2" />
                           Video
                         </Button>
-                        <Button variant="ghost" size="sm">
+
+                        <Button variant="ghost" size="sm" className="shrink-0">
                           <Smile className="h-4 w-4 mr-2" />
                           Feeling
                         </Button>
                       </div>
+
                       <Button
                         onClick={() => createPostMutation.mutate()}
                         disabled={!postContent.trim()}
+                        className="sm:self-auto self-end"
                       >
                         <Send className="h-4 w-4 mr-2" />
                         Post
