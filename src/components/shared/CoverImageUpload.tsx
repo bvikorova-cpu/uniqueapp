@@ -7,7 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 interface CoverImageUploadProps {
   value?: string;
   onChange: (url: string | undefined) => void;
-  folder: "groups" | "pages" | "events";
+  folder: string;
 }
 
 export const CoverImageUpload = ({ value, onChange, folder }: CoverImageUploadProps) => {
