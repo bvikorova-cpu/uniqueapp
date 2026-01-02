@@ -133,13 +133,14 @@ const Home = () => {
               index === currentImageIndex ? "opacity-100" : "opacity-0"
             }`}
           >
-            {/* Mobile: cover image for better display */}
+            {/* Mobile: cover image with brightness boost */}
             <div 
               className="block sm:hidden absolute inset-0"
               style={{
                 backgroundImage: `url(${image})`,
                 backgroundSize: "cover",
                 backgroundPosition: "center",
+                filter: "brightness(1.15) contrast(1.05) saturate(1.1)",
               }}
             />
             {/* Desktop: cover for better look */}
@@ -154,11 +155,11 @@ const Home = () => {
           </div>
         ))}
         
-        {/* Dark overlay for better text readability */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/25 to-black/35"></div>
+        {/* Lighter overlay for better visibility on mobile, darker on desktop */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/15 via-black/10 to-black/20 sm:from-black/30 sm:via-black/25 sm:to-black/35"></div>
         
-        {/* Subtle animated gradient overlay for premium feel */}
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-900/10 via-transparent to-blue-900/10"></div>
+        {/* Subtle warm gradient overlay for more vibrant feel */}
+        <div className="absolute inset-0 bg-gradient-to-br from-orange-400/5 via-transparent to-pink-400/5 sm:from-purple-900/10 sm:via-transparent sm:to-blue-900/10"></div>
         
         <div className="relative z-10 text-center space-y-4 sm:space-y-8 px-3 sm:px-4 pt-16 sm:pt-32">
           <h1 className="text-3xl sm:text-5xl md:text-7xl font-bold text-white leading-tight drop-shadow-2xl">
