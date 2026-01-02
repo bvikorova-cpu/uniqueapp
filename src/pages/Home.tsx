@@ -140,7 +140,7 @@ const Home = () => {
                 backgroundImage: `url(${image})`,
                 backgroundSize: "cover",
                 backgroundPosition: "center",
-                filter: "brightness(1.35) contrast(1.05) saturate(1.15)",
+                filter: "brightness(1.25) contrast(1.05) saturate(1.12)",
               }}
             />
             {/* Desktop: cover for better look */}
