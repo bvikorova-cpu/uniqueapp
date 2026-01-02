@@ -165,7 +165,7 @@ const Home = () => {
           <h1 className="text-3xl sm:text-5xl md:text-7xl font-bold text-white leading-tight drop-shadow-2xl">
             {t('home.hero_title')}{" "}
             <span className="relative inline-block">
-              <span className="bg-gradient-to-r from-[#E91E63] via-[#FF5722] to-[#FFC107] bg-clip-text text-transparent animate-glow drop-shadow-[0_0_30px_rgba(233,30,99,0.5)]">
+              <span className="bg-gradient-to-r from-[#9C27B0] via-[#E91E63] to-[#FF4081] bg-clip-text text-transparent animate-glow drop-shadow-[0_0_30px_rgba(156,39,176,0.5)]">
                 {displayedText}
                 <span className="animate-blink">|</span>
               </span>
