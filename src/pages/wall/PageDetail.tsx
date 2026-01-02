@@ -62,6 +62,10 @@ export default function PageDetail() {
   const [newCoverImage, setNewCoverImage] = useState<string | undefined>();
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [showLocationInput, setShowLocationInput] = useState(false);
+  const [showSettingsDialog, setShowSettingsDialog] = useState(false);
+  const [editName, setEditName] = useState("");
+  const [editDescription, setEditDescription] = useState("");
+  const [editCategory, setEditCategory] = useState("");
 
   const { data: user } = useQuery({
     queryKey: ["current-user"],
@@ -221,6 +225,46 @@ export default function PageDetail() {
     },
   });
 
+  const updatePageMutation = useMutation({
+    mutationFn: async () => {
+      const { error } = await supabase
+        .from("pages")
+        .update({ 
+          name: editName,
+          description: editDescription,
+          category: editCategory
+        })
+        .eq("id", pageId);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["page", pageId] });
+      setShowSettingsDialog(false);
+      toast({ title: "Page updated!" });
+    },
+  });
+
+  const deletePageMutation = useMutation({
+    mutationFn: async () => {
+      const { error } = await supabase
+        .from("pages")
+        .delete()
+        .eq("id", pageId);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      navigate("/wall/pages");
+      toast({ title: "Page deleted!" });
+    },
+  });
+
+  const openSettings = () => {
+    setEditName(page?.name || "");
+    setEditDescription(page?.description || "");
+    setEditCategory(page?.category || "");
+    setShowSettingsDialog(true);
+  };
+
   // Loading state
   if (isLoadingPage) {
     return (
@@ -370,7 +414,7 @@ export default function PageDetail() {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuItem>
+                    <DropdownMenuItem onClick={openSettings}>
                       <Settings className="h-4 w-4 mr-2" />
                       Page Settings
                     </DropdownMenuItem>
@@ -693,6 +737,61 @@ export default function PageDetail() {
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* Page Settings Dialog */}
+      <Dialog open={showSettingsDialog} onOpenChange={setShowSettingsDialog}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Page Settings</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Page Name</label>
+              <Input
+                value={editName}
+                onChange={(e) => setEditName(e.target.value)}
+                placeholder="Enter page name..."
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Description</label>
+              <Textarea
+                value={editDescription}
+                onChange={(e) => setEditDescription(e.target.value)}
+                placeholder="Enter description..."
+                rows={3}
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Category</label>
+              <Input
+                value={editCategory}
+                onChange={(e) => setEditCategory(e.target.value)}
+                placeholder="Enter category..."
+              />
+            </div>
+            <div className="flex gap-2 pt-4">
+              <Button 
+                onClick={() => updatePageMutation.mutate()}
+                disabled={!editName.trim()}
+                className="flex-1"
+              >
+                Save Changes
+              </Button>
+              <Button 
+                variant="destructive"
+                onClick={() => {
+                  if (confirm("Are you sure you want to delete this page?")) {
+                    deletePageMutation.mutate();
+                  }
+                }}
+              >
+                Delete Page
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

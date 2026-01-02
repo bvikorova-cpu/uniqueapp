@@ -62,6 +62,10 @@ export default function EventDetail() {
   const [newCoverImage, setNewCoverImage] = useState<string | undefined>();
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [showLocationInput, setShowLocationInput] = useState(false);
+  const [showSettingsDialog, setShowSettingsDialog] = useState(false);
+  const [editTitle, setEditTitle] = useState("");
+  const [editDescription, setEditDescription] = useState("");
+  const [editLocation, setEditLocation] = useState("");
 
   const { data: user } = useQuery({
     queryKey: ["current-user"],
@@ -200,6 +204,46 @@ export default function EventDetail() {
       toast({ title: "Cover image updated!" });
     },
   });
+
+  const updateEventMutation = useMutation({
+    mutationFn: async () => {
+      const { error } = await supabase
+        .from("events")
+        .update({ 
+          title: editTitle,
+          description: editDescription,
+          location: editLocation
+        })
+        .eq("id", eventId);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["event", eventId] });
+      setShowSettingsDialog(false);
+      toast({ title: "Event updated!" });
+    },
+  });
+
+  const deleteEventMutation = useMutation({
+    mutationFn: async () => {
+      const { error } = await supabase
+        .from("events")
+        .delete()
+        .eq("id", eventId);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      navigate("/wall/events");
+      toast({ title: "Event deleted!" });
+    },
+  });
+
+  const openSettings = () => {
+    setEditTitle(event?.title || "");
+    setEditDescription(event?.description || "");
+    setEditLocation(event?.location || "");
+    setShowSettingsDialog(true);
+  };
 
   // Loading state
   if (isLoadingEvent) {
@@ -363,7 +407,7 @@ export default function EventDetail() {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuItem>
+                    <DropdownMenuItem onClick={openSettings}>
                       <Settings className="h-4 w-4 mr-2" />
                       Edit Event
                     </DropdownMenuItem>
@@ -723,6 +767,61 @@ export default function EventDetail() {
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* Event Settings Dialog */}
+      <Dialog open={showSettingsDialog} onOpenChange={setShowSettingsDialog}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Event Settings</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Event Title</label>
+              <Input
+                value={editTitle}
+                onChange={(e) => setEditTitle(e.target.value)}
+                placeholder="Enter event title..."
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Description</label>
+              <Textarea
+                value={editDescription}
+                onChange={(e) => setEditDescription(e.target.value)}
+                placeholder="Enter description..."
+                rows={3}
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Location</label>
+              <Input
+                value={editLocation}
+                onChange={(e) => setEditLocation(e.target.value)}
+                placeholder="Enter location..."
+              />
+            </div>
+            <div className="flex gap-2 pt-4">
+              <Button 
+                onClick={() => updateEventMutation.mutate()}
+                disabled={!editTitle.trim()}
+                className="flex-1"
+              >
+                Save Changes
+              </Button>
+              <Button 
+                variant="destructive"
+                onClick={() => {
+                  if (confirm("Are you sure you want to delete this event?")) {
+                    deleteEventMutation.mutate();
+                  }
+                }}
+              >
+                Delete Event
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
