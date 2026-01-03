@@ -52,70 +52,62 @@ export function WallTopNav({ currentPath }: WallTopNavProps) {
 
   return (
     <div className="fixed top-16 left-0 right-0 z-40 bg-card/95 backdrop-blur-xl border-b shadow-sm">
-      <div className="max-w-7xl mx-auto px-1 sm:px-4">
-        <div className="flex items-center gap-1 py-1.5 sm:py-2">
-          <div 
-            className="flex-1 overflow-x-auto overflow-y-hidden scrollbar-hide"
-            style={{ 
-              WebkitOverflowScrolling: 'touch',
-            }}
-          >
-            <div className="flex items-center gap-0.5 sm:gap-1 px-0.5 w-max">
-              {mainNavItems.map((item) => (
+      <div className="max-w-7xl mx-auto px-2 sm:px-4">
+        <div className="flex items-center justify-between gap-2 py-1.5 sm:py-2">
+          <div className="flex items-center gap-1 sm:gap-2">
+            {mainNavItems.map((item) => (
+              <Button
+                key={item.path}
+                variant="ghost"
+                size="sm"
+                className={cn(
+                  "flex items-center gap-1 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg transition-all hover:bg-primary/10",
+                  currentPath === item.path && "bg-primary/10 text-primary font-semibold"
+                )}
+                onClick={() => navigate(item.path)}
+              >
+                <item.icon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                <span className="text-[10px] sm:text-xs whitespace-nowrap">{item.label}</span>
+              </Button>
+            ))}
+
+            {/* More dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
                 <Button
-                  key={item.path}
                   variant="ghost"
                   size="sm"
                   className={cn(
-                    "flex items-center gap-1 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg transition-all hover:bg-primary/10 flex-shrink-0 min-w-0",
-                    currentPath === item.path && "bg-primary/10 text-primary font-semibold"
+                    "flex items-center gap-1 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg transition-all hover:bg-primary/10",
+                    isMoreActive && "bg-primary/10 text-primary font-semibold"
                   )}
-                  onClick={() => navigate(item.path)}
                 >
-                  <item.icon className="h-3.5 w-3.5 sm:h-4 sm:w-4 flex-shrink-0" />
-                  <span className="text-[10px] sm:text-xs whitespace-nowrap">{item.label}</span>
+                  <MoreHorizontal className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                  <span className="text-[10px] sm:text-xs whitespace-nowrap">More</span>
                 </Button>
-              ))}
-
-              {/* More dropdown with Groups, Pages, Events, etc. */}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="sm"
+              </DropdownMenuTrigger>
+              <DropdownMenuContent 
+                align="start" 
+                className="w-48 bg-card border shadow-lg z-50"
+              >
+                {moreNavItems.map((item) => (
+                  <DropdownMenuItem
+                    key={item.path}
+                    onClick={() => navigate(item.path)}
                     className={cn(
-                      "flex items-center gap-1 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg transition-all hover:bg-primary/10 flex-shrink-0",
-                      isMoreActive && "bg-primary/10 text-primary font-semibold"
+                      "flex items-center gap-2 cursor-pointer",
+                      currentPath === item.path && "bg-primary/10 text-primary font-semibold"
                     )}
                   >
-                    <MoreHorizontal className="h-3.5 w-3.5 sm:h-4 sm:w-4 flex-shrink-0" />
-                    <span className="text-[10px] sm:text-xs whitespace-nowrap">More</span>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent 
-                  align="start" 
-                  className="w-48 bg-card border shadow-lg z-50"
-                >
-                  {moreNavItems.map((item) => (
-                    <DropdownMenuItem
-                      key={item.path}
-                      onClick={() => navigate(item.path)}
-                      className={cn(
-                        "flex items-center gap-2 cursor-pointer",
-                        currentPath === item.path && "bg-primary/10 text-primary font-semibold"
-                      )}
-                    >
-                      <item.icon className="h-4 w-4" />
-                      <span>{item.label}</span>
-                    </DropdownMenuItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
+                    <item.icon className="h-4 w-4" />
+                    <span>{item.label}</span>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
-          <div className="flex-shrink-0">
-            <AnimationToggle />
-          </div>
+          
+          <AnimationToggle />
         </div>
       </div>
     </div>
