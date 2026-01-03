@@ -1,0 +1,246 @@
+import { useState, useEffect, useRef } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Progress } from "@/components/ui/progress";
+import { Play, Sparkles, CheckCircle, Clock, Tv } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import { useQueryClient } from "@tanstack/react-query";
+
+interface DailyXPVideoRewardProps {
+  userId: string;
+}
+
+export const DailyXPVideoReward = ({ userId }: DailyXPVideoRewardProps) => {
+  const [canClaim, setCanClaim] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [showAdDialog, setShowAdDialog] = useState(false);
+  const [adProgress, setAdProgress] = useState(0);
+  const [isWatching, setIsWatching] = useState(false);
+  const [claimedToday, setClaimedToday] = useState(false);
+  const [totalXP, setTotalXP] = useState(0);
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const AD_DURATION = 15; // 15 seconds video ad
+
+  useEffect(() => {
+    checkDailyClaim();
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, [userId]);
+
+  const checkDailyClaim = async () => {
+    if (!userId) return;
+    
+    setIsLoading(true);
+    try {
+      const today = new Date().toISOString().split('T')[0];
+      
+      // Check if already claimed today
+      const { data: claim } = await supabase
+        .from("daily_xp_claims")
+        .select("*")
+        .eq("user_id", userId)
+        .eq("claim_date", today)
+        .single();
+
+      // Get total XP earned from video ads
+      const { data: totalClaims } = await supabase
+        .from("daily_xp_claims")
+        .select("xp_earned")
+        .eq("user_id", userId);
+
+      const total = totalClaims?.reduce((sum, c) => sum + c.xp_earned, 0) || 0;
+      setTotalXP(total);
+
+      setClaimedToday(!!claim);
+      setCanClaim(!claim);
+    } catch (error) {
+      setCanClaim(true);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const startWatchingAd = () => {
+    setShowAdDialog(true);
+    setIsWatching(true);
+    setAdProgress(0);
+
+    let elapsed = 0;
+    timerRef.current = setInterval(() => {
+      elapsed += 1;
+      const progress = (elapsed / AD_DURATION) * 100;
+      setAdProgress(progress);
+
+      if (elapsed >= AD_DURATION) {
+        if (timerRef.current) clearInterval(timerRef.current);
+        claimXP();
+      }
+    }, 1000);
+  };
+
+  const claimXP = async () => {
+    setIsWatching(false);
+    
+    try {
+      const today = new Date().toISOString().split('T')[0];
+      
+      // Insert daily XP claim
+      const { error: claimError } = await supabase
+        .from("daily_xp_claims")
+        .insert({
+          user_id: userId,
+          xp_earned: 1,
+          claim_date: today,
+          ad_watched: true
+        });
+
+      if (claimError) throw claimError;
+
+      // Add XP points
+      const { error: pointsError } = await supabase.rpc('add_user_points', {
+        p_user_id: userId,
+        p_points: 1,
+        p_activity_type: 'daily_video_xp'
+      });
+
+      if (pointsError) throw pointsError;
+
+      setClaimedToday(true);
+      setCanClaim(false);
+      setTotalXP(prev => prev + 1);
+      
+      queryClient.invalidateQueries({ queryKey: ["gamification", userId] });
+      queryClient.invalidateQueries({ queryKey: ["leaderboard"] });
+
+      toast({
+        title: "🎉 +1 XP!",
+        description: "Získal si 1 XP za zhliadnutie reklamy!",
+      });
+
+      setTimeout(() => setShowAdDialog(false), 1500);
+    } catch (error: any) {
+      toast({
+        title: "Chyba",
+        description: error.message || "Nepodarilo sa získať XP",
+        variant: "destructive"
+      });
+      setShowAdDialog(false);
+    }
+  };
+
+  const cancelAd = () => {
+    if (timerRef.current) clearInterval(timerRef.current);
+    setIsWatching(false);
+    setShowAdDialog(false);
+    setAdProgress(0);
+  };
+
+  if (isLoading) {
+    return (
+      <Card className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 border-purple-500/20">
+        <CardContent className="p-4 flex items-center justify-center">
+          <div className="animate-spin rounded-full h-6 w-6 border-2 border-purple-500 border-t-transparent" />
+        </CardContent>
+      </Card>
+    );
+  }
+
+  return (
+    <>
+      <Card className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 border-purple-500/20 overflow-hidden">
+        <CardHeader className="pb-2">
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <Tv className="h-5 w-5 text-purple-500" />
+            Denné XP za reklamu
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Sparkles className="h-5 w-5 text-yellow-500" />
+              <span className="text-sm text-muted-foreground">
+                Celkovo získané: <strong className="text-foreground">{totalXP} XP</strong>
+              </span>
+            </div>
+          </div>
+
+          {claimedToday ? (
+            <div className="flex items-center gap-3 p-3 rounded-lg bg-green-500/10 border border-green-500/20">
+              <CheckCircle className="h-6 w-6 text-green-500" />
+              <div>
+                <p className="font-medium text-green-700 dark:text-green-400">Dnes už splnené!</p>
+                <p className="text-sm text-muted-foreground">Vráť sa zajtra pre ďalšie XP</p>
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Clock className="h-4 w-4" />
+                <span>Pozri si 15s reklamu a získaj 1 XP</span>
+              </div>
+              <Button
+                onClick={startWatchingAd}
+                disabled={!canClaim}
+                className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
+              >
+                <Play className="h-4 w-4 mr-2" />
+                Pozrieť reklamu (+1 XP)
+              </Button>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      <Dialog open={showAdDialog} onOpenChange={(open) => !isWatching && setShowAdDialog(open)}>
+        <DialogContent className="sm:max-w-md" onPointerDownOutside={(e) => isWatching && e.preventDefault()}>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Tv className="h-5 w-5 text-purple-500" />
+              {isWatching ? "Pozeráš reklamu..." : "🎉 Hotovo!"}
+            </DialogTitle>
+          </DialogHeader>
+          
+          <div className="space-y-4 py-4">
+            {isWatching ? (
+              <>
+                <div className="aspect-video bg-gradient-to-br from-purple-600 via-pink-500 to-orange-400 rounded-lg flex items-center justify-center relative overflow-hidden">
+                  <div className="absolute inset-0 bg-black/20" />
+                  <div className="relative z-10 text-center text-white">
+                    <Sparkles className="h-12 w-12 mx-auto mb-2 animate-pulse" />
+                    <p className="font-bold text-xl">Reklamný obsah</p>
+                    <p className="text-sm opacity-80">Ďakujeme za sledovanie!</p>
+                  </div>
+                  <div className="absolute bottom-2 left-2 right-2">
+                    <Progress value={adProgress} className="h-2" />
+                  </div>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground">
+                    Zostáva: {Math.ceil(AD_DURATION - (adProgress / 100 * AD_DURATION))}s
+                  </span>
+                  <Button variant="ghost" size="sm" onClick={cancelAd}>
+                    Zrušiť
+                  </Button>
+                </div>
+              </>
+            ) : (
+              <div className="text-center py-6">
+                <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-r from-green-400 to-emerald-500 flex items-center justify-center">
+                  <CheckCircle className="h-10 w-10 text-white" />
+                </div>
+                <h3 className="text-2xl font-bold mb-2">+1 XP</h3>
+                <p className="text-muted-foreground">Úspešne si získal denné XP!</p>
+              </div>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+};

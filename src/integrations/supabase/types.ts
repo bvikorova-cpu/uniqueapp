@@ -8954,6 +8954,33 @@ export type Database = {
         }
         Relationships: []
       }
+      daily_xp_claims: {
+        Row: {
+          ad_watched: boolean
+          claim_date: string
+          claimed_at: string
+          id: string
+          user_id: string
+          xp_earned: number
+        }
+        Insert: {
+          ad_watched?: boolean
+          claim_date?: string
+          claimed_at?: string
+          id?: string
+          user_id: string
+          xp_earned?: number
+        }
+        Update: {
+          ad_watched?: boolean
+          claim_date?: string
+          claimed_at?: string
+          id?: string
+          user_id?: string
+          xp_earned?: number
+        }
+        Relationships: []
+      }
       dating_gifts: {
         Row: {
           created_at: string
