@@ -1,12 +1,11 @@
-import { useState, useEffect, useMemo } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
+import { useState } from "react";
 import PostCard from "@/components/feed/PostCard";
 import RepostCard from "@/components/feed/RepostCard";
 import { PostFilters, SortBy, TimeFilter, CategoryFilter } from "@/components/feed/PostFilters";
 import { Loader2 } from "lucide-react";
 import { AchievementsBadge } from "@/components/wall/AchievementsBadge";
 import { SearchBar } from "@/components/wall/SearchBar";
+import { VideoAdCard } from "@/components/wall/VideoAdCard";
 import { useTranslation } from "react-i18next";
 import type { Post, Repost, FeedItem } from "@/types/database";
 
@@ -107,6 +106,7 @@ export default function WallFeed({
             ) : (
               <>
                 {filteredFeedItems.map((item, index) => (
+                  <>
                     <div 
                       key={`${item.type}-${item.data.id}`}
                       className="animate-fade-in"
@@ -124,7 +124,18 @@ export default function WallFeed({
                         />
                       )}
                     </div>
-                  ))}
+                    {/* Video ad after every 10th post */}
+                    {(index + 1) % 10 === 0 && (
+                      <div 
+                        key={`ad-${index}`}
+                        className="animate-fade-in"
+                        style={{ animationDelay: `${index * 0.05}s` }}
+                      >
+                        <VideoAdCard adIndex={Math.floor((index + 1) / 10)} />
+                      </div>
+                    )}
+                  </>
+                ))}
                 
                 {/* Loading more indicator */}
                 {loadingMore && (
