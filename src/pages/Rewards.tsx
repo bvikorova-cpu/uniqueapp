@@ -10,6 +10,7 @@ import DailyRewardButton from "@/components/gamification/DailyRewardButton";
 import { DailyXPVideoReward } from "@/components/gamification/DailyXPVideoReward";
 import Leaderboard from "@/components/gamification/Leaderboard";
 import RewardsGuide from "@/components/gamification/RewardsGuide";
+import MyBadgesDisplay from "@/components/gamification/MyBadgesDisplay";
 import { Crown } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
@@ -57,12 +58,17 @@ export default function Rewards() {
 
         <RewardsGuide />
 
-        <Tabs defaultValue="badges" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3">
+        <Tabs defaultValue="my-badges" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="my-badges">🏅 Moje</TabsTrigger>
             <TabsTrigger value="badges">{t('rewards.badges')}</TabsTrigger>
-            <TabsTrigger value="badge-hunters">🏆 Badge Hunters</TabsTrigger>
+            <TabsTrigger value="badge-hunters">🏆 Hunters</TabsTrigger>
             <TabsTrigger value="leaderboard">{t('rewards.leaderboard')}</TabsTrigger>
           </TabsList>
+
+          <TabsContent value="my-badges">
+            <MyBadgesDisplay userId={user.id} />
+          </TabsContent>
 
           <TabsContent value="badges">
             <BadgesDisplay userId={user.id} />
