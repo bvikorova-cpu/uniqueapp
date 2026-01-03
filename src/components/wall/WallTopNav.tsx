@@ -35,10 +35,10 @@ export function WallTopNav({ currentPath }: WallTopNavProps) {
     { icon: Home, label: "Feed", path: "/wall" },
     { icon: MessageCircle, label: "Messages", path: "/wall/messages" },
     { icon: Users2, label: "Friends", path: "/wall/friends" },
+    { icon: Sparkles, label: "AI Studio", path: "/wall/ai-studio" },
   ];
 
   const moreNavItems = [
-    { icon: Sparkles, label: "AI Studio", path: "/wall/ai-studio" },
     { icon: Users, label: "Groups", path: "/wall/groups" },
     { icon: FileText, label: "Pages", path: "/wall/pages" },
     { icon: Calendar, label: "Events", path: "/wall/events" },
