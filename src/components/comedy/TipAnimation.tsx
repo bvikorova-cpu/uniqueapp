@@ -128,7 +128,7 @@ export const TipAnimation = ({
             />
           </div>
           <Button onClick={handleCustomTip} disabled={!customAmount}>
-            Odoslať
+            Send
           </Button>
         </div>
 

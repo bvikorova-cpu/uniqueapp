@@ -63,12 +63,12 @@ function CreateCampaignDialog({ onCreated }: { onCreated: () => void }) {
       const min = Number(budgetMin);
       const max = Number(budgetMax);
 
-      if (!brandName.trim()) throw new Error("Zadaj názov značky");
-      if (!campaignName.trim()) throw new Error("Zadaj názov kampane");
-      if (!deadline) throw new Error("Zadaj deadline");
-      if (!Number.isFinite(min) || min <= 0) throw new Error("Minimálny rozpočet musí byť číslo > 0");
-      if (!Number.isFinite(max) || max <= 0) throw new Error("Maximálny rozpočet musí byť číslo > 0");
-      if (max < min) throw new Error("Maximálny rozpočet musí byť väčší alebo rovný minimálnemu");
+      if (!brandName.trim()) throw new Error("Enter brand name");
+      if (!campaignName.trim()) throw new Error("Enter campaign name");
+      if (!deadline) throw new Error("Enter deadline");
+      if (!Number.isFinite(min) || min <= 0) throw new Error("Minimum budget must be a number > 0");
+      if (!Number.isFinite(max) || max <= 0) throw new Error("Maximum budget must be a number > 0");
+      if (max < min) throw new Error("Maximum budget must be greater than or equal to minimum");
 
       const parsedTags = tags
         .split(",")
@@ -90,13 +90,13 @@ function CreateCampaignDialog({ onCreated }: { onCreated: () => void }) {
       if (error) throw error;
     },
     onSuccess: () => {
-      toast.success("Kampaň bola vytvorená");
+      toast.success("Campaign was created");
       onCreated();
       reset();
       setOpen(false);
     },
     onError: (e: any) => {
-      toast.error(e?.message ?? "Nepodarilo sa vytvoriť kampaň");
+      toast.error(e?.message ?? "Failed to create campaign");
     },
   });
 
@@ -105,53 +105,53 @@ function CreateCampaignDialog({ onCreated }: { onCreated: () => void }) {
       <DialogTrigger asChild>
         <Button>
           <Plus className="h-4 w-4 mr-2" />
-          Pridať kampaň
+          Add Campaign
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-xl">
         <DialogHeader>
-          <DialogTitle>Nová brand kampaň</DialogTitle>
+          <DialogTitle>New Brand Campaign</DialogTitle>
           <DialogDescription>
-            Vytvor kampaň a začni zbierať prihlášky od creatorov.
+            Create a campaign and start collecting applications from creators.
           </DialogDescription>
         </DialogHeader>
 
         <div className="grid gap-4">
           <div className="grid sm:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="brand_name">Názov značky</Label>
+              <Label htmlFor="brand_name">Brand Name</Label>
               <Input
                 id="brand_name"
                 value={brandName}
                 onChange={(e) => setBrandName(e.target.value)}
-                placeholder="napr. UNIQA" 
+                placeholder="e.g. Nike" 
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="campaign_name">Názov kampane</Label>
+              <Label htmlFor="campaign_name">Campaign Name</Label>
               <Input
                 id="campaign_name"
                 value={campaignName}
                 onChange={(e) => setCampaignName(e.target.value)}
-                placeholder="napr. Zimná kampaň" 
+                placeholder="e.g. Winter Campaign" 
               />
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="description">Popis</Label>
+            <Label htmlFor="description">Description</Label>
             <Textarea
               id="description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Čo má creator vytvoriť? Aké výstupy?" 
+              placeholder="What should the creator produce? What outputs?" 
               rows={4}
             />
           </div>
 
           <div className="grid sm:grid-cols-3 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="budget_min">Min rozpočet (€)</Label>
+              <Label htmlFor="budget_min">Min Budget (€)</Label>
               <Input
                 id="budget_min"
                 type="number"
@@ -162,7 +162,7 @@ function CreateCampaignDialog({ onCreated }: { onCreated: () => void }) {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="budget_max">Max rozpočet (€)</Label>
+              <Label htmlFor="budget_max">Max Budget (€)</Label>
               <Input
                 id="budget_max"
                 type="number"
@@ -184,7 +184,7 @@ function CreateCampaignDialog({ onCreated }: { onCreated: () => void }) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="tags">Tagy (oddelené čiarkou)</Label>
+            <Label htmlFor="tags">Tags (comma separated)</Label>
             <Input
               id="tags"
               value={tags}
@@ -196,10 +196,10 @@ function CreateCampaignDialog({ onCreated }: { onCreated: () => void }) {
 
         <DialogFooter className="gap-2 sm:gap-0">
           <Button variant="outline" onClick={() => setOpen(false)} disabled={mutation.isPending}>
-            Zrušiť
+            Cancel
           </Button>
           <Button onClick={() => mutation.mutate()} disabled={mutation.isPending}>
-            Vytvoriť
+            Create
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -214,7 +214,7 @@ export default function BrandDashboard() {
     document.title = "Brand Dashboard | Kampane";
     const ensureMeta = () => {
       const name = "description";
-      const content = "Brand dashboard na správu kampaní, prihlášok a platieb.";
+      const content = "Brand dashboard for managing campaigns, applications and payments.";
       let tag = document.querySelector(`meta[name='${name}']`) as HTMLMetaElement | null;
       if (!tag) {
         tag = document.createElement("meta");
@@ -269,7 +269,7 @@ export default function BrandDashboard() {
         <div>
           <h1 className="text-3xl font-bold">Brand Dashboard</h1>
           <p className="text-muted-foreground mt-2">
-            Vytváraj kampane, sleduj prihlášky a rieš platby.
+            Create campaigns, track applications and manage payments.
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -277,11 +277,11 @@ export default function BrandDashboard() {
         </div>
       </header>
 
-      <section className="grid gap-4 sm:grid-cols-2 mb-6" aria-label="Prehľad">
+      <section className="grid gap-4 sm:grid-cols-2 mb-6" aria-label="Overview">
         <Card>
           <CardHeader>
-            <CardTitle>Spolu kampaní</CardTitle>
-            <CardDescription>Počet kampaní, ktoré si vytvoril/a</CardDescription>
+            <CardTitle>Total Campaigns</CardTitle>
+            <CardDescription>Number of campaigns you have created</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold">{stats.total}</div>
@@ -289,8 +289,8 @@ export default function BrandDashboard() {
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle>Aktívne</CardTitle>
-            <CardDescription>Kampane viditeľné pre creatorov</CardDescription>
+            <CardTitle>Active</CardTitle>
+            <CardDescription>Campaigns visible to creators</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold">{stats.active}</div>
@@ -301,12 +301,12 @@ export default function BrandDashboard() {
       <main>
         <Tabs defaultValue="campaigns" className="w-full">
           <TabsList className="grid w-full grid-cols-2 max-w-md">
-            <TabsTrigger value="campaigns">Kampane</TabsTrigger>
-            <TabsTrigger value="payments">Platby</TabsTrigger>
+            <TabsTrigger value="campaigns">Campaigns</TabsTrigger>
+            <TabsTrigger value="payments">Payments</TabsTrigger>
           </TabsList>
 
           <TabsContent value="campaigns" className="mt-6">
-            <section aria-label="Zoznam kampaní" className="space-y-4">
+            <section aria-label="Campaign list" className="space-y-4">
               {isLoading ? (
                 <div className="flex items-center justify-center p-8">
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
@@ -367,7 +367,7 @@ export default function BrandDashboard() {
           </TabsContent>
 
           <TabsContent value="payments" className="mt-6">
-            <section aria-label="Platby">
+            <section aria-label="Payments">
               <BrandCampaignPayments />
             </section>
           </TabsContent>

@@ -128,7 +128,7 @@ export const useAICredits = () => {
 
       if (error) {
         console.error('Edge function error:', error);
-        throw new Error(error.message || 'Nepodarilo sa vytvoriť platobnú reláciu');
+        throw new Error(error.message || 'Failed to create payment session');
       }
       
       if (data?.url) {

@@ -38,15 +38,15 @@ export const VideoThumbnailGenerator = ({ videoTitle, videoId, category }: Video
         document.body.removeChild(link);
 
         toast({
-          title: "Obrázok vygenerovaný",
-          description: "Thumbnail bol úspešne vygenerovaný a stiahnutý.",
+          title: "Image generated",
+          description: "Thumbnail was successfully generated and downloaded.",
         });
       }
     } catch (error) {
       console.error('Error generating thumbnail:', error);
       toast({
-        title: "Chyba",
-        description: "Nepodarilo sa vygenerovať thumbnail.",
+        title: "Error",
+        description: "Failed to generate thumbnail.",
         variant: "destructive",
       });
     } finally {
@@ -63,7 +63,7 @@ export const VideoThumbnailGenerator = ({ videoTitle, videoId, category }: Video
       className="mt-2"
     >
       <Download className="h-4 w-4 mr-2" />
-      {isGenerating ? "Generuje sa..." : "Vygenerovať obrázok"}
+      {isGenerating ? "Generating..." : "Generate image"}
     </Button>
   );
 };

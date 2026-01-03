@@ -35,8 +35,8 @@ export const AngryBirdsGame = ({ onBack }: AngryBirdsGameProps) => {
   const launchBird = () => {
     if (birdsLeft <= 0) {
       toast({
-        title: "💥 Žiadne vtáky!",
-        description: "Prehral si túto úroveň!",
+        title: "💥 No birds left!",
+        description: "You lost this level!",
         variant: "destructive",
       });
       setTimeout(resetLevel, 1500);

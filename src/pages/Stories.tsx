@@ -513,18 +513,18 @@ export default function Stories() {
       <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
         <AlertDialogContent className="bg-background">
           <AlertDialogHeader>
-            <AlertDialogTitle>Odstrániť Story?</AlertDialogTitle>
+            <AlertDialogTitle>Delete Story?</AlertDialogTitle>
             <AlertDialogDescription>
-              Táto akcia je nezvratná. Story bude natrvalo odstránená.
+              This action is irreversible. The story will be permanently deleted.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Zrušiť</AlertDialogCancel>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => currentStory && deleteStoryMutation.mutate(currentStory.id)}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              Odstrániť
+              Delete
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

@@ -171,8 +171,8 @@ export const NotificationsDropdown = () => {
       setUnreadCount(0);
 
       toast({
-        title: "Úspech",
-        description: "Všetky notifikácie označené ako prečítané",
+        title: "Success",
+        description: "All notifications marked as read",
       });
     } catch (error: any) {
       toast({
@@ -197,8 +197,8 @@ export const NotificationsDropdown = () => {
     setSoundEnabled(newValue);
     localStorage.setItem('notificationSoundEnabled', String(newValue));
     toast({
-      title: newValue ? "Zvuky zapnuté" : "Zvuky vypnuté",
-      description: newValue ? "Budete počuť zvuk pri nových sledovaniach" : "Zvuky notifikácií sú vypnuté",
+      title: newValue ? "Sounds enabled" : "Sounds disabled",
+      description: newValue ? "You will hear sounds for new notifications" : "Notification sounds are disabled",
     });
   };
 
@@ -220,18 +220,18 @@ export const NotificationsDropdown = () => {
   };
 
   const getNotificationText = (notification: Notification) => {
-    const name = notification.actor.full_name || "Niekto";
+    const name = notification.actor.full_name || "Someone";
     switch (notification.type) {
       case 'like':
-        return `${name} dal like vášmu príspevku`;
+        return `${name} liked your post`;
       case 'comment':
-        return `${name} komentoval váš príspevok`;
+        return `${name} commented on your post`;
       case 'reaction':
-        return `${name} reagoval na váš príspevok`;
+        return `${name} reacted to your post`;
       case 'repost':
-        return `${name} zdieľal váš príspevok`;
+        return `${name} shared your post`;
       case 'follow':
-        return `${name} vás začal sledovať`;
+        return `${name} started following you`;
       default:
         return "";
     }
@@ -251,14 +251,14 @@ export const NotificationsDropdown = () => {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-80">
         <div className="flex items-center justify-between p-2 border-b">
-          <h3 className="font-semibold">Notifikácie</h3>
+          <h3 className="font-semibold">Notifications</h3>
           <div className="flex items-center gap-1">
             <Button
               variant="ghost"
               size="sm"
               onClick={toggleSound}
               className="text-lg px-2"
-              title={soundEnabled ? "Vypnúť zvuky" : "Zapnúť zvuky"}
+              title={soundEnabled ? "Disable sounds" : "Enable sounds"}
             >
               {soundEnabled ? "🔔" : "🔕"}
             </Button>
@@ -270,7 +270,7 @@ export const NotificationsDropdown = () => {
                 className="text-xs"
               >
                 <Check className="h-3 w-3 mr-1" />
-                Označ všetky
+                Mark all
               </Button>
             )}
           </div>
@@ -278,11 +278,11 @@ export const NotificationsDropdown = () => {
         <ScrollArea className="h-[400px]">
           {loading ? (
             <div className="p-4 text-center text-muted-foreground">
-              Načítavam...
+              Loading...
             </div>
           ) : notifications.length === 0 ? (
             <div className="p-8 text-center text-muted-foreground">
-              Žiadne notifikácie
+              No notifications
             </div>
           ) : (
             notifications.map((notification) => (

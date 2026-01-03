@@ -198,9 +198,9 @@ export const CourseHistory = () => {
         <Card>
           <CardContent className="py-12 text-center">
             <Trophy className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-            <h3 className="text-lg font-semibold mb-2">Zatiaľ žiadne kurzy</h3>
+            <h3 className="text-lg font-semibold mb-2">No courses yet</h3>
             <p className="text-muted-foreground">
-              Začnite vzdelávanie a vaše kurzy sa zobrazia tu
+              Start learning and your courses will appear here
             </p>
           </CardContent>
         </Card>
