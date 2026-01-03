@@ -7,6 +7,7 @@ import { PointsDisplay } from "@/components/gamification/PointsDisplay";
 import BadgesDisplay from "@/components/gamification/BadgesDisplay";
 import BadgeLeaderboard from "@/components/gamification/BadgeLeaderboard";
 import DailyRewardButton from "@/components/gamification/DailyRewardButton";
+import { DailyXPVideoReward } from "@/components/gamification/DailyXPVideoReward";
 import Leaderboard from "@/components/gamification/Leaderboard";
 import RewardsGuide from "@/components/gamification/RewardsGuide";
 import { Crown } from "lucide-react";
@@ -48,9 +49,10 @@ export default function Rewards() {
           </Button>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6 mb-8">
+        <div className="grid md:grid-cols-3 gap-6 mb-8">
           <PointsDisplay />
           <DailyRewardButton />
+          <DailyXPVideoReward userId={user.id} />
         </div>
 
         <RewardsGuide />
