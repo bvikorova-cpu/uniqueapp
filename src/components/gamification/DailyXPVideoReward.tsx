@@ -120,14 +120,14 @@ export const DailyXPVideoReward = ({ userId }: DailyXPVideoRewardProps) => {
 
       toast({
         title: "🎉 +1 XP!",
-        description: "Získal si 1 XP za zhliadnutie reklamy!",
+        description: "You earned 1 XP for watching the ad!",
       });
 
       setTimeout(() => setShowAdDialog(false), 1500);
     } catch (error: any) {
       toast({
-        title: "Chyba",
-        description: error.message || "Nepodarilo sa získať XP",
+        title: "Error",
+        description: error.message || "Failed to claim XP",
         variant: "destructive"
       });
       setShowAdDialog(false);
@@ -157,7 +157,7 @@ export const DailyXPVideoReward = ({ userId }: DailyXPVideoRewardProps) => {
         <CardHeader className="pb-2">
           <CardTitle className="flex items-center gap-2 text-lg">
             <Tv className="h-5 w-5 text-purple-500" />
-            Denné XP za reklamu
+            Daily XP for Ad
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -165,7 +165,7 @@ export const DailyXPVideoReward = ({ userId }: DailyXPVideoRewardProps) => {
             <div className="flex items-center gap-2">
               <Sparkles className="h-5 w-5 text-yellow-500" />
               <span className="text-sm text-muted-foreground">
-                Celkovo získané: <strong className="text-foreground">{totalXP} XP</strong>
+                Total earned: <strong className="text-foreground">{totalXP} XP</strong>
               </span>
             </div>
           </div>
@@ -174,15 +174,15 @@ export const DailyXPVideoReward = ({ userId }: DailyXPVideoRewardProps) => {
             <div className="flex items-center gap-3 p-3 rounded-lg bg-green-500/10 border border-green-500/20">
               <CheckCircle className="h-6 w-6 text-green-500" />
               <div>
-                <p className="font-medium text-green-700 dark:text-green-400">Dnes už splnené!</p>
-                <p className="text-sm text-muted-foreground">Vráť sa zajtra pre ďalšie XP</p>
+                <p className="font-medium text-green-700 dark:text-green-400">Already done today!</p>
+                <p className="text-sm text-muted-foreground">Come back tomorrow for more XP</p>
               </div>
             </div>
           ) : (
             <div className="space-y-3">
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Clock className="h-4 w-4" />
-                <span>Pozri si 15s reklamu a získaj 1 XP</span>
+                <span>Watch a 15s ad and earn 1 XP</span>
               </div>
               <Button
                 onClick={startWatchingAd}
@@ -190,7 +190,7 @@ export const DailyXPVideoReward = ({ userId }: DailyXPVideoRewardProps) => {
                 className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
               >
                 <Play className="h-4 w-4 mr-2" />
-                Pozrieť reklamu (+1 XP)
+                Watch Ad (+1 XP)
               </Button>
             </div>
           )}
@@ -202,7 +202,7 @@ export const DailyXPVideoReward = ({ userId }: DailyXPVideoRewardProps) => {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Tv className="h-5 w-5 text-purple-500" />
-              {isWatching ? "Pozeráš reklamu..." : "🎉 Hotovo!"}
+              {isWatching ? "Watching ad..." : "🎉 Done!"}
             </DialogTitle>
           </DialogHeader>
           
@@ -213,8 +213,8 @@ export const DailyXPVideoReward = ({ userId }: DailyXPVideoRewardProps) => {
                   <div className="absolute inset-0 bg-black/20" />
                   <div className="relative z-10 text-center text-white">
                     <Sparkles className="h-12 w-12 mx-auto mb-2 animate-pulse" />
-                    <p className="font-bold text-xl">Reklamný obsah</p>
-                    <p className="text-sm opacity-80">Ďakujeme za sledovanie!</p>
+                    <p className="font-bold text-xl">Ad Content</p>
+                    <p className="text-sm opacity-80">Thanks for watching!</p>
                   </div>
                   <div className="absolute bottom-2 left-2 right-2">
                     <Progress value={adProgress} className="h-2" />
