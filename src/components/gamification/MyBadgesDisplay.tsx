@@ -28,14 +28,14 @@ export default function MyBadgesDisplay({ userId }: MyBadgesDisplayProps) {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Trophy className="h-5 w-5 text-yellow-500" />
-            Moje získané odznaky
+            My Earned Badges
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="text-center py-8 text-muted-foreground">
             <Medal className="h-12 w-12 mx-auto mb-3 opacity-30" />
-            <p>Zatiaľ nemáš žiadne odznaky.</p>
-            <p className="text-sm mt-1">Začni aktivitou a získaj ich!</p>
+            <p>You don't have any badges yet.</p>
+            <p className="text-sm mt-1">Start being active and earn them!</p>
           </div>
         </CardContent>
       </Card>
@@ -48,10 +48,10 @@ export default function MyBadgesDisplay({ userId }: MyBadgesDisplayProps) {
         <CardTitle className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Trophy className="h-5 w-5 text-yellow-500" />
-            Moje získané odznaky
+            My Earned Badges
           </div>
           <Badge variant="secondary" className="text-base px-3 py-1">
-            {totalEarned} celkom
+            {totalEarned} total
           </Badge>
         </CardTitle>
       </CardHeader>
@@ -61,7 +61,7 @@ export default function MyBadgesDisplay({ userId }: MyBadgesDisplayProps) {
           <div>
             <h3 className="text-sm font-semibold text-muted-foreground mb-3 flex items-center gap-2">
               <Medal className="h-4 w-4" />
-              Odznaky ({userBadges.length})
+              Badges ({userBadges.length})
             </h3>
             <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3">
               {userBadges.map((userBadge: any) => (
@@ -80,7 +80,7 @@ export default function MyBadgesDisplay({ userId }: MyBadgesDisplayProps) {
                     <div className="space-y-1">
                       <p className="font-semibold">{userBadge.badge_name}</p>
                       <p className="text-xs text-green-500">
-                        ✓ Získané: {new Date(userBadge.earned_at).toLocaleDateString("sk-SK")}
+                        ✓ Earned: {new Date(userBadge.earned_at).toLocaleDateString("en-US")}
                       </p>
                     </div>
                   </TooltipContent>
@@ -95,7 +95,7 @@ export default function MyBadgesDisplay({ userId }: MyBadgesDisplayProps) {
           <div>
             <h3 className="text-sm font-semibold text-muted-foreground mb-3 flex items-center gap-2">
               <Star className="h-4 w-4" />
-              Úspechy ({userAchievements.length})
+              Achievements ({userAchievements.length})
             </h3>
             <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3">
               {userAchievements.map((ua: any) => {
@@ -119,10 +119,10 @@ export default function MyBadgesDisplay({ userId }: MyBadgesDisplayProps) {
                         <p className="font-semibold">{achievement.icon} {achievement.name}</p>
                         <p className="text-sm">{achievement.description}</p>
                         <p className="text-xs text-primary">
-                          +{achievement.points} bodov
+                          +{achievement.points} points
                         </p>
                         <p className="text-xs text-green-500">
-                          ✓ Odomknuté: {new Date(ua.unlocked_at).toLocaleDateString("sk-SK")}
+                          ✓ Unlocked: {new Date(ua.unlocked_at).toLocaleDateString("en-US")}
                         </p>
                       </div>
                     </TooltipContent>
