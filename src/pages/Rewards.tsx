@@ -58,12 +58,12 @@ export default function Rewards() {
 
         <RewardsGuide />
 
-        <Tabs defaultValue="my-badges" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="my-badges">🏅 My Badges</TabsTrigger>
-            <TabsTrigger value="badges">{t('rewards.badges')}</TabsTrigger>
-            <TabsTrigger value="badge-hunters">🏆 Hunters</TabsTrigger>
-            <TabsTrigger value="leaderboard">{t('rewards.leaderboard')}</TabsTrigger>
+        <Tabs defaultValue="my-badges" className="space-y-6 mt-4">
+          <TabsList className="grid w-full grid-cols-4 h-auto">
+            <TabsTrigger value="my-badges" className="py-2">🏅 My Badges</TabsTrigger>
+            <TabsTrigger value="badges" className="py-2">{t('rewards.badges')}</TabsTrigger>
+            <TabsTrigger value="badge-hunters" className="py-2">🏆 Hunters</TabsTrigger>
+            <TabsTrigger value="leaderboard" className="py-2">{t('rewards.leaderboard')}</TabsTrigger>
           </TabsList>
 
           <TabsContent value="my-badges">
