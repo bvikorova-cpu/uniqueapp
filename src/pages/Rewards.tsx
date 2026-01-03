@@ -60,7 +60,7 @@ export default function Rewards() {
 
         <Tabs defaultValue="my-badges" className="space-y-6">
           <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="my-badges">🏅 Moje</TabsTrigger>
+            <TabsTrigger value="my-badges">🏅 My Badges</TabsTrigger>
             <TabsTrigger value="badges">{t('rewards.badges')}</TabsTrigger>
             <TabsTrigger value="badge-hunters">🏆 Hunters</TabsTrigger>
             <TabsTrigger value="leaderboard">{t('rewards.leaderboard')}</TabsTrigger>
