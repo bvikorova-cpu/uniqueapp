@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
-import { Trophy, Play, Tv, CheckCircle, Clock, Sparkles } from "lucide-react";
+import { Trophy, Play, Tv, CheckCircle, Clock, Sparkles, RefreshCw } from "lucide-react";
 import { useAchievements } from "@/hooks/useAchievements";
+import { useAchievementChecker } from "@/hooks/useAchievementChecker";
 import {
   Popover,
   PopoverContent,
@@ -15,6 +16,7 @@ import { useQueryClient } from "@tanstack/react-query";
 
 export const AchievementsBadge = () => {
   const { userAchievements, allAchievements, totalPoints, isLoading } = useAchievements();
+  const { checkAllAchievements } = useAchievementChecker();
   const [userId, setUserId] = useState<string | null>(null);
   const [canClaim, setCanClaim] = useState(false);
   const [claimedToday, setClaimedToday] = useState(false);
@@ -22,9 +24,11 @@ export const AchievementsBadge = () => {
   const [adProgress, setAdProgress] = useState(0);
   const [isWatching, setIsWatching] = useState(false);
   const [videoXPLoading, setVideoXPLoading] = useState(true);
+  const [isCheckingAchievements, setIsCheckingAchievements] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const hasCheckedRef = useRef(false);
 
   const AD_DURATION = 15;
 
@@ -34,6 +38,12 @@ export const AchievementsBadge = () => {
       if (user) {
         setUserId(user.id);
         checkDailyClaim(user.id);
+        
+        // Auto-check achievements on first load
+        if (!hasCheckedRef.current) {
+          hasCheckedRef.current = true;
+          checkAllAchievements(user.id);
+        }
       } else {
         setVideoXPLoading(false);
       }
@@ -42,7 +52,7 @@ export const AchievementsBadge = () => {
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, []);
+  }, [checkAllAchievements]);
 
   const checkDailyClaim = async (uid: string) => {
     setVideoXPLoading(true);
@@ -108,14 +118,14 @@ export const AchievementsBadge = () => {
 
       toast({
         title: "🎉 +1 XP!",
-        description: "Získal si 1 XP za zhliadnutie reklamy!",
+        description: "You earned 1 XP for watching the ad!",
       });
 
       setTimeout(() => setShowAdDialog(false), 1500);
     } catch (error: any) {
       toast({
-        title: "Chyba",
-        description: error.message || "Nepodarilo sa získať XP",
+        title: "Error",
+        description: error.message || "Failed to claim XP",
         variant: "destructive"
       });
       setShowAdDialog(false);
@@ -159,14 +169,14 @@ export const AchievementsBadge = () => {
               <div className="p-3 rounded-lg bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20">
                 <div className="flex items-center gap-2 mb-2">
                   <Tv className="w-4 h-4 text-purple-500" />
-                  <span className="font-medium text-sm">Denné XP za reklamu</span>
+                  <span className="font-medium text-sm">Daily XP Reward</span>
                 </div>
                 {videoXPLoading ? (
                   <div className="h-8 animate-pulse bg-muted rounded" />
                 ) : claimedToday ? (
                   <div className="flex items-center gap-2 text-sm text-green-600">
                     <CheckCircle className="w-4 h-4" />
-                    <span>Dnes splnené! Príď zajtra.</span>
+                    <span>Claimed today! Come back tomorrow.</span>
                   </div>
                 ) : (
                   <Button
@@ -175,7 +185,7 @@ export const AchievementsBadge = () => {
                     className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
                   >
                     <Play className="w-3 h-3 mr-1" />
-                    Pozrieť reklamu (+1 XP)
+                    Watch Ad (+1 XP)
                   </Button>
                 )}
               </div>
@@ -184,9 +194,26 @@ export const AchievementsBadge = () => {
             <div>
               <div className="flex items-center justify-between mb-2">
                 <h4 className="font-semibold">Achievements</h4>
-                <span className="text-sm text-muted-foreground">
-                  {userAchievements.length}/{allAchievements.length}
-                </span>
+                <div className="flex items-center gap-2">
+                  {userId && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-6 w-6 p-0"
+                      onClick={async () => {
+                        setIsCheckingAchievements(true);
+                        await checkAllAchievements(userId);
+                        setIsCheckingAchievements(false);
+                      }}
+                      disabled={isCheckingAchievements}
+                    >
+                      <RefreshCw className={`h-3 w-3 ${isCheckingAchievements ? 'animate-spin' : ''}`} />
+                    </Button>
+                  )}
+                  <span className="text-sm text-muted-foreground">
+                    {userAchievements.length}/{allAchievements.length}
+                  </span>
+                </div>
               </div>
               <Progress value={progress} className="h-2" />
             </div>
@@ -231,7 +258,7 @@ export const AchievementsBadge = () => {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Tv className="h-5 w-5 text-purple-500" />
-              {isWatching ? "Pozeráš reklamu..." : "🎉 Hotovo!"}
+              {isWatching ? "Watching Ad..." : "🎉 Done!"}
             </DialogTitle>
           </DialogHeader>
           
@@ -242,8 +269,8 @@ export const AchievementsBadge = () => {
                   <div className="absolute inset-0 bg-black/20" />
                   <div className="relative z-10 text-center text-white">
                     <Sparkles className="h-12 w-12 mx-auto mb-2 animate-pulse" />
-                    <p className="font-bold text-xl">Reklamný obsah</p>
-                    <p className="text-sm opacity-80">Ďakujeme za sledovanie!</p>
+                    <p className="font-bold text-xl">Ad Content</p>
+                    <p className="text-sm opacity-80">Thanks for watching!</p>
                   </div>
                   <div className="absolute bottom-2 left-2 right-2">
                     <Progress value={adProgress} className="h-2" />
