@@ -33,8 +33,8 @@ export const StarTrekGame = ({ onBack }: StarTrekGameProps) => {
   const fireWeapon = () => {
     if (photonTorpedoes <= 0) {
       toast({
-        title: "⚠️ Žiadne torpéda!",
-        description: "Nabíjaš zbrane...",
+        title: "⚠️ No torpedoes!",
+        description: "Recharging weapons...",
       });
       setTimeout(() => setPhotonTorpedoes(5), 2000);
       return;

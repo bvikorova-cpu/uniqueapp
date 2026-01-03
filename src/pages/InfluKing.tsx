@@ -499,8 +499,8 @@ const InfluKing = () => {
       queryClient.invalidateQueries({ queryKey: ["isFollowing"] });
       queryClient.invalidateQueries({ queryKey: ["topInfluencers"] });
       toast({
-        title: variables.follow ? "✅ Sledujete" : "❌ Prestali ste sledovať",
-        description: variables.follow ? "Teraz sledujete tohto influencera" : "Prestali ste sledovať tohto influencera",
+        title: variables.follow ? "✅ Following" : "❌ Unfollowed",
+        description: variables.follow ? "You are now following this influencer" : "You stopped following this influencer",
       });
     },
   });
@@ -1008,7 +1008,7 @@ const InfluKing = () => {
                           disabled={followMutation.isPending}
                           variant={isFollowing ? "outline" : "default"}
                         >
-                          {isFollowing ? "Sledovaný" : "Sledovať"}
+                          {isFollowing ? "Following" : "Follow"}
                         </Button>
                         <Button
                           onClick={() => setShowGiftDialog(true)}
@@ -1180,7 +1180,7 @@ const InfluKing = () => {
                             }}
                             disabled={followMutation.isPending}
                           >
-                            {followStatusMap[influencer.id] ? "Sledovaný" : "Sledovať"}
+                            {followStatusMap[influencer.id] ? "Following" : "Follow"}
                           </Button>
                         )}
                       </div>

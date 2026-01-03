@@ -166,7 +166,7 @@ export default function ProductDetail() {
               onClick={handleAddToCart}
               disabled={!selectedVariant?.availableForSale}
             >
-              {selectedVariant?.availableForSale ? 'Pridať do košíka' : 'Nedostupné'}
+              {selectedVariant?.availableForSale ? 'Add to Cart' : 'Unavailable'}
             </Button>
           </div>
         </div>

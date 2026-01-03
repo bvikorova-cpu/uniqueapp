@@ -55,8 +55,8 @@ const HomeDecorSubscription = () => {
       }
     } catch (error: any) {
       toast({
-        title: "Chyba",
-        description: error.message || "Nepodarilo sa vytvoriť checkout session",
+        title: "Error",
+        description: error.message || "Failed to create checkout session",
         variant: "destructive",
       });
     } finally {

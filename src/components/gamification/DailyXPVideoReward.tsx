@@ -222,10 +222,10 @@ export const DailyXPVideoReward = ({ userId }: DailyXPVideoRewardProps) => {
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-muted-foreground">
-                    Zostáva: {Math.ceil(AD_DURATION - (adProgress / 100 * AD_DURATION))}s
+                    Remaining: {Math.ceil(AD_DURATION - (adProgress / 100 * AD_DURATION))}s
                   </span>
                   <Button variant="ghost" size="sm" onClick={cancelAd}>
-                    Zrušiť
+                    Cancel
                   </Button>
                 </div>
               </>
@@ -235,7 +235,7 @@ export const DailyXPVideoReward = ({ userId }: DailyXPVideoRewardProps) => {
                   <CheckCircle className="h-10 w-10 text-white" />
                 </div>
                 <h3 className="text-2xl font-bold mb-2">+1 XP</h3>
-                <p className="text-muted-foreground">Úspešne si získal denné XP!</p>
+                <p className="text-muted-foreground">You successfully earned daily XP!</p>
               </div>
             )}
           </div>
