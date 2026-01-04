@@ -16,6 +16,7 @@ import { NotificationBell } from "./NotificationBell";
 import { PrivacySettingsDialog } from "./PrivacySettingsDialog";
 import { MediaGalleryDialog } from "./MediaGalleryDialog";
 import { EnhancedCreatePost } from "./EnhancedCreatePost";
+import { DailyXPVideoReward } from "@/components/gamification/DailyXPVideoReward";
 
 interface MobileWallMenuProps {
   onPostCreated?: () => void;
@@ -98,6 +99,11 @@ export function MobileWallMenu({ onPostCreated }: MobileWallMenuProps) {
             }} 
             userProfile={profile} 
           />
+
+          <div className="h-px bg-border" />
+
+          {/* Daily XP Video Reward */}
+          {user && <DailyXPVideoReward userId={user.id} />}
 
           <div className="h-px bg-border" />
 
