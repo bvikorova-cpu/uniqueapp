@@ -16,6 +16,11 @@ import heroSocial from "@/assets/hero-social-new.jpg";
 import heroEducation from "@/assets/hero-education.jpg";
 import heroMusic from "@/assets/hero-music.jpg";
 
+// Mobile-specific hero images (cleaner, better text visibility)
+import mobileHero1 from "@/assets/hero/mobile-hero-1.jpg";
+import mobileHero2 from "@/assets/hero/mobile-hero-2.jpg";
+import mobileHero3 from "@/assets/hero/mobile-hero-3.jpg";
+
 const Home = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -24,6 +29,7 @@ const Home = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const fullText = t('home.hero_title_highlight');
 
+  // Desktop uses all hero images
   const heroImages = [
     heroDating,
     heroWellness,
@@ -32,6 +38,13 @@ const Home = () => {
     heroSocial,
     heroEducation,
     heroMusic
+  ];
+
+  // Mobile uses cleaner images with better text visibility
+  const mobileHeroImages = [
+    mobileHero1,
+    mobileHero2,
+    mobileHero3
   ];
 
   // Typewriter effect
@@ -49,14 +62,17 @@ const Home = () => {
     return () => clearInterval(intervalId);
   }, [fullText]);
 
-  // Image slideshow effect
+  // Image slideshow effect - different timing for mobile (3 images) vs desktop (7 images)
+  const [mobileImageIndex, setMobileImageIndex] = useState(0);
+  
   useEffect(() => {
     const slideshowInterval = setInterval(() => {
       setCurrentImageIndex((prev) => (prev + 1) % heroImages.length);
+      setMobileImageIndex((prev) => (prev + 1) % mobileHeroImages.length);
     }, 5000); // Change image every 5 seconds
 
     return () => clearInterval(slideshowInterval);
-  }, [heroImages.length]);
+  }, [heroImages.length, mobileHeroImages.length]);
 
   const services = [
     { name: "Wall", path: "/wall", keywords: ["wall", "posts", "sharing", "social network"] },
@@ -125,27 +141,35 @@ const Home = () => {
     <div className="min-h-screen bg-background pt-16">
       {/* Hero Section */}
       <section className="relative min-h-[50vh] sm:h-screen flex items-start justify-center overflow-hidden">
-        {/* Image Slideshow Background */}
+        {/* Desktop Image Slideshow */}
         {heroImages.map((image, index) => (
           <div
-            key={index}
-            className={`absolute inset-0 transition-opacity duration-1000 ${
+            key={`desktop-${index}`}
+            className={`hidden sm:block absolute inset-0 transition-opacity duration-1000 ${
               index === currentImageIndex ? "opacity-100" : "opacity-0"
             }`}
           >
-            {/* Mobile: cover image with brightness boost */}
             <div 
-              className="block sm:hidden absolute inset-0"
+              className="absolute inset-0"
               style={{
                 backgroundImage: `url(${image})`,
                 backgroundSize: "cover",
                 backgroundPosition: "center",
-                filter: "brightness(1.25) contrast(1.05) saturate(1.12)",
               }}
             />
-            {/* Desktop: cover for better look */}
+          </div>
+        ))}
+        
+        {/* Mobile Image Slideshow - cleaner images with better text visibility */}
+        {mobileHeroImages.map((image, index) => (
+          <div
+            key={`mobile-${index}`}
+            className={`block sm:hidden absolute inset-0 transition-opacity duration-1000 ${
+              index === mobileImageIndex ? "opacity-100" : "opacity-0"
+            }`}
+          >
             <div 
-              className="hidden sm:block absolute inset-0"
+              className="absolute inset-0"
               style={{
                 backgroundImage: `url(${image})`,
                 backgroundSize: "cover",
