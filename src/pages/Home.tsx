@@ -17,9 +17,7 @@ import heroEducation from "@/assets/hero-education.jpg";
 import heroMusic from "@/assets/hero-music.jpg";
 
 // Mobile-specific hero images (cleaner, better text visibility)
-import mobileHero1 from "@/assets/hero/mobile-hero-1.jpg";
-import mobileHero2 from "@/assets/hero/mobile-hero-2.jpg";
-import mobileHero3 from "@/assets/hero/mobile-hero-3.jpg";
+import mobileHeroBalloons from "@/assets/hero/mobile-hero-3.jpg";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -40,12 +38,8 @@ const Home = () => {
     heroMusic
   ];
 
-  // Mobile uses cleaner images with better text visibility
-  const mobileHeroImages = [
-    mobileHero1,
-    mobileHero2,
-    mobileHero3
-  ];
+  // Mobile uses single clean image with balloons
+  const mobileHeroImage = mobileHeroBalloons;
 
   // Typewriter effect
   useEffect(() => {
@@ -62,17 +56,14 @@ const Home = () => {
     return () => clearInterval(intervalId);
   }, [fullText]);
 
-  // Image slideshow effect - different timing for mobile (3 images) vs desktop (7 images)
-  const [mobileImageIndex, setMobileImageIndex] = useState(0);
-  
+  // Image slideshow effect - only for desktop
   useEffect(() => {
     const slideshowInterval = setInterval(() => {
       setCurrentImageIndex((prev) => (prev + 1) % heroImages.length);
-      setMobileImageIndex((prev) => (prev + 1) % mobileHeroImages.length);
     }, 5000); // Change image every 5 seconds
 
     return () => clearInterval(slideshowInterval);
-  }, [heroImages.length, mobileHeroImages.length]);
+  }, [heroImages.length]);
 
   const services = [
     { name: "Wall", path: "/wall", keywords: ["wall", "posts", "sharing", "social network"] },
@@ -160,24 +151,17 @@ const Home = () => {
           </div>
         ))}
         
-        {/* Mobile Image Slideshow - cleaner images with better text visibility */}
-        {mobileHeroImages.map((image, index) => (
-          <div
-            key={`mobile-${index}`}
-            className={`block sm:hidden absolute inset-0 transition-opacity duration-1000 ${
-              index === mobileImageIndex ? "opacity-100" : "opacity-0"
-            }`}
-          >
-            <div 
-              className="absolute inset-0"
-              style={{
-                backgroundImage: `url(${image})`,
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-              }}
-            />
-          </div>
-        ))}
+        {/* Mobile - single static balloon image */}
+        <div className="block sm:hidden absolute inset-0">
+          <div 
+            className="absolute inset-0"
+            style={{
+              backgroundImage: `url(${mobileHeroImage})`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+            }}
+          />
+        </div>
         
         {/* Lighter overlay for better visibility on mobile, darker on desktop */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/15 via-black/10 to-black/20 sm:from-black/30 sm:via-black/25 sm:to-black/35"></div>
