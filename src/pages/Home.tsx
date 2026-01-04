@@ -7,7 +7,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
-// Import hero images - using new versions without problematic hands
+// Import hero images - all from the hero folder
 import heroDating from "@/assets/hero/hero-dating-new.jpg";
 import heroWellness from "@/assets/hero-wellness.jpg";
 import heroCooking from "@/assets/hero/hero-cooking-new.jpg";
