@@ -7,17 +7,14 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
-// Import hero images
-import heroDating from "@/assets/hero-dating-new.jpg";
+// Import hero images - using new versions without problematic hands
+import heroDating from "@/assets/hero/hero-dating-new.jpg";
 import heroWellness from "@/assets/hero-wellness.jpg";
-import heroCooking from "@/assets/hero-cooking.jpg";
+import heroCooking from "@/assets/hero/hero-cooking-new.jpg";
 import heroTravel from "@/assets/hero-travel.jpg";
-import heroSocial from "@/assets/hero-social-new.jpg";
+import heroSocial from "@/assets/hero/hero-social-new.jpg";
 import heroEducation from "@/assets/hero-education.jpg";
 import heroMusic from "@/assets/hero-music.jpg";
-
-// Mobile-specific hero images (cleaner, better text visibility)
-import mobileHeroBalloons from "@/assets/hero/mobile-hero-3.jpg";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -27,7 +24,7 @@ const Home = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const fullText = t('home.hero_title_highlight');
 
-  // Desktop uses all hero images
+  // All hero images for slideshow (both mobile and desktop)
   const heroImages = [
     heroDating,
     heroWellness,
@@ -37,9 +34,6 @@ const Home = () => {
     heroEducation,
     heroMusic
   ];
-
-  // Mobile uses single clean image with balloons
-  const mobileHeroImage = mobileHeroBalloons;
 
   // Typewriter effect
   useEffect(() => {
@@ -132,11 +126,11 @@ const Home = () => {
     <div className="min-h-screen bg-background pt-16">
       {/* Hero Section */}
       <section className="relative min-h-[50vh] sm:h-screen flex items-start justify-center overflow-hidden">
-        {/* Desktop Image Slideshow */}
+        {/* Image Slideshow - same for both mobile and desktop */}
         {heroImages.map((image, index) => (
           <div
-            key={`desktop-${index}`}
-            className={`hidden sm:block absolute inset-0 transition-opacity duration-1000 ${
+            key={index}
+            className={`absolute inset-0 transition-opacity duration-1000 ${
               index === currentImageIndex ? "opacity-100" : "opacity-0"
             }`}
           >
@@ -150,18 +144,6 @@ const Home = () => {
             />
           </div>
         ))}
-        
-        {/* Mobile - single static balloon image */}
-        <div className="block sm:hidden absolute inset-0">
-          <div 
-            className="absolute inset-0"
-            style={{
-              backgroundImage: `url(${mobileHeroImage})`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-            }}
-          />
-        </div>
         
         {/* Lighter overlay for better visibility on mobile, darker on desktop */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/15 via-black/10 to-black/20 sm:from-black/30 sm:via-black/25 sm:to-black/35"></div>
