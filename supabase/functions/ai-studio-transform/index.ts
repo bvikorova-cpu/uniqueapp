@@ -6,143 +6,214 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-const TRANSFORMATION_PROMPTS: Record<string, string> = {
-  // Christmas themes
-  "christmas-polar": "Transform this person into a magical Christmas scene where they are wearing a cozy red Santa outfit with white fur trim and holding an adorable white polar bear cub. Add snowy winter background with a decorated Christmas tree, golden sparkles, and warm festive lighting. Keep the person's face exactly the same.",
-  "christmas-tree": "Transform this person into an elegant Christmas portrait. Dress them in a beautiful sparkling red dress or suit, standing next to a gorgeously decorated Christmas tree with golden ornaments. Add cozy fireplace in background with warm festive lighting. Keep the person's face exactly the same.",
-  "christmas-elf": "Transform this person into Santa's magical helper elf. Add pointy elf hat, festive red and green outfit, and place them in Santa's North Pole workshop with toys and Christmas decorations. Add magical sparkles. Keep the person's face exactly the same.",
-  "christmas-cozy": "Transform this person into a cozy Christmas scene. Dress them in warm knitted sweater, holding a cup of hot cocoa, with snowy window background and fairy lights. Add warm cabin atmosphere. Keep the person's face exactly the same.",
+// Style descriptions for the AI to understand the scene
+const STYLE_DESCRIPTIONS: Record<string, string> = {
+  // Glamour styles
+  "glamour-barbie": "Barbie-style glamour portrait with pink aesthetic, sparkling diamonds, luxurious pink background with sparkles and glitter, perfect makeup, dreamy pink lighting, real-life Barbie doll photoshoot",
+  "glamour-paris": "Elegant Paris Eiffel Tower photoshoot at golden hour sunset, elegant French fashion, romantic Parisian atmosphere with soft warm lighting",
+  "glamour-flowers": "Magical flower garden portrait surrounded by beautiful colorful flowers, butterflies flying around, soft dreamy lighting, enchanted garden atmosphere",
+  "glamour-biker": "Stylish biker girl portrait with cool leather jacket, vintage motorcycle in background, edgy urban setting with neon lights",
+  "glamour-vintage": "Vintage mirror glamour portrait with ornate golden vintage mirror frame, soft nostalgic lighting, elegant vintage aesthetic",
+  "glamour-balloons": "Fun red balloons photoshoot surrounded by many floating red heart balloons, playful and romantic atmosphere, soft lighting",
+  "glamour-golden": "Luxurious golden glamour portrait with golden sparkles, gold jewelry, golden lighting, rich and opulent atmosphere",
+  "glamour-butterfly": "Magical butterfly queen portrait with beautiful colorful butterflies surrounding, ethereal magical atmosphere, enchanted forest background with soft lighting",
+  "glamour-birthday": "Fabulous birthday celebration portrait with birthday crown or tiara, colorful balloons, confetti, birthday cake with candles, festive party atmosphere",
+  "glamour-christmas-lights": "Magical Christmas lights portrait surrounded by beautiful twinkling fairy lights, warm cozy atmosphere, soft bokeh lighting effect",
+  "glamour-monochrome": "Elegant monochrome black and white glamour portrait with dramatic professional studio lighting, high fashion black and white aesthetic, magazine quality",
+  "glamour-golden-moon": "Mystical golden moon portrait with large glowing golden crescent moon, starry night sky, magical ethereal atmosphere with golden lighting",
+  "glamour-ocean-waves": "Ocean goddess portrait near beautiful ocean waves at sunset, flowing dress, mermaid-like aesthetic, magical beach atmosphere",
+  "glamour-panther": "Fierce black panther portrait with sleek black aesthetic, powerful black panther animal beside, dark dramatic jungle background with golden accents",
+  "glamour-reindeer": "Magical winter reindeer portrait with beautiful reindeer with antlers beside, snowy winter forest background, magical Christmas atmosphere with soft lighting",
+  "glamour-christmas-family": "Heartwarming Christmas family portrait scene with cozy Christmas living room with decorated tree, warm fireplace, festive red and green colors",
+  "glamour-cozy-mug": "Cozy Christmas portrait wearing off-shoulder knitted sweater, holding Christmas mug, sitting on white fur blanket surrounded by Christmas decorations, gingerbread cookies, candy canes, poinsettia flowers, warm bokeh lights background",
+  "glamour-tree-dance": "Joyful Christmas scene wearing white crop top and burgundy pleated skirt, dancing pose by beautifully decorated Christmas tree with golden and red ornaments, gift boxes around, confetti falling",
+  "glamour-santa-candy": "Festive Santa portrait closeup wearing red Santa hat and burgundy scarf, holding candy cane near lips, red lipstick, beautiful bokeh Christmas lights background, glamorous winter makeup",
+  "glamour-santa-mirror": "Glamorous Santa girl looking at round makeup mirror reflection, wearing red Santa fur dress with white trim, Christmas tree bokeh lights background, elegant vanity scene",
+  "glamour-grinch": "Magical Christmas scene with the Grinch character, person in Santa costume exchanging gift with friendly Grinch, snowy Christmas trees background, magical winter wonderland atmosphere",
+  "glamour-red-dress-gift": "Elegant Christmas portrait wearing sparkly red sequin dress, holding green gift box with red bow, standing by decorated Christmas tree, fireplace with red candles in background",
+  "glamour-baby-sled": "Adorable Christmas baby portrait wearing cute red Santa dress, sitting on wooden sled in snowy scene, decorated Christmas house with lights and wreath in background, magical winter atmosphere",
+  "glamour-gift-box": "Person emerging from giant red gift box, wearing red sequin dress, Merry Christmas neon sign above, decorated Christmas trees with gold and red ornaments on sides, festive celebration portrait",
+  "glamour-rose-wreath": "Elegant Christmas portrait sitting with giant rose wreath frame around, wearing red embroidered gown, golden sparkle curtain background, red gift boxes around, teddy bear, luxurious holiday portrait",
+  "glamour-champagne-tree": "Elegant Christmas portrait sitting on brown leather couch, wearing beautiful floral satin dress, elegantly holding champagne glass, decorated Christmas tree with red ornaments in background, Mickey Mouse Santa plush, nutcracker decoration, warm festive lighting",
+  "glamour-gingerbread-girl": "Cozy Christmas portrait wearing red Santa outfit with white fur trim, lying on luxurious red satin sheets, gently holding cute gingerbread plush toy against chest, Christmas tree with warm lights in background, glamorous holiday atmosphere",
+  "glamour-santa-lollipop": "Festive Christmas portrait wearing elegant red off-shoulder top, delicately holding Christmas lollipop near face, gold Christmas tree with ornaments in background, city lights bokeh, red lipstick, glamorous winter makeup",
   
-  // Valentine themes
-  "valentine-roses": "Transform this person into a romantic Valentine portrait surrounded by beautiful red roses and floating pink hearts. Dress them in elegant red attire with soft dreamy pink lighting. Add romantic atmosphere. Keep the person's face exactly the same.",
-  "valentine-cupid": "Transform this person into a beautiful Cupid angel with soft white wings and a pink halo. Surround with floating hearts, soft pink and red background. Add dreamy romantic lighting. Keep the person's face exactly the same.",
-  "valentine-dinner": "Transform this person into an elegant romantic dinner setting. Dress them in fancy pink or red gown/suit at a candlelit table with champagne, heart-shaped bokeh lights in background. Keep the person's face exactly the same.",
-  "valentine-garden": "Transform this person into a romantic cherry blossom garden. Surround with beautiful pink flowers, falling petals forming heart shapes, soft sunset lighting. Keep the person's face exactly the same.",
+  // Atlantis Mermaid
+  "atlantis-seaflora": "Beautiful pink mermaid underwater portrait, flowing pink hair, pink iridescent seashell top, surrounded by pink coral reef, tropical fish swimming around, magical underwater glow, ethereal fantasy atmosphere",
+  "atlantis-sunwave": "Majestic golden mermaid queen underwater, wearing ornate golden seashell crown with pearls, gold jewelry necklace and earrings, golden light rays streaming from above, shimmering gold tail, magical underwater palace atmosphere",
+  "atlantis-nyxelle": "Enchanting purple mermaid underwater, beautiful iridescent purple tail, pearl necklace, surrounded by colorful fish and coral, magical underwater light rays, serene ocean goddess pose",
   
-  // Easter themes
-  "easter-bunny": "Transform this person into a cute Easter scene with bunny ears headband, surrounded by colorful Easter eggs and adorable white bunnies in a flower meadow. Add soft spring sunshine. Keep the person's face exactly the same.",
-  "easter-spring": "Transform this person into a beautiful spring portrait with a flower crown of tulips and daffodils. Surround with blooming spring flowers, butterflies, and soft pastel colors. Keep the person's face exactly the same.",
+  // Creative Studio
+  "creative-sunflower": "Bright cheerful portrait holding large beautiful bouquet of sunflowers, elegant casual outfit, soft studio lighting, simple light background, professional photography style, warm sunny atmosphere",
+  "creative-giant": "Surreal giant statue monument towering over city buildings, scaffolding around, construction workers for scale, dramatic low angle perspective, impressive monument style, creative photo manipulation effect",
+  "creative-desert": "Arabian desert queen portrait with majestic horse beside, wearing elegant blue hijab and traditional embroidered dress, golden sand dunes in background, beautiful sunset, cinematic Middle Eastern atmosphere",
+  "creative-graffiti": "Portrait as giant colorful street art mural painted on building wall, vibrant graffiti style, urban city street with motorcycles passing below, street photography perspective, impressive mural art effect",
   
-  // Halloween themes
-  "halloween-vampire": "Transform this person into an elegant vampire portrait. Add pale skin, subtle fangs, gothic castle background with full moon and flying bats. Add dramatic mysterious lighting. Keep the person's face recognizable but vampiric.",
-  "halloween-witch": "Transform this person into a beautiful magical witch with an enchanted purple glowing hat. Add pumpkins, mystical forest background, magical sparkles and purple lighting. Keep the person's face exactly the same.",
+  // Chibi
+  "chibi-skiing": "Adorable 3D chibi cartoon character skiing down snowy mountain, cute big eyes, purple ski suit with goggles, snowy Alps background, Disney Pixar animation style, playful dynamic skiing pose",
+  "chibi-basketball": "Adorable 3D chibi cartoon character playing basketball, cute big eyes, blue basketball jersey, holding basketball with both hands, basketball court with cheering crowd, Disney Pixar animation style, energetic sporty pose",
   
-  // Luxury themes
-  "luxury-vip": "Transform this person into a VIP billionaire portrait. Dress them in designer clothes with gold jewelry, place them in a private jet or yacht interior. Add champagne, luxury watches, wealthy lifestyle elements. Keep the person's face exactly the same.",
-  "luxury-dubai": "Transform this person into an elegant Dubai luxury portrait. Dress in white designer outfit, Dubai skyline with Burj Khalifa in background, golden sunset. Add luxurious atmosphere. Keep the person's face exactly the same.",
-  "luxury-royal": "Transform this person into a royal queen or king portrait. Add a magnificent crown with jewels, place them on a golden throne in a palace throne room. Add regal atmosphere with rich fabrics. Keep the person's face exactly the same.",
+  // Pocket
+  "pocket-work": "Cute 3D mini figure doll inside purple Polly Pocket style toy case, office worker theme with tiny laptop and books around, professional outfit, pastel colors, adorable toy photography style, miniature diorama scene",
+  "pocket-gift": "Cute 3D mini figure doll inside pink heart-shaped Polly Pocket style toy case, holding small gift box with both hands, birthday party decorations inside case, pastel pink colors, adorable toy photography style, celebration scene",
   
-  // Portrait themes
-  "portrait-business": "Transform this into a professional corporate headshot. Dress person in elegant suit, modern office with city skyline view in background. Add professional studio lighting. Keep the person's face exactly the same.",
-  "portrait-artistic": "Transform this into an artistic editorial portrait. Add creative dramatic lighting, artistic makeup look, studio photography style with dramatic shadows. Keep the person's face exactly the same.",
-  "glamour-hollywood": "Transform this into a Hollywood glamour portrait. Add professional red carpet styling, golden sparkles, elegant hair and makeup, magazine-quality aesthetics. Keep the person's face exactly the same.",
+  // Christmas
+  "christmas-polar": "Magical Christmas scene wearing cozy red Santa outfit with white fur trim holding adorable white polar bear cub, snowy winter background with decorated Christmas tree, golden sparkles, warm festive lighting",
+  "christmas-tree": "Elegant Christmas portrait in beautiful sparkling red dress or suit, standing next to gorgeously decorated Christmas tree with golden ornaments, cozy fireplace in background with warm festive lighting",
+  "christmas-elf": "Santa's magical helper elf with pointy elf hat, festive red and green outfit, in Santa's North Pole workshop with toys and Christmas decorations, magical sparkles",
+  "christmas-cozy": "Cozy Christmas scene in warm knitted sweater, holding cup of hot cocoa, snowy window background and fairy lights, warm cabin atmosphere",
   
-  // Glamour Photo styles
-  "glamour-barbie": "Transform this person into a stunning Barbie-style glamour portrait. Add pink Barbie aesthetic, sparkling diamonds, luxurious pink background with sparkles and glitter, perfect makeup, dreamy pink lighting. Make it look like a real-life Barbie doll photoshoot. Keep the person's face exactly the same.",
-  "glamour-paris": "Transform this person into an elegant Paris Eiffel Tower photoshoot. Place them in front of the iconic Eiffel Tower at golden hour sunset, wearing elegant French fashion, romantic Parisian atmosphere with soft warm lighting. Keep the person's face exactly the same.",
-  "glamour-flowers": "Transform this person into a magical flower garden portrait. Surround them with beautiful colorful flowers, butterflies flying around, soft dreamy lighting, enchanted garden atmosphere. Keep the person's face exactly the same.",
-  "glamour-biker": "Transform this person into a stylish biker girl portrait. Add cool leather jacket, vintage motorcycle in background, edgy urban setting with neon lights. Keep the person's face exactly the same.",
-  "glamour-vintage": "Transform this person into a vintage mirror glamour portrait. Add ornate golden vintage mirror frame, soft nostalgic lighting, elegant vintage aesthetic. Keep the person's face exactly the same.",
-  "glamour-balloons": "Transform this person into a fun red balloons photoshoot. Surround with many floating red heart balloons, playful and romantic atmosphere, soft lighting. Keep the person's face exactly the same.",
-  "glamour-golden": "Transform this person into a luxurious golden glamour portrait. Add golden sparkles, gold jewelry, golden lighting, rich and opulent atmosphere. Keep the person's face exactly the same.",
-  "glamour-butterfly": "Transform this person into a magical butterfly queen portrait. Add beautiful colorful butterflies surrounding them, ethereal magical atmosphere, enchanted forest background with soft lighting. Keep the person's face exactly the same.",
-  "glamour-birthday": "Transform this person into a fabulous birthday celebration portrait. Add birthday crown or tiara, colorful balloons, confetti, birthday cake with candles, festive party atmosphere. Keep the person's face exactly the same.",
-  "glamour-christmas-lights": "Transform this person into a magical Christmas lights portrait. Surround with beautiful twinkling fairy lights, warm cozy atmosphere, soft bokeh lighting effect. Keep the person's face exactly the same.",
-  "glamour-monochrome": "Transform this person into an elegant monochrome black and white glamour portrait. Add dramatic professional studio lighting, high fashion black and white aesthetic, magazine quality. Keep the person's face exactly the same.",
-  "glamour-golden-moon": "Transform this person into a mystical golden moon portrait. Add large glowing golden crescent moon, starry night sky, magical ethereal atmosphere with golden lighting. Keep the person's face exactly the same.",
-  "glamour-ocean": "Transform this person into an ocean goddess portrait. Place them near beautiful ocean waves at sunset, flowing dress, mermaid-like aesthetic, magical beach atmosphere. Keep the person's face exactly the same.",
-  "glamour-panther": "Transform this person into a fierce black panther portrait. Add sleek black aesthetic, powerful black panther animal beside them, dark dramatic jungle background with golden accents. Keep the person's face exactly the same.",
-  "glamour-reindeer": "Transform this person into a magical winter reindeer portrait. Add beautiful reindeer with antlers beside them, snowy winter forest background, magical Christmas atmosphere with soft lighting. Keep the person's face exactly the same.",
-  "glamour-christmas-family": "Transform this person into a heartwarming Christmas family portrait scene. Add cozy Christmas living room with decorated tree, warm fireplace, festive red and green colors, family celebration atmosphere. Keep the person's face exactly the same.",
-  "glamour-cozy-mug": "Transform this person into a cozy Christmas portrait wearing off-shoulder knitted sweater, holding a Christmas mug, sitting on white fur blanket surrounded by Christmas decorations, gingerbread cookies, candy canes, poinsettia flowers, warm bokeh lights background. Keep the person's face exactly the same.",
-  "glamour-tree-dance": "Transform this person into a joyful Christmas scene wearing white crop top and burgundy pleated skirt, dancing pose by beautifully decorated Christmas tree with golden and red ornaments, gift boxes around, confetti falling. Keep the person's face exactly the same.",
-  "glamour-santa-candy": "Transform this person into a festive Santa portrait closeup wearing red Santa hat and burgundy scarf, holding candy cane near lips, red lipstick, beautiful bokeh Christmas lights background, glamorous winter makeup. Keep the person's face exactly the same.",
-  "glamour-santa-mirror": "Transform this person into glamorous Santa girl looking at round makeup mirror reflection, wearing red Santa fur dress with white trim, Christmas tree bokeh lights background, elegant vanity scene. Keep the person's face exactly the same.",
-  "glamour-grinch": "Transform this person into a magical Christmas scene with the Grinch character. The person in Santa costume exchanging gift with friendly Grinch, snowy Christmas trees background, magical winter wonderland atmosphere. Keep the person's face exactly the same.",
-  "glamour-red-dress-gift": "Transform this person into elegant Christmas portrait wearing sparkly red sequin dress, holding green gift box with red bow, standing by decorated Christmas tree, fireplace with red candles in background. Keep the person's face exactly the same.",
-  "glamour-baby-sled": "Transform this person into adorable Christmas baby portrait wearing cute red Santa dress, sitting on wooden sled in snowy scene, decorated Christmas house with lights and wreath in background, magical winter atmosphere. Keep the person's face exactly the same.",
-  "glamour-gift-box": "Transform this person emerging from giant red gift box, wearing red sequin dress, Merry Christmas neon sign above, decorated Christmas trees with gold and red ornaments on sides, festive celebration portrait. Keep the person's face exactly the same.",
-  "glamour-rose-wreath": "Transform this person into elegant Christmas portrait sitting with giant rose wreath frame around them, wearing red embroidered gown, golden sparkle curtain background, red gift boxes around, teddy bear, luxurious holiday portrait. Keep the person's face exactly the same.",
-  "glamour-champagne-tree": "Transform this person into elegant Christmas portrait sitting on brown leather couch, wearing beautiful floral satin dress, elegantly holding champagne glass, decorated Christmas tree with red ornaments in background, Mickey Mouse Santa plush, nutcracker decoration, warm festive lighting. Keep the person's face exactly the same.",
-  "glamour-gingerbread-girl": "Transform this person into cozy Christmas portrait wearing red Santa outfit with white fur trim, lying on luxurious red satin sheets, gently holding cute gingerbread plush toy against chest, Christmas tree with warm lights in background, glamorous holiday atmosphere. Keep the person's face exactly the same.",
-  "glamour-santa-lollipop": "Transform this person into festive Christmas portrait wearing elegant red off-shoulder top, delicately holding Christmas lollipop near face, gold Christmas tree with ornaments in background, city lights bokeh, red lipstick, glamorous winter makeup. Keep the person's face exactly the same.",
+  // Valentine
+  "valentine-roses": "Romantic Valentine portrait surrounded by beautiful red roses and floating pink hearts, elegant red attire with soft dreamy pink lighting, romantic atmosphere",
+  "valentine-cupid": "Beautiful Cupid angel with soft white wings and pink halo, surrounded by floating hearts, soft pink and red background, dreamy romantic lighting",
+  "valentine-dinner": "Elegant romantic dinner setting in fancy pink or red gown/suit at candlelit table with champagne, heart-shaped bokeh lights in background",
+  "valentine-garden": "Romantic cherry blossom garden surrounded by beautiful pink flowers, falling petals forming heart shapes, soft sunset lighting",
   
-  // Atlantis Mermaid styles
-  "atlantis-seaflora": "Transform this person into beautiful pink mermaid underwater portrait, flowing pink hair, pink iridescent seashell top, surrounded by pink coral reef, tropical fish swimming around, magical underwater glow, ethereal fantasy atmosphere. Keep the person's face exactly the same.",
-  "atlantis-sunwave": "Transform this person into majestic golden mermaid queen underwater, wearing ornate golden seashell crown with pearls, gold jewelry necklace and earrings, golden light rays streaming from above, shimmering gold tail, magical underwater palace atmosphere. Keep the person's face exactly the same.",
-  "atlantis-nyxelle": "Transform this person into enchanting purple mermaid underwater, beautiful iridescent purple tail, pearl necklace, surrounded by colorful fish and coral, magical underwater light rays, serene ocean goddess pose. Keep the person's face exactly the same.",
+  // Easter
+  "easter-bunny": "Cute Easter scene with bunny ears headband, surrounded by colorful Easter eggs and adorable white bunnies in flower meadow, soft spring sunshine",
+  "easter-spring": "Beautiful spring portrait with flower crown of tulips and daffodils, surrounded by blooming spring flowers, butterflies, soft pastel colors",
+  "easter-chick": "Sweet Easter portrait with cute baby chicks, spring flowers, pastel colors, soft warm lighting",
+  "easter-basket": "Easter portrait holding beautiful Easter basket full of colorful eggs, surrounded by spring flowers and cute bunnies",
   
-  // Creative Studio styles
-  "creative-sunflower": "Transform this person into bright cheerful portrait holding large beautiful bouquet of sunflowers, elegant casual outfit, soft studio lighting, simple light background, professional photography style, warm sunny atmosphere. Keep the person's face exactly the same.",
-  "creative-giant": "Transform this person into surreal giant statue monument towering over city buildings, scaffolding around them, construction workers for scale, dramatic low angle perspective, impressive monument style, creative photo manipulation effect. Keep the person's face exactly the same.",
-  "creative-desert": "Transform this person into Arabian desert queen portrait with majestic horse beside them, wearing elegant blue hijab and traditional embroidered dress, golden sand dunes in background, beautiful sunset, cinematic Middle Eastern atmosphere. Keep the person's face exactly the same.",
-  "creative-graffiti": "Transform this person's portrait into giant colorful street art mural painted on building wall, vibrant graffiti style, urban city street with motorcycles passing below, street photography perspective, impressive mural art effect. Keep the person's face exactly the same.",
+  // Halloween
+  "halloween-vampire": "Elegant vampire portrait with pale skin, subtle fangs, gothic castle background with full moon and flying bats, dramatic mysterious lighting",
+  "halloween-witch": "Beautiful magical witch with enchanted purple glowing hat, pumpkins, mystical forest background, magical sparkles and purple lighting",
+  "halloween-zombie": "Spooky zombie portrait with dramatic makeup, dark graveyard background, misty atmosphere",
+  "halloween-ghost": "Ethereal ghost portrait with flowing white attire, haunted mansion background, mystical foggy atmosphere",
   
-  // Chibi Champs styles
-  "chibi-skiing": "Transform this person into adorable 3D chibi cartoon character skiing down snowy mountain, cute big eyes, purple ski suit with goggles, snowy Alps background, Disney Pixar animation style, playful dynamic skiing pose. Keep the person's facial features recognizable in chibi style.",
-  "chibi-basketball": "Transform this person into adorable 3D chibi cartoon character playing basketball, cute big eyes, blue basketball jersey, holding basketball with both hands properly, basketball court with cheering crowd, Disney Pixar animation style, energetic sporty pose. Keep the person's facial features recognizable in chibi style.",
+  // Luxury
+  "luxury-vip": "VIP billionaire portrait in designer clothes with gold jewelry, private jet or yacht interior, champagne, luxury watches, wealthy lifestyle elements",
+  "luxury-dubai": "Elegant Dubai luxury portrait in white designer outfit, Dubai skyline with Burj Khalifa in background, golden sunset, luxurious atmosphere",
+  "luxury-royal": "Royal queen or king portrait with magnificent crown with jewels, on golden throne in palace throne room, regal atmosphere with rich fabrics",
+  "luxury-yacht": "Luxury yacht lifestyle portrait on beautiful yacht deck, crystal blue ocean, sunset, champagne, ultimate luxury vacation vibes",
   
-  // Pocket Buddies styles
-  "pocket-work": "Transform this person into cute 3D mini figure doll inside purple Polly Pocket style toy case, office worker theme with tiny laptop and books around, professional outfit, pastel colors, adorable toy photography style, miniature diorama scene. Keep the person's facial features recognizable in doll style.",
-  "pocket-gift": "Transform this person into cute 3D mini figure doll inside pink heart-shaped Polly Pocket style toy case, holding small gift box with both hands properly, birthday party decorations inside case, pastel pink colors, adorable toy photography style, celebration scene. Keep the person's facial features recognizable in doll style.",
+  // Portrait
+  "portrait-business": "Professional corporate headshot in elegant suit, modern office with city skyline view in background, professional studio lighting",
+  "portrait-artistic": "Artistic editorial portrait with creative dramatic lighting, artistic makeup look, studio photography style with dramatic shadows",
+  "glamour-hollywood": "Hollywood glamour portrait with professional red carpet styling, golden sparkles, elegant hair and makeup, magazine-quality aesthetics",
+  "portrait-fashion": "High fashion editorial portrait with designer outfit, professional fashion photography lighting, magazine cover quality",
   
-  // Star themes
-  "star-popstar": "Transform this person into a famous pop star on stage. Add concert stage lighting, neon lights, microphone, screaming fans in background. Give them star performer vibes. Keep the person's face exactly the same.",
-  "star-movie": "Transform this person into a movie star at a film premiere. Red carpet, paparazzi cameras flashing, Oscar award vibe, celebrity glamour styling. Keep the person's face exactly the same.",
+  // Star
+  "star-popstar": "Famous pop star on stage with concert stage lighting, neon lights, microphone, screaming fans in background, star performer vibes",
+  "star-movie": "Movie star at film premiere on red carpet, paparazzi cameras flashing, Oscar award vibe, celebrity glamour styling",
+  "star-grammy": "Grammy award winner portrait holding golden grammy trophy, glamorous outfit, red carpet background, celebrity spotlight",
+  "star-runway": "High fashion runway model walking the catwalk, designer outfit, dramatic lighting, fashion week atmosphere",
   
-  // Fantasy themes
-  "fairytale-princess": "Transform this person into a magical Disney-style princess. Dress them in a sparkling ball gown, add a tiara, place in front of enchanted castle with magical lights and sparkles. Keep the person's face exactly the same.",
-  "fantasy-elf": "Transform this person into a beautiful mystical elf. Add elegant pointed ears, ethereal elven clothing, enchanted forest background with magical glowing lights. Keep the person's face recognizable.",
-  "fantasy-mermaid": "Transform this person into a beautiful mermaid. Add shimmering colorful tail, underwater ocean scene with coral reef, magical underwater lighting. Keep the person's face exactly the same.",
-  "fantasy-knight": "Transform this person into a noble medieval knight. Add shining armor, sword and shield, medieval castle in background. Epic fantasy warrior atmosphere. Keep the person's face exactly the same.",
+  // Fantasy
+  "fairytale-princess": "Magical Disney-style princess in sparkling ball gown with tiara, in front of enchanted castle with magical lights and sparkles",
+  "fantasy-elf": "Beautiful mystical elf with elegant pointed ears, ethereal elven clothing, enchanted forest background with magical glowing lights",
+  "fantasy-mermaid": "Beautiful mermaid with shimmering colorful tail, underwater ocean scene with coral reef, magical underwater lighting",
+  "fantasy-knight": "Noble medieval knight in shining armor with sword and shield, medieval castle in background, epic fantasy warrior atmosphere",
   
-  // Superhero themes
-  "super-hero": "Transform this person into a powerful superhero. Add superhero costume with cape, heroic pose, city skyline background, dramatic lighting. Make them look like they could save the world. Keep the person's face exactly the same.",
+  // Superhero
+  "super-hero": "Powerful superhero with superhero costume and cape, heroic pose, city skyline background, dramatic lighting",
+  "super-heroine": "Powerful female superhero with superhero costume and cape, flying over city, powerful pose",
+  "super-villain": "Dramatic supervillain with dark costume, lightning, powerful evil aesthetic",
+  "super-comic": "Comic book superhero with comic art style, action pose, superhero suit",
   
-  // Retro themes
-  "retro-80s": "Transform this person into an 80s retro portrait. Add colorful neon 80s fashion, big hair, synthesizer/disco background, retro neon lights. Vintage 80s vibe. Keep the person's face exactly the same.",
-  "retro-50s": "Transform this person into a classic 1950s portrait. Add vintage 50s style clothing and hair, classic diner or vintage car background, pin-up aesthetic. Keep the person's face exactly the same.",
+  // Retro
+  "retro-80s": "80s retro portrait with colorful neon 80s fashion, big hair, synthesizer/disco background, retro neon lights, vintage 80s vibe",
+  "retro-50s": "Classic 1950s portrait with vintage 50s style clothing and hair, classic diner or vintage car background, pin-up aesthetic",
+  "retro-70s": "70s disco style with afro hair, disco ball, colorful lights, retro disco club",
+  "retro-gatsby": "1920s Great Gatsby style with art deco, flapper dress or suit, vintage party",
   
-  // Nature themes
-  "nature-forest": "Transform this person into an enchanted forest scene. Dress in flowing ethereal outfit, magical forest with sunbeams through trees, butterflies and mystical atmosphere. Keep the person's face exactly the same.",
-  "nature-underwater": "Transform this person into an underwater paradise. Add beautiful coral reef, tropical fish, sunlight filtering through water. Serene underwater atmosphere. Keep the person's face exactly the same.",
-  "nature-mountain": "Transform this person into a majestic mountain scene. Place them on mountain peak with stunning sunrise/sunset view, dramatic epic landscape. Keep the person's face exactly the same.",
+  // Nature
+  "nature-forest": "Enchanted forest scene in flowing ethereal outfit, magical forest with sunbeams through trees, butterflies and mystical atmosphere",
+  "nature-mountain": "Majestic mountain scene on mountain peak with stunning sunrise/sunset view, dramatic epic landscape",
+  "summer-beach": "Beautiful summer beach portrait on tropical beach with crystal clear water, palm trees, sunset, summer vibes",
+  "winter-snow": "Magical winter wonderland with snowy landscape, winter clothing, soft snowfall, cozy winter atmosphere",
   
-  // Sci-Fi themes
-  "scifi-cyberpunk": "Transform this person into a cyberpunk character. Add neon city background, cybernetic enhancements, futuristic LED lights, dark urban atmosphere. Keep the person's face exactly the same.",
-  "scifi-space": "Transform this person into an astronaut or space explorer. Add space suit elements, galaxy/nebula background, floating in space with stars. Keep the person's face exactly the same.",
-  "scifi-matrix": "Transform this person into a Matrix character. Add green digital code rain, black leather trench coat, dramatic Matrix movie atmosphere. Keep the person's face exactly the same.",
+  // Sports
+  "sports-fitness": "Fitness professional portrait in athletic wear, gym setting, powerful pose, fitness lifestyle",
+  "sports-champion": "Sports champion portrait holding trophy, victory celebration, stadium background",
+  "sports-basketball": "Basketball player dunking with NBA style uniform, stadium, sports action",
+  "sports-yoga": "Yoga master in lotus pose in zen garden, peaceful meditation setting",
   
-  // Historical themes
-  "historical-ancient": "Transform this person into ancient royalty (Egyptian, Roman, or Greek). Add period-appropriate attire, golden jewelry, ancient palace or temple background. Keep the person's face exactly the same.",
-  "historical-medieval": "Transform this person into medieval nobility. Add rich velvet robes, golden crown or circlet, medieval castle throne room background. Keep the person's face exactly the same.",
-  "historical-renaissance": "Transform this person into a Renaissance painting style portrait. Add period clothing, oil painting texture, dramatic baroque lighting. Keep the person's face exactly the same.",
+  // Art
+  "art-painting": "Beautiful oil painting style portrait with artistic brush strokes, classical art aesthetic",
+  "art-popart": "Pop art style portrait with bold colors, comic book dots, Andy Warhol inspired",
+  "art-anime": "Anime style portrait with big eyes, colorful hair, Japanese animation aesthetic",
+  "art-watercolor": "Beautiful watercolor painting style portrait with soft artistic brush strokes, watercolor aesthetic",
   
-  // Seasonal themes
-  "seasonal-autumn": "Transform this person into a beautiful autumn scene. Add fall colors, falling golden leaves, cozy sweater, warm autumn lighting. Keep the person's face exactly the same.",
-  "seasonal-winter": "Transform this person into a magical winter wonderland. Add snowy landscape, winter clothing, soft snowfall, cozy winter atmosphere. Keep the person's face exactly the same.",
-  "seasonal-spring": "Transform this person into a spring bloom scene. Add cherry blossoms, fresh flowers, butterflies, soft spring lighting. Keep the person's face exactly the same.",
-  "seasonal-summer": "Transform this person into a tropical summer paradise. Add beach setting, palm trees, sunset, summer vibes. Keep the person's face exactly the same.",
+  // Travel
+  "travel-paris": "Paris travel portrait with Eiffel Tower in background, romantic Parisian atmosphere, elegant outfit",
+  "travel-safari": "African safari adventure portrait with safari outfit, African savanna with elephants, sunset",
+  "travel-newyork": "New York Times Square portrait with city lights, urban atmosphere, NYC landmarks",
+  "travel-maldives": "Maldives beach resort portrait with crystal clear water, luxury resort, tropical paradise",
   
-  // Additional themes
-  "super-heroine": "Transform this person into a powerful female superhero. Add superhero costume with cape, flying over city, powerful pose. Keep the person's face exactly the same.",
-  "super-villain": "Transform this person into a dramatic supervillain. Add dark costume, lightning, powerful evil aesthetic. Keep the person's face exactly the same.",
-  "super-comic": "Transform this person into a comic book superhero. Add comic art style, action pose, superhero suit. Keep the person's face recognizable.",
-  "retro-70s": "Transform this person into 70s disco style. Add afro hair, disco ball, colorful lights, retro disco club. Keep the person's face exactly the same.",
-  "retro-gatsby": "Transform this person into 1920s Great Gatsby style. Add art deco, flapper dress or suit, vintage party. Keep the person's face exactly the same.",
-  "sports-basketball": "Transform this person into a basketball player dunking. Add NBA style uniform, stadium, sports action. Keep the person's face exactly the same.",
-  "sports-yoga": "Transform this person into a yoga master in lotus pose. Add zen garden, peaceful meditation setting. Keep the person's face exactly the same.",
-  "art-watercolor": "Transform this into a beautiful watercolor painting style portrait. Add soft artistic brush strokes, watercolor aesthetic. Keep the person's face recognizable.",
-  "travel-newyork": "Transform this person in New York Times Square. Add city lights, urban atmosphere, NYC landmarks. Keep the person's face exactly the same.",
-  "travel-maldives": "Transform this person at Maldives beach resort. Add crystal clear water, luxury resort, tropical paradise. Keep the person's face exactly the same.",
-  "party-newyear": "Transform this person at New Year Eve celebration. Add champagne, fireworks, midnight celebration. Keep the person's face exactly the same.",
-  "party-carnival": "Transform this person at a Venetian carnival masquerade. Add elegant mask, carnival costume, ballroom setting. Keep the person's face exactly the same.",
-  "wedding-bridesmaid": "Transform this person into an elegant bridesmaid. Add pink dress, wedding flowers, romantic venue. Keep the person's face exactly the same.",
-  "wedding-dance": "Transform this person into a romantic first dance at wedding. Add elegant ballroom, wedding reception, romantic lighting. Keep the person's face exactly the same.",
+  // Party
+  "party-birthday": "Birthday party celebration portrait with balloons, confetti, birthday cake, festive atmosphere",
+  "party-club": "VIP club portrait with neon lights, DJ booth, nightclub atmosphere, party vibes",
+  "party-newyear": "New Year Eve celebration with champagne, fireworks, midnight celebration",
+  "party-carnival": "Venetian carnival masquerade with elegant mask, carnival costume, ballroom setting",
+  
+  // Wedding
+  "wedding-bride": "Beautiful bride portrait in stunning white wedding dress, bridal bouquet, romantic wedding venue",
+  "wedding-groom": "Elegant groom portrait in sharp tuxedo, boutonniere, classic wedding setting",
+  "wedding-bridesmaid": "Elegant bridesmaid in pink dress, wedding flowers, romantic venue",
+  "wedding-dance": "Romantic first dance at wedding in elegant ballroom, wedding reception, romantic lighting",
+  
+  // Futuristic
+  "future-cyberpunk": "Cyberpunk character with neon city background, cybernetic enhancements, futuristic LED lights, dark urban atmosphere",
+  "future-space": "Astronaut or space explorer with space suit elements, galaxy/nebula background, floating in space with stars",
+  "future-robot": "Futuristic robot/android portrait with metallic elements, sci-fi background, advanced technology aesthetic",
+  "future-matrix": "Matrix character with green digital code rain, black leather trench coat, dramatic Matrix movie atmosphere",
+  
+  // Music
+  "music-dj": "Famous DJ portrait at DJ booth, neon lights, club atmosphere, electronic music vibes",
+  "music-rockstar": "Rock star portrait with electric guitar, concert stage, dramatic lighting, rock and roll aesthetic",
+  "music-country": "Country music star with cowboy hat, guitar, Nashville vibes, warm rustic background",
+  "music-orchestra": "Orchestra conductor portrait with conductor baton, symphony orchestra, elegant concert hall",
+  
+  // Pets
+  "pets-dog": "Portrait with adorable puppy, loving bond, soft natural lighting, heartwarming scene",
+  "pets-cat": "Cat lover portrait with beautiful cat, cozy atmosphere, warm lighting",
+  "pets-bunny": "Portrait with cute bunny rabbit, spring flowers, soft pastel colors",
+  "pets-horse": "Horse riding portrait on majestic horse, countryside or stable background, equestrian elegance",
+  
+  // Gothic
+  "gothic-dark": "Dark queen gothic portrait with dramatic dark makeup, gothic castle background, mysterious atmosphere",
+  "gothic-angel": "Dark angel portrait with black wings, dramatic lighting, celestial gothic aesthetic",
+  "gothic-romantic": "Romantic gothic portrait with vintage dark aesthetic, roses, Victorian elegance",
+  "gothic-vampire": "Vampire lord portrait with elegant dark attire, gothic castle, mysterious night atmosphere",
+  
+  // Steampunk
+  "steampunk-inventor": "Steampunk inventor portrait with gears, goggles, Victorian industrial aesthetic",
+  "steampunk-pilot": "Airship pilot portrait with aviator gear, steampunk airship background, brass and copper elements",
+  "steampunk-lady": "Victorian steampunk lady with corset, gears, elegant industrial aesthetic",
+  "steampunk-explorer": "Steampunk explorer portrait with adventure gear, mechanical elements, industrial Victorian setting",
+  
+  // Warriors
+  "viking-warrior": "Viking warrior portrait with viking helmet, fur cape, Norse background, fierce warrior aesthetic",
+  "pirate-captain": "Pirate captain portrait with captain hat, ship deck, ocean background, adventurous pirate aesthetic",
+  "warrior-spartan": "Spartan warrior portrait with helmet, shield, ancient Greek battlefield",
+  "warrior-samurai": "Samurai warrior portrait with traditional armor, katana, Japanese aesthetic",
+  
+  // Western
+  "western-cowboy": "Cowboy portrait with cowboy hat, desert background, Wild West aesthetic",
+  "western-sheriff": "Sheriff portrait with badge, western town, classic western movie style",
+  "western-rodeo": "Rodeo portrait with cowboy gear, rodeo arena, exciting western atmosphere",
+  "western-saloon": "Saloon portrait in western attire, vintage saloon background, old west vibes",
+  
+  // Chef
+  "chef-gourmet": "Gourmet chef portrait with chef outfit, professional kitchen, culinary expertise",
+  "chef-pastry": "Pastry chef portrait with desserts, bakery setting, sweet creations",
+  "chef-sushi": "Sushi chef portrait with Japanese chef attire, sushi preparation, Japanese restaurant aesthetic",
+  "chef-bbq": "BBQ master portrait with grill, smoky atmosphere, outdoor cooking scene",
+  
+  // Zen
+  "zen-meditation": "Meditation portrait in lotus pose, zen garden, peaceful spiritual atmosphere",
+  "underwater-diver": "Deep sea diver portrait underwater, coral reef, tropical fish, beautiful ocean",
+  "zen-taichi": "Tai Chi master portrait in traditional outfit, misty mountain background, peaceful martial arts scene",
+  "zen-monk": "Buddhist monk portrait in traditional robes, temple background, spiritual peaceful atmosphere",
 };
 
 async function fetchImageAsBase64(url: string): Promise<string> {
+  console.log("Fetching image from URL:", url.substring(0, 100) + "...");
   const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`Failed to fetch image: ${response.status}`);
+  }
   const arrayBuffer = await response.arrayBuffer();
   const uint8Array = new Uint8Array(arrayBuffer);
   let binary = '';
@@ -158,7 +229,9 @@ serve(async (req) => {
   }
 
   try {
-    const { imageUrl, transformationType } = await req.json();
+    const { imageUrl, transformationType, stylePreviewUrl } = await req.json();
+    
+    console.log("Received request:", { transformationType, hasImageUrl: !!imageUrl, hasStylePreviewUrl: !!stylePreviewUrl });
     
     if (!imageUrl || !transformationType) {
       return new Response(
@@ -167,9 +240,9 @@ serve(async (req) => {
       );
     }
 
-    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
-    if (!OPENAI_API_KEY) {
-      throw new Error("OPENAI_API_KEY is not configured");
+    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    if (!LOVABLE_API_KEY) {
+      throw new Error("LOVABLE_API_KEY is not configured");
     }
 
     const supabaseClient = createClient(
@@ -214,63 +287,124 @@ serve(async (req) => {
       );
     }
 
-    const prompt = TRANSFORMATION_PROMPTS[transformationType] || "Transform this photo into a beautiful artistic portrait with enhanced lighting and magical atmosphere. Keep the person exactly the same.";
-    console.log(`Transforming image with type: ${transformationType}`);
+    // Get the style description
+    const styleDescription = STYLE_DESCRIPTIONS[transformationType] || "Beautiful artistic portrait with enhanced lighting and magical atmosphere";
+    console.log(`Transforming with style: ${transformationType}`);
+    console.log(`Style description: ${styleDescription}`);
 
-    // For image editing with OpenAI, we need to use gpt-image-1 with the edit endpoint
-    // But since we're doing style transfer, we'll use the generation endpoint with a detailed prompt
-    const fullPrompt = `Based on this reference photo, create a new image: ${prompt}. The result should maintain the person's likeness while applying the transformation.`;
+    // Fetch user image as base64
+    console.log("Fetching user image...");
+    const userImageBase64 = await fetchImageAsBase64(imageUrl);
+    const userImageDataUrl = `data:image/jpeg;base64,${userImageBase64}`;
 
-    // Download the original image and convert to base64
-    console.log("Fetching original image...");
-    const imageBase64 = await fetchImageAsBase64(imageUrl);
+    // Build the prompt for face swap / style transfer
+    let prompt: string;
+    let messageContent: any[];
 
-    // Use OpenAI's image edit API
-    const formData = new FormData();
-    
-    // Convert base64 to blob
-    const binaryString = atob(imageBase64);
-    const bytes = new Uint8Array(binaryString.length);
-    for (let i = 0; i < binaryString.length; i++) {
-      bytes[i] = binaryString.charCodeAt(i);
+    if (stylePreviewUrl) {
+      // If we have a style preview URL, fetch it and use both images
+      console.log("Fetching style preview image...");
+      const styleImageBase64 = await fetchImageAsBase64(stylePreviewUrl);
+      const styleImageDataUrl = `data:image/jpeg;base64,${styleImageBase64}`;
+      
+      prompt = `You are an expert at creating photorealistic face swap images. 
+
+I'm providing you with two images:
+1. FIRST IMAGE (User's Photo): This is the source face that you need to preserve exactly - all facial features, skin tone, expressions, and likeness.
+2. SECOND IMAGE (Style Reference): This is the target scene/style that you need to recreate exactly - the pose, clothing, setting, lighting, and atmosphere.
+
+Your task: Generate a NEW image that looks EXACTLY like the Style Reference image (same scene, pose, outfit, background, lighting) but with the FACE from the User's Photo perfectly integrated. The result should look like a real photograph of the person from image 1 in the exact scene/outfit/pose from image 2.
+
+CRITICAL REQUIREMENTS:
+- The FACE must be a perfect match to the User's Photo - same eyes, nose, mouth, facial structure, skin tone
+- The SCENE must be a perfect match to the Style Reference - same outfit, pose, background, props, lighting
+- The integration must be seamless and photorealistic - no visible artifacts or mismatches
+- Maintain natural skin tones and realistic lighting on the face to match the scene
+
+Generate this as a high-quality, photorealistic image.`;
+
+      messageContent = [
+        { type: "text", text: prompt },
+        { type: "image_url", image_url: { url: userImageDataUrl } },
+        { type: "image_url", image_url: { url: styleImageDataUrl } }
+      ];
+    } else {
+      // Fallback to text-based style description
+      prompt = `You are an expert at creating photorealistic portrait transformations.
+
+I'm providing you with a photo of a person. Your task is to create a NEW image that:
+1. Preserves the EXACT facial features, likeness, skin tone, and identity of the person in the photo
+2. Places them in this specific scene/style: ${styleDescription}
+
+CRITICAL REQUIREMENTS:
+- The FACE must remain a perfect match to the original photo - same eyes, nose, mouth, facial structure
+- Create the scene/outfit/background as described in the style
+- Make it look like a real professional photograph
+- Natural lighting that matches the scene while preserving the person's skin tone
+- Seamless integration - should look completely real
+
+Generate this as a high-quality, photorealistic image.`;
+
+      messageContent = [
+        { type: "text", text: prompt },
+        { type: "image_url", image_url: { url: userImageDataUrl } }
+      ];
     }
-    const imageBlob = new Blob([bytes], { type: 'image/png' });
-    formData.append('image', imageBlob, 'image.png');
-    formData.append('prompt', prompt);
-    formData.append('model', 'gpt-image-1');
-    formData.append('size', '1024x1024');
 
-    const response = await fetch("https://api.openai.com/v1/images/edits", {
+    console.log("Calling Lovable AI Gateway for image generation...");
+    
+    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${OPENAI_API_KEY}`,
+        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        "Content-Type": "application/json",
       },
-      body: formData,
+      body: JSON.stringify({
+        model: "google/gemini-2.5-flash-image-preview",
+        messages: [
+          {
+            role: "user",
+            content: messageContent
+          }
+        ],
+        modalities: ["image", "text"]
+      })
     });
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error("OpenAI API error:", response.status, errorText);
+      console.error("AI Gateway error:", response.status, errorText);
       
       if (response.status === 429) {
         return new Response(
-          JSON.stringify({ error: "Rate limit exceeded. Please try again later." }),
+          JSON.stringify({ error: "Rate limit exceeded. Please try again in a moment." }),
           { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
+      if (response.status === 402) {
+        return new Response(
+          JSON.stringify({ error: "AI credits depleted. Please add credits to continue." }),
+          { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
       
-      throw new Error("Failed to transform image");
+      throw new Error(`AI Gateway error: ${response.status}`);
     }
 
     const data = await response.json();
-    const base64Image = data.data?.[0]?.b64_json;
-
-    if (!base64Image) {
-      throw new Error("No transformed image generated");
+    console.log("AI Gateway response received");
+    
+    // Extract the generated image
+    const generatedImage = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+    
+    if (!generatedImage) {
+      console.error("No image in response:", JSON.stringify(data).substring(0, 500));
+      throw new Error("No image generated. Please try again.");
     }
 
-    const transformedImageUrl = `data:image/png;base64,${base64Image}`;
+    const transformedImageUrl = generatedImage;
 
+    // Deduct credit
     const { error: updateError } = await supabaseClient
       .from("ai_studio_credits")
       .update({ 
@@ -283,6 +417,7 @@ serve(async (req) => {
       console.error("Failed to deduct credit:", updateError);
     }
 
+    // Save transformation record
     await supabaseClient
       .from("ai_studio_transformations")
       .insert({

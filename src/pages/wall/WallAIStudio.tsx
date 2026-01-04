@@ -637,6 +637,18 @@ export default function WallAIStudio() {
     }
   };
 
+  // Helper function to get the preview image URL for a selected transformation
+  const getStylePreviewUrl = (transformationId: string): string | undefined => {
+    for (const category of TRANSFORMATION_CATEGORIES) {
+      const item = category.items.find(i => i.id === transformationId);
+      if (item) {
+        // Return the full URL for the preview image
+        return window.location.origin + item.image;
+      }
+    }
+    return undefined;
+  };
+
   const transformMutation = useMutation({
     mutationFn: async () => {
       if (!selectedTransformation) throw new Error("Select a transformation style");
@@ -651,8 +663,15 @@ export default function WallAIStudio() {
       
       if (!finalImageUrl) throw new Error("Please provide an image");
 
+      // Get the style preview URL to send to the backend
+      const stylePreviewUrl = getStylePreviewUrl(selectedTransformation);
+
       const { data, error } = await supabase.functions.invoke("ai-studio-transform", {
-        body: { imageUrl: finalImageUrl, transformationType: selectedTransformation }
+        body: { 
+          imageUrl: finalImageUrl, 
+          transformationType: selectedTransformation,
+          stylePreviewUrl: stylePreviewUrl
+        }
       });
 
       if (error) {
