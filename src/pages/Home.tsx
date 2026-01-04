@@ -12,11 +12,10 @@ import heroDating from "@/assets/hero/hero-dating-new.jpg";
 import heroWellness from "@/assets/hero-wellness.jpg";
 import heroCooking from "@/assets/hero/hero-cooking-new.jpg";
 import heroTravel from "@/assets/hero-travel.jpg";
-import heroSocial from "@/assets/hero/hero-social-new.jpg";
 import heroEducation from "@/assets/hero-education.jpg";
 import heroMusic from "@/assets/hero-music.jpg";
-import heroParisCouple from "@/assets/hero/hero-paris-couple.jpg";
-import heroNycFriends from "@/assets/hero/hero-nyc-friends.jpg";
+import heroParis from "@/assets/hero/hero-paris-tower.jpg";
+import heroNyc from "@/assets/hero/hero-nyc-lights.jpg";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -32,11 +31,10 @@ const Home = () => {
     heroWellness,
     heroCooking,
     heroTravel,
-    heroSocial,
     heroEducation,
     heroMusic,
-    heroParisCouple,
-    heroNycFriends
+    heroParis,
+    heroNyc
   ];
 
   // Typewriter effect
