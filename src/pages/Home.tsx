@@ -16,6 +16,7 @@ import heroEducation from "@/assets/hero-education.jpg";
 import heroMusic from "@/assets/hero-music.jpg";
 import heroParis from "@/assets/hero/hero-paris-tower.jpg";
 import heroNyc from "@/assets/hero/hero-nyc-lights.jpg";
+import heroFriends from "@/assets/hero/hero-friends.jpg";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -34,7 +35,8 @@ const Home = () => {
     heroEducation,
     heroMusic,
     heroParis,
-    heroNyc
+    heroNyc,
+    heroFriends
   ];
 
   // Typewriter effect
