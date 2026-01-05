@@ -192,6 +192,57 @@ import chibiBasketball from "@/assets/ai-studio/chibi-basketball.jpg";
 // Pocket
 import pocketWork from "@/assets/ai-studio/pocket-work.jpg";
 import pocketGift from "@/assets/ai-studio/pocket-gift.jpg";
+// New non-holiday styles 2026
+import lifestyleWine from "@/assets/ai-studio/lifestyle-wine.jpg";
+import careerPilot from "@/assets/ai-studio/career-pilot.jpg";
+import danceBallerina from "@/assets/ai-studio/dance-ballerina.jpg";
+import funScientist from "@/assets/ai-studio/fun-scientist.jpg";
+import lifestyleCasino from "@/assets/ai-studio/lifestyle-casino.jpg";
+import cultureGeisha from "@/assets/ai-studio/culture-geisha.jpg";
+import techHacker from "@/assets/ai-studio/tech-hacker.jpg";
+import ancientPharaoh from "@/assets/ai-studio/ancient-pharaoh.jpg";
+import mythGoddess from "@/assets/ai-studio/myth-goddess.jpg";
+import sportsRacing from "@/assets/ai-studio/sports-racing.jpg";
+import careerFirefighter from "@/assets/ai-studio/career-firefighter.jpg";
+import fashionMagazine from "@/assets/ai-studio/fashion-magazine.jpg";
+import awardOscar from "@/assets/ai-studio/award-oscar.jpg";
+import sportsBoxer from "@/assets/ai-studio/sports-boxer.jpg";
+import petsPuppies from "@/assets/ai-studio/pets-puppies.jpg";
+import cultureBollywood from "@/assets/ai-studio/culture-bollywood.jpg";
+import magicPotion from "@/assets/ai-studio/magic-potion.jpg";
+import royalRenaissance from "@/assets/ai-studio/royal-renaissance.jpg";
+import gamingEsports from "@/assets/ai-studio/gaming-esports.jpg";
+import fantasyFairy from "@/assets/ai-studio/fantasy-fairy.jpg";
+import mysticFortune from "@/assets/ai-studio/mystic-fortune.jpg";
+import sportsSurfing from "@/assets/ai-studio/sports-surfing.jpg";
+import danceFlamenco from "@/assets/ai-studio/dance-flamenco.jpg";
+import actionSpy from "@/assets/ai-studio/action-spy.jpg";
+import musicKpop from "@/assets/ai-studio/music-kpop.jpg";
+import ancientGladiator from "@/assets/ai-studio/ancient-gladiator.jpg";
+import mythNightqueen from "@/assets/ai-studio/myth-nightqueen.jpg";
+import musicHiphop from "@/assets/ai-studio/music-hiphop.jpg";
+import adventureJungle from "@/assets/ai-studio/adventure-jungle.jpg";
+import warriorDragon from "@/assets/ai-studio/warrior-dragon.jpg";
+import fantasyUnicorn from "@/assets/ai-studio/fantasy-unicorn.jpg";
+import sportsSoccer from "@/assets/ai-studio/sports-soccer.jpg";
+import fantasyIcequeen from "@/assets/ai-studio/fantasy-icequeen.jpg";
+import cultureDiademuertos from "@/assets/ai-studio/culture-diademuertos.jpg";
+import sportsSkating from "@/assets/ai-studio/sports-skating.jpg";
+import cultureHanfu from "@/assets/ai-studio/culture-hanfu.jpg";
+import lifestyleBiker from "@/assets/ai-studio/lifestyle-biker.jpg";
+import careerDoctor from "@/assets/ai-studio/career-doctor.jpg";
+import fantasyWizard from "@/assets/ai-studio/fantasy-wizard.jpg";
+import retroFilmnoir from "@/assets/ai-studio/retro-filmnoir.jpg";
+import mythAthena from "@/assets/ai-studio/myth-athena.jpg";
+import lifestyleBarista from "@/assets/ai-studio/lifestyle-barista.jpg";
+import warriorAmazon from "@/assets/ai-studio/warrior-amazon.jpg";
+import glamourMasquerade from "@/assets/ai-studio/glamour-masquerade.jpg";
+import sportsTennis from "@/assets/ai-studio/sports-tennis.jpg";
+import mythNature from "@/assets/ai-studio/myth-nature.jpg";
+import artPainter from "@/assets/ai-studio/art-painter.jpg";
+import musicJazz from "@/assets/ai-studio/music-jazz.jpg";
+import sportsSnowboard from "@/assets/ai-studio/sports-snowboard.jpg";
+import cultureScottish from "@/assets/ai-studio/culture-scottish.jpg";
 
 const TRANSFORMATION_CATEGORIES = [
   {
@@ -481,6 +532,121 @@ const TRANSFORMATION_CATEGORIES = [
       { id: "underwater-diver", label: "Deep Sea", image: underwaterDiver },
       { id: "zen-taichi", label: "Tai Chi", image: zenTaichi },
       { id: "zen-monk", label: "Monk", image: zenMonk },
+    ]
+  },
+  // New 2026 categories
+  {
+    name: "🏋️ Extreme Sports",
+    items: [
+      { id: "sports-racing", label: "F1 Racer", image: sportsRacing },
+      { id: "sports-boxer", label: "Boxer", image: sportsBoxer },
+      { id: "sports-surfing", label: "Pro Surfer", image: sportsSurfing },
+      { id: "sports-soccer", label: "Soccer Star", image: sportsSoccer },
+      { id: "sports-skating", label: "Ice Skater", image: sportsSkating },
+      { id: "sports-tennis", label: "Tennis Pro", image: sportsTennis },
+      { id: "sports-snowboard", label: "Snowboarder", image: sportsSnowboard },
+    ]
+  },
+  {
+    name: "💼 Career Dreams",
+    items: [
+      { id: "career-pilot", label: "Airline Pilot", image: careerPilot },
+      { id: "career-firefighter", label: "Firefighter", image: careerFirefighter },
+      { id: "career-doctor", label: "Surgeon", image: careerDoctor },
+      { id: "lifestyle-barista", label: "Barista", image: lifestyleBarista },
+    ]
+  },
+  {
+    name: "🌍 World Cultures",
+    items: [
+      { id: "culture-geisha", label: "Japanese Geisha", image: cultureGeisha },
+      { id: "culture-bollywood", label: "Bollywood Star", image: cultureBollywood },
+      { id: "culture-diademuertos", label: "Día de Muertos", image: cultureDiademuertos },
+      { id: "culture-hanfu", label: "Chinese Hanfu", image: cultureHanfu },
+      { id: "culture-scottish", label: "Scottish Highland", image: cultureScottish },
+    ]
+  },
+  {
+    name: "🔮 Mythology & Magic",
+    items: [
+      { id: "myth-goddess", label: "Greek Goddess", image: mythGoddess },
+      { id: "ancient-pharaoh", label: "Egyptian Pharaoh", image: ancientPharaoh },
+      { id: "myth-nightqueen", label: "Night Queen", image: mythNightqueen },
+      { id: "myth-athena", label: "Athena Warrior", image: mythAthena },
+      { id: "myth-nature", label: "Nature Goddess", image: mythNature },
+      { id: "magic-potion", label: "Potion Witch", image: magicPotion },
+      { id: "mystic-fortune", label: "Fortune Teller", image: mysticFortune },
+    ]
+  },
+  {
+    name: "✨ Fantasy Creatures",
+    items: [
+      { id: "fantasy-fairy", label: "Magical Fairy", image: fantasyFairy },
+      { id: "fantasy-unicorn", label: "Unicorn Rider", image: fantasyUnicorn },
+      { id: "fantasy-icequeen", label: "Ice Queen", image: fantasyIcequeen },
+      { id: "fantasy-wizard", label: "Dark Wizard", image: fantasyWizard },
+    ]
+  },
+  {
+    name: "🎤 Modern Music",
+    items: [
+      { id: "music-kpop", label: "K-Pop Star", image: musicKpop },
+      { id: "music-hiphop", label: "Hip Hop Artist", image: musicHiphop },
+      { id: "music-jazz", label: "Jazz Singer", image: musicJazz },
+    ]
+  },
+  {
+    name: "🎬 Action & Adventure",
+    items: [
+      { id: "action-spy", label: "Secret Agent", image: actionSpy },
+      { id: "adventure-jungle", label: "Jungle Explorer", image: adventureJungle },
+      { id: "ancient-gladiator", label: "Gladiator", image: ancientGladiator },
+      { id: "warrior-dragon", label: "Dragon Warrior", image: warriorDragon },
+      { id: "warrior-amazon", label: "Amazon Warrior", image: warriorAmazon },
+    ]
+  },
+  {
+    name: "💃 Dance & Performance",
+    items: [
+      { id: "dance-ballerina", label: "Prima Ballerina", image: danceBallerina },
+      { id: "dance-flamenco", label: "Flamenco Dancer", image: danceFlamenco },
+    ]
+  },
+  {
+    name: "🎰 Lifestyle & Luxury",
+    items: [
+      { id: "lifestyle-wine", label: "Wine Tasting", image: lifestyleWine },
+      { id: "lifestyle-casino", label: "Casino VIP", image: lifestyleCasino },
+      { id: "lifestyle-biker", label: "Road Rider", image: lifestyleBiker },
+      { id: "glamour-masquerade", label: "Masquerade Ball", image: glamourMasquerade },
+    ]
+  },
+  {
+    name: "🏆 Awards & Fame",
+    items: [
+      { id: "award-oscar", label: "Oscar Winner", image: awardOscar },
+      { id: "fashion-magazine", label: "Magazine Cover", image: fashionMagazine },
+    ]
+  },
+  {
+    name: "🔬 Fun & Quirky",
+    items: [
+      { id: "fun-scientist", label: "Mad Scientist", image: funScientist },
+      { id: "tech-hacker", label: "Neon Hacker", image: techHacker },
+      { id: "gaming-esports", label: "Pro Gamer", image: gamingEsports },
+    ]
+  },
+  {
+    name: "📺 Retro Classics",
+    items: [
+      { id: "retro-filmnoir", label: "Film Noir Star", image: retroFilmnoir },
+      { id: "royal-renaissance", label: "Renaissance Noble", image: royalRenaissance },
+    ]
+  },
+  {
+    name: "🐶 Pet Love",
+    items: [
+      { id: "pets-puppies", label: "Puppy Party", image: petsPuppies },
     ]
   },
 ];
