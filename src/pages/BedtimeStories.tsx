@@ -20,8 +20,8 @@ export default function BedtimeStories() {
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [language, setLanguage] = useState('en-US');
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const sleepTimerRef = useRef<NodeJS.Timeout | null>(null);
-  const fadeIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const sleepTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const fadeIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const { toast } = useToast();
 
   const languages = [

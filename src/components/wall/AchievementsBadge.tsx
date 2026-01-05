@@ -27,7 +27,7 @@ export const AchievementsBadge = () => {
   const [isCheckingAchievements, setIsCheckingAchievements] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const hasCheckedRef = useRef(false);
 
   const AD_DURATION = 15;

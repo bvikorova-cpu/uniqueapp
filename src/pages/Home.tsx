@@ -7,16 +7,16 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
-// Import hero images - all from the hero folder
+// Import hero images - centralized for consistent cache-busting in preview
 import heroDating from "@/assets/hero/hero-dating-new.jpg";
-import heroWellness from "@/assets/hero-wellness.jpg";
+import heroSocial from "@/assets/hero/hero-social-new.jpg";
 import heroCooking from "@/assets/hero/hero-cooking-new.jpg";
-import heroTravel from "@/assets/hero-travel.jpg";
-import heroEducation from "@/assets/hero-education.jpg";
-import heroMusic from "@/assets/hero-music.jpg";
 import heroParis from "@/assets/hero/hero-paris-tower.jpg";
+import heroParisCouple from "@/assets/hero/hero-paris-couple.jpg";
 import heroNyc from "@/assets/hero/hero-nyc-lights.jpg";
+import heroNycFriends from "@/assets/hero/hero-nyc-friends.jpg";
 import heroFriends from "@/assets/hero/hero-friends.jpg";
+// preview-sync: 2026-01-05a
 
 const Home = () => {
   const navigate = useNavigate();
@@ -27,16 +27,16 @@ const Home = () => {
   const fullText = t('home.hero_title_highlight');
 
   // All hero images for slideshow (both mobile and desktop)
+  // NOTE: keep these imports in /assets/hero to avoid old cached variants in preview.
   const heroImages = [
     heroDating,
-    heroWellness,
+    heroSocial,
     heroCooking,
-    heroTravel,
-    heroEducation,
-    heroMusic,
     heroParis,
+    heroParisCouple,
     heroNyc,
-    heroFriends
+    heroNycFriends,
+    heroFriends,
   ];
 
   // Typewriter effect

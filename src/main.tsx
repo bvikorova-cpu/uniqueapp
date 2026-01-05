@@ -8,7 +8,7 @@ import { CookieConsentBanner } from "./components/gdpr/CookieConsentBanner";
  * Prevent preview from getting stuck on a previously cached PWA build.
  * We clear SW + Cache Storage once per version and then do a single hard reload.
  */
-const CACHE_BUST_VERSION = "2025-12-26a";
+const CACHE_BUST_VERSION = "2026-01-05a"; // preview-sync: bump to force SW+cache clear
 
 (async () => {
   try {
