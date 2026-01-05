@@ -149,11 +149,11 @@ const Home = () => {
           </div>
         ))}
         
-        {/* Lighter overlay for better visibility on mobile, darker on desktop */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/15 via-black/10 to-black/20 sm:from-black/30 sm:via-black/25 sm:to-black/35"></div>
+        {/* Very light overlay - minimal darkening for crisp images */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/5 via-transparent to-black/15 sm:from-black/10 sm:via-black/5 sm:to-black/20"></div>
         
-        {/* Subtle warm gradient overlay for more vibrant feel */}
-        <div className="absolute inset-0 bg-gradient-to-br from-orange-400/5 via-transparent to-pink-400/5 sm:from-purple-900/10 sm:via-transparent sm:to-blue-900/10"></div>
+        {/* Subtle warm gradient overlay for vibrant feel */}
+        <div className="absolute inset-0 bg-gradient-to-br from-orange-400/3 via-transparent to-pink-400/3 sm:from-purple-900/5 sm:via-transparent sm:to-blue-900/5"></div>
         
         <div className="relative z-10 text-center space-y-4 sm:space-y-8 px-3 sm:px-4 pt-16 sm:pt-32">
           <h1 className="text-3xl sm:text-5xl md:text-7xl font-bold text-white leading-tight drop-shadow-2xl">
