@@ -22,7 +22,7 @@ export const DailyXPVideoReward = ({ userId }: DailyXPVideoRewardProps) => {
   const [totalXP, setTotalXP] = useState(0);
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const AD_DURATION = 15; // 15 seconds video ad
 

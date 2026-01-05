@@ -26,7 +26,7 @@ export const SearchBar = () => {
   const [results, setResults] = useState<SearchResult>({ posts: [], users: [], hashtags: [] });
   const [searching, setSearching] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
-  const debounceRef = useRef<NodeJS.Timeout>();
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   // Live search as user types
   useEffect(() => {

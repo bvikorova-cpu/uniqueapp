@@ -29,7 +29,7 @@ interface LocalProgress {
 
 export const useCourseProgress = (courseName: string) => {
   const queryClient = useQueryClient();
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const startTimeRef = useRef<Date>(new Date());
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
 
