@@ -403,29 +403,44 @@ Generate this as a high-quality, photorealistic image.`;
       ];
     }
 
-    console.log("Calling Lovable AI Gateway for image generation...");
+    console.log("Calling OpenAI gpt-image-1 for image generation...");
     
-    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
+    if (!OPENAI_API_KEY) {
+      throw new Error("OPENAI_API_KEY is not configured");
+    }
+
+    // Build the prompt text including style description
+    let imageEditPrompt: string;
+    if (stylePreviewUrl) {
+      imageEditPrompt = `Create a photorealistic portrait transformation. Take the face from the provided image and place it in this exact scene/style: ${styleDescription}. 
+The face must remain a perfect match to the original - same eyes, nose, mouth, facial structure, skin tone. 
+Create the scene/outfit/background exactly as described. Make it look like a real professional photograph with seamless integration and natural lighting.`;
+    } else {
+      imageEditPrompt = `Create a photorealistic portrait transformation. Take the face from the provided image and place it in this scene: ${styleDescription}. 
+The face must remain a perfect match to the original - same eyes, nose, mouth, facial structure, skin tone. 
+Make it look like a real professional photograph with seamless integration and natural lighting.`;
+    }
+
+    const response = await fetch("https://api.openai.com/v1/images/generations", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        Authorization: `Bearer ${OPENAI_API_KEY}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash-image-preview",
-        messages: [
-          {
-            role: "user",
-            content: messageContent
-          }
-        ],
-        modalities: ["image", "text"]
+        model: "gpt-image-1",
+        prompt: imageEditPrompt,
+        n: 1,
+        size: "1024x1024",
+        quality: "high",
+        response_format: "b64_json"
       })
     });
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error("AI Gateway error:", response.status, errorText);
+      console.error("OpenAI API error:", response.status, errorText);
       
       if (response.status === 429) {
         return new Response(
@@ -433,26 +448,28 @@ Generate this as a high-quality, photorealistic image.`;
           { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
-      if (response.status === 402) {
+      if (response.status === 402 || response.status === 401) {
         return new Response(
-          JSON.stringify({ error: "AI credits depleted. Please add credits to continue." }),
+          JSON.stringify({ error: "OpenAI API authentication failed. Please check API key." }),
           { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
       
-      throw new Error(`AI Gateway error: ${response.status}`);
+      throw new Error(`OpenAI API error: ${response.status} - ${errorText}`);
     }
 
     const data = await response.json();
-    console.log("AI Gateway response received");
+    console.log("OpenAI API response received");
     
-    // Extract the generated image
-    const generatedImage = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+    // Extract the generated image (base64)
+    const generatedImageBase64 = data.data?.[0]?.b64_json;
     
-    if (!generatedImage) {
+    if (!generatedImageBase64) {
       console.error("No image in response:", JSON.stringify(data).substring(0, 500));
       throw new Error("No image generated. Please try again.");
     }
+    
+    const generatedImage = `data:image/png;base64,${generatedImageBase64}`;
 
     const transformedImageUrl = generatedImage;
 
