@@ -213,9 +213,13 @@ interface LimitedEditionGiftsProps {
 
 export const LimitedEditionGifts = ({ onSelectGift }: LimitedEditionGiftsProps) => {
   const currentSeason = getCurrentSeason();
-  const seasonData = SEASONAL_GIFTS[currentSeason as keyof typeof SEASONAL_GIFTS];
   const { credits } = useSecretSanta();
   const [selectedGift, setSelectedGift] = useState<string | null>(null);
+  const [activeSeason, setActiveSeason] = useState<string>(currentSeason);
+
+  // All 4 seasons
+  const seasons = ["winter", "spring", "summer", "fall"] as const;
+  const seasonData = SEASONAL_GIFTS[activeSeason as keyof typeof SEASONAL_GIFTS];
 
   // Calculate days remaining in the season (simplified)
   const getDaysRemaining = () => {
@@ -232,51 +236,99 @@ export const LimitedEditionGifts = ({ onSelectGift }: LimitedEditionGiftsProps) 
 
   return (
     <div className="space-y-4">
+      {/* Season tabs */}
+      <div className="flex gap-2 overflow-x-auto pb-2">
+        {seasons.map((season) => {
+          const sData = SEASONAL_GIFTS[season];
+          const isActive = activeSeason === season;
+          const isCurrent = currentSeason === season;
+          
+          return (
+            <button
+              key={season}
+              onClick={() => setActiveSeason(season)}
+              className={`flex items-center gap-2 px-4 py-2 rounded-full whitespace-nowrap transition-all ${
+                isActive
+                  ? `bg-gradient-to-r ${sData.color} text-white shadow-lg`
+                  : "bg-white border border-gray-200 text-gray-600 hover:bg-gray-50"
+              }`}
+            >
+              {sData.icon}
+              <span className="font-medium text-sm">{sData.name}</span>
+              {isCurrent && (
+                <span className="bg-white/30 text-[10px] px-2 py-0.5 rounded-full font-bold">
+                  NOW
+                </span>
+              )}
+            </button>
+          );
+        })}
+      </div>
+
       {/* Season header */}
       <div className={`bg-gradient-to-r ${seasonData.color} rounded-2xl p-4 sm:p-6 text-white shadow-lg`}>
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
             {seasonData.icon}
             <h3 className="font-bold text-lg">{seasonData.name}</h3>
+            <span className="bg-white/20 rounded-full px-2 py-0.5 text-xs">
+              {seasonData.gifts.length} gifts
+            </span>
           </div>
-          <div className="flex items-center gap-1 bg-white/20 rounded-full px-3 py-1 text-sm">
-            <Calendar className="h-4 w-4" />
-            <span>{getDaysRemaining()} days left</span>
-          </div>
+          {activeSeason === currentSeason && (
+            <div className="flex items-center gap-1 bg-white/20 rounded-full px-3 py-1 text-sm">
+              <Calendar className="h-4 w-4" />
+              <span>{getDaysRemaining()} days left</span>
+            </div>
+          )}
         </div>
         <p className="text-white/80 text-sm">
-          Limited time gifts! Available only during this season.
+          {activeSeason === currentSeason 
+            ? "Limited time gifts! Available only during this season."
+            : "Preview collection - available when the season arrives!"}
         </p>
       </div>
 
       {/* Seasonal gifts grid */}
       <div className={`bg-gradient-to-br ${seasonData.bgColor} rounded-2xl p-4 border border-gray-200`}>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-3">
           {seasonData.gifts.map((gift, index) => {
-            const canAfford = credits >= gift.value;
+            const canAfford = credits >= gift.value && activeSeason === currentSeason;
             const isSelected = selectedGift === gift.type;
+            const isAvailable = activeSeason === currentSeason;
 
             return (
               <motion.div
                 key={gift.type}
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: index * 0.05 }}
-                onClick={() => canAfford && handleSelect(gift)}
+                transition={{ delay: index * 0.03 }}
+                onClick={() => isAvailable && canAfford && handleSelect(gift)}
                 className={`relative p-3 rounded-xl text-center cursor-pointer transition-all ${
                   isSelected
                     ? `bg-gradient-to-br ${seasonData.color} text-white shadow-lg scale-105`
+                    : !isAvailable
+                    ? "bg-gray-100/70 opacity-60 cursor-not-allowed"
                     : canAfford
                     ? "bg-white hover:shadow-md border border-gray-200"
                     : "bg-gray-100 opacity-50 cursor-not-allowed"
                 }`}
               >
                 {/* Limited badge */}
-                <div className="absolute -top-2 -right-2">
-                  <span className="bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">
-                    LIMITED
-                  </span>
-                </div>
+                {isAvailable && (
+                  <div className="absolute -top-2 -right-2">
+                    <span className="bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">
+                      LIMITED
+                    </span>
+                  </div>
+                )}
+                {!isAvailable && (
+                  <div className="absolute -top-2 -right-2">
+                    <span className="bg-gray-400 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">
+                      SOON
+                    </span>
+                  </div>
+                )}
 
                 <span className="text-3xl block mb-1">{gift.emoji}</span>
                 <p className={`text-xs font-medium truncate ${isSelected ? "text-white" : "text-gray-700"}`}>
