@@ -14,46 +14,47 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { motion, AnimatePresence } from "framer-motion";
 
 const MYSTERY_BOX_TIERS = [
-  { 
-    id: "bronze", 
-    name: "Bronze Box", 
-    emoji: "🎁", 
-    cost: 15, 
-    minValue: 5, 
-    maxValue: 20,
-    color: "from-amber-600 to-orange-700",
-    description: "Contains gifts worth 5-20 credits"
-  },
-  { 
-    id: "silver", 
-    name: "Silver Box", 
-    emoji: "🎀", 
-    cost: 35, 
-    minValue: 15, 
-    maxValue: 50,
-    color: "from-gray-400 to-gray-600",
-    description: "Contains gifts worth 15-50 credits"
-  },
-  { 
-    id: "gold", 
-    name: "Gold Box", 
-    emoji: "✨", 
-    cost: 75, 
-    minValue: 40, 
-    maxValue: 100,
-    color: "from-yellow-400 to-amber-500",
-    description: "Contains gifts worth 40-100 credits"
-  },
-  { 
-    id: "diamond", 
-    name: "Diamond Box", 
-    emoji: "💎", 
-    cost: 150, 
-    minValue: 80, 
-    maxValue: 300,
-    color: "from-cyan-400 to-blue-600",
-    description: "Contains gifts worth 80-300 credits"
-  },
+  // Basic tier (15-50)
+  { id: "bronze", name: "Bronze Box", emoji: "🎁", cost: 15, minValue: 5, maxValue: 20, color: "from-amber-600 to-orange-700", description: "Gifts worth 5-20 credits" },
+  { id: "copper", name: "Copper Box", emoji: "🧡", cost: 20, minValue: 8, maxValue: 25, color: "from-orange-500 to-amber-600", description: "Gifts worth 8-25 credits" },
+  { id: "silver", name: "Silver Box", emoji: "🎀", cost: 35, minValue: 15, maxValue: 50, color: "from-gray-400 to-gray-600", description: "Gifts worth 15-50 credits" },
+  { id: "steel", name: "Steel Box", emoji: "🔩", cost: 45, minValue: 20, maxValue: 60, color: "from-slate-400 to-slate-600", description: "Gifts worth 20-60 credits" },
+  { id: "gold", name: "Gold Box", emoji: "✨", cost: 75, minValue: 40, maxValue: 100, color: "from-yellow-400 to-amber-500", description: "Gifts worth 40-100 credits" },
+  
+  // Premium tier (80-200)
+  { id: "platinum", name: "Platinum Box", emoji: "🌟", cost: 100, minValue: 50, maxValue: 150, color: "from-gray-300 to-gray-500", description: "Gifts worth 50-150 credits" },
+  { id: "emerald", name: "Emerald Box", emoji: "💚", cost: 120, minValue: 60, maxValue: 180, color: "from-emerald-400 to-green-600", description: "Gifts worth 60-180 credits" },
+  { id: "sapphire", name: "Sapphire Box", emoji: "💙", cost: 140, minValue: 70, maxValue: 200, color: "from-blue-400 to-indigo-600", description: "Gifts worth 70-200 credits" },
+  { id: "diamond", name: "Diamond Box", emoji: "💎", cost: 150, minValue: 80, maxValue: 300, color: "from-cyan-400 to-blue-600", description: "Gifts worth 80-300 credits" },
+  { id: "ruby", name: "Ruby Box", emoji: "❤️", cost: 175, minValue: 90, maxValue: 250, color: "from-red-500 to-rose-700", description: "Gifts worth 90-250 credits" },
+  
+  // Elite tier (200-400)
+  { id: "amethyst", name: "Amethyst Box", emoji: "💜", cost: 200, minValue: 100, maxValue: 300, color: "from-purple-500 to-violet-700", description: "Gifts worth 100-300 credits" },
+  { id: "obsidian", name: "Obsidian Box", emoji: "🖤", cost: 225, minValue: 120, maxValue: 350, color: "from-gray-800 to-black", description: "Gifts worth 120-350 credits" },
+  { id: "opal", name: "Opal Box", emoji: "🤍", cost: 250, minValue: 130, maxValue: 400, color: "from-pink-300 via-blue-300 to-green-300", description: "Gifts worth 130-400 credits" },
+  { id: "crystal", name: "Crystal Box", emoji: "🔮", cost: 275, minValue: 150, maxValue: 450, color: "from-violet-400 to-purple-600", description: "Gifts worth 150-450 credits" },
+  { id: "titanium", name: "Titanium Box", emoji: "⚙️", cost: 300, minValue: 160, maxValue: 500, color: "from-zinc-400 to-zinc-700", description: "Gifts worth 160-500 credits" },
+  
+  // Legendary tier (350-600)
+  { id: "phoenix", name: "Phoenix Box", emoji: "🔥", cost: 350, minValue: 200, maxValue: 550, color: "from-orange-500 to-red-600", description: "Gifts worth 200-550 credits" },
+  { id: "dragon", name: "Dragon Box", emoji: "🐉", cost: 400, minValue: 220, maxValue: 600, color: "from-green-600 to-emerald-800", description: "Gifts worth 220-600 credits" },
+  { id: "unicorn", name: "Unicorn Box", emoji: "🦄", cost: 450, minValue: 250, maxValue: 650, color: "from-pink-400 via-purple-400 to-blue-400", description: "Gifts worth 250-650 credits" },
+  { id: "cosmic", name: "Cosmic Box", emoji: "🌌", cost: 500, minValue: 280, maxValue: 700, color: "from-indigo-600 to-purple-900", description: "Gifts worth 280-700 credits" },
+  { id: "aurora", name: "Aurora Box", emoji: "🌈", cost: 550, minValue: 300, maxValue: 750, color: "from-green-400 via-blue-500 to-purple-600", description: "Gifts worth 300-750 credits" },
+  
+  // Mythical tier (600-900)
+  { id: "celestial", name: "Celestial Box", emoji: "⭐", cost: 600, minValue: 350, maxValue: 800, color: "from-yellow-300 to-orange-400", description: "Gifts worth 350-800 credits" },
+  { id: "supernova", name: "Supernova Box", emoji: "💥", cost: 650, minValue: 380, maxValue: 850, color: "from-red-500 via-orange-400 to-yellow-300", description: "Gifts worth 380-850 credits" },
+  { id: "nebula", name: "Nebula Box", emoji: "🌀", cost: 700, minValue: 400, maxValue: 900, color: "from-purple-600 via-pink-500 to-red-500", description: "Gifts worth 400-900 credits" },
+  { id: "galaxy", name: "Galaxy Box", emoji: "🌠", cost: 750, minValue: 450, maxValue: 950, color: "from-blue-900 via-purple-800 to-pink-700", description: "Gifts worth 450-950 credits" },
+  { id: "infinity", name: "Infinity Box", emoji: "♾️", cost: 800, minValue: 500, maxValue: 1000, color: "from-violet-600 to-fuchsia-600", description: "Gifts worth 500-1000 credits" },
+  
+  // Divine tier (900-1500)
+  { id: "divine", name: "Divine Box", emoji: "👼", cost: 900, minValue: 550, maxValue: 1200, color: "from-amber-200 to-yellow-400", description: "Gifts worth 550-1200 credits" },
+  { id: "eternal", name: "Eternal Box", emoji: "🕊️", cost: 1000, minValue: 600, maxValue: 1500, color: "from-sky-300 to-blue-500", description: "Gifts worth 600-1500 credits" },
+  { id: "godlike", name: "Godlike Box", emoji: "⚡", cost: 1200, minValue: 700, maxValue: 1800, color: "from-yellow-400 via-amber-500 to-orange-600", description: "Gifts worth 700-1800 credits" },
+  { id: "supreme", name: "Supreme Box", emoji: "👑", cost: 1500, minValue: 800, maxValue: 2000, color: "from-amber-400 via-yellow-300 to-amber-500", description: "Gifts worth 800-2000 credits" },
+  { id: "omnipotent", name: "Omnipotent Box", emoji: "🔱", cost: 2000, minValue: 1000, maxValue: 2500, color: "from-purple-700 via-indigo-600 to-blue-700", description: "Gifts worth 1000-2500 credits" },
 ];
 
 export const MysteryBox = () => {
