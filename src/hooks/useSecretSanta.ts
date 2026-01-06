@@ -367,6 +367,85 @@ export const GIFT_CATALOG = [
   { type: "galactic_emperor", emoji: "🌌", label: "Galactic Emperor", value: 800, category: "vip", description: "Rule the galaxy" },
   { type: "reality_bender", emoji: "🌀", label: "Reality Bender", value: 1200, category: "vip", description: "Shape existence" },
   { type: "supreme_being", emoji: "🔆", label: "Supreme Being", value: 1500, category: "vip", description: "Beyond comprehension" },
+  
+  // WAVE 4 - Final 50 gifts
+  // Messages wave 4 (5-100)
+  { type: "easter_card", emoji: "🐰", label: "Easter Card", value: 22, category: "messages", description: "Spring wishes" },
+  { type: "new_year_card", emoji: "🎆", label: "New Year Card", value: 28, category: "messages", description: "Fresh start" },
+  { type: "halloween_card", emoji: "🎃", label: "Halloween Card", value: 20, category: "messages", description: "Spooky greetings" },
+  { type: "sympathy_card", emoji: "🕯️", label: "Sympathy Card", value: 25, category: "messages", description: "Comfort in loss" },
+  { type: "ai_story", emoji: "📚", label: "AI Story", value: 75, category: "messages", description: "Custom tale" },
+  { type: "secret_confession", emoji: "🤫", label: "Secret Confession", value: 45, category: "messages", description: "Hidden truth" },
+  { type: "bucket_list_card", emoji: "📋", label: "Bucket List Card", value: 38, category: "messages", description: "Dream together" },
+  
+  // Emotions wave 4 (5-130)
+  { type: "silent_support", emoji: "🤝", label: "Silent Support", value: 18, category: "emotions", description: "I'm here" },
+  { type: "nostalgic_moment", emoji: "📷", label: "Nostalgic Moment", value: 32, category: "emotions", description: "Remember when" },
+  { type: "victory_dance", emoji: "🕺", label: "Victory Dance", value: 25, category: "emotions", description: "Celebrate win" },
+  { type: "zen_peace", emoji: "🧘", label: "Zen Peace", value: 42, category: "emotions", description: "Inner calm" },
+  { type: "cosmic_love", emoji: "🌌", label: "Cosmic Love", value: 85, category: "emotions", description: "Universal bond" },
+  { type: "unconditional_love", emoji: "💗", label: "Unconditional Love", value: 130, category: "emotions", description: "Pure devotion" },
+  
+  // Flowers wave 4 (8-220)
+  { type: "peony", emoji: "🌺", label: "Peony", value: 16, category: "flowers", description: "Romantic bloom" },
+  { type: "magnolia", emoji: "🌸", label: "Magnolia", value: 22, category: "flowers", description: "Noble flower" },
+  { type: "greenhouse", emoji: "🏡", label: "Private Greenhouse", value: 120, category: "flowers", description: "Year-round garden" },
+  { type: "flower_crown", emoji: "👑", label: "Flower Crown", value: 35, category: "flowers", description: "Floral tiara" },
+  { type: "secret_garden", emoji: "🚪", label: "Secret Garden", value: 220, category: "flowers", description: "Hidden paradise" },
+  
+  // Romantic wave 4 (15-650)
+  { type: "love_song", emoji: "🎶", label: "Love Song", value: 48, category: "romantic", description: "Our melody" },
+  { type: "picnic_date", emoji: "🧺", label: "Picnic Date", value: 32, category: "romantic", description: "Park romance" },
+  { type: "castle_wedding", emoji: "🏰", label: "Castle Wedding", value: 450, category: "romantic", description: "Fairytale event" },
+  { type: "eternal_vow", emoji: "📜", label: "Eternal Vow", value: 280, category: "romantic", description: "Forever promise" },
+  { type: "honeymoon_cruise", emoji: "🚢", label: "Honeymoon Cruise", value: 380, category: "romantic", description: "Ocean romance" },
+  { type: "stars_named", emoji: "⭐", label: "Star Named After Us", value: 650, category: "romantic", description: "Celestial tribute" },
+  
+  // Sweets wave 4 (5-180)
+  { type: "brownie", emoji: "🍫", label: "Fudge Brownie", value: 9, category: "sweets", description: "Chocolate heaven" },
+  { type: "pancakes", emoji: "🥞", label: "Pancake Stack", value: 12, category: "sweets", description: "Breakfast treat" },
+  { type: "cheesecake", emoji: "🍰", label: "Cheesecake", value: 18, category: "sweets", description: "Creamy delight" },
+  { type: "candy_store", emoji: "🏪", label: "Candy Store", value: 95, category: "sweets", description: "Sweet shop" },
+  { type: "willy_wonka", emoji: "🏭", label: "Chocolate Factory", value: 180, category: "sweets", description: "Wonka experience" },
+  
+  // Drinks wave 4 (8-180)
+  { type: "kombucha", emoji: "🫖", label: "Kombucha", value: 12, category: "drinks", description: "Probiotic drink" },
+  { type: "margarita", emoji: "🍹", label: "Margarita", value: 16, category: "drinks", description: "Salt rimmed" },
+  { type: "wine_yacht", emoji: "🛥️", label: "Wine Tasting Yacht", value: 180, category: "drinks", description: "Luxury sipping" },
+  { type: "speakeasy", emoji: "🚪", label: "Speakeasy Entry", value: 55, category: "drinks", description: "Secret bar" },
+  
+  // Awards wave 4 (40-750)
+  { type: "kindness_award", emoji: "🤗", label: "Kindness Award", value: 58, category: "awards", description: "Pure heart" },
+  { type: "courage_medal", emoji: "🦁", label: "Courage Medal", value: 72, category: "awards", description: "Brave soul" },
+  { type: "wisdom_crown", emoji: "🦉", label: "Wisdom Crown", value: 110, category: "awards", description: "Sage advice" },
+  { type: "universe_creator", emoji: "🌌", label: "Universe Creator", value: 750, category: "awards", description: "God-like honor" },
+  
+  // Luxury wave 4 (120-2000)
+  { type: "bugatti", emoji: "🏎️", label: "Bugatti", value: 680, category: "luxury", description: "Ultimate supercar" },
+  { type: "undersea_hotel", emoji: "🐠", label: "Undersea Hotel", value: 450, category: "luxury", description: "Ocean suite" },
+  { type: "orbital_wedding", emoji: "💒", label: "Orbital Wedding", value: 1800, category: "luxury", description: "Space ceremony" },
+  { type: "entire_planet", emoji: "🪐", label: "Entire Planet", value: 2000, category: "luxury", description: "Your own world" },
+  
+  // Special wave 4 (30-800)
+  { type: "good_karma", emoji: "☸️", label: "Good Karma", value: 35, category: "special", description: "Positive energy" },
+  { type: "serendipity", emoji: "🎲", label: "Serendipity", value: 55, category: "special", description: "Happy accident" },
+  { type: "destiny_thread", emoji: "🧵", label: "Destiny Thread", value: 145, category: "special", description: "Fate connection" },
+  { type: "reality_stone", emoji: "🔴", label: "Reality Stone", value: 380, category: "special", description: "Alter existence" },
+  { type: "omniscience", emoji: "👁️", label: "Omniscience", value: 800, category: "special", description: "Know everything" },
+  
+  // Mythical wave 4 (75-1200)
+  { type: "kitsune", emoji: "🦊", label: "Kitsune", value: 125, category: "mythical", description: "Nine-tailed fox" },
+  { type: "selkie", emoji: "🦭", label: "Selkie", value: 95, category: "mythical", description: "Seal spirit" },
+  { type: "yggdrasil", emoji: "🌳", label: "Yggdrasil", value: 450, category: "mythical", description: "World tree" },
+  { type: "odin_wisdom", emoji: "👁️", label: "Odin's Wisdom", value: 550, category: "mythical", description: "Allfather knowledge" },
+  { type: "creation_power", emoji: "✨", label: "Creation Power", value: 1200, category: "mythical", description: "Make worlds" },
+  
+  // VIP wave 4 (50-2500)
+  { type: "platinum_wings", emoji: "🪽", label: "Platinum Wings", value: 280, category: "vip", description: "Flying elite" },
+  { type: "time_lord", emoji: "⏰", label: "Time Lord Status", value: 550, category: "vip", description: "Control time" },
+  { type: "dimension_emperor", emoji: "🌀", label: "Dimension Emperor", value: 950, category: "vip", description: "Rule dimensions" },
+  { type: "absolute_god", emoji: "⚡", label: "Absolute God", value: 2000, category: "vip", description: "Supreme deity" },
+  { type: "infinity_itself", emoji: "♾️", label: "Infinity Itself", value: 2500, category: "vip", description: "Boundless power" },
 ];
 
 export const CREDIT_PACKAGES = [
