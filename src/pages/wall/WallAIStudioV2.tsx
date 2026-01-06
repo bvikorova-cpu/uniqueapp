@@ -19,634 +19,412 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { useSearchParams, useNavigate } from "react-router-dom";
 
-// Import preview images - Christmas
-import christmasPolar from "@/assets/ai-studio/christmas-polar.jpg";
-import christmasTree from "@/assets/ai-studio/christmas-tree.jpg";
-import christmasElf from "@/assets/ai-studio/christmas-elf.jpg";
-import christmasCozy from "@/assets/ai-studio/christmas-cozy.jpg";
-// Valentine
-import valentineRoses from "@/assets/ai-studio/valentine-roses.jpg";
-import valentineCupid from "@/assets/ai-studio/valentine-cupid.jpg";
-import valentineDinner from "@/assets/ai-studio/valentine-dinner.jpg";
-import valentineGarden from "@/assets/ai-studio/valentine-garden.jpg";
-// Easter
-import easterBunny from "@/assets/ai-studio/easter-bunny.jpg";
-import easterSpring from "@/assets/ai-studio/easter-spring.jpg";
-import easterChick from "@/assets/ai-studio/easter-chick.jpg";
-import easterBasket from "@/assets/ai-studio/easter-basket.jpg";
-// Halloween
-import halloweenVampire from "@/assets/ai-studio/halloween-vampire.jpg";
-import halloweenWitch from "@/assets/ai-studio/halloween-witch.jpg";
-import halloweenZombie from "@/assets/ai-studio/halloween-zombie.jpg";
-import halloweenGhost from "@/assets/ai-studio/halloween-ghost.jpg";
-// Seasons
-import summerBeach from "@/assets/ai-studio/summer-beach.jpg";
-import winterSnow from "@/assets/ai-studio/winter-snow.jpg";
-// Glamour & Portrait
-import glamourHollywood from "@/assets/ai-studio/glamour-hollywood.jpg";
-import fairytalePrincess from "@/assets/ai-studio/fairytale-princess.jpg";
-// Luxury
-import luxuryVip from "@/assets/ai-studio/luxury-vip.jpg";
-import luxuryDubai from "@/assets/ai-studio/luxury-dubai.jpg";
-import luxuryRoyal from "@/assets/ai-studio/luxury-royal.jpg";
-import luxuryYacht from "@/assets/ai-studio/luxury-yacht.jpg";
-// Portrait
-import portraitBusiness from "@/assets/ai-studio/portrait-business.jpg";
-import portraitArtistic from "@/assets/ai-studio/portrait-artistic.jpg";
-import portraitFashion from "@/assets/ai-studio/portrait-fashion.jpg";
-// Star
-import starPopstar from "@/assets/ai-studio/star-popstar.jpg";
-import starMovie from "@/assets/ai-studio/star-movie.jpg";
-import starGrammy from "@/assets/ai-studio/star-grammy.jpg";
-import starRunway from "@/assets/ai-studio/star-runway.jpg";
-// Fantasy
-import fantasyElf from "@/assets/ai-studio/fantasy-elf.jpg";
-import fantasyMermaid from "@/assets/ai-studio/fantasy-mermaid.jpg";
-import fantasyKnight from "@/assets/ai-studio/fantasy-knight.jpg";
-// Retro
-import retro80s from "@/assets/ai-studio/retro-80s.jpg";
-import retro50s from "@/assets/ai-studio/retro-50s.jpg";
-import retro70s from "@/assets/ai-studio/retro-70s.jpg";
-import retroGatsby from "@/assets/ai-studio/retro-gatsby.jpg";
-// Nature
-import natureForest from "@/assets/ai-studio/nature-forest.jpg";
-import natureMountain from "@/assets/ai-studio/nature-mountain.jpg";
-// Sports
-import sportsFitness from "@/assets/ai-studio/sports-fitness.jpg";
-import sportsChampion from "@/assets/ai-studio/sports-champion.jpg";
-import sportsBasketball from "@/assets/ai-studio/sports-basketball.jpg";
-import sportsYoga from "@/assets/ai-studio/sports-yoga.jpg";
-// Art
-import artPainting from "@/assets/ai-studio/art-painting.jpg";
-import artPopart from "@/assets/ai-studio/art-popart.jpg";
-import artAnime from "@/assets/ai-studio/art-anime.jpg";
-import artWatercolor from "@/assets/ai-studio/art-watercolor.jpg";
-// Travel
-import travelParis from "@/assets/ai-studio/travel-paris.jpg";
-import travelSafari from "@/assets/ai-studio/travel-safari.jpg";
-import travelNewyork from "@/assets/ai-studio/travel-newyork.jpg";
-import travelMaldives from "@/assets/ai-studio/travel-maldives.jpg";
-// Party
-import partyBirthday from "@/assets/ai-studio/party-birthday.jpg";
-import partyClub from "@/assets/ai-studio/party-club.jpg";
-import partyNewyear from "@/assets/ai-studio/party-newyear.jpg";
-import partyCarnival from "@/assets/ai-studio/party-carnival.jpg";
-// Wedding
-import weddingBride from "@/assets/ai-studio/wedding-bride.jpg";
-import weddingGroom from "@/assets/ai-studio/wedding-groom.jpg";
-import weddingBridesmaid from "@/assets/ai-studio/wedding-bridesmaid.jpg";
-import weddingDance from "@/assets/ai-studio/wedding-dance.jpg";
-// Future
-import futureCyberpunk from "@/assets/ai-studio/future-cyberpunk.jpg";
-import futureSpace from "@/assets/ai-studio/future-space.jpg";
-import futureRobot from "@/assets/ai-studio/future-robot.jpg";
-import futureMatrix from "@/assets/ai-studio/future-matrix.jpg";
-// Super
-import superHero from "@/assets/ai-studio/super-hero.jpg";
-import superHeroine from "@/assets/ai-studio/super-heroine.jpg";
-import superVillain from "@/assets/ai-studio/super-villain.jpg";
-import superComic from "@/assets/ai-studio/super-comic.jpg";
-// Music
-import musicDj from "@/assets/ai-studio/music-dj.jpg";
-import musicRockstar from "@/assets/ai-studio/music-rockstar.jpg";
-import musicCountry from "@/assets/ai-studio/music-country.jpg";
-import musicOrchestra from "@/assets/ai-studio/music-orchestra.jpg";
-// Pets
-import petsDog from "@/assets/ai-studio/pets-dog.jpg";
-import petsCat from "@/assets/ai-studio/pets-cat.jpg";
-import petsBunny from "@/assets/ai-studio/pets-bunny.jpg";
-import petsHorse from "@/assets/ai-studio/pets-horse.jpg";
-// Gothic
-import gothicDark from "@/assets/ai-studio/gothic-dark.jpg";
-import gothicAngel from "@/assets/ai-studio/gothic-angel.jpg";
-import gothicRomantic from "@/assets/ai-studio/gothic-romantic.jpg";
-import gothicVampire from "@/assets/ai-studio/gothic-vampire.jpg";
-// Steampunk
-import steampunkInventor from "@/assets/ai-studio/steampunk-inventor.jpg";
-import steampunkPilot from "@/assets/ai-studio/steampunk-pilot.jpg";
-import steampunkLady from "@/assets/ai-studio/steampunk-lady.jpg";
-import steampunkExplorer from "@/assets/ai-studio/steampunk-explorer.jpg";
-// Warriors
-import vikingWarrior from "@/assets/ai-studio/viking-warrior.jpg";
-import pirateCaptain from "@/assets/ai-studio/pirate-captain.jpg";
-import warriorSpartan from "@/assets/ai-studio/warrior-spartan.jpg";
-import warriorSamurai from "@/assets/ai-studio/warrior-samurai.jpg";
-// Western
-import westernCowboy from "@/assets/ai-studio/western-cowboy.jpg";
-import westernSheriff from "@/assets/ai-studio/western-sheriff.jpg";
-import westernRodeo from "@/assets/ai-studio/western-rodeo.jpg";
-import westernSaloon from "@/assets/ai-studio/western-saloon.jpg";
-// Chef
-import chefGourmet from "@/assets/ai-studio/chef-gourmet.jpg";
-import chefPastry from "@/assets/ai-studio/chef-pastry.jpg";
-import chefSushi from "@/assets/ai-studio/chef-sushi.jpg";
-import chefBbq from "@/assets/ai-studio/chef-bbq.jpg";
-// Zen
-import zenMeditation from "@/assets/ai-studio/zen-meditation.jpg";
-import underwaterDiver from "@/assets/ai-studio/underwater-diver.jpg";
-import zenTaichi from "@/assets/ai-studio/zen-taichi.jpg";
-import zenMonk from "@/assets/ai-studio/zen-monk.jpg";
-// Glamour Photo
-import glamourBirthday from "@/assets/ai-studio/glamour-birthday.jpg";
-import glamourChristmasLights from "@/assets/ai-studio/glamour-christmas-lights.jpg";
-import glamourMonochrome from "@/assets/ai-studio/glamour-monochrome.jpg";
-import glamourGoldenMoon from "@/assets/ai-studio/glamour-golden-moon.jpg";
-import glamourOceanWaves from "@/assets/ai-studio/glamour-ocean-waves.jpg";
-import glamourPanther from "@/assets/ai-studio/glamour-panther.jpg";
-import glamourReindeer from "@/assets/ai-studio/glamour-reindeer.jpg";
-import glamourChristmasFamily from "@/assets/ai-studio/glamour-christmas-family.jpg";
-import glamourBarbie from "@/assets/ai-studio/glamour-barbie.jpg";
-import glamourParis from "@/assets/ai-studio/glamour-paris.jpg";
-import glamourFlowers from "@/assets/ai-studio/glamour-flowers.jpg";
-import glamourBiker from "@/assets/ai-studio/glamour-biker.jpg";
-import glamourVintage from "@/assets/ai-studio/glamour-vintage.jpg";
-import glamourBalloons from "@/assets/ai-studio/glamour-balloons.jpg";
-import glamourGolden from "@/assets/ai-studio/glamour-golden.jpg";
-import glamourButterfly from "@/assets/ai-studio/glamour-butterfly.jpg";
-// New Glamour Christmas
-import glamourCozyMug from "@/assets/ai-studio/glamour-cozy-mug.jpg";
-import glamourTreeDance from "@/assets/ai-studio/glamour-tree-dance.jpg";
-import glamourSantaCandy from "@/assets/ai-studio/glamour-santa-candy.jpg";
-import glamourSantaMirror from "@/assets/ai-studio/glamour-santa-mirror.jpg";
-import glamourGrinch from "@/assets/ai-studio/glamour-grinch.jpg";
-import glamourRedDressGift from "@/assets/ai-studio/glamour-red-dress-gift.jpg";
-import glamourBabySled from "@/assets/ai-studio/glamour-baby-sled.jpg";
-import glamourGiftBox from "@/assets/ai-studio/glamour-gift-box.jpg";
-import glamourRoseWreath from "@/assets/ai-studio/glamour-rose-wreath.jpg";
-// New Glamour Christmas 2
-import glamourChampagneTree from "@/assets/ai-studio/glamour-champagne-tree.jpg";
-import glamourGingerbreadGirl from "@/assets/ai-studio/glamour-gingerbread-girl.jpg";
-import glamourSantaLollipop from "@/assets/ai-studio/glamour-santa-lollipop.jpg";
-// Atlantis Mermaid
-import atlantisSeaflora from "@/assets/ai-studio/atlantis-seaflora.jpg";
-import atlantisSunwave from "@/assets/ai-studio/atlantis-sunwave.jpg";
-import atlantisNyxelle from "@/assets/ai-studio/atlantis-nyxelle.jpg";
-// Creative
-import creativeSunflower from "@/assets/ai-studio/creative-sunflower.jpg";
-import creativeGiant from "@/assets/ai-studio/creative-giant.jpg";
-import creativeDesert from "@/assets/ai-studio/creative-desert.jpg";
-import creativeGraffiti from "@/assets/ai-studio/creative-graffiti.jpg";
-// Chibi
-import chibiSkiing from "@/assets/ai-studio/chibi-skiing.jpg";
-import chibiBasketball from "@/assets/ai-studio/chibi-basketball.jpg";
-// Pocket
-import pocketWork from "@/assets/ai-studio/pocket-work.jpg";
-import pocketGift from "@/assets/ai-studio/pocket-gift.jpg";
-// New non-holiday styles 2026
-import lifestyleWine from "@/assets/ai-studio/lifestyle-wine.jpg";
-import careerPilot from "@/assets/ai-studio/career-pilot.jpg";
-import danceBallerina from "@/assets/ai-studio/dance-ballerina.jpg";
-import funScientist from "@/assets/ai-studio/fun-scientist.jpg";
-import lifestyleCasino from "@/assets/ai-studio/lifestyle-casino.jpg";
-import cultureGeisha from "@/assets/ai-studio/culture-geisha.jpg";
-import techHacker from "@/assets/ai-studio/tech-hacker.jpg";
-import ancientPharaoh from "@/assets/ai-studio/ancient-pharaoh.jpg";
-import mythGoddess from "@/assets/ai-studio/myth-goddess.jpg";
-import sportsRacing from "@/assets/ai-studio/sports-racing.jpg";
-import careerFirefighter from "@/assets/ai-studio/career-firefighter.jpg";
-import fashionMagazine from "@/assets/ai-studio/fashion-magazine.jpg";
-import awardOscar from "@/assets/ai-studio/award-oscar.jpg";
-import sportsBoxer from "@/assets/ai-studio/sports-boxer.jpg";
-import petsPuppies from "@/assets/ai-studio/pets-puppies.jpg";
-import cultureBollywood from "@/assets/ai-studio/culture-bollywood.jpg";
-import magicPotion from "@/assets/ai-studio/magic-potion.jpg";
-import royalRenaissance from "@/assets/ai-studio/royal-renaissance.jpg";
-import gamingEsports from "@/assets/ai-studio/gaming-esports.jpg";
-import fantasyFairy from "@/assets/ai-studio/fantasy-fairy.jpg";
-import mysticFortune from "@/assets/ai-studio/mystic-fortune.jpg";
-import sportsSurfing from "@/assets/ai-studio/sports-surfing.jpg";
-import danceFlamenco from "@/assets/ai-studio/dance-flamenco.jpg";
-import actionSpy from "@/assets/ai-studio/action-spy.jpg";
-import musicKpop from "@/assets/ai-studio/music-kpop.jpg";
-import ancientGladiator from "@/assets/ai-studio/ancient-gladiator.jpg";
-import mythNightqueen from "@/assets/ai-studio/myth-nightqueen.jpg";
-import musicHiphop from "@/assets/ai-studio/music-hiphop.jpg";
-import adventureJungle from "@/assets/ai-studio/adventure-jungle.jpg";
-import warriorDragon from "@/assets/ai-studio/warrior-dragon.jpg";
-import fantasyUnicorn from "@/assets/ai-studio/fantasy-unicorn.jpg";
-import sportsSoccer from "@/assets/ai-studio/sports-soccer.jpg";
-import fantasyIcequeen from "@/assets/ai-studio/fantasy-icequeen.jpg";
-import cultureDiademuertos from "@/assets/ai-studio/culture-diademuertos.jpg";
-import sportsSkating from "@/assets/ai-studio/sports-skating.jpg";
-import cultureHanfu from "@/assets/ai-studio/culture-hanfu.jpg";
-import lifestyleBiker from "@/assets/ai-studio/lifestyle-biker.jpg";
-import careerDoctor from "@/assets/ai-studio/career-doctor.jpg";
-import fantasyWizard from "@/assets/ai-studio/fantasy-wizard.jpg";
-import retroFilmnoir from "@/assets/ai-studio/retro-filmnoir.jpg";
-import mythAthena from "@/assets/ai-studio/myth-athena.jpg";
-import lifestyleBarista from "@/assets/ai-studio/lifestyle-barista.jpg";
-import warriorAmazon from "@/assets/ai-studio/warrior-amazon.jpg";
-import glamourMasquerade from "@/assets/ai-studio/glamour-masquerade.jpg";
-import sportsTennis from "@/assets/ai-studio/sports-tennis.jpg";
-import mythNature from "@/assets/ai-studio/myth-nature.jpg";
-import artPainter from "@/assets/ai-studio/art-painter.jpg";
-import musicJazz from "@/assets/ai-studio/music-jazz.jpg";
-import sportsSnowboard from "@/assets/ai-studio/sports-snowboard.jpg";
-import cultureScottish from "@/assets/ai-studio/culture-scottish.jpg";
+// Helper to get image path from public folder - NO static imports!
+const getImagePath = (filename: string): string => `/ai-studio/${filename}.jpg`;
 
+// Define categories with string paths instead of imported modules
 const TRANSFORMATION_CATEGORIES = [
   {
     name: "💎 Glamour Photo",
     items: [
-      { id: "glamour-barbie", label: "Barbie Dream", image: glamourBarbie },
-      { id: "glamour-paris", label: "Paris Eiffel", image: glamourParis },
-      { id: "glamour-flowers", label: "Flower Garden", image: glamourFlowers },
-      { id: "glamour-biker", label: "Biker Girl", image: glamourBiker },
-      { id: "glamour-vintage", label: "Vintage Mirror", image: glamourVintage },
-      { id: "glamour-balloons", label: "Red Balloons", image: glamourBalloons },
-      { id: "glamour-golden", label: "Golden Glamour", image: glamourGolden },
-      { id: "glamour-butterfly", label: "Butterfly Queen", image: glamourButterfly },
-      { id: "glamour-birthday", label: "Birthday Glam", image: glamourBirthday },
-      { id: "glamour-christmas-lights", label: "Christmas Lights", image: glamourChristmasLights },
-      { id: "glamour-monochrome", label: "Monochrome", image: glamourMonochrome },
-      { id: "glamour-golden-moon", label: "Golden Moon", image: glamourGoldenMoon },
-      { id: "glamour-ocean-waves", label: "Ocean Goddess", image: glamourOceanWaves },
-      { id: "glamour-panther", label: "Black Panther", image: glamourPanther },
-      { id: "glamour-reindeer", label: "Magic Reindeer", image: glamourReindeer },
-      { id: "glamour-christmas-family", label: "Christmas Family", image: glamourChristmasFamily },
-      { id: "glamour-cozy-mug", label: "Cozy Christmas Mug", image: glamourCozyMug },
-      { id: "glamour-tree-dance", label: "Tree Dance", image: glamourTreeDance },
-      { id: "glamour-santa-candy", label: "Santa Candy", image: glamourSantaCandy },
-      { id: "glamour-santa-mirror", label: "Santa Mirror", image: glamourSantaMirror },
-      { id: "glamour-grinch", label: "Grinch Friend", image: glamourGrinch },
-      { id: "glamour-red-dress-gift", label: "Red Dress Gift", image: glamourRedDressGift },
-      { id: "glamour-baby-sled", label: "Baby Sled", image: glamourBabySled },
-      { id: "glamour-gift-box", label: "Gift Box", image: glamourGiftBox },
-      { id: "glamour-rose-wreath", label: "Rose Wreath", image: glamourRoseWreath },
-      { id: "glamour-champagne-tree", label: "Champagne Tree", image: glamourChampagneTree },
-      { id: "glamour-gingerbread-girl", label: "Gingerbread Girl", image: glamourGingerbreadGirl },
-      { id: "glamour-santa-lollipop", label: "Santa Lollipop", image: glamourSantaLollipop },
+      { id: "glamour-barbie", label: "Barbie Dream", image: getImagePath("glamour-barbie") },
+      { id: "glamour-paris", label: "Paris Eiffel", image: getImagePath("glamour-paris") },
+      { id: "glamour-flowers", label: "Flower Garden", image: getImagePath("glamour-flowers") },
+      { id: "glamour-biker", label: "Biker Girl", image: getImagePath("glamour-biker") },
+      { id: "glamour-vintage", label: "Vintage Mirror", image: getImagePath("glamour-vintage") },
+      { id: "glamour-balloons", label: "Red Balloons", image: getImagePath("glamour-balloons") },
+      { id: "glamour-golden", label: "Golden Glamour", image: getImagePath("glamour-golden") },
+      { id: "glamour-butterfly", label: "Butterfly Queen", image: getImagePath("glamour-butterfly") },
+      { id: "glamour-birthday", label: "Birthday Glam", image: getImagePath("glamour-birthday") },
+      { id: "glamour-christmas-lights", label: "Christmas Lights", image: getImagePath("glamour-christmas-lights") },
+      { id: "glamour-monochrome", label: "Monochrome", image: getImagePath("glamour-monochrome") },
+      { id: "glamour-golden-moon", label: "Golden Moon", image: getImagePath("glamour-golden-moon") },
+      { id: "glamour-ocean-waves", label: "Ocean Goddess", image: getImagePath("glamour-ocean-waves") },
+      { id: "glamour-panther", label: "Black Panther", image: getImagePath("glamour-panther") },
+      { id: "glamour-reindeer", label: "Magic Reindeer", image: getImagePath("glamour-reindeer") },
+      { id: "glamour-christmas-family", label: "Christmas Family", image: getImagePath("glamour-christmas-family") },
+      { id: "glamour-cozy-mug", label: "Cozy Christmas Mug", image: getImagePath("glamour-cozy-mug") },
+      { id: "glamour-tree-dance", label: "Tree Dance", image: getImagePath("glamour-tree-dance") },
+      { id: "glamour-santa-candy", label: "Santa Candy", image: getImagePath("glamour-santa-candy") },
+      { id: "glamour-santa-mirror", label: "Santa Mirror", image: getImagePath("glamour-santa-mirror") },
+      { id: "glamour-grinch", label: "Grinch Friend", image: getImagePath("glamour-grinch") },
+      { id: "glamour-red-dress-gift", label: "Red Dress Gift", image: getImagePath("glamour-red-dress-gift") },
+      { id: "glamour-baby-sled", label: "Baby Sled", image: getImagePath("glamour-baby-sled") },
+      { id: "glamour-gift-box", label: "Gift Box", image: getImagePath("glamour-gift-box") },
+      { id: "glamour-rose-wreath", label: "Rose Wreath", image: getImagePath("glamour-rose-wreath") },
+      { id: "glamour-champagne-tree", label: "Champagne Tree", image: getImagePath("glamour-champagne-tree") },
+      { id: "glamour-gingerbread-girl", label: "Gingerbread Girl", image: getImagePath("glamour-gingerbread-girl") },
+      { id: "glamour-santa-lollipop", label: "Santa Lollipop", image: getImagePath("glamour-santa-lollipop") },
     ]
   },
   {
     name: "🧜‍♀️ Atlantis Mermaid",
     items: [
-      { id: "atlantis-seaflora", label: "Seaflora Blush", image: atlantisSeaflora },
-      { id: "atlantis-sunwave", label: "Sunwave Opal", image: atlantisSunwave },
-      { id: "atlantis-nyxelle", label: "Nyxelle Pearl", image: atlantisNyxelle },
+      { id: "atlantis-seaflora", label: "Seaflora Blush", image: getImagePath("atlantis-seaflora") },
+      { id: "atlantis-sunwave", label: "Sunwave Opal", image: getImagePath("atlantis-sunwave") },
+      { id: "atlantis-nyxelle", label: "Nyxelle Pearl", image: getImagePath("atlantis-nyxelle") },
     ]
   },
   {
     name: "🎨 Creative Studio",
     items: [
-      { id: "creative-sunflower", label: "Sun Flower", image: creativeSunflower },
-      { id: "creative-giant", label: "Giant Statue", image: creativeGiant },
-      { id: "creative-desert", label: "Desert Queen", image: creativeDesert },
-      { id: "creative-graffiti", label: "Graffiti Wall", image: creativeGraffiti },
+      { id: "creative-sunflower", label: "Sun Flower", image: getImagePath("creative-sunflower") },
+      { id: "creative-giant", label: "Giant Statue", image: getImagePath("creative-giant") },
+      { id: "creative-desert", label: "Desert Queen", image: getImagePath("creative-desert") },
+      { id: "creative-graffiti", label: "Graffiti Wall", image: getImagePath("creative-graffiti") },
     ]
   },
   {
     name: "🏆 Chibi Champs",
     items: [
-      { id: "chibi-skiing", label: "Frosty Zoomers", image: chibiSkiing },
-      { id: "chibi-basketball", label: "Bounce Buds", image: chibiBasketball },
+      { id: "chibi-skiing", label: "Frosty Zoomers", image: getImagePath("chibi-skiing") },
+      { id: "chibi-basketball", label: "Bounce Buds", image: getImagePath("chibi-basketball") },
     ]
   },
   {
     name: "💝 Pocket Buddies",
     items: [
-      { id: "pocket-work", label: "Pocket Work", image: pocketWork },
-      { id: "pocket-gift", label: "Pocket Gift", image: pocketGift },
+      { id: "pocket-work", label: "Pocket Work", image: getImagePath("pocket-work") },
+      { id: "pocket-gift", label: "Pocket Gift", image: getImagePath("pocket-gift") },
     ]
   },
   {
     name: "🎄 Christmas Magic",
     items: [
-      { id: "christmas-polar", label: "Polar Bear Hug", image: christmasPolar },
-      { id: "christmas-tree", label: "Christmas Tree", image: christmasTree },
-      { id: "christmas-elf", label: "Santa's Helper", image: christmasElf },
-      { id: "christmas-cozy", label: "Cozy Winter", image: christmasCozy },
+      { id: "christmas-polar", label: "Polar Bear Hug", image: getImagePath("christmas-polar") },
+      { id: "christmas-tree", label: "Christmas Tree", image: getImagePath("christmas-tree") },
+      { id: "christmas-elf", label: "Santa's Helper", image: getImagePath("christmas-elf") },
+      { id: "christmas-cozy", label: "Cozy Winter", image: getImagePath("christmas-cozy") },
     ]
   },
   {
     name: "💕 Valentine's Day",
     items: [
-      { id: "valentine-roses", label: "Red Roses", image: valentineRoses },
-      { id: "valentine-cupid", label: "Cupid Angel", image: valentineCupid },
-      { id: "valentine-dinner", label: "Romantic Dinner", image: valentineDinner },
-      { id: "valentine-garden", label: "Love Garden", image: valentineGarden },
+      { id: "valentine-roses", label: "Red Roses", image: getImagePath("valentine-roses") },
+      { id: "valentine-cupid", label: "Cupid Angel", image: getImagePath("valentine-cupid") },
+      { id: "valentine-dinner", label: "Romantic Dinner", image: getImagePath("valentine-dinner") },
+      { id: "valentine-garden", label: "Love Garden", image: getImagePath("valentine-garden") },
     ]
   },
   {
     name: "🐣 Easter & Spring",
     items: [
-      { id: "easter-bunny", label: "Easter Bunny", image: easterBunny },
-      { id: "easter-spring", label: "Spring Flowers", image: easterSpring },
-      { id: "easter-chick", label: "Easter Chick", image: easterChick },
-      { id: "easter-basket", label: "Easter Basket", image: easterBasket },
+      { id: "easter-bunny", label: "Easter Bunny", image: getImagePath("easter-bunny") },
+      { id: "easter-spring", label: "Spring Flowers", image: getImagePath("easter-spring") },
+      { id: "easter-chick", label: "Easter Chick", image: getImagePath("easter-chick") },
+      { id: "easter-basket", label: "Easter Basket", image: getImagePath("easter-basket") },
     ]
   },
   {
     name: "🎃 Halloween",
     items: [
-      { id: "halloween-vampire", label: "Vampire", image: halloweenVampire },
-      { id: "halloween-witch", label: "Magic Witch", image: halloweenWitch },
-      { id: "halloween-zombie", label: "Zombie", image: halloweenZombie },
-      { id: "halloween-ghost", label: "Ghost", image: halloweenGhost },
+      { id: "halloween-vampire", label: "Vampire", image: getImagePath("halloween-vampire") },
+      { id: "halloween-witch", label: "Magic Witch", image: getImagePath("halloween-witch") },
+      { id: "halloween-zombie", label: "Zombie", image: getImagePath("halloween-zombie") },
+      { id: "halloween-ghost", label: "Ghost", image: getImagePath("halloween-ghost") },
     ]
   },
   {
     name: "👑 Luxury & VIP",
     items: [
-      { id: "luxury-vip", label: "VIP Lifestyle", image: luxuryVip },
-      { id: "luxury-dubai", label: "Dubai Dream", image: luxuryDubai },
-      { id: "luxury-royal", label: "Royal Queen", image: luxuryRoyal },
-      { id: "luxury-yacht", label: "Yacht Life", image: luxuryYacht },
+      { id: "luxury-vip", label: "VIP Lifestyle", image: getImagePath("luxury-vip") },
+      { id: "luxury-dubai", label: "Dubai Dream", image: getImagePath("luxury-dubai") },
+      { id: "luxury-royal", label: "Royal Queen", image: getImagePath("luxury-royal") },
+      { id: "luxury-yacht", label: "Yacht Life", image: getImagePath("luxury-yacht") },
     ]
   },
   {
     name: "📸 Portrait & Professional",
     items: [
-      { id: "portrait-business", label: "Business Pro", image: portraitBusiness },
-      { id: "portrait-artistic", label: "Artistic", image: portraitArtistic },
-      { id: "glamour-hollywood", label: "Hollywood Star", image: glamourHollywood },
-      { id: "portrait-fashion", label: "Fashion", image: portraitFashion },
+      { id: "portrait-business", label: "Business Pro", image: getImagePath("portrait-business") },
+      { id: "portrait-artistic", label: "Artistic", image: getImagePath("portrait-artistic") },
+      { id: "glamour-hollywood", label: "Hollywood Star", image: getImagePath("glamour-hollywood") },
+      { id: "portrait-fashion", label: "Fashion", image: getImagePath("portrait-fashion") },
     ]
   },
   {
     name: "⭐ Celebrity & Star",
     items: [
-      { id: "star-popstar", label: "Pop Star", image: starPopstar },
-      { id: "star-movie", label: "Movie Star", image: starMovie },
-      { id: "star-grammy", label: "Grammy Winner", image: starGrammy },
-      { id: "star-runway", label: "Runway Model", image: starRunway },
+      { id: "star-popstar", label: "Pop Star", image: getImagePath("star-popstar") },
+      { id: "star-movie", label: "Movie Star", image: getImagePath("star-movie") },
+      { id: "star-grammy", label: "Grammy Winner", image: getImagePath("star-grammy") },
+      { id: "star-runway", label: "Runway Model", image: getImagePath("star-runway") },
     ]
   },
   {
     name: "🧚 Fantasy & Magic",
     items: [
-      { id: "fairytale-princess", label: "Princess", image: fairytalePrincess },
-      { id: "fantasy-elf", label: "Mystical Elf", image: fantasyElf },
-      { id: "fantasy-mermaid", label: "Mermaid", image: fantasyMermaid },
-      { id: "fantasy-knight", label: "Knight", image: fantasyKnight },
+      { id: "fairytale-princess", label: "Princess", image: getImagePath("fairytale-princess") },
+      { id: "fantasy-elf", label: "Mystical Elf", image: getImagePath("fantasy-elf") },
+      { id: "fantasy-mermaid", label: "Mermaid", image: getImagePath("fantasy-mermaid") },
+      { id: "fantasy-knight", label: "Knight", image: getImagePath("fantasy-knight") },
     ]
   },
   {
     name: "🦸 Superhero",
     items: [
-      { id: "super-hero", label: "Superhero", image: superHero },
-      { id: "super-heroine", label: "Superheroine", image: superHeroine },
-      { id: "super-villain", label: "Villain", image: superVillain },
-      { id: "super-comic", label: "Comic Style", image: superComic },
+      { id: "super-hero", label: "Superhero", image: getImagePath("super-hero") },
+      { id: "super-heroine", label: "Superheroine", image: getImagePath("super-heroine") },
+      { id: "super-villain", label: "Villain", image: getImagePath("super-villain") },
+      { id: "super-comic", label: "Comic Style", image: getImagePath("super-comic") },
     ]
   },
   {
     name: "📼 Retro & Vintage",
     items: [
-      { id: "retro-80s", label: "80s Neon", image: retro80s },
-      { id: "retro-50s", label: "50s Classic", image: retro50s },
-      { id: "retro-70s", label: "70s Disco", image: retro70s },
-      { id: "retro-gatsby", label: "Gatsby 20s", image: retroGatsby },
+      { id: "retro-80s", label: "80s Neon", image: getImagePath("retro-80s") },
+      { id: "retro-50s", label: "50s Classic", image: getImagePath("retro-50s") },
+      { id: "retro-70s", label: "70s Disco", image: getImagePath("retro-70s") },
+      { id: "retro-gatsby", label: "Gatsby 20s", image: getImagePath("retro-gatsby") },
     ]
   },
   {
     name: "🌲 Nature & Outdoor",
     items: [
-      { id: "nature-forest", label: "Enchanted Forest", image: natureForest },
-      { id: "nature-mountain", label: "Mountain Peak", image: natureMountain },
-      { id: "summer-beach", label: "Summer Beach", image: summerBeach },
-      { id: "winter-snow", label: "Winter Snow", image: winterSnow },
+      { id: "nature-forest", label: "Enchanted Forest", image: getImagePath("nature-forest") },
+      { id: "nature-mountain", label: "Mountain Peak", image: getImagePath("nature-mountain") },
+      { id: "summer-beach", label: "Summer Beach", image: getImagePath("summer-beach") },
+      { id: "winter-snow", label: "Winter Snow", image: getImagePath("winter-snow") },
     ]
   },
   {
     name: "🏆 Sports & Fitness",
     items: [
-      { id: "sports-fitness", label: "Fitness Pro", image: sportsFitness },
-      { id: "sports-champion", label: "Champion", image: sportsChampion },
-      { id: "sports-basketball", label: "Basketball", image: sportsBasketball },
-      { id: "sports-yoga", label: "Yoga Master", image: sportsYoga },
+      { id: "sports-fitness", label: "Fitness Pro", image: getImagePath("sports-fitness") },
+      { id: "sports-champion", label: "Champion", image: getImagePath("sports-champion") },
+      { id: "sports-basketball", label: "Basketball", image: getImagePath("sports-basketball") },
+      { id: "sports-yoga", label: "Yoga Master", image: getImagePath("sports-yoga") },
     ]
   },
   {
     name: "🎨 Art & Creative",
     items: [
-      { id: "art-painting", label: "Oil Painting", image: artPainting },
-      { id: "art-popart", label: "Pop Art", image: artPopart },
-      { id: "art-anime", label: "Anime Style", image: artAnime },
-      { id: "art-watercolor", label: "Watercolor", image: artWatercolor },
+      { id: "art-painting", label: "Oil Painting", image: getImagePath("art-painting") },
+      { id: "art-popart", label: "Pop Art", image: getImagePath("art-popart") },
+      { id: "art-anime", label: "Anime Style", image: getImagePath("art-anime") },
+      { id: "art-watercolor", label: "Watercolor", image: getImagePath("art-watercolor") },
     ]
   },
   {
     name: "✈️ Travel & Adventure",
     items: [
-      { id: "travel-paris", label: "Paris Dream", image: travelParis },
-      { id: "travel-safari", label: "Safari Adventure", image: travelSafari },
-      { id: "travel-newyork", label: "New York", image: travelNewyork },
-      { id: "travel-maldives", label: "Maldives", image: travelMaldives },
+      { id: "travel-paris", label: "Paris Dream", image: getImagePath("travel-paris") },
+      { id: "travel-safari", label: "Safari Adventure", image: getImagePath("travel-safari") },
+      { id: "travel-newyork", label: "New York", image: getImagePath("travel-newyork") },
+      { id: "travel-maldives", label: "Maldives", image: getImagePath("travel-maldives") },
     ]
   },
   {
     name: "🎉 Party & Celebration",
     items: [
-      { id: "party-birthday", label: "Birthday Party", image: partyBirthday },
-      { id: "party-club", label: "VIP Club", image: partyClub },
-      { id: "party-newyear", label: "New Year", image: partyNewyear },
-      { id: "party-carnival", label: "Carnival", image: partyCarnival },
+      { id: "party-birthday", label: "Birthday Party", image: getImagePath("party-birthday") },
+      { id: "party-club", label: "VIP Club", image: getImagePath("party-club") },
+      { id: "party-newyear", label: "New Year", image: getImagePath("party-newyear") },
+      { id: "party-carnival", label: "Carnival", image: getImagePath("party-carnival") },
     ]
   },
   {
     name: "💒 Wedding",
     items: [
-      { id: "wedding-bride", label: "Beautiful Bride", image: weddingBride },
-      { id: "wedding-groom", label: "Elegant Groom", image: weddingGroom },
-      { id: "wedding-bridesmaid", label: "Bridesmaid", image: weddingBridesmaid },
-      { id: "wedding-dance", label: "First Dance", image: weddingDance },
+      { id: "wedding-bride", label: "Beautiful Bride", image: getImagePath("wedding-bride") },
+      { id: "wedding-groom", label: "Elegant Groom", image: getImagePath("wedding-groom") },
+      { id: "wedding-bridesmaid", label: "Bridesmaid", image: getImagePath("wedding-bridesmaid") },
+      { id: "wedding-dance", label: "First Dance", image: getImagePath("wedding-dance") },
     ]
   },
   {
     name: "🚀 Futuristic & Sci-Fi",
     items: [
-      { id: "future-cyberpunk", label: "Cyberpunk", image: futureCyberpunk },
-      { id: "future-space", label: "Space Explorer", image: futureSpace },
-      { id: "future-robot", label: "Robot", image: futureRobot },
-      { id: "future-matrix", label: "Matrix", image: futureMatrix },
+      { id: "future-cyberpunk", label: "Cyberpunk", image: getImagePath("future-cyberpunk") },
+      { id: "future-space", label: "Space Explorer", image: getImagePath("future-space") },
+      { id: "future-robot", label: "Robot", image: getImagePath("future-robot") },
+      { id: "future-matrix", label: "Matrix", image: getImagePath("future-matrix") },
     ]
   },
   {
     name: "🎵 Music & Stage",
     items: [
-      { id: "music-dj", label: "Famous DJ", image: musicDj },
-      { id: "music-rockstar", label: "Rock Star", image: musicRockstar },
-      { id: "music-country", label: "Country Star", image: musicCountry },
-      { id: "music-orchestra", label: "Conductor", image: musicOrchestra },
+      { id: "music-dj", label: "Famous DJ", image: getImagePath("music-dj") },
+      { id: "music-rockstar", label: "Rock Star", image: getImagePath("music-rockstar") },
+      { id: "music-country", label: "Country Star", image: getImagePath("music-country") },
+      { id: "music-orchestra", label: "Conductor", image: getImagePath("music-orchestra") },
     ]
   },
   {
     name: "🐕 Pets & Animals",
     items: [
-      { id: "pets-dog", label: "With Puppy", image: petsDog },
-      { id: "pets-cat", label: "Cat Lover", image: petsCat },
-      { id: "pets-bunny", label: "Bunny", image: petsBunny },
-      { id: "pets-horse", label: "Horse Riding", image: petsHorse },
+      { id: "pets-dog", label: "With Puppy", image: getImagePath("pets-dog") },
+      { id: "pets-cat", label: "Cat Lover", image: getImagePath("pets-cat") },
+      { id: "pets-bunny", label: "Bunny", image: getImagePath("pets-bunny") },
+      { id: "pets-horse", label: "Horse Riding", image: getImagePath("pets-horse") },
     ]
   },
   {
     name: "🦇 Gothic & Dark",
     items: [
-      { id: "gothic-dark", label: "Dark Queen", image: gothicDark },
-      { id: "gothic-angel", label: "Dark Angel", image: gothicAngel },
-      { id: "gothic-romantic", label: "Romantic Gothic", image: gothicRomantic },
-      { id: "gothic-vampire", label: "Vampire Lord", image: gothicVampire },
+      { id: "gothic-dark", label: "Dark Queen", image: getImagePath("gothic-dark") },
+      { id: "gothic-angel", label: "Dark Angel", image: getImagePath("gothic-angel") },
+      { id: "gothic-romantic", label: "Romantic Gothic", image: getImagePath("gothic-romantic") },
+      { id: "gothic-vampire", label: "Vampire Lord", image: getImagePath("gothic-vampire") },
     ]
   },
   {
     name: "⚙️ Steampunk",
     items: [
-      { id: "steampunk-inventor", label: "Inventor", image: steampunkInventor },
-      { id: "steampunk-pilot", label: "Airship Pilot", image: steampunkPilot },
-      { id: "steampunk-lady", label: "Victorian Lady", image: steampunkLady },
-      { id: "steampunk-explorer", label: "Explorer", image: steampunkExplorer },
+      { id: "steampunk-inventor", label: "Inventor", image: getImagePath("steampunk-inventor") },
+      { id: "steampunk-pilot", label: "Airship Pilot", image: getImagePath("steampunk-pilot") },
+      { id: "steampunk-lady", label: "Victorian Lady", image: getImagePath("steampunk-lady") },
+      { id: "steampunk-explorer", label: "Explorer", image: getImagePath("steampunk-explorer") },
     ]
   },
   {
     name: "⚔️ Historical Warriors",
     items: [
-      { id: "viking-warrior", label: "Viking", image: vikingWarrior },
-      { id: "pirate-captain", label: "Pirate Captain", image: pirateCaptain },
-      { id: "warrior-spartan", label: "Spartan", image: warriorSpartan },
-      { id: "warrior-samurai", label: "Samurai", image: warriorSamurai },
+      { id: "viking-warrior", label: "Viking", image: getImagePath("viking-warrior") },
+      { id: "pirate-captain", label: "Pirate Captain", image: getImagePath("pirate-captain") },
+      { id: "warrior-spartan", label: "Spartan", image: getImagePath("warrior-spartan") },
+      { id: "warrior-samurai", label: "Samurai", image: getImagePath("warrior-samurai") },
     ]
   },
   {
     name: "🤠 Western",
     items: [
-      { id: "western-cowboy", label: "Cowboy", image: westernCowboy },
-      { id: "western-sheriff", label: "Sheriff", image: westernSheriff },
-      { id: "western-rodeo", label: "Rodeo", image: westernRodeo },
-      { id: "western-saloon", label: "Saloon", image: westernSaloon },
+      { id: "western-cowboy", label: "Cowboy", image: getImagePath("western-cowboy") },
+      { id: "western-sheriff", label: "Sheriff", image: getImagePath("western-sheriff") },
+      { id: "western-rodeo", label: "Rodeo", image: getImagePath("western-rodeo") },
+      { id: "western-saloon", label: "Saloon", image: getImagePath("western-saloon") },
     ]
   },
   {
     name: "👨‍🍳 Culinary",
     items: [
-      { id: "chef-gourmet", label: "Gourmet Chef", image: chefGourmet },
-      { id: "chef-pastry", label: "Pastry Chef", image: chefPastry },
-      { id: "chef-sushi", label: "Sushi Chef", image: chefSushi },
-      { id: "chef-bbq", label: "BBQ Master", image: chefBbq },
+      { id: "chef-gourmet", label: "Gourmet Chef", image: getImagePath("chef-gourmet") },
+      { id: "chef-pastry", label: "Pastry Chef", image: getImagePath("chef-pastry") },
+      { id: "chef-sushi", label: "Sushi Chef", image: getImagePath("chef-sushi") },
+      { id: "chef-bbq", label: "BBQ Master", image: getImagePath("chef-bbq") },
     ]
   },
   {
     name: "🧘 Zen & Spiritual",
     items: [
-      { id: "zen-meditation", label: "Meditation", image: zenMeditation },
-      { id: "underwater-diver", label: "Deep Sea", image: underwaterDiver },
-      { id: "zen-taichi", label: "Tai Chi", image: zenTaichi },
-      { id: "zen-monk", label: "Monk", image: zenMonk },
+      { id: "zen-meditation", label: "Meditation", image: getImagePath("zen-meditation") },
+      { id: "underwater-diver", label: "Deep Sea", image: getImagePath("underwater-diver") },
+      { id: "zen-taichi", label: "Tai Chi", image: getImagePath("zen-taichi") },
+      { id: "zen-monk", label: "Monk", image: getImagePath("zen-monk") },
     ]
   },
-  // New 2026 categories
   {
     name: "🏋️ Extreme Sports",
     items: [
-      { id: "sports-racing", label: "F1 Racer", image: sportsRacing },
-      { id: "sports-boxer", label: "Boxer", image: sportsBoxer },
-      { id: "sports-surfing", label: "Pro Surfer", image: sportsSurfing },
-      { id: "sports-soccer", label: "Soccer Star", image: sportsSoccer },
-      { id: "sports-skating", label: "Ice Skater", image: sportsSkating },
-      { id: "sports-tennis", label: "Tennis Pro", image: sportsTennis },
-      { id: "sports-snowboard", label: "Snowboarder", image: sportsSnowboard },
+      { id: "sports-racing", label: "F1 Racer", image: getImagePath("sports-racing") },
+      { id: "sports-boxer", label: "Boxer", image: getImagePath("sports-boxer") },
+      { id: "sports-surfing", label: "Pro Surfer", image: getImagePath("sports-surfing") },
+      { id: "sports-soccer", label: "Soccer Star", image: getImagePath("sports-soccer") },
+      { id: "sports-skating", label: "Ice Skater", image: getImagePath("sports-skating") },
+      { id: "sports-tennis", label: "Tennis Pro", image: getImagePath("sports-tennis") },
+      { id: "sports-snowboard", label: "Snowboarder", image: getImagePath("sports-snowboard") },
     ]
   },
   {
     name: "💼 Career Dreams",
     items: [
-      { id: "career-pilot", label: "Airline Pilot", image: careerPilot },
-      { id: "career-firefighter", label: "Firefighter", image: careerFirefighter },
-      { id: "career-doctor", label: "Surgeon", image: careerDoctor },
-      { id: "lifestyle-barista", label: "Barista", image: lifestyleBarista },
+      { id: "career-pilot", label: "Airline Pilot", image: getImagePath("career-pilot") },
+      { id: "career-firefighter", label: "Firefighter", image: getImagePath("career-firefighter") },
+      { id: "career-doctor", label: "Surgeon", image: getImagePath("career-doctor") },
+      { id: "lifestyle-barista", label: "Barista", image: getImagePath("lifestyle-barista") },
     ]
   },
   {
     name: "🌍 World Cultures",
     items: [
-      { id: "culture-geisha", label: "Japanese Geisha", image: cultureGeisha },
-      { id: "culture-bollywood", label: "Bollywood Star", image: cultureBollywood },
-      { id: "culture-diademuertos", label: "Día de Muertos", image: cultureDiademuertos },
-      { id: "culture-hanfu", label: "Chinese Hanfu", image: cultureHanfu },
-      { id: "culture-scottish", label: "Scottish Highland", image: cultureScottish },
+      { id: "culture-geisha", label: "Japanese Geisha", image: getImagePath("culture-geisha") },
+      { id: "culture-bollywood", label: "Bollywood Star", image: getImagePath("culture-bollywood") },
+      { id: "culture-diademuertos", label: "Día de Muertos", image: getImagePath("culture-diademuertos") },
+      { id: "culture-hanfu", label: "Chinese Hanfu", image: getImagePath("culture-hanfu") },
+      { id: "culture-scottish", label: "Scottish Highland", image: getImagePath("culture-scottish") },
     ]
   },
   {
     name: "🔮 Mythology & Magic",
     items: [
-      { id: "myth-goddess", label: "Greek Goddess", image: mythGoddess },
-      { id: "ancient-pharaoh", label: "Egyptian Pharaoh", image: ancientPharaoh },
-      { id: "myth-nightqueen", label: "Night Queen", image: mythNightqueen },
-      { id: "myth-athena", label: "Athena Warrior", image: mythAthena },
-      { id: "myth-nature", label: "Nature Goddess", image: mythNature },
-      { id: "magic-potion", label: "Potion Witch", image: magicPotion },
-      { id: "mystic-fortune", label: "Fortune Teller", image: mysticFortune },
+      { id: "myth-goddess", label: "Greek Goddess", image: getImagePath("myth-goddess") },
+      { id: "ancient-pharaoh", label: "Egyptian Pharaoh", image: getImagePath("ancient-pharaoh") },
+      { id: "myth-nightqueen", label: "Night Queen", image: getImagePath("myth-nightqueen") },
+      { id: "myth-athena", label: "Athena Warrior", image: getImagePath("myth-athena") },
+      { id: "myth-nature", label: "Nature Goddess", image: getImagePath("myth-nature") },
+      { id: "magic-potion", label: "Potion Witch", image: getImagePath("magic-potion") },
+      { id: "mystic-fortune", label: "Fortune Teller", image: getImagePath("mystic-fortune") },
     ]
   },
   {
     name: "✨ Fantasy Creatures",
     items: [
-      { id: "fantasy-fairy", label: "Magical Fairy", image: fantasyFairy },
-      { id: "fantasy-unicorn", label: "Unicorn Rider", image: fantasyUnicorn },
-      { id: "fantasy-icequeen", label: "Ice Queen", image: fantasyIcequeen },
-      { id: "fantasy-wizard", label: "Dark Wizard", image: fantasyWizard },
+      { id: "fantasy-fairy", label: "Magical Fairy", image: getImagePath("fantasy-fairy") },
+      { id: "fantasy-unicorn", label: "Unicorn Rider", image: getImagePath("fantasy-unicorn") },
+      { id: "fantasy-icequeen", label: "Ice Queen", image: getImagePath("fantasy-icequeen") },
+      { id: "fantasy-wizard", label: "Dark Wizard", image: getImagePath("fantasy-wizard") },
     ]
   },
   {
     name: "🎤 Modern Music",
     items: [
-      { id: "music-kpop", label: "K-Pop Star", image: musicKpop },
-      { id: "music-hiphop", label: "Hip Hop Artist", image: musicHiphop },
-      { id: "music-jazz", label: "Jazz Singer", image: musicJazz },
+      { id: "music-kpop", label: "K-Pop Star", image: getImagePath("music-kpop") },
+      { id: "music-hiphop", label: "Hip Hop Artist", image: getImagePath("music-hiphop") },
+      { id: "music-jazz", label: "Jazz Singer", image: getImagePath("music-jazz") },
     ]
   },
   {
     name: "🎬 Action & Adventure",
     items: [
-      { id: "action-spy", label: "Secret Agent", image: actionSpy },
-      { id: "adventure-jungle", label: "Jungle Explorer", image: adventureJungle },
-      { id: "ancient-gladiator", label: "Gladiator", image: ancientGladiator },
-      { id: "warrior-dragon", label: "Dragon Warrior", image: warriorDragon },
-      { id: "warrior-amazon", label: "Amazon Warrior", image: warriorAmazon },
+      { id: "action-spy", label: "Secret Agent", image: getImagePath("action-spy") },
+      { id: "adventure-jungle", label: "Jungle Explorer", image: getImagePath("adventure-jungle") },
+      { id: "ancient-gladiator", label: "Gladiator", image: getImagePath("ancient-gladiator") },
+      { id: "warrior-dragon", label: "Dragon Warrior", image: getImagePath("warrior-dragon") },
+      { id: "warrior-amazon", label: "Amazon Warrior", image: getImagePath("warrior-amazon") },
     ]
   },
   {
     name: "💃 Dance & Performance",
     items: [
-      { id: "dance-ballerina", label: "Prima Ballerina", image: danceBallerina },
-      { id: "dance-flamenco", label: "Flamenco Dancer", image: danceFlamenco },
+      { id: "dance-ballerina", label: "Prima Ballerina", image: getImagePath("dance-ballerina") },
+      { id: "dance-flamenco", label: "Flamenco Dancer", image: getImagePath("dance-flamenco") },
     ]
   },
   {
     name: "🎰 Lifestyle & Luxury",
     items: [
-      { id: "lifestyle-wine", label: "Wine Tasting", image: lifestyleWine },
-      { id: "lifestyle-casino", label: "Casino VIP", image: lifestyleCasino },
-      { id: "lifestyle-biker", label: "Road Rider", image: lifestyleBiker },
-      { id: "glamour-masquerade", label: "Masquerade Ball", image: glamourMasquerade },
+      { id: "lifestyle-wine", label: "Wine Tasting", image: getImagePath("lifestyle-wine") },
+      { id: "lifestyle-casino", label: "Casino VIP", image: getImagePath("lifestyle-casino") },
+      { id: "lifestyle-biker", label: "Road Rider", image: getImagePath("lifestyle-biker") },
+      { id: "glamour-masquerade", label: "Masquerade Ball", image: getImagePath("glamour-masquerade") },
     ]
   },
   {
     name: "🏆 Awards & Fame",
     items: [
-      { id: "award-oscar", label: "Oscar Winner", image: awardOscar },
-      { id: "fashion-magazine", label: "Magazine Cover", image: fashionMagazine },
+      { id: "award-oscar", label: "Oscar Winner", image: getImagePath("award-oscar") },
+      { id: "fashion-magazine", label: "Magazine Cover", image: getImagePath("fashion-magazine") },
     ]
   },
   {
     name: "🔬 Fun & Quirky",
     items: [
-      { id: "fun-scientist", label: "Mad Scientist", image: funScientist },
-      { id: "tech-hacker", label: "Neon Hacker", image: techHacker },
-      { id: "gaming-esports", label: "Pro Gamer", image: gamingEsports },
+      { id: "fun-scientist", label: "Mad Scientist", image: getImagePath("fun-scientist") },
+      { id: "tech-hacker", label: "Neon Hacker", image: getImagePath("tech-hacker") },
+      { id: "gaming-esports", label: "Pro Gamer", image: getImagePath("gaming-esports") },
     ]
   },
   {
     name: "📺 Retro Classics",
     items: [
-      { id: "retro-filmnoir", label: "Film Noir Star", image: retroFilmnoir },
-      { id: "royal-renaissance", label: "Renaissance Noble", image: royalRenaissance },
+      { id: "retro-filmnoir", label: "Film Noir Star", image: getImagePath("retro-filmnoir") },
+      { id: "royal-renaissance", label: "Renaissance Noble", image: getImagePath("royal-renaissance") },
     ]
   },
   {
     name: "🐶 Pet Love",
     items: [
-      { id: "pets-puppies", label: "Puppy Party", image: petsPuppies },
+      { id: "pets-puppies", label: "Puppy Party", image: getImagePath("pets-puppies") },
     ]
   },
 ];
@@ -658,7 +436,7 @@ const CREDIT_PACKAGES = [
   { id: "100", credits: 100, price: 55, popular: false, bestValue: true },
 ];
 
-export const WALL_AI_STUDIO_V2_VERSION = "2026-01-06a";
+export const WALL_AI_STUDIO_V2_VERSION = "2026-01-06d";
 export const WallAIStudioV2 = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -809,7 +587,6 @@ export const WallAIStudioV2 = () => {
     for (const category of TRANSFORMATION_CATEGORIES) {
       const item = category.items.find(i => i.id === transformationId);
       if (item) {
-        // Return the full URL for the preview image
         return window.location.origin + item.image;
       }
     }
@@ -830,7 +607,6 @@ export const WallAIStudioV2 = () => {
       
       if (!finalImageUrl) throw new Error("Please provide an image");
 
-      // Get the style preview URL to send to the backend
       const stylePreviewUrl = getStylePreviewUrl(selectedTransformation);
 
       const { data, error } = await supabase.functions.invoke("ai-studio-transform", {
@@ -842,7 +618,6 @@ export const WallAIStudioV2 = () => {
       });
 
       if (error) {
-        // Check if response contains error message
         if (data?.error) {
           throw new Error(data.error);
         }
@@ -985,6 +760,7 @@ export const WallAIStudioV2 = () => {
                           <img
                             src={item.image}
                             alt={item.label}
+                            loading="lazy"
                             className="w-full h-full object-cover"
                           />
                         </div>
@@ -1095,6 +871,7 @@ export const WallAIStudioV2 = () => {
                     <img
                       src={item.transformed_image_url}
                       alt="Transformation"
+                      loading="lazy"
                       className="w-full h-full object-cover"
                     />
                     <button
