@@ -436,7 +436,7 @@ const CREDIT_PACKAGES = [
   { id: "100", credits: 100, price: 55, popular: false, bestValue: true },
 ];
 
-export const WALL_AI_STUDIO_V2_VERSION = "2026-01-06d";
+export const WALL_AI_STUDIO_V2_VERSION = "2026-01-06e";
 export const WallAIStudioV2 = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();

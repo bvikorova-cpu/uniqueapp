@@ -5,7 +5,7 @@ import { componentTagger } from "lovable-tagger";
 import { VitePWA } from "vite-plugin-pwa";
 
 // Bump this to force clients (especially mobile/PWA + CDN caches) onto a new versioned URL.
-const APP_BUILD_VERSION = "2026-01-06b";
+const APP_BUILD_VERSION = "2026-01-06e";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
