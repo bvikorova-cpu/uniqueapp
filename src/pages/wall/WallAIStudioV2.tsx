@@ -658,7 +658,7 @@ const CREDIT_PACKAGES = [
   { id: "100", credits: 100, price: 55, popular: false, bestValue: true },
 ];
 
-export default function WallAIStudio() {
+export default function WallAIStudioV2() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
