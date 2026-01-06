@@ -278,6 +278,95 @@ export const GIFT_CATALOG = [
   { type: "emperor_throne", emoji: "🪑", label: "Emperor Throne", value: 400, category: "vip", description: "Rule supreme" },
   { type: "universe_ruler", emoji: "🌌", label: "Universe Ruler", value: 650, category: "vip", description: "Cosmic authority" },
   { type: "omnipotent_being", emoji: "✨", label: "Omnipotent Being", value: 1000, category: "vip", description: "Ultimate power" },
+  
+  // WAVE 3 - 50 more gifts
+  // Messages wave 3 (6-85)
+  { type: "friendship_letter", emoji: "📨", label: "Friendship Letter", value: 16, category: "messages", description: "BFF message" },
+  { type: "holiday_card", emoji: "🎄", label: "Holiday Card", value: 24, category: "messages", description: "Seasonal greetings" },
+  { type: "valentine_card", emoji: "💌", label: "Valentine Card", value: 38, category: "messages", description: "Love day special" },
+  { type: "mother_day_card", emoji: "👩", label: "Mother's Day Card", value: 35, category: "messages", description: "For mom" },
+  { type: "father_day_card", emoji: "👨", label: "Father's Day Card", value: 35, category: "messages", description: "For dad" },
+  { type: "ai_song_dedication", emoji: "🎵", label: "AI Song Dedication", value: 85, category: "messages", description: "Custom melody" },
+  
+  // Emotions wave 3 (7-110)
+  { type: "gentle_pat", emoji: "🤚", label: "Gentle Pat", value: 7, category: "emotions", description: "Comforting touch" },
+  { type: "proud_moment", emoji: "🥲", label: "Proud Moment", value: 28, category: "emotions", description: "Proud of you" },
+  { type: "belly_laugh", emoji: "😂", label: "Belly Laugh", value: 15, category: "emotions", description: "Hilarious moment" },
+  { type: "mind_meld", emoji: "🧠", label: "Mind Meld", value: 65, category: "emotions", description: "Telepathic bond" },
+  { type: "spiritual_hug", emoji: "🕊️", label: "Spiritual Hug", value: 48, category: "emotions", description: "Soul embrace" },
+  { type: "love_overload", emoji: "💖", label: "Love Overload", value: 110, category: "emotions", description: "Maximum affection" },
+  
+  // Flowers wave 3 (6-180)
+  { type: "clover_field", emoji: "☘️", label: "Clover Field", value: 22, category: "flowers", description: "Irish luck" },
+  { type: "rose_gold", emoji: "🌹", label: "Rose Gold Bouquet", value: 95, category: "flowers", description: "Premium roses" },
+  { type: "japanese_garden", emoji: "🏯", label: "Japanese Garden", value: 130, category: "flowers", description: "Zen paradise" },
+  { type: "wildflower_meadow", emoji: "🌾", label: "Wildflower Meadow", value: 75, category: "flowers", description: "Natural beauty" },
+  { type: "enchanted_forest", emoji: "🌲", label: "Enchanted Forest", value: 180, category: "flowers", description: "Magical woodland" },
+  { type: "lotus", emoji: "🪷", label: "Sacred Lotus", value: 45, category: "flowers", description: "Spiritual bloom" },
+  
+  // Romantic wave 3 (8-500)
+  { type: "first_date", emoji: "🍿", label: "First Date Memory", value: 32, category: "romantic", description: "Nostalgic moment" },
+  { type: "love_story_book", emoji: "📖", label: "Love Story Book", value: 58, category: "romantic", description: "Our story" },
+  { type: "couples_spa", emoji: "🧖", label: "Couples Spa", value: 95, category: "romantic", description: "Relaxation duo" },
+  { type: "hot_air_balloon", emoji: "🎈", label: "Hot Air Balloon", value: 145, category: "romantic", description: "Sky romance" },
+  { type: "maldives_escape", emoji: "🏝️", label: "Maldives Escape", value: 320, category: "romantic", description: "Island paradise" },
+  { type: "aurora_proposal", emoji: "💍", label: "Aurora Proposal", value: 500, category: "romantic", description: "Dream proposal" },
+  
+  // Sweets wave 3 (3-150)
+  { type: "gummy_bears", emoji: "🐻", label: "Gummy Bears", value: 6, category: "sweets", description: "Chewy fun" },
+  { type: "baklava", emoji: "🥮", label: "Baklava", value: 18, category: "sweets", description: "Honey layers" },
+  { type: "mochi", emoji: "🍡", label: "Mochi", value: 14, category: "sweets", description: "Japanese treat" },
+  { type: "croissant", emoji: "🥐", label: "Croissant", value: 11, category: "sweets", description: "French pastry" },
+  { type: "swiss_chocolate", emoji: "🍫", label: "Swiss Chocolate Box", value: 65, category: "sweets", description: "Alpine quality" },
+  { type: "dessert_island", emoji: "🏝️", label: "Dessert Island", value: 150, category: "sweets", description: "Sweet paradise" },
+  
+  // Drinks wave 3 (7-150)
+  { type: "matcha", emoji: "🍵", label: "Matcha Latte", value: 10, category: "drinks", description: "Green energy" },
+  { type: "irish_coffee", emoji: "☕", label: "Irish Coffee", value: 16, category: "drinks", description: "Whiskey blend" },
+  { type: "pina_colada", emoji: "🍹", label: "Piña Colada", value: 18, category: "drinks", description: "Tropical mix" },
+  { type: "cognac", emoji: "🥃", label: "Fine Cognac", value: 65, category: "drinks", description: "French brandy" },
+  { type: "champagne_cellar", emoji: "🍾", label: "Champagne Cellar", value: 150, category: "drinks", description: "Bubbly heaven" },
+  { type: "craft_beer_set", emoji: "🍻", label: "Craft Beer Set", value: 32, category: "drinks", description: "Artisan brews" },
+  
+  // Awards wave 3 (28-550)
+  { type: "hero_medal", emoji: "🦸", label: "Hero Medal", value: 75, category: "awards", description: "Heroic deed" },
+  { type: "genius_award", emoji: "🧠", label: "Genius Award", value: 95, category: "awards", description: "Brilliant mind" },
+  { type: "heart_of_gold", emoji: "💛", label: "Heart of Gold", value: 65, category: "awards", description: "Kind soul" },
+  { type: "inspiration_trophy", emoji: "💪", label: "Inspiration Trophy", value: 88, category: "awards", description: "You inspire" },
+  { type: "eternal_flame", emoji: "🔥", label: "Eternal Flame Award", value: 350, category: "awards", description: "Undying passion" },
+  { type: "galaxy_champion", emoji: "🌌", label: "Galaxy Champion", value: 550, category: "awards", description: "Intergalactic winner" },
+  
+  // Luxury wave 3 (90-1500)
+  { type: "lamborghini", emoji: "🏎️", label: "Lamborghini", value: 420, category: "luxury", description: "Italian beast" },
+  { type: "dubai_tower", emoji: "🏙️", label: "Dubai Penthouse", value: 550, category: "luxury", description: "Sky high living" },
+  { type: "gold_helicopter", emoji: "🚁", label: "Gold Helicopter", value: 380, category: "luxury", description: "Flying gold" },
+  { type: "diamond_yacht", emoji: "💎", label: "Diamond Yacht", value: 900, category: "luxury", description: "Floating jewel" },
+  { type: "mars_colony", emoji: "🔴", label: "Mars Colony", value: 1500, category: "luxury", description: "Red planet home" },
+  { type: "billionaire_bundle", emoji: "💰", label: "Billionaire Bundle", value: 1200, category: "luxury", description: "Everything luxury" },
+  
+  // Special wave 3 (25-600)
+  { type: "magic_mirror", emoji: "🪞", label: "Magic Mirror", value: 42, category: "special", description: "Enchanted reflection" },
+  { type: "infinity_stone", emoji: "💎", label: "Infinity Stone", value: 250, category: "special", description: "Cosmic power" },
+  { type: "philosophers_stone", emoji: "🔶", label: "Philosopher's Stone", value: 350, category: "special", description: "Alchemy magic" },
+  { type: "parallel_universe", emoji: "🌀", label: "Parallel Universe", value: 400, category: "special", description: "Alternate reality" },
+  { type: "multiverse_key", emoji: "🗝️", label: "Multiverse Key", value: 600, category: "special", description: "Access all realities" },
+  { type: "quantum_entanglement", emoji: "⚛️", label: "Quantum Entanglement", value: 180, category: "special", description: "Connected forever" },
+  
+  // Mythical wave 3 (65-900)
+  { type: "chimera", emoji: "🦁", label: "Chimera", value: 145, category: "mythical", description: "Triple beast" },
+  { type: "minotaur", emoji: "🐂", label: "Minotaur", value: 115, category: "mythical", description: "Labyrinth guardian" },
+  { type: "banshee", emoji: "👻", label: "Banshee", value: 100, category: "mythical", description: "Spirit wail" },
+  { type: "fenrir", emoji: "🐺", label: "Fenrir", value: 280, category: "mythical", description: "Giant wolf" },
+  { type: "ragnarok", emoji: "⚡", label: "Ragnarök", value: 650, category: "mythical", description: "End times" },
+  { type: "primordial_chaos", emoji: "🌑", label: "Primordial Chaos", value: 900, category: "mythical", description: "Before creation" },
+  
+  // VIP wave 3 (35-1500)
+  { type: "influencer_badge", emoji: "📱", label: "Influencer Badge", value: 45, category: "vip", description: "Social star" },
+  { type: "golden_halo", emoji: "😇", label: "Golden Halo", value: 95, category: "vip", description: "Divine glow" },
+  { type: "supreme_crown", emoji: "👑", label: "Supreme Crown", value: 350, category: "vip", description: "Above all" },
+  { type: "galactic_emperor", emoji: "🌌", label: "Galactic Emperor", value: 800, category: "vip", description: "Rule the galaxy" },
+  { type: "reality_bender", emoji: "🌀", label: "Reality Bender", value: 1200, category: "vip", description: "Shape existence" },
+  { type: "supreme_being", emoji: "🔆", label: "Supreme Being", value: 1500, category: "vip", description: "Beyond comprehension" },
 ];
 
 export const CREDIT_PACKAGES = [
