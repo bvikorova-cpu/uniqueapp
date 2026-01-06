@@ -393,9 +393,8 @@ verify_jwt = true
 [functions.generate-teacher-coloring]
 verify_jwt = true
 
-[functions.create-credits-payment]
+[functions.create-comedy-payment]
 verify_jwt = true
-
 [functions.create-comedy-payment]
 verify_jwt = true
 
