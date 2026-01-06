@@ -283,9 +283,7 @@ export const LimitedEditionGifts = ({ onSelectGift }: LimitedEditionGiftsProps) 
           )}
         </div>
         <p className="text-white/80 text-sm">
-          {activeSeason === currentSeason 
-            ? "Limited time gifts! Available only during this season."
-            : "Preview collection - available when the season arrives!"}
+          Exclusive seasonal collection - available all year round!
         </p>
       </div>
 
@@ -293,9 +291,8 @@ export const LimitedEditionGifts = ({ onSelectGift }: LimitedEditionGiftsProps) 
       <div className={`bg-gradient-to-br ${seasonData.bgColor} rounded-2xl p-4 border border-gray-200`}>
         <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-3">
           {seasonData.gifts.map((gift, index) => {
-            const canAfford = credits >= gift.value && activeSeason === currentSeason;
+            const canAfford = credits >= gift.value;
             const isSelected = selectedGift === gift.type;
-            const isAvailable = activeSeason === currentSeason;
 
             return (
               <motion.div
@@ -303,32 +300,21 @@ export const LimitedEditionGifts = ({ onSelectGift }: LimitedEditionGiftsProps) 
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: index * 0.03 }}
-                onClick={() => isAvailable && canAfford && handleSelect(gift)}
+                onClick={() => canAfford && handleSelect(gift)}
                 className={`relative p-3 rounded-xl text-center cursor-pointer transition-all ${
                   isSelected
                     ? `bg-gradient-to-br ${seasonData.color} text-white shadow-lg scale-105`
-                    : !isAvailable
-                    ? "bg-gray-100/70 opacity-60 cursor-not-allowed"
                     : canAfford
                     ? "bg-white hover:shadow-md border border-gray-200"
                     : "bg-gray-100 opacity-50 cursor-not-allowed"
                 }`}
               >
                 {/* Limited badge */}
-                {isAvailable && (
-                  <div className="absolute -top-2 -right-2">
-                    <span className="bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">
-                      LIMITED
-                    </span>
-                  </div>
-                )}
-                {!isAvailable && (
-                  <div className="absolute -top-2 -right-2">
-                    <span className="bg-gray-400 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">
-                      SOON
-                    </span>
-                  </div>
-                )}
+                <div className="absolute -top-2 -right-2">
+                  <span className="bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">
+                    LIMITED
+                  </span>
+                </div>
 
                 <span className="text-3xl block mb-1">{gift.emoji}</span>
                 <p className={`text-xs font-medium truncate ${isSelected ? "text-white" : "text-gray-700"}`}>
@@ -349,7 +335,7 @@ export const LimitedEditionGifts = ({ onSelectGift }: LimitedEditionGiftsProps) 
       {/* Info */}
       <div className="flex items-center gap-2 text-gray-500 text-sm px-2">
         <Sparkles className="h-4 w-4 text-amber-500" />
-        <span>Seasonal gifts are exclusive and only available for a limited time!</span>
+        <span>Exclusive seasonal collections available all year round!</span>
       </div>
     </div>
   );
