@@ -138,12 +138,13 @@ const Home = () => {
               index === currentImageIndex ? "opacity-100" : "opacity-0"
             }`}
           >
-            <div 
-              className="absolute inset-0"
+            <img 
+              src={image}
+              alt={`Hero slide ${index + 1}`}
+              className="absolute inset-0 w-full h-full object-cover"
               style={{
-                backgroundImage: `url(${image})`,
-                backgroundSize: "cover",
-                backgroundPosition: "center",
+                imageRendering: "auto",
+                opacity: 1,
               }}
             />
           </div>
