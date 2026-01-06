@@ -427,7 +427,7 @@ export const GIFT_CATALOG = [
   { type: "entire_planet", emoji: "🪐", label: "Entire Planet", value: 2000, category: "luxury", description: "Your own world" },
   
   // Special wave 4 (30-800)
-  { type: "good_karma", emoji: "☸️", label: "Good Karma", value: 35, category: "special", description: "Positive energy" },
+  { type: "good_karma", emoji: "🔄", label: "Good Karma", value: 35, category: "special", description: "Positive energy" },
   { type: "serendipity", emoji: "🎲", label: "Serendipity", value: 55, category: "special", description: "Happy accident" },
   { type: "destiny_thread", emoji: "🧵", label: "Destiny Thread", value: 145, category: "special", description: "Fate connection" },
   { type: "reality_stone", emoji: "🔴", label: "Reality Stone", value: 380, category: "special", description: "Alter existence" },
@@ -441,7 +441,7 @@ export const GIFT_CATALOG = [
   { type: "creation_power", emoji: "✨", label: "Creation Power", value: 1200, category: "mythical", description: "Make worlds" },
   
   // VIP wave 4 (50-2500)
-  { type: "platinum_wings", emoji: "🪽", label: "Platinum Wings", value: 280, category: "vip", description: "Flying elite" },
+  { type: "platinum_wings", emoji: "🦅", label: "Platinum Wings", value: 280, category: "vip", description: "Flying elite" },
   { type: "time_lord", emoji: "⏰", label: "Time Lord Status", value: 550, category: "vip", description: "Control time" },
   { type: "dimension_emperor", emoji: "🌀", label: "Dimension Emperor", value: 950, category: "vip", description: "Rule dimensions" },
   { type: "absolute_god", emoji: "⚡", label: "Absolute God", value: 2000, category: "vip", description: "Supreme deity" },
