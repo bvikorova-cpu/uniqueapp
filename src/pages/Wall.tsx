@@ -509,7 +509,7 @@ const Feed = () => {
       case '/wall/friends':
         return <WallFriends />;
       case '/wall/ai-studio':
-        return <WallAIStudioV2 />;
+        return <WallAIStudioV2 key="ai-studio-v2-2026-01-06c" />;
       case '/wall/groups':
         return <WallGroups />;
       case '/wall/pages':
