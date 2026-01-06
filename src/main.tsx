@@ -8,12 +8,20 @@ import { CookieConsentBanner } from "./components/gdpr/CookieConsentBanner";
  * Prevent preview from getting stuck on a previously cached PWA build.
  * We clear SW + Cache Storage once per version and then do a single hard reload.
  */
-const CACHE_BUST_VERSION = "2026-01-06a"; // preview-sync: bump to force SW+cache clear
+const CACHE_BUST_VERSION = "2026-01-06b"; // preview-sync: bump to force SW+cache clear
 
 (async () => {
   try {
     const key = `sw_cache_cleared_${CACHE_BUST_VERSION}`;
-    if (localStorage.getItem(key) === "1") return;
+
+    // Always force a versioned URL so CDN/proxy caches can't keep serving an old /index.html.
+    // (Most caches key by the full URL including querystring.)
+    const url = new URL(window.location.href);
+    const currentV = url.searchParams.get("v");
+    const needsVersionedUrl = currentV !== CACHE_BUST_VERSION;
+
+    // If we've already purged for this version AND we're already on the versioned URL, do nothing.
+    if (localStorage.getItem(key) === "1" && !needsVersionedUrl) return;
 
     let didSomething = false;
 
@@ -35,9 +43,8 @@ const CACHE_BUST_VERSION = "2026-01-06a"; // preview-sync: bump to force SW+cach
 
     localStorage.setItem(key, "1");
 
-    // If we actually removed a SW/cache, reload once to pick up the fresh build.
-    if (didSomething) {
-      const url = new URL(window.location.href);
+    // Reload once to pick up the fresh build OR to ensure we're on the versioned URL.
+    if (didSomething || needsVersionedUrl) {
       url.searchParams.set("v", CACHE_BUST_VERSION);
       window.location.replace(url.toString());
     }
