@@ -4,6 +4,9 @@ import path from "path";
 import { componentTagger } from "lovable-tagger";
 import { VitePWA } from "vite-plugin-pwa";
 
+// Bump this to force clients (especially mobile/PWA + CDN caches) onto a new versioned URL.
+const APP_BUILD_VERSION = "2026-01-06b";
+
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
   server: {
@@ -21,7 +24,8 @@ export default defineConfig(({ mode }) => ({
         short_name: "Unique",
         description:
           "Tvoja jedinečná sociálna sieť. Zdieľaj, spájaj sa a objavuj nových priateľov.",
-        start_url: "/",
+        start_url: `/?v=${APP_BUILD_VERSION}`,
+        scope: "/",
         display: "standalone",
         background_color: "#ffffff",
         theme_color: "#8b5cf6",
