@@ -236,8 +236,8 @@ export const LimitedEditionGifts = ({ onSelectGift }: LimitedEditionGiftsProps) 
 
   return (
     <div className="space-y-4">
-      {/* Season tabs */}
-      <div className="flex gap-2 overflow-x-auto pb-2">
+      {/* Season tabs - vertical grid */}
+      <div className="grid grid-cols-2 gap-2">
         {seasons.map((season) => {
           const sData = SEASONAL_GIFTS[season];
           const isActive = activeSeason === season;
@@ -247,7 +247,7 @@ export const LimitedEditionGifts = ({ onSelectGift }: LimitedEditionGiftsProps) 
             <button
               key={season}
               onClick={() => setActiveSeason(season)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-full whitespace-nowrap transition-all ${
+              className={`flex items-center justify-center gap-2 px-4 py-3 rounded-xl transition-all ${
                 isActive
                   ? `bg-gradient-to-r ${sData.color} text-white shadow-lg`
                   : "bg-white border border-gray-200 text-gray-600 hover:bg-gray-50"
