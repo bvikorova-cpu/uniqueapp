@@ -9,14 +9,14 @@ import { useTranslation } from "react-i18next";
 
 // Import hero images - centralized for consistent cache-busting in preview
 import heroDating from "@/assets/hero/hero-dating-new.jpg";
-import heroSocial from "@/assets/hero/hero-social-new.jpg";
+import heroRelaxing from "@/assets/hero/hero-adventure.jpg";
 import heroCooking from "@/assets/hero/hero-cooking-new.jpg";
 import heroParis from "@/assets/hero/hero-paris-tower.jpg";
-import heroParisCouple from "@/assets/hero/hero-paris-couple.jpg";
+import heroHappyCouple from "@/assets/hero/hero-paris-couple.jpg";
 import heroNyc from "@/assets/hero/hero-nyc-lights.jpg";
 import heroNycFriends from "@/assets/hero/hero-nyc-friends.jpg";
 import heroFriends from "@/assets/hero/hero-friends.jpg";
-// preview-sync: 2026-01-05a
+// preview-sync: 2026-01-06a
 
 const Home = () => {
   const navigate = useNavigate();
@@ -30,10 +30,10 @@ const Home = () => {
   // NOTE: keep these imports in /assets/hero to avoid old cached variants in preview.
   const heroImages = [
     heroDating,
-    heroSocial,
+    heroRelaxing,
     heroCooking,
     heroParis,
-    heroParisCouple,
+    heroHappyCouple,
     heroNyc,
     heroNycFriends,
     heroFriends,
