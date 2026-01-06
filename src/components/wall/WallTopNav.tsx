@@ -11,7 +11,6 @@ import {
   Calendar,
   Bookmark,
   TrendingUp,
-  Sparkles,
   Info,
   MoreHorizontal,
 } from "lucide-react";
@@ -35,7 +34,6 @@ export function WallTopNav({ currentPath }: WallTopNavProps) {
     { icon: Home, label: "Feed", path: "/wall" },
     { icon: MessageCircle, label: "Messages", path: "/wall/messages" },
     { icon: Users2, label: "Friends", path: "/wall/friends" },
-    { icon: Sparkles, label: "AI Studio", path: "/wall/ai-studio" },
   ];
 
   const moreNavItems = [
