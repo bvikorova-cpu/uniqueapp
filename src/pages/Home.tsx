@@ -15,7 +15,7 @@ import heroParis from "@/assets/hero/hero-paris-tower.jpg";
 import heroHappyCouple from "@/assets/hero/hero-paris-couple.jpg";
 import heroNyc from "@/assets/hero/hero-nyc-lights.jpg";
 import heroNycFriends from "@/assets/hero/hero-nyc-friends.jpg";
-import heroFriends from "@/assets/hero/hero-friends.jpg";
+import heroUserUpload8 from "@/assets/hero/hero-user-upload-8.jpg";
 // preview-sync: 2026-01-06a
 
 const Home = () => {
@@ -36,7 +36,7 @@ const Home = () => {
     heroHappyCouple,
     heroNyc,
     heroNycFriends,
-    heroFriends,
+    heroUserUpload8,
   ];
 
   // Typewriter effect
