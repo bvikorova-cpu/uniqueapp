@@ -54,6 +54,17 @@ import sebastian from "@/assets/characters/sebastian.png";
 import flounder from "@/assets/characters/flounder.png";
 import crush from "@/assets/characters/crush.png";
 import squidward from "@/assets/characters/squidward.png";
+// DC Heroes
+import batman from "@/assets/characters/batman.png";
+import superman from "@/assets/characters/superman.png";
+import wonderWoman from "@/assets/characters/wonder-woman.png";
+import flash from "@/assets/characters/flash.png";
+import aquaman from "@/assets/characters/aquaman.png";
+import greenLantern from "@/assets/characters/green-lantern.png";
+import cyborg from "@/assets/characters/cyborg.png";
+import batgirl from "@/assets/characters/batgirl.png";
+import supergirl from "@/assets/characters/supergirl.png";
+import robin from "@/assets/characters/robin.png";
 
 export const characterImages: Record<string, string> = {
   elsa,
@@ -111,4 +122,15 @@ export const characterImages: Record<string, string> = {
   flounder,
   crush,
   squidward,
+  // DC Heroes
+  batman,
+  superman,
+  "wonder-woman": wonderWoman,
+  flash,
+  aquaman,
+  "green-lantern": greenLantern,
+  cyborg,
+  batgirl,
+  supergirl,
+  robin,
 };

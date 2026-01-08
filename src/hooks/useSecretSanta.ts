@@ -514,6 +514,18 @@ export const GIFT_CATALOG = [
   { type: "captain-marvel", emoji: "⭐", label: "Captain Marvel", value: 68, category: "disney", description: "Cosmic hero", image: characterImages["captain-marvel"] },
   { type: "ant-man", emoji: "🐜", label: "Ant-Man", value: 42, category: "disney", description: "Size-changing hero", image: characterImages["ant-man"] },
   { type: "doctor-strange", emoji: "🔮", label: "Doctor Strange", value: 75, category: "disney", description: "Sorcerer Supreme", image: characterImages["doctor-strange"] },
+
+  // DC HEROES with images
+  { type: "batman", emoji: "🦇", label: "Batman", value: 70, category: "disney", description: "Dark Knight", image: characterImages["batman"] },
+  { type: "superman", emoji: "💪", label: "Superman", value: 65, category: "disney", description: "Man of Steel", image: characterImages["superman"] },
+  { type: "wonder-woman", emoji: "⭐", label: "Wonder Woman", value: 68, category: "disney", description: "Amazon Princess", image: characterImages["wonder-woman"] },
+  { type: "flash", emoji: "⚡", label: "The Flash", value: 55, category: "disney", description: "Fastest man alive", image: characterImages["flash"] },
+  { type: "aquaman", emoji: "🔱", label: "Aquaman", value: 58, category: "disney", description: "King of Atlantis", image: characterImages["aquaman"] },
+  { type: "green-lantern", emoji: "💚", label: "Green Lantern", value: 52, category: "disney", description: "Emerald Knight", image: characterImages["green-lantern"] },
+  { type: "cyborg", emoji: "🤖", label: "Cyborg", value: 48, category: "disney", description: "Half man, half machine", image: characterImages["cyborg"] },
+  { type: "batgirl", emoji: "🦇", label: "Batgirl", value: 45, category: "disney", description: "Gotham's protector", image: characterImages["batgirl"] },
+  { type: "supergirl", emoji: "💫", label: "Supergirl", value: 60, category: "disney", description: "Girl of Steel", image: characterImages["supergirl"] },
+  { type: "robin", emoji: "🐦", label: "Robin", value: 42, category: "disney", description: "Boy Wonder", image: characterImages["robin"] },
 ];
 
 export const CREDIT_PACKAGES = [
