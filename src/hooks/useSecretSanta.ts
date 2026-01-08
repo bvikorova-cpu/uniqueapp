@@ -502,6 +502,18 @@ export const GIFT_CATALOG = [
   { type: "dimension_emperor", emoji: "🌀", label: "Dimension Emperor", value: 950, category: "vip", description: "Rule dimensions" },
   { type: "absolute_god", emoji: "⚡", label: "Absolute God", value: 2000, category: "vip", description: "Supreme deity" },
   { type: "infinity_itself", emoji: "♾️", label: "Infinity Itself", value: 2500, category: "vip", description: "Boundless power" },
+
+  // MARVEL HEROES with images
+  { type: "spider-man", emoji: "🕷️", label: "Spider-Man", value: 45, category: "disney", description: "Friendly neighborhood hero", image: characterImages["spider-man"] },
+  { type: "iron-man", emoji: "🤖", label: "Iron Man", value: 65, category: "disney", description: "Genius billionaire", image: characterImages["iron-man"] },
+  { type: "captain-america", emoji: "🛡️", label: "Captain America", value: 55, category: "disney", description: "First Avenger", image: characterImages["captain-america"] },
+  { type: "black-panther", emoji: "🐆", label: "Black Panther", value: 70, category: "disney", description: "King of Wakanda", image: characterImages["black-panther"] },
+  { type: "hulk", emoji: "💪", label: "Hulk", value: 50, category: "disney", description: "Incredible strength", image: characterImages["hulk"] },
+  { type: "thor", emoji: "⚡", label: "Thor", value: 60, category: "disney", description: "God of Thunder", image: characterImages["thor"] },
+  { type: "black-widow", emoji: "🕷️", label: "Black Widow", value: 48, category: "disney", description: "Super spy", image: characterImages["black-widow"] },
+  { type: "captain-marvel", emoji: "⭐", label: "Captain Marvel", value: 68, category: "disney", description: "Cosmic hero", image: characterImages["captain-marvel"] },
+  { type: "ant-man", emoji: "🐜", label: "Ant-Man", value: 42, category: "disney", description: "Size-changing hero", image: characterImages["ant-man"] },
+  { type: "doctor-strange", emoji: "🔮", label: "Doctor Strange", value: 75, category: "disney", description: "Sorcerer Supreme", image: characterImages["doctor-strange"] },
 ];
 
 export const CREDIT_PACKAGES = [
