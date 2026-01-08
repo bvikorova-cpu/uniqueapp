@@ -203,7 +203,15 @@ export const SecretSantaSendGift = () => {
                     : "bg-gray-100 border border-gray-200 opacity-50 cursor-not-allowed"
                 }`}
               >
-                <span className="text-2xl sm:text-3xl block">{gift.emoji}</span>
+                {(gift as any).image ? (
+                  <img 
+                    src={(gift as any).image} 
+                    alt={gift.label} 
+                    className="w-10 h-10 sm:w-12 sm:h-12 mx-auto object-contain"
+                  />
+                ) : (
+                  <span className="text-2xl sm:text-3xl block">{gift.emoji}</span>
+                )}
                 <p className="text-gray-700 text-[10px] sm:text-xs mt-1 truncate font-medium">{gift.label}</p>
                 <p className={`text-[10px] sm:text-xs mt-0.5 font-semibold ${affordable ? "text-amber-600" : "text-red-500"}`}>
                   💎 {gift.value}
@@ -217,7 +225,15 @@ export const SecretSantaSendGift = () => {
         {selectedGiftData && (
           <div className="mt-4 p-4 rounded-xl bg-gradient-to-r from-amber-100 to-yellow-100 border border-amber-300">
             <div className="flex items-center gap-3">
-              <span className="text-4xl">{selectedGiftData.emoji}</span>
+              {(selectedGiftData as any).image ? (
+                <img 
+                  src={(selectedGiftData as any).image} 
+                  alt={selectedGiftData.label} 
+                  className="w-12 h-12 object-contain"
+                />
+              ) : (
+                <span className="text-4xl">{selectedGiftData.emoji}</span>
+              )}
               <div className="flex-1">
                 <h4 className="font-semibold text-gray-800">{selectedGiftData.label}</h4>
                 <p className="text-gray-600 text-sm">{selectedGiftData.description}</p>
