@@ -5,10 +5,13 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Heart, Play, Star, Sparkles, Crown, BookOpen, Volume2, Trophy, Moon, CreditCard, Video, Castle, Palette } from "lucide-react";
+import { Heart, Play, Star, Sparkles, Crown, BookOpen, Volume2, Trophy, Moon, CreditCard, Video, Castle, Palette, Unlock, Shield } from "lucide-react";
 import { toast } from "sonner";
 import { showImages } from "@/components/kids/ShowImages";
 import castleBg from "@/assets/kids/disney-castle-bg.jpg";
+import { ParentalGate, useParentalGate } from "@/components/kids/ParentalGate";
+import { SafeContentBadge } from "@/components/kids/SafeContentBadge";
+import { useKidsGoldPass } from "@/hooks/useKidsGoldPass";
 
 interface Show {
   id: string;
@@ -29,6 +32,21 @@ const KidsChannel = () => {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<any>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
+  
+  // Parental Gate state
+  const [showParentalGate, setShowParentalGate] = useState(false);
+  const [pendingNavigation, setPendingNavigation] = useState<string | null>(null);
+  const [pendingFeatureName, setPendingFeatureName] = useState<string>("");
+  const { isVerified, checkVerification } = useParentalGate();
+  
+  // Gold Pass status
+  const { hasGoldPass, loading: goldPassLoading } = useKidsGoldPass();
+
+  // AI-interactive features that require parental gate
+  const AI_FEATURES = [
+    { path: '/kids-stories/voice-chat', name: 'Character Chat' },
+    { path: '/kids-story-creator', name: 'Story Creator' },
+  ];
 
   const showImageMap: Record<string, string> = {
     "Peppa Pig": showImages.peppa,
@@ -191,6 +209,42 @@ const KidsChannel = () => {
     ? shows 
     : shows.filter(s => s.category === selectedCategory);
 
+  // Handle navigation with parental gate for AI features
+  const handleFeatureNavigation = (path: string, featureName: string, requiresGate: boolean) => {
+    if (requiresGate) {
+      // Check if already verified
+      if (checkVerification()) {
+        navigate(path);
+      } else {
+        setPendingNavigation(path);
+        setPendingFeatureName(featureName);
+        setShowParentalGate(true);
+      }
+    } else {
+      navigate(path);
+    }
+  };
+
+  const handleParentalGateSuccess = () => {
+    setShowParentalGate(false);
+    if (pendingNavigation) {
+      navigate(pendingNavigation);
+      setPendingNavigation(null);
+      setPendingFeatureName("");
+    }
+  };
+
+  // Check if a feature is AI-interactive (requires parental gate)
+  const isAIFeature = (path: string) => {
+    return AI_FEATURES.some(f => f.path === path);
+  };
+
+  // Get feature name for parental gate
+  const getFeatureName = (path: string) => {
+    const feature = AI_FEATURES.find(f => f.path === path);
+    return feature?.name || "this feature";
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-600 via-pink-500 to-blue-400">
@@ -243,12 +297,17 @@ const KidsChannel = () => {
 
         {/* Interactive Features - Grid Layout */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
-          {/* 1. Talk to Characters */}
+          {/* 1. Talk to Characters - AI Feature with Parental Gate */}
           <Card 
-            className="group overflow-hidden bg-gradient-to-br from-green-100/95 to-emerald-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-green-400 transition-all duration-300 hover:scale-105 cursor-pointer shadow-2xl hover:shadow-green-300/50 animate-fade-in"
-            onClick={() => navigate('/kids-stories/voice-chat')}
+            className={`group overflow-hidden bg-gradient-to-br from-green-100/95 to-emerald-100/95 backdrop-blur-sm border-4 transition-all duration-300 hover:scale-105 cursor-pointer shadow-2xl hover:shadow-green-300/50 animate-fade-in ${hasGoldPass ? 'border-green-400 ring-2 ring-green-300' : 'border-white/60 hover:border-green-400'}`}
+            onClick={() => handleFeatureNavigation('/kids-stories/voice-chat', 'Character Chat', true)}
           >
-            <div className="p-6 text-center">
+            <div className="p-6 text-center relative">
+              {hasGoldPass && (
+                <div className="absolute top-2 right-2">
+                  <Badge className="bg-green-500 text-white gap-1"><Unlock className="w-3 h-3" /> Unlocked</Badge>
+                </div>
+              )}
               <div className="bg-white rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center shadow-lg">
                 <Volume2 className="w-10 h-10 text-green-500" />
               </div>
@@ -258,7 +317,10 @@ const KidsChannel = () => {
               <p className="text-gray-700 text-sm mb-3">
                 Have real conversations with your favorite characters!
               </p>
-              <Badge className="bg-green-500 text-white shadow-md">Voice Interactive</Badge>
+              <div className="flex gap-2 justify-center flex-wrap">
+                <Badge className="bg-green-500 text-white shadow-md">Voice Interactive</Badge>
+                <Badge variant="outline" className="border-purple-300 text-purple-600"><Shield className="w-3 h-3 mr-1" />Parent Check</Badge>
+              </div>
             </div>
           </Card>
 
@@ -451,6 +513,23 @@ const KidsChannel = () => {
           animation: cloud-slow 90s linear infinite;
         }
       `}</style>
+
+      {/* Safe Content Badge Footer */}
+      <div className="relative z-10 container mx-auto px-4 pb-8">
+        <SafeContentBadge />
+      </div>
+
+      {/* Parental Gate Dialog */}
+      <ParentalGate
+        isOpen={showParentalGate}
+        onSuccess={handleParentalGateSuccess}
+        onClose={() => {
+          setShowParentalGate(false);
+          setPendingNavigation(null);
+          setPendingFeatureName("");
+        }}
+        featureName={pendingFeatureName}
+      />
     </div>
   );
 };
