@@ -14,6 +14,8 @@ import { User as SupabaseUser } from "@supabase/supabase-js";
 import { JobPreferencesDialog } from "@/components/jobs/JobPreferencesDialog";
 import { JobAIAssistant } from "@/components/jobs/JobAIAssistant";
 import { JobApplicationDialog } from "@/components/jobs/JobApplicationDialog";
+import { OneClickApplyDialog } from "@/components/jobs/OneClickApplyDialog";
+import { AIJobOptimizer } from "@/components/jobs/AIJobOptimizer";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
@@ -482,6 +484,7 @@ const Jobs = () => {
               <>
                 <JobPreferencesDialog userId={user.id} />
                 <JobAIAssistant />
+                <AIJobOptimizer />
               </>
             )}
             {user && isEmployer && (
@@ -812,7 +815,7 @@ const Jobs = () => {
 
               {/* Action Button */}
               {selectedJob && user && (
-                <JobApplicationDialog
+                <OneClickApplyDialog
                   jobId={selectedJob.id}
                   jobTitle={selectedJob.title}
                   companyName={selectedJob.company_name}
