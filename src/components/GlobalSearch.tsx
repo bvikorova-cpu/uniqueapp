@@ -28,77 +28,120 @@ const fuzzyMatch = (text: string, query: string): boolean => {
 
 // All searchable pages in the app
 const SEARCHABLE_PAGES: SearchResult[] = [
-  { id: "1", title: "Domov", category: "Hlavné", path: "/" },
-  { id: "2", title: "Nástenka", category: "Sociálne", path: "/wall" },
-  { id: "3", title: "Messenger", category: "Komunikácia", path: "/messenger" },
-  { id: "4", title: "Dating", category: "Sociálne", path: "/dating" },
-  { id: "5", title: "Anonymné rande", category: "Sociálne", path: "/anonymous-date" },
-  { id: "6", title: "Hry", category: "Zábava", path: "/games" },
-  { id: "7", title: "Brain Duel", category: "Hry", path: "/brain-duel" },
-  { id: "8", title: "AI Generátor", category: "AI", path: "/ai-generation" },
-  { id: "9", title: "AI Kamarát", category: "AI", path: "/best-friend" },
-  { id: "10", title: "AI Mentor", category: "AI", path: "/ai-mentor" },
-  { id: "11", title: "AI Spoločníci", category: "AI", path: "/companions" },
-  { id: "12", title: "AI Klon", category: "AI", path: "/ai-clone" },
-  { id: "13", title: "Beauty Štúdio", category: "AI", path: "/beauty-studio" },
-  { id: "14", title: "AI Hudba", category: "AI", path: "/ai-music-producer" },
-  { id: "15", title: "AI Tetovanie", category: "AI", path: "/ai-tattoo" },
-  { id: "16", title: "Varenie", category: "Jedlo", path: "/cooking" },
-  { id: "17", title: "AI Chef", category: "Jedlo", path: "/cooking-ai" },
-  { id: "18", title: "Plánovač jedál", category: "Jedlo", path: "/meal-planner" },
-  { id: "19", title: "Vzdelávanie", category: "Vzdelávanie", path: "/education" },
-  { id: "20", title: "Kurzy", category: "Vzdelávanie", path: "/courses-hub" },
-  { id: "21", title: "Marketplace", category: "Obchod", path: "/marketplace" },
-  { id: "22", title: "Bazár", category: "Obchod", path: "/bazaar" },
-  { id: "23", title: "Aukcie", category: "Obchod", path: "/auction" },
-  { id: "24", title: "Práca", category: "Kariéra", path: "/jobs" },
-  { id: "25", title: "InfluKing", category: "Influencer", path: "/influ-king" },
-  { id: "26", title: "Megatalent", category: "Talent", path: "/megatalent" },
-  { id: "27", title: "Psychológ", category: "Zdravie", path: "/psychologist" },
-  { id: "28", title: "Prvá pomoc", category: "Zdravie", path: "/first-aid" },
-  { id: "29", title: "Fit & Slim", category: "Zdravie", path: "/fit-slim" },
-  { id: "30", title: "Wellness", category: "Zdravie", path: "/wellness" },
-  { id: "31", title: "Výživa", category: "Zdravie", path: "/nutrition-hub" },
-  { id: "32", title: "Dovolenka", category: "Cestovanie", path: "/vacationer" },
-  { id: "33", title: "Detský kanál", category: "Deti", path: "/kids-channel" },
-  { id: "34", title: "Domáce úlohy", category: "Deti", path: "/kids-homework" },
-  { id: "35", title: "Príbehy pre deti", category: "Deti", path: "/kids-story-creator" },
-  { id: "36", title: "Omaľovánky", category: "Deti", path: "/coloring-pages" },
-  { id: "37", title: "Astrológia", category: "Mystika", path: "/astrology" },
-  { id: "38", title: "Denník snov", category: "Mystika", path: "/dream-journal" },
-  { id: "39", title: "Minulý život", category: "Mystika", path: "/past-life" },
-  { id: "40", title: "Predok dvojča", category: "Mystika", path: "/ancestor-twin" },
-  { id: "41", title: "Virtuálny miláčik", category: "Zábava", path: "/virtual-pet" },
-  { id: "42", title: "Prekladač zvierat", category: "Zábava", path: "/pet-translator" },
-  { id: "43", title: "Starostlivosť o rastliny", category: "Zábava", path: "/plant-care" },
-  { id: "44", title: "Káva", category: "Komunita", path: "/coffee" },
-  { id: "45", title: "Skill Swap", category: "Komunita", path: "/skill-swap" },
-  { id: "46", title: "Referral", category: "Odmeny", path: "/referral" },
-  { id: "47", title: "Odmeny", category: "Odmeny", path: "/rewards" },
-  { id: "48", title: "Nastavenia", category: "Účet", path: "/settings" },
-  { id: "49", title: "Profil", category: "Účet", path: "/profile" },
-  { id: "50", title: "Predplatné", category: "Účet", path: "/subscription" },
+  // Main
+  { id: "1", title: "Home", category: "Main", path: "/" },
+  { id: "2", title: "Wall", category: "Social", path: "/wall" },
+  { id: "3", title: "Messenger", category: "Communication", path: "/messenger" },
+  
+  // Social & Dating
+  { id: "4", title: "Dating", category: "Social", path: "/dating" },
+  { id: "5", title: "Anonymous Date", category: "Social", path: "/anonymous-date" },
+  
+  // Games & Entertainment
+  { id: "6", title: "Games", category: "Entertainment", path: "/games" },
+  { id: "7", title: "Brain Duel", category: "Games", path: "/brain-duel" },
+  { id: "8", title: "Virtual Pet", category: "Entertainment", path: "/virtual-pet" },
+  { id: "9", title: "Pet Translator", category: "Entertainment", path: "/pet-translator" },
+  
+  // AI Services
+  { id: "10", title: "AI Generator", category: "AI", path: "/ai-generation" },
+  { id: "11", title: "AI Best Friend", category: "AI", path: "/best-friend" },
+  { id: "12", title: "AI Mentor", category: "AI", path: "/ai-mentor" },
+  { id: "13", title: "AI Companions", category: "AI", path: "/companions" },
+  { id: "14", title: "AI Clone", category: "AI", path: "/ai-clone" },
+  { id: "15", title: "Beauty Studio", category: "AI", path: "/beauty-studio" },
+  { id: "16", title: "AI Music Producer", category: "AI", path: "/ai-music-producer" },
+  { id: "17", title: "AI Tattoo Designer", category: "AI", path: "/ai-tattoo" },
+  { id: "18", title: "AI Chef", category: "Food", path: "/cooking-ai" },
+  { id: "19", title: "Lie Detector", category: "AI", path: "/lie-detector" },
+  { id: "20", title: "AI Image Analyzer", category: "AI", path: "/analyzer" },
+  
+  // Food & Cooking
+  { id: "21", title: "Cooking", category: "Food", path: "/cooking" },
+  { id: "22", title: "Meal Planner", category: "Food", path: "/meal-planner" },
+  
+  // Education & Learning
+  { id: "23", title: "Education", category: "Education", path: "/education" },
+  { id: "24", title: "Courses Hub", category: "Education", path: "/courses-hub" },
+  { id: "25", title: "Learning", category: "Education", path: "/learning" },
+  
+  // Work & Career
+  { id: "26", title: "Jobs", category: "Career", path: "/jobs" },
+  { id: "27", title: "Work", category: "Career", path: "/work" },
+  { id: "28", title: "Fundraising", category: "Career", path: "/fundraising" },
+  
+  // Marketplace & Commerce
+  { id: "29", title: "Marketplace", category: "Commerce", path: "/marketplace" },
+  { id: "30", title: "Bazaar", category: "Commerce", path: "/bazaar" },
+  { id: "31", title: "Auctions", category: "Commerce", path: "/auction" },
+  { id: "32", title: "Secret Santa", category: "Commerce", path: "/secret-santa" },
+  
+  // Talent & Influencer
+  { id: "33", title: "InfluKing", category: "Influencer", path: "/influ-king" },
+  { id: "34", title: "Megatalent", category: "Talent", path: "/megatalent" },
+  
+  // Health & Wellness
+  { id: "35", title: "Psychologist", category: "Health", path: "/psychologist" },
+  { id: "36", title: "First Aid", category: "Health", path: "/first-aid" },
+  { id: "37", title: "Fit & Slim", category: "Health", path: "/fit-slim" },
+  { id: "38", title: "Wellness", category: "Health", path: "/wellness" },
+  { id: "39", title: "Nutrition Hub", category: "Health", path: "/nutrition-hub" },
+  
+  // Travel
+  { id: "40", title: "Vacationer", category: "Travel", path: "/vacationer" },
+  
+  // Kids
+  { id: "41", title: "Kids Channel", category: "Kids", path: "/kids-channel" },
+  { id: "42", title: "Kids Homework", category: "Kids", path: "/kids-homework" },
+  { id: "43", title: "Kids Story Creator", category: "Kids", path: "/kids-story-creator" },
+  { id: "44", title: "Coloring Pages", category: "Kids", path: "/coloring-pages" },
+  
+  // Mystical
+  { id: "45", title: "Astrology", category: "Mystical", path: "/astrology" },
+  { id: "46", title: "Dream Journal", category: "Mystical", path: "/dream-journal" },
+  { id: "47", title: "Past Life", category: "Mystical", path: "/past-life" },
+  { id: "48", title: "Ancestor Twin", category: "Mystical", path: "/ancestor-twin" },
+  
+  // Community
+  { id: "49", title: "Plant Care", category: "Community", path: "/plant-care" },
+  { id: "50", title: "Coffee", category: "Community", path: "/coffee" },
+  { id: "51", title: "Skill Swap", category: "Community", path: "/skill-swap" },
+  
+  // Rewards & Account
+  { id: "52", title: "Referral", category: "Rewards", path: "/referral" },
+  { id: "53", title: "Rewards", category: "Rewards", path: "/rewards" },
+  { id: "54", title: "Settings", category: "Account", path: "/settings" },
+  { id: "55", title: "Profile", category: "Account", path: "/profile" },
+  { id: "56", title: "Subscription", category: "Account", path: "/subscription" },
+  { id: "57", title: "Premium", category: "Account", path: "/premium" },
+  
+  // Other Services
+  { id: "58", title: "Antiques", category: "Commerce", path: "/antiques" },
+  { id: "59", title: "Home Decor", category: "Commerce", path: "/home-decor" },
+  { id: "60", title: "Confessions", category: "Social", path: "/confessions" },
+  { id: "61", title: "Comedy Club", category: "Entertainment", path: "/comedy-club" },
 ];
 
 const CATEGORY_COLORS: Record<string, string> = {
-  "Hlavné": "bg-primary/10 text-primary",
-  "Sociálne": "bg-pink-500/10 text-pink-500",
-  "Komunikácia": "bg-blue-500/10 text-blue-500",
-  "Zábava": "bg-yellow-500/10 text-yellow-500",
+  "Main": "bg-primary/10 text-primary",
+  "Social": "bg-pink-500/10 text-pink-500",
+  "Communication": "bg-blue-500/10 text-blue-500",
+  "Entertainment": "bg-yellow-500/10 text-yellow-500",
+  "Games": "bg-amber-500/10 text-amber-500",
   "AI": "bg-purple-500/10 text-purple-500",
-  "Jedlo": "bg-orange-500/10 text-orange-500",
-  "Vzdelávanie": "bg-green-500/10 text-green-500",
-  "Obchod": "bg-emerald-500/10 text-emerald-500",
-  "Kariéra": "bg-indigo-500/10 text-indigo-500",
+  "Food": "bg-orange-500/10 text-orange-500",
+  "Education": "bg-green-500/10 text-green-500",
+  "Commerce": "bg-emerald-500/10 text-emerald-500",
+  "Career": "bg-indigo-500/10 text-indigo-500",
   "Influencer": "bg-rose-500/10 text-rose-500",
   "Talent": "bg-amber-500/10 text-amber-500",
-  "Zdravie": "bg-teal-500/10 text-teal-500",
-  "Cestovanie": "bg-cyan-500/10 text-cyan-500",
-  "Deti": "bg-lime-500/10 text-lime-500",
-  "Mystika": "bg-violet-500/10 text-violet-500",
-  "Komunita": "bg-sky-500/10 text-sky-500",
-  "Odmeny": "bg-fuchsia-500/10 text-fuchsia-500",
-  "Účet": "bg-slate-500/10 text-slate-500",
+  "Health": "bg-teal-500/10 text-teal-500",
+  "Travel": "bg-cyan-500/10 text-cyan-500",
+  "Kids": "bg-lime-500/10 text-lime-500",
+  "Mystical": "bg-violet-500/10 text-violet-500",
+  "Community": "bg-sky-500/10 text-sky-500",
+  "Rewards": "bg-fuchsia-500/10 text-fuchsia-500",
+  "Account": "bg-slate-500/10 text-slate-500",
 };
 
 export function GlobalSearch() {
@@ -168,10 +211,10 @@ export function GlobalSearch() {
         <Button 
           variant="outline" 
           className="relative h-9 w-9 p-0 xl:h-10 xl:w-60 xl:justify-start xl:px-3 xl:py-2"
-          aria-label="Hľadať"
+          aria-label="Search"
         >
           <Search className="h-4 w-4 xl:mr-2" aria-hidden="true" />
-          <span className="hidden xl:inline-flex">Hľadať...</span>
+          <span className="hidden xl:inline-flex">Search...</span>
           <kbd className="pointer-events-none absolute right-1.5 top-2 hidden h-6 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 xl:flex">
             <span className="text-xs">⌘</span>K
           </kbd>
@@ -181,12 +224,12 @@ export function GlobalSearch() {
         <div className="flex items-center border-b px-3">
           <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
           <Input
-            placeholder="Hľadať stránky, funkcie..."
+            placeholder="Search pages, features..."
             className="flex h-12 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground border-0 focus-visible:ring-0"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             autoFocus
-            aria-label="Vyhľadávací dopyt"
+            aria-label="Search query"
           />
           {query && (
             <Button
@@ -194,7 +237,7 @@ export function GlobalSearch() {
               size="icon"
               className="h-6 w-6"
               onClick={() => setQuery("")}
-              aria-label="Vymazať hľadanie"
+              aria-label="Clear search"
             >
               <X className="h-4 w-4" />
             </Button>
@@ -208,7 +251,7 @@ export function GlobalSearch() {
             className="cursor-pointer text-xs"
             onClick={() => setSelectedCategory(null)}
           >
-            Všetko
+            All
           </Badge>
           {categories.slice(0, 8).map((cat) => (
             <Badge
@@ -232,7 +275,7 @@ export function GlobalSearch() {
             </div>
           ) : results.length === 0 ? (
             <div className="py-6 text-center text-sm text-muted-foreground">
-              Žiadne výsledky pre "{query}"
+              No results for "{query}"
             </div>
           ) : (
             <div className="p-2">
@@ -258,12 +301,12 @@ export function GlobalSearch() {
         </ScrollArea>
         
         <div className="flex items-center justify-between border-t p-2 text-xs text-muted-foreground">
-          <span>{results.length} výsledkov</span>
+          <span>{results.length} results</span>
           <div className="flex gap-2">
             <kbd className="rounded border bg-muted px-1.5 py-0.5">↑↓</kbd>
-            <span>navigovať</span>
+            <span>navigate</span>
             <kbd className="rounded border bg-muted px-1.5 py-0.5">↵</kbd>
-            <span>vybrať</span>
+            <span>select</span>
           </div>
         </div>
       </DialogContent>
