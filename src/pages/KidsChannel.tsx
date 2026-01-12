@@ -46,6 +46,7 @@ const KidsChannel = () => {
   const AI_FEATURES = [
     { path: '/kids-stories/voice-chat', name: 'Character Chat' },
     { path: '/kids-story-creator', name: 'Story Creator' },
+    { path: '/kids-homework', name: 'AI Homework Helper' },
   ];
 
   const showImageMap: Record<string, string> = {

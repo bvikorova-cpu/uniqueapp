@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,6 +15,8 @@ import { StoryLimitBanner } from "@/components/kids-story/StoryLimitBanner";
 import { StoryLibrary } from "@/components/kids-story/StoryLibrary";
 import { StorySubscriptionManagement } from "@/components/kids-story/StorySubscriptionManagement";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ParentalGate, useParentalGate } from "@/components/kids/ParentalGate";
+import { SafeContentBadge } from "@/components/kids/SafeContentBadge";
 
 const KidsStoryCreator = () => {
   const { user } = useAuth();
@@ -25,6 +27,17 @@ const KidsStoryCreator = () => {
   const [category, setCategory] = useState("adventure");
   const [loading, setLoading] = useState(false);
   const [story, setStory] = useState<any>(null);
+  
+  // Parental Gate
+  const { isVerified, checkVerification } = useParentalGate();
+  const [showParentalGate, setShowParentalGate] = useState(false);
+
+  useEffect(() => {
+    // Check parental gate on mount
+    if (!checkVerification()) {
+      setShowParentalGate(true);
+    }
+  }, []);
 
   const handleGenerate = async () => {
     if (!title.trim() || !characters.trim() || !theme.trim()) {
@@ -299,8 +312,27 @@ const KidsStoryCreator = () => {
             </TabsContent>
           </Tabs>
         </div>
+        
+        {/* Safe Content Badge */}
+        <div className="max-w-2xl mx-auto mt-8">
+          <SafeContentBadge />
+        </div>
       </main>
       <Footer />
+      
+      {/* Parental Gate Dialog */}
+      <ParentalGate
+        isOpen={showParentalGate}
+        onSuccess={() => setShowParentalGate(false)}
+        onClose={() => {
+          // Redirect back if gate not verified
+          if (!checkVerification()) {
+            window.history.back();
+          }
+          setShowParentalGate(false);
+        }}
+        featureName="AI Story Creator"
+      />
     </div>
   );
 };

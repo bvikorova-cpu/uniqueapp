@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,6 +20,8 @@ import { HomeworkLimitBanner } from "@/components/kids-homework/HomeworkLimitBan
 import { SubscriptionManagement } from "@/components/kids-homework/SubscriptionManagement";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useQueryClient } from "@tanstack/react-query";
+import { ParentalGate, useParentalGate } from "@/components/kids/ParentalGate";
+import { SafeContentBadge } from "@/components/kids/SafeContentBadge";
 
 const KidsHomework = () => {
   const { user } = useAuth();
@@ -32,6 +34,19 @@ const KidsHomework = () => {
   const [difficulty, setDifficulty] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
+  
+  // Parental Gate
+  const { isVerified, checkVerification } = useParentalGate();
+  const [showParentalGate, setShowParentalGate] = useState(false);
+  const [isGateChecked, setIsGateChecked] = useState(false);
+
+  useEffect(() => {
+    // Check parental gate on mount
+    if (!checkVerification()) {
+      setShowParentalGate(true);
+    }
+    setIsGateChecked(true);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -316,8 +331,27 @@ const KidsHomework = () => {
             </TabsContent>
           </Tabs>
         </div>
+        
+        {/* Safe Content Badge */}
+        <div className="max-w-2xl mx-auto mt-8">
+          <SafeContentBadge />
+        </div>
       </main>
       <Footer />
+      
+      {/* Parental Gate Dialog */}
+      <ParentalGate
+        isOpen={showParentalGate}
+        onSuccess={() => setShowParentalGate(false)}
+        onClose={() => {
+          // Redirect back if gate not verified
+          if (!checkVerification()) {
+            window.history.back();
+          }
+          setShowParentalGate(false);
+        }}
+        featureName="AI Homework Helper"
+      />
     </div>
   );
 };
