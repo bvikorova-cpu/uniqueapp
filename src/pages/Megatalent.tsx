@@ -13,6 +13,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ReferralProgram } from "@/components/megatalent/ReferralProgram";
 import { MegaTalentGuide } from "@/components/megatalent/MegaTalentGuide";
+import { TopPremiumBadge } from "@/components/megatalent/TopPremiumBadge";
 import { useTranslation } from "react-i18next";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
@@ -209,6 +210,19 @@ const Megatalent = () => {
           .select('id, full_name, avatar_url')
           .in('id', userIds);
 
+        // Fetch subscription tiers for all users to show TOP Premium badge
+        const { data: subscriptionsData } = await supabase
+          .from('megatalent_subscriptions')
+          .select('user_id, tier')
+          .in('user_id', userIds)
+          .eq('status', 'active');
+
+        // Create a map of user_id to tier
+        const userTiers: Record<string, string> = {};
+        subscriptionsData?.forEach(sub => {
+          userTiers[sub.user_id] = sub.tier;
+        });
+
         // Fetch comment counts for all submissions
         const submissionIds = submissionsData.map(s => s.id);
         const { data: commentsData } = await supabase
@@ -223,10 +237,11 @@ const Megatalent = () => {
         });
         setCommentCounts(counts);
 
-        // Merge profiles with submissions
+        // Merge profiles and subscription tier with submissions
         const enrichedSubmissions = submissionsData.map(submission => ({
           ...submission,
-          profiles: profilesData?.find(p => p.id === submission.user_id)
+          profiles: profilesData?.find(p => p.id === submission.user_id),
+          subscriptionTier: userTiers[submission.user_id] || null
         }));
 
         setSubmissions(enrichedSubmissions);
@@ -1159,17 +1174,27 @@ const Megatalent = () => {
               </Card>
             ) : (
               submissions.map((submission) => (
-                <Card key={submission.id} className="overflow-hidden">
+                <Card key={submission.id} className={`overflow-hidden ${submission.subscriptionTier === 'top_premium' ? 'ring-2 ring-gold/50' : ''}`}>
                   <CardHeader className="pb-3">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-gradient-primary rounded-full flex items-center justify-center text-white font-semibold">
-                          {submission.profiles?.full_name?.[0] || 'U'}
+                        <div className="relative">
+                          <div className="w-10 h-10 bg-gradient-primary rounded-full flex items-center justify-center text-white font-semibold">
+                            {submission.profiles?.full_name?.[0] || 'U'}
+                          </div>
+                          {submission.subscriptionTier === 'top_premium' && (
+                            <TopPremiumBadge variant="small" className="absolute -bottom-1 -right-1" showIcon={false} />
+                          )}
                         </div>
                         <div>
-                          <p className="font-semibold">
-                            {submission.profiles?.full_name || 'User'}
-                          </p>
+                          <div className="flex items-center gap-2">
+                            <p className="font-semibold">
+                              {submission.profiles?.full_name || 'User'}
+                            </p>
+                            {submission.subscriptionTier === 'top_premium' && (
+                              <TopPremiumBadge variant="inline" />
+                            )}
+                          </div>
                           <p className="text-sm text-muted-foreground">
                             {new Date(submission.created_at).toLocaleDateString('en-US')}
                           </p>

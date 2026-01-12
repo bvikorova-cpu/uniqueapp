@@ -29386,6 +29386,7 @@ export type Database = {
           media_type: string | null
           media_url: string | null
           rank_in_category: number | null
+          ranking_score: number | null
           submission_id: string | null
           subscription_tier:
             | Database["public"]["Enums"]["megatalent_tier"]
