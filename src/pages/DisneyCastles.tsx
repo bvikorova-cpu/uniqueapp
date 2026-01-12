@@ -5,7 +5,8 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useDisneyCastles, useUserVisits, useUserStamps } from "@/hooks/useDisneyCastles";
 import { useUserCertificates } from "@/hooks/useCertificates";
-import { Globe2, MapPin, Sparkles, Trophy, ArrowLeft, Award } from "lucide-react";
+import { Globe2, MapPin, Sparkles, Trophy, ArrowLeft, Award, Volume2 } from "lucide-react";
+import { CastleVoiceNarration } from "@/components/disney/CastleVoiceNarration";
 import cinderellaFlorida from "@/assets/disney/cinderella-castle-florida.jpg";
 import sleepingBeautyCalifornia from "@/assets/disney/sleeping-beauty-castle-california.jpg";
 import parisCastle from "@/assets/disney/paris-castle.jpg";
@@ -186,6 +187,19 @@ export default function DisneyCastles() {
                         <span className="text-xs font-semibold text-blue-600">Fun Fact</span>
                       </div>
                       <p className="text-xs">{castle.fun_facts[0]}</p>
+                    </div>
+                  )}
+
+                  {/* Voice Narration Preview */}
+                  {castle.description && (
+                    <div className="mb-4 p-3 bg-purple-50 dark:bg-purple-950 rounded-lg">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Volume2 className="h-4 w-4 text-purple-600" />
+                        <span className="text-xs font-semibold text-purple-600">AI Audio Guide</span>
+                      </div>
+                      <p className="text-xs text-muted-foreground mb-2">
+                        Listen in 8 languages: 🇬🇧 🇩🇪 🇫🇷 🇪🇸 🇸🇰 🇮🇹 🇵🇹 🇨🇳
+                      </p>
                     </div>
                   )}
                   
