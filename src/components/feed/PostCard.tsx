@@ -752,7 +752,7 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
               title="Unique Founders E-book"
               price={0}
               imageUrl={null}
-              condition="ZADARMO"
+              condition="FREE"
             />
           </div>
         )}
