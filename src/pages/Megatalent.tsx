@@ -14,9 +14,12 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { ReferralProgram } from "@/components/megatalent/ReferralProgram";
 import { MegaTalentGuide } from "@/components/megatalent/MegaTalentGuide";
 import { TopPremiumBadge } from "@/components/megatalent/TopPremiumBadge";
+import { AnimatedVoteCounter } from "@/components/megatalent/AnimatedVoteCounter";
+import { VoteBoostTooltip } from "@/components/megatalent/VoteBoostTooltip";
 import { useTranslation } from "react-i18next";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { triggerTopPremiumConfetti } from "@/utils/confetti";
 
 const categoryGroups = [
   {
@@ -343,7 +346,13 @@ const Megatalent = () => {
         description: tier === 'premium' ? t('megatalent.premium_activated') : t('megatalent.top_premium_activated'),
       });
 
+      // Trigger gold confetti for TOP Premium purchase
+      if (tier === 'top_premium') {
+        triggerTopPremiumConfetti();
+      }
+
       setIsSubscribed(true);
+      setSubscriptionTier(tier);
     } catch (error) {
       console.error('Error subscribing:', error);
       toast({
@@ -1035,16 +1044,21 @@ const Megatalent = () => {
             <Card className="sticky top-24">
               <CardHeader>
                 {(subscriptionTier === 'premium' || subscriptionTier === 'top_premium') && (
-                  <div className="p-4 rounded-lg bg-gradient-primary border border-gold/30">
+                  <div className={`p-4 rounded-lg border ${subscriptionTier === 'top_premium' ? 'bg-gradient-to-r from-gold/20 via-yellow-400/10 to-gold/20 border-gold/50 shadow-[0_0_15px_rgba(255,215,0,0.2)]' : 'bg-gradient-primary border-gold/30'}`}>
                     <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium">{t('megatalent.your_votes')}</span>
-                      <Badge className="bg-gold text-gold-foreground text-base font-bold">
-                        {totalVotes.toLocaleString('en-US')}
-                      </Badge>
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-medium">{t('megatalent.your_votes')}</span>
+                        <VoteBoostTooltip isTopPremium={subscriptionTier === 'top_premium'} />
+                      </div>
+                      <AnimatedVoteCounter 
+                        targetValue={totalVotes}
+                        bonusVotes={subscriptionTier === 'top_premium' ? 100000 : 0}
+                        isTopPremium={subscriptionTier === 'top_premium'}
+                      />
                     </div>
                     {subscriptionTier === 'top_premium' && (
-                      <p className="text-xs text-muted-foreground mt-2">
-                        {t('megatalent.bonus_votes')}
+                      <p className="text-xs text-gold mt-2 flex items-center gap-1">
+                        🏆 {t('megatalent.bonus_votes')}
                       </p>
                     )}
                   </div>
@@ -1252,8 +1266,14 @@ const Megatalent = () => {
                           className={likedSubmissions.has(submission.id) ? "text-red-500" : ""}
                         >
                           <Heart className={`h-4 w-4 mr-1 ${likedSubmissions.has(submission.id) ? 'fill-current' : ''}`} />
-                          {submission.votes_count || 0}
+                          {submission.subscriptionTier === 'top_premium' 
+                            ? ((submission.votes_count || 0) + 100000).toLocaleString()
+                            : (submission.votes_count || 0)
+                          }
                         </Button>
+                        {submission.subscriptionTier === 'top_premium' && (
+                          <VoteBoostTooltip isTopPremium={true} />
+                        )}
                         
                         <Dialog open={commentDialogOpen === submission.id} onOpenChange={(open) => {
                           setCommentDialogOpen(open ? submission.id : null);
