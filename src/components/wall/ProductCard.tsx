@@ -82,10 +82,11 @@ export const ProductCard = ({
             {title}
           </h4>
           <p className={cn(
-            "font-bold text-primary",
+            "font-bold",
+            price === 0 ? "text-green-500" : "text-primary",
             compact ? "text-base" : "text-lg"
           )}>
-            €{price.toFixed(2)}
+            {price === 0 ? "ZADARMO" : `€${price.toFixed(2)}`}
           </p>
         </div>
 
@@ -94,13 +95,18 @@ export const ProductCard = ({
           onClick={handleBuyNow}
           size={compact ? "sm" : "default"}
           className={cn(
-            "gap-2 bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90",
+            "gap-2",
+            price === 0 
+              ? "bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700"
+              : "bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90",
             "shadow-md hover:shadow-lg transition-all",
             compact ? "px-3" : "px-4"
           )}
         >
           <ShoppingCart className={cn(compact ? "h-3.5 w-3.5" : "h-4 w-4")} />
-          <span className={compact ? "text-xs" : "text-sm"}>Buy Now</span>
+          <span className={compact ? "text-xs" : "text-sm"}>
+            {price === 0 ? "Stiahnuť" : "Kúpiť"}
+          </span>
           <ExternalLink className={cn(compact ? "h-3 w-3" : "h-3.5 w-3.5", "opacity-50")} />
         </Button>
       </div>
