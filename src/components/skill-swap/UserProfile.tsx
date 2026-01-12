@@ -52,7 +52,10 @@ export const UserProfile = () => {
   };
 
   const loadProfile = async () => {
-    if (!userId) return;
+    if (!userId || userId === 'undefined') {
+      setLoading(false);
+      return;
+    }
 
     try {
       const { data: profileData, error: profileError } = await supabase
@@ -87,7 +90,7 @@ export const UserProfile = () => {
       })));
     } catch (error) {
       console.error('Error loading profile:', error);
-      toast.error('Failed to load profile');
+      toast.error('Error loading profile');
     } finally {
       setLoading(false);
     }
@@ -111,13 +114,13 @@ export const UserProfile = () => {
     );
   }
 
-  if (!profile) {
+  if (!profile || !userId || userId === 'undefined') {
     return (
       <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 flex items-center justify-center">
         <Card className="p-8 text-center">
           <p className="text-muted-foreground">Profile not found</p>
-          <Button onClick={() => navigate('/skill-swap')} className="mt-4">
-            Back to Skill Swap
+          <Button onClick={() => navigate('/')} className="mt-4">
+            Back to Wall
           </Button>
         </Card>
       </div>
