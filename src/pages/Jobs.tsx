@@ -16,6 +16,7 @@ import { JobAIAssistant } from "@/components/jobs/JobAIAssistant";
 import { JobApplicationDialog } from "@/components/jobs/JobApplicationDialog";
 import { OneClickApplyDialog } from "@/components/jobs/OneClickApplyDialog";
 import { AIJobOptimizer } from "@/components/jobs/AIJobOptimizer";
+import { WorkUserGuide } from "@/components/work/WorkUserGuide";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
@@ -480,6 +481,7 @@ const Jobs = () => {
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
+            <WorkUserGuide />
             {user && (
               <>
                 <JobPreferencesDialog userId={user.id} />
