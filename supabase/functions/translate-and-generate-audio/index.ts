@@ -6,30 +6,21 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
-// Language configurations with ElevenLabs voice IDs
-// Using warm, storyteller-style voices for children aged 6-12
-const LANGUAGE_CONFIG: Record<string, { name: string; voiceId: string }> = {
-  'en': { name: 'English', voiceId: 'EXAVITQu4vr4xnSDxMaL' }, // Sarah - warm, storyteller
-  'de': { name: 'German', voiceId: 'onwK4e9ZLuTAKqWW03F9' }, // Daniel - warm male
-  'fr': { name: 'French', voiceId: 'XrExE9yKIg1WjnnlVkGX' }, // Matilda - warm female
-  'es': { name: 'Spanish', voiceId: 'cgSgspJ2msm6clMCkdW9' }, // Jessica - engaging
-  'sk': { name: 'Slovak', voiceId: 'EXAVITQu4vr4xnSDxMaL' }, // Sarah (multilingual)
-  'it': { name: 'Italian', voiceId: 'XrExE9yKIg1WjnnlVkGX' }, // Matilda (multilingual)
-  'pt': { name: 'Portuguese', voiceId: 'cgSgspJ2msm6clMCkdW9' }, // Jessica (multilingual)
-  'zh': { name: 'Chinese', voiceId: 'EXAVITQu4vr4xnSDxMaL' }, // Sarah (multilingual)
+// Language configurations
+const LANGUAGE_CONFIG: Record<string, { name: string }> = {
+  'en': { name: 'English' },
+  'de': { name: 'German' },
+  'fr': { name: 'French' },
+  'es': { name: 'Spanish' },
+  'sk': { name: 'Slovak' },
+  'it': { name: 'Italian' },
+  'pt': { name: 'Portuguese' },
+  'zh': { name: 'Chinese (Mandarin)' },
 }
 
-// Fallback to OpenAI voices if ElevenLabs not available
-const OPENAI_VOICES: Record<string, string> = {
-  'en': 'nova',
-  'de': 'alloy',
-  'fr': 'shimmer',
-  'es': 'nova',
-  'sk': 'alloy',
-  'it': 'shimmer',
-  'pt': 'nova',
-  'zh': 'alloy',
-}
+// OpenAI TTS voice - using 'shimmer' for warm, storytelling female persona
+// Consistent across all languages for unified experience
+const OPENAI_VOICE = 'shimmer'
 
 async function translateText(text: string, targetLanguage: string, openaiApiKey: string): Promise<string> {
   const languageName = LANGUAGE_CONFIG[targetLanguage]?.name || 'English'
@@ -74,46 +65,8 @@ IMPORTANT GUIDELINES:
   return translationData.choices[0].message.content.trim()
 }
 
-async function generateAudioWithElevenLabs(text: string, language: string, apiKey: string): Promise<ArrayBuffer> {
-  const config = LANGUAGE_CONFIG[language] || LANGUAGE_CONFIG['en']
-  
-  console.log('Generating audio with ElevenLabs, voice:', config.voiceId)
-
-  const response = await fetch(
-    `https://api.elevenlabs.io/v1/text-to-speech/${config.voiceId}?output_format=mp3_44100_128`,
-    {
-      method: 'POST',
-      headers: {
-        'xi-api-key': apiKey,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        text,
-        model_id: 'eleven_multilingual_v2',
-        voice_settings: {
-          stability: 0.6, // Balanced for storytelling
-          similarity_boost: 0.75,
-          style: 0.4, // Slight expressiveness for engagement
-          use_speaker_boost: true,
-          speed: 0.95, // Slightly slower for children
-        },
-      }),
-    }
-  )
-
-  if (!response.ok) {
-    const errorText = await response.text()
-    console.error('ElevenLabs TTS error:', response.status, errorText)
-    throw new Error(`ElevenLabs TTS failed: ${errorText}`)
-  }
-
-  return response.arrayBuffer()
-}
-
-async function generateAudioWithOpenAI(text: string, language: string, apiKey: string): Promise<ArrayBuffer> {
-  const voice = OPENAI_VOICES[language] || 'nova'
-  
-  console.log('Generating audio with OpenAI TTS, voice:', voice)
+async function generateAudioWithOpenAI(text: string, apiKey: string): Promise<ArrayBuffer> {
+  console.log('Generating audio with OpenAI TTS, voice:', OPENAI_VOICE)
 
   const response = await fetch('https://api.openai.com/v1/audio/speech', {
     method: 'POST',
@@ -124,9 +77,9 @@ async function generateAudioWithOpenAI(text: string, language: string, apiKey: s
     body: JSON.stringify({
       model: 'tts-1-hd', // Higher quality for storytelling
       input: text,
-      voice: voice,
+      voice: OPENAI_VOICE,
       response_format: 'mp3',
-      speed: 0.95, // Slightly slower for children
+      speed: 0.95, // Slightly slower for children's content
     }),
   })
 
@@ -155,7 +108,6 @@ serve(async (req) => {
     const langCode = language.split('-')[0].toLowerCase()
 
     const openaiApiKey = Deno.env.get('OPENAI_API_KEY')
-    const elevenLabsApiKey = Deno.env.get('ELEVENLABS_API_KEY')
 
     if (!openaiApiKey) {
       throw new Error('OPENAI_API_KEY not configured')
@@ -170,23 +122,9 @@ serve(async (req) => {
       console.log('Translation completed')
     }
 
-    // Generate audio - prefer ElevenLabs for better quality
-    let audioArrayBuffer: ArrayBuffer
-
-    if (elevenLabsApiKey) {
-      try {
-        audioArrayBuffer = await generateAudioWithElevenLabs(translatedText, langCode, elevenLabsApiKey)
-        console.log('Audio generated with ElevenLabs, size:', audioArrayBuffer.byteLength)
-      } catch (elevenLabsError) {
-        console.warn('ElevenLabs failed, falling back to OpenAI:', elevenLabsError)
-        audioArrayBuffer = await generateAudioWithOpenAI(translatedText, langCode, openaiApiKey)
-        console.log('Audio generated with OpenAI (fallback), size:', audioArrayBuffer.byteLength)
-      }
-    } else {
-      console.log('ElevenLabs API key not found, using OpenAI')
-      audioArrayBuffer = await generateAudioWithOpenAI(translatedText, langCode, openaiApiKey)
-      console.log('Audio generated with OpenAI, size:', audioArrayBuffer.byteLength)
-    }
+    // Generate audio with OpenAI TTS
+    const audioArrayBuffer = await generateAudioWithOpenAI(translatedText, openaiApiKey)
+    console.log('Audio generated with OpenAI TTS, size:', audioArrayBuffer.byteLength)
 
     // Convert to base64
     const base64Audio = base64Encode(audioArrayBuffer)
@@ -197,7 +135,8 @@ serve(async (req) => {
         audioContent: base64Audio,
         translatedText,
         language: langCode,
-        provider: elevenLabsApiKey ? 'elevenlabs' : 'openai'
+        provider: 'openai',
+        voice: OPENAI_VOICE
       }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
