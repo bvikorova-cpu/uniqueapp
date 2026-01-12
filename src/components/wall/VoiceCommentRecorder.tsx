@@ -6,9 +6,11 @@ import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 
 interface VoiceCommentRecorderProps {
-  postId: string;
+  postId?: string;
   parentCommentId?: string;
-  onCommentAdded: () => void;
+  onCommentAdded?: () => void;
+  onRecordingComplete?: (url: string, duration: number) => void;
+  onCancel?: () => void;
   compact?: boolean;
 }
 
@@ -16,6 +18,8 @@ export const VoiceCommentRecorder = ({
   postId, 
   parentCommentId, 
   onCommentAdded,
+  onRecordingComplete,
+  onCancel,
   compact = false 
 }: VoiceCommentRecorderProps) => {
   const [isRecording, setIsRecording] = useState(false);
@@ -136,23 +140,32 @@ export const VoiceCommentRecorder = ({
 
       const { data: { publicUrl } } = supabase.storage.from("media").getPublicUrl(fileName);
 
-      // Create comment with voice URL
-      const { error: commentError } = await supabase
-        .from("post_comments")
-        .insert({
-          post_id: postId,
-          user_id: user.id,
-          content: "🎤 Voice comment",
-          voice_url: publicUrl,
-          voice_duration: duration,
-          parent_comment_id: parentCommentId || null,
-        });
+      // If using callback mode, return the URL
+      if (onRecordingComplete) {
+        onRecordingComplete(publicUrl, duration);
+        discardRecording();
+        return;
+      }
 
-      if (commentError) throw commentError;
+      // Otherwise, create comment directly
+      if (postId) {
+        const { error: commentError } = await supabase
+          .from("post_comments")
+          .insert({
+            post_id: postId,
+            user_id: user.id,
+            content: "🎤 Voice comment",
+            voice_url: publicUrl,
+            voice_duration: duration,
+            parent_comment_id: parentCommentId || null,
+          });
+
+        if (commentError) throw commentError;
+      }
 
       toast({ title: "Success!", description: "Voice comment added" });
       discardRecording();
-      onCommentAdded();
+      onCommentAdded?.();
     } catch (error: any) {
       toast({ 
         title: "Error", 
@@ -162,6 +175,11 @@ export const VoiceCommentRecorder = ({
     } finally {
       setUploading(false);
     }
+  };
+
+  const handleCancel = () => {
+    discardRecording();
+    onCancel?.();
   };
 
   const formatTime = (seconds: number) => {
@@ -242,15 +260,28 @@ export const VoiceCommentRecorder = ({
           </div>
 
           {/* Actions */}
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8 text-destructive hover:text-destructive"
-            onClick={discardRecording}
-          >
-            <Trash2 className="h-4 w-4" />
-          </Button>
+          {onCancel && (
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 text-muted-foreground"
+              onClick={handleCancel}
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          )}
+          {!onCancel && (
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 text-destructive hover:text-destructive"
+              onClick={discardRecording}
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          )}
 
           <Button
             type="button"

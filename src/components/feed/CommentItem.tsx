@@ -3,6 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { CommentReactionPicker } from "./CommentReactionPicker";
 import { EnhancedCommentInput } from "./EnhancedCommentInput";
+import { VoiceCommentPlayer } from "@/components/wall/VoiceCommentPlayer";
 import { MapPin, MessageCircle, ChevronDown, ChevronUp } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { enUS } from "date-fns/locale";
@@ -72,6 +73,15 @@ export const CommentItem = ({
               src={comment.video_url} 
               controls 
               className="mt-1 max-w-[200px] rounded-lg"
+            />
+          )}
+          
+          {/* Voice Comment Player */}
+          {comment.voice_url && (
+            <VoiceCommentPlayer 
+              voiceUrl={comment.voice_url} 
+              duration={comment.voice_duration || 0}
+              compact
             />
           )}
           

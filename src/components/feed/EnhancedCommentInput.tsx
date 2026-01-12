@@ -12,8 +12,10 @@ import {
   X, 
   Loader2,
   Sparkles,
-  Send
+  Send,
+  Mic
 } from "lucide-react";
+import { VoiceCommentRecorder } from "@/components/wall/VoiceCommentRecorder";
 import {
   Tooltip,
   TooltipContent,
@@ -63,6 +65,9 @@ export function EnhancedCommentInput({ postId, onCommentAdded, parentCommentId, 
   const [taggedFriends, setTaggedFriends] = useState<string[]>([]);
   const [showTemplates, setShowTemplates] = useState(false);
   const [showTagFriends, setShowTagFriends] = useState(false);
+  const [showVoiceRecorder, setShowVoiceRecorder] = useState(false);
+  const [voiceUrl, setVoiceUrl] = useState<string | null>(null);
+  const [voiceDuration, setVoiceDuration] = useState<number | null>(null);
   const { toast } = useToast();
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>, type: "image" | "video") => {
@@ -132,6 +137,8 @@ export function EnhancedCommentInput({ postId, onCommentAdded, parentCommentId, 
           location: location || null,
           tagged_friends: taggedFriends.length > 0 ? taggedFriends : null,
           parent_comment_id: parentCommentId || null,
+          voice_url: voiceUrl,
+          voice_duration: voiceDuration,
         });
 
       if (commentError) throw commentError;
@@ -142,6 +149,8 @@ export function EnhancedCommentInput({ postId, onCommentAdded, parentCommentId, 
       setFeeling(null);
       setLocation("");
       setTaggedFriends([]);
+      setVoiceUrl(null);
+      setVoiceDuration(null);
       onCommentAdded();
     } catch (error: any) {
       toast({ title: "Error", description: error.message, variant: "destructive" });
@@ -173,7 +182,7 @@ export function EnhancedCommentInput({ postId, onCommentAdded, parentCommentId, 
       />
 
       {/* Preview selected items */}
-      {(feeling || location || taggedFriends.length > 0 || file) && (
+      {(feeling || location || taggedFriends.length > 0 || file || voiceUrl) && (
         <div className="flex flex-wrap gap-1.5 text-xs text-muted-foreground">
           {feeling && (
             <div className="flex items-center gap-1 bg-accent px-2 py-0.5 rounded-full">
@@ -206,6 +215,15 @@ export function EnhancedCommentInput({ postId, onCommentAdded, parentCommentId, 
               {file.type.startsWith("image/") ? <Image className="h-3 w-3" /> : <Video className="h-3 w-3" />}
               <span className="truncate max-w-[100px]">{file.name}</span>
               <button type="button" onClick={() => setFile(null)}>
+                <X className="h-3 w-3" />
+              </button>
+            </div>
+          )}
+          {voiceUrl && (
+            <div className="flex items-center gap-1 bg-accent px-2 py-0.5 rounded-full">
+              <Mic className="h-3 w-3 text-primary" />
+              <span>Voice ({voiceDuration}s)</span>
+              <button type="button" onClick={() => { setVoiceUrl(null); setVoiceDuration(null); }}>
                 <X className="h-3 w-3" />
               </button>
             </div>
@@ -350,11 +368,26 @@ export function EnhancedCommentInput({ postId, onCommentAdded, parentCommentId, 
               </TooltipTrigger>
               <TooltipContent>Template</TooltipContent>
             </Tooltip>
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className={`h-7 w-7 p-0 ${showVoiceRecorder ? 'bg-primary/20' : ''}`}
+                  onClick={() => setShowVoiceRecorder(!showVoiceRecorder)}
+                >
+                  <Mic className="h-3.5 w-3.5 text-primary" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Voice Comment</TooltipContent>
+            </Tooltip>
           </div>
         </TooltipProvider>
 
         <Button 
-          onClick={handleSubmit} 
+          onClick={handleSubmit}
           disabled={uploading || (!content.trim() && !file)}
           size="sm"
         >
@@ -384,6 +417,18 @@ export function EnhancedCommentInput({ postId, onCommentAdded, parentCommentId, 
         className="hidden"
         onChange={(e) => handleFileSelect(e, "video")}
       />
+
+      {/* Voice Recorder */}
+      {showVoiceRecorder && (
+        <VoiceCommentRecorder
+          onRecordingComplete={(url, duration) => {
+            setVoiceUrl(url);
+            setVoiceDuration(duration);
+            setShowVoiceRecorder(false);
+          }}
+          onCancel={() => setShowVoiceRecorder(false)}
+        />
+      )}
 
       {/* Dialogs */}
       <PostTemplatesDialog
