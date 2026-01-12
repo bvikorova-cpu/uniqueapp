@@ -6,7 +6,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 
 interface SmartSleepTimerProps {
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 const BREAK_MESSAGES = [
@@ -30,7 +30,7 @@ const BREAK_MESSAGES = [
   },
 ];
 
-export function SmartSleepTimer({ children }: SmartSleepTimerProps) {
+export function SmartSleepTimer({ children }: SmartSleepTimerProps = {}) {
   const { user } = useAuth();
   const [showBreakDialog, setShowBreakDialog] = useState(false);
   const [breakMessage, setBreakMessage] = useState(BREAK_MESSAGES[0]);

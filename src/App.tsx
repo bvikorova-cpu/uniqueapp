@@ -84,6 +84,8 @@ import {
   StoryVideoDemo,
   StoryGallery,
   SharedStory,
+  KidsMagicLibrary,
+  KidsParentalDashboard,
   Vacationer,
   Dating,
   FirstAid,
@@ -523,6 +525,8 @@ const App = () => {
                         <Route path="/story-video-demo" element={<StoryVideoDemo />} />
                         <Route path="/story-gallery" element={<StoryGallery />} />
                         <Route path="/shared/:shareCode" element={<SharedStory />} />
+                        <Route path="/kids-channel/my-gallery" element={<ProtectedRoute><KidsMagicLibrary /></ProtectedRoute>} />
+                        <Route path="/kids-channel/parental-dashboard" element={<ProtectedRoute><KidsParentalDashboard /></ProtectedRoute>} />
                         <Route path="/admin-image-editor" element={<ProtectedRoute requireAdmin={true}><AdminImageEditor /></ProtectedRoute>} />
                         <Route path="/coffee" element={<Coffee />} />
                         <Route path="/coffee/checkins" element={<CoffeeCheckins />} />
