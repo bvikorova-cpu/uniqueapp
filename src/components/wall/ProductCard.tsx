@@ -86,7 +86,7 @@ export const ProductCard = ({
             price === 0 ? "text-green-500" : "text-primary",
             compact ? "text-base" : "text-lg"
           )}>
-            {price === 0 ? "ZADARMO" : `€${price.toFixed(2)}`}
+            {price === 0 ? "FREE" : `€${price.toFixed(2)}`}
           </p>
         </div>
 
@@ -105,7 +105,7 @@ export const ProductCard = ({
         >
           <ShoppingCart className={cn(compact ? "h-3.5 w-3.5" : "h-4 w-4")} />
           <span className={compact ? "text-xs" : "text-sm"}>
-            {price === 0 ? "Stiahnuť" : "Kúpiť"}
+            {price === 0 ? "Get" : "Buy"}
           </span>
           <ExternalLink className={cn(compact ? "h-3 w-3" : "h-3.5 w-3.5", "opacity-50")} />
         </Button>
