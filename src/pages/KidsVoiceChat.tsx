@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -9,6 +9,8 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
 import { CharacterCard } from "@/components/kids/CharacterCard";
+import { ParentalGate, useParentalGate } from "@/components/kids/ParentalGate";
+import { SafeContentBadge } from "@/components/kids/SafeContentBadge";
 
 export default function KidsVoiceChat() {
   const navigate = useNavigate();
@@ -17,6 +19,17 @@ export default function KidsVoiceChat() {
   const [messages, setMessages] = useState<Array<{ role: string; content: string }>>([]);
   const [inputMessage, setInputMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  
+  // Parental Gate
+  const { checkVerification } = useParentalGate();
+  const [showParentalGate, setShowParentalGate] = useState(false);
+
+  useEffect(() => {
+    // Check parental gate on mount
+    if (!checkVerification()) {
+      setShowParentalGate(true);
+    }
+  }, []);
 
   const sendMessage = async () => {
     if (!inputMessage.trim() || !selectedCharacter || isLoading) return;
@@ -210,7 +223,26 @@ export default function KidsVoiceChat() {
             </Card>
           )}
         </div>
+        
+        {/* Safe Content Badge */}
+        <div className="max-w-2xl mx-auto mt-8">
+          <SafeContentBadge />
+        </div>
       </div>
+      
+      {/* Parental Gate Dialog */}
+      <ParentalGate
+        isOpen={showParentalGate}
+        onSuccess={() => setShowParentalGate(false)}
+        onClose={() => {
+          // Redirect back if gate not verified
+          if (!checkVerification()) {
+            navigate('/kids-channel');
+          }
+          setShowParentalGate(false);
+        }}
+        featureName="Character Chat"
+      />
     </div>
   );
 }

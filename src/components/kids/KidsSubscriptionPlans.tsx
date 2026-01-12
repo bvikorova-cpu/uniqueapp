@@ -24,26 +24,6 @@ const PRODUCT_TIERS = {
 
 const subscriptionPlans = [
   {
-    id: 'monthly',
-    name: '✨ Premium Monthly',
-    price: 5,
-    interval: 'month',
-    icon: Sparkles,
-    color: 'from-pink-500 to-purple-500',
-    popular: false,
-    featured: false,
-    features: [
-      'Unlimited homework questions',
-      'AI-powered explanations',
-      'Fun facts included',
-      'Kid-friendly guidance',
-      'All subjects covered',
-      'Track progress & achievements',
-      'Daily challenges with bonus points',
-      'Priority support'
-    ]
-  },
-  {
     id: 'gold_pass',
     name: '👑 Unique Kids Gold Pass',
     price: 30,
@@ -65,27 +45,6 @@ const subscriptionPlans = [
       '👨‍👩‍👧 Up to 5 child profiles',
       '📊 Parental analytics dashboard',
       '⭐ Priority support 24/7'
-    ]
-  },
-  {
-    id: 'annual',
-    name: '👑 Premium Annual',
-    price: 50,
-    interval: 'year',
-    icon: Users,
-    color: 'from-purple-500 to-indigo-500',
-    popular: false,
-    featured: false,
-    features: [
-      'Unlimited homework questions',
-      'AI-powered explanations',
-      'Fun facts included',
-      'Kid-friendly guidance',
-      'All subjects covered',
-      'Track progress & achievements',
-      'Daily challenges with bonus points',
-      'Priority support',
-      '💰 Save €10 (2 months free!)'
     ]
   }
 ];
@@ -205,8 +164,8 @@ export default function KidsSubscriptionPlans() {
           )}
         </div>
 
-        {/* Subscription Plans */}
-        <div className="grid md:grid-cols-1 lg:grid-cols-3 gap-6 max-w-6xl mx-auto pt-8">
+        {/* Subscription Plans - Single Gold Pass Centered */}
+        <div className="flex justify-center pt-8">
           {subscriptionPlans.map((plan) => {
             const Icon = plan.icon;
             const isGoldPass = plan.id === 'gold_pass';
@@ -214,13 +173,7 @@ export default function KidsSubscriptionPlans() {
             return (
               <Card 
                 key={plan.id}
-                className={`relative overflow-hidden transform transition-all hover:scale-105 ${
-                  isGoldPass 
-                    ? 'border-4 border-yellow-400 shadow-2xl shadow-yellow-300/30 ring-2 ring-yellow-400/50' 
-                    : plan.popular 
-                      ? 'border-4 border-primary shadow-2xl' 
-                      : 'border-4 border-transparent hover:border-primary/30'
-                }`}
+                className="relative overflow-hidden transform transition-all hover:scale-105 border-4 border-yellow-400 shadow-2xl shadow-yellow-300/30 ring-2 ring-yellow-400/50 max-w-lg w-full"
                 style={isGoldPass ? {
                   background: 'linear-gradient(135deg, rgba(254, 243, 199, 0.3) 0%, rgba(253, 230, 138, 0.2) 50%, rgba(251, 191, 36, 0.15) 100%)',
                 } : undefined}
@@ -306,12 +259,7 @@ export default function KidsSubscriptionPlans() {
                   <Button
                     onClick={() => handleUpgrade(plan.id)}
                     disabled={isCurrentPlan(plan.id) || loading[plan.id] || checkingSubscription}
-                    className={`w-full text-lg py-6 rounded-2xl shadow-lg hover:shadow-xl transition-shadow ${
-                      isGoldPass 
-                        ? 'bg-gradient-to-r from-yellow-500 via-amber-500 to-orange-500 hover:from-yellow-600 hover:via-amber-600 hover:to-orange-600 text-white border-2 border-yellow-300' 
-                        : ''
-                    }`}
-                    variant={plan.popular || isGoldPass ? 'default' : 'outline'}
+                    className="w-full text-lg py-6 rounded-2xl shadow-lg hover:shadow-xl transition-shadow bg-gradient-to-r from-yellow-500 via-amber-500 to-orange-500 hover:from-yellow-600 hover:via-amber-600 hover:to-orange-600 text-white border-2 border-yellow-300"
                   >
                     {loading[plan.id] ? (
                       <>
@@ -320,15 +268,18 @@ export default function KidsSubscriptionPlans() {
                       </>
                     ) : isCurrentPlan(plan.id) ? (
                       '✓ Your Plan'
-                    ) : isGoldPass ? (
+                    ) : (
                       <>
                         <Crown className="mr-2 h-5 w-5" />
                         Get Gold Pass
                       </>
-                    ) : (
-                      'Choose Plan'
                     )}
                   </Button>
+                  
+                  {/* Security notice */}
+                  <p className="text-xs text-center text-amber-700 dark:text-amber-300 mt-3">
+                    🔒 Secure payment. Requires parental verification for AI features.
+                  </p>
                 </CardContent>
               </Card>
             );
