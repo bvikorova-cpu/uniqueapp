@@ -3535,6 +3535,68 @@ export type Database = {
           },
         ]
       }
+      celebration_congratulations: {
+        Row: {
+          celebration_id: string
+          created_at: string | null
+          id: string
+          user_id: string
+        }
+        Insert: {
+          celebration_id: string
+          created_at?: string | null
+          id?: string
+          user_id: string
+        }
+        Update: {
+          celebration_id?: string
+          created_at?: string | null
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "celebration_congratulations_celebration_id_fkey"
+            columns: ["celebration_id"]
+            isOneToOne: false
+            referencedRelation: "celebration_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      celebration_posts: {
+        Row: {
+          achievement_title: string
+          achievement_type: string
+          created_at: string | null
+          description: string | null
+          id: string
+          source_id: string | null
+          source_type: string | null
+          user_id: string
+        }
+        Insert: {
+          achievement_title: string
+          achievement_type?: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          source_id?: string | null
+          source_type?: string | null
+          user_id: string
+        }
+        Update: {
+          achievement_title?: string
+          achievement_type?: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          source_id?: string | null
+          source_type?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       certificate_purchases: {
         Row: {
           amount: number
@@ -20199,6 +20261,8 @@ export type Database = {
           updated_at: string
           user_id: string
           video_url: string | null
+          voice_duration: number | null
+          voice_url: string | null
         }
         Insert: {
           content: string
@@ -20213,6 +20277,8 @@ export type Database = {
           updated_at?: string
           user_id: string
           video_url?: string | null
+          voice_duration?: number | null
+          voice_url?: string | null
         }
         Update: {
           content?: string
@@ -20227,6 +20293,8 @@ export type Database = {
           updated_at?: string
           user_id?: string
           video_url?: string | null
+          voice_duration?: number | null
+          voice_url?: string | null
         }
         Relationships: [
           {
@@ -23820,6 +23888,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      shadow_bans: {
+        Row: {
+          banned_at: string | null
+          banned_by: string | null
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          reason: string | null
+          unbanned_at: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          banned_at?: string | null
+          banned_by?: string | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          reason?: string | null
+          unbanned_at?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          banned_at?: string | null
+          banned_by?: string | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          reason?: string | null
+          unbanned_at?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
       }
       shadow_battle_participants: {
         Row: {
@@ -29211,6 +29315,18 @@ export type Database = {
       }
     }
     Views: {
+      active_shadow_bans: {
+        Row: {
+          user_id: string | null
+        }
+        Insert: {
+          user_id?: string | null
+        }
+        Update: {
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       megatalent_leaderboard: {
         Row: {
           avatar_url: string | null
