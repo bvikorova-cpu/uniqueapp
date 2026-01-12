@@ -117,6 +117,8 @@ export const DisneyCastles = lazy(() => import("@/pages/DisneyCastles"));
 export const DisneyCastleTour = lazy(() => import("@/pages/DisneyCastleTour"));
 export const DisneyAdmin = lazy(() => import("@/pages/DisneyAdmin"));
 export const CertificateGallery = lazy(() => import("@/pages/CertificateGallery"));
+export const KidsMagicLibrary = lazy(() => import("@/pages/KidsMagicLibrary"));
+export const KidsParentalDashboard = lazy(() => import("@/pages/KidsParentalDashboard"));
 
 // Education
 export const Education = lazy(() => import("@/pages/Education"));
