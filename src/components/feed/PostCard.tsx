@@ -26,7 +26,8 @@ import { ReactionPicker } from "@/components/wall/ReactionPicker";
 import { ReportDialog } from "@/components/wall/ReportDialog";
 import { PinButton } from "@/components/wall/PinButton";
 import { FollowButton } from "@/components/wall/FollowButton";
-import { VerifiedFounderBadge } from "@/components/wall/VerifiedFounderBadge";
+import { VerifiedFounderBadge, isVerifiedFounder } from "@/components/wall/VerifiedFounderBadge";
+import { ProductCard } from "@/components/wall/ProductCard";
 import { EnhancedCommentInput } from "./EnhancedCommentInput";
 import { CommentItem } from "./CommentItem";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -740,6 +741,20 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
           <p className="text-base text-foreground mb-4 leading-relaxed whitespace-pre-wrap line-clamp-6">
             {post.content}
           </p>
+        )}
+
+        {/* Founder E-book Product Card - Only on founder posts mentioning e-book */}
+        {isVerifiedFounder(post.profiles?.full_name) && 
+         post.content?.toLowerCase().includes('e-book') && (
+          <div className="my-4">
+            <ProductCard 
+              productId="1ca13cf3-ef37-48a9-a41f-b045d3b9fb48"
+              title="Unique Founders E-book"
+              price={0}
+              imageUrl={null}
+              condition="ZADARMO"
+            />
+          </div>
         )}
 
         {/* Interaction Buttons */}
