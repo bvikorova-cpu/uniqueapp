@@ -8,8 +8,9 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { DollarSign, Users, TrendingUp, CreditCard, Search, ChefHat, Mic2, ChevronRight } from "lucide-react";
+import { DollarSign, Users, TrendingUp, CreditCard, Search, ChefHat, Mic2, ChevronRight, UserX } from "lucide-react";
 import { VerificationRequestsWidget } from "@/components/admin/VerificationRequestsWidget";
+import { ShadowBanToggle } from "@/components/admin/ShadowBanToggle";
 
 const Admin = () => {
   const navigate = useNavigate();
@@ -30,6 +31,7 @@ const Admin = () => {
   const [subscriptions, setSubscriptions] = useState<any[]>([]);
   const [transactions, setTransactions] = useState<any[]>([]);
   const [messages, setMessages] = useState<any[]>([]);
+  const [users, setUsers] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
@@ -122,6 +124,15 @@ const Admin = () => {
         .order('created_at', { ascending: false });
 
       setMessages(msgs || []);
+
+      // Load users for user management
+      const { data: usersData } = await supabase
+        .from('profiles')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(100);
+
+      setUsers(usersData || []);
 
       // Calculate stats
       const totalUsers = new Set(subs?.map(s => s.user_id) || []).size;
@@ -353,6 +364,10 @@ const Admin = () => {
             <TabsTrigger value="subscriptions">Predplatné</TabsTrigger>
             <TabsTrigger value="transactions">Transakcie</TabsTrigger>
             <TabsTrigger value="messages">Správy</TabsTrigger>
+            <TabsTrigger value="users" className="gap-1">
+              <UserX className="h-4 w-4" />
+              User Management
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="subscriptions">
@@ -516,6 +531,47 @@ const Admin = () => {
                               Označiť ako prečítané
                             </Button>
                           )}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="users">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <UserX className="h-5 w-5" />
+                  User Management & Shadow Ban
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>User</TableHead>
+                      <TableHead>Email</TableHead>
+                      <TableHead>Joined</TableHead>
+                      <TableHead>Shadow Ban</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {users.filter(user =>
+                      user.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                      user.email?.toLowerCase().includes(searchTerm.toLowerCase())
+                    ).map((user) => (
+                      <TableRow key={user.id}>
+                        <TableCell>{user.full_name || 'Unknown'}</TableCell>
+                        <TableCell>{user.email || 'N/A'}</TableCell>
+                        <TableCell>{new Date(user.created_at).toLocaleDateString('sk-SK')}</TableCell>
+                        <TableCell>
+                          <ShadowBanToggle 
+                            userId={user.id} 
+                            userName={user.full_name || 'User'}
+                          />
                         </TableCell>
                       </TableRow>
                     ))}

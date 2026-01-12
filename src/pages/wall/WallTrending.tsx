@@ -1,8 +1,23 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
-import { TrendingUp, Loader2 } from "lucide-react";
+import { TrendingUp, Loader2, BookOpen, FlaskConical } from "lucide-react";
 import PostCard from "@/components/feed/PostCard";
+import { Badge } from "@/components/ui/badge";
+
+// Educational content boost factor (20% bonus)
+const EDUCATIONAL_BOOST = 1.2;
+
+// Check if post is educational (from Science Lab or tagged as educational)
+const isEducationalPost = (post: any): boolean => {
+  const content = (post.content || "").toLowerCase();
+  const isFromScienceLab = content.includes("#sciencelab") || 
+                           content.includes("#science") ||
+                           content.includes("#education") ||
+                           content.includes("#learning") ||
+                           content.includes("#tutorial");
+  return isFromScienceLab;
+};
 
 export default function WallTrending() {
   const { data: trendingPosts = [], isLoading, refetch } = useQuery({
@@ -37,19 +52,27 @@ export default function WallTrending() {
         (profiles || []).map(p => [p.id, p])
       );
 
-      // Calculate engagement score and sort
-      const postsWithEngagement = posts.map(post => ({
-        ...post,
-        profiles: profilesMap.get(post.user_id) || {
-          id: post.user_id,
-          full_name: null,
-          avatar_url: null
-        },
-        engagementScore: (post.likes_count || 0) + 
-                        (post.comments_count || 0) * 2 + 
-                        (post.shares_count || 0) * 3 +
-                        (post.reposts_count || 0) * 2
-      }));
+      // Calculate engagement score with educational boost
+      const postsWithEngagement = posts.map(post => {
+        const baseScore = (post.likes_count || 0) + 
+                         (post.comments_count || 0) * 2 + 
+                         (post.shares_count || 0) * 3 +
+                         (post.reposts_count || 0) * 2;
+        
+        const isEducational = isEducationalPost(post);
+        const engagementScore = isEducational ? baseScore * EDUCATIONAL_BOOST : baseScore;
+        
+        return {
+          ...post,
+          profiles: profilesMap.get(post.user_id) || {
+            id: post.user_id,
+            full_name: null,
+            avatar_url: null
+          },
+          engagementScore,
+          isEducational
+        };
+      });
 
       return postsWithEngagement.sort((a, b) => b.engagementScore - a.engagementScore);
     },
@@ -76,11 +99,19 @@ export default function WallTrending() {
           <div className="space-y-4">
             {trendingPosts.map((post, index) => (
               <div key={post.id} className="relative">
-                {index < 3 && (
-                  <div className="absolute -left-4 top-4 flex items-center justify-center w-8 h-8 bg-primary text-primary-foreground rounded-full text-sm font-bold z-10">
-                    {index + 1}
-                  </div>
-                )}
+                <div className="flex items-center gap-2 absolute -left-4 top-4 z-10">
+                  {index < 3 && (
+                    <div className="flex items-center justify-center w-8 h-8 bg-primary text-primary-foreground rounded-full text-sm font-bold">
+                      {index + 1}
+                    </div>
+                  )}
+                  {post.isEducational && (
+                    <Badge variant="secondary" className="gap-1 bg-emerald-500/20 text-emerald-600 border-emerald-500/30">
+                      <FlaskConical className="h-3 w-3" />
+                      +20% Boost
+                    </Badge>
+                  )}
+                </div>
                 <PostCard
                   post={post}
                   onDelete={refetch}

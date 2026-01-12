@@ -26,6 +26,7 @@ import { ReactionPicker } from "@/components/wall/ReactionPicker";
 import { ReportDialog } from "@/components/wall/ReportDialog";
 import { PinButton } from "@/components/wall/PinButton";
 import { FollowButton } from "@/components/wall/FollowButton";
+import { VerifiedFounderBadge } from "@/components/wall/VerifiedFounderBadge";
 import { EnhancedCommentInput } from "./EnhancedCommentInput";
 import { CommentItem } from "./CommentItem";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -661,12 +662,18 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
             </AvatarFallback>
           </Avatar>
           <div className="flex-1 min-w-0">
-            <p 
-              className="font-semibold text-base truncate cursor-pointer hover:underline" 
-              onClick={(e) => handleUserClick(e, post.user_id)}
-            >
-              {post.profiles?.full_name || "User"}
-            </p>
+            <div className="flex items-center gap-2 flex-wrap">
+              <p 
+                className="font-semibold text-base truncate cursor-pointer hover:underline" 
+                onClick={(e) => handleUserClick(e, post.user_id)}
+              >
+                {post.profiles?.full_name || "User"}
+              </p>
+              <VerifiedFounderBadge 
+                userName={post.profiles?.full_name || ""} 
+                size="sm"
+              />
+            </div>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <span>
                 {formatDistanceToNow(new Date(post.created_at), {
