@@ -293,11 +293,22 @@ function CollectibleMarker({
 }
 
 const LANGUAGES = [
-  { code: 'en-US', name: 'English', flag: '🇬🇧' },
-  { code: 'sk-SK', name: 'Slovenčina', flag: '🇸🇰' },
-  { code: 'fr-FR', name: 'Français', flag: '🇫🇷' },
-  { code: 'es-ES', name: 'Español', flag: '🇪🇸' },
+  { code: 'en', name: 'English', flag: '🇬🇧' },
+  { code: 'de', name: 'Deutsch', flag: '🇩🇪' },
+  { code: 'fr', name: 'Français', flag: '🇫🇷' },
+  { code: 'es', name: 'Español', flag: '🇪🇸' },
+  { code: 'sk', name: 'Slovenčina', flag: '🇸🇰' },
+  { code: 'it', name: 'Italiano', flag: '🇮🇹' },
+  { code: 'pt', name: 'Português', flag: '🇵🇹' },
+  { code: 'zh', name: '中文', flag: '🇨🇳' },
 ];
+
+// Detect user's preferred language
+const getDefaultLanguage = (): string => {
+  const browserLang = navigator.language.split('-')[0].toLowerCase();
+  const supported = LANGUAGES.find(l => l.code === browserLang);
+  return supported ? supported.code : 'en';
+};
 
 export function DisneyPanoramaViewer({ 
   imageUrl, 
@@ -312,7 +323,7 @@ export function DisneyPanoramaViewer({
   const [ambientVolume, setAmbientVolume] = useState(0.3);
   const [isAmbientMuted, setIsAmbientMuted] = useState(false);
   const [hoveredCollectible, setHoveredCollectible] = useState<string | null>(null);
-  const [selectedLanguage, setSelectedLanguage] = useState<string>('en-US');
+  const [selectedLanguage, setSelectedLanguage] = useState<string>(getDefaultLanguage);
   const [isGenerating, setIsGenerating] = useState(false);
   const [audioCache, setAudioCache] = useState<Record<string, string>>({});
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -458,61 +469,94 @@ export function DisneyPanoramaViewer({
 
       {/* Audio Guide Control */}
       {audioGuideText && (
-        <div className="absolute top-24 left-6 z-20 flex flex-col gap-2">
-          <Button
-            onClick={handleSpeak}
-            size="lg"
-            disabled={isGenerating}
-            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-2xl disabled:opacity-50"
-          >
-            {isGenerating ? (
-              <>
-                <div className="mr-2 h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                Generating...
-              </>
-            ) : isPlaying ? (
-              <>
-                <VolumeX className="mr-2 h-5 w-5" />
-                Stop Audio Guide
-              </>
-            ) : (
-              <>
-                <Volume2 className="mr-2 h-5 w-5" />
-                🎧 Play Audio Guide
-              </>
-            )}
-          </Button>
-          
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="outline"
-                size="lg"
-                className="bg-white/90 hover:bg-white shadow-xl"
-              >
-                <Languages className="mr-2 h-5 w-5" />
-                {LANGUAGES.find(l => l.code === selectedLanguage)?.flag} {LANGUAGES.find(l => l.code === selectedLanguage)?.name}
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="bg-white">
-              {LANGUAGES.map((lang) => (
-                <DropdownMenuItem
-                  key={lang.code}
-                  onClick={() => {
-                    setSelectedLanguage(lang.code);
-                    if (isPlaying) {
-                      window.speechSynthesis.cancel();
-                      setIsPlaying(false);
-                    }
-                  }}
-                  className="cursor-pointer"
+        <div className="absolute top-24 left-6 z-20 flex flex-col gap-3">
+          {/* Main Controls Row */}
+          <div className="flex items-center gap-2">
+            <Button
+              onClick={handleSpeak}
+              size="lg"
+              disabled={isGenerating}
+              className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-2xl disabled:opacity-50 min-w-[180px]"
+            >
+              {isGenerating ? (
+                <>
+                  <div className="mr-2 h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                  Generating...
+                </>
+              ) : isPlaying ? (
+                <>
+                  <VolumeX className="mr-2 h-5 w-5" />
+                  Stop Story
+                </>
+              ) : (
+                <>
+                  <Volume2 className="mr-2 h-5 w-5" />
+                  🎧 Play Story
+                </>
+              )}
+            </Button>
+            
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="bg-white/90 hover:bg-white shadow-xl"
                 >
-                  <span className="mr-2">{lang.flag}</span>
-                  {lang.name}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
+                  <Languages className="mr-2 h-4 w-4" />
+                  {LANGUAGES.find(l => l.code === selectedLanguage)?.flag} {LANGUAGES.find(l => l.code === selectedLanguage)?.name}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="bg-white max-h-[300px] overflow-y-auto">
+                {LANGUAGES.map((lang) => (
+                  <DropdownMenuItem
+                    key={lang.code}
+                    onClick={() => {
+                      setSelectedLanguage(lang.code);
+                      if (isPlaying && elevenLabsAudioRef.current) {
+                        elevenLabsAudioRef.current.pause();
+                        elevenLabsAudioRef.current.currentTime = 0;
+                        setIsPlaying(false);
+                      }
+                    }}
+                    className={`cursor-pointer ${lang.code === selectedLanguage ? 'bg-purple-100' : ''}`}
+                  >
+                    <span className="mr-2 text-lg">{lang.flag}</span>
+                    {lang.name}
+                    {lang.code === selectedLanguage && (
+                      <span className="ml-auto text-purple-600">✓</span>
+                    )}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+
+          {/* Audio Progress & Sound Wave */}
+          {isPlaying && (
+            <div className="bg-white/90 backdrop-blur-sm rounded-xl p-3 shadow-lg max-w-xs">
+              <div className="flex items-center gap-2 mb-2">
+                {/* Sound Wave Animation */}
+                <div className="flex items-end gap-0.5 h-6">
+                  {[...Array(12)].map((_, i) => (
+                    <div
+                      key={i}
+                      className="w-1 bg-gradient-to-t from-purple-600 to-blue-500 rounded-full animate-pulse"
+                      style={{
+                        height: `${20 + Math.random() * 80}%`,
+                        animationDelay: `${i * 0.1}s`,
+                        animationDuration: '0.5s',
+                      }}
+                    />
+                  ))}
+                </div>
+                <span className="text-xs text-gray-600 ml-auto">Playing...</span>
+              </div>
+              <div className="h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                <div className="h-full bg-gradient-to-r from-purple-600 to-blue-500 animate-pulse w-full" />
+              </div>
+            </div>
+          )}
         </div>
       )}
 
