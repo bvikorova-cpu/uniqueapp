@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, Mail, ArrowLeft, MapPin, Phone, Globe, Briefcase, Building2, Calendar, Edit, UserPlus, UserCheck, Users, TrendingUp, Video, Bookmark, Trophy, GraduationCap, Brain } from "lucide-react";
+import { Loader2, Mail, ArrowLeft, MapPin, Phone, Globe, Briefcase, Building2, Calendar, Edit, UserPlus, UserCheck, Users, TrendingUp, Video, Bookmark, Trophy, GraduationCap, Brain, Package, Sparkles, ArrowRightLeft } from "lucide-react";
 import { BrainDuelStats } from "@/components/profile/BrainDuelStats";
 import { useToast } from "@/hooks/use-toast";
 import PostCard from "@/components/feed/PostCard";
@@ -16,6 +16,11 @@ import { UserContests } from "@/components/profile/UserContests";
 import { FollowButton } from "@/components/profile/FollowButton";
 import { FollowersModal } from "@/components/profile/FollowersModal";
 import { useFollowCounts } from "@/hooks/useFollow";
+import { VerifiedFounderBadge, isVerifiedFounder } from "@/components/wall/VerifiedFounderBadge";
+import { DailyXPVideoReward } from "@/components/gamification/DailyXPVideoReward";
+import { MyBazaarListings } from "@/components/profile/MyBazaarListings";
+import { MySkillsHub } from "@/components/profile/MySkillsHub";
+import { MyJobApplications } from "@/components/profile/MyJobApplications";
 
 interface Profile {
   id: string;
@@ -388,9 +393,18 @@ const Profile = () => {
 
             <div className="flex-1">
               <div className="flex items-center justify-between mb-3">
-                <h1 className="text-3xl font-bold">
-                  {profile.full_name || "No name"}
-                </h1>
+                <div className="flex items-center gap-3 flex-wrap">
+                  <h1 className="text-3xl font-bold">
+                    {profile.full_name || "No name"}
+                  </h1>
+                  {/* Verified Founder Badge - prominently displayed */}
+                  <VerifiedFounderBadge 
+                    userName={profile.full_name || ""} 
+                    userEmail={profile.email || undefined}
+                    userId={userId}
+                    size="lg"
+                  />
+                </div>
                 <div className="flex gap-2">
                   {currentUserId === userId ? (
                     <Button variant="outline" size="sm" onClick={() => navigate("/edit-profile")} className="glass-button rounded-xl">
@@ -505,6 +519,13 @@ const Profile = () => {
           )}
         </div>
 
+        {/* Daily XP Widget - only for own profile */}
+        {currentUserId === userId && (
+          <div className="mb-8">
+            <DailyXPVideoReward userId={userId} />
+          </div>
+        )}
+
         {/* Activity Statistics */}
         <div className="glass-post-card p-8 mb-8">
           <div className="flex items-center gap-2 mb-4">
@@ -559,16 +580,27 @@ const Profile = () => {
           </div>
         </div>
 
-        {/* Tabs Section */}
-
+        {/* Tabs Section - Central Hub */}
         <Tabs defaultValue={defaultTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-4 md:grid-cols-8 h-auto gap-1">
             <TabsTrigger value="posts">Posts</TabsTrigger>
+            <TabsTrigger value="listings">
+              <Package className="h-4 w-4 mr-1 hidden sm:inline" />
+              Listings
+            </TabsTrigger>
+            <TabsTrigger value="skills">
+              <Sparkles className="h-4 w-4 mr-1 hidden sm:inline" />
+              Skills
+            </TabsTrigger>
+            <TabsTrigger value="jobs">
+              <Briefcase className="h-4 w-4 mr-1 hidden sm:inline" />
+              Jobs
+            </TabsTrigger>
             <TabsTrigger value="contests">Contests</TabsTrigger>
             <TabsTrigger value="education">Courses</TabsTrigger>
             <TabsTrigger value="brain-duel">
-              <Brain className="h-4 w-4 mr-2" />
-              Brain Duel
+              <Brain className="h-4 w-4 mr-1 hidden sm:inline" />
+              Duel
             </TabsTrigger>
             <TabsTrigger value="friends">Friends</TabsTrigger>
           </TabsList>
@@ -587,6 +619,21 @@ const Profile = () => {
                 />
               ))
             )}
+          </TabsContent>
+
+          {/* My Listings (Bazaar) */}
+          <TabsContent value="listings" className="mt-4">
+            <MyBazaarListings userId={userId!} isOwnProfile={currentUserId === userId} />
+          </TabsContent>
+
+          {/* My Skills (Marketplace/Swap) */}
+          <TabsContent value="skills" className="mt-4">
+            <MySkillsHub userId={userId!} isOwnProfile={currentUserId === userId} />
+          </TabsContent>
+
+          {/* Job Applications */}
+          <TabsContent value="jobs" className="mt-4">
+            <MyJobApplications userId={userId!} isOwnProfile={currentUserId === userId} />
           </TabsContent>
 
           <TabsContent value="contests" className="mt-4">
