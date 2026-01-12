@@ -87,6 +87,8 @@ export const KidsPricing = lazy(() => import("@/pages/KidsPricing"));
 export const StoryVideoDemo = lazy(() => import("@/pages/StoryVideoDemo"));
 export const StoryGallery = lazy(() => import("@/pages/StoryGallery"));
 export const SharedStory = lazy(() => import("@/pages/SharedStory"));
+export const KidsMagicLibrary = lazy(() => import("@/pages/KidsMagicLibrary"));
+export const KidsParentalDashboard = lazy(() => import("@/pages/KidsParentalDashboard"));
 
 // Lifestyle
 export const Vacationer = lazy(() => import("@/pages/Vacationer"));

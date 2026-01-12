@@ -43,7 +43,10 @@ const subscriptionPlans = [
       '💬 Character Chat - Unlimited',
       '🌙 Bedtime Stories - All Content',
       '👨‍👩‍👧 Up to 5 child profiles',
-      '📊 Parental analytics dashboard',
+      '📊 Monthly Educational Progress Reports',
+      '📚 Access to My Magic Library Portfolio',
+      '⏰ Smart Sleep Timer Controls',
+      '📈 Parental analytics dashboard',
       '⭐ Priority support 24/7'
     ]
   }

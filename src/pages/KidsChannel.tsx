@@ -5,13 +5,14 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Heart, Play, Star, Sparkles, Crown, BookOpen, Volume2, Trophy, Moon, CreditCard, Video, Castle, Palette, Unlock, Shield } from "lucide-react";
+import { Heart, Play, Star, Sparkles, Crown, BookOpen, Volume2, Trophy, Moon, CreditCard, Video, Castle, Palette, Unlock, Shield, Library, BarChart3 } from "lucide-react";
 import { toast } from "sonner";
 import { showImages } from "@/components/kids/ShowImages";
 import castleBg from "@/assets/kids/disney-castle-bg.jpg";
 import { ParentalGate, useParentalGate } from "@/components/kids/ParentalGate";
 import { SafeContentBadge } from "@/components/kids/SafeContentBadge";
 import { useKidsGoldPass } from "@/hooks/useKidsGoldPass";
+import { SmartSleepTimer } from "@/components/kids/SmartSleepTimer";
 
 interface Show {
   id: string;
@@ -464,6 +465,61 @@ const KidsChannel = () => {
               <Badge className="bg-blue-500 text-white shadow-md">Virtual Tour</Badge>
             </div>
           </Card>
+
+          {/* 10. My Magic Library */}
+          <Card 
+            className={`group overflow-hidden bg-gradient-to-br from-amber-100/95 to-yellow-100/95 backdrop-blur-sm border-4 transition-all duration-300 hover:scale-105 cursor-pointer shadow-2xl hover:shadow-amber-300/50 animate-fade-in ${hasGoldPass ? 'border-amber-400 ring-2 ring-amber-300' : 'border-white/60 hover:border-amber-400'}`}
+            style={{ animationDelay: "0.9s" }}
+            onClick={() => navigate('/kids-channel/my-gallery')}
+          >
+            <div className="p-6 text-center relative">
+              {hasGoldPass && (
+                <div className="absolute top-2 right-2">
+                  <Badge className="bg-green-500 text-white gap-1"><Unlock className="w-3 h-3" /> Unlocked</Badge>
+                </div>
+              )}
+              <div className="bg-white rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center shadow-lg">
+                <Library className="w-10 h-10 text-amber-500" />
+              </div>
+              <h3 className="text-xl font-bold text-amber-700 mb-2">
+                My Magic Library! 📚
+              </h3>
+              <p className="text-gray-700 text-sm mb-3">
+                See all your saved stories, drawings, and characters in one place!
+              </p>
+              <Badge className="bg-amber-500 text-white shadow-md">Portfolio</Badge>
+            </div>
+          </Card>
+
+          {/* 11. Parent Dashboard - Only shown when logged in */}
+          {user && (
+            <Card 
+              className={`group overflow-hidden bg-gradient-to-br from-slate-100/95 to-gray-100/95 backdrop-blur-sm border-4 transition-all duration-300 hover:scale-105 cursor-pointer shadow-2xl hover:shadow-slate-300/50 animate-fade-in ${hasGoldPass ? 'border-slate-400 ring-2 ring-slate-300' : 'border-white/60 hover:border-slate-400'}`}
+              style={{ animationDelay: "1.0s" }}
+              onClick={() => navigate('/kids-channel/parental-dashboard')}
+            >
+              <div className="p-6 text-center relative">
+                {hasGoldPass && (
+                  <div className="absolute top-2 right-2">
+                    <Badge className="bg-green-500 text-white gap-1"><Unlock className="w-3 h-3" /> Unlocked</Badge>
+                  </div>
+                )}
+                <div className="bg-white rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center shadow-lg">
+                  <BarChart3 className="w-10 h-10 text-slate-500" />
+                </div>
+                <h3 className="text-xl font-bold text-slate-700 mb-2">
+                  Parent Dashboard 👨‍👩‍👧
+                </h3>
+                <p className="text-gray-700 text-sm mb-3">
+                  View progress reports and set screen time limits.
+                </p>
+                <div className="flex gap-2 justify-center flex-wrap">
+                  <Badge className="bg-slate-500 text-white shadow-md">Analytics</Badge>
+                  {!hasGoldPass && <Badge variant="outline" className="border-amber-400 text-amber-600">Gold Pass</Badge>}
+                </div>
+              </div>
+            </Card>
+          )}
         </div>
       </div>
 
@@ -531,6 +587,9 @@ const KidsChannel = () => {
         }}
         featureName={pendingFeatureName}
       />
+
+      {/* Smart Sleep Timer */}
+      <SmartSleepTimer />
     </div>
   );
 };
