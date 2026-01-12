@@ -117,3 +117,73 @@ export const triggerLevelUpConfetti = () => {
     });
   }, 250);
 };
+
+// Gold confetti for TOP Premium subscription
+export const triggerTopPremiumConfetti = () => {
+  const duration = 4000;
+  const animationEnd = Date.now() + duration;
+  
+  // Gold and premium colors
+  const goldColors = ['#FFD700', '#FFC107', '#FFB300', '#FFA000', '#FF8F00', '#FFECB3'];
+
+  // Initial burst
+  confetti({
+    particleCount: 150,
+    spread: 100,
+    origin: { y: 0.5 },
+    colors: goldColors,
+    zIndex: 9999,
+    shapes: ['circle', 'square'],
+    scalar: 1.2,
+  });
+
+  // Side cannons
+  const frame = () => {
+    confetti({
+      particleCount: 3,
+      angle: 60,
+      spread: 40,
+      origin: { x: 0, y: 0.7 },
+      colors: goldColors,
+      zIndex: 9999,
+      ticks: 200,
+    });
+
+    confetti({
+      particleCount: 3,
+      angle: 120,
+      spread: 40,
+      origin: { x: 1, y: 0.7 },
+      colors: goldColors,
+      zIndex: 9999,
+      ticks: 200,
+    });
+
+    if (Date.now() < animationEnd) {
+      requestAnimationFrame(frame);
+    }
+  };
+
+  frame();
+
+  // Additional bursts
+  setTimeout(() => {
+    confetti({
+      particleCount: 80,
+      spread: 60,
+      origin: { y: 0.4, x: 0.3 },
+      colors: goldColors,
+      zIndex: 9999,
+    });
+  }, 500);
+
+  setTimeout(() => {
+    confetti({
+      particleCount: 80,
+      spread: 60,
+      origin: { y: 0.4, x: 0.7 },
+      colors: goldColors,
+      zIndex: 9999,
+    });
+  }, 1000);
+};
