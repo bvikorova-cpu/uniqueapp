@@ -16435,32 +16435,47 @@ export type Database = {
       }
       marketplace_responses: {
         Row: {
+          commission_amount: number | null
           created_at: string | null
+          escrow_released_at: string | null
+          escrow_status: string | null
           id: string
           is_read: boolean | null
           message: string
           offering_id: string
+          payment_amount: number | null
           receiver_id: string
+          seller_payout: number | null
           sender_id: string
           updated_at: string | null
         }
         Insert: {
+          commission_amount?: number | null
           created_at?: string | null
+          escrow_released_at?: string | null
+          escrow_status?: string | null
           id?: string
           is_read?: boolean | null
           message: string
           offering_id: string
+          payment_amount?: number | null
           receiver_id: string
+          seller_payout?: number | null
           sender_id: string
           updated_at?: string | null
         }
         Update: {
+          commission_amount?: number | null
           created_at?: string | null
+          escrow_released_at?: string | null
+          escrow_status?: string | null
           id?: string
           is_read?: boolean | null
           message?: string
           offering_id?: string
+          payment_amount?: number | null
           receiver_id?: string
+          seller_payout?: number | null
           sender_id?: string
           updated_at?: string | null
         }
@@ -20002,6 +20017,36 @@ export type Database = {
           scientific_name?: string | null
           updated_at?: string | null
           user_id?: string
+        }
+        Relationships: []
+      }
+      platform_commission_settings: {
+        Row: {
+          commission_rate: number
+          created_at: string | null
+          description: string | null
+          id: string
+          is_active: boolean | null
+          service_type: string
+          updated_at: string | null
+        }
+        Insert: {
+          commission_rate: number
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          service_type: string
+          updated_at?: string | null
+        }
+        Update: {
+          commission_rate?: number
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          service_type?: string
+          updated_at?: string | null
         }
         Relationships: []
       }
@@ -24312,6 +24357,7 @@ export type Database = {
           category: Database["public"]["Enums"]["skill_category"]
           created_at: string
           description: string
+          escrow_status: string | null
           id: string
           image_url: string | null
           is_active: boolean | null
@@ -24325,6 +24371,7 @@ export type Database = {
           category: Database["public"]["Enums"]["skill_category"]
           created_at?: string
           description: string
+          escrow_status?: string | null
           id?: string
           image_url?: string | null
           is_active?: boolean | null
@@ -24338,6 +24385,7 @@ export type Database = {
           category?: Database["public"]["Enums"]["skill_category"]
           created_at?: string
           description?: string
+          escrow_status?: string | null
           id?: string
           image_url?: string | null
           is_active?: boolean | null
