@@ -10227,6 +10227,8 @@ export type Database = {
           updated_at: string | null
           updates: Json | null
           user_id: string
+          verified: boolean | null
+          verified_by: string | null
           video_url: string | null
         }
         Insert: {
@@ -10246,6 +10248,8 @@ export type Database = {
           updated_at?: string | null
           updates?: Json | null
           user_id: string
+          verified?: boolean | null
+          verified_by?: string | null
           video_url?: string | null
         }
         Update: {
@@ -10265,6 +10269,8 @@ export type Database = {
           updated_at?: string | null
           updates?: Json | null
           user_id?: string
+          verified?: boolean | null
+          verified_by?: string | null
           video_url?: string | null
         }
         Relationships: []
@@ -19565,6 +19571,8 @@ export type Database = {
           updated_at: string | null
           urgent: boolean | null
           user_id: string
+          verified: boolean | null
+          verified_by: string | null
           video_url: string | null
         }
         Insert: {
@@ -19585,6 +19593,8 @@ export type Database = {
           updated_at?: string | null
           urgent?: boolean | null
           user_id: string
+          verified?: boolean | null
+          verified_by?: string | null
           video_url?: string | null
         }
         Update: {
@@ -19605,6 +19615,8 @@ export type Database = {
           updated_at?: string | null
           urgent?: boolean | null
           user_id?: string
+          verified?: boolean | null
+          verified_by?: string | null
           video_url?: string | null
         }
         Relationships: []
@@ -26256,6 +26268,8 @@ export type Database = {
           title: string
           updated_at: string | null
           user_id: string
+          verified: boolean | null
+          verified_by: string | null
         }
         Insert: {
           created_at?: string | null
@@ -26275,6 +26289,8 @@ export type Database = {
           title: string
           updated_at?: string | null
           user_id: string
+          verified?: boolean | null
+          verified_by?: string | null
         }
         Update: {
           created_at?: string | null
@@ -26294,6 +26310,8 @@ export type Database = {
           title?: string
           updated_at?: string | null
           user_id?: string
+          verified?: boolean | null
+          verified_by?: string | null
         }
         Relationships: []
       }
@@ -26393,6 +26411,8 @@ export type Database = {
           title: string
           updated_at: string | null
           user_id: string
+          verified: boolean | null
+          verified_by: string | null
           video_url: string | null
         }
         Insert: {
@@ -26415,6 +26435,8 @@ export type Database = {
           title: string
           updated_at?: string | null
           user_id: string
+          verified?: boolean | null
+          verified_by?: string | null
           video_url?: string | null
         }
         Update: {
@@ -26437,6 +26459,8 @@ export type Database = {
           title?: string
           updated_at?: string | null
           user_id?: string
+          verified?: boolean | null
+          verified_by?: string | null
           video_url?: string | null
         }
         Relationships: []

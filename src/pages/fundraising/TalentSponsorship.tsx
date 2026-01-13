@@ -46,9 +46,10 @@ export default function TalentSponsorship() {
   const fetchCampaigns = async () => {
     try {
       let query = supabase
-        .from('talent_campaigns')
+        .from('talent_campaigns' as any)
         .select('*')
         .eq('status', 'active')
+        .eq('verified', true)
         .order('premium_subscriber', { ascending: false })
         .order('created_at', { ascending: false });
 
@@ -59,7 +60,7 @@ export default function TalentSponsorship() {
       const { data, error } = await query;
 
       if (error) throw error;
-      setCampaigns(data || []);
+      setCampaigns((data as unknown as TalentCampaign[]) || []);
     } catch (error) {
       console.error('Error fetching campaigns:', error);
       toast({

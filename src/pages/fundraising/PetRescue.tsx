@@ -47,9 +47,10 @@ export default function PetRescue() {
   const fetchCampaigns = async () => {
     try {
       let query = supabase
-        .from('pet_rescue_campaigns')
+        .from('pet_rescue_campaigns' as any)
         .select('*')
         .eq('status', 'active')
+        .eq('verified', true)
         .order('urgent', { ascending: false })
         .order('created_at', { ascending: false });
 
@@ -62,7 +63,7 @@ export default function PetRescue() {
       const { data, error } = await query;
 
       if (error) throw error;
-      setCampaigns(data || []);
+      setCampaigns((data as unknown as PetCampaign[]) || []);
     } catch (error) {
       console.error('Error fetching campaigns:', error);
       toast({

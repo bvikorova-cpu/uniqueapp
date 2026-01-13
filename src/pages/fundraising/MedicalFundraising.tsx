@@ -48,14 +48,14 @@ export default function MedicalFundraising() {
   const fetchCampaigns = async () => {
     try {
       const { data, error } = await supabase
-        .from('medical_campaigns')
+        .from('medical_campaigns' as any)
         .select('*')
         .eq('status', 'active')
         .eq('verified', true)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setCampaigns(data || []);
+      setCampaigns((data as unknown as MedicalCampaign[]) || []);
     } catch (error) {
       console.error('Error fetching campaigns:', error);
       toast({

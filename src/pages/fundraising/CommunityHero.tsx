@@ -45,9 +45,10 @@ export default function CommunityHero() {
   const fetchCampaigns = async () => {
     try {
       let query = supabase
-        .from('hero_campaigns')
+        .from('hero_campaigns' as any)
         .select('*')
         .eq('status', 'active')
+        .eq('verified', true)
         .order('created_at', { ascending: false });
 
       if (filter !== 'all') {
@@ -57,7 +58,7 @@ export default function CommunityHero() {
       const { data, error } = await query;
 
       if (error) throw error;
-      setCampaigns(data || []);
+      setCampaigns((data as unknown as HeroCampaign[]) || []);
     } catch (error) {
       console.error('Error fetching campaigns:', error);
       toast({
