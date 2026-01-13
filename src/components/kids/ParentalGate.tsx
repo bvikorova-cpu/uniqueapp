@@ -63,8 +63,8 @@ export function ParentalGate({ isOpen, onSuccess, onCancel, featureName = "this 
     if (numAnswer === mathQuestion.answer) {
       setSuccess(true);
       setError(false);
-      // Store in sessionStorage for 1 hour
-      const expiresAt = Date.now() + 60 * 60 * 1000; // 1 hour
+      // Store in sessionStorage for 30 minutes
+      const expiresAt = Date.now() + 30 * 60 * 1000; // 30 minutes
       sessionStorage.setItem('parental_gate_verified', JSON.stringify({ expiresAt }));
       setTimeout(() => {
         onSuccess();
