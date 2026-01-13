@@ -56,9 +56,9 @@ const KidsHomework = () => {
   };
 
   const handleParentalGateCancel = () => {
-    // Redirect to learning dashboard - cannot bypass
+    // Hard redirect to home page - cannot bypass
     setShowParentalGate(false);
-    navigate('/learning');
+    window.location.assign("/");
   };
 
   const handleSubmit = async (e: React.FormEvent) => {

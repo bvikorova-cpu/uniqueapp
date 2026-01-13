@@ -9,7 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Shield, AlertCircle, CheckCircle } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+
 
 interface ParentalGateProps {
   isOpen: boolean;
@@ -29,7 +29,6 @@ function generateMathQuestion(): { question: string; answer: number } {
 }
 
 export function ParentalGate({ isOpen, onSuccess, onCancel, featureName = "this feature" }: ParentalGateProps) {
-  const navigate = useNavigate();
   const [mathQuestion, setMathQuestion] = useState(generateMathQuestion());
   const [userAnswer, setUserAnswer] = useState("");
   const [error, setError] = useState(false);
@@ -89,9 +88,9 @@ export function ParentalGate({ isOpen, onSuccess, onCancel, featureName = "this 
   };
 
   const handleCancel = () => {
-    // Redirect to home page - cannot bypass the parental gate
-    navigate('/', { replace: true });
+    // Hard redirect to Home page to guarantee a clean navigation (no bypass)
     onCancel?.();
+    window.location.assign("/");
   };
 
   return (
@@ -187,14 +186,14 @@ export function ParentalGate({ isOpen, onSuccess, onCancel, featureName = "this 
             </Button>
           </div>
 
-          <div className="bg-purple-100/50 p-3 rounded-lg border border-purple-200">
-            <p className="text-xs text-center text-purple-700 font-medium">
-              🔒 This safety check ensures adult supervision for AI-interactive features.
-            </p>
-            <p className="text-xs text-center text-purple-600 mt-1">
-              Clicking "Cancel" will take you back to the Learning Dashboard.
-            </p>
-          </div>
+           <div className="bg-purple-100/50 p-3 rounded-lg border border-purple-200">
+             <p className="text-xs text-center text-purple-700 font-medium">
+               🔒 This safety check ensures adult supervision for AI-interactive features.
+             </p>
+             <p className="text-xs text-center text-purple-600 mt-1">
+               Clicking "Cancel" will take you back to the Home page.
+             </p>
+           </div>
         </div>
       </DialogContent>
     </Dialog>
