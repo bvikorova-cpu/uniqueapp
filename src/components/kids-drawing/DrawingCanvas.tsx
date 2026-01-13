@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Canvas as FabricCanvas, PencilBrush, Circle, Rect, Polygon } from "fabric";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
-import { Eraser, Paintbrush, Trash2, Eye, EyeOff, Undo, Redo, Circle as CircleIcon, Square, Star, Save } from "lucide-react";
+import { Eraser, Paintbrush, Trash2, Eye, EyeOff, Undo, Redo, Circle as CircleIcon, Square, Star, Save, Layers } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
@@ -12,6 +12,7 @@ import { useKidsDrawingGallery } from "@/hooks/useKidsDrawingGallery";
 interface DrawingCanvasProps {
   tutorialImage?: string;
   stepNumber: number;
+  category?: string;
 }
 
 const COLORS = [
@@ -27,13 +28,15 @@ const COLORS = [
   "#FFC0CB", // Pink
 ];
 
-export const DrawingCanvas = ({ tutorialImage, stepNumber }: DrawingCanvasProps) => {
+export const DrawingCanvas = ({ tutorialImage, stepNumber, category }: DrawingCanvasProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [fabricCanvas, setFabricCanvas] = useState<FabricCanvas | null>(null);
   const [activeColor, setActiveColor] = useState("#000000");
   const [brushSize, setBrushSize] = useState(3);
   const [activeTool, setActiveTool] = useState<"draw" | "erase" | "circle" | "square" | "star">("draw");
   const [showReference, setShowReference] = useState(true);
+  const [overlayMode, setOverlayMode] = useState(false);
+  const [overlayOpacity, setOverlayOpacity] = useState(30);
   const [canvasHistory, setCanvasHistory] = useState<string[]>([]);
   const [historyStep, setHistoryStep] = useState(-1);
   const [showSaveDialog, setShowSaveDialog] = useState(false);
@@ -255,6 +258,7 @@ export const DrawingCanvas = ({ tutorialImage, stepNumber }: DrawingCanvasProps)
       imageDataURL: dataURL,
       title,
       stepNumber,
+      category,
     });
     
     setShowSaveDialog(false);
@@ -380,7 +384,34 @@ export const DrawingCanvas = ({ tutorialImage, stepNumber }: DrawingCanvasProps)
               )}
               {showReference ? "Hide" : "Show"} Reference
             </Button>
+            {tutorialImage && (
+              <Button
+                variant={overlayMode ? "default" : "outline"}
+                size="sm"
+                onClick={() => setOverlayMode(!overlayMode)}
+              >
+                <Layers className="w-4 h-4 mr-2" />
+                {overlayMode ? "Overlay ON" : "Overlay OFF"}
+              </Button>
+            )}
           </div>
+
+          {/* Overlay Opacity Control */}
+          {overlayMode && tutorialImage && (
+            <div>
+              <label className="text-sm font-medium mb-2 block">
+                Overlay Opacity: {overlayOpacity}%
+              </label>
+              <Slider
+                value={[overlayOpacity]}
+                onValueChange={(value) => setOverlayOpacity(value[0])}
+                min={10}
+                max={70}
+                step={5}
+                className="w-full"
+              />
+            </div>
+          )}
 
           {/* Color Picker */}
           {activeTool === "draw" && (
@@ -419,15 +450,32 @@ export const DrawingCanvas = ({ tutorialImage, stepNumber }: DrawingCanvasProps)
       </Card>
 
       {/* Canvas and Reference */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Drawing Canvas */}
-        <div className="border-2 border-border rounded-lg overflow-hidden bg-white">
-          <div className="bg-muted px-3 py-2 text-sm font-medium">Your Drawing</div>
-          <canvas ref={canvasRef} className="w-full" />
+      <div className={`grid gap-4 ${overlayMode ? "grid-cols-1" : "grid-cols-1 md:grid-cols-2"}`}>
+        {/* Drawing Canvas with Optional Overlay */}
+        <div className="border-2 border-border rounded-lg overflow-hidden bg-white relative">
+          <div className="bg-muted px-3 py-2 text-sm font-medium">
+            Your Drawing {overlayMode && "(Overlay Mode)"}
+          </div>
+          <div className="relative">
+            <canvas ref={canvasRef} className="w-full" />
+            {/* Overlay Reference Image */}
+            {overlayMode && tutorialImage && (
+              <div 
+                className="absolute inset-0 pointer-events-none flex items-center justify-center"
+                style={{ opacity: overlayOpacity / 100 }}
+              >
+                <img
+                  src={tutorialImage}
+                  alt={`Step ${stepNumber} overlay`}
+                  className="max-w-full max-h-full object-contain"
+                />
+              </div>
+            )}
+          </div>
         </div>
 
-        {/* Reference Image */}
-        {showReference && tutorialImage && (
+        {/* Reference Image - Only show if not in overlay mode */}
+        {showReference && tutorialImage && !overlayMode && (
           <div className="border-2 border-border rounded-lg overflow-hidden bg-white">
             <div className="bg-muted px-3 py-2 text-sm font-medium">
               Reference (Step {stepNumber})

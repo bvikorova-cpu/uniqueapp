@@ -2,15 +2,16 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Paintbrush, ChevronRight, ChevronLeft, Sparkles, Crown, Info } from "lucide-react";
+import { Paintbrush, ChevronRight, ChevronLeft, Sparkles, Crown, Info, Settings } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { DrawingCanvas } from "@/components/kids-drawing/DrawingCanvas";
 import { DrawingGallery } from "@/components/kids-drawing/DrawingGallery";
-import { useKidsDrawingSubscription, useCreateDrawingCheckout, useIncrementDrawingUsage } from "@/hooks/useKidsDrawingSubscription";
+import { useKidsDrawingSubscription, useCreateDrawingCheckout, useIncrementDrawingUsage, useOpenDrawingCustomerPortal } from "@/hooks/useKidsDrawingSubscription";
 import { useNavigate } from "react-router-dom";
+import { useKidsDrawingGallery } from "@/hooks/useKidsDrawingGallery";
 
 const KidsDrawingBuddy = () => {
   const navigate = useNavigate();
@@ -22,8 +23,13 @@ const KidsDrawingBuddy = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const { data: subscription, isLoading: subLoading } = useKidsDrawingSubscription();
+  const { drawings } = useKidsDrawingGallery();
   const createCheckout = useCreateDrawingCheckout();
   const incrementUsage = useIncrementDrawingUsage();
+  const openPortal = useOpenDrawingCustomerPortal();
+
+  // Check if free user has saved drawings (gallery locked after first save)
+  const galleryLocked = !subscription?.subscribed && (drawings?.length || 0) > 0;
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -159,16 +165,24 @@ const KidsDrawingBuddy = () => {
                       </>
                     )}
                   </span>
-                  {!subscription?.subscribed && (
-                    <Button onClick={() => createCheckout.mutate()} size="sm" disabled={createCheckout.isPending}>
-                      <Crown className="w-4 h-4 mr-2" />
-                      Upgrade to Premium
-                    </Button>
-                  )}
+                  <div className="flex gap-2">
+                    {subscription?.subscribed && (
+                      <Button onClick={() => openPortal.mutate()} size="sm" variant="outline" disabled={openPortal.isPending}>
+                        <Settings className="w-4 h-4 mr-2" />
+                        Manage Subscription
+                      </Button>
+                    )}
+                    {!subscription?.subscribed && (
+                      <Button onClick={() => createCheckout.mutate()} size="sm" disabled={createCheckout.isPending}>
+                        <Crown className="w-4 h-4 mr-2" />
+                        Upgrade to Premium
+                      </Button>
+                    )}
+                  </div>
                 </CardTitle>
                 <CardDescription>
                   {subscription?.subscribed
-                    ? "Unlimited AI-powered drawing tutorials"
+                    ? `Unlimited AI-powered drawing tutorials${subscription?.subscription_end ? ` • Renews ${new Date(subscription.subscription_end).toLocaleDateString()}` : ""}`
                     : `${(subscription?.tutorials_limit || 1) - (subscription?.tutorials_used || 0)} free tutorial${(subscription?.tutorials_limit || 1) - (subscription?.tutorials_used || 0) !== 1 ? 's' : ''} remaining this month`}
                 </CardDescription>
               </CardHeader>
@@ -184,6 +198,7 @@ const KidsDrawingBuddy = () => {
                       <li>✓ Access to all topics and difficulty levels</li>
                       <li>✓ AI-generated step-by-step images</li>
                       <li>✓ Full canvas tools (shapes, colors, undo/redo)</li>
+                      <li>✓ Full Gallery access with all saved drawings</li>
                       <li>✓ Download your artwork anytime</li>
                     </ul>
                   </div>
@@ -400,6 +415,7 @@ const KidsDrawingBuddy = () => {
                   <DrawingCanvas 
                     tutorialImage={tutorial.steps[currentStep].image}
                     stepNumber={currentStep + 1}
+                    category={topic}
                   />
 
                   <div className="flex gap-2">
@@ -431,7 +447,29 @@ const KidsDrawingBuddy = () => {
           )}
 
           {/* Drawing Gallery - show when logged in */}
-          {isAuthenticated && <DrawingGallery />}
+          {isAuthenticated && (
+            galleryLocked ? (
+              <Card className="border-2">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-muted-foreground">
+                    <Crown className="w-5 h-5" />
+                    Gallery Locked
+                  </CardTitle>
+                  <CardDescription>
+                    Free users can save drawings but need Premium to view the full gallery.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Button onClick={() => createCheckout.mutate()} className="w-full" disabled={createCheckout.isPending}>
+                    <Crown className="w-4 h-4 mr-2" />
+                    Unlock Gallery with Premium
+                  </Button>
+                </CardContent>
+              </Card>
+            ) : (
+              <DrawingGallery />
+            )
+          )}
         </div>
       </main>
       <Footer />

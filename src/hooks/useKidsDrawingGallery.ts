@@ -26,11 +26,13 @@ export const useKidsDrawingGallery = () => {
     mutationFn: async ({ 
       imageDataURL, 
       title, 
-      stepNumber 
+      stepNumber,
+      category,
     }: { 
       imageDataURL: string; 
       title: string; 
       stepNumber?: number;
+      category?: string;
     }) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
@@ -64,7 +66,7 @@ export const useKidsDrawingGallery = () => {
           user_id: user.id,
           title,
           drawing_url: urlData.publicUrl,
-          tutorial_topic: "Custom Drawing",
+          tutorial_topic: category || "Custom Drawing",
           steps_completed: stepNumber || 0,
           total_steps: stepNumber || 0,
           difficulty: "custom",
