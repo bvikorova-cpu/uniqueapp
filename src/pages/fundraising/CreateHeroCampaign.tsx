@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ArrowLeft, Shield, ImagePlus, X } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
@@ -24,6 +25,7 @@ export default function CreateHeroCampaign() {
   const navigate = useNavigate();
   const [creating, setCreating] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [consentChecked, setConsentChecked] = useState(false);
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -99,6 +101,15 @@ export default function CreateHeroCampaign() {
       toast({
         title: 'Error',
         description: 'Please fill in all required fields',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    if (!consentChecked) {
+      toast({
+        title: 'Error',
+        description: 'You must confirm the consent checkbox',
         variant: 'destructive',
       });
       return;
@@ -324,20 +335,43 @@ export default function CreateHeroCampaign() {
                 />
               </div>
 
+              {/* Consent Checkbox - MANDATORY */}
+              <div className="flex items-start space-x-3 border-2 border-primary/30 p-4 rounded-lg bg-primary/5">
+                <Checkbox
+                  id="consent"
+                  checked={consentChecked}
+                  onCheckedChange={(checked) => setConsentChecked(checked as boolean)}
+                  className="mt-1"
+                />
+                <Label htmlFor="consent" className="text-sm leading-relaxed cursor-pointer">
+                  I confirm that all provided information is true and accurate. I consent to the processing of personal data for verification purposes.
+                </Label>
+              </div>
+
               <div className="bg-muted p-4 rounded-lg">
                 <h3 className="font-semibold mb-2">Before You Submit:</h3>
                 <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
                   <li>Your campaign will be reviewed by our admin team</li>
                   <li>Provide clear details about the heroes you're supporting</li>
-                  <li>Explain how the funds will be used</li>
+                  <li>Platform fee: 5%</li>
                   <li>Add photos if possible to show the real need</li>
                 </ul>
               </div>
 
-              <Button type="submit" className="w-full" size="lg" disabled={creating || uploading}>
-                <Shield className="mr-2 h-5 w-5" />
-                {creating ? 'Submitting...' : 'Submit Hero Campaign'}
-              </Button>
+              <div className="flex gap-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => navigate('/')}
+                  className="flex-1"
+                >
+                  Cancel
+                </Button>
+                <Button type="submit" className="flex-1" size="lg" disabled={creating || uploading || !consentChecked}>
+                  <Shield className="mr-2 h-5 w-5" />
+                  {creating ? 'Submitting...' : 'Submit Hero Campaign'}
+                </Button>
+              </div>
             </form>
           </CardContent>
         </Card>

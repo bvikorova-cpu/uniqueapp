@@ -23,6 +23,7 @@ export default function CreatePetCampaign() {
   const navigate = useNavigate();
   const [creating, setCreating] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [consentChecked, setConsentChecked] = useState(false);
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -352,20 +353,38 @@ export default function CreatePetCampaign() {
                 <p className="text-sm text-muted-foreground mt-1">Optional: Add a video showing the pet</p>
               </div>
 
+              {/* Consent Checkbox - MANDATORY */}
+              <div className="flex items-start space-x-3 border-2 border-accent/30 p-4 rounded-lg bg-accent/5">
+                <Checkbox
+                  id="consent"
+                  checked={consentChecked}
+                  onCheckedChange={(checked) => setConsentChecked(checked as boolean)}
+                  className="mt-1"
+                />
+                <Label htmlFor="consent" className="text-sm leading-relaxed cursor-pointer">
+                  I confirm that all provided information is true and accurate. I consent to the processing of personal data for verification purposes.
+                </Label>
+              </div>
+
               <div className="bg-muted p-4 rounded-lg">
                 <h3 className="font-semibold mb-2">Before You Submit:</h3>
                 <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
                   <li>Your campaign will be reviewed by our admin team</li>
                   <li>Add clear photos showing the pet's condition</li>
-                  <li>Be honest about medical needs and costs</li>
+                  <li>Platform fee: 6%</li>
                   <li>Include any veterinary documentation if available</li>
                 </ul>
               </div>
 
-              <Button type="submit" className="w-full" size="lg" disabled={creating || uploading}>
-                <PawPrint className="mr-2 h-5 w-5" />
-                {creating ? 'Submitting...' : 'Submit Pet Rescue Campaign'}
-              </Button>
+              <div className="flex gap-4">
+                <Button type="button" variant="outline" onClick={() => navigate('/')} className="flex-1">
+                  Cancel
+                </Button>
+                <Button type="submit" className="flex-1" size="lg" disabled={creating || uploading || !consentChecked}>
+                  <PawPrint className="mr-2 h-5 w-5" />
+                  {creating ? 'Submitting...' : 'Submit Pet Rescue Campaign'}
+                </Button>
+              </div>
             </form>
           </CardContent>
         </Card>

@@ -8,7 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
-import { ArrowLeft, AlertTriangle, Upload } from 'lucide-react';
+import { ArrowLeft, AlertTriangle, Upload, FileText } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 
 const crisisTypes = [
@@ -24,6 +24,8 @@ export default function CreateCrisisCampaign() {
   const navigate = useNavigate();
   const [creating, setCreating] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [uploadingProof, setUploadingProof] = useState(false);
+  const [consentChecked, setConsentChecked] = useState(false);
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -35,6 +37,7 @@ export default function CreateCrisisCampaign() {
     images: [] as string[],
     video_url: '',
     expires_at: '',
+    proof_document_url: '',
   });
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -98,6 +101,63 @@ export default function CreateCrisisCampaign() {
     }
   };
 
+  const handleProofUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 10 * 1024 * 1024) {
+      toast({
+        title: 'Error',
+        description: 'File is too large (max 10MB)',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    setUploadingProof(true);
+
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast({
+          title: 'Error',
+          description: 'You must be logged in',
+          variant: 'destructive',
+        });
+        return;
+      }
+
+      const fileExt = file.name.split('.').pop();
+      const fileName = `crisis-proof-${session.user.id}-${Date.now()}.${fileExt}`;
+
+      const { data, error } = await supabase.storage
+        .from('campaign-images')
+        .upload(fileName, file);
+
+      if (error) throw error;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('campaign-images')
+        .getPublicUrl(data.path);
+
+      setFormData({ ...formData, proof_document_url: publicUrl });
+
+      toast({
+        title: 'Success',
+        description: 'Crisis documentation uploaded',
+      });
+    } catch (error) {
+      console.error('Error uploading proof:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to upload documentation',
+        variant: 'destructive',
+      });
+    } finally {
+      setUploadingProof(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -105,6 +165,24 @@ export default function CreateCrisisCampaign() {
       toast({
         title: 'Error',
         description: 'Please fill in all required fields',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    if (!formData.proof_document_url) {
+      toast({
+        title: 'Error',
+        description: 'Crisis documentation/evidence is required for verification',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    if (!consentChecked) {
+      toast({
+        title: 'Error',
+        description: 'You must confirm the consent checkbox',
         variant: 'destructive',
       });
       return;
@@ -343,20 +421,72 @@ export default function CreateCrisisCampaign() {
                 <p className="text-sm text-muted-foreground mt-1">Optional: When do you need help by</p>
               </div>
 
+              {/* Crisis Documentation - MANDATORY */}
+              <div className="space-y-2 border-2 border-destructive/30 p-4 rounded-lg bg-destructive/5">
+                <Label htmlFor="proof" className="flex items-center gap-2 text-destructive font-semibold">
+                  <FileText className="h-4 w-4" />
+                  Crisis Documentation/Evidence (REQUIRED) *
+                </Label>
+                <Input
+                  id="proof"
+                  type="file"
+                  accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
+                  onChange={handleProofUpload}
+                  disabled={uploadingProof}
+                  className="cursor-pointer"
+                />
+                {formData.proof_document_url && (
+                  <p className="text-sm text-green-600 flex items-center gap-2">
+                    ✓ Documentation uploaded successfully
+                  </p>
+                )}
+                <p className="text-xs text-muted-foreground">
+                  Required: Upload police reports, insurance documents, photos of damage, or official statements. Max 10MB.
+                </p>
+              </div>
+
+              {/* Consent Checkbox - MANDATORY */}
+              <div className="flex items-start space-x-3 border-2 border-primary/30 p-4 rounded-lg bg-primary/5">
+                <Checkbox
+                  id="consent"
+                  checked={consentChecked}
+                  onCheckedChange={(checked) => setConsentChecked(checked as boolean)}
+                  className="mt-1"
+                />
+                <Label htmlFor="consent" className="text-sm leading-relaxed cursor-pointer">
+                  I confirm that all provided information is true and accurate. I consent to the processing of sensitive personal data for verification purposes. I understand that false information may result in account suspension and legal action.
+                </Label>
+              </div>
+
               <div className="bg-muted p-4 rounded-lg">
                 <h3 className="font-semibold mb-2">Before You Submit:</h3>
                 <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
                   <li>Your campaign will be reviewed quickly due to urgent nature</li>
-                  <li>Add photos/videos showing the crisis situation</li>
+                  <li>Crisis documentation is required for verification</li>
                   <li>Be specific about immediate needs</li>
-                  <li>Explain how funds will be used to help</li>
+                  <li>Platform fee: 8%</li>
                 </ul>
               </div>
 
-              <Button type="submit" className="w-full" size="lg" disabled={creating || uploading}>
-                <AlertTriangle className="mr-2 h-5 w-5" />
-                {creating ? 'Submitting...' : 'Submit Crisis Campaign'}
-              </Button>
+              <div className="flex gap-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => navigate('/')}
+                  className="flex-1"
+                >
+                  Cancel
+                </Button>
+                <Button 
+                  type="submit" 
+                  className="flex-1" 
+                  size="lg" 
+                  disabled={creating || uploading || uploadingProof || !consentChecked || !formData.proof_document_url}
+                >
+                  <AlertTriangle className="mr-2 h-5 w-5" />
+                  {creating ? 'Submitting...' : 'Submit Crisis Campaign'}
+                </Button>
+              </div>
             </form>
           </CardContent>
         </Card>
