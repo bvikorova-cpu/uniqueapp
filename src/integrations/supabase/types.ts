@@ -21639,6 +21639,10 @@ export type Database = {
           skills_offered: string[] | null
           skills_wanted: string[] | null
           social_links: Json | null
+          stripe_connect_account_id: string | null
+          stripe_connect_charges_enabled: boolean | null
+          stripe_connect_onboarding_complete: boolean | null
+          stripe_connect_payouts_enabled: boolean | null
           total_reviews: number | null
           updated_at: string
           user_type: string | null
@@ -21665,6 +21669,10 @@ export type Database = {
           skills_offered?: string[] | null
           skills_wanted?: string[] | null
           social_links?: Json | null
+          stripe_connect_account_id?: string | null
+          stripe_connect_charges_enabled?: boolean | null
+          stripe_connect_onboarding_complete?: boolean | null
+          stripe_connect_payouts_enabled?: boolean | null
           total_reviews?: number | null
           updated_at?: string
           user_type?: string | null
@@ -21691,6 +21699,10 @@ export type Database = {
           skills_offered?: string[] | null
           skills_wanted?: string[] | null
           social_links?: Json | null
+          stripe_connect_account_id?: string | null
+          stripe_connect_charges_enabled?: boolean | null
+          stripe_connect_onboarding_complete?: boolean | null
+          stripe_connect_payouts_enabled?: boolean | null
           total_reviews?: number | null
           updated_at?: string
           user_type?: string | null
@@ -29602,6 +29614,9 @@ export type Database = {
           reviewed_at: string | null
           reviewed_by: string | null
           status: string
+          stripe_connect_account_id: string | null
+          stripe_payout_id: string | null
+          stripe_transfer_id: string | null
           swift_code: string | null
           updated_at: string | null
         }
@@ -29620,6 +29635,9 @@ export type Database = {
           reviewed_at?: string | null
           reviewed_by?: string | null
           status?: string
+          stripe_connect_account_id?: string | null
+          stripe_payout_id?: string | null
+          stripe_transfer_id?: string | null
           swift_code?: string | null
           updated_at?: string | null
         }
@@ -29638,6 +29656,9 @@ export type Database = {
           reviewed_at?: string | null
           reviewed_by?: string | null
           status?: string
+          stripe_connect_account_id?: string | null
+          stripe_payout_id?: string | null
+          stripe_transfer_id?: string | null
           swift_code?: string | null
           updated_at?: string | null
         }
