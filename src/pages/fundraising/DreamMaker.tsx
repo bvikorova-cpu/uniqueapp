@@ -44,9 +44,10 @@ export default function DreamMaker() {
   const fetchCampaigns = async () => {
     try {
       let query = supabase
-        .from('dream_campaigns')
+        .from('dream_campaigns' as any)
         .select('*')
         .eq('status', 'active')
+        .eq('verified', true)
         .order('created_at', { ascending: false });
 
       if (filter !== 'all') {
@@ -56,7 +57,7 @@ export default function DreamMaker() {
       const { data, error } = await query;
 
       if (error) throw error;
-      setCampaigns(data || []);
+      setCampaigns((data as unknown as DreamCampaign[]) || []);
     } catch (error) {
       console.error('Error fetching campaigns:', error);
       toast({

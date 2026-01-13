@@ -67,7 +67,7 @@ serve(async (req) => {
       medical: 'medical_campaigns',
       dream: 'dream_campaigns',
       hero: 'hero_campaigns',
-      pet: 'pet_campaigns',
+      pet: 'pet_rescue_campaigns',
       student: 'student_campaigns',
       crisis: 'crisis_campaigns',
       talent: 'talent_campaigns',
