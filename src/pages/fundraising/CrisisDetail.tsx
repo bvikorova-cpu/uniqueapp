@@ -372,7 +372,7 @@ export default function CrisisDetail() {
                   </Button>
                   
                   <p className="text-xs text-muted-foreground text-center">
-                    Platform fee: 8% · Secure payment via Stripe
+                    Your donation includes a platform service fee of 8% to ensure security, verification, and technical maintenance. Secure payment via Stripe.
                   </p>
                 </CardContent>
               </Card>
