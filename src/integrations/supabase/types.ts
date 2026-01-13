@@ -24221,6 +24221,47 @@ export type Database = {
           },
         ]
       }
+      shadow_arena_achievements: {
+        Row: {
+          awarded_at: string | null
+          badge_type: string
+          battle_id: string | null
+          created_at: string | null
+          id: string
+          notified_teen_career: boolean | null
+          placement: number
+          user_id: string
+        }
+        Insert: {
+          awarded_at?: string | null
+          badge_type?: string
+          battle_id?: string | null
+          created_at?: string | null
+          id?: string
+          notified_teen_career?: boolean | null
+          placement: number
+          user_id: string
+        }
+        Update: {
+          awarded_at?: string | null
+          badge_type?: string
+          battle_id?: string | null
+          created_at?: string | null
+          id?: string
+          notified_teen_career?: boolean | null
+          placement?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shadow_arena_achievements_battle_id_fkey"
+            columns: ["battle_id"]
+            isOneToOne: false
+            referencedRelation: "shadow_battles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       shadow_bans: {
         Row: {
           banned_at: string | null
@@ -24306,6 +24347,41 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "shadow_battle_participants_battle_id_fkey"
+            columns: ["battle_id"]
+            isOneToOne: false
+            referencedRelation: "shadow_battles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      shadow_battle_placements: {
+        Row: {
+          battle_id: string
+          created_at: string | null
+          id: string
+          placement: number
+          prize_amount: number | null
+          user_id: string
+        }
+        Insert: {
+          battle_id: string
+          created_at?: string | null
+          id?: string
+          placement: number
+          prize_amount?: number | null
+          user_id: string
+        }
+        Update: {
+          battle_id?: string
+          created_at?: string | null
+          id?: string
+          placement?: number
+          prize_amount?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shadow_battle_placements_battle_id_fkey"
             columns: ["battle_id"]
             isOneToOne: false
             referencedRelation: "shadow_battles"

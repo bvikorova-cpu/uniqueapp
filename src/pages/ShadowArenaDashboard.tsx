@@ -4,10 +4,16 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { SubscriptionGate } from '@/components/shadow-arena/SubscriptionGate';
-import { Plus, Swords, BookOpen, Trophy, Ghost, DollarSign, TrendingUp, Users } from 'lucide-react';
+import { Plus, Swords, BookOpen, Trophy, Ghost, DollarSign, TrendingUp, Users, Award, Info } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface Battle {
   id: string;
@@ -228,6 +234,36 @@ export default function ShadowArenaDashboard() {
                 Payouts processed via Stripe within 48 hours of battle completion.
               </AlertDescription>
             </Alert>
+            
+            {/* Talent Badge Tooltip */}
+            <TooltipProvider>
+              <div className="mt-4 flex items-center justify-center gap-2 p-3 bg-gradient-to-r from-purple-900/30 to-red-900/30 rounded-lg border border-purple-500/30">
+                <Award className="h-5 w-5 text-purple-400" />
+                <span className="text-sm text-purple-200">Top 3 winners receive a verified</span>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <span className="text-sm font-bold text-yellow-400 underline decoration-dotted cursor-help flex items-center gap-1">
+                      Shadow Arena Talent Badge
+                      <Info className="h-3 w-3" />
+                    </span>
+                  </TooltipTrigger>
+                  <TooltipContent className="max-w-xs p-4 bg-black/95 border-purple-500/50">
+                    <div className="space-y-2">
+                      <p className="font-bold text-yellow-400 flex items-center gap-2">
+                        🏆 Shadow Arena Talent Badge
+                      </p>
+                      <p className="text-sm text-gray-300">
+                        This verified achievement is added to your <strong>Teen Career Profile</strong> and recognized as a <strong>"Creative & Performance Strength"</strong> during AI career analysis.
+                      </p>
+                      <p className="text-xs text-gray-400 italic">
+                        Badge appears in your public profile, achievements section, and on your Career PDF report.
+                      </p>
+                    </div>
+                  </TooltipContent>
+                </Tooltip>
+                <span className="text-sm text-purple-200">for their Career Profile</span>
+              </div>
+            </TooltipProvider>
           </CardContent>
         </Card>
 
