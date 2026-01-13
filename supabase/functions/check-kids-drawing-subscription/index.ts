@@ -1,7 +1,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { corsHeaders } from "../_shared/cors.ts";
 import { authenticateUser, createSupabaseAdminClient } from "../_shared/supabaseClient.ts";
-import { createStripeClient, hasActiveSubscription } from "../_shared/stripe.ts";
+import { createStripeClient, getStripeCustomer, hasActiveSubscription } from "../_shared/stripe.ts";
 import { createLogger } from "../_shared/logger.ts";
 
 const log = createLogger("check-kids-drawing-subscription");
@@ -36,7 +36,14 @@ serve(async (req) => {
     }
 
     const stripe = createStripeClient();
-    const subResult = await hasActiveSubscription(stripe, user.email!);
+    
+    // First find customer by email - don't error if not found
+    const customerId = await getStripeCustomer(stripe, user.email!);
+    
+    // If no customer exists, user has no subscription
+    const subResult = customerId 
+      ? await hasActiveSubscription(stripe, customerId)
+      : { hasSubscription: false, productId: null, subscriptionEnd: null };
 
     if (subResult.hasSubscription) {
       await supabase
