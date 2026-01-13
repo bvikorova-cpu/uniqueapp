@@ -324,11 +324,8 @@ const KidsStoryCreator = () => {
       <ParentalGate
         isOpen={showParentalGate}
         onSuccess={() => setShowParentalGate(false)}
-        onClose={() => {
-          // Redirect back if gate not verified
-          if (!checkVerification()) {
-            window.history.back();
-          }
+        onCancel={() => {
+          // Hard redirect to Home page - handled by ParentalGate component
           setShowParentalGate(false);
         }}
         featureName="AI Story Creator"

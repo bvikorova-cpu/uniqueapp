@@ -2,11 +2,23 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BookOpen, Download, Trash2 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { BookOpen, Download, Trash2, Eye, AlertCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import jsPDF from "jspdf";
+import { StoryDetailModal } from "./StoryDetailModal";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 interface Story {
   id: string;
@@ -32,11 +44,24 @@ const CATEGORIES = [
   { value: "fairy-tale", label: "Fairy Tale", emoji: "👑" },
 ];
 
+const CATEGORY_COLORS: Record<string, string> = {
+  adventure: "bg-orange-100 text-orange-800 border-orange-300",
+  fantasy: "bg-purple-100 text-purple-800 border-purple-300",
+  educational: "bg-blue-100 text-blue-800 border-blue-300",
+  mystery: "bg-gray-100 text-gray-800 border-gray-300",
+  friendship: "bg-pink-100 text-pink-800 border-pink-300",
+  animal: "bg-green-100 text-green-800 border-green-300",
+  space: "bg-indigo-100 text-indigo-800 border-indigo-300",
+  "fairy-tale": "bg-yellow-100 text-yellow-800 border-yellow-300",
+};
+
 export const StoryLibrary = () => {
   const { user } = useAuth();
   const [stories, setStories] = useState<Story[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [selectedStory, setSelectedStory] = useState<Story | null>(null);
+  const [storyToDelete, setStoryToDelete] = useState<Story | null>(null);
 
   useEffect(() => {
     if (user) {
@@ -76,6 +101,8 @@ export const StoryLibrary = () => {
     } catch (error) {
       console.error('Error deleting story:', error);
       toast.error("Failed to delete story");
+    } finally {
+      setStoryToDelete(null);
     }
   };
 
@@ -83,13 +110,26 @@ export const StoryLibrary = () => {
     try {
       const pdf = new jsPDF();
       const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
       const margin = 20;
       let yPos = 20;
 
+      const categoryInfo = CATEGORIES.find(c => c.value === story.category);
+
       // Title
-      pdf.setFontSize(22);
+      pdf.setFontSize(24);
       pdf.setFont("helvetica", "bold");
-      pdf.text(story.title, pageWidth / 2, yPos, { align: "center" });
+      const titleLines = pdf.splitTextToSize(story.title, pageWidth - 2 * margin);
+      titleLines.forEach((line: string) => {
+        pdf.text(line, pageWidth / 2, yPos, { align: "center" });
+        yPos += 10;
+      });
+      yPos += 5;
+
+      // Category
+      pdf.setFontSize(12);
+      pdf.setFont("helvetica", "normal");
+      pdf.text(`${categoryInfo?.emoji || "📖"} ${categoryInfo?.label || story.category}`, pageWidth / 2, yPos, { align: "center" });
       yPos += 15;
 
       // Add illustration if available
@@ -103,26 +143,46 @@ export const StoryLibrary = () => {
       }
 
       // Story text
-      pdf.setFontSize(12);
+      pdf.setFontSize(11);
       pdf.setFont("helvetica", "normal");
       const lines = pdf.splitTextToSize(story.story_text, pageWidth - 2 * margin);
       
       lines.forEach((line: string) => {
-        if (yPos > 270) {
+        if (yPos > pageHeight - 40) {
           pdf.addPage();
           yPos = 20;
         }
         pdf.text(line, margin, yPos);
-        yPos += 7;
+        yPos += 6;
       });
 
-      // Footer
+      // Footer with meta info
+      yPos += 15;
+      if (yPos > pageHeight - 50) {
+        pdf.addPage();
+        yPos = 20;
+      }
+
+      pdf.setDrawColor(200, 200, 200);
+      pdf.line(margin, yPos, pageWidth - margin, yPos);
       yPos += 10;
+
       pdf.setFontSize(10);
-      pdf.setFont("helvetica", "italic");
+      pdf.setFont("helvetica", "bold");
+      pdf.text("Story Details", margin, yPos);
+      yPos += 8;
+
+      pdf.setFont("helvetica", "normal");
       pdf.text(`Characters: ${story.characters}`, margin, yPos);
       yPos += 6;
-      pdf.text(`Theme: ${story.theme}`, margin, yPos);
+      pdf.text(`Theme/Setting: ${story.theme}`, margin, yPos);
+      yPos += 6;
+      pdf.text(`Created: ${new Date(story.created_at).toLocaleDateString()}`, margin, yPos);
+
+      // Footer
+      pdf.setFontSize(8);
+      pdf.setTextColor(150, 150, 150);
+      pdf.text("Created with AI Story Creator ✨", pageWidth / 2, pageHeight - 10, { align: "center" });
 
       pdf.save(`${story.title.replace(/\s+/g, '_')}.pdf`);
       toast.success("PDF downloaded!");
@@ -140,6 +200,12 @@ export const StoryLibrary = () => {
     ? stories 
     : stories.filter(story => story.category === selectedCategory);
 
+  // Count stories per category
+  const categoryCounts = stories.reduce((acc, story) => {
+    acc[story.category] = (acc[story.category] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>);
+
   if (stories.length === 0) {
     return (
       <Card>
@@ -154,18 +220,28 @@ export const StoryLibrary = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold mb-4">Your Story Library</h2>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-2xl font-bold">Your Story Library</h2>
+          <Badge variant="outline" className="text-sm">
+            {stories.length} {stories.length === 1 ? 'story' : 'stories'}
+          </Badge>
+        </div>
         
         <Tabs value={selectedCategory} onValueChange={setSelectedCategory} className="w-full">
-          <TabsList className="grid w-full grid-cols-3 lg:grid-cols-9 h-auto">
+          <TabsList className="grid w-full grid-cols-3 lg:grid-cols-9 h-auto gap-1">
             {CATEGORIES.map((cat) => (
               <TabsTrigger 
                 key={cat.value} 
                 value={cat.value}
-                className="text-xs sm:text-sm"
+                className="text-xs sm:text-sm relative"
               >
                 <span className="mr-1">{cat.emoji}</span>
                 <span className="hidden sm:inline">{cat.label}</span>
+                {cat.value !== "all" && categoryCounts[cat.value] && (
+                  <span className="ml-1 text-[10px] opacity-70">
+                    ({categoryCounts[cat.value]})
+                  </span>
+                )}
               </TabsTrigger>
             ))}
           </TabsList>
@@ -180,57 +256,100 @@ export const StoryLibrary = () => {
           </CardContent>
         </Card>
       ) : (
-        <div className="grid gap-4 md:grid-cols-2">
-        {filteredStories.map((story) => (
-          <Card key={story.id} className="overflow-hidden">
-            {story.illustration_url && (
-              <div className="h-48 overflow-hidden bg-muted">
-                <img
-                  src={story.illustration_url}
-                  alt={story.title}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            )}
-            <CardHeader>
-              <div className="flex items-start justify-between gap-2 mb-2">
-                <CardTitle className="text-lg flex-1">{story.title}</CardTitle>
-                <span className="text-xl">
-                  {CATEGORIES.find(c => c.value === story.category)?.emoji || "📖"}
-                </span>
-              </div>
-              <CardDescription>
-                {new Date(story.created_at).toLocaleDateString()}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground line-clamp-3 mb-4">
-                {story.story_text}
-              </p>
-              <div className="flex gap-2">
-                <Button
-                  onClick={() => downloadPDF(story)}
-                  variant="outline"
-                  size="sm"
-                  className="flex-1"
-                >
-                  <Download className="h-4 w-4 mr-2" />
-                  PDF
-                </Button>
-                <Button
-                  onClick={() => deleteStory(story.id)}
-                  variant="outline"
-                  size="sm"
-                  className="text-destructive hover:text-destructive"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {filteredStories.map((story) => {
+            const categoryInfo = CATEGORIES.find(c => c.value === story.category);
+            return (
+              <Card 
+                key={story.id} 
+                className="overflow-hidden group hover:shadow-lg transition-shadow cursor-pointer"
+                onClick={() => setSelectedStory(story)}
+              >
+                {story.illustration_url && (
+                  <div className="h-40 overflow-hidden bg-muted relative">
+                    <img
+                      src={story.illustration_url}
+                      alt={story.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center">
+                      <Eye className="h-8 w-8 text-white opacity-0 group-hover:opacity-100 transition-opacity drop-shadow-lg" />
+                    </div>
+                  </div>
+                )}
+                <CardHeader className="pb-2">
+                  <div className="flex items-start justify-between gap-2">
+                    <CardTitle className="text-base line-clamp-1 flex-1">{story.title}</CardTitle>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Badge className={`text-xs ${CATEGORY_COLORS[story.category] || ''} border`}>
+                      {categoryInfo?.emoji} {categoryInfo?.label}
+                    </Badge>
+                    <CardDescription className="text-xs">
+                      {new Date(story.created_at).toLocaleDateString()}
+                    </CardDescription>
+                  </div>
+                </CardHeader>
+                <CardContent className="pt-0">
+                  <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
+                    {story.story_text}
+                  </p>
+                  <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
+                    <Button
+                      onClick={() => downloadPDF(story)}
+                      variant="outline"
+                      size="sm"
+                      className="flex-1"
+                    >
+                      <Download className="h-3.5 w-3.5 mr-1.5" />
+                      PDF
+                    </Button>
+                    <Button
+                      onClick={() => setStoryToDelete(story)}
+                      variant="outline"
+                      size="sm"
+                      className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                    >
+                      <Trash2 className="h-3.5 w-3.5" />
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })}
         </div>
       )}
+
+      {/* Story Detail Modal */}
+      <StoryDetailModal
+        story={selectedStory}
+        isOpen={!!selectedStory}
+        onClose={() => setSelectedStory(null)}
+      />
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={!!storyToDelete} onOpenChange={() => setStoryToDelete(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2">
+              <AlertCircle className="h-5 w-5 text-destructive" />
+              Delete Story?
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete "{storyToDelete?.title}"? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => storyToDelete && deleteStory(storyToDelete.id)}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

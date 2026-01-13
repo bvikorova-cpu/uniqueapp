@@ -7,6 +7,18 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+// Category-specific system prompts for tone and style
+const CATEGORY_PROMPTS: Record<string, string> = {
+  adventure: "You are an exciting adventure storyteller. Create thrilling stories with brave heroes, exciting journeys, and triumphant victories. Include action, exploration, and the joy of discovery.",
+  fantasy: "You are a magical fantasy storyteller. Create enchanting stories with wizards, magical creatures, spells, and mystical lands. Fill the story with wonder and imagination.",
+  educational: "You are an educational storyteller. Create stories that teach valuable lessons about science, nature, history, or life skills in an engaging and fun way. Include interesting facts wrapped in narrative.",
+  mystery: "You are a mystery storyteller for children. Create intriguing stories with puzzles to solve, clues to find, and mysteries to unravel. Keep it age-appropriate and exciting without being scary.",
+  friendship: "You are a heartwarming storyteller about friendship. Create stories that celebrate the bonds between friends, teamwork, kindness, and the value of true friendship.",
+  animal: "You are an animal adventure storyteller. Create stories featuring animals as main characters with their unique personalities, adventures, and lessons about nature and wildlife.",
+  space: "You are a space exploration storyteller. Create stories about astronauts, aliens, planets, and cosmic adventures. Inspire wonder about the universe and space exploration.",
+  "fairy-tale": "You are a classic fairy tale storyteller. Create stories with princes, princesses, magical transformations, and happy endings. Include classic fairy tale elements with a modern positive twist."
+};
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -34,6 +46,8 @@ serve(async (req) => {
       throw new Error("Missing required fields");
     }
 
+    console.log("[KIDS-STORY-CREATOR] Creating story for user:", user.id, "Category:", category);
+
     // Check subscription status
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
       apiVersion: "2025-08-27.basil",
@@ -51,6 +65,8 @@ serve(async (req) => {
       });
       isPremium = subscriptions.data.length > 0;
     }
+
+    console.log("[KIDS-STORY-CREATOR] User premium status:", isPremium);
 
     // Check monthly limit for free users
     if (!isPremium) {
@@ -78,18 +94,27 @@ serve(async (req) => {
       throw new Error("OPENAI_API_KEY is not configured");
     }
 
-    // Generate story text
+    // Get category-specific system prompt
+    const categoryPrompt = CATEGORY_PROMPTS[category] || CATEGORY_PROMPTS.adventure;
+
+    // Generate story text with category-specific tone
     const storyPrompt = `Create a magical children's story with these details:
 Title: ${title}
 Characters: ${characters}
 Theme/Setting: ${theme}
 
-Write an engaging, age-appropriate story (300-500 words) that is fun, educational, and has a positive message. Make it creative and imaginative!
+Write an engaging, age-appropriate story (300-500 words) that:
+- Is fun, educational, and has a positive message
+- Uses vivid descriptions and dialogue
+- Has a clear beginning, middle, and satisfying end
+- Is suitable for children aged 6-12
 
 Format your response as JSON:
 {
   "story": "The complete story text here"
 }`;
+
+    console.log("[KIDS-STORY-CREATOR] Generating story with GPT-4o-mini...");
 
     const storyResponse = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
@@ -100,7 +125,7 @@ Format your response as JSON:
       body: JSON.stringify({
         model: "gpt-4o-mini",
         messages: [
-          { role: "system", content: "You are a creative children's story writer. Create engaging, fun, and age-appropriate stories." },
+          { role: "system", content: categoryPrompt },
           { role: "user", content: storyPrompt }
         ],
         response_format: { type: "json_object" }
@@ -109,7 +134,7 @@ Format your response as JSON:
 
     if (!storyResponse.ok) {
       const errorText = await storyResponse.text();
-      console.error("OpenAI API error:", storyResponse.status, errorText);
+      console.error("[KIDS-STORY-CREATOR] OpenAI API error:", storyResponse.status, errorText);
       
       if (storyResponse.status === 429) {
         throw new Error("Too many requests. Please try again in a moment.");
@@ -120,8 +145,25 @@ Format your response as JSON:
     const storyData = await storyResponse.json();
     const storyContent = JSON.parse(storyData.choices[0].message.content);
 
+    console.log("[KIDS-STORY-CREATOR] Story generated, creating illustration...");
+
     // Generate illustration with OpenAI
-    const illustrationPrompt = `Create a colorful, child-friendly illustration for this story: ${title}. Theme: ${theme}. Characters: ${characters}. Make it magical, vibrant, and fun for kids aged 6-12. Ultra high resolution.`;
+    const illustrationPrompt = `Create a colorful, child-friendly digital illustration for a children's story book.
+
+Story title: "${title}"
+Theme/Setting: ${theme}
+Characters: ${characters}
+Genre: ${category}
+
+Style requirements:
+- Vibrant, bright colors suitable for children
+- Cartoon/illustrated style (not photorealistic)
+- Magical, whimsical atmosphere
+- Safe and age-appropriate for children 6-12
+- High quality, detailed artwork
+- No text or words in the image
+
+Ultra high resolution children's book illustration.`;
 
     let illustrationUrl = null;
     try {
@@ -147,10 +189,13 @@ Format your response as JSON:
         const base64Image = imageData.data?.[0]?.b64_json;
         if (base64Image) {
           illustrationUrl = `data:image/webp;base64,${base64Image}`;
+          console.log("[KIDS-STORY-CREATOR] Illustration generated successfully");
         }
+      } else {
+        console.error("[KIDS-STORY-CREATOR] Image generation failed:", await imageResponse.text());
       }
     } catch (imgError) {
-      console.error("Error generating illustration:", imgError);
+      console.error("[KIDS-STORY-CREATOR] Error generating illustration:", imgError);
     }
 
     // Save story to library
@@ -167,7 +212,9 @@ Format your response as JSON:
       });
 
     if (saveError) {
-      console.error('Error saving story:', saveError);
+      console.error('[KIDS-STORY-CREATOR] Error saving story:', saveError);
+    } else {
+      console.log("[KIDS-STORY-CREATOR] Story saved to library");
     }
 
     // Update usage tracking
@@ -201,16 +248,21 @@ Format your response as JSON:
         });
     }
 
+    console.log("[KIDS-STORY-CREATOR] Usage updated, returning response");
+
     return new Response(JSON.stringify({
       title,
       story: storyContent.story,
-      illustration: illustrationUrl
+      illustration: illustrationUrl,
+      category,
+      characters,
+      theme
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
     });
   } catch (error) {
-    console.error("Error in kids-story-creator:", error);
+    console.error("[KIDS-STORY-CREATOR] Error:", error);
     const errorMessage = error instanceof Error ? error.message : "Unknown error";
     return new Response(JSON.stringify({ error: errorMessage }), {
       status: 500,
