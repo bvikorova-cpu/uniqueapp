@@ -1,11 +1,6 @@
 import { useState, useEffect } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import * as DialogPrimitive from "@radix-ui/react-dialog";
+import { DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Shield, AlertCircle, CheckCircle } from "lucide-react";
@@ -94,109 +89,89 @@ export function ParentalGate({ isOpen, onSuccess, onCancel, featureName = "this 
   };
 
   return (
-    <Dialog 
-      open={isOpen} 
-      onOpenChange={() => {
-        // Prevent any external closing - clicking outside does nothing
-        // The user MUST either solve the math problem or click Cancel
-      }}
-    >
-      <DialogContent 
-        className="sm:max-w-md bg-gradient-to-br from-purple-50 to-pink-50 border-4 border-purple-200"
-        // CRITICAL: Remove the X close button and disable pointer events on overlay
-        onPointerDownOutside={(e) => e.preventDefault()}
-        onEscapeKeyDown={(e) => e.preventDefault()}
-        onInteractOutside={(e) => e.preventDefault()}
-        // Hide the built-in close button by not including it via CSS
-        style={{ position: 'relative' }}
-      >
-        {/* CSS to hide the default close button */}
-        <style>{`
-          [data-radix-collection-item][aria-label="Close"] {
-            display: none !important;
-          }
-          button[aria-label="Close"] {
-            display: none !important;
-          }
-          .absolute.right-4.top-4 {
-            display: none !important;
-          }
-        `}</style>
-        
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2 text-2xl text-purple-700">
-            <Shield className="w-6 h-6 text-purple-500" />
-            Parent Check 👨‍👩‍👧
-          </DialogTitle>
-          <DialogDescription className="text-base text-gray-600">
-            To access {featureName}, please ask your parent or guardian to solve this math problem.
-          </DialogDescription>
-        </DialogHeader>
-        
-        <div className="space-y-6 py-4">
-          <div className="bg-white/80 rounded-xl p-6 text-center shadow-inner border-2 border-purple-100">
-            <p className="text-sm text-purple-600 mb-2 font-medium">
-              Ask your parent: 🧮
-            </p>
-            <p className="text-3xl font-bold text-purple-800 mb-4">
-              {mathQuestion.question}
-            </p>
-            
-            <Input
-              type="number"
-              value={userAnswer}
-              onChange={(e) => setUserAnswer(e.target.value)}
-              onKeyPress={handleKeyPress}
-              placeholder="Enter the answer"
-              className="text-center text-xl font-semibold h-14 border-2 border-purple-200 focus:border-purple-400"
-              disabled={success}
-              autoFocus
-            />
-          </div>
+    <DialogPrimitive.Root open={isOpen}>
+      <DialogPrimitive.Portal>
+        <DialogPrimitive.Overlay
+          className="fixed inset-0 z-[1000] bg-black/80"
+          onPointerDown={(e) => e.preventDefault()}
+        />
+        <DialogPrimitive.Content
+          className="fixed left-[50%] top-[50%] z-[1001] grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-gradient-to-br from-purple-50 to-pink-50 p-6 shadow-lg sm:rounded-lg"
+          onPointerDownOutside={(e) => e.preventDefault()}
+          onEscapeKeyDown={(e) => e.preventDefault()}
+          onInteractOutside={(e) => e.preventDefault()}
+        >
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-2xl text-purple-700">
+              <Shield className="w-6 h-6 text-purple-500" />
+              Parent Check 👨‍👩‍👧
+            </DialogTitle>
+            <DialogDescription className="text-base text-gray-600">
+              To access {featureName}, please ask your parent or guardian to solve this math problem.
+            </DialogDescription>
+          </DialogHeader>
 
-          {error && (
-            <div className="flex items-center gap-2 text-red-500 bg-red-50 p-3 rounded-lg animate-shake">
-              <AlertCircle className="w-5 h-5" />
-              <span className="font-medium">That's not right. Try again!</span>
+          <div className="space-y-6 py-4">
+            <div className="bg-white/80 rounded-xl p-6 text-center shadow-inner border-2 border-purple-100">
+              <p className="text-sm text-purple-600 mb-2 font-medium">Ask your parent: 🧮</p>
+              <p className="text-3xl font-bold text-purple-800 mb-4">{mathQuestion.question}</p>
+
+              <Input
+                type="number"
+                value={userAnswer}
+                onChange={(e) => setUserAnswer(e.target.value)}
+                onKeyPress={handleKeyPress}
+                placeholder="Enter the answer"
+                className="text-center text-xl font-semibold h-14 border-2 border-purple-200 focus:border-purple-400"
+                disabled={success}
+                autoFocus
+              />
             </div>
-          )}
 
-          {success && (
-            <div className="flex items-center gap-2 text-green-600 bg-green-50 p-3 rounded-lg">
-              <CheckCircle className="w-5 h-5" />
-              <span className="font-medium">Correct! Opening {featureName}...</span>
+            {error && (
+              <div className="flex items-center gap-2 text-red-500 bg-red-50 p-3 rounded-lg animate-shake">
+                <AlertCircle className="w-5 h-5" />
+                <span className="font-medium">That's not right. Try again!</span>
+              </div>
+            )}
+
+            {success && (
+              <div className="flex items-center gap-2 text-green-600 bg-green-50 p-3 rounded-lg">
+                <CheckCircle className="w-5 h-5" />
+                <span className="font-medium">Correct! Opening {featureName}...</span>
+              </div>
+            )}
+
+            <div className="flex gap-3">
+              <Button
+                variant="outline"
+                onClick={handleCancel}
+                className="flex-1 border-2 border-purple-200 hover:bg-purple-50"
+                disabled={success}
+              >
+                Cancel (Go Back)
+              </Button>
+              <Button
+                onClick={handleSubmit}
+                className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
+                disabled={!userAnswer || success}
+              >
+                {success ? "Opening..." : "Verify ✓"}
+              </Button>
             </div>
-          )}
 
-          <div className="flex gap-3">
-            <Button 
-              variant="outline" 
-              onClick={handleCancel}
-              className="flex-1 border-2 border-purple-200 hover:bg-purple-50"
-              disabled={success}
-            >
-              Cancel (Go Back)
-            </Button>
-            <Button 
-              onClick={handleSubmit}
-              className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
-              disabled={!userAnswer || success}
-            >
-              {success ? "Opening..." : "Verify ✓"}
-            </Button>
+            <div className="bg-purple-100/50 p-3 rounded-lg border border-purple-200">
+              <p className="text-xs text-center text-purple-700 font-medium">
+                🔒 This safety check ensures adult supervision for AI-interactive features.
+              </p>
+              <p className="text-xs text-center text-purple-600 mt-1">
+                Clicking "Cancel" will take you back to the Home page.
+              </p>
+            </div>
           </div>
-
-           <div className="bg-purple-100/50 p-3 rounded-lg border border-purple-200">
-             <p className="text-xs text-center text-purple-700 font-medium">
-               🔒 This safety check ensures adult supervision for AI-interactive features.
-             </p>
-             <p className="text-xs text-center text-purple-600 mt-1">
-               Clicking "Cancel" will take you back to the Home page.
-             </p>
-           </div>
-        </div>
-      </DialogContent>
-    </Dialog>
+        </DialogPrimitive.Content>
+      </DialogPrimitive.Portal>
+    </DialogPrimitive.Root>
   );
 }
 

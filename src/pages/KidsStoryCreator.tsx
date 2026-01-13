@@ -17,7 +17,6 @@ import { StorySubscriptionManagement } from "@/components/kids-story/StorySubscr
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ParentalGate } from "@/components/kids/ParentalGate";
 import { SafeContentBadge } from "@/components/kids/SafeContentBadge";
-import { useNavigate } from "react-router-dom";
 
 const KidsStoryCreator = () => {
   const { user } = useAuth();
@@ -29,52 +28,33 @@ const KidsStoryCreator = () => {
   const [loading, setLoading] = useState(false);
   const [story, setStory] = useState<any>(null);
   
-  // PARENTAL GATE STATE - Simple and direct, no bypass possible
-  const [isVerified, setIsVerified] = useState<boolean>(() => {
-    // Check sessionStorage synchronously on initial render
-    const stored = sessionStorage.getItem('parental_gate_verified');
-    if (stored) {
-      try {
-        const { expiresAt } = JSON.parse(stored);
-        if (Date.now() < expiresAt) {
-          return true;
-        }
-        sessionStorage.removeItem('parental_gate_verified');
-      } catch {
-        sessionStorage.removeItem('parental_gate_verified');
-      }
-    }
-    return false; // Default: NOT verified, must show gate
-  });
+  // PARENTAL GATE STATE - BLOCK BY DEFAULT
+  const [isVerified, setIsVerified] = useState<boolean>(false);
 
-  // Re-check verification periodically (in case 30 min expires while on page)
+  // On page open: check if verification exists and is still valid
   useEffect(() => {
-    const checkExpiry = () => {
-      const stored = sessionStorage.getItem('parental_gate_verified');
-      if (!stored) {
-        setIsVerified(false);
-        return;
-      }
-      try {
-        const { expiresAt } = JSON.parse(stored);
-        if (Date.now() >= expiresAt) {
-          sessionStorage.removeItem('parental_gate_verified');
-          setIsVerified(false);
-        }
-      } catch {
-        sessionStorage.removeItem('parental_gate_verified');
-        setIsVerified(false);
-      }
-    };
+    const stored = sessionStorage.getItem("parental_gate_verified");
+    if (!stored) {
+      setIsVerified(false);
+      return;
+    }
 
-    const interval = setInterval(checkExpiry, 30000); // Check every 30 seconds
-    return () => clearInterval(interval);
+    try {
+      const { expiresAt } = JSON.parse(stored);
+      if (Date.now() < expiresAt) {
+        setIsVerified(true);
+      } else {
+        sessionStorage.removeItem("parental_gate_verified");
+        setIsVerified(false);
+      }
+    } catch {
+      sessionStorage.removeItem("parental_gate_verified");
+      setIsVerified(false);
+    }
   }, []);
 
-  // Handle successful verification
+  // When the gate succeeds, just unlock UI (ParentalGate already writes sessionStorage)
   const handleVerificationSuccess = () => {
-    const expiresAt = Date.now() + 30 * 60 * 1000; // 30 minutes
-    sessionStorage.setItem('parental_gate_verified', JSON.stringify({ expiresAt }));
     setIsVerified(true);
   };
 
@@ -129,24 +109,10 @@ const KidsStoryCreator = () => {
   };
 
   // ========== BLOCKING PARENTAL GATE ==========
-  // If NOT verified, show ONLY the parental gate - NO content visible at all
+  // If NOT verified, show ONLY the parental gate - NOTHING else is rendered (no navbar/footer/content)
   if (!isVerified) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20">
-        <Navbar />
-        <main className="container mx-auto px-4 py-8 mt-16">
-          <div className="max-w-2xl mx-auto text-center">
-            <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-              AI Story Creator ✨
-            </h1>
-            <p className="text-muted-foreground mb-8">
-              Parent verification required to continue
-            </p>
-          </div>
-        </main>
-        <Footer />
-        
-        {/* Mandatory Parental Gate - Cannot be bypassed */}
+      <div className="min-h-screen">
         <ParentalGate
           isOpen={true}
           onSuccess={handleVerificationSuccess}
