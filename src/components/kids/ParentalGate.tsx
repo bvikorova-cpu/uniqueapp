@@ -89,8 +89,8 @@ export function ParentalGate({ isOpen, onSuccess, onCancel, featureName = "this 
   };
 
   const handleCancel = () => {
-    // Redirect to learning dashboard - cannot bypass
-    navigate('/learning');
+    // Redirect to home page - cannot bypass the parental gate
+    navigate('/', { replace: true });
     onCancel?.();
   };
 
