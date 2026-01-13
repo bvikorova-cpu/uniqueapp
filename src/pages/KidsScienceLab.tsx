@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { FlaskConical, Sparkles, Microscope, AlertTriangle, Info } from "lucide-react";
+import { FlaskConical, Sparkles, Microscope, AlertTriangle, Info, Atom, Beaker, BookOpen } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
@@ -13,6 +13,9 @@ import { ScienceLimitBanner } from "@/components/kids-science/ScienceLimitBanner
 import { ScienceSubscriptionManagement } from "@/components/kids-science/ScienceSubscriptionManagement";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useNavigate } from "react-router-dom";
+import { ParentalGate } from "@/components/kids/ParentalGate";
+
+const PARENTAL_GATE_KEY = "parental_gate_verified_kids_science_lab";
 
 const KidsScienceLab = () => {
   const navigate = useNavigate();
@@ -23,9 +26,54 @@ const KidsScienceLab = () => {
   const [result, setResult] = useState<any>(null);
   const { subscription, refreshSubscription, subscribe, manageSubscription, incrementUsage } = useScienceSubscription();
 
+  // PARENTAL GATE STATE - BLOCK BY DEFAULT
+  const [isVerified, setIsVerified] = useState<boolean>(() => {
+    const stored = sessionStorage.getItem(PARENTAL_GATE_KEY);
+    if (!stored) return false;
+    try {
+      const { expiresAt } = JSON.parse(stored);
+      if (Date.now() < expiresAt) return true;
+      sessionStorage.removeItem(PARENTAL_GATE_KEY);
+      return false;
+    } catch {
+      sessionStorage.removeItem(PARENTAL_GATE_KEY);
+      return false;
+    }
+  });
+
+  // Keep session-based verification honest while the user stays on the page
   useEffect(() => {
-    refreshSubscription();
-  }, []);
+    const tick = () => {
+      const stored = sessionStorage.getItem(PARENTAL_GATE_KEY);
+      if (!stored) {
+        if (isVerified) setIsVerified(false);
+        return;
+      }
+      try {
+        const { expiresAt } = JSON.parse(stored);
+        if (Date.now() >= expiresAt) {
+          sessionStorage.removeItem(PARENTAL_GATE_KEY);
+          if (isVerified) setIsVerified(false);
+        }
+      } catch {
+        sessionStorage.removeItem(PARENTAL_GATE_KEY);
+        if (isVerified) setIsVerified(false);
+      }
+    };
+
+    const interval = setInterval(tick, 30_000);
+    return () => clearInterval(interval);
+  }, [isVerified]);
+
+  const handleVerificationSuccess = () => {
+    setIsVerified(true);
+  };
+
+  useEffect(() => {
+    if (isVerified) {
+      refreshSubscription();
+    }
+  }, [isVerified]);
 
   const handleAnalyze = async () => {
     if (!category || !hypothesis.trim() || !observations.trim()) {
@@ -67,19 +115,49 @@ const KidsScienceLab = () => {
 
   const canAnalyze = subscription.subscribed || subscription.experiments_used < subscription.experiments_limit;
 
+  // ========== BLOCKING PARENTAL GATE ==========
+  if (!isVerified) {
+    return (
+      <div className="min-h-screen">
+        <ParentalGate
+          isOpen={true}
+          storageKey={PARENTAL_GATE_KEY}
+          onSuccess={handleVerificationSuccess}
+          onCancel={() => {
+            navigate("/");
+          }}
+          featureName="AI Science Lab"
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20">
       <Navbar />
       <main className="container mx-auto px-4 py-8 mt-16">
         <div className="max-w-4xl mx-auto space-y-6">
           <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+            <div className="flex justify-center gap-3 mb-4">
+              <Atom className="w-10 h-10 text-primary animate-pulse" />
+              <Beaker className="w-10 h-10 text-blue-500" />
+              <FlaskConical className="w-10 h-10 text-green-500" />
+            </div>
+            <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-primary via-blue-500 to-green-500 bg-clip-text text-transparent">
               AI Science Lab 🔬
             </h1>
             <p className="text-muted-foreground text-lg">
               Discover science with virtual experiments and AI-powered analysis!
             </p>
           </div>
+
+          {/* PERMANENT Safety Warning - Always visible at top */}
+          <Alert className="border-2 border-orange-500 bg-gradient-to-r from-orange-500/20 to-red-500/20 shadow-lg">
+            <AlertTriangle className="h-6 w-6 text-orange-600" />
+            <AlertDescription className="ml-2 text-base font-semibold text-orange-800 dark:text-orange-200">
+              ⚠️ SAFETY FIRST: All experiments must be done with an adult! Always wear safety gear (goggles, gloves) and work in a safe environment.
+            </AlertDescription>
+          </Alert>
 
           {/* What is this section */}
           <Card className="border-blue-500/30 bg-blue-500/5">
@@ -108,13 +186,55 @@ const KidsScienceLab = () => {
             </CardContent>
           </Card>
 
-          {/* Safety Warning */}
-          <Alert variant="destructive" className="border-orange-500 bg-orange-500/10">
-            <AlertTriangle className="h-5 w-5" />
-            <AlertDescription className="ml-2">
-              <strong>Important Safety Notice:</strong> Real experiments should only be performed under adult supervision. Always follow proper safety guidelines and use appropriate protective equipment.
-            </AlertDescription>
-          </Alert>
+          {/* Scientific Method Guide */}
+          <Card className="border-purple-500/30 bg-gradient-to-br from-purple-500/10 to-indigo-500/10">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-purple-600 dark:text-purple-400">
+                <BookOpen className="w-5 h-5" />
+                🧪 The Scientific Method Guide
+              </CardTitle>
+              <CardDescription>Learn how real scientists think!</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4 text-sm">
+              <div className="grid gap-3">
+                <div className="flex items-start gap-3 p-3 rounded-lg bg-background/50">
+                  <span className="flex-shrink-0 w-8 h-8 rounded-full bg-purple-500 text-white flex items-center justify-center font-bold">1</span>
+                  <div>
+                    <p className="font-semibold">Ask a Question</p>
+                    <p className="text-muted-foreground">What do you want to find out? Example: "Do plants grow faster in sunlight or shade?"</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3 p-3 rounded-lg bg-background/50">
+                  <span className="flex-shrink-0 w-8 h-8 rounded-full bg-indigo-500 text-white flex items-center justify-center font-bold">2</span>
+                  <div>
+                    <p className="font-semibold">Make a Hypothesis</p>
+                    <p className="text-muted-foreground">A hypothesis is your <strong>best guess</strong> about what will happen. Start with "I think..." Example: "I think plants will grow faster in sunlight because they need light for energy."</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3 p-3 rounded-lg bg-background/50">
+                  <span className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold">3</span>
+                  <div>
+                    <p className="font-semibold">Do the Experiment</p>
+                    <p className="text-muted-foreground">Test your idea! Watch carefully and write down everything you see.</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3 p-3 rounded-lg bg-background/50">
+                  <span className="flex-shrink-0 w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center font-bold">4</span>
+                  <div>
+                    <p className="font-semibold">Record Observations</p>
+                    <p className="text-muted-foreground">Write down what you saw, heard, or measured. Be specific! Example: "The plant in sunlight grew 5cm in 1 week."</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3 p-3 rounded-lg bg-background/50">
+                  <span className="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold">5</span>
+                  <div>
+                    <p className="font-semibold">Draw a Conclusion</p>
+                    <p className="text-muted-foreground">Was your hypothesis correct? Our AI will help you understand why!</p>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
 
           {/* Subscription Status Banner */}
           {subscription.loading ? (
