@@ -2604,53 +2604,189 @@ export type Database = {
           },
         ]
       }
+      brain_duel_gifts: {
+        Row: {
+          created_at: string | null
+          gift_cost: number
+          gift_type: string
+          id: string
+          match_id: string
+          message: string | null
+          recipient_id: string
+          sender_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          gift_cost: number
+          gift_type: string
+          id?: string
+          match_id: string
+          message?: string | null
+          recipient_id: string
+          sender_id: string
+        }
+        Update: {
+          created_at?: string | null
+          gift_cost?: number
+          gift_type?: string
+          id?: string
+          match_id?: string
+          message?: string | null
+          recipient_id?: string
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "brain_duel_gifts_match_id_fkey"
+            columns: ["match_id"]
+            isOneToOne: false
+            referencedRelation: "brain_duel_matches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      brain_duel_leagues: {
+        Row: {
+          best_win_streak: number | null
+          created_at: string | null
+          id: string
+          league: string
+          league_points: number | null
+          season: string | null
+          total_losses: number | null
+          total_wins: number | null
+          updated_at: string | null
+          user_id: string
+          win_streak: number | null
+        }
+        Insert: {
+          best_win_streak?: number | null
+          created_at?: string | null
+          id?: string
+          league?: string
+          league_points?: number | null
+          season?: string | null
+          total_losses?: number | null
+          total_wins?: number | null
+          updated_at?: string | null
+          user_id: string
+          win_streak?: number | null
+        }
+        Update: {
+          best_win_streak?: number | null
+          created_at?: string | null
+          id?: string
+          league?: string
+          league_points?: number | null
+          season?: string | null
+          total_losses?: number | null
+          total_wins?: number | null
+          updated_at?: string | null
+          user_id?: string
+          win_streak?: number | null
+        }
+        Relationships: []
+      }
+      brain_duel_match_chat: {
+        Row: {
+          created_at: string | null
+          id: string
+          match_id: string
+          message: string
+          message_type: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          match_id: string
+          message: string
+          message_type?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          match_id?: string
+          message?: string
+          message_type?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "brain_duel_match_chat_match_id_fkey"
+            columns: ["match_id"]
+            isOneToOne: false
+            referencedRelation: "brain_duel_matches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       brain_duel_matches: {
         Row: {
           category: string
           created_at: string
           current_question_index: number
+          entry_cost: number | null
           finished_at: string | null
+          game_mode: string | null
           id: string
+          is_spectatable: boolean | null
+          league: string | null
           player1_id: string
           player1_score: number
           player2_id: string | null
           player2_score: number
           started_at: string | null
           status: string
+          time_per_question: number | null
           total_questions: number
           updated_at: string
+          win_reward: number | null
           winner_id: string | null
         }
         Insert: {
           category: string
           created_at?: string
           current_question_index?: number
+          entry_cost?: number | null
           finished_at?: string | null
+          game_mode?: string | null
           id?: string
+          is_spectatable?: boolean | null
+          league?: string | null
           player1_id: string
           player1_score?: number
           player2_id?: string | null
           player2_score?: number
           started_at?: string | null
           status?: string
+          time_per_question?: number | null
           total_questions?: number
           updated_at?: string
+          win_reward?: number | null
           winner_id?: string | null
         }
         Update: {
           category?: string
           created_at?: string
           current_question_index?: number
+          entry_cost?: number | null
           finished_at?: string | null
+          game_mode?: string | null
           id?: string
+          is_spectatable?: boolean | null
+          league?: string | null
           player1_id?: string
           player1_score?: number
           player2_id?: string | null
           player2_score?: number
           started_at?: string | null
           status?: string
+          time_per_question?: number | null
           total_questions?: number
           updated_at?: string
+          win_reward?: number | null
           winner_id?: string | null
         }
         Relationships: []
@@ -2679,6 +2815,42 @@ export type Database = {
           quantity?: number
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      brain_duel_question_packs: {
+        Row: {
+          category: string
+          created_at: string | null
+          description: string | null
+          icon: string | null
+          id: string
+          is_premium: boolean | null
+          name: string
+          price_credits: number
+          question_count: number
+        }
+        Insert: {
+          category: string
+          created_at?: string | null
+          description?: string | null
+          icon?: string | null
+          id?: string
+          is_premium?: boolean | null
+          name: string
+          price_credits?: number
+          question_count?: number
+        }
+        Update: {
+          category?: string
+          created_at?: string | null
+          description?: string | null
+          icon?: string | null
+          id?: string
+          is_premium?: boolean | null
+          name?: string
+          price_credits?: number
+          question_count?: number
         }
         Relationships: []
       }
@@ -2720,6 +2892,67 @@ export type Database = {
           question?: string
         }
         Relationships: []
+      }
+      brain_duel_spectators: {
+        Row: {
+          id: string
+          joined_at: string | null
+          left_at: string | null
+          match_id: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          joined_at?: string | null
+          left_at?: string | null
+          match_id: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          joined_at?: string | null
+          left_at?: string | null
+          match_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "brain_duel_spectators_match_id_fkey"
+            columns: ["match_id"]
+            isOneToOne: false
+            referencedRelation: "brain_duel_matches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      brain_duel_user_packs: {
+        Row: {
+          id: string
+          pack_id: string
+          purchased_at: string | null
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          pack_id: string
+          purchased_at?: string | null
+          user_id: string
+        }
+        Update: {
+          id?: string
+          pack_id?: string
+          purchased_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "brain_duel_user_packs_pack_id_fkey"
+            columns: ["pack_id"]
+            isOneToOne: false
+            referencedRelation: "brain_duel_question_packs"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       brand_battle_credits: {
         Row: {
