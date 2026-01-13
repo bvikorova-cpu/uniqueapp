@@ -239,7 +239,7 @@ export default function CreateCrisisCampaign() {
         description: 'Your crisis relief campaign has been submitted for admin approval',
       });
 
-      navigate(`/fundraising/crisis/${data.id}`);
+      navigate(`/fundraising/crisis/${data.id}/success?action=created`);
     } catch (error) {
       console.error('Error creating campaign:', error);
       toast({

@@ -351,6 +351,7 @@ export const AdminPaymentDashboard = lazy(() => import("@/pages/AdminPaymentDash
 export const PaymentDocumentation = lazy(() => import("@/pages/PaymentDocumentation"));
 export const CampaignApprovals = lazy(() => import("@/pages/admin/CampaignApprovals"));
 export const WithdrawalRequests = lazy(() => import("@/pages/admin/WithdrawalRequests"));
+export const CampaignSuccess = lazy(() => import("@/pages/fundraising/CampaignSuccess"));
 
 // Education Components
 export const QuizCreator = lazy(() => import("@/components/education/QuizCreator"));

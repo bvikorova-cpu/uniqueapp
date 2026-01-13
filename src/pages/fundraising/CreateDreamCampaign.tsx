@@ -160,7 +160,7 @@ export default function CreateDreamCampaign() {
         description: 'Your dream campaign has been submitted for admin approval',
       });
 
-      navigate(`/fundraising/dream/${data.id}`);
+      navigate(`/fundraising/dream/${data.id}/success?action=created`);
     } catch (error) {
       console.error('Error creating campaign:', error);
       toast({

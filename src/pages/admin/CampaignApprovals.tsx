@@ -5,9 +5,10 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { ArrowLeft, Check, X, Eye } from 'lucide-react';
+import { ArrowLeft, Check, X, Eye, FileText, ExternalLink, AlertTriangle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from '@/hooks/use-toast';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { useIsAdmin } from '@/hooks/useIsAdmin';
 
 interface CampaignApproval {
@@ -294,6 +295,64 @@ export default function CampaignApprovals() {
                       <span>{new Date(approval.created_at).toLocaleDateString()}</span>
                     </div>
                   </div>
+
+                  {/* Verification Documents Section */}
+                  {(approval.campaign_type === 'medical' || approval.campaign_type === 'crisis') && (
+                    <div className="border-2 border-amber-500/30 bg-amber-50 dark:bg-amber-900/10 p-3 rounded-lg">
+                      <div className="flex items-center gap-2 mb-2">
+                        <AlertTriangle className="h-4 w-4 text-amber-600" />
+                        <span className="font-semibold text-amber-800 dark:text-amber-300 text-sm">Verification Required</span>
+                      </div>
+                      {approval.campaign_data?.proof_document_url ? (
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button variant="outline" size="sm" className="w-full">
+                              <FileText className="mr-2 h-4 w-4" />
+                              View Verification Document
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent className="max-w-4xl max-h-[90vh] overflow-auto">
+                            <DialogHeader>
+                              <DialogTitle>Verification Document - {approval.campaign_data?.title}</DialogTitle>
+                            </DialogHeader>
+                            <div className="space-y-4">
+                              {approval.campaign_data.proof_document_url.endsWith('.pdf') ? (
+                                <div className="space-y-2">
+                                  <p className="text-sm text-muted-foreground">PDF Document uploaded</p>
+                                  <a 
+                                    href={approval.campaign_data.proof_document_url} 
+                                    target="_blank" 
+                                    rel="noopener noreferrer"
+                                    className="flex items-center gap-2 text-primary hover:underline"
+                                  >
+                                    <ExternalLink className="h-4 w-4" />
+                                    Open PDF in New Tab
+                                  </a>
+                                </div>
+                              ) : (
+                                <img 
+                                  src={approval.campaign_data.proof_document_url} 
+                                  alt="Verification document"
+                                  className="w-full max-h-[70vh] object-contain rounded-lg border"
+                                />
+                              )}
+                              <a 
+                                href={approval.campaign_data.proof_document_url} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="flex items-center gap-2 text-primary hover:underline text-sm"
+                              >
+                                <ExternalLink className="h-4 w-4" />
+                                Open Full Document
+                              </a>
+                            </div>
+                          </DialogContent>
+                        </Dialog>
+                      ) : (
+                        <p className="text-sm text-destructive">⚠️ No verification document uploaded!</p>
+                      )}
+                    </div>
+                  )}
 
                   {selectedApproval?.id === approval.id ? (
                     <div className="space-y-4">
