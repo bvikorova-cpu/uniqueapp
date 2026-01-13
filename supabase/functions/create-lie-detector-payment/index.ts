@@ -26,16 +26,18 @@ serve(async (req) => {
 
     const { credits } = await req.json();
     
-    if (!credits || ![20, 50, 150, 400].includes(credits)) {
+    // Global Credit Packages - shared across CreativeForge and Lie Detector
+    const validCredits = [30, 75, 150, 400];
+    if (!credits || !validCredits.includes(credits)) {
       throw new Error("Invalid credit package");
     }
 
-    // Determine price based on credits
+    // Determine price based on credits - aligned with CreativeForge
     const priceMap: Record<number, { amount: number; description: string }> = {
-      20: { amount: 800, description: "Starter Package - 20 Credits" },
-      50: { amount: 1800, description: "Basic Package - 50 Credits" },
-      150: { amount: 4500, description: "Pro Package - 150 Credits (Most Popular)" },
-      400: { amount: 10000, description: "Expert Package - 400 Credits (Best Value)" },
+      30: { amount: 800, description: "Starter Package - 30 Credits" },
+      75: { amount: 1800, description: "Creator Package - 75 Credits" },
+      150: { amount: 3200, description: "Professional Package - 150 Credits (Most Popular)" },
+      400: { amount: 7500, description: "Studio Package - 400 Credits (Best Value)" },
     };
 
     const priceInfo = priceMap[credits];

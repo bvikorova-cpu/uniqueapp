@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Shield, MessageSquare, Users, Brain, History } from "lucide-react";
+import { Shield, MessageSquare, Users, Brain, History, AlertTriangle } from "lucide-react";
 import { LieDetectorHeader } from "@/components/lie-detector/LieDetectorHeader";
 import { LieDetectorCredits } from "@/components/lie-detector/LieDetectorCredits";
 import { SingleMessageAnalysis } from "@/components/lie-detector/SingleMessageAnalysis";
 import { ThreadAnalysis } from "@/components/lie-detector/ThreadAnalysis";
 import { PsychologicalProfile } from "@/components/lie-detector/PsychologicalProfile";
 import { AnalysisHistory } from "@/components/lie-detector/AnalysisHistory";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 const LieDetector = () => {
   const [activeTab, setActiveTab] = useState("single");
@@ -59,6 +60,19 @@ const LieDetector = () => {
             <AnalysisHistory />
           </TabsContent>
         </Tabs>
+
+        {/* Mandatory Disclaimer */}
+        <Alert className="mt-8 border-2 border-yellow-500/50 bg-yellow-500/10">
+          <AlertTriangle className="h-5 w-5 text-yellow-500" />
+          <AlertTitle className="text-yellow-600 dark:text-yellow-400 font-bold">
+            ⚠️ Important Disclaimer
+          </AlertTitle>
+          <AlertDescription className="text-yellow-700 dark:text-yellow-300 mt-2">
+            <strong>For entertainment and informational purposes only.</strong> Results are AI-generated estimates 
+            based on linguistic patterns and should NOT be used as definitive proof of truthfulness or deception. 
+            This tool does not replace professional psychological assessment or legal investigation.
+          </AlertDescription>
+        </Alert>
       </div>
     </div>
   );

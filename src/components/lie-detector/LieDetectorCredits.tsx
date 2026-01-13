@@ -16,33 +16,34 @@ export const LieDetectorCredits = () => {
 
   if (isLoading) return null;
 
+  // Global Credit Packages - shared across CreativeForge and Lie Detector
   const packages = [
     { 
-      credits: 20, 
+      credits: 30, 
       price: 8, 
       label: "Starter",
       icon: Coins,
-      description: "6 analyses or 1 thread"
+      description: "10 analyses or 2 threads"
     },
     { 
-      credits: 50, 
+      credits: 75, 
       price: 18, 
-      label: "Basic",
+      label: "Creator",
       icon: Zap,
-      description: "16 analyses or 3 threads"
+      description: "25 analyses or 5 threads"
     },
     { 
       credits: 150, 
-      price: 45, 
-      label: "Pro",
+      price: 32, 
+      label: "Professional",
       icon: Sparkles,
       popular: true,
       description: "50 analyses or 10 threads"
     },
     { 
       credits: 400, 
-      price: 100, 
-      label: "Expert",
+      price: 75, 
+      label: "Studio",
       icon: Crown,
       bestValue: true,
       description: "Best value - All features"
