@@ -70,6 +70,7 @@ export const KidsSciencePricing = lazy(() => import("@/pages/KidsSciencePricing"
 export const KidsScienceAdmin = lazy(() => import("@/pages/KidsScienceAdmin"));
 export const KidsDrawingBuddy = lazy(() => import("@/pages/KidsDrawingBuddy"));
 export const KidsReadingCompanion = lazy(() => import("@/pages/KidsReadingCompanion"));
+export const KidsAcademy = lazy(() => import("@/pages/KidsAcademy"));
 export const ColoringPages = lazy(() => import("@/pages/ColoringPages"));
 export const TeenCareerCounselor = lazy(() => import("@/pages/TeenCareerCounselor"));
 export const KidsChannel = lazy(() => import("@/pages/KidsChannel"));
