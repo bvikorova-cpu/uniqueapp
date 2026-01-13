@@ -57,11 +57,11 @@ const gameModes: GameMode[] = [
 ];
 
 interface GameModeSelectorProps {
-  onSelectMode: (mode: GameMode) => void;
-  isSearching: boolean;
+  onSelectMode?: (mode: GameMode) => void;
+  isSearching?: boolean;
 }
 
-export const GameModeSelector = ({ onSelectMode, isSearching }: GameModeSelectorProps) => {
+export const GameModeSelector = ({ onSelectMode, isSearching = false }: GameModeSelectorProps) => {
   const { credits } = useBrainDuelCredits();
   const { toast } = useToast();
   const [selectedMode, setSelectedMode] = useState<string | null>(null);
@@ -76,7 +76,7 @@ export const GameModeSelector = ({ onSelectMode, isSearching }: GameModeSelector
       return;
     }
     setSelectedMode(mode.id);
-    onSelectMode(mode);
+    onSelectMode?.(mode);
   };
 
   return (

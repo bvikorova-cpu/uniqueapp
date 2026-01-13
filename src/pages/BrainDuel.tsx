@@ -7,7 +7,7 @@ import {
   Trophy, Zap, Users, ShoppingCart, Crown, Flame, Clock, 
   Globe, BookOpen, FlaskConical, Film, Dumbbell, Music, 
   Pizza, Briefcase, Palette, Gamepad2, Target, Brain,
-  TrendingUp, Heart, Sparkles, Gift, User
+  TrendingUp, Heart, Sparkles, User, Radio
 } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
@@ -16,6 +16,10 @@ import { BrainDuelGame } from "@/components/brain-duel/BrainDuelGame";
 import { BrainDuelLeaderboard } from "@/components/brain-duel/BrainDuelLeaderboard";
 import { FriendChallenges } from "@/components/brain-duel/FriendChallenges";
 import FriendChallengesLeaderboard from "@/components/brain-duel/FriendChallengesLeaderboard";
+import { GameModeSelector } from "@/components/brain-duel/GameModeSelector";
+import { LeagueSystem } from "@/components/brain-duel/LeagueSystem";
+import { QuestionPackStore } from "@/components/brain-duel/QuestionPackStore";
+import { LiveSpectatorMode } from "@/components/brain-duel/LiveSpectatorMode";
 import { useBrainDuelPowerups } from "@/hooks/useBrainDuelPowerups";
 import { useBrainDuelOnlinePlayers } from "@/hooks/useBrainDuelOnlinePlayers";
 import { useBrainDuelRealTimeNotifications } from "@/hooks/useBrainDuelRealTimeNotifications";
@@ -24,7 +28,6 @@ import { useQueryClient } from "@tanstack/react-query";
 
 const BrainDuel = () => {
   const navigate = useNavigate();
-  const [selectedMode, setSelectedMode] = useState<string | null>(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const queryClient = useQueryClient();
   const [userId, setUserId] = useState<string | null>(null);
@@ -79,79 +82,6 @@ const BrainDuel = () => {
     }
   };
 
-  const gameModes = [
-    {
-      id: "quick",
-      name: "Quick Duel",
-      duration: "5 minutes",
-      questions: 10,
-      timePerQuestion: "30s",
-      entry: 10,
-      reward: 20,
-      icon: Zap,
-      color: "text-yellow-500"
-    },
-    {
-      id: "classic",
-      name: "Classic Battle",
-      duration: "10 minutes",
-      questions: 20,
-      timePerQuestion: "30s",
-      entry: 20,
-      reward: 50,
-      icon: Trophy,
-      color: "text-blue-500"
-    },
-    {
-      id: "championship",
-      name: "Championship",
-      duration: "20 minutes",
-      questions: 50,
-      timePerQuestion: "24s",
-      entry: 50,
-      reward: 150,
-      icon: Crown,
-      color: "text-purple-500",
-      featured: true
-    }
-  ];
-
-  const tournaments = [
-    {
-      id: "bronze",
-      name: "Bronze League",
-      entry: 10,
-      description: "Beginners",
-      color: "bg-amber-700",
-      icon: "🥉"
-    },
-    {
-      id: "silver",
-      name: "Silver League",
-      entry: 20,
-      description: "Advanced",
-      color: "bg-slate-400",
-      icon: "🥈"
-    },
-    {
-      id: "gold",
-      name: "Gold League",
-      entry: 50,
-      description: "Experts",
-      color: "bg-yellow-500",
-      icon: "🥇"
-    },
-    {
-      id: "diamond",
-      name: "Diamond League",
-      entry: 100,
-      description: "Professionals",
-      color: "bg-cyan-400",
-      icon: "💎",
-      featured: true
-    }
-  ];
-
   const categories = [
     { id: "geography", name: "Geography", icon: Globe, color: "text-green-500" },
     { id: "history", name: "History", icon: BookOpen, color: "text-amber-600" },
@@ -199,50 +129,6 @@ const BrainDuel = () => {
       color: "text-purple-500"
     }
   ];
-
-  const questionPacks = [
-    {
-      id: "celebrity",
-      name: "Celebrity Pack",
-      questions: 100,
-      price: 30,
-      category: "Entertainment"
-    },
-    {
-      id: "history",
-      name: "History Bundle",
-      questions: 200,
-      price: 50,
-      category: "History"
-    },
-    {
-      id: "science",
-      name: "Science Mega Pack",
-      questions: 300,
-      price: 80,
-      category: "Science"
-    },
-    {
-      id: "custom",
-      name: "Create Custom Pack",
-      questions: "Unlimited",
-      price: "1 credit/question",
-      category: "Custom",
-      custom: true
-    }
-  ];
-
-  const handleStartGame = (modeId: string) => {
-    toast.info(`Starting ${gameModes.find(m => m.id === modeId)?.name}...`, {
-      description: "Finding an opponent for you"
-    });
-  };
-
-  const handleJoinTournament = (tournamentId: string) => {
-    toast.info(`Joining ${tournaments.find(t => t.id === tournamentId)?.name}...`, {
-      description: "Waiting for tournament to start"
-    });
-  };
 
   return (
     <div className="min-h-screen bg-background p-2 sm:p-4">
@@ -316,7 +202,7 @@ const BrainDuel = () => {
             </div>
             <div className="mt-4 pt-4 border-t border-border/50">
               <p className="text-xs sm:text-sm text-muted-foreground">
-                <strong>💡 Tip:</strong> Each game costs 10 credits to enter. Win to double your credits! Purchase credit packages or earn them by winning matches.
+                <strong>💡 Tip:</strong> Each game costs credits to enter based on mode. Win to earn rewards! Purchase credit packages or earn them by winning matches.
               </p>
             </div>
           </div>
@@ -344,10 +230,10 @@ const BrainDuel = () => {
               <span className="hidden sm:inline">Play Now</span>
               <span className="sm:hidden">Play</span>
             </TabsTrigger>
-            <TabsTrigger value="tournaments" className="gap-1 sm:gap-2 text-xs sm:text-sm px-2 sm:px-3 flex-shrink-0">
+            <TabsTrigger value="leagues" className="gap-1 sm:gap-2 text-xs sm:text-sm px-2 sm:px-3 flex-shrink-0">
               <Trophy className="h-3 w-3 sm:h-4 sm:w-4" />
-              <span className="hidden sm:inline">Tournaments</span>
-              <span className="sm:hidden">Tour</span>
+              <span className="hidden sm:inline">Leagues</span>
+              <span className="sm:hidden">League</span>
             </TabsTrigger>
             <TabsTrigger value="challenges" className="gap-1 sm:gap-2 text-xs sm:text-sm px-2 sm:px-3 flex-shrink-0">
               <Users className="h-3 w-3 sm:h-4 sm:w-4" />
@@ -365,7 +251,7 @@ const BrainDuel = () => {
               <span className="sm:hidden">Packs</span>
             </TabsTrigger>
             <TabsTrigger value="audience" className="gap-1 sm:gap-2 text-xs sm:text-sm px-2 sm:px-3 flex-shrink-0">
-              <Users className="h-3 w-3 sm:h-4 sm:w-4" />
+              <Radio className="h-3 w-3 sm:h-4 sm:w-4" />
               <span className="hidden sm:inline">Live Audience</span>
               <span className="sm:hidden">Live</span>
             </TabsTrigger>
@@ -392,57 +278,12 @@ const BrainDuel = () => {
               </CardContent>
             </Card>
 
-            {/* Game Modes */}
-            <div className="grid md:grid-cols-3 gap-4">
-              {gameModes.map((mode) => {
-                const Icon = mode.icon;
-                return (
-                  <Card 
-                    key={mode.id}
-                    className={`relative hover:shadow-elegant transition-all ${
-                      mode.featured ? 'border-primary/50 ring-2 ring-primary/20' : ''
-                    }`}
-                  >
-                    {mode.featured && (
-                      <div className="absolute -top-2 -right-2 bg-primary text-primary-foreground text-xs px-3 py-1 rounded-full font-bold">
-                        POPULAR
-                      </div>
-                    )}
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
-                        <Icon className={`h-5 w-5 ${mode.color}`} />
-                        {mode.name}
-                      </CardTitle>
-                      <CardDescription>
-                        {mode.duration} • {mode.questions} questions
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <div className="space-y-2 text-sm">
-                        <div className="flex justify-between">
-                          <span className="text-muted-foreground">Time per question:</span>
-                          <span className="font-medium">{mode.timePerQuestion}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-muted-foreground">Entry cost:</span>
-                          <span className="font-bold text-primary">{mode.entry} credits</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-muted-foreground">Win reward:</span>
-                          <span className="font-bold text-green-500">{mode.reward} credits</span>
-                        </div>
-                      </div>
-                      <Button 
-                        className="w-full"
-                        onClick={() => handleStartGame(mode.id)}
-                      >
-                        Start Battle
-                      </Button>
-                    </CardContent>
-                  </Card>
-                );
-              })}
-            </div>
+            {/* Game Mode Selector */}
+            <GameModeSelector onSelectMode={(mode) => {
+              toast.info(`Selected ${mode.name} mode`, {
+                description: `${mode.questions} questions, ${mode.entry} credits entry`
+              });
+            }} />
 
             {/* Categories */}
             <Card>
@@ -472,55 +313,9 @@ const BrainDuel = () => {
             </Card>
           </TabsContent>
 
-          {/* Tournaments Tab */}
-          <TabsContent value="tournaments" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Tiered Tournaments</CardTitle>
-                <CardDescription>
-                  Compete in your skill level and climb the ranks
-                </CardDescription>
-              </CardHeader>
-            </Card>
-
-            <div className="grid md:grid-cols-2 gap-4">
-              {tournaments.map((tournament) => (
-                <Card 
-                  key={tournament.id}
-                  className={`relative ${
-                    tournament.featured ? 'border-primary/50 ring-2 ring-primary/20' : ''
-                  }`}
-                >
-                  {tournament.featured && (
-                    <div className="absolute -top-2 -right-2 bg-gradient-to-r from-primary to-purple-600 text-white text-xs px-3 py-1 rounded-full font-bold">
-                      ELITE
-                    </div>
-                  )}
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-3">
-                      <div className={`w-12 h-12 ${tournament.color} rounded-full flex items-center justify-center text-2xl`}>
-                        {tournament.icon}
-                      </div>
-                      <div>
-                        <div>{tournament.name}</div>
-                        <div className="text-sm font-normal text-muted-foreground">
-                          {tournament.description}
-                        </div>
-                      </div>
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="flex justify-between items-center">
-                      <span className="text-muted-foreground">Entry cost:</span>
-                      <span className="text-2xl font-bold text-primary">{tournament.entry} credits</span>
-                    </div>
-                    <Button className="w-full" onClick={() => handleJoinTournament(tournament.id)}>
-                      Join Tournament
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+          {/* Leagues Tab */}
+          <TabsContent value="leagues" className="space-y-6">
+            <LeagueSystem />
           </TabsContent>
 
           {/* Friend Challenges Tab */}
@@ -543,7 +338,7 @@ const BrainDuel = () => {
               {powerUps.map((powerUp) => {
                 const Icon = powerUp.icon;
                 return (
-                  <Card key={powerUp.id} className="hover:shadow-elegant transition-all">
+                  <Card key={powerUp.id} className="hover:shadow-lg transition-all">
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2 text-lg">
                         <Icon className={`h-5 w-5 ${powerUp.color}`} />
@@ -571,97 +366,12 @@ const BrainDuel = () => {
 
           {/* Question Packs Tab */}
           <TabsContent value="packs" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Question Packs</CardTitle>
-                <CardDescription>
-                  Expand your question library with themed packs or create your own
-                </CardDescription>
-              </CardHeader>
-            </Card>
-
-            <div className="grid md:grid-cols-2 gap-4">
-              {questionPacks.map((pack) => (
-                <Card 
-                  key={pack.id}
-                  className={`hover:shadow-elegant transition-all ${
-                    pack.custom ? 'border-primary/50 bg-gradient-to-br from-primary/5 to-purple-500/5' : ''
-                  }`}
-                >
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      {pack.custom ? <Gift className="h-5 w-5 text-primary" /> : <ShoppingCart className="h-5 w-5" />}
-                      {pack.name}
-                    </CardTitle>
-                    <CardDescription>
-                      {pack.category} • {pack.questions} questions
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="flex justify-between items-center">
-                      <span className="text-2xl font-bold text-primary">
-                        {typeof pack.price === 'number' ? `${pack.price} credits` : pack.price}
-                      </span>
-                      <Button>
-                        {pack.custom ? 'Create Pack' : 'Purchase'}
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+            <QuestionPackStore />
           </TabsContent>
 
           {/* Live Audience Tab */}
           <TabsContent value="audience" className="space-y-6">
-            <Card className="border-primary/50 bg-gradient-to-br from-primary/5 to-purple-500/5">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Users className="h-5 w-5 text-primary" />
-                  Live Spectator Mode
-                </CardTitle>
-                <CardDescription>
-                  Watch live battles and support your favorite players
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between p-3 bg-background rounded-lg">
-                    <span className="text-sm text-muted-foreground">Live battles:</span>
-                    <span className="font-bold">Watch for free</span>
-                  </div>
-                  <div className="flex items-center justify-between p-3 bg-background rounded-lg">
-                    <span className="text-sm text-muted-foreground">Chat access:</span>
-                    <span className="font-bold text-green-500">Free</span>
-                  </div>
-                  <div className="flex items-center justify-between p-3 bg-background rounded-lg">
-                    <span className="text-sm text-muted-foreground">Reactions:</span>
-                    <span className="font-bold text-purple-500">Unlimited</span>
-                  </div>
-                </div>
-
-                <div className="border-t pt-4 mt-4">
-                  <h4 className="font-semibold mb-3 flex items-center gap-2">
-                    <Heart className="h-4 w-4 text-red-500" />
-                    Virtual Gifts
-                  </h4>
-                  <p className="text-sm text-muted-foreground mb-3">
-                    Send virtual gifts to players during battles (costs virtual credits)
-                  </p>
-                  <div className="flex gap-2 flex-wrap">
-                    <Badge variant="outline">❤️ 5 credits</Badge>
-                    <Badge variant="outline">🎁 10 credits</Badge>
-                    <Badge variant="outline">🏆 20 credits</Badge>
-                    <Badge variant="outline">👑 50 credits</Badge>
-                    <Badge variant="outline">💎 100 credits</Badge>
-                  </div>
-                </div>
-
-                <Button className="w-full mt-4" size="lg">
-                  Watch Live Battles
-                </Button>
-              </CardContent>
-            </Card>
+            <LiveSpectatorMode />
           </TabsContent>
         </Tabs>
       </div>
