@@ -15,8 +15,9 @@ import { StoryLimitBanner } from "@/components/kids-story/StoryLimitBanner";
 import { StoryLibrary } from "@/components/kids-story/StoryLibrary";
 import { StorySubscriptionManagement } from "@/components/kids-story/StorySubscriptionManagement";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ParentalGate, useParentalGate } from "@/components/kids/ParentalGate";
+import { ParentalGate } from "@/components/kids/ParentalGate";
 import { SafeContentBadge } from "@/components/kids/SafeContentBadge";
+import { useNavigate } from "react-router-dom";
 
 const KidsStoryCreator = () => {
   const { user } = useAuth();
@@ -28,28 +29,54 @@ const KidsStoryCreator = () => {
   const [loading, setLoading] = useState(false);
   const [story, setStory] = useState<any>(null);
   
-  // Parental Gate - Initialize as needing verification (show gate by default)
-  const { isVerified, checkVerification, resetVerification } = useParentalGate();
-  const [showParentalGate, setShowParentalGate] = useState(true);
-  const [gateChecked, setGateChecked] = useState(false);
+  // PARENTAL GATE STATE - Simple and direct, no bypass possible
+  const [isVerified, setIsVerified] = useState<boolean>(() => {
+    // Check sessionStorage synchronously on initial render
+    const stored = sessionStorage.getItem('parental_gate_verified');
+    if (stored) {
+      try {
+        const { expiresAt } = JSON.parse(stored);
+        if (Date.now() < expiresAt) {
+          return true;
+        }
+        sessionStorage.removeItem('parental_gate_verified');
+      } catch {
+        sessionStorage.removeItem('parental_gate_verified');
+      }
+    }
+    return false; // Default: NOT verified, must show gate
+  });
 
-  // Check parental gate verification on mount and re-renders
+  // Re-check verification periodically (in case 30 min expires while on page)
   useEffect(() => {
-    const verified = checkVerification();
-    setShowParentalGate(!verified);
-    setGateChecked(true);
+    const checkExpiry = () => {
+      const stored = sessionStorage.getItem('parental_gate_verified');
+      if (!stored) {
+        setIsVerified(false);
+        return;
+      }
+      try {
+        const { expiresAt } = JSON.parse(stored);
+        if (Date.now() >= expiresAt) {
+          sessionStorage.removeItem('parental_gate_verified');
+          setIsVerified(false);
+        }
+      } catch {
+        sessionStorage.removeItem('parental_gate_verified');
+        setIsVerified(false);
+      }
+    };
+
+    const interval = setInterval(checkExpiry, 30000); // Check every 30 seconds
+    return () => clearInterval(interval);
   }, []);
 
-  // Re-check verification periodically (in case 30 min expires)
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const stillVerified = checkVerification();
-      if (!stillVerified && !showParentalGate) {
-        setShowParentalGate(true);
-      }
-    }, 60000); // Check every minute
-    return () => clearInterval(interval);
-  }, [showParentalGate]);
+  // Handle successful verification
+  const handleVerificationSuccess = () => {
+    const expiresAt = Date.now() + 30 * 60 * 1000; // 30 minutes
+    sessionStorage.setItem('parental_gate_verified', JSON.stringify({ expiresAt }));
+    setIsVerified(true);
+  };
 
   const handleGenerate = async () => {
     if (!title.trim() || !characters.trim() || !theme.trim()) {
@@ -101,20 +128,9 @@ const KidsStoryCreator = () => {
     toast.success("Story saved! 💾");
   };
 
-  // Don't render content until we've checked the gate AND user is verified
-  if (!gateChecked) {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto" />
-          <p className="mt-4 text-muted-foreground">Loading...</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Show ONLY the parental gate if not verified - block all content
-  if (showParentalGate) {
+  // ========== BLOCKING PARENTAL GATE ==========
+  // If NOT verified, show ONLY the parental gate - NO content visible at all
+  if (!isVerified) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20">
         <Navbar />
@@ -133,7 +149,7 @@ const KidsStoryCreator = () => {
         {/* Mandatory Parental Gate - Cannot be bypassed */}
         <ParentalGate
           isOpen={true}
-          onSuccess={() => setShowParentalGate(false)}
+          onSuccess={handleVerificationSuccess}
           onCancel={() => {
             // Hard redirect to Home - handled by ParentalGate component
           }}
@@ -142,6 +158,8 @@ const KidsStoryCreator = () => {
       </div>
     );
   }
+
+  // ========== VERIFIED USER CONTENT ==========
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20">
