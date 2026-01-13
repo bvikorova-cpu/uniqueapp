@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, BookOpen, Palette, Sparkles, Crown, Image, Download, Trash2, Calendar } from "lucide-react";
+import { ArrowLeft, BookOpen, Palette, Sparkles, Crown, Image, Download, Trash2, Calendar, PaintBucket } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { useAuth } from "@/contexts/AuthContext";
@@ -39,6 +39,14 @@ interface Character {
   costume_color: string;
   personality: string;
   image_url: string | null;
+  created_at: string;
+}
+
+interface ColoringPage {
+  id: string;
+  original_image_url: string;
+  processed_image_url: string;
+  difficulty: string;
   created_at: string;
 }
 
@@ -86,6 +94,22 @@ export default function KidsMagicLibrary() {
     enabled: !!user,
   });
 
+  // Fetch coloring pages
+  const { data: coloringPages = [], isLoading: coloringLoading } = useQuery({
+    queryKey: ["kids-coloring-pages", user?.id],
+    queryFn: async () => {
+      if (!user) return [];
+      const { data, error } = await supabase
+        .from("coloring_pages")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return data as ColoringPage[];
+    },
+    enabled: !!user,
+  });
+
   const handleDownload = async (url: string, filename: string) => {
     try {
       const response = await fetch(url);
@@ -100,7 +124,7 @@ export default function KidsMagicLibrary() {
     }
   };
 
-  const isLoading = storiesLoading || drawingsLoading || charactersLoading;
+  const isLoading = storiesLoading || drawingsLoading || charactersLoading || coloringLoading;
 
   return (
     <div className="min-h-screen relative overflow-hidden">
@@ -144,7 +168,7 @@ export default function KidsMagicLibrary() {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-3 gap-4 max-w-2xl mx-auto mb-10">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto mb-10">
           <Card className="bg-gradient-to-br from-purple-100 to-purple-200 border-purple-300 text-center">
             <CardContent className="pt-4 pb-4">
               <BookOpen className="w-8 h-8 mx-auto text-purple-600 mb-2" />
@@ -166,11 +190,18 @@ export default function KidsMagicLibrary() {
               <div className="text-sm text-blue-600">Characters</div>
             </CardContent>
           </Card>
+          <Card className="bg-gradient-to-br from-orange-100 to-amber-200 border-orange-300 text-center">
+            <CardContent className="pt-4 pb-4">
+              <PaintBucket className="w-8 h-8 mx-auto text-orange-600 mb-2" />
+              <div className="text-3xl font-bold text-orange-700">{coloringPages.length}</div>
+              <div className="text-sm text-orange-600">Coloring Books</div>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="max-w-5xl mx-auto">
-          <TabsList className="grid w-full grid-cols-3 bg-white/80 backdrop-blur-sm mb-6">
+          <TabsList className="grid w-full grid-cols-4 bg-white/80 backdrop-blur-sm mb-6">
             <TabsTrigger value="stories" className="gap-2">
               <BookOpen className="w-4 h-4" /> Stories
             </TabsTrigger>
@@ -179,6 +210,9 @@ export default function KidsMagicLibrary() {
             </TabsTrigger>
             <TabsTrigger value="characters" className="gap-2">
               <Sparkles className="w-4 h-4" /> Characters
+            </TabsTrigger>
+            <TabsTrigger value="coloring" className="gap-2">
+              <PaintBucket className="w-4 h-4" /> Coloring
             </TabsTrigger>
           </TabsList>
 
@@ -321,6 +355,57 @@ export default function KidsMagicLibrary() {
                         </div>
                       </div>
                     </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
+          </TabsContent>
+
+          {/* Coloring Pages Tab */}
+          <TabsContent value="coloring">
+            {isLoading ? (
+              <div className="text-center py-12">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600 mx-auto" />
+              </div>
+            ) : coloringPages.length === 0 ? (
+              <Card className="bg-white/80 backdrop-blur-sm text-center py-12">
+                <CardContent>
+                  <PaintBucket className="w-16 h-16 mx-auto text-orange-300 mb-4" />
+                  <h3 className="text-xl font-semibold text-orange-700 mb-2">No Coloring Pages Yet!</h3>
+                  <p className="text-muted-foreground mb-4">Transform any image into a coloring page!</p>
+                  {hasGoldPass && (
+                    <Badge className="mb-4 bg-gradient-to-r from-yellow-500 to-amber-500 text-white">
+                      <Crown className="w-3 h-3 mr-1" /> Gold Pass: Unlimited HD Access
+                    </Badge>
+                  )}
+                  <div className="mt-4">
+                    <Button onClick={() => navigate("/coloring-pages")} className="bg-gradient-to-r from-orange-500 to-amber-500">
+                      Create Coloring Page 🎨
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {coloringPages.map((page) => (
+                  <Card key={page.id} className="bg-white/90 backdrop-blur-sm border-2 border-orange-200 hover:border-orange-400 transition-all hover:shadow-lg group">
+                    <div className="aspect-square overflow-hidden rounded-t-lg relative">
+                      <img src={page.processed_image_url} alt="Coloring page" className="w-full h-full object-cover" />
+                      <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                        <Button size="sm" variant="secondary" onClick={() => handleDownload(page.processed_image_url, `coloring-page-${page.id}.png`)}>
+                          <Download className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-lg text-orange-700 capitalize">{page.difficulty} Level</CardTitle>
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <span className="flex items-center gap-1">
+                          <Calendar className="w-3 h-3" />
+                          {format(new Date(page.created_at), "MMM d, yyyy")}
+                        </span>
+                      </div>
+                    </CardHeader>
                   </Card>
                 ))}
               </div>
