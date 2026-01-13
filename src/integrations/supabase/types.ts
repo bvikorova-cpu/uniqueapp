@@ -2721,6 +2721,36 @@ export type Database = {
         }
         Relationships: []
       }
+      brand_battle_credits: {
+        Row: {
+          created_at: string
+          credits_balance: number
+          id: string
+          total_credits_earned: number
+          total_credits_spent: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_balance?: number
+          id?: string
+          total_credits_earned?: number
+          total_credits_spent?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_balance?: number
+          id?: string
+          total_credits_earned?: number
+          total_credits_spent?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       brand_campaigns: {
         Row: {
           applications_count: number | null
@@ -27484,6 +27514,7 @@ export type Database = {
       user_daily_votes: {
         Row: {
           created_at: string | null
+          credits_earned: number | null
           date: string
           id: string
           user_id: string
@@ -27492,6 +27523,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string | null
+          credits_earned?: number | null
           date?: string
           id?: string
           user_id: string
@@ -27500,6 +27532,7 @@ export type Database = {
         }
         Update: {
           created_at?: string | null
+          credits_earned?: number | null
           date?: string
           id?: string
           user_id?: string
@@ -29053,6 +29086,45 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      voting_streaks: {
+        Row: {
+          created_at: string
+          credits_earned: number
+          current_streak: number
+          id: string
+          last_vote_date: string | null
+          longest_streak: number
+          streak_bonus_claimed_at: string | null
+          total_votes_cast: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_earned?: number
+          current_streak?: number
+          id?: string
+          last_vote_date?: string | null
+          longest_streak?: number
+          streak_bonus_claimed_at?: string | null
+          total_votes_cast?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_earned?: number
+          current_streak?: number
+          id?: string
+          last_vote_date?: string | null
+          longest_streak?: number
+          streak_bonus_claimed_at?: string | null
+          total_votes_cast?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       wardrobe_items: {
         Row: {

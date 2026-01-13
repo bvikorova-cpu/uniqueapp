@@ -11,6 +11,9 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { BrandVotesDisplay } from "@/components/brand-battle/BrandVotesDisplay";
+import { VotingStreakCard } from "@/components/brand-battle/VotingStreakCard";
+import { RewardsSection } from "@/components/brand-battle/RewardsSection";
+import { FeaturedBrandCard } from "@/components/brand-battle/FeaturedBrandCard";
 import { useBrandVotes } from "@/hooks/useBrandVotes";
 
 interface BrandSponsor {
@@ -251,17 +254,20 @@ export default function BrandBattle() {
           </div>
           
           {user && (
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
-              <BrandVotesDisplay />
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => navigate("/sponsor-dashboard")}
-                className="border-purple-500/30 hover:bg-purple-500/10"
-              >
-                <Building2 className="h-4 w-4 mr-2" />
-                Sponsor Dashboard
-              </Button>
+            <div className="space-y-4 mb-6">
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <BrandVotesDisplay />
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => navigate("/sponsor-dashboard")}
+                  className="border-purple-500/30 hover:bg-purple-500/10"
+                >
+                  <Building2 className="h-4 w-4 mr-2" />
+                  Sponsor Dashboard
+                </Button>
+              </div>
+              <VotingStreakCard />
             </div>
           )}
         </div>
@@ -311,53 +317,17 @@ export default function BrandBattle() {
 
             {/* Top 3 - Featured */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-              {sortedSponsors.slice(0, 3).map((sponsor, index) => {
-                const tierInfo = SPONSOR_TIERS[sponsor.tier];
-                const medals = ["🥇", "🥈", "🥉"];
-                
-                return (
-                  <Card key={sponsor.id} className={`relative overflow-hidden ${index === 0 ? "md:scale-105 shadow-xl" : ""}`}>
-                    <div className={`absolute top-0 left-0 right-0 h-2 bg-gradient-to-r ${tierInfo.color}`}></div>
-                    <CardHeader className="text-center pb-3">
-                      <div className="flex justify-center mb-2">
-                        {sponsor.logo.startsWith('http') ? (
-                          <img 
-                            src={sponsor.logo} 
-                            alt={sponsor.name}
-                            className="w-24 h-24 object-cover rounded-lg"
-                          />
-                        ) : (
-                          <div className="text-6xl">{sponsor.logo}</div>
-                        )}
-                      </div>
-                      <div className="text-4xl mb-2">{medals[index]}</div>
-                      <CardTitle className="text-xl">{sponsor.name}</CardTitle>
-                      <CardDescription>{sponsor.description}</CardDescription>
-                      <Badge variant="secondary" className="mt-2">
-                        {sponsor.category}
-                      </Badge>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <div className="text-center">
-                        <div className="text-3xl font-bold text-primary">{sponsor.total_votes}</div>
-                        <div className="text-sm text-muted-foreground">votes</div>
-                      </div>
-                      <Button 
-                        onClick={() => handleVote(sponsor.id, sponsor.name)}
-                        className="w-full min-h-[44px]"
-                        disabled={!user || voteMutation.isPending || (votes?.remaining || 0) <= 0}
-                      >
-                        {voteMutation.isPending ? (
-                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                        ) : (
-                          <Vote className="h-4 w-4 mr-2" />
-                        )}
-                        Vote Now
-                      </Button>
-                    </CardContent>
-                  </Card>
-                );
-              })}
+              {sortedSponsors.slice(0, 3).map((sponsor, index) => (
+                <FeaturedBrandCard
+                  key={sponsor.id}
+                  sponsor={sponsor}
+                  rank={index + 1}
+                  onVote={handleVote}
+                  isVoting={voteMutation.isPending}
+                  canVote={(votes?.remaining || 0) > 0}
+                  isAuthenticated={!!user}
+                />
+              ))}
             </div>
 
             {/* Rest of the Leaderboard */}
@@ -472,116 +442,7 @@ export default function BrandBattle() {
 
           {/* Rewards Tab */}
           <TabsContent value="rewards" className="space-y-6">
-            <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold mb-4">Rewards & Prizes</h2>
-              <p className="text-muted-foreground max-w-2xl mx-auto">
-                Participate in voting and earn rewards. Top brands and voters receive exclusive benefits.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Trophy className="h-5 w-5 text-yellow-500" />
-                    For Winning Brands
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <div className="flex items-start gap-3">
-                    <div className="text-2xl">🥇</div>
-                    <div>
-                      <div className="font-semibold">1st Place</div>
-                      <div className="text-sm text-muted-foreground">
-                        Homepage hero banner for 1 month + Featured article + Full analytics dashboard
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="text-2xl">🥈</div>
-                    <div>
-                      <div className="font-semibold">2nd Place</div>
-                      <div className="text-sm text-muted-foreground">
-                        Featured article + Advanced analytics
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="text-2xl">🥉</div>
-                    <div>
-                      <div className="font-semibold">3rd Place</div>
-                      <div className="text-sm text-muted-foreground">
-                        Social media feature + Basic analytics
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Award className="h-5 w-5 text-primary" />
-                    For Top Voters
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <div className="flex items-start gap-3">
-                    <div className="text-2xl">👑</div>
-                    <div>
-                      <div className="font-semibold">Top 10 Voters</div>
-                      <div className="text-sm text-muted-foreground">
-                        €50 in platform credits each month
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="text-2xl">🎁</div>
-                    <div>
-                      <div className="font-semibold">Daily Voting Rewards</div>
-                      <div className="text-sm text-muted-foreground">
-                        Earn 2 credits for every vote cast
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="text-2xl">🔥</div>
-                    <div>
-                      <div className="font-semibold">Streak Bonuses</div>
-                      <div className="text-sm text-muted-foreground">
-                        Vote 7 days in a row: +20 bonus credits
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Campaign Info */}
-            <Card className="bg-primary/5 border-primary/20">
-              <CardHeader>
-                <CardTitle>Q1 2025 Campaign</CardTitle>
-                <CardDescription>
-                  Current battle period: January 1 - March 31, 2025
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid md:grid-cols-3 gap-4">
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-primary">€10,000</div>
-                    <div className="text-sm text-muted-foreground">Total Prize Pool</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-primary">45</div>
-                    <div className="text-sm text-muted-foreground">Days Remaining</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-primary">12,547</div>
-                    <div className="text-sm text-muted-foreground">Total Votes Cast</div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            <RewardsSection />
           </TabsContent>
         </Tabs>
       </main>
