@@ -1,7 +1,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { corsHeaders } from "../_shared/cors.ts";
 import { authenticateUser, createSupabaseAdminClient } from "../_shared/supabaseClient.ts";
-import { createStripeClient, hasActiveSubscription } from "../_shared/stripe.ts";
+import { createStripeClient, hasActiveSubscription, getStripeCustomer } from "../_shared/stripe.ts";
 import { createLogger } from "../_shared/logger.ts";
 
 const log = createLogger("check-kids-reading-subscription");
@@ -43,7 +43,12 @@ serve(async (req) => {
     }
 
     const stripe = createStripeClient();
-    const subResult = await hasActiveSubscription(stripe, user.email!);
+    
+    // First get Stripe customer ID, then check subscription
+    const customerId = await getStripeCustomer(stripe, user.email!);
+    const subResult = customerId 
+      ? await hasActiveSubscription(stripe, customerId)
+      : { hasSubscription: false, subscription: null, priceId: null, productId: null, subscriptionEnd: null };
 
     if (subResult.hasSubscription && subResult.subscriptionEnd) {
       const subscriptionEndDate = subResult.subscriptionEnd.split('T')[0];
