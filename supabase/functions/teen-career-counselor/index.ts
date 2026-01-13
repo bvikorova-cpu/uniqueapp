@@ -70,8 +70,42 @@ serve(async (req) => {
       throw new Error('OPENAI_API_KEY is not configured');
     }
 
+    // Check for Shadow Arena achievements
+    const { data: shadowArenaAchievements } = await supabaseClient
+      .from("shadow_arena_achievements")
+      .select("*")
+      .eq("user_id", user.id);
+
+    const hasShadowArenaBadge = (shadowArenaAchievements?.length || 0) > 0;
+    
+    // Build achievement context for AI
+    let achievementContext = "";
+    if (hasShadowArenaBadge) {
+      const placements = shadowArenaAchievements!.map((a: { placement: number }) => {
+        switch (a.placement) {
+          case 1: return "1st Place";
+          case 2: return "2nd Place";
+          case 3: return "3rd Place";
+          default: return "Top 3";
+        }
+      });
+      achievementContext = `
+IMPORTANT: This user has VERIFIED COMMUNITY ACHIEVEMENTS:
+- Shadow Arena Talent Badge: ${placements.join(", ")} winner in Shadow Arena Monthly Horror Storytelling Battles
+- This demonstrates STRONG Creative & Performance abilities including:
+  * Creative writing and storytelling skills
+  * Public speaking and performance under pressure
+  * Ability to engage and captivate an audience
+  * Competitive drive and ability to excel against peers
+  * Digital content creation skills
+  
+Incorporate these verified achievements as significant strengths in your career recommendations.
+Suggest careers that leverage these creative and performance abilities.`;
+    }
+
     const systemPrompt = `You are an expert career counselor specializing in helping teenagers (13-18 years old) explore career paths. 
 Your role is to provide personalized, encouraging, and realistic career guidance based on their interests, strengths, and goals.
+${achievementContext}
 
 Provide:
 1. 3-5 specific career paths that match their profile
@@ -80,6 +114,11 @@ Provide:
 4. Key skills they should develop
 5. Realistic outlook and growth opportunities
 6. Actionable next steps they can take now
+${hasShadowArenaBadge ? `
+7. A special section titled "VERIFIED COMMUNITY ACHIEVEMENTS" that:
+   - Lists their Shadow Arena Talent Badge(s)
+   - Explains how this achievement demonstrates valuable career-relevant skills
+   - Shows how winning in competitive creative battles is recognized by employers` : ''}
 
 Be encouraging, age-appropriate, and realistic. Format your response in a clear, easy-to-read structure with headings and bullet points.`;
 
@@ -127,8 +166,20 @@ Please provide comprehensive career guidance tailored to their profile.`;
         .eq("user_id", user.id);
     }
 
+    // Mark achievements as notified
+    if (hasShadowArenaBadge) {
+      await supabaseClient
+        .from("shadow_arena_achievements")
+        .update({ notified_teen_career: true })
+        .eq("user_id", user.id);
+    }
+
     return new Response(
-      JSON.stringify({ guidance }),
+      JSON.stringify({ 
+        guidance,
+        hasShadowArenaBadge,
+        shadowArenaAchievements: shadowArenaAchievements || []
+      }),
       { 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 200 

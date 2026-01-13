@@ -5,11 +5,19 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Briefcase, Heart, TrendingUp, Lightbulb, Download, CreditCard, Sparkles } from "lucide-react";
+import { Briefcase, Heart, TrendingUp, Lightbulb, Download, CreditCard, Sparkles, Award, Trophy } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import jsPDF from "jspdf";
 import { useNavigate } from "react-router-dom";
+import { useHasShadowArenaAchievementsForCareer } from "@/hooks/useShadowArenaAchievements";
+import { Badge } from "@/components/ui/badge";
+
+interface ShadowArenaAchievement {
+  id: string;
+  placement: number;
+  awarded_at: string;
+}
 
 export default function TeenCareerCounselor() {
   const [interests, setInterests] = useState("");
@@ -17,6 +25,7 @@ export default function TeenCareerCounselor() {
   const [goals, setGoals] = useState("");
   const [guidance, setGuidance] = useState("");
   const [loading, setLoading] = useState(false);
+  const [shadowArenaAchievements, setShadowArenaAchievements] = useState<ShadowArenaAchievement[]>([]);
   const [usageData, setUsageData] = useState<{
     canGenerate: boolean;
     hasFreeTrial: boolean;
@@ -26,6 +35,7 @@ export default function TeenCareerCounselor() {
   const [checkingUsage, setCheckingUsage] = useState(true);
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { data: shadowArenaData } = useHasShadowArenaAchievementsForCareer();
 
   useEffect(() => {
     checkUsage();
@@ -145,7 +155,22 @@ export default function TeenCareerCounselor() {
       }
       
       setGuidance(data.guidance);
+      
+      // Store shadow arena achievements from response
+      if (data.shadowArenaAchievements) {
+        setShadowArenaAchievements(data.shadowArenaAchievements);
+      }
+      
       await checkUsage();
+      
+      // Show notification if Shadow Arena badge was recognized
+      if (data.hasShadowArenaBadge) {
+        toast({
+          title: "🏆 Achievement Recognized!",
+          description: "Your Shadow Arena Talent Badge has been included in your career analysis!",
+        });
+      }
+      
       toast({
         title: "Career Guidance Ready!",
         description: "Check out your personalized career path recommendations",
@@ -240,6 +265,35 @@ export default function TeenCareerCounselor() {
         const goalsLines = doc.splitTextToSize(goals, pageWidth - 2 * margin);
         doc.text(goalsLines, margin + 5, yPos);
         yPos += goalsLines.length * 5 + 8;
+      }
+
+      // Section: Verified Community Achievements (if user has Shadow Arena badges)
+      if (shadowArenaAchievements.length > 0 || shadowArenaData?.hasBadge) {
+        if (yPos > 220) {
+          doc.addPage();
+          yPos = 20;
+        }
+        
+        doc.setFillColor(255, 215, 0); // Gold color
+        doc.rect(margin - 5, yPos - 5, pageWidth - 2 * margin + 10, 8, 'F');
+        doc.setFontSize(14);
+        doc.setFont("helvetica", "bold");
+        doc.setTextColor(0, 0, 0);
+        doc.text("🏆 Verified Community Achievements", margin, yPos);
+        yPos += 12;
+
+        doc.setFontSize(10);
+        doc.setFont("helvetica", "bold");
+        doc.setTextColor(99, 102, 241);
+        doc.text("Shadow Arena Talent Badge", margin, yPos);
+        yPos += 6;
+        
+        doc.setFont("helvetica", "normal");
+        doc.setTextColor(0, 0, 0);
+        const badgeDesc = "Top 3 winner in Shadow Arena Monthly Horror Storytelling Battle - Demonstrates verified creative writing, public performance, and competitive excellence skills.";
+        const badgeLines = doc.splitTextToSize(badgeDesc, pageWidth - 2 * margin);
+        doc.text(badgeLines, margin + 5, yPos);
+        yPos += badgeLines.length * 5 + 10;
       }
 
       // Check if we need a new page
