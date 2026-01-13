@@ -1204,3 +1204,15 @@ verify_jwt = true
 
 [functions.analyze-resume-ai]
 verify_jwt = false
+
+[functions.stripe-connect-onboarding]
+verify_jwt = true
+
+[functions.stripe-connect-payout]
+verify_jwt = true
+
+[functions.stripe-connect-status]
+verify_jwt = true
+
+[functions.stripe-connect-dashboard]
+verify_jwt = true

@@ -4,7 +4,20 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, ArrowLeft, DollarSign, TrendingUp, Clock, Download } from "lucide-react";
+import { 
+  Loader2, 
+  ArrowLeft, 
+  DollarSign, 
+  TrendingUp, 
+  Clock, 
+  Download, 
+  CheckCircle2, 
+  AlertTriangle, 
+  ExternalLink,
+  CreditCard,
+  Settings,
+  RefreshCw
+} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
   Dialog,
@@ -16,6 +29,22 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Separator } from "@/components/ui/separator";
+
+interface StripeConnectStatus {
+  connected: boolean;
+  accountId: string | null;
+  chargesEnabled: boolean;
+  payoutsEnabled: boolean;
+  detailsSubmitted: boolean;
+  requiresAction: boolean;
+  stripeBalance?: {
+    available: number;
+    pending: number;
+    currency: string;
+  };
+}
 
 export default function CampaignDashboard() {
   const { campaignType, campaignId } = useParams();
@@ -27,16 +56,16 @@ export default function CampaignDashboard() {
   const [withdrawalRequests, setWithdrawalRequests] = useState<any[]>([]);
   const [showWithdrawDialog, setShowWithdrawDialog] = useState(false);
   const [withdrawAmount, setWithdrawAmount] = useState("");
-  const [bankDetails, setBankDetails] = useState({
-    bankName: "",
-    bankAccountNumber: "",
-    bankAccountName: "",
-    iban: "",
-    swiftCode: "",
-  });
+  const [processingWithdraw, setProcessingWithdraw] = useState(false);
+  
+  // Stripe Connect state
+  const [connectStatus, setConnectStatus] = useState<StripeConnectStatus | null>(null);
+  const [loadingConnect, setLoadingConnect] = useState(true);
+  const [connectingStripe, setConnectingStripe] = useState(false);
 
   useEffect(() => {
     loadData();
+    loadConnectStatus();
   }, [campaignId, campaignType]);
 
   const loadData = async () => {
@@ -92,22 +121,82 @@ export default function CampaignDashboard() {
     }
   };
 
+  const loadConnectStatus = async () => {
+    try {
+      setLoadingConnect(true);
+      const { data, error } = await supabase.functions.invoke('stripe-connect-status');
+      
+      if (error) throw error;
+      setConnectStatus(data);
+    } catch (error: any) {
+      console.error("Failed to load Connect status:", error);
+    } finally {
+      setLoadingConnect(false);
+    }
+  };
+
+  const handleSetupStripeConnect = async () => {
+    try {
+      setConnectingStripe(true);
+      
+      const currentUrl = window.location.href;
+      const returnUrl = currentUrl;
+      const refreshUrl = currentUrl;
+
+      const { data, error } = await supabase.functions.invoke('stripe-connect-onboarding', {
+        body: { returnUrl, refreshUrl },
+      });
+
+      if (error) throw error;
+
+      if (data.onboardingComplete) {
+        toast({
+          title: "Already Connected",
+          description: "Your Stripe account is already set up for payouts!",
+        });
+        loadConnectStatus();
+      } else if (data.onboardingUrl) {
+        // Redirect to Stripe onboarding
+        window.location.href = data.onboardingUrl;
+      }
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setConnectingStripe(false);
+    }
+  };
+
+  const handleOpenStripeDashboard = async () => {
+    try {
+      const { data, error } = await supabase.functions.invoke('stripe-connect-dashboard');
+      
+      if (error) throw error;
+      
+      if (data.dashboardUrl) {
+        window.open(data.dashboardUrl, '_blank');
+      }
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
   const handleWithdrawalRequest = async () => {
     try {
+      setProcessingWithdraw(true);
       const amount = parseFloat(withdrawAmount);
+      
       if (isNaN(amount) || amount <= 0) {
         toast({
           title: "Invalid amount",
           description: "Please enter a valid amount",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      if (!bankDetails.bankName || !bankDetails.bankAccountNumber || !bankDetails.bankAccountName) {
-        toast({
-          title: "Missing information",
-          description: "Please fill in all required bank details",
           variant: "destructive",
         });
         return;
@@ -123,42 +212,42 @@ export default function CampaignDashboard() {
         return;
       }
 
-      const { error } = await supabase.functions.invoke('request-campaign-withdrawal', {
+      if (!connectStatus?.payoutsEnabled) {
+        toast({
+          title: "Setup Required",
+          description: "Please complete your Stripe account setup before requesting a withdrawal.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const { data, error } = await supabase.functions.invoke('stripe-connect-payout', {
         body: {
           campaignId,
           campaignType,
           amount,
-          bankAccountName: bankDetails.bankAccountName,
-          bankAccountNumber: bankDetails.bankAccountNumber,
-          bankName: bankDetails.bankName,
-          iban: bankDetails.iban || null,
-          swiftCode: bankDetails.swiftCode || null,
         },
       });
 
       if (error) throw error;
 
       toast({
-        title: "Success",
-        description: "Withdrawal request submitted successfully",
+        title: "Success!",
+        description: data.message || "Funds transferred to your Stripe account.",
       });
 
       setShowWithdrawDialog(false);
       setWithdrawAmount("");
-      setBankDetails({
-        bankName: "",
-        bankAccountNumber: "",
-        bankAccountName: "",
-        iban: "",
-        swiftCode: "",
-      });
       loadData();
+      loadConnectStatus();
     } catch (error: any) {
       toast({
         title: "Error",
         description: error.message,
         variant: "destructive",
       });
+    } finally {
+      setProcessingWithdraw(false);
     }
   };
 
@@ -190,6 +279,136 @@ export default function CampaignDashboard() {
         </p>
       </div>
 
+      {/* Stripe Connect Payout Settings */}
+      <Card className="mb-6 border-2">
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <CreditCard className="h-5 w-5" />
+              <CardTitle>Payout Settings</CardTitle>
+            </div>
+            {loadingConnect ? (
+              <Badge variant="secondary">
+                <Loader2 className="h-3 w-3 animate-spin mr-1" />
+                Loading...
+              </Badge>
+            ) : connectStatus?.connected && connectStatus.payoutsEnabled ? (
+              <Badge className="bg-green-500 hover:bg-green-600">
+                <CheckCircle2 className="h-3 w-3 mr-1" />
+                Stripe Connected
+              </Badge>
+            ) : connectStatus?.connected && !connectStatus.payoutsEnabled ? (
+              <Badge variant="destructive">
+                <AlertTriangle className="h-3 w-3 mr-1" />
+                Action Required
+              </Badge>
+            ) : (
+              <Badge variant="outline">
+                <AlertTriangle className="h-3 w-3 mr-1" />
+                Not Connected
+              </Badge>
+            )}
+          </div>
+          <CardDescription>
+            Connect your bank account via Stripe to receive payouts securely
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {!connectStatus?.connected ? (
+            <Alert>
+              <AlertTriangle className="h-4 w-4" />
+              <AlertTitle>Setup Required</AlertTitle>
+              <AlertDescription className="mt-2">
+                To receive payouts from your campaign, you need to set up a Stripe Connect account. 
+                Stripe will securely handle your bank details and identity verification.
+              </AlertDescription>
+              <Button 
+                onClick={handleSetupStripeConnect} 
+                className="mt-4"
+                disabled={connectingStripe}
+              >
+                {connectingStripe ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Setting up...
+                  </>
+                ) : (
+                  <>
+                    <CreditCard className="mr-2 h-4 w-4" />
+                    Set Up Stripe Account
+                  </>
+                )}
+              </Button>
+            </Alert>
+          ) : connectStatus.requiresAction ? (
+            <Alert variant="destructive">
+              <AlertTriangle className="h-4 w-4" />
+              <AlertTitle>Complete Your Setup</AlertTitle>
+              <AlertDescription className="mt-2">
+                Your Stripe account setup is incomplete. Please complete the verification to enable payouts.
+              </AlertDescription>
+              <Button 
+                onClick={handleSetupStripeConnect} 
+                variant="destructive"
+                className="mt-4"
+                disabled={connectingStripe}
+              >
+                {connectingStripe ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Loading...
+                  </>
+                ) : (
+                  <>
+                    <Settings className="mr-2 h-4 w-4" />
+                    Complete Setup
+                  </>
+                )}
+              </Button>
+            </Alert>
+          ) : (
+            <div className="space-y-4">
+              <div className="flex items-center justify-between p-4 bg-green-50 dark:bg-green-950 rounded-lg">
+                <div>
+                  <p className="font-medium text-green-800 dark:text-green-200">
+                    ✓ Your Stripe account is ready for payouts
+                  </p>
+                  <p className="text-sm text-green-600 dark:text-green-400">
+                    Account ID: {connectStatus.accountId?.slice(0, 12)}...
+                  </p>
+                </div>
+                <Button variant="outline" size="sm" onClick={handleOpenStripeDashboard}>
+                  <ExternalLink className="mr-2 h-4 w-4" />
+                  Stripe Dashboard
+                </Button>
+              </div>
+              
+              {connectStatus.stripeBalance && (
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="p-4 border rounded-lg">
+                    <p className="text-sm text-muted-foreground">Stripe Available</p>
+                    <p className="text-xl font-bold text-green-600">
+                      €{connectStatus.stripeBalance.available.toFixed(2)}
+                    </p>
+                  </div>
+                  <div className="p-4 border rounded-lg">
+                    <p className="text-sm text-muted-foreground">Stripe Pending</p>
+                    <p className="text-xl font-bold text-yellow-600">
+                      €{connectStatus.stripeBalance.pending.toFixed(2)}
+                    </p>
+                  </div>
+                </div>
+              )}
+              
+              <Button variant="ghost" size="sm" onClick={loadConnectStatus}>
+                <RefreshCw className="mr-2 h-4 w-4" />
+                Refresh Status
+              </Button>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
       {/* Balance Overview */}
       <div className="grid gap-4 md:grid-cols-4 mb-6">
         <Card>
@@ -199,7 +418,7 @@ export default function CampaignDashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              €{balance?.total_raised.toFixed(2) || '0.00'}
+              €{balance?.total_raised?.toFixed(2) || '0.00'}
             </div>
           </CardContent>
         </Card>
@@ -223,7 +442,7 @@ export default function CampaignDashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-yellow-600">
-              €{balance?.pending_withdrawal.toFixed(2) || '0.00'}
+              €{balance?.pending_withdrawal?.toFixed(2) || '0.00'}
             </div>
           </CardContent>
         </Card>
@@ -235,7 +454,7 @@ export default function CampaignDashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              €{balance?.total_withdrawn.toFixed(2) || '0.00'}
+              €{balance?.total_withdrawn?.toFixed(2) || '0.00'}
             </div>
           </CardContent>
         </Card>
@@ -245,91 +464,72 @@ export default function CampaignDashboard() {
       <div className="mb-6">
         <Dialog open={showWithdrawDialog} onOpenChange={setShowWithdrawDialog}>
           <DialogTrigger asChild>
-            <Button size="lg" disabled={availableBalance <= 0}>
+            <Button 
+              size="lg" 
+              disabled={availableBalance <= 0 || !connectStatus?.payoutsEnabled}
+            >
               <DollarSign className="mr-2 h-5 w-5" />
-              Request Withdrawal
+              Transfer to Bank via Stripe
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-2xl">
+          <DialogContent>
             <DialogHeader>
-              <DialogTitle>Request Withdrawal</DialogTitle>
+              <DialogTitle>Transfer Funds to Your Bank</DialogTitle>
               <DialogDescription>
                 Available balance: €{availableBalance.toFixed(2)}
               </DialogDescription>
             </DialogHeader>
 
             <div className="space-y-4">
+              <Alert>
+                <CheckCircle2 className="h-4 w-4" />
+                <AlertDescription>
+                  Funds will be transferred to your connected Stripe account and then deposited to your bank according to your Stripe payout schedule (usually 2-7 business days).
+                </AlertDescription>
+              </Alert>
+
               <div>
                 <Label htmlFor="amount">Amount (€)</Label>
                 <Input
                   id="amount"
                   type="number"
                   step="0.01"
+                  max={availableBalance}
                   value={withdrawAmount}
                   onChange={(e) => setWithdrawAmount(e.target.value)}
                   placeholder="Enter amount"
                 />
               </div>
 
-              <div>
-                <Label htmlFor="bankName">Bank Name *</Label>
-                <Input
-                  id="bankName"
-                  value={bankDetails.bankName}
-                  onChange={(e) => setBankDetails({ ...bankDetails, bankName: e.target.value })}
-                  placeholder="e.g., Slovenská sporiteľňa"
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="accountName">Account Holder Name *</Label>
-                <Input
-                  id="accountName"
-                  value={bankDetails.bankAccountName}
-                  onChange={(e) => setBankDetails({ ...bankDetails, bankAccountName: e.target.value })}
-                  placeholder="Full name on bank account"
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="accountNumber">Account Number *</Label>
-                <Input
-                  id="accountNumber"
-                  value={bankDetails.bankAccountNumber}
-                  onChange={(e) => setBankDetails({ ...bankDetails, bankAccountNumber: e.target.value })}
-                  placeholder="e.g., 123456789/0900"
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="iban">IBAN (Optional)</Label>
-                <Input
-                  id="iban"
-                  value={bankDetails.iban}
-                  onChange={(e) => setBankDetails({ ...bankDetails, iban: e.target.value })}
-                  placeholder="e.g., SK31 1200 0000 1987 4263 7541"
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="swiftCode">SWIFT Code (Optional)</Label>
-                <Input
-                  id="swiftCode"
-                  value={bankDetails.swiftCode}
-                  onChange={(e) => setBankDetails({ ...bankDetails, swiftCode: e.target.value })}
-                  placeholder="e.g., GIBASKBX"
-                />
-              </div>
-
-              <Button onClick={handleWithdrawalRequest} className="w-full">
-                Submit Withdrawal Request
+              <Button 
+                onClick={handleWithdrawalRequest} 
+                className="w-full"
+                disabled={processingWithdraw}
+              >
+                {processingWithdraw ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Processing...
+                  </>
+                ) : (
+                  <>
+                    <CreditCard className="mr-2 h-4 w-4" />
+                    Transfer €{withdrawAmount || '0.00'}
+                  </>
+                )}
               </Button>
             </div>
           </DialogContent>
         </Dialog>
+        
+        {!connectStatus?.payoutsEnabled && availableBalance > 0 && (
+          <p className="text-sm text-muted-foreground mt-2">
+            ⚠️ Complete your Stripe account setup to enable withdrawals
+          </p>
+        )}
       </div>
 
-      {/* Withdrawal Requests */}
+      {/* Withdrawal History */}
       <Card className="mb-6">
         <CardHeader>
           <CardTitle>Withdrawal History</CardTitle>
@@ -337,7 +537,7 @@ export default function CampaignDashboard() {
         </CardHeader>
         <CardContent>
           {withdrawalRequests.length === 0 ? (
-            <p className="text-muted-foreground text-center py-4">No withdrawal requests yet</p>
+            <p className="text-muted-foreground text-center py-4">No withdrawals yet</p>
           ) : (
             <div className="space-y-4">
               {withdrawalRequests.map((request) => (
@@ -347,6 +547,11 @@ export default function CampaignDashboard() {
                     <p className="text-sm text-muted-foreground">
                       {new Date(request.created_at).toLocaleDateString()}
                     </p>
+                    {request.stripe_transfer_id && (
+                      <p className="text-xs text-muted-foreground">
+                        Transfer: {request.stripe_transfer_id.slice(0, 12)}...
+                      </p>
+                    )}
                   </div>
                   <Badge
                     className={
