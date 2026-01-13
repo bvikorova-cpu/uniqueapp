@@ -7,6 +7,23 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+// List of inappropriate topics/keywords to filter
+const BLOCKED_TOPICS = [
+  'violence', 'violent', 'kill', 'murder', 'death', 'dead', 'die',
+  'weapon', 'gun', 'knife', 'bomb', 'explosion',
+  'drug', 'alcohol', 'smoking', 'cigarette', 'beer', 'wine',
+  'sex', 'sexual', 'naked', 'nude', 'porn',
+  'curse', 'swear', 'hate', 'racist', 'discrimination',
+  'suicide', 'self-harm', 'hurt myself',
+  'scary', 'horror', 'nightmare', 'monster', 'demon', 'devil',
+  'gambling', 'casino', 'bet', 'betting',
+];
+
+function containsInappropriateContent(text: string): boolean {
+  const lowerText = text.toLowerCase();
+  return BLOCKED_TOPICS.some(topic => lowerText.includes(topic));
+}
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -118,39 +135,80 @@ serve(async (req) => {
       throw new Error("Missing required fields");
     }
 
+    // Child-safe content filter - check user input
+    if (containsInappropriateContent(question)) {
+      console.log("Blocked inappropriate content in question:", question);
+      return new Response(
+        JSON.stringify({
+          explanation: "Oops! 🙈 That question isn't about homework. Let me help you with something educational instead!\n\nHere's a fun tip: You can ask me about Math (like fractions or multiplication), Science (like planets or animals), English (like grammar or vocabulary), History (like ancient civilizations), or Geography (like countries and capitals)!\n\nWhat would you like to learn about today? 📚✨",
+          funFacts: [
+            "🧠 Did you know? Your brain is like a supercomputer that can learn new things every single day!",
+            "📖 Reading for just 20 minutes a day exposes you to 1.8 million words per year!",
+            "🌟 Every time you learn something new, your brain creates new connections called synapses!"
+          ],
+          wasFiltered: true
+        }),
+        { 
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 200
+        }
+      );
+    }
+
     const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
     if (!OPENAI_API_KEY) {
       throw new Error("OPENAI_API_KEY is not configured");
     }
 
-    const systemPrompt = `You are a friendly homework helper for kids aged 6-12. 
-Your job is to help them understand their homework in a fun and easy way.
+    // Enhanced "Supportive Tutor" persona with strict child-safety
+    const systemPrompt = `You are a SUPPORTIVE TUTOR - a friendly, encouraging homework helper for kids aged 6-12. 
+Your personality is warm, patient, and enthusiastic about learning!
 
-You are a child-safe AI. Do not discuss sensitive, adult, or harmful topics. If a user asks something inappropriate, gently redirect them to a positive, educational topic.
+🎯 YOUR MISSION:
+Help children understand their homework in a fun, engaging way while keeping them 100% safe.
 
-Always:
-- Use simple, kid-friendly language appropriate for elementary school students
-- Make learning fun with relatable examples
-- Encourage them to think and build confidence
-- Give clear step-by-step explanations
-- Add 2-3 fun facts related to the topic
-- ONLY answer questions related to school subjects (Math, Science, English, History, Geography, etc.)
-- If the question is not homework-related or inappropriate, respond with a gentle redirection
-- Never include scary, violent, or adult content in your explanations
-- Promote curiosity and a love of learning
-- Be supportive and never make the child feel bad for not understanding
+📝 RESPONSE FORMAT (MANDATORY):
+Every response MUST include these two sections:
 
-Format your response as JSON with this structure:
+1. **STEP-BY-STEP EXPLANATION** 
+   - Break down the answer into simple, numbered steps
+   - Use age-appropriate language (no jargon!)
+   - Include relatable real-life examples (toys, games, food, sports, animals)
+   - Add encouraging phrases like "Great question!", "You're doing amazing!", "Let's figure this out together!"
+   - Use emojis to make it fun and engaging 🎉✨🌟
+
+2. **FUN FACTS** (exactly 2-3 facts)
+   - Related to the topic
+   - Surprising and memorable
+   - Age-appropriate and positive
+   - Start each with an emoji
+
+🛡️ CHILD-SAFETY RULES (CRITICAL - NEVER BREAK THESE):
+- ONLY answer questions about: Math, Science, English, History, Geography, and general educational topics
+- NEVER discuss: violence, weapons, death, drugs, alcohol, adult content, scary topics, hate, or anything inappropriate
+- If asked about inappropriate topics, respond ONLY with a gentle redirect to educational content
+- Keep all content cheerful, positive, and encouraging
+- Never make a child feel bad for not understanding something
+- Never include anything that could scare, upset, or confuse a child
+
+🚫 IF THE QUESTION IS NOT HOMEWORK-RELATED:
+Gently say: "That's an interesting thought, but let me help you with your schoolwork instead! What subject are you working on today?"
+
+📋 JSON FORMAT:
 {
-  "explanation": "Your detailed, kid-friendly explanation here",
-  "funFacts": ["Fun fact 1", "Fun fact 2", "Fun fact 3"]
-}`;
+  "explanation": "Your detailed, step-by-step explanation with numbered steps, examples, and encouragement",
+  "funFacts": ["🌟 Fun fact 1", "🎉 Fun fact 2", "✨ Fun fact 3 (optional)"]
+}
 
-    const userPrompt = `Subject: ${subject}
-Difficulty: ${difficulty}
+Remember: You're not just answering questions - you're building confidence and making learning FUN! 🎓`;
+
+    const userPrompt = `Subject: ${subject.toUpperCase()}
+Difficulty Level: ${difficulty} ${difficulty === 'easy' ? '😊' : difficulty === 'medium' ? '🤔' : '🧠'}
 Question: ${question}
 
-Please help me understand this homework question!`;
+Please help me understand this in a fun and easy way!`;
+
+    console.log("Processing homework question:", { subject, difficulty, userId });
 
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
@@ -164,7 +222,9 @@ Please help me understand this homework question!`;
           { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt }
         ],
-        response_format: { type: "json_object" }
+        response_format: { type: "json_object" },
+        temperature: 0.7,
+        max_tokens: 1500,
       }),
     });
 
@@ -184,12 +244,33 @@ Please help me understand this homework question!`;
     const content = data.choices[0].message.content;
     const result = JSON.parse(content);
 
+    // Double-check AI response for any inappropriate content (defense in depth)
+    if (result.explanation && containsInappropriateContent(result.explanation)) {
+      console.log("AI response contained filtered content, returning safe response");
+      return new Response(
+        JSON.stringify({
+          explanation: "Let me give you a helpful answer about your schoolwork! 📚\n\nThis is a great topic to learn about. Here's what you need to know:\n\n1. Start by reading the question carefully\n2. Think about what you already know about this subject\n3. Break the problem into smaller parts\n4. Ask for help if you get stuck!\n\nWould you like to try asking your question in a different way? I'm here to help! 🌟",
+          funFacts: [
+            "🧠 Your brain grows and gets stronger every time you learn something new!",
+            "📚 Reading and studying help build new brain connections called neurons!",
+            "⭐ Making mistakes is actually how we learn best - so don't be afraid to try!"
+          ]
+        }),
+        { 
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 200
+        }
+      );
+    }
+
     // Award points and track challenges if user is authenticated
     if (userId) {
       await awardPoints(supabase, userId, subject);
       await trackDailyProgress(supabase, userId, subject);
       await checkDailyChallenges(supabase, userId);
     }
+
+    console.log("Successfully processed homework question for user:", userId);
 
     return new Response(JSON.stringify(result), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },

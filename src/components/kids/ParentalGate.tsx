@@ -9,11 +9,13 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Shield, AlertCircle, CheckCircle } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface ParentalGateProps {
   isOpen: boolean;
   onSuccess: () => void;
-  onClose: () => void;
+  onCancel?: () => void;
+  onClose?: () => void; // Deprecated - use onCancel
   featureName?: string;
 }
 
@@ -26,7 +28,8 @@ function generateMathQuestion(): { question: string; answer: number } {
   };
 }
 
-export function ParentalGate({ isOpen, onSuccess, onClose, featureName = "this feature" }: ParentalGateProps) {
+export function ParentalGate({ isOpen, onSuccess, onCancel, featureName = "this feature" }: ParentalGateProps) {
+  const navigate = useNavigate();
   const [mathQuestion, setMathQuestion] = useState(generateMathQuestion());
   const [userAnswer, setUserAnswer] = useState("");
   const [error, setError] = useState(false);
@@ -39,6 +42,21 @@ export function ParentalGate({ isOpen, onSuccess, onClose, featureName = "this f
       setError(false);
       setSuccess(false);
     }
+  }, [isOpen]);
+
+  // Block ESC key completely when dialog is open
+  useEffect(() => {
+    if (!isOpen) return;
+    
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    };
+    
+    document.addEventListener("keydown", handleKeyDown, true);
+    return () => document.removeEventListener("keydown", handleKeyDown, true);
   }, [isOpen]);
 
   const handleSubmit = () => {
@@ -70,9 +88,42 @@ export function ParentalGate({ isOpen, onSuccess, onClose, featureName = "this f
     }
   };
 
+  const handleCancel = () => {
+    // Redirect to learning dashboard - cannot bypass
+    navigate('/learning');
+    onCancel();
+  };
+
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-md bg-gradient-to-br from-purple-50 to-pink-50 border-4 border-purple-200">
+    <Dialog 
+      open={isOpen} 
+      onOpenChange={() => {
+        // Prevent any external closing - clicking outside does nothing
+        // The user MUST either solve the math problem or click Cancel
+      }}
+    >
+      <DialogContent 
+        className="sm:max-w-md bg-gradient-to-br from-purple-50 to-pink-50 border-4 border-purple-200"
+        // CRITICAL: Remove the X close button and disable pointer events on overlay
+        onPointerDownOutside={(e) => e.preventDefault()}
+        onEscapeKeyDown={(e) => e.preventDefault()}
+        onInteractOutside={(e) => e.preventDefault()}
+        // Hide the built-in close button by not including it via CSS
+        style={{ position: 'relative' }}
+      >
+        {/* CSS to hide the default close button */}
+        <style>{`
+          [data-radix-collection-item][aria-label="Close"] {
+            display: none !important;
+          }
+          button[aria-label="Close"] {
+            display: none !important;
+          }
+          .absolute.right-4.top-4 {
+            display: none !important;
+          }
+        `}</style>
+        
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-2xl text-purple-700">
             <Shield className="w-6 h-6 text-purple-500" />
@@ -100,6 +151,7 @@ export function ParentalGate({ isOpen, onSuccess, onClose, featureName = "this f
               placeholder="Enter the answer"
               className="text-center text-xl font-semibold h-14 border-2 border-purple-200 focus:border-purple-400"
               disabled={success}
+              autoFocus
             />
           </div>
 
@@ -120,24 +172,29 @@ export function ParentalGate({ isOpen, onSuccess, onClose, featureName = "this f
           <div className="flex gap-3">
             <Button 
               variant="outline" 
-              onClick={onClose}
-              className="flex-1"
+              onClick={handleCancel}
+              className="flex-1 border-2 border-purple-200 hover:bg-purple-50"
               disabled={success}
             >
-              Cancel
+              Cancel (Go Back)
             </Button>
             <Button 
               onClick={handleSubmit}
               className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
               disabled={!userAnswer || success}
             >
-              {success ? "Opening..." : "Verify"}
+              {success ? "Opening..." : "Verify ✓"}
             </Button>
           </div>
 
-          <p className="text-xs text-center text-gray-500">
-            🔒 This safety check helps ensure adult supervision for AI-interactive features.
-          </p>
+          <div className="bg-purple-100/50 p-3 rounded-lg border border-purple-200">
+            <p className="text-xs text-center text-purple-700 font-medium">
+              🔒 This safety check ensures adult supervision for AI-interactive features.
+            </p>
+            <p className="text-xs text-center text-purple-600 mt-1">
+              Clicking "Cancel" will take you back to the Learning Dashboard.
+            </p>
+          </div>
         </div>
       </DialogContent>
     </Dialog>
