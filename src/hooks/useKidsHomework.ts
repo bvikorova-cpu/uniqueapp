@@ -54,9 +54,9 @@ export const useKidsHomework = () => {
         .from('kids_homework_usage')
         .select('*')
         .eq('user_id', user!.id)
-        .single();
+        .maybeSingle();
 
-      if (error && error.code !== 'PGRST116') {
+      if (error) {
         console.error('Error fetching usage:', error);
       }
 
