@@ -28,16 +28,28 @@ const KidsStoryCreator = () => {
   const [loading, setLoading] = useState(false);
   const [story, setStory] = useState<any>(null);
   
-  // Parental Gate
-  const { isVerified, checkVerification } = useParentalGate();
-  const [showParentalGate, setShowParentalGate] = useState(false);
+  // Parental Gate - Initialize as needing verification (show gate by default)
+  const { isVerified, checkVerification, resetVerification } = useParentalGate();
+  const [showParentalGate, setShowParentalGate] = useState(true);
+  const [gateChecked, setGateChecked] = useState(false);
 
+  // Check parental gate verification on mount and re-renders
   useEffect(() => {
-    // Check parental gate on mount
-    if (!checkVerification()) {
-      setShowParentalGate(true);
-    }
+    const verified = checkVerification();
+    setShowParentalGate(!verified);
+    setGateChecked(true);
   }, []);
+
+  // Re-check verification periodically (in case 30 min expires)
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const stillVerified = checkVerification();
+      if (!stillVerified && !showParentalGate) {
+        setShowParentalGate(true);
+      }
+    }, 60000); // Check every minute
+    return () => clearInterval(interval);
+  }, [showParentalGate]);
 
   const handleGenerate = async () => {
     if (!title.trim() || !characters.trim() || !theme.trim()) {
@@ -88,6 +100,48 @@ const KidsStoryCreator = () => {
     URL.revokeObjectURL(url);
     toast.success("Story saved! 💾");
   };
+
+  // Don't render content until we've checked the gate AND user is verified
+  if (!gateChecked) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto" />
+          <p className="mt-4 text-muted-foreground">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show ONLY the parental gate if not verified - block all content
+  if (showParentalGate) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20">
+        <Navbar />
+        <main className="container mx-auto px-4 py-8 mt-16">
+          <div className="max-w-2xl mx-auto text-center">
+            <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+              AI Story Creator ✨
+            </h1>
+            <p className="text-muted-foreground mb-8">
+              Parent verification required to continue
+            </p>
+          </div>
+        </main>
+        <Footer />
+        
+        {/* Mandatory Parental Gate - Cannot be bypassed */}
+        <ParentalGate
+          isOpen={true}
+          onSuccess={() => setShowParentalGate(false)}
+          onCancel={() => {
+            // Hard redirect to Home - handled by ParentalGate component
+          }}
+          featureName="AI Story Creator"
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20">
@@ -319,17 +373,6 @@ const KidsStoryCreator = () => {
         </div>
       </main>
       <Footer />
-      
-      {/* Parental Gate Dialog */}
-      <ParentalGate
-        isOpen={showParentalGate}
-        onSuccess={() => setShowParentalGate(false)}
-        onCancel={() => {
-          // Hard redirect to Home page - handled by ParentalGate component
-          setShowParentalGate(false);
-        }}
-        featureName="AI Story Creator"
-      />
     </div>
   );
 };
