@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Checkbox } from '@/components/ui/checkbox';
 import { ArrowLeft, Star, Upload, Plus, X } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 
@@ -24,6 +25,7 @@ export default function CreateTalentCampaign() {
   const navigate = useNavigate();
   const [creating, setCreating] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [consentChecked, setConsentChecked] = useState(false);
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -425,20 +427,38 @@ export default function CreateTalentCampaign() {
                 />
               </div>
 
+              {/* Consent Checkbox - MANDATORY */}
+              <div className="flex items-start space-x-3 border-2 border-accent/30 p-4 rounded-lg bg-accent/5">
+                <Checkbox
+                  id="consent"
+                  checked={consentChecked}
+                  onCheckedChange={(checked) => setConsentChecked(checked as boolean)}
+                  className="mt-1"
+                />
+                <Label htmlFor="consent" className="text-sm leading-relaxed cursor-pointer">
+                  I confirm that all provided information is true and accurate. I consent to the processing of personal data for verification purposes.
+                </Label>
+              </div>
+
               <div className="bg-muted p-4 rounded-lg">
                 <h3 className="font-semibold mb-2">Before You Submit:</h3>
                 <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
                   <li>Your campaign will be reviewed by our admin team</li>
                   <li>Add your best work to showcase your talent</li>
-                  <li>Be clear about how funds will help you grow</li>
+                  <li>Platform fee: 10%</li>
                   <li>Include performance videos if possible</li>
                 </ul>
               </div>
 
-              <Button type="submit" className="w-full" size="lg" disabled={creating || uploading}>
-                <Star className="mr-2 h-5 w-5" />
-                {creating ? 'Submitting...' : 'Submit Talent Campaign'}
-              </Button>
+              <div className="flex gap-4">
+                <Button type="button" variant="outline" onClick={() => navigate('/')} className="flex-1">
+                  Cancel
+                </Button>
+                <Button type="submit" className="flex-1" size="lg" disabled={creating || uploading || !consentChecked}>
+                  <Star className="mr-2 h-5 w-5" />
+                  {creating ? 'Submitting...' : 'Submit Talent Campaign'}
+                </Button>
+              </div>
             </form>
           </CardContent>
         </Card>

@@ -6,12 +6,15 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { ArrowLeft, Upload, Heart } from 'lucide-react';
+import { Checkbox } from '@/components/ui/checkbox';
+import { ArrowLeft, Upload, Heart, FileText } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 
 export default function CreateMedicalCampaign() {
   const navigate = useNavigate();
   const [creating, setCreating] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [consentChecked, setConsentChecked] = useState(false);
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -22,7 +25,65 @@ export default function CreateMedicalCampaign() {
     target_amount: '',
     image_url: '',
     ends_at: '',
+    proof_document_url: '',
   });
+
+  const handleProofUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 10 * 1024 * 1024) {
+      toast({
+        title: 'Error',
+        description: 'File is too large (max 10MB)',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    setUploading(true);
+
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast({
+          title: 'Error',
+          description: 'You must be logged in',
+          variant: 'destructive',
+        });
+        return;
+      }
+
+      const fileExt = file.name.split('.').pop();
+      const fileName = `proof-${session.user.id}-${Date.now()}.${fileExt}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('bazaar_images')
+        .upload(fileName, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('bazaar_images')
+        .getPublicUrl(fileName);
+
+      setFormData({ ...formData, proof_document_url: publicUrl });
+
+      toast({
+        title: 'Success',
+        description: 'Medical documentation uploaded',
+      });
+    } catch (error) {
+      console.error('Error uploading proof:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to upload documentation',
+        variant: 'destructive',
+      });
+    } finally {
+      setUploading(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,6 +93,24 @@ export default function CreateMedicalCampaign() {
       toast({
         title: 'Error',
         description: 'Please fill in all required fields',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    if (!formData.proof_document_url) {
+      toast({
+        title: 'Error',
+        description: 'Medical documentation is required for verification',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    if (!consentChecked) {
+      toast({
+        title: 'Error',
+        description: 'You must confirm the consent checkbox',
         variant: 'destructive',
       });
       return;
@@ -303,11 +382,48 @@ export default function CreateMedicalCampaign() {
                 </p>
               </div>
 
+              {/* Medical Documentation - MANDATORY */}
+              <div className="space-y-2 border-2 border-destructive/30 p-4 rounded-lg bg-destructive/5">
+                <Label htmlFor="proof" className="flex items-center gap-2 text-destructive font-semibold">
+                  <FileText className="h-4 w-4" />
+                  Medical Documentation (REQUIRED) *
+                </Label>
+                <Input
+                  id="proof"
+                  type="file"
+                  accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
+                  onChange={handleProofUpload}
+                  disabled={uploading}
+                  className="cursor-pointer"
+                />
+                {formData.proof_document_url && (
+                  <p className="text-sm text-green-600 flex items-center gap-2">
+                    ✓ Documentation uploaded successfully
+                  </p>
+                )}
+                <p className="text-xs text-muted-foreground">
+                  Required: Upload medical reports, hospital bills, or doctor's confirmation. Max 10MB.
+                </p>
+              </div>
+
+              {/* Consent Checkbox - MANDATORY */}
+              <div className="flex items-start space-x-3 border-2 border-primary/30 p-4 rounded-lg bg-primary/5">
+                <Checkbox
+                  id="consent"
+                  checked={consentChecked}
+                  onCheckedChange={(checked) => setConsentChecked(checked as boolean)}
+                  className="mt-1"
+                />
+                <Label htmlFor="consent" className="text-sm leading-relaxed cursor-pointer">
+                  I confirm that all provided information is true and accurate. I consent to the processing of sensitive personal data (including medical information) for verification purposes. I understand that false information may result in account suspension and legal action.
+                </Label>
+              </div>
+
               <div className="bg-muted p-4 rounded-lg">
                 <h4 className="font-semibold mb-2">⚠️ Important Information</h4>
                 <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
                   <li>All campaigns must be verified by an administrator before publishing</li>
-                  <li>You will need to provide medical reports and documentation</li>
+                  <li>Medical documentation is required for verification</li>
                   <li>The platform charges a 6% fee on each donation</li>
                   <li>Fake campaigns will be blocked and reported</li>
                 </ul>
@@ -317,14 +433,14 @@ export default function CreateMedicalCampaign() {
                 <Button
                   type="button"
                   variant="outline"
-                  onClick={() => navigate('/fundraising/medical')}
+                  onClick={() => navigate('/')}
                   className="flex-1"
                 >
                   Cancel
                 </Button>
                 <Button
                   type="submit"
-                  disabled={creating}
+                  disabled={creating || uploading || !consentChecked || !formData.proof_document_url}
                   className="flex-1"
                 >
                   <Heart className="mr-2 h-4 w-4" />

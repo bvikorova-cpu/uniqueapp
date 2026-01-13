@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ArrowLeft, Upload, Sparkles, ImagePlus, X } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
@@ -22,6 +23,7 @@ export default function CreateDreamCampaign() {
   const navigate = useNavigate();
   const [creating, setCreating] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [consentChecked, setConsentChecked] = useState(false);
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -96,6 +98,15 @@ export default function CreateDreamCampaign() {
       toast({
         title: 'Error',
         description: 'Please fill in all required fields',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    if (!consentChecked) {
+      toast({
+        title: 'Error',
+        description: 'You must confirm the consent checkbox',
         variant: 'destructive',
       });
       return;
@@ -321,25 +332,48 @@ export default function CreateDreamCampaign() {
                 <p className="text-sm text-muted-foreground mt-1">Optional: Set a deadline for your campaign</p>
               </div>
 
+              {/* Consent Checkbox - MANDATORY */}
+              <div className="flex items-start space-x-3 border-2 border-amber-500/30 p-4 rounded-lg bg-amber-500/5">
+                <Checkbox
+                  id="consent"
+                  checked={consentChecked}
+                  onCheckedChange={(checked) => setConsentChecked(checked as boolean)}
+                  className="mt-1"
+                />
+                <Label htmlFor="consent" className="text-sm leading-relaxed cursor-pointer">
+                  I confirm that all provided information is true and accurate. I consent to the processing of personal data for verification purposes.
+                </Label>
+              </div>
+
               <div className="bg-amber-500/10 border border-amber-500/20 p-4 rounded-lg">
                 <h3 className="font-semibold mb-2 text-foreground">Before You Submit:</h3>
                 <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
                   <li>Your campaign will be reviewed by our admin team</li>
                   <li>You'll receive a notification once it's approved</li>
-                  <li>Be honest and detailed in your story</li>
+                  <li>Platform fee: 7%</li>
                   <li>Add a compelling image to increase support</li>
                 </ul>
               </div>
 
-              <Button 
-                type="submit" 
-                className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white" 
-                size="lg" 
-                disabled={creating || uploading}
-              >
-                <Sparkles className="mr-2 h-5 w-5" />
-                {creating ? 'Submitting...' : 'Submit Dream Campaign'}
-              </Button>
+              <div className="flex gap-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => navigate('/')}
+                  className="flex-1"
+                >
+                  Cancel
+                </Button>
+                <Button 
+                  type="submit" 
+                  className="flex-1 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white" 
+                  size="lg" 
+                  disabled={creating || uploading || !consentChecked}
+                >
+                  <Sparkles className="mr-2 h-5 w-5" />
+                  {creating ? 'Submitting...' : 'Submit Dream Campaign'}
+                </Button>
+              </div>
             </form>
           </CardContent>
         </Card>
