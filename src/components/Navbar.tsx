@@ -175,7 +175,10 @@ const Navbar = () => {
     { path: "/coloring-pages", label: "Coloring Pages", icon: Palette },
     { path: "/brand-battle", label: "Brand Battle Arena", icon: Trophy },
     { path: "/brain-duel", label: "BrainDuel - Knowledge Battle", icon: Trophy },
-    
+  ];
+
+  const kidsAcademyServices = [
+    { path: "/kids", label: "Kids Academy Hub", icon: Sparkles },
     { path: "/kids-homework", label: "Homework Helper (6-12y)", icon: BookOpen },
     { path: "/kids-story-creator", label: "Story Creator (6-12y)", icon: BookOpen },
     { path: "/kids-science-lab", label: "Science Lab (6-12y)", icon: FlaskConical },
@@ -185,13 +188,14 @@ const Navbar = () => {
   ];
 
   const fundraisingServices = [
-    { path: "/fundraising/medical", label: "Medical Fundraising", icon: Heart },
-    { path: "/fundraising/dream", label: "Dream Maker", icon: Sparkles },
-    { path: "/fundraising/hero", label: "Community Hero", icon: Shield },
-    { path: "/fundraising/pet", label: "Pet Rescue", icon: PawPrint },
-    { path: "/fundraising/student", label: "Student Support", icon: GraduationCap },
-    { path: "/fundraising/crisis", label: "Crisis Relief", icon: AlertTriangle },
-    { path: "/fundraising/talent", label: "Talent Sponsorship", icon: Star },
+    { path: "/fundraising", label: "Fundraising Hub", icon: Heart },
+    { path: "/fundraising/medical", label: "Medical Fundraising (6%)", icon: Heart },
+    { path: "/fundraising/dream", label: "Dream Maker (7%)", icon: Sparkles },
+    { path: "/fundraising/hero", label: "Community Hero (5%)", icon: Shield },
+    { path: "/fundraising/pet", label: "Pet Rescue (6%)", icon: PawPrint },
+    { path: "/fundraising/student", label: "Student Support (5%)", icon: GraduationCap },
+    { path: "/fundraising/crisis", label: "Crisis Relief (8%)", icon: AlertTriangle },
+    { path: "/fundraising/talent", label: "Talent Sponsorship (10%)", icon: Star },
   ];
 
   const otherServices = [
@@ -277,7 +281,8 @@ const Navbar = () => {
   ];
 
   const isLearningServiceActive = learningServices.some(item => location.pathname === item.path);
-  const isFundraisingServiceActive = fundraisingServices.some(item => location.pathname === item.path);
+  const isKidsAcademyServiceActive = kidsAcademyServices.some(item => location.pathname === item.path) || location.pathname.startsWith('/kids');
+  const isFundraisingServiceActive = fundraisingServices.some(item => location.pathname === item.path) || location.pathname.startsWith('/fundraising');
   const isOtherServiceActive = otherServices.some(item => location.pathname === item.path);
 
   return (
@@ -326,6 +331,29 @@ const Navbar = () => {
                 {learningServices.map((item) => {
                   const Icon = item.icon;
                   const isActive = location.pathname === item.path;
+                  
+                  return (
+                    <DropdownMenuItem key={item.path} asChild>
+                      <Link to={item.path} className="w-full cursor-pointer">
+                        <Icon className="h-4 w-4 mr-2" />
+                        {item.label}
+                      </Link>
+                    </DropdownMenuItem>
+                  );
+                })}
+              </DropdownMenuContent>
+            </DropdownMenu>
+            
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant={isKidsAcademyServiceActive ? "premium" : "ghost"}>
+                  <Sparkles className="h-4 w-4" />
+                  Kids Academy
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56 max-h-96 overflow-y-auto">
+                {kidsAcademyServices.map((item) => {
+                  const Icon = item.icon;
                   
                   return (
                     <DropdownMenuItem key={item.path} asChild>

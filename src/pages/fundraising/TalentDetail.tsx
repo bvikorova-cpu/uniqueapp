@@ -403,7 +403,7 @@ export default function TalentDetail() {
                   </Button>
                   
                   <p className="text-xs text-muted-foreground text-center">
-                    Platform fee: 10% · Secure payment via Stripe
+                    Your donation includes a platform service fee of 10% to ensure security, verification, and technical maintenance. Secure payment via Stripe.
                   </p>
                 </CardContent>
               </Card>

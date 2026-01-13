@@ -339,7 +339,7 @@ export default function DreamDetail() {
                   </Button>
                   
                   <p className="text-xs text-muted-foreground text-center">
-                    Platform fee: 7% · Secure payment via Stripe
+                    Your donation includes a platform service fee of 7% to ensure security, verification, and technical maintenance. Secure payment via Stripe.
                   </p>
                 </CardContent>
               </Card>
