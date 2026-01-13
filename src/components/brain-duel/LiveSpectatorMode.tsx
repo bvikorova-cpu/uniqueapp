@@ -231,7 +231,7 @@ export const LiveSpectatorMode = () => {
       }
 
       // Deduct credits
-      await spendCredits({ amount: gift.cost });
+      spendCredits(gift.cost);
 
       // Record gift
       const { error } = await supabase

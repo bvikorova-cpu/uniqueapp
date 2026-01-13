@@ -65,7 +65,7 @@ export const QuestionPackStore = () => {
       }
 
       // Deduct credits
-      await spendCredits({ amount: pack.price_credits });
+      spendCredits(pack.price_credits);
 
       // Add pack to user
       const { error } = await supabase
