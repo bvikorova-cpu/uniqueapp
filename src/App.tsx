@@ -67,6 +67,7 @@ import {
   KidsScienceAdmin,
   KidsDrawingBuddy,
   KidsReadingCompanion,
+  KidsAcademy,
   ColoringPages,
   TeenCareerCounselor,
   KidsChannel,
@@ -462,6 +463,7 @@ const App = () => {
                         <Route path="/kids-science-admin" element={<ProtectedRoute requireAdmin={true}><KidsScienceAdmin /></ProtectedRoute>} />
                         <Route path="/kids-drawing-buddy" element={<KidsDrawingBuddy />} />
                         <Route path="/kids-reading-companion" element={<KidsReadingCompanion />} />
+                        <Route path="/kids-academy" element={<KidsAcademy />} />
                         <Route path="/photo-restoration" element={<PhotoRestoration />} />
                         <Route path="/antique-appraisal" element={<AntiqueAppraisal />} />
                         <Route path="/teen-career-counselor" element={<TeenCareerCounselor />} />

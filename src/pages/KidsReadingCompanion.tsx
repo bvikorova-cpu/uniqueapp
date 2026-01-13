@@ -10,9 +10,14 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useKidsReadingSubscription } from "@/hooks/useKidsReadingSubscription";
 import { Progress } from "@/components/ui/progress";
+import { ParentalGate } from "@/components/kids/ParentalGate";
+import { useNavigate } from "react-router-dom";
+
+const PARENTAL_GATE_KEY = "parental_gate_verified_kids_reading_companion";
 
 const KidsReadingCompanion = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [bookText, setBookText] = useState("");
   const [loading, setLoading] = useState(false);
   const [analysis, setAnalysis] = useState<any>(null);
@@ -21,6 +26,49 @@ const KidsReadingCompanion = () => {
   const [selectedAnswer, setSelectedAnswer] = useState<string>("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const { subscription, createCheckout, incrementAnalysisUsage, incrementQuizUsage } = useKidsReadingSubscription();
+
+  // PARENTAL GATE STATE - BLOCK BY DEFAULT
+  const [isVerified, setIsVerified] = useState<boolean>(() => {
+    const stored = sessionStorage.getItem(PARENTAL_GATE_KEY);
+    if (!stored) return false;
+    try {
+      const { expiresAt } = JSON.parse(stored);
+      if (Date.now() < expiresAt) return true;
+      sessionStorage.removeItem(PARENTAL_GATE_KEY);
+      return false;
+    } catch {
+      sessionStorage.removeItem(PARENTAL_GATE_KEY);
+      return false;
+    }
+  });
+
+  // Keep session-based verification honest while the user stays on the page
+  useEffect(() => {
+    const tick = () => {
+      const stored = sessionStorage.getItem(PARENTAL_GATE_KEY);
+      if (!stored) {
+        if (isVerified) setIsVerified(false);
+        return;
+      }
+      try {
+        const { expiresAt } = JSON.parse(stored);
+        if (Date.now() >= expiresAt) {
+          sessionStorage.removeItem(PARENTAL_GATE_KEY);
+          if (isVerified) setIsVerified(false);
+        }
+      } catch {
+        sessionStorage.removeItem(PARENTAL_GATE_KEY);
+        if (isVerified) setIsVerified(false);
+      }
+    };
+
+    const interval = setInterval(tick, 30_000);
+    return () => clearInterval(interval);
+  }, [isVerified]);
+
+  const handleVerificationSuccess = () => {
+    setIsVerified(true);
+  };
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -112,6 +160,23 @@ const KidsReadingCompanion = () => {
       toast.error(`Not quite! The answer is: ${quiz.correctAnswer}`);
     }
   };
+
+  // ========== BLOCKING PARENTAL GATE ==========
+  if (!isVerified) {
+    return (
+      <div className="min-h-screen">
+        <ParentalGate
+          isOpen={true}
+          storageKey={PARENTAL_GATE_KEY}
+          onSuccess={handleVerificationSuccess}
+          onCancel={() => {
+            navigate("/");
+          }}
+          featureName="AI Reading Companion"
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20">
