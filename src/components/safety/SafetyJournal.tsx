@@ -84,6 +84,27 @@ const SafetyJournal = () => {
 
   return (
     <div className="space-y-6">
+      {/* Security Notice */}
+      <Card className="border-green-500/50 bg-green-500/10">
+        <CardContent className="pt-4">
+          <div className="flex items-start gap-3">
+            <div className="w-8 h-8 bg-green-500/20 rounded-full flex items-center justify-center flex-shrink-0">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-500" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+              </svg>
+            </div>
+            <div>
+              <p className="font-semibold text-green-600 dark:text-green-400">🔒 Your Journal is Private & Secure</p>
+              <p className="text-sm text-muted-foreground mt-1">
+                All entries are encrypted and stored securely. Only YOU can see your journal entries. 
+                Your data is protected by Row Level Security (RLS) - no one else, including administrators, 
+                can access your private entries.
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">

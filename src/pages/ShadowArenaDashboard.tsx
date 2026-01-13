@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { SubscriptionGate } from '@/components/shadow-arena/SubscriptionGate';
-import { Plus, Swords, BookOpen, Trophy, Ghost } from 'lucide-react';
+import { Plus, Swords, BookOpen, Trophy, Ghost, DollarSign, TrendingUp, Users } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 interface Battle {
   id: string;
@@ -63,6 +64,14 @@ export default function ShadowArenaDashboard() {
       setLoading(false);
     }
   };
+
+  // Calculate total prize pool from all active battles
+  const totalActivePrizePool = battles
+    .filter(b => b.status === 'active' || b.status === 'waiting_for_participants')
+    .reduce((sum, b) => sum + b.total_prize_pool, 0);
+
+  const winnerShare = totalActivePrizePool * 0.8;
+  const platformFee = totalActivePrizePool * 0.2;
 
   return (
     <SubscriptionGate>
@@ -179,6 +188,48 @@ export default function ShadowArenaDashboard() {
             </CardContent>
           </Card>
         </div>
+
+        {/* Prize Pool Distribution Card */}
+        <Card className="mb-8 bg-gradient-to-br from-yellow-900/30 via-black/60 to-red-950/30 border-yellow-600/50 shadow-[0_0_30px_rgba(234,179,8,0.3)]">
+          <CardHeader className="pb-2">
+            <CardTitle className="flex items-center gap-3 text-yellow-400">
+              <Trophy className="h-8 w-8 animate-pulse drop-shadow-[0_0_10px_rgba(234,179,8,0.8)]" />
+              Prize Pool Distribution
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div className="bg-black/40 p-4 rounded-lg border border-yellow-600/30 text-center">
+                <DollarSign className="h-8 w-8 text-yellow-400 mx-auto mb-2" />
+                <p className="text-2xl font-bold text-yellow-400">€{totalActivePrizePool.toFixed(2)}</p>
+                <p className="text-xs text-gray-400">Total Prize Pool</p>
+              </div>
+              <div className="bg-black/40 p-4 rounded-lg border border-green-600/30 text-center">
+                <TrendingUp className="h-8 w-8 text-green-400 mx-auto mb-2" />
+                <p className="text-2xl font-bold text-green-400">80%</p>
+                <p className="text-xs text-gray-400">Winners Share (€{winnerShare.toFixed(2)})</p>
+              </div>
+              <div className="bg-black/40 p-4 rounded-lg border border-purple-600/30 text-center">
+                <Users className="h-8 w-8 text-purple-400 mx-auto mb-2" />
+                <p className="text-2xl font-bold text-purple-400">Top 3</p>
+                <p className="text-xs text-gray-400">Winners Split Pool</p>
+              </div>
+              <div className="bg-black/40 p-4 rounded-lg border border-gray-600/30 text-center">
+                <DollarSign className="h-8 w-8 text-gray-400 mx-auto mb-2" />
+                <p className="text-2xl font-bold text-gray-400">20%</p>
+                <p className="text-xs text-gray-400">Platform Fee (€{platformFee.toFixed(2)})</p>
+              </div>
+            </div>
+            <Alert className="mt-4 border-yellow-600/30 bg-yellow-900/20">
+              <Trophy className="h-4 w-4 text-yellow-400" />
+              <AlertTitle className="text-yellow-400 text-sm">Prize Split: 80% to Winners / 20% Platform</AlertTitle>
+              <AlertDescription className="text-yellow-200/80 text-xs">
+                1st Place: 50% of winner share | 2nd Place: 30% | 3rd Place: 20%. 
+                Payouts processed via Stripe within 48 hours of battle completion.
+              </AlertDescription>
+            </Alert>
+          </CardContent>
+        </Card>
 
         {/* Action Buttons */}
         <div className="grid md:grid-cols-2 gap-4 mb-8">
