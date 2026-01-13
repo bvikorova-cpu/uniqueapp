@@ -106,3 +106,34 @@ export const useIncrementDrawingUsage = () => {
     },
   });
 };
+
+export const useOpenDrawingCustomerPortal = () => {
+  return useMutation({
+    mutationFn: async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        throw new Error("You must be logged in to manage subscription");
+      }
+
+      const { data, error } = await supabase.functions.invoke(
+        "kids-drawing-customer-portal",
+        {
+          headers: {
+            Authorization: `Bearer ${session.access_token}`,
+          },
+        }
+      );
+
+      if (error) throw error;
+      return data.url;
+    },
+    onSuccess: (url) => {
+      window.open(url, "_blank");
+      toast.success("Opening subscription management...");
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || "Failed to open customer portal");
+    },
+  });
+};
