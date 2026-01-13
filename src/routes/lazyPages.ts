@@ -332,6 +332,7 @@ export const AdminImageEditor = lazy(() => import("@/pages/AdminImageEditor"));
 export const AdminPaymentDashboard = lazy(() => import("@/pages/AdminPaymentDashboard"));
 export const CampaignApprovals = lazy(() => import("@/pages/admin/CampaignApprovals"));
 export const WithdrawalRequests = lazy(() => import("@/pages/admin/WithdrawalRequests"));
+export const CampaignSuccess = lazy(() => import("@/pages/fundraising/CampaignSuccess"));
 
 // Misc
 export const Contact = lazy(() => import("@/pages/Contact"));

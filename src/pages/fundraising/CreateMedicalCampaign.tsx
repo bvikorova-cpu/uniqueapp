@@ -166,7 +166,7 @@ export default function CreateMedicalCampaign() {
         description: 'Campaign created and waiting for admin approval',
       });
 
-      navigate(`/fundraising/medical/${data.id}`);
+      navigate(`/fundraising/medical/${data.id}/success?action=created`);
     } catch (error) {
       console.error('Error creating campaign:', error);
       toast({

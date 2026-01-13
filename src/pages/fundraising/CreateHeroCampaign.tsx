@@ -164,7 +164,7 @@ export default function CreateHeroCampaign() {
         description: 'Your hero campaign has been submitted for admin approval',
       });
 
-      navigate(`/fundraising/hero/${data.id}`);
+      navigate(`/fundraising/hero/${data.id}/success?action=created`);
     } catch (error) {
       console.error('Error creating campaign:', error);
       toast({

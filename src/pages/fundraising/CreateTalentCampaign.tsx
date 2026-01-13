@@ -147,6 +147,15 @@ export default function CreateTalentCampaign() {
       return;
     }
 
+    if (!consentChecked) {
+      toast({
+        title: 'Error',
+        description: 'You must confirm the consent checkbox',
+        variant: 'destructive',
+      });
+      return;
+    }
+
     const targetAmount = parseFloat(formData.target_amount);
     if (isNaN(targetAmount) || targetAmount < 100) {
       toast({
@@ -202,7 +211,7 @@ export default function CreateTalentCampaign() {
         description: 'Your talent sponsorship campaign has been submitted for admin approval',
       });
 
-      navigate(`/fundraising/talent/${data.id}`);
+      navigate(`/fundraising/talent/${data.id}/success?action=created`);
     } catch (error) {
       console.error('Error creating campaign:', error);
       toast({

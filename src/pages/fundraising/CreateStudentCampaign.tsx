@@ -166,7 +166,7 @@ export default function CreateStudentCampaign() {
         description: 'Your student support campaign has been submitted for admin approval',
       });
 
-      navigate(`/fundraising/student/${data.id}`);
+      navigate(`/fundraising/student/${data.id}/success?action=created`);
     } catch (error) {
       console.error('Error creating campaign:', error);
       toast({

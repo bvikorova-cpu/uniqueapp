@@ -111,6 +111,15 @@ export default function CreatePetCampaign() {
       return;
     }
 
+    if (!consentChecked) {
+      toast({
+        title: 'Error',
+        description: 'You must confirm the consent checkbox',
+        variant: 'destructive',
+      });
+      return;
+    }
+
     const targetAmount = parseFloat(formData.target_amount);
     if (isNaN(targetAmount) || targetAmount < 50) {
       toast({
@@ -163,7 +172,7 @@ export default function CreatePetCampaign() {
         description: 'Your pet rescue campaign has been submitted for admin approval',
       });
 
-      navigate(`/fundraising/pet/${data.id}`);
+      navigate(`/fundraising/pet/${data.id}/success?action=created`);
     } catch (error) {
       console.error('Error creating campaign:', error);
       toast({

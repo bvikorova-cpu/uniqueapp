@@ -304,6 +304,7 @@ import {
   PaymentDocumentation,
   CampaignApprovals,
   WithdrawalRequests,
+  CampaignSuccess,
   QuizCreator,
   QuizTaker,
 } from "@/routes/lazyPages";
@@ -666,6 +667,7 @@ const App = () => {
                         <Route path="/fundraising/talent" element={<TalentSponsorship />} />
                         <Route path="/fundraising/talent/create" element={<CreateTalentCampaign />} />
                         <Route path="/fundraising/talent/:id" element={<TalentDetail />} />
+                        <Route path="/fundraising/:type/:id/success" element={<CampaignSuccess />} />
                         <Route path="/admin/campaign-approvals" element={<ProtectedRoute requireAdmin={true}><CampaignApprovals /></ProtectedRoute>} />
                         <Route path="/admin/campaign-withdrawals" element={<ProtectedRoute requireAdmin={true}><WithdrawalRequests /></ProtectedRoute>} />
                         <Route path="/property-marketplace" element={<PropertyMarketplace />} />
