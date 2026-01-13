@@ -464,6 +464,7 @@ const App = () => {
                         <Route path="/kids-science-admin" element={<ProtectedRoute requireAdmin={true}><KidsScienceAdmin /></ProtectedRoute>} />
                         <Route path="/kids-drawing-buddy" element={<KidsDrawingBuddy />} />
                         <Route path="/kids-reading-companion" element={<KidsReadingCompanion />} />
+                        <Route path="/kids" element={<Navigate to="/kids-academy" replace />} />
                         <Route path="/kids-academy" element={<KidsAcademy />} />
                         <Route path="/photo-restoration" element={<PhotoRestoration />} />
                         <Route path="/antique-appraisal" element={<AntiqueAppraisal />} />
