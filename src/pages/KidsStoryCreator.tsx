@@ -29,31 +29,47 @@ const KidsStoryCreator = () => {
   const [story, setStory] = useState<any>(null);
   
   // PARENTAL GATE STATE - BLOCK BY DEFAULT
-  const [isVerified, setIsVerified] = useState<boolean>(false);
+  const PARENTAL_GATE_KEY = "parental_gate_verified_kids_story_creator";
 
-  // On page open: check if verification exists and is still valid
-  useEffect(() => {
-    const stored = sessionStorage.getItem("parental_gate_verified");
-    if (!stored) {
-      setIsVerified(false);
-      return;
-    }
-
+  const [isVerified, setIsVerified] = useState<boolean>(() => {
+    const stored = sessionStorage.getItem(PARENTAL_GATE_KEY);
+    if (!stored) return false;
     try {
       const { expiresAt } = JSON.parse(stored);
-      if (Date.now() < expiresAt) {
-        setIsVerified(true);
-      } else {
-        sessionStorage.removeItem("parental_gate_verified");
-        setIsVerified(false);
-      }
+      if (Date.now() < expiresAt) return true;
+      sessionStorage.removeItem(PARENTAL_GATE_KEY);
+      return false;
     } catch {
-      sessionStorage.removeItem("parental_gate_verified");
-      setIsVerified(false);
+      sessionStorage.removeItem(PARENTAL_GATE_KEY);
+      return false;
     }
-  }, []);
+  });
 
-  // When the gate succeeds, just unlock UI (ParentalGate already writes sessionStorage)
+  // Keep session-based verification honest while the user stays on the page (no flash)
+  useEffect(() => {
+    const tick = () => {
+      const stored = sessionStorage.getItem(PARENTAL_GATE_KEY);
+      if (!stored) {
+        if (isVerified) setIsVerified(false);
+        return;
+      }
+      try {
+        const { expiresAt } = JSON.parse(stored);
+        if (Date.now() >= expiresAt) {
+          sessionStorage.removeItem(PARENTAL_GATE_KEY);
+          if (isVerified) setIsVerified(false);
+        }
+      } catch {
+        sessionStorage.removeItem(PARENTAL_GATE_KEY);
+        if (isVerified) setIsVerified(false);
+      }
+    };
+
+    const interval = setInterval(tick, 30_000);
+    return () => clearInterval(interval);
+  }, [isVerified]);
+
+  // When the gate succeeds, just unlock UI (ParentalGate writes sessionStorage)
   const handleVerificationSuccess = () => {
     setIsVerified(true);
   };
@@ -109,12 +125,13 @@ const KidsStoryCreator = () => {
   };
 
   // ========== BLOCKING PARENTAL GATE ==========
-  // If NOT verified, show ONLY the parental gate - NOTHING else is rendered (no navbar/footer/content)
+  // If NOT verified, show ONLY the parental gate - NOTHING else is rendered
   if (!isVerified) {
     return (
       <div className="min-h-screen">
         <ParentalGate
           isOpen={true}
+          storageKey={PARENTAL_GATE_KEY}
           onSuccess={handleVerificationSuccess}
           onCancel={() => {
             // Hard redirect to Home - handled by ParentalGate component

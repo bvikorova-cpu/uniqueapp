@@ -12,6 +12,8 @@ interface ParentalGateProps {
   onCancel?: () => void;
   onClose?: () => void; // Deprecated - use onCancel
   featureName?: string;
+  /** Override to avoid collisions between multiple parental-gated features */
+  storageKey?: string;
 }
 
 function generateMathQuestion(): { question: string; answer: number } {
@@ -23,7 +25,13 @@ function generateMathQuestion(): { question: string; answer: number } {
   };
 }
 
-export function ParentalGate({ isOpen, onSuccess, onCancel, featureName = "this feature" }: ParentalGateProps) {
+export function ParentalGate({
+  isOpen,
+  onSuccess,
+  onCancel,
+  featureName = "this feature",
+  storageKey = "parental_gate_verified",
+}: ParentalGateProps) {
   const [mathQuestion, setMathQuestion] = useState(generateMathQuestion());
   const [userAnswer, setUserAnswer] = useState("");
   const [error, setError] = useState(false);
@@ -60,7 +68,7 @@ export function ParentalGate({ isOpen, onSuccess, onCancel, featureName = "this 
       setError(false);
       // Store in sessionStorage for 30 minutes
       const expiresAt = Date.now() + 30 * 60 * 1000; // 30 minutes
-      sessionStorage.setItem('parental_gate_verified', JSON.stringify({ expiresAt }));
+      sessionStorage.setItem(storageKey, JSON.stringify({ expiresAt }));
       setTimeout(() => {
         onSuccess();
       }, 800);
