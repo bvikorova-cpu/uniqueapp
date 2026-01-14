@@ -16,7 +16,17 @@ import {
   Sparkles as SparklesIcon, 
   Music,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  Crown,
+  Clock,
+  Timer,
+  ChefHat,
+  Car,
+  MessageCircle,
+  Star,
+  MessageSquare,
+  Brain,
+  Palette
 } from "lucide-react";
 import { useState } from "react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
@@ -32,6 +42,7 @@ interface WallSidebarProps {
 export function WallSidebar({ onPostCreated }: WallSidebarProps) {
   const navigate = useNavigate();
   const [modulesOpen, setModulesOpen] = useState(false);
+  const [ecosystemOpen, setEcosystemOpen] = useState(false);
 
   const { data: user } = useQuery({
     queryKey: ["current-user"],
@@ -55,6 +66,21 @@ export function WallSidebar({ onPostCreated }: WallSidebarProps) {
     enabled: !!user,
   });
 
+  // Ecosystem Modules (The 10 core premium modules)
+  const ecosystemModules = [
+    { name: "Holographic Avatars", path: "/holographic-avatars", icon: Crown, color: "text-purple-500" },
+    { name: "Time Capsule 2.0", path: "/time-capsule-subscription", icon: Clock, color: "text-blue-500" },
+    { name: "Time Reversal Social", path: "/time-reversal-subscription", icon: Timer, color: "text-violet-500" },
+    { name: "MasterChef Platform", path: "/masterchef-subscription", icon: ChefHat, color: "text-orange-500" },
+    { name: "GP Fantasy Racing", path: "/f1-racing", icon: Car, color: "text-red-500" },
+    { name: "Messenger", path: "/messenger", icon: MessageCircle, color: "text-cyan-500" },
+    { name: "Influ-King", path: "/influ-king", icon: Star, color: "text-yellow-500" },
+    { name: "Megaforum", path: "/megaforum", icon: MessageSquare, color: "text-emerald-500" },
+    { name: "Online Psychologist", path: "/psychologist", icon: Brain, color: "text-pink-500" },
+    { name: "Content Studio", path: "/content-studio", icon: Palette, color: "text-indigo-500" },
+  ];
+
+  // Advanced Modules (Additional 10 modules)
   const advancedModules = [
     { name: "Lottery AI", path: "/lottery-ai", icon: Ticket, color: "text-amber-500" },
     { name: "Property Marketplace", path: "/property-marketplace", icon: Building2, color: "text-sky-500" },
@@ -109,6 +135,42 @@ export function WallSidebar({ onPostCreated }: WallSidebarProps) {
         </div>
 
         <div className="h-px bg-border" />
+
+        {/* Ecosystem Modules Section (Premium 10) */}
+        <Collapsible open={ecosystemOpen} onOpenChange={setEcosystemOpen}>
+          <CollapsibleTrigger asChild>
+            <Button
+              variant="ghost"
+              className="w-full justify-between gap-2.5 h-auto py-2.5 hover:bg-primary/10 rounded-lg"
+            >
+              <div className="flex items-center gap-2.5">
+                <Crown className="h-5 w-5 text-yellow-500" />
+                <span className="font-medium text-sm">Ecosystem Modules</span>
+              </div>
+              {ecosystemOpen ? (
+                <ChevronUp className="h-4 w-4 text-muted-foreground" />
+              ) : (
+                <ChevronDown className="h-4 w-4 text-muted-foreground" />
+              )}
+            </Button>
+          </CollapsibleTrigger>
+          <CollapsibleContent className="space-y-1 mt-2">
+            {ecosystemModules.map((module) => {
+              const Icon = module.icon;
+              return (
+                <Button
+                  key={module.path}
+                  variant="ghost"
+                  className="w-full justify-start gap-2.5 h-auto py-2 hover:bg-accent/50 rounded-lg text-sm"
+                  onClick={() => navigate(module.path)}
+                >
+                  <Icon className={`h-4 w-4 ${module.color}`} />
+                  <span className="font-medium">{module.name}</span>
+                </Button>
+              );
+            })}
+          </CollapsibleContent>
+        </Collapsible>
 
         {/* Advanced Modules Section */}
         <Collapsible open={modulesOpen} onOpenChange={setModulesOpen}>
