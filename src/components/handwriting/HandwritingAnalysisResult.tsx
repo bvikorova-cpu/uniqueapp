@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { SocialShareButtons } from "@/components/shared/SocialShareButtons";
 import {
   Brain,
   TrendingUp,
@@ -199,6 +200,16 @@ export const HandwritingAnalysisResult = ({
             </li>
           ))}
         </ul>
+      </Card>
+
+      {/* Social Share Section */}
+      <Card className="p-4 sm:p-6 bg-gradient-to-br from-purple-500/5 to-indigo-500/5">
+        <h3 className="text-base sm:text-lg font-bold mb-4 text-center">Share Your Results</h3>
+        <SocialShareButtons
+          title={`My Handwriting Analysis - ${getTypeLabel(analysis.analysis_type)}`}
+          description={`I just discovered my personality traits through handwriting analysis! My strengths include: ${analysis.strengths?.slice(0, 2).join(", ")}. Try it yourself!`}
+          hashtags={["HandwritingAnalysis", "PersonalityTest", "Graphology"]}
+        />
       </Card>
     </div>
   );
