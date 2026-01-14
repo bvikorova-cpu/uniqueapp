@@ -619,13 +619,24 @@ const App = () => {
                         <Route path="/time-capsule" element={<TimeCapsule />} />
                         <Route path="/home-decor-subscription" element={<HomeDecorSubscription />} />
                         <Route path="/holographic-avatars" element={<HolographicAvatars />} />
+                        {/* Crystal Energy Network */}
                         <Route path="/crystal-energy-network" element={<CrystalEnergyNetwork />} />
+                        <Route path="/crystal-energy" element={<CrystalEnergyNetwork />} />
                         <Route path="/crystal-marketplace" element={<CrystalMarketplace />} />
+                        {/* DNA Memory Network */}
                         <Route path="/dna-memory-network" element={<DNAMemoryNetwork />} />
+                        <Route path="/dna-memory" element={<DNAMemoryNetwork />} />
+                        {/* Reincarnation Social */}
                         <Route path="/reincarnation-social" element={<ReincarnationSocial />} />
+                        {/* Blockchain Confessions */}
                         <Route path="/blockchain-confessions" element={<BlockchainConfessions />} />
+                        <Route path="/confessions" element={<BlockchainConfessions />} />
+                        {/* Phobia Trading */}
                         <Route path="/phobia-trading" element={<PhobiaTrading />} />
+                        {/* Multiverse Network */}
                         <Route path="/multiverse-network" element={<MultiverseNetwork />} />
+                        <Route path="/multiverse" element={<MultiverseNetwork />} />
+                        {/* Live Concerts */}
                         <Route path="/live-concerts" element={<LiveConcerts />} />
                         <Route path="/musician-dashboard" element={<ProtectedRoute><MusicianDashboard /></ProtectedRoute>} />
                         <Route path="/coffee/leaderboard" element={<CoffeeCheckins />} />
