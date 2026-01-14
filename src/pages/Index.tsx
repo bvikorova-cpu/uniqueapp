@@ -16,7 +16,8 @@ import {
   ShoppingBag,
   Brain,
   TrendingUp,
-  Ghost
+  Ghost,
+  Building2
 } from "lucide-react";
 
 const Index = () => {
@@ -150,6 +151,96 @@ const Index = () => {
       badge: "Horror",
       badgeColor: "bg-purple-600",
       gradient: "from-purple-600 to-fuchsia-600"
+    },
+    {
+      title: "🎰 Lottery AI",
+      description: "AI-powered lottery number predictions with advanced pattern analysis",
+      icon: TrendingUp,
+      path: "/lottery-ai",
+      badge: "AI Predictions",
+      badgeColor: "bg-amber-600",
+      gradient: "from-amber-600 to-yellow-500"
+    },
+    {
+      title: "🏠 Property Marketplace",
+      description: "Professional real estate platform with premium listing packages",
+      icon: Building2,
+      path: "/property-marketplace",
+      badge: "Real Estate",
+      badgeColor: "bg-sky-600",
+      gradient: "from-sky-600 to-blue-500"
+    },
+    {
+      title: "👥 Membership Community",
+      description: "Exclusive social network with tiered membership benefits",
+      icon: Users,
+      path: "/membership-community",
+      badge: "Community",
+      badgeColor: "bg-rose-600",
+      gradient: "from-rose-600 to-pink-500"
+    },
+    {
+      title: "💎 Crystal Energy Network",
+      description: "Healing crystal marketplace with energy readings and subscriptions",
+      icon: Sparkles,
+      path: "/crystal-energy",
+      badge: "Wellness",
+      badgeColor: "bg-violet-600",
+      gradient: "from-violet-600 to-purple-500"
+    },
+    {
+      title: "🧬 DNA Memory Network",
+      description: "Unlock ancestral memories through DNA analysis and AI restoration",
+      icon: Brain,
+      path: "/dna-memory",
+      badge: "Heritage",
+      badgeColor: "bg-cyan-600",
+      gradient: "from-cyan-600 to-teal-500"
+    },
+    {
+      title: "🔮 Reincarnation Social",
+      description: "Discover past lives and connect with your soul family",
+      icon: Heart,
+      path: "/reincarnation-social",
+      badge: "Spiritual",
+      badgeColor: "bg-fuchsia-600",
+      gradient: "from-fuchsia-600 to-pink-500"
+    },
+    {
+      title: "⛓️ Blockchain Confessions",
+      description: "Anonymous confession platform with crypto rewards and voting",
+      icon: Ghost,
+      path: "/blockchain-confessions",
+      badge: "Anonymous",
+      badgeColor: "bg-slate-600",
+      gradient: "from-slate-600 to-gray-500"
+    },
+    {
+      title: "🕷️ Phobia Trading",
+      description: "Trade and overcome fears in a gamified therapeutic platform",
+      icon: Ghost,
+      path: "/phobia-trading",
+      badge: "Therapy",
+      badgeColor: "bg-orange-600",
+      gradient: "from-orange-600 to-amber-500"
+    },
+    {
+      title: "🌌 Multiverse Network",
+      description: "Explore parallel universe versions of yourself with AI analysis",
+      icon: Sparkles,
+      path: "/multiverse-network",
+      badge: "Exploration",
+      badgeColor: "bg-indigo-600",
+      gradient: "from-indigo-600 to-violet-500"
+    },
+    {
+      title: "🎵 Live Concerts",
+      description: "HD concert streaming with virtual gifts and VIP experiences",
+      icon: Video,
+      path: "/live-concerts",
+      badge: "Entertainment",
+      badgeColor: "bg-red-600",
+      gradient: "from-red-600 to-rose-500"
     }
   ];
   

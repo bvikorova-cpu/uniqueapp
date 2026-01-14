@@ -3,7 +3,23 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Settings } from "lucide-react";
+import { 
+  Settings, 
+  Ticket, 
+  Building2, 
+  Users, 
+  Gem, 
+  Dna, 
+  RotateCcw, 
+  Link2, 
+  Bug, 
+  Sparkles as SparklesIcon, 
+  Music,
+  ChevronDown,
+  ChevronUp
+} from "lucide-react";
+import { useState } from "react";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { NotificationBell } from "./NotificationBell";
 import { PrivacySettingsDialog } from "./PrivacySettingsDialog";
 import { MediaGalleryDialog } from "./MediaGalleryDialog";
@@ -15,6 +31,7 @@ interface WallSidebarProps {
 
 export function WallSidebar({ onPostCreated }: WallSidebarProps) {
   const navigate = useNavigate();
+  const [modulesOpen, setModulesOpen] = useState(false);
 
   const { data: user } = useQuery({
     queryKey: ["current-user"],
@@ -37,6 +54,19 @@ export function WallSidebar({ onPostCreated }: WallSidebarProps) {
     },
     enabled: !!user,
   });
+
+  const advancedModules = [
+    { name: "Lottery AI", path: "/lottery-ai", icon: Ticket, color: "text-amber-500" },
+    { name: "Property Marketplace", path: "/property-marketplace", icon: Building2, color: "text-sky-500" },
+    { name: "Membership Community", path: "/membership-community", icon: Users, color: "text-rose-500" },
+    { name: "Crystal Energy", path: "/crystal-energy", icon: Gem, color: "text-violet-500" },
+    { name: "DNA Memory", path: "/dna-memory", icon: Dna, color: "text-cyan-500" },
+    { name: "Reincarnation Social", path: "/reincarnation-social", icon: RotateCcw, color: "text-fuchsia-500" },
+    { name: "Blockchain Confessions", path: "/blockchain-confessions", icon: Link2, color: "text-slate-400" },
+    { name: "Phobia Trading", path: "/phobia-trading", icon: Bug, color: "text-orange-500" },
+    { name: "Multiverse Network", path: "/multiverse-network", icon: SparklesIcon, color: "text-indigo-500" },
+    { name: "Live Concerts", path: "/live-concerts", icon: Music, color: "text-red-500" },
+  ];
 
   return (
     <div className="w-64 lg:w-80 h-[calc(100vh-112px)] sticky top-0 border-r bg-card/30 backdrop-blur-xl overflow-y-auto">
@@ -80,13 +110,51 @@ export function WallSidebar({ onPostCreated }: WallSidebarProps) {
 
         <div className="h-px bg-border" />
 
+        {/* Advanced Modules Section */}
+        <Collapsible open={modulesOpen} onOpenChange={setModulesOpen}>
+          <CollapsibleTrigger asChild>
+            <Button
+              variant="ghost"
+              className="w-full justify-between gap-2.5 h-auto py-2.5 hover:bg-primary/10 rounded-lg"
+            >
+              <div className="flex items-center gap-2.5">
+                <SparklesIcon className="h-5 w-5 text-primary" />
+                <span className="font-medium text-sm">Advanced Modules</span>
+              </div>
+              {modulesOpen ? (
+                <ChevronUp className="h-4 w-4 text-muted-foreground" />
+              ) : (
+                <ChevronDown className="h-4 w-4 text-muted-foreground" />
+              )}
+            </Button>
+          </CollapsibleTrigger>
+          <CollapsibleContent className="space-y-1 mt-2">
+            {advancedModules.map((module) => {
+              const Icon = module.icon;
+              return (
+                <Button
+                  key={module.path}
+                  variant="ghost"
+                  className="w-full justify-start gap-2.5 h-auto py-2 hover:bg-accent/50 rounded-lg text-sm"
+                  onClick={() => navigate(module.path)}
+                >
+                  <Icon className={`h-4 w-4 ${module.color}`} />
+                  <span className="font-medium">{module.name}</span>
+                </Button>
+              );
+            })}
+          </CollapsibleContent>
+        </Collapsible>
+
+        <div className="h-px bg-border" />
+
         {/* Settings */}
         <Button
           variant="ghost"
           className="w-full justify-start gap-2.5 h-auto py-2 hover:bg-accent/50 rounded-lg"
           onClick={() => navigate("/settings")}
         >
-          <Settings className="h-5 w-5 text-gray-500" />
+          <Settings className="h-5 w-5 text-muted-foreground" />
           <span className="font-medium text-sm">Settings</span>
         </Button>
       </div>
