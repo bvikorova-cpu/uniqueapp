@@ -26,7 +26,14 @@ import {
   Star,
   MessageSquare,
   Brain,
-  Palette
+  Palette,
+  Apple,
+  PawPrint,
+  Trophy,
+  Mic2,
+  Image as ImageIcon,
+  Gift,
+  Plane
 } from "lucide-react";
 import { useState } from "react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
@@ -44,6 +51,7 @@ export function WallSidebar({ onPostCreated }: WallSidebarProps) {
   const [modulesOpen, setModulesOpen] = useState(false);
   const [ecosystemOpen, setEcosystemOpen] = useState(false);
   const [coreOpen, setCoreOpen] = useState(false);
+  const [entertainmentOpen, setEntertainmentOpen] = useState(false);
 
   const { data: user } = useQuery({
     queryKey: ["current-user"],
@@ -107,6 +115,20 @@ export function WallSidebar({ onPostCreated }: WallSidebarProps) {
     { name: "Phobia Trading", path: "/phobia-trading", icon: Bug, color: "text-orange-500" },
     { name: "Multiverse Network", path: "/multiverse-network", icon: SparklesIcon, color: "text-indigo-500" },
     { name: "Live Concerts", path: "/live-concerts", icon: Music, color: "text-red-500" },
+  ];
+
+  // Entertainment & Utility Modules (Batch 8)
+  const entertainmentModules = [
+    { name: "Nutrition Hub", path: "/nutrition-hub", icon: Apple, color: "text-green-500" },
+    { name: "Virtual Pet", path: "/virtual-pet", icon: PawPrint, color: "text-pink-500" },
+    { name: "Astrology", path: "/astrology", icon: Star, color: "text-purple-500" },
+    { name: "Character Arena", path: "/character-arena", icon: Trophy, color: "text-orange-500" },
+    { name: "Horse Racing", path: "/horse-racing", icon: Trophy, color: "text-amber-500" },
+    { name: "Comedy Club", path: "/comedy-club", icon: Mic2, color: "text-fuchsia-500" },
+    { name: "AI Tattoo", path: "/ai-tattoo", icon: ImageIcon, color: "text-slate-400" },
+    { name: "Mystery Box", path: "/mystery-box", icon: Gift, color: "text-violet-500" },
+    { name: "Secret Santa", path: "/secret-santa", icon: Gift, color: "text-rose-500" },
+    { name: "Vacationer", path: "/vacationer", icon: Plane, color: "text-sky-500" },
   ];
 
   return (
@@ -243,6 +265,42 @@ export function WallSidebar({ onPostCreated }: WallSidebarProps) {
           </CollapsibleTrigger>
           <CollapsibleContent className="space-y-1 mt-2">
             {advancedModules.map((module) => {
+              const Icon = module.icon;
+              return (
+                <Button
+                  key={module.path}
+                  variant="ghost"
+                  className="w-full justify-start gap-2.5 h-auto py-2 hover:bg-accent/50 rounded-lg text-sm"
+                  onClick={() => navigate(module.path)}
+                >
+                  <Icon className={`h-4 w-4 ${module.color}`} />
+                  <span className="font-medium">{module.name}</span>
+                </Button>
+              );
+            })}
+          </CollapsibleContent>
+        </Collapsible>
+
+        {/* Entertainment & Utility Modules Section */}
+        <Collapsible open={entertainmentOpen} onOpenChange={setEntertainmentOpen}>
+          <CollapsibleTrigger asChild>
+            <Button
+              variant="ghost"
+              className="w-full justify-between gap-2.5 h-auto py-2.5 hover:bg-primary/10 rounded-lg"
+            >
+              <div className="flex items-center gap-2.5">
+                <Gift className="h-5 w-5 text-violet-500" />
+                <span className="font-medium text-sm">Entertainment</span>
+              </div>
+              {entertainmentOpen ? (
+                <ChevronUp className="h-4 w-4 text-muted-foreground" />
+              ) : (
+                <ChevronDown className="h-4 w-4 text-muted-foreground" />
+              )}
+            </Button>
+          </CollapsibleTrigger>
+          <CollapsibleContent className="space-y-1 mt-2">
+            {entertainmentModules.map((module) => {
               const Icon = module.icon;
               return (
                 <Button
