@@ -17,12 +17,116 @@ import {
   Brain,
   TrendingUp,
   Ghost,
-  Building2
+  Building2,
+  Crown,
+  Clock,
+  Timer,
+  ChefHat,
+  MessageCircle,
+  Star,
+  MessageSquare,
+  Palette
 } from "lucide-react";
 
 const Index = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+
+  // Premium Ecosystem Modules (Featured Section)
+  const ecosystemModules = [
+    {
+      title: "👑 Holographic Avatars",
+      description: "AI-powered 3D avatars with breeding, battles, and autonomous personalities",
+      icon: Crown,
+      path: "/holographic-avatars",
+      badge: "3D AI",
+      badgeColor: "bg-purple-600",
+      gradient: "from-purple-600 to-pink-600",
+      featured: true
+    },
+    {
+      title: "⏰ Time Capsule 2.0",
+      description: "Send messages to the future with encrypted storage (1-20 years)",
+      icon: Clock,
+      path: "/time-capsule-subscription",
+      badge: "Future",
+      badgeColor: "bg-blue-600",
+      gradient: "from-blue-600 to-cyan-600"
+    },
+    {
+      title: "⏮️ Time Reversal Social",
+      description: "Live your life backwards with AI age transformation",
+      icon: Timer,
+      path: "/time-reversal-subscription",
+      badge: "Social",
+      badgeColor: "bg-violet-600",
+      gradient: "from-violet-600 to-purple-600"
+    },
+    {
+      title: "👨‍🍳 MasterChef Platform",
+      description: "Online cooking competitions with voting and prizes",
+      icon: ChefHat,
+      path: "/masterchef-subscription",
+      badge: "Competition",
+      badgeColor: "bg-orange-600",
+      gradient: "from-orange-600 to-red-600"
+    },
+    {
+      title: "🏎️ GP Fantasy Racing",
+      description: "3D racing with Three.js, team management, and leaderboards",
+      icon: Car,
+      path: "/f1-racing",
+      badge: "3D Racing",
+      badgeColor: "bg-red-600",
+      gradient: "from-red-600 to-orange-600",
+      featured: true
+    },
+    {
+      title: "💬 Messenger",
+      description: "Real-time chat with reactions, voice messages, and self-destructing messages",
+      icon: MessageCircle,
+      path: "/messenger",
+      badge: "Chat",
+      badgeColor: "bg-cyan-600",
+      gradient: "from-cyan-600 to-blue-600"
+    },
+    {
+      title: "⭐ Influ-King",
+      description: "Creator profiles with 12 categories, stats, and virtual gift monetization",
+      icon: Star,
+      path: "/influ-king",
+      badge: "Creators",
+      badgeColor: "bg-yellow-600",
+      gradient: "from-yellow-600 to-amber-600"
+    },
+    {
+      title: "💬 Megaforum",
+      description: "Open community forum with 9 categories (100% FREE)",
+      icon: MessageSquare,
+      path: "/megaforum",
+      badge: "Free",
+      badgeColor: "bg-emerald-600",
+      gradient: "from-emerald-600 to-green-600"
+    },
+    {
+      title: "🧠 Online Psychologist",
+      description: "Anonymous AI chat with empathetic streaming responses",
+      icon: Brain,
+      path: "/psychologist",
+      badge: "Anonymous",
+      badgeColor: "bg-pink-600",
+      gradient: "from-pink-600 to-rose-600"
+    },
+    {
+      title: "🎨 Content Studio",
+      description: "AI generation hub for social media, CVs, articles, and scripts",
+      icon: Palette,
+      path: "/content-studio",
+      badge: "AI Studio",
+      badgeColor: "bg-indigo-600",
+      gradient: "from-indigo-600 to-purple-600"
+    },
+  ];
 
   const services = [
     {
@@ -260,40 +364,86 @@ const Index = () => {
           </p>
         </div>
 
-        {/* Services Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-2 sm:gap-6">
-          {services.map((service, index) => {
-            const Icon = service.icon;
-            return (
-              <Card
-                key={index}
-                className={`group cursor-pointer border-2 hover:border-primary transition-all duration-300 hover:scale-[1.02] sm:hover:scale-105 hover:shadow-xl sm:hover:shadow-2xl ${
-                  service.featured ? "border-primary shadow-lg" : ""
-                }`}
-                onClick={() => navigate(service.path)}
-                style={{ animationDelay: `${index * 0.1}s` }}
-              >
-                <CardHeader className="p-3 sm:p-6">
-                  <div className={`w-10 h-10 sm:w-16 sm:h-16 rounded-full bg-gradient-to-br ${service.gradient} flex items-center justify-center mb-2 sm:mb-4 group-hover:scale-110 transition-transform duration-300`}>
-                    <Icon className="w-5 h-5 sm:w-8 sm:h-8 text-white" />
-                  </div>
-                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1 sm:gap-2">
-                    <CardTitle className="text-sm sm:text-xl group-hover:text-primary transition-colors line-clamp-2">
-                      {service.title}
+        {/* Ecosystem Modules Section */}
+        <div className="mb-8 sm:mb-12">
+          <div className="flex items-center gap-3 mb-4 sm:mb-6 px-2">
+            <Crown className="h-6 w-6 sm:h-8 sm:w-8 text-yellow-500" />
+            <h2 className="text-xl sm:text-3xl font-bold">Ecosystem Modules</h2>
+            <Badge className="bg-gradient-to-r from-yellow-500 to-amber-500 text-white">Premium</Badge>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-4">
+            {ecosystemModules.map((module, index) => {
+              const Icon = module.icon;
+              return (
+                <Card
+                  key={index}
+                  className={`group cursor-pointer border-2 hover:border-primary transition-all duration-300 hover:scale-[1.02] hover:shadow-xl ${
+                    module.featured ? "border-primary/50 shadow-lg" : ""
+                  }`}
+                  onClick={() => navigate(module.path)}
+                >
+                  <CardHeader className="p-3 sm:p-4">
+                    <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br ${module.gradient} flex items-center justify-center mb-2 group-hover:scale-110 transition-transform duration-300`}>
+                      <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                    </div>
+                    <CardTitle className="text-xs sm:text-sm group-hover:text-primary transition-colors line-clamp-2">
+                      {module.title}
                     </CardTitle>
-                    <Badge className={`${service.badgeColor} text-white text-[10px] sm:text-xs w-fit`}>
-                      {service.badge}
+                    <Badge className={`${module.badgeColor} text-white text-[8px] sm:text-[10px] w-fit mt-1`}>
+                      {module.badge}
                     </Badge>
-                  </div>
-                </CardHeader>
-                <CardContent className="p-3 pt-0 sm:p-6 sm:pt-0">
-                  <p className="text-muted-foreground text-xs sm:text-base line-clamp-2">
-                    {service.description}
-                  </p>
-                </CardContent>
-              </Card>
-            );
-          })}
+                  </CardHeader>
+                  <CardContent className="p-3 pt-0 sm:p-4 sm:pt-0">
+                    <p className="text-muted-foreground text-[10px] sm:text-xs line-clamp-2">
+                      {module.description}
+                    </p>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Services Grid */}
+        <div className="mb-6 sm:mb-8">
+          <div className="flex items-center gap-3 mb-4 sm:mb-6 px-2">
+            <Sparkles className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
+            <h2 className="text-xl sm:text-3xl font-bold">All Services</h2>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-2 sm:gap-6">
+            {services.map((service, index) => {
+              const Icon = service.icon;
+              return (
+                <Card
+                  key={index}
+                  className={`group cursor-pointer border-2 hover:border-primary transition-all duration-300 hover:scale-[1.02] sm:hover:scale-105 hover:shadow-xl sm:hover:shadow-2xl ${
+                    service.featured ? "border-primary shadow-lg" : ""
+                  }`}
+                  onClick={() => navigate(service.path)}
+                  style={{ animationDelay: `${index * 0.1}s` }}
+                >
+                  <CardHeader className="p-3 sm:p-6">
+                    <div className={`w-10 h-10 sm:w-16 sm:h-16 rounded-full bg-gradient-to-br ${service.gradient} flex items-center justify-center mb-2 sm:mb-4 group-hover:scale-110 transition-transform duration-300`}>
+                      <Icon className="w-5 h-5 sm:w-8 sm:h-8 text-white" />
+                    </div>
+                    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1 sm:gap-2">
+                      <CardTitle className="text-sm sm:text-xl group-hover:text-primary transition-colors line-clamp-2">
+                        {service.title}
+                      </CardTitle>
+                      <Badge className={`${service.badgeColor} text-white text-[10px] sm:text-xs w-fit`}>
+                        {service.badge}
+                      </Badge>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="p-3 pt-0 sm:p-6 sm:pt-0">
+                    <p className="text-muted-foreground text-xs sm:text-base line-clamp-2">
+                      {service.description}
+                    </p>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
         </div>
 
         {/* Footer CTA */}
