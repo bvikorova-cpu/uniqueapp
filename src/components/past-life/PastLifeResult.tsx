@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { SocialShareButtons } from "@/components/shared/SocialShareButtons";
 import { Clock, MapPin, Briefcase, Heart, Lightbulb } from "lucide-react";
 
 interface PastLife {
@@ -107,6 +108,16 @@ export const PastLifeResult = ({ reading }: PastLifeResultProps) => {
           </Card>
         ))}
       </div>
+
+      {/* Social Share Section */}
+      <Card className="p-4 sm:p-6 bg-gradient-to-br from-indigo-500/5 to-purple-500/5">
+        <h3 className="text-base sm:text-lg font-bold mb-4 text-center">Share Your Past Life Journey</h3>
+        <SocialShareButtons
+          title={`I Discovered My Past Lives!`}
+          description={`I was ${reading.pastLives[0]?.name || "someone fascinating"} in ${reading.pastLives[0]?.period || "a past life"}! My karmic theme: ${reading.overallKarmicTheme.slice(0, 100)}... Discover your own past lives!`}
+          hashtags={["PastLife", "Reincarnation", "KarmicJourney", "SpiritualDiscovery"]}
+        />
+      </Card>
     </div>
   );
 };
