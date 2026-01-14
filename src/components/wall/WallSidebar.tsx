@@ -43,6 +43,7 @@ export function WallSidebar({ onPostCreated }: WallSidebarProps) {
   const navigate = useNavigate();
   const [modulesOpen, setModulesOpen] = useState(false);
   const [ecosystemOpen, setEcosystemOpen] = useState(false);
+  const [coreOpen, setCoreOpen] = useState(false);
 
   const { data: user } = useQuery({
     queryKey: ["current-user"],
@@ -66,7 +67,21 @@ export function WallSidebar({ onPostCreated }: WallSidebarProps) {
     enabled: !!user,
   });
 
-  // Ecosystem Modules (The 10 core premium modules)
+  // Core Modules (The 10 requested modules from this task)
+  const coreModules = [
+    { name: "Character Companions", path: "/companions", icon: MessageCircle, color: "text-pink-500" },
+    { name: "Exclusive Experiences", path: "/ai-experiences", icon: SparklesIcon, color: "text-purple-500" },
+    { name: "Brand Builder", path: "/brand-builder", icon: Palette, color: "text-indigo-500" },
+    { name: "Home Designer", path: "/home-designer", icon: Building2, color: "text-sky-500" },
+    { name: "Beauty Studio", path: "/beauty-studio", icon: Star, color: "text-rose-500" },
+    { name: "Photo Restoration", path: "/photo-restoration", icon: RotateCcw, color: "text-amber-500" },
+    { name: "Antique Appraisal", path: "/antique-appraisal", icon: Gem, color: "text-orange-500" },
+    { name: "Collectibles", path: "/collectibles", icon: Crown, color: "text-violet-500" },
+    { name: "Dream Journal", path: "/dream-journal", icon: Brain, color: "text-blue-500" },
+    { name: "Fashion Studio", path: "/fashion-studio", icon: Palette, color: "text-fuchsia-500" },
+  ];
+
+  // Ecosystem Modules (The 10 premium ecosystem modules)
   const ecosystemModules = [
     { name: "Holographic Avatars", path: "/holographic-avatars", icon: Crown, color: "text-purple-500" },
     { name: "Time Capsule 2.0", path: "/time-capsule-subscription", icon: Clock, color: "text-blue-500" },
@@ -135,6 +150,42 @@ export function WallSidebar({ onPostCreated }: WallSidebarProps) {
         </div>
 
         <div className="h-px bg-border" />
+
+        {/* Core Modules Section (10 requested modules) */}
+        <Collapsible open={coreOpen} onOpenChange={setCoreOpen}>
+          <CollapsibleTrigger asChild>
+            <Button
+              variant="ghost"
+              className="w-full justify-between gap-2.5 h-auto py-2.5 hover:bg-primary/10 rounded-lg"
+            >
+              <div className="flex items-center gap-2.5">
+                <SparklesIcon className="h-5 w-5 text-primary" />
+                <span className="font-medium text-sm">Core Modules</span>
+              </div>
+              {coreOpen ? (
+                <ChevronUp className="h-4 w-4 text-muted-foreground" />
+              ) : (
+                <ChevronDown className="h-4 w-4 text-muted-foreground" />
+              )}
+            </Button>
+          </CollapsibleTrigger>
+          <CollapsibleContent className="space-y-1 mt-2">
+            {coreModules.map((module) => {
+              const Icon = module.icon;
+              return (
+                <Button
+                  key={module.path}
+                  variant="ghost"
+                  className="w-full justify-start gap-2.5 h-auto py-2 hover:bg-accent/50 rounded-lg text-sm"
+                  onClick={() => navigate(module.path)}
+                >
+                  <Icon className={`h-4 w-4 ${module.color}`} />
+                  <span className="font-medium">{module.name}</span>
+                </Button>
+              );
+            })}
+          </CollapsibleContent>
+        </Collapsible>
 
         {/* Ecosystem Modules Section (Premium 10) */}
         <Collapsible open={ecosystemOpen} onOpenChange={setEcosystemOpen}>
