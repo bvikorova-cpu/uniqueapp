@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { Upload, Sparkles, CheckCircle, Loader2 } from "lucide-react";
 import { useAncestorTwin } from "@/hooks/useAncestorTwin";
 import { supabase } from "@/integrations/supabase/client";
+import { SocialShareButtons } from "@/components/shared/SocialShareButtons";
 
 const AncestorTwinUpload = () => {
   const navigate = useNavigate();
@@ -211,7 +212,12 @@ const AncestorTwinUpload = () => {
               ))}
             </div>
 
-            <div className="text-center mt-8">
+            <div className="text-center mt-8 space-y-6">
+              <SocialShareButtons
+                title={`I found my historical twin: ${matchResults.matches[0]?.name} (${matchResults.matches[0]?.similarity}% match)!`}
+                description={`Discover your historical lookalike with Ancestor Twin Finder! I matched with ${matchResults.matches.length} famous figures from history.`}
+                hashtags={["AncestorTwin", "HistoricalDouble", "AI"]}
+              />
               <Button
                 onClick={() => navigate("/ancestor-twin")}
                 variant="outline"
