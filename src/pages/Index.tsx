@@ -25,7 +25,11 @@ import {
   MessageCircle,
   Star,
   MessageSquare,
-  Palette
+  Palette,
+  Camera,
+  Gem,
+  RotateCcw,
+  Shirt
 } from "lucide-react";
 
 const Index = () => {
@@ -125,6 +129,100 @@ const Index = () => {
       badge: "AI Studio",
       badgeColor: "bg-indigo-600",
       gradient: "from-indigo-600 to-purple-600"
+    },
+  ];
+
+  // Core Modules (10 key modules from the final mega-task)
+  const coreModules = [
+    {
+      title: "💬 Character Companions",
+      description: "Chat with 5 AI personas - motivators, comedians, therapists and more",
+      icon: MessageCircle,
+      path: "/companions",
+      badge: "5 Free Msgs",
+      badgeColor: "bg-pink-600",
+      gradient: "from-pink-600 to-rose-600"
+    },
+    {
+      title: "🌍 Exclusive Experiences",
+      description: "33 global destinations & fantasy worlds with AI virtual tours",
+      icon: Sparkles,
+      path: "/ai-experiences",
+      badge: "15 Credits",
+      badgeColor: "bg-purple-600",
+      gradient: "from-purple-600 to-violet-600"
+    },
+    {
+      title: "🎨 Brand Builder",
+      description: "Generate complete brand kits with logo, colors, slogan & strategy",
+      icon: Palette,
+      path: "/brand-builder",
+      badge: "15 Credits",
+      badgeColor: "bg-indigo-600",
+      gradient: "from-indigo-600 to-blue-600"
+    },
+    {
+      title: "🏠 Home Designer",
+      description: "AI room redesign + furniture marketplace with Stripe checkout",
+      icon: Building2,
+      path: "/home-designer",
+      badge: "Marketplace",
+      badgeColor: "bg-sky-600",
+      gradient: "from-sky-600 to-cyan-600"
+    },
+    {
+      title: "💄 Beauty Studio",
+      description: "Virtual makeup, hair styling, product recommendations & tutorials",
+      icon: Star,
+      path: "/beauty-studio",
+      badge: "2-5 Credits",
+      badgeColor: "bg-rose-600",
+      gradient: "from-rose-600 to-pink-600"
+    },
+    {
+      title: "📸 Photo Restoration",
+      description: "AI colorization, repair scratches, and enhance old photos",
+      icon: Camera,
+      path: "/photo-restoration",
+      badge: "1 Credit",
+      badgeColor: "bg-amber-600",
+      gradient: "from-amber-600 to-yellow-600"
+    },
+    {
+      title: "🏺 Antique Appraisal",
+      description: "AI identification, valuation & authenticity checks for antiques",
+      icon: Gem,
+      path: "/antique-appraisal",
+      badge: "3-20 Credits",
+      badgeColor: "bg-orange-600",
+      gradient: "from-orange-600 to-amber-600"
+    },
+    {
+      title: "✨ Collectibles",
+      description: "Mystery boxes, AI item generator & marketplace for trading",
+      icon: Crown,
+      path: "/collectibles",
+      badge: "10 Credits",
+      badgeColor: "bg-violet-600",
+      gradient: "from-violet-600 to-purple-600"
+    },
+    {
+      title: "🌙 Dream Journal",
+      description: "AI dream analysis, mood tracking & pattern visualization",
+      icon: Brain,
+      path: "/dream-journal",
+      badge: "Wellness",
+      badgeColor: "bg-blue-600",
+      gradient: "from-blue-600 to-indigo-600"
+    },
+    {
+      title: "👗 Fashion Studio",
+      description: "AI fashion generator, community gallery & design challenges",
+      icon: Shirt,
+      path: "/fashion-studio",
+      badge: "Creative",
+      badgeColor: "bg-fuchsia-600",
+      gradient: "from-fuchsia-600 to-pink-600"
     },
   ];
 
@@ -380,6 +478,44 @@ const Index = () => {
                   className={`group cursor-pointer border-2 hover:border-primary transition-all duration-300 hover:scale-[1.02] hover:shadow-xl ${
                     module.featured ? "border-primary/50 shadow-lg" : ""
                   }`}
+                  onClick={() => navigate(module.path)}
+                >
+                  <CardHeader className="p-3 sm:p-4">
+                    <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br ${module.gradient} flex items-center justify-center mb-2 group-hover:scale-110 transition-transform duration-300`}>
+                      <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                    </div>
+                    <CardTitle className="text-xs sm:text-sm group-hover:text-primary transition-colors line-clamp-2">
+                      {module.title}
+                    </CardTitle>
+                    <Badge className={`${module.badgeColor} text-white text-[8px] sm:text-[10px] w-fit mt-1`}>
+                      {module.badge}
+                    </Badge>
+                  </CardHeader>
+                  <CardContent className="p-3 pt-0 sm:p-4 sm:pt-0">
+                    <p className="text-muted-foreground text-[10px] sm:text-xs line-clamp-2">
+                      {module.description}
+                    </p>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Core Modules Section */}
+        <div className="mb-8 sm:mb-12">
+          <div className="flex items-center gap-3 mb-4 sm:mb-6 px-2">
+            <Sparkles className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
+            <h2 className="text-xl sm:text-3xl font-bold">Core Modules</h2>
+            <Badge className="bg-gradient-to-r from-primary to-accent text-white">AI-Powered</Badge>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-4">
+            {coreModules.map((module, index) => {
+              const Icon = module.icon;
+              return (
+                <Card
+                  key={index}
+                  className="group cursor-pointer border-2 hover:border-primary transition-all duration-300 hover:scale-[1.02] hover:shadow-xl"
                   onClick={() => navigate(module.path)}
                 >
                   <CardHeader className="p-3 sm:p-4">
