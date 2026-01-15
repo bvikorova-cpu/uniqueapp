@@ -33,7 +33,11 @@ import {
   Mic2,
   Image as ImageIcon,
   Gift,
-  Plane
+  Plane,
+  Heart,
+  Bot,
+  Globe,
+  Atom
 } from "lucide-react";
 import { useState } from "react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
@@ -52,6 +56,7 @@ export function WallSidebar({ onPostCreated }: WallSidebarProps) {
   const [ecosystemOpen, setEcosystemOpen] = useState(false);
   const [coreOpen, setCoreOpen] = useState(false);
   const [entertainmentOpen, setEntertainmentOpen] = useState(false);
+  const [visionaryOpen, setVisionaryOpen] = useState(false);
 
   const { data: user } = useQuery({
     queryKey: ["current-user"],
@@ -129,6 +134,19 @@ export function WallSidebar({ onPostCreated }: WallSidebarProps) {
     { name: "Mystery Box", path: "/mystery-box", icon: Gift, color: "text-violet-500" },
     { name: "Secret Santa", path: "/secret-santa", icon: Gift, color: "text-rose-500" },
     { name: "Vacationer", path: "/vacationer", icon: Plane, color: "text-sky-500" },
+  ];
+
+  // Visionary Social & Lifestyle Modules (Batch 9)
+  const visionaryModules = [
+    { name: "Dating", path: "/dating", icon: Heart, color: "text-rose-500" },
+    { name: "First Aid", path: "/first-aid", icon: SparklesIcon, color: "text-red-500" },
+    { name: "Fit & Slim", path: "/fit-slim", icon: Users, color: "text-green-500" },
+    { name: "Cooking", path: "/cooking", icon: ChefHat, color: "text-orange-500" },
+    { name: "Coffee", path: "/coffee", icon: Star, color: "text-amber-600" },
+    { name: "AI Clone", path: "/ai-clone", icon: Bot, color: "text-purple-500" },
+    { name: "Parallel Lives", path: "/parallel-lives", icon: Globe, color: "text-blue-500" },
+    { name: "Emotion Economy", path: "/emotion-economy", icon: Heart, color: "text-pink-500" },
+    { name: "Quantum Social", path: "/quantum-social", icon: Atom, color: "text-cyan-500" },
   ];
 
   return (
@@ -301,6 +319,42 @@ export function WallSidebar({ onPostCreated }: WallSidebarProps) {
           </CollapsibleTrigger>
           <CollapsibleContent className="space-y-1 mt-2">
             {entertainmentModules.map((module) => {
+              const Icon = module.icon;
+              return (
+                <Button
+                  key={module.path}
+                  variant="ghost"
+                  className="w-full justify-start gap-2.5 h-auto py-2 hover:bg-accent/50 rounded-lg text-sm"
+                  onClick={() => navigate(module.path)}
+                >
+                  <Icon className={`h-4 w-4 ${module.color}`} />
+                  <span className="font-medium">{module.name}</span>
+                </Button>
+              );
+            })}
+          </CollapsibleContent>
+        </Collapsible>
+
+        {/* Visionary Social & Lifestyle Modules Section (Batch 9) */}
+        <Collapsible open={visionaryOpen} onOpenChange={setVisionaryOpen}>
+          <CollapsibleTrigger asChild>
+            <Button
+              variant="ghost"
+              className="w-full justify-between gap-2.5 h-auto py-2.5 hover:bg-primary/10 rounded-lg"
+            >
+              <div className="flex items-center gap-2.5">
+                <Atom className="h-5 w-5 text-cyan-500" />
+                <span className="font-medium text-sm">Visionary Social</span>
+              </div>
+              {visionaryOpen ? (
+                <ChevronUp className="h-4 w-4 text-muted-foreground" />
+              ) : (
+                <ChevronDown className="h-4 w-4 text-muted-foreground" />
+              )}
+            </Button>
+          </CollapsibleTrigger>
+          <CollapsibleContent className="space-y-1 mt-2">
+            {visionaryModules.map((module) => {
               const Icon = module.icon;
               return (
                 <Button
