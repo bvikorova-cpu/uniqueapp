@@ -969,65 +969,125 @@ const FitSlim = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background pt-20 pb-12">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-primary bg-clip-text text-transparent">
-            Fit & Slim
-          </h1>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Your journey to a healthier lifestyle starts here. Find workouts, recipes and tips for better fitness.
-          </p>
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-green-950/30 px-6 pb-10 pt-28">
+      <div className="max-w-7xl mx-auto">
+        {/* Futuristic Header */}
+        <div className="mb-12">
+          <div className="flex items-center gap-4 mb-6">
+            <div className="p-4 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600 shadow-lg shadow-green-500/25 relative">
+              <Heart className="h-10 w-10 text-white" />
+              <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-green-400/20 to-emerald-500/20 animate-pulse" />
+            </div>
+            <div>
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-green-400 via-emerald-500 to-teal-500 bg-clip-text text-transparent">
+                Fit & Slim Academy
+              </h1>
+              <p className="text-muted-foreground text-lg">Your complete fitness and wellness companion</p>
+            </div>
+          </div>
+          
+          {/* Premium Stats Card */}
+          <Card className="bg-gradient-to-r from-green-500/10 via-emerald-500/10 to-teal-500/10 border-green-500/30 backdrop-blur-sm mb-8">
+            <CardContent className="pt-6">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-green-400">{weightLossVideos.length}</div>
+                  <div className="text-sm text-muted-foreground">Weight Loss Videos</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-emerald-400">{healthVideos.length}</div>
+                  <div className="text-sm text-muted-foreground">Health Videos</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-teal-400">{weightLossRecipes.length}+</div>
+                  <div className="text-sm text-muted-foreground">Slimming Recipes</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-cyan-400">{healthyRecipes.length}+</div>
+                  <div className="text-sm text-muted-foreground">Healthy Recipes</div>
+                </div>
+              </div>
+              <p className="text-center text-muted-foreground mt-4 max-w-3xl mx-auto">
+                Transform your body and mind with our curated collection of workout videos, expert-designed recipes, 
+                and comprehensive wellness programs. All content is 100% FREE!
+              </p>
+              <div className="flex justify-center mt-4">
+                <Badge className="bg-green-500/20 text-green-400 border-green-500/30 text-lg px-4 py-1">
+                  🆓 Completely FREE
+                </Badge>
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 mb-8">
-            <TabsTrigger value="weight-loss-videos">
+          <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 mb-8 bg-card/50 backdrop-blur-sm border border-border/50 p-1">
+            <TabsTrigger value="weight-loss-videos" className="data-[state=active]:bg-green-500/20 data-[state=active]:text-green-400">
               <Play className="h-4 w-4 mr-2" />
               Weight Loss
             </TabsTrigger>
-            <TabsTrigger value="health-videos">
+            <TabsTrigger value="health-videos" className="data-[state=active]:bg-green-500/20 data-[state=active]:text-green-400">
               <Heart className="h-4 w-4 mr-2" />
               Health
             </TabsTrigger>
-            <TabsTrigger value="weight-loss-recipes">
+            <TabsTrigger value="weight-loss-recipes" className="data-[state=active]:bg-green-500/20 data-[state=active]:text-green-400">
               <ChefHat className="h-4 w-4 mr-2" />
-              Weight Loss Recipes
+              Slimming Recipes
             </TabsTrigger>
-            <TabsTrigger value="healthy-recipes">
+            <TabsTrigger value="healthy-recipes" className="data-[state=active]:bg-green-500/20 data-[state=active]:text-green-400">
               <ChefHat className="h-4 w-4 mr-2" />
               Healthy Recipes
             </TabsTrigger>
           </TabsList>
 
           <TabsContent value="weight-loss-videos" className="space-y-6">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h2 className="text-2xl font-bold text-foreground">Weight Loss Workouts</h2>
+                <p className="text-muted-foreground">High-intensity training for maximum calorie burn</p>
+              </div>
+              <Badge className="bg-red-500/20 text-red-400 border-red-500/30">🔥 Fat Burning</Badge>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {weightLossVideos.map((video) => (
                 <Card 
                   key={video.id} 
-                  className="overflow-hidden hover:shadow-elegant transition-all cursor-pointer"
+                  className="bg-card/50 backdrop-blur-sm border-border/50 hover:border-green-500/50 overflow-hidden transition-all duration-300 cursor-pointer group hover:shadow-lg hover:shadow-green-500/10"
                   onClick={() => setSelectedVideo(video.videoUrl)}
                 >
-                  <div className="relative aspect-video">
+                  <div className="relative aspect-video overflow-hidden">
                     <img
                       src={video.thumbnail}
                       alt={video.title}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                     />
-                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center hover:bg-black/50 transition-colors">
-                      <Play className="h-16 w-16 text-white" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-background/20 to-transparent flex items-center justify-center">
+                      <div className="w-16 h-16 rounded-full bg-green-500/90 flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg shadow-green-500/30">
+                        <Play className="h-8 w-8 text-white ml-1" />
+                      </div>
                     </div>
-                    <Badge className="absolute top-2 right-2 bg-primary">
+                    <Badge className="absolute top-3 right-3 bg-green-500/90 text-white border-0">
                       <Clock className="h-3 w-3 mr-1" />
                       {video.duration}
                     </Badge>
+                    <Badge className="absolute top-3 left-3 bg-red-500/90 text-white border-0">
+                      🔥 {video.calories}
+                    </Badge>
                   </div>
-                  <CardHeader>
-                    <CardTitle className="text-lg">{video.title}</CardTitle>
-                    <CardDescription className="flex items-center justify-between">
-                      <span>Difficulty: {video.difficulty}</span>
-                      <span className="text-primary font-semibold">{video.calories}</span>
-                    </CardDescription>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-lg group-hover:text-green-400 transition-colors line-clamp-2">
+                      {video.title}
+                    </CardTitle>
+                    <div className="flex items-center justify-between">
+                      <Badge variant="outline" className={`
+                        ${video.difficulty === 'Easy' ? 'bg-green-500/10 text-green-400 border-green-500/30' : ''}
+                        ${video.difficulty === 'Medium' ? 'bg-yellow-500/10 text-yellow-400 border-yellow-500/30' : ''}
+                        ${video.difficulty === 'Hard' ? 'bg-red-500/10 text-red-400 border-red-500/30' : ''}
+                      `}>
+                        {video.difficulty}
+                      </Badge>
+                      <span className="text-sm text-muted-foreground">Click to play</span>
+                    </div>
                   </CardHeader>
                 </Card>
               ))}
@@ -1035,38 +1095,49 @@ const FitSlim = () => {
           </TabsContent>
 
           <TabsContent value="health-videos" className="space-y-6">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h2 className="text-2xl font-bold text-foreground">Health & Wellness</h2>
+                <p className="text-muted-foreground">Yoga, stretching, and mindfulness for better health</p>
+              </div>
+              <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30">💚 Wellness</Badge>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {healthVideos.map((video) => (
                 <Card 
                   key={video.id} 
-                  className="overflow-hidden hover:shadow-elegant transition-all cursor-pointer"
+                  className="bg-card/50 backdrop-blur-sm border-border/50 hover:border-emerald-500/50 overflow-hidden transition-all duration-300 cursor-pointer group hover:shadow-lg hover:shadow-emerald-500/10"
                   onClick={() => setSelectedVideo(video.videoUrl)}
                 >
-                  <div className="relative aspect-video">
+                  <div className="relative aspect-video overflow-hidden">
                     <img
                       src={video.thumbnail}
                       alt={video.title}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                     />
-                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center hover:bg-black/50 transition-colors">
-                      <Play className="h-16 w-16 text-white" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-background/20 to-transparent flex items-center justify-center">
+                      <div className="w-16 h-16 rounded-full bg-emerald-500/90 flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg shadow-emerald-500/30">
+                        <Play className="h-8 w-8 text-white ml-1" />
+                      </div>
                     </div>
-                    <Badge className="absolute top-2 right-2 bg-primary">
+                    <Badge className="absolute top-3 right-3 bg-emerald-500/90 text-white border-0">
                       <Clock className="h-3 w-3 mr-1" />
                       {video.duration}
                     </Badge>
+                    <Badge className="absolute top-3 left-3 bg-teal-500/90 text-white border-0">
+                      💚 {video.benefit}
+                    </Badge>
                   </div>
-                  <CardHeader>
-                    <CardTitle className="text-lg">{video.title}</CardTitle>
-                    <CardDescription>
-                      <span className="flex items-center justify-between">
-                        <span>Difficulty: {video.difficulty}</span>
-                        <span className="text-primary font-semibold flex items-center">
-                          <Heart className="h-3 w-3 mr-1" />
-                          {video.benefit}
-                        </span>
-                      </span>
-                    </CardDescription>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-lg group-hover:text-emerald-400 transition-colors line-clamp-2">
+                      {video.title}
+                    </CardTitle>
+                    <div className="flex items-center justify-between">
+                      <Badge variant="outline" className="bg-green-500/10 text-green-400 border-green-500/30">
+                        {video.difficulty}
+                      </Badge>
+                      <span className="text-sm text-muted-foreground">Click to play</span>
+                    </div>
                   </CardHeader>
                 </Card>
               ))}
@@ -1074,34 +1145,45 @@ const FitSlim = () => {
           </TabsContent>
 
           <TabsContent value="weight-loss-recipes" className="space-y-6">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h2 className="text-2xl font-bold text-foreground">Slimming Recipes</h2>
+                <p className="text-muted-foreground">Low-calorie, high-protein meals for weight loss</p>
+              </div>
+              <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/30">🥗 Low Calorie</Badge>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {weightLossRecipes.map((recipe) => (
                 <Card 
                   key={recipe.id} 
-                  className="overflow-hidden hover:shadow-elegant transition-all cursor-pointer"
+                  className="bg-card/50 backdrop-blur-sm border-border/50 hover:border-orange-500/50 overflow-hidden transition-all duration-300 cursor-pointer group hover:shadow-lg hover:shadow-orange-500/10"
                   onClick={() => setSelectedRecipe(recipe)}
                 >
-                  <div className="relative aspect-video">
+                  <div className="relative aspect-video overflow-hidden">
                     <img
                       src={recipe.image}
                       alt={recipe.title}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                     />
-                    <Badge className="absolute top-2 right-2 bg-primary">
+                    <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent" />
+                    <Badge className="absolute top-3 right-3 bg-orange-500/90 text-white border-0">
                       <Clock className="h-3 w-3 mr-1" />
                       {recipe.time}
                     </Badge>
+                    <Badge className="absolute top-3 left-3 bg-red-500/90 text-white border-0">
+                      🔥 {recipe.calories}
+                    </Badge>
                   </div>
-                  <CardHeader>
-                    <CardTitle className="text-lg hover:text-primary transition-colors">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-lg group-hover:text-orange-400 transition-colors line-clamp-2">
                       {recipe.title}
                     </CardTitle>
-                    <CardDescription>
-                      <span className="flex items-center justify-between mt-2">
-                        <span className="text-primary font-semibold">{recipe.calories}</span>
-                        <span>Protein: {recipe.protein}</span>
-                      </span>
-                    </CardDescription>
+                    <div className="flex items-center justify-between text-sm">
+                      <Badge variant="outline" className="bg-blue-500/10 text-blue-400 border-blue-500/30">
+                        💪 {recipe.protein} protein
+                      </Badge>
+                      <span className="text-muted-foreground">View recipe</span>
+                    </div>
                   </CardHeader>
                 </Card>
               ))}
@@ -1109,37 +1191,45 @@ const FitSlim = () => {
           </TabsContent>
 
           <TabsContent value="healthy-recipes" className="space-y-6">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h2 className="text-2xl font-bold text-foreground">Healthy Living Recipes</h2>
+                <p className="text-muted-foreground">Nutritious meals for a balanced lifestyle</p>
+              </div>
+              <Badge className="bg-teal-500/20 text-teal-400 border-teal-500/30">🌿 Nutritious</Badge>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {healthyRecipes.map((recipe) => (
                 <Card 
                   key={recipe.id} 
-                  className="overflow-hidden hover:shadow-elegant transition-all cursor-pointer"
+                  className="bg-card/50 backdrop-blur-sm border-border/50 hover:border-teal-500/50 overflow-hidden transition-all duration-300 cursor-pointer group hover:shadow-lg hover:shadow-teal-500/10"
                   onClick={() => setSelectedRecipe(recipe)}
                 >
-                  <div className="relative aspect-video">
+                  <div className="relative aspect-video overflow-hidden">
                     <img
                       src={recipe.image}
                       alt={recipe.title}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                     />
-                    <Badge className="absolute top-2 right-2 bg-primary">
+                    <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent" />
+                    <Badge className="absolute top-3 right-3 bg-teal-500/90 text-white border-0">
                       <Clock className="h-3 w-3 mr-1" />
                       {recipe.time}
                     </Badge>
+                    <Badge className="absolute top-3 left-3 bg-emerald-500/90 text-white border-0">
+                      🔥 {recipe.calories}
+                    </Badge>
                   </div>
-                  <CardHeader>
-                    <CardTitle className="text-lg hover:text-primary transition-colors">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-lg group-hover:text-teal-400 transition-colors line-clamp-2">
                       {recipe.title}
                     </CardTitle>
-                    <CardDescription>
-                      <span className="flex items-center justify-between mt-2">
-                        <span className="text-primary font-semibold">{recipe.calories}</span>
-                        <span className="flex items-center">
-                          <Heart className="h-3 w-3 mr-1" />
-                          {recipe.benefit}
-                        </span>
-                      </span>
-                    </CardDescription>
+                    <div className="flex items-center justify-between text-sm">
+                      <Badge variant="outline" className="bg-green-500/10 text-green-400 border-green-500/30">
+                        💚 {recipe.benefit}
+                      </Badge>
+                      <span className="text-muted-foreground">View recipe</span>
+                    </div>
                   </CardHeader>
                 </Card>
               ))}

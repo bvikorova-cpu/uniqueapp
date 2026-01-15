@@ -163,22 +163,46 @@ const Cooking = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-background/80 pt-20 pb-12">
-      <div className="container mx-auto px-4">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-primary rounded-2xl mb-4">
-            <ChefHat className="w-8 h-8 text-white" />
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-orange-950/30 px-6 pb-10 pt-28">
+      <div className="max-w-7xl mx-auto">
+        {/* Futuristic Header */}
+        <div className="mb-12">
+          <div className="flex items-center gap-4 mb-6">
+            <div className="p-4 rounded-2xl bg-gradient-to-br from-orange-500 to-red-600 shadow-lg shadow-orange-500/25 relative">
+              <ChefHat className="h-10 w-10 text-white" />
+              <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-orange-400/20 to-red-500/20 animate-pulse" />
+            </div>
+            <div>
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-orange-400 via-red-500 to-pink-500 bg-clip-text text-transparent">
+                AI Culinary Academy
+              </h1>
+              <p className="text-muted-foreground text-lg">Your personal AI-powered kitchen assistant</p>
+            </div>
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-primary bg-clip-text text-transparent">
-            Cooking & Recipes
-          </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Discover recipes for every occasion - from quick meals to gourmet dishes
-          </p>
-          <Badge variant="secondary" className="mt-4 text-lg px-4 py-2">
-            {totalRecipes}+ recipes
-          </Badge>
+          
+          {/* Premium Description Card */}
+          <Card className="bg-gradient-to-r from-orange-500/10 via-red-500/10 to-pink-500/10 border-orange-500/30 backdrop-blur-sm mb-8">
+            <CardContent className="pt-6">
+              <div className="grid md:grid-cols-3 gap-6">
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-orange-400">{totalRecipes}+</div>
+                  <div className="text-sm text-muted-foreground">Premium Recipes</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-red-400">6</div>
+                  <div className="text-sm text-muted-foreground">AI Cooking Tools</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-pink-400">14</div>
+                  <div className="text-sm text-muted-foreground">Recipe Categories</div>
+                </div>
+              </div>
+              <p className="text-center text-muted-foreground mt-4 max-w-3xl mx-auto">
+                Welcome to the ultimate culinary experience. Discover world-class recipes, generate custom meals from your ingredients, 
+                scan food for instant nutrition facts, and chat with our AI chef for expert guidance.
+              </p>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Search */}
@@ -210,46 +234,42 @@ const Cooking = () => {
           </Dialog>
         </div>
 
-        {/* AI Features Section */}
+        {/* AI Features Section - Premium Cards */}
         <div className="mb-12">
           <div className="flex items-center justify-between mb-6">
-            <div>
-              <h2 className="text-2xl font-bold flex items-center gap-2">
-                <Sparkles className="h-6 w-6 text-primary" />
-                AI Cooking Tools
-              </h2>
-              <p className="text-muted-foreground mb-4">Try our AI-powered features that make cooking easier and more enjoyable</p>
-              <div className="text-sm text-muted-foreground space-y-1 max-w-3xl">
-                <p>• <strong>Recipe Generator:</strong> Enter ingredients you have at home and AI creates custom recipes</p>
-                <p>• <strong>Meal Planner:</strong> Get personalized weekly meal plans based on your dietary preferences and calorie goals</p>
-                <p>• <strong>Food Scanner:</strong> Take a photo of your meal to instantly analyze nutritional values and calories</p>
-                <p>• <strong>Menu Analyzer:</strong> Upload restaurant menus for healthy recommendations and allergen information</p>
-                <p>• <strong>AI Chef Chat:</strong> Ask cooking questions and get expert advice from our AI chef assistant</p>
-                <p>• <strong>Wine Pairing:</strong> Discover perfect wine and beverage matches for your dishes</p>
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-xl bg-gradient-to-br from-orange-500/20 to-red-500/20">
+                <Sparkles className="h-6 w-6 text-orange-400" />
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold text-foreground">AI Cooking Tools</h2>
+                <p className="text-muted-foreground text-sm">6 powerful AI-powered features at your fingertips</p>
               </div>
             </div>
             <Button 
-              variant="outline" 
               onClick={() => navigate('/cooking-ai')}
-              className="gap-2"
+              className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600"
             >
-              View All
+              View All Tools
             </Button>
           </div>
           
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             {aiFeatures.map((feature, idx) => (
               <Card 
                 key={idx}
-                className="cursor-pointer hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+                className="bg-card/50 backdrop-blur-sm border-border/50 hover:border-orange-500/50 cursor-pointer transition-all duration-300 hover:-translate-y-2 hover:shadow-lg hover:shadow-orange-500/10 group"
                 onClick={() => navigate(feature.path)}
               >
-                <CardContent className="p-2 sm:p-4 text-center">
-                  <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-r ${feature.color} flex items-center justify-center mx-auto mb-2 sm:mb-3`}>
-                    <feature.icon className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
+                <CardContent className="p-4 text-center">
+                  <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${feature.color} flex items-center justify-center mx-auto mb-3 shadow-lg group-hover:scale-110 transition-transform`}>
+                    <feature.icon className="h-7 w-7 text-white" />
                   </div>
-                  <h3 className="font-semibold text-xs sm:text-sm mb-1">{feature.title}</h3>
-                  <p className="text-xs text-muted-foreground hidden sm:block">{feature.description}</p>
+                  <h3 className="font-semibold text-sm mb-1">{feature.title}</h3>
+                  <p className="text-xs text-muted-foreground line-clamp-2">{feature.description}</p>
+                  <Badge className="mt-2 bg-orange-500/20 text-orange-400 border-orange-500/30 text-xs">
+                    AI Powered
+                  </Badge>
                 </CardContent>
               </Card>
             ))}
@@ -278,48 +298,57 @@ const Cooking = () => {
               </div>
             ) : (
               <>
-                {/* Recipe Grid */}
+                {/* Recipe Grid - Premium Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                   {filteredRecipes.map((recipe) => (
-                    <Card key={recipe.id} className="group hover:shadow-elegant transition-all duration-300 overflow-hidden">
+                    <Card 
+                      key={recipe.id} 
+                      className="bg-card/50 backdrop-blur-sm border-border/50 hover:border-orange-500/50 group transition-all duration-300 overflow-hidden hover:shadow-xl hover:shadow-orange-500/10"
+                    >
                       <div className="relative overflow-hidden">
                         <img
                           src={recipe.image_url}
                           alt={recipe.title}
-                          className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-300"
+                          className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500"
                         />
-                        <div className="absolute top-2 right-2">
-                          <Button 
-                            size="sm" 
-                            variant="premium"
-                            className="pointer-events-none"
-                          >
+                        <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                        <div className="absolute top-3 right-3">
+                          <Badge className={`${getDifficultyColor(recipe.difficulty)} backdrop-blur-sm`}>
                             {recipe.difficulty}
-                          </Button>
+                          </Badge>
+                        </div>
+                        <div className="absolute top-3 left-3">
+                          <Badge className="bg-orange-500/90 text-white border-0">
+                            {recipe.category}
+                          </Badge>
                         </div>
                       </div>
-                      <CardHeader>
-                        <CardTitle className="line-clamp-1">{recipe.title}</CardTitle>
-                        <CardDescription className="line-clamp-2">
+                      <CardHeader className="pb-2">
+                        <CardTitle className="line-clamp-1 text-lg group-hover:text-orange-400 transition-colors">
+                          {recipe.title}
+                        </CardTitle>
+                        <CardDescription className="line-clamp-2 text-sm">
                           {recipe.description}
                         </CardDescription>
                       </CardHeader>
                       <CardContent className="space-y-3">
-                        <div className="flex items-center justify-between text-sm text-muted-foreground">
-                          <div className="flex items-center gap-1">
+                        <div className="flex items-center justify-between text-sm">
+                          <div className="flex items-center gap-1 text-orange-400">
                             <Clock className="w-4 h-4" />
                             <span>{recipe.time}</span>
                           </div>
-                          <div className="flex items-center gap-1">
+                          <div className="flex items-center gap-1 text-muted-foreground">
                             <Users className="w-4 h-4" />
                             <span>{recipe.servings} servings</span>
                           </div>
                         </div>
                         <div className="flex items-center justify-between">
-                          <Badge variant="outline">{recipe.calories} kcal</Badge>
+                          <Badge variant="outline" className="bg-red-500/10 text-red-400 border-red-500/30">
+                            🔥 {recipe.calories} kcal
+                          </Badge>
                           <Button 
                             size="sm" 
-                            variant="premium"
+                            className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600"
                             onClick={() => handleRecipeClick(recipe)}
                           >
                             View Recipe
