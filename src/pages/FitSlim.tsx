@@ -318,320 +318,161 @@ const FitSlim = () => {
   const weightLossRecipes = [
     {
       id: 1,
-      title: "Vegetable Salad with Grilled Chicken",
+      title: "Grilled Chicken Salad with Citrus Vinaigrette",
       calories: "320 kcal",
       protein: "35g",
       time: "20 min",
       image: grilledChickenSalad,
       ingredients: [
-        "200g chicken breast",
-        "100g mixed green salads",
-        "1 tomato",
-        "1/2 cucumber",
-        "50g cherry tomatoes",
-        "2 tablespoons olive oil",
-        "1 tablespoon lemon juice",
-        "salt, black pepper",
-        "fresh herbs to taste"
+        "200g boneless chicken breast fillet",
+        "100g mixed baby greens (arugula, spinach, lettuce)",
+        "1 large ripe tomato (approximately 150g)",
+        "½ medium cucumber (approximately 120g)",
+        "50g cherry tomatoes, halved",
+        "30ml extra virgin olive oil",
+        "15ml fresh lemon juice",
+        "2g sea salt",
+        "1g freshly ground black pepper",
+        "5g fresh mixed herbs (basil, parsley, dill)"
       ],
-      instructions: "1. Season the chicken breast with salt and pepper.\n2. Grill on a pan or grill for 5-7 minutes on each side.\n3. Wash and chop the vegetables.\n4. In a bowl, mix the salads, chopped tomato, cucumber and cherry tomatoes.\n5. Prepare dressing from olive oil and lemon juice.\n6. Slice the grilled chicken.\n7. Add the chicken to the vegetables, pour the dressing and sprinkle with herbs."
+      instructions: "Begin by seasoning the 200g chicken breast evenly with sea salt and freshly ground black pepper on both sides. Heat a grill pan or skillet over medium-high heat and cook the chicken for 5-7 minutes per side until the internal temperature reaches 75°C and juices run clear. While the chicken rests, thoroughly wash all vegetables under cold running water. Dice the large tomato into bite-sized cubes, slice the cucumber into thin half-moons, and halve the cherry tomatoes. In a large mixing bowl, combine the baby greens with all chopped vegetables. In a small bowl, whisk together the olive oil and lemon juice to create a simple vinaigrette. Slice the grilled chicken against the grain into thin strips. Toss the salad with the dressing, top with sliced chicken, and finish with freshly chopped herbs for a burst of fresh flavor."
     },
     {
       id: 2,
-      title: "Quinoa with Roasted Vegetables",
+      title: "Roasted Rainbow Vegetable Quinoa Bowl",
       calories: "280 kcal",
       protein: "12g",
       time: "30 min",
       image: quinoaRoastedVegetables,
       ingredients: [
-        "150g quinoa",
-        "1 red bell pepper",
-        "1 zucchini",
-        "1 eggplant",
-        "200g cherry tomatoes",
-        "2 cloves of garlic",
-        "3 tablespoons olive oil",
-        "salt, pepper",
-        "fresh thyme"
+        "150g dried quinoa (white or tri-color)",
+        "1 medium red bell pepper (approximately 180g)",
+        "1 medium zucchini (approximately 200g)",
+        "1 small eggplant (approximately 250g)",
+        "200g cherry tomatoes on the vine",
+        "2 large garlic cloves, minced (approximately 8g)",
+        "45ml extra virgin olive oil",
+        "3g sea salt",
+        "2g ground black pepper",
+        "5g fresh thyme leaves"
       ],
-      instructions: "1. Rinse quinoa and cook according to package instructions (usually 15 minutes).\n2. Cut vegetables into cubes.\n3. Preheat oven to 200°C.\n4. Toss vegetables with olive oil, pressed garlic and pepper.\n5. Spread on a baking sheet and bake for 20-25 minutes.\n6. Add roasted vegetables to cooked quinoa.\n7. Season with fresh thyme and serve warm."
+      instructions: "Preheat your oven to 200°C (400°F) and line a large baking sheet with parchment paper. Rinse the quinoa thoroughly under cold water using a fine-mesh strainer to remove any bitterness, then cook according to package directions (typically 15 minutes in boiling water with a 2:1 water-to-quinoa ratio). While the quinoa cooks, dice the bell pepper, zucchini, and eggplant into uniform 2cm cubes for even roasting. In a large mixing bowl, toss the chopped vegetables with olive oil, minced garlic, salt, and pepper until evenly coated. Spread the vegetables in a single layer on the prepared baking sheet and roast for 20-25 minutes, tossing halfway through, until they develop golden-brown caramelized edges. Once the quinoa is cooked and the vegetables are roasted, fluff the quinoa with a fork and gently fold in the roasted vegetables. Finish with fresh thyme leaves and serve warm as a complete plant-based meal."
     },
     {
       id: 3,
-      title: "Protein Smoothie with Fruit",
+      title: "Vanilla Berry Protein Power Smoothie",
       calories: "250 kcal",
       protein: "25g",
       time: "5 min",
       image: proteinSmoothie,
       ingredients: [
-        "1 banana",
+        "1 medium ripe banana (approximately 120g)",
         "150g frozen strawberries",
-        "30g protein powder (vanilla)",
-        "200ml almond milk",
-        "1 tablespoon chia seeds",
-        "1 teaspoon honey",
-        "ice to taste"
+        "30g vanilla protein powder (whey or plant-based)",
+        "200ml unsweetened almond milk",
+        "15g chia seeds",
+        "5ml honey or maple syrup",
+        "50g ice cubes"
       ],
-      instructions: "1. Peel and break the banana into pieces.\n2. Put banana, strawberries, protein powder and almond milk into the blender.\n3. Add chia seeds and honey.\n4. Blend on high speed for 1-2 minutes until smooth.\n5. If you want a colder drink, add ice and blend briefly again.\n6. Pour into a glass and serve immediately."
+      instructions: "Peel the ripe banana and break it into 3-4 chunks for easier blending. Add the banana pieces, frozen strawberries, and protein powder to a high-powered blender. Pour in the almond milk, which serves as the liquid base for a smooth consistency. Add the chia seeds for an omega-3 boost and fiber content, along with honey for natural sweetness. Blend on high speed for 60-90 seconds until the mixture is completely smooth and creamy with no visible lumps. If you prefer a thicker, frostier texture, add ice cubes and blend for an additional 20-30 seconds. Pour immediately into a tall glass and enjoy this protein-packed post-workout recovery drink or energizing breakfast replacement."
     },
     {
       id: 4,
-      title: "Vegetable Soup with Lentils",
+      title: "Hearty Red Lentil Vegetable Soup",
       calories: "210 kcal",
       protein: "15g",
       time: "35 min",
       image: lentilSoup,
       ingredients: [
-        "150g red lentils",
-        "2 carrots",
-        "1 celery",
-        "1 onion",
-        "2 cloves of garlic",
-        "1 tablespoon tomato paste",
-        "1 tablespoon olive oil",
-        "1l vegetable broth",
-        "salt, pepper, cumin"
+        "150g dried red lentils, rinsed",
+        "2 medium carrots (approximately 150g), diced",
+        "1 large celery stalk (approximately 80g), chopped",
+        "1 medium yellow onion (approximately 120g), finely diced",
+        "2 large garlic cloves (approximately 8g), minced",
+        "30g tomato paste",
+        "15ml olive oil",
+        "1000ml low-sodium vegetable broth",
+        "3g sea salt",
+        "2g ground black pepper",
+        "2g ground cumin"
       ],
-      instructions: "1. Finely chop the onion and garlic and fry in olive oil.\n2. Add chopped carrots and celery, fry for 5 minutes.\n3. Add tomato paste and lentils.\n4. Pour vegetable broth and cook for 25-30 minutes.\n5. Season with salt, pepper and cumin.\n6. Optionally blend the soup or leave with vegetable pieces."
+      instructions: "Heat the olive oil in a large soup pot over medium heat until shimmering. Add the finely diced onion and minced garlic, sautéing for 3-4 minutes until the onion becomes translucent and fragrant. Stir in the chopped carrots and celery, continuing to cook for an additional 5 minutes to develop deeper flavors. Add the tomato paste and stir continuously for 1 minute to caramelize it slightly, which enhances the soup's umami depth. Pour in the rinsed red lentils followed by the vegetable broth, stirring to combine all ingredients. Bring the soup to a rolling boil, then reduce heat to low and simmer uncovered for 25-30 minutes until the lentils are completely tender and breaking apart. Season with salt, pepper, and cumin, adjusting to taste. For a creamier texture, use an immersion blender to partially puree the soup, or leave it chunky for more texture."
     },
     {
       id: 5,
-      title: "Grilled Salmon with Brussels Sprouts",
+      title: "Herb-Crusted Salmon with Roasted Brussels Sprouts",
       calories: "340 kcal",
       protein: "38g",
       time: "25 min",
       image: grilledSalmonBrussels,
       ingredients: [
-        "200g salmon",
-        "300g Brussels sprouts",
-        "2 tablespoons olive oil",
-        "1 lemon",
-        "2 cloves of garlic",
-        "salt, black pepper",
-        "fresh dill"
+        "200g fresh salmon fillet, skin removed",
+        "300g fresh Brussels sprouts, trimmed and halved",
+        "30ml extra virgin olive oil",
+        "1 medium lemon (approximately 60g), zested and juiced",
+        "2 large garlic cloves (approximately 8g), pressed",
+        "3g sea salt",
+        "2g freshly ground black pepper",
+        "10g fresh dill, finely chopped"
       ],
-      instructions: "1. Preheat oven to 200°C.\n2. Season salmon with salt, pepper and drizzle with lemon.\n3. Cut Brussels sprouts in half and toss with olive oil and pressed garlic.\n4. Place salmon and Brussels sprouts on a baking sheet lined with parchment paper.\n5. Bake for 18-20 minutes.\n6. Serve with fresh dill and lemon slices."
+      instructions: "Preheat your oven to 200°C (400°F) and line a large baking sheet with parchment paper for easy cleanup. Pat the salmon fillet completely dry with paper towels to ensure proper seasoning adhesion. Season both sides of the salmon generously with salt, pepper, and fresh lemon zest, then drizzle with 10ml of olive oil and set aside. In a large mixing bowl, toss the halved Brussels sprouts with the remaining 20ml olive oil, pressed garlic, and a pinch of salt and pepper until evenly coated. Arrange the Brussels sprouts cut-side down on one side of the prepared baking sheet and place the seasoned salmon on the other side. Roast everything together for 18-20 minutes, until the salmon flakes easily with a fork and the Brussels sprouts are caramelized with crispy, golden-brown edges. Remove from the oven, squeeze fresh lemon juice over both the salmon and vegetables, and garnish generously with chopped fresh dill before serving."
     },
     {
       id: 6,
-      title: "Vegetable Wrap with Hummus",
+      title: "Mediterranean Vegetable Wrap with Creamy Hummus",
       calories: "290 kcal",
       protein: "14g",
       time: "15 min",
       image: vegetableWrapHummus,
       ingredients: [
-        "2 whole wheat tortillas",
-        "100g hummus",
-        "1 bell pepper",
-        "1/2 cucumber",
-        "50g baby spinach",
-        "50g red cabbage",
-        "1 carrot",
-        "lemon juice"
+        "2 large whole wheat tortillas (approximately 80g each)",
+        "100g store-bought or homemade hummus",
+        "1 medium red bell pepper (approximately 150g), julienned",
+        "½ medium cucumber (approximately 100g), thinly sliced",
+        "50g fresh baby spinach leaves",
+        "50g red cabbage, finely shredded",
+        "1 medium carrot (approximately 80g), julienned or shaved",
+        "15ml fresh lemon juice",
+        "2g flaky sea salt"
       ],
-      instructions: "1. Wash and cut vegetables into thin strips.\n2. Spread out tortillas and spread with hummus.\n3. On one half of the tortilla, place spinach and sliced vegetables.\n4. Drizzle with lemon juice.\n5. Roll the tortillas tightly.\n6. Cut in half and serve."
+      instructions: "Wash and thoroughly dry all fresh vegetables to prevent the wrap from becoming soggy. Using a sharp knife, julienne the red bell pepper and carrot into thin matchstick strips for easier wrapping and better texture. Thinly slice the cucumber into rounds and finely shred the red cabbage for optimal distribution. Lay the two whole wheat tortillas flat on a clean work surface and spread 50g of hummus evenly across the center of each tortilla, leaving a 2cm border around the edges. Layer the baby spinach leaves first to create a moisture barrier, then arrange the julienned pepper, cucumber slices, shredded cabbage, and carrot strips in neat rows. Drizzle fresh lemon juice over the vegetables and sprinkle with flaky sea salt for brightness. Fold in the sides of the tortilla, then roll tightly from the bottom up, tucking as you go to create a compact wrap. Slice each wrap diagonally in half and serve immediately, or wrap tightly in foil for a portable lunch."
     },
     {
       id: 7,
-      title: "Cottage Cheese with Cucumber and Tomatoes",
+      title: "Cottage Cheese Bowl with Fresh Vegetables",
       calories: "180 kcal",
       protein: "20g",
       time: "10 min",
       image: cottageCheeseVegetables,
       ingredients: [
-        "200g cottage cheese",
-        "1 cucumber",
-        "2 tomatoes",
-        "spring onion",
-        "fresh basil",
-        "olive oil",
-        "salt, pepper"
+        "200g low-fat cottage cheese (2% milkfat)",
+        "1 medium cucumber (approximately 150g), diced",
+        "2 medium ripe tomatoes (approximately 200g), diced",
+        "2 spring onions (approximately 20g), thinly sliced",
+        "10g fresh basil leaves, torn",
+        "10ml extra virgin olive oil",
+        "2g sea salt",
+        "1g freshly ground black pepper"
       ],
-      instructions: "1. Wash and dice the cucumber and tomatoes.\n2. Slice the spring onion into rings.\n3. In a bowl, mix cottage cheese, chopped vegetables and onion.\n4. Add chopped basil.\n5. Season with salt, pepper and a drop of olive oil.\n6. Serve chilled."
+      instructions: "Thoroughly wash and dice the cucumber and tomatoes into uniform small cubes for the best texture and flavor distribution. Thinly slice the spring onions, including the tender green parts, which add a mild onion flavor without overpowering the dish. Transfer the cottage cheese to a large mixing bowl and fold in the diced cucumber, tomatoes, and sliced spring onions, mixing gently to combine while maintaining the cottage cheese's texture. Tear fresh basil leaves by hand rather than chopping them with a knife, as this prevents bruising and preserves their aromatic oils. Season the mixture with sea salt and freshly ground black pepper, adjusting to your taste preference. Drizzle the olive oil over the top and give everything one final gentle stir to incorporate. Serve immediately in a chilled bowl for the freshest taste and crispest vegetable texture."
     },
     {
       id: 8,
-      title: "Spinach Omelette",
+      title: "Mediterranean Spinach and Feta Omelette",
       calories: "240 kcal",
       protein: "22g",
       time: "12 min",
       image: spinachOmelette,
       ingredients: [
-        "3 eggs",
-        "100g fresh spinach",
-        "30g feta cheese",
-        "1 clove of garlic",
-        "1 tablespoon olive oil",
-        "salt, pepper"
+        "3 large eggs (approximately 180g total)",
+        "100g fresh baby spinach leaves",
+        "30g crumbled feta cheese",
+        "1 large garlic clove (approximately 4g), pressed",
+        "15ml extra virgin olive oil",
+        "2g sea salt",
+        "1g freshly ground black pepper"
       ],
-      instructions: "1. Beat eggs in a bowl, season with salt and pepper.\n2. Wash and roughly chop the spinach.\n3. Heat olive oil in a pan and fry the pressed garlic.\n4. Add spinach and fry for 2 minutes.\n5. Pour in the beaten eggs and sprinkle with crumbled feta.\n6. Cook on medium heat for 5-7 minutes until the omelette sets."
-    },
-    {
-      id: 9,
-      title: "Tuna Chunks with Avocado",
-      calories: "310 kcal",
-      protein: "30g",
-      time: "10 min",
-      image: tunaAvocado,
-      ingredients: [
-        "150g canned tuna",
-        "1 avocado",
-        "50g cherry tomatoes",
-        "lemon juice",
-        "spring onion",
-        "salt, pepper",
-        "fresh parsley"
-      ],
-      instructions: "1. Drain tuna and flake with a fork.\n2. Halve avocado, remove pit and dice.\n3. Halve cherry tomatoes.\n4. Slice spring onion into rings.\n5. Mix all ingredients in a bowl.\n6. Season with lemon juice, salt and pepper, sprinkle with parsley."
-    },
-    {
-      id: 10,
-      title: "Chicken with Chili and Green Beans",
-      calories: "295 kcal",
-      protein: "32g",
-      time: "22 min",
-      image: chickenChiliBeans,
-      ingredients: [
-        "200g chicken breast",
-        "200g green beans",
-        "1 chili pepper",
-        "2 cloves of garlic",
-        "ginger",
-        "soy sauce",
-        "sesame oil",
-        "salt, pepper"
-      ],
-      instructions: "1. Cut chicken into pieces and season.\n2. Clean and chop green beans.\n3. Heat sesame oil in a pan.\n4. Fry garlic, ginger and chili.\n5. Add chicken and fry for 10 minutes.\n6. Add beans, soy sauce and simmer for 8 minutes."
-    },
-    {
-      id: 11,
-      title: "Vegetable Curry with Chickpeas",
-      calories: "265 kcal",
-      protein: "16g",
-      time: "28 min",
-      image: vegetableCurryChickpeas,
-      ingredients: [
-        "200g chickpeas (canned)",
-        "1 bell pepper",
-        "1 zucchini",
-        "1 onion",
-        "400ml coconut milk",
-        "2 tablespoons curry paste",
-        "spinach",
-        "salt, pepper"
-      ],
-      instructions: "1. Chop onion and fry in oil.\n2. Add curry paste and fry for 1 minute.\n3. Add chopped bell pepper and zucchini.\n4. Pour coconut milk and add drained chickpeas.\n5. Cook for 15 minutes on low heat.\n6. Finally add spinach and season to taste."
-    },
-    {
-      id: 12,
-      title: "Baked Cod with Lemon",
-      calories: "260 kcal",
-      protein: "34g",
-      time: "20 min",
-      image: bakedCodLemon,
-      ingredients: [
-        "200g cod fillet",
-        "1 lemon",
-        "2 cloves of garlic",
-        "olive oil",
-        "fresh thyme",
-        "salt, pepper",
-        "cherry tomatoes"
-      ],
-      instructions: "1. Preheat oven to 200°C.\n2. Place cod on a baking sheet, drizzle with olive oil.\n3. Season with salt, pepper, pressed garlic and thyme.\n4. Add lemon slices and cherry tomatoes.\n5. Bake for 15-18 minutes.\n6. Serve with fresh lemon."
-    },
-    {
-      id: 13,
-      title: "Tofu and Brown Rice Bowl",
-      calories: "330 kcal",
-      protein: "18g",
-      time: "25 min",
-      image: tofuBrownRiceBowl,
-      ingredients: [
-        "150g tofu",
-        "100g brown rice",
-        "50g edamame",
-        "1 carrot",
-        "red cabbage",
-        "avocado",
-        "soy sauce",
-        "sesame seeds"
-      ],
-      instructions: "1. Cook brown rice according to instructions.\n2. Dice tofu and fry in a pan.\n3. Grate carrot, slice cabbage into strips.\n4. Cook edamame for 3-4 minutes.\n5. Put rice, tofu and vegetables in a bowl.\n6. Drizzle with soy sauce and sprinkle with sesame."
-    },
-    {
-      id: 14,
-      title: "Creamy Broccoli Soup",
-      calories: "195 kcal",
-      protein: "11g",
-      time: "30 min",
-      image: creamyBroccoliSoup,
-      ingredients: [
-        "400g broccoli",
-        "1 potato",
-        "1 onion",
-        "2 cloves of garlic",
-        "800ml vegetable broth",
-        "100ml cooking cream",
-        "olive oil",
-        "salt, pepper"
-      ],
-      instructions: "1. Fry onion and garlic in oil.\n2. Add chopped potatoes and broccoli.\n3. Pour vegetable broth and cook for 20 minutes.\n4. Blend the soup until smooth.\n5. Add cream, season with salt and pepper.\n6. Serve with croutons."
-    },
-    {
-      id: 15,
-      title: "Herb Roasted Chicken",
-      calories: "305 kcal",
-      protein: "36g",
-      time: "40 min",
-      image: herbRoastedChicken,
-      ingredients: [
-        "250g chicken thighs",
-        "rosemary, thyme",
-        "3 cloves of garlic",
-        "olive oil",
-        "lemon",
-        "salt, pepper",
-        "potatoes"
-      ],
-      instructions: "1. Preheat oven to 190°C.\n2. Season chicken with salt, pepper, herbs and garlic.\n3. Drizzle with olive oil and lemon.\n4. Cut potatoes into wedges and add to the baking sheet.\n5. Bake for 35-40 minutes until the meat is golden.\n6. Serve with fresh herbs."
-    },
-    {
-      id: 16,
-      title: "Lentils with Tomatoes and Zucchini",
-      calories: "245 kcal",
-      protein: "17g",
-      time: "32 min",
-      image: lentilsTomatoesZucchini,
-      ingredients: [
-        "150g green lentils",
-        "2 tomatoes",
-        "1 zucchini",
-        "1 onion",
-        "2 cloves of garlic",
-        "tomato paste",
-        "olive oil",
-        "salt, pepper, cumin"
-      ],
-      instructions: "1. Cook lentils according to instructions.\n2. Fry onion and garlic in oil.\n3. Add chopped zucchini and tomatoes.\n4. Add tomato paste and simmer for 10 minutes.\n5. Add cooked lentils and mix.\n6. Season with salt, pepper and cumin."
-    },
-    {
-      id: 17,
-      title: "Cabbage Salad with Turkey",
-      calories: "270 kcal",
-      protein: "28g",
-      time: "18 min",
-      image: cabbageSaladTurkey,
-      ingredients: [
-        "200g turkey meat",
-        "200g white cabbage",
-        "1 carrot",
-        "spring onion",
-        "lemon juice",
-        "olive oil",
-        "salt, pepper"
-      ],
-      instructions: "1. Cut turkey into pieces and fry.\n2. Grate cabbage and carrot.\n3. Chop spring onion.\n4. Mix vegetables with fried turkey.\n5. Prepare dressing from oil and lemon.\n6. Mix and serve."
+      instructions: "Crack the eggs into a medium mixing bowl and whisk vigorously with a fork for about 30 seconds until the yolks and whites are completely combined and slightly frothy. Season the beaten eggs with a pinch of salt and freshly ground black pepper. Rinse the fresh spinach leaves thoroughly under cold water and roughly chop them into bite-sized pieces. Heat the olive oil in a medium non-stick skillet over medium heat until it shimmers but doesn't smoke. Add the pressed garlic and sauté for 30 seconds until fragrant, then add the chopped spinach and cook for 2 minutes, stirring occasionally, until wilted. Pour the beaten eggs evenly over the spinach, tilting the pan to distribute them across the entire surface. Allow the eggs to cook undisturbed for 2-3 minutes until the edges begin to set, then sprinkle the crumbled feta cheese over half of the omelette. Using a spatula, carefully fold the omelette in half and continue cooking for another 2-3 minutes until the eggs are fully set but still tender."
     },
     {
       id: 18,
