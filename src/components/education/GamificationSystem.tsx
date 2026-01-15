@@ -200,13 +200,13 @@ export const GamificationSystem = ({
 
             <TabsContent value="weekly">
               <div className="text-center py-8 text-muted-foreground">
-                Týždenný rebríček sa obnoví v pondelok
+                Weekly leaderboard resets on Monday
               </div>
             </TabsContent>
 
             <TabsContent value="friends">
               <div className="text-center py-8 text-muted-foreground">
-                Pridajte priateľov a súťažte spolu!
+                Add friends and compete together!
               </div>
             </TabsContent>
           </Tabs>
