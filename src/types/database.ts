@@ -1,6 +1,6 @@
 /**
- * Robustné TypeScript typy pre hlavné databázové entity
- * Generované pre Supabase tabuľky: profiles, posts
+ * Robust TypeScript types for main database entities
+ * Generated for Supabase tables: profiles, posts
  */
 
 // ==================== PROFILES (Users) ====================
@@ -65,7 +65,7 @@ export interface Post {
   is_pinned?: boolean;
   is_archived?: boolean;
   
-  // Vztahy - optional pre databázové queries
+  // Relations - optional for database queries
   profiles?: ProfileBasic;
   media?: PostMedia[];
   likes?: PostLike[];
@@ -199,7 +199,7 @@ export interface EventAttendee {
 
 // ==================== UTILITY TYPES ====================
 
-// Pre Supabase queries s chýbajúcimi typmi
+// For Supabase queries with missing types
 export type SupabaseQuery<T> = T;
 
 // Helper pre nullable fields

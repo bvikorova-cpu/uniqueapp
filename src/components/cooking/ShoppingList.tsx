@@ -35,17 +35,17 @@ interface Recipe {
 
 const defaultRecipe: Recipe = {
   id: "1",
-  name: "Špagety Carbonara",
+  name: "Spaghetti Carbonara",
   servings: 4,
   prepTime: "30 min",
   ingredients: [
-    { id: "1", name: "Špagety", amount: "400g", checked: false, category: "Cestoviny" },
-    { id: "2", name: "Slanina", amount: "200g", checked: false, category: "Mäso" },
-    { id: "3", name: "Vajcia", amount: "4 ks", checked: false, category: "Mliečne" },
-    { id: "4", name: "Parmezán", amount: "100g", checked: false, category: "Mliečne" },
-    { id: "5", name: "Čierne korenie", amount: "podľa chuti", checked: false, category: "Koreniny" },
-    { id: "6", name: "Soľ", amount: "podľa chuti", checked: false, category: "Koreniny" },
-    { id: "7", name: "Cesnak", amount: "2 strúčiky", checked: false, category: "Zelenina" },
+    { id: "1", name: "Spaghetti", amount: "400g", checked: false, category: "Pasta" },
+    { id: "2", name: "Bacon", amount: "200g", checked: false, category: "Meat" },
+    { id: "3", name: "Eggs", amount: "4 pcs", checked: false, category: "Dairy" },
+    { id: "4", name: "Parmesan", amount: "100g", checked: false, category: "Dairy" },
+    { id: "5", name: "Black pepper", amount: "to taste", checked: false, category: "Spices" },
+    { id: "6", name: "Salt", amount: "to taste", checked: false, category: "Spices" },
+    { id: "7", name: "Garlic", amount: "2 cloves", checked: false, category: "Vegetables" },
   ],
 };
 
@@ -77,7 +77,7 @@ export const ShoppingList = () => {
           name: newItem,
           amount: "",
           checked: false,
-          category: "Ostatné",
+          category: "Other",
         },
       ],
     });
@@ -112,7 +112,7 @@ export const ShoppingList = () => {
               <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
                 <span className="flex items-center gap-1">
                   <Users className="h-4 w-4" />
-                  {servings} porcií
+                  {servings} servings
                 </span>
                 <span className="flex items-center gap-1">
                   <Clock className="h-4 w-4" />
@@ -132,7 +132,7 @@ export const ShoppingList = () => {
 
           {/* Servings Adjuster */}
           <div className="flex items-center gap-4 p-3 bg-background rounded-lg">
-            <span className="text-sm">Porcií:</span>
+            <span className="text-sm">Servings:</span>
             <div className="flex items-center gap-2">
               <Button
                 variant="outline"
@@ -160,7 +160,7 @@ export const ShoppingList = () => {
       <Card>
         <CardContent className="pt-6">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm text-muted-foreground">Nakúpené</span>
+            <span className="text-sm text-muted-foreground">Purchased</span>
             <span className="font-medium">{checkedCount}/{recipe.ingredients.length}</span>
           </div>
           <div className="h-2 bg-muted rounded-full overflow-hidden">
@@ -178,7 +178,7 @@ export const ShoppingList = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <ShoppingCart className="h-5 w-5" />
-            Nákupný zoznam
+            Shopping List
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -223,7 +223,7 @@ export const ShoppingList = () => {
           {/* Add Item */}
           <div className="flex gap-2 pt-4 border-t">
             <Input
-              placeholder="Pridať položku..."
+              placeholder="Add item..."
               value={newItem}
               onChange={(e) => setNewItem(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && addItem()}
