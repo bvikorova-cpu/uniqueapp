@@ -475,337 +475,558 @@ const FitSlim = () => {
       instructions: "Crack the eggs into a medium mixing bowl and whisk vigorously with a fork for about 30 seconds until the yolks and whites are completely combined and slightly frothy. Season the beaten eggs with a pinch of salt and freshly ground black pepper. Rinse the fresh spinach leaves thoroughly under cold water and roughly chop them into bite-sized pieces. Heat the olive oil in a medium non-stick skillet over medium heat until it shimmers but doesn't smoke. Add the pressed garlic and sauté for 30 seconds until fragrant, then add the chopped spinach and cook for 2 minutes, stirring occasionally, until wilted. Pour the beaten eggs evenly over the spinach, tilting the pan to distribute them across the entire surface. Allow the eggs to cook undisturbed for 2-3 minutes until the edges begin to set, then sprinkle the crumbled feta cheese over half of the omelette. Using a spatula, carefully fold the omelette in half and continue cooking for another 2-3 minutes until the eggs are fully set but still tender."
     },
     {
+      id: 9,
+      title: "Tuna Stuffed Avocado Boats",
+      calories: "295 kcal",
+      protein: "28g",
+      time: "12 min",
+      image: tunaAvocado,
+      ingredients: [
+        "2 medium ripe avocados (approximately 300g total)",
+        "160g canned albacore tuna in water, drained",
+        "30g Greek yogurt (0% fat)",
+        "15ml fresh lime juice",
+        "30g red onion, finely minced",
+        "2g sea salt",
+        "1g freshly ground black pepper",
+        "5g fresh cilantro, finely chopped"
+      ],
+      instructions: "Carefully slice each avocado in half lengthwise and remove the pit by tapping it with a knife blade and twisting. Scoop a small amount of additional flesh from each cavity to create a larger well for the filling. In a medium mixing bowl, combine the drained tuna with Greek yogurt and mash together with a fork until well incorporated. Add the finely minced red onion and fresh lime juice to the tuna mixture and stir thoroughly. Season with sea salt and freshly ground black pepper, adjusting to taste preference. Divide the tuna salad mixture evenly among the four avocado halves, mounding it generously in the center. Garnish each stuffed avocado with freshly chopped cilantro and an extra squeeze of lime juice for brightness."
+    },
+    {
+      id: 10,
+      title: "Spicy Chicken Chili with Black Beans",
+      calories: "310 kcal",
+      protein: "32g",
+      time: "35 min",
+      image: chickenChiliBeans,
+      ingredients: [
+        "250g boneless skinless chicken breast, diced into 2cm cubes",
+        "200g canned black beans, drained and rinsed",
+        "200g canned crushed tomatoes",
+        "1 medium red bell pepper (approximately 150g), diced",
+        "1 medium yellow onion (approximately 120g), finely chopped",
+        "2 large garlic cloves (approximately 8g), minced",
+        "15ml olive oil",
+        "5g ground cumin",
+        "3g smoked paprika",
+        "2g cayenne pepper (adjust to taste)",
+        "3g sea salt"
+      ],
+      instructions: "Heat the olive oil in a large Dutch oven or heavy-bottomed pot over medium-high heat until shimmering. Season the diced chicken with salt and half the spices, then sear in the hot oil for 3-4 minutes until golden brown on all sides. Remove the chicken and set aside, then add the onion and garlic to the same pot, sautéing for 3 minutes until softened and fragrant. Add the diced bell pepper and cook for an additional 2 minutes until slightly tender. Stir in the remaining cumin, paprika, and cayenne pepper, toasting the spices for 30 seconds until aromatic. Add the crushed tomatoes and black beans, stirring to combine all ingredients thoroughly. Return the seared chicken to the pot and bring the mixture to a gentle simmer. Cover and cook for 20-25 minutes until the chicken is cooked through and flavors have melded together beautifully."
+    },
+    {
+      id: 11,
+      title: "Thai Vegetable Curry with Chickpeas",
+      calories: "275 kcal",
+      protein: "14g",
+      time: "28 min",
+      image: vegetableCurryChickpeas,
+      ingredients: [
+        "200g canned chickpeas, drained and rinsed",
+        "200ml light coconut milk",
+        "30g Thai red curry paste",
+        "1 medium red bell pepper (approximately 150g), sliced",
+        "150g baby spinach leaves",
+        "1 medium zucchini (approximately 180g), half-moon sliced",
+        "15ml coconut oil",
+        "10g fresh basil leaves",
+        "15ml fresh lime juice",
+        "10ml low-sodium soy sauce"
+      ],
+      instructions: "Heat the coconut oil in a large wok or deep skillet over medium-high heat until it begins to shimmer. Add the red curry paste and stir-fry for 60 seconds until fragrant and the oils begin to separate. Pour in the coconut milk and whisk thoroughly to incorporate the curry paste completely. Add the sliced bell pepper and zucchini to the curry, stirring to coat them evenly in the sauce. Simmer for 8-10 minutes until the vegetables are tender but still have a slight crunch. Fold in the chickpeas and continue cooking for 3-4 minutes until heated through. Add the baby spinach and stir gently until wilted, about 2 minutes. Finish with soy sauce, fresh lime juice, and torn basil leaves, serving immediately over steamed jasmine rice or cauliflower rice for a lower-carb option."
+    },
+    {
+      id: 12,
+      title: "Lemon Herb Baked Cod with Asparagus",
+      calories: "245 kcal",
+      protein: "36g",
+      time: "22 min",
+      image: bakedCodLemon,
+      ingredients: [
+        "200g fresh Atlantic cod fillet",
+        "250g fresh asparagus spears, trimmed",
+        "1 medium lemon (approximately 60g), zested and sliced",
+        "30ml extra virgin olive oil",
+        "3 large garlic cloves (approximately 12g), minced",
+        "10g fresh parsley, finely chopped",
+        "5g fresh thyme leaves",
+        "3g sea salt",
+        "2g freshly ground black pepper"
+      ],
+      instructions: "Preheat your oven to 200°C (400°F) and line a large baking sheet with parchment paper for easy cleanup. Pat the cod fillet completely dry with paper towels to ensure proper browning and seasoning adhesion. Season both sides of the cod with salt, pepper, lemon zest, and half the minced garlic, then set aside. Trim the woody ends from the asparagus spears and toss them in a bowl with olive oil, remaining garlic, and a pinch of salt. Arrange the asparagus in a single layer on one half of the prepared baking sheet and place the seasoned cod on the other half. Top the cod with thin lemon slices and fresh thyme leaves for aromatic flavor infusion. Bake for 15-18 minutes until the cod flakes easily with a fork and reaches an internal temperature of 63°C, and the asparagus is tender-crisp with slightly charred tips."
+    },
+    {
+      id: 13,
+      title: "Teriyaki Tofu Brown Rice Power Bowl",
+      calories: "320 kcal",
+      protein: "18g",
+      time: "30 min",
+      image: tofuBrownRiceBowl,
+      ingredients: [
+        "200g extra-firm tofu, pressed and cubed",
+        "150g cooked brown rice",
+        "100g shelled edamame",
+        "1 medium carrot (approximately 80g), julienned",
+        "½ medium cucumber (approximately 100g), sliced",
+        "30ml low-sodium teriyaki sauce",
+        "15ml toasted sesame oil",
+        "10g sesame seeds",
+        "2 green onions (approximately 15g), thinly sliced"
+      ],
+      instructions: "Press the tofu block between paper towels with a heavy object for 15 minutes to remove excess moisture for better texture. Cut the pressed tofu into 2cm cubes and toss with half the teriyaki sauce in a bowl. Heat sesame oil in a large non-stick skillet over medium-high heat until shimmering. Add the marinated tofu cubes in a single layer and cook undisturbed for 3-4 minutes until golden brown on the bottom. Flip the tofu and continue cooking for another 3-4 minutes until crispy on all sides. Cook the brown rice according to package directions while preparing the vegetables, and steam the edamame for 3 minutes. Assemble the bowl by placing warm brown rice as a base, then arranging the crispy tofu, edamame, julienned carrot, and sliced cucumber in sections. Drizzle with remaining teriyaki sauce, sprinkle with sesame seeds and sliced green onions, and serve immediately."
+    },
+    {
+      id: 14,
+      title: "Creamy Broccoli Soup with Cashews",
+      calories: "195 kcal",
+      protein: "10g",
+      time: "25 min",
+      image: creamyBroccoliSoup,
+      ingredients: [
+        "400g fresh broccoli florets",
+        "50g raw cashews, soaked for 30 minutes",
+        "1 medium yellow onion (approximately 120g), diced",
+        "2 large garlic cloves (approximately 8g), minced",
+        "750ml low-sodium vegetable broth",
+        "15ml extra virgin olive oil",
+        "3g sea salt",
+        "2g ground black pepper",
+        "2g ground nutmeg"
+      ],
+      instructions: "Heat the olive oil in a large soup pot over medium heat until it shimmers gently. Add the diced onion and sauté for 4-5 minutes until softened and translucent, stirring occasionally. Add the minced garlic and cook for an additional minute until fragrant but not browned. Add the broccoli florets and vegetable broth to the pot, bringing to a rolling boil. Reduce heat to medium-low and simmer for 12-15 minutes until the broccoli is very tender and easily pierced with a fork. Drain the soaked cashews and add them to the soup pot for creaminess without dairy. Using an immersion blender or transferring to a countertop blender in batches, puree the soup until completely smooth and velvety. Season with salt, pepper, and nutmeg, adjusting to taste, and serve hot with a drizzle of olive oil on top."
+    },
+    {
+      id: 15,
+      title: "Herb-Roasted Chicken Breast with Mixed Greens",
+      calories: "335 kcal",
+      protein: "42g",
+      time: "28 min",
+      image: herbRoastedChicken,
+      ingredients: [
+        "250g boneless skinless chicken breast",
+        "100g mixed baby greens (arugula, spinach, mesclun)",
+        "50g cherry tomatoes, halved",
+        "30g red onion, thinly sliced",
+        "30ml extra virgin olive oil",
+        "15ml balsamic vinegar",
+        "5g fresh rosemary, finely chopped",
+        "5g fresh thyme leaves",
+        "3g sea salt",
+        "2g freshly ground black pepper"
+      ],
+      instructions: "Preheat your oven to 200°C (400°F) and let the chicken breast come to room temperature for 10 minutes for even cooking. Combine the fresh rosemary, thyme, 15ml olive oil, salt, and pepper in a small bowl to create an herb paste. Coat the chicken breast thoroughly with the herb mixture on all sides, pressing the herbs into the surface. Heat an oven-safe skillet over medium-high heat and sear the chicken for 2-3 minutes per side until golden brown. Transfer the skillet to the preheated oven and roast for 12-15 minutes until the internal temperature reaches 74°C. While the chicken rests for 5 minutes, toss the mixed greens with cherry tomatoes, red onion, remaining olive oil, and balsamic vinegar. Slice the rested chicken against the grain and arrange over the dressed salad, drizzling any accumulated juices on top."
+    },
+    {
+      id: 16,
+      title: "Mediterranean Lentils with Tomatoes and Zucchini",
+      calories: "265 kcal",
+      protein: "16g",
+      time: "32 min",
+      image: lentilsTomatoesZucchini,
+      ingredients: [
+        "150g dried green or brown lentils, rinsed",
+        "2 medium zucchini (approximately 350g), diced",
+        "200g cherry tomatoes, halved",
+        "1 medium yellow onion (approximately 120g), diced",
+        "3 large garlic cloves (approximately 12g), minced",
+        "30ml extra virgin olive oil",
+        "5g ground cumin",
+        "3g smoked paprika",
+        "500ml vegetable broth",
+        "10g fresh parsley, chopped"
+      ],
+      instructions: "Rinse the lentils thoroughly under cold running water and set aside in a fine-mesh strainer. Heat olive oil in a large deep skillet or Dutch oven over medium heat until shimmering. Add the diced onion and sauté for 4-5 minutes until softened and beginning to turn golden at the edges. Stir in the minced garlic, cumin, and smoked paprika, cooking for 1 minute until very fragrant. Add the rinsed lentils and vegetable broth, bringing to a boil before reducing heat to a simmer. Cook for 15-18 minutes until the lentils are almost tender but still hold their shape. Add the diced zucchini and halved cherry tomatoes, continuing to simmer for 8-10 minutes until vegetables are tender and lentils are fully cooked. Season with salt and pepper to taste, garnish generously with fresh chopped parsley, and serve warm as a complete protein-rich meal."
+    },
+    {
+      id: 17,
+      title: "Asian Cabbage Salad with Turkey",
+      calories: "255 kcal",
+      protein: "28g",
+      time: "18 min",
+      image: cabbageSaladTurkey,
+      ingredients: [
+        "200g lean ground turkey (93% lean)",
+        "200g napa cabbage, finely shredded",
+        "100g red cabbage, finely shredded",
+        "1 medium carrot (approximately 80g), julienned",
+        "30ml low-sodium soy sauce",
+        "15ml rice vinegar",
+        "15ml toasted sesame oil",
+        "10g fresh ginger, grated",
+        "2 large garlic cloves (approximately 8g), minced",
+        "10g sesame seeds"
+      ],
+      instructions: "Heat half the sesame oil in a large skillet over medium-high heat until it begins to shimmer. Add the ground turkey, breaking it into small crumbles with a wooden spoon as it cooks. Cook for 6-8 minutes until the turkey is fully browned and cooked through with no pink remaining. Add the grated ginger and minced garlic to the turkey, stirring for 1 minute until aromatic. Remove from heat and set aside to cool slightly while preparing the salad base. In a large mixing bowl, combine the shredded napa cabbage, red cabbage, and julienned carrot. In a small bowl, whisk together the soy sauce, rice vinegar, and remaining sesame oil to create the dressing. Add the warm turkey to the cabbage mixture and toss with the dressing until everything is evenly coated. Sprinkle generously with sesame seeds and serve immediately while the turkey is still warm."
+    },
+    {
       id: 18,
-      title: "Vegetable Skewers with Rice Noodles",
+      title: "Asian Vegetable Skewers with Rice Noodles",
       calories: "285 kcal",
       protein: "13g",
       time: "24 min",
       image: vegetableSkewersNoodles,
       ingredients: [
-        "150g rice noodles",
-        "1 bell pepper",
-        "1 zucchini",
-        "mushrooms",
-        "cherry tomatoes",
-        "soy sauce",
-        "sesame oil",
-        "garlic, ginger"
+        "150g dried rice noodles (thin vermicelli style)",
+        "1 large red bell pepper (approximately 180g), cut into 3cm chunks",
+        "1 medium zucchini (approximately 200g), cut into 2cm rounds",
+        "150g cremini mushrooms, halved",
+        "150g cherry tomatoes, whole",
+        "30ml low-sodium soy sauce",
+        "15ml toasted sesame oil",
+        "3 large garlic cloves (approximately 12g), minced",
+        "10g fresh ginger, grated",
+        "10g fresh cilantro, chopped"
       ],
-      instructions: "1. Cook rice noodles according to instructions.\n2. Cut vegetables and thread onto skewers.\n3. Grill or bake in the oven for 15 minutes.\n4. Heat sesame oil in a pan.\n5. Add garlic, ginger and soy sauce.\n6. Mix with noodles and serve with skewers."
+      instructions: "Soak wooden skewers in water for 20 minutes to prevent burning during cooking. Cook the rice noodles according to package directions, usually 4-5 minutes in boiling water, then drain and rinse with cold water to stop cooking. Thread the bell pepper chunks, zucchini rounds, mushroom halves, and cherry tomatoes alternately onto the soaked skewers. Preheat your grill or oven broiler to high heat and brush the vegetable skewers with half the sesame oil. Grill or broil the skewers for 12-15 minutes, turning every 4 minutes, until vegetables are charred and tender. In a small saucepan, heat the remaining sesame oil with minced garlic and grated ginger for 1 minute until fragrant. Add the soy sauce and warm through, then toss the cooked noodles in this sauce until evenly coated. Serve the noodles in bowls topped with the grilled vegetable skewers and garnish with fresh cilantro."
     },
   ];
 
   const healthyRecipes = [
     {
       id: 1,
-      title: "Oatmeal with Fresh Fruit",
+      title: "Creamy Steel-Cut Oatmeal with Fresh Berries",
       calories: "350 kcal",
-      benefit: "Energy for the whole day",
-      time: "10 min",
+      benefit: "Sustained energy for the whole day",
+      time: "15 min",
       image: oatmealFruit,
       ingredients: [
-        "80g oat flakes",
-        "250ml milk or plant-based milk",
-        "1 banana",
-        "50g blueberries",
-        "1 tablespoon honey",
-        "cinnamon",
-        "nuts for topping"
+        "80g steel-cut or rolled oats",
+        "250ml whole milk or oat milk",
+        "1 medium ripe banana (approximately 120g), sliced",
+        "50g fresh blueberries",
+        "30g fresh raspberries",
+        "15ml pure honey or maple syrup",
+        "2g ground Ceylon cinnamon",
+        "30g raw walnuts, roughly chopped",
+        "15g sliced almonds for topping"
       ],
-      instructions: "1. Pour milk over oat flakes and cook for 5 minutes.\n2. Add honey and cinnamon.\n3. Let it cool slightly.\n4. Slice the banana into rounds.\n5. Transfer porridge to a bowl and decorate with banana, blueberries and nuts.\n6. Serve warm."
+      instructions: "Pour the milk into a medium saucepan and bring to a gentle simmer over medium heat, being careful not to let it boil over. Add the oats and reduce heat to low, stirring occasionally for 10-12 minutes until the oats are creamy and tender. Stir in the honey and ground cinnamon during the last 2 minutes of cooking, allowing the flavors to meld together. Transfer the cooked oatmeal to a serving bowl and let it cool for 2 minutes so toppings don't sink. Arrange the sliced banana in an overlapping pattern on one side of the bowl. Scatter the fresh blueberries and raspberries across the surface for vibrant color and antioxidant benefits. Top with roughly chopped walnuts and sliced almonds for added crunch and healthy fats, then serve immediately while warm."
     },
     {
       id: 2,
-      title: "Baked Salmon with Broccoli",
+      title: "Omega-3 Baked Salmon with Garlic Broccoli",
       calories: "420 kcal",
-      benefit: "Omega-3 fatty acids",
-      time: "25 min",
+      benefit: "Heart-healthy omega-3 fatty acids",
+      time: "28 min",
       image: bakedSalmonBroccoli,
       ingredients: [
-        "250g salmon",
-        "400g broccoli",
-        "3 tablespoons olive oil",
-        "2 cloves of garlic",
-        "lemon",
-        "salt, pepper",
-        "sesame seeds"
+        "250g fresh Atlantic salmon fillet, skin-on",
+        "400g fresh broccoli florets",
+        "45ml extra virgin olive oil, divided",
+        "3 large garlic cloves (approximately 12g), minced",
+        "1 medium lemon (approximately 60g), zested and juiced",
+        "3g sea salt",
+        "2g freshly ground black pepper",
+        "10g toasted sesame seeds",
+        "5g fresh dill, chopped"
       ],
-      instructions: "1. Preheat oven to 200°C.\n2. Divide broccoli into florets and toss with half the oil and garlic.\n3. Season salmon, drizzle with lemon and olive oil.\n4. Place salmon and broccoli on a baking sheet.\n5. Bake for 20-22 minutes.\n6. Sprinkle with sesame seeds and serve."
+      instructions: "Preheat your oven to 200°C (400°F) and line a large rimmed baking sheet with parchment paper. Pat the salmon fillet completely dry with paper towels and season generously with salt, pepper, and lemon zest on both sides. Cut the broccoli into uniform florets approximately 4cm in size for even roasting. In a large mixing bowl, toss the broccoli florets with 30ml olive oil and half the minced garlic until evenly coated. Arrange the broccoli in a single layer on one half of the prepared baking sheet, cut sides facing down for maximum caramelization. Place the seasoned salmon skin-side down on the other half and drizzle with remaining olive oil and lemon juice. Roast for 20-22 minutes until the salmon flakes easily and reaches an internal temperature of 62°C, and broccoli is tender with charred edges. Garnish with toasted sesame seeds and fresh dill before serving."
     },
     {
       id: 3,
-      title: "Avocado Toast with Egg",
+      title: "California Avocado Toast with Poached Eggs",
       calories: "380 kcal",
-      benefit: "Healthy fats",
+      benefit: "Healthy monounsaturated fats and protein",
       time: "15 min",
       image: avocadoToastEgg,
       ingredients: [
-        "2 slices whole grain bread",
-        "1 avocado",
-        "2 eggs",
-        "lemon juice",
-        "cherry tomatoes",
-        "salt, pepper",
-        "fresh basil"
+        "2 thick slices artisan whole grain bread (approximately 80g)",
+        "1 large ripe Hass avocado (approximately 150g)",
+        "2 large organic eggs",
+        "15ml fresh lemon juice",
+        "100g cherry tomatoes, halved",
+        "15ml white vinegar (for poaching)",
+        "3g flaky Maldon sea salt",
+        "2g freshly cracked black pepper",
+        "5g microgreens or fresh basil"
       ],
-      instructions: "1. Toast bread in a toaster.\n2. Mash avocado with a fork and mix with lemon juice.\n3. Fry eggs or cook soft-boiled.\n4. Spread toast with avocado.\n5. Add egg and cherry tomatoes.\n6. Sprinkle with salt, pepper and basil."
+      instructions: "Fill a medium saucepan with 8cm of water, add white vinegar, and bring to a gentle simmer with small bubbles forming on the bottom. While the water heats, halve the avocado, remove the pit, and scoop the flesh into a bowl. Mash the avocado with a fork to your desired consistency, whether chunky or smooth, and stir in lemon juice, salt, and pepper. Toast the bread slices until golden brown and crispy on the edges. Create a gentle whirlpool in the simmering water and carefully crack each egg into the center, poaching for exactly 3 minutes for a runny yolk. Spread the seasoned avocado generously on each toast slice, creating an even layer edge to edge. Using a slotted spoon, carefully lift each poached egg and place it atop the avocado. Garnish with halved cherry tomatoes, microgreens, and an extra pinch of flaky salt."
     },
     {
       id: 4,
-      title: "Greek Yogurt with Nuts and Honey",
+      title: "Probiotic Greek Yogurt Parfait with Honey",
       calories: "310 kcal",
-      benefit: "Probiotics",
-      time: "5 min",
+      benefit: "Gut-healthy probiotics and calcium",
+      time: "8 min",
       image: greekYogurtNutsHoney,
       ingredients: [
-        "200g Greek yogurt",
-        "30g walnuts",
-        "1 tablespoon honey",
-        "1 tablespoon chia seeds",
-        "fresh berries",
-        "cinnamon"
+        "200g full-fat Greek yogurt (5% or higher)",
+        "40g raw walnuts, roughly chopped",
+        "20g raw almonds, sliced",
+        "20ml raw organic honey",
+        "15g chia seeds",
+        "80g mixed fresh berries (strawberries, blueberries, raspberries)",
+        "2g ground cinnamon",
+        "10g toasted coconut flakes"
       ],
-      instructions: "1. Transfer Greek yogurt to a bowl.\n2. Roughly chop the nuts.\n3. Sprinkle yogurt with nuts and chia seeds.\n4. Drizzle with honey.\n5. Add fresh fruit.\n6. Sprinkle with cinnamon and serve."
+      instructions: "Spoon the thick Greek yogurt into a wide serving bowl or glass jar for an attractive layered presentation. Roughly chop the walnuts into irregular pieces that will provide varied texture in each bite. In a separate small bowl, combine the chopped walnuts, sliced almonds, and chia seeds for easy sprinkling. Create an even layer of the nut and seed mixture over the yogurt surface. Drizzle the raw honey in a zigzag pattern across the top, allowing it to pool slightly in places. Arrange the fresh berries artfully on top, varying colors for visual appeal. Finish with a generous sprinkle of ground cinnamon and toasted coconut flakes. Serve immediately for maximum crunch, or refrigerate for up to 2 hours for a softer chia seed texture."
     },
     {
       id: 5,
-      title: "Chicken Noodle Soup",
+      title: "Immunity-Boosting Chicken Noodle Soup",
       calories: "280 kcal",
-      benefit: "Immunity boost",
-      time: "45 min",
+      benefit: "Immune system support and hydration",
+      time: "50 min",
       image: chickenNoodleSoup,
       ingredients: [
-        "300g chicken pieces",
-        "2 carrots",
-        "1 celery",
-        "1 onion",
-        "2l water",
-        "100g homemade noodles",
-        "parsley",
-        "salt, pepper, bay leaf"
+        "300g bone-in chicken thighs or drumsticks",
+        "2 medium carrots (approximately 160g), diced",
+        "2 celery stalks (approximately 120g), sliced",
+        "1 medium yellow onion (approximately 130g), diced",
+        "2000ml filtered water",
+        "100g egg noodles or pasta",
+        "15g fresh flat-leaf parsley, chopped",
+        "3g sea salt",
+        "2g freshly ground black pepper",
+        "2 bay leaves",
+        "5g fresh thyme sprigs"
       ],
-      instructions: "1. Pour water over chicken and add bay leaf.\n2. Cook for 20 minutes and skim off the foam.\n3. Add chopped vegetables and cook for another 15 minutes.\n4. Remove meat and vegetables, strain the broth.\n5. Add noodles to the broth and cook for 5 minutes.\n6. Return the meat, season and sprinkle with parsley."
+      instructions: "Place the chicken pieces in a large stockpot and cover with 2000ml of cold filtered water for the clearest broth. Add the bay leaves and thyme sprigs, then bring to a gentle boil over medium-high heat. Reduce heat to low and simmer for 20 minutes, periodically skimming any foam that rises to the surface. Add the diced onion, carrots, and celery to the pot, continuing to simmer for another 15 minutes until vegetables are tender. Remove the chicken pieces with tongs and set aside until cool enough to handle, about 5 minutes. Shred the chicken meat, discarding skin and bones, and return the meat to the pot. Add the egg noodles and cook for 8-10 minutes according to package directions until al dente. Remove bay leaves and thyme stems, season with salt and pepper, and garnish generously with fresh chopped parsley."
     },
     {
       id: 6,
-      title: "Smoothie Bowl with Chia Seeds",
+      title: "Antioxidant Açaí Smoothie Bowl with Chia",
       calories: "330 kcal",
-      benefit: "Antioxidants",
-      time: "8 min",
+      benefit: "Powerful antioxidants and fiber",
+      time: "10 min",
       image: smoothieBowlChia,
       ingredients: [
-        "1 frozen banana",
-        "100g frozen berries",
-        "150ml almond milk",
-        "1 tablespoon chia seeds",
-        "granola",
-        "fresh fruit",
-        "coconut flakes"
+        "1 medium frozen banana (approximately 120g)",
+        "100g frozen açaí puree packet",
+        "100g frozen mixed berries",
+        "150ml unsweetened almond milk",
+        "20g chia seeds",
+        "40g granola (low-sugar variety)",
+        "50g fresh seasonal fruit for topping",
+        "15g unsweetened coconut flakes",
+        "15g natural almond butter"
       ],
-      instructions: "1. Blend frozen banana, berries and milk until smooth.\n2. Pour smoothie into a bowl.\n3. Sprinkle with chia seeds.\n4. Add granola, fresh fruit and coconut flakes.\n5. Serve immediately.\n6. You can also add honey or peanut butter."
+      instructions: "Remove the frozen açaí packet from the freezer and run it under warm water for 30 seconds to soften slightly for easier blending. Break the frozen banana into chunks and add to a high-powered blender along with the açaí and frozen berries. Pour in just enough almond milk to help the blending process, keeping the mixture as thick as possible for a spoonable consistency. Blend on high for 60-90 seconds, using the tamper tool to push ingredients down, until completely smooth and thick like soft-serve. Pour the smoothie base into a chilled bowl, spreading it evenly to create a flat surface for toppings. Sprinkle chia seeds in a line across one section, followed by granola, fresh fruit, and coconut flakes in separate sections. Drizzle almond butter in thin ribbons across the entire bowl and serve immediately before it melts."
     },
     {
       id: 7,
-      title: "Baked Sweet Potatoes with Black Beans",
+      title: "Fiber-Rich Baked Sweet Potatoes with Black Bean Salsa",
       calories: "390 kcal",
-      benefit: "Fiber and vitamins",
-      time: "40 min",
+      benefit: "Fiber, vitamins, and sustained energy",
+      time: "45 min",
       image: sweetPotatoBlackBeans,
       ingredients: [
-        "2 sweet potatoes",
-        "200g black beans (canned)",
-        "1 bell pepper",
-        "1 avocado",
-        "spring onion",
-        "lime juice",
-        "olive oil",
-        "salt, pepper, cumin"
+        "2 medium sweet potatoes (approximately 400g total)",
+        "200g canned black beans, drained and rinsed",
+        "1 medium red bell pepper (approximately 150g), finely diced",
+        "1 ripe Hass avocado (approximately 150g), cubed",
+        "2 green onions (approximately 20g), thinly sliced",
+        "30ml fresh lime juice",
+        "15ml extra virgin olive oil",
+        "3g sea salt",
+        "2g ground cumin",
+        "5g fresh cilantro, chopped"
       ],
-      instructions: "1. Preheat oven to 200°C.\n2. Prick sweet potatoes with a fork and bake for 35-40 minutes.\n3. Chop bell pepper and fry with black beans.\n4. Cut open baked potatoes and fill with bean and pepper mixture.\n5. Add avocado and spring onion.\n6. Drizzle with lime juice and sprinkle with cumin."
+      instructions: "Preheat your oven to 200°C (400°F) and line a baking sheet with aluminum foil for easy cleanup. Scrub the sweet potatoes thoroughly under running water and pierce each one 6-8 times with a fork to allow steam to escape. Place the sweet potatoes directly on the prepared baking sheet and bake for 40-45 minutes until completely tender when pierced with a knife. While the potatoes bake, prepare the black bean salsa by combining drained black beans with diced bell pepper in a mixing bowl. Add fresh lime juice, cumin, salt, and half the olive oil, stirring gently to combine without mashing the beans. Once the sweet potatoes are done, slice them open lengthwise and gently mash the flesh inside with a fork. Top each potato generously with the black bean salsa, cubed avocado, and sliced green onions. Drizzle with remaining olive oil and garnish with fresh cilantro."
     },
     {
       id: 8,
-      title: "Tuna Salad with Avocado",
+      title: "Protein-Packed Tuna and Avocado Salad",
       calories: "360 kcal",
-      benefit: "Omega-3 and protein",
+      benefit: "Complete protein with omega-3 fatty acids",
       time: "12 min",
       image: tunaSaladAvocado,
       ingredients: [
-        "150g canned tuna",
-        "1 avocado",
-        "50g baby salad greens",
-        "cherry tomatoes",
-        "cucumber",
-        "olive oil",
-        "lemon juice",
-        "salt, pepper"
+        "150g canned albacore tuna in olive oil, drained",
+        "1 large ripe Hass avocado (approximately 170g), cubed",
+        "60g mixed baby salad greens",
+        "100g cherry tomatoes, halved",
+        "1 medium Persian cucumber (approximately 100g), sliced",
+        "30ml extra virgin olive oil",
+        "20ml fresh lemon juice",
+        "3g flaky sea salt",
+        "2g freshly cracked black pepper",
+        "5g fresh dill, chopped"
       ],
-      instructions: "1. Drain and flake the tuna.\n2. Dice the avocado.\n3. Halve cherry tomatoes, slice cucumber.\n4. Mix all ingredients in a bowl.\n5. Prepare dressing from oil and lemon.\n6. Mix and serve on salad leaves."
+      instructions: "Drain the tuna thoroughly and transfer to a medium mixing bowl, flaking it gently with a fork into bite-sized chunks. Carefully cube the ripe avocado and add to the tuna, being gentle to maintain the avocado's shape. Halve the cherry tomatoes and slice the cucumber into thin rounds, adding both to the bowl. In a small jar with a lid, combine the olive oil, lemon juice, salt, and pepper, shaking vigorously to emulsify the dressing. Arrange the mixed baby greens as a bed on a large serving plate or individual salad bowls. Gently toss the tuna mixture with half the dressing, being careful not to mash the avocado. Mound the dressed tuna salad over the greens and drizzle remaining dressing on top, finishing with fresh chopped dill."
     },
     {
       id: 9,
-      title: "Whole Grain Pancakes with Berries",
+      title: "Whole Grain Buttermilk Pancakes with Mixed Berries",
       calories: "340 kcal",
-      benefit: "Complex carbohydrates",
-      time: "18 min",
+      benefit: "Complex carbohydrates and sustained energy",
+      time: "20 min",
       image: wholeGrainPancakes,
       ingredients: [
-        "100g whole grain flour",
-        "1 egg",
-        "150ml milk",
-        "1 teaspoon baking powder",
-        "100g fresh berries",
-        "maple syrup",
-        "coconut oil for frying"
+        "120g whole wheat flour",
+        "1 large organic egg (approximately 55g)",
+        "180ml buttermilk (or milk with 1 tbsp lemon juice)",
+        "5g baking powder",
+        "2g baking soda",
+        "120g fresh mixed berries (strawberries, blueberries)",
+        "30ml pure maple syrup",
+        "15g coconut oil for cooking",
+        "2g vanilla extract",
+        "Pinch of sea salt"
       ],
-      instructions: "1. Mix flour, egg, milk and baking powder.\n2. Let the batter rest for 5 minutes.\n3. Heat coconut oil in a pan.\n4. Ladle the batter and cook pancakes on both sides.\n5. Serve with fresh berries.\n6. Drizzle with maple syrup."
+      instructions: "In a large mixing bowl, whisk together the whole wheat flour, baking powder, baking soda, and salt until well combined. In a separate bowl, beat the egg and then add the buttermilk and vanilla extract, whisking until smooth. Create a well in the center of the dry ingredients and pour in the wet mixture, stirring gently until just combined with some small lumps remaining. Let the batter rest for 5 minutes while heating a non-stick skillet or griddle over medium heat. Add a small amount of coconut oil to the hot pan and swirl to coat evenly. Pour approximately 60ml of batter per pancake and cook until bubbles form on the surface and edges appear set, about 2-3 minutes. Flip carefully and cook for another 1-2 minutes until golden brown on both sides. Stack pancakes on a warm plate, top with fresh berries, and drizzle generously with pure maple syrup."
     },
     {
       id: 10,
-      title: "Tuna Poke Bowl",
+      title: "Hawaiian Ahi Tuna Poke Bowl",
       calories: "410 kcal",
-      benefit: "Omega-3 and minerals",
-      time: "20 min",
+      benefit: "Premium omega-3 and essential minerals",
+      time: "25 min",
       image: tunaPokeBowl,
       ingredients: [
-        "200g fresh tuna",
-        "150g sushi rice",
-        "avocado",
-        "edamame",
-        "cucumber",
-        "wakame seaweed",
-        "soy sauce",
-        "sesame seeds"
+        "200g sushi-grade ahi tuna, diced into 2cm cubes",
+        "150g cooked sushi rice",
+        "1 ripe Hass avocado (approximately 150g), sliced",
+        "80g shelled edamame, steamed",
+        "1 medium Persian cucumber (approximately 100g), thinly sliced",
+        "30g wakame seaweed, rehydrated",
+        "30ml low-sodium soy sauce",
+        "10ml toasted sesame oil",
+        "10g black sesame seeds",
+        "2 green onions, sliced"
       ],
-      instructions: "1. Cook sushi rice according to instructions.\n2. Dice tuna and marinate in soy sauce.\n3. Slice avocado and cucumber.\n4. Cook edamame.\n5. Put rice in a bowl and gradually add all ingredients.\n6. Sprinkle with sesame and drizzle with remaining sauce."
+      instructions: "Cook the sushi rice according to package directions and allow it to cool to room temperature for the best poke bowl texture. Rehydrate the wakame seaweed in cold water for 5-10 minutes, then drain thoroughly and squeeze out excess moisture. In a medium bowl, gently toss the diced ahi tuna with soy sauce and sesame oil, being careful not to break up the cubes. Let the tuna marinate for 5-10 minutes while preparing the remaining ingredients. Steam the edamame for 3-4 minutes until tender and vibrant green. Slice the avocado and cucumber into thin, uniform pieces for attractive presentation. Place the cooled sushi rice in the bottom of a serving bowl and arrange the marinated tuna in the center. Arrange the avocado slices, edamame, cucumber, and wakame in sections around the tuna, then sprinkle with black sesame seeds and sliced green onions."
     },
     {
       id: 11,
-      title: "Spinach Quiche",
+      title: "French Spinach and Gruyère Quiche",
       calories: "365 kcal",
-      benefit: "Iron and calcium",
-      time: "50 min",
+      benefit: "Iron, calcium, and complete protein",
+      time: "55 min",
       image: spinachQuiche,
       ingredients: [
-        "1 puff pastry",
-        "200g fresh spinach",
-        "3 eggs",
-        "150ml cream",
-        "100g feta cheese",
-        "onion",
-        "salt, pepper, nutmeg"
+        "1 sheet frozen puff pastry (approximately 250g), thawed",
+        "200g fresh baby spinach leaves",
+        "4 large eggs (approximately 220g total)",
+        "150ml heavy cream",
+        "100g Gruyère cheese, grated",
+        "1 medium yellow onion (approximately 120g), finely diced",
+        "15ml olive oil",
+        "3g sea salt",
+        "2g freshly ground black pepper",
+        "1g freshly grated nutmeg"
       ],
-      instructions: "1. Preheat oven to 180°C.\n2. Spread puff pastry into a pie dish.\n3. Fry spinach and onion, let cool.\n4. Mix eggs, cream, salt and pepper.\n5. Add spinach and crumbled feta.\n6. Pour onto pastry and bake for 35-40 minutes."
+      instructions: "Preheat your oven to 180°C (350°F) and lightly grease a 23cm tart pan with a removable bottom. Roll out the thawed puff pastry and carefully press it into the prepared pan, trimming any excess from the edges. Prick the bottom with a fork, line with parchment and pie weights, and blind bake for 12 minutes until lightly golden. Heat olive oil in a large skillet over medium heat and sauté the diced onion for 4-5 minutes until softened and translucent. Add the fresh spinach in batches, stirring until completely wilted, about 3 minutes, then transfer to a colander to drain excess liquid. In a large bowl, whisk together the eggs, cream, salt, pepper, and nutmeg until smooth and well combined. Spread the cooled spinach mixture evenly over the pre-baked crust, then sprinkle with grated Gruyère cheese. Pour the egg mixture carefully over the spinach and cheese, ensuring even distribution. Bake for 35-40 minutes until the filling is set and the top is golden brown with slight puffing."
     },
     {
       id: 12,
-      title: "Green Detox Smoothie",
+      title: "Detoxifying Green Goddess Smoothie",
       calories: "220 kcal",
-      benefit: "Detoxification",
-      time: "5 min",
+      benefit: "Natural detoxification and alkalizing",
+      time: "8 min",
       image: greenDetoxSmoothie,
       ingredients: [
-        "1 handful baby spinach",
-        "1/2 cucumber",
-        "1 green apple",
-        "1 banana",
-        "juice of 1/2 lemon",
-        "200ml coconut water",
-        "ginger"
+        "60g fresh baby spinach leaves",
+        "½ medium English cucumber (approximately 150g), roughly chopped",
+        "1 medium Granny Smith apple (approximately 180g), cored and quartered",
+        "1 medium ripe banana (approximately 120g)",
+        "Juice of ½ lemon (approximately 20ml)",
+        "200ml pure coconut water",
+        "10g fresh ginger, peeled and sliced",
+        "5 fresh mint leaves"
       ],
-      instructions: "1. Rinse all ingredients.\n2. Chop apple and cucumber.\n3. Put spinach, cucumber, apple and banana into the blender.\n4. Add lemon juice, ginger and coconut water.\n5. Blend for 1-2 minutes until smooth.\n6. Serve immediately."
+      instructions: "Rinse all fresh produce thoroughly under cold running water to remove any residual dirt or pesticides. Core the apple and cut into quarters, leaving the nutrient-rich skin intact for added fiber. Roughly chop the cucumber into 2cm pieces for easier blending in standard blenders. Peel the ginger root and slice it into thin coins to ensure it blends smoothly without leaving fibrous chunks. Add the coconut water to the blender first, followed by the spinach and mint leaves which will blend more easily with liquid present. Add the cucumber, apple, banana, ginger, and lemon juice to the blender. Blend on high speed for 90-120 seconds until the smoothie is completely smooth with no visible chunks remaining. Pour immediately into a tall glass and consume within 15 minutes for maximum nutrient retention and the freshest taste."
     },
     {
       id: 13,
-      title: "Buddha Bowl with Hummus",
+      title: "Nourishing Buddha Bowl with Tahini Dressing",
       calories: "385 kcal",
-      benefit: "Complete nutrient profile",
-      time: "30 min",
+      benefit: "Complete balanced nutrition in one bowl",
+      time: "35 min",
       image: buddhaBowlHummus,
       ingredients: [
-        "100g quinoa",
-        "100g hummus",
-        "roasted pumpkin",
-        "roasted potatoes",
-        "baby spinach",
-        "cherry tomatoes",
-        "tahini",
-        "lemon"
+        "100g tri-color quinoa, rinsed",
+        "80g store-bought hummus",
+        "150g butternut squash, cubed and roasted",
+        "100g baby kale or spinach",
+        "80g cherry tomatoes, halved",
+        "60g roasted chickpeas",
+        "30ml tahini",
+        "20ml fresh lemon juice",
+        "15ml olive oil",
+        "10ml warm water"
       ],
-      instructions: "1. Cook quinoa according to instructions.\n2. Cut pumpkin and potatoes and bake for 25 minutes at 200°C.\n3. Put quinoa as a base in a bowl.\n4. Gradually add roasted vegetables, spinach and tomatoes.\n5. Add hummus.\n6. Drizzle with tahini and lemon juice."
+      instructions: "Preheat your oven to 200°C (400°F) and line a baking sheet with parchment paper for the roasted vegetables. Cook the quinoa according to package directions, typically 15 minutes in boiling water with a 2:1 ratio, then fluff with a fork. Toss the cubed butternut squash with olive oil, salt, and pepper, then roast for 25-30 minutes until caramelized and tender. While vegetables roast, prepare the tahini dressing by whisking together tahini, lemon juice, and warm water until smooth and pourable. Arrange the cooked quinoa as a base in a large serving bowl, spreading it to cover the bottom evenly. Section the bowl by adding roasted butternut squash, baby greens, halved cherry tomatoes, and roasted chickpeas in separate areas. Place a generous dollop of hummus in the center of the bowl as the protein-rich focal point. Drizzle the tahini dressing over the entire bowl and serve immediately while the quinoa and squash are still warm."
     },
     {
       id: 14,
-      title: "Chia Pudding with Mango",
+      title: "Tropical Chia Seed Pudding with Fresh Mango",
       calories: "295 kcal",
-      benefit: "Fiber and omega-3",
-      time: "10 min + chilling",
+      benefit: "Fiber, omega-3, and slow-release energy",
+      time: "10 min + 4 hours chilling",
       image: chiaPuddingMango,
       ingredients: [
-        "3 tablespoons chia seeds",
-        "200ml coconut milk",
-        "1 tablespoon maple syrup",
-        "1 mango",
-        "coconut flakes",
-        "mint"
+        "45g chia seeds",
+        "240ml full-fat coconut milk",
+        "20ml pure maple syrup",
+        "2g vanilla extract",
+        "1 large ripe mango (approximately 250g), peeled and diced",
+        "20g unsweetened toasted coconut flakes",
+        "Fresh mint leaves for garnish",
+        "10g passion fruit pulp (optional)"
       ],
-      instructions: "1. Mix chia seeds with coconut milk and syrup.\n2. Leave in the fridge for at least 4 hours (ideally overnight).\n3. Peel and dice the mango.\n4. Transfer pudding to glasses.\n5. Add mango and coconut flakes.\n6. Garnish with mint."
+      instructions: "In a medium mixing bowl or mason jar, combine the chia seeds with coconut milk and whisk vigorously to prevent clumping. Add the maple syrup and vanilla extract, stirring thoroughly to distribute the sweetener evenly. Cover the mixture and refrigerate for a minimum of 4 hours, ideally overnight, stirring once after the first 30 minutes. The chia seeds will absorb the liquid and create a thick, pudding-like consistency that holds its shape. Peel the ripe mango and cut the flesh into 1cm cubes, collecting any juice that runs off. When ready to serve, give the chia pudding a final stir to ensure even consistency throughout. Divide the pudding between two serving glasses or bowls, layering with diced mango as you go. Top with toasted coconut flakes, fresh mint leaves, and passion fruit pulp if using."
     },
     {
       id: 15,
-      title: "Roasted Pumpkin with Quinoa",
+      title: "Autumn Roasted Butternut Squash with Quinoa and Goat Cheese",
       calories: "345 kcal",
-      benefit: "Vitamin A and protein",
-      time: "35 min",
+      benefit: "Beta-carotene and plant protein",
+      time: "40 min",
       image: "https://images.unsplash.com/photo-1476718406336-bb5a9690ee2a?w=800&auto=format&fit=crop",
       ingredients: [
-        "300g pumpkin",
-        "100g quinoa",
-        "50g goat cheese",
-        "30g walnuts",
-        "olive oil",
-        "honey",
-        "thyme",
-        "salt, pepper"
+        "350g butternut squash, peeled and cubed",
+        "120g white quinoa, rinsed",
+        "60g soft goat cheese, crumbled",
+        "40g raw walnuts, roughly chopped",
+        "30ml extra virgin olive oil",
+        "15ml raw honey",
+        "5g fresh thyme leaves",
+        "3g sea salt",
+        "2g freshly ground black pepper"
       ],
-      instructions: "1. Preheat oven to 200°C.\n2. Dice pumpkin and toss with oil and thyme.\n3. Bake for 25 minutes.\n4. Cook quinoa according to instructions.\n5. Mix quinoa with roasted pumpkin.\n6. Add crumbled goat cheese, nuts and a drop of honey."
+      instructions: "Preheat your oven to 200°C (400°F) and line a large baking sheet with parchment paper. Peel the butternut squash, remove seeds, and cut into uniform 2cm cubes for even roasting. Toss the squash cubes with 20ml olive oil, thyme leaves, salt, and pepper until evenly coated. Spread the squash in a single layer on the prepared baking sheet and roast for 25-30 minutes until fork-tender and caramelized on the edges. While the squash roasts, cook the quinoa in boiling salted water according to package directions, about 15 minutes. Drain any excess water and fluff the quinoa with a fork to separate the grains. Transfer the cooked quinoa to a large serving bowl and gently fold in the roasted butternut squash while still warm. Crumble the soft goat cheese over the top, scatter with chopped walnuts, and drizzle with remaining olive oil and honey."
     },
     {
       id: 16,
-      title: "Green Curry with Coconut Milk",
+      title: "Anti-Inflammatory Thai Green Curry with Vegetables",
       calories: "370 kcal",
-      benefit: "Anti-inflammatory effects",
-      time: "28 min",
+      benefit: "Anti-inflammatory compounds and immune support",
+      time: "30 min",
       image: "https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?w=800&auto=format&fit=crop",
       ingredients: [
-        "2 tablespoons green curry paste",
-        "400ml coconut milk",
-        "200g tofu or chicken",
-        "1 bell pepper",
-        "100g bamboo shoots",
-        "peas",
-        "basil",
-        "lime juice"
+        "45g Thai green curry paste",
+        "400ml full-fat coconut milk",
+        "200g extra-firm tofu or chicken breast, cubed",
+        "1 medium red bell pepper (approximately 150g), sliced",
+        "120g canned bamboo shoots, drained",
+        "80g sugar snap peas",
+        "20g fresh Thai basil leaves",
+        "30ml fresh lime juice",
+        "15ml fish sauce or soy sauce",
+        "15ml coconut oil"
       ],
-      instructions: "1. Fry curry paste in a pan for 1 minute.\n2. Add coconut milk and stir.\n3. Add chopped tofu/chicken and vegetables.\n4. Cook for 15-20 minutes on low heat.\n5. Add fresh basil and lime juice.\n6. Serve with rice or noodles."
+      instructions: "Heat the coconut oil in a large wok or deep skillet over medium-high heat until it shimmers and begins to smoke slightly. Add the green curry paste and stir-fry for 60-90 seconds until very fragrant and the oils begin to separate from the paste. Pour in half the coconut milk and stir vigorously to incorporate the curry paste completely. Add the cubed tofu or chicken and cook for 5-6 minutes, stirring occasionally, until lightly browned on all sides. Add the sliced bell pepper, bamboo shoots, and remaining coconut milk, bringing to a gentle simmer. Cook for 8-10 minutes until the vegetables are tender but still have a slight crunch and the protein is cooked through. Stir in the sugar snap peas during the last 3 minutes of cooking to preserve their bright green color. Finish with fish sauce and fresh lime juice, then garnish generously with torn Thai basil leaves before serving over steamed jasmine rice."
     },
     {
       id: 17,
-      title: "Protein Pancakes with Banana",
+      title: "Muscle-Building Protein Pancakes with Banana",
       calories: "325 kcal",
-      benefit: "Protein for muscle growth",
-      time: "15 min",
+      benefit: "High protein for muscle recovery and growth",
+      time: "18 min",
       image: "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=800&auto=format&fit=crop",
       ingredients: [
-        "2 eggs",
-        "1 banana",
-        "30g protein powder",
-        "50g oat flakes",
-        "cinnamon",
-        "coconut oil",
-        "maple syrup"
+        "2 large organic eggs (approximately 110g)",
+        "1 large ripe banana (approximately 130g)",
+        "35g vanilla whey protein powder",
+        "50g rolled oats",
+        "3g ground cinnamon",
+        "15g coconut oil for cooking",
+        "30ml pure maple syrup",
+        "Fresh berries for serving"
       ],
-      instructions: "1. Blend banana with eggs.\n2. Add protein powder, oat flakes and cinnamon.\n3. Mix into a smooth batter.\n4. Heat coconut oil in a pan.\n5. Cook pancakes on both sides until golden.\n6. Serve with maple syrup and fresh fruit."
+      instructions: "Peel the ripe banana and add it to a blender or food processor, blending until completely smooth with no chunks remaining. Add the eggs to the banana puree and blend for another 30 seconds until fully incorporated. Add the protein powder, rolled oats, and cinnamon to the blender and pulse until the batter is smooth and homogeneous. Let the batter rest for 3-5 minutes while the oats absorb some liquid, which will result in fluffier pancakes. Heat a non-stick skillet over medium heat and add a small amount of coconut oil, swirling to coat evenly. Pour approximately 60ml of batter per pancake and cook until bubbles form on the surface and edges look set, about 2-3 minutes. Flip carefully with a thin spatula and cook for another 1-2 minutes until golden brown on both sides. Stack the pancakes on a warm plate, drizzle with maple syrup, and serve with fresh berries for added antioxidants."
     },
   ];
 
