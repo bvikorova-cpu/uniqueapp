@@ -8,7 +8,7 @@ import QuantumSubscriptions from "@/components/quantum-social/QuantumSubscriptio
 
 const QuantumSocial = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-cyan-950/30 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-cyan-950/30 px-6 pb-10 pt-32">
       <div className="max-w-6xl mx-auto space-y-6">
         {/* Futuristic Header */}
         <div className="flex items-center gap-4 mb-8">
