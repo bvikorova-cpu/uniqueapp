@@ -8,103 +8,74 @@ import QuantumSubscriptions from "@/components/quantum-social/QuantumSubscriptio
 
 const QuantumSocial = () => {
   return (
-    <div className="container mx-auto px-4 py-8 pt-24">
-      <div className="text-center mb-8">
-        <div className="flex items-center justify-center gap-2 mb-4">
-          <Atom className="h-8 w-8 text-primary animate-spin-slow" />
-          <h1 className="text-4xl font-bold">Quantum Social Network</h1>
-        </div>
-        <p className="text-muted-foreground text-lg mb-6">
-          Your profile exists in quantum superposition - followers see different versions of you
-        </p>
-        
-        <div className="max-w-4xl mx-auto bg-card border rounded-lg p-6 text-left space-y-4">
-          <h2 className="text-xl font-semibold">How It Works</h2>
-          
-          <div className="space-y-3 text-sm text-muted-foreground">
-            <p>
-              <strong className="text-foreground">Quantum Posts:</strong> When you create a post, AI generates multiple versions with different personality tones (professional, casual, humorous). Each follower sees a different version randomly assigned to them, creating a unique experience.
-            </p>
-            
-            <p>
-              <strong className="text-foreground">Reality Collapse:</strong> For €2.99, you can "collapse" a post's quantum state, making everyone see the same version. Perfect for important announcements or when you want consistent messaging.
-            </p>
-            
-            <p>
-              <strong className="text-foreground">Observer Mode (€19.99/month):</strong> Subscribe to see all quantum versions of any post. Discover how content appears differently to various audiences and understand quantum dynamics.
-            </p>
-            
-            <p>
-              <strong className="text-foreground">Quantum Entanglement (€9.99/month):</strong> Connect with someone special - you'll both always see the same versions of posts, creating a shared reality experience.
-            </p>
-            
-            <p>
-              <strong className="text-foreground">Quantum Profiles (€12.99/month):</strong> Enable multiple reality versions of your profile. Different followers see different aspects of your personality, optimized for their preferences.
-            </p>
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-cyan-950/30 p-6">
+      <div className="max-w-6xl mx-auto space-y-6">
+        {/* Futuristic Header */}
+        <div className="flex items-center gap-4 mb-8">
+          <div className="p-3 rounded-2xl bg-gradient-to-br from-cyan-500 to-purple-600 shadow-lg shadow-cyan-500/25 relative">
+            <Atom className="h-8 w-8 text-white animate-spin" style={{ animationDuration: '8s' }} />
+            <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-cyan-400/20 to-purple-500/20 animate-pulse" />
+          </div>
+          <div>
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent">
+              Quantum Social Network
+            </h1>
+            <p className="text-muted-foreground">Your profile exists in quantum superposition</p>
           </div>
         </div>
-      </div>
 
-      <Tabs defaultValue="feed" className="w-full">
-        <TabsList className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 w-full h-auto gap-2 p-2 mb-8">
-          <TabsTrigger value="feed" className="flex items-center justify-center gap-2 px-3 py-3 text-sm">
-            <FileText className="h-4 w-4" />
-            <span>Feed</span>
-          </TabsTrigger>
-          <TabsTrigger value="profile" className="flex items-center justify-center gap-2 px-3 py-3 text-sm">
-            <Settings className="h-4 w-4" />
-            <span>My Profile</span>
-          </TabsTrigger>
-          <TabsTrigger value="observer" className="flex items-center justify-center gap-2 px-3 py-3 text-sm">
-            <Eye className="h-4 w-4" />
-            <span>Observer</span>
-          </TabsTrigger>
-          <TabsTrigger value="entanglements" className="flex items-center justify-center gap-2 px-3 py-3 text-sm">
-            <Users className="h-4 w-4" />
-            <span>Entangle</span>
-          </TabsTrigger>
-          <TabsTrigger value="subscriptions" className="flex items-center justify-center gap-2 px-3 py-3 text-sm col-span-2 sm:col-span-1">
-            <Zap className="h-4 w-4" />
-            <span>Subscribe</span>
-          </TabsTrigger>
-        </TabsList>
-
-        {/* Tab Descriptions */}
-        <div className="mb-8 bg-card border rounded-lg p-4">
-          <h3 className="font-semibold mb-3">Tab Guide</h3>
-          <div className="grid gap-3 text-sm text-muted-foreground">
-            <div className="flex items-start gap-3">
-              <FileText className="h-4 w-4 mt-0.5 text-primary shrink-0" />
-              <div>
-                <strong className="text-foreground">Feed:</strong> Browse and create quantum posts. Each post you create will be split into multiple personality versions (professional, casual, humorous) that different followers see randomly.
-              </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <Settings className="h-4 w-4 mt-0.5 text-primary shrink-0" />
-              <div>
-                <strong className="text-foreground">My Profile:</strong> Manage your quantum profile settings. Enable multiple reality versions of your profile so different followers see different aspects of your personality.
-              </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <Eye className="h-4 w-4 mt-0.5 text-primary shrink-0" />
-              <div>
-                <strong className="text-foreground">Observer Mode:</strong> Subscribe to see ALL quantum versions of any post. Discover how content appears differently to various audiences and understand quantum dynamics.
-              </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <Users className="h-4 w-4 mt-0.5 text-primary shrink-0" />
-              <div>
-                <strong className="text-foreground">Entanglements:</strong> Create quantum connections with special people. When entangled, you both always see the exact same versions of posts, creating a shared reality experience.
-              </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <Zap className="h-4 w-4 mt-0.5 text-primary shrink-0" />
-              <div>
-                <strong className="text-foreground">Subscriptions:</strong> Manage your premium subscriptions. Upgrade to access Observer Mode, Quantum Entanglements, Quantum Profiles, and the ability to collapse post quantum states.
-              </div>
-            </div>
+        {/* Neon Info Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
+          <div className="p-4 rounded-xl bg-gradient-to-br from-cyan-500/10 to-cyan-500/5 border border-cyan-500/30 hover:border-cyan-400/50 transition-all group">
+            <div className="text-2xl mb-2">⚛️</div>
+            <h3 className="font-semibold text-sm text-cyan-400">Quantum Posts</h3>
+            <p className="text-xs text-muted-foreground mt-1">3 versions per post</p>
+          </div>
+          <div className="p-4 rounded-xl bg-gradient-to-br from-purple-500/10 to-purple-500/5 border border-purple-500/30 hover:border-purple-400/50 transition-all">
+            <div className="text-2xl mb-2">🔮</div>
+            <h3 className="font-semibold text-sm text-purple-400">Reality Collapse</h3>
+            <p className="text-xs text-muted-foreground mt-1">€2.99 per collapse</p>
+          </div>
+          <div className="p-4 rounded-xl bg-gradient-to-br from-blue-500/10 to-blue-500/5 border border-blue-500/30 hover:border-blue-400/50 transition-all">
+            <div className="text-2xl mb-2">👁️</div>
+            <h3 className="font-semibold text-sm text-blue-400">Observer Mode</h3>
+            <p className="text-xs text-muted-foreground mt-1">€19.99/month</p>
+          </div>
+          <div className="p-4 rounded-xl bg-gradient-to-br from-pink-500/10 to-pink-500/5 border border-pink-500/30 hover:border-pink-400/50 transition-all">
+            <div className="text-2xl mb-2">🔗</div>
+            <h3 className="font-semibold text-sm text-pink-400">Entanglement</h3>
+            <p className="text-xs text-muted-foreground mt-1">€9.99/month</p>
+          </div>
+          <div className="p-4 rounded-xl bg-gradient-to-br from-amber-500/10 to-amber-500/5 border border-amber-500/30 hover:border-amber-400/50 transition-all">
+            <div className="text-2xl mb-2">✨</div>
+            <h3 className="font-semibold text-sm text-amber-400">Quantum Profiles</h3>
+            <p className="text-xs text-muted-foreground mt-1">€12.99/month</p>
           </div>
         </div>
+
+        <Tabs defaultValue="feed" className="w-full">
+          <TabsList className="grid grid-cols-5 w-full bg-card/50 backdrop-blur-sm border border-border/50 p-1">
+            <TabsTrigger value="feed" className="data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-400">
+              <FileText className="h-4 w-4 mr-2" />
+              Feed
+            </TabsTrigger>
+            <TabsTrigger value="profile" className="data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-400">
+              <Settings className="h-4 w-4 mr-2" />
+              Profile
+            </TabsTrigger>
+            <TabsTrigger value="observer" className="data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-400">
+              <Eye className="h-4 w-4 mr-2" />
+              Observer
+            </TabsTrigger>
+            <TabsTrigger value="entanglements" className="data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-400">
+              <Users className="h-4 w-4 mr-2" />
+              Entangle
+            </TabsTrigger>
+            <TabsTrigger value="subscriptions" className="data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-400">
+              <Zap className="h-4 w-4 mr-2" />
+              Subscribe
+            </TabsTrigger>
+          </TabsList>
 
         <TabsContent value="feed">
           <QuantumFeed />
@@ -125,7 +96,8 @@ const QuantumSocial = () => {
         <TabsContent value="subscriptions">
           <QuantumSubscriptions />
         </TabsContent>
-      </Tabs>
+        </Tabs>
+      </div>
     </div>
   );
 };
