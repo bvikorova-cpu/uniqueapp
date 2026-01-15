@@ -16,21 +16,22 @@ export const CookingCreditsDisplay = () => {
   if (isLoading) return null;
 
   return (
-    <Card className="p-6 bg-gradient-to-r from-primary/10 to-primary/5">
-      <div className="flex items-center justify-between">
+    <Card className="p-4 md:p-6 bg-gradient-to-r from-primary/10 to-primary/5">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <Coins className="h-8 w-8 text-primary" />
+          <Coins className="h-8 w-8 text-primary flex-shrink-0" />
           <div>
             <p className="text-sm text-muted-foreground">Available Credits</p>
-            <p className="text-3xl font-bold">{credits?.credits || 0}</p>
+            <p className="text-2xl md:text-3xl font-bold">{credits?.credits || 0}</p>
           </div>
         </div>
 
-        <div className="flex gap-2">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
           <Button
             onClick={() => handlePurchase(10)}
             variant="outline"
             size="sm"
+            className="w-full"
           >
             <Plus className="mr-2 h-4 w-4" />
             10 Credits - €5
@@ -39,6 +40,7 @@ export const CookingCreditsDisplay = () => {
             size="sm"
             variant="outline"
             onClick={() => handlePurchase(25)}
+            className="w-full"
           >
             <Plus className="mr-2 h-4 w-4" />
             25 Credits - €10
@@ -47,6 +49,7 @@ export const CookingCreditsDisplay = () => {
             size="sm"
             variant="outline"
             onClick={() => handlePurchase(50)}
+            className="w-full"
           >
             <Plus className="mr-2 h-4 w-4" />
             50 Credits - €15
