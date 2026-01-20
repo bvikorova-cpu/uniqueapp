@@ -298,15 +298,25 @@ const Auth = () => {
                     </div>
                   </div>
                   
-                  <div className="space-y-3">
+                  <div className="space-y-3 p-3 rounded-lg bg-muted/30 border border-border/50">
                     <div className="flex items-start space-x-2">
                       <Checkbox 
                         id="privacy-consent" 
                         checked={privacyConsent}
                         onCheckedChange={(checked) => setPrivacyConsent(checked as boolean)}
+                        className="mt-0.5"
                       />
                       <Label htmlFor="privacy-consent" className="text-sm leading-tight cursor-pointer">
-                        I agree to the processing of my personal data in accordance with the Privacy Policy
+                        I agree to the processing of my personal data in accordance with the{" "}
+                        <a 
+                          href="/terms#privacy" 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="text-primary hover:underline font-medium"
+                        >
+                          Privacy Policy
+                        </a>
+                        {" "}(GDPR compliant)
                       </Label>
                     </div>
                     <div className="flex items-start space-x-2">
@@ -314,9 +324,19 @@ const Auth = () => {
                         id="terms-consent" 
                         checked={termsConsent}
                         onCheckedChange={(checked) => setTermsConsent(checked as boolean)}
+                        className="mt-0.5"
                       />
                       <Label htmlFor="terms-consent" className="text-sm leading-tight cursor-pointer">
-                        I agree to the Terms of Use
+                        I agree to the{" "}
+                        <a 
+                          href="/terms" 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="text-primary hover:underline font-medium"
+                        >
+                          Terms of Service
+                        </a>
+                        {" "}and understand the platform rules
                       </Label>
                     </div>
                   </div>
