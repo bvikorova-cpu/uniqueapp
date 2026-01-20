@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Upload, Sparkles, Search, Shield, BookOpen, TrendingUp, Wrench, ExternalLink, Info, Star, Zap, CheckCircle } from "lucide-react";
+import { Upload, Sparkles, Search, Shield, BookOpen, TrendingUp, Wrench, ExternalLink, Info, Star, Zap, CheckCircle, Package } from "lucide-react";
 import { useAntiqueCredits } from "@/hooks/useAntiqueCredits";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
