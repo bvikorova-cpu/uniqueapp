@@ -1,12 +1,18 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
+import { verifyAndProcessPayment } from "../_shared/paymentVerification.ts";
 
 const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
   apiVersion: "2025-08-27.basil",
 });
 
 const cryptoProvider = Stripe.createSubtleCryptoProvider();
+
+const logStep = (step: string, details?: any) => {
+  const detailsStr = details ? ` - ${JSON.stringify(details)}` : '';
+  console.log(`[STRIPE-WEBHOOK] ${step}${detailsStr}`);
+};
 
 serve(async (req) => {
   const signature = req.headers.get("Stripe-Signature");
@@ -26,7 +32,7 @@ serve(async (req) => {
       cryptoProvider
     );
 
-    console.log("Webhook event:", event.type);
+    logStep("Event received", { type: event.type });
 
     const supabaseAdmin = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
@@ -35,28 +41,53 @@ serve(async (req) => {
 
     // Handle checkout.session.completed
     if (event.type === "checkout.session.completed") {
-      let userId: string | null = null;
-      let credits = 0;
-      let paymentStatus = "";
-      let metadata: any = {};
+      const session = event.data.object as Stripe.Checkout.Session;
+      const paymentStatus = session.payment_status || "";
+      const metadata = session.metadata || {};
+      const sessionId = session.id;
 
-      if (event.type === "checkout.session.completed") {
-        const session = event.data.object as Stripe.Checkout.Session;
-        paymentStatus = session.payment_status || "";
-        userId = session.metadata?.user_id || null;
-        credits = parseInt(session.metadata?.credits || "0");
-        metadata = session.metadata || {};
+      logStep("Processing checkout session", { 
+        sessionId, 
+        paymentStatus, 
+        metadataType: metadata.type || metadata.credit_type 
+      });
 
-      // Handle property listing payments
+      // CRITICAL: Only process if payment is actually paid
+      if (paymentStatus !== "paid") {
+        logStep("Payment not completed, skipping", { paymentStatus });
+        return new Response(JSON.stringify({ received: true, skipped: true }), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
+
+      // Handle credit purchases - use centralized verification
+      const creditType = metadata.credit_type || metadata.type;
+      const credits = parseInt(metadata.credits || "0");
+      
+      if (credits > 0 && creditType) {
+        logStep("Processing credit purchase", { creditType, credits });
+        
+        const result = await verifyAndProcessPayment(supabaseAdmin, sessionId);
+        
+        if (result.success) {
+          logStep("Credit purchase processed", { 
+            credits: result.credits, 
+            alreadyProcessed: result.alreadyProcessed 
+          });
+        } else {
+          logStep("Credit purchase failed", { error: result.error });
+        }
+      }
+
       // Handle concert ticket purchases
-      if (paymentStatus === "paid" && metadata.type === "concert_ticket") {
-        console.log("Processing concert ticket", { sessionId: session.id });
+      if (metadata.type === "concert_ticket") {
+        logStep("Processing concert ticket");
         
         const ticketPrice = session.amount_total ? session.amount_total / 100 : 0;
-        const musicianAmount = ticketPrice * 0.80; // 80% to musician
-        const platformCommission = ticketPrice * 0.20; // 20% platform fee
+        const musicianAmount = ticketPrice * 0.80;
+        const platformCommission = ticketPrice * 0.20;
         
-        // Create ticket purchase record
         const { error: ticketError } = await supabaseAdmin
           .from("concert_ticket_purchases")
           .insert({
@@ -65,13 +96,10 @@ serve(async (req) => {
             ticket_type_id: metadata.ticket_type_id,
             amount_paid: ticketPrice,
             payment_status: "completed",
-            stripe_session_id: session.id
+            stripe_session_id: sessionId
           });
 
-        if (ticketError) {
-          console.error("Error creating ticket:", ticketError);
-        } else {
-          // Record musician earnings
+        if (!ticketError) {
           await supabaseAdmin
             .from("musician_earnings")
             .insert({
@@ -83,12 +111,26 @@ serve(async (req) => {
               commission_rate: 20.00,
               related_id: metadata.concert_id
             });
+
+          // Create audit trail
+          await supabaseAdmin.from("transactions").insert({
+            user_id: metadata.user_id,
+            transaction_type: "concert_ticket",
+            amount: ticketPrice,
+            commission_rate: 0.20,
+            commission_amount: platformCommission,
+            seller_amount: musicianAmount,
+            status: "completed",
+            item_type: "concert_ticket",
+            stripe_session_id: sessionId,
+            seller_id: metadata.musician_id,
+          });
         }
       }
 
       // Handle concert gifts
-      if (paymentStatus === "paid" && metadata.type === "concert_gift") {
-        console.log("Processing concert gift", { sessionId: session.id });
+      if (metadata.type === "concert_gift") {
+        logStep("Processing concert gift");
         
         const giftPrice = session.amount_total ? session.amount_total / 100 : 0;
         const musicianAmount = giftPrice * 0.80;
@@ -103,7 +145,7 @@ serve(async (req) => {
             gift_id: metadata.gift_id,
             amount: giftPrice,
             message: metadata.message,
-            stripe_session_id: session.id
+            stripe_session_id: sessionId
           });
 
         if (!giftError) {
@@ -118,12 +160,26 @@ serve(async (req) => {
               commission_rate: 20.00,
               related_id: metadata.concert_id
             });
+
+          // Create audit trail
+          await supabaseAdmin.from("transactions").insert({
+            user_id: metadata.sender_id,
+            transaction_type: "gift",
+            amount: giftPrice,
+            commission_rate: 0.20,
+            commission_amount: platformCommission,
+            seller_amount: musicianAmount,
+            status: "completed",
+            item_type: "concert_gift",
+            stripe_session_id: sessionId,
+            seller_id: metadata.musician_id,
+          });
         }
       }
 
       // Handle holographic avatar purchases
-      if (paymentStatus === "paid" && metadata.type === "holographic_avatar") {
-        console.log("Processing holographic avatar purchase", { sessionId: session.id });
+      if (metadata.type === "holographic_avatar") {
+        logStep("Processing holographic avatar purchase");
         
         const serviceType = metadata.feature || "unknown";
         const isSubscription = session.mode === "subscription";
@@ -132,33 +188,23 @@ serve(async (req) => {
           user_id: metadata.user_id,
           service_type: serviceType,
           status: "active",
-          stripe_session_id: session.id,
+          stripe_session_id: sessionId,
         };
 
         if (isSubscription && session.subscription) {
           purchaseData.stripe_subscription_id = session.subscription;
-          // Subscriptions don't expire (managed by Stripe)
         } else {
-          // One-time purchases expire after 1 year
           const expiresAt = new Date();
           expiresAt.setFullYear(expiresAt.getFullYear() + 1);
           purchaseData.expires_at = expiresAt.toISOString();
         }
 
-        const { error: purchaseError } = await supabaseAdmin
-          .from("holographic_purchases")
-          .insert(purchaseData);
-
-        if (purchaseError) {
-          console.error("Error creating holographic purchase:", purchaseError);
-        } else {
-          console.log("Holographic avatar purchase recorded");
-        }
+        await supabaseAdmin.from("holographic_purchases").insert(purchaseData);
       }
 
       // Handle time capsule purchases
-      if (paymentStatus === "paid" && (metadata.type === "time_capsule" || metadata.type === "time_capsule_premium")) {
-        console.log("Processing time capsule purchase", { sessionId: session.id });
+      if (metadata.type === "time_capsule" || metadata.type === "time_capsule_premium") {
+        logStep("Processing time capsule purchase");
         
         const isSubscription = metadata.type === "time_capsule_premium";
         const durationYears = metadata.duration_years ? parseInt(metadata.duration_years) : null;
@@ -167,174 +213,87 @@ serve(async (req) => {
           user_id: metadata.user_id,
           service_type: isSubscription ? "premium_subscription" : `${durationYears}_year`,
           status: "active",
-          stripe_session_id: session.id,
+          stripe_session_id: sessionId,
           duration_years: durationYears,
         };
 
         if (isSubscription && session.subscription) {
           purchaseData.stripe_subscription_id = session.subscription;
-          // Premium subscription doesn't expire (managed by Stripe)
         } else if (durationYears) {
-          // Calculate expiration date based on duration
           const expiresAt = new Date();
           expiresAt.setFullYear(expiresAt.getFullYear() + durationYears);
           purchaseData.expires_at = expiresAt.toISOString();
         }
 
-        const { error: purchaseError } = await supabaseAdmin
-          .from("time_capsule_purchases")
-          .insert(purchaseData);
-
-        if (purchaseError) {
-          console.error("Error creating time capsule purchase:", purchaseError);
-        } else {
-          console.log("Time capsule purchase recorded");
-        }
+        await supabaseAdmin.from("time_capsule_purchases").insert(purchaseData);
       }
 
-      if (paymentStatus === "paid" && metadata.type === "property_listing") {
-        console.log("Processing property listing payment", { sessionId: session.id });
+      // Handle property listing payment
+      if (metadata.type === "property_listing") {
+        logStep("Processing property listing payment");
         
-        const { error: packageError } = await supabaseAdmin
+        await supabaseAdmin
           .from("property_listing_packages")
           .update({ payment_status: "completed" })
-          .eq("stripe_session_id", session.id);
-
-        if (packageError) {
-          console.error("Error updating property listing package:", packageError);
-        } else {
-          console.log("Property listing package activated - trigger will activate property");
-        }
+          .eq("stripe_session_id", sessionId);
       }
 
-        // Handle MasterChef gift payments
-        if (paymentStatus === "paid" && metadata.type === "masterchef_gift") {
-          console.log("Processing MasterChef gift payment", { sessionId: session.id });
-          
-          const { data: giftData, error: giftError } = await supabaseAdmin
-            .from("masterchef_sent_gifts")
-            .update({ 
-              status: "completed",
-              stripe_session_id: session.id
-            })
-            .eq("sender_id", metadata.sender_id)
-            .eq("chef_id", metadata.chef_id)
-            .eq("gift_id", metadata.gift_id)
-            .is("stripe_session_id", null)
-            .select('id, chef_id, chef_amount')
-            .single();
+      // Handle MasterChef gift payments
+      if (metadata.type === "masterchef_gift") {
+        logStep("Processing MasterChef gift payment");
+        
+        const { data: giftData, error: giftError } = await supabaseAdmin
+          .from("masterchef_sent_gifts")
+          .update({ 
+            status: "completed",
+            stripe_session_id: sessionId
+          })
+          .eq("sender_id", metadata.sender_id)
+          .eq("chef_id", metadata.chef_id)
+          .eq("gift_id", metadata.gift_id)
+          .is("stripe_session_id", null)
+          .select('id, chef_id, chef_amount')
+          .single();
 
-          if (giftError) {
-            console.error("Error updating MasterChef gift:", giftError);
-          } else {
-            console.log("MasterChef gift marked as completed");
-            
-            // Get chef name for notification
+        if (!giftError && giftData) {
+          // Notify admins
+          const { data: adminUsers } = await supabaseAdmin
+            .from("user_roles")
+            .select("user_id")
+            .eq("role", "admin");
+
+          if (adminUsers) {
             const { data: chefProfile } = await supabaseAdmin
               .from("profiles")
               .select("full_name")
               .eq("id", metadata.chef_id)
               .single();
 
-            const chefName = chefProfile?.full_name || 'Chef';
-
-            // Get the platform earning record
-            const { data: earningData } = await supabaseAdmin
-              .from("masterchef_platform_earnings")
-              .select("id, chef_amount")
-              .eq("gift_id", giftData.id)
-              .single();
-
-            if (earningData) {
-              // Get all admin users
-              const { data: adminUsers } = await supabaseAdmin
-                .from("user_roles")
-                .select("user_id")
-                .eq("role", "admin");
-
-              // Notify admins about new withdrawal request
-              if (adminUsers) {
-                for (const admin of adminUsers) {
-                  await supabaseAdmin
-                    .from("notifications")
-                    .insert({
-                      user_id: admin.user_id,
-                      type: "masterchef_withdrawal",
-                      message: `${chefName} received a gift worth €${Number(earningData.chef_amount).toFixed(2)}`
-                    });
-                }
-              }
+            for (const admin of adminUsers) {
+              await supabaseAdmin.from("notifications").insert({
+                user_id: admin.user_id,
+                type: "masterchef_withdrawal",
+                message: `${chefProfile?.full_name || 'Chef'} received a gift worth €${Number(giftData.chef_amount).toFixed(2)}`
+              });
             }
-          }
-        }
-
-        // Handle Influencer gift payments
-        if (paymentStatus === "paid" && metadata.type === "influencer_gift") {
-          console.log("Processing Influencer gift payment", { sessionId: session.id });
-          
-          const { data: giftData, error: giftError } = await supabaseAdmin
-            .from("influencer_sent_gifts")
-            .update({ 
-              status: "completed",
-              stripe_payment_intent: session.payment_intent
-            })
-            .eq("sender_id", metadata.sender_id)
-            .eq("influencer_id", metadata.influencer_id)
-            .eq("gift_id", metadata.gift_id)
-            .eq("stripe_session_id", session.id)
-            .select('id, influencer_id, chef_amount')
-            .single();
-
-          if (giftError) {
-            console.error("Error updating Influencer gift:", giftError);
-          } else {
-            console.log("Influencer gift marked as completed - trigger will update balances");
           }
         }
       }
 
-      if (paymentStatus === "paid" && userId && credits > 0) {
-        const creditType = metadata.type || "ai_credits";
-        const tableName = creditType === "photo_credits" ? "photo_credits" : "ai_credits";
+      // Handle Influencer gift payments
+      if (metadata.type === "influencer_gift") {
+        logStep("Processing Influencer gift payment");
         
-        // Get current credits
-        const { data: currentCredits } = await supabaseAdmin
-          .from(tableName)
-          .select("*")
-          .eq("user_id", userId)
-          .maybeSingle();
-
-        if (currentCredits) {
-          // Update existing record
-          const { error } = await supabaseAdmin
-            .from(tableName)
-            .update({
-              credits_remaining: currentCredits.credits_remaining + credits,
-              total_credits_purchased: currentCredits.total_credits_purchased + credits,
-            })
-            .eq("user_id", userId);
-
-          if (error) {
-            console.error(`Error updating ${tableName}:`, error);
-            throw error;
-          }
-        } else {
-          // Create new record
-          const { error } = await supabaseAdmin
-            .from(tableName)
-            .insert({
-              user_id: userId,
-              credits_remaining: credits,
-              total_credits_purchased: credits,
-            });
-
-          if (error) {
-            console.error(`Error creating ${tableName}:`, error);
-            throw error;
-          }
-        }
-
-        console.log(`Added ${credits} credits to user ${userId} in ${tableName}`);
+        await supabaseAdmin
+          .from("influencer_sent_gifts")
+          .update({ 
+            status: "completed",
+            stripe_payment_intent: session.payment_intent
+          })
+          .eq("sender_id", metadata.sender_id)
+          .eq("influencer_id", metadata.influencer_id)
+          .eq("gift_id", metadata.gift_id)
+          .eq("stripe_session_id", sessionId);
       }
     }
 
@@ -343,7 +302,7 @@ serve(async (req) => {
       headers: { "Content-Type": "application/json" },
     });
   } catch (error) {
-    console.error("Webhook error:", error);
+    console.error("[STRIPE-WEBHOOK] Error:", error);
     return new Response(
       JSON.stringify({ error: error instanceof Error ? error.message : "Unknown error" }),
       { status: 400 }

@@ -7,12 +7,11 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-// Map price IDs to vote amounts
 const VOTE_PACKAGES: Record<string, number> = {
-  "price_1SSDabGaXSfGtYFtjBhb6kVr": 5,   // 2€ = 5 votes
-  "price_1SSDacGaXSfGtYFtYnW8omLQ": 10,  // 3€ = 10 votes
-  "price_1SSDadGaXSfGtYFthJDJ0sYd": 50,  // 10€ = 50 votes
-  "price_1SSDmg0QTWhd4oRp8S8VrIeM": 100, // 20€ = 100 votes (bulk discount)
+  "price_1SSDabGaXSfGtYFtjBhb6kVr": 5,
+  "price_1SSDacGaXSfGtYFtYnW8omLQ": 10,
+  "price_1SSDadGaXSfGtYFthJDJ0sYd": 50,
+  "price_1SSDmg0QTWhd4oRp8S8VrIeM": 100,
 };
 
 serve(async (req) => {
@@ -20,12 +19,17 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
-  const supabaseClient = createClient(
+  const supabaseAdmin = createClient(
     Deno.env.get("SUPABASE_URL") ?? "",
-    Deno.env.get("SUPABASE_ANON_KEY") ?? ""
+    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
   );
 
   try {
+    const supabaseClient = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_ANON_KEY") ?? ""
+    );
+
     const authHeader = req.headers.get("Authorization")!;
     const token = authHeader.replace("Bearer ", "");
     const { data } = await supabaseClient.auth.getUser(token);
@@ -35,27 +39,41 @@ serve(async (req) => {
     const { sessionId } = await req.json();
     if (!sessionId) throw new Error("Session ID is required");
 
-    console.log(`Verifying payment for user ${user.id}, session: ${sessionId}`);
+    // Check idempotency - prevent double processing
+    const { data: existing } = await supabaseAdmin
+      .from("payment_verifications")
+      .select("*")
+      .eq("stripe_session_id", sessionId)
+      .single();
+
+    if (existing?.payment_status === "completed") {
+      return new Response(JSON.stringify({ 
+        success: true, 
+        votesAdded: 0,
+        alreadyProcessed: true
+      }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 200,
+      });
+    }
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
       apiVersion: "2025-08-27.basil",
     });
 
-    // Retrieve session to verify payment
     const session = await stripe.checkout.sessions.retrieve(sessionId);
     
     if (session.payment_status !== "paid") {
-      console.log(`Payment not completed: ${session.payment_status}`);
-      return new Response(JSON.stringify({ 
-        success: false, 
-        message: "Payment not completed" 
-      }), {
+      return new Response(JSON.stringify({ success: false, message: "Payment not completed" }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 400,
       });
     }
 
-    // Get the price ID from the session
+    if (session.metadata?.user_id !== user.id) {
+      throw new Error("Session does not belong to this user");
+    }
+
     const lineItems = await stripe.checkout.sessions.listLineItems(sessionId);
     const priceId = lineItems.data[0]?.price?.id;
     
@@ -64,11 +82,21 @@ serve(async (req) => {
     }
 
     const votesToAdd = VOTE_PACKAGES[priceId];
-    console.log(`Adding ${votesToAdd} votes for price ${priceId}`);
 
-    // Get or create today's vote tracking
+    // Record verification
+    await supabaseAdmin.from("payment_verifications").upsert({
+      stripe_session_id: sessionId,
+      user_id: user.id,
+      credit_type: "brand_battle_votes",
+      credits_amount: votesToAdd,
+      amount_paid: session.amount_total ? session.amount_total / 100 : 0,
+      payment_status: "completed",
+      processed_at: new Date().toISOString(),
+    });
+
+    // Add votes
     const today = new Date().toISOString().split('T')[0];
-    const { data: voteTracking } = await supabaseClient
+    const { data: voteTracking } = await supabaseAdmin
       .from("user_daily_votes")
       .select("*")
       .eq("user_id", user.id)
@@ -76,36 +104,31 @@ serve(async (req) => {
       .single();
 
     if (voteTracking) {
-      // Update existing record
-      const { error: updateError } = await supabaseClient
+      await supabaseAdmin
         .from("user_daily_votes")
-        .update({
-          votes_purchased: (voteTracking.votes_purchased || 0) + votesToAdd,
-        })
+        .update({ votes_purchased: (voteTracking.votes_purchased || 0) + votesToAdd })
         .eq("user_id", user.id)
         .eq("date", today);
-
-      if (updateError) throw updateError;
     } else {
-      // Create new record
-      const { error: insertError } = await supabaseClient
+      await supabaseAdmin
         .from("user_daily_votes")
-        .insert({
-          user_id: user.id,
-          date: today,
-          votes_used: 0,
-          votes_purchased: votesToAdd,
-        });
-
-      if (insertError) throw insertError;
+        .insert({ user_id: user.id, date: today, votes_used: 0, votes_purchased: votesToAdd });
     }
 
-    console.log(`Successfully added ${votesToAdd} votes to user ${user.id}`);
+    // Audit trail
+    await supabaseAdmin.from("transactions").insert({
+      user_id: user.id,
+      transaction_type: "credit_purchase",
+      amount: session.amount_total ? session.amount_total / 100 : 0,
+      commission_rate: 0,
+      commission_amount: 0,
+      seller_amount: 0,
+      status: "completed",
+      item_type: "brand_battle_votes",
+      stripe_session_id: sessionId,
+    });
 
-    return new Response(JSON.stringify({ 
-      success: true,
-      votesAdded: votesToAdd
-    }), {
+    return new Response(JSON.stringify({ success: true, votesAdded: votesToAdd }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
     });

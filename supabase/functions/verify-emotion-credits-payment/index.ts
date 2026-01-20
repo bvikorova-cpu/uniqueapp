@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
+import { verifyAndProcessPayment } from "../_shared/paymentVerification.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -12,14 +13,13 @@ serve(async (req) => {
   }
 
   try {
-    const { credits } = await req.json();
+    const { sessionId } = await req.json();
     
-    const creditsToAdd = parseInt(credits, 10);
-    if (!creditsToAdd || creditsToAdd <= 0) {
-      return new Response(JSON.stringify({ error: 'Invalid credits amount' }), {
-        status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+    if (!sessionId) {
+      return new Response(
+        JSON.stringify({ error: 'Session ID required' }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
     }
 
     // Get authenticated user
@@ -30,10 +30,10 @@ serve(async (req) => {
 
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) {
-      return new Response(JSON.stringify({ error: 'Authorization required' }), {
-        status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      return new Response(
+        JSON.stringify({ error: 'Authorization required' }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
     }
 
     const token = authHeader.replace("Bearer ", "");
@@ -41,69 +41,45 @@ serve(async (req) => {
     const user = data.user;
     
     if (!user) {
-      return new Response(JSON.stringify({ error: 'User not authenticated' }), {
-        status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      return new Response(
+        JSON.stringify({ error: 'User not authenticated' }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
     }
 
-    console.log(`[VERIFY-EMOTION-CREDITS-PAYMENT] Adding ${creditsToAdd} credits for user ${user.id}`);
+    console.log(`[VERIFY-EMOTION-CREDITS-PAYMENT] Verifying session ${sessionId} for user ${user.id}`);
 
-    // Use service role for update
+    // Use admin client for credit operations
     const supabaseAdmin = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
     );
 
-    // Get current credits
-    let { data: currentCredits } = await supabaseAdmin
+    // Verify payment and process credits with idempotency protection
+    const result = await verifyAndProcessPayment(supabaseAdmin, sessionId, user.id);
+
+    if (!result.success) {
+      console.error(`[VERIFY-EMOTION-CREDITS-PAYMENT] Verification failed: ${result.error}`);
+      return new Response(
+        JSON.stringify({ error: result.error }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Get updated credit balance
+    const { data: creditsData } = await supabaseAdmin
       .from('emotion_credits')
-      .select('*')
+      .select('credits_remaining')
       .eq('user_id', user.id)
       .single();
 
-    if (currentCredits) {
-      // Update existing record
-      const { error: updateError } = await supabaseAdmin
-        .from('emotion_credits')
-        .update({
-          credits_remaining: currentCredits.credits_remaining + creditsToAdd,
-          total_credits_purchased: currentCredits.total_credits_purchased + creditsToAdd,
-          updated_at: new Date().toISOString()
-        })
-        .eq('user_id', user.id);
-
-      if (updateError) {
-        console.error('[VERIFY-EMOTION-CREDITS-PAYMENT] Update error:', updateError);
-        return new Response(JSON.stringify({ error: 'Failed to add credits' }), {
-          status: 500,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
-      }
-    } else {
-      // Create new record
-      const { error: insertError } = await supabaseAdmin
-        .from('emotion_credits')
-        .insert({
-          user_id: user.id,
-          credits_remaining: creditsToAdd,
-          total_credits_purchased: creditsToAdd
-        });
-
-      if (insertError) {
-        console.error('[VERIFY-EMOTION-CREDITS-PAYMENT] Insert error:', insertError);
-        return new Response(JSON.stringify({ error: 'Failed to create credits' }), {
-          status: 500,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
-      }
-    }
-
-    console.log(`[VERIFY-EMOTION-CREDITS-PAYMENT] Successfully added ${creditsToAdd} credits`);
+    console.log(`[VERIFY-EMOTION-CREDITS-PAYMENT] Success - credits: ${creditsData?.credits_remaining}`);
 
     return new Response(JSON.stringify({ 
       success: true,
-      credits_added: creditsToAdd
+      credits: creditsData?.credits_remaining || result.credits,
+      credits_added: result.alreadyProcessed ? 0 : result.credits,
+      alreadyProcessed: result.alreadyProcessed
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,

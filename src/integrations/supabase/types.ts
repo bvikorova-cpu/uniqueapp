@@ -19235,6 +19235,48 @@ export type Database = {
         }
         Relationships: []
       }
+      payment_verifications: {
+        Row: {
+          amount_paid: number | null
+          created_at: string | null
+          credit_type: string
+          credits_amount: number
+          currency: string | null
+          id: string
+          metadata: Json | null
+          payment_status: string
+          processed_at: string | null
+          stripe_session_id: string
+          user_id: string
+        }
+        Insert: {
+          amount_paid?: number | null
+          created_at?: string | null
+          credit_type: string
+          credits_amount: number
+          currency?: string | null
+          id?: string
+          metadata?: Json | null
+          payment_status?: string
+          processed_at?: string | null
+          stripe_session_id: string
+          user_id: string
+        }
+        Update: {
+          amount_paid?: number | null
+          created_at?: string | null
+          credit_type?: string
+          credits_amount?: number
+          currency?: string | null
+          id?: string
+          metadata?: Json | null
+          payment_status?: string
+          processed_at?: string | null
+          stripe_session_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       payout_batches: {
         Row: {
           batch_date: string
@@ -27335,6 +27377,7 @@ export type Database = {
           seller_id: string | null
           status: string
           stream_id: string | null
+          stripe_session_id: string | null
           transaction_type: string
           updated_at: string
           user_id: string
@@ -27352,6 +27395,7 @@ export type Database = {
           seller_id?: string | null
           status?: string
           stream_id?: string | null
+          stripe_session_id?: string | null
           transaction_type: string
           updated_at?: string
           user_id: string
@@ -27369,6 +27413,7 @@ export type Database = {
           seller_id?: string | null
           status?: string
           stream_id?: string | null
+          stripe_session_id?: string | null
           transaction_type?: string
           updated_at?: string
           user_id?: string
