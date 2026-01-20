@@ -8,9 +8,16 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { DollarSign, Users, TrendingUp, CreditCard, Search, ChefHat, Mic2, ChevronRight, UserX } from "lucide-react";
+import { 
+  DollarSign, Users, TrendingUp, CreditCard, Search, ChefHat, Mic2, ChevronRight, 
+  UserX, Shield, Terminal, Zap, BadgeCheck, Coins, Megaphone, Activity 
+} from "lucide-react";
 import { VerificationRequestsWidget } from "@/components/admin/VerificationRequestsWidget";
 import { ShadowBanToggle } from "@/components/admin/ShadowBanToggle";
+import { UserVerificationToggle } from "@/components/admin/UserVerificationToggle";
+import { CreditOverrideDialog } from "@/components/admin/CreditOverrideDialog";
+import { GlobalAnnouncementPanel } from "@/components/admin/GlobalAnnouncementPanel";
+import { TransactionLogPanel } from "@/components/admin/TransactionLogPanel";
 
 const Admin = () => {
   const navigate = useNavigate();
@@ -57,8 +64,8 @@ const Admin = () => {
 
       if (!roles) {
         toast({
-          title: "Prístup zamietnutý",
-          description: "Nemáte oprávnenie na prístup k admin panelu",
+          title: "Access Denied",
+          description: "You do not have permission to access the Command Center",
           variant: "destructive",
         });
         navigate('/');
@@ -205,7 +212,14 @@ const Admin = () => {
   };
 
   if (loading) {
-    return <div className="min-h-screen bg-background flex items-center justify-center">Loading...</div>;
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <Terminal className="h-12 w-12 mx-auto animate-pulse text-primary" />
+          <p className="text-muted-foreground">Initializing Command Center...</p>
+        </div>
+      </div>
+    );
   }
 
   if (!isAdmin) {
@@ -228,122 +242,128 @@ const Admin = () => {
   return (
     <div className="min-h-screen bg-background pt-20 pb-12">
       <div className="container mx-auto px-4">
-        <h1 className="text-4xl font-bold mb-8">Admin Panel</h1>
+        {/* Header */}
+        <div className="mb-8">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="p-3 rounded-lg bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/20">
+              <Terminal className="h-8 w-8 text-primary" />
+            </div>
+            <div>
+              <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent">
+                Unique Tech. Command Center
+              </h1>
+              <p className="text-muted-foreground flex items-center gap-2">
+                <Shield className="h-4 w-4" />
+                Secure Admin Console • Full Platform Control
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Power Tools Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          <GlobalAnnouncementPanel />
+          <TransactionLogPanel />
+        </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
           <VerificationRequestsWidget />
           
-          <Card>
+          <Card className="bg-gradient-to-br from-blue-500/10 to-blue-500/5 border-blue-500/20">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Celkový počet užívateľov</CardTitle>
-              <Users className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-sm font-medium">Total Users</CardTitle>
+              <Users className="h-4 w-4 text-blue-400" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{stats.totalUsers}</div>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="bg-gradient-to-br from-purple-500/10 to-purple-500/5 border-purple-500/20">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Prémiový užívatelia</CardTitle>
-              <CreditCard className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-sm font-medium">Premium Users</CardTitle>
+              <CreditCard className="h-4 w-4 text-purple-400" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{stats.premiumUsers}</div>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="bg-gradient-to-br from-green-500/10 to-green-500/5 border-green-500/20">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Celkový príjem</CardTitle>
-              <DollarSign className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
+              <DollarSign className="h-4 w-4 text-green-400" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stats.totalRevenue.toFixed(2)} €</div>
+              <div className="text-2xl font-bold">€{stats.totalRevenue.toFixed(2)}</div>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="bg-gradient-to-br from-amber-500/10 to-amber-500/5 border-amber-500/20">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">MasterChef Provízie</CardTitle>
-              <ChefHat className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-sm font-medium">Monthly Revenue</CardTitle>
+              <TrendingUp className="h-4 w-4 text-amber-400" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">€{stats.masterchefEarnings.toFixed(2)}</div>
-              <Button 
-                variant="link" 
-                className="p-0 h-auto text-sm" 
-                onClick={() => navigate('/admin/masterchef-payouts')}
-              >
-                Manage Payouts →
-              </Button>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Mesačný príjem</CardTitle>
-              <TrendingUp className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stats.monthlyRevenue.toFixed(2)} €</div>
+              <div className="text-2xl font-bold">€{stats.monthlyRevenue.toFixed(2)}</div>
             </CardContent>
           </Card>
         </div>
 
-        {/* MasterChef Earnings Card */}
-        <Card 
-          className="mb-8 cursor-pointer hover:shadow-lg transition-shadow border-2 border-orange-500/30 bg-gradient-to-br from-orange-500/5 to-red-500/5"
-          onClick={() => navigate('/admin/masterchef-payouts')}
-        >
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="p-3 rounded-lg bg-orange-500/20">
-                  <ChefHat className="h-6 w-6 text-orange-600" />
+        {/* Platform Earnings Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <Card 
+            className="cursor-pointer hover:shadow-lg transition-shadow border-2 border-orange-500/30 bg-gradient-to-br from-orange-500/5 to-red-500/5"
+            onClick={() => navigate('/admin/masterchef-payouts')}
+          >
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="p-3 rounded-lg bg-orange-500/20">
+                    <ChefHat className="h-6 w-6 text-orange-500" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-xl">MasterChef Earnings</CardTitle>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      Platform commissions from virtual gifts (20%)
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <CardTitle className="text-xl">MasterChef Platform Earnings</CardTitle>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    Total commissions from virtual gifts (20% per gift)
-                  </p>
+                <div className="text-right">
+                  <div className="text-3xl font-bold text-orange-500">
+                    €{stats.masterchefEarnings.toFixed(2)}
+                  </div>
+                  <Button variant="outline" size="sm" className="mt-2">
+                    Manage Payouts →
+                  </Button>
                 </div>
               </div>
-              <div className="text-right">
-                <div className="text-3xl font-bold text-orange-600">
-                  €{stats.masterchefEarnings.toFixed(2)}
-                </div>
-                <Button variant="outline" size="sm" className="mt-2">
-                  View Details →
-                </Button>
-              </div>
-            </div>
-          </CardHeader>
-        </Card>
+            </CardHeader>
+          </Card>
 
-        {/* Comedy Club Earnings Card */}
-        <Card 
-          className="mb-8 cursor-pointer hover:shadow-lg transition-shadow border-2 border-purple-500/30 bg-gradient-to-br from-purple-500/5 to-pink-500/5"
-          onClick={() => navigate('/admin/comedy-payouts')}
-        >
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="p-3 rounded-lg bg-purple-500/20">
-                  <Mic2 className="h-6 w-6 text-purple-600" />
+          <Card 
+            className="cursor-pointer hover:shadow-lg transition-shadow border-2 border-purple-500/30 bg-gradient-to-br from-purple-500/5 to-pink-500/5"
+            onClick={() => navigate('/admin/comedy-payouts')}
+          >
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="p-3 rounded-lg bg-purple-500/20">
+                    <Mic2 className="h-6 w-6 text-purple-500" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-xl">Comedy Club Earnings</CardTitle>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      Commissions from tickets, tips, and clips (25%)
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <CardTitle className="text-xl">Comedy Club Platform Earnings</CardTitle>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    Provízie z lístkov, tipov a clipov (25%)
-                  </p>
-                </div>
+                <ChevronRight className="h-6 w-6 text-muted-foreground" />
               </div>
-              <ChevronRight className="h-6 w-6 text-muted-foreground" />
-            </div>
-          </CardHeader>
-        </Card>
+            </CardHeader>
+          </Card>
+        </div>
 
         {/* Search */}
         <div className="mb-6">
@@ -359,21 +379,79 @@ const Admin = () => {
         </div>
 
         {/* Tabs */}
-        <Tabs defaultValue="subscriptions" className="space-y-6">
-          <TabsList>
-            <TabsTrigger value="subscriptions">Predplatné</TabsTrigger>
-            <TabsTrigger value="transactions">Transakcie</TabsTrigger>
-            <TabsTrigger value="messages">Správy</TabsTrigger>
+        <Tabs defaultValue="users" className="space-y-6">
+          <TabsList className="flex-wrap">
             <TabsTrigger value="users" className="gap-1">
-              <UserX className="h-4 w-4" />
+              <BadgeCheck className="h-4 w-4" />
               User Management
             </TabsTrigger>
+            <TabsTrigger value="subscriptions">Subscriptions</TabsTrigger>
+            <TabsTrigger value="transactions">Transactions</TabsTrigger>
+            <TabsTrigger value="messages">Messages</TabsTrigger>
           </TabsList>
+
+          <TabsContent value="users">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Shield className="h-5 w-5 text-primary" />
+                  User Management, Verification & Credit Control
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>User</TableHead>
+                      <TableHead>Email</TableHead>
+                      <TableHead>Joined</TableHead>
+                      <TableHead>Verification</TableHead>
+                      <TableHead>Shadow Ban</TableHead>
+                      <TableHead>Credits</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {users.filter(user =>
+                      user.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                      user.email?.toLowerCase().includes(searchTerm.toLowerCase())
+                    ).map((user) => (
+                      <TableRow key={user.id}>
+                        <TableCell className="font-medium">{user.full_name || 'Unknown'}</TableCell>
+                        <TableCell>{user.email || 'N/A'}</TableCell>
+                        <TableCell>{new Date(user.created_at).toLocaleDateString()}</TableCell>
+                        <TableCell>
+                          <UserVerificationToggle 
+                            userId={user.id} 
+                            userName={user.full_name || 'User'}
+                            isVerified={user.is_verified || false}
+                            onUpdate={loadData}
+                          />
+                        </TableCell>
+                        <TableCell>
+                          <ShadowBanToggle 
+                            userId={user.id} 
+                            userName={user.full_name || 'User'}
+                          />
+                        </TableCell>
+                        <TableCell>
+                          <CreditOverrideDialog
+                            userId={user.id}
+                            userName={user.full_name || 'User'}
+                            onUpdate={loadData}
+                          />
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          </TabsContent>
 
           <TabsContent value="subscriptions">
             <Card>
               <CardHeader>
-                <CardTitle>Predplatné</CardTitle>
+                <CardTitle>Subscriptions</CardTitle>
               </CardHeader>
               <CardContent>
                 <Table>
@@ -398,14 +476,14 @@ const Admin = () => {
                             {sub.tier.toUpperCase()}
                           </Badge>
                         </TableCell>
-                        <TableCell>{parseFloat(sub.price).toFixed(2)} €</TableCell>
+                        <TableCell>€{parseFloat(sub.price).toFixed(2)}</TableCell>
                         <TableCell>
                           <Badge variant={sub.status === 'active' ? 'default' : 'secondary'}>
                             {sub.status}
                           </Badge>
                         </TableCell>
-                        <TableCell>{new Date(sub.started_at).toLocaleDateString('sk-SK')}</TableCell>
-                        <TableCell>{sub.expires_at ? new Date(sub.expires_at).toLocaleDateString('sk-SK') : 'Neobmedzene'}</TableCell>
+                        <TableCell>{new Date(sub.started_at).toLocaleDateString()}</TableCell>
+                        <TableCell>{sub.expires_at ? new Date(sub.expires_at).toLocaleDateString() : 'Unlimited'}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
@@ -417,20 +495,20 @@ const Admin = () => {
           <TabsContent value="transactions">
             <Card>
               <CardHeader>
-                <CardTitle>Transakcie</CardTitle>
+                <CardTitle>Transactions</CardTitle>
               </CardHeader>
               <CardContent>
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Užívateľ/Kupec</TableHead>
-                      <TableHead>Predajca</TableHead>
-                      <TableHead>Typ</TableHead>
-                      <TableHead>Suma</TableHead>
-                      <TableHead>Provízia €</TableHead>
+                      <TableHead>User/Buyer</TableHead>
+                      <TableHead>Seller</TableHead>
+                      <TableHead>Type</TableHead>
+                      <TableHead>Amount</TableHead>
+                      <TableHead>Commission €</TableHead>
                       <TableHead>Status</TableHead>
-                      <TableHead>Dátum</TableHead>
-                      <TableHead>Akcie</TableHead>
+                      <TableHead>Date</TableHead>
+                      <TableHead>Actions</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -443,8 +521,8 @@ const Admin = () => {
                             {trans.item_type || trans.transaction_type || 'N/A'}
                           </Badge>
                         </TableCell>
-                        <TableCell>{parseFloat(trans.amount || 0).toFixed(2)} €</TableCell>
-                        <TableCell className="font-bold">{parseFloat(trans.commission_amount || 0).toFixed(2)} €</TableCell>
+                        <TableCell>€{parseFloat(trans.amount || 0).toFixed(2)}</TableCell>
+                        <TableCell className="font-bold">€{parseFloat(trans.commission_amount || 0).toFixed(2)}</TableCell>
                         <TableCell>
                           <Badge variant={
                             trans.status === 'completed' ? 'default' :
@@ -453,7 +531,7 @@ const Admin = () => {
                             {trans.status}
                           </Badge>
                         </TableCell>
-                        <TableCell>{new Date(trans.created_at).toLocaleDateString('sk-SK')}</TableCell>
+                        <TableCell>{new Date(trans.created_at).toLocaleDateString()}</TableCell>
                         <TableCell>
                           {trans.status === 'pending' && (
                             <div className="flex gap-2">
@@ -461,14 +539,14 @@ const Admin = () => {
                                 size="sm"
                                 onClick={() => updateTransactionStatus(trans.id, 'completed')}
                               >
-                                Schváliť
+                                Approve
                               </Button>
                               <Button
                                 size="sm"
                                 variant="destructive"
                                 onClick={() => updateTransactionStatus(trans.id, 'refunded')}
                               >
-                                Vrátiť
+                                Refund
                               </Button>
                             </div>
                           )}
@@ -484,19 +562,19 @@ const Admin = () => {
           <TabsContent value="messages">
             <Card>
               <CardHeader>
-                <CardTitle>Kontaktné správy</CardTitle>
+                <CardTitle>Contact Messages</CardTitle>
               </CardHeader>
               <CardContent>
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Meno</TableHead>
+                      <TableHead>Name</TableHead>
                       <TableHead>Email</TableHead>
-                      <TableHead>Predmet</TableHead>
-                      <TableHead>Správa</TableHead>
+                      <TableHead>Subject</TableHead>
+                      <TableHead>Message</TableHead>
                       <TableHead>Status</TableHead>
-                      <TableHead>Dátum</TableHead>
-                      <TableHead>Akcia</TableHead>
+                      <TableHead>Date</TableHead>
+                      <TableHead>Action</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -512,10 +590,10 @@ const Admin = () => {
                         <TableCell className="max-w-md truncate">{msg.message}</TableCell>
                         <TableCell>
                           <Badge variant={msg.is_read ? 'secondary' : 'default'}>
-                            {msg.is_read ? 'Prečítané' : 'Nové'}
+                            {msg.is_read ? 'Read' : 'New'}
                           </Badge>
                         </TableCell>
-                        <TableCell>{new Date(msg.created_at).toLocaleDateString('sk-SK')}</TableCell>
+                        <TableCell>{new Date(msg.created_at).toLocaleDateString()}</TableCell>
                         <TableCell>
                           {!msg.is_read && (
                             <Button
@@ -528,50 +606,9 @@ const Admin = () => {
                                 await loadData();
                               }}
                             >
-                              Označiť ako prečítané
+                              Mark Read
                             </Button>
                           )}
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="users">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <UserX className="h-5 w-5" />
-                  User Management & Shadow Ban
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>User</TableHead>
-                      <TableHead>Email</TableHead>
-                      <TableHead>Joined</TableHead>
-                      <TableHead>Shadow Ban</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {users.filter(user =>
-                      user.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                      user.email?.toLowerCase().includes(searchTerm.toLowerCase())
-                    ).map((user) => (
-                      <TableRow key={user.id}>
-                        <TableCell>{user.full_name || 'Unknown'}</TableCell>
-                        <TableCell>{user.email || 'N/A'}</TableCell>
-                        <TableCell>{new Date(user.created_at).toLocaleDateString('sk-SK')}</TableCell>
-                        <TableCell>
-                          <ShadowBanToggle 
-                            userId={user.id} 
-                            userName={user.full_name || 'User'}
-                          />
                         </TableCell>
                       </TableRow>
                     ))}

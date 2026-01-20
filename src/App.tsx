@@ -16,6 +16,7 @@ import Footer from "./components/Footer";
 import SkipLink from "./components/SkipLink";
 import ProgressiveOnboarding from "./components/onboarding/ProgressiveOnboarding";
 import { PageLoader } from "@/components/ui/PageLoader";
+import { GlobalAnnouncementBanner } from "./components/GlobalAnnouncementBanner";
 
 // Critical pages - loaded immediately for best UX
 import Home from "./pages/Home";
@@ -341,6 +342,7 @@ const App = () => {
                 <Sonner />
                 <div className="flex flex-col min-h-screen">
                   <Navbar />
+                  <GlobalAnnouncementBanner />
                   <main id="main-content" className="flex-1">
                     <Suspense fallback={<PageLoader />}>
                       <Routes>
