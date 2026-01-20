@@ -10,11 +10,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { 
   DollarSign, Users, TrendingUp, CreditCard, Search, ChefHat, Mic2, ChevronRight, 
-  UserX, Shield, Terminal, Zap, BadgeCheck, Coins, Megaphone, Activity 
+  UserX, Shield, Terminal, Zap, Coins, Megaphone, Activity
 } from "lucide-react";
-import { VerificationRequestsWidget } from "@/components/admin/VerificationRequestsWidget";
 import { ShadowBanToggle } from "@/components/admin/ShadowBanToggle";
-import { UserVerificationToggle } from "@/components/admin/UserVerificationToggle";
 import { CreditOverrideDialog } from "@/components/admin/CreditOverrideDialog";
 import { GlobalAnnouncementPanel } from "@/components/admin/GlobalAnnouncementPanel";
 import { TransactionLogPanel } from "@/components/admin/TransactionLogPanel";
@@ -267,8 +265,7 @@ const Admin = () => {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
-          <VerificationRequestsWidget />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           
           <Card className="bg-gradient-to-br from-blue-500/10 to-blue-500/5 border-blue-500/20">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
@@ -382,7 +379,7 @@ const Admin = () => {
         <Tabs defaultValue="users" className="space-y-6">
           <TabsList className="flex-wrap">
             <TabsTrigger value="users" className="gap-1">
-              <BadgeCheck className="h-4 w-4" />
+              <Users className="h-4 w-4" />
               User Management
             </TabsTrigger>
             <TabsTrigger value="subscriptions">Subscriptions</TabsTrigger>
@@ -395,7 +392,7 @@ const Admin = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Shield className="h-5 w-5 text-primary" />
-                  User Management, Verification & Credit Control
+                  User Management & Credit Control
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -405,7 +402,6 @@ const Admin = () => {
                       <TableHead>User</TableHead>
                       <TableHead>Email</TableHead>
                       <TableHead>Joined</TableHead>
-                      <TableHead>Verification</TableHead>
                       <TableHead>Shadow Ban</TableHead>
                       <TableHead>Credits</TableHead>
                     </TableRow>
@@ -419,14 +415,6 @@ const Admin = () => {
                         <TableCell className="font-medium">{user.full_name || 'Unknown'}</TableCell>
                         <TableCell>{user.email || 'N/A'}</TableCell>
                         <TableCell>{new Date(user.created_at).toLocaleDateString()}</TableCell>
-                        <TableCell>
-                          <UserVerificationToggle 
-                            userId={user.id} 
-                            userName={user.full_name || 'User'}
-                            isVerified={user.is_verified || false}
-                            onUpdate={loadData}
-                          />
-                        </TableCell>
                         <TableCell>
                           <ShadowBanToggle 
                             userId={user.id} 
