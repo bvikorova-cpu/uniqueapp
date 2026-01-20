@@ -545,22 +545,6 @@ const Terms = () => {
           </CardContent>
         </Card>
 
-        {/* Contact Section */}
-        <Card className="mb-6 border-primary/50">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Lock className="h-5 w-5 text-primary" />
-              X. Contact Information
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4 text-muted-foreground">
-            <p><strong>Data Protection Officer:</strong> privacy@unique-platform.com</p>
-            <p><strong>General Support:</strong> support@unique-platform.com</p>
-            <p><strong>Legal Inquiries:</strong> legal@unique-platform.com</p>
-            <p><strong>Address:</strong> UNIQUE Tech, Bratislava, Slovak Republic</p>
-          </CardContent>
-        </Card>
-
         {/* Footer */}
         <div className="text-center text-muted-foreground text-sm mt-8 p-4 border rounded-lg bg-muted/20">
           <p className="font-semibold">
