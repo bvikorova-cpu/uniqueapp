@@ -33,18 +33,17 @@ interface Recipe {
 
 const categories = [
   "All",
-  "Appetizers",
   "Main Dishes",
-  "Desserts",
   "Soups",
-  "Salads",
-  "Pasta",
-  "Pizza",
+  "Appetizers",
+  "Desserts",
   "Pastries",
-  "Drinks",
+  "Pasta",
   "Vegetarian",
-  "Vegan",
-  "Gluten-Free",
+  "Asian",
+  "Mexican",
+  "Italian",
+  "French",
   "Fitness",
 ];
 
