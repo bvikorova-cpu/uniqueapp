@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Shield, AlertTriangle, Scale, CreditCard, Users, FileText, Lock, Gavel } from "lucide-react";
+import { Shield, AlertTriangle, Scale, CreditCard, Users, FileText, Lock, Gavel, Database, Brain, Percent, Eye, Fingerprint, Clock } from "lucide-react";
 
 const Terms = () => {
   return (
@@ -16,7 +16,7 @@ const Terms = () => {
             🛡️ UNIQUE PLATFORM TERMS & CONDITIONS
           </h1>
           <p className="text-muted-foreground">
-            Effective Date: November 27, 2025
+            Effective Date: January 20, 2026
           </p>
         </div>
 
@@ -140,7 +140,7 @@ const Terms = () => {
           </CardContent>
         </Card>
 
-        {/* Section III */}
+        {/* Section III - Financial Terms */}
         <Card className="mb-6 border-amber-500/50">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -193,134 +193,319 @@ const Terms = () => {
           </CardContent>
         </Card>
 
-        {/* Section IV */}
-        <Card className="mb-6">
+        {/* NEW Section - Commission Fees */}
+        <Card className="mb-6 border-green-500/50">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <FileText className="h-5 w-5 text-primary" />
-              IV. Specific Services, Disclaimers, and High-Risk Activity
+              <Percent className="h-5 w-5 text-green-500" />
+              IV. Platform Commission Fees and Creator Payouts
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6 text-muted-foreground">
             <div>
-              <h4 className="font-semibold text-foreground mb-3">7. Contests of Skill (MegaTalent, F1 Racing, Horse Racing)</h4>
+              <h4 className="font-semibold text-foreground mb-3">7. Marketplace and Auction Fees</h4>
               <p className="mb-2">
-                <strong>7.1. Strict Classification:</strong> All functions including F1 Racing, Horse Racing, and MegaTalent 
-                are strictly defined and operated as Contests of Skill (Súťaže Zručnosti). They are not Games of Chance 
-                (hazardné hry) and do not require a gambling license.
+                <strong>7.1. Bazaar Marketplace:</strong> The Platform retains a <strong className="text-green-600">10% commission</strong> on 
+                all Bazaar transactions. Sellers receive 90% of the final sale price after successful delivery confirmation.
               </p>
               <p className="mb-2">
-                <strong>7.2. Reliance on Skill (Racing Modules):</strong> Success in F1 Racing and Horse Racing is determined 
-                by the User's strategic planning, investment management, and optimization of assets (car/horse), not by random 
-                outcomes or simple wagering.
+                <strong>7.2. Auction Platform:</strong> The Platform retains a <strong className="text-green-600">10% commission</strong> on 
+                all completed auction sales. The 7-day escrow protection period applies before funds are released to sellers.
               </p>
               <p className="mb-2">
-                <strong>7.3. Reliance on Skill (MegaTalent):</strong> The outcome of MegaTalent is determined by Peer-Review 
-                (evaluation by other qualified participants) or an objective internal committee, which constitutes a collective 
-                assessment of skill, not a lottery or random draw.
+                <strong>7.3. Service Marketplace:</strong> The Platform retains a <strong className="text-green-600">15% commission</strong> on 
+                all service-based transactions (translations, design work, professional services). Service providers receive 85% of the transaction value.
               </p>
               <p>
-                <strong>7.4. Prohibition:</strong> These modules strictly prohibit traditional betting (wagering) on the 
-                outcomes of competitions where the User has no control.
+                <strong>7.4. Stock Content Library:</strong> The Platform retains a <strong className="text-green-600">30% commission</strong> on 
+                all digital content sales (images, graphics, templates). Content creators receive 70% of each sale.
               </p>
             </div>
 
             <Separator />
 
             <div>
-              <h4 className="font-semibold text-foreground mb-3">8. Prediction and Advice Services (AI, Tipsters, Psychology, etc.)</h4>
-              <p className="mb-2 font-semibold text-destructive">
-                <strong>8.1. Absolute Denial of Financial/Investment Advice:</strong> Services including Lottery AI Predictions, 
-                Sports Match Predictions, and any financial/business analysis are provided SOLELY FOR ENTERTAINMENT AND 
-                SIMULATION PURPOSES. The Operator provides no financial, investment, or gambling advice.
+              <h4 className="font-semibold text-foreground mb-3">8. Creator and Influencer Revenue Shares</h4>
+              <p className="mb-2">
+                <strong>8.1. Membership Community:</strong> Creators receive <strong className="text-green-600">90%</strong> of 
+                all subscription, pay-per-view, gift, tip, and merchandise revenue. The Platform retains 10%.
               </p>
               <p className="mb-2">
-                <strong>8.2. No Guarantee of Success:</strong> The User accepts that relying on AI predictions, Expert Tips, 
-                or any advice carries inherent risk. The Operator is not liable for any financial losses, damages, or injuries 
-                resulting from reliance on such information.
+                <strong>8.2. Tutorial Platform:</strong> Instructors receive <strong className="text-green-600">70%</strong> of 
+                course and workshop sales. The Platform retains 30% for hosting, marketing, and payment processing.
               </p>
               <p className="mb-2">
-                <strong>8.3. Tipsters are Independent:</strong> The Operator does not guarantee, endorse, or take responsibility 
-                for the quality, accuracy, or integrity of advice provided by Expert Tipsters. Users transact with Tipsters at 
-                their own risk.
+                <strong>8.3. Virtual Influencer Agency:</strong> Influencers receive <strong className="text-green-600">70%</strong> of 
+                brand collaboration and sponsorship revenue. The Platform retains 30% for matchmaking and administration.
+              </p>
+              <p className="mb-2">
+                <strong>8.4. Comedy Club & Live Concerts:</strong> Performers receive <strong className="text-green-600">80%</strong> of 
+                ticket sales and virtual gifts. The Platform retains 20% for streaming infrastructure and moderation.
               </p>
               <p>
-                <strong>8.4. No Medical/Legal Substitute:</strong> Services like Psychology & Tutoring Services, Professional 
-                Services (Doctor, Lawyer), etc., ARE NOT substitutes for professional licensed advice.
+                <strong>8.5. Stripe Connect Payouts:</strong> All creator payouts are processed via Stripe Connect. Creators must 
+                complete KYC verification before receiving any payouts. Payout processing time is typically 2-7 business days.
               </p>
             </div>
           </CardContent>
         </Card>
 
-        {/* Section V */}
+        {/* Section - AI and Prediction Services */}
         <Card className="mb-6">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Lock className="h-5 w-5 text-primary" />
-              V. Content, Privacy, and Termination
+              <Brain className="h-5 w-5 text-primary" />
+              V. AI Services, Predictions, and Entertainment Disclaimers
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6 text-muted-foreground">
             <div>
-              <h4 className="font-semibold text-foreground mb-3">9. Content and Intellectual Property</h4>
+              <h4 className="font-semibold text-foreground mb-3">9. AI-Generated Content Disclaimer</h4>
+              <p className="mb-2 font-semibold text-destructive">
+                <strong>9.1. Entertainment Purpose Only:</strong> ALL AI-generated content, predictions, analyses, and 
+                recommendations provided by UNIQUE Platform are for <strong>ENTERTAINMENT AND EDUCATIONAL PURPOSES ONLY</strong>. 
+                They do not constitute professional, medical, legal, financial, or psychological advice.
+              </p>
               <p className="mb-2">
-                <strong>9.1. User Content License:</strong> You retain all ownership rights to content you upload. By posting, 
+                <strong>9.2. No Medical Advice:</strong> AI features including Psychology Chat, Wellness recommendations, 
+                and health-related analyses are NOT substitutes for professional medical diagnosis or treatment. Always 
+                consult qualified healthcare professionals for medical concerns.
+              </p>
+              <p className="mb-2">
+                <strong>9.3. No Legal Advice:</strong> Any legal information provided is general in nature and does not 
+                constitute legal advice. Consult a licensed attorney for legal matters.
+              </p>
+              <p>
+                <strong>9.4. No Financial Advice:</strong> Lottery AI, Sports Predictions, and any investment-related 
+                analyses are simulations for entertainment. They do not guarantee outcomes and should not be used as 
+                the basis for financial decisions.
+              </p>
+            </div>
+
+            <Separator />
+
+            <div>
+              <h4 className="font-semibold text-foreground mb-3">10. Contests of Skill (MegaTalent, GP Racing, Horse Racing)</h4>
+              <p className="mb-2">
+                <strong>10.1. Strict Classification:</strong> All functions including GP Racing, Horse Racing, and MegaTalent 
+                are strictly defined and operated as Contests of Skill (Súťaže Zručnosti). They are not Games of Chance 
+                (hazardné hry) and do not require a gambling license.
+              </p>
+              <p className="mb-2">
+                <strong>10.2. Reliance on Skill:</strong> Success is determined by the User's strategic planning, investment 
+                management, and optimization of assets, not by random outcomes or simple wagering.
+              </p>
+              <p>
+                <strong>10.3. Prohibition:</strong> These modules strictly prohibit traditional betting (wagering) on the 
+                outcomes of competitions where the User has no control.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* NEW Section - Data Processing & Privacy */}
+        <Card className="mb-6 border-blue-500/50" id="privacy">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Database className="h-5 w-5 text-blue-500" />
+              VI. Privacy Policy & Data Protection (GDPR Compliant)
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6 text-muted-foreground">
+            <div>
+              <h4 className="font-semibold text-foreground mb-3">11. Data Collection and Processing</h4>
+              <p className="mb-2">
+                <strong>11.1. Personal Data:</strong> We collect and process personal data including name, email, phone number, 
+                profile information, and payment details in accordance with GDPR (EU Regulation 2016/679).
+              </p>
+              <p className="mb-2">
+                <strong>11.2. Legal Basis:</strong> Data processing is based on: (a) Contractual necessity for service provision; 
+                (b) Legitimate interests for platform security and fraud prevention; (c) Consent for marketing communications; 
+                (d) Legal obligations for financial records and tax compliance.
+              </p>
+              <p>
+                <strong>11.3. Data Controller:</strong> UNIQUE Tech (Slovak Republic) is the data controller responsible for 
+                your personal data.
+              </p>
+            </div>
+
+            <Separator />
+
+            <div>
+              <h4 className="font-semibold text-foreground mb-3 flex items-center gap-2">
+                <Fingerprint className="h-4 w-4" />
+                12. Biometric and Sensitive Data Processing
+              </h4>
+              <p className="mb-2 font-semibold text-blue-600">
+                <strong>12.1. Future Face (Age Simulation):</strong> Facial images uploaded for AI age progression are processed 
+                using OpenAI DALL-E. Images are encrypted during transmission (TLS 1.3) and temporarily stored for processing only. 
+                Original uploads are automatically deleted within 24 hours of processing completion.
+              </p>
+              <p className="mb-2">
+                <strong>12.2. Pet Translator (Voice Data):</strong> Audio recordings of pet sounds are processed using AI analysis. 
+                Voice data is encrypted and stored temporarily (maximum 7 days) for analysis purposes only. Users may request 
+                immediate deletion of voice recordings via Settings.
+              </p>
+              <p className="mb-2">
+                <strong>12.3. Handwriting Analysis:</strong> Handwriting samples are processed using AI pattern recognition. 
+                Images are encrypted and stored for analysis history. Users may delete their analysis history at any time.
+              </p>
+              <p>
+                <strong>12.4. Photo Restoration & AI Studio:</strong> All images uploaded for AI transformation are encrypted 
+                and processed securely. Processed images are stored in user galleries until manually deleted.
+              </p>
+            </div>
+
+            <Separator />
+
+            <div>
+              <h4 className="font-semibold text-foreground mb-3 flex items-center gap-2">
+                <Clock className="h-4 w-4" />
+                13. Data Retention Policy
+              </h4>
+              <p className="mb-2">
+                <strong>13.1. Account Data:</strong> Personal profile data is retained for the duration of your account and 
+                for 3 years after account deletion for legal compliance purposes.
+              </p>
+              <p className="mb-2">
+                <strong>13.2. AI-Generated Content:</strong> AI-generated images, analyses, and transformations are stored 
+                temporarily and encrypted. Specific retention periods: (a) Image generations: 90 days unless saved to gallery; 
+                (b) Chat conversations: 30 days; (c) Analysis results: Until manually deleted by user.
+              </p>
+              <p className="mb-2">
+                <strong>13.3. Transaction Records:</strong> Payment and transaction data is retained for 7 years to comply 
+                with financial regulations and tax requirements.
+              </p>
+              <p className="mb-2">
+                <strong>13.4. Biometric Data:</strong> Facial images for Future Face are deleted within 24 hours. Voice 
+                recordings for Pet Translator are deleted within 7 days. Users may request immediate deletion.
+              </p>
+              <p>
+                <strong>13.5. Encryption Standards:</strong> All personal data is encrypted at rest (AES-256) and in transit 
+                (TLS 1.3). Biometric data receives additional encryption layers.
+              </p>
+            </div>
+
+            <Separator />
+
+            <div>
+              <h4 className="font-semibold text-foreground mb-3 flex items-center gap-2">
+                <Eye className="h-4 w-4" />
+                14. User Data Rights (GDPR)
+              </h4>
+              <p className="mb-2">
+                <strong>14.1. Right of Access:</strong> You may request a copy of all personal data we hold about you.
+              </p>
+              <p className="mb-2">
+                <strong>14.2. Right to Rectification:</strong> You may correct inaccurate or incomplete personal data.
+              </p>
+              <p className="mb-2">
+                <strong>14.3. Right to Erasure:</strong> You may request deletion of your personal data ("Right to be Forgotten").
+              </p>
+              <p className="mb-2">
+                <strong>14.4. Right to Data Portability:</strong> You may request your data in a machine-readable format.
+              </p>
+              <p className="mb-2">
+                <strong>14.5. Right to Object:</strong> You may object to processing based on legitimate interests.
+              </p>
+              <p>
+                <strong>14.6. Exercise Your Rights:</strong> Contact privacy@unique-platform.com or use the Settings → Privacy 
+                section in your account to exercise these rights. We respond within 30 days.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Section - Payment Processing */}
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <CreditCard className="h-5 w-5 text-primary" />
+              VII. Payment Processing and Stripe Integration
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6 text-muted-foreground">
+            <div>
+              <h4 className="font-semibold text-foreground mb-3">15. Payment Security</h4>
+              <p className="mb-2">
+                <strong>15.1. Payment Processor:</strong> All payments are processed by Stripe, Inc., a PCI-DSS Level 1 
+                certified payment processor. UNIQUE Platform does not store credit card numbers or CVV codes.
+              </p>
+              <p className="mb-2">
+                <strong>15.2. Escrow Protection:</strong> Marketplace and Auction transactions use 7-day escrow protection. 
+                Funds are held securely until buyer confirmation or automatic release after the escrow period.
+              </p>
+              <p className="mb-2">
+                <strong>15.3. Currency:</strong> All transactions are processed in EUR (Euros). Currency conversion fees 
+                may apply for non-EUR payment methods.
+              </p>
+              <p>
+                <strong>15.4. Dispute Resolution:</strong> Payment disputes are handled through Stripe's dispute resolution 
+                process. Buyers may open disputes within 7 days of delivery for marketplace transactions.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Section - Content and IP */}
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <FileText className="h-5 w-5 text-primary" />
+              VIII. Content, Intellectual Property, and Termination
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6 text-muted-foreground">
+            <div>
+              <h4 className="font-semibold text-foreground mb-3">16. Content and Intellectual Property</h4>
+              <p className="mb-2">
+                <strong>16.1. User Content License:</strong> You retain all ownership rights to content you upload. By posting, 
                 you grant the Operator a worldwide, non-exclusive, royalty-free license to use, reproduce, modify, and 
                 distribute your content on the Platform.
               </p>
+              <p className="mb-2">
+                <strong>16.2. AI-Generated Content:</strong> Users retain rights to AI-generated content created using their 
+                inputs and credits. The Platform retains no ownership claims to user-generated AI content.
+              </p>
               <p>
-                <strong>9.2. Copyright Infringement:</strong> The Operator respects IP rights. Users must contact the Operator 
+                <strong>16.3. Copyright Infringement:</strong> The Operator respects IP rights. Users must contact the Operator 
                 with detailed information regarding any alleged copyright infringement.
               </p>
             </div>
 
             <Separator />
 
-            <div id="privacy">
-              <h4 className="font-semibold text-foreground mb-3">10. Privacy and Data Protection</h4>
-              <p className="mb-2">
-                <strong>10.1. GDPR Compliance:</strong> Personal data processing complies with GDPR and applicable data 
-                protection laws.
-              </p>
-              <p>
-                <strong>10.2. User Rights:</strong> Users retain the right to access, correction, deletion, and portability 
-                of their data. For detailed information, review the Privacy Policy.
-              </p>
-            </div>
-
-            <Separator />
-
             <div>
-              <h4 className="font-semibold text-foreground mb-3">11. Account Termination</h4>
+              <h4 className="font-semibold text-foreground mb-3">17. Account Termination</h4>
               <p className="mb-2">
-                <strong>11.1. User-Initiated Termination:</strong> Users may delete their account at any time. Upon deletion, 
+                <strong>17.1. User-Initiated Termination:</strong> Users may delete their account at any time. Upon deletion, 
                 unused AI credits will be forfeited, and active subscriptions will be cancelled (no refunds).
               </p>
               <p>
-                <strong>11.2. Platform-Initiated Termination:</strong> The Operator reserves the right to suspend or terminate 
+                <strong>17.2. Platform-Initiated Termination:</strong> The Operator reserves the right to suspend or terminate 
                 accounts that violate these terms, engage in illegal activities, or attempt to exploit the platform.
               </p>
             </div>
           </CardContent>
         </Card>
 
-        {/* Section VI */}
+        {/* Section - Liability */}
         <Card className="mb-6 border-destructive/50">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Gavel className="h-5 w-5 text-destructive" />
-              VI. Liability and Dispute Resolution
+              IX. Liability and Dispute Resolution
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6 text-muted-foreground">
             <div>
-              <h4 className="font-semibold text-foreground mb-3">12. Technical Failure and Exclusive Remedy</h4>
+              <h4 className="font-semibold text-foreground mb-3">18. Technical Failure and Exclusive Remedy</h4>
               <p className="mb-2">
-                <strong>12.1. No Financial Compensation:</strong> In the event of technical failure, service interruption, 
+                <strong>18.1. No Financial Compensation:</strong> In the event of technical failure, service interruption, 
                 or data loss, the User shall not be entitled to any monetary compensation or refund.
               </p>
               <p>
-                <strong>12.2. Exclusive Remedy:</strong> The sole remedy is the crediting of an equivalent replacement in 
+                <strong>18.2. Exclusive Remedy:</strong> The sole remedy is the crediting of an equivalent replacement in 
                 the form of additional subscription time or AI Credits/In-App Currencies, at the sole discretion of the Operator.
               </p>
             </div>
@@ -328,34 +513,51 @@ const Terms = () => {
             <Separator />
 
             <div>
-              <h4 className="font-semibold text-foreground mb-3">13. Limitation of Liability and Indemnification</h4>
+              <h4 className="font-semibold text-foreground mb-3">19. Limitation of Liability and Indemnification</h4>
               <p className="mb-2">
-                <strong>13.1. No Warranties:</strong> The Platform provides services "as is" without warranties of any kind.
+                <strong>19.1. No Warranties:</strong> The Platform provides services "as is" without warranties of any kind.
               </p>
               <p className="mb-2">
-                <strong>13.2. Indemnification:</strong> The User agrees to defend, indemnify, and hold harmless the Operator 
+                <strong>19.2. Indemnification:</strong> The User agrees to defend, indemnify, and hold harmless the Operator 
                 against any and all claims, demands, losses, damages, and legal fees arising from the User's breach of these 
                 T&C, failure to meet tax obligations, or reliance on any prediction/tip.
               </p>
               <p className="font-semibold text-amber-600">
-                <strong>13.3. Maximum Liability:</strong> The Operator's total liability for any claim shall not exceed the 
+                <strong>19.3. Maximum Liability:</strong> The Operator's total liability for any claim shall not exceed the 
                 total amount paid by the User/Creator to the Operator for services during the immediately preceding three (3) 
-                month period. (This replaces the original 12-month limit with a stricter, more protective 3-month limit).
+                month period.
               </p>
             </div>
 
             <Separator />
 
             <div>
-              <h4 className="font-semibold text-foreground mb-3">14. Dispute Resolution</h4>
+              <h4 className="font-semibold text-foreground mb-3">20. Dispute Resolution</h4>
               <p className="mb-2">
-                <strong>14.1. Informal Resolution:</strong> Users agree to first contact support to attempt informal resolution.
+                <strong>20.1. Informal Resolution:</strong> Users agree to first contact support@unique-platform.com to attempt 
+                informal resolution.
               </p>
               <p>
-                <strong>14.2. Governing Law and Jurisdiction:</strong> As per Section 2.2 and 2.3, legal proceedings will be 
-                governed by the laws of the Slovak Republic, with exclusive jurisdiction in Bratislava.
+                <strong>20.2. Governing Law and Jurisdiction:</strong> These T&C shall be governed by the laws of the Slovak 
+                Republic, with exclusive jurisdiction in Bratislava.
               </p>
             </div>
+          </CardContent>
+        </Card>
+
+        {/* Contact Section */}
+        <Card className="mb-6 border-primary/50">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Lock className="h-5 w-5 text-primary" />
+              X. Contact Information
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4 text-muted-foreground">
+            <p><strong>Data Protection Officer:</strong> privacy@unique-platform.com</p>
+            <p><strong>General Support:</strong> support@unique-platform.com</p>
+            <p><strong>Legal Inquiries:</strong> legal@unique-platform.com</p>
+            <p><strong>Address:</strong> UNIQUE Tech, Bratislava, Slovak Republic</p>
           </CardContent>
         </Card>
 
@@ -363,10 +565,13 @@ const Terms = () => {
         <div className="text-center text-muted-foreground text-sm mt-8 p-4 border rounded-lg bg-muted/20">
           <p className="font-semibold">
             By using this platform, you acknowledge that you have read, understood, and agree to be bound by these 
-            Terms and Conditions.
+            Terms and Conditions and Privacy Policy.
           </p>
           <p className="mt-2">
             © {new Date().getFullYear()} UNIQUE Platform. All rights reserved.
+          </p>
+          <p className="mt-2 text-xs">
+            Last Updated: January 20, 2026 | Version 2.1
           </p>
         </div>
       </div>
