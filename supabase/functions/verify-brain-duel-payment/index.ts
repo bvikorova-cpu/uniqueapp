@@ -1,6 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
+import { verifyAndProcessPayment } from "../_shared/paymentVerification.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -12,93 +12,79 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
-  const supabaseClient = createClient(
-    Deno.env.get('SUPABASE_URL') ?? '',
-    Deno.env.get('SUPABASE_ANON_KEY') ?? ''
-  );
-
   try {
-    const authHeader = req.headers.get('Authorization')!;
+    // Get authenticated user
+    const supabaseClient = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_ANON_KEY') ?? ''
+    );
+
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) {
+      return new Response(
+        JSON.stringify({ error: 'Authorization required' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     const token = authHeader.replace('Bearer ', '');
     const { data } = await supabaseClient.auth.getUser(token);
     const user = data.user;
     
     if (!user) {
-      throw new Error('User not authenticated');
+      return new Response(
+        JSON.stringify({ error: 'User not authenticated' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
     const { sessionId } = await req.json();
     
     if (!sessionId) {
-      throw new Error('Session ID required');
+      return new Response(
+        JSON.stringify({ error: 'Session ID required' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
-    const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY') || '', {
-      apiVersion: '2025-08-27.basil',
-    });
+    // Use admin client for credit operations
+    const supabaseAdmin = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+    );
 
-    // Retrieve the session
-    const session = await stripe.checkout.sessions.retrieve(sessionId);
+    // Verify payment and process credits with idempotency protection
+    const result = await verifyAndProcessPayment(supabaseAdmin, sessionId, user.id);
 
-    if (session.payment_status !== 'paid') {
-      throw new Error('Payment not completed');
+    if (!result.success) {
+      return new Response(
+        JSON.stringify({ error: result.error }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
-    if (session.metadata?.user_id !== user.id) {
-      throw new Error('Session does not belong to this user');
-    }
-
-    const creditsToAdd = parseInt(session.metadata?.credits || '0');
-
-    if (creditsToAdd <= 0) {
-      throw new Error('Invalid credits amount');
-    }
-
-    // Get current credits
-    const { data: currentCredits, error: fetchError } = await supabaseClient
+    // Get updated credit balance
+    const { data: creditsData } = await supabaseAdmin
       .from('brain_duel_credits')
       .select('credits')
       .eq('user_id', user.id)
       .single();
 
-    if (fetchError && fetchError.code !== 'PGRST116') {
-      throw fetchError;
-    }
-
-    const newCredits = (currentCredits?.credits || 0) + creditsToAdd;
-
-    // Update credits
-    const { error: updateError } = await supabaseClient
-      .from('brain_duel_credits')
-      .upsert({
-        user_id: user.id,
-        credits: newCredits,
-      });
-
-    if (updateError) {
-      throw updateError;
-    }
-
     return new Response(
       JSON.stringify({ 
         success: true, 
-        credits: newCredits,
-        added: creditsToAdd 
+        credits: creditsData?.credits || result.credits,
+        added: result.alreadyProcessed ? 0 : result.credits,
+        alreadyProcessed: result.alreadyProcessed
       }),
-      {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 200,
-      }
+      { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   } catch (error) {
     console.error('Error verifying payment:', error);
     const errorMessage = error instanceof Error ? error.message : String(error);
     return new Response(
       JSON.stringify({ error: errorMessage }),
-      {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 500,
-      }
+      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
 });
