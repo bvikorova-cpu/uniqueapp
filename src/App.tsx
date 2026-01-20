@@ -345,6 +345,7 @@ const App = () => {
                   <GlobalAnnouncementBanner />
                   <main id="main-content" className="flex-1">
                     <Suspense fallback={<PageLoader />}>
+                      {/* All routes render inside this Suspense boundary */}
                       <Routes>
                         <Route path="/" element={<Home />} />
                         <Route path="/wall" element={<Wall />} />
@@ -694,6 +695,7 @@ const App = () => {
                       </Routes>
                     </Suspense>
                   </main>
+                  <Footer />
                 </div>
               </TooltipProvider>
             </AnimationProvider>
