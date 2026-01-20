@@ -34,9 +34,40 @@ const IQPlatform = () => {
         toast({ title: "Please login first", variant: "destructive" });
         return;
       }
-      toast({ title: "Test functionality coming soon!" });
-    } catch (error) {
-      toast({ title: "Error starting test", variant: "destructive" });
+      
+      const test = testCategories.find(t => t.id === testType);
+      if (!test) return;
+      
+      // Check if user has enough credits
+      const { data: userCredits } = await supabase
+        .from("brain_duel_credits")
+        .select("credits")
+        .eq("user_id", session.user.id)
+        .maybeSingle();
+      
+      if (!userCredits || userCredits.credits < test.credits) {
+        toast({ 
+          title: "Insufficient Credits", 
+          description: `You need ${test.credits} credits for this test. Please purchase more credits.`,
+          variant: "destructive" 
+        });
+        return;
+      }
+      
+      // Deduct credits
+      await supabase
+        .from("brain_duel_credits")
+        .update({ credits: userCredits.credits - test.credits })
+        .eq("user_id", session.user.id);
+      
+      // Start the test (navigate to test page or open test modal)
+      toast({ 
+        title: "Test Started!", 
+        description: `${test.title} - ${test.questions} questions, ${test.timeLimit} minutes. Good luck!` 
+      });
+      
+    } catch (error: any) {
+      toast({ title: "Error starting test", description: error.message, variant: "destructive" });
     }
   };
 

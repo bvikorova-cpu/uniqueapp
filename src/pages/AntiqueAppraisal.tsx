@@ -352,9 +352,11 @@ const AntiqueAppraisal = () => {
                 <CardDescription>View and manage your analyzed antiques</CardDescription>
               </CardHeader>
               <CardContent>
-                <p className="text-center text-muted-foreground py-8">
-                  Collection feature coming soon!
-                </p>
+                <div className="text-center py-8">
+                  <Package className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                  <p className="text-muted-foreground">Your analyzed antiques will appear here</p>
+                  <p className="text-sm text-muted-foreground mt-2">Upload and analyze your first antique to start your collection!</p>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
