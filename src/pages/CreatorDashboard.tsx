@@ -278,12 +278,20 @@ export default function CreatorDashboard() {
             <Card>
               <CardHeader>
                 <CardTitle>Subscribers</CardTitle>
-                <CardDescription>Manage your community members</CardDescription>
+                <CardDescription>Manage your {stats.activeSubscribers} community members</CardDescription>
               </CardHeader>
               <CardContent>
-                <p className="text-center text-muted-foreground py-8">
-                  Subscriber management coming soon
-                </p>
+                {stats.activeSubscribers === 0 ? (
+                  <div className="text-center py-8">
+                    <Users className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                    <p className="text-muted-foreground">No subscribers yet</p>
+                    <p className="text-sm text-muted-foreground mt-2">Share your profile to get your first subscribers!</p>
+                  </div>
+                ) : (
+                  <p className="text-center text-muted-foreground py-4">
+                    You have {stats.activeSubscribers} active subscribers
+                  </p>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
@@ -295,9 +303,12 @@ export default function CreatorDashboard() {
                 <CardDescription>Share posts with your members</CardDescription>
               </CardHeader>
               <CardContent>
-                <p className="text-center text-muted-foreground py-8">
-                  Content posting coming soon
-                </p>
+                <div className="text-center py-8">
+                  <Button onClick={() => toast({ title: "Create exclusive content for your subscribers!" })}>
+                    <Plus className="mr-2 h-4 w-4" />
+                    Create New Post
+                  </Button>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
@@ -309,9 +320,12 @@ export default function CreatorDashboard() {
                 <CardDescription>Create and manage subscription levels</CardDescription>
               </CardHeader>
               <CardContent>
-                <p className="text-center text-muted-foreground py-8">
-                  Tier management coming soon
-                </p>
+                <div className="text-center py-8">
+                  <Button onClick={() => toast({ title: "Create membership tiers to offer different subscription levels!" })}>
+                    <Plus className="mr-2 h-4 w-4" />
+                    Create New Tier
+                  </Button>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>

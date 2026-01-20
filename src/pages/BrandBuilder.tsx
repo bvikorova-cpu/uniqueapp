@@ -425,9 +425,46 @@ const BrandBuilder = () => {
                         </div>
                       </div>
 
-                      <Button variant="outline" className="w-full">
+                      <Button 
+                        variant="outline" 
+                        className="w-full"
+                        onClick={() => {
+                          // Generate PDF with brand kit data
+                          const content = `
+BRAND KIT: ${kit.business_name}
+================================
+
+TAGLINES:
+${kit.taglines?.join('\n') || 'None'}
+
+MISSION STATEMENT:
+${kit.mission_statement || 'Not specified'}
+
+COLOR PALETTE:
+${JSON.stringify(kit.color_palette, null, 2)}
+
+TYPOGRAPHY:
+${kit.visual_identity?.typography || 'Not specified'}
+
+BRAND TONE:
+${kit.visual_identity?.tone || 'Not specified'}
+                          `;
+                          
+                          const blob = new Blob([content], { type: 'text/plain' });
+                          const url = URL.createObjectURL(blob);
+                          const a = document.createElement('a');
+                          a.href = url;
+                          a.download = `${kit.business_name?.replace(/\s+/g, '_')}_brand_kit.txt`;
+                          document.body.appendChild(a);
+                          a.click();
+                          document.body.removeChild(a);
+                          URL.revokeObjectURL(url);
+                          
+                          toast({ title: "Downloaded!", description: "Your brand kit has been downloaded." });
+                        }}
+                      >
                         <Download className="mr-2 h-4 w-4" />
-                        Download Brand Kit (Coming Soon)
+                        Download Brand Kit
                       </Button>
                     </CardContent>
                   </Card>

@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
 import { useAnalyzerCredits } from "@/hooks/useAnalyzerCredits";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 const PRICING_TIERS = [
   {
@@ -145,8 +146,16 @@ export default function AnalyzerPricing() {
                     <Button
                       className="w-full"
                       variant={tier.popular ? 'default' : 'outline'}
-                      onClick={() => {
-                        toast.info(`Upgrade to ${tier.name} coming soon! Payment integration in progress.`);
+                      onClick={async () => {
+                        try {
+                          const { data, error } = await supabase.functions.invoke('create-analyzer-subscription', {
+                            body: { tier: tier.id }
+                          });
+                          if (error) throw error;
+                          if (data?.url) window.location.href = data.url;
+                        } catch (error: any) {
+                          toast.error(`Error: ${error.message}`);
+                        }
                       }}
                     >
                       Upgrade Now
@@ -192,7 +201,17 @@ export default function AnalyzerPricing() {
                   </div>
                   <Button 
                     className="w-full"
-                    onClick={() => toast.info("Credit purchase coming soon! Payment integration in progress.")}
+                    onClick={async () => {
+                      try {
+                        const { data, error } = await supabase.functions.invoke('create-analyzer-credits-payment', {
+                          body: { credits: pack.credits }
+                        });
+                        if (error) throw error;
+                        if (data?.url) window.location.href = data.url;
+                      } catch (error: any) {
+                        toast.error(`Error: ${error.message}`);
+                      }
+                    }}
                   >
                     Buy Credits
                   </Button>
