@@ -28471,6 +28471,66 @@ export type Database = {
         }
         Relationships: []
       }
+      user_recipes: {
+        Row: {
+          calories: number | null
+          category: string
+          created_at: string
+          description: string | null
+          difficulty: string
+          id: string
+          image_url: string | null
+          ingredients: string[] | null
+          instructions: string[] | null
+          is_public: boolean | null
+          servings: number
+          tags: string[] | null
+          time: string
+          title: string
+          updated_at: string
+          user_id: string
+          video_url: string | null
+        }
+        Insert: {
+          calories?: number | null
+          category: string
+          created_at?: string
+          description?: string | null
+          difficulty?: string
+          id?: string
+          image_url?: string | null
+          ingredients?: string[] | null
+          instructions?: string[] | null
+          is_public?: boolean | null
+          servings?: number
+          tags?: string[] | null
+          time: string
+          title: string
+          updated_at?: string
+          user_id: string
+          video_url?: string | null
+        }
+        Update: {
+          calories?: number | null
+          category?: string
+          created_at?: string
+          description?: string | null
+          difficulty?: string
+          id?: string
+          image_url?: string | null
+          ingredients?: string[] | null
+          instructions?: string[] | null
+          is_public?: boolean | null
+          servings?: number
+          tags?: string[] | null
+          time?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+          video_url?: string | null
+        }
+        Relationships: []
+      }
       user_recommendations: {
         Row: {
           created_at: string | null

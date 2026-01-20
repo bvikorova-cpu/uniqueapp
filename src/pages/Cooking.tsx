@@ -4,11 +4,13 @@ import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Clock, Users, ChefHat, Search, Sparkles, Calendar, Camera, Store, MessageCircle, Wine } from "lucide-react";
+import { Clock, Users, ChefHat, Search, Sparkles, Calendar, Camera, Store, MessageCircle, Wine, Play, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { AddRecipeDialog } from "@/components/cooking/AddRecipeDialog";
+import { useUserRecipes, UserRecipe } from "@/hooks/useUserRecipes";
 
 import grilledChickenSalad from "@/assets/recipes/grilled-chicken-salad.jpg";
 import lentilSoup from "@/assets/recipes/lentil-soup.jpg";
@@ -29,6 +31,8 @@ interface Recipe {
   ingredients?: string[];
   instructions?: string[];
   tags?: string[];
+  video_url?: string | null;
+  isUserRecipe?: boolean;
 }
 
 const categories = [
@@ -989,8 +993,31 @@ const Cooking = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  
+  const { userRecipes, refetch: refetchUserRecipes } = useUserRecipes();
 
-  const recipes = COOKING_RECIPES;
+  // Combine hardcoded recipes with user recipes
+  const allRecipes: Recipe[] = useMemo(() => {
+    const userRecipesMapped: Recipe[] = userRecipes.map((ur) => ({
+      id: ur.id,
+      title: ur.title,
+      category: ur.category,
+      difficulty: ur.difficulty,
+      time: ur.time,
+      servings: ur.servings,
+      calories: ur.calories || 0,
+      image_url: ur.image_url || "https://images.unsplash.com/photo-1495521821757-a1efb6729352?w=800",
+      description: ur.description || "",
+      ingredients: ur.ingredients,
+      instructions: ur.instructions,
+      tags: ur.tags,
+      video_url: ur.video_url,
+      isUserRecipe: true,
+    }));
+    return [...userRecipesMapped, ...COOKING_RECIPES];
+  }, [userRecipes]);
+
+  const recipes = allRecipes;
   const totalRecipes = recipes.length;
 
   const aiFeatures = [
@@ -1108,15 +1135,18 @@ const Cooking = () => {
         </div>
 
         <div className="max-w-2xl mx-auto mb-8">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5" />
-            <Input
-              type="text"
-              placeholder="Search recipes..."
-              className="pl-10 h-12 text-lg"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
+          <div className="flex gap-3">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5" />
+              <Input
+                type="text"
+                placeholder="Search recipes..."
+                className="pl-10 h-12 text-lg"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+            <AddRecipeDialog categories={categories} onRecipeAdded={refetchUserRecipes} />
           </div>
         </div>
 
@@ -1189,11 +1219,23 @@ const Cooking = () => {
                       loading="lazy"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                    <div className="absolute top-3 right-3">
+                    <div className="absolute top-3 right-3 flex flex-col gap-1">
                       <Badge className={`${getDifficultyColor(recipe.difficulty)} backdrop-blur-sm`}>{recipe.difficulty}</Badge>
+                      {recipe.isUserRecipe && (
+                        <Badge className="bg-primary/90 text-primary-foreground border-0 backdrop-blur-sm">
+                          <User className="w-3 h-3 mr-1" />
+                          My Recipe
+                        </Badge>
+                      )}
                     </div>
-                    <div className="absolute top-3 left-3">
+                    <div className="absolute top-3 left-3 flex flex-col gap-1">
                       <Badge className="bg-orange-500/90 text-white border-0">{recipe.category}</Badge>
+                      {recipe.video_url && (
+                        <Badge className="bg-blue-500/90 text-white border-0">
+                          <Play className="w-3 h-3 mr-1" />
+                          Video
+                        </Badge>
+                      )}
                     </div>
                   </div>
                   <CardHeader className="pb-2">
@@ -1294,12 +1336,33 @@ const Cooking = () => {
                       className="w-full h-full object-cover"
                       loading="lazy"
                     />
-                    <div className="absolute top-4 right-4">
+                    <div className="absolute top-4 right-4 flex gap-2">
                       <Button size="sm" variant="premium" className="pointer-events-none">
                         {selectedRecipe.difficulty}
                       </Button>
+                      {selectedRecipe.isUserRecipe && (
+                        <Badge className="bg-primary text-primary-foreground">
+                          <User className="w-3 h-3 mr-1" />
+                          My Recipe
+                        </Badge>
+                      )}
                     </div>
                   </div>
+
+                  {selectedRecipe.video_url && (
+                    <div className="space-y-2">
+                      <h3 className="text-lg font-semibold flex items-center gap-2">
+                        <Play className="w-5 h-5 text-primary" />
+                        Recipe Video
+                      </h3>
+                      <video
+                        src={selectedRecipe.video_url}
+                        className="w-full rounded-lg"
+                        controls
+                        preload="metadata"
+                      />
+                    </div>
+                  )}
 
                   <div className="grid grid-cols-3 gap-4">
                     <div className="flex items-center gap-2 text-muted-foreground">
