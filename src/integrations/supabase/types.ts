@@ -12750,6 +12750,33 @@ export type Database = {
         }
         Relationships: []
       }
+      global_announcements: {
+        Row: {
+          created_at: string | null
+          created_by: string | null
+          expires_at: string | null
+          id: string
+          is_active: boolean | null
+          message: string
+        }
+        Insert: {
+          created_at?: string | null
+          created_by?: string | null
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          message: string
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string | null
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          message?: string
+        }
+        Relationships: []
+      }
       group_chat_members: {
         Row: {
           group_id: string
@@ -21632,6 +21659,7 @@ export type Database = {
           iban: string | null
           id: string
           interests: string[] | null
+          is_verified: boolean | null
           location: string | null
           occupation: string | null
           phone: string | null
@@ -21662,6 +21690,7 @@ export type Database = {
           iban?: string | null
           id: string
           interests?: string[] | null
+          is_verified?: boolean | null
           location?: string | null
           occupation?: string | null
           phone?: string | null
@@ -21692,6 +21721,7 @@ export type Database = {
           iban?: string | null
           id?: string
           interests?: string[] | null
+          is_verified?: boolean | null
           location?: string | null
           occupation?: string | null
           phone?: string | null
