@@ -32,9 +32,29 @@ export default function ShadowArenaBattleSubmit() {
   }, [battleId, sessionId]);
 
   const verifyPaymentAndFetch = async () => {
-    // In production, verify Stripe session
-    setPaymentVerified(true);
-    fetchBattle();
+    try {
+      if (!sessionId || !battleId) return;
+      const { data, error } = await supabase.functions.invoke('verify-shadow-battle-payment', {
+        body: { sessionId, battleId },
+      });
+
+      if (error) throw error;
+
+      if (!data?.verified) {
+        setPaymentVerified(false);
+        toast.error('Payment not verified yet. Please complete checkout first.');
+        navigate(`/shadow-arena/battle/${battleId}`);
+        return;
+      }
+
+      setPaymentVerified(true);
+      fetchBattle();
+    } catch (err) {
+      console.error('Verify payment error:', err);
+      setPaymentVerified(false);
+      toast.error('Failed to verify payment');
+      navigate(`/shadow-arena/battle/${battleId}`);
+    }
   };
 
   const fetchBattle = async () => {
@@ -63,6 +83,11 @@ export default function ShadowArenaBattleSubmit() {
 
     if (!title.trim() || !content.trim()) {
       toast.error('Please fill in all fields');
+      return;
+    }
+
+    if (!paymentVerified) {
+      toast.error('Payment verification required before submitting');
       return;
     }
 
@@ -173,7 +198,7 @@ export default function ShadowArenaBattleSubmit() {
               type="submit" 
               size="lg" 
               className="w-full"
-              disabled={submitting}
+              disabled={submitting || !paymentVerified}
             >
               {submitting ? 'Submitting...' : 'Submit Story'}
             </Button>
