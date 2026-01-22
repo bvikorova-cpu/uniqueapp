@@ -7,6 +7,8 @@ const corsHeaders = {
 };
 
 serve(async (req) => {
+  console.log("[CREATE-SHADOW-BATTLE] Function started");
+  
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
@@ -18,7 +20,11 @@ serve(async (req) => {
 
   try {
     const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
-    if (!OPENAI_API_KEY) throw new Error("OPENAI_API_KEY not configured");
+    if (!OPENAI_API_KEY) {
+      console.log("[CREATE-SHADOW-BATTLE] ERROR: OPENAI_API_KEY not configured");
+      throw new Error("OPENAI_API_KEY not configured");
+    }
+    console.log("[CREATE-SHADOW-BATTLE] OpenAI key found, generating challenge...");
 
     // Generate AI horror challenge
     const response = await fetch("https://api.openai.com/v1/chat/completions", {

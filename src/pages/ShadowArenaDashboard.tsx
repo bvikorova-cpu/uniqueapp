@@ -81,7 +81,7 @@ export default function ShadowArenaDashboard() {
 
   return (
     <SubscriptionGate>
-      <div className="container mx-auto p-6 max-w-7xl">
+      <div className="container mx-auto px-4 sm:px-6 pt-24 pb-8 max-w-7xl">
         {/* Hero Section */}
         <div className="mb-12">
           <div className="text-center mb-8 relative">
