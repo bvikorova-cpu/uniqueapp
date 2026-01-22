@@ -1,6 +1,6 @@
 import { createStripeClient, getStripeCustomer, hasActiveSubscription, hasCompletedPayment } from "./stripe.ts";
 import { authenticateUser, createSupabaseAdminClient } from "./supabaseClient.ts";
-import { successResponse, errorResponse, handleCors } from "./response.ts";
+import { successResponse, errorResponse, handleCors, unauthorizedResponse } from "./response.ts";
 import { createLogger } from "./logger.ts";
 import { SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
@@ -151,7 +151,18 @@ export function createSubscriptionCheckHandler(config: SubscriptionConfig) {
 
       return successResponse(response);
     } catch (error) {
-      log("ERROR", { message: error instanceof Error ? error.message : String(error) });
+      const message = error instanceof Error ? error.message : String(error);
+      log("ERROR", { message });
+
+      // Map common auth failures to 401 to avoid confusing 500s.
+      if (
+        message.includes("authorization header") ||
+        message.includes("bearer token") ||
+        message.toLowerCase().includes("unauthorized")
+      ) {
+        return unauthorizedResponse(message);
+      }
+
       return errorResponse(error);
     }
   };
