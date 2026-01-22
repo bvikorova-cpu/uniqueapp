@@ -8,6 +8,13 @@ export function useShadowSubscription() {
   const [subscriptionEnd, setSubscriptionEnd] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const isAuthError = (err: unknown) => {
+    const anyErr = err as any;
+    const status = anyErr?.context?.status ?? anyErr?.status;
+    const message = String(anyErr?.message ?? "");
+    return status === 401 || message.includes("Missing authorization header") || message.includes("Invalid bearer token");
+  };
+
   const checkSubscription = async () => {
     if (!user) {
       setSubscribed(false);
@@ -24,7 +31,11 @@ export function useShadowSubscription() {
       setSubscribed(data.subscribed || false);
       setSubscriptionEnd(data.subscription_end || null);
     } catch (error) {
-      console.error('Check subscription error:', error);
+      // When session is missing/expired, the edge function returns 401.
+      // Treat it as "not subscribed" instead of a hard error.
+      if (!isAuthError(error)) {
+        console.error('Check subscription error:', error);
+      }
       setSubscribed(false);
     } finally {
       setLoading(false);
