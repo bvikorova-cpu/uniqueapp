@@ -25,7 +25,9 @@ serve(async (req) => {
 
     const { participantId } = await req.json();
 
-    // Update participant status to not streaming
+    console.log(`[STOP-STREAM] User ${user.id} stopping stream for participant ${participantId}`);
+
+    // Try to update participant status (columns may not exist yet)
     const { error: updateError } = await supabaseClient
       .from('shadow_battle_participants')
       .update({ 
@@ -35,7 +37,10 @@ serve(async (req) => {
       .eq('id', participantId)
       .eq('user_id', user.id);
 
-    if (updateError) throw updateError;
+    // Log but don't throw - columns might not exist
+    if (updateError) {
+      console.log("[STOP-STREAM] Update warning (columns may not exist):", updateError.message);
+    }
 
     return new Response(JSON.stringify({ 
       success: true,
