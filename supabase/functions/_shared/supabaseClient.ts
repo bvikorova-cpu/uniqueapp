@@ -47,7 +47,16 @@ export async function authenticateUser(req: Request) {
   }
 
   const supabase = createSupabaseAdminClient();
-  const token = authHeader.replace("Bearer ", "");
+  const token = authHeader.replace("Bearer ", "").trim();
+
+  // Guard: supabase-js may throw confusing errors (e.g. "Invalid time value")
+  // if token is empty or not a JWT.
+  if (!token) {
+    throw new Error("Missing bearer token");
+  }
+  if (token.split(".").length !== 3) {
+    throw new Error("Invalid bearer token");
+  }
   
   const { data: { user }, error } = await supabase.auth.getUser(token);
   
