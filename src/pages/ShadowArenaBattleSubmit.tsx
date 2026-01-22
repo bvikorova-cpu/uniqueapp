@@ -106,7 +106,7 @@ export default function ShadowArenaBattleSubmit() {
 
   return (
     <SubscriptionGate>
-      <div className="container mx-auto p-6 max-w-4xl">
+      <div className="container mx-auto px-4 sm:px-6 pt-24 pb-8 max-w-4xl">
         {paymentVerified && (
           <Card className="p-4 mb-6 bg-green-500/10 border-green-500/20">
             <div className="flex items-center gap-2 text-green-600">

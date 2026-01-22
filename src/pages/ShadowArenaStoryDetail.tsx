@@ -80,7 +80,7 @@ export default function ShadowArenaStoryDetail() {
   if (!story) {
     return (
       <SubscriptionGate>
-        <div className="container mx-auto p-6 text-center">
+        <div className="container mx-auto px-4 sm:px-6 pt-24 pb-8 text-center">
           <p>Story not found</p>
         </div>
       </SubscriptionGate>
@@ -91,7 +91,7 @@ export default function ShadowArenaStoryDetail() {
 
   return (
     <SubscriptionGate>
-      <div className="container mx-auto p-6 max-w-4xl">
+      <div className="container mx-auto px-4 sm:px-6 pt-24 pb-8 max-w-4xl">
         <Button 
           variant="ghost" 
           onClick={() => navigate('/shadow-arena/dashboard')}

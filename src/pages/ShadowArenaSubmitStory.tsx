@@ -46,7 +46,7 @@ export default function ShadowArenaSubmitStory() {
 
   return (
     <SubscriptionGate>
-      <div className="container mx-auto p-6 max-w-4xl">
+      <div className="container mx-auto px-4 sm:px-6 pt-24 pb-8 max-w-4xl">
         <div className="mb-8">
           <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-purple-400 to-fuchsia-600 bg-clip-text text-transparent">
             📝 Submit Your Horror Story
