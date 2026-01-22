@@ -30123,7 +30123,7 @@ export type Database = {
         Args: { conversation_id: string; user_id: string }
         Returns: boolean
       }
-      is_shadowbanned: { Args: { _user_id: string }; Returns: boolean }
+      is_shadowbanned: { Args: { p_user_id: string }; Returns: boolean }
       is_vip_user: { Args: { user_id_param: string }; Returns: boolean }
       process_influencer_withdrawal: {
         Args: {
