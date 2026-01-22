@@ -295,14 +295,14 @@ export function GlobalSearch() {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button 
-          variant="outline" 
-          className="relative h-9 w-9 p-0 xl:h-10 xl:w-60 xl:justify-start xl:px-3 xl:py-2"
+          variant="ghost" 
+          className="relative h-9 w-9 p-0 xl:h-9 xl:w-56 xl:justify-start xl:px-3 xl:py-2 bg-muted/50 hover:bg-muted/80 border border-border/50 rounded-full transition-all duration-200 group"
           aria-label="Search"
         >
-          <Search className="h-4 w-4 xl:mr-2" aria-hidden="true" />
-          <span className="hidden xl:inline-flex">Search...</span>
-          <kbd className="pointer-events-none absolute right-1.5 top-2 hidden h-6 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 xl:flex">
-            <span className="text-xs">⌘</span>K
+          <Search className="h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors xl:mr-2" aria-hidden="true" />
+          <span className="hidden xl:inline-flex text-muted-foreground group-hover:text-foreground transition-colors text-sm">Search services...</span>
+          <kbd className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 hidden h-5 select-none items-center gap-0.5 rounded-md bg-background/80 border border-border/50 px-1.5 font-mono text-[10px] font-medium text-muted-foreground xl:flex shadow-sm">
+            <span className="text-[10px]">⌘</span>K
           </kbd>
         </Button>
       </DialogTrigger>
