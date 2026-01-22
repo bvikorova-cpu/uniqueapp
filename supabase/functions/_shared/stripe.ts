@@ -89,12 +89,15 @@ export async function hasActiveSubscription(
     
     // If no specific priceIds provided, return first active subscription
     if (!priceIds || priceIds.length === 0 || priceIds.includes(currentPriceId)) {
+      const currentPeriodEndSec = Number((subscription as any).current_period_end);
       return {
         hasSubscription: true,
         subscription,
         priceId: currentPriceId,
         productId: currentProductId,
-        subscriptionEnd: new Date(subscription.current_period_end * 1000).toISOString(),
+        subscriptionEnd: Number.isFinite(currentPeriodEndSec) && currentPeriodEndSec > 0
+          ? new Date(currentPeriodEndSec * 1000).toISOString()
+          : null,
       };
     }
   }
@@ -134,10 +137,13 @@ export async function hasCompletedPayment(
         
         if (productId) {
           if (!productIds || productIds.length === 0 || productIds.includes(productId)) {
+            const createdSec = Number((session as any).created);
             return {
               hasPurchase: true,
               productId,
-              purchaseDate: session.created ? new Date(session.created * 1000).toISOString() : null,
+              purchaseDate: Number.isFinite(createdSec) && createdSec > 0
+                ? new Date(createdSec * 1000).toISOString()
+                : null,
             };
           }
         }
