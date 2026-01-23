@@ -176,7 +176,7 @@ export default function ShadowArenaBattleDetail() {
 
         {participants.length === 0 ? (
           <Card className="p-12 text-center bg-gradient-to-br from-black/80 to-red-950/20 border-red-900/50">
-            <p className="text-muted-foreground">No participants yet. Be the first to join!</p>
+            <p className="text-white/80">No participants yet. Be the first to join!</p>
           </Card>
         ) : (
           <div className="grid gap-6">
