@@ -17505,13 +17505,6 @@ export type Database = {
             foreignKeyName: "megatalent_winners_submission_id_fkey"
             columns: ["submission_id"]
             isOneToOne: false
-            referencedRelation: "megatalent_leaderboard"
-            referencedColumns: ["submission_id"]
-          },
-          {
-            foreignKeyName: "megatalent_winners_submission_id_fkey"
-            columns: ["submission_id"]
-            isOneToOne: false
             referencedRelation: "talent_submissions"
             referencedColumns: ["id"]
           },
@@ -26652,13 +26645,6 @@ export type Database = {
             foreignKeyName: "talent_comments_submission_id_fkey"
             columns: ["submission_id"]
             isOneToOne: false
-            referencedRelation: "megatalent_leaderboard"
-            referencedColumns: ["submission_id"]
-          },
-          {
-            foreignKeyName: "talent_comments_submission_id_fkey"
-            columns: ["submission_id"]
-            isOneToOne: false
             referencedRelation: "talent_submissions"
             referencedColumns: ["id"]
           },
@@ -26726,13 +26712,6 @@ export type Database = {
           user_id?: string
         }
         Relationships: [
-          {
-            foreignKeyName: "talent_votes_submission_id_fkey"
-            columns: ["submission_id"]
-            isOneToOne: false
-            referencedRelation: "megatalent_leaderboard"
-            referencedColumns: ["submission_id"]
-          },
           {
             foreignKeyName: "talent_votes_submission_id_fkey"
             columns: ["submission_id"]
@@ -29924,41 +29903,7 @@ export type Database = {
       }
     }
     Views: {
-      active_shadow_bans: {
-        Row: {
-          user_id: string | null
-        }
-        Insert: {
-          user_id?: string | null
-        }
-        Update: {
-          user_id?: string | null
-        }
-        Relationships: []
-      }
-      megatalent_leaderboard: {
-        Row: {
-          avatar_url: string | null
-          bonus_votes: number | null
-          category: Database["public"]["Enums"]["talent_category"] | null
-          created_at: string | null
-          description: string | null
-          full_name: string | null
-          media_type: string | null
-          media_url: string | null
-          rank_in_category: number | null
-          ranking_score: number | null
-          submission_id: string | null
-          subscription_tier:
-            | Database["public"]["Enums"]["megatalent_tier"]
-            | null
-          title: string | null
-          total_votes_with_bonus: number | null
-          user_id: string | null
-          votes_count: number | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Functions: {
       activate_user_theme: {

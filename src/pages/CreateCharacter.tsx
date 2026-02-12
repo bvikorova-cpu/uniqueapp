@@ -24,6 +24,7 @@ export default function CreateCharacter() {
   const [selectedAgeGroup, setSelectedAgeGroup] = useState("kid");
   const [selectedPersonality, setSelectedPersonality] = useState("brave");
   const [selectedGender, setSelectedGender] = useState("hero");
+  const [selectedSkinColor, setSelectedSkinColor] = useState("medium");
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
   const [generatedStory, setGeneratedStory] = useState<string | null>(null);
@@ -80,6 +81,14 @@ export default function CreateCharacter() {
     { id: "smart", name: "Smart", emoji: "🧠" },
     { id: "adventurous", name: "Adventurous", emoji: "🗺️" },
     { id: "creative", name: "Creative", emoji: "🎨" }
+  ];
+
+  const skinColors = [
+    { id: "light", name: "Light", emoji: "🧑🏻" },
+    { id: "medium-light", name: "Medium Light", emoji: "🧑🏼" },
+    { id: "medium", name: "Medium", emoji: "🧑🏽" },
+    { id: "medium-dark", name: "Medium Dark", emoji: "🧑🏾" },
+    { id: "dark", name: "Dark", emoji: "🧑🏿" },
   ];
 
   const genders = [
@@ -180,13 +189,17 @@ export default function CreateCharacter() {
     setIsGenerating(true);
     
     try {
-      const powerName = superPowers.find(p => p.id === selectedPower)?.name || "superhero";
-      const hairName = hairColors.find(h => h.id === selectedHair)?.name || "brown hair";
-      
       const { data, error } = await supabase.functions.invoke('generate-character-image', {
         body: {
           characterName,
-          characterType: `${powerName} character with ${hairName}`
+          hairColor: hairColors.find(h => h.id === selectedHair)?.name || "brown",
+          eyeColor: eyeColors.find(e => e.id === selectedEyeColor)?.name || "blue",
+          costumeColor: costumeColors.find(c => c.id === selectedCostumeColor)?.name || "blue",
+          superpower: superPowers.find(p => p.id === selectedPower)?.name || "superhero",
+          ageGroup: ageGroups.find(a => a.id === selectedAgeGroup)?.name || "kid",
+          personality: personalities.find(p => p.id === selectedPersonality)?.name || "brave",
+          gender: genders.find(g => g.id === selectedGender)?.name || "hero",
+          skinColor: skinColors.find(s => s.id === selectedSkinColor)?.name || "medium",
         }
       });
 
@@ -398,6 +411,11 @@ export default function CreateCharacter() {
                     </div>
                     <div className="bg-white/60 rounded-full px-4 py-2 inline-block shadow-md">
                       <p className="text-gray-800 font-semibold">
+                        Skin: {skinColors.find(s => s.id === selectedSkinColor)?.emoji} {skinColors.find(s => s.id === selectedSkinColor)?.name}
+                      </p>
+                    </div>
+                    <div className="bg-white/60 rounded-full px-4 py-2 inline-block shadow-md">
+                      <p className="text-gray-800 font-semibold">
                         Costume: {costumeColors.find(c => c.id === selectedCostumeColor)?.emoji} {costumeColors.find(c => c.id === selectedCostumeColor)?.name}
                       </p>
                     </div>
@@ -571,6 +589,30 @@ export default function CreateCharacter() {
                       >
                         <span className="text-3xl mb-1 animate-pulse">{personality.emoji}</span>
                         <span className="text-xs text-center font-semibold">{personality.name}</span>
+                      </Button>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Skin Color Selection */}
+              <Card className="bg-white/95 border-3 border-amber-300 shadow-lg hover-scale transition-all">
+                <CardContent className="p-6">
+                  <Label className="text-xl font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent mb-4 block">
+                    Choose Skin Color 🎨
+                  </Label>
+                  <div className="grid grid-cols-5 gap-3">
+                    {skinColors.map((skin) => (
+                      <Button
+                        key={skin.id}
+                        variant={selectedSkinColor === skin.id ? "default" : "outline"}
+                        onClick={() => setSelectedSkinColor(skin.id)}
+                        className={`h-20 text-2xl flex flex-col items-center justify-center transition-all duration-200 hover:scale-110 hover:shadow-lg ${
+                          selectedSkinColor === skin.id ? "bg-gradient-to-br from-amber-500 to-orange-500 border-3 border-yellow-300 scale-105 shadow-xl" : "border-2 border-gray-300 hover:border-amber-400"
+                        }`}
+                      >
+                        <span className="text-3xl mb-1">{skin.emoji}</span>
+                        <span className="text-[10px] font-semibold">{skin.name}</span>
                       </Button>
                     ))}
                   </div>
