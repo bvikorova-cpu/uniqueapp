@@ -116,8 +116,10 @@ export function createSubscriptionCheckHandler(config: SubscriptionConfig) {
       const subscription = subscriptions.data[0];
       const priceId = subscription.items.data[0].price.id;
       const productId = subscription.items.data[0].price.product as string;
-      const subscriptionEnd = subscription.current_period_end 
-        ? new Date(subscription.current_period_end * 1000).toISOString() 
+      // Hardened date parsing: cast to number, validate before converting
+      const rawEnd = Number((subscription as any).current_period_end);
+      const subscriptionEnd = Number.isFinite(rawEnd) && rawEnd > 0
+        ? new Date(rawEnd * 1000).toISOString()
         : null;
 
       // Resolve tier
