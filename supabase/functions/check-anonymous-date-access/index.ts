@@ -57,13 +57,24 @@ serve(async (req) => {
     });
 
     const hasActiveSubscription = subscriptions.data.length > 0;
-    let subscriptionEnd = null;
-    let stripeSubscriptionId = null;
+    let subscriptionEnd: string | null = null;
+    let stripeSubscriptionId: string | null = null;
+
+    // Safe date conversion helper
+    const safeTimestampToISO = (ts: number | null | undefined): string | null => {
+      if (!ts || typeof ts !== 'number') return null;
+      try {
+        return new Date(ts * 1000).toISOString();
+      } catch {
+        return null;
+      }
+    };
 
     if (hasActiveSubscription) {
       const subscription = subscriptions.data[0];
-      subscriptionEnd = new Date(subscription.current_period_end * 1000).toISOString();
+      subscriptionEnd = safeTimestampToISO(subscription.current_period_end);
       stripeSubscriptionId = subscription.id;
+      const periodStart = safeTimestampToISO(subscription.current_period_start);
       console.log("Active subscription found:", stripeSubscriptionId);
 
       // Update or create subscription record in database
@@ -80,7 +91,7 @@ serve(async (req) => {
             stripe_customer_id: customerId,
             stripe_subscription_id: stripeSubscriptionId,
             subscription_status: "active",
-            current_period_start: new Date(subscription.current_period_start * 1000).toISOString(),
+            current_period_start: periodStart,
             current_period_end: subscriptionEnd,
             updated_at: new Date().toISOString(),
           })
@@ -93,7 +104,7 @@ serve(async (req) => {
             stripe_customer_id: customerId,
             stripe_subscription_id: stripeSubscriptionId,
             subscription_status: "active",
-            current_period_start: new Date(subscription.current_period_start * 1000).toISOString(),
+            current_period_start: periodStart,
             current_period_end: subscriptionEnd,
           });
       }
