@@ -148,8 +148,10 @@ export const useAncestorTwin = () => {
         return null;
       }
 
+      const isSubscription = tier === 'subscription';
+
       const { data, error } = await supabase.functions.invoke('create-ancestor-twin-checkout', {
-        body: { tier, priceId },
+        body: { tier, priceId, isLifetime: !isSubscription },
         headers: {
           Authorization: `Bearer ${session.access_token}`,
         },
