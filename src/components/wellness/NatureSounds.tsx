@@ -10,7 +10,7 @@ const NATURE_SOUNDS = [
   { id: "forest", name: "Forest", icon: Trees, description: "Peaceful nature sounds with birds", src: "/sounds/forest.mp3" },
   { id: "thunderstorm", name: "Thunderstorm", icon: Zap, description: "Powerful thunder and rain for deep relaxation", src: "/sounds/thunderstorm.mp3" },
   { id: "campfire", name: "Campfire", icon: Flame, description: "Crackling fire sounds for cozy atmosphere", src: "/sounds/campfire.mp3" },
-  { id: "wind", name: "Wind", icon: Wind, description: "Gentle wind blowing through trees", src: "/sounds/wind.mp3" },
+  
   { id: "waterfall", name: "Waterfall", icon: Droplets, description: "Flowing water for meditation and focus", src: "/sounds/waterfall.mp3" },
 ];
 
