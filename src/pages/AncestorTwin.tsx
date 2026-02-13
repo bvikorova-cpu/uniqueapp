@@ -136,8 +136,27 @@ const AncestorTwin = () => {
             Ancestor Twin Finder
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Discover your celebrity double from history! Find your lookalike among historical figures, celebrities, and famous artworks.
+            Discover your celebrity double from history! Upload your photo and our AI analyzes your facial features to find real lookalikes among historical figures, celebrities, and famous artworks.
           </p>
+
+          {/* About Section */}
+          <div className="max-w-3xl mx-auto mt-6 grid sm:grid-cols-3 gap-4 text-left">
+            <Card className="p-4 bg-primary/5 border-primary/20">
+              <ScanFace className="h-6 w-6 text-primary mb-2" />
+              <h3 className="font-semibold text-sm mb-1">AI Facial Analysis</h3>
+              <p className="text-xs text-muted-foreground">Advanced AI scans your face shape, eyes, nose, jawline, and other features to create a detailed facial profile.</p>
+            </Card>
+            <Card className="p-4 bg-purple-500/5 border-purple-500/20">
+              <Users className="h-6 w-6 text-purple-500 mb-2" />
+              <h3 className="font-semibold text-sm mb-1">Real Similarity Matching</h3>
+              <p className="text-xs text-muted-foreground">We compare your features against known portraits of historical figures and celebrities — only genuine lookalikes are shown.</p>
+            </Card>
+            <Card className="p-4 bg-pink-500/5 border-pink-500/20">
+              <Dna className="h-6 w-6 text-pink-500 mb-2" />
+              <h3 className="font-semibold text-sm mb-1">Heritage Reports</h3>
+              <p className="text-xs text-muted-foreground">Premium tiers include detailed bios, heritage analysis, and up to 20+ matches with similarity breakdowns.</p>
+            </Card>
+          </div>
           
           <div className="flex flex-wrap items-center justify-center gap-3 pt-4">
             {hasAccess && (

@@ -144,11 +144,12 @@ serve(async (req) => {
     const celebrityList = celebrities.map(c => `${c.name} - ${c.era}`).join('\n');
     const artworkList = includeArtworks ? famousArtworks.map(a => `${a.name} by ${a.artist} - ${a.era}`).join('\n') : '';
 
-    const matchingPrompt = `Based on this facial analysis:
+    const matchingPrompt = `You are a facial similarity expert. Based on this detailed facial analysis of a person's photo:
 "${facialAnalysis}"
 
-Find the ${numMatches} best matches from these historical figures and celebrities:
+Compare their SPECIFIC facial features (face shape, eye shape/color, nose structure, jawline, cheekbones, lips, skin tone, hair) against the known appearances of these historical figures and celebrities. Only select people who genuinely share similar facial features.
 
+AVAILABLE PEOPLE:
 HISTORICAL FIGURES:
 ${historicalList}
 
@@ -157,13 +158,21 @@ ${celebrityList}
 
 ${includeArtworks ? `FAMOUS ARTWORKS:\n${artworkList}` : ''}
 
-For each match, provide:
-1. name - exact name from the list
-2. similarity - realistic score 65-92 (higher for better matches)
-3. reason - specific facial features that match (2-3 sentences)
+CRITICAL RULES:
+- ONLY select people whose known facial features actually match the analyzed face
+- If the person has a round face, do NOT match them with someone known for a long/angular face
+- Match eye shape, nose width, jawline, cheekbone structure realistically
+- Similarity scores must be HONEST: 65-75 = slight resemblance, 76-85 = noticeable similarity, 86-92 = striking resemblance
+- Most matches should be in the 65-80 range. Only give 85+ if features truly align closely
+- Return exactly ${numMatches} matches, sorted by similarity (highest first)
 
-Return ONLY a valid JSON array with these exact fields. Example:
-[{"name":"Leonardo da Vinci","similarity":87,"reason":"Similar facial structure..."}]`;
+For each match return:
+1. name - exact name from the list above
+2. similarity - honest score based on actual facial feature overlap
+3. reason - explain WHICH specific facial features match (e.g. "Both share a strong square jawline, deep-set eyes, and a prominent brow ridge")
+
+Return ONLY a valid JSON array. Example:
+[{"name":"Leonardo da Vinci","similarity":78,"reason":"Both share a high forehead, deep-set eyes with heavy lids, and a strong aquiline nose."}]`;
 
     const matchResponse = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
