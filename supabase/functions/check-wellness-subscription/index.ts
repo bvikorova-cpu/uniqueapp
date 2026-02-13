@@ -4,6 +4,17 @@ import { authenticateUser } from "../_shared/supabaseClient.ts";
 import { createStripeClient } from "../_shared/stripe.ts";
 import { createLogger } from "../_shared/logger.ts";
 
+function safeParseDate(value: unknown): string | null {
+  try {
+    if (!value) return null;
+    if (typeof value === "number") return new Date(value * 1000).toISOString();
+    if (typeof value === "string") return new Date(value).toISOString();
+    return null;
+  } catch {
+    return null;
+  }
+}
+
 const log = createLogger("check-wellness-subscription");
 
 // Wellness product IDs
@@ -64,12 +75,12 @@ serve(async (req) => {
       
       if (productId === WELLNESS_PRODUCTS.premiumMonthly) {
         tier = "premium";
-        subscriptionEnd = new Date(subscription.current_period_end * 1000).toISOString();
+        subscriptionEnd = safeParseDate(subscription.current_period_end);
         log("Active Premium Monthly found");
         break;
       } else if (productId === WELLNESS_PRODUCTS.basicMonthly) {
         tier = "basic";
-        subscriptionEnd = new Date(subscription.current_period_end * 1000).toISOString();
+        subscriptionEnd = safeParseDate(subscription.current_period_end);
         log("Active Basic Monthly found");
         break;
       }
