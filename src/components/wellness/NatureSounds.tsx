@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
+import { useToast } from "@/hooks/use-toast";
 import { Cloud, Waves, Trees, Play, Pause, Volume2, VolumeX, Zap, Flame, Wind, Droplets, Clock, X } from "lucide-react";
 
 type SoundGenerator = {
@@ -324,6 +325,7 @@ const TIMER_PRESETS = [
 ];
 
 export function NatureSounds() {
+  const { toast } = useToast();
   const [selectedSound, setSelectedSound] = useState<string | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(70);
@@ -335,14 +337,14 @@ export function NatureSounds() {
   const generatorRef = useRef<SoundGenerator | null>(null);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const getAudioContext = useCallback(() => {
+  const getAudioContext = useCallback(async () => {
     if (!audioCtxRef.current) {
       audioCtxRef.current = new AudioContext();
       masterGainRef.current = audioCtxRef.current.createGain();
       masterGainRef.current.connect(audioCtxRef.current.destination);
     }
     if (audioCtxRef.current.state === 'suspended') {
-      audioCtxRef.current.resume();
+      await audioCtxRef.current.resume();
     }
     return { ctx: audioCtxRef.current, gain: masterGainRef.current! };
   }, []);
@@ -375,36 +377,49 @@ export function NatureSounds() {
     }
   }, [remainingSeconds, isPlaying]);
 
-  const handleSoundSelect = (soundId: string) => {
-    if (selectedSound === soundId && isPlaying) {
+  const handleSoundSelect = async (soundId: string) => {
+    try {
+      if (selectedSound === soundId && isPlaying) {
+        generatorRef.current?.stop();
+        setIsPlaying(false);
+        return;
+      }
+
+      // Stop current sound
       generatorRef.current?.stop();
-      setIsPlaying(false);
-      return;
+
+      const { ctx, gain } = await getAudioContext();
+      const factory = SOUND_FACTORIES[soundId];
+      if (!factory) {
+        console.error("No sound factory for:", soundId);
+        return;
+      }
+
+      const generator = factory(ctx, gain);
+      generatorRef.current = generator;
+      generator.setVolume(isMuted ? 0 : volume / 100);
+      generator.start();
+      setIsPlaying(true);
+      setSelectedSound(soundId);
+      console.log("Sound started:", soundId, "AudioContext state:", ctx.state);
+    } catch (err) {
+      console.error("Error starting sound:", err);
+      toast({
+        title: "Sound Error",
+        description: "Could not play sound. Please try again.",
+        variant: "destructive",
+      });
     }
-
-    // Stop current sound
-    generatorRef.current?.stop();
-
-    const { ctx, gain } = getAudioContext();
-    const factory = SOUND_FACTORIES[soundId];
-    if (!factory) return;
-
-    const generator = factory(ctx, gain);
-    generatorRef.current = generator;
-    generator.setVolume(isMuted ? 0 : volume / 100);
-    generator.start();
-    setIsPlaying(true);
-    setSelectedSound(soundId);
   };
 
-  const togglePlayPause = () => {
+  const togglePlayPause = async () => {
     if (!generatorRef.current || !selectedSound) return;
 
     if (isPlaying) {
       generatorRef.current.stop();
       setIsPlaying(false);
     } else {
-      const { ctx, gain } = getAudioContext();
+      const { ctx, gain } = await getAudioContext();
       const factory = SOUND_FACTORIES[selectedSound];
       if (!factory) return;
       const generator = factory(ctx, gain);
