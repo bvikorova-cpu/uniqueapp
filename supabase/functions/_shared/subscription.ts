@@ -75,37 +75,56 @@ export function createSubscriptionCheckHandler(config: SubscriptionConfig) {
 
       log("Found Stripe customer", { customerId });
 
-      // Check active subscriptions
-      const subscriptions = await stripe.subscriptions.list({
-        customer: customerId,
-        status: "active",
-        limit: 1,
-      });
+      // Check active subscriptions — wrap in try/catch because the Stripe SDK
+      // may internally convert timestamps to Date objects and throw
+      // "Invalid time value" for malformed values.
+      let subscriptions: any;
+      try {
+        subscriptions = await stripe.subscriptions.list({
+          customer: customerId,
+          status: "active",
+          limit: 1,
+        });
+      } catch (stripeErr: any) {
+        if (stripeErr?.message?.includes("Invalid time value")) {
+          log("Stripe SDK date parsing error – treating as no subscription", { error: stripeErr.message });
+          return successResponse(defaultNoSubResponse);
+        }
+        throw stripeErr;
+      }
 
       if (subscriptions.data.length === 0) {
         // Check lifetime purchases if configured
         if (config.checkLifetime && config.lifetimeProducts) {
-          const purchaseResult = await hasCompletedPayment(
-            stripe, 
-            customerId, 
-            Object.values(config.lifetimeProducts)
-          );
-
-          if (purchaseResult.hasPurchase) {
-            const tier = findTierByProductId(purchaseResult.productId, config.lifetimeProducts);
-            log("Lifetime purchase found", { tier });
-
-            let response: Record<string, unknown> = {
-              subscribed: true,
-              tier,
-              product_id: purchaseResult.productId,
-              subscription_end: null,
-              is_lifetime: true,
-            };
-
-            return successResponse(
-              config.responseMapping ? config.responseMapping(response) : response
+          try {
+            const purchaseResult = await hasCompletedPayment(
+              stripe, 
+              customerId, 
+              Object.values(config.lifetimeProducts)
             );
+
+            if (purchaseResult.hasPurchase) {
+              const tier = findTierByProductId(purchaseResult.productId, config.lifetimeProducts);
+              log("Lifetime purchase found", { tier });
+
+              let response: Record<string, unknown> = {
+                subscribed: true,
+                tier,
+                product_id: purchaseResult.productId,
+                subscription_end: null,
+                is_lifetime: true,
+              };
+
+              return successResponse(
+                config.responseMapping ? config.responseMapping(response) : response
+              );
+            }
+          } catch (lifetimeErr: any) {
+            if (lifetimeErr?.message?.includes("Invalid time value")) {
+              log("Stripe SDK date error in lifetime check", { error: lifetimeErr.message });
+            } else {
+              throw lifetimeErr;
+            }
           }
         }
 
@@ -114,19 +133,26 @@ export function createSubscriptionCheckHandler(config: SubscriptionConfig) {
       }
 
       const subscription = subscriptions.data[0];
-      const priceId = subscription.items.data[0].price.id;
-      const productId = subscription.items.data[0].price.product as string;
-      // Hardened date parsing: cast to number, validate before converting
-      const rawEnd = Number((subscription as any).current_period_end);
-      const subscriptionEnd = Number.isFinite(rawEnd) && rawEnd > 0
-        ? new Date(rawEnd * 1000).toISOString()
-        : null;
+      let priceId: string | null = null;
+      let productId: string | null = null;
+      let subscriptionEnd: string | null = null;
+
+      try {
+        priceId = subscription.items.data[0].price.id;
+        productId = subscription.items.data[0].price.product as string;
+        const rawEnd = Number(subscription.current_period_end);
+        subscriptionEnd = Number.isFinite(rawEnd) && rawEnd > 0
+          ? new Date(rawEnd * 1000).toISOString()
+          : null;
+      } catch (parseErr: any) {
+        log("Error parsing subscription fields", { error: parseErr?.message });
+      }
 
       // Resolve tier
       let tier: string | null = null;
       if (config.tierMapping) {
         const lookupId = config.useProductId ? productId : priceId;
-        tier = config.tierMapping[lookupId] || null;
+        tier = lookupId ? (config.tierMapping[lookupId] || null) : null;
       }
 
       log("Active subscription found", { tier, priceId, productId, subscriptionEnd });
