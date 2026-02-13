@@ -23,32 +23,31 @@ serve(async (req) => {
     };
     const targetLanguage = languageNames[language] || 'English';
 
-    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-    if (!LOVABLE_API_KEY) throw new Error('LOVABLE_API_KEY not configured');
+    const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
+    if (!OPENAI_API_KEY) throw new Error('OPENAI_API_KEY not configured');
 
     console.log(`Generating story: ${theme}, ${validSceneCount} scenes, ${targetLanguage}`);
 
-    // Step 1: Generate story text
-    const storyResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+    // Step 1: Generate story text with OpenAI
+    const storyResponse = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+        'Authorization': `Bearer ${OPENAI_API_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'google/gemini-3-flash-preview',
+        model: 'gpt-4o-mini',
         messages: [
           { role: 'system', content: `You are a children's story writer. Write stories in ${targetLanguage}.` },
           { role: 'user', content: `Create a short bedtime story for children about "${theme}" in ${targetLanguage}. Structure it as exactly ${validSceneCount} scenes. Each scene should be 1-2 sentences. Format strictly as:\nScene 1: [text]\nScene 2: [text]\n...\nScene ${validSceneCount}: [text]` }
         ],
+        max_tokens: 1000,
       }),
     });
 
     if (!storyResponse.ok) {
       const errText = await storyResponse.text();
       console.error('Story generation error:', storyResponse.status, errText);
-      if (storyResponse.status === 429) throw new Error('Rate limit exceeded. Please wait a moment and try again.');
-      if (storyResponse.status === 402) throw new Error('AI credits exhausted. Please add credits.');
       throw new Error(`Story generation failed: ${storyResponse.status}`);
     }
 
@@ -76,44 +75,40 @@ serve(async (req) => {
     scenes = scenes.slice(0, validSceneCount);
     console.log(`Parsed ${scenes.length} scenes`);
 
-    // Step 2: Generate images using Lovable AI image model
+    // Step 2: Generate images with OpenAI DALL-E 3 (sequential to avoid rate limits)
     const images: string[] = [];
 
     for (let i = 0; i < scenes.length; i++) {
       try {
         console.log(`Generating image ${i + 1}/${scenes.length}...`);
-        const imgResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+        const imgResponse = await fetch('https://api.openai.com/v1/images/generations', {
           method: 'POST',
           headers: {
-            'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+            'Authorization': `Bearer ${OPENAI_API_KEY}`,
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            model: 'google/gemini-2.5-flash-image',
-            messages: [
-              { role: 'user', content: `Children's storybook illustration, vibrant colors, friendly cartoon style. Scene: ${scenes[i]}` }
-            ],
-            modalities: ['image', 'text'],
+            model: 'dall-e-3',
+            prompt: `Children's storybook illustration, vibrant colors, friendly cartoon style, cute and whimsical. Scene: ${scenes[i]}`,
+            n: 1,
+            size: '1024x1024',
+            response_format: 'url',
           }),
         });
 
         if (!imgResponse.ok) {
-          console.error(`Image ${i + 1} failed:`, imgResponse.status);
-          if (imgResponse.status === 429) {
-            console.log('Rate limited on image gen, waiting 5s...');
-            await new Promise(r => setTimeout(r, 5000));
-          }
+          const errText = await imgResponse.text();
+          console.error(`Image ${i + 1} failed:`, imgResponse.status, errText);
           images.push('');
           continue;
         }
 
         const imgData = await imgResponse.json();
-        const imageUrl = imgData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+        const imageUrl = imgData.data?.[0]?.url;
         if (imageUrl) {
           images.push(imageUrl);
           console.log(`Image ${i + 1} generated`);
         } else {
-          console.error(`Image ${i + 1}: no image in response`);
           images.push('');
         }
       } catch (imgErr) {

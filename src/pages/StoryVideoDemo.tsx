@@ -15,6 +15,7 @@ const StoryVideoDemo = () => {
   const MAX_SCENES = 6;
   const [sceneDuration, setSceneDuration] = useState(5);
   const [language, setLanguage] = useState('english');
+  const [lastRequestTime, setLastRequestTime] = useState(0);
   const navigate = useNavigate();
 
   const handleGenerate = async () => {
@@ -22,9 +23,19 @@ const StoryVideoDemo = () => {
       toast.error('Please enter a story theme');
       return;
     }
-    if (loading) return; // prevent double clicks
+    if (loading) return;
+
+    // Cooldown: prevent requests within 30s of each other
+    const now = Date.now();
+    const timeSinceLast = now - lastRequestTime;
+    if (timeSinceLast < 30000 && lastRequestTime > 0) {
+      const waitSecs = Math.ceil((30000 - timeSinceLast) / 1000);
+      toast.error(`Please wait ${waitSecs} seconds before generating again.`);
+      return;
+    }
 
     setLoading(true);
+    setLastRequestTime(now);
     try {
       toast.info('Generating your story... This may take up to 2 minutes.');
       const { data, error } = await supabase.functions.invoke('generate-story-video', {
@@ -32,7 +43,7 @@ const StoryVideoDemo = () => {
       });
 
       if (error) {
-        if (error.message?.includes('Too Many Requests') || error.message?.includes('ThrottlerException')) {
+        if (error.message?.includes('Too Many Requests') || error.message?.includes('ThrottlerException') || error.message?.includes('rate limited')) {
           throw new Error('Too many requests. Please wait 30 seconds and try again.');
         }
         throw error;
