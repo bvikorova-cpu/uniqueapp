@@ -11,289 +11,206 @@ type SoundGenerator = {
   setVolume: (v: number) => void;
 };
 
-function createNoiseGenerator(ctx: AudioContext, gainNode: GainNode, type: 'white' | 'pink' | 'brown'): AudioBufferSourceNode {
-  const bufferSize = 2 * ctx.sampleRate;
-  const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-  const data = buffer.getChannelData(0);
-
-  if (type === 'white') {
-    for (let i = 0; i < bufferSize; i++) {
-      data[i] = Math.random() * 2 - 1;
-    }
-  } else if (type === 'pink') {
-    let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
-    for (let i = 0; i < bufferSize; i++) {
-      const white = Math.random() * 2 - 1;
-      b0 = 0.99886 * b0 + white * 0.0555179;
-      b1 = 0.99332 * b1 + white * 0.0750759;
-      b2 = 0.96900 * b2 + white * 0.1538520;
-      b3 = 0.86650 * b3 + white * 0.3104856;
-      b4 = 0.55000 * b4 + white * 0.5329522;
-      b5 = -0.7616 * b5 - white * 0.0168980;
-      data[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362) * 0.11;
-      b6 = white * 0.115926;
-    }
-  } else { // brown
-    let lastOut = 0;
-    for (let i = 0; i < bufferSize; i++) {
-      const white = Math.random() * 2 - 1;
-      data[i] = (lastOut + 0.02 * white) / 1.02;
-      lastOut = data[i];
-      data[i] *= 3.5;
-    }
+// Utility: create a very soft filtered noise layer
+function createSoftNoise(ctx: AudioContext, output: GainNode, volume: number, lowcut: number, highcut: number): AudioBufferSourceNode {
+  const len = 2 * ctx.sampleRate;
+  const buf = ctx.createBuffer(1, len, ctx.sampleRate);
+  const d = buf.getChannelData(0);
+  let last = 0;
+  for (let i = 0; i < len; i++) {
+    const w = Math.random() * 2 - 1;
+    d[i] = (last + 0.02 * w) / 1.02;
+    last = d[i];
+    d[i] *= 3.5;
   }
+  const src = ctx.createBufferSource();
+  src.buffer = buf;
+  src.loop = true;
 
-  const source = ctx.createBufferSource();
-  source.buffer = buffer;
-  source.loop = true;
-  source.connect(gainNode);
-  return source;
+  const g = ctx.createGain();
+  g.gain.value = volume;
+
+  const lp = ctx.createBiquadFilter();
+  lp.type = 'lowpass';
+  lp.frequency.value = highcut;
+  lp.Q.value = 0.5;
+
+  const hp = ctx.createBiquadFilter();
+  hp.type = 'highpass';
+  hp.frequency.value = lowcut;
+  hp.Q.value = 0.5;
+
+  src.connect(g);
+  g.connect(lp);
+  lp.connect(hp);
+  hp.connect(output);
+  return src;
 }
 
+// Utility: gentle sine pad with slow vibrato
+function createPad(ctx: AudioContext, output: GainNode, freq: number, vol: number, vibratoRate = 0.2, vibratoDepth = 2): { nodes: AudioNode[], start: () => void } {
+  const osc = ctx.createOscillator();
+  osc.type = 'sine';
+  osc.frequency.value = freq;
+
+  const vibOsc = ctx.createOscillator();
+  vibOsc.frequency.value = vibratoRate;
+  const vibGain = ctx.createGain();
+  vibGain.gain.value = vibratoDepth;
+  vibOsc.connect(vibGain);
+  vibGain.connect(osc.frequency);
+
+  const g = ctx.createGain();
+  g.gain.value = vol;
+  osc.connect(g);
+  g.connect(output);
+
+  return {
+    nodes: [osc, vibOsc],
+    start() { osc.start(); vibOsc.start(); }
+  };
+}
+
+// ---- RAIN: very soft brown noise + gentle deep drone ----
 function createRainSound(ctx: AudioContext, masterGain: GainNode): SoundGenerator {
-  let sources: AudioBufferSourceNode[] = [];
-  
+  let all: AudioNode[] = [];
   return {
     start() {
-      // Brown noise for rain base
-      const rainGain = ctx.createGain();
-      rainGain.gain.value = 0.4;
-      rainGain.connect(masterGain);
-      const rain = createNoiseGenerator(ctx, rainGain, 'brown');
-      
-      // Filtered white noise for rain detail
-      const detailGain = ctx.createGain();
-      detailGain.gain.value = 0.15;
-      const filter = ctx.createBiquadFilter();
-      filter.type = 'bandpass';
-      filter.frequency.value = 8000;
-      filter.Q.value = 0.5;
-      detailGain.connect(filter);
-      filter.connect(masterGain);
-      const detail = createNoiseGenerator(ctx, detailGain, 'white');
-      
-      rain.start();
-      detail.start();
-      sources = [rain, detail];
+      const noise = createSoftNoise(ctx, masterGain, 0.08, 80, 600);
+      const pad1 = createPad(ctx, masterGain, 174, 0.06, 0.08, 1);
+      const pad2 = createPad(ctx, masterGain, 220, 0.04, 0.12, 1.5);
+      noise.start();
+      pad1.start();
+      pad2.start();
+      all = [noise, ...pad1.nodes, ...pad2.nodes];
     },
-    stop() {
-      sources.forEach(s => { try { s.stop(); } catch {} });
-      sources = [];
-    },
+    stop() { all.forEach(n => { try { (n as any).stop(); } catch {} }); all = []; },
     setVolume(v: number) { masterGain.gain.value = v; }
   };
 }
 
+// ---- OCEAN: slow sweeping pads like waves ----
 function createOceanSound(ctx: AudioContext, masterGain: GainNode): SoundGenerator {
-  let sources: AudioBufferSourceNode[] = [];
-  let lfo: OscillatorNode | null = null;
-
+  let all: AudioNode[] = [];
   return {
     start() {
-      const baseGain = ctx.createGain();
-      baseGain.gain.value = 0.5;
-      baseGain.connect(masterGain);
-      const base = createNoiseGenerator(ctx, baseGain, 'brown');
-      
-      // LFO for wave-like modulation
-      lfo = ctx.createOscillator();
-      lfo.frequency.value = 0.1;
-      const lfoGain = ctx.createGain();
-      lfoGain.gain.value = 0.3;
-      lfo.connect(lfoGain);
-      lfoGain.connect(baseGain.gain);
-      
-      base.start();
-      lfo.start();
-      sources = [base];
-    },
-    stop() {
-      sources.forEach(s => { try { s.stop(); } catch {} });
-      if (lfo) { try { lfo.stop(); } catch {} }
-      sources = [];
-      lfo = null;
-    },
-    setVolume(v: number) { masterGain.gain.value = v; }
-  };
-}
-
-function createForestSound(ctx: AudioContext, masterGain: GainNode): SoundGenerator {
-  let sources: AudioNode[] = [];
-
-  return {
-    start() {
-      // Gentle pink noise for wind through trees
-      const windGain = ctx.createGain();
-      windGain.gain.value = 0.15;
-      windGain.connect(masterGain);
-      const wind = createNoiseGenerator(ctx, windGain, 'pink');
-      
-      // Bird-like chirps using oscillators
-      const birdGain = ctx.createGain();
-      birdGain.gain.value = 0.08;
-      birdGain.connect(masterGain);
-      
-      const osc1 = ctx.createOscillator();
-      osc1.type = 'sine';
-      osc1.frequency.value = 2500;
-      const vibrato = ctx.createOscillator();
-      vibrato.frequency.value = 6;
-      const vibratoGain = ctx.createGain();
-      vibratoGain.gain.value = 200;
-      vibrato.connect(vibratoGain);
-      vibratoGain.connect(osc1.frequency);
-      osc1.connect(birdGain);
-      
-      wind.start();
-      osc1.start();
-      vibrato.start();
-      sources = [wind, osc1, vibrato];
-    },
-    stop() {
-      sources.forEach(s => { try { (s as any).stop(); } catch {} });
-      sources = [];
-    },
-    setVolume(v: number) { masterGain.gain.value = v; }
-  };
-}
-
-function createThunderstormSound(ctx: AudioContext, masterGain: GainNode): SoundGenerator {
-  let sources: AudioBufferSourceNode[] = [];
-
-  return {
-    start() {
-      // Heavy rain - brown + white noise
-      const rainGain = ctx.createGain();
-      rainGain.gain.value = 0.5;
-      rainGain.connect(masterGain);
-      const rain = createNoiseGenerator(ctx, rainGain, 'brown');
-      
-      const heavyGain = ctx.createGain();
-      heavyGain.gain.value = 0.2;
-      const lpf = ctx.createBiquadFilter();
-      lpf.type = 'lowpass';
-      lpf.frequency.value = 3000;
-      heavyGain.connect(lpf);
-      lpf.connect(masterGain);
-      const heavy = createNoiseGenerator(ctx, heavyGain, 'white');
-      
-      rain.start();
-      heavy.start();
-      sources = [rain, heavy];
-    },
-    stop() {
-      sources.forEach(s => { try { s.stop(); } catch {} });
-      sources = [];
-    },
-    setVolume(v: number) { masterGain.gain.value = v; }
-  };
-}
-
-function createCampfireSound(ctx: AudioContext, masterGain: GainNode): SoundGenerator {
-  let sources: AudioBufferSourceNode[] = [];
-  let crackleInterval: ReturnType<typeof setInterval> | null = null;
-
-  return {
-    start() {
-      // Base crackle - filtered noise
-      const baseGain = ctx.createGain();
-      baseGain.gain.value = 0.3;
-      const hpf = ctx.createBiquadFilter();
-      hpf.type = 'highpass';
-      hpf.frequency.value = 1000;
-      baseGain.connect(hpf);
-      hpf.connect(masterGain);
-      const base = createNoiseGenerator(ctx, baseGain, 'white');
-      
-      // Low rumble
-      const rumbleGain = ctx.createGain();
-      rumbleGain.gain.value = 0.2;
-      const lpf = ctx.createBiquadFilter();
-      lpf.type = 'lowpass';
-      lpf.frequency.value = 200;
-      rumbleGain.connect(lpf);
-      lpf.connect(masterGain);
-      const rumble = createNoiseGenerator(ctx, rumbleGain, 'brown');
-      
-      base.start();
-      rumble.start();
-      sources = [base, rumble];
-    },
-    stop() {
-      sources.forEach(s => { try { s.stop(); } catch {} });
-      if (crackleInterval) clearInterval(crackleInterval);
-      sources = [];
-      crackleInterval = null;
-    },
-    setVolume(v: number) { masterGain.gain.value = v; }
-  };
-}
-
-function createWindSound(ctx: AudioContext, masterGain: GainNode): SoundGenerator {
-  let sources: AudioNode[] = [];
-
-  return {
-    start() {
-      const windGain = ctx.createGain();
-      windGain.gain.value = 0.4;
-      const bpf = ctx.createBiquadFilter();
-      bpf.type = 'bandpass';
-      bpf.frequency.value = 500;
-      bpf.Q.value = 0.3;
-      windGain.connect(bpf);
-      bpf.connect(masterGain);
-      const wind = createNoiseGenerator(ctx, windGain, 'pink');
-      
-      // Slow modulation for gusting
+      const noise = createSoftNoise(ctx, masterGain, 0.06, 40, 400);
+      // Slow sweeping pad
+      const osc = ctx.createOscillator();
+      osc.type = 'sine';
+      osc.frequency.value = 110;
       const lfo = ctx.createOscillator();
-      lfo.frequency.value = 0.15;
-      const lfoGain = ctx.createGain();
-      lfoGain.gain.value = 0.2;
-      lfo.connect(lfoGain);
-      lfoGain.connect(windGain.gain);
-      
-      wind.start();
-      lfo.start();
-      sources = [wind, lfo];
+      lfo.frequency.value = 0.06; // very slow
+      const lfoG = ctx.createGain();
+      lfoG.gain.value = 20;
+      lfo.connect(lfoG);
+      lfoG.connect(osc.frequency);
+      const g = ctx.createGain();
+      g.gain.value = 0.07;
+      osc.connect(g);
+      g.connect(masterGain);
+      // Second harmonic
+      const pad = createPad(ctx, masterGain, 165, 0.04, 0.04, 3);
+      noise.start(); osc.start(); lfo.start(); pad.start();
+      all = [noise, osc, lfo, ...pad.nodes];
     },
-    stop() {
-      sources.forEach(s => { try { (s as any).stop(); } catch {} });
-      sources = [];
-    },
+    stop() { all.forEach(n => { try { (n as any).stop(); } catch {} }); all = []; },
     setVolume(v: number) { masterGain.gain.value = v; }
   };
 }
 
-function createWaterfallSound(ctx: AudioContext, masterGain: GainNode): SoundGenerator {
-  let sources: AudioBufferSourceNode[] = [];
-
+// ---- FOREST: gentle high sine tones (birds) + soft wind ----
+function createForestSound(ctx: AudioContext, masterGain: GainNode): SoundGenerator {
+  let all: AudioNode[] = [];
   return {
     start() {
-      // White noise through bandpass for water
-      const waterGain = ctx.createGain();
-      waterGain.gain.value = 0.35;
-      const bpf = ctx.createBiquadFilter();
-      bpf.type = 'bandpass';
-      bpf.frequency.value = 2000;
-      bpf.Q.value = 0.2;
-      waterGain.connect(bpf);
-      bpf.connect(masterGain);
-      const water = createNoiseGenerator(ctx, waterGain, 'white');
-      
-      // Low rumble for depth
-      const rumbleGain = ctx.createGain();
-      rumbleGain.gain.value = 0.25;
-      rumbleGain.connect(masterGain);
-      const rumble = createNoiseGenerator(ctx, rumbleGain, 'brown');
-      
-      water.start();
-      rumble.start();
-      sources = [water, rumble];
+      const noise = createSoftNoise(ctx, masterGain, 0.04, 100, 800);
+      // Gentle "bird" - very quiet high sine with slow tremolo
+      const bird = ctx.createOscillator();
+      bird.type = 'sine';
+      bird.frequency.value = 1200;
+      const trem = ctx.createOscillator();
+      trem.frequency.value = 3;
+      const tremG = ctx.createGain();
+      tremG.gain.value = 0.02;
+      trem.connect(tremG);
+      const birdG = ctx.createGain();
+      birdG.gain.value = 0.03;
+      bird.connect(birdG);
+      tremG.connect(birdG.gain);
+      birdG.connect(masterGain);
+      // Warm base pad
+      const pad = createPad(ctx, masterGain, 196, 0.05, 0.1, 1);
+      const pad2 = createPad(ctx, masterGain, 262, 0.03, 0.07, 1);
+      noise.start(); bird.start(); trem.start(); pad.start(); pad2.start();
+      all = [noise, bird, trem, ...pad.nodes, ...pad2.nodes];
     },
-    stop() {
-      sources.forEach(s => { try { s.stop(); } catch {} });
-      sources = [];
+    stop() { all.forEach(n => { try { (n as any).stop(); } catch {} }); all = []; },
+    setVolume(v: number) { masterGain.gain.value = v; }
+  };
+}
+
+// ---- THUNDERSTORM: deep bass drone + soft noise ----
+function createThunderstormSound(ctx: AudioContext, masterGain: GainNode): SoundGenerator {
+  let all: AudioNode[] = [];
+  return {
+    start() {
+      const noise = createSoftNoise(ctx, masterGain, 0.1, 30, 500);
+      const pad = createPad(ctx, masterGain, 55, 0.08, 0.05, 2);
+      const pad2 = createPad(ctx, masterGain, 82, 0.05, 0.08, 1.5);
+      noise.start(); pad.start(); pad2.start();
+      all = [noise, ...pad.nodes, ...pad2.nodes];
     },
+    stop() { all.forEach(n => { try { (n as any).stop(); } catch {} }); all = []; },
+    setVolume(v: number) { masterGain.gain.value = v; }
+  };
+}
+
+// ---- CAMPFIRE: warm crackling tone + cozy drone ----
+function createCampfireSound(ctx: AudioContext, masterGain: GainNode): SoundGenerator {
+  let all: AudioNode[] = [];
+  return {
+    start() {
+      const noise = createSoftNoise(ctx, masterGain, 0.05, 200, 2000);
+      const pad = createPad(ctx, masterGain, 146, 0.06, 0.15, 1);
+      const pad2 = createPad(ctx, masterGain, 220, 0.04, 0.1, 1);
+      const pad3 = createPad(ctx, masterGain, 293, 0.025, 0.08, 0.5);
+      noise.start(); pad.start(); pad2.start(); pad3.start();
+      all = [noise, ...pad.nodes, ...pad2.nodes, ...pad3.nodes];
+    },
+    stop() { all.forEach(n => { try { (n as any).stop(); } catch {} }); all = []; },
+    setVolume(v: number) { masterGain.gain.value = v; }
+  };
+}
+
+// ---- WIND: very soft filtered noise with slow modulation ----
+function createWindSound(ctx: AudioContext, masterGain: GainNode): SoundGenerator {
+  let all: AudioNode[] = [];
+  return {
+    start() {
+      const noise = createSoftNoise(ctx, masterGain, 0.07, 60, 500);
+      const pad = createPad(ctx, masterGain, 130, 0.05, 0.05, 3);
+      const pad2 = createPad(ctx, masterGain, 196, 0.035, 0.03, 2);
+      noise.start(); pad.start(); pad2.start();
+      all = [noise, ...pad.nodes, ...pad2.nodes];
+    },
+    stop() { all.forEach(n => { try { (n as any).stop(); } catch {} }); all = []; },
+    setVolume(v: number) { masterGain.gain.value = v; }
+  };
+}
+
+// ---- WATERFALL: gentle flowing tone ----
+function createWaterfallSound(ctx: AudioContext, masterGain: GainNode): SoundGenerator {
+  let all: AudioNode[] = [];
+  return {
+    start() {
+      const noise = createSoftNoise(ctx, masterGain, 0.06, 100, 1200);
+      const pad = createPad(ctx, masterGain, 261, 0.05, 0.06, 2);
+      const pad2 = createPad(ctx, masterGain, 392, 0.03, 0.04, 1.5);
+      noise.start(); pad.start(); pad2.start();
+      all = [noise, ...pad.nodes, ...pad2.nodes];
+    },
+    stop() { all.forEach(n => { try { (n as any).stop(); } catch {} }); all = []; },
     setVolume(v: number) { masterGain.gain.value = v; }
   };
 }
