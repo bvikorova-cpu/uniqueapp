@@ -1,4 +1,4 @@
-import { createStripeClient, getStripeCustomer, hasActiveSubscription, hasCompletedPayment } from "./stripe.ts";
+import { createStripeClient, getStripeCustomer, hasActiveSubscription, hasCompletedPayment, safeParseStripeDate } from "./stripe.ts";
 import { authenticateUser, createSupabaseAdminClient } from "./supabaseClient.ts";
 import { successResponse, errorResponse, handleCors, unauthorizedResponse } from "./response.ts";
 import { createLogger } from "./logger.ts";
@@ -140,10 +140,7 @@ export function createSubscriptionCheckHandler(config: SubscriptionConfig) {
       try {
         priceId = subscription.items.data[0].price.id;
         productId = subscription.items.data[0].price.product as string;
-        const rawEnd = Number(subscription.current_period_end);
-        subscriptionEnd = Number.isFinite(rawEnd) && rawEnd > 0
-          ? new Date(rawEnd * 1000).toISOString()
-          : null;
+        subscriptionEnd = safeParseStripeDate(subscription.current_period_end);
       } catch (parseErr: any) {
         log("Error parsing subscription fields", { error: parseErr?.message });
       }

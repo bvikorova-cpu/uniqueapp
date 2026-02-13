@@ -1,7 +1,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { corsHeaders } from "../_shared/cors.ts";
 import { authenticateUser } from "../_shared/supabaseClient.ts";
-import { createStripeClient, getOrCreateStripeCustomer } from "../_shared/stripe.ts";
+import { createStripeClient, getOrCreateStripeCustomer, safeParseStripeDate } from "../_shared/stripe.ts";
 import { createLogger } from "../_shared/logger.ts";
 
 const log = createLogger("check-lottery-subscription");
@@ -42,7 +42,7 @@ serve(async (req) => {
 
     for (const sub of subscriptions.data) {
       const subProductId = sub.items.data[0].price.product as string;
-      subscriptionEnd = new Date(sub.current_period_end * 1000).toISOString();
+      subscriptionEnd = safeParseStripeDate((sub as any).current_period_end);
       
       if (subProductId === LOTTERY_PRODUCTS.basic) {
         isBasic = true;
