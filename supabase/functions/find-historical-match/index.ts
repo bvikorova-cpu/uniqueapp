@@ -6,43 +6,43 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-// Historical figures database
+// Historical figures database with Wikipedia portrait URLs
 const historicalFigures = [
-  { name: "Leonardo da Vinci", era: "Renaissance (1452-1519)", category: "artist" },
-  { name: "Cleopatra VII", era: "Ancient Egypt (69-30 BC)", category: "royalty" },
-  { name: "Napoleon Bonaparte", era: "French Empire (1769-1821)", category: "military" },
-  { name: "Queen Elizabeth I", era: "Tudor England (1533-1603)", category: "royalty" },
-  { name: "Julius Caesar", era: "Roman Empire (100-44 BC)", category: "military" },
-  { name: "Marie Antoinette", era: "French Monarchy (1755-1793)", category: "royalty" },
-  { name: "William Shakespeare", era: "Elizabethan Era (1564-1616)", category: "writer" },
-  { name: "Joan of Arc", era: "Medieval France (1412-1431)", category: "military" },
-  { name: "Alexander the Great", era: "Ancient Greece (356-323 BC)", category: "military" },
-  { name: "Catherine the Great", era: "Russian Empire (1729-1796)", category: "royalty" },
-  { name: "Michelangelo", era: "Renaissance (1475-1564)", category: "artist" },
-  { name: "Genghis Khan", era: "Mongol Empire (1162-1227)", category: "military" },
-  { name: "Marco Polo", era: "Medieval Venice (1254-1324)", category: "explorer" },
-  { name: "Charlemagne", era: "Carolingian Empire (742-814)", category: "royalty" },
-  { name: "Nefertiti", era: "Ancient Egypt (1370-1330 BC)", category: "royalty" },
-  { name: "Galileo Galilei", era: "Renaissance (1564-1642)", category: "scientist" },
-  { name: "King Henry VIII", era: "Tudor England (1491-1547)", category: "royalty" },
-  { name: "Queen Victoria", era: "Victorian Era (1819-1901)", category: "royalty" },
-  { name: "Beethoven", era: "Classical Era (1770-1827)", category: "musician" },
-  { name: "Mozart", era: "Classical Era (1756-1791)", category: "musician" },
+  { name: "Leonardo da Vinci", era: "Renaissance (1452-1519)", category: "artist", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f7/Francesco_Melzi_-_Portrait_of_Leonardo.png/440px-Francesco_Melzi_-_Portrait_of_Leonardo.png" },
+  { name: "Cleopatra VII", era: "Ancient Egypt (69-30 BC)", category: "royalty", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Kleopatra-VII.-Altes-Museum-Berlin1.jpg/440px-Kleopatra-VII.-Altes-Museum-Berlin1.jpg" },
+  { name: "Napoleon Bonaparte", era: "French Empire (1769-1821)", category: "military", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Jacques-Louis_David_-_The_Emperor_Napoleon_in_His_Study_at_the_Tuileries_-_Google_Art_Project.jpg/440px-Jacques-Louis_David_-_The_Emperor_Napoleon_in_His_Study_at_the_Tuileries_-_Google_Art_Project.jpg" },
+  { name: "Queen Elizabeth I", era: "Tudor England (1533-1603)", category: "royalty", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/Darnley_stage_3.jpg/440px-Darnley_stage_3.jpg" },
+  { name: "Julius Caesar", era: "Roman Empire (100-44 BC)", category: "military", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Bust_of_Julius_Caesar_%28Green_Caesar%29.jpg/440px-Bust_of_Julius_Caesar_%28Green_Caesar%29.jpg" },
+  { name: "Marie Antoinette", era: "French Monarchy (1755-1793)", category: "royalty", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Marie-Antoinette%2C_1775_-_Mus%C3%A9e_Antoine_L%C3%A9cuyer.jpg/440px-Marie-Antoinette%2C_1775_-_Mus%C3%A9e_Antoine_L%C3%A9cuyer.jpg" },
+  { name: "William Shakespeare", era: "Elizabethan Era (1564-1616)", category: "writer", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Shakespeare.jpg/440px-Shakespeare.jpg" },
+  { name: "Joan of Arc", era: "Medieval France (1412-1431)", category: "military", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Joan_of_Arc_miniature_graded.jpg/440px-Joan_of_Arc_miniature_graded.jpg" },
+  { name: "Alexander the Great", era: "Ancient Greece (356-323 BC)", category: "military", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Alexander_the_Great_mosaic_%28cropped%29.jpg/440px-Alexander_the_Great_mosaic_%28cropped%29.jpg" },
+  { name: "Catherine the Great", era: "Russian Empire (1729-1796)", category: "royalty", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Profile_portrait_of_Catherine_II_by_Fedor_Rokotov_%281763%2C_Tretyakov_gallery%29.jpg/440px-Profile_portrait_of_Catherine_II_by_Fedor_Rokotov_%281763%2C_Tretyakov_gallery%29.jpg" },
+  { name: "Michelangelo", era: "Renaissance (1475-1564)", category: "artist", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Miguel_%C3%81ngel%2C_por_Daniele_da_Volterra_%28detalle%29.jpg/440px-Miguel_%C3%81ngel%2C_por_Daniele_da_Volterra_%28detalle%29.jpg" },
+  { name: "Genghis Khan", era: "Mongol Empire (1162-1227)", category: "military", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/YuanEmperorAlbumGenghisPortrait.jpg/440px-YuanEmperorAlbumGenghisPortrait.jpg" },
+  { name: "Marco Polo", era: "Medieval Venice (1254-1324)", category: "explorer", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Marco_Polo_portrait.jpg/440px-Marco_Polo_portrait.jpg" },
+  { name: "Charlemagne", era: "Carolingian Empire (742-814)", category: "royalty", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Charlemagne-by-Durer.jpg/440px-Charlemagne-by-Durer.jpg" },
+  { name: "Nefertiti", era: "Ancient Egypt (1370-1330 BC)", category: "royalty", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Nofretete_Neues_Museum.jpg/440px-Nofretete_Neues_Museum.jpg" },
+  { name: "Galileo Galilei", era: "Renaissance (1564-1642)", category: "scientist", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Justus_Sustermans_-_Portrait_of_Galileo_Galilei%2C_1636.jpg/440px-Justus_Sustermans_-_Portrait_of_Galileo_Galilei%2C_1636.jpg" },
+  { name: "King Henry VIII", era: "Tudor England (1491-1547)", category: "royalty", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/Workshop_of_Hans_Holbein_the_Younger_-_Portrait_of_Henry_VIII_-_Google_Art_Project.jpg/440px-Workshop_of_Hans_Holbein_the_Younger_-_Portrait_of_Henry_VIII_-_Google_Art_Project.jpg" },
+  { name: "Queen Victoria", era: "Victorian Era (1819-1901)", category: "royalty", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Queen_Victoria_by_Bassano.jpg/440px-Queen_Victoria_by_Bassano.jpg" },
+  { name: "Beethoven", era: "Classical Era (1770-1827)", category: "musician", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Beethoven.jpg/440px-Beethoven.jpg" },
+  { name: "Mozart", era: "Classical Era (1756-1791)", category: "musician", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Wolfgang-amadeus-mozart_1.jpg/440px-Wolfgang-amadeus-mozart_1.jpg" },
 ];
 
 const celebrities = [
-  { name: "Marilyn Monroe", era: "Golden Age Hollywood (1926-1962)" },
-  { name: "Elvis Presley", era: "Rock and Roll Era (1935-1977)" },
-  { name: "Audrey Hepburn", era: "Classic Hollywood (1929-1993)" },
-  { name: "James Dean", era: "1950s Hollywood (1931-1955)" },
-  { name: "Grace Kelly", era: "Golden Age Hollywood (1929-1982)" },
+  { name: "Marilyn Monroe", era: "Golden Age Hollywood (1926-1962)", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Marilyn_Monroe_-_publicity.jpg/440px-Marilyn_Monroe_-_publicity.jpg" },
+  { name: "Elvis Presley", era: "Rock and Roll Era (1935-1977)", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Elvis_Presley_promoting_Jailhouse_Rock.jpg/440px-Elvis_Presley_promoting_Jailhouse_Rock.jpg" },
+  { name: "Audrey Hepburn", era: "Classic Hollywood (1929-1993)", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Audrey_Hepburn_-_1953.jpg/440px-Audrey_Hepburn_-_1953.jpg" },
+  { name: "James Dean", era: "1950s Hollywood (1931-1955)", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/James_Dean_-_publicity_-_early.jpg/440px-James_Dean_-_publicity_-_early.jpg" },
+  { name: "Grace Kelly", era: "Golden Age Hollywood (1929-1982)", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Grace_Kelly_1956.jpg/440px-Grace_Kelly_1956.jpg" },
 ];
 
 const famousArtworks = [
-  { name: "Mona Lisa Portrait", era: "Renaissance (1503-1519)", artist: "Leonardo da Vinci" },
-  { name: "Girl with a Pearl Earring", era: "Dutch Golden Age (1665)", artist: "Johannes Vermeer" },
-  { name: "The Birth of Venus", era: "Renaissance (1485)", artist: "Sandro Botticelli" },
-  { name: "Portrait of Adele Bloch-Bauer", era: "Art Nouveau (1907)", artist: "Gustav Klimt" },
+  { name: "Mona Lisa Portrait", era: "Renaissance (1503-1519)", artist: "Leonardo da Vinci", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg/440px-Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg" },
+  { name: "Girl with a Pearl Earring", era: "Dutch Golden Age (1665)", artist: "Johannes Vermeer", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/1665_Girl_with_a_Pearl_Earring.jpg/440px-1665_Girl_with_a_Pearl_Earring.jpg" },
+  { name: "The Birth of Venus", era: "Renaissance (1485)", artist: "Sandro Botticelli", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Sandro_Botticelli_-_La_nascita_di_Venere_-_Google_Art_Project_-_edited.jpg/640px-Sandro_Botticelli_-_La_nascita_di_Venere_-_Google_Art_Project_-_edited.jpg" },
+  { name: "Portrait of Adele Bloch-Bauer", era: "Art Nouveau (1907)", artist: "Gustav Klimt", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Gustav_Klimt_046.jpg/440px-Gustav_Klimt_046.jpg" },
 ];
 
 serve(async (req) => {
@@ -222,8 +222,11 @@ Return ONLY a valid JSON array with these exact fields. Example:
         matchResult.bio = match.reason || `Remarkable similarities in facial structure and features with ${match.name}.`;
       }
 
-      // Add placeholder image
-      matchResult.imageUrl = `https://picsum.photos/seed/${match.name.replace(/\s/g, '')}/400/500`;
+      // Use real portrait from our database
+      const figureData = historicalFigures.find(f => f.name === match.name) ||
+                         celebrities.find(c => c.name === match.name) ||
+                         famousArtworks.find(a => a.name === match.name);
+      matchResult.imageUrl = (figureData as any)?.image || null;
 
       return matchResult;
     });
