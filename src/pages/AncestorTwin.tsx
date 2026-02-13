@@ -1,19 +1,24 @@
-import { useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useRef, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { Sparkles, Users, Dna, Image as ImageIcon, Crown, Calendar, Check, CreditCard, Upload, History, ImagePlus, Loader2, ScanFace, X } from "lucide-react";
+import { Sparkles, Users, Dna, Image as ImageIcon, Crown, Check, CreditCard, Upload, History, ImagePlus, Loader2, ScanFace, X } from "lucide-react";
 import { useAncestorTwin } from "@/hooks/useAncestorTwin";
+import { supabase } from "@/integrations/supabase/client";
+
+const STORAGE_KEY = "ancestor_twin_pending";
 
 const AncestorTwin = () => {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [selectedTier, setSelectedTier] = useState<'basic' | 'extended' | 'heritage'>('basic');
+  const [isPurchasing, setIsPurchasing] = useState(false);
   
   const { 
     subscription, 
@@ -23,10 +28,110 @@ const AncestorTwin = () => {
     createCheckout,
   } = useAncestorTwin();
 
-  const handlePurchase = async (tier: string, priceId: string) => {
-    const url = await createCheckout(tier, priceId);
-    if (url) {
-      window.open(url, '_blank');
+  // Detect return from Stripe and auto-run analysis
+  useEffect(() => {
+    const isSuccess = searchParams.get("success") === "true";
+    const isCanceled = searchParams.get("canceled") === "true";
+
+    if (isCanceled) {
+      toast.error("Payment was canceled");
+      setSearchParams({});
+      return;
+    }
+
+    if (isSuccess) {
+      toast.success("Payment successful! Starting analysis...");
+      setSearchParams({});
+      runPendingAnalysis();
+    }
+  }, []);
+
+  const runPendingAnalysis = async () => {
+    const pendingRaw = localStorage.getItem(STORAGE_KEY);
+    if (!pendingRaw) {
+      toast.info("Upload a photo and start analysis.");
+      return;
+    }
+
+    try {
+      const pending = JSON.parse(pendingRaw);
+      const { storagePath, tier } = pending;
+      localStorage.removeItem(STORAGE_KEY);
+
+      if (!storagePath || !tier) {
+        toast.error("Missing analysis data.");
+        return;
+      }
+
+      setIsAnalyzing(true);
+      setSelectedTier(tier);
+
+      // Download the image from storage
+      const { data: downloadData, error: downloadError } = await supabase.storage
+        .from('ancestor-twin-photos')
+        .download(storagePath);
+
+      if (downloadError || !downloadData) {
+        throw new Error("Failed to load photo");
+      }
+
+      // Convert blob to File
+      const file = new File([downloadData], 'photo.jpg', { type: downloadData.type });
+      setSelectedFile(file);
+      setPreviewUrl(URL.createObjectURL(file));
+
+      // Run analysis
+      await findMatches(file, tier);
+      toast.success("Matches found! Check your results below.");
+    } catch (error) {
+      console.error("Auto-analysis error:", error);
+      toast.error("Analysis failed. Please try again.");
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
+
+  const handlePurchaseWithPhoto = async (tier: string, priceId: string) => {
+    if (!selectedFile) {
+      toast.error("Please upload a photo first");
+      fileInputRef.current?.click();
+      return;
+    }
+
+    setIsPurchasing(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast.error("Please sign in to continue");
+        setIsPurchasing(false);
+        return;
+      }
+
+      // Upload photo to storage before redirect
+      const fileExt = selectedFile.name.split('.').pop();
+      const storagePath = `${session.user.id}/${Date.now()}.${fileExt}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('ancestor-twin-photos')
+        .upload(storagePath, selectedFile, { cacheControl: '3600', upsert: false });
+
+      if (uploadError) {
+        throw new Error("Photo upload failed");
+      }
+
+      // Save pending analysis data to localStorage
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ storagePath, tier }));
+
+      // Create checkout and redirect (same tab so we return here)
+      const url = await createCheckout(tier, priceId);
+      if (url) {
+        window.location.href = url;
+      }
+    } catch (error) {
+      console.error("Purchase error:", error);
+      toast.error("Purchase failed. Please try again.");
+    } finally {
+      setIsPurchasing(false);
     }
   };
 
@@ -50,14 +155,9 @@ const AncestorTwin = () => {
       toast.error("Please upload a photo first");
       return;
     }
-    setIsAnalyzing(true);
-    try {
-      await findMatches(selectedFile, selectedTier);
-      toast.success("Matches found! Check your results below.");
-    } catch (error) {
-      toast.error("Failed to find matches. Please try again.");
-    } finally {
-      setIsAnalyzing(false);
+    const tier = pricingTiers.find(t => t.id === selectedTier);
+    if (tier) {
+      await handlePurchaseWithPhoto(selectedTier, tier.priceId);
     }
   };
 
@@ -173,7 +273,7 @@ const AncestorTwin = () => {
           </div>
         </div>
 
-        {/* Upload & Find Section — always visible */}
+        {/* Upload & Find Section */}
         <Card className="max-w-3xl mx-auto mb-12 p-8 border-2 border-primary/30 bg-gradient-to-br from-primary/5 to-purple-500/5">
           <h2 className="text-2xl font-bold text-center mb-6 flex items-center justify-center gap-2">
             <ScanFace className="h-7 w-7 text-primary" />
@@ -226,9 +326,9 @@ const AncestorTwin = () => {
                   onClick={() => setSelectedTier(tier)}
                   className="capitalize"
                 >
-                  {tier === 'basic' && '1 Match'}
-                  {tier === 'extended' && '10 Matches'}
-                  {tier === 'heritage' && '20+ Matches'}
+                  {tier === 'basic' && '1 Match — €1.99'}
+                  {tier === 'extended' && '10 Matches — €6.99'}
+                  {tier === 'heritage' && '20+ Matches — €14.99'}
                 </Button>
               ))}
             </div>
@@ -237,7 +337,7 @@ const AncestorTwin = () => {
           {/* Action button */}
           <Button
             onClick={handleFindMatches}
-            disabled={!selectedFile || isAnalyzing}
+            disabled={!selectedFile || isAnalyzing || isPurchasing}
             size="lg"
             className="w-full gap-2"
           >
@@ -246,19 +346,24 @@ const AncestorTwin = () => {
                 <Loader2 className="h-5 w-5 animate-spin" />
                 Analyzing your face...
               </>
+            ) : isPurchasing ? (
+              <>
+                <Loader2 className="h-5 w-5 animate-spin" />
+                Preparing payment...
+              </>
             ) : (
               <>
                 <Sparkles className="h-5 w-5" />
-                Find My Historical Twin
+                Purchase & Find My Twin
               </>
             )}
           </Button>
 
-          {!hasAccess && (
-            <p className="text-xs text-center text-muted-foreground mt-3">
-              Credits required — purchase a package below or subscribe for unlimited basic matches.
-            </p>
-          )}
+          <p className="text-xs text-center text-muted-foreground mt-3">
+            {hasAccess 
+              ? "You have Premium — unlimited basic matches included."
+              : "Upload photo → select tier → pay → get instant results."}
+          </p>
         </Card>
 
         {/* Match Results */}
@@ -328,8 +433,13 @@ const AncestorTwin = () => {
                       </li>
                     ))}
                   </ul>
-                  <Button onClick={() => handlePurchase(tier.id, tier.priceId)} className="w-full" variant={tier.popular ? "default" : "outline"}>
-                    Purchase
+                  <Button 
+                    onClick={() => handlePurchaseWithPhoto(tier.id, tier.priceId)} 
+                    className="w-full" 
+                    variant={tier.popular ? "default" : "outline"}
+                    disabled={isPurchasing}
+                  >
+                    {isPurchasing ? <Loader2 className="h-4 w-4 animate-spin" /> : "Purchase"}
                   </Button>
                 </Card>
               );
@@ -357,9 +467,16 @@ const AncestorTwin = () => {
               </div>
             ))}
           </div>
-          <Button onClick={() => handlePurchase('subscription', subscriptionPlan.priceId)} size="lg" className="w-full gap-2" disabled={hasAccess}>
+          <Button 
+            onClick={() => handlePurchaseWithPhoto('subscription', subscriptionPlan.priceId)} 
+            size="lg" 
+            className="w-full gap-2" 
+            disabled={hasAccess || isPurchasing}
+          >
             {hasAccess ? (
               <><Check className="h-5 w-5" /> Active Subscription</>
+            ) : isPurchasing ? (
+              <><Loader2 className="h-5 w-5 animate-spin" /> Preparing...</>
             ) : (
               <><Crown className="h-5 w-5" /> Subscribe Now</>
             )}
@@ -369,11 +486,12 @@ const AncestorTwin = () => {
         {/* How It Works */}
         <div className="max-w-4xl mx-auto mt-16">
           <h2 className="text-3xl font-bold text-center mb-12">How It Works</h2>
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-4 gap-8">
             {[
-              { icon: Upload, title: '1. Upload Your Photo', desc: 'Upload a clear photo of your face for the best results' },
-              { icon: Sparkles, title: '2. AI Analysis', desc: 'Our AI scans thousands of historical figures and artworks' },
-              { icon: Users, title: '3. Find Your Twin', desc: 'Discover your historical lookalikes with similarity scores' },
+              { icon: Upload, title: '1. Upload Photo', desc: 'Upload a clear photo of your face' },
+              { icon: CreditCard, title: '2. Choose & Pay', desc: 'Select a package and complete payment' },
+              { icon: Sparkles, title: '3. AI Analysis', desc: 'Our AI scans thousands of historical figures' },
+              { icon: Users, title: '4. Get Results', desc: 'Discover your historical lookalikes instantly' },
             ].map((step, i) => (
               <div key={i} className="text-center">
                 <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
