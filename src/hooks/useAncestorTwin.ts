@@ -139,7 +139,7 @@ export const useAncestorTwin = () => {
     }
   };
 
-  const createCheckout = async (tier: string, priceInCents: number): Promise<string | null> => {
+  const createCheckout = async (tier: string, priceId: string): Promise<string | null> => {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       
@@ -149,7 +149,7 @@ export const useAncestorTwin = () => {
       }
 
       const { data, error } = await supabase.functions.invoke('create-ancestor-twin-checkout', {
-        body: { tier, priceInCents },
+        body: { tier, priceId },
         headers: {
           Authorization: `Bearer ${session.access_token}`,
         },

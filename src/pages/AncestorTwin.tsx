@@ -15,8 +15,8 @@ const AncestorTwin = () => {
     createCheckout,
   } = useAncestorTwin();
 
-  const handlePurchase = async (tier: string, priceInCents: number) => {
-    const url = await createCheckout(tier, priceInCents);
+  const handlePurchase = async (tier: string, priceId: string) => {
+    const url = await createCheckout(tier, priceId);
     if (url) {
       window.open(url, '_blank');
     }
@@ -27,7 +27,7 @@ const AncestorTwin = () => {
       id: 'basic',
       name: 'Basic Match',
       price: '€1.99',
-      priceInCents: 199,
+      priceId: 'price_1T0KZIGaXSfGtYFtzLeZROU7',
       icon: Users,
       features: [
         '1 historical double',
@@ -42,7 +42,7 @@ const AncestorTwin = () => {
       id: 'extended',
       name: 'Extended Match',
       price: '€6.99',
-      priceInCents: 699,
+      priceId: 'price_1T0KZLGaXSfGtYFtHo4Rywlh',
       icon: Sparkles,
       popular: true,
       features: [
@@ -59,7 +59,7 @@ const AncestorTwin = () => {
       id: 'heritage',
       name: 'DNA Heritage Report',
       price: '€14.99',
-      priceInCents: 1499,
+      priceId: 'price_1T0KZNGaXSfGtYFtrNPfNMlR',
       icon: Dna,
       features: [
         'Full ancestry integration',
@@ -76,7 +76,7 @@ const AncestorTwin = () => {
       id: 'art_print',
       name: 'Renaissance Art Print',
       price: '€49.99',
-      priceInCents: 4999,
+      priceId: 'price_1T0KZOGaXSfGtYFtgzk1hp2L',
       icon: ImageIcon,
       features: [
         'Your face in Renaissance style',
@@ -94,7 +94,7 @@ const AncestorTwin = () => {
   const subscriptionPlan = {
     name: 'Premium Subscription',
     price: '€7.99/month',
-    priceInCents: 799,
+    priceId: 'price_1T0KZkGaXSfGtYFtLCYo8lzm',
     icon: Crown,
     features: [
       'Weekly new matches',
@@ -221,7 +221,7 @@ const AncestorTwin = () => {
                   </ul>
 
                   <Button
-                    onClick={() => handlePurchase(tier.id, tier.priceInCents)}
+                    onClick={() => handlePurchase(tier.id, tier.priceId)}
                     className="w-full"
                     variant={tier.popular ? "default" : "outline"}
                   >
@@ -256,7 +256,7 @@ const AncestorTwin = () => {
           </div>
 
           <Button
-            onClick={() => handlePurchase('subscription', subscriptionPlan.priceInCents)}
+            onClick={() => handlePurchase('subscription', subscriptionPlan.priceId)}
             size="lg"
             className="w-full gap-2"
             disabled={subscription?.hasSubscription}
