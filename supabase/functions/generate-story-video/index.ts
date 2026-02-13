@@ -3,7 +3,7 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
 };
 
 serve(async (req) => {
@@ -19,7 +19,7 @@ serve(async (req) => {
     }
 
     // Validate scene count
-    const validSceneCount = Math.max(2, Math.min(20, sceneCount));
+    const validSceneCount = Math.max(2, Math.min(6, sceneCount));
     
     // Language mapping
     const languageNames: Record<string, string> = {
@@ -152,41 +152,49 @@ serve(async (req) => {
     const characterDescription = characterData.choices[0].message.content;
     console.log('Character descriptions:', characterDescription);
 
-    // Generate images for each scene using DALL-E 3
+    // Generate images for each scene using DALL-E 3 — generate in parallel batches of 2
     const images: string[] = [];
     const baseStyle = "Children's storybook illustration, vibrant colors, friendly cartoon style, consistent character design";
     
-    for (let i = 0; i < validSceneCount; i++) {
-      const imagePrompt = `${baseStyle}. Characters: ${characterDescription}. Scene: ${scenes[i]}`;
-      
-      console.log(`Generating image ${i + 1}...`);
-      const imageResponse = await fetch('https://api.openai.com/v1/images/generations', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${OPENAI_API_KEY}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          model: 'dall-e-3',
-          prompt: imagePrompt,
-          n: 1,
-          size: '1024x1024',
-          response_format: 'b64_json'
-        }),
-      });
-
-      if (!imageResponse.ok) {
-        console.error(`Image ${i} generation error:`, imageResponse.status);
-        continue;
+    for (let i = 0; i < validSceneCount; i += 2) {
+      const batch = [];
+      for (let j = i; j < Math.min(i + 2, validSceneCount); j++) {
+        const imagePrompt = `${baseStyle}. Characters: ${characterDescription}. Scene: ${scenes[j]}`;
+        console.log(`Generating image ${j + 1}...`);
+        batch.push(
+          fetch('https://api.openai.com/v1/images/generations', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${OPENAI_API_KEY}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              model: 'dall-e-3',
+              prompt: imagePrompt,
+              n: 1,
+              size: '1024x1024',
+              response_format: 'b64_json'
+            }),
+          }).then(async (resp) => {
+            if (!resp.ok) {
+              console.error(`Image ${j + 1} generation error:`, resp.status);
+              return '';
+            }
+            const data = await resp.json();
+            const b64 = data.data?.[0]?.b64_json;
+            if (b64) {
+              console.log(`Image ${j + 1} generated successfully`);
+              return `data:image/png;base64,${b64}`;
+            }
+            return '';
+          }).catch((err) => {
+            console.error(`Image ${j + 1} error:`, err);
+            return '';
+          })
+        );
       }
-
-      const imageData = await imageResponse.json();
-      const base64Image = imageData.data?.[0]?.b64_json;
-      
-      if (base64Image) {
-        images.push(`data:image/png;base64,${base64Image}`);
-        console.log(`Image ${i + 1} generated successfully`);
-      }
+      const results = await Promise.all(batch);
+      images.push(...results.filter(Boolean));
     }
 
     console.log(`Generated ${images.length} images`);

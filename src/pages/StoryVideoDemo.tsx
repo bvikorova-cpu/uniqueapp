@@ -12,6 +12,7 @@ const StoryVideoDemo = () => {
   const [loading, setLoading] = useState(false);
   const [storyData, setStoryData] = useState<{ scenes: string[], images: string[], audioFiles?: string[] } | null>(null);
   const [sceneCount, setSceneCount] = useState(4);
+  const MAX_SCENES = 6;
   const [sceneDuration, setSceneDuration] = useState(5);
   const [language, setLanguage] = useState('english');
   const navigate = useNavigate();
@@ -144,13 +145,13 @@ const StoryVideoDemo = () => {
                 <input
                   type="range"
                   min="2"
-                  max="20"
+                  max={MAX_SCENES}
                   value={sceneCount}
                   onChange={(e) => setSceneCount(Number(e.target.value))}
                   disabled={loading}
                   className="w-full h-2 bg-purple-200 rounded-lg appearance-none cursor-pointer accent-purple-500"
                 />
-                <p className="text-xs text-purple-600">2-20 scenes</p>
+                <p className="text-xs text-purple-600">2-{MAX_SCENES} scenes (max {MAX_SCENES} due to generation time)</p>
               </div>
 
               <div className="space-y-2">
