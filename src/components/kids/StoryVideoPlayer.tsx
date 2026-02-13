@@ -423,29 +423,29 @@ export const StoryVideoPlayer = ({ scenes, images, audioFiles, sceneDuration = 5
 
   return (
     <div className="w-full max-w-4xl mx-auto space-y-4">
-      <div className="relative aspect-video bg-black rounded-lg overflow-hidden shadow-2xl">
-        {images[currentScene] && (
-          <img
-            src={images[currentScene]}
-            alt={`Scene ${currentScene + 1}`}
-            className="w-full h-full object-cover animate-fade-in"
-            style={{
-              animation: 'fadeIn 1s ease-in-out'
-            }}
-          />
-        )}
-        
-        {/* Subtitles/Captions - Only show during playback */}
-        {isPlaying && (
-          <div className="absolute bottom-0 left-0 right-0 bg-black/75 backdrop-blur-sm p-6 border-t-2 border-purple-400/50">
-            <p className="text-white text-xl md:text-2xl font-semibold text-center leading-relaxed animate-fade-in drop-shadow-lg">
-              {scenes[currentScene]}
-            </p>
-          </div>
-        )}
+      <div className="rounded-lg overflow-hidden shadow-2xl">
+        <div className="relative aspect-video bg-black">
+          {images[currentScene] && (
+            <img
+              src={images[currentScene]}
+              alt={`Scene ${currentScene + 1}`}
+              className="w-full h-full object-cover animate-fade-in"
+              style={{
+                animation: 'fadeIn 1s ease-in-out'
+              }}
+            />
+          )}
 
-        <div className="absolute top-4 right-4 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
-          {currentScene + 1} / {scenes.length}
+          <div className="absolute top-4 right-4 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
+            {currentScene + 1} / {scenes.length}
+          </div>
+        </div>
+
+        {/* Scene text below the image */}
+        <div className="bg-purple-50 border-t-2 border-purple-300 p-4 md:p-6">
+          <p className="text-purple-900 text-base md:text-lg font-medium text-center leading-relaxed">
+            {scenes[currentScene]}
+          </p>
         </div>
       </div>
 
