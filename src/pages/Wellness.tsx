@@ -348,10 +348,12 @@ export default function Wellness() {
               </Badge>
               {subscriptionStatus.is_lifetime ? (
                 <span className="text-sm">Lifetime Access ✨</span>
-              ) : (
+              ) : subscriptionStatus.subscription_end ? (
                 <span className="text-sm">
                   Active until {new Date(subscriptionStatus.subscription_end).toLocaleDateString()}
                 </span>
+              ) : (
+                <span className="text-sm">Active subscription</span>
               )}
             </div>
           </CardContent>
