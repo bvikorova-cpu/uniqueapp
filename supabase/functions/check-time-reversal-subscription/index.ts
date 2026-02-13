@@ -1,7 +1,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { corsHeaders } from "../_shared/cors.ts";
 import { authenticateUser } from "../_shared/supabaseClient.ts";
-import { createStripeClient } from "../_shared/stripe.ts";
+import { createStripeClient, safeParseStripeDate } from "../_shared/stripe.ts";
 import { createLogger } from "../_shared/logger.ts";
 
 const log = createLogger("check-time-reversal-subscription");
@@ -38,8 +38,8 @@ serve(async (req) => {
     for (const sub of subscriptions.data) {
       const productId = sub.items.data[0].price.product as string;
       activeFeatures.push(productId);
-      const subEnd = new Date(sub.current_period_end * 1000).toISOString();
-      if (!subscriptionEnd || subEnd > subscriptionEnd) {
+      const subEnd = safeParseStripeDate((sub as any).current_period_end);
+      if (subEnd && (!subscriptionEnd || subEnd > subscriptionEnd)) {
         subscriptionEnd = subEnd;
       }
     }

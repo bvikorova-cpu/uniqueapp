@@ -3,6 +3,29 @@ import Stripe from "https://esm.sh/stripe@18.5.0";
 const STRIPE_API_VERSION = "2025-08-27.basil";
 
 /**
+ * Safely parse a Stripe timestamp that may be a number (unix seconds) or a string (ISO date).
+ * Stripe API version "basil" returns string dates instead of unix timestamps.
+ */
+export function safeParseStripeDate(value: unknown): string | null {
+  if (!value) return null;
+  try {
+    if (typeof value === "number") {
+      if (!Number.isFinite(value) || value <= 0) return null;
+      // Unix seconds → ms
+      return new Date(value * 1000).toISOString();
+    }
+    if (typeof value === "string") {
+      const d = new Date(value);
+      if (!isNaN(d.getTime())) return d.toISOString();
+      // Maybe it's a stringified number
+      const num = Number(value);
+      if (Number.isFinite(num) && num > 0) return new Date(num * 1000).toISOString();
+    }
+  } catch { /* swallow */ }
+  return null;
+}
+
+/**
  * Creates and returns a configured Stripe instance
  */
 export function createStripeClient(): Stripe {
@@ -89,15 +112,12 @@ export async function hasActiveSubscription(
     
     // If no specific priceIds provided, return first active subscription
     if (!priceIds || priceIds.length === 0 || priceIds.includes(currentPriceId)) {
-      const currentPeriodEndSec = Number((subscription as any).current_period_end);
       return {
         hasSubscription: true,
         subscription,
         priceId: currentPriceId,
         productId: currentProductId,
-        subscriptionEnd: Number.isFinite(currentPeriodEndSec) && currentPeriodEndSec > 0
-          ? new Date(currentPeriodEndSec * 1000).toISOString()
-          : null,
+        subscriptionEnd: safeParseStripeDate((subscription as any).current_period_end),
       };
     }
   }
@@ -137,13 +157,10 @@ export async function hasCompletedPayment(
         
         if (productId) {
           if (!productIds || productIds.length === 0 || productIds.includes(productId)) {
-            const createdSec = Number((session as any).created);
             return {
               hasPurchase: true,
               productId,
-              purchaseDate: Number.isFinite(createdSec) && createdSec > 0
-                ? new Date(createdSec * 1000).toISOString()
-                : null,
+              purchaseDate: safeParseStripeDate((session as any).created),
             };
           }
         }
