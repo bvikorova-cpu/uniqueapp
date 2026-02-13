@@ -268,9 +268,23 @@ const AncestorTwin = () => {
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {matchResults.matches.map((match, i) => (
                 <Card key={i} className="overflow-hidden hover:shadow-lg transition-shadow">
-                  {match.imageUrl && (
-                    <img src={match.imageUrl} alt={match.name} className="w-full h-48 object-cover" />
-                  )}
+                  {match.imageUrl ? (
+                    <img
+                      src={match.imageUrl}
+                      alt={match.name}
+                      className="w-full h-48 object-cover"
+                      referrerPolicy="no-referrer"
+                      onError={(e) => {
+                        const target = e.currentTarget;
+                        target.style.display = 'none';
+                        const fallback = target.nextElementSibling as HTMLElement;
+                        if (fallback) fallback.style.display = 'flex';
+                      }}
+                    />
+                  ) : null}
+                  <div className="w-full h-48 bg-gradient-to-br from-primary/20 to-purple-500/20 items-center justify-center" style={{ display: match.imageUrl ? 'none' : 'flex' }}>
+                    <span className="text-4xl font-bold text-primary/40">{match.name.split(' ').map(n => n[0]).join('')}</span>
+                  </div>
                   <div className="p-4">
                     <h3 className="font-bold text-lg">{match.name}</h3>
                     <p className="text-sm text-muted-foreground mb-2">{match.era}</p>
