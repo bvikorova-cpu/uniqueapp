@@ -22,14 +22,21 @@ const StoryVideoDemo = () => {
       toast.error('Please enter a story theme');
       return;
     }
+    if (loading) return; // prevent double clicks
 
     setLoading(true);
     try {
+      toast.info('Generating your story... This may take up to 2 minutes.');
       const { data, error } = await supabase.functions.invoke('generate-story-video', {
         body: { theme, sceneCount, language }
       });
 
-      if (error) throw error;
+      if (error) {
+        if (error.message?.includes('Too Many Requests') || error.message?.includes('ThrottlerException')) {
+          throw new Error('Too many requests. Please wait 30 seconds and try again.');
+        }
+        throw error;
+      }
 
       if (data.error) {
         throw new Error(data.error);
