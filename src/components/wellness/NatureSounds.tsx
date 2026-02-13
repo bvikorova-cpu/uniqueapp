@@ -9,49 +9,49 @@ const NATURE_SOUNDS = [
     id: "rain",
     name: "Rain",
     icon: Cloud,
-    url: "https://cdn.pixabay.com/download/audio/2022/03/10/audio_4037f5ea8e.mp3",
+    url: "https://upload.wikimedia.org/wikipedia/commons/4/4e/Rain_on_a_tin_roof.ogg",
     description: "Gentle rain sounds for calming the mind"
   },
   {
     id: "waves",
     name: "Ocean Waves",
     icon: Waves,
-    url: "https://cdn.pixabay.com/download/audio/2022/05/13/audio_c49e4b9ea9.mp3",
+    url: "https://upload.wikimedia.org/wikipedia/commons/e/ea/Sea_waves_%28Näsudden%2C_Gotland%29.ogg",
     description: "Relaxing sounds of ocean waves"
   },
   {
     id: "forest",
     name: "Forest",
     icon: Trees,
-    url: "https://cdn.pixabay.com/download/audio/2022/03/15/audio_13d711e6c6.mp3",
+    url: "https://upload.wikimedia.org/wikipedia/commons/4/4c/Birdsong_in_a_forest_in_England.ogg",
     description: "Peaceful nature sounds with birds"
   },
   {
     id: "thunderstorm",
     name: "Thunderstorm",
     icon: Zap,
-    url: "https://cdn.pixabay.com/download/audio/2022/03/24/audio_4a656f830e.mp3",
+    url: "https://upload.wikimedia.org/wikipedia/commons/4/4b/Thunderstorm_SLP.ogg",
     description: "Powerful thunder and rain for deep relaxation"
   },
   {
     id: "campfire",
     name: "Campfire",
     icon: Flame,
-    url: "https://cdn.pixabay.com/download/audio/2022/03/15/audio_4a4cb2d5c7.mp3",
+    url: "https://upload.wikimedia.org/wikipedia/commons/5/55/Campfire_Sounds.ogg",
     description: "Crackling fire sounds for cozy atmosphere"
   },
   {
     id: "wind",
     name: "Wind",
     icon: Wind,
-    url: "https://cdn.pixabay.com/download/audio/2022/03/20/audio_c6c4c67fff.mp3",
+    url: "https://upload.wikimedia.org/wikipedia/commons/3/3f/Wind_sound.ogg",
     description: "Gentle wind blowing through trees"
   },
   {
     id: "waterfall",
     name: "Waterfall",
     icon: Droplets,
-    url: "https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3",
+    url: "https://upload.wikimedia.org/wikipedia/commons/b/b4/Waterfall_sound.ogg",
     description: "Flowing water for meditation and focus"
   }
 ];
