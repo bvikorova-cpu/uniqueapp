@@ -317,14 +317,14 @@ const AncestorTwin = () => {
           {/* Tier selector */}
           <div className="mb-6">
             <p className="text-sm text-muted-foreground text-center mb-3">Select match type:</p>
-            <div className="flex flex-wrap justify-center gap-2">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 max-w-lg mx-auto">
               {(['basic', 'extended', 'heritage'] as const).map((tier) => (
                 <Button
                   key={tier}
                   variant={selectedTier === tier ? "default" : "outline"}
                   size="sm"
                   onClick={() => setSelectedTier(tier)}
-                  className="capitalize"
+                  className="w-full text-xs sm:text-sm"
                 >
                   {tier === 'basic' && '1 Match — €1.99'}
                   {tier === 'extended' && '10 Matches — €6.99'}
@@ -410,7 +410,7 @@ const AncestorTwin = () => {
         {/* Pricing Section */}
         <div className="mb-12">
           <h2 className="text-3xl font-bold text-center mb-8">Choose Your Package</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {pricingTiers.map((tier) => {
               const Icon = tier.icon;
               return (
