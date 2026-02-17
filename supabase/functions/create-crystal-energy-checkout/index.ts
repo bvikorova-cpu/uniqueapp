@@ -32,8 +32,8 @@ serve(async (req) => {
     if (!user?.email) throw new Error("User not authenticated");
     logStep("User authenticated", { userId: user.id, email: user.email });
 
-    const { priceId, featureName } = await req.json();
-    logStep("Received request", { priceId, featureName });
+    const { priceId, featureName, featureKey } = await req.json();
+    logStep("Received request", { priceId, featureName, featureKey });
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
       apiVersion: "2025-08-27.basil",
@@ -61,11 +61,12 @@ serve(async (req) => {
         },
       ],
       mode: isSubscription ? "subscription" : "payment",
-      success_url: `${req.headers.get("origin")}/crystal-energy-network?success=true`,
+      success_url: `${req.headers.get("origin")}/crystal-energy-network?success=true&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${req.headers.get("origin")}/crystal-energy-network?canceled=true`,
       metadata: {
         user_id: user.id,
         feature: featureName,
+        feature_key: featureKey,
       },
     });
 

@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Check, Sparkles, Heart, Gem, BookOpen, Store } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import CrystalEnergyUpload from "@/components/crystal/CrystalEnergyUpload";
 
 const FEATURES = {
@@ -70,8 +70,31 @@ const FEATURES = {
 
 export default function CrystalEnergyNetwork() {
   const [loading, setLoading] = useState<string | null>(null);
+  const [searchParams] = useSearchParams();
   const { toast } = useToast();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const sessionId = searchParams.get("session_id");
+    const success = searchParams.get("success");
+    if (success === "true" && sessionId) {
+      // Verify payment and activate service
+      supabase.functions.invoke("verify-crystal-payment", {
+        body: { sessionId },
+      }).then(({ data, error }) => {
+        if (error) {
+          toast({ title: "Verification failed", description: "Please contact support.", variant: "destructive" });
+        } else {
+          toast({ title: "Payment successful!", description: "Your service has been activated." });
+        }
+      });
+      // Clean URL
+      window.history.replaceState({}, "", "/crystal-energy-network");
+    } else if (searchParams.get("canceled") === "true") {
+      toast({ title: "Payment canceled", description: "No charges were made." });
+      window.history.replaceState({}, "", "/crystal-energy-network");
+    }
+  }, [searchParams, toast]);
 
   const handlePurchase = async (featureKey: keyof typeof FEATURES) => {
     try {
@@ -93,6 +116,7 @@ export default function CrystalEnergyNetwork() {
         body: {
           priceId: feature.priceId,
           featureName: feature.name,
+          featureKey,
         },
       });
 
