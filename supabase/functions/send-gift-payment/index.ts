@@ -63,8 +63,8 @@ serve(async (req) => {
         },
       ],
       mode: "payment",
-      success_url: `${origin}/creator/${creatorId}?gift_success=true`,
-      cancel_url: `${origin}/creator/${creatorId}`,
+      success_url: `${origin}/creator/${creatorId}?gift_success=true&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${origin}/creator/${creatorId}?gift_canceled=true`,
       metadata: {
         gift_id: giftId,
         creator_id: creatorId,

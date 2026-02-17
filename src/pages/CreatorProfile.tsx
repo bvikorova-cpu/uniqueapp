@@ -81,9 +81,27 @@ export default function CreatorProfile() {
     const subscription = searchParams.get('subscription');
     const purchase = searchParams.get('purchase');
     const giftParam = searchParams.get('gift');
+    const giftSuccess = searchParams.get('gift_success');
+    const sessionId = searchParams.get('session_id');
 
     if (giftParam === 'true' && creator) {
       setGiftDialogOpen(true);
+      window.history.replaceState({}, '', `/creator/${creatorId}`);
+    }
+
+    if (giftSuccess === 'true' && sessionId) {
+      // Verify and record the gift payment
+      supabase.functions.invoke('verify-gift-payment', {
+        body: { sessionId },
+      }).then(({ error }) => {
+        if (error) {
+          console.error('Gift verification error:', error);
+        }
+        toast({
+          title: "Gift Sent! 🎉",
+          description: `Your gift has been delivered! The creator receives 90% of the value.`,
+        });
+      });
       window.history.replaceState({}, '', `/creator/${creatorId}`);
     }
 
