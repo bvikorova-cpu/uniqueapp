@@ -46,7 +46,7 @@ import {
   Megatalent,
   MegatalentCategory,
   Subscription,
-  SubscriptionManagement,
+  
   PremiumStore,
   AICreditsStore,
   MysteryBox,
@@ -200,11 +200,6 @@ import {
   CreatorProfile,
   DiscoverCreators,
   FutureFace,
-  AncestorTwin,
-  AncestorTwinUpload,
-  AncestorTwinHistory,
-  AncestorTwinGallery,
-  AncestorTwinComparison,
   TimeReversalSubscription,
   TimeReversalDashboard,
   TimeReversalTimeline,
@@ -435,16 +430,11 @@ const App = () => {
                         <Route path="/pet-translator" element={<PetTranslator />} />
                         <Route path="/pet-translator-pricing" element={<PetTranslatorPricing />} />
                         <Route path="/future-face" element={<FutureFace />} />
-                        <Route path="/ancestor-twin" element={<AncestorTwin />} />
-                        <Route path="/ancestor-twin/upload" element={<AncestorTwinUpload />} />
-                        <Route path="/ancestor-twin/history" element={<AncestorTwinHistory />} />
-                        <Route path="/ancestor-twin/gallery" element={<AncestorTwinGallery />} />
-                        <Route path="/ancestor-twin/comparison" element={<AncestorTwinComparison />} />
                         <Route path="/skill-swap" element={<SkillSwap />} />
                         <Route path="/skill-swap/dashboard" element={<ProtectedRoute><SkillSwapDashboard /></ProtectedRoute>} />
                         <Route path="/skill-swap/profile/:userId" element={<ProtectedRoute><SkillSwapProfile /></ProtectedRoute>} />
                         <Route path="/skill-swap/profile/edit" element={<ProtectedRoute><SkillSwapSettings /></ProtectedRoute>} />
-                        <Route path="/subscription-management" element={<ProtectedRoute><SubscriptionManagement /></ProtectedRoute>} />
+                        
                         <Route path="/wellness" element={<Wellness />} />
                         <Route path="/safety-prevention" element={<SafetyPrevention />} />
                         <Route path="/handwriting" element={<Handwriting />} />

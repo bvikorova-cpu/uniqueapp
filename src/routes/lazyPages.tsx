@@ -44,7 +44,7 @@ export const MegatalentCategory = lazy(() => import("@/pages/megatalent/Megatale
 
 // Subscription & Store
 export const Subscription = lazy(() => import("@/pages/Subscription"));
-export const SubscriptionManagement = lazy(() => import("@/pages/SubscriptionManagement"));
+
 export const PremiumStore = lazy(() => import("@/pages/PremiumStore"));
 export const AICreditsStore = lazy(() => import("@/pages/AICreditsStore"));
 export const MysteryBox = lazy(() => import("@/pages/MysteryBox"));
@@ -224,11 +224,6 @@ export const DiscoverCreators = lazy(() => import("@/pages/DiscoverCreators"));
 
 // Ancestor & Time
 export const FutureFace = lazy(() => import("@/pages/FutureFace"));
-export const AncestorTwin = lazy(() => import("@/pages/AncestorTwin"));
-export const AncestorTwinUpload = lazy(() => import("@/pages/AncestorTwinUpload"));
-export const AncestorTwinHistory = lazy(() => import("@/pages/AncestorTwinHistory"));
-export const AncestorTwinGallery = lazy(() => import("@/pages/AncestorTwinGallery"));
-export const AncestorTwinComparison = lazy(() => import("@/pages/AncestorTwinComparison"));
 export const TimeReversalSubscription = lazy(() => import("@/pages/TimeReversalSubscription"));
 export const TimeReversalDashboard = lazy(() => import("@/pages/TimeReversalDashboard"));
 export const TimeReversalTimeline = lazy(() => import("@/pages/TimeReversalTimeline"));
