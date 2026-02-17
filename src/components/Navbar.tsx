@@ -208,7 +208,7 @@ const Navbar = () => {
     { path: "/past-life", label: "Past Life Explorer", icon: Clock },
     { path: "/anonymous-date", label: "Anonymous Date", icon: Heart },
     { path: "/skill-swap", label: "Global Skill Swap", icon: Globe },
-    { path: "/ancestor-twin", label: "Ancestor Twin Finder", icon: Users },
+    
     { path: "/lottery-ai", label: "Lottery Numbers - AI Predictions", icon: Sparkles },
     
     { path: "/property-marketplace", label: "Property Marketplace", icon: Building2 },

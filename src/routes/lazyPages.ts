@@ -183,11 +183,6 @@ export const Handwriting = lazy(() => import("@/pages/Handwriting"));
 
 // Ancestors & History
 export const FutureFace = lazy(() => import("@/pages/FutureFace"));
-export const AncestorTwin = lazy(() => import("@/pages/AncestorTwin"));
-export const AncestorTwinUpload = lazy(() => import("@/pages/AncestorTwinUpload"));
-export const AncestorTwinHistory = lazy(() => import("@/pages/AncestorTwinHistory"));
-export const AncestorTwinGallery = lazy(() => import("@/pages/AncestorTwinGallery"));
-export const AncestorTwinComparison = lazy(() => import("@/pages/AncestorTwinComparison"));
 export const PastLife = lazy(() => import("@/pages/PastLife"));
 export const AntiqueAppraisal = lazy(() => import("@/pages/AntiqueAppraisal"));
 export const Collectibles = lazy(() => import("@/pages/Collectibles"));
@@ -228,7 +223,7 @@ export const InfluencerEarnings = lazy(() => import("@/pages/InfluencerEarnings"
 
 // Membership & Subscriptions
 export const Subscription = lazy(() => import("@/pages/Subscription"));
-export const SubscriptionManagement = lazy(() => import("@/pages/SubscriptionManagement"));
+
 export const MembershipCommunity = lazy(() => import("@/pages/MembershipCommunity"));
 export const PremiumStore = lazy(() => import("@/pages/PremiumStore"));
 export const AICreditsStore = lazy(() => import("@/pages/AICreditsStore"));

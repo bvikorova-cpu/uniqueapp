@@ -176,7 +176,7 @@ const SEARCHABLE_PAGES: SearchResult[] = [
   { id: "121", title: "Astrology", category: "Mystical", path: "/astrology" },
   { id: "122", title: "Dream Journal", category: "Mystical", path: "/dream-journal" },
   { id: "123", title: "Past Life", category: "Mystical", path: "/past-life" },
-  { id: "124", title: "Ancestor Twin", category: "Mystical", path: "/ancestor-twin" },
+  
   { id: "125", title: "Future Face", category: "Mystical", path: "/future-face" },
   { id: "126", title: "Parallel Lives", category: "Mystical", path: "/parallel-lives" },
   { id: "127", title: "Reincarnation Social", category: "Mystical", path: "/reincarnation-social" },
