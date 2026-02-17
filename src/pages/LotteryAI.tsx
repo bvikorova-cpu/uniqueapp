@@ -225,28 +225,13 @@ export default function LotteryAI() {
       return;
     }
 
-    // For demo purposes, allow 3 free generations per day without subscription
-    const FREE_DAILY_LIMIT = 3;
-    
     if (!subscription?.subscribed) {
-      const today = new Date().toISOString().split('T')[0];
-      const storedDate = localStorage.getItem('lottery_free_date');
-      const storedCount = parseInt(localStorage.getItem('lottery_free_count') || '0');
-      
-      const freeCount = storedDate === today ? storedCount : 0;
-      
-      if (freeCount >= FREE_DAILY_LIMIT) {
-        toast({
-          title: "Free Limit Reached",
-          description: "Subscribe to get unlimited generations!",
-          variant: "destructive",
-        });
-        return;
-      }
-      
-      // Update free generation count
-      localStorage.setItem('lottery_free_date', today);
-      localStorage.setItem('lottery_free_count', (freeCount + 1).toString());
+      toast({
+        title: "Subscription Required",
+        description: "You need an active subscription to generate lucky numbers. Choose a plan below!",
+        variant: "destructive",
+      });
+      return;
     }
 
     // Check generation limits for Basic tier (10 generations per month)
