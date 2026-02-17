@@ -7,6 +7,15 @@ import { Gem, ShoppingCart, Search, Plus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Dialog,
   DialogContent,
@@ -34,6 +43,15 @@ export default function CrystalMarketplace() {
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [purchasingItem, setPurchasingItem] = useState<string | null>(null);
+  const [listDialogOpen, setListDialogOpen] = useState(false);
+  const [listingForm, setListingForm] = useState({
+    title: "",
+    description: "",
+    crystal_type: "",
+    weight_grams: "",
+    price: "",
+  });
+  const [submittingListing, setSubmittingListing] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -107,6 +125,46 @@ export default function CrystalMarketplace() {
     }
   };
 
+  const handleSubmitListing = async () => {
+    try {
+      setSubmittingListing(true);
+
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast({ title: "Login Required", description: "Please sign in to list a crystal", variant: "destructive" });
+        navigate("/auth");
+        return;
+      }
+
+      if (!listingForm.title || !listingForm.description || !listingForm.crystal_type || !listingForm.price) {
+        toast({ title: "Missing Fields", description: "Please fill all required fields", variant: "destructive" });
+        return;
+      }
+
+      const { error } = await supabase.from("crystal_marketplace_items").insert({
+        seller_id: session.user.id,
+        title: listingForm.title,
+        description: listingForm.description,
+        crystal_type: listingForm.crystal_type,
+        weight_grams: listingForm.weight_grams ? parseFloat(listingForm.weight_grams) : null,
+        price: parseFloat(listingForm.price),
+        is_available: true,
+      });
+
+      if (error) throw error;
+
+      toast({ title: "Crystal Listed!", description: "Your crystal has been added to the marketplace." });
+      setListDialogOpen(false);
+      setListingForm({ title: "", description: "", crystal_type: "", weight_grams: "", price: "" });
+      loadItems();
+    } catch (error) {
+      console.error("Listing error:", error);
+      toast({ title: "Error", description: "Failed to create listing", variant: "destructive" });
+    } finally {
+      setSubmittingListing(false);
+    }
+  };
+
   const filteredItems = items.filter(
     (item) =>
       item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -143,26 +201,85 @@ export default function CrystalMarketplace() {
             </div>
           </div>
 
-          <Dialog>
+          <Dialog open={listDialogOpen} onOpenChange={setListDialogOpen}>
             <DialogTrigger asChild>
               <Button size="lg" className="gap-2">
                 <Plus className="h-5 w-5" />
                 List Your Crystal
               </Button>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className="max-w-md">
               <DialogHeader>
                 <DialogTitle>List Your Crystal for Sale</DialogTitle>
                 <DialogDescription>
-                  Create a listing to sell your authentic crystals. Each listing will receive an AI-generated energy profile and authenticity certificate.
+                  Add your crystal to the marketplace. 15% platform commission on sales.
                 </DialogDescription>
               </DialogHeader>
-              <div className="space-y-4 py-4">
-                <p className="text-sm text-muted-foreground">
-                  This feature requires seller verification. Please contact support to become a verified crystal seller.
-                </p>
-                <Button variant="outline" className="w-full">
-                  Contact Support
+              <div className="space-y-4 py-2">
+                <div className="space-y-2">
+                  <Label htmlFor="title">Title *</Label>
+                  <Input
+                    id="title"
+                    placeholder="e.g. Natural Amethyst Cluster"
+                    value={listingForm.title}
+                    onChange={(e) => setListingForm(f => ({ ...f, title: e.target.value }))}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="crystal_type">Crystal Type *</Label>
+                  <Select
+                    value={listingForm.crystal_type}
+                    onValueChange={(v) => setListingForm(f => ({ ...f, crystal_type: v }))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {["Amethyst", "Rose Quartz", "Clear Quartz", "Citrine", "Black Tourmaline", "Selenite", "Labradorite", "Obsidian", "Fluorite", "Moonstone", "Other"].map(t => (
+                        <SelectItem key={t} value={t}>{t}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="description">Description *</Label>
+                  <Textarea
+                    id="description"
+                    placeholder="Describe your crystal, origin, quality..."
+                    value={listingForm.description}
+                    onChange={(e) => setListingForm(f => ({ ...f, description: e.target.value }))}
+                    rows={3}
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="weight">Weight (grams)</Label>
+                    <Input
+                      id="weight"
+                      type="number"
+                      placeholder="e.g. 150"
+                      value={listingForm.weight_grams}
+                      onChange={(e) => setListingForm(f => ({ ...f, weight_grams: e.target.value }))}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="price">Price (€) *</Label>
+                    <Input
+                      id="price"
+                      type="number"
+                      step="0.01"
+                      placeholder="e.g. 29.99"
+                      value={listingForm.price}
+                      onChange={(e) => setListingForm(f => ({ ...f, price: e.target.value }))}
+                    />
+                  </div>
+                </div>
+                <Button
+                  className="w-full"
+                  onClick={handleSubmitListing}
+                  disabled={submittingListing}
+                >
+                  {submittingListing ? "Listing..." : "List Crystal for Sale"}
                 </Button>
               </div>
             </DialogContent>
