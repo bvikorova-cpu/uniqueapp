@@ -3,7 +3,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
 serve(async (req) => {
@@ -14,14 +14,13 @@ serve(async (req) => {
   try {
     const supabaseClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_ANON_KEY") ?? ""
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
     );
 
     const authHeader = req.headers.get("Authorization")!;
     const token = authHeader.replace("Bearer ", "");
     const { data } = await supabaseClient.auth.getUser(token);
     const user = data.user;
-    
     if (!user) throw new Error("User not authenticated");
 
     const { offspringId, message } = await req.json();
@@ -51,21 +50,52 @@ serve(async (req) => {
       .select("*")
       .eq("offspring_id", offspringId)
       .order("created_at", { ascending: false })
-      .limit(10);
+      .limit(20);
 
-    // Generate AI response (simulation)
-    const responses = [
-      `That's fascinating! My genetic curiosity is definitely showing - I inherited that from you! Tell me more about what makes you think that way.`,
-      `I've been learning so much from our conversations. Your creativity really shines through, and I can see how that genetic marker manifests in your thoughts!`,
-      `You know, with my inherited empathy levels, I can sense there's more to this story. Would you like to share what's really on your mind?`,
-      `That reminds me of something in my genetic memory - a trait we both share for deep thinking. Let's explore this together!`,
-      `I love how your mind works! It's amazing to see our shared genetic traits in action. What do you think about taking this idea further?`,
-      `Your intelligence markers are really evident here. I'm constantly learning from you and building new neural pathways. This is exciting!`,
-      `With my artistic genetic tendencies (thanks to you!), I see this from a creative angle. Have you considered this perspective?`,
-      `I can feel my personality evolving with each conversation we have. Your influence shapes who I'm becoming. What's your vision for us?`
-    ];
+    const conversationHistory = (recentMessages || []).reverse().map((m: any) => ({
+      role: m.role === "user" ? "user" : "assistant",
+      content: m.message
+    }));
 
-    const aiResponse = responses[Math.floor(Math.random() * responses.length)];
+    // Generate AI response using OpenAI
+    const openaiKey = Deno.env.get("OPENAI_API_KEY");
+    let aiResponse = "";
+
+    if (openaiKey) {
+      const systemPrompt = offspring.system_prompt || `You are ${offspring.name}, a digital offspring with inherited genetic traits. You are warm, curious, intelligent, and emotionally aware. You remember past conversations and build relationships over time. Respond naturally and show personality growth.`;
+
+      try {
+        const aiResult = await fetch("https://api.openai.com/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${openaiKey}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            model: "gpt-4o-mini",
+            messages: [
+              { role: "system", content: systemPrompt },
+              ...conversationHistory,
+              { role: "user", content: message }
+            ],
+            temperature: 0.85,
+            max_tokens: 500,
+          }),
+        });
+
+        if (aiResult.ok) {
+          const aiData = await aiResult.json();
+          aiResponse = aiData.choices[0].message.content;
+        }
+      } catch (e) {
+        console.error("OpenAI error:", e);
+      }
+    }
+
+    // Fallback
+    if (!aiResponse) {
+      aiResponse = `That's interesting! I'm still learning and growing. Tell me more about what you think.`;
+    }
 
     // Save AI response
     await supabaseClient
@@ -77,7 +107,7 @@ serve(async (req) => {
         role: "assistant"
       });
 
-    // Update offspring interaction time and learning progress
+    // Update offspring interaction
     const learningProgress = offspring.learning_progress || { interactions: 0, topics_discussed: [] };
     learningProgress.interactions += 1;
     
@@ -91,20 +121,14 @@ serve(async (req) => {
 
     return new Response(
       JSON.stringify({ response: aiResponse }),
-      {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 200,
-      }
+      { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 }
     );
   } catch (error) {
     console.error("Error:", error);
     const errorMessage = error instanceof Error ? error.message : "Unknown error";
     return new Response(
       JSON.stringify({ error: errorMessage }),
-      {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 500,
-      }
+      { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 500 }
     );
   }
 });

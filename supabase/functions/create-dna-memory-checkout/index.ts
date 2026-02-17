@@ -4,14 +4,14 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-const PRICE_IDS = {
-  dna_analysis: "price_1SPjUsGaXSfGtYFtW8tINFeX",
-  ancestral_memories: "price_1SPjVCGaXSfGtYFtiil4iYcu",
-  genetic_dating: "price_1SPjVV0QTWhd4oRplGDSFv2u",
-  digital_offspring: "price_1SPjVl0QTWhd4oRp6qIEt64a",
+const PRICE_IDS: Record<string, { priceId: string; mode: "payment" | "subscription" }> = {
+  dna_analysis: { priceId: "price_1T1s3AGaXSfGtYFt5YJNvjx4", mode: "payment" },
+  ancestral_memories: { priceId: "price_1T1s3CGaXSfGtYFt8FW8HKsh", mode: "subscription" },
+  genetic_dating: { priceId: "price_1T1s3DGaXSfGtYFtmMPNd8Yc", mode: "subscription" },
+  digital_offspring: { priceId: "price_1T1s3EGaXSfGtYFtQABAicPA", mode: "payment" },
 };
 
 serve(async (req) => {
@@ -33,8 +33,8 @@ serve(async (req) => {
 
     const { serviceType } = await req.json();
     
-    const priceId = PRICE_IDS[serviceType as keyof typeof PRICE_IDS];
-    if (!priceId) {
+    const service = PRICE_IDS[serviceType];
+    if (!service) {
       throw new Error("Invalid service type");
     }
 
@@ -48,21 +48,17 @@ serve(async (req) => {
       customerId = customers.data[0].id;
     }
 
-    const mode = serviceType === "ancestral_memories" || serviceType === "genetic_dating" 
-      ? "subscription" 
-      : "payment";
-
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       customer_email: customerId ? undefined : user.email,
       line_items: [
         {
-          price: priceId,
+          price: service.priceId,
           quantity: 1,
         },
       ],
-      mode: mode,
-      success_url: `${req.headers.get("origin")}/dna-memory-network?payment=success&session_id={CHECKOUT_SESSION_ID}`,
+      mode: service.mode,
+      success_url: `${req.headers.get("origin")}/dna-memory-network?payment=success&service=${serviceType}&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${req.headers.get("origin")}/dna-memory-network?payment=canceled`,
       metadata: {
         user_id: user.id,
