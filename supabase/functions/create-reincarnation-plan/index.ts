@@ -26,78 +26,91 @@ serve(async (req) => {
 
     const { planName, goalDescription } = await req.json();
 
-    // Get user's karmic debts to include in plan
+    // Get user's karmic debts for context
     const { data: karmicDebts } = await supabaseClient
       .from("karmic_debts")
       .select("*")
       .eq("user_id", user.id)
       .eq("current_status", "active");
 
-    // Generate comprehensive reincarnation plan
-    const plan = {
-      plan_name: planName || "My Next Life Journey",
-      next_life_goal: goalDescription || "Achieve spiritual enlightenment and complete karmic lessons",
-      desired_era: "Future Earth (2100-2200)",
-      desired_location: "Advanced spiritual community",
-      desired_role: "Spiritual Teacher & Healer",
-      soul_missions: [
-        {
-          mission: "Complete unfinished karmic debts",
-          priority: "high",
-          estimated_lifetimes: 1,
-          progress: 0
-        },
-        {
-          mission: "Guide other souls on their journey",
-          priority: "medium",
-          estimated_lifetimes: 2,
-          progress: 0
-        },
-        {
-          mission: "Contribute to collective consciousness evolution",
-          priority: "high",
-          estimated_lifetimes: 3,
-          progress: 0
-        }
-      ],
-      karmic_lessons_to_complete: karmicDebts?.map(debt => debt.debt_type) || [
-        "Practice unconditional love",
-        "Master patience and understanding",
-        "Achieve balance in all aspects"
-      ],
-      preservation_protocol: {
-        memory_retention: "high",
-        skill_transfer: ["Spiritual wisdom", "Healing abilities", "Leadership"],
-        soul_signature: "Unique vibrational frequency preserved",
-        connection_anchors: ["Soulmate bonds", "Family connections", "Life purpose"],
-        awakening_triggers: [
-          "Meditation practices",
-          "Meeting soulmates",
-          "Visiting significant locations",
-          "Experiencing déjà vu moments"
-        ]
+    // Get past life regressions for context
+    const { data: pastLives } = await supabaseClient
+      .from("past_life_regressions")
+      .select("life_era, life_role, life_location, lessons_learned")
+      .eq("user_id", user.id)
+      .limit(5);
+
+    const openaiKey = Deno.env.get("OPENAI_API_KEY");
+    if (!openaiKey) throw new Error("OpenAI API key not configured");
+
+    const debtsContext = (karmicDebts || []).map(d => d.debt_type).join(", ") || "None recorded";
+    const livesContext = (pastLives || []).map(l => `${l.life_role} in ${l.life_location} (${l.life_era})`).join("; ") || "No past lives explored yet";
+
+    const aiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${openaiKey}`,
+        "Content-Type": "application/json",
       },
-      destiny_mapping: {
-        birth_circumstances: "Supportive family environment",
-        key_life_events: [
-          { age: 7, event: "Spiritual awakening begins" },
-          { age: 21, event: "Meet primary soulmate" },
-          { age: 33, event: "Master spiritual gifts" },
-          { age: 42, event: "Begin teaching others" },
-          { age: 63, event: "Complete major karmic lessons" }
+      body: JSON.stringify({
+        model: "gpt-4o-mini",
+        messages: [
+          {
+            role: "system",
+            content: `You are a reincarnation planning expert. Create a detailed, personalized next-life plan based on the user's karmic history. Return ONLY valid JSON:
+{
+  "plan_name": "string",
+  "next_life_goal": "compelling 2-sentence goal",
+  "desired_era": "specific future or past era",
+  "desired_location": "specific location",
+  "desired_role": "specific role",
+  "soul_missions": [
+    {"mission": "description", "priority": "high/medium/low", "estimated_lifetimes": number, "progress": 0}
+  ],
+  "karmic_lessons_to_complete": ["lesson1", "lesson2", "lesson3"],
+  "preservation_protocol": {
+    "memory_retention": "high/medium/low",
+    "skill_transfer": ["skill1", "skill2", "skill3"],
+    "soul_signature": "unique description",
+    "connection_anchors": ["anchor1", "anchor2", "anchor3"],
+    "awakening_triggers": ["trigger1", "trigger2", "trigger3", "trigger4"]
+  },
+  "destiny_mapping": {
+    "birth_circumstances": "description",
+    "key_life_events": [{"age": number, "event": "description"}],
+    "life_challenges": ["challenge1", "challenge2", "challenge3"],
+    "success_indicators": ["indicator1", "indicator2", "indicator3"]
+  }
+}
+Generate 3 soul_missions, 3 karmic_lessons, 5 key_life_events. Make everything deeply personalized.`
+          },
+          {
+            role: "user",
+            content: `Create my reincarnation plan. Name: "${planName || "My Next Life Journey"}". Goal: "${goalDescription || "Spiritual growth"}". My active karmic debts: ${debtsContext}. My past lives: ${livesContext}.`
+          }
         ],
-        life_challenges: [
-          "Learning to trust intuition",
-          "Balancing material and spiritual",
-          "Overcoming fear of judgment"
-        ],
-        success_indicators: [
-          "Spiritual community leadership",
-          "Healed relationships",
-          "Positive karmic balance"
-        ]
-      }
-    };
+        temperature: 0.9,
+        max_tokens: 2000,
+      }),
+    });
+
+    if (!aiResponse.ok) {
+      const errText = await aiResponse.text();
+      console.error("OpenAI error:", errText);
+      throw new Error("Failed to generate AI reincarnation plan");
+    }
+
+    const aiData = await aiResponse.json();
+    const content = aiData.choices[0]?.message?.content;
+    
+    let plan;
+    try {
+      const cleaned = content.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
+      plan = JSON.parse(cleaned);
+    } catch (e) {
+      console.error("Failed to parse AI response:", content);
+      throw new Error("Failed to parse AI reincarnation plan");
+    }
 
     // Insert reincarnation plan
     const { data: insertedPlan, error: insertError } = await supabaseClient
