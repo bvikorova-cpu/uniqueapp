@@ -401,14 +401,17 @@ export default function MembershipCommunity() {
                   <Button
                     className="flex-1"
                     variant="outline"
-                    onClick={() => navigate(`/creator/${creator.id}`)}
+                    onClick={() => navigate(`/creator/${creator.user_id}`)}
                   >
                     <Heart className="mr-2 h-4 w-4" />
                     View
                   </Button>
                   <Button
                     variant="default"
-                    onClick={() => navigate(`/creator/${creator.id}`)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      navigate(`/creator/${creator.user_id}?gift=true`);
+                    }}
                   >
                     <Gift className="h-4 w-4" />
                   </Button>

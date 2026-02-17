@@ -80,6 +80,12 @@ export default function CreatorProfile() {
   useEffect(() => {
     const subscription = searchParams.get('subscription');
     const purchase = searchParams.get('purchase');
+    const giftParam = searchParams.get('gift');
+
+    if (giftParam === 'true' && creator) {
+      setGiftDialogOpen(true);
+      window.history.replaceState({}, '', `/creator/${creatorId}`);
+    }
 
     if (subscription === 'success') {
       checkSubscription();
@@ -95,7 +101,7 @@ export default function CreatorProfile() {
       });
       window.history.replaceState({}, '', `/creator/${creatorId}`);
     }
-  }, [searchParams, creatorId, toast]);
+  }, [searchParams, creatorId, toast, creator]);
 
   const getCurrentUser = async () => {
     const { data: { user } } = await supabase.auth.getUser();
