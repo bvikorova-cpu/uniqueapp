@@ -20,7 +20,7 @@ serve(async (req) => {
 
     const supabaseClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_ANON_KEY") ?? ""
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
     );
 
     const authHeader = req.headers.get("Authorization")!;
@@ -121,6 +121,7 @@ Return ONLY a valid JSON object with this structure:
       }
     );
   } catch (error) {
+    console.error("[CRYSTAL-ENERGY] ERROR:", error instanceof Error ? error.message : error);
     return new Response(
       JSON.stringify({ 
         error: error instanceof Error ? error.message : "Unknown error" 
