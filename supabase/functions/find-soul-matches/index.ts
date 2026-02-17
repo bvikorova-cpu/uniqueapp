@@ -38,125 +38,112 @@ serve(async (req) => {
       );
     }
 
-    // Get other active profiles
-    const { data: otherProfiles } = await supabaseClient
-      .from("soul_profiles")
-      .select("*")
-      .eq("is_active", true)
-      .neq("user_id", user.id)
-      .limit(10);
+    // Get user's past lives for context
+    const { data: pastLives } = await supabaseClient
+      .from("past_life_regressions")
+      .select("life_era, life_role, life_location, emotional_themes")
+      .eq("user_id", user.id)
+      .limit(5);
 
-    // Generate demo matches if no profiles exist
-    if (!otherProfiles || otherProfiles.length === 0) {
-      const demoMatches = [
-        {
-          user_id: "demo-soul-1",
-          display_name: "Elena Starweaver",
-          bio: "Old soul seeking karmic connections. Past lives in ancient Greece and Renaissance Italy.",
-          age: 32,
-          location: "Barcelona, Spain",
-          spiritual_level: 7,
-          past_lives_count: 12,
-          karma_balance: 85,
-          soul_age: "old"
-        },
-        {
-          user_id: "demo-soul-2",
-          display_name: "Marcus Lightbringer",
-          bio: "Ancient warrior soul on a path of redemption. Seeking souls from past lifetimes.",
-          age: 38,
-          location: "Edinburgh, Scotland",
-          spiritual_level: 8,
-          past_lives_count: 15,
-          karma_balance: 78,
-          soul_age: "ancient"
-        },
-        {
-          user_id: "demo-soul-3",
-          display_name: "Aria Moonchild",
-          bio: "Young soul exploring past connections. Healer archetype across multiple lives.",
-          age: 28,
-          location: "Portland, USA",
-          spiritual_level: 6,
-          past_lives_count: 8,
-          karma_balance: 92,
-          soul_age: "mature"
-        }
-      ];
+    const openaiKey = Deno.env.get("OPENAI_API_KEY");
+    if (!openaiKey) throw new Error("OpenAI API key not configured");
 
-      const matches = demoMatches.map(profile => {
-        const compatibilityScore = Math.floor(Math.random() * 25) + 75;
-        const pastLivesTogether = Math.floor(Math.random() * 5) + 1;
+    const profileContext = `Name: ${userProfile.display_name}, Bio: ${userProfile.bio || 'N/A'}, Soul Age: ${userProfile.soul_age || 'unknown'}, Spiritual Level: ${userProfile.spiritual_level || 5}, Karma Balance: ${userProfile.karma_balance || 50}`;
+    const livesContext = (pastLives || []).map(l => `${l.life_role} in ${l.life_location} (${l.life_era})`).join("; ") || "No past lives explored";
 
-        return {
-          user1_id: user.id,
-          user2_id: profile.user_id,
-          connection_type: ["Soulmate", "Twin Flame", "Soul Family", "Karmic Partner"][Math.floor(Math.random() * 4)],
-          past_lives_together: pastLivesTogether,
-          relationship_history: [
-            { era: "Ancient Egypt", relationship: "Siblings", lesson: "Loyalty" },
-            { era: "Medieval Europe", relationship: "Master & Student", lesson: "Wisdom" },
-            { era: "Victorian Era", relationship: "Lovers", lesson: "True Love" }
-          ].slice(0, pastLivesTogether),
-          soul_contract: "You agreed to meet again in this lifetime to complete unfinished spiritual lessons and support each other's growth.",
-          compatibility_score: compatibilityScore,
-          karmic_lessons: [
-            { lesson: "Forgiveness", progress: 75 },
-            { lesson: "Trust", progress: 82 },
-            { lesson: "Compassion", progress: 90 }
-          ],
-          reunion_probability: Math.floor(Math.random() * 30) + 70,
-          profile: profile
-        };
-      });
-
-      return new Response(
-        JSON.stringify({ matches }),
-        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 }
-      );
+    const aiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${openaiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "gpt-4o-mini",
+        messages: [
+          {
+            role: "system",
+            content: `You are a soul connection expert. Generate 3 unique potential soul matches based on the user's spiritual profile. Return ONLY valid JSON:
+{
+  "matches": [
+    {
+      "display_name": "mystical sounding name",
+      "bio": "2-sentence compelling bio",
+      "age": number 25-55,
+      "location": "city, country",
+      "spiritual_level": number 5-10,
+      "past_lives_count": number 5-20,
+      "karma_balance": number 60-98,
+      "soul_age": "young/mature/old/ancient",
+      "connection_type": "Soulmate/Twin Flame/Soul Family/Karmic Partner",
+      "past_lives_together": number 1-5,
+      "relationship_history": [
+        {"era": "historical era", "relationship": "type of relationship", "lesson": "karmic lesson"}
+      ],
+      "soul_contract": "2-sentence description of the soul agreement",
+      "compatibility_score": number 75-98,
+      "karmic_lessons": [
+        {"lesson": "name", "progress": number 50-95}
+      ],
+      "reunion_probability": number 70-98
     }
-
-    // Generate matches with real profiles
-    const matches = otherProfiles.map(profile => {
-      const compatibilityScore = Math.floor(Math.random() * 30) + 70;
-      const pastLivesTogether = Math.floor(Math.random() * 5) + 1;
-
-      return {
-        user1_id: user.id,
-        user2_id: profile.user_id,
-        connection_type: ["Soulmate", "Twin Flame", "Soul Family", "Karmic Partner"][Math.floor(Math.random() * 4)],
-        past_lives_together: pastLivesTogether,
-        relationship_history: [
-          { era: "Ancient Civilization", relationship: "Connected Souls", lesson: "Growth" }
+  ]
+}
+Each match should have 2-3 relationship_history entries and 3 karmic_lessons. Make each match unique with distinct connection types.`
+          },
+          {
+            role: "user",
+            content: `Find soul matches for me. My profile: ${profileContext}. My past lives: ${livesContext}.`
+          }
         ],
-        soul_contract: "A karmic connection spanning lifetimes",
-        compatibility_score: compatibilityScore,
-        karmic_lessons: [
-          { lesson: "Understanding", progress: Math.floor(Math.random() * 40) + 60 }
-        ],
-        reunion_probability: Math.floor(Math.random() * 30) + 70,
-        profile: profile
-      };
+        temperature: 0.9,
+        max_tokens: 2500,
+      }),
     });
 
-    // Store matches in database
-    const matchRecords = matches.map(m => ({
-      user1_id: m.user1_id,
-      user2_id: m.user2_id,
-      connection_type: m.connection_type,
-      past_lives_together: m.past_lives_together,
-      relationship_history: m.relationship_history,
-      soul_contract: m.soul_contract,
-      compatibility_score: m.compatibility_score,
-      karmic_lessons: m.karmic_lessons,
-      reunion_probability: m.reunion_probability,
-      match_status: "discovered"
+    if (!aiResponse.ok) {
+      const errText = await aiResponse.text();
+      console.error("OpenAI error:", errText);
+      throw new Error("Failed to generate AI soul matches");
+    }
+
+    const aiData = await aiResponse.json();
+    const content = aiData.choices[0]?.message?.content;
+    
+    let aiMatches;
+    try {
+      const cleaned = content.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
+      aiMatches = JSON.parse(cleaned);
+    } catch (e) {
+      console.error("Failed to parse AI response:", content);
+      throw new Error("Failed to parse AI soul matches");
+    }
+
+    // Format matches for response
+    const matches = aiMatches.matches.map((match: any) => ({
+      user1_id: user.id,
+      user2_id: `ai-soul-${crypto.randomUUID().slice(0, 8)}`,
+      connection_type: match.connection_type,
+      past_lives_together: match.past_lives_together,
+      relationship_history: match.relationship_history,
+      soul_contract: match.soul_contract,
+      compatibility_score: match.compatibility_score,
+      karmic_lessons: match.karmic_lessons,
+      reunion_probability: match.reunion_probability,
+      profile: {
+        user_id: `ai-soul-${crypto.randomUUID().slice(0, 8)}`,
+        display_name: match.display_name,
+        bio: match.bio,
+        age: match.age,
+        location: match.location,
+        spiritual_level: match.spiritual_level,
+        past_lives_count: match.past_lives_count,
+        karma_balance: match.karma_balance,
+        soul_age: match.soul_age,
+      }
     }));
 
-    await supabaseClient.from("soul_matches").insert(matchRecords);
-
     return new Response(
-      JSON.stringify({ matches: matches.slice(0, 5) }),
+      JSON.stringify({ matches }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 200,
