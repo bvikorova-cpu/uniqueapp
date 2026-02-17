@@ -201,7 +201,7 @@ export default function MembershipCommunity() {
 
         <div className="flex flex-wrap gap-4 justify-center mb-12">
           {myCreatorProfile ? (
-            <Button size="lg" onClick={() => navigate(`/creator/${myCreatorProfile.id}`)}>
+            <Button size="lg" onClick={() => navigate(`/creator/${myCreatorProfile.user_id}`)}>
               <Crown className="mr-2 h-5 w-5" />
               My Creator Profile
             </Button>

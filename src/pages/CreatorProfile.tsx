@@ -99,11 +99,20 @@ export default function CreatorProfile() {
 
   const loadCreatorProfile = async () => {
     try {
-      const { data, error } = await supabase
+      // Try by user_id first, then by profile id
+      let { data, error } = await supabase
         .from('creator_profiles')
         .select('*')
         .eq('user_id', creatorId)
         .maybeSingle();
+
+      if (!data) {
+        ({ data, error } = await supabase
+          .from('creator_profiles')
+          .select('*')
+          .eq('id', creatorId)
+          .maybeSingle());
+      }
 
       if (error) throw error;
       
