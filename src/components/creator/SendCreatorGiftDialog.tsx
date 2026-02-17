@@ -98,15 +98,13 @@ export function SendCreatorGiftDialog({
 
       if (error) throw error;
 
-      if (data?.clientSecret) {
-        // For now, just show success - in production you'd integrate Stripe Elements
-        toast({
-          title: "Gift Sent!",
-          description: `Your gift has been sent to ${creatorName}!`,
-        });
+      if (data?.url) {
+        window.open(data.url, "_blank");
         onOpenChange(false);
         setSelectedGift(null);
         setMessage("");
+      } else {
+        throw new Error("No checkout URL returned");
       }
     } catch (error) {
       console.error("Gift send error:", error);
