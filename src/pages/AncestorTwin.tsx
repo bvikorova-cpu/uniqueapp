@@ -211,15 +211,6 @@ const AncestorTwin = () => {
     }
   ];
 
-  const subscriptionPlan = {
-    name: 'Premium Subscription',
-    price: '€7.99/month',
-    priceId: 'price_1T0LpZGaXSfGtYFtifLyNqfG',
-    icon: Crown,
-    features: ['Weekly new matches', 'AI avatars in historical costumes', 'Unlimited basic matches', 'Priority processing', 'Exclusive historical periods', 'Access to member gallery', '50% off physical prints'],
-    color: 'from-yellow-500/20 to-amber-500/20',
-    borderColor: 'border-yellow-500/50'
-  };
 
   const hasAccess = subscription?.hasSubscription;
 
@@ -446,42 +437,6 @@ const AncestorTwin = () => {
             })}
           </div>
         </div>
-
-        {/* Subscription Section */}
-        <Card className={`max-w-4xl mx-auto p-8 bg-gradient-to-br ${subscriptionPlan.color} border-2 ${subscriptionPlan.borderColor}`}>
-          <div className="text-center mb-6">
-            <Crown className="h-16 w-16 mx-auto mb-4 text-yellow-500 animate-pulse" />
-            <h2 className="text-3xl font-bold mb-2">{subscriptionPlan.name}</h2>
-            <div className="text-4xl font-bold text-primary mb-4">{subscriptionPlan.price}</div>
-            {hasAccess && subscription.subscriptionEnd && (
-              <p className="text-sm text-green-600 font-semibold">
-                Active until {new Date(subscription.subscriptionEnd).toLocaleDateString()}
-              </p>
-            )}
-          </div>
-          <div className="grid md:grid-cols-2 gap-4 mb-8">
-            {subscriptionPlan.features.map((feature, index) => (
-              <div key={index} className="flex items-start gap-2">
-                <Check className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
-                <span className="text-sm">{feature}</span>
-              </div>
-            ))}
-          </div>
-          <Button 
-            onClick={() => handlePurchaseWithPhoto('subscription', subscriptionPlan.priceId)} 
-            size="lg" 
-            className="w-full gap-2" 
-            disabled={hasAccess || isPurchasing}
-          >
-            {hasAccess ? (
-              <><Check className="h-5 w-5" /> Active Subscription</>
-            ) : isPurchasing ? (
-              <><Loader2 className="h-5 w-5 animate-spin" /> Preparing...</>
-            ) : (
-              <><Crown className="h-5 w-5" /> Subscribe Now</>
-            )}
-          </Button>
-        </Card>
 
         {/* How It Works */}
         <div className="max-w-4xl mx-auto mt-16">
