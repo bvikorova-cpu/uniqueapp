@@ -1216,3 +1216,9 @@ verify_jwt = true
 
 [functions.stripe-connect-dashboard]
 verify_jwt = true
+
+[functions.verify-crystal-payment]
+verify_jwt = true
+
+[functions.generate-chakra-day]
+verify_jwt = true

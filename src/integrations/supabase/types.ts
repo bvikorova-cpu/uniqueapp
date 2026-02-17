@@ -8998,6 +8998,56 @@ export type Database = {
           },
         ]
       }
+      crystal_chakra_days: {
+        Row: {
+          chakra_name: string
+          content: string | null
+          created_at: string
+          crystal_recommendation: string | null
+          day_number: number
+          id: string
+          is_unlocked: boolean | null
+          meditation_guide: string | null
+          purchase_id: string
+          unlock_date: string | null
+          user_id: string
+        }
+        Insert: {
+          chakra_name: string
+          content?: string | null
+          created_at?: string
+          crystal_recommendation?: string | null
+          day_number: number
+          id?: string
+          is_unlocked?: boolean | null
+          meditation_guide?: string | null
+          purchase_id: string
+          unlock_date?: string | null
+          user_id: string
+        }
+        Update: {
+          chakra_name?: string
+          content?: string | null
+          created_at?: string
+          crystal_recommendation?: string | null
+          day_number?: number
+          id?: string
+          is_unlocked?: boolean | null
+          meditation_guide?: string | null
+          purchase_id?: string
+          unlock_date?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crystal_chakra_days_purchase_id_fkey"
+            columns: ["purchase_id"]
+            isOneToOne: false
+            referencedRelation: "crystal_purchases"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       crystal_energy_readings: {
         Row: {
           created_at: string | null
@@ -9134,6 +9184,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      crystal_purchases: {
+        Row: {
+          created_at: string
+          expires_at: string | null
+          feature_key: string
+          feature_name: string
+          id: string
+          metadata: Json | null
+          status: string
+          stripe_session_id: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at?: string | null
+          feature_key: string
+          feature_name: string
+          id?: string
+          metadata?: Json | null
+          status?: string
+          stripe_session_id?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string | null
+          feature_key?: string
+          feature_name?: string
+          id?: string
+          metadata?: Json | null
+          status?: string
+          stripe_session_id?: string | null
+          user_id?: string
+        }
+        Relationships: []
       }
       cv_documents: {
         Row: {
