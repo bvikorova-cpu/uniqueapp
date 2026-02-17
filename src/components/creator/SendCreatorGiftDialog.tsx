@@ -7,6 +7,25 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Gift, Loader2, Heart } from "lucide-react";
 
+const giftEmojis: Record<string, string> = {
+  "Heart": "❤️",
+  "Double Heart": "💕",
+  "Golden Heart": "💛",
+  "Star": "⭐",
+  "Shooting Star": "🌠",
+  "Crown": "👑",
+  "Galaxy": "🌌",
+  "Diamond": "💎",
+  "Trophy": "🏆",
+  "Fireworks": "🎆",
+  "Unicorn": "🦄",
+  "Rainbow": "🌈",
+  "Rose": "🌹",
+  "Bouquet": "💐",
+  "Cake": "🎂",
+  "Champagne": "🍾",
+};
+
 interface GiftOption {
   id: string;
   name: string;
@@ -158,11 +177,7 @@ export function SendCreatorGiftDialog({
                           : "border-border hover:border-primary/50"
                       }`}
                     >
-                      {gift.image_url ? (
-                        <img src={gift.image_url} alt={gift.name} className="w-12 h-12 mx-auto mb-2 object-contain" />
-                      ) : (
-                        <div className="text-4xl mb-2">🎁</div>
-                      )}
+                      <div className="text-4xl mb-2">{giftEmojis[gift.name] || "🎁"}</div>
                       <div className="font-semibold">{gift.name}</div>
                       {gift.description && (
                         <div className="text-sm text-muted-foreground line-clamp-2">{gift.description}</div>
@@ -177,11 +192,7 @@ export function SendCreatorGiftDialog({
                 <div className="p-4 bg-muted rounded-lg">
                   <p className="text-sm text-muted-foreground mb-2">Selected Gift:</p>
                   <div className="flex items-center gap-3">
-                    {selectedGiftData.image_url ? (
-                      <img src={selectedGiftData.image_url} alt={selectedGiftData.name} className="w-10 h-10 object-contain" />
-                    ) : (
-                      <span className="text-3xl">🎁</span>
-                    )}
+                    <span className="text-3xl">{giftEmojis[selectedGiftData.name] || "🎁"}</span>
                     <div>
                       <p className="font-medium">{selectedGiftData.name}</p>
                       <p className="text-lg font-bold text-primary">€{selectedGiftData.price.toFixed(2)}</p>
