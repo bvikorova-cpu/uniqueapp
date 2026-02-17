@@ -12,11 +12,13 @@ import { CreatorMediaUpload } from "@/components/creator/CreatorMediaUpload";
 import { CreatorContentPackForm } from "@/components/creator/CreatorContentPackForm";
 import { CreatorContentPacks } from "@/components/creator/CreatorContentPacks";
 import { SendCreatorGiftDialog } from "@/components/creator/SendCreatorGiftDialog";
+import { CreatorProfileEditForm } from "@/components/creator/CreatorProfileEditForm";
 import { PaidMessageDialog } from "@/components/creator/PaidMessageDialog";
 import { CreatorLiveStreams } from "@/components/creator/CreatorLiveStreams";
 import { CreatorMerchStore } from "@/components/creator/CreatorMerchStore";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Users, CheckCircle2, Crown, ShieldAlert, Instagram, Twitter, Gift, MessageCircle, Camera, ImagePlus } from "lucide-react";
+import { Users, CheckCircle2, Crown, ShieldAlert, Instagram, Twitter, Gift, MessageCircle, Camera, ImagePlus, UserPlus, UserMinus } from "lucide-react";
+import { useIsFollowing, useFollowMutation, useUnfollowMutation } from "@/hooks/useFollow";
 
 interface Creator {
   id: string;
@@ -59,6 +61,9 @@ export default function CreatorProfile() {
   const [uploadingCover, setUploadingCover] = useState(false);
   const avatarInputRef = useRef<HTMLInputElement>(null);
   const coverInputRef = useRef<HTMLInputElement>(null);
+  const { data: isFollowing, isLoading: followLoading } = useIsFollowing(currentUserId ?? undefined, creator?.user_id);
+  const followMutation = useFollowMutation();
+  const unfollowMutation = useUnfollowMutation();
 
   useEffect(() => {
     loadCreatorProfile();
@@ -407,13 +412,34 @@ export default function CreatorProfile() {
                   )}
                 </div>
 
-                {/* Subscribe Badge & Gift Button */}
-                <div className="flex items-center gap-2">
+                {/* Subscribe Badge & Action Buttons */}
+                <div className="flex items-center gap-2 flex-wrap">
                   {userSubscription.subscribed && !isOwnProfile && (
                     <Badge variant="secondary" className="flex items-center gap-1 text-lg px-4 py-2">
                       <Crown className="h-5 w-5" />
                       Subscribed
                     </Badge>
+                  )}
+                  {!isOwnProfile && currentUserId && currentUserId !== creator.user_id && (
+                    <Button
+                      variant={isFollowing ? "outline" : "default"}
+                      onClick={() => {
+                        if (!currentUserId) return;
+                        if (isFollowing) {
+                          unfollowMutation.mutate({ followerId: currentUserId, followingId: creator.user_id });
+                        } else {
+                          followMutation.mutate({ followerId: currentUserId, followingId: creator.user_id });
+                        }
+                      }}
+                      disabled={followLoading || followMutation.isPending || unfollowMutation.isPending}
+                      className="flex items-center gap-2"
+                    >
+                      {isFollowing ? (
+                        <><UserMinus className="h-4 w-4" /> Unfollow</>
+                      ) : (
+                        <><UserPlus className="h-4 w-4" /> Follow</>
+                      )}
+                    </Button>
                   )}
                   {!isOwnProfile && (
                     <>
@@ -434,6 +460,9 @@ export default function CreatorProfile() {
                         Gift
                       </Button>
                     </>
+                  )}
+                  {isOwnProfile && (
+                    <CreatorProfileEditForm creator={creator} onSave={loadCreatorProfile} />
                   )}
                 </div>
               </div>
