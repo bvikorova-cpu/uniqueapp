@@ -193,7 +193,7 @@ export default function F1RacingArena() {
 
   const handleBuyCar = () => {
     if (!carName) {
-      toast.error("Please enter a vessel designation");
+      toast.error("Please enter a car name");
       return;
     }
     
@@ -217,7 +217,7 @@ export default function F1RacingArena() {
 
   const handleConfirmJoinRace = () => {
     if (!selectedCarForRace || !selectedRace) {
-      toast.error("Please select a vessel");
+      toast.error("Please select a car");
       return;
     }
 
@@ -240,7 +240,7 @@ export default function F1RacingArena() {
 
   const handlePurchaseColor = () => {
     if (!selectedCarForShop) {
-      toast.error("Please select a vessel");
+      toast.error("Please select a car");
       return;
     }
 
@@ -293,13 +293,13 @@ export default function F1RacingArena() {
           <div>
             <div className="flex items-center gap-2 mb-1">
               <div className="h-1 w-8 bg-cyan-400 rounded-full" />
-              <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-cyan-400/60">Galactic Racing Command</span>
+              <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-cyan-400/60">Racing Command Center</span>
             </div>
             <h1 className="text-3xl sm:text-5xl font-bold text-white font-mono tracking-tight">
               GP <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400">Racing Arena</span>
             </h1>
             <p className="text-cyan-400/50 mt-1 font-mono text-xs sm:text-sm tracking-wider">
-              Build • Upgrade • Dominate the Galaxy
+              Build • Upgrade • Dominate the Track
             </p>
           </div>
           {!user && (
@@ -309,7 +309,7 @@ export default function F1RacingArena() {
                 className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white border border-cyan-400/30 shadow-lg shadow-cyan-500/20 font-mono uppercase tracking-wider"
               >
                 <LogIn className="mr-2 h-4 w-4" />
-                Enter Command
+                Sign In
               </Button>
             </motion.div>
           )}
@@ -330,26 +330,26 @@ export default function F1RacingArena() {
                   <div className="absolute -inset-2 bg-cyan-400/10 rounded-full blur-md" />
                 </div>
                 <div className="space-y-3 text-sm">
-                  <h3 className="font-mono font-bold text-cyan-300 uppercase tracking-wider text-base">Mission Briefing</h3>
-                  <p className="text-cyan-100/60 leading-relaxed">
-                    Welcome, Pilot. Build your racing vessel, upgrade its systems, and compete across galactic circuits.
-                    Climb the rankings to become the ultimate champion of the racing arena.
-                  </p>
+                  <h3 className="font-mono font-bold text-cyan-300 uppercase tracking-wider text-base">How to Play</h3>
+                   <p className="text-cyan-100/60 leading-relaxed">
+                     Welcome, Racer. Build your racing car, upgrade its components, and compete across circuits worldwide.
+                     Climb the rankings to become the ultimate GP Racing Champion.
+                   </p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
                     <div className="space-y-2 p-3 rounded-lg bg-cyan-950/30 border border-cyan-500/10">
                       <h4 className="font-mono font-semibold text-cyan-300 text-xs uppercase tracking-wider flex items-center gap-2">
-                        <Rocket className="h-3.5 w-3.5" /> Quick Start Protocol
-                      </h4>
-                      <ul className="text-cyan-100/50 space-y-1.5 text-xs font-mono">
-                        <li className="flex items-center gap-2"><span className="w-4 h-4 rounded bg-cyan-500/20 flex items-center justify-center text-[10px] text-cyan-400">1</span> Commission vessel (75 Coins)</li>
-                        <li className="flex items-center gap-2"><span className="w-4 h-4 rounded bg-cyan-500/20 flex items-center justify-center text-[10px] text-cyan-400">2</span> Customize designation & livery</li>
-                        <li className="flex items-center gap-2"><span className="w-4 h-4 rounded bg-cyan-500/20 flex items-center justify-center text-[10px] text-cyan-400">3</span> Enter galactic circuits</li>
-                        <li className="flex items-center gap-2"><span className="w-4 h-4 rounded bg-cyan-500/20 flex items-center justify-center text-[10px] text-cyan-400">4</span> Earn rewards & climb ranks</li>
+                         <Rocket className="h-3.5 w-3.5" /> Quick Start Guide
+                       </h4>
+                       <ul className="text-cyan-100/50 space-y-1.5 text-xs font-mono">
+                         <li className="flex items-center gap-2"><span className="w-4 h-4 rounded bg-cyan-500/20 flex items-center justify-center text-[10px] text-cyan-400">1</span> Buy a car (75 Coins)</li>
+                         <li className="flex items-center gap-2"><span className="w-4 h-4 rounded bg-cyan-500/20 flex items-center justify-center text-[10px] text-cyan-400">2</span> Name & customize your car</li>
+                         <li className="flex items-center gap-2"><span className="w-4 h-4 rounded bg-cyan-500/20 flex items-center justify-center text-[10px] text-cyan-400">3</span> Join races on circuits</li>
+                         <li className="flex items-center gap-2"><span className="w-4 h-4 rounded bg-cyan-500/20 flex items-center justify-center text-[10px] text-cyan-400">4</span> Earn rewards & climb ranks</li>
                       </ul>
                     </div>
                     <div className="space-y-2 p-3 rounded-lg bg-cyan-950/30 border border-cyan-500/10">
                       <h4 className="font-mono font-semibold text-cyan-300 text-xs uppercase tracking-wider flex items-center gap-2">
-                        <Cpu className="h-3.5 w-3.5" /> Ship Systems
+                        <Cpu className="h-3.5 w-3.5" /> Car Stats
                       </h4>
                       <ul className="text-cyan-100/50 space-y-1.5 text-xs font-mono">
                         <li className="flex items-center gap-2"><Flame className="h-3 w-3 text-orange-400" /> Engine power & thrust</li>
@@ -373,9 +373,9 @@ export default function F1RacingArena() {
           <TabsList className="flex w-full overflow-x-auto bg-slate-900/60 border border-cyan-500/20 backdrop-blur-sm rounded-xl p-1 gap-1">
             {[
               { value: "garage", label: "Hangar", icon: <Car className="h-3.5 w-3.5" /> },
-              { value: "racing", label: "Circuits", icon: <Rocket className="h-3.5 w-3.5" /> },
-              { value: "upgrades", label: "Systems", icon: <Wrench className="h-3.5 w-3.5" /> },
-              { value: "shop", label: "Armory", icon: <ShoppingCart className="h-3.5 w-3.5" /> },
+              { value: "racing", label: "Races", icon: <Rocket className="h-3.5 w-3.5" /> },
+              { value: "upgrades", label: "Upgrades", icon: <Wrench className="h-3.5 w-3.5" /> },
+              { value: "shop", label: "Shop", icon: <ShoppingCart className="h-3.5 w-3.5" /> },
               { value: "leaderboard", label: "Rankings", icon: <Trophy className="h-3.5 w-3.5" /> },
             ].map(tab => (
               <TabsTrigger 
@@ -393,15 +393,15 @@ export default function F1RacingArena() {
           <TabsContent value="garage" className="space-y-4 mt-4">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
               <div>
-                <h2 className="text-xl sm:text-2xl font-mono font-bold text-white uppercase tracking-wider">Your Fleet</h2>
-                <p className="text-[10px] font-mono text-cyan-400/40 uppercase tracking-[0.3em]">Racing Vessels</p>
+                <h2 className="text-xl sm:text-2xl font-mono font-bold text-white uppercase tracking-wider">Your Cars</h2>
+                <p className="text-[10px] font-mono text-cyan-400/40 uppercase tracking-[0.3em]">Racing Machines</p>
               </div>
               <Button 
                 onClick={() => requireAuth(() => setShowBuyCar(true))} 
                 className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 border border-cyan-400/30 shadow-lg shadow-cyan-500/20 font-mono uppercase tracking-wider text-xs"
               >
                 <Zap className="mr-2 h-4 w-4" />
-                Commission Vessel (75 Coins)
+                Buy Car (75 Coins)
               </Button>
             </div>
 
@@ -464,7 +464,7 @@ export default function F1RacingArena() {
 
                       <div className="mt-4 pt-3 border-t border-cyan-500/10 flex items-center justify-between">
                         <span className="text-[10px] font-mono text-cyan-400/40 uppercase tracking-wider">
-                          Missions: {car.total_races} • Victories: {car.total_wins}
+                          Races: {car.total_races} • Wins: {car.total_wins}
                         </span>
                         <div className="flex items-center gap-1">
                           <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
@@ -479,11 +479,11 @@ export default function F1RacingArena() {
 
             {!user && (
               <Card className="p-8 bg-slate-900/60 border-cyan-500/20 backdrop-blur-sm text-center">
-                <Rocket className="h-12 w-12 mx-auto mb-4 text-cyan-400/30" />
-                <p className="text-cyan-300/60 font-mono mb-4">Enter command to commission your first vessel</p>
+                <Car className="h-12 w-12 mx-auto mb-4 text-cyan-400/30" />
+                <p className="text-cyan-300/60 font-mono mb-4">Sign in to buy your first racing car</p>
                 <Button onClick={() => navigate('/auth')} className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 border border-cyan-400/30 font-mono uppercase tracking-wider text-xs">
                   <LogIn className="mr-2 h-4 w-4" />
-                  Enter Command
+                  Sign In
                 </Button>
               </Card>
             )}
@@ -492,14 +492,14 @@ export default function F1RacingArena() {
           {/* RACING TAB */}
           <TabsContent value="racing" className="space-y-4 mt-4">
             <div>
-              <h2 className="text-xl sm:text-2xl font-mono font-bold text-white uppercase tracking-wider">Galactic Circuits</h2>
-              <p className="text-[10px] font-mono text-cyan-400/40 uppercase tracking-[0.3em]">Available Missions</p>
+              <h2 className="text-xl sm:text-2xl font-mono font-bold text-white uppercase tracking-wider">Race Circuits</h2>
+              <p className="text-[10px] font-mono text-cyan-400/40 uppercase tracking-[0.3em]">Available Races</p>
             </div>
             
             {selectedRace && activeRace ? (
               <div className="space-y-4">
                 <Button variant="outline" onClick={() => setSelectedRace(null)} className="border-cyan-500/30 text-cyan-300 hover:bg-cyan-950/30 font-mono text-xs uppercase tracking-wider">
-                  ← Back to Circuits
+                  ← Back to Races
                 </Button>
                 
                 <div className="h-[400px] rounded-xl overflow-hidden border-2 border-cyan-500/30 shadow-lg shadow-cyan-500/10">
@@ -540,7 +540,7 @@ export default function F1RacingArena() {
                   })}
                 >
                   <Flame className="mr-2 h-5 w-5" />
-                  Engage Engines
+                  Start Race
                 </Button>
               </div>
             ) : (
@@ -568,7 +568,7 @@ export default function F1RacingArena() {
                           </div>
                           <div className="flex flex-wrap gap-2 mt-1.5">
                             <span className="text-[10px] font-mono text-cyan-400/40 uppercase">
-                              Pilots: {race.f1_race_participants?.length || 0}/{race.max_participants}
+                              Drivers: {race.f1_race_participants?.length || 0}/{race.max_participants}
                             </span>
                             <span className="text-[10px] font-mono text-cyan-400/40 uppercase">
                               • {race.weather} • {race.track_condition}
@@ -588,7 +588,7 @@ export default function F1RacingArena() {
                             onClick={() => requireAuth(() => handleJoinRace(race.id))} 
                             className="flex-1 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 border border-cyan-400/20 font-mono text-xs uppercase tracking-wider"
                           >
-                            Deploy
+                            Join Race
                           </Button>
                         </div>
                       </div>
@@ -604,8 +604,8 @@ export default function F1RacingArena() {
             <Card className="relative overflow-hidden bg-slate-900/60 border-cyan-500/20 backdrop-blur-sm">
               <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-400/30 to-transparent" />
               <div className="p-4 sm:p-6">
-                <h2 className="text-xl sm:text-2xl font-mono font-bold mb-1 text-white uppercase tracking-wider">Engineering Bay</h2>
-                <p className="text-cyan-400/50 font-mono text-xs mb-6 uppercase tracking-wider">Enhance vessel subsystems — 25 Coins per upgrade</p>
+                <h2 className="text-xl sm:text-2xl font-mono font-bold mb-1 text-white uppercase tracking-wider">Car Upgrades</h2>
+                <p className="text-cyan-400/50 font-mono text-xs mb-6 uppercase tracking-wider">Upgrade car components — 25 Coins per upgrade</p>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {cars?.map((car) => (
@@ -664,8 +664,8 @@ export default function F1RacingArena() {
             <Card className="relative overflow-hidden bg-slate-900/60 border-cyan-500/20 backdrop-blur-sm">
               <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-400/30 to-transparent" />
               <div className="p-4 sm:p-6">
-                <h2 className="text-xl sm:text-2xl font-mono font-bold mb-1 text-white uppercase tracking-wider">Armory & Tech Store</h2>
-                <p className="text-cyan-400/50 font-mono text-xs mb-6 uppercase tracking-wider">Acquire advanced technology to dominate circuits</p>
+                <h2 className="text-xl sm:text-2xl font-mono font-bold mb-1 text-white uppercase tracking-wider">Parts & Tech Shop</h2>
+                <p className="text-cyan-400/50 font-mono text-xs mb-6 uppercase tracking-wider">Buy performance parts to dominate races</p>
                 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                   {[
@@ -729,7 +729,7 @@ export default function F1RacingArena() {
                 {/* Mystery Boxes */}
                 <div className="mt-6 pt-6 border-t border-cyan-500/10">
                   <h3 className="text-lg font-mono font-bold text-cyan-300 mb-4 uppercase tracking-wider flex items-center gap-2">
-                    <Box className="h-4 w-4" /> Quantum Crates
+                    <Box className="h-4 w-4" /> Mystery Crates
                   </h3>
                   <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
                     {[
@@ -764,7 +764,7 @@ export default function F1RacingArena() {
                     className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 border border-violet-400/30 font-mono uppercase tracking-wider text-xs"
                   >
                     <Sparkles className="mr-2 h-4 w-4" />
-                    Change Vessel Livery (50 Gems)
+                    Change Car Livery (50 Gems)
                   </Button>
                 </div>
               </div>
@@ -786,22 +786,22 @@ export default function F1RacingArena() {
         <DialogContent className="bg-slate-950/95 border-cyan-500/30 backdrop-blur-xl">
           <DialogHeader>
             <DialogTitle className="text-cyan-300 font-mono uppercase tracking-wider flex items-center gap-2">
-              <Rocket className="h-5 w-5 text-cyan-400" />
-              Commission New Vessel
+              <Car className="h-5 w-5 text-cyan-400" />
+              Buy New Car
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <div>
-              <Label className="text-cyan-300 font-mono text-xs uppercase tracking-wider">Vessel Designation</Label>
+              <Label className="text-cyan-300 font-mono text-xs uppercase tracking-wider">Car Name</Label>
               <Input
                 value={carName}
                 onChange={(e) => setCarName(e.target.value)}
-                placeholder="Enter designation..."
+                placeholder="Enter car name..."
                 className="bg-slate-900/50 border-cyan-500/30 text-white font-mono placeholder:text-cyan-400/30"
               />
             </div>
             <div>
-              <Label className="text-cyan-300 font-mono text-xs uppercase tracking-wider">Squadron</Label>
+              <Label className="text-cyan-300 font-mono text-xs uppercase tracking-wider">Team</Label>
               <Select value={carTeam} onValueChange={setCarTeam}>
                 <SelectTrigger className="bg-slate-900/50 border-cyan-500/30 text-white font-mono">
                   <SelectValue />
@@ -815,7 +815,7 @@ export default function F1RacingArena() {
               </Select>
             </div>
             <div>
-              <Label className="text-cyan-300 font-mono text-xs uppercase tracking-wider">Hull Color</Label>
+              <Label className="text-cyan-300 font-mono text-xs uppercase tracking-wider">Car Color</Label>
               <Input
                 type="color"
                 value={carColor}
@@ -824,7 +824,7 @@ export default function F1RacingArena() {
               />
             </div>
             <Button onClick={handleBuyCar} className="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 border border-cyan-400/20 font-mono uppercase tracking-wider" disabled={createCar.isPending}>
-              {createCar.isPending ? "Fabricating..." : "Commission Vessel (75 Coins)"}
+              {createCar.isPending ? "Building..." : "Buy Car (75 Coins)"}
             </Button>
           </div>
         </DialogContent>
@@ -835,16 +835,16 @@ export default function F1RacingArena() {
         <DialogContent className="bg-slate-950/95 border-cyan-500/30 backdrop-blur-xl">
           <DialogHeader>
             <DialogTitle className="text-cyan-300 font-mono uppercase tracking-wider flex items-center gap-2">
-              <Rocket className="h-5 w-5 text-cyan-400" />
-              Deploy to Circuit
+              <Car className="h-5 w-5 text-cyan-400" />
+              Join Race
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <div>
-              <Label className="text-cyan-300 font-mono text-xs uppercase tracking-wider">Select Vessel</Label>
+              <Label className="text-cyan-300 font-mono text-xs uppercase tracking-wider">Select Car</Label>
               <Select value={selectedCarForRace} onValueChange={setSelectedCarForRace}>
                 <SelectTrigger className="bg-slate-900/50 border-cyan-500/30 text-white font-mono">
-                  <SelectValue placeholder="Choose vessel..." />
+                   <SelectValue placeholder="Choose car..." />
                 </SelectTrigger>
                 <SelectContent className="bg-slate-950 border-cyan-500/30">
                   {cars?.map(car => (
@@ -854,7 +854,7 @@ export default function F1RacingArena() {
               </Select>
             </div>
             <div>
-              <Label className="text-cyan-300 font-mono text-xs uppercase tracking-wider">Combat Strategy</Label>
+              <Label className="text-cyan-300 font-mono text-xs uppercase tracking-wider">Race Strategy</Label>
               <Select value={raceStrategy} onValueChange={setRaceStrategy}>
                 <SelectTrigger className="bg-slate-900/50 border-cyan-500/30 text-white font-mono">
                   <SelectValue />
@@ -867,7 +867,7 @@ export default function F1RacingArena() {
               </Select>
             </div>
             <Button onClick={handleConfirmJoinRace} className="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 border border-cyan-400/20 font-mono uppercase tracking-wider" disabled={joinRace.isPending}>
-              {joinRace.isPending ? "Deploying..." : "Launch to Circuit"}
+              {joinRace.isPending ? "Joining..." : "Join Race"}
             </Button>
           </div>
         </DialogContent>
@@ -884,10 +884,10 @@ export default function F1RacingArena() {
           </DialogHeader>
           <div className="space-y-4">
             <div>
-              <Label className="text-cyan-300 font-mono text-xs uppercase tracking-wider">Select Vessel</Label>
+              <Label className="text-cyan-300 font-mono text-xs uppercase tracking-wider">Select Car</Label>
               <Select value={selectedCarForShop} onValueChange={setSelectedCarForShop}>
                 <SelectTrigger className="bg-slate-900/50 border-cyan-500/30 text-white font-mono">
-                  <SelectValue placeholder="Choose vessel..." />
+                  <SelectValue placeholder="Choose car..." />
                 </SelectTrigger>
                 <SelectContent className="bg-slate-950 border-cyan-500/30">
                   {cars?.map(car => (
@@ -897,7 +897,7 @@ export default function F1RacingArena() {
               </Select>
             </div>
             <div>
-              <Label className="text-cyan-300 font-mono text-xs uppercase tracking-wider">New Hull Color</Label>
+              <Label className="text-cyan-300 font-mono text-xs uppercase tracking-wider">New Car Color</Label>
               <Input
                 type="color"
                 value={shopColor}
