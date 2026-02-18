@@ -1222,3 +1222,12 @@ verify_jwt = true
 
 [functions.generate-chakra-day]
 verify_jwt = true
+
+[functions.create-fitslim-checkout]
+verify_jwt = true
+
+[functions.generate-fitness-plan]
+verify_jwt = true
+
+[functions.verify-fitslim-payment]
+verify_jwt = true

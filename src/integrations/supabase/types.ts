@@ -12394,6 +12394,75 @@ export type Database = {
         }
         Relationships: []
       }
+      fitness_plans: {
+        Row: {
+          activity_level: string | null
+          age: number | null
+          created_at: string
+          dietary_restrictions: string[] | null
+          fitness_goal: string | null
+          gender: string | null
+          health_conditions: string[] | null
+          height_cm: number | null
+          id: string
+          meal_plan: Json | null
+          payment_status: string | null
+          plan_type: string
+          status: string
+          stripe_session_id: string | null
+          summary: string | null
+          target_weight_kg: number | null
+          updated_at: string
+          user_id: string
+          weight_kg: number | null
+          workout_plan: Json | null
+        }
+        Insert: {
+          activity_level?: string | null
+          age?: number | null
+          created_at?: string
+          dietary_restrictions?: string[] | null
+          fitness_goal?: string | null
+          gender?: string | null
+          health_conditions?: string[] | null
+          height_cm?: number | null
+          id?: string
+          meal_plan?: Json | null
+          payment_status?: string | null
+          plan_type: string
+          status?: string
+          stripe_session_id?: string | null
+          summary?: string | null
+          target_weight_kg?: number | null
+          updated_at?: string
+          user_id: string
+          weight_kg?: number | null
+          workout_plan?: Json | null
+        }
+        Update: {
+          activity_level?: string | null
+          age?: number | null
+          created_at?: string
+          dietary_restrictions?: string[] | null
+          fitness_goal?: string | null
+          gender?: string | null
+          health_conditions?: string[] | null
+          height_cm?: number | null
+          id?: string
+          meal_plan?: Json | null
+          payment_status?: string | null
+          plan_type?: string
+          status?: string
+          stripe_session_id?: string | null
+          summary?: string | null
+          target_weight_kg?: number | null
+          updated_at?: string
+          user_id?: string
+          weight_kg?: number | null
+          workout_plan?: Json | null
+        }
+        Relationships: []
+      }
       follows: {
         Row: {
           created_at: string
