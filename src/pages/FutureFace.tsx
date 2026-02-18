@@ -181,7 +181,7 @@ const FutureFace = () => {
       id: 'basic',
       name: 'Basic',
       price: '€2.99',
-      priceId: 'price_1SQMOiGaXSfGtYFtG9pyLN4y',
+      priceId: 'price_1T27vBGaXSfGtYFtp0Pbf4TG',
       description: 'One-time purchase',
       features: [
         '1 photo analysis',
@@ -196,7 +196,7 @@ const FutureFace = () => {
       id: 'premium',
       name: 'Premium HD',
       price: '€9.99',
-      priceId: 'price_1SQMP40QTWhd4oRpNUwVVsDe',
+      priceId: 'price_1T27vCGaXSfGtYFt4khqe9tW',
       description: 'One-time purchase',
       features: [
         'HD quality results',
@@ -213,7 +213,7 @@ const FutureFace = () => {
       id: 'family',
       name: 'Family Plan',
       price: '€19.99/mo',
-      priceId: 'price_1SQMBTGaXSfGtYFt64xGyUBq',
+      priceId: 'price_1T27vDGaXSfGtYFtCjoqmHKC',
       description: 'Monthly subscription',
       features: [
         'Up to 5 family members',
