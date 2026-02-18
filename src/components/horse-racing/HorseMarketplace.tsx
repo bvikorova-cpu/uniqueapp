@@ -73,7 +73,7 @@ export const HorseMarketplace = () => {
       if (error) throw error;
       return data as MarketListing[] || [];
     },
-    refetchInterval: 5000,
+    refetchInterval: 30000,
   });
 
   const listHorse = useMutation({

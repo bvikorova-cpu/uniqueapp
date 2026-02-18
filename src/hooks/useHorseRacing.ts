@@ -189,7 +189,7 @@ export const useRaces = () => {
       if (error) throw error;
       return data;
     },
-    refetchInterval: 5000, // Poll every 5 seconds
+    refetchInterval: 30000, // Poll every 30 seconds
   });
 
   return { races, isLoading };
