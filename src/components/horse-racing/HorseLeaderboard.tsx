@@ -1,9 +1,7 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Trophy, Star, TrendingUp } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Badge } from "@/components/ui/badge";
+import { motion } from "framer-motion";
 
 export const HorseLeaderboard = () => {
   const { data: topHorses = [], isLoading } = useQuery({
@@ -28,99 +26,110 @@ export const HorseLeaderboard = () => {
       if (error) throw error;
       return data || [];
     },
-    refetchInterval: 10000, // Refresh every 10 seconds
+    refetchInterval: 10000,
   });
 
-  const getMedalEmoji = (index: number) => {
-    if (index === 0) return "🥇";
-    if (index === 1) return "🥈";
-    if (index === 2) return "🥉";
-    return null;
+  const getRankStyle = (index: number) => {
+    if (index === 0) return { border: "border-amber-400/60", bg: "from-amber-950/40 to-amber-900/20", glow: "shadow-amber-500/20", badge: "🥇", color: "text-amber-300" };
+    if (index === 1) return { border: "border-gray-300/40", bg: "from-gray-800/40 to-gray-900/20", glow: "shadow-gray-400/10", badge: "🥈", color: "text-gray-300" };
+    if (index === 2) return { border: "border-orange-400/40", bg: "from-orange-950/30 to-orange-900/10", glow: "shadow-orange-500/10", badge: "🥉", color: "text-orange-300" };
+    return { border: "border-emerald-500/15", bg: "from-slate-900/50 to-slate-950/50", glow: "", badge: null, color: "text-emerald-300" };
   };
 
   if (isLoading) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Trophy className="h-5 w-5 text-yellow-500" />
-            Top Horses
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-sm text-muted-foreground text-center py-4">Loading...</p>
-        </CardContent>
-      </Card>
+      <div className="p-8 text-center">
+        <div className="inline-flex items-center gap-2 text-emerald-400/60 font-mono text-sm uppercase tracking-wider">
+          <div className="h-2 w-2 bg-emerald-400 rounded-full animate-pulse" />
+          Loading Rankings...
+        </div>
+      </div>
+    );
+  }
+
+  if (topHorses.length === 0) {
+    return (
+      <div className="p-12 text-center">
+        <Trophy className="w-16 h-16 mx-auto mb-4 text-emerald-500/30" />
+        <p className="text-emerald-400/50 font-mono uppercase tracking-wider text-sm">No horses have raced yet</p>
+        <p className="text-emerald-400/30 text-xs mt-2">Be the first to claim the leaderboard</p>
+      </div>
     );
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Trophy className="h-5 w-5 text-yellow-500" />
-          Top Horses
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        {topHorses.length === 0 ? (
-          <p className="text-sm text-muted-foreground text-center py-4">
-            No horses have raced yet
-          </p>
-        ) : (
-          <div className="space-y-3">
-            {topHorses.map((horse, index) => {
-              const medal = getMedalEmoji(index);
-              const winRate = horse.total_races > 0 
-                ? Math.round((horse.race_wins / horse.total_races) * 100) 
-                : 0;
+    <div className="space-y-4">
+      {/* Header */}
+      <div className="flex items-center gap-3">
+        <div className="relative">
+          <Trophy className="h-6 w-6 text-amber-400" />
+          <div className="absolute -inset-2 bg-amber-400/10 rounded-full blur-md" />
+        </div>
+        <div>
+          <h2 className="text-xl font-mono font-bold text-white uppercase tracking-wider">Horse Rankings</h2>
+          <p className="text-[10px] text-emerald-400/50 font-mono uppercase tracking-[0.3em]">Top 10 Champions</p>
+        </div>
+      </div>
 
-              return (
+      {/* Rankings */}
+      <div className="space-y-2">
+        {topHorses.map((horse, index) => {
+          const rank = getRankStyle(index);
+          const winRate = horse.total_races > 0 
+            ? Math.round((horse.race_wins / horse.total_races) * 100) 
+            : 0;
+            
+          return (
+            <motion.div
+              key={horse.id}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: index * 0.05 }}
+              className={`relative flex items-center gap-3 p-3 sm:p-4 rounded-xl border bg-gradient-to-r ${rank.bg} ${rank.border} ${rank.glow} shadow-lg backdrop-blur-sm overflow-hidden group hover:border-emerald-400/40 transition-all duration-300`}
+            >
+              {/* Hover scan effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/0 via-emerald-500/5 to-emerald-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+              {/* Rank */}
+              <div className={`flex items-center justify-center w-10 h-10 rounded-lg bg-black/40 border ${rank.border} font-mono font-bold text-lg ${rank.color} shrink-0`}>
+                {rank.badge || (index + 1)}
+              </div>
+              
+              {/* Horse color */}
+              <div className="relative shrink-0">
                 <div
-                  key={horse.id}
-                  className={`
-                    flex items-center gap-3 p-3 rounded-lg transition-colors
-                    ${index < 3 ? "bg-primary/5 border-2 border-primary/20" : "bg-muted/50"}
-                  `}
-                >
-                  <div className="w-8 text-center font-bold text-lg">
-                    {medal || `#${index + 1}`}
-                  </div>
-
-                  <Avatar 
-                    className="h-12 w-12 border-2" 
-                    style={{ borderColor: horse.color }}
-                  >
-                    <AvatarFallback style={{ backgroundColor: horse.color }}>
-                      🐴
-                    </AvatarFallback>
-                  </Avatar>
-
-                  <div className="flex-1 min-w-0">
-                    <p className="font-semibold truncate">{horse.name}</p>
-                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                      <span>{horse.breed}</span>
-                      <span>•</span>
-                      <span>{horse.race_wins} wins</span>
-                    </div>
-                  </div>
-
-                  <div className="text-right space-y-1">
-                    <div className="flex items-center gap-1 justify-end">
-                      <Star className="h-4 w-4 text-yellow-500" />
-                      <span className="font-bold text-sm">{horse.race_wins}</span>
-                    </div>
-                    <Badge variant="outline" className="text-xs">
-                      <TrendingUp className="h-3 w-3 mr-1" />
-                      {winRate}% win rate
-                    </Badge>
+                  className="w-10 h-10 rounded-lg border-2 border-white/20"
+                  style={{ backgroundColor: horse.color }}
+                />
+                <div 
+                  className="absolute -inset-1 rounded-xl blur-md opacity-40"
+                  style={{ backgroundColor: horse.color }}
+                />
+              </div>
+              
+              {/* Info */}
+              <div className="flex-1 min-w-0">
+                <p className="font-mono font-bold text-white text-sm sm:text-base truncate">{horse.name}</p>
+                <p className="text-xs text-emerald-400/50 font-mono capitalize truncate">{horse.breed}</p>
+              </div>
+              
+              {/* Stats */}
+              <div className="flex items-center gap-4 shrink-0">
+                <div className="text-right hidden sm:block">
+                  <div className="flex items-center gap-1 text-xs text-emerald-400/40 font-mono">
+                    <Star className="h-3 w-3" />
+                    <span>PWR {horse.speed_stat + horse.stamina_stat}</span>
                   </div>
                 </div>
-              );
-            })}
-          </div>
-        )}
-      </CardContent>
-    </Card>
+                <div className="text-right">
+                  <p className="font-mono font-bold text-amber-400 text-sm">{horse.race_wins} W</p>
+                  <p className="text-[10px] text-emerald-400/40 font-mono">{winRate}% WR</p>
+                </div>
+              </div>
+            </motion.div>
+          );
+        })}
+      </div>
+    </div>
   );
 };
