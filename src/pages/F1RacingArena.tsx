@@ -11,12 +11,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { F1CurrencyDisplay } from "@/components/f1-racing/F1CurrencyDisplay";
 import { F1Leaderboard } from "@/components/f1-racing/F1Leaderboard";
 import { useUserCars, useF1Races, useJoinF1Race, useUpgradeCar, usePurchaseCarColor, useF1Currency } from "@/hooks/useF1Racing";
-import { Trophy, Wrench, Sparkles, Zap, TrendingUp, Car, LogIn, Info } from "lucide-react";
+import { Trophy, Wrench, Sparkles, Zap, TrendingUp, Car, LogIn, Info, Gauge, Wind, CircleDot, Compass, ShoppingCart, Box, Rocket, Shield, Target, Cpu, Flame } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { motion, AnimatePresence } from "framer-motion";
+import gpHeroBg from "@/assets/gp-racing-hero.jpg";
 
 // 3D F1 Car Component
 function F1Car3D({ position, color }: { position: [number, number, number]; color: string }) {
@@ -54,28 +56,29 @@ function RaceTrack3D({ participants, isRacing }: { participants: any[]; isRacing
       <Suspense fallback={null}>
         <PerspectiveCamera makeDefault position={[0, 15, 20]} />
         <OrbitControls enablePan={false} maxPolarAngle={Math.PI / 2} minDistance={10} maxDistance={50} />
-        <ambientLight intensity={0.5} />
-        <directionalLight position={[10, 10, 5]} intensity={1} castShadow />
+        <ambientLight intensity={0.4} color="#4dd0e1" />
+        <directionalLight position={[10, 10, 5]} intensity={1} color="#e0f7fa" castShadow />
+        <pointLight position={[-10, 5, -10]} intensity={0.5} color="#00bcd4" />
         
         {/* Track */}
         <mesh position={[0, -0.5, 0]} rotation={[-Math.PI / 2, 0, 0]}>
           <planeGeometry args={[50, 100]} />
-          <meshStandardMaterial color="#2a2a2a" />
+          <meshStandardMaterial color="#0a1628" />
         </mesh>
         
-        {/* Track lines */}
+        {/* Glowing track lines */}
         {Array.from({ length: 20 }).map((_, i) => (
           <mesh key={i} position={[0, -0.48, -45 + i * 5]} rotation={[-Math.PI / 2, 0, 0]}>
             <planeGeometry args={[0.3, 2]} />
-            <meshStandardMaterial color="#ffffff" />
+            <meshStandardMaterial color="#00e5ff" emissive="#00e5ff" emissiveIntensity={0.5} />
           </mesh>
         ))}
         
-        {/* Barriers */}
+        {/* Cyan energy barriers */}
         {[-8, 8].map((x, i) => (
           <mesh key={i} position={[x, 0, 0]}>
-            <boxGeometry args={[0.5, 1, 100]} />
-            <meshStandardMaterial color="#ff0000" />
+            <boxGeometry args={[0.3, 1.5, 100]} />
+            <meshStandardMaterial color="#00bcd4" emissive="#00bcd4" emissiveIntensity={0.3} transparent opacity={0.6} />
           </mesh>
         ))}
         
@@ -84,53 +87,58 @@ function RaceTrack3D({ participants, isRacing }: { participants: any[]; isRacing
           <F1Car3D 
             key={p.id} 
             position={[-4 + i * 2.5, 0, isRacing ? -20 + Math.random() * 40 : 0]} 
-            color={p.f1_cars?.color || "#e10600"} 
+            color={p.f1_cars?.color || "#00e5ff"} 
           />
         ))}
         
-        <Environment preset="sunset" />
+        <Environment preset="night" />
       </Suspense>
     </Canvas>
   );
 }
 
-// Demo races for unauthenticated users to see available tracks
-
 const demoRaces = [
   {
     id: "demo-race-1",
-    track_name: "American Coastal Speedway",
+    track_name: "Nebula Drift Circuit",
     distance: 5410,
     entry_fee_coins: 24,
     max_participants: 8,
-    weather: "sunny",
-    track_condition: "dry",
+    weather: "solar_storm",
+    track_condition: "ion_charged",
     status: "open",
     f1_race_participants: []
   },
   {
     id: "demo-race-2",
-    track_name: "Monaco Grand Circuit",
+    track_name: "Quantum Horizon Ring",
     distance: 3340,
     entry_fee_coins: 50,
     max_participants: 6,
-    weather: "cloudy",
-    track_condition: "dry",
+    weather: "cosmic_clear",
+    track_condition: "plasma_smooth",
     status: "open",
     f1_race_participants: []
   },
   {
     id: "demo-race-3",
-    track_name: "Tokyo Drift Arena",
+    track_name: "Asteroid Belt Gauntlet",
     distance: 4200,
     entry_fee_coins: 35,
     max_participants: 10,
-    weather: "rainy",
-    track_condition: "wet",
+    weather: "meteor_shower",
+    track_condition: "debris_field",
     status: "open",
     f1_race_participants: []
   }
 ];
+
+const statIcons: Record<string, React.ReactNode> = {
+  engine: <Flame className="h-4 w-4" />,
+  aero: <Wind className="h-4 w-4" />,
+  tires: <CircleDot className="h-4 w-4" />,
+  handling: <Compass className="h-4 w-4" />,
+};
 
 export default function F1RacingArena() {
   const navigate = useNavigate();
@@ -143,11 +151,8 @@ export default function F1RacingArena() {
   const upgradeCar = useUpgradeCar();
   const purchaseColor = usePurchaseCarColor();
   
-  // Use demo races for unauthenticated users, no demo cars or currency
   const cars = user ? userCars : [];
   const races = user ? userRaces : demoRaces;
-  const displayCoins = currency?.coins || 0;
-  const displayGems = currency?.gems || 0;
   
   const [showBuyCar, setShowBuyCar] = useState(false);
   const [showJoinRace, setShowJoinRace] = useState(false);
@@ -156,26 +161,25 @@ export default function F1RacingArena() {
   const [raceStrategy, setRaceStrategy] = useState("balanced");
   const [carName, setCarName] = useState("");
   const [carTeam, setCarTeam] = useState("Custom Racing");
-  const [carColor, setCarColor] = useState("#e10600");
+  const [carColor, setCarColor] = useState("#00e5ff");
   
   const [showShop, setShowShop] = useState(false);
   const [selectedCarForShop, setSelectedCarForShop] = useState("");
-  const [shopColor, setShopColor] = useState("#e10600");
-  
+  const [shopColor, setShopColor] = useState("#00e5ff");
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const paymentStatus = params.get("payment");
 
     if (paymentStatus === "success") {
-      toast.success("Purchase successful! Your coins/gems will be added shortly.");
+      toast.success("Purchase successful! Your resources will be added shortly.");
       setTimeout(() => {
         queryClient.invalidateQueries({ queryKey: ["f1-currency"] });
       }, 2000);
-      window.history.replaceState({}, "", "/f1-racing-arena");
+      window.history.replaceState({}, "", "/f1-racing");
     } else if (paymentStatus === "cancelled") {
       toast.info("Payment was cancelled");
-      window.history.replaceState({}, "", "/f1-racing-arena");
+      window.history.replaceState({}, "", "/f1-racing");
     }
   }, [queryClient]);
 
@@ -189,7 +193,7 @@ export default function F1RacingArena() {
 
   const handleBuyCar = () => {
     if (!carName) {
-      toast.error("Please enter a car name");
+      toast.error("Please enter a vessel designation");
       return;
     }
     
@@ -213,7 +217,7 @@ export default function F1RacingArena() {
 
   const handleConfirmJoinRace = () => {
     if (!selectedCarForRace || !selectedRace) {
-      toast.error("Please select a car");
+      toast.error("Please select a vessel");
       return;
     }
 
@@ -236,7 +240,7 @@ export default function F1RacingArena() {
 
   const handlePurchaseColor = () => {
     if (!selectedCarForShop) {
-      toast.error("Please select a car");
+      toast.error("Please select a vessel");
       return;
     }
 
@@ -254,164 +258,251 @@ export default function F1RacingArena() {
   const activeRace = races?.find(r => r.id === selectedRace);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-black via-red-950/20 to-black p-6">
-      <div className="max-w-7xl mx-auto space-y-6 pt-20">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+    <div className="min-h-screen bg-slate-950 relative overflow-hidden">
+      {/* Animated background */}
+      <div className="fixed inset-0 z-0">
+        <div 
+          className="absolute inset-0 bg-cover bg-center opacity-30"
+          style={{ backgroundImage: `url(${gpHeroBg})` }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-950/60 via-slate-950/80 to-slate-950" />
+        {/* Floating particles effect */}
+        <div className="absolute inset-0">
+          {Array.from({ length: 30 }).map((_, i) => (
+            <div
+              key={i}
+              className="absolute w-0.5 h-0.5 bg-cyan-400/40 rounded-full animate-pulse"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                animationDelay: `${Math.random() * 3}s`,
+                animationDuration: `${2 + Math.random() * 3}s`,
+              }}
+            />
+          ))}
+        </div>
+      </div>
+
+      <div className="relative z-10 max-w-7xl mx-auto space-y-6 p-4 sm:p-6 pt-20 sm:pt-24">
+        {/* Hero Header */}
+        <motion.div 
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+        >
           <div>
-            <h1 className="text-3xl sm:text-4xl font-bold text-white">🏎️ GP Racing Arena</h1>
-            <p className="text-gray-400 mt-2">
-              Build your car • Upgrade parts • Race to win
+            <div className="flex items-center gap-2 mb-1">
+              <div className="h-1 w-8 bg-cyan-400 rounded-full" />
+              <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-cyan-400/60">Galactic Racing Command</span>
+            </div>
+            <h1 className="text-3xl sm:text-5xl font-bold text-white font-mono tracking-tight">
+              GP <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400">Racing Arena</span>
+            </h1>
+            <p className="text-cyan-400/50 mt-1 font-mono text-xs sm:text-sm tracking-wider">
+              Build • Upgrade • Dominate the Galaxy
             </p>
           </div>
           {!user && (
-            <Button 
-              onClick={() => navigate('/auth')} 
-              className="bg-red-600 hover:bg-red-700 text-white"
-            >
-              <LogIn className="mr-2 h-4 w-4" />
-              Login to Play
-            </Button>
+            <motion.div whileHover={{ scale: 1.02 }}>
+              <Button 
+                onClick={() => navigate('/auth')} 
+                className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white border border-cyan-400/30 shadow-lg shadow-cyan-500/20 font-mono uppercase tracking-wider"
+              >
+                <LogIn className="mr-2 h-4 w-4" />
+                Enter Command
+              </Button>
+            </motion.div>
           )}
-        </div>
+        </motion.div>
 
-        {/* Feature Description */}
-        <Card className="p-4 sm:p-6 bg-black/80 border-red-500/50">
-          <div className="flex items-start gap-3">
-            <Info className="h-6 w-6 text-red-400 flex-shrink-0 mt-1" />
-            <div className="space-y-3 text-sm sm:text-base">
-              <h3 className="font-bold text-white text-lg">Welcome to GP Racing Arena!</h3>
-              <p className="text-gray-300">
-                Experience the ultimate virtual racing simulation. Build your dream car, compete in thrilling races, 
-                and climb the global leaderboard to become the ultimate champion.
-              </p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
-                <div className="space-y-2">
-                  <h4 className="font-semibold text-white">🚗 How to Get Started:</h4>
-                  <ul className="text-gray-300 space-y-1 text-sm">
-                    <li>1. Buy your first racing car (75 Coins)</li>
-                    <li>2. Customize your car name, team, and color</li>
-                    <li>3. Join available races with entry fees</li>
-                    <li>4. Win races to earn coins and climb rankings</li>
-                  </ul>
+        {/* Info Panel */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+        >
+          <Card className="relative overflow-hidden bg-slate-900/60 border-cyan-500/20 backdrop-blur-sm">
+            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-400/50 to-transparent" />
+            <div className="p-4 sm:p-6">
+              <div className="flex items-start gap-3">
+                <div className="relative shrink-0 mt-1">
+                  <Info className="h-5 w-5 text-cyan-400" />
+                  <div className="absolute -inset-2 bg-cyan-400/10 rounded-full blur-md" />
                 </div>
-                <div className="space-y-2">
-                  <h4 className="font-semibold text-white">⚙️ Key Features:</h4>
-                  <ul className="text-gray-300 space-y-1 text-sm">
-                    <li>• Upgrade engine, aero, tires & handling</li>
-                    <li>• Choose race strategies (aggressive/balanced/safe)</li>
-                    <li>• Buy special items and mystery boxes</li>
-                    <li>• Compete on global leaderboard</li>
-                  </ul>
+                <div className="space-y-3 text-sm">
+                  <h3 className="font-mono font-bold text-cyan-300 uppercase tracking-wider text-base">Mission Briefing</h3>
+                  <p className="text-cyan-100/60 leading-relaxed">
+                    Welcome, Pilot. Build your racing vessel, upgrade its systems, and compete across galactic circuits.
+                    Climb the rankings to become the ultimate champion of the racing arena.
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+                    <div className="space-y-2 p-3 rounded-lg bg-cyan-950/30 border border-cyan-500/10">
+                      <h4 className="font-mono font-semibold text-cyan-300 text-xs uppercase tracking-wider flex items-center gap-2">
+                        <Rocket className="h-3.5 w-3.5" /> Quick Start Protocol
+                      </h4>
+                      <ul className="text-cyan-100/50 space-y-1.5 text-xs font-mono">
+                        <li className="flex items-center gap-2"><span className="w-4 h-4 rounded bg-cyan-500/20 flex items-center justify-center text-[10px] text-cyan-400">1</span> Commission vessel (75 Coins)</li>
+                        <li className="flex items-center gap-2"><span className="w-4 h-4 rounded bg-cyan-500/20 flex items-center justify-center text-[10px] text-cyan-400">2</span> Customize designation & livery</li>
+                        <li className="flex items-center gap-2"><span className="w-4 h-4 rounded bg-cyan-500/20 flex items-center justify-center text-[10px] text-cyan-400">3</span> Enter galactic circuits</li>
+                        <li className="flex items-center gap-2"><span className="w-4 h-4 rounded bg-cyan-500/20 flex items-center justify-center text-[10px] text-cyan-400">4</span> Earn rewards & climb ranks</li>
+                      </ul>
+                    </div>
+                    <div className="space-y-2 p-3 rounded-lg bg-cyan-950/30 border border-cyan-500/10">
+                      <h4 className="font-mono font-semibold text-cyan-300 text-xs uppercase tracking-wider flex items-center gap-2">
+                        <Cpu className="h-3.5 w-3.5" /> Ship Systems
+                      </h4>
+                      <ul className="text-cyan-100/50 space-y-1.5 text-xs font-mono">
+                        <li className="flex items-center gap-2"><Flame className="h-3 w-3 text-orange-400" /> Engine power & thrust</li>
+                        <li className="flex items-center gap-2"><Wind className="h-3 w-3 text-blue-400" /> Aero dynamics & efficiency</li>
+                        <li className="flex items-center gap-2"><CircleDot className="h-3 w-3 text-green-400" /> Tire grip & durability</li>
+                        <li className="flex items-center gap-2"><Compass className="h-3 w-3 text-violet-400" /> Handling & control</li>
+                      </ul>
+                    </div>
+                  </div>
                 </div>
-              </div>
-              <div className="mt-4 p-3 bg-black/50 rounded-lg border border-yellow-500/50">
-                <p className="text-yellow-400 text-sm">
-                  <strong>💡 Pro Tip:</strong> Upgrade your car stats before joining high-stakes races. 
-                  Weather and track conditions affect performance - choose your strategy wisely!
-                </p>
               </div>
             </div>
-          </div>
-        </Card>
+          </Card>
+        </motion.div>
 
         {/* Currency Display */}
         <F1CurrencyDisplay />
 
+        {/* Main Tabs */}
         <Tabs defaultValue="garage" className="w-full">
-          <TabsList className="flex w-full overflow-x-auto bg-black/50 border border-red-500/50">
-            <TabsTrigger value="garage" className="flex-1 min-w-fit text-xs sm:text-sm data-[state=active]:bg-red-600 text-white">
-              Garage
-            </TabsTrigger>
-            <TabsTrigger value="racing" className="flex-1 min-w-fit text-xs sm:text-sm data-[state=active]:bg-red-600 text-white">
-              Racing
-            </TabsTrigger>
-            <TabsTrigger value="upgrades" className="flex-1 min-w-fit text-xs sm:text-sm data-[state=active]:bg-red-600 text-white">
-              Upgrades
-            </TabsTrigger>
-            <TabsTrigger value="shop" className="flex-1 min-w-fit text-xs sm:text-sm data-[state=active]:bg-red-600 text-white">
-              Shop
-            </TabsTrigger>
-            <TabsTrigger value="leaderboard" className="flex-1 min-w-fit text-xs sm:text-sm data-[state=active]:bg-red-600 text-white">
-              Leaderboard
-            </TabsTrigger>
+          <TabsList className="flex w-full overflow-x-auto bg-slate-900/60 border border-cyan-500/20 backdrop-blur-sm rounded-xl p-1 gap-1">
+            {[
+              { value: "garage", label: "Hangar", icon: <Car className="h-3.5 w-3.5" /> },
+              { value: "racing", label: "Circuits", icon: <Rocket className="h-3.5 w-3.5" /> },
+              { value: "upgrades", label: "Systems", icon: <Wrench className="h-3.5 w-3.5" /> },
+              { value: "shop", label: "Armory", icon: <ShoppingCart className="h-3.5 w-3.5" /> },
+              { value: "leaderboard", label: "Rankings", icon: <Trophy className="h-3.5 w-3.5" /> },
+            ].map(tab => (
+              <TabsTrigger 
+                key={tab.value}
+                value={tab.value} 
+                className="flex-1 min-w-fit text-xs sm:text-sm font-mono uppercase tracking-wider data-[state=active]:bg-gradient-to-r data-[state=active]:from-cyan-600 data-[state=active]:to-blue-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-cyan-500/20 text-cyan-400/60 rounded-lg transition-all flex items-center gap-1.5"
+              >
+                {tab.icon}
+                <span className="hidden sm:inline">{tab.label}</span>
+              </TabsTrigger>
+            ))}
           </TabsList>
 
-          <TabsContent value="garage" className="space-y-4">
+          {/* GARAGE TAB */}
+          <TabsContent value="garage" className="space-y-4 mt-4">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-              <h2 className="text-xl sm:text-2xl font-bold text-white">Your Racing Cars</h2>
+              <div>
+                <h2 className="text-xl sm:text-2xl font-mono font-bold text-white uppercase tracking-wider">Your Fleet</h2>
+                <p className="text-[10px] font-mono text-cyan-400/40 uppercase tracking-[0.3em]">Racing Vessels</p>
+              </div>
               <Button 
                 onClick={() => requireAuth(() => setShowBuyCar(true))} 
-                className="bg-red-600 hover:bg-red-700"
+                className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 border border-cyan-400/30 shadow-lg shadow-cyan-500/20 font-mono uppercase tracking-wider text-xs"
               >
                 <Zap className="mr-2 h-4 w-4" />
-                Buy New Car (75 Coins)
+                Commission Vessel (75 Coins)
               </Button>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {cars?.map((car) => (
-                <Card key={car.id} className="p-4 bg-black/80 border-red-500/50">
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <h3 className="font-bold text-lg text-white">{car.name}</h3>
-                      <p className="text-sm text-gray-400">{car.team}</p>
-                      <p className="text-xs text-gray-500">Level {car.level}</p>
-                    </div>
-                    <div
-                      className="w-12 h-12 rounded-lg border-4 border-red-500"
-                      style={{ backgroundColor: car.color }}
-                    />
-                  </div>
+              {cars?.map((car, index) => (
+                <motion.div
+                  key={car.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                >
+                  <Card className="relative overflow-hidden bg-slate-900/60 border-cyan-500/20 backdrop-blur-sm group hover:border-cyan-400/40 transition-all duration-300">
+                    <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-400/30 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-b from-cyan-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                    
+                    <div className="relative p-4">
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <h3 className="font-mono font-bold text-lg text-white">{car.name}</h3>
+                          <p className="text-xs font-mono text-cyan-400/50">{car.team}</p>
+                          <div className="mt-1 inline-flex items-center gap-1 px-2 py-0.5 rounded bg-cyan-500/10 border border-cyan-500/20">
+                            <Shield className="h-3 w-3 text-cyan-400" />
+                            <span className="text-[10px] font-mono text-cyan-300 uppercase">Level {car.level}</span>
+                          </div>
+                        </div>
+                        <div className="relative">
+                          <div
+                            className="w-14 h-14 rounded-xl border-2 border-cyan-500/30"
+                            style={{ backgroundColor: car.color }}
+                          />
+                          <div 
+                            className="absolute -inset-1 rounded-xl blur-md opacity-30"
+                            style={{ backgroundColor: car.color }}
+                          />
+                        </div>
+                      </div>
 
-                  <div className="mt-4 space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-400">Engine</span>
-                      <span className="font-bold text-white">{car.engine_stat}</span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-400">Aerodynamics</span>
-                      <span className="font-bold text-white">{car.aero_stat}</span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-400">Tires</span>
-                      <span className="font-bold text-white">{car.tires_stat}</span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-400">Handling</span>
-                      <span className="font-bold text-white">{car.handling_stat}</span>
-                    </div>
-                  </div>
+                      <div className="mt-4 space-y-2">
+                        {[
+                          { label: "Engine", value: car.engine_stat, icon: <Flame className="h-3.5 w-3.5 text-orange-400" />, color: "bg-orange-500" },
+                          { label: "Aero", value: car.aero_stat, icon: <Wind className="h-3.5 w-3.5 text-blue-400" />, color: "bg-blue-500" },
+                          { label: "Tires", value: car.tires_stat, icon: <CircleDot className="h-3.5 w-3.5 text-green-400" />, color: "bg-green-500" },
+                          { label: "Handling", value: car.handling_stat, icon: <Compass className="h-3.5 w-3.5 text-violet-400" />, color: "bg-violet-500" },
+                        ].map(stat => (
+                          <div key={stat.label} className="flex items-center gap-2">
+                            {stat.icon}
+                            <span className="text-xs font-mono text-cyan-400/60 w-16">{stat.label}</span>
+                            <div className="flex-1 h-1.5 bg-slate-800 rounded-full overflow-hidden">
+                              <motion.div 
+                                initial={{ width: 0 }}
+                                animate={{ width: `${stat.value}%` }}
+                                transition={{ duration: 1, delay: 0.3 }}
+                                className={`h-full ${stat.color} rounded-full`}
+                              />
+                            </div>
+                            <span className="text-xs font-mono font-bold text-white w-8 text-right">{stat.value}</span>
+                          </div>
+                        ))}
+                      </div>
 
-                  <div className="mt-4 pt-4 border-t border-red-500/30">
-                    <p className="text-xs text-gray-500">
-                      Races: {car.total_races} • Wins: {car.total_wins}
-                    </p>
-                  </div>
-                </Card>
+                      <div className="mt-4 pt-3 border-t border-cyan-500/10 flex items-center justify-between">
+                        <span className="text-[10px] font-mono text-cyan-400/40 uppercase tracking-wider">
+                          Missions: {car.total_races} • Victories: {car.total_wins}
+                        </span>
+                        <div className="flex items-center gap-1">
+                          <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
+                          <span className="text-[10px] font-mono text-cyan-400/60">Active</span>
+                        </div>
+                      </div>
+                    </div>
+                  </Card>
+                </motion.div>
               ))}
             </div>
 
             {!user && (
-              <Card className="p-6 bg-black/80 border-red-500/50 text-center">
-                <p className="text-gray-300 mb-4">Login to buy your first car and start racing!</p>
-                <Button onClick={() => navigate('/auth')} className="bg-red-600 hover:bg-red-700">
+              <Card className="p-8 bg-slate-900/60 border-cyan-500/20 backdrop-blur-sm text-center">
+                <Rocket className="h-12 w-12 mx-auto mb-4 text-cyan-400/30" />
+                <p className="text-cyan-300/60 font-mono mb-4">Enter command to commission your first vessel</p>
+                <Button onClick={() => navigate('/auth')} className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 border border-cyan-400/30 font-mono uppercase tracking-wider text-xs">
                   <LogIn className="mr-2 h-4 w-4" />
-                  Login to Start Racing
+                  Enter Command
                 </Button>
               </Card>
             )}
           </TabsContent>
 
-          <TabsContent value="racing" className="space-y-4">
-            <h2 className="text-xl sm:text-2xl font-bold text-white">Racing Arena</h2>
+          {/* RACING TAB */}
+          <TabsContent value="racing" className="space-y-4 mt-4">
+            <div>
+              <h2 className="text-xl sm:text-2xl font-mono font-bold text-white uppercase tracking-wider">Galactic Circuits</h2>
+              <p className="text-[10px] font-mono text-cyan-400/40 uppercase tracking-[0.3em]">Available Missions</p>
+            </div>
             
             {selectedRace && activeRace ? (
               <div className="space-y-4">
-                <Button variant="outline" onClick={() => setSelectedRace(null)} className="border-red-500 text-white">
-                  Back to Races
+                <Button variant="outline" onClick={() => setSelectedRace(null)} className="border-cyan-500/30 text-cyan-300 hover:bg-cyan-950/30 font-mono text-xs uppercase tracking-wider">
+                  ← Back to Circuits
                 </Button>
                 
-                <div className="h-[400px] rounded-lg overflow-hidden border-4 border-red-500">
+                <div className="h-[400px] rounded-xl overflow-hidden border-2 border-cyan-500/30 shadow-lg shadow-cyan-500/10">
                   <RaceTrack3D 
                     participants={activeRace.f1_race_participants || []} 
                     isRacing={activeRace.status === "running"} 
@@ -419,7 +510,7 @@ export default function F1RacingArena() {
                 </div>
                 
                 <Button 
-                  className="w-full bg-red-600 hover:bg-red-700"
+                  className="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 border border-cyan-400/30 shadow-lg shadow-cyan-500/20 font-mono uppercase tracking-wider py-6 text-base"
                   onClick={() => requireAuth(async () => {
                     try {
                       const { data, error } = await supabase.functions.invoke(
@@ -432,8 +523,8 @@ export default function F1RacingArena() {
                       if (data?.results) {
                         const winner = data.results[0];
                         toast.success(
-                          `Race finished! Winner: ${winner.carName}${
-                            winner.prize > 0 ? ` - Prize: ${winner.prize} coins` : ""
+                          `Race complete! Victor: ${winner.carName}${
+                            winner.prize > 0 ? ` — Reward: ${winner.prize} coins` : ""
                           } 🏆`
                         );
                       }
@@ -448,316 +539,274 @@ export default function F1RacingArena() {
                     setSelectedRace(null);
                   })}
                 >
-                  Start Race 🏁
+                  <Flame className="mr-2 h-5 w-5" />
+                  Engage Engines
                 </Button>
               </div>
             ) : (
-              <div className="grid grid-cols-1 gap-4">
-                {races?.map((race) => (
-                  <Card key={race.id} className="p-4 bg-black/80 border-red-500/50">
-                    <div className="space-y-3">
-                      <div>
-                        <h3 className="font-bold text-lg text-white">{race.track_name}</h3>
-                        <p className="text-sm text-gray-400">
-                          Distance: {race.distance}m • Entry: {race.entry_fee_coins} Coins
-                        </p>
-                        <p className="text-sm text-gray-400">
-                          Participants: {race.f1_race_participants?.length || 0}/{race.max_participants}
-                        </p>
-                        <p className="text-xs text-gray-500 mt-1">
-                          Weather: {race.weather} • Track: {race.track_condition}
-                        </p>
-                      </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {races?.map((race, index) => (
+                  <motion.div
+                    key={race.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                  >
+                    <Card className="relative overflow-hidden bg-slate-900/60 border-cyan-500/20 backdrop-blur-sm group hover:border-cyan-400/40 transition-all duration-300">
+                      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-400/30 to-transparent" />
                       
-                      <div className="flex flex-col gap-2">
-                        <Button onClick={() => setSelectedRace(race.id)} className="w-full bg-red-600 hover:bg-red-700 text-white">
-                          View Race
-                        </Button>
-                        <Button 
-                          onClick={() => requireAuth(() => handleJoinRace(race.id))} 
-                          className="w-full bg-red-700 hover:bg-red-800 text-white border-none"
-                        >
-                          Join Race
-                        </Button>
+                      <div className="p-4 space-y-3">
+                        <div>
+                          <h3 className="font-mono font-bold text-base text-white">{race.track_name}</h3>
+                          <div className="flex flex-wrap gap-2 mt-2">
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-cyan-500/10 border border-cyan-500/15 text-[10px] font-mono text-cyan-300 uppercase">
+                              <Target className="h-3 w-3" /> {race.distance}m
+                            </span>
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-amber-500/10 border border-amber-500/15 text-[10px] font-mono text-amber-300 uppercase">
+                              Entry: {race.entry_fee_coins}
+                            </span>
+                          </div>
+                          <div className="flex flex-wrap gap-2 mt-1.5">
+                            <span className="text-[10px] font-mono text-cyan-400/40 uppercase">
+                              Pilots: {race.f1_race_participants?.length || 0}/{race.max_participants}
+                            </span>
+                            <span className="text-[10px] font-mono text-cyan-400/40 uppercase">
+                              • {race.weather} • {race.track_condition}
+                            </span>
+                          </div>
+                        </div>
+                        
+                        <div className="flex gap-2">
+                          <Button 
+                            onClick={() => setSelectedRace(race.id)} 
+                            variant="outline"
+                            className="flex-1 border-cyan-500/30 text-cyan-300 hover:bg-cyan-950/30 font-mono text-xs uppercase tracking-wider"
+                          >
+                            Scan
+                          </Button>
+                          <Button 
+                            onClick={() => requireAuth(() => handleJoinRace(race.id))} 
+                            className="flex-1 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 border border-cyan-400/20 font-mono text-xs uppercase tracking-wider"
+                          >
+                            Deploy
+                          </Button>
+                        </div>
                       </div>
-                    </div>
-                  </Card>
+                    </Card>
+                  </motion.div>
                 ))}
               </div>
             )}
           </TabsContent>
 
-          <TabsContent value="upgrades" className="space-y-4">
-            <Card className="p-6 bg-black/80 border-red-500/50">
-              <h2 className="text-xl sm:text-2xl font-bold mb-4 text-white">Upgrade Center</h2>
-              <p className="text-gray-400 mb-6">Upgrade your car's parts to improve performance! (25 Coins per upgrade)</p>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {cars?.map((car) => (
-                  <Card key={car.id} className="p-4 bg-red-950/30 border-red-500/30">
-                    <h3 className="font-bold text-lg mb-2 text-white">{car.name}</h3>
-                    <p className="text-sm text-gray-400 mb-3">Level {car.level}</p>
-                    
-                    <div className="space-y-2 mb-4">
-                      <div className="flex justify-between text-sm">
-                        <span className="text-gray-400">Engine</span>
-                        <span className="text-white">{car.engine_stat}/100</span>
+          {/* UPGRADES TAB */}
+          <TabsContent value="upgrades" className="space-y-4 mt-4">
+            <Card className="relative overflow-hidden bg-slate-900/60 border-cyan-500/20 backdrop-blur-sm">
+              <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-400/30 to-transparent" />
+              <div className="p-4 sm:p-6">
+                <h2 className="text-xl sm:text-2xl font-mono font-bold mb-1 text-white uppercase tracking-wider">Engineering Bay</h2>
+                <p className="text-cyan-400/50 font-mono text-xs mb-6 uppercase tracking-wider">Enhance vessel subsystems — 25 Coins per upgrade</p>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {cars?.map((car) => (
+                    <Card key={car.id} className="p-4 bg-slate-950/50 border-cyan-500/15 backdrop-blur-sm">
+                      <div className="flex items-center justify-between mb-3">
+                        <div>
+                          <h3 className="font-mono font-bold text-base text-white">{car.name}</h3>
+                          <span className="text-[10px] font-mono text-cyan-400/40 uppercase">Level {car.level}</span>
+                        </div>
+                        <div
+                          className="w-8 h-8 rounded-lg border border-cyan-500/30"
+                          style={{ backgroundColor: car.color }}
+                        />
                       </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-gray-400">Aerodynamics</span>
-                        <span className="text-white">{car.aero_stat}/100</span>
+                      
+                      <div className="space-y-3 mb-4">
+                        {[
+                          { key: "engine" as const, label: "Engine", value: car.engine_stat, icon: <Flame className="h-3.5 w-3.5 text-orange-400" />, color: "bg-orange-500" },
+                          { key: "aero" as const, label: "Aero", value: car.aero_stat, icon: <Wind className="h-3.5 w-3.5 text-blue-400" />, color: "bg-blue-500" },
+                          { key: "tires" as const, label: "Tires", value: car.tires_stat, icon: <CircleDot className="h-3.5 w-3.5 text-green-400" />, color: "bg-green-500" },
+                          { key: "handling" as const, label: "Handling", value: car.handling_stat, icon: <Compass className="h-3.5 w-3.5 text-violet-400" />, color: "bg-violet-500" },
+                        ].map(stat => (
+                          <div key={stat.key} className="flex items-center gap-2">
+                            {stat.icon}
+                            <div className="flex-1 h-1.5 bg-slate-800 rounded-full overflow-hidden">
+                              <div className={`h-full ${stat.color} rounded-full transition-all`} style={{ width: `${stat.value}%` }} />
+                            </div>
+                            <span className="text-xs font-mono text-white w-10 text-right">{stat.value}/100</span>
+                          </div>
+                        ))}
                       </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-gray-400">Tires</span>
-                        <span className="text-white">{car.tires_stat}/100</span>
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-gray-400">Handling</span>
-                        <span className="text-white">{car.handling_stat}/100</span>
-                      </div>
-                    </div>
 
-                    <div className="grid grid-cols-2 gap-2">
-                      <Button
-                        size="sm"
-                        onClick={() => requireAuth(() => handleUpgradeCar(car.id, 'engine'))}
-                        disabled={upgradeCar.isPending || car.engine_stat >= 100}
-                        className="bg-red-600 hover:bg-red-700"
-                      >
-                        Engine
-                      </Button>
-                      <Button
-                        size="sm"
-                        onClick={() => requireAuth(() => handleUpgradeCar(car.id, 'aero'))}
-                        disabled={upgradeCar.isPending || car.aero_stat >= 100}
-                        className="bg-red-600 hover:bg-red-700"
-                      >
-                        Aero
-                      </Button>
-                      <Button
-                        size="sm"
-                        onClick={() => requireAuth(() => handleUpgradeCar(car.id, 'tires'))}
-                        disabled={upgradeCar.isPending || car.tires_stat >= 100}
-                        className="bg-red-600 hover:bg-red-700"
-                      >
-                        Tires
-                      </Button>
-                      <Button
-                        size="sm"
-                        onClick={() => requireAuth(() => handleUpgradeCar(car.id, 'handling'))}
-                        disabled={upgradeCar.isPending || car.handling_stat >= 100}
-                        className="bg-red-600 hover:bg-red-700"
-                      >
-                        Handling
-                      </Button>
-                    </div>
-                  </Card>
-                ))}
+                      <div className="grid grid-cols-2 gap-2">
+                        {(["engine", "aero", "tires", "handling"] as const).map(statType => (
+                          <Button
+                            key={statType}
+                            size="sm"
+                            onClick={() => requireAuth(() => handleUpgradeCar(car.id, statType))}
+                            disabled={upgradeCar.isPending || car[`${statType}_stat`] >= 100}
+                            className="bg-cyan-600/20 hover:bg-cyan-600/40 border border-cyan-500/20 text-cyan-300 font-mono text-[10px] uppercase tracking-wider"
+                          >
+                            {statIcons[statType]}
+                            <span className="ml-1">{statType}</span>
+                          </Button>
+                        ))}
+                      </div>
+                    </Card>
+                  ))}
+                </div>
               </div>
             </Card>
           </TabsContent>
 
-          <TabsContent value="shop" className="space-y-4">
-            <Card className="p-6 bg-black/80 border-red-500/50">
-              <h2 className="text-xl sm:text-2xl font-bold mb-4 text-white">🛒 Performance Shop</h2>
-              <p className="text-gray-400 mb-6">Upgrade your car with special items to dominate the track!</p>
-              
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {/* Engines */}
-                <div className="p-4 bg-red-950/50 rounded-lg border border-red-500/30">
-                  <div className="text-2xl mb-2">🔥</div>
-                  <h3 className="font-bold text-white">Turbo Engine V8</h3>
-                  <p className="text-sm text-gray-400 mb-2">+15 Engine Power</p>
-                  <p className="text-yellow-500 font-bold">150 Coins</p>
-                </div>
+          {/* SHOP TAB */}
+          <TabsContent value="shop" className="space-y-4 mt-4">
+            <Card className="relative overflow-hidden bg-slate-900/60 border-cyan-500/20 backdrop-blur-sm">
+              <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-400/30 to-transparent" />
+              <div className="p-4 sm:p-6">
+                <h2 className="text-xl sm:text-2xl font-mono font-bold mb-1 text-white uppercase tracking-wider">Armory & Tech Store</h2>
+                <p className="text-cyan-400/50 font-mono text-xs mb-6 uppercase tracking-wider">Acquire advanced technology to dominate circuits</p>
                 
-                <div className="p-4 bg-red-950/50 rounded-lg border border-red-500/30">
-                  <div className="text-2xl mb-2">⚡</div>
-                  <h3 className="font-bold text-white">Hybrid Power Unit</h3>
-                  <p className="text-sm text-gray-400 mb-2">+20 Engine Power, +5 Efficiency</p>
-                  <p className="text-yellow-500 font-bold">250 Coins</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                  {[
+                    { emoji: "🔥", name: "Turbo Engine V8", desc: "+15 Engine Power", price: "150 Coins", tier: "standard" },
+                    { emoji: "⚡", name: "Hybrid Power Unit", desc: "+20 Engine, +5 Efficiency", price: "250 Coins", tier: "standard" },
+                    { emoji: "💎", name: "Nuclear Fusion Core", desc: "+30 Engine Power", price: "100 Gems", tier: "premium" },
+                    { emoji: "🌬️", name: "Carbon Fiber Wing", desc: "+10 Aerodynamics", price: "100 Coins", tier: "standard" },
+                    { emoji: "🛸", name: "DRS+ System", desc: "+18 Aero, +5 Speed", price: "200 Coins", tier: "standard" },
+                    { emoji: "🚀", name: "Active Aero Kit", desc: "+25 Aerodynamics", price: "80 Gems", tier: "premium" },
+                    { emoji: "🛞", name: "Soft Compound Tires", desc: "+12 Grip, +8 Handling", price: "120 Coins", tier: "standard" },
+                    { emoji: "🏁", name: "Slick Racing Tires", desc: "+20 Grip", price: "180 Coins", tier: "standard" },
+                    { emoji: "✨", name: "Quantum Grip Tires", desc: "+30 Grip, +15 Handling", price: "120 Gems", tier: "premium" },
+                    { emoji: "🎯", name: "Precision Steering", desc: "+15 Handling", price: "130 Coins", tier: "standard" },
+                    { emoji: "⚙️", name: "Advanced Suspension", desc: "+18 Handling, +8 Stability", price: "200 Coins", tier: "standard" },
+                    { emoji: "🤖", name: "AI Assist System", desc: "+25 Handling, Auto-correct", price: "90 Gems", tier: "premium" },
+                  ].map((item, i) => (
+                    <motion.div
+                      key={i}
+                      whileHover={{ scale: 1.02 }}
+                      className={`p-4 rounded-xl border backdrop-blur-sm transition-all ${
+                        item.tier === "premium" 
+                          ? "bg-gradient-to-b from-violet-950/40 to-slate-950/60 border-violet-500/30 hover:border-violet-400/50" 
+                          : "bg-slate-950/40 border-cyan-500/15 hover:border-cyan-400/30"
+                      }`}
+                    >
+                      <div className="text-2xl mb-2">{item.emoji}</div>
+                      <h3 className="font-mono font-bold text-sm text-white">{item.name}</h3>
+                      <p className="text-[10px] font-mono text-cyan-400/50 mt-1">{item.desc}</p>
+                      <p className={`font-mono font-bold text-sm mt-2 ${item.tier === "premium" ? "text-violet-400" : "text-amber-400"}`}>
+                        {item.price}
+                      </p>
+                    </motion.div>
+                  ))}
                 </div>
-                
-                <div className="p-4 bg-red-950/50 rounded-lg border border-purple-500/50">
-                  <div className="text-2xl mb-2">💎</div>
-                  <h3 className="font-bold text-white">Nuclear Fusion Core</h3>
-                  <p className="text-sm text-gray-400 mb-2">+30 Engine Power</p>
-                  <p className="text-purple-400 font-bold">100 Gems</p>
-                </div>
-                
-                {/* Aerodynamics */}
-                <div className="p-4 bg-red-950/50 rounded-lg border border-red-500/30">
-                  <div className="text-2xl mb-2">🌬️</div>
-                  <h3 className="font-bold text-white">Carbon Fiber Wing</h3>
-                  <p className="text-sm text-gray-400 mb-2">+10 Aerodynamics</p>
-                  <p className="text-yellow-500 font-bold">100 Coins</p>
-                </div>
-                
-                <div className="p-4 bg-red-950/50 rounded-lg border border-red-500/30">
-                  <div className="text-2xl mb-2">🛸</div>
-                  <h3 className="font-bold text-white">DRS+ System</h3>
-                  <p className="text-sm text-gray-400 mb-2">+18 Aerodynamics, +5 Speed</p>
-                  <p className="text-yellow-500 font-bold">200 Coins</p>
-                </div>
-                
-                <div className="p-4 bg-red-950/50 rounded-lg border border-purple-500/50">
-                  <div className="text-2xl mb-2">🚀</div>
-                  <h3 className="font-bold text-white">Active Aero Kit</h3>
-                  <p className="text-sm text-gray-400 mb-2">+25 Aerodynamics</p>
-                  <p className="text-purple-400 font-bold">80 Gems</p>
-                </div>
-                
-                {/* Tires */}
-                <div className="p-4 bg-red-950/50 rounded-lg border border-red-500/30">
-                  <div className="text-2xl mb-2">🛞</div>
-                  <h3 className="font-bold text-white">Soft Compound Tires</h3>
-                  <p className="text-sm text-gray-400 mb-2">+12 Grip, +8 Handling</p>
-                  <p className="text-yellow-500 font-bold">120 Coins</p>
-                </div>
-                
-                <div className="p-4 bg-red-950/50 rounded-lg border border-red-500/30">
-                  <div className="text-2xl mb-2">🏁</div>
-                  <h3 className="font-bold text-white">Slick Racing Tires</h3>
-                  <p className="text-sm text-gray-400 mb-2">+20 Grip</p>
-                  <p className="text-yellow-500 font-bold">180 Coins</p>
-                </div>
-                
-                <div className="p-4 bg-red-950/50 rounded-lg border border-purple-500/50">
-                  <div className="text-2xl mb-2">✨</div>
-                  <h3 className="font-bold text-white">Quantum Grip Tires</h3>
-                  <p className="text-sm text-gray-400 mb-2">+30 Grip, +15 Handling</p>
-                  <p className="text-purple-400 font-bold">120 Gems</p>
-                </div>
-                
-                {/* Handling */}
-                <div className="p-4 bg-red-950/50 rounded-lg border border-red-500/30">
-                  <div className="text-2xl mb-2">🎯</div>
-                  <h3 className="font-bold text-white">Precision Steering</h3>
-                  <p className="text-sm text-gray-400 mb-2">+15 Handling</p>
-                  <p className="text-yellow-500 font-bold">130 Coins</p>
-                </div>
-                
-                <div className="p-4 bg-red-950/50 rounded-lg border border-red-500/30">
-                  <div className="text-2xl mb-2">⚙️</div>
-                  <h3 className="font-bold text-white">Advanced Suspension</h3>
-                  <p className="text-sm text-gray-400 mb-2">+18 Handling, +8 Stability</p>
-                  <p className="text-yellow-500 font-bold">200 Coins</p>
-                </div>
-                
-                <div className="p-4 bg-red-950/50 rounded-lg border border-purple-500/50">
-                  <div className="text-2xl mb-2">🤖</div>
-                  <h3 className="font-bold text-white">AI Assist System</h3>
-                  <p className="text-sm text-gray-400 mb-2">+25 Handling, Auto-correction</p>
-                  <p className="text-purple-400 font-bold">90 Gems</p>
-                </div>
-                
+
                 {/* Special Items */}
-                <div className="p-4 bg-gradient-to-br from-yellow-900/50 to-orange-900/50 rounded-lg border border-yellow-500/50">
-                  <div className="text-2xl mb-2">🏆</div>
-                  <h3 className="font-bold text-yellow-300">Champion's Nitro Boost</h3>
-                  <p className="text-sm text-gray-300 mb-2">+10% Race Speed Bonus</p>
-                  <p className="text-yellow-400 font-bold">300 Coins</p>
+                <div className="mt-6 pt-6 border-t border-cyan-500/10">
+                  <h3 className="text-lg font-mono font-bold text-amber-300 mb-4 uppercase tracking-wider flex items-center gap-2">
+                    <Sparkles className="h-4 w-4" /> Legendary Tech
+                  </h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                    {[
+                      { emoji: "🏆", name: "Champion's Nitro Boost", desc: "+10% Race Speed", price: "300 Coins", gradient: "from-amber-950/40 to-orange-950/30", border: "border-amber-500/30" },
+                      { emoji: "❄️", name: "Cryo Cooling System", desc: "Anti-overheat, +5 All", price: "350 Coins", gradient: "from-blue-950/40 to-cyan-950/30", border: "border-blue-500/30" },
+                      { emoji: "⭐", name: "Legendary Engine Swap", desc: "+50 All Stats", price: "500 Gems", gradient: "from-violet-950/40 to-purple-950/30", border: "border-violet-400/40" },
+                    ].map((item, i) => (
+                      <motion.div
+                        key={i}
+                        whileHover={{ scale: 1.02 }}
+                        className={`p-4 rounded-xl bg-gradient-to-b ${item.gradient} border ${item.border} backdrop-blur-sm`}
+                      >
+                        <div className="text-2xl mb-2">{item.emoji}</div>
+                        <h3 className="font-mono font-bold text-sm text-white">{item.name}</h3>
+                        <p className="text-[10px] font-mono text-cyan-400/50 mt-1">{item.desc}</p>
+                        <p className="font-mono font-bold text-sm mt-2 text-amber-400">{item.price}</p>
+                      </motion.div>
+                    ))}
+                  </div>
                 </div>
                 
-                <div className="p-4 bg-gradient-to-br from-blue-900/50 to-cyan-900/50 rounded-lg border border-blue-500/50">
-                  <div className="text-2xl mb-2">❄️</div>
-                  <h3 className="font-bold text-blue-300">Cryo Cooling System</h3>
-                  <p className="text-sm text-gray-300 mb-2">Prevents overheating, +5 All Stats</p>
-                  <p className="text-yellow-400 font-bold">350 Coins</p>
+                {/* Mystery Boxes */}
+                <div className="mt-6 pt-6 border-t border-cyan-500/10">
+                  <h3 className="text-lg font-mono font-bold text-cyan-300 mb-4 uppercase tracking-wider flex items-center gap-2">
+                    <Box className="h-4 w-4" /> Quantum Crates
+                  </h3>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+                    {[
+                      { name: "Bronze", desc: "+5-15 stats", price: "50 Coins", gradient: "from-amber-900/30 to-amber-950/30", border: "border-amber-500/20" },
+                      { name: "Silver", desc: "+10-25 stats", price: "100 Coins", gradient: "from-gray-700/30 to-gray-900/30", border: "border-gray-400/20" },
+                      { name: "Gold", desc: "+20-40 stats", price: "200 Coins", gradient: "from-yellow-900/30 to-amber-950/30", border: "border-yellow-500/30" },
+                      { name: "Diamond", desc: "+30-60 stats", price: "50 Gems", gradient: "from-blue-900/30 to-violet-950/30", border: "border-blue-400/30" },
+                      { name: "Legendary", desc: "+100 All + Skin", price: "300 Gems", gradient: "from-amber-600/20 via-orange-600/20 to-red-600/20", border: "border-amber-300/40", special: true },
+                    ].map((box, i) => (
+                      <motion.div
+                        key={i}
+                        whileHover={{ scale: 1.03 }}
+                        className={`p-3 rounded-xl bg-gradient-to-b ${box.gradient} border ${box.border} text-center backdrop-blur-sm ${box.special ? "animate-pulse" : ""}`}
+                      >
+                        <div className="text-xl mb-1">{box.special ? "👑" : ["📦", "🎁", "✨", "💎"][i]}</div>
+                        <h4 className="font-mono font-bold text-xs text-white">{box.name}</h4>
+                        <p className="text-[9px] font-mono text-cyan-400/40 mt-0.5">{box.desc}</p>
+                        <p className="text-[10px] font-mono font-bold text-amber-400 mt-1">{box.price}</p>
+                      </motion.div>
+                    ))}
+                  </div>
                 </div>
                 
-                <div className="p-4 bg-gradient-to-br from-purple-900/50 to-pink-900/50 rounded-lg border border-purple-500/50">
-                  <div className="text-2xl mb-2">⭐</div>
-                  <h3 className="font-bold text-purple-300">Legendary Engine Swap</h3>
-                  <p className="text-sm text-gray-300 mb-2">+50 All Stats, Legendary Tier</p>
-                  <p className="text-purple-400 font-bold">500 Gems</p>
+                {/* Livery Shop */}
+                <div className="mt-6 pt-6 border-t border-cyan-500/10">
+                  <h3 className="text-lg font-mono font-bold text-cyan-300 mb-4 uppercase tracking-wider flex items-center gap-2">
+                    <Sparkles className="h-4 w-4" /> Livery Customization
+                  </h3>
+                  <Button 
+                    onClick={() => requireAuth(() => setShowShop(true))} 
+                    disabled={!cars || cars.length === 0} 
+                    className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 border border-violet-400/30 font-mono uppercase tracking-wider text-xs"
+                  >
+                    <Sparkles className="mr-2 h-4 w-4" />
+                    Change Vessel Livery (50 Gems)
+                  </Button>
                 </div>
-              </div>
-              
-              {/* Mystery Boxes */}
-              <div className="mt-6">
-                <h3 className="text-xl font-bold text-white mb-4">🎁 Mystery Boxes</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  <div className="p-4 bg-gradient-to-br from-amber-900/50 to-yellow-900/50 rounded-lg border border-amber-500/50">
-                    <div className="text-2xl mb-2">📦</div>
-                    <h3 className="font-bold text-amber-300">Bronze Box</h3>
-                    <p className="text-sm text-gray-300 mb-2">Random +5-15 stats boost</p>
-                    <p className="text-yellow-400 font-bold">50 Coins</p>
-                  </div>
-                  
-                  <div className="p-4 bg-gradient-to-br from-gray-600/50 to-gray-400/50 rounded-lg border border-gray-400/50">
-                    <div className="text-2xl mb-2">🎁</div>
-                    <h3 className="font-bold text-gray-200">Silver Box</h3>
-                    <p className="text-sm text-gray-300 mb-2">Random +10-25 stats boost</p>
-                    <p className="text-yellow-400 font-bold">100 Coins</p>
-                  </div>
-                  
-                  <div className="p-4 bg-gradient-to-br from-yellow-600/50 to-amber-500/50 rounded-lg border border-yellow-400/50">
-                    <div className="text-2xl mb-2">✨</div>
-                    <h3 className="font-bold text-yellow-300">Gold Box</h3>
-                    <p className="text-sm text-gray-300 mb-2">Random +20-40 stats boost</p>
-                    <p className="text-yellow-400 font-bold">200 Coins</p>
-                  </div>
-                  
-                  <div className="p-4 bg-gradient-to-br from-purple-700/50 to-violet-600/50 rounded-lg border border-purple-400/50">
-                    <div className="text-2xl mb-2">💎</div>
-                    <h3 className="font-bold text-purple-300">Diamond Box</h3>
-                    <p className="text-sm text-gray-300 mb-2">Random +30-60 stats boost</p>
-                    <p className="text-purple-400 font-bold">50 Gems</p>
-                  </div>
-                  
-                  <div className="p-4 bg-gradient-to-br from-yellow-500/60 via-orange-500/60 to-red-600/60 rounded-lg border-2 border-yellow-300/70 animate-pulse">
-                    <div className="text-2xl mb-2">👑</div>
-                    <h3 className="font-bold text-yellow-200">Legendary Box</h3>
-                    <p className="text-sm text-gray-200 mb-2">+100 All Stats + Legendary Skin</p>
-                    <p className="text-yellow-300 font-bold">300 Gems</p>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="mt-6 pt-6 border-t border-red-500/30">
-                <h3 className="text-xl font-bold text-white mb-4">🎨 Livery Shop</h3>
-                <Button 
-                  onClick={() => requireAuth(() => setShowShop(true))} 
-                  disabled={!cars || cars.length === 0} 
-                  className="bg-red-600 hover:bg-red-700 text-white"
-                >
-                  <Sparkles className="mr-2 h-4 w-4" />
-                  Change Car Livery (50 Gems)
-                </Button>
               </div>
             </Card>
           </TabsContent>
 
-          <TabsContent value="leaderboard" className="space-y-4">
-            <F1Leaderboard />
+          {/* LEADERBOARD TAB */}
+          <TabsContent value="leaderboard" className="space-y-4 mt-4">
+            <Card className="relative overflow-hidden bg-slate-900/60 border-cyan-500/20 backdrop-blur-sm p-4 sm:p-6">
+              <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-400/30 to-transparent" />
+              <F1Leaderboard />
+            </Card>
           </TabsContent>
         </Tabs>
       </div>
 
       {/* Buy Car Dialog */}
       <Dialog open={showBuyCar} onOpenChange={setShowBuyCar}>
-        <DialogContent className="bg-black/95 border-red-500">
+        <DialogContent className="bg-slate-950/95 border-cyan-500/30 backdrop-blur-xl">
           <DialogHeader>
-            <DialogTitle className="text-white">🏎️ Build New F1 Car</DialogTitle>
+            <DialogTitle className="text-cyan-300 font-mono uppercase tracking-wider flex items-center gap-2">
+              <Rocket className="h-5 w-5 text-cyan-400" />
+              Commission New Vessel
+            </DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <div>
-              <Label className="text-white">Car Name</Label>
+              <Label className="text-cyan-300 font-mono text-xs uppercase tracking-wider">Vessel Designation</Label>
               <Input
                 value={carName}
                 onChange={(e) => setCarName(e.target.value)}
-                placeholder="Enter car name..."
-                className="bg-black/50 border-red-500/50 text-white"
+                placeholder="Enter designation..."
+                className="bg-slate-900/50 border-cyan-500/30 text-white font-mono placeholder:text-cyan-400/30"
               />
             </div>
             <div>
-              <Label className="text-white">Team Name</Label>
+              <Label className="text-cyan-300 font-mono text-xs uppercase tracking-wider">Squadron</Label>
               <Select value={carTeam} onValueChange={setCarTeam}>
-                <SelectTrigger className="bg-black/50 border-red-500/50 text-white">
+                <SelectTrigger className="bg-slate-900/50 border-cyan-500/30 text-white font-mono">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-slate-950 border-cyan-500/30">
                   <SelectItem value="Custom Racing">Custom Racing</SelectItem>
                   <SelectItem value="Speed Demons">Speed Demons</SelectItem>
                   <SelectItem value="Thunder Racing">Thunder Racing</SelectItem>
@@ -766,16 +815,16 @@ export default function F1RacingArena() {
               </Select>
             </div>
             <div>
-              <Label className="text-white">Car Color</Label>
+              <Label className="text-cyan-300 font-mono text-xs uppercase tracking-wider">Hull Color</Label>
               <Input
                 type="color"
                 value={carColor}
                 onChange={(e) => setCarColor(e.target.value)}
-                className="h-12 bg-black/50 border-red-500/50"
+                className="h-12 bg-slate-900/50 border-cyan-500/30"
               />
             </div>
-            <Button onClick={handleBuyCar} className="w-full bg-red-600 hover:bg-red-700" disabled={createCar.isPending}>
-              {createCar.isPending ? "Building..." : "Build Car (75 Coins)"}
+            <Button onClick={handleBuyCar} className="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 border border-cyan-400/20 font-mono uppercase tracking-wider" disabled={createCar.isPending}>
+              {createCar.isPending ? "Fabricating..." : "Commission Vessel (75 Coins)"}
             </Button>
           </div>
         </DialogContent>
@@ -783,41 +832,42 @@ export default function F1RacingArena() {
 
       {/* Join Race Dialog */}
       <Dialog open={showJoinRace} onOpenChange={setShowJoinRace}>
-        <DialogContent className="bg-black/95 border-red-500">
+        <DialogContent className="bg-slate-950/95 border-cyan-500/30 backdrop-blur-xl">
           <DialogHeader>
-            <DialogTitle className="text-white">🏁 Join Race</DialogTitle>
+            <DialogTitle className="text-cyan-300 font-mono uppercase tracking-wider flex items-center gap-2">
+              <Rocket className="h-5 w-5 text-cyan-400" />
+              Deploy to Circuit
+            </DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <div>
-              <Label className="text-white">Select Car</Label>
+              <Label className="text-cyan-300 font-mono text-xs uppercase tracking-wider">Select Vessel</Label>
               <Select value={selectedCarForRace} onValueChange={setSelectedCarForRace}>
-                <SelectTrigger className="bg-black/50 border-red-500/50 text-white">
-                  <SelectValue placeholder="Choose a car" />
+                <SelectTrigger className="bg-slate-900/50 border-cyan-500/30 text-white font-mono">
+                  <SelectValue placeholder="Choose vessel..." />
                 </SelectTrigger>
-                <SelectContent>
-                  {(user ? userCars : [])?.map((car) => (
-                    <SelectItem key={car.id} value={car.id}>
-                      {car.name} (Level {car.level})
-                    </SelectItem>
+                <SelectContent className="bg-slate-950 border-cyan-500/30">
+                  {cars?.map(car => (
+                    <SelectItem key={car.id} value={car.id}>{car.name}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
             <div>
-              <Label className="text-white">Race Strategy</Label>
+              <Label className="text-cyan-300 font-mono text-xs uppercase tracking-wider">Combat Strategy</Label>
               <Select value={raceStrategy} onValueChange={setRaceStrategy}>
-                <SelectTrigger className="bg-black/50 border-red-500/50 text-white">
+                <SelectTrigger className="bg-slate-900/50 border-cyan-500/30 text-white font-mono">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="aggressive">Aggressive (High risk, high reward)</SelectItem>
-                  <SelectItem value="balanced">Balanced (Moderate approach)</SelectItem>
-                  <SelectItem value="conservative">Conservative (Safe driving)</SelectItem>
+                <SelectContent className="bg-slate-950 border-cyan-500/30">
+                  <SelectItem value="aggressive">Aggressive — Max Speed</SelectItem>
+                  <SelectItem value="balanced">Balanced — Optimal</SelectItem>
+                  <SelectItem value="safe">Conservative — Steady</SelectItem>
                 </SelectContent>
               </Select>
             </div>
-            <Button onClick={handleConfirmJoinRace} className="w-full bg-red-600 hover:bg-red-700" disabled={joinRace.isPending}>
-              {joinRace.isPending ? "Joining..." : "Join Race"}
+            <Button onClick={handleConfirmJoinRace} className="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 border border-cyan-400/20 font-mono uppercase tracking-wider" disabled={joinRace.isPending}>
+              {joinRace.isPending ? "Deploying..." : "Launch to Circuit"}
             </Button>
           </div>
         </DialogContent>
@@ -825,42 +875,42 @@ export default function F1RacingArena() {
 
       {/* Shop Dialog */}
       <Dialog open={showShop} onOpenChange={setShowShop}>
-        <DialogContent className="bg-black/95 border-red-500">
+        <DialogContent className="bg-slate-950/95 border-cyan-500/30 backdrop-blur-xl">
           <DialogHeader>
-            <DialogTitle className="text-white">🎨 Change Livery</DialogTitle>
+            <DialogTitle className="text-cyan-300 font-mono uppercase tracking-wider flex items-center gap-2">
+              <Sparkles className="h-5 w-5 text-violet-400" />
+              Livery Bay
+            </DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <div>
-              <Label className="text-white">Select Car</Label>
+              <Label className="text-cyan-300 font-mono text-xs uppercase tracking-wider">Select Vessel</Label>
               <Select value={selectedCarForShop} onValueChange={setSelectedCarForShop}>
-                <SelectTrigger className="bg-black/50 border-red-500/50 text-white">
-                  <SelectValue placeholder="Choose a car" />
+                <SelectTrigger className="bg-slate-900/50 border-cyan-500/30 text-white font-mono">
+                  <SelectValue placeholder="Choose vessel..." />
                 </SelectTrigger>
-                <SelectContent>
-                  {(user ? userCars : [])?.map((car) => (
-                    <SelectItem key={car.id} value={car.id}>
-                      {car.name}
-                    </SelectItem>
+                <SelectContent className="bg-slate-950 border-cyan-500/30">
+                  {cars?.map(car => (
+                    <SelectItem key={car.id} value={car.id}>{car.name}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
             <div>
-              <Label className="text-white">New Color</Label>
+              <Label className="text-cyan-300 font-mono text-xs uppercase tracking-wider">New Hull Color</Label>
               <Input
                 type="color"
                 value={shopColor}
                 onChange={(e) => setShopColor(e.target.value)}
-                className="h-12 bg-black/50 border-red-500/50"
+                className="h-12 bg-slate-900/50 border-cyan-500/30"
               />
             </div>
-            <Button onClick={handlePurchaseColor} className="w-full bg-red-600 hover:bg-red-700" disabled={purchaseColor.isPending}>
-              {purchaseColor.isPending ? "Changing..." : "Change Livery (50 Gems)"}
+            <Button onClick={handlePurchaseColor} className="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 border border-violet-400/20 font-mono uppercase tracking-wider" disabled={purchaseColor.isPending}>
+              {purchaseColor.isPending ? "Applying..." : "Apply Livery (50 Gems)"}
             </Button>
           </div>
         </DialogContent>
       </Dialog>
-
     </div>
   );
 }
