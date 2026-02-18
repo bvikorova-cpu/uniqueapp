@@ -41,7 +41,7 @@ export function F1Leaderboard() {
     return (
       <div className="p-12 text-center">
         <Trophy className="w-16 h-16 mx-auto mb-4 text-cyan-500/30" />
-        <p className="text-cyan-400/50 font-mono uppercase tracking-wider text-sm">No pilots have raced yet</p>
+        <p className="text-cyan-400/50 font-mono uppercase tracking-wider text-sm">No drivers have raced yet</p>
         <p className="text-cyan-400/30 text-xs mt-2">Be the first to claim the leaderboard</p>
       </div>
     );
@@ -56,8 +56,8 @@ export function F1Leaderboard() {
           <div className="absolute -inset-2 bg-amber-400/10 rounded-full blur-md" />
         </div>
         <div>
-          <h2 className="text-xl font-mono font-bold text-white uppercase tracking-wider">Galactic Rankings</h2>
-          <p className="text-[10px] text-cyan-400/50 font-mono uppercase tracking-[0.3em]">Top 10 Pilots</p>
+          <h2 className="text-xl font-mono font-bold text-white uppercase tracking-wider">Driver Rankings</h2>
+          <p className="text-[10px] text-cyan-400/50 font-mono uppercase tracking-[0.3em]">Top 10 Drivers</p>
         </div>
       </div>
 
