@@ -1,0 +1,1 @@
+DELETE FROM bazaar_items WHERE id = '1ca13cf3-ef37-48a9-a41f-b045d3b9fb48';
