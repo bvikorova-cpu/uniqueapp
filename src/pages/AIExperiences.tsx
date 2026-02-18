@@ -669,13 +669,6 @@ const AIExperiences = () => {
                           />
                           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
                           
-                          {/* Street View Badge */}
-                          <div className="absolute top-3 left-3">
-                            <Badge className="bg-blue-500/80 text-white border-0 backdrop-blur-sm text-xs">
-                              <Eye className="h-3 w-3 mr-1" />
-                              Street View
-                            </Badge>
-                          </div>
 
                           {isVisited && (
                             <Badge className="absolute top-3 right-3 bg-green-500 text-white border-0">
