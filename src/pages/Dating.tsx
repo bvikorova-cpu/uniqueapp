@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -9,9 +9,11 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Heart, X, MessageCircle, User, Sparkles, Send, Settings, Trash2, Upload, Image as ImageIcon, RotateCcw, Gift, Zap, Eye, Check, CheckCheck, Camera, Video, Plus, XCircle } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
+import { Heart, X, MessageCircle, User, Sparkles, Send, Settings, Trash2, Upload, Image as ImageIcon, RotateCcw, Gift, Zap, Eye, Check, CheckCheck, Camera, Video, Plus, XCircle, Shield, MapPin, Star, Clock, Crown, Flame, ArrowLeft, Info, ChevronRight } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface DatingProfile {
   id: string;
@@ -101,15 +103,21 @@ const Dating = () => {
   const [cancelingSubscription, setCancelingSubscription] = useState(false);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [videoPreviews, setVideoPreviews] = useState<string[]>([]);
+  const [swipeDirection, setSwipeDirection] = useState<"left" | "right" | "up" | null>(null);
+  const [activePhotoIndex, setActivePhotoIndex] = useState(0);
+  const chatEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     checkAuth();
   }, []);
 
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
   const checkAuth = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     setUser(user);
-    
     if (user) {
       await checkSubscription(user.id);
     }
@@ -159,9 +167,7 @@ const Dating = () => {
       .from("dating_swipes")
       .select("swiped_id")
       .eq("swiper_id", user?.id || "");
-
     const swipedIds = swipedProfiles?.map(s => s.swiped_id) || [];
-
     const { data } = await supabase
       .from("dating_profiles")
       .select("*")
@@ -169,7 +175,6 @@ const Dating = () => {
       .neq("user_id", user?.id || "")
       .not("user_id", "in", `(${swipedIds.join(",") || "NULL"})`)
       .limit(20);
-
     setProfiles(data || []);
   };
 
@@ -178,7 +183,6 @@ const Dating = () => {
       .from("dating_matches")
       .select("*")
       .or(`user1_id.eq.${userId},user2_id.eq.${userId}`);
-
     if (data) {
       const matchesWithProfiles = await Promise.all(
         data.map(async (match) => {
@@ -201,9 +205,7 @@ const Dating = () => {
       .select("*")
       .eq("match_id", matchId)
       .order("created_at", { ascending: true });
-
     setMessages(data || []);
-    
     if (data && data.length > 0) {
       await supabase
         .from("dating_messages")
@@ -212,54 +214,30 @@ const Dating = () => {
         .neq("sender_id", user?.id || "")
         .is("read_at", null);
     }
-    
     const { data: gifts } = await supabase
       .from("dating_sent_gifts")
-      .select(`
-        *,
-        gift:gift_id (*)
-      `)
+      .select(`*, gift:gift_id (*)`)
       .eq("match_id", matchId)
       .order("created_at", { ascending: true });
-    
     setSentGifts(gifts || []);
   };
 
   const handleSubscribe = async (planType: 'monthly' | 'yearly') => {
     if (!user) {
-      toast({
-        title: "Login Required",
-        description: "You must log in to access",
-        variant: "destructive",
-      });
+      toast({ title: "Login Required", description: "You must log in to access", variant: "destructive" });
       return;
     }
-
     const price = planType === 'monthly' ? 2.00 : 20.00;
     const expiresAt = planType === 'monthly' 
       ? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
       : new Date(Date.now() + 365 * 24 * 60 * 60 * 1000);
-
     const { error } = await supabase
       .from("dating_subscriptions")
-      .insert([{
-        user_id: user.id,
-        price: price,
-        subscription_type: planType,
-        expires_at: expiresAt.toISOString(),
-      }]);
-
+      .insert([{ user_id: user.id, price, subscription_type: planType, expires_at: expiresAt.toISOString() }]);
     if (error) {
-      toast({
-        title: "Error",
-        description: "Failed to activate subscription",
-        variant: "destructive",
-      });
+      toast({ title: "Error", description: "Failed to activate subscription", variant: "destructive" });
     } else {
-      toast({
-        title: "Success",
-        description: "Subscription has been activated",
-      });
+      toast({ title: "Success", description: "Subscription has been activated" });
       setIsSubscribed(true);
       setShowProfileDialog(true);
     }
@@ -267,32 +245,16 @@ const Dating = () => {
 
   const handleCreateProfile = async () => {
     if (!user || !profileForm.display_name || !profileForm.bio) {
-      toast({
-        title: "Incomplete Data",
-        description: "Fill in all fields",
-        variant: "destructive",
-      });
+      toast({ title: "Incomplete Data", description: "Fill in all fields", variant: "destructive" });
       return;
     }
-
     const { error } = await supabase
       .from("dating_profiles")
-      .insert([{
-        ...profileForm,
-        user_id: user.id,
-      }]);
-
+      .insert([{ ...profileForm, user_id: user.id }]);
     if (error) {
-      toast({
-        title: "Error",
-        description: "Failed to create profile",
-        variant: "destructive",
-      });
+      toast({ title: "Error", description: "Failed to create profile", variant: "destructive" });
     } else {
-      toast({
-        title: "Success",
-        description: "Profile has been created",
-      });
+      toast({ title: "Success", description: "Profile has been created" });
       setShowProfileDialog(false);
       await loadUserProfile(user.id);
       await loadProfiles();
@@ -301,142 +263,78 @@ const Dating = () => {
 
   const handleSwipe = async (action: "like" | "dislike", isSuper = false) => {
     if (!user || currentIndex >= profiles.length) return;
-
     const currentCard = profiles[currentIndex];
-
+    
+    setSwipeDirection(action === "like" ? (isSuper ? "up" : "right") : "left");
+    
     await supabase
       .from("dating_last_swipe")
-      .upsert({
-        user_id: user.id,
-        swiped_profile_id: currentCard.user_id,
-        action: isSuper ? "super_like" : action,
-      });
-    
+      .upsert({ user_id: user.id, swiped_profile_id: currentCard.user_id, action: isSuper ? "super_like" : action });
     setCanRewind(true);
     setLastSwipe({ swiped_profile_id: currentCard.user_id, action: isSuper ? "super_like" : action });
 
     if (isSuper) {
       const { error: superError } = await supabase
         .from("dating_super_likes")
-        .insert([{
-          swiper_id: user.id,
-          swiped_id: currentCard.user_id,
-        }]);
-
+        .insert([{ swiper_id: user.id, swiped_id: currentCard.user_id }]);
       if (superError) {
-        toast({
-          title: "Error",
-          description: "Failed to send Super Like",
-          variant: "destructive",
-        });
+        toast({ title: "Error", description: "Failed to send Super Like", variant: "destructive" });
+        setSwipeDirection(null);
         return;
       }
-
-      toast({
-        title: "⭐ Super Like!",
-        description: `${currentCard.display_name} will be notified!`,
-      });
-      
+      toast({ title: "⭐ Super Like!", description: `${currentCard.display_name} will be notified!` });
       setSuperLikesRemaining(superLikesRemaining - 1);
     }
 
     const { error } = await supabase
       .from("dating_swipes")
-      .insert([{
-        swiper_id: user.id,
-        swiped_id: currentCard.user_id,
-        action: isSuper ? "like" : action,
-      }]);
-
+      .insert([{ swiper_id: user.id, swiped_id: currentCard.user_id, action: isSuper ? "like" : action }]);
     if (error) {
-      toast({
-        title: "Error",
-        description: "Failed to save swipe",
-        variant: "destructive",
-      });
+      toast({ title: "Error", description: "Failed to save swipe", variant: "destructive" });
+      setSwipeDirection(null);
       return;
     }
 
     if (action === "like" || isSuper) {
       await supabase
         .from("dating_likes_you")
-        .insert([{
-          liker_id: user.id,
-          liked_id: currentCard.user_id,
-        }]);
-
+        .insert([{ liker_id: user.id, liked_id: currentCard.user_id }]);
       const { data } = await supabase
         .from("dating_matches")
         .select("*")
         .or(`user1_id.eq.${user.id},user2_id.eq.${user.id}`)
         .or(`user1_id.eq.${currentCard.user_id},user2_id.eq.${currentCard.user_id}`)
         .maybeSingle();
-
       if (data) {
-        // Create notification for both users
-        await supabase
-          .from("notifications")
-          .insert([
-            {
-              user_id: currentCard.user_id,
-              type: "dating_match",
-              title: "🎉 New Match!",
-              message: `You matched with ${currentProfile?.display_name || "someone"}!`,
-              related_id: data.id,
-            },
-            {
-              user_id: user.id,
-              type: "dating_match",
-              title: "🎉 New Match!",
-              message: `You matched with ${currentCard.display_name}!`,
-              related_id: data.id,
-            }
-          ]);
-
-        toast({
-          title: "🎉 It's a Match!",
-          description: `You matched with ${currentCard.display_name}!`,
-        });
+        await supabase.from("notifications").insert([
+          { user_id: currentCard.user_id, type: "dating_match", title: "🎉 New Match!", message: `You matched with ${currentProfile?.display_name || "someone"}!`, related_id: data.id },
+          { user_id: user.id, type: "dating_match", title: "🎉 New Match!", message: `You matched with ${currentCard.display_name}!`, related_id: data.id }
+        ]);
+        toast({ title: "🎉 It's a Match!", description: `You matched with ${currentCard.display_name}!` });
         await loadMatches(user.id);
       }
     }
 
-    setCurrentIndex(currentIndex + 1);
+    setTimeout(() => {
+      setCurrentIndex(currentIndex + 1);
+      setSwipeDirection(null);
+      setActivePhotoIndex(0);
+    }, 300);
   };
 
   const handleSendMessage = async () => {
     if (!selectedMatch || !newMessage.trim()) return;
-
-    const otherId = selectedMatch.user1_id === user.id 
-      ? selectedMatch.user2_id 
-      : selectedMatch.user1_id;
-
+    const otherId = selectedMatch.user1_id === user.id ? selectedMatch.user2_id : selectedMatch.user1_id;
     const { error } = await supabase
       .from("dating_messages")
-      .insert([{
-        match_id: selectedMatch.id,
-        sender_id: user.id,
-        content: newMessage,
-      }]);
-
+      .insert([{ match_id: selectedMatch.id, sender_id: user.id, content: newMessage }]);
     if (error) {
-      toast({
-        title: "Error",
-        description: "Failed to send message",
-        variant: "destructive",
-      });
+      toast({ title: "Error", description: "Failed to send message", variant: "destructive" });
     } else {
-      // Create notification for receiver
-      await supabase
-        .from("notifications")
-        .insert([{
-          user_id: otherId,
-          type: "dating_message",
-          title: "New Message 💌",
-          message: `${currentProfile?.display_name || "Someone"} sent you a message`,
-          related_id: selectedMatch.id,
-        }]);
-
+      await supabase.from("notifications").insert([{
+        user_id: otherId, type: "dating_message", title: "New Message 💌",
+        message: `${currentProfile?.display_name || "Someone"} sent you a message`, related_id: selectedMatch.id
+      }]);
       setNewMessage("");
       await loadMessages(selectedMatch.id);
     }
@@ -444,37 +342,17 @@ const Dating = () => {
 
   const handleUpdateProfile = async () => {
     if (!user || !currentProfile || !editForm.display_name || !editForm.bio) {
-      toast({
-        title: "Incomplete Data",
-        description: "Fill in all fields",
-        variant: "destructive",
-      });
+      toast({ title: "Incomplete Data", description: "Fill in all fields", variant: "destructive" });
       return;
     }
-
     const { error } = await supabase
       .from("dating_profiles")
-      .update({
-        display_name: editForm.display_name,
-        age: editForm.age,
-        gender: editForm.gender,
-        looking_for: editForm.looking_for,
-        bio: editForm.bio,
-        location: editForm.location,
-      })
+      .update({ display_name: editForm.display_name, age: editForm.age, gender: editForm.gender, looking_for: editForm.looking_for, bio: editForm.bio, location: editForm.location })
       .eq("id", currentProfile.id);
-
     if (error) {
-      toast({
-        title: "Error",
-        description: "Failed to update profile",
-        variant: "destructive",
-      });
+      toast({ title: "Error", description: "Failed to update profile", variant: "destructive" });
     } else {
-      toast({
-        title: "Success",
-        description: "Profile has been updated",
-      });
+      toast({ title: "Success", description: "Profile has been updated" });
       setShowEditDialog(false);
       await loadUserProfile(user.id);
     }
@@ -482,24 +360,15 @@ const Dating = () => {
 
   const handleDeleteProfile = async () => {
     if (!user || !currentProfile) return;
-
     const { error } = await supabase
       .from("dating_profiles")
       .delete()
       .eq("id", currentProfile.id)
       .eq("user_id", user.id);
-
     if (error) {
-      toast({
-        title: "Error",
-        description: "Failed to delete profile",
-        variant: "destructive",
-      });
+      toast({ title: "Error", description: "Failed to delete profile", variant: "destructive" });
     } else {
-      toast({
-        title: "Success",
-        description: "Profile has been deleted",
-      });
+      toast({ title: "Success", description: "Profile has been deleted" });
       setCurrentProfile(null);
     }
   };
@@ -507,56 +376,26 @@ const Dating = () => {
   const handleUploadProfilePhoto = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file || !user || !currentProfile) return;
-
-    // Check if file is image or video
     const isVideo = file.type.startsWith('video/');
     const isImage = file.type.startsWith('image/');
-
     if (!isVideo && !isImage) {
-      toast({
-        title: "Invalid File",
-        description: "Please upload an image or video file",
-        variant: "destructive",
-      });
+      toast({ title: "Invalid File", description: "Please upload an image or video file", variant: "destructive" });
       return;
     }
-
     setUploadingPhoto(true);
-
     try {
       const fileExt = file.name.split('.').pop();
       const fileName = `${user.id}-profile-${Date.now()}.${fileExt}`;
       const filePath = `${user.id}/${fileName}`;
-
-      const { error: uploadError } = await supabase.storage
-        .from('avatars')
-        .upload(filePath, file, { upsert: true });
-
+      const { error: uploadError } = await supabase.storage.from('avatars').upload(filePath, file, { upsert: true });
       if (uploadError) throw uploadError;
-
-      const { data: { publicUrl } } = supabase.storage
-        .from('avatars')
-        .getPublicUrl(filePath);
-
-      const { error: updateError } = await supabase
-        .from('dating_profiles')
-        .update({ profile_photo_url: publicUrl })
-        .eq('id', currentProfile.id);
-
+      const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(filePath);
+      const { error: updateError } = await supabase.from('dating_profiles').update({ profile_photo_url: publicUrl }).eq('id', currentProfile.id);
       if (updateError) throw updateError;
-
-      toast({
-        title: "Success",
-        description: "Profile photo has been uploaded",
-      });
-      
+      toast({ title: "Success", description: "Profile photo has been uploaded" });
       await loadUserProfile(user.id);
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to upload photo",
-        variant: "destructive",
-      });
+    } catch {
+      toast({ title: "Error", description: "Failed to upload photo", variant: "destructive" });
     } finally {
       setUploadingPhoto(false);
     }
@@ -565,60 +404,29 @@ const Dating = () => {
   const handleUploadAdditionalPhotos = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (!files || !user || !currentProfile) return;
-
     setUploadingAdditional(true);
-
     try {
       const uploadedUrls: string[] = [];
-
       for (const file of Array.from(files)) {
-        // Check if file is image or video
         const isVideo = file.type.startsWith('video/');
         const isImage = file.type.startsWith('image/');
-
-        if (!isVideo && !isImage) {
-          continue;
-        }
-
+        if (!isVideo && !isImage) continue;
         const fileExt = file.name.split('.').pop();
         const fileName = `${user.id}-additional-${Date.now()}-${Math.random()}.${fileExt}`;
         const filePath = `${user.id}/${fileName}`;
-
-        const { error: uploadError } = await supabase.storage
-          .from('avatars')
-          .upload(filePath, file);
-
+        const { error: uploadError } = await supabase.storage.from('avatars').upload(filePath, file);
         if (uploadError) throw uploadError;
-
-        const { data: { publicUrl } } = supabase.storage
-          .from('avatars')
-          .getPublicUrl(filePath);
-
+        const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(filePath);
         uploadedUrls.push(publicUrl);
       }
-
       const currentPhotos = currentProfile.additional_photos || [];
       const newPhotos = [...currentPhotos, ...uploadedUrls];
-
-      const { error: updateError } = await supabase
-        .from('dating_profiles')
-        .update({ additional_photos: newPhotos })
-        .eq('id', currentProfile.id);
-
+      const { error: updateError } = await supabase.from('dating_profiles').update({ additional_photos: newPhotos }).eq('id', currentProfile.id);
       if (updateError) throw updateError;
-
-      toast({
-        title: "Success",
-        description: `${uploadedUrls.length} media files have been uploaded`,
-      });
-      
+      toast({ title: "Success", description: `${uploadedUrls.length} media files have been uploaded` });
       await loadUserProfile(user.id);
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to upload media",
-        variant: "destructive",
-      });
+    } catch {
+      toast({ title: "Error", description: "Failed to upload media", variant: "destructive" });
     } finally {
       setUploadingAdditional(false);
     }
@@ -626,405 +434,370 @@ const Dating = () => {
 
   const handleRemoveAdditionalPhoto = async (photoUrl: string) => {
     if (!user || !currentProfile) return;
-
     const updatedPhotos = (currentProfile.additional_photos || []).filter(url => url !== photoUrl);
-
-    const { error } = await supabase
-      .from('dating_profiles')
-      .update({ additional_photos: updatedPhotos })
-      .eq('id', currentProfile.id);
-
+    const { error } = await supabase.from('dating_profiles').update({ additional_photos: updatedPhotos }).eq('id', currentProfile.id);
     if (error) {
-      toast({
-        title: "Error",
-        description: "Failed to remove photo",
-        variant: "destructive",
-      });
+      toast({ title: "Error", description: "Failed to remove photo", variant: "destructive" });
     } else {
-      toast({
-        title: "Success",
-        description: "Photo has been removed",
-      });
+      toast({ title: "Success", description: "Photo has been removed" });
       await loadUserProfile(user.id);
     }
   };
 
   const loadGifts = async () => {
-    const { data } = await supabase
-      .from("dating_gifts")
-      .select("*")
-      .order("price", { ascending: true });
-    
+    const { data } = await supabase.from("dating_gifts").select("*").order("price", { ascending: true });
     setAvailableGifts(data || []);
   };
 
   const handleSendGift = async (giftId: string) => {
     if (!selectedMatch || !user) return;
-
     try {
       const { data, error } = await supabase.functions.invoke('send-dating-gift', {
-        body: {
-          matchId: selectedMatch.id,
-          giftId: giftId,
-          message: newMessage || "",
-        }
+        body: { matchId: selectedMatch.id, giftId, message: newMessage || "" }
       });
-
       if (error) throw error;
-
       if (data?.url) {
-        // Open Stripe checkout in new tab
         window.open(data.url, '_blank');
-        toast({
-          title: "Opening Checkout 🎁",
-          description: "Complete payment to send your gift",
-        });
+        toast({ title: "Opening Checkout 🎁", description: "Complete payment to send your gift" });
         setShowGiftDialog(false);
       }
-    } catch (error) {
-      console.error("Gift sending error:", error);
-      toast({
-        title: "Error",
-        description: "Failed to process gift. Please try again.",
-        variant: "destructive",
-      });
+    } catch {
+      toast({ title: "Error", description: "Failed to process gift. Please try again.", variant: "destructive" });
     }
   };
 
   const handleRewind = async () => {
     if (!user || !lastSwipe || !canRewind) return;
-
-    const { error } = await supabase
-      .from("dating_swipes")
-      .delete()
-      .eq("swiper_id", user.id)
-      .eq("swiped_id", lastSwipe.swiped_profile_id);
-
+    const { error } = await supabase.from("dating_swipes").delete().eq("swiper_id", user.id).eq("swiped_id", lastSwipe.swiped_profile_id);
     if (error) {
-      toast({
-        title: "Error",
-        description: "Failed to rewind swipe",
-        variant: "destructive",
-      });
+      toast({ title: "Error", description: "Failed to rewind swipe", variant: "destructive" });
       return;
     }
-
     setCurrentIndex(Math.max(0, currentIndex - 1));
     setCanRewind(false);
     setLastSwipe(null);
-
-    toast({
-      title: "Swipe Rewinded!",
-      description: "You can change your mind",
-    });
+    toast({ title: "Swipe Rewinded!", description: "You can change your mind" });
   };
 
   const checkLastSwipe = async (userId: string) => {
-    const { data } = await supabase
-      .from("dating_last_swipe")
-      .select("*")
-      .eq("user_id", userId)
-      .maybeSingle();
-    
-    if (data) {
-      setCanRewind(true);
-      setLastSwipe(data);
-    }
+    const { data } = await supabase.from("dating_last_swipe").select("*").eq("user_id", userId).maybeSingle();
+    if (data) { setCanRewind(true); setLastSwipe(data); }
   };
 
   const handleCancelSubscription = async () => {
     if (!user) return;
-
     setCancelingSubscription(true);
     try {
-      const { data, error } = await supabase.functions.invoke('cancel-subscription', {
-        body: { subscriptionType: 'dating' }
-      });
-
+      const { data, error } = await supabase.functions.invoke('cancel-subscription', { body: { subscriptionType: 'dating' } });
       if (error) throw error;
-
-      toast({
-        title: "Subscription Cancelled",
-        description: data.message || "Subscription will be cancelled at the end of current period",
-      });
-
+      toast({ title: "Subscription Cancelled", description: data.message || "Subscription will be cancelled at the end of current period" });
       await checkSubscription(user.id);
-    } catch (error) {
-      console.error('Cancellation error:', error);
-      toast({
-        title: "Error",
-        description: "Failed to cancel subscription",
-        variant: "destructive",
-      });
+    } catch {
+      toast({ title: "Error", description: "Failed to cancel subscription", variant: "destructive" });
     } finally {
       setCancelingSubscription(false);
     }
   };
 
   const loadLikesYou = async (userId: string) => {
-    const { data } = await supabase
-      .from("dating_likes_you")
-      .select("*")
-      .eq("liked_id", userId)
-      .eq("seen", false);
-    
+    const { data } = await supabase.from("dating_likes_you").select("*").eq("liked_id", userId).eq("seen", false);
     setLikesYouCount(data?.length || 0);
   };
 
   const viewLikesYou = async () => {
     if (!user) return;
-
     const { data } = await supabase
       .from("dating_likes_you")
-      .select(`
-        *,
-        liker:liker_id (
-          id,
-          dating_profiles (*)
-        )
-      `)
+      .select(`*, liker:liker_id ( id, dating_profiles (*) )`)
       .eq("liked_id", user.id)
       .eq("seen", false);
-
     if (data && data.length > 0) {
-      await supabase
-        .from("dating_likes_you")
-        .update({ seen: true })
-        .eq("liked_id", user.id);
-      
-      toast({
-        title: `${data.length} people liked you!`,
-        description: "Check their profiles in swipe section",
-      });
-      
+      await supabase.from("dating_likes_you").update({ seen: true }).eq("liked_id", user.id);
+      toast({ title: `${data.length} people liked you!`, description: "Check their profiles in swipe section" });
       setLikesYouCount(0);
     } else {
-      toast({
-        title: "No Likes Yet",
-        description: "Keep swiping!",
-      });
+      toast({ title: "No Likes Yet", description: "Keep swiping!" });
     }
   };
 
-  const isVideoUrl = (url: string) => {
-    return url.match(/\.(mp4|webm|ogg|mov)$/i);
+  const isVideoUrl = (url: string) => url.match(/\.(mp4|webm|ogg|mov)$/i);
+
+  const getProfilePhotos = (profile: DatingProfile) => {
+    const photos: string[] = [];
+    if (profile.profile_photo_url) photos.push(profile.profile_photo_url);
+    if (profile.additional_photos) photos.push(...profile.additional_photos);
+    return photos;
+  };
+
+  const getProfileCompleteness = () => {
+    if (!currentProfile) return 0;
+    let score = 0;
+    if (currentProfile.display_name) score += 15;
+    if (currentProfile.bio) score += 20;
+    if (currentProfile.age) score += 10;
+    if (currentProfile.location) score += 15;
+    if (currentProfile.profile_photo_url) score += 25;
+    if (currentProfile.additional_photos && currentProfile.additional_photos.length > 0) score += 15;
+    return score;
   };
 
   const [selectedPlan, setSelectedPlan] = useState<'monthly' | 'yearly'>('monthly');
-  
+
+  // ==================== LANDING / PAYWALL ====================
   if (!isSubscribed) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-background pt-16 sm:pt-20 pb-8 sm:pb-12">
-        <div className="container mx-auto px-3 sm:px-4 max-w-5xl">
-          <div className="text-center space-y-4 sm:space-y-8">
-            <div className="flex justify-center">
-              <Badge className="bg-gradient-to-r from-pink-500 to-purple-500 text-white text-sm sm:text-lg px-4 sm:px-6 py-1 sm:py-2">
-                <Heart className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
-                Premium Dating
-              </Badge>
-            </div>
-            <h1 className="text-3xl sm:text-5xl md:text-7xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-pink-500 bg-clip-text text-transparent animate-gradient">
-              Find Your Perfect Match
-            </h1>
-            <p className="text-base sm:text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed px-2">
-              Join thousands of people who have already found their love story. Swipe, match, and start meaningful conversations!
-            </p>
+      <div className="min-h-screen bg-background pt-16 sm:pt-20 pb-12">
+        {/* Hero Section */}
+        <div className="relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-rose-500/10 via-pink-500/5 to-purple-500/10" />
+          <div className="absolute top-20 left-1/4 w-72 h-72 bg-rose-500/10 rounded-full blur-3xl" />
+          <div className="absolute bottom-10 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl" />
+          
+          <div className="relative container mx-auto px-4 max-w-6xl py-12 sm:py-20">
+            <div className="text-center space-y-6">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+              >
+                <Badge className="bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20 text-sm px-4 py-1.5 mb-4">
+                  <Flame className="h-3.5 w-3.5 mr-1.5" />
+                  Premium Dating Platform
+                </Badge>
+              </motion.div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-8 max-w-4xl mx-auto mt-8 sm:mt-16">
-              <Card 
-                className={`relative cursor-pointer transition-all hover:scale-105 ${
+              <motion.h1
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.1 }}
+                className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight"
+              >
+                <span className="text-foreground">Where Real</span>
+                <br />
+                <span className="bg-gradient-to-r from-rose-500 via-pink-500 to-purple-500 bg-clip-text text-transparent">
+                  Connections
+                </span>
+                <br />
+                <span className="text-foreground">Begin</span>
+              </motion.h1>
+
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed"
+              >
+                Discover meaningful relationships with people who share your values. 
+                Swipe smart, match genuine, connect deep.
+              </motion.p>
+
+              {/* Stats */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+                className="flex justify-center gap-8 sm:gap-16 pt-4"
+              >
+                <div className="text-center">
+                  <p className="text-2xl sm:text-3xl font-bold text-foreground">50K+</p>
+                  <p className="text-sm text-muted-foreground">Active Users</p>
+                </div>
+                <div className="text-center">
+                  <p className="text-2xl sm:text-3xl font-bold text-foreground">12K+</p>
+                  <p className="text-sm text-muted-foreground">Matches Made</p>
+                </div>
+                <div className="text-center">
+                  <p className="text-2xl sm:text-3xl font-bold text-foreground">4.8★</p>
+                  <p className="text-sm text-muted-foreground">User Rating</p>
+                </div>
+              </motion.div>
+            </div>
+          </div>
+        </div>
+
+        {/* Features */}
+        <div className="container mx-auto px-4 max-w-5xl py-12">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 mb-16">
+            {[
+              { icon: Heart, label: "Smart Matching", desc: "AI-powered compatibility" },
+              { icon: Shield, label: "Verified Profiles", desc: "Real people only" },
+              { icon: Camera, label: "Photo & Video", desc: "Rich media profiles" },
+              { icon: MessageCircle, label: "Instant Chat", desc: "Real-time messaging" },
+            ].map((feat, i) => (
+              <motion.div
+                key={feat.label}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.4 + i * 0.1 }}
+              >
+                <Card className="p-4 sm:p-6 text-center border-border/50 hover:border-rose-500/30 transition-colors h-full">
+                  <feat.icon className="h-8 w-8 mx-auto mb-3 text-rose-500" />
+                  <p className="font-semibold text-sm sm:text-base">{feat.label}</p>
+                  <p className="text-xs text-muted-foreground mt-1">{feat.desc}</p>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Pricing */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.6 }}
+          >
+            <h2 className="text-2xl sm:text-3xl font-bold text-center mb-2">Choose Your Plan</h2>
+            <p className="text-muted-foreground text-center mb-8">Start your journey today</p>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+              {/* Monthly */}
+              <Card
+                className={`relative cursor-pointer transition-all duration-300 overflow-hidden ${
                   selectedPlan === 'monthly' 
-                    ? 'ring-2 sm:ring-4 ring-pink-500 shadow-xl sm:shadow-2xl shadow-pink-500/50' 
-                    : 'hover:ring-2 hover:ring-pink-300'
-                }`} 
+                    ? 'ring-2 ring-rose-500 shadow-lg shadow-rose-500/10' 
+                    : 'hover:border-rose-500/30'
+                }`}
                 onClick={() => setSelectedPlan('monthly')}
               >
-                <CardHeader className="text-center pb-4 sm:pb-8">
-                  <div className="text-4xl sm:text-6xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent mb-2 sm:mb-3">
-                    2 €
+                <CardContent className="p-6 sm:p-8">
+                  <div className="flex items-baseline gap-1 mb-1">
+                    <span className="text-4xl sm:text-5xl font-bold text-foreground">€2</span>
+                    <span className="text-muted-foreground">/month</span>
                   </div>
-                  <p className="text-base sm:text-xl text-muted-foreground font-medium">per month</p>
-                </CardHeader>
-                <CardContent className="space-y-2 sm:space-y-4 pb-4 sm:pb-8">
-                  <div className="space-y-2 sm:space-y-4">
-                    <div className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 bg-pink-50 dark:bg-pink-950/30 rounded-lg">
-                      <Heart className="h-5 w-5 sm:h-6 sm:w-6 text-pink-500 flex-shrink-0" />
-                      <span className="text-sm sm:text-base">Unlimited swiping</span>
-                    </div>
-                    <div className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 bg-purple-50 dark:bg-purple-950/30 rounded-lg">
-                      <MessageCircle className="h-5 w-5 sm:h-6 sm:w-6 text-purple-500 flex-shrink-0" />
-                      <span className="text-sm sm:text-base">Chat with matches</span>
-                    </div>
-                    <div className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 bg-pink-50 dark:bg-pink-950/30 rounded-lg">
-                      <Sparkles className="h-5 w-5 sm:h-6 sm:w-6 text-pink-500 flex-shrink-0" />
-                      <span className="text-sm sm:text-base">Premium filters</span>
-                    </div>
-                    <div className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 bg-purple-50 dark:bg-purple-950/30 rounded-lg">
-                      <Camera className="h-5 w-5 sm:h-6 sm:w-6 text-purple-500 flex-shrink-0" />
-                      <span className="text-sm sm:text-base">Photo & video profiles</span>
-                    </div>
-                    <div className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 bg-pink-50 dark:bg-pink-950/30 rounded-lg">
-                      <Zap className="h-5 w-5 sm:h-6 sm:w-6 text-pink-500 flex-shrink-0" />
-                      <span className="text-sm sm:text-base">5 Super Likes daily</span>
-                    </div>
+                  <p className="text-sm text-muted-foreground mb-6">Flexible monthly plan</p>
+                  <div className="space-y-3">
+                    {["Unlimited swipes", "Send messages", "5 Super Likes daily", "Photo & video profiles", "See who likes you", "Rewind last swipe", "Send virtual gifts"].map(feat => (
+                      <div key={feat} className="flex items-center gap-2.5">
+                        <Check className="h-4 w-4 text-rose-500 flex-shrink-0" />
+                        <span className="text-sm">{feat}</span>
+                      </div>
+                    ))}
                   </div>
                 </CardContent>
               </Card>
 
-              <Card 
-                className={`relative cursor-pointer transition-all hover:scale-105 ${
+              {/* Yearly */}
+              <Card
+                className={`relative cursor-pointer transition-all duration-300 overflow-hidden ${
                   selectedPlan === 'yearly' 
-                    ? 'ring-4 ring-purple-500 shadow-2xl shadow-purple-500/50' 
-                    : 'hover:ring-2 hover:ring-purple-300'
-                }`} 
+                    ? 'ring-2 ring-purple-500 shadow-lg shadow-purple-500/10' 
+                    : 'hover:border-purple-500/30'
+                }`}
                 onClick={() => setSelectedPlan('yearly')}
               >
-                <div className="absolute -top-4 right-6">
-                  <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 text-white text-base px-4 py-2 shadow-lg">
-                    Save 17% 🎉
+                <div className="absolute top-0 right-0">
+                  <Badge className="bg-gradient-to-r from-emerald-500 to-green-500 text-white rounded-none rounded-bl-lg px-3 py-1 text-xs font-semibold">
+                    SAVE 17%
                   </Badge>
                 </div>
-                <CardHeader className="text-center pb-8 pt-10">
-                  <div className="text-6xl font-bold bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent mb-3">
-                    20 €
+                <CardContent className="p-6 sm:p-8">
+                  <div className="flex items-baseline gap-1 mb-1">
+                    <span className="text-4xl sm:text-5xl font-bold text-foreground">€20</span>
+                    <span className="text-muted-foreground">/year</span>
                   </div>
-                  <p className="text-xl text-muted-foreground font-medium">per year</p>
-                  <p className="text-lg text-green-500 font-semibold mt-2">Only 1.67 € / month</p>
-                </CardHeader>
-                <CardContent className="space-y-4 pb-8">
-                  <div className="space-y-4">
-                    <div className="flex items-center gap-3 p-3 bg-purple-50 dark:bg-purple-950/30 rounded-lg">
-                      <Heart className="h-6 w-6 text-purple-500 flex-shrink-0" />
-                      <span className="text-base">Unlimited swiping</span>
-                    </div>
-                    <div className="flex items-center gap-3 p-3 bg-pink-50 dark:bg-pink-950/30 rounded-lg">
-                      <MessageCircle className="h-6 w-6 text-pink-500 flex-shrink-0" />
-                      <span className="text-base">Chat with matches</span>
-                    </div>
-                    <div className="flex items-center gap-3 p-3 bg-purple-50 dark:bg-purple-950/30 rounded-lg">
-                      <Sparkles className="h-6 w-6 text-purple-500 flex-shrink-0" />
-                      <span className="text-base">Premium filters</span>
-                    </div>
-                    <div className="flex items-center gap-3 p-3 bg-pink-50 dark:bg-pink-950/30 rounded-lg">
-                      <Camera className="h-6 w-6 text-pink-500 flex-shrink-0" />
-                      <span className="text-base">Photo & video profiles</span>
-                    </div>
-                    <div className="flex items-center gap-3 p-3 bg-purple-50 dark:bg-purple-950/30 rounded-lg">
-                      <Zap className="h-6 w-6 text-purple-500 flex-shrink-0" />
-                      <span className="text-base">5 Super Likes daily</span>
-                    </div>
+                  <p className="text-sm text-emerald-600 dark:text-emerald-400 font-medium mb-6">Only €1.67/month</p>
+                  <div className="space-y-3">
+                    {["Everything in Monthly", "Priority in discovery", "10 Super Likes daily", "Advanced filters", "Read receipts", "Profile boost weekly", "Premium badge"].map(feat => (
+                      <div key={feat} className="flex items-center gap-2.5">
+                        <Check className="h-4 w-4 text-purple-500 flex-shrink-0" />
+                        <span className="text-sm">{feat}</span>
+                      </div>
+                    ))}
                   </div>
                 </CardContent>
               </Card>
             </div>
 
-            <Button 
-              onClick={() => handleSubscribe(selectedPlan)} 
-              size="lg"
-              className="w-full max-w-md mx-auto text-lg py-6 bg-gradient-to-r from-pink-500 via-purple-500 to-pink-500 hover:from-pink-600 hover:via-purple-600 hover:to-pink-600 text-white shadow-xl hover:shadow-2xl transition-all"
-            >
-              <Heart className="mr-2 h-5 w-5" />
-              Start Your Journey ({selectedPlan === 'monthly' ? '2 €/month' : '20 €/year'})
-            </Button>
-            
-            <p className="text-sm text-muted-foreground mt-4">
-              Cancel anytime • Secure payment • Money back guarantee
-            </p>
+            <div className="text-center mt-8 space-y-4">
+              <Button
+                onClick={() => handleSubscribe(selectedPlan)}
+                size="lg"
+                className="w-full max-w-md mx-auto text-base py-6 bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white shadow-lg shadow-rose-500/20"
+              >
+                <Heart className="mr-2 h-5 w-5" />
+                Get Started — {selectedPlan === 'monthly' ? '€2/month' : '€20/year'}
+              </Button>
+              <p className="text-xs text-muted-foreground">
+                Cancel anytime • Secure payment • 100% satisfaction guarantee
+              </p>
+            </div>
+          </motion.div>
+
+          {/* Safety Section */}
+          <div className="mt-16 border-t border-border/50 pt-12">
+            <div className="flex items-center justify-center gap-2 mb-6">
+              <Shield className="h-5 w-5 text-rose-500" />
+              <h3 className="text-lg font-semibold">Your Safety Matters</h3>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto text-center">
+              <div className="p-4">
+                <p className="font-medium text-sm mb-1">Photo Verification</p>
+                <p className="text-xs text-muted-foreground">Verified profiles for authentic connections</p>
+              </div>
+              <div className="p-4">
+                <p className="font-medium text-sm mb-1">Block & Report</p>
+                <p className="text-xs text-muted-foreground">Easy tools to manage your experience</p>
+              </div>
+              <div className="p-4">
+                <p className="font-medium text-sm mb-1">Data Encryption</p>
+                <p className="text-xs text-muted-foreground">Your conversations stay private</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     );
   }
 
+  // ==================== CREATE PROFILE DIALOG ====================
   if (!currentProfile) {
     return (
-      <Dialog open={true} onOpenChange={(open) => {
-        if (!open) {
-          navigate('/');
-        }
-      }}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <Dialog open={true} onOpenChange={(open) => { if (!open) navigate('/'); }}>
+        <DialogContent className="max-w-lg">
           <DialogHeader>
-            <DialogTitle className="text-2xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">
+            <DialogTitle className="text-xl font-bold flex items-center gap-2">
+              <Heart className="h-5 w-5 text-rose-500" />
               Create Your Profile
             </DialogTitle>
           </DialogHeader>
-          <div className="space-y-6">
-            <div className="grid md:grid-cols-2 gap-4">
+          <div className="space-y-5">
+            <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="text-sm font-medium mb-2 block">Display Name *</label>
-                <Input
-                  value={profileForm.display_name}
-                  onChange={(e) => setProfileForm({ ...profileForm, display_name: e.target.value })}
-                  placeholder="Your name"
-                  className="text-base"
-                />
+                <label className="text-sm font-medium mb-1.5 block">Display Name *</label>
+                <Input value={profileForm.display_name} onChange={(e) => setProfileForm({ ...profileForm, display_name: e.target.value })} placeholder="Your name" />
               </div>
               <div>
-                <label className="text-sm font-medium mb-2 block">Age *</label>
-                <Input
-                  type="number"
-                  min="18"
-                  max="99"
-                  value={profileForm.age}
-                  onChange={(e) => setProfileForm({ ...profileForm, age: parseInt(e.target.value) })}
-                  className="text-base"
-                />
+                <label className="text-sm font-medium mb-1.5 block">Age *</label>
+                <Input type="number" min="18" max="99" value={profileForm.age} onChange={(e) => setProfileForm({ ...profileForm, age: parseInt(e.target.value) })} />
               </div>
             </div>
-            
-            <div className="grid md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="text-sm font-medium mb-2 block">I am</label>
-                <select 
-                  className="w-full p-3 border rounded-lg bg-background text-foreground text-base"
-                  value={profileForm.gender}
-                  onChange={(e) => setProfileForm({ ...profileForm, gender: e.target.value })}
-                >
+                <label className="text-sm font-medium mb-1.5 block">I am</label>
+                <select className="w-full p-2.5 border rounded-lg bg-background text-foreground text-sm" value={profileForm.gender} onChange={(e) => setProfileForm({ ...profileForm, gender: e.target.value })}>
                   <option value="male">Male</option>
                   <option value="female">Female</option>
                   <option value="other">Other</option>
                 </select>
               </div>
               <div>
-                <label className="text-sm font-medium mb-2 block">Looking For</label>
-                <select 
-                  className="w-full p-3 border rounded-lg bg-background text-foreground text-base"
-                  value={profileForm.looking_for}
-                  onChange={(e) => setProfileForm({ ...profileForm, looking_for: e.target.value })}
-                >
+                <label className="text-sm font-medium mb-1.5 block">Looking For</label>
+                <select className="w-full p-2.5 border rounded-lg bg-background text-foreground text-sm" value={profileForm.looking_for} onChange={(e) => setProfileForm({ ...profileForm, looking_for: e.target.value })}>
                   <option value="male">Male</option>
                   <option value="female">Female</option>
                   <option value="other">Other</option>
                 </select>
               </div>
             </div>
-
             <div>
-              <label className="text-sm font-medium mb-2 block">About Me *</label>
-              <Textarea
-                value={profileForm.bio}
-                onChange={(e) => setProfileForm({ ...profileForm, bio: e.target.value })}
-                placeholder="Tell others about yourself, your hobbies, what you're looking for..."
-                className="min-h-32 text-base"
-              />
+              <label className="text-sm font-medium mb-1.5 block">About Me *</label>
+              <Textarea value={profileForm.bio} onChange={(e) => setProfileForm({ ...profileForm, bio: e.target.value })} placeholder="Tell others about yourself, your hobbies, what you're looking for..." className="min-h-24" />
             </div>
-
             <div>
-              <label className="text-sm font-medium mb-2 block">Location</label>
-              <Input
-                value={profileForm.location}
-                onChange={(e) => setProfileForm({ ...profileForm, location: e.target.value })}
-                placeholder="City, Country"
-                className="text-base"
-              />
+              <label className="text-sm font-medium mb-1.5 block">Location</label>
+              <Input value={profileForm.location} onChange={(e) => setProfileForm({ ...profileForm, location: e.target.value })} placeholder="City, Country" />
             </div>
-
-            <Button 
-              onClick={handleCreateProfile} 
-              className="w-full bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-lg py-6"
-            >
-              <Heart className="mr-2" />
+            <Button onClick={handleCreateProfile} className="w-full bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 py-5">
+              <Heart className="mr-2 h-4 w-4" />
               Create Profile
             </Button>
           </div>
@@ -1033,589 +806,609 @@ const Dating = () => {
     );
   }
 
+  // ==================== MAIN APP ====================
+  const currentCard = currentIndex < profiles.length ? profiles[currentIndex] : null;
+  const cardPhotos = currentCard ? getProfilePhotos(currentCard) : [];
+  const completeness = getProfileCompleteness();
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50/50 via-purple-50/50 to-background pt-20 pb-12">
+    <div className="min-h-screen bg-background pt-16 sm:pt-20 pb-24">
       <div className="container mx-auto px-4 max-w-7xl">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-full bg-gradient-to-br from-rose-500 to-pink-600 flex items-center justify-center text-white shadow-lg shadow-rose-500/20">
+              <Flame className="h-5 w-5" />
+            </div>
+            <div>
+              <h1 className="text-xl font-bold">Dating</h1>
+              <p className="text-xs text-muted-foreground">{matches.length} matches • {likesYouCount} likes</p>
+            </div>
+          </div>
+          {superLikesRemaining > 0 && (
+            <Badge variant="outline" className="border-blue-500/30 text-blue-600 dark:text-blue-400 gap-1">
+              <Sparkles className="h-3 w-3" />
+              {superLikesRemaining} Super Likes
+            </Badge>
+          )}
+        </div>
+
         <Tabs defaultValue="swipe" className="w-full">
-          <TabsList className="grid w-full grid-cols-4 max-w-2xl mx-auto mb-8 h-14 bg-background/80 backdrop-blur">
-            <TabsTrigger value="swipe" className="text-base">
-              <Heart className="h-5 w-5 mr-2" />
+          <TabsList className="grid w-full grid-cols-4 max-w-lg mx-auto mb-6 h-11 bg-muted/50">
+            <TabsTrigger value="swipe" className="text-sm gap-1.5 data-[state=active]:bg-rose-500 data-[state=active]:text-white">
+              <Heart className="h-4 w-4" />
               <span className="hidden sm:inline">Discover</span>
             </TabsTrigger>
-            <TabsTrigger value="matches" className="text-base">
-              <MessageCircle className="h-5 w-5 mr-2" />
-              <span className="hidden sm:inline">Matches</span> ({matches.length})
+            <TabsTrigger value="matches" className="text-sm gap-1.5 data-[state=active]:bg-rose-500 data-[state=active]:text-white">
+              <MessageCircle className="h-4 w-4" />
+              <span className="hidden sm:inline">Matches</span>
+              {matches.length > 0 && <span className="text-xs">({matches.length})</span>}
             </TabsTrigger>
-            <TabsTrigger value="likes" className="text-base">
-              <Eye className="h-5 w-5 mr-2" />
-              <span className="hidden sm:inline">Likes</span> ({likesYouCount})
+            <TabsTrigger value="likes" className="text-sm gap-1.5 data-[state=active]:bg-rose-500 data-[state=active]:text-white relative">
+              <Eye className="h-4 w-4" />
+              <span className="hidden sm:inline">Likes</span>
+              {likesYouCount > 0 && (
+                <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-rose-500 text-white text-xs flex items-center justify-center">{likesYouCount}</span>
+              )}
             </TabsTrigger>
-            <TabsTrigger value="profile" className="text-base">
-              <Settings className="h-5 w-5 mr-2" />
+            <TabsTrigger value="profile" className="text-sm gap-1.5 data-[state=active]:bg-rose-500 data-[state=active]:text-white">
+              <User className="h-4 w-4" />
               <span className="hidden sm:inline">Profile</span>
             </TabsTrigger>
           </TabsList>
 
-          {/* Swipe Tab */}
+          {/* ==================== DISCOVER TAB ==================== */}
           <TabsContent value="swipe" className="flex justify-center">
-            {currentIndex < profiles.length ? (
-              <Card className="w-full max-w-md shadow-2xl border-2">
-                <CardContent className="p-0">
-                  <div className="relative aspect-[3/4] bg-gradient-to-br from-pink-100 to-purple-100 rounded-t-lg overflow-hidden group">
-                    {profiles[currentIndex].profile_photo_url ? (
-                      <>
-                        {isVideoUrl(profiles[currentIndex].profile_photo_url!) ? (
-                          <video
-                            src={profiles[currentIndex].profile_photo_url!}
-                            className="w-full h-full object-cover cursor-pointer"
-                            onClick={() => setLightboxImage(profiles[currentIndex].profile_photo_url)}
-                            autoPlay
-                            loop
-                            muted
-                          />
-                        ) : (
-                          <img
-                            src={profiles[currentIndex].profile_photo_url!}
-                            alt={profiles[currentIndex].display_name}
-                            className="w-full h-full object-cover cursor-pointer transform group-hover:scale-105 transition-transform duration-300"
-                            onClick={() => setLightboxImage(profiles[currentIndex].profile_photo_url)}
-                          />
-                        )}
-                      </>
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center">
-                        <User className="h-32 w-32 text-muted-foreground" />
+            <AnimatePresence mode="wait">
+              {currentCard ? (
+                <motion.div
+                  key={currentCard.id}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ 
+                    opacity: swipeDirection ? 0 : 1, 
+                    scale: swipeDirection ? 0.9 : 1,
+                    x: swipeDirection === "left" ? -200 : swipeDirection === "right" ? 200 : 0,
+                    y: swipeDirection === "up" ? -200 : 0,
+                    rotate: swipeDirection === "left" ? -15 : swipeDirection === "right" ? 15 : 0
+                  }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="w-full max-w-sm"
+                >
+                  <Card className="overflow-hidden shadow-xl border-0 bg-card">
+                    {/* Photo section */}
+                    <div className="relative aspect-[3/4] bg-muted overflow-hidden">
+                      {cardPhotos.length > 0 ? (
+                        <>
+                          {isVideoUrl(cardPhotos[activePhotoIndex]) ? (
+                            <video src={cardPhotos[activePhotoIndex]} className="w-full h-full object-cover" autoPlay loop muted playsInline />
+                          ) : (
+                            <img
+                              src={cardPhotos[activePhotoIndex]}
+                              alt={currentCard.display_name}
+                              className="w-full h-full object-cover"
+                              onClick={() => setLightboxImage(cardPhotos[activePhotoIndex])}
+                            />
+                          )}
+                          {/* Photo indicators */}
+                          {cardPhotos.length > 1 && (
+                            <div className="absolute top-3 left-3 right-3 flex gap-1">
+                              {cardPhotos.map((_, i) => (
+                                <button
+                                  key={i}
+                                  onClick={() => setActivePhotoIndex(i)}
+                                  className={`flex-1 h-1 rounded-full transition-all ${
+                                    i === activePhotoIndex ? 'bg-white' : 'bg-white/40'
+                                  }`}
+                                />
+                              ))}
+                            </div>
+                          )}
+                          {/* Tap zones for photo navigation */}
+                          {cardPhotos.length > 1 && (
+                            <>
+                              <button
+                                className="absolute left-0 top-0 w-1/3 h-full"
+                                onClick={() => setActivePhotoIndex(Math.max(0, activePhotoIndex - 1))}
+                              />
+                              <button
+                                className="absolute right-0 top-0 w-1/3 h-full"
+                                onClick={() => setActivePhotoIndex(Math.min(cardPhotos.length - 1, activePhotoIndex + 1))}
+                              />
+                            </>
+                          )}
+                        </>
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-rose-100 to-purple-100 dark:from-rose-900/20 dark:to-purple-900/20">
+                          <User className="h-24 w-24 text-muted-foreground/50" />
+                        </div>
+                      )}
+                      
+                      {/* Info overlay */}
+                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-5">
+                        <div className="flex items-end justify-between">
+                          <div>
+                            <h2 className="text-2xl font-bold text-white">
+                              {currentCard.display_name}, {currentCard.age}
+                            </h2>
+                            {currentCard.location && (
+                              <p className="text-white/80 text-sm flex items-center gap-1 mt-0.5">
+                                <MapPin className="h-3.5 w-3.5" />
+                                {currentCard.location}
+                              </p>
+                            )}
+                          </div>
+                          <button
+                            onClick={() => setLightboxImage(cardPhotos[activePhotoIndex] || null)}
+                            className="h-9 w-9 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center text-white hover:bg-white/30 transition-colors"
+                          >
+                            <Info className="h-4 w-4" />
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Swipe indicators */}
+                      {swipeDirection === "right" && (
+                        <div className="absolute top-8 left-6 rotate-[-20deg]">
+                          <Badge className="bg-emerald-500 text-white text-2xl px-6 py-2 border-4 border-emerald-400">LIKE</Badge>
+                        </div>
+                      )}
+                      {swipeDirection === "left" && (
+                        <div className="absolute top-8 right-6 rotate-[20deg]">
+                          <Badge className="bg-red-500 text-white text-2xl px-6 py-2 border-4 border-red-400">NOPE</Badge>
+                        </div>
+                      )}
+                      {swipeDirection === "up" && (
+                        <div className="absolute top-8 left-1/2 -translate-x-1/2">
+                          <Badge className="bg-blue-500 text-white text-2xl px-6 py-2 border-4 border-blue-400">SUPER LIKE</Badge>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Bio */}
+                    {currentCard.bio && (
+                      <div className="px-5 py-3 border-b border-border/50">
+                        <p className="text-sm text-muted-foreground line-clamp-2">{currentCard.bio}</p>
                       </div>
                     )}
-                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-6 text-white">
-                      <h2 className="text-3xl font-bold mb-1">
-                        {profiles[currentIndex].display_name}, {profiles[currentIndex].age}
-                      </h2>
-                      {profiles[currentIndex].location && (
-                        <p className="text-white/90 mb-2 flex items-center">
-                          📍 {profiles[currentIndex].location}
-                        </p>
-                      )}
-                      {profiles[currentIndex].bio && (
-                        <p className="text-sm text-white/80 line-clamp-3">{profiles[currentIndex].bio}</p>
-                      )}
+
+                    {/* Interests */}
+                    {currentCard.interests && currentCard.interests.length > 0 && (
+                      <div className="px-5 py-3 border-b border-border/50">
+                        <div className="flex flex-wrap gap-1.5">
+                          {currentCard.interests.slice(0, 5).map(interest => (
+                            <Badge key={interest} variant="secondary" className="text-xs font-normal">
+                              {interest}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Action buttons */}
+                    <div className="p-5">
+                      <div className="flex gap-3 justify-center items-center">
+                        <button
+                          disabled={!canRewind}
+                          onClick={handleRewind}
+                          className="h-11 w-11 rounded-full border border-border flex items-center justify-center hover:bg-amber-50 dark:hover:bg-amber-950/20 hover:border-amber-400 transition-all disabled:opacity-30"
+                        >
+                          <RotateCcw className="h-5 w-5 text-amber-500" />
+                        </button>
+                        <button
+                          onClick={() => handleSwipe("dislike")}
+                          className="h-14 w-14 rounded-full border-2 border-red-200 dark:border-red-800 flex items-center justify-center hover:bg-red-50 dark:hover:bg-red-950/20 hover:border-red-400 hover:scale-110 transition-all shadow-sm"
+                        >
+                          <X className="h-7 w-7 text-red-500" />
+                        </button>
+                        <button
+                          onClick={() => handleSwipe("like", true)}
+                          disabled={superLikesRemaining === 0}
+                          className="h-11 w-11 rounded-full border border-border flex items-center justify-center hover:bg-blue-50 dark:hover:bg-blue-950/20 hover:border-blue-400 transition-all disabled:opacity-30"
+                        >
+                          <Star className="h-5 w-5 text-blue-500" />
+                        </button>
+                        <button
+                          onClick={() => handleSwipe("like")}
+                          className="h-14 w-14 rounded-full border-2 border-emerald-200 dark:border-emerald-800 flex items-center justify-center hover:bg-emerald-50 dark:hover:bg-emerald-950/20 hover:border-emerald-400 hover:scale-110 transition-all shadow-sm"
+                        >
+                          <Heart className="h-7 w-7 text-emerald-500" />
+                        </button>
+                        <button
+                          onClick={viewLikesYou}
+                          className="h-11 w-11 rounded-full border border-border flex items-center justify-center hover:bg-purple-50 dark:hover:bg-purple-950/20 hover:border-purple-400 transition-all relative"
+                        >
+                          <Eye className="h-5 w-5 text-purple-500" />
+                          {likesYouCount > 0 && (
+                            <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-rose-500 text-white text-[10px] flex items-center justify-center">
+                              {likesYouCount}
+                            </span>
+                          )}
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                  
-                  <div className="p-6 space-y-4">
-                    <div className="flex gap-3 justify-center items-center">
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        disabled={!canRewind}
-                        onClick={handleRewind}
-                        className="h-14 w-14 rounded-full hover:bg-yellow-100 hover:border-yellow-500"
-                      >
-                        <RotateCcw className="h-6 w-6 text-yellow-500" />
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        onClick={() => handleSwipe("dislike")}
-                        className="h-16 w-16 rounded-full hover:bg-red-100 hover:border-red-500"
-                      >
-                        <X className="h-8 w-8 text-red-500" />
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        onClick={() => handleSwipe("like", true)}
-                        disabled={superLikesRemaining === 0}
-                        className="h-14 w-14 rounded-full hover:bg-blue-100 hover:border-blue-500"
-                      >
-                        <Sparkles className="h-6 w-6 text-blue-500" />
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        onClick={() => handleSwipe("like")}
-                        className="h-16 w-16 rounded-full hover:bg-green-100 hover:border-green-500"
-                      >
-                        <Heart className="h-8 w-8 text-green-500" />
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        onClick={viewLikesYou}
-                        className="h-14 w-14 rounded-full hover:bg-purple-100 hover:border-purple-500"
-                      >
-                        <Eye className="h-6 w-6 text-purple-500" />
-                      </Button>
+                  </Card>
+                </motion.div>
+              ) : (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                >
+                  <Card className="w-full max-w-sm p-10 text-center">
+                    <div className="h-20 w-20 mx-auto rounded-full bg-muted flex items-center justify-center mb-4">
+                      <Heart className="h-10 w-10 text-muted-foreground/50" />
                     </div>
-                    <p className="text-center text-sm text-muted-foreground">
-                      {superLikesRemaining} Super Likes remaining
+                    <h3 className="text-xl font-bold mb-2">No More Profiles</h3>
+                    <p className="text-sm text-muted-foreground mb-6">
+                      You've seen everyone nearby. Check back later for new people.
                     </p>
-                  </div>
-                </CardContent>
-              </Card>
-            ) : (
-              <Card className="w-full max-w-md p-12">
-                <div className="text-center space-y-4">
-                  <User className="h-24 w-24 mx-auto text-muted-foreground" />
-                  <h3 className="text-2xl font-bold">No More Profiles</h3>
-                  <p className="text-muted-foreground">
-                    You've seen everyone! Check back later for new people.
-                  </p>
-                  <Button onClick={() => loadProfiles()} className="mt-4">
-                    Refresh
-                  </Button>
-                </div>
-              </Card>
-            )}
+                    <Button onClick={() => loadProfiles()} variant="outline" className="gap-2">
+                      <RotateCcw className="h-4 w-4" />
+                      Refresh
+                    </Button>
+                  </Card>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </TabsContent>
 
-          {/* Matches Tab */}
+          {/* ==================== MATCHES TAB ==================== */}
           <TabsContent value="matches">
             {selectedMatch ? (
-              <Card className="max-w-4xl mx-auto shadow-xl">
-                <CardHeader className="border-b bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-950/30 dark:to-purple-950/30">
-                  <div className="flex items-center gap-4">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => setSelectedMatch(null)}
-                    >
-                      <X className="h-5 w-5" />
-                    </Button>
-                    <div className="flex items-center gap-3">
-                      <div className="h-12 w-12 rounded-full bg-gradient-to-br from-pink-400 to-purple-400 flex items-center justify-center text-white font-bold text-lg">
+              <Card className="max-w-2xl mx-auto shadow-lg border-0 overflow-hidden">
+                {/* Chat header */}
+                <div className="border-b bg-card p-4 flex items-center gap-3">
+                  <Button variant="ghost" size="icon" onClick={() => setSelectedMatch(null)} className="h-9 w-9">
+                    <ArrowLeft className="h-5 w-5" />
+                  </Button>
+                  <div className="h-10 w-10 rounded-full overflow-hidden bg-gradient-to-br from-rose-400 to-pink-500 flex-shrink-0">
+                    {selectedMatch.profile?.profile_photo_url ? (
+                      <img src={selectedMatch.profile.profile_photo_url} alt="" className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-white font-bold">
                         {selectedMatch.profile?.display_name?.charAt(0) || "?"}
                       </div>
-                      <div>
-                        <h3 className="font-bold text-lg">{selectedMatch.profile?.display_name}</h3>
-                        <p className="text-sm text-muted-foreground">Online</p>
-                      </div>
-                    </div>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => setShowGiftDialog(true)}
-                      className="ml-auto"
-                    >
-                      <Gift className="h-5 w-5" />
-                    </Button>
+                    )}
                   </div>
-                </CardHeader>
-                <CardContent className="p-0">
-                  <ScrollArea className="h-[500px] p-6">
-                    <div className="space-y-4">
-                      {messages.map((msg) => (
-                        <div
-                          key={msg.id}
-                          className={`flex ${msg.sender_id === user?.id ? "justify-end" : "justify-start"}`}
-                        >
-                          <div
-                            className={`max-w-[70%] rounded-2xl px-4 py-3 ${
-                              msg.sender_id === user?.id
-                                ? "bg-gradient-to-r from-pink-500 to-purple-500 text-white"
-                                : "bg-muted"
-                            }`}
-                          >
-                            <p className="text-sm">{msg.content}</p>
-                            <div className="flex items-center gap-1 mt-1 justify-end">
-                              <span className={`text-xs ${msg.sender_id === user?.id ? "text-white/70" : "text-muted-foreground"}`}>
-                                {new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                              </span>
-                              {msg.sender_id === user?.id && (
-                                msg.read_at ? <CheckCheck className="h-3 w-3" /> : <Check className="h-3 w-3" />
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                      {sentGifts.map((gift) => (
-                        <div
-                          key={gift.id}
-                          className={`flex ${gift.sender_id === user?.id ? "justify-end" : "justify-start"}`}
-                        >
-                          <div className="bg-gradient-to-br from-yellow-100 to-orange-100 dark:from-yellow-900/30 dark:to-orange-900/30 rounded-2xl px-6 py-4 text-center">
-                            <div className="text-4xl mb-2">{gift.gift.icon}</div>
-                            <p className="font-semibold">{gift.gift.name}</p>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </ScrollArea>
-                  <div className="border-t p-4 bg-background">
-                    <div className="flex gap-2">
-                      <Input
-                        value={newMessage}
-                        onChange={(e) => setNewMessage(e.target.value)}
-                        placeholder="Type a message..."
-                        onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
-                        className="flex-1"
-                      />
-                      <Button onClick={handleSendMessage} size="icon" className="bg-gradient-to-r from-pink-500 to-purple-500">
-                        <Send className="h-5 w-5" />
-                      </Button>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ) : (
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 max-w-6xl mx-auto">
-                {matches.map((match) => (
-                  <Card
-                    key={match.id}
-                    className="cursor-pointer hover:shadow-xl transition-all hover:scale-105"
-                    onClick={() => {
-                      setSelectedMatch(match);
-                      loadMessages(match.id);
-                    }}
-                  >
-                    <CardContent className="p-0">
-                      <div className="aspect-square bg-gradient-to-br from-pink-100 to-purple-100 rounded-t-lg overflow-hidden">
-                        {match.profile?.profile_photo_url ? (
-                          <>
-                            {isVideoUrl(match.profile.profile_photo_url) ? (
-                              <video
-                                src={match.profile.profile_photo_url}
-                                className="w-full h-full object-cover"
-                                muted
-                              />
-                            ) : (
-                              <img
-                                src={match.profile.profile_photo_url}
-                                alt={match.profile.display_name}
-                                className="w-full h-full object-cover"
-                              />
-                            )}
-                          </>
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center">
-                            <User className="h-16 w-16 text-muted-foreground" />
-                          </div>
-                        )}
-                      </div>
-                      <div className="p-4">
-                        <h3 className="font-bold truncate">{match.profile?.display_name}</h3>
-                        <p className="text-sm text-muted-foreground truncate">
-                          {match.profile?.age} • {match.profile?.location}
-                        </p>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-                {matches.length === 0 && (
-                  <div className="col-span-full text-center py-12">
-                    <MessageCircle className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
-                    <h3 className="text-xl font-bold mb-2">No Matches Yet</h3>
-                    <p className="text-muted-foreground">
-                      Start swiping to find your perfect match!
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-semibold text-sm truncate">{selectedMatch.profile?.display_name}</h3>
+                    <p className="text-xs text-emerald-500 flex items-center gap-1">
+                      <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                      Online
                     </p>
                   </div>
+                  <Button variant="ghost" size="icon" onClick={() => setShowGiftDialog(true)} className="h-9 w-9 text-rose-500">
+                    <Gift className="h-5 w-5" />
+                  </Button>
+                </div>
+
+                {/* Messages */}
+                <ScrollArea className="h-[450px]">
+                  <div className="p-4 space-y-3">
+                    {messages.length === 0 && sentGifts.length === 0 && (
+                      <div className="text-center py-12">
+                        <Heart className="h-12 w-12 mx-auto text-rose-300 mb-3" />
+                        <p className="text-sm font-medium">It's a match! 🎉</p>
+                        <p className="text-xs text-muted-foreground mt-1">Say something nice to start the conversation</p>
+                      </div>
+                    )}
+                    {messages.map((msg) => (
+                      <div key={msg.id} className={`flex ${msg.sender_id === user?.id ? "justify-end" : "justify-start"}`}>
+                        <div className={`max-w-[75%] rounded-2xl px-4 py-2.5 ${
+                          msg.sender_id === user?.id
+                            ? "bg-gradient-to-r from-rose-500 to-pink-500 text-white rounded-br-md"
+                            : "bg-muted rounded-bl-md"
+                        }`}>
+                          <p className="text-sm leading-relaxed">{msg.content}</p>
+                          <div className="flex items-center gap-1 mt-1 justify-end">
+                            <span className={`text-[10px] ${msg.sender_id === user?.id ? "text-white/60" : "text-muted-foreground"}`}>
+                              {new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                            </span>
+                            {msg.sender_id === user?.id && (
+                              msg.read_at ? <CheckCheck className="h-3 w-3 text-white/60" /> : <Check className="h-3 w-3 text-white/60" />
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                    {sentGifts.map((gift) => (
+                      <div key={gift.id} className={`flex ${gift.sender_id === user?.id ? "justify-end" : "justify-start"}`}>
+                        <div className="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-2xl px-5 py-3 text-center border border-amber-200/50 dark:border-amber-800/50">
+                          <div className="text-3xl mb-1">{gift.gift.icon}</div>
+                          <p className="text-xs font-medium">{gift.gift.name}</p>
+                        </div>
+                      </div>
+                    ))}
+                    <div ref={chatEndRef} />
+                  </div>
+                </ScrollArea>
+
+                {/* Input */}
+                <div className="border-t p-3 bg-card">
+                  <div className="flex gap-2">
+                    <Input
+                      value={newMessage}
+                      onChange={(e) => setNewMessage(e.target.value)}
+                      placeholder="Type a message..."
+                      onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
+                      className="flex-1 border-0 bg-muted/50 focus-visible:ring-1 focus-visible:ring-rose-500"
+                    />
+                    <Button onClick={handleSendMessage} size="icon" className="bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 h-10 w-10">
+                      <Send className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              </Card>
+            ) : (
+              <div className="max-w-4xl mx-auto">
+                {matches.length > 0 ? (
+                  <div className="space-y-3">
+                    {matches.map((match) => (
+                      <Card
+                        key={match.id}
+                        className="cursor-pointer hover:bg-muted/30 transition-colors border-border/50"
+                        onClick={() => { setSelectedMatch(match); loadMessages(match.id); }}
+                      >
+                        <CardContent className="p-4 flex items-center gap-4">
+                          <div className="h-14 w-14 rounded-full overflow-hidden bg-gradient-to-br from-rose-400 to-pink-500 flex-shrink-0">
+                            {match.profile?.profile_photo_url ? (
+                              <img src={match.profile.profile_photo_url} alt="" className="w-full h-full object-cover" />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center text-white font-bold text-lg">
+                                {match.profile?.display_name?.charAt(0) || "?"}
+                              </div>
+                            )}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2">
+                              <h3 className="font-semibold truncate">{match.profile?.display_name}</h3>
+                              <span className="text-xs text-muted-foreground">{match.profile?.age}</span>
+                            </div>
+                            <p className="text-sm text-muted-foreground truncate">
+                              {match.profile?.location || "Tap to start chatting"}
+                            </p>
+                          </div>
+                          <ChevronRight className="h-5 w-5 text-muted-foreground flex-shrink-0" />
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                ) : (
+                  <Card className="p-12 text-center">
+                    <MessageCircle className="h-14 w-14 mx-auto text-muted-foreground/40 mb-4" />
+                    <h3 className="text-xl font-bold mb-2">No Matches Yet</h3>
+                    <p className="text-sm text-muted-foreground max-w-sm mx-auto">
+                      Start swiping to find people you connect with. When you both like each other, you'll match!
+                    </p>
+                  </Card>
                 )}
               </div>
             )}
           </TabsContent>
 
-          {/* Likes You Tab */}
+          {/* ==================== LIKES TAB ==================== */}
           <TabsContent value="likes">
-            <Card className="max-w-2xl mx-auto p-8 text-center">
-              <div className="space-y-6">
-                <div className="h-24 w-24 mx-auto rounded-full bg-gradient-to-br from-pink-500 to-purple-500 flex items-center justify-center">
-                  <Eye className="h-12 w-12 text-white" />
-                </div>
-                <div>
-                  <h2 className="text-3xl font-bold mb-2">
-                    {likesYouCount} {likesYouCount === 1 ? "Person" : "People"} Like You
-                  </h2>
-                  <p className="text-muted-foreground text-lg">
-                    See who's interested in you and make the first move!
-                  </p>
-                </div>
-                <Button
-                  onClick={viewLikesYou}
-                  size="lg"
-                  className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-lg px-8 py-6"
-                >
-                  <Eye className="mr-2 h-5 w-5" />
-                  View Likes
-                </Button>
+            <Card className="max-w-md mx-auto p-8 text-center">
+              <div className="h-20 w-20 mx-auto rounded-full bg-gradient-to-br from-rose-500 to-pink-600 flex items-center justify-center mb-4 shadow-lg shadow-rose-500/20">
+                <Eye className="h-10 w-10 text-white" />
               </div>
+              <h2 className="text-2xl font-bold mb-1">
+                {likesYouCount} {likesYouCount === 1 ? "Person" : "People"} Like You
+              </h2>
+              <p className="text-sm text-muted-foreground mb-6">
+                See who's interested and make the first move
+              </p>
+              <Button onClick={viewLikesYou} className="bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 gap-2">
+                <Eye className="h-4 w-4" />
+                View Likes
+              </Button>
             </Card>
           </TabsContent>
 
-          {/* Profile Tab */}
+          {/* ==================== PROFILE TAB ==================== */}
           <TabsContent value="profile">
-            <Card className="max-w-2xl mx-auto shadow-xl">
-              <CardHeader className="bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-950/30 dark:to-purple-950/30">
-                <div className="flex justify-between items-center">
-                  <h2 className="text-2xl font-bold">My Profile</h2>
-                  <Button
-                    variant="outline"
-                    onClick={() => setShowEditDialog(true)}
-                    className="gap-2"
-                  >
-                    <Settings className="h-4 w-4" />
-                    Edit
-                  </Button>
-                </div>
-              </CardHeader>
-              <CardContent className="p-6 space-y-6">
-                {/* Profile Photo */}
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-semibold">Profile Photo</h3>
-                    <label htmlFor="profile-photo-upload">
-                      <Button variant="outline" size="sm" asChild className="cursor-pointer">
-                        <span>
-                          <Camera className="h-4 w-4 mr-2" />
-                          {uploadingPhoto ? "Uploading..." : "Upload Photo/Video"}
-                        </span>
-                      </Button>
-                      <input
-                        id="profile-photo-upload"
-                        type="file"
-                        accept="image/*,video/*"
-                        className="hidden"
-                        onChange={handleUploadProfilePhoto}
-                        disabled={uploadingPhoto}
-                      />
-                    </label>
-                  </div>
-                  <div className="aspect-square max-w-md mx-auto bg-gradient-to-br from-pink-100 to-purple-100 rounded-2xl overflow-hidden">
-                    {currentProfile.profile_photo_url ? (
-                      <>
-                        {isVideoUrl(currentProfile.profile_photo_url) ? (
-                          <video
-                            src={currentProfile.profile_photo_url}
-                            className="w-full h-full object-cover"
-                            controls
-                          />
+            <div className="max-w-lg mx-auto space-y-4">
+              {/* Profile Card */}
+              <Card className="overflow-hidden border-0 shadow-lg">
+                <div className="relative">
+                  <div className="h-32 bg-gradient-to-br from-rose-500 via-pink-500 to-purple-500" />
+                  <div className="absolute -bottom-12 left-1/2 -translate-x-1/2">
+                    <div className="h-24 w-24 rounded-full border-4 border-card overflow-hidden bg-muted shadow-lg">
+                      {currentProfile.profile_photo_url ? (
+                        isVideoUrl(currentProfile.profile_photo_url) ? (
+                          <video src={currentProfile.profile_photo_url} className="w-full h-full object-cover" muted />
                         ) : (
-                          <img
-                            src={currentProfile.profile_photo_url}
-                            alt={currentProfile.display_name}
-                            className="w-full h-full object-cover"
-                          />
-                        )}
-                      </>
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center">
-                        <User className="h-32 w-32 text-muted-foreground" />
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Additional Media */}
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-semibold">Additional Photos & Videos</h3>
-                    <label htmlFor="additional-photos-upload">
-                      <Button variant="outline" size="sm" asChild className="cursor-pointer">
-                        <span>
-                          <Plus className="h-4 w-4 mr-2" />
-                          {uploadingAdditional ? "Uploading..." : "Add Media"}
-                        </span>
-                      </Button>
-                      <input
-                        id="additional-photos-upload"
-                        type="file"
-                        accept="image/*,video/*"
-                        multiple
-                        className="hidden"
-                        onChange={handleUploadAdditionalPhotos}
-                        disabled={uploadingAdditional}
-                      />
-                    </label>
-                  </div>
-                  <div className="grid grid-cols-3 gap-4">
-                    {currentProfile.additional_photos?.map((photo, index) => (
-                      <div key={index} className="relative aspect-square rounded-lg overflow-hidden group">
-                        {isVideoUrl(photo) ? (
-                          <video
-                            src={photo}
-                            className="w-full h-full object-cover"
-                            muted
-                          />
-                        ) : (
-                          <img
-                            src={photo}
-                            alt={`Additional ${index + 1}`}
-                            className="w-full h-full object-cover"
-                          />
-                        )}
-                        <Button
-                          variant="destructive"
-                          size="icon"
-                          className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8"
-                          onClick={() => handleRemoveAdditionalPhoto(photo)}
-                        >
-                          <XCircle className="h-5 w-5" />
-                        </Button>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Profile Info */}
-                <div className="space-y-4 pt-4 border-t">
-                  <div>
-                    <h3 className="text-sm font-medium text-muted-foreground mb-1">Name & Age</h3>
-                    <p className="text-lg font-semibold">{currentProfile.display_name}, {currentProfile.age}</p>
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-medium text-muted-foreground mb-1">Looking For</h3>
-                    <p className="text-lg">{currentProfile.looking_for}</p>
-                  </div>
-                  {currentProfile.location && (
-                    <div>
-                      <h3 className="text-sm font-medium text-muted-foreground mb-1">Location</h3>
-                      <p className="text-lg">📍 {currentProfile.location}</p>
+                          <img src={currentProfile.profile_photo_url} alt="" className="w-full h-full object-cover" />
+                        )
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <User className="h-10 w-10 text-muted-foreground" />
+                        </div>
+                      )}
                     </div>
+                  </div>
+                </div>
+                <CardContent className="pt-16 pb-6 px-6 text-center">
+                  <h2 className="text-xl font-bold">{currentProfile.display_name}, {currentProfile.age}</h2>
+                  {currentProfile.location && (
+                    <p className="text-sm text-muted-foreground flex items-center justify-center gap-1 mt-1">
+                      <MapPin className="h-3.5 w-3.5" />
+                      {currentProfile.location}
+                    </p>
                   )}
                   {currentProfile.bio && (
-                    <div>
-                      <h3 className="text-sm font-medium text-muted-foreground mb-1">About Me</h3>
-                      <p className="text-base whitespace-pre-wrap">{currentProfile.bio}</p>
-                    </div>
+                    <p className="text-sm text-muted-foreground mt-3 max-w-sm mx-auto">{currentProfile.bio}</p>
                   )}
-                </div>
+                </CardContent>
+              </Card>
 
-                {/* Actions */}
-                <div className="flex gap-3 pt-4 border-t">
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <Button
-                        variant="outline"
-                        className="flex-1 text-destructive border-destructive hover:bg-destructive hover:text-destructive-foreground"
+              {/* Profile Completeness */}
+              <Card className="p-4">
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-sm font-medium">Profile Completeness</p>
+                  <span className="text-sm font-bold text-rose-500">{completeness}%</span>
+                </div>
+                <Progress value={completeness} className="h-2" />
+                {completeness < 100 && (
+                  <p className="text-xs text-muted-foreground mt-2">
+                    {!currentProfile.profile_photo_url ? "Add a profile photo to get 25% more views" : 
+                     !currentProfile.additional_photos?.length ? "Add more photos to boost visibility" :
+                     !currentProfile.location ? "Add your location for better matches" : "Complete your bio for better matches"}
+                  </p>
+                )}
+              </Card>
+
+              {/* Photos Section */}
+              <Card className="p-5">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="font-semibold text-sm">Photos & Videos</h3>
+                  <label className="cursor-pointer">
+                    <input type="file" className="hidden" onChange={handleUploadProfilePhoto} accept="image/*,video/*" disabled={uploadingPhoto} />
+                    <Badge variant="outline" className="cursor-pointer hover:bg-muted gap-1">
+                      <Camera className="h-3 w-3" />
+                      {uploadingPhoto ? "Uploading..." : "Change Main"}
+                    </Badge>
+                  </label>
+                </div>
+                <div className="grid grid-cols-3 gap-2">
+                  {/* Main photo */}
+                  <div className="aspect-square rounded-lg overflow-hidden bg-muted relative">
+                    {currentProfile.profile_photo_url ? (
+                      isVideoUrl(currentProfile.profile_photo_url) ? (
+                        <video src={currentProfile.profile_photo_url} className="w-full h-full object-cover" muted />
+                      ) : (
+                        <img src={currentProfile.profile_photo_url} alt="" className="w-full h-full object-cover" />
+                      )
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <Camera className="h-6 w-6 text-muted-foreground/50" />
+                      </div>
+                    )}
+                    <Badge className="absolute bottom-1 left-1 bg-black/60 text-white text-[10px] px-1.5 py-0.5">Main</Badge>
+                  </div>
+                  {/* Additional photos */}
+                  {(currentProfile.additional_photos || []).map((url, i) => (
+                    <div key={i} className="aspect-square rounded-lg overflow-hidden bg-muted relative group">
+                      {isVideoUrl(url) ? (
+                        <video src={url} className="w-full h-full object-cover" muted />
+                      ) : (
+                        <img src={url} alt="" className="w-full h-full object-cover" onClick={() => setLightboxImage(url)} />
+                      )}
+                      <button
+                        onClick={() => handleRemoveAdditionalPhoto(url)}
+                        className="absolute top-1 right-1 h-6 w-6 rounded-full bg-black/60 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
                       >
-                        <Trash2 className="h-4 w-4 mr-2" />
-                        Delete Profile
-                      </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                        <AlertDialogDescription>
-                          This action cannot be undone. This will permanently delete your profile and remove all your data.
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction onClick={handleDeleteProfile} className="bg-destructive">
-                          Delete
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
-
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <Button variant="outline" className="flex-1" disabled={cancelingSubscription}>
-                        Cancel Subscription
-                      </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>Cancel Subscription?</AlertDialogTitle>
-                        <AlertDialogDescription>
-                          You will lose access to premium features at the end of your current billing period.
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Keep Subscription</AlertDialogCancel>
-                        <AlertDialogAction onClick={handleCancelSubscription}>
-                          {cancelingSubscription ? "Canceling..." : "Cancel Subscription"}
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
+                        <X className="h-3 w-3" />
+                      </button>
+                    </div>
+                  ))}
+                  {/* Add more button */}
+                  <label className="aspect-square rounded-lg border-2 border-dashed border-border hover:border-rose-500/50 flex items-center justify-center cursor-pointer transition-colors">
+                    <input type="file" className="hidden" onChange={handleUploadAdditionalPhotos} accept="image/*,video/*" multiple disabled={uploadingAdditional} />
+                    <Plus className="h-6 w-6 text-muted-foreground" />
+                  </label>
                 </div>
-              </CardContent>
-            </Card>
+              </Card>
+
+              {/* Actions */}
+              <div className="grid grid-cols-2 gap-3">
+                <Button variant="outline" onClick={() => setShowEditDialog(true)} className="gap-2">
+                  <Settings className="h-4 w-4" />
+                  Edit Profile
+                </Button>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button variant="outline" className="gap-2 text-destructive hover:text-destructive">
+                      <Trash2 className="h-4 w-4" />
+                      Delete Profile
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Delete Profile?</AlertDialogTitle>
+                      <AlertDialogDescription>This will permanently delete your dating profile, matches, and messages. This action cannot be undone.</AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={handleDeleteProfile} className="bg-destructive">Delete</AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </div>
+
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="ghost" className="w-full text-muted-foreground text-sm" disabled={cancelingSubscription}>
+                    Cancel Subscription
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Cancel Subscription?</AlertDialogTitle>
+                    <AlertDialogDescription>You will lose access to premium features at the end of your current billing period.</AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Keep Subscription</AlertDialogCancel>
+                    <AlertDialogAction onClick={handleCancelSubscription}>
+                      {cancelingSubscription ? "Canceling..." : "Cancel Subscription"}
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </div>
           </TabsContent>
         </Tabs>
       </div>
 
       {/* Edit Profile Dialog */}
       <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-lg">
           <DialogHeader>
-            <DialogTitle className="text-2xl font-bold">Edit Profile</DialogTitle>
+            <DialogTitle className="flex items-center gap-2">
+              <Settings className="h-5 w-5" />
+              Edit Profile
+            </DialogTitle>
           </DialogHeader>
-          <div className="space-y-6">
-            <div className="grid md:grid-cols-2 gap-4">
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="text-sm font-medium mb-2 block">Display Name</label>
-                <Input
-                  value={editForm.display_name}
-                  onChange={(e) => setEditForm({ ...editForm, display_name: e.target.value })}
-                  placeholder="Your name"
-                />
+                <label className="text-sm font-medium mb-1.5 block">Display Name</label>
+                <Input value={editForm.display_name} onChange={(e) => setEditForm({ ...editForm, display_name: e.target.value })} />
               </div>
               <div>
-                <label className="text-sm font-medium mb-2 block">Age</label>
-                <Input
-                  type="number"
-                  min="18"
-                  max="99"
-                  value={editForm.age}
-                  onChange={(e) => setEditForm({ ...editForm, age: parseInt(e.target.value) })}
-                />
+                <label className="text-sm font-medium mb-1.5 block">Age</label>
+                <Input type="number" min="18" max="99" value={editForm.age} onChange={(e) => setEditForm({ ...editForm, age: parseInt(e.target.value) })} />
               </div>
             </div>
-            
-            <div className="grid md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="text-sm font-medium mb-2 block">Gender</label>
-                <select 
-                  className="w-full p-3 border rounded-lg bg-background text-foreground"
-                  value={editForm.gender}
-                  onChange={(e) => setEditForm({ ...editForm, gender: e.target.value })}
-                >
+                <label className="text-sm font-medium mb-1.5 block">Gender</label>
+                <select className="w-full p-2.5 border rounded-lg bg-background text-foreground text-sm" value={editForm.gender} onChange={(e) => setEditForm({ ...editForm, gender: e.target.value })}>
                   <option value="male">Male</option>
                   <option value="female">Female</option>
                   <option value="other">Other</option>
                 </select>
               </div>
               <div>
-                <label className="text-sm font-medium mb-2 block">Looking For</label>
-                <select 
-                  className="w-full p-3 border rounded-lg bg-background text-foreground"
-                  value={editForm.looking_for}
-                  onChange={(e) => setEditForm({ ...editForm, looking_for: e.target.value })}
-                >
+                <label className="text-sm font-medium mb-1.5 block">Looking For</label>
+                <select className="w-full p-2.5 border rounded-lg bg-background text-foreground text-sm" value={editForm.looking_for} onChange={(e) => setEditForm({ ...editForm, looking_for: e.target.value })}>
                   <option value="male">Male</option>
                   <option value="female">Female</option>
                   <option value="other">Other</option>
                 </select>
               </div>
             </div>
-
             <div>
-              <label className="text-sm font-medium mb-2 block">About Me</label>
-              <Textarea
-                value={editForm.bio}
-                onChange={(e) => setEditForm({ ...editForm, bio: e.target.value })}
-                placeholder="Write something about yourself..."
-                className="min-h-32"
-              />
+              <label className="text-sm font-medium mb-1.5 block">About Me</label>
+              <Textarea value={editForm.bio} onChange={(e) => setEditForm({ ...editForm, bio: e.target.value })} placeholder="Write something about yourself..." className="min-h-24" />
             </div>
-
             <div>
-              <label className="text-sm font-medium mb-2 block">Location</label>
-              <Input
-                value={editForm.location}
-                onChange={(e) => setEditForm({ ...editForm, location: e.target.value })}
-                placeholder="City, Country"
-              />
+              <label className="text-sm font-medium mb-1.5 block">Location</label>
+              <Input value={editForm.location} onChange={(e) => setEditForm({ ...editForm, location: e.target.value })} placeholder="City, Country" />
             </div>
-
             <div className="flex gap-3">
-              <Button onClick={handleUpdateProfile} className="flex-1 bg-gradient-to-r from-pink-500 to-purple-500">
-                Save Changes
-              </Button>
-              <Button variant="outline" onClick={() => setShowEditDialog(false)} className="flex-1">
-                Cancel
-              </Button>
+              <Button onClick={handleUpdateProfile} className="flex-1 bg-gradient-to-r from-rose-500 to-pink-500">Save Changes</Button>
+              <Button variant="outline" onClick={() => setShowEditDialog(false)} className="flex-1">Cancel</Button>
             </div>
           </div>
         </DialogContent>
@@ -1623,23 +1416,24 @@ const Dating = () => {
 
       {/* Gift Dialog */}
       <Dialog open={showGiftDialog} onOpenChange={setShowGiftDialog}>
-        <DialogContent>
+        <DialogContent className="max-w-sm">
           <DialogHeader>
-            <DialogTitle>Send a Gift 🎁</DialogTitle>
+            <DialogTitle className="flex items-center gap-2">
+              <Gift className="h-5 w-5 text-rose-500" />
+              Send a Gift
+            </DialogTitle>
           </DialogHeader>
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-3 gap-3">
             {availableGifts.map((gift) => (
-              <Card
+              <button
                 key={gift.id}
-                className="cursor-pointer hover:shadow-lg transition-all hover:scale-105"
                 onClick={() => handleSendGift(gift.id)}
+                className="p-4 rounded-xl border border-border hover:border-rose-500/50 hover:bg-rose-50/50 dark:hover:bg-rose-950/20 transition-all text-center"
               >
-                <CardContent className="p-4 text-center">
-                  <div className="text-4xl mb-2">{gift.icon}</div>
-                  <p className="text-sm font-semibold mb-1">{gift.name}</p>
-                  <p className="text-xs text-muted-foreground">{gift.price} €</p>
-                </CardContent>
-              </Card>
+                <div className="text-3xl mb-1">{gift.icon}</div>
+                <p className="text-xs font-medium truncate">{gift.name}</p>
+                <p className="text-[10px] text-muted-foreground">{gift.price} €</p>
+              </button>
             ))}
           </div>
         </DialogContent>
@@ -1647,32 +1441,15 @@ const Dating = () => {
 
       {/* Lightbox */}
       {lightboxImage && (
-        <div
-          className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4"
-          onClick={() => setLightboxImage(null)}
-        >
+        <div className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center p-4" onClick={() => setLightboxImage(null)}>
           {isVideoUrl(lightboxImage) ? (
-            <video
-              src={lightboxImage}
-              className="max-w-full max-h-full"
-              controls
-              autoPlay
-            />
+            <video src={lightboxImage} className="max-w-full max-h-full" controls autoPlay />
           ) : (
-            <img
-              src={lightboxImage}
-              alt="Full size"
-              className="max-w-full max-h-full object-contain"
-            />
+            <img src={lightboxImage} alt="Full size" className="max-w-full max-h-full object-contain" />
           )}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="absolute top-4 right-4 text-white hover:bg-white/20"
-            onClick={() => setLightboxImage(null)}
-          >
-            <X className="h-6 w-6" />
-          </Button>
+          <button className="absolute top-4 right-4 h-10 w-10 rounded-full bg-white/10 backdrop-blur-sm text-white flex items-center justify-center hover:bg-white/20 transition-colors" onClick={() => setLightboxImage(null)}>
+            <X className="h-5 w-5" />
+          </button>
         </div>
       )}
     </div>
