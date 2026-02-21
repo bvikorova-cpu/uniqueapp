@@ -1,70 +1,61 @@
 import { useEffect, useRef } from "react";
 
 interface AdBannerProps {
-  placementId: string;
+  adSlot: string;
   className?: string;
-  format?: "banner" | "rectangle" | "leaderboard" | "sidebar";
+  format?: "auto" | "horizontal" | "vertical" | "rectangle";
+  responsive?: boolean;
 }
 
 /**
- * Universal Ad Banner component for Ezoic integration
+ * Google AdSense Banner component
  * 
  * Usage:
- * <AdBanner placementId="ezoic-pub-ad-placeholder-101" format="banner" />
+ * <AdBanner adSlot="1234567890" format="auto" />
  * 
- * To activate:
- * 1. Register at ezoic.com and get your Publisher ID
- * 2. Add Ezoic script to index.html
- * 3. Replace EZOIC_ENABLED with true in this file
- * 4. Replace placeholder IDs with real Ezoic placement IDs
+ * The ad client ID (ca-pub-3821622017213888) is loaded via index.html.
+ * You only need the ad slot ID from your AdSense dashboard.
  */
 
-// 🔧 SET TO TRUE WHEN READY TO SHOW ADS
-const EZOIC_ENABLED = false;
+const ADSENSE_ENABLED = true;
+const AD_CLIENT = "ca-pub-3821622017213888";
 
-const AdBanner = ({ placementId, className = "", format = "banner" }: AdBannerProps) => {
+const AdBanner = ({ adSlot, className = "", format = "auto", responsive = true }: AdBannerProps) => {
   const adRef = useRef<HTMLDivElement>(null);
+  const isAdLoaded = useRef(false);
 
   useEffect(() => {
-    if (EZOIC_ENABLED && adRef.current && window.ezstandalone) {
-      // Ezoic will automatically populate this div
-      window.ezstandalone.define(placementId);
-      window.ezstandalone.display();
+    if (!ADSENSE_ENABLED || isAdLoaded.current) return;
+
+    try {
+      if (window.adsbygoogle) {
+        window.adsbygoogle.push({});
+        isAdLoaded.current = true;
+      }
+    } catch (e) {
+      console.error("AdSense error:", e);
     }
-  }, [placementId]);
+  }, [adSlot]);
 
-  // Don't render anything if ads are disabled
-  if (!EZOIC_ENABLED) {
-    return null;
-  }
-
-  const formatClasses = {
-    banner: "min-h-[90px] max-w-[728px]", // Standard banner (728x90)
-    rectangle: "min-h-[250px] max-w-[300px]", // Medium rectangle (300x250)
-    leaderboard: "min-h-[90px] max-w-[970px]", // Leaderboard (970x90)
-    sidebar: "min-h-[600px] max-w-[160px]", // Wide skyscraper (160x600)
-  };
+  if (!ADSENSE_ENABLED) return null;
 
   return (
-    <div
-      ref={adRef}
-      id={placementId}
-      className={`ad-container mx-auto ${formatClasses[format]} ${className}`}
-      data-ad-format={format}
-    >
-      {/* Ezoic will inject ad here */}
+    <div ref={adRef} className={`ad-container mx-auto ${className}`}>
+      <ins
+        className="adsbygoogle"
+        style={{ display: "block" }}
+        data-ad-client={AD_CLIENT}
+        data-ad-slot={adSlot}
+        data-ad-format={format}
+        data-full-width-responsive={responsive ? "true" : "false"}
+      />
     </div>
   );
 };
 
-// TypeScript declaration for Ezoic global
 declare global {
   interface Window {
-    ezstandalone?: {
-      define: (placementId: string) => void;
-      display: () => void;
-      refresh: () => void;
-    };
+    adsbygoogle?: Array<Record<string, unknown>>;
   }
 }
 

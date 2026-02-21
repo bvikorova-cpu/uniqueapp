@@ -1,69 +1,44 @@
 /**
- * 📍 Ad Placement Configuration
+ * 📍 Google AdSense Ad Placement Configuration
  * 
- * This file defines all ad placement IDs for your application.
- * 
- * TO ACTIVATE ADS:
- * 1. Register at ezoic.com
- * 2. Get your Publisher ID and Placement IDs from Ezoic dashboard
- * 3. Replace the placeholder IDs below with real Ezoic placement IDs
- * 4. Add Ezoic script to index.html (instructions in comments there)
- * 5. Set EZOIC_ENABLED to true in AdBanner.tsx
+ * Replace the placeholder slot IDs below with real AdSense ad unit slot IDs
+ * from your Google AdSense dashboard (adsense.google.com > Ads > By ad unit).
  */
 
 export const AD_PLACEMENTS = {
-  // 🏠 Global placements (shown on all pages)
-  FOOTER_BANNER: "ezoic-pub-ad-placeholder-101", // Small banner in footer
+  // 🏠 Global
+  FOOTER_BANNER: "0000000001", // Replace with real ad slot ID
   
-  // 🎯 Section-specific placements
+  // 🎯 Section-specific (replace with real slot IDs from AdSense)
   ESCAPE_ROOM: {
-    BETWEEN_ROOMS: "ezoic-pub-ad-placeholder-201", // After completing a room
-    END_GAME: "ezoic-pub-ad-placeholder-202", // After finishing all rooms
+    BETWEEN_ROOMS: "0000000002",
+    END_GAME: "0000000003",
   },
-  
   COFFEE_BUDDY: {
-    LIST_NATIVE: "ezoic-pub-ad-placeholder-301", // In cafe list
-    DETAIL_SIDEBAR: "ezoic-pub-ad-placeholder-302", // On cafe detail page
+    LIST_NATIVE: "0000000004",
+    DETAIL_SIDEBAR: "0000000005",
   },
-  
   ASTROLOGY: {
-    FORECAST_NATIVE: "ezoic-pub-ad-placeholder-401", // Between horoscope sections
+    FORECAST_NATIVE: "0000000006",
   },
-  
   CHARACTER_ARENA: {
-    BATTLE_END: "ezoic-pub-ad-placeholder-501", // After battle ends
-    LEADERBOARD_SIDEBAR: "ezoic-pub-ad-placeholder-502", // On leaderboard
+    BATTLE_END: "0000000007",
+    LEADERBOARD_SIDEBAR: "0000000008",
   },
-  
   NUTRITION: {
-    RECIPE_LIST: "ezoic-pub-ad-placeholder-601", // In recipe feed
-    RECIPE_DETAIL: "ezoic-pub-ad-placeholder-602", // On recipe page
+    RECIPE_LIST: "0000000009",
+    RECIPE_DETAIL: "0000000010",
   },
-  
   MUSIC_PRODUCER: {
-    AFTER_GENERATION: "ezoic-pub-ad-placeholder-701", // After song is generated
+    AFTER_GENERATION: "0000000011",
   },
-  
   COLLECTIBLES: {
-    MARKETPLACE_NATIVE: "ezoic-pub-ad-placeholder-801", // In marketplace
+    MARKETPLACE_NATIVE: "0000000012",
   },
-  
   KIDS_QUIZ: {
-    BETWEEN_QUIZZES: "ezoic-pub-ad-placeholder-901", // After quiz ends
+    BETWEEN_QUIZZES: "0000000013",
   },
-  
   MINIBIZ: {
-    BUSINESS_LIST: "ezoic-pub-ad-placeholder-1001", // In business ideas list
+    BUSINESS_LIST: "0000000014",
   },
 };
-
-/**
- * 💰 Expected Revenue Estimates (after optimization)
- * 
- * Based on 5,000 active users/month:
- * - Footer banner: ~€50/month
- * - Section native ads: ~€30-40 each
- * - Rewarded video (if implemented): ~€100-150/month
- * 
- * Total estimated: €400-600/month with Ezoic + Media.net
- */
