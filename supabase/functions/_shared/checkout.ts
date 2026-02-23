@@ -80,7 +80,7 @@ export function createCheckoutHandler(config: CheckoutConfig) {
   const log = createLogger(config.functionName);
   const corsHeaders = {
     'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
   };
 
   return async (req: Request): Promise<Response> => {
@@ -171,7 +171,7 @@ export function createDynamicCheckoutHandler(config: DynamicCheckoutConfig) {
   const tierKey = config.tierKey || "tier";
   const corsHeaders = {
     'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
   };
 
   return async (req: Request): Promise<Response> => {
@@ -248,7 +248,7 @@ export function createCreditsCheckoutHandler(
   const log = createLogger(functionName);
   const corsHeaders = {
     'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
   };
 
   return async (req: Request): Promise<Response> => {
@@ -315,7 +315,7 @@ export function createFlexibleCheckoutHandler(config: FlexibleCheckoutConfig) {
   const priceIdKey = config.priceIdFromBody || "priceId";
   const corsHeaders = {
     'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
   };
 
   return async (req: Request): Promise<Response> => {
@@ -407,7 +407,7 @@ export function createServiceCheckoutHandler(config: ServiceCheckoutConfig) {
   const serviceKey = config.serviceKey || "serviceType";
   const corsHeaders = {
     'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
   };
 
   return async (req: Request): Promise<Response> => {
@@ -491,7 +491,7 @@ export function createPackageCheckoutHandler(config: PackageCheckoutConfig) {
   const packageKey = config.packageKey || "packageType";
   const corsHeaders = {
     'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
   };
 
   return async (req: Request): Promise<Response> => {
