@@ -6,9 +6,9 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 export interface RateLimitConfig {
-  action: string;           // Action type (e.g., 'checkout', 'ai_generation')
-  maxRequests: number;      // Maximum requests allowed
-  windowMinutes: number;    // Time window in minutes
+  action: string;
+  maxRequests: number;
+  windowMinutes: number;
 }
 
 export interface RateLimitResult {
@@ -20,43 +20,31 @@ export interface RateLimitResult {
 
 // Default rate limit configurations for different actions
 export const RATE_LIMITS: Record<string, RateLimitConfig> = {
-  // Critical - Financial operations
   checkout: { action: 'checkout', maxRequests: 10, windowMinutes: 5 },
   subscription: { action: 'subscription', maxRequests: 5, windowMinutes: 5 },
   payment: { action: 'payment', maxRequests: 10, windowMinutes: 5 },
-  
-  // AI Operations - Expensive
   ai_generation: { action: 'ai_generation', maxRequests: 20, windowMinutes: 5 },
   ai_chat: { action: 'ai_chat', maxRequests: 50, windowMinutes: 5 },
   image_generation: { action: 'image_generation', maxRequests: 10, windowMinutes: 5 },
-  
-  // Standard API calls
   api_call: { action: 'api_call', maxRequests: 100, windowMinutes: 1 },
   search: { action: 'search', maxRequests: 30, windowMinutes: 1 },
-  
-  // Auth operations
   login: { action: 'login', maxRequests: 5, windowMinutes: 15 },
   signup: { action: 'signup', maxRequests: 3, windowMinutes: 60 },
   password_reset: { action: 'password_reset', maxRequests: 3, windowMinutes: 60 },
-  
-  // Content creation
   upload: { action: 'upload', maxRequests: 20, windowMinutes: 5 },
   post_create: { action: 'post_create', maxRequests: 30, windowMinutes: 5 },
+  file_upload: { action: 'file_upload', maxRequests: 50, windowMinutes: 60 },
+  message_send: { action: 'message_send', maxRequests: 100, windowMinutes: 60 },
 };
 
 /**
  * Get identifier from request (user ID or IP)
  */
 export function getIdentifier(req: Request, userId?: string): string {
-  if (userId) {
-    return userId;
-  }
-  
-  // Fallback to IP address for unauthenticated requests
+  if (userId) return userId;
   const forwardedFor = req.headers.get('x-forwarded-for');
   const realIp = req.headers.get('x-real-ip');
   const cfConnectingIp = req.headers.get('cf-connecting-ip');
-  
   return cfConnectingIp || realIp || forwardedFor?.split(',')[0]?.trim() || 'unknown';
 }
 
@@ -71,31 +59,28 @@ export async function checkRateLimit(
   const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
   
   if (!supabaseUrl || !supabaseServiceKey) {
-    console.error('Missing Supabase credentials for rate limiting');
-    // Fail open - allow request if rate limiting is misconfigured
     return { allowed: true, remaining: 999, reset_at: new Date().toISOString(), current_count: 0 };
   }
   
-  const supabase = createClient(supabaseUrl, supabaseServiceKey);
   const windowSeconds = config.windowMinutes * 60;
+  const resetAt = new Date(Date.now() + windowSeconds * 1000).toISOString();
   
   try {
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
+    
     const { data, error } = await supabase.rpc('check_rate_limit', {
-      p_action_type: config.action,
       p_identifier: identifier,
+      p_action_type: config.action,
       p_max_requests: config.maxRequests,
       p_window_seconds: windowSeconds,
     });
     
     if (error) {
       console.error('Rate limit check error:', error);
-      // Fail open on error
-      return { allowed: true, remaining: 999, reset_at: new Date().toISOString(), current_count: 0 };
+      return { allowed: true, remaining: 999, reset_at: resetAt, current_count: 0 };
     }
     
     const allowed = data === true;
-    const resetAt = new Date(Date.now() + windowSeconds * 1000).toISOString();
-    
     return {
       allowed,
       remaining: allowed ? config.maxRequests - 1 : 0,
@@ -104,12 +89,12 @@ export async function checkRateLimit(
     };
   } catch (err) {
     console.error('Rate limit exception:', err);
-    return { allowed: true, remaining: 999, reset_at: new Date().toISOString(), current_count: 0 };
+    return { allowed: true, remaining: 999, reset_at: resetAt, current_count: 0 };
   }
 }
 
 /**
- * Create rate limit exceeded response with proper headers
+ * Create rate limit exceeded response
  */
 export function rateLimitExceededResponse(
   result: RateLimitResult,
@@ -130,9 +115,6 @@ export function rateLimitExceededResponse(
       headers: {
         ...corsHeaders,
         'Content-Type': 'application/json',
-        'X-RateLimit-Limit': String(result.current_count),
-        'X-RateLimit-Remaining': '0',
-        'X-RateLimit-Reset': result.reset_at,
         'Retry-After': String(retryAfter),
       },
     }

@@ -34,7 +34,19 @@ serve(async (req) => {
     }
 
     const stripe = createStripeClient();
-    const subResult = await hasActiveSubscription(stripe, user.email!);
+    
+    // Get Stripe customer ID first (hasActiveSubscription expects customerId, not email)
+    const { getStripeCustomer } = await import("../_shared/stripe.ts");
+    const customerId = await getStripeCustomer(stripe, user.email!);
+    
+    if (!customerId) {
+      log("No Stripe customer found");
+      return new Response(JSON.stringify({ subscribed: false }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    
+    const subResult = await hasActiveSubscription(stripe, customerId);
 
     return new Response(JSON.stringify({
       subscribed: subResult.hasSubscription,
