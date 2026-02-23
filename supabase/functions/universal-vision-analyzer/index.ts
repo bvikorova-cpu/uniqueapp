@@ -87,13 +87,18 @@ serve(async (req) => {
   try {
     const { imageUrl, category, analysisType = 'basic' } = await req.json();
     
-    const supabaseClient = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_ANON_KEY') ?? ''
-    );
-
     const authHeader = req.headers.get('Authorization')!;
     const token = authHeader.replace('Bearer ', '');
+
+    const supabaseClient = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
+      {
+        global: {
+          headers: { Authorization: authHeader },
+        },
+      }
+    );
     const { data: { user } } = await supabaseClient.auth.getUser(token);
     
     if (!user) throw new Error('Not authenticated');
