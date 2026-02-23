@@ -61,9 +61,9 @@ export async function checkRateLimit(
 
     const { data, error } = await supabase.rpc("check_rate_limit", {
       p_identifier: identifier,
-      p_action_name: config.action,
+      p_action_type: config.action,
       p_max_requests: config.maxRequests,
-      p_window_minutes: config.windowMinutes,
+      p_window_seconds: config.windowMinutes * 60,
     });
 
     if (error) {
