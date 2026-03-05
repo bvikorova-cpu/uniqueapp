@@ -1,6 +1,7 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { safeInvoke } from "@/utils/safeInvoke";
 
 interface CreditBalance {
   handwriting: number;
@@ -55,27 +56,24 @@ export const useUnifiedCredits = () => {
     service: keyof CreditBalance,
     amount: number
   ): Promise<string | null> => {
-    try {
-      const functionMap = {
-        handwriting: "create-handwriting-credits-payment",
-        pastLife: "create-past-life-credits-payment",
-        anonymousDate: "create-anonymous-date-payment",
-        lieDetector: "create-lie-detector-payment",
-        creativeForge: "create-creative-forge-payment",
-      };
+    const functionMap = {
+      handwriting: "create-handwriting-credits-payment",
+      pastLife: "create-past-life-credits-payment",
+      anonymousDate: "create-anonymous-date-payment",
+      lieDetector: "create-lie-detector-payment",
+      creativeForge: "create-creative-forge-payment",
+    };
 
-      const { data, error } = await supabase.functions.invoke(
-        functionMap[service],
-        { body: { credits: amount } }
-      );
+    const { data, error } = await safeInvoke(
+      functionMap[service],
+      { body: { credits: amount } }
+    );
 
-      if (error) throw error;
-      return data?.url || null;
-    } catch (error) {
-      console.error("Error purchasing credits:", error);
+    if (error) {
       toast.error("Failed to initiate payment");
       return null;
     }
+    return data?.url || null;
   };
 
   // Refresh all credit balances

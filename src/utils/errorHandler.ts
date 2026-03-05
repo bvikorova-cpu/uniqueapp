@@ -5,8 +5,10 @@
 const TECHNICAL_ERROR_PATTERNS: [RegExp, string][] = [
   [/FunctionsHttpError/i, "Service temporarily unavailable. Please try again."],
   [/edge.*function.*returned/i, "Service temporarily unavailable. Please try again."],
+  [/non-2xx/i, "Service temporarily unavailable. Please try again."],
   [/Failed to fetch/i, "Network error. Please check your connection."],
   [/Network.*error/i, "Network error. Please check your connection."],
+  [/AbortError/i, "Request was cancelled. Please try again."],
   [/timeout/i, "Request timed out. Please try again."],
   [/CORS/i, "Service configuration error. Please try again later."],
   [/401|unauthorized/i, "Please sign in to continue."],
@@ -21,6 +23,8 @@ const TECHNICAL_ERROR_PATTERNS: [RegExp, string][] = [
   [/stripe/i, "Payment processing error. Please try again."],
   [/database.*error/i, "Data error. Please try again."],
   [/supabase/i, "Service error. Please try again."],
+  [/OPENAI_API_KEY/i, "AI service not configured. Please try again later."],
+  [/exceeded.*quota/i, "Service quota exceeded. Please try again later."],
 ];
 
 export function getUserFriendlyErrorMessage(error: unknown, fallback = "Something went wrong. Please try again."): string {

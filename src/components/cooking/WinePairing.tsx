@@ -3,10 +3,10 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useMutation } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { Wine } from 'lucide-react';
 import { useCookingCredits } from '@/hooks/useCookingCredits';
+import { invokeOrThrow } from '@/utils/safeInvoke';
 
 export const WinePairing = () => {
   const [dishName, setDishName] = useState('');
@@ -15,11 +15,9 @@ export const WinePairing = () => {
 
   const pairingMutation = useMutation({
     mutationFn: async () => {
-      const { data, error } = await supabase.functions.invoke('suggest-wine-pairing', {
+      return invokeOrThrow('suggest-wine-pairing', {
         body: { dish_name: dishName, price_range: 'medium' }
       });
-      if (error) throw error;
-      return data;
     },
     onSuccess: (data) => {
       setPairing(data.pairings);

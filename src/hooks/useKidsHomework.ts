@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { safeInvoke } from "@/utils/safeInvoke";
 
 interface HomeworkUsage {
   questionsUsed: number;
@@ -35,7 +36,7 @@ export const useKidsHomework = () => {
   const checkUsage = async () => {
     try {
       // Check subscription status
-      const { data: subData } = await supabase.functions.invoke('check-kids-subscription');
+      const { data: subData } = await safeInvoke('check-kids-subscription');
       const isPremium = subData?.subscribed || false;
 
       if (isPremium) {
@@ -89,7 +90,7 @@ export const useKidsHomework = () => {
 
   const manageSubscription = async () => {
     try {
-      const { data, error } = await supabase.functions.invoke('kids-customer-portal');
+      const { data, error } = await safeInvoke('kids-customer-portal');
       
       if (error) throw error;
       

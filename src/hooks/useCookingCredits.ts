@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { safeInvoke } from '@/utils/safeInvoke';
 
 export const useCookingCredits = () => {
   const query = useQuery({
@@ -36,22 +37,15 @@ export const useCookingCredits = () => {
   });
 
   const purchaseCredits = async (credits: number): Promise<string | null> => {
-    try {
-      const { data, error } = await supabase.functions.invoke('create-cooking-credits-payment', {
-        body: { credits }
-      });
-      
-      if (error) throw error;
-      
-      if (data?.url) {
-        return data.url;
-      }
-      return null;
-    } catch (error) {
-      console.error('Error:', error);
+    const { data, error } = await safeInvoke('create-cooking-credits-payment', {
+      body: { credits }
+    });
+    
+    if (error) {
       toast.error("Error creating payment session");
       return null;
     }
+    return data?.url || null;
   };
 
   return {
