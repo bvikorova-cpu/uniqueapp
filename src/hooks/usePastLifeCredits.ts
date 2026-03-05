@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { invokeOrThrow, safeInvoke } from "@/utils/safeInvoke";
 
 export const usePastLifeCredits = () => {
   const queryClient = useQueryClient();
@@ -43,19 +44,15 @@ export const usePastLifeCredits = () => {
       partnerBirthDate?: string;
       partnerInfo?: string;
     }) => {
-      const { data, error } = await supabase.functions.invoke("analyze-past-life", {
+      const result = await invokeOrThrow("analyze-past-life", {
         body: params,
       });
 
-      if (error) throw error;
-      if (data.error) {
-        if (data.requiresPayment) {
-          throw new Error("INSUFFICIENT_CREDITS");
-        }
-        throw new Error(data.error);
+      if (result?.requiresPayment) {
+        throw new Error("INSUFFICIENT_CREDITS");
       }
 
-      return data;
+      return result;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["past-life-credits"] });
@@ -71,19 +68,16 @@ export const usePastLifeCredits = () => {
   });
 
   const purchaseCredits = async (amount: number) => {
-    try {
-      const { data, error } = await supabase.functions.invoke(
-        "create-past-life-credits-payment",
-        { body: { credits: amount } }
-      );
+    const { data, error } = await safeInvoke(
+      "create-past-life-credits-payment",
+      { body: { credits: amount } }
+    );
 
-      if (error) throw error;
-      return data.url;
-    } catch (error) {
-      console.error("Error purchasing credits:", error);
+    if (error) {
       toast.error("Failed to initiate payment");
       return null;
     }
+    return data?.url || null;
   };
 
   return {

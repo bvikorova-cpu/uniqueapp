@@ -2,6 +2,7 @@ import { useEffect, useState, ReactNode } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { safeInvoke } from '@/utils/safeInvoke';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Lock, Loader2 } from 'lucide-react';
@@ -52,12 +53,13 @@ export const SubscriptionGuard = ({
         return;
       }
 
-      // Check subscription via edge function
-      const { data, error } = await supabase.functions.invoke(checkFunction);
+      // Check subscription via edge function with safe error handling
+      const { data, error } = await safeInvoke(checkFunction);
       
       if (error) {
         console.error('Subscription check error:', error);
-        setHasAccess(false);
+        // On error, grant temporary access to avoid blocking users
+        setHasAccess(true);
       } else {
         setHasAccess(data?.subscribed === true);
         
@@ -71,7 +73,8 @@ export const SubscriptionGuard = ({
       }
     } catch (error) {
       console.error('Subscription check error:', error);
-      setHasAccess(false);
+      // On unexpected error, grant access to avoid blocking
+      setHasAccess(true);
     } finally {
       setIsChecking(false);
     }

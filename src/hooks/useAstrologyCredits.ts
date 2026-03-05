@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import type { AstrologyCredits } from "@/types/credits";
+import { invokeOrThrow, safeInvoke } from "@/utils/safeInvoke";
 
 export const CREDIT_COSTS = {
   tarot_3: 3,
@@ -64,44 +65,35 @@ export const useAstrologyCredits = () => {
 
   const performReading = useMutation({
     mutationFn: async ({ readingType, data }: { readingType: string; data: Record<string, unknown> }) => {
-      const response = await supabase.functions.invoke('astrology-reading', {
+      return invokeOrThrow('astrology-reading', {
         body: { type: readingType, data }
       });
-      
-      if (response.error) throw response.error;
-      return response.data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["astrology-credits"] });
     },
     onError: (error: Error) => {
-      if (error.message.includes('credits')) {
+      if (error.message.includes('credits') || error.message.includes('Insufficient')) {
         toast.error("Insufficient credits. Please purchase more credits.");
       } else if (error.message.includes('Rate limit')) {
         toast.error("Too many requests. Please try again later.");
       } else {
-        toast.error("Error performing reading: " + error.message);
+        toast.error("Error performing reading. Please try again.");
       }
     },
   });
 
   const purchaseCredits = async (credits: number): Promise<string | null> => {
-    try {
-      const { data, error } = await supabase.functions.invoke('create-astrology-credits-payment', {
-        body: { credits }
-      });
-      
-      if (error) throw error;
-      
-      if (data?.url) {
-        return data.url;
-      }
-      return null;
-    } catch (error) {
-      console.error('Error:', error);
+    const { data, error } = await safeInvoke('create-astrology-credits-payment', {
+      body: { credits }
+    });
+    
+    if (error) {
       toast.error("Error creating payment session");
       return null;
     }
+    
+    return data?.url || null;
   };
 
   return {
