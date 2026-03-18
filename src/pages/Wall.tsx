@@ -86,7 +86,7 @@ const Feed = () => {
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(0);
   const [showBackToTop, setShowBackToTop] = useState(false);
-  const [isRightbarOpen, setIsRightbarOpen] = useState(false);
+  
   const [pullToRefresh, setPullToRefresh] = useState({
     pulling: false,
     pullDistance: 0,
