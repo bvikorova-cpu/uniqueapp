@@ -86,7 +86,7 @@ const Feed = () => {
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(0);
   const [showBackToTop, setShowBackToTop] = useState(false);
-  const [isRightbarOpen, setIsRightbarOpen] = useState(false);
+  
   const [pullToRefresh, setPullToRefresh] = useState({
     pulling: false,
     pullDistance: 0,
@@ -645,7 +645,7 @@ const Feed = () => {
         </Sheet>
         
         {/* Main Layout Container - starts below fixed nav */}
-        <div className="flex pt-[112px]">
+        <div className="flex flex-col lg:flex-row pt-[112px]">
           {/* Left Sidebar - Hidden on mobile, sticky within container */}
           <div className="hidden lg:block">
             <WallSidebar onPostCreated={fetchPosts} />
@@ -656,30 +656,18 @@ const Feed = () => {
             <div className="[&_.card]:bg-white/95 [&_.card]:backdrop-blur-md [&_.card]:shadow-[0_0_30px_rgba(167,139,250,0.3)] [&_.card]:border-violet-300/30">
               {renderContent()}
             </div>
+
+            {/* Right sidebar content shown inline on mobile */}
+            <div className="md:hidden mt-6 px-1">
+              <WallRightbar />
+            </div>
           </div>
 
-          {/* Right Sidebar - Hidden on mobile, visible on md+ */}
+          {/* Right Sidebar - visible on md+ as sticky column */}
           <div className="hidden md:block">
             <WallRightbar />
           </div>
         </div>
-
-        {/* Mobile Rightbar Sheet */}
-        <Sheet open={isRightbarOpen} onOpenChange={setIsRightbarOpen}>
-          <SheetTrigger asChild>
-            <Button
-              size="icon"
-              className="md:hidden fixed bottom-20 right-4 z-50 h-12 w-12 rounded-full shadow-lg bg-primary hover:bg-primary/90"
-            >
-              <TrendingUp className="h-5 w-5" />
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="right" className="w-[85vw] sm:w-[400px] p-0 overflow-y-auto">
-            <div className="pt-6">
-              <WallRightbar />
-            </div>
-          </SheetContent>
-        </Sheet>
 
         {/* Back to top button - enhanced neon style */}
         {showBackToTop && (
