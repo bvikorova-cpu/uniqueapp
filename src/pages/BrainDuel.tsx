@@ -7,7 +7,7 @@ import {
   Trophy, Zap, Users, ShoppingCart, Crown, Flame, Clock, 
   Globe, BookOpen, FlaskConical, Film, Dumbbell, Music, 
   Pizza, Briefcase, Palette, Gamepad2, Target, Brain,
-  TrendingUp, Heart, Sparkles, User, Radio
+  TrendingUp, Heart, Sparkles, User, Radio, ChevronRight
 } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
@@ -25,6 +25,7 @@ import { useBrainDuelOnlinePlayers } from "@/hooks/useBrainDuelOnlinePlayers";
 import { useBrainDuelRealTimeNotifications } from "@/hooks/useBrainDuelRealTimeNotifications";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
+import { motion } from "framer-motion";
 
 const BrainDuel = () => {
   const navigate = useNavigate();
@@ -34,10 +35,8 @@ const BrainDuel = () => {
   const { purchasePowerup, isPurchasing } = useBrainDuelPowerups();
   const { onlineCount } = useBrainDuelOnlinePlayers();
   
-  // Enable real-time notifications
   useBrainDuelRealTimeNotifications();
 
-  // Get current user
   useEffect(() => {
     const getCurrentUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();
@@ -46,14 +45,12 @@ const BrainDuel = () => {
     getCurrentUser();
   }, []);
 
-  // Handle payment success
   useEffect(() => {
     const payment = searchParams.get('payment');
     const sessionId = searchParams.get('session_id');
 
     if (payment === 'success' && sessionId) {
       handlePaymentSuccess(sessionId);
-      // Clean up URL
       searchParams.delete('payment');
       searchParams.delete('session_id');
       setSearchParams(searchParams);
@@ -83,63 +80,59 @@ const BrainDuel = () => {
   };
 
   const categories = [
-    { id: "geography", name: "Geography", icon: Globe, color: "text-green-500" },
-    { id: "history", name: "History", icon: BookOpen, color: "text-amber-600" },
-    { id: "science", name: "Science & Tech", icon: FlaskConical, color: "text-blue-500" },
-    { id: "film", name: "Film & TV", icon: Film, color: "text-red-500" },
-    { id: "sports", name: "Sports", icon: Dumbbell, color: "text-orange-500" },
-    { id: "music", name: "Music", icon: Music, color: "text-purple-500" },
-    { id: "food", name: "Food & Drinks", icon: Pizza, color: "text-pink-500" },
-    { id: "business", name: "Business & Economy", icon: Briefcase, color: "text-slate-600" },
-    { id: "art", name: "Art & Culture", icon: Palette, color: "text-violet-500" },
-    { id: "gaming", name: "Gaming & Pop Culture", icon: Gamepad2, color: "text-cyan-500" }
+    { id: "geography", name: "Geography", icon: Globe, color: "text-emerald-400", bg: "from-emerald-500/20 to-emerald-600/10" },
+    { id: "history", name: "History", icon: BookOpen, color: "text-amber-400", bg: "from-amber-500/20 to-amber-600/10" },
+    { id: "science", name: "Science & Tech", icon: FlaskConical, color: "text-cyan-400", bg: "from-cyan-500/20 to-cyan-600/10" },
+    { id: "film", name: "Film & TV", icon: Film, color: "text-rose-400", bg: "from-rose-500/20 to-rose-600/10" },
+    { id: "sports", name: "Sports", icon: Dumbbell, color: "text-orange-400", bg: "from-orange-500/20 to-orange-600/10" },
+    { id: "music", name: "Music", icon: Music, color: "text-violet-400", bg: "from-violet-500/20 to-violet-600/10" },
+    { id: "food", name: "Food & Drinks", icon: Pizza, color: "text-pink-400", bg: "from-pink-500/20 to-pink-600/10" },
+    { id: "business", name: "Business", icon: Briefcase, color: "text-slate-400", bg: "from-slate-500/20 to-slate-600/10" },
+    { id: "art", name: "Art & Culture", icon: Palette, color: "text-fuchsia-400", bg: "from-fuchsia-500/20 to-fuchsia-600/10" },
+    { id: "gaming", name: "Gaming", icon: Gamepad2, color: "text-sky-400", bg: "from-sky-500/20 to-sky-600/10" }
   ];
 
   const powerUps = [
-    {
-      id: "fifty-fifty",
-      name: "50:50",
-      description: "Remove 2 wrong answers",
-      price: 5,
-      icon: Target,
-      color: "text-yellow-500"
-    },
-    {
-      id: "ask-ai",
-      name: "Ask AI",
-      description: "AI hint for the answer",
-      price: 3,
-      icon: Brain,
-      color: "text-blue-500"
-    },
-    {
-      id: "extra-time",
-      name: "Extra Time",
-      description: "+15 seconds bonus",
-      price: 2,
-      icon: Clock,
-      color: "text-green-500"
-    },
-    {
-      id: "double-points",
-      name: "Double Points",
-      description: "2× credits from this question",
-      price: 10,
-      icon: TrendingUp,
-      color: "text-purple-500"
-    }
+    { id: "fifty-fifty", name: "50:50", description: "Remove 2 wrong answers", price: 5, icon: Target, color: "text-yellow-400", glow: "shadow-yellow-500/20" },
+    { id: "ask-ai", name: "Ask AI", description: "AI hint for the answer", price: 3, icon: Brain, color: "text-blue-400", glow: "shadow-blue-500/20" },
+    { id: "extra-time", name: "Extra Time", description: "+15 seconds bonus", price: 2, icon: Clock, color: "text-green-400", glow: "shadow-green-500/20" },
+    { id: "double-points", name: "Double Points", description: "2× credits from this question", price: 10, icon: TrendingUp, color: "text-purple-400", glow: "shadow-purple-500/20" }
+  ];
+
+  const howItWorks = [
+    { step: "01", title: "Choose Category", desc: "Pick from 10+ knowledge topics", icon: BookOpen },
+    { step: "02", title: "Find Opponent", desc: "Real-time matchmaking", icon: Users },
+    { step: "03", title: "Answer Fast", desc: "Race against the clock", icon: Zap },
+    { step: "04", title: "Win Credits", desc: "Winner takes the pot!", icon: Trophy },
   ];
 
   return (
-    <div className="min-h-screen bg-background p-2 sm:p-4">
-      <div className="container mx-auto max-w-7xl pt-16 sm:pt-20">
-        {/* Hero Section */}
-        <div className="text-center mb-4 sm:mb-8">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-2 mb-4">
+    <div className="min-h-screen bg-background relative overflow-hidden">
+      {/* Animated background elements */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary/5 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute top-1/3 -left-20 w-60 h-60 bg-violet-500/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+        <div className="absolute bottom-20 right-1/4 w-72 h-72 bg-cyan-500/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
+      </div>
+
+      <div className="container mx-auto max-w-7xl pt-20 sm:pt-24 px-3 sm:px-4 relative z-10">
+        
+        {/* ===== HERO SECTION ===== */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-8 sm:mb-12"
+        >
+          {/* Top bar */}
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 mb-6">
             <div className="hidden sm:block flex-1" />
             <div className="inline-flex items-center gap-2 flex-wrap justify-center">
-              <Badge variant="secondary" className="text-xs sm:text-sm">Live Now</Badge>
-              <Badge variant="outline" className="text-xs sm:text-sm">
+              <Badge className="bg-green-500/10 text-green-500 border-green-500/30 animate-pulse text-xs sm:text-sm">
+                <span className="w-2 h-2 bg-green-500 rounded-full mr-2 inline-block" />
+                Live Now
+              </Badge>
+              <Badge variant="outline" className="text-xs sm:text-sm backdrop-blur-sm">
                 <Flame className="w-3 h-3 mr-1 text-orange-500" />
                 {onlineCount} {onlineCount === 1 ? 'player' : 'players'} online
               </Badge>
@@ -150,7 +143,7 @@ const BrainDuel = () => {
                   variant="outline"
                   size="sm"
                   onClick={() => navigate(`/profile/${userId}?tab=brain-duel`)}
-                  className="gap-2 text-xs sm:text-sm"
+                  className="gap-2 text-xs sm:text-sm backdrop-blur-sm"
                 >
                   <User className="h-3 w-3 sm:h-4 sm:w-4" />
                   My Stats
@@ -158,222 +151,290 @@ const BrainDuel = () => {
               )}
             </div>
           </div>
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-2 sm:mb-4 bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
-            BrainDuel
-          </h1>
-          <p className="text-base sm:text-lg lg:text-xl text-muted-foreground mb-4">
-            Knowledge Battle Arena • Virtual Competition
-          </p>
-          
-          {/* How It Works Section */}
-          <div className="bg-muted/50 rounded-xl p-4 sm:p-6 max-w-4xl mx-auto mb-6 text-left">
-            <h3 className="font-semibold text-lg mb-3 flex items-center gap-2">
-              <span className="text-primary">🧠</span> How BrainDuel Works
-            </h3>
-            <div className="grid sm:grid-cols-2 gap-4 text-sm sm:text-base text-muted-foreground">
-              <div className="space-y-2">
-                <div className="flex items-start gap-2">
-                  <span className="text-primary font-bold">1.</span>
-                  <span><strong>Choose a Category:</strong> Select from 10+ knowledge categories like Science, History, Geography, Entertainment, and more.</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <span className="text-primary font-bold">2.</span>
-                  <span><strong>Find an Opponent:</strong> Get matched with another player in real-time for a head-to-head quiz battle.</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <span className="text-primary font-bold">3.</span>
-                  <span><strong>Answer Questions:</strong> Race against time to answer multiple-choice questions correctly and score points.</span>
-                </div>
-              </div>
-              <div className="space-y-2">
-                <div className="flex items-start gap-2">
-                  <span className="text-primary font-bold">4.</span>
-                  <span><strong>Use Power-ups:</strong> Activate special abilities like 50/50, Extra Time, or Hints to gain an advantage.</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <span className="text-primary font-bold">5.</span>
-                  <span><strong>Win Credits:</strong> Beat your opponent to win virtual credits. The winner takes all!</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <span className="text-primary font-bold">6.</span>
-                  <span><strong>Challenge Friends:</strong> Create private matches with friends and compete for bragging rights.</span>
-                </div>
-              </div>
-            </div>
-            <div className="mt-4 pt-4 border-t border-border/50">
-              <p className="text-xs sm:text-sm text-muted-foreground">
-                <strong>💡 Tip:</strong> Each game costs credits to enter based on mode. Win to earn rewards! Purchase credit packages or earn them by winning matches.
-              </p>
-            </div>
-          </div>
-        </div>
 
-        {/* Credits Display */}
-        <div className="max-w-3xl mx-auto mb-8 space-y-6">
+          {/* Title */}
+          <div className="relative inline-block mb-4">
+            <motion.div
+              animate={{ rotate: [0, 5, -5, 0] }}
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+              className="absolute -top-6 -left-6 sm:-top-8 sm:-left-10"
+            >
+              <Brain className="w-8 h-8 sm:w-12 sm:h-12 text-primary/30" />
+            </motion.div>
+            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black tracking-tight">
+              <span className="bg-gradient-to-r from-primary via-violet-500 to-cyan-500 bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient">
+                BrainDuel
+              </span>
+            </h1>
+            <motion.div
+              animate={{ rotate: [0, -5, 5, 0] }}
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+              className="absolute -bottom-2 -right-4 sm:-bottom-4 sm:-right-8"
+            >
+              <Zap className="w-6 h-6 sm:w-10 sm:h-10 text-yellow-500/30" />
+            </motion.div>
+          </div>
+          
+          <p className="text-base sm:text-lg lg:text-xl text-muted-foreground mb-8 max-w-md mx-auto">
+            Knowledge Battle Arena • Test Your Brain Power
+          </p>
+
+          {/* How it works - compact horizontal */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-3xl mx-auto mb-8"
+          >
+            {howItWorks.map((item, i) => {
+              const Icon = item.icon;
+              return (
+                <motion.div
+                  key={item.step}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.4 + i * 0.1 }}
+                  className="relative group"
+                >
+                  <div className="rounded-2xl border border-border/50 bg-card/50 backdrop-blur-sm p-4 text-center hover:border-primary/40 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300">
+                    <div className="text-[10px] font-bold text-primary/50 mb-2">{item.step}</div>
+                    <Icon className="w-6 h-6 mx-auto mb-2 text-primary" />
+                    <div className="text-xs sm:text-sm font-semibold text-foreground">{item.title}</div>
+                    <div className="text-[10px] sm:text-xs text-muted-foreground mt-1">{item.desc}</div>
+                  </div>
+                  {i < howItWorks.length - 1 && (
+                    <ChevronRight className="hidden sm:block absolute top-1/2 -right-3.5 w-4 h-4 text-muted-foreground/30 -translate-y-1/2" />
+                  )}
+                </motion.div>
+              );
+            })}
+          </motion.div>
+        </motion.div>
+
+        {/* ===== CREDITS & GAME ===== */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.5 }}
+          className="max-w-3xl mx-auto mb-10 space-y-6"
+        >
           <BrainDuelCreditsDisplay />
           <BrainDuelGame />
-        </div>
+        </motion.div>
 
-        {/* Leaderboard and Friend Challenges */}
-        <div className="max-w-6xl mx-auto mb-8 grid md:grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* ===== LEADERBOARD & FRIENDS ===== */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.6 }}
+          className="max-w-6xl mx-auto mb-10 grid md:grid-cols-1 lg:grid-cols-2 gap-6"
+        >
           <BrainDuelLeaderboard />
           <div className="space-y-6">
             <FriendChallenges />
             <FriendChallengesLeaderboard />
           </div>
-        </div>
+        </motion.div>
 
-        <Tabs defaultValue="play" className="w-full">
-          <TabsList className="flex w-full overflow-x-auto gap-1 sm:gap-2 h-auto bg-muted p-1 sm:p-2 mb-4 sm:mb-6">
-            <TabsTrigger value="play" className="gap-1 sm:gap-2 text-xs sm:text-sm px-2 sm:px-3 flex-shrink-0">
-              <Zap className="h-3 w-3 sm:h-4 sm:w-4" />
-              <span className="hidden sm:inline">Play Now</span>
-              <span className="sm:hidden">Play</span>
-            </TabsTrigger>
-            <TabsTrigger value="leagues" className="gap-1 sm:gap-2 text-xs sm:text-sm px-2 sm:px-3 flex-shrink-0">
-              <Trophy className="h-3 w-3 sm:h-4 sm:w-4" />
-              <span className="hidden sm:inline">Leagues</span>
-              <span className="sm:hidden">League</span>
-            </TabsTrigger>
-            <TabsTrigger value="challenges" className="gap-1 sm:gap-2 text-xs sm:text-sm px-2 sm:px-3 flex-shrink-0">
-              <Users className="h-3 w-3 sm:h-4 sm:w-4" />
-              <span className="hidden sm:inline">Challenges</span>
-              <span className="sm:hidden">Chal</span>
-            </TabsTrigger>
-            <TabsTrigger value="powerups" className="gap-1 sm:gap-2 text-xs sm:text-sm px-2 sm:px-3 flex-shrink-0">
-              <Sparkles className="h-3 w-3 sm:h-4 sm:w-4" />
-              <span className="hidden sm:inline">Power-ups</span>
-              <span className="sm:hidden">Power</span>
-            </TabsTrigger>
-            <TabsTrigger value="packs" className="gap-1 sm:gap-2 text-xs sm:text-sm px-2 sm:px-3 flex-shrink-0">
-              <ShoppingCart className="h-3 w-3 sm:h-4 sm:w-4" />
-              <span className="hidden sm:inline">Question Packs</span>
-              <span className="sm:hidden">Packs</span>
-            </TabsTrigger>
-            <TabsTrigger value="audience" className="gap-1 sm:gap-2 text-xs sm:text-sm px-2 sm:px-3 flex-shrink-0">
-              <Radio className="h-3 w-3 sm:h-4 sm:w-4" />
-              <span className="hidden sm:inline">Live Audience</span>
-              <span className="sm:hidden">Live</span>
-            </TabsTrigger>
-          </TabsList>
+        {/* ===== TABS ===== */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.7 }}
+        >
+          <Tabs defaultValue="play" className="w-full">
+            <TabsList className="flex w-full overflow-x-auto gap-1 h-auto bg-card/60 backdrop-blur-md border border-border/50 p-1.5 sm:p-2 mb-6 rounded-2xl">
+              <TabsTrigger value="play" className="gap-1.5 text-xs sm:text-sm px-3 sm:px-4 py-2.5 rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-primary/20 transition-all flex-shrink-0">
+                <Zap className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                <span className="hidden sm:inline">Play Now</span>
+                <span className="sm:hidden">Play</span>
+              </TabsTrigger>
+              <TabsTrigger value="leagues" className="gap-1.5 text-xs sm:text-sm px-3 sm:px-4 py-2.5 rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-primary/20 transition-all flex-shrink-0">
+                <Trophy className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                <span className="hidden sm:inline">Leagues</span>
+                <span className="sm:hidden">League</span>
+              </TabsTrigger>
+              <TabsTrigger value="challenges" className="gap-1.5 text-xs sm:text-sm px-3 sm:px-4 py-2.5 rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-primary/20 transition-all flex-shrink-0">
+                <Users className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                <span className="hidden sm:inline">Challenges</span>
+                <span className="sm:hidden">Chal</span>
+              </TabsTrigger>
+              <TabsTrigger value="powerups" className="gap-1.5 text-xs sm:text-sm px-3 sm:px-4 py-2.5 rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-primary/20 transition-all flex-shrink-0">
+                <Sparkles className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                <span className="hidden sm:inline">Power-ups</span>
+                <span className="sm:hidden">Power</span>
+              </TabsTrigger>
+              <TabsTrigger value="packs" className="gap-1.5 text-xs sm:text-sm px-3 sm:px-4 py-2.5 rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-primary/20 transition-all flex-shrink-0">
+                <ShoppingCart className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                <span className="hidden sm:inline">Packs</span>
+                <span className="sm:hidden">Packs</span>
+              </TabsTrigger>
+              <TabsTrigger value="audience" className="gap-1.5 text-xs sm:text-sm px-3 sm:px-4 py-2.5 rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-primary/20 transition-all flex-shrink-0">
+                <Radio className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                <span className="hidden sm:inline">Live</span>
+                <span className="sm:hidden">Live</span>
+              </TabsTrigger>
+            </TabsList>
 
-          {/* Play Now Tab */}
-          <TabsContent value="play" className="space-y-6">
-            {/* Virtual Game Info */}
-            <Card className="border-primary/50 bg-gradient-to-br from-primary/5 to-purple-500/5">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Trophy className="h-5 w-5 text-primary" />
-                  Virtual Competition System
-                </CardTitle>
-                <CardDescription>
-                  Play for fun • Win virtual credits • No real money involved
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground">
-                  Compete against other players in knowledge battles. Winners earn virtual credits that can be used within the game. 
-                  All credits are for entertainment purposes only and have no real-world monetary value.
-                </p>
-              </CardContent>
-            </Card>
+            {/* Play Now Tab */}
+            <TabsContent value="play" className="space-y-6">
+              {/* Virtual Game Info */}
+              <Card className="relative overflow-hidden border-primary/20">
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-violet-500/5 to-cyan-500/5" />
+                <CardHeader className="relative">
+                  <CardTitle className="flex items-center gap-2">
+                    <div className="p-2 rounded-xl bg-primary/10">
+                      <Trophy className="h-5 w-5 text-primary" />
+                    </div>
+                    Virtual Competition System
+                  </CardTitle>
+                  <CardDescription>
+                    Play for fun • Win virtual credits • No real money involved
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="relative">
+                  <p className="text-sm text-muted-foreground">
+                    Compete against other players in knowledge battles. Winners earn virtual credits that can be used within the game. 
+                    All credits are for entertainment purposes only and have no real-world monetary value.
+                  </p>
+                </CardContent>
+              </Card>
 
-            {/* Game Mode Selector */}
-            <GameModeSelector onSelectMode={(mode) => {
-              toast.info(`Selected ${mode.name} mode`, {
-                description: `${mode.questions} questions, ${mode.entry} credits entry`
-              });
-            }} />
+              {/* Game Mode Selector */}
+              <GameModeSelector onSelectMode={(mode) => {
+                toast.info(`Selected ${mode.name} mode`, {
+                  description: `${mode.questions} questions, ${mode.entry} credits entry`
+                });
+              }} />
 
-            {/* Categories */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Question Categories</CardTitle>
-                <CardDescription>
-                  Choose your expertise or challenge yourself with mixed categories
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="p-3 sm:p-6">
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 sm:gap-3">
-                  {categories.map((category) => {
-                    const Icon = category.icon;
-                    return (
-                      <Button
-                        key={category.id}
-                        variant="outline"
-                        className="h-auto min-h-[70px] sm:min-h-[80px] py-2 sm:py-4 flex-col gap-1 sm:gap-2 px-2 sm:px-3 whitespace-normal"
-                      >
-                        <Icon className={`h-4 w-4 sm:h-6 sm:w-6 flex-shrink-0 ${category.color}`} />
-                        <span className="text-[9px] sm:text-xs font-medium text-center leading-tight break-words">{category.name}</span>
-                      </Button>
-                    );
-                  })}
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* Leagues Tab */}
-          <TabsContent value="leagues" className="space-y-6">
-            <LeagueSystem />
-          </TabsContent>
-
-          {/* Friend Challenges Tab */}
-          <TabsContent value="challenges" className="space-y-6">
-            <FriendChallenges />
-          </TabsContent>
-
-          {/* Power-ups Tab */}
-          <TabsContent value="powerups" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>In-Game Power-ups</CardTitle>
-                <CardDescription>
-                  Boost your chances during battles with special abilities
-                </CardDescription>
-              </CardHeader>
-            </Card>
-
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-              {powerUps.map((powerUp) => {
-                const Icon = powerUp.icon;
-                return (
-                  <Card key={powerUp.id} className="hover:shadow-lg transition-all">
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2 text-lg">
-                        <Icon className={`h-5 w-5 ${powerUp.color}`} />
-                        {powerUp.name}
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-3">
-                      <p className="text-sm text-muted-foreground">{powerUp.description}</p>
-                      <div className="flex justify-between items-center">
-                        <span className="text-2xl font-bold text-primary">{powerUp.price} credits</span>
-                        <Button 
-                          size="sm"
-                          onClick={() => purchasePowerup({ type: powerUp.id, price: powerUp.price })}
-                          disabled={isPurchasing}
+              {/* Categories */}
+              <Card className="overflow-hidden">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <div className="p-2 rounded-xl bg-primary/10">
+                      <BookOpen className="h-5 w-5 text-primary" />
+                    </div>
+                    Question Categories
+                  </CardTitle>
+                  <CardDescription>
+                    Choose your expertise or go random for a surprise
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="p-3 sm:p-6">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 sm:gap-3">
+                    {categories.map((category, i) => {
+                      const Icon = category.icon;
+                      return (
+                        <motion.div
+                          key={category.id}
+                          whileHover={{ scale: 1.05, y: -2 }}
+                          whileTap={{ scale: 0.97 }}
                         >
-                          Buy
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                );
-              })}
-            </div>
-          </TabsContent>
+                          <Button
+                            variant="outline"
+                            className={`h-auto min-h-[80px] sm:min-h-[90px] py-3 sm:py-4 flex-col gap-2 px-2 sm:px-3 whitespace-normal w-full bg-gradient-to-br ${category.bg} border-border/50 hover:border-primary/30 hover:shadow-lg transition-all duration-300`}
+                          >
+                            <div className="p-2 rounded-xl bg-background/50">
+                              <Icon className={`h-5 w-5 sm:h-6 sm:w-6 flex-shrink-0 ${category.color}`} />
+                            </div>
+                            <span className="text-[10px] sm:text-xs font-semibold text-center leading-tight">{category.name}</span>
+                          </Button>
+                        </motion.div>
+                      );
+                    })}
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
 
-          {/* Question Packs Tab */}
-          <TabsContent value="packs" className="space-y-6">
-            <QuestionPackStore />
-          </TabsContent>
+            {/* Leagues Tab */}
+            <TabsContent value="leagues" className="space-y-6">
+              <LeagueSystem />
+            </TabsContent>
 
-          {/* Live Audience Tab */}
-          <TabsContent value="audience" className="space-y-6">
-            <LiveSpectatorMode />
-          </TabsContent>
-        </Tabs>
+            {/* Friend Challenges Tab */}
+            <TabsContent value="challenges" className="space-y-6">
+              <FriendChallenges />
+            </TabsContent>
+
+            {/* Power-ups Tab */}
+            <TabsContent value="powerups" className="space-y-6">
+              <Card className="relative overflow-hidden border-primary/20">
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-violet-500/5 to-transparent" />
+                <CardHeader className="relative">
+                  <CardTitle className="flex items-center gap-2">
+                    <div className="p-2 rounded-xl bg-primary/10">
+                      <Sparkles className="h-5 w-5 text-primary" />
+                    </div>
+                    In-Game Power-ups
+                  </CardTitle>
+                  <CardDescription>
+                    Boost your chances during battles with special abilities
+                  </CardDescription>
+                </CardHeader>
+              </Card>
+
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                {powerUps.map((powerUp, i) => {
+                  const Icon = powerUp.icon;
+                  return (
+                    <motion.div
+                      key={powerUp.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: i * 0.1 }}
+                      whileHover={{ y: -4 }}
+                    >
+                      <Card className={`hover:shadow-xl ${powerUp.glow} transition-all duration-300 h-full`}>
+                        <CardHeader className="pb-3">
+                          <CardTitle className="flex items-center gap-2 text-lg">
+                            <div className="p-2 rounded-xl bg-muted">
+                              <Icon className={`h-5 w-5 ${powerUp.color}`} />
+                            </div>
+                            {powerUp.name}
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                          <p className="text-sm text-muted-foreground">{powerUp.description}</p>
+                          <div className="flex justify-between items-center">
+                            <span className="text-xl font-bold text-primary">{powerUp.price} <span className="text-xs font-normal text-muted-foreground">credits</span></span>
+                            <Button 
+                              size="sm"
+                              onClick={() => purchasePowerup({ type: powerUp.id, price: powerUp.price })}
+                              disabled={isPurchasing}
+                              className="shadow-lg shadow-primary/20"
+                            >
+                              Buy
+                            </Button>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </motion.div>
+                  );
+                })}
+              </div>
+            </TabsContent>
+
+            {/* Question Packs Tab */}
+            <TabsContent value="packs" className="space-y-6">
+              <QuestionPackStore />
+            </TabsContent>
+
+            {/* Live Audience Tab */}
+            <TabsContent value="audience" className="space-y-6">
+              <LiveSpectatorMode />
+            </TabsContent>
+          </Tabs>
+        </motion.div>
+
+        {/* Tip */}
+        <div className="max-w-3xl mx-auto mt-8 mb-12">
+          <div className="rounded-2xl border border-border/50 bg-card/40 backdrop-blur-sm p-4 text-center">
+            <p className="text-xs sm:text-sm text-muted-foreground">
+              <span className="text-primary font-semibold">💡 Tip:</span> Each game costs credits to enter. Win to earn rewards! Purchase credit packages or earn them by winning matches.
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );
