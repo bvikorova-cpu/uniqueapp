@@ -398,7 +398,7 @@ const Navbar = () => {
                   {t('navbar.other_services')}
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56 max-h-96 overflow-y-auto">
+              <DropdownMenuContent align="end" className="w-56 max-h-96 overflow-y-auto bg-popover/95 backdrop-blur-xl border-border/50 shadow-[0_8px_40px_hsl(var(--primary)/0.08)]">
                 {otherServices.map((item) => {
                   const Icon = item.icon;
                   const isActive = location.pathname === item.path;
