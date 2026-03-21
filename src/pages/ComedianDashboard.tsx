@@ -75,7 +75,7 @@ export default function ComedianDashboard() {
   if (!profile) return null;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-muted p-6">
+    <div className="min-h-screen bg-background p-6">
       <div className="max-w-7xl mx-auto space-y-6">
         <div className="flex items-center justify-between mt-16">
           <div>

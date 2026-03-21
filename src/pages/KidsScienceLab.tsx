@@ -133,7 +133,7 @@ const KidsScienceLab = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20">
+    <div className="min-h-screen bg-background
       <Navbar />
       <main className="container mx-auto px-4 py-8 mt-16">
         <div className="max-w-4xl mx-auto space-y-6">
@@ -143,7 +143,7 @@ const KidsScienceLab = () => {
               <Beaker className="w-10 h-10 text-blue-500" />
               <FlaskConical className="w-10 h-10 text-green-500" />
             </div>
-            <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-primary via-blue-500 to-green-500 bg-clip-text text-transparent">
+            <h1 className="text-4xl font-black mb-4 bg-gradient-to-r from-primary via-blue-500 to-green-500 bg-clip-text text-transparent">
               AI Science Lab 🔬
             </h1>
             <p className="text-muted-foreground text-lg">

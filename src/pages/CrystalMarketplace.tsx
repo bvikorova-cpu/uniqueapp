@@ -182,7 +182,7 @@ export default function CrystalMarketplace() {
               Crystal Marketplace
             </span>
           </div>
-          <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-violet-500 via-pink-500 to-violet-600 bg-clip-text text-transparent">
+          <h1 className="text-5xl md:text-6xl font-black mb-6 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
             Authentic Crystals Worldwide
           </h1>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">

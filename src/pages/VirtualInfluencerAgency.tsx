@@ -57,7 +57,7 @@ const VirtualInfluencerAgency = () => {
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8 mt-16">
-          <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
+          <h1 className="text-4xl font-black mb-2 bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
             Virtual Influencer Agency
           </h1>
           <p className="text-muted-foreground mb-6">

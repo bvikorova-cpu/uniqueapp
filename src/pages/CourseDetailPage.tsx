@@ -211,7 +211,7 @@ export default function CourseDetailPage() {
                 <Badge>{course.category}</Badge>
                 <Badge variant="outline">{course.difficulty_level}</Badge>
               </div>
-              <h1 className="text-4xl font-bold mb-4">{course.title}</h1>
+              <h1 className="text-4xl font-black mb-4">{course.title}</h1>
               <p className="text-lg text-muted-foreground mb-6">{course.description}</p>
               
               <div className="flex flex-wrap gap-6 text-sm">

@@ -136,7 +136,7 @@ const PublicSpeakingMaster = () => {
             <ArrowLeft className="h-5 w-5" />
           </Button>
           <div>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
               Public Speaking Master
             </h1>
             <p className="text-muted-foreground">AI-powered speech analysis and coaching</p>

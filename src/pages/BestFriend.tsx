@@ -201,7 +201,7 @@ const BestFriend = () => {
 
   if (loadingHistory || subscription.loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20 pt-20 pb-8 flex items-center justify-center">
+      <div className="min-h-screen bg-background pt-20 pb-8 flex items-center justify-center">
         <div className="text-center">
           <Heart className="w-12 h-12 text-destructive animate-pulse mx-auto mb-4" />
           <p className="text-muted-foreground">Loading...</p>
@@ -213,13 +213,13 @@ const BestFriend = () => {
   const messagesLeft = !subscription.subscribed ? Math.max(0, subscription.freeMessagesLimit - subscription.freeMessagesUsed) : null;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20 pt-20 pb-8">
+    <div className="min-h-screen bg-background pt-20 pb-8">
       <div className="container mx-auto px-4 max-w-4xl">
         {/* Header */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 mb-4">
             <Heart className="w-8 h-8 text-destructive animate-pulse" />
-            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
               Best Friend
             </h1>
           </div>

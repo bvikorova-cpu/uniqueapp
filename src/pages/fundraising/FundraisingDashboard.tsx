@@ -187,11 +187,11 @@ export default function FundraisingDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 py-12 px-4">
+    <div className="min-h-screen bg-background py-12 px-4">
       <div className="max-w-7xl mx-auto">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-4xl font-bold mb-2">Dashboard - My Campaigns</h1>
+            <h1 className="text-4xl font-black mb-2">Dashboard - My Campaigns</h1>
             <p className="text-muted-foreground">Manage your fundraising campaigns</p>
           </div>
           <Button onClick={() => navigate('/fundraising/medical/create')} size="lg">

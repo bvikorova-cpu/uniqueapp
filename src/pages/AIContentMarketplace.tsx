@@ -65,7 +65,7 @@ const AIContentMarketplace = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20 py-8 px-4">
+    <div className="min-h-screen bg-background py-8 px-4">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12">
@@ -73,7 +73,7 @@ const AIContentMarketplace = () => {
             <Store className="w-16 h-16 text-primary" />
             <Sparkles className="w-8 h-8 text-primary animate-pulse" />
           </div>
-          <h1 className="text-4xl font-bold mb-4">AI Content Marketplace</h1>
+          <h1 className="text-4xl font-black mb-4">AI Content Marketplace</h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Sell your AI-generated content and earn money. Platform fee: 15-20% per sale.
           </p>
@@ -100,7 +100,7 @@ const AIContentMarketplace = () => {
 
         {/* Browse Marketplace */}
         <div className="mb-12">
-          <h2 className="text-3xl font-bold mb-6">Browse Content</h2>
+          <h2 className="text-3xl font-black mb-6">Browse Content</h2>
           <div className="grid md:grid-cols-3 gap-6">
             {marketplaceItems.map((item) => (
               <Card key={item.id} className="overflow-hidden hover:shadow-xl transition-shadow">
@@ -181,7 +181,7 @@ const AIContentMarketplace = () => {
 
         {/* Why It Works */}
         <div className="mt-12 text-center max-w-3xl mx-auto">
-          <h3 className="text-2xl font-bold mb-4">Why AI Content Marketplace Works</h3>
+          <h3 className="text-2xl font-black mb-4">Why AI Content Marketplace Works</h3>
           <div className="grid md:grid-cols-2 gap-6">
             <Card className="p-6 text-left">
               <h4 className="font-semibold mb-2">High Demand</h4>

@@ -281,14 +281,14 @@ export default function PropertyMarketplace() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-secondary/10">
+    <div className="min-h-screen bg-background
       <div className="container mx-auto px-4 py-24">
         {/* Hero Section */}
         <div className="text-center mb-12 space-y-6 pt-12">
           <div className="inline-block p-3 bg-primary/10 rounded-full mb-4">
             <Building2 className="h-12 w-12 text-primary" />
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
             Property Marketplace
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
@@ -453,7 +453,7 @@ export default function PropertyMarketplace() {
 
         {/* Properties Grid */}
         <div className="mb-12">
-          <h2 className="text-3xl font-bold mb-8">Available Properties</h2>
+          <h2 className="text-3xl font-black mb-8">Available Properties</h2>
           {loading ? (
             <div className="flex justify-center items-center py-20">
               <Loader2 className="h-12 w-12 animate-spin text-primary" />

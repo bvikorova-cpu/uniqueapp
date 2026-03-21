@@ -163,7 +163,7 @@ const GenericLearning = () => {
       <div className="min-h-screen flex items-center justify-center p-6">
         <Card className="p-8 text-center max-w-md">
           <Lock className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
-          <h2 className="text-2xl font-bold mb-2">Access Denied</h2>
+          <h2 className="text-2xl font-black mb-2">Access Denied</h2>
           <p className="text-muted-foreground mb-4">
             You need to purchase this course to access the content.
           </p>
@@ -174,13 +174,13 @@ const GenericLearning = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 p-6">
+    <div className="min-h-screen bg-background p-6">
       <div className="max-w-6xl mx-auto">
         <div className="mb-8">
           <Button variant="ghost" onClick={() => navigate(-1)} className="mb-4">
             ← Back
           </Button>
-          <h1 className="text-4xl font-bold mb-2">{content.title}</h1>
+          <h1 className="text-4xl font-black mb-2">{content.title}</h1>
           <p className="text-muted-foreground">Instructor: {content.instructor}</p>
         </div>
 

@@ -113,13 +113,17 @@ const Photography = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 p-3 sm:p-6">
+    <div className="min-h-screen bg-background px-3 sm:px-6 pb-10">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-8 sm:mb-12 mt-12 sm:mt-16">
-          <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold mb-3 sm:mb-4 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+        <div className="text-center mb-8 sm:mb-12 pt-20 sm:pt-24">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-sm text-primary mb-4">
+            <Camera className="w-4 h-4" />
+            <span className="font-medium">Professional Training</span>
+          </div>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black mb-3 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
             Photography Masterclasses
           </h1>
-          <p className="text-sm sm:text-lg text-muted-foreground max-w-2xl mx-auto px-2">
+          <p className="text-sm sm:text-lg text-muted-foreground max-w-xl mx-auto">
             Learn from professional photographers and master your craft
           </p>
         </div>
@@ -152,7 +156,7 @@ const Photography = () => {
                   </div>
                 </div>
 
-                <h3 className="text-lg sm:text-2xl font-bold mb-2">{masterclass.title}</h3>
+                <h3 className="text-lg sm:text-2xl font-black mb-2">{masterclass.title}</h3>
                 <p className="text-sm sm:text-base text-muted-foreground mb-3 sm:mb-4">{masterclass.description}</p>
 
                 <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm text-muted-foreground mb-3 sm:mb-4">

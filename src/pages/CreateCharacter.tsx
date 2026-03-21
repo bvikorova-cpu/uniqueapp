@@ -309,7 +309,7 @@ export default function CreateCharacter() {
             <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-yellow-300/30 to-transparent rounded-full -mr-16 -mt-16" />
             <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-pink-300/30 to-transparent rounded-full -ml-12 -mb-12" />
             <CardHeader className="text-center relative z-10">
-              <CardTitle className="text-5xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-2 animate-fade-in">
+              <CardTitle className="text-5xl font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent mb-2 animate-fade-in">
                 Create Your Hero! 🦸‍♀️✨
               </CardTitle>
               <CardDescription className="text-xl text-gray-700 font-medium">
@@ -360,7 +360,7 @@ export default function CreateCharacter() {
                       <CardContent className="p-6">
                         <div className="flex items-center gap-2 mb-3">
                           <span className="text-3xl">📖</span>
-                          <h4 className="text-xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                          <h4 className="text-xl font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
                             {characterName}'s Story
                           </h4>
                         </div>
@@ -389,7 +389,7 @@ export default function CreateCharacter() {
                     </div>
                   )}
                   
-                  <h3 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-3">
+                  <h3 className="text-4xl font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent mb-3">
                     {characterName || "Your Hero"}
                   </h3>
                   
@@ -439,7 +439,7 @@ export default function CreateCharacter() {
               {/* Name Input */}
               <Card className="bg-white/95 border-3 border-blue-300 shadow-lg hover-scale transition-all">
                 <CardContent className="p-6">
-                  <Label className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-3 block">
+                  <Label className="text-xl font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent mb-3 block">
                     What's your hero's name? 📝
                   </Label>
                   <Input
@@ -454,7 +454,7 @@ export default function CreateCharacter() {
               {/* Hair Color Selection */}
               <Card className="bg-white/95 border-3 border-pink-300 shadow-lg hover-scale transition-all">
                 <CardContent className="p-6">
-                  <Label className="text-xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent mb-4 block">
+                  <Label className="text-xl font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent mb-4 block">
                     Choose Hair Color 🎨
                   </Label>
                   <div className="grid grid-cols-4 gap-3">
@@ -478,7 +478,7 @@ export default function CreateCharacter() {
               {/* Superpower Selection */}
               <Card className="bg-white/95 border-3 border-yellow-300 shadow-lg hover-scale transition-all">
                 <CardContent className="p-6">
-                  <Label className="text-xl font-bold bg-gradient-to-r from-yellow-600 to-orange-600 bg-clip-text text-transparent mb-4 block">
+                  <Label className="text-xl font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent mb-4 block">
                     Choose Superpower 🦸‍♀️
                   </Label>
                   <div className="grid grid-cols-2 gap-3">
@@ -502,7 +502,7 @@ export default function CreateCharacter() {
               {/* Eye Color Selection */}
               <Card className="bg-white/95 border-3 border-blue-300 shadow-lg hover-scale transition-all">
                 <CardContent className="p-6">
-                  <Label className="text-xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent mb-4 block">
+                  <Label className="text-xl font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent mb-4 block">
                     Choose Eye Color 👁️
                   </Label>
                   <div className="grid grid-cols-3 gap-3">
@@ -526,7 +526,7 @@ export default function CreateCharacter() {
               {/* Costume Color Selection */}
               <Card className="bg-white/95 border-3 border-purple-300 shadow-lg hover-scale transition-all">
                 <CardContent className="p-6">
-                  <Label className="text-xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-4 block">
+                  <Label className="text-xl font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent mb-4 block">
                     Choose Costume Color 👗
                   </Label>
                   <div className="grid grid-cols-3 gap-3">
@@ -550,7 +550,7 @@ export default function CreateCharacter() {
               {/* Age Group Selection */}
               <Card className="bg-white/95 border-3 border-green-300 shadow-lg hover-scale transition-all">
                 <CardContent className="p-6">
-                  <Label className="text-xl font-bold bg-gradient-to-r from-green-600 to-teal-600 bg-clip-text text-transparent mb-4 block">
+                  <Label className="text-xl font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent mb-4 block">
                     Choose Age 🎂
                   </Label>
                   <div className="grid grid-cols-3 gap-3">
@@ -574,7 +574,7 @@ export default function CreateCharacter() {
               {/* Personality Selection */}
               <Card className="bg-white/95 border-3 border-orange-300 shadow-lg hover-scale transition-all">
                 <CardContent className="p-6">
-                  <Label className="text-xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent mb-4 block">
+                  <Label className="text-xl font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent mb-4 block">
                     Choose Personality ⭐
                   </Label>
                   <div className="grid grid-cols-2 gap-3">
@@ -598,7 +598,7 @@ export default function CreateCharacter() {
               {/* Skin Color Selection */}
               <Card className="bg-white/95 border-3 border-amber-300 shadow-lg hover-scale transition-all">
                 <CardContent className="p-6">
-                  <Label className="text-xl font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent mb-4 block">
+                  <Label className="text-xl font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent mb-4 block">
                     Choose Skin Color 🎨
                   </Label>
                   <div className="grid grid-cols-5 gap-3">
@@ -622,7 +622,7 @@ export default function CreateCharacter() {
               {/* Gender Selection */}
               <Card className="bg-white/95 border-3 border-indigo-300 shadow-lg hover-scale transition-all">
                 <CardContent className="p-6">
-                  <Label className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-4 block">
+                  <Label className="text-xl font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent mb-4 block">
                     Choose Gender 🦸
                   </Label>
                   <div className="grid grid-cols-3 gap-3">

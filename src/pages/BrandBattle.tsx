@@ -221,7 +221,7 @@ export default function BrandBattle() {
             <Trophy className="h-5 w-5 text-primary" />
             <span className="text-sm font-semibold">Live Brand Battle - Q1 2025</span>
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">
+          <h1 className="text-4xl md:text-5xl font-black mb-4">
             Brand Battle Arena
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-4">
@@ -396,7 +396,7 @@ export default function BrandBattle() {
           {/* Sponsor Tiers Tab */}
           <TabsContent value="sponsors" className="space-y-6">
             <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold mb-4">Become a Sponsor</h2>
+              <h2 className="text-3xl font-black mb-4">Become a Sponsor</h2>
               <p className="text-muted-foreground max-w-2xl mx-auto">
                 Get premium visibility, engage with our community, and boost your brand recognition through our Brand Battle Arena.
               </p>

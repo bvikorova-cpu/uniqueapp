@@ -102,7 +102,7 @@ export default function LiveStreamList() {
             </div>
           </div>
           <h1 className="text-5xl font-bold">
-            <span className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
               Live Streaming
             </span>
           </h1>

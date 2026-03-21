@@ -165,7 +165,7 @@ EMOTIONS: ${result.targetEmotions.join(', ')}
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-8">
           <div className="flex flex-col md:flex-row items-center justify-center gap-4 mb-4">
-            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
               Video Ad Generator
             </h1>
             <div className="flex flex-col items-center md:items-end gap-1">

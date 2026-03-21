@@ -25,19 +25,21 @@ const DreamJournal = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-background via-background to-purple-500/5">
+    <div className="min-h-screen flex flex-col bg-background">
       <Navbar />
       
       <main className="flex-1 container mx-auto px-3 sm:px-4 pt-24 pb-12 max-w-7xl">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
           <div className="text-center sm:text-left">
-            <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold mb-2">
-              <span className="bg-gradient-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent">
-                Dream Analyzer & Journal 💭
-              </span>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-xs text-primary mb-3">
+              <Moon className="w-3 h-3" />
+              <span className="font-medium">AI-Powered</span>
+            </div>
+            <h1 className="text-2xl sm:text-4xl font-black mb-2 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
+              Dream Analyzer & Journal 💭
             </h1>
-            <p className="text-muted-foreground text-sm sm:text-lg max-w-2xl">
-              Unlock your subconscious, track your emotions, and discover patterns in your mental journey
+            <p className="text-muted-foreground text-sm sm:text-base max-w-xl">
+              Unlock your subconscious and discover patterns in your mental journey
             </p>
           </div>
           

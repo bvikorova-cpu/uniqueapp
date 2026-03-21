@@ -228,7 +228,7 @@ const HobbyExplorer = () => {
             <ArrowLeft className="h-5 w-5" />
           </Button>
           <div>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-orange-400 to-amber-400 bg-clip-text text-transparent">
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
               Hobby Explorer
             </h1>
             <p className="text-muted-foreground">Discover your next passion</p>

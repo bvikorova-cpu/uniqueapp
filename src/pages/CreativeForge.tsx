@@ -267,7 +267,7 @@ export default function CreativeForge() {
   const selectedCategoryData = CATEGORIES.find(c => c.id === selectedCategory);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 pt-20 pb-12 overflow-x-hidden">
+    <div className="min-h-screen bg-background pt-20 pb-12 overflow-x-hidden">
       <div className="w-full max-w-7xl mx-auto px-3 sm:px-4">
         {/* Header */}
         <div className="flex items-center gap-4 mb-8">

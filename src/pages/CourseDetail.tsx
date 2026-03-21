@@ -91,7 +91,7 @@ const CourseDetail = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-background to-muted flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin h-12 w-12 border-b-2 border-primary mx-auto mb-4" />
           <p className="text-muted-foreground">Loading course...</p>
@@ -102,7 +102,7 @@ const CourseDetail = () => {
 
   if (testPassed) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-background to-muted p-4">
+      <div className="min-h-screen bg-background p-4">
         <Certificate
           userName={userName}
           courseName={courseName || ""}
@@ -114,7 +114,7 @@ const CourseDetail = () => {
 
   if (showTest) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-background to-muted p-4">
+      <div className="min-h-screen bg-background p-4">
         <div className="max-w-4xl mx-auto">
           <Button
             variant="ghost"
@@ -136,7 +136,7 @@ const CourseDetail = () => {
 
   if (topics.length === 0) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-background to-muted flex items-center justify-center p-4">
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
         <Card className="p-8 text-center max-w-md">
           <p className="text-muted-foreground mb-4">Failed to load course content.</p>
           <Button onClick={() => navigate("/education")}>
@@ -148,7 +148,7 @@ const CourseDetail = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-muted p-4">
+    <div className="min-h-screen bg-background p-4">
       <div className="max-w-7xl mx-auto">
         <Card className="mb-6">
           <CardHeader>

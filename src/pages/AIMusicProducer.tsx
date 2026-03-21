@@ -9,12 +9,12 @@ import { MySongs } from "@/components/music-producer/MySongs";
 
 const AIMusicProducer = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
+    <div className="min-h-screen bg-background
       <Navbar />
       
       <div className="container mx-auto px-4 pt-24 pb-12">
         <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500 bg-clip-text text-transparent mb-4">
+          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent mb-4">
             🎵 AI Music Producer
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">

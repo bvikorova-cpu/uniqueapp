@@ -154,7 +154,7 @@ export default function Schools() {
             <School className="w-4 h-4 mr-2" />
             For Schools & Educational Institutions
           </Badge>
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+          <h1 className="text-4xl md:text-5xl font-black mb-4 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
             Educational Coloring Pages
           </h1>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-6">
@@ -172,7 +172,7 @@ export default function Schools() {
         {/* Demo Video Section */}
         <div className="mb-16">
           <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold mb-2">See It In Action</h2>
+            <h2 className="text-3xl font-black mb-2">See It In Action</h2>
             <p className="text-muted-foreground">Real classroom scenarios across different grade levels</p>
           </div>
           
@@ -224,7 +224,7 @@ export default function Schools() {
                   </div>
 
                   <div className="p-8">
-                    <h3 className="text-2xl font-bold mb-6">Miss Johnson's Kindergarten Class</h3>
+                    <h3 className="text-2xl font-black mb-6">Miss Johnson's Kindergarten Class</h3>
                     <div className="space-y-6">
                       <div className="flex gap-4">
                         <div className="flex-shrink-0 w-10 h-10 rounded-full bg-yellow-500/10 flex items-center justify-center text-yellow-600 font-bold animate-scale-in">
@@ -304,7 +304,7 @@ export default function Schools() {
                   </div>
 
                   <div className="p-8">
-                    <h3 className="text-2xl font-bold mb-6">Mr. Smith's 3rd Grade Class</h3>
+                    <h3 className="text-2xl font-black mb-6">Mr. Smith's 3rd Grade Class</h3>
                     <div className="space-y-6">
                       <div className="flex gap-4">
                         <div className="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-600 font-bold animate-scale-in">
@@ -384,7 +384,7 @@ export default function Schools() {
                   </div>
 
                   <div className="p-8">
-                    <h3 className="text-2xl font-bold mb-6">Ms. Rodriguez's Biology Class</h3>
+                    <h3 className="text-2xl font-black mb-6">Ms. Rodriguez's Biology Class</h3>
                     <div className="space-y-6">
                       <div className="flex gap-4">
                         <div className="flex-shrink-0 w-10 h-10 rounded-full bg-purple-500/10 flex items-center justify-center text-purple-600 font-bold animate-scale-in">
@@ -487,7 +487,7 @@ export default function Schools() {
         {/* Subject Collections */}
         <div className="mb-16">
           <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold mb-4">Thematic Subject Collections</h2>
+            <h2 className="text-3xl font-black mb-4">Thematic Subject Collections</h2>
             <p className="text-muted-foreground">
               Access curriculum-aligned coloring pages across all major subjects
             </p>

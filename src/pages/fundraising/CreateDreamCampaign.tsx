@@ -174,7 +174,7 @@ export default function CreateDreamCampaign() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-amber-500/10 py-12 px-4">
+    <div className="min-h-screen bg-background py-12 px-4">
       <div className="max-w-3xl mx-auto">
         <Button variant="outline" size="sm" onClick={() => navigate('/fundraising/dream')} className="mb-6">
           <ArrowLeft className="mr-2 h-4 w-4" />
@@ -185,7 +185,7 @@ export default function CreateDreamCampaign() {
           <CardHeader className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 rounded-t-lg border-b border-amber-500/20">
             <CardTitle className="text-3xl flex items-center gap-2 text-foreground">
               <Sparkles className="h-8 w-8 text-amber-500" />
-              <span className="bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
                 Share Your Dream
               </span>
             </CardTitle>

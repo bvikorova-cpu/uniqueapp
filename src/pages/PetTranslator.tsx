@@ -90,7 +90,7 @@ const PetTranslator = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20">
+    <div className="min-h-screen bg-background
       {/* Hero Section */}
       <div className="container mx-auto px-4 pt-20 pb-12">
         <div className="text-center max-w-4xl mx-auto">
@@ -100,7 +100,7 @@ const PetTranslator = () => {
               <Sparkles className="w-8 h-8 text-primary absolute -top-2 -right-2 animate-bounce" />
             </div>
           </div>
-          <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
+          <h1 className="text-5xl md:text-6xl font-black mb-6 bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
             AI Pet Translator
           </h1>
           <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-2xl mx-auto">
@@ -287,7 +287,7 @@ const PetTranslator = () => {
                   <Heart className="w-8 h-8 text-primary" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-2xl font-bold mb-3">
+                  <h3 className="text-2xl font-black mb-3">
                     Emotion Detected: {translation.emotion}
                   </h3>
                   <p className="text-xl mb-6 italic">"{translation.message}"</p>

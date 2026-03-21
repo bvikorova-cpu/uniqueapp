@@ -248,7 +248,7 @@ const OnlinePsychologist = () => {
             <Lock className="h-3 w-3 mr-1" />
             Anonymous and Confidential
           </Badge>
-          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
             Online Psychologist
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">

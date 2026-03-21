@@ -425,8 +425,8 @@ const Auction = () => {
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-6 sm:mb-8">
           <div className="flex-1">
-            <h1 className="text-2xl sm:text-4xl font-bold mb-2">
-              <span className="bg-gradient-primary bg-clip-text text-transparent">
+            <h1 className="text-2xl sm:text-4xl font-black mb-2">
+              <span className="bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
                 Online Auction
               </span>
             </h1>

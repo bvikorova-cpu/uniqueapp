@@ -186,7 +186,7 @@ const AITattoo = () => {
 
         {/* Detailed Description */}
         <Card className="p-6 mb-8 max-w-4xl mx-auto bg-card text-card-foreground">
-          <h2 className="text-2xl font-bold mb-4 text-foreground">What is AI Tattoo Designer?</h2>
+          <h2 className="text-2xl font-black mb-4 text-foreground">What is AI Tattoo Designer?</h2>
           <p className="text-muted-foreground mb-4">
             AI Tattoo Designer is an innovative tool that uses artificial intelligence to create unique, 
             custom tattoo designs based on your description. Whether you're looking for a realistic portrait, 
@@ -220,7 +220,7 @@ const AITattoo = () => {
 
           <TabsContent value="generate" className="space-y-6">
             <Card className="p-6 max-w-2xl mx-auto">
-              <h2 className="text-2xl font-bold mb-4">Design Your Tattoo</h2>
+              <h2 className="text-2xl font-black mb-4">Design Your Tattoo</h2>
               
               <div className="space-y-4">
                 <div>
@@ -336,7 +336,7 @@ const AITattoo = () => {
 
           <TabsContent value="preview" className="space-y-6">
             <Card className="p-6 max-w-4xl mx-auto">
-              <h2 className="text-2xl font-bold mb-4">Placement Preview</h2>
+              <h2 className="text-2xl font-black mb-4">Placement Preview</h2>
               
               <div className="space-y-4">
                 <div>

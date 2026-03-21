@@ -19,7 +19,7 @@ export default function NutritionSubscriptions() {
               <Apple className="h-5 w-5 text-primary" />
               <span className="text-sm font-medium">Nutrition Hub Subscriptions</span>
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-green-500 via-blue-500 to-purple-500 bg-clip-text text-transparent">
+            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
               Upgrade Your Nutrition Journey
             </h1>
           </div>

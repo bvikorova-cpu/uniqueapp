@@ -107,10 +107,10 @@ const DigitalMarketing = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 p-6">
+    <div className="min-h-screen bg-background p-6">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12 mt-16">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+          <h1 className="text-4xl md:text-5xl font-black mb-4 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
             Digital Marketing Courses
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
@@ -146,7 +146,7 @@ const DigitalMarketing = () => {
                   </div>
                 </div>
 
-                <h3 className="text-2xl font-bold mb-2">{course.title}</h3>
+                <h3 className="text-2xl font-black mb-2">{course.title}</h3>
                 <p className="text-muted-foreground mb-4">{course.description}</p>
 
                 <div className="flex items-center gap-4 text-sm text-muted-foreground mb-4">

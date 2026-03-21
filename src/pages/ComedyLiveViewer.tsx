@@ -105,7 +105,7 @@ export default function ComedyLiveViewer() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-muted p-6">
+    <div className="min-h-screen bg-background p-6">
       <div className="max-w-7xl mx-auto space-y-6 mt-16">
         <Button variant="ghost" onClick={() => navigate("/comedy-club")}>
           <ArrowLeft className="mr-2 h-4 w-4" />

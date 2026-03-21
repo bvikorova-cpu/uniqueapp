@@ -2,597 +2,196 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { motion } from "framer-motion";
 import { 
-  Car, 
-  Baby, 
-  GraduationCap, 
-  Briefcase, 
-  Heart,
-  Sparkles,
-  Trophy,
-  Users,
-  Video,
-  Mic,
-  ShoppingBag,
-  Brain,
-  TrendingUp,
-  Ghost,
-  Building2,
-  Crown,
-  Clock,
-  Timer,
-  ChefHat,
-  MessageCircle,
-  Star,
-  MessageSquare,
-  Palette,
-  Camera,
-  Gem,
-  RotateCcw,
-  Shirt
+  Car, Baby, GraduationCap, Briefcase, Heart, Sparkles, Trophy, Users,
+  Video, Mic, ShoppingBag, Brain, TrendingUp, Ghost, Building2, Crown,
+  Clock, Timer, ChefHat, MessageCircle, Star, MessageSquare, Palette,
+  Camera, Gem, RotateCcw, Shirt, ArrowRight, Rocket, Zap
 } from "lucide-react";
+
+const container = {
+  hidden: { opacity: 0 },
+  show: { opacity: 1, transition: { staggerChildren: 0.04 } }
+};
+const item = {
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.16, 1, 0.3, 1] } }
+};
 
 const Index = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  // Premium Ecosystem Modules (Featured Section)
   const ecosystemModules = [
-    {
-      title: "👑 Holographic Avatars",
-      description: "AI-powered 3D avatars with breeding, battles, and autonomous personalities",
-      icon: Crown,
-      path: "/holographic-avatars",
-      badge: "3D AI",
-      badgeColor: "bg-purple-600",
-      gradient: "from-purple-600 to-pink-600",
-      featured: true
-    },
-    {
-      title: "⏰ Time Capsule 2.0",
-      description: "Send messages to the future with encrypted storage (1-20 years)",
-      icon: Clock,
-      path: "/time-capsule-subscription",
-      badge: "Future",
-      badgeColor: "bg-blue-600",
-      gradient: "from-blue-600 to-cyan-600"
-    },
-    {
-      title: "⏮️ Time Reversal Social",
-      description: "Live your life backwards with AI age transformation",
-      icon: Timer,
-      path: "/time-reversal-subscription",
-      badge: "Social",
-      badgeColor: "bg-violet-600",
-      gradient: "from-violet-600 to-purple-600"
-    },
-    {
-      title: "👨‍🍳 MasterChef Platform",
-      description: "Online cooking competitions with voting and prizes",
-      icon: ChefHat,
-      path: "/masterchef-subscription",
-      badge: "Competition",
-      badgeColor: "bg-orange-600",
-      gradient: "from-orange-600 to-red-600"
-    },
-    {
-      title: "🏎️ GP Fantasy Racing",
-      description: "3D racing with Three.js, team management, and leaderboards",
-      icon: Car,
-      path: "/f1-racing",
-      badge: "3D Racing",
-      badgeColor: "bg-red-600",
-      gradient: "from-red-600 to-orange-600",
-      featured: true
-    },
-    {
-      title: "💬 Messenger",
-      description: "Real-time chat with reactions, voice messages, and self-destructing messages",
-      icon: MessageCircle,
-      path: "/messenger",
-      badge: "Chat",
-      badgeColor: "bg-cyan-600",
-      gradient: "from-cyan-600 to-blue-600"
-    },
-    {
-      title: "⭐ Influ-King",
-      description: "Creator profiles with 12 categories, stats, and virtual gift monetization",
-      icon: Star,
-      path: "/influ-king",
-      badge: "Creators",
-      badgeColor: "bg-yellow-600",
-      gradient: "from-yellow-600 to-amber-600"
-    },
-    {
-      title: "💬 Megaforum",
-      description: "Open community forum with 9 categories (100% FREE)",
-      icon: MessageSquare,
-      path: "/megaforum",
-      badge: "Free",
-      badgeColor: "bg-emerald-600",
-      gradient: "from-emerald-600 to-green-600"
-    },
-    {
-      title: "🧠 Online Psychologist",
-      description: "Anonymous AI chat with empathetic streaming responses",
-      icon: Brain,
-      path: "/psychologist",
-      badge: "Anonymous",
-      badgeColor: "bg-pink-600",
-      gradient: "from-pink-600 to-rose-600"
-    },
-    {
-      title: "🎨 Content Studio",
-      description: "AI generation hub for social media, CVs, articles, and scripts",
-      icon: Palette,
-      path: "/content-studio",
-      badge: "AI Studio",
-      badgeColor: "bg-indigo-600",
-      gradient: "from-indigo-600 to-purple-600"
-    },
+    { title: "Holographic Avatars", emoji: "👑", description: "AI-powered 3D avatars with breeding & battles", icon: Crown, path: "/holographic-avatars", badge: "3D AI", gradient: "from-purple-600 to-pink-600", featured: true },
+    { title: "Time Capsule 2.0", emoji: "⏰", description: "Send messages to the future (1-20 years)", icon: Clock, path: "/time-capsule-subscription", badge: "Future", gradient: "from-blue-600 to-cyan-600" },
+    { title: "Time Reversal Social", emoji: "⏮️", description: "Live your life backwards with AI transformation", icon: Timer, path: "/time-reversal-subscription", badge: "Social", gradient: "from-violet-600 to-purple-600" },
+    { title: "MasterChef Platform", emoji: "👨‍🍳", description: "Online cooking competitions with prizes", icon: ChefHat, path: "/masterchef-subscription", badge: "Competition", gradient: "from-orange-600 to-red-600" },
+    { title: "GP Fantasy Racing", emoji: "🏎️", description: "3D racing with team management & leaderboards", icon: Car, path: "/f1-racing", badge: "3D Racing", gradient: "from-red-600 to-orange-600", featured: true },
+    { title: "Messenger", emoji: "💬", description: "Real-time chat with reactions & voice messages", icon: MessageCircle, path: "/messenger", badge: "Chat", gradient: "from-cyan-600 to-blue-600" },
+    { title: "Influ-King", emoji: "⭐", description: "Creator profiles with 12 categories & virtual gifts", icon: Star, path: "/influ-king", badge: "Creators", gradient: "from-yellow-600 to-amber-600" },
+    { title: "Megaforum", emoji: "💬", description: "Open community forum with 9 categories (FREE)", icon: MessageSquare, path: "/megaforum", badge: "Free", gradient: "from-emerald-600 to-green-600" },
+    { title: "Online Psychologist", emoji: "🧠", description: "Anonymous AI chat with empathetic responses", icon: Brain, path: "/psychologist", badge: "Anonymous", gradient: "from-pink-600 to-rose-600" },
+    { title: "Content Studio", emoji: "🎨", description: "AI hub for social media, CVs & scripts", icon: Palette, path: "/content-studio", badge: "AI Studio", gradient: "from-indigo-600 to-purple-600" },
   ];
 
-  // Core Modules (10 key modules from the final mega-task)
   const coreModules = [
-    {
-      title: "💬 Character Companions",
-      description: "Chat with 5 AI personas - motivators, comedians, therapists and more",
-      icon: MessageCircle,
-      path: "/companions",
-      badge: "5 Free Msgs",
-      badgeColor: "bg-pink-600",
-      gradient: "from-pink-600 to-rose-600"
-    },
-    {
-      title: "🌍 Exclusive Experiences",
-      description: "33 global destinations & fantasy worlds with AI virtual tours",
-      icon: Sparkles,
-      path: "/ai-experiences",
-      badge: "15 Credits",
-      badgeColor: "bg-purple-600",
-      gradient: "from-purple-600 to-violet-600"
-    },
-    {
-      title: "🎨 Brand Builder",
-      description: "Generate complete brand kits with logo, colors, slogan & strategy",
-      icon: Palette,
-      path: "/brand-builder",
-      badge: "15 Credits",
-      badgeColor: "bg-indigo-600",
-      gradient: "from-indigo-600 to-blue-600"
-    },
-    {
-      title: "🏠 Home Designer",
-      description: "AI room redesign + furniture marketplace with Stripe checkout",
-      icon: Building2,
-      path: "/home-designer",
-      badge: "Marketplace",
-      badgeColor: "bg-sky-600",
-      gradient: "from-sky-600 to-cyan-600"
-    },
-    {
-      title: "💄 Beauty Studio",
-      description: "Virtual makeup, hair styling, product recommendations & tutorials",
-      icon: Star,
-      path: "/beauty-studio",
-      badge: "2-5 Credits",
-      badgeColor: "bg-rose-600",
-      gradient: "from-rose-600 to-pink-600"
-    },
-    {
-      title: "📸 Photo Restoration",
-      description: "AI colorization, repair scratches, and enhance old photos",
-      icon: Camera,
-      path: "/photo-restoration",
-      badge: "1 Credit",
-      badgeColor: "bg-amber-600",
-      gradient: "from-amber-600 to-yellow-600"
-    },
-    {
-      title: "🏺 Antique Appraisal",
-      description: "AI identification, valuation & authenticity checks for antiques",
-      icon: Gem,
-      path: "/antique-appraisal",
-      badge: "3-20 Credits",
-      badgeColor: "bg-orange-600",
-      gradient: "from-orange-600 to-amber-600"
-    },
-    {
-      title: "✨ Collectibles",
-      description: "Mystery boxes, AI item generator & marketplace for trading",
-      icon: Crown,
-      path: "/collectibles",
-      badge: "10 Credits",
-      badgeColor: "bg-violet-600",
-      gradient: "from-violet-600 to-purple-600"
-    },
-    {
-      title: "🌙 Dream Journal",
-      description: "AI dream analysis, mood tracking & pattern visualization",
-      icon: Brain,
-      path: "/dream-journal",
-      badge: "Wellness",
-      badgeColor: "bg-blue-600",
-      gradient: "from-blue-600 to-indigo-600"
-    },
-    {
-      title: "👗 Fashion Studio",
-      description: "AI fashion generator, community gallery & design challenges",
-      icon: Shirt,
-      path: "/fashion-studio",
-      badge: "Creative",
-      badgeColor: "bg-fuchsia-600",
-      gradient: "from-fuchsia-600 to-pink-600"
-    },
+    { title: "Character Companions", emoji: "💬", description: "Chat with 5 AI personas", icon: MessageCircle, path: "/companions", badge: "5 Free Msgs", gradient: "from-pink-600 to-rose-600" },
+    { title: "Exclusive Experiences", emoji: "🌍", description: "33 global destinations & fantasy worlds", icon: Sparkles, path: "/ai-experiences", badge: "15 Credits", gradient: "from-purple-600 to-violet-600" },
+    { title: "Brand Builder", emoji: "🎨", description: "Generate complete brand kits with AI", icon: Palette, path: "/brand-builder", badge: "15 Credits", gradient: "from-indigo-600 to-blue-600" },
+    { title: "Home Designer", emoji: "🏠", description: "AI room redesign + furniture marketplace", icon: Building2, path: "/home-designer", badge: "Marketplace", gradient: "from-sky-600 to-cyan-600" },
+    { title: "Beauty Studio", emoji: "💄", description: "Virtual makeup & hair styling with AI", icon: Star, path: "/beauty-studio", badge: "2-5 Credits", gradient: "from-rose-600 to-pink-600" },
+    { title: "Photo Restoration", emoji: "📸", description: "AI colorization & enhance old photos", icon: Camera, path: "/photo-restoration", badge: "1 Credit", gradient: "from-amber-600 to-yellow-600" },
+    { title: "Antique Appraisal", emoji: "🏺", description: "AI identification & valuation", icon: Gem, path: "/antique-appraisal", badge: "3-20 Credits", gradient: "from-orange-600 to-amber-600" },
+    { title: "Collectibles", emoji: "✨", description: "Mystery boxes & AI item generator", icon: Crown, path: "/collectibles", badge: "10 Credits", gradient: "from-violet-600 to-purple-600" },
+    { title: "Dream Journal", emoji: "🌙", description: "AI dream analysis & mood tracking", icon: Brain, path: "/dream-journal", badge: "Wellness", gradient: "from-blue-600 to-indigo-600" },
+    { title: "Fashion Studio", emoji: "👗", description: "AI fashion generator & design challenges", icon: Shirt, path: "/fashion-studio", badge: "Creative", gradient: "from-fuchsia-600 to-pink-600" },
   ];
 
   const services = [
-    {
-      title: "🏎️ GP Fantasy Racing",
-      description: "Premium 3D racing platform with fantasy teams & live competitions",
-      icon: Car,
-      path: "/f1-subscription",
-      badge: "Premium",
-      badgeColor: "bg-red-600",
-      gradient: "from-red-600 to-orange-600",
-      featured: true
-    },
-    {
-      title: "👶 Kids Channel",
-      description: "Interactive educational games, stories, and fun activities for children",
-      icon: Baby,
-      path: "/kids-channel",
-      badge: "Family",
-      badgeColor: "bg-blue-500",
-      gradient: "from-blue-500 to-cyan-500"
-    },
-    {
-      title: "🎓 Education & AI Tutor",
-      description: "AI-powered learning, tutoring, and educational resources",
-      icon: GraduationCap,
-      path: "/education",
-      badge: "Learning",
-      badgeColor: "bg-green-500",
-      gradient: "from-green-500 to-emerald-500"
-    },
-    {
-      title: "💼 Jobs & Career",
-      description: "Find jobs, create CV, prepare for interviews with AI assistance",
-      icon: Briefcase,
-      path: "/jobs",
-      badge: "Career",
-      badgeColor: "bg-purple-500",
-      gradient: "from-purple-500 to-indigo-500"
-    },
-    {
-      title: "💝 Dating",
-      description: "Meet new people, create connections, and find love",
-      icon: Heart,
-      path: "/dating",
-      badge: "Social",
-      badgeColor: "bg-pink-500",
-      gradient: "from-pink-500 to-rose-500"
-    },
-    {
-      title: "✨ AI Generation",
-      description: "Generate art, music, avatars, and creative content with AI",
-      icon: Sparkles,
-      path: "/ai-generation",
-      badge: "Creative",
-      badgeColor: "bg-yellow-500",
-      gradient: "from-yellow-500 to-amber-500"
-    },
-    {
-      title: "🎮 Games",
-      description: "Play fun games, compete in tournaments, and win prizes",
-      icon: Trophy,
-      path: "/games",
-      badge: "Entertainment",
-      badgeColor: "bg-orange-500",
-      gradient: "from-orange-500 to-red-500"
-    },
-    {
-      title: "👥 Social Wall",
-      description: "Connect with friends, share stories, and build your community",
-      icon: Users,
-      path: "/wall",
-      badge: "Social",
-      badgeColor: "bg-teal-500",
-      gradient: "from-teal-500 to-cyan-500"
-    },
-    {
-      title: "🎥 Live Streaming",
-      description: "Stream live content, watch shows, and interact with creators",
-      icon: Video,
-      path: "/livestream",
-      badge: "Entertainment",
-      badgeColor: "bg-indigo-500",
-      gradient: "from-indigo-500 to-purple-500"
-    },
-    {
-      title: "🎤 Comedy Club",
-      description: "Watch comedy shows, become a comedian, and make people laugh",
-      icon: Mic,
-      path: "/comedy-club",
-      badge: "Entertainment",
-      badgeColor: "bg-fuchsia-500",
-      gradient: "from-fuchsia-500 to-pink-500"
-    },
-    {
-      title: "🛍️ Marketplace",
-      description: "Buy and sell products, discover unique items, and support creators",
-      icon: ShoppingBag,
-      path: "/marketplace",
-      badge: "Shopping",
-      badgeColor: "bg-violet-500",
-      gradient: "from-violet-500 to-purple-500"
-    },
-    {
-      title: "🧠 AI Services",
-      description: "Psychology chat, astrology readings, best friend AI, and more",
-      icon: Brain,
-      path: "/psychology-chat",
-      badge: "Wellness",
-      badgeColor: "bg-emerald-500",
-      gradient: "from-emerald-500 to-teal-500"
-    },
-    {
-      title: "🧩 IQ Platform",
-      description: "IQ tests, AI analysis, online competitions & earn credits",
-      icon: Brain,
-      path: "/iq-platform",
-      badge: "Intelligence",
-      badgeColor: "bg-blue-600",
-      gradient: "from-blue-600 to-indigo-600"
-    },
-    {
-      title: "🎭 Shadow Arena",
-      description: "Horror storytelling platform with creator battles & AI-enhanced stories",
-      icon: Ghost,
-      path: "/shadow-arena",
-      badge: "Horror",
-      badgeColor: "bg-purple-600",
-      gradient: "from-purple-600 to-fuchsia-600"
-    },
-    {
-      title: "🎰 Lottery AI",
-      description: "AI-powered lottery number predictions with advanced pattern analysis",
-      icon: TrendingUp,
-      path: "/lottery-ai",
-      badge: "AI Predictions",
-      badgeColor: "bg-amber-600",
-      gradient: "from-amber-600 to-yellow-500"
-    },
-    {
-      title: "🏠 Property Marketplace",
-      description: "Professional real estate platform with premium listing packages",
-      icon: Building2,
-      path: "/property-marketplace",
-      badge: "Real Estate",
-      badgeColor: "bg-sky-600",
-      gradient: "from-sky-600 to-blue-500"
-    },
-    {
-      title: "👥 Membership Community",
-      description: "Exclusive social network with tiered membership benefits",
-      icon: Users,
-      path: "/membership-community",
-      badge: "Community",
-      badgeColor: "bg-rose-600",
-      gradient: "from-rose-600 to-pink-500"
-    },
-    {
-      title: "💎 Crystal Energy Network",
-      description: "Healing crystal marketplace with energy readings and subscriptions",
-      icon: Sparkles,
-      path: "/crystal-energy",
-      badge: "Wellness",
-      badgeColor: "bg-violet-600",
-      gradient: "from-violet-600 to-purple-500"
-    },
-    {
-      title: "🧬 DNA Memory Network",
-      description: "Unlock ancestral memories through DNA analysis and AI restoration",
-      icon: Brain,
-      path: "/dna-memory",
-      badge: "Heritage",
-      badgeColor: "bg-cyan-600",
-      gradient: "from-cyan-600 to-teal-500"
-    },
-    {
-      title: "🔮 Reincarnation Social",
-      description: "Discover past lives and connect with your soul family",
-      icon: Heart,
-      path: "/reincarnation-social",
-      badge: "Spiritual",
-      badgeColor: "bg-fuchsia-600",
-      gradient: "from-fuchsia-600 to-pink-500"
-    },
-    {
-      title: "⛓️ Blockchain Confessions",
-      description: "Anonymous confession platform with crypto rewards and voting",
-      icon: Ghost,
-      path: "/blockchain-confessions",
-      badge: "Anonymous",
-      badgeColor: "bg-slate-600",
-      gradient: "from-slate-600 to-gray-500"
-    },
-    {
-      title: "🕷️ Phobia Trading",
-      description: "Trade and overcome fears in a gamified therapeutic platform",
-      icon: Ghost,
-      path: "/phobia-trading",
-      badge: "Therapy",
-      badgeColor: "bg-orange-600",
-      gradient: "from-orange-600 to-amber-500"
-    },
-    {
-      title: "🌌 Multiverse Network",
-      description: "Explore parallel universe versions of yourself with AI analysis",
-      icon: Sparkles,
-      path: "/multiverse-network",
-      badge: "Exploration",
-      badgeColor: "bg-indigo-600",
-      gradient: "from-indigo-600 to-violet-500"
-    },
-    {
-      title: "🎵 Live Concerts",
-      description: "HD concert streaming with virtual gifts and VIP experiences",
-      icon: Video,
-      path: "/live-concerts",
-      badge: "Entertainment",
-      badgeColor: "bg-red-600",
-      gradient: "from-red-600 to-rose-500"
-    }
+    { title: "GP Fantasy Racing", emoji: "🏎️", icon: Car, path: "/f1-subscription", badge: "Premium", gradient: "from-red-600 to-orange-600", featured: true },
+    { title: "Kids Channel", emoji: "👶", icon: Baby, path: "/kids-channel", badge: "Family", gradient: "from-blue-500 to-cyan-500" },
+    { title: "Education & AI Tutor", emoji: "🎓", icon: GraduationCap, path: "/education", badge: "Learning", gradient: "from-green-500 to-emerald-500" },
+    { title: "Jobs & Career", emoji: "💼", icon: Briefcase, path: "/jobs", badge: "Career", gradient: "from-purple-500 to-indigo-500" },
+    { title: "Dating", emoji: "💝", icon: Heart, path: "/dating", badge: "Social", gradient: "from-pink-500 to-rose-500" },
+    { title: "AI Generation", emoji: "✨", icon: Sparkles, path: "/ai-generation", badge: "Creative", gradient: "from-yellow-500 to-amber-500" },
+    { title: "Games", emoji: "🎮", icon: Trophy, path: "/games", badge: "Entertainment", gradient: "from-orange-500 to-red-500" },
+    { title: "Social Wall", emoji: "👥", icon: Users, path: "/wall", badge: "Social", gradient: "from-teal-500 to-cyan-500" },
+    { title: "Live Streaming", emoji: "🎥", icon: Video, path: "/livestream", badge: "Entertainment", gradient: "from-indigo-500 to-purple-500" },
+    { title: "Comedy Club", emoji: "🎤", icon: Mic, path: "/comedy-club", badge: "Entertainment", gradient: "from-fuchsia-500 to-pink-500" },
+    { title: "Marketplace", emoji: "🛍️", icon: ShoppingBag, path: "/marketplace", badge: "Shopping", gradient: "from-violet-500 to-purple-500" },
+    { title: "AI Services", emoji: "🧠", icon: Brain, path: "/psychology-chat", badge: "Wellness", gradient: "from-emerald-500 to-teal-500" },
+    { title: "IQ Platform", emoji: "🧩", icon: Brain, path: "/iq-platform", badge: "Intelligence", gradient: "from-blue-600 to-indigo-600" },
+    { title: "Shadow Arena", emoji: "🎭", icon: Ghost, path: "/shadow-arena", badge: "Horror", gradient: "from-purple-600 to-fuchsia-600" },
+    { title: "Lottery AI", emoji: "🎰", icon: TrendingUp, path: "/lottery-ai", badge: "AI Predictions", gradient: "from-amber-600 to-yellow-500" },
+    { title: "Property Marketplace", emoji: "🏠", icon: Building2, path: "/property-marketplace", badge: "Real Estate", gradient: "from-sky-600 to-blue-500" },
+    { title: "Membership Community", emoji: "👥", icon: Users, path: "/membership-community", badge: "Community", gradient: "from-rose-600 to-pink-500" },
+    { title: "Crystal Energy", emoji: "💎", icon: Sparkles, path: "/crystal-energy", badge: "Wellness", gradient: "from-violet-600 to-purple-500" },
+    { title: "DNA Memory Network", emoji: "🧬", icon: Brain, path: "/dna-memory", badge: "Heritage", gradient: "from-cyan-600 to-teal-500" },
+    { title: "Reincarnation Social", emoji: "🔮", icon: Heart, path: "/reincarnation-social", badge: "Spiritual", gradient: "from-fuchsia-600 to-pink-500" },
+    { title: "Blockchain Confessions", emoji: "⛓️", icon: Ghost, path: "/blockchain-confessions", badge: "Anonymous", gradient: "from-slate-600 to-gray-500" },
+    { title: "Phobia Trading", emoji: "🕷️", icon: Ghost, path: "/phobia-trading", badge: "Therapy", gradient: "from-orange-600 to-amber-500" },
+    { title: "Multiverse Network", emoji: "🌌", icon: Sparkles, path: "/multiverse-network", badge: "Exploration", gradient: "from-indigo-600 to-violet-500" },
+    { title: "Live Concerts", emoji: "🎵", icon: Video, path: "/live-concerts", badge: "Entertainment", gradient: "from-red-600 to-rose-500" },
   ];
-  
+
+  const ModuleCard = ({ mod, size = "sm" }: { mod: any; size?: "sm" | "lg" }) => {
+    const Icon = mod.icon;
+    const isLg = size === "lg";
+    return (
+      <motion.div variants={item}>
+        <Card
+          className={`group cursor-pointer overflow-hidden relative border-transparent hover:border-primary/40 transition-all duration-300 hover:scale-[1.03] ${mod.featured ? 'ring-1 ring-primary/30' : ''}`}
+          onClick={() => navigate(mod.path)}
+        >
+          {/* Gradient top bar */}
+          <div className={`h-1 bg-gradient-to-r ${mod.gradient}`} />
+          <CardHeader className={isLg ? "p-4 sm:p-5" : "p-3 sm:p-4"}>
+            <div className="flex items-start gap-3">
+              <div className={`${isLg ? 'w-11 h-11 sm:w-14 sm:h-14' : 'w-9 h-9 sm:w-11 sm:h-11'} rounded-xl bg-gradient-to-br ${mod.gradient} flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg`}>
+                <Icon className={`${isLg ? 'w-5 h-5 sm:w-7 sm:h-7' : 'w-4 h-4 sm:w-5 sm:h-5'} text-white`} />
+              </div>
+              <div className="min-w-0 flex-1">
+                <CardTitle className={`${isLg ? 'text-sm sm:text-base' : 'text-xs sm:text-sm'} group-hover:text-primary transition-colors line-clamp-1`}>
+                  {mod.emoji} {mod.title}
+                </CardTitle>
+                <Badge variant="secondary" className="text-[9px] sm:text-[10px] mt-1 font-medium">
+                  {mod.badge}
+                </Badge>
+              </div>
+            </div>
+          </CardHeader>
+          {mod.description && (
+            <CardContent className={`${isLg ? 'px-4 sm:px-5' : 'px-3 sm:px-4'} pb-3 sm:pb-4 pt-0`}>
+              <p className="text-muted-foreground text-[10px] sm:text-xs line-clamp-2">{mod.description}</p>
+            </CardContent>
+          )}
+        </Card>
+      </motion.div>
+    );
+  };
+
+  const SectionHeader = ({ icon: Icon, title, badge, badgeClass }: any) => (
+    <motion.div variants={item} className="flex items-center gap-3 mb-4 sm:mb-6 px-1">
+      <div className="p-2 rounded-xl bg-primary/10">
+        <Icon className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
+      </div>
+      <h2 className="text-lg sm:text-2xl font-bold">{title}</h2>
+      {badge && <Badge className={badgeClass || "bg-primary/10 text-primary border-primary/20"}>{badge}</Badge>}
+    </motion.div>
+  );
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-primary/5">
-      <div className="max-w-7xl mx-auto p-2 sm:p-4 py-6 sm:py-12">
-        {/* Header */}
-        <div className="text-center mb-6 sm:mb-12 animate-fade-in px-2">
-          <h1 className="text-3xl sm:text-6xl font-bold mb-2 sm:mb-4 bg-gradient-to-r from-primary via-primary-glow to-accent bg-clip-text text-transparent">
-            {t('index.welcome')}
-          </h1>
-          <p className="text-lg sm:text-2xl text-muted-foreground mb-1 sm:mb-2">
-            {t('index.subtitle')}
-          </p>
-          <p className="text-sm sm:text-lg text-muted-foreground/80">
-            Explore our premium services and discover amazing features
-          </p>
+    <div className="min-h-screen bg-background">
+      {/* Hero */}
+      <div className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/8 via-transparent to-accent/5" />
+        <div className="absolute top-20 left-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-10 right-10 w-96 h-96 bg-accent/5 rounded-full blur-3xl" />
+        
+        <div className="relative max-w-7xl mx-auto px-3 sm:px-6 pt-24 sm:pt-32 pb-8 sm:pb-16">
+          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="text-center">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-sm text-primary mb-4 sm:mb-6">
+              <Rocket className="w-4 h-4" />
+              <span className="font-medium">All-in-One Platform</span>
+            </div>
+            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black mb-3 sm:mb-5 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent leading-tight">
+              {t('index.welcome')}
+            </h1>
+            <p className="text-base sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-6">
+              {t('index.subtitle')}
+            </p>
+            <div className="flex flex-wrap justify-center gap-3">
+              <Button size="lg" variant="premium" onClick={() => navigate('/wall')}>
+                <Zap className="w-4 h-4" /> Explore Now
+              </Button>
+              <Button size="lg" variant="outline" onClick={() => navigate('/games')}>
+                <Trophy className="w-4 h-4" /> Play Games
+              </Button>
+            </div>
+          </motion.div>
         </div>
+      </div>
 
-        {/* Ecosystem Modules Section */}
-        <div className="mb-8 sm:mb-12">
-          <div className="flex items-center gap-3 mb-4 sm:mb-6 px-2">
-            <Crown className="h-6 w-6 sm:h-8 sm:w-8 text-yellow-500" />
-            <h2 className="text-xl sm:text-3xl font-bold">Ecosystem Modules</h2>
-            <Badge className="bg-gradient-to-r from-yellow-500 to-amber-500 text-white">Premium</Badge>
+      <div className="max-w-7xl mx-auto px-2 sm:px-6 py-6 sm:py-10 space-y-8 sm:space-y-14">
+        {/* Ecosystem */}
+        <motion.section variants={container} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.1 }}>
+          <SectionHeader icon={Crown} title="Ecosystem Modules" badge="Premium" badgeClass="bg-gradient-to-r from-yellow-500/20 to-amber-500/20 text-yellow-600 border-yellow-500/30" />
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3">
+            {ecosystemModules.map((mod, i) => <ModuleCard key={i} mod={mod} />)}
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-4">
-            {ecosystemModules.map((module, index) => {
-              const Icon = module.icon;
-              return (
-                <Card
-                  key={index}
-                  className={`group cursor-pointer border-2 hover:border-primary transition-all duration-300 hover:scale-[1.02] hover:shadow-xl ${
-                    module.featured ? "border-primary/50 shadow-lg" : ""
-                  }`}
-                  onClick={() => navigate(module.path)}
-                >
-                  <CardHeader className="p-3 sm:p-4">
-                    <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br ${module.gradient} flex items-center justify-center mb-2 group-hover:scale-110 transition-transform duration-300`}>
-                      <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-                    </div>
-                    <CardTitle className="text-xs sm:text-sm group-hover:text-primary transition-colors line-clamp-2">
-                      {module.title}
-                    </CardTitle>
-                    <Badge className={`${module.badgeColor} text-white text-[8px] sm:text-[10px] w-fit mt-1`}>
-                      {module.badge}
-                    </Badge>
-                  </CardHeader>
-                  <CardContent className="p-3 pt-0 sm:p-4 sm:pt-0">
-                    <p className="text-muted-foreground text-[10px] sm:text-xs line-clamp-2">
-                      {module.description}
-                    </p>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
-        </div>
+        </motion.section>
 
-        {/* Core Modules Section */}
-        <div className="mb-8 sm:mb-12">
-          <div className="flex items-center gap-3 mb-4 sm:mb-6 px-2">
-            <Sparkles className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
-            <h2 className="text-xl sm:text-3xl font-bold">Core Modules</h2>
-            <Badge className="bg-gradient-to-r from-primary to-accent text-white">AI-Powered</Badge>
+        {/* Core */}
+        <motion.section variants={container} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.1 }}>
+          <SectionHeader icon={Sparkles} title="Core Modules" badge="AI-Powered" />
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3">
+            {coreModules.map((mod, i) => <ModuleCard key={i} mod={mod} />)}
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-4">
-            {coreModules.map((module, index) => {
-              const Icon = module.icon;
-              return (
-                <Card
-                  key={index}
-                  className="group cursor-pointer border-2 hover:border-primary transition-all duration-300 hover:scale-[1.02] hover:shadow-xl"
-                  onClick={() => navigate(module.path)}
-                >
-                  <CardHeader className="p-3 sm:p-4">
-                    <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br ${module.gradient} flex items-center justify-center mb-2 group-hover:scale-110 transition-transform duration-300`}>
-                      <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-                    </div>
-                    <CardTitle className="text-xs sm:text-sm group-hover:text-primary transition-colors line-clamp-2">
-                      {module.title}
-                    </CardTitle>
-                    <Badge className={`${module.badgeColor} text-white text-[8px] sm:text-[10px] w-fit mt-1`}>
-                      {module.badge}
-                    </Badge>
-                  </CardHeader>
-                  <CardContent className="p-3 pt-0 sm:p-4 sm:pt-0">
-                    <p className="text-muted-foreground text-[10px] sm:text-xs line-clamp-2">
-                      {module.description}
-                    </p>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
-        </div>
+        </motion.section>
 
-        {/* Services Grid */}
-        <div className="mb-6 sm:mb-8">
-          <div className="flex items-center gap-3 mb-4 sm:mb-6 px-2">
-            <Sparkles className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
-            <h2 className="text-xl sm:text-3xl font-bold">All Services</h2>
+        {/* All Services */}
+        <motion.section variants={container} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.05 }}>
+          <SectionHeader icon={Zap} title="All Services" />
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3">
+            {services.map((mod, i) => <ModuleCard key={i} mod={mod} size="lg" />)}
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-2 sm:gap-6">
-            {services.map((service, index) => {
-              const Icon = service.icon;
-              return (
-                <Card
-                  key={index}
-                  className={`group cursor-pointer border-2 hover:border-primary transition-all duration-300 hover:scale-[1.02] sm:hover:scale-105 hover:shadow-xl sm:hover:shadow-2xl ${
-                    service.featured ? "border-primary shadow-lg" : ""
-                  }`}
-                  onClick={() => navigate(service.path)}
-                  style={{ animationDelay: `${index * 0.1}s` }}
-                >
-                  <CardHeader className="p-3 sm:p-6">
-                    <div className={`w-10 h-10 sm:w-16 sm:h-16 rounded-full bg-gradient-to-br ${service.gradient} flex items-center justify-center mb-2 sm:mb-4 group-hover:scale-110 transition-transform duration-300`}>
-                      <Icon className="w-5 h-5 sm:w-8 sm:h-8 text-white" />
-                    </div>
-                    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1 sm:gap-2">
-                      <CardTitle className="text-sm sm:text-xl group-hover:text-primary transition-colors line-clamp-2">
-                        {service.title}
-                      </CardTitle>
-                      <Badge className={`${service.badgeColor} text-white text-[10px] sm:text-xs w-fit`}>
-                        {service.badge}
-                      </Badge>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="p-3 pt-0 sm:p-6 sm:pt-0">
-                    <p className="text-muted-foreground text-xs sm:text-base line-clamp-2">
-                      {service.description}
-                    </p>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
-        </div>
+        </motion.section>
 
         {/* Footer CTA */}
-        <div className="mt-6 sm:mt-12 text-center px-2">
-          <Card className="border-2 border-primary bg-gradient-to-r from-primary/5 to-accent/5">
-            <CardContent className="pt-4 sm:pt-6 p-3 sm:p-6">
-              <h3 className="text-lg sm:text-2xl font-bold mb-1 sm:mb-2">Ready to get started?</h3>
-              <p className="text-muted-foreground text-sm sm:text-base mb-2 sm:mb-4">
-                Choose a service above and begin your journey!
-              </p>
+        <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} className="text-center pb-8">
+          <Card className="border-primary/20 bg-gradient-to-r from-primary/5 via-background to-accent/5 max-w-2xl mx-auto">
+            <CardContent className="py-8 sm:py-10">
+              <h3 className="text-xl sm:text-2xl font-black mb-2">Ready to get started?</h3>
+              <p className="text-muted-foreground mb-4">Choose a service above and begin your journey!</p>
+              <Button variant="premium" size="lg" onClick={() => navigate('/wall')}>
+                <ArrowRight className="w-4 h-4" /> Get Started
+              </Button>
             </CardContent>
           </Card>
-        </div>
+        </motion.div>
       </div>
     </div>
   );

@@ -62,7 +62,7 @@ const CookingAI = () => {
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-red-50 pt-20 pb-8 px-8">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12">
-          <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
+          <h1 className="text-5xl font-black mb-4 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
             🍳 AI Cooking Tools
           </h1>
           <p className="text-xl text-muted-foreground mb-4">

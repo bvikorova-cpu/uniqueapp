@@ -41,7 +41,7 @@ export default function Collectibles() {
       <div className="container mx-auto px-3 sm:px-4 max-w-7xl">
         <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
           <div>
-            <h1 className="text-2xl sm:text-4xl font-bold bg-gradient-primary bg-clip-text text-transparent flex items-center gap-2">
+            <h1 className="text-2xl sm:text-4xl font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent flex items-center gap-2">
               <Sparkles className="h-6 w-6 sm:h-8 sm:w-8" />
               Collectibles
             </h1>

@@ -227,7 +227,7 @@ const MysteryBox = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-background/80">
+    <div className="min-h-screen bg-background
       <Navbar />
       
       <div className="container mx-auto px-4 pt-24 pb-12 max-w-7xl">
@@ -249,7 +249,7 @@ const MysteryBox = () => {
 
         {/* Detailed Description */}
         <Card className="p-6 mb-8 max-w-4xl mx-auto bg-card text-card-foreground">
-          <h2 className="text-2xl font-bold mb-4 text-foreground">What is Mystery Box?</h2>
+          <h2 className="text-2xl font-black mb-4 text-foreground">What is Mystery Box?</h2>
           <p className="text-muted-foreground mb-4">
             Mystery Box is an exciting gacha-style feature where you can purchase mystery boxes containing 
             random digital collectibles, rewards, and exclusive items. Each box has different rarity tiers 
@@ -313,7 +313,7 @@ const MysteryBox = () => {
 
         {/* Available Boxes */}
         <div className="mb-12">
-          <h2 className="text-2xl font-bold mb-6">Available Mystery Boxes</h2>
+          <h2 className="text-2xl font-black mb-6">Available Mystery Boxes</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {boxes.map((box) => (
               <Card key={box.id} className="hover:shadow-lg transition-shadow">
@@ -350,7 +350,7 @@ const MysteryBox = () => {
         {/* User's Boxes */}
         {userBoxes.length > 0 && (
           <div className="mb-12">
-            <h2 className="text-2xl font-bold mb-6">Your Mystery Boxes</h2>
+            <h2 className="text-2xl font-black mb-6">Your Mystery Boxes</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {userBoxes.filter(ub => !ub.is_opened).map((userBox) => (
                 <Card key={userBox.id} className="hover:shadow-lg transition-shadow">
@@ -387,7 +387,7 @@ const MysteryBox = () => {
         {/* Active Rewards */}
         {rewards.length > 0 && (
           <div>
-            <h2 className="text-2xl font-bold mb-6">Your Active Items</h2>
+            <h2 className="text-2xl font-black mb-6">Your Active Items</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {rewards.map((reward) => (
                 <Card key={reward.id}>

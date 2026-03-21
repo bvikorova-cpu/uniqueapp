@@ -224,13 +224,13 @@ const MultiverseNetwork = () => {
           <div className="text-center max-w-6xl mx-auto">
             <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-gradient-to-r from-red-900/50 to-rose-900/50 border border-red-500/40 backdrop-blur-xl mb-8 shadow-lg shadow-red-500/20">
               <Infinity className="w-5 h-5 text-red-400 animate-spin" style={{ animationDuration: "10s" }} />
-              <span className="text-sm font-semibold bg-gradient-to-r from-red-300 to-rose-300 bg-clip-text text-transparent">
+              <span className="text-sm font-semibold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
                 Infinite Realities · AI-Generated Worlds · Quantum Navigation
               </span>
               <Sparkles className="w-5 h-5 text-rose-400 animate-pulse" />
             </div>
             
-            <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-9xl font-bold mb-8 leading-none px-2">
+            <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-9xl font-black mb-8 leading-none px-2">
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-red-400 via-rose-400 to-orange-400 animate-gradient">
                 Multiverse
               </span>
@@ -382,7 +382,7 @@ const MultiverseNetwork = () => {
                   <CardContent className="space-y-4">
                     <div>
                       <div className="flex items-baseline gap-2">
-                        <span className="text-4xl font-bold bg-gradient-to-r from-red-400 to-rose-400 bg-clip-text text-transparent">
+                        <span className="text-4xl font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
                           {service.price}
                         </span>
                         <span className="text-muted-foreground text-xs">
@@ -429,7 +429,7 @@ const MultiverseNetwork = () => {
       </section>
 
       {/* How It Works - NOW AFTER PRICING */}
-      <section className="py-16 px-4 bg-gradient-to-b from-background to-red-950/10 relative">
+      <section className="py-16 px-4 bg-background relative">
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-0 left-1/4 w-96 h-96 bg-red-500 rounded-full blur-3xl" />
         </div>
@@ -497,7 +497,7 @@ const MultiverseNetwork = () => {
         
         <div className="container mx-auto relative z-10">
           <h2 className="text-4xl md:text-5xl font-bold text-center mb-6">
-            <span className="bg-gradient-to-r from-red-400 to-rose-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
               Why Explore The Multiverse?
             </span>
           </h2>
@@ -510,7 +510,7 @@ const MultiverseNetwork = () => {
               <div className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-gradient-to-br from-red-500/20 to-rose-500/20 border-2 border-red-500/30 mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-red-500/20">
                 <Sparkles className="w-12 h-12 text-red-400" />
               </div>
-              <h3 className="text-2xl font-bold mb-4 group-hover:text-red-400 transition-colors">
+              <h3 className="text-2xl font-black mb-4 group-hover:text-red-400 transition-colors">
                 AI Universe Generation
               </h3>
               <p className="text-muted-foreground leading-relaxed">
@@ -522,7 +522,7 @@ const MultiverseNetwork = () => {
               <div className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-gradient-to-br from-rose-500/20 to-orange-500/20 border-2 border-rose-500/30 mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-rose-500/20">
                 <Shield className="w-12 h-12 text-rose-400" />
               </div>
-              <h3 className="text-2xl font-bold mb-4 group-hover:text-rose-400 transition-colors">
+              <h3 className="text-2xl font-black mb-4 group-hover:text-rose-400 transition-colors">
                 Quantum Secure
               </h3>
               <p className="text-muted-foreground leading-relaxed">
@@ -534,7 +534,7 @@ const MultiverseNetwork = () => {
               <div className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-gradient-to-br from-orange-500/20 to-red-500/20 border-2 border-orange-500/30 mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-orange-500/20">
                 <Infinity className="w-12 h-12 text-orange-400" />
               </div>
-              <h3 className="text-2xl font-bold mb-4 group-hover:text-orange-400 transition-colors">
+              <h3 className="text-2xl font-black mb-4 group-hover:text-orange-400 transition-colors">
                 Limitless Exploration
               </h3>
               <p className="text-muted-foreground leading-relaxed">

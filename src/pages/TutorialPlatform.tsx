@@ -142,14 +142,14 @@ const TutorialPlatform = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20">
+    <div className="min-h-screen bg-background
       <Navbar />
       
       <main className="container mx-auto px-4 py-8">
         <div className="text-center mb-12">
           <div className="h-24" />
           <GraduationCap className="w-16 h-16 mx-auto mb-4" />
-          <h1 className="text-4xl font-bold mb-6">Tutorial & Course Platform</h1>
+          <h1 className="text-4xl font-black mb-6">Tutorial & Course Platform</h1>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-4">
             Share your expertise and earn money by creating educational courses and tutorials. Build a learning business with our comprehensive course creation tools.
           </p>

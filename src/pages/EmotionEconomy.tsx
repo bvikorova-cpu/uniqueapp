@@ -13,13 +13,13 @@ export default function EmotionEconomy() {
   const [activeTab, setActiveTab] = useState("feed");
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/20">
+    <div className="min-h-screen bg-background
       <div className="container mx-auto px-4 pt-20 pb-8">
         {/* Hero Section */}
         <div className="text-center mb-12 space-y-4">
           <div className="flex items-center justify-center gap-3 mb-4">
             <Heart className="h-12 w-12 text-red-500 animate-pulse" />
-            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-red-500 via-pink-500 to-blue-500 bg-clip-text text-transparent">
+            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
               Emotion Economy Network
             </h1>
           </div>
@@ -64,7 +64,7 @@ export default function EmotionEconomy() {
         </div>
 
         {/* How It Works Section */}
-        <Card className="max-w-5xl mx-auto border-primary/20 bg-gradient-to-br from-background to-muted/30 mb-8">
+        <Card className="max-w-5xl mx-auto border-primary/20 bg-background mb-8">
           <CardHeader>
             <CardTitle className="text-xl md:text-2xl flex items-center gap-2">
               <Sparkles className="h-6 w-6 text-primary" />

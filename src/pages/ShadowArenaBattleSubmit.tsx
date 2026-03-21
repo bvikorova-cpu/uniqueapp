@@ -143,7 +143,7 @@ export default function ShadowArenaBattleSubmit() {
 
         <Card className="p-8">
           <div className="mb-6">
-            <h1 className="text-3xl font-bold mb-2">Submit Your Battle Story</h1>
+            <h1 className="text-3xl font-black mb-2">Submit Your Battle Story</h1>
             <div className="flex items-center gap-2 text-muted-foreground">
               <Clock className="h-5 w-5" />
               <p>{timeRemaining} minutes remaining</p>

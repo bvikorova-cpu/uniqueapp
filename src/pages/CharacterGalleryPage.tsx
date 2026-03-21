@@ -127,7 +127,7 @@ export default function CharacterGalleryPage() {
 
         <Card className="bg-white/95 backdrop-blur-sm border-4 border-yellow-300 shadow-2xl mb-8 animate-scale-in">
           <CardContent className="p-8">
-            <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent text-center mb-2">
+            <h1 className="text-5xl font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent text-center mb-2">
               Your Hero Gallery 🦸‍♀️
             </h1>
             <p className="text-center text-xl text-gray-700 font-medium">
@@ -190,7 +190,7 @@ export default function CharacterGalleryPage() {
                   </div>
                   
                   <div className="p-6">
-                    <h3 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4 text-center">
+                    <h3 className="text-3xl font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent mb-4 text-center">
                       {character.name}
                     </h3>
                     

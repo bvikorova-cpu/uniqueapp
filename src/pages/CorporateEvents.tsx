@@ -19,7 +19,7 @@ const CorporateEvents = () => {
     }, 100);
   };
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20">
+    <div className="min-h-screen bg-background
       {/* Hero Section */}
       <section className="relative py-20 px-4">
         <div className="container mx-auto max-w-6xl text-center">
@@ -27,7 +27,7 @@ const CorporateEvents = () => {
             <Building2 className="w-4 h-4 mr-2" />
             B2B Solutions
           </Badge>
-          <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+          <h1 className="text-5xl md:text-6xl font-black mb-6 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
             Corporate & Event Solutions
           </h1>
           <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
@@ -50,7 +50,7 @@ const CorporateEvents = () => {
             {/* CORPORATE EVENTS */}
             <TabsContent value="corporate" className="space-y-8">
               <div className="text-center mb-12">
-                <h2 className="text-4xl font-bold mb-4">Corporate Events & Brand Marketing</h2>
+                <h2 className="text-4xl font-black mb-4">Corporate Events & Brand Marketing</h2>
                 <p className="text-muted-foreground max-w-2xl mx-auto">
                   Custom coloring books with company logo, mascots and brand identity for family days, team buildings and client gifts.
                 </p>
@@ -67,7 +67,7 @@ const CorporateEvents = () => {
                     <CardDescription>For small companies and startups</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-3xl font-bold mb-4">€15<span className="text-sm text-muted-foreground">/event</span></div>
+                    <div className="text-3xl font-black mb-4">€15<span className="text-sm text-muted-foreground">/event</span></div>
                     <ul className="space-y-2 text-sm">
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
@@ -99,7 +99,7 @@ const CorporateEvents = () => {
                     <CardDescription>For medium companies</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-3xl font-bold mb-4">€30<span className="text-sm text-muted-foreground">/event</span></div>
+                    <div className="text-3xl font-black mb-4">€30<span className="text-sm text-muted-foreground">/event</span></div>
                     <ul className="space-y-2 text-sm">
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
@@ -136,7 +136,7 @@ const CorporateEvents = () => {
                     <CardDescription>For large corporations</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-3xl font-bold mb-4">€60<span className="text-sm text-muted-foreground">/event</span></div>
+                    <div className="text-3xl font-black mb-4">€60<span className="text-sm text-muted-foreground">/event</span></div>
                     <ul className="space-y-2 text-sm">
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
@@ -196,7 +196,7 @@ const CorporateEvents = () => {
             {/* RESTAURANTS */}
             <TabsContent value="restaurants" className="space-y-8">
               <div className="text-center mb-12">
-                <h2 className="text-4xl font-bold mb-4">Restaurants & Kids Corners</h2>
+                <h2 className="text-4xl font-black mb-4">Restaurants & Kids Corners</h2>
                 <p className="text-muted-foreground max-w-2xl mx-auto">
                   Monthly subscriptions, menu as coloring pages, seasonal campaigns and QR codes for restaurants with kids corners.
                 </p>
@@ -212,7 +212,7 @@ const CorporateEvents = () => {
                     <CardDescription>Small restaurant/café</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-3xl font-bold mb-4">€5<span className="text-sm text-muted-foreground">/month</span></div>
+                    <div className="text-3xl font-black mb-4">€5<span className="text-sm text-muted-foreground">/month</span></div>
                     <ul className="space-y-2 text-sm">
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
@@ -237,7 +237,7 @@ const CorporateEvents = () => {
                     <CardDescription>Medium restaurant</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-3xl font-bold mb-4">€12<span className="text-sm text-muted-foreground">/month</span></div>
+                    <div className="text-3xl font-black mb-4">€12<span className="text-sm text-muted-foreground">/month</span></div>
                     <ul className="space-y-2 text-sm">
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
@@ -267,7 +267,7 @@ const CorporateEvents = () => {
                     <CardDescription>Restaurant chains</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-3xl font-bold mb-4">€25<span className="text-sm text-muted-foreground">/location</span></div>
+                    <div className="text-3xl font-black mb-4">€25<span className="text-sm text-muted-foreground">/location</span></div>
                     <ul className="space-y-2 text-sm">
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
@@ -300,7 +300,7 @@ const CorporateEvents = () => {
                     <CardDescription>Large fast food chains</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-3xl font-bold mb-4">€40<span className="text-sm text-muted-foreground">/location</span></div>
+                    <div className="text-3xl font-black mb-4">€40<span className="text-sm text-muted-foreground">/location</span></div>
                     <ul className="space-y-2 text-sm">
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
@@ -397,7 +397,7 @@ const CorporateEvents = () => {
             {/* WEDDINGS */}
             <TabsContent value="weddings" className="space-y-8">
               <div className="text-center mb-12">
-                <h2 className="text-4xl font-bold mb-4">Weddings & Private Celebrations</h2>
+                <h2 className="text-4xl font-black mb-4">Weddings & Private Celebrations</h2>
                 <p className="text-muted-foreground max-w-2xl mx-auto">
                   Custom coloring pages as gifts for guests' children. Illustrations of couples, wedding venues, love story timeline and more.
                 </p>
@@ -413,7 +413,7 @@ const CorporateEvents = () => {
                     <CardDescription>Small celebration (up to 20 kids)</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-3xl font-bold mb-4">€20<span className="text-sm text-muted-foreground">/event</span></div>
+                    <div className="text-3xl font-black mb-4">€20<span className="text-sm text-muted-foreground">/event</span></div>
                     <ul className="space-y-2 text-sm">
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
@@ -442,7 +442,7 @@ const CorporateEvents = () => {
                     <CardDescription>Medium wedding (20-50 kids)</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-3xl font-bold mb-4">€50<span className="text-sm text-muted-foreground">/wedding</span></div>
+                    <div className="text-3xl font-black mb-4">€50<span className="text-sm text-muted-foreground">/wedding</span></div>
                     <ul className="space-y-2 text-sm">
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
@@ -476,7 +476,7 @@ const CorporateEvents = () => {
                     <CardDescription>Large wedding (50-100 kids)</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-3xl font-bold mb-4">€100<span className="text-sm text-muted-foreground">/wedding</span></div>
+                    <div className="text-3xl font-black mb-4">€100<span className="text-sm text-muted-foreground">/wedding</span></div>
                     <ul className="space-y-2 text-sm">
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
@@ -513,7 +513,7 @@ const CorporateEvents = () => {
                     <CardDescription>Luxury wedding (100+ kids)</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-3xl font-bold mb-4">€200<span className="text-sm text-muted-foreground">/wedding</span></div>
+                    <div className="text-3xl font-black mb-4">€200<span className="text-sm text-muted-foreground">/wedding</span></div>
                     <ul className="space-y-2 text-sm">
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
@@ -584,7 +584,7 @@ const CorporateEvents = () => {
             {/* EVENT ORGANIZERS */}
             <TabsContent value="events" className="space-y-8">
               <div className="text-center mb-12">
-                <h2 className="text-4xl font-bold mb-4">Event Organizers & Agencies</h2>
+                <h2 className="text-4xl font-black mb-4">Event Organizers & Agencies</h2>
                 <p className="text-muted-foreground max-w-2xl mx-auto">
                   B2B licenses, on-site printing, custom booth design, live AI generation and social media integration.
                 </p>
@@ -600,7 +600,7 @@ const CorporateEvents = () => {
                     <CardDescription>For event planners</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-3xl font-bold mb-4">€80<span className="text-sm text-muted-foreground">/event</span></div>
+                    <div className="text-3xl font-black mb-4">€80<span className="text-sm text-muted-foreground">/event</span></div>
                     <ul className="space-y-2 text-sm">
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
@@ -638,7 +638,7 @@ const CorporateEvents = () => {
                     <CardDescription>Event agencies & production houses</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-3xl font-bold mb-4">€200<span className="text-sm text-muted-foreground">/month</span></div>
+                    <div className="text-3xl font-black mb-4">€200<span className="text-sm text-muted-foreground">/month</span></div>
                     <ul className="space-y-2 text-sm">
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
@@ -751,7 +751,7 @@ const CorporateEvents = () => {
       <section className="py-16 px-4 bg-secondary/30">
         <div className="container mx-auto max-w-7xl">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold mb-4">Specialized Solutions</h2>
+            <h2 className="text-4xl font-black mb-4">Specialized Solutions</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
               Other industries where our solutions bring value
             </p>
@@ -825,7 +825,7 @@ const CorporateEvents = () => {
       <section className="py-16 px-4">
         <div className="container mx-auto max-w-7xl">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold mb-4">Advanced B2B Features</h2>
+            <h2 className="text-4xl font-black mb-4">Advanced B2B Features</h2>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
@@ -881,7 +881,7 @@ const CorporateEvents = () => {
       <section id="inquiry-form" className="py-20 px-4 bg-gradient-to-b from-secondary/20 to-background">
         <div className="container mx-auto max-w-4xl">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold mb-4">Contact Us</h2>
+            <h2 className="text-4xl font-black mb-4">Contact Us</h2>
             <p className="text-xl text-muted-foreground">
               Fill out a non-binding inquiry and we will contact you with an individual offer
             </p>

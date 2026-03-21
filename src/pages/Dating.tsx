@@ -574,7 +574,7 @@ const Dating = () => {
               >
                 <span className="text-foreground">Where Real</span>
                 <br />
-                <span className="bg-gradient-to-r from-rose-500 via-pink-500 to-purple-500 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
                   Connections
                 </span>
                 <br />
@@ -1192,7 +1192,7 @@ const Dating = () => {
               <div className="h-20 w-20 mx-auto rounded-full bg-gradient-to-br from-rose-500 to-pink-600 flex items-center justify-center mb-4 shadow-lg shadow-rose-500/20">
                 <Eye className="h-10 w-10 text-white" />
               </div>
-              <h2 className="text-2xl font-bold mb-1">
+              <h2 className="text-2xl font-black mb-1">
                 {likesYouCount} {likesYouCount === 1 ? "Person" : "People"} Like You
               </h2>
               <p className="text-sm text-muted-foreground mb-6">

@@ -229,12 +229,12 @@ const FutureFace = () => {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 pt-24 pb-12">
+      <div className="min-h-screen bg-background pt-24 pb-12">
         <div className="container mx-auto px-4 max-w-4xl text-center">
           <div className="space-y-6">
             <Badge className="bg-gradient-primary text-white">Authentication Required</Badge>
             <h1 className="text-4xl md:text-6xl font-bold">
-              Please <span className="bg-gradient-primary bg-clip-text text-transparent">Sign In</span>
+              Please <span className="bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">Sign In</span>
             </h1>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               You need to be logged in to access Future Face
@@ -249,7 +249,7 @@ const FutureFace = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 pt-16 sm:pt-24 pb-12">
+    <div className="min-h-screen bg-background pt-16 sm:pt-24 pb-12">
       <div className="container mx-auto px-3 sm:px-4 max-w-7xl">
         
         {/* Hero Section */}
@@ -259,8 +259,8 @@ const FutureFace = () => {
             AI-Powered Age Prediction
           </Badge>
           
-          <h1 className="text-3xl sm:text-5xl md:text-7xl font-bold mb-4 sm:mb-6">
-            Future <span className="bg-gradient-primary bg-clip-text text-transparent">Face</span>
+          <h1 className="text-3xl sm:text-5xl md:text-7xl font-black mb-4 sm:mb-6">
+            Future <span className="bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">Face</span>
           </h1>
           
           <p className="text-base sm:text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed px-2">
@@ -531,7 +531,7 @@ const FutureFace = () => {
 
         {/* Pricing Section */}
         <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold mb-4">Choose Your Plan</h2>
+          <h2 className="text-4xl font-black mb-4">Choose Your Plan</h2>
           <p className="text-xl text-muted-foreground">Unlock the full potential of Future Face</p>
         </div>
 

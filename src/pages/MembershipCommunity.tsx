@@ -182,7 +182,7 @@ export default function MembershipCommunity() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background via-background to-primary/5">
+    <div className="min-h-screen bg-background
       {/* Hero Section */}
       <section className="container mx-auto px-4 py-16 text-center">
         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-6">
@@ -190,7 +190,7 @@ export default function MembershipCommunity() {
           <span className="text-sm font-medium">SFW Community-First Platform</span>
         </div>
         
-        <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent">
+        <h1 className="text-4xl md:text-6xl font-black mb-6 bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent">
           Build Your Exclusive Community
         </h1>
         
@@ -338,7 +338,7 @@ export default function MembershipCommunity() {
       {/* Browse All Creators */}
       <section className="container mx-auto px-4 py-16 bg-muted/30">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold mb-4">Browse All Creators</h2>
+          <h2 className="text-3xl font-black mb-4">Browse All Creators</h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Discover amazing creators and support them with memberships and gifts
           </p>
@@ -523,7 +523,7 @@ export default function MembershipCommunity() {
       {/* CTA Section */}
       <section className="container mx-auto px-4 py-16 text-center">
         <div className="max-w-3xl mx-auto">
-          <h2 className="text-3xl font-bold mb-4">Ready to Build Your Community?</h2>
+          <h2 className="text-3xl font-black mb-4">Ready to Build Your Community?</h2>
           <p className="text-lg text-muted-foreground mb-8">
             Join thousands of creators who are earning recurring revenue while building meaningful connections
           </p>

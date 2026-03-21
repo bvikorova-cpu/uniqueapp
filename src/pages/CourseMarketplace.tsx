@@ -143,7 +143,7 @@ export default function CourseMarketplace() {
             <span className="text-sm font-medium">Professional Course Marketplace</span>
           </div>
           
-          <h1 className="text-4xl md:text-6xl font-bold mb-6">
+          <h1 className="text-4xl md:text-6xl font-black mb-6">
             Learn Anything, Anytime
           </h1>
           
@@ -288,7 +288,7 @@ export default function CourseMarketplace() {
 
       {/* CTA Section */}
       <section className="container mx-auto px-4 py-16 text-center bg-muted/30 rounded-lg">
-        <h2 className="text-3xl font-bold mb-4">Want to Teach?</h2>
+        <h2 className="text-3xl font-black mb-4">Want to Teach?</h2>
         <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
           Share your knowledge and earn 80% from every course sale. Start creating today!
         </p>

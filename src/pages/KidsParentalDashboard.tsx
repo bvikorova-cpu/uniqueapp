@@ -158,7 +158,7 @@ export default function KidsParentalDashboard() {
         </div>
 
         <div className="text-center">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent mb-2">
             Parental Dashboard 👨‍👩‍👧
           </h1>
           <p className="text-muted-foreground">

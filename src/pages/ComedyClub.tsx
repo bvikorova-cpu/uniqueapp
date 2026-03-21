@@ -63,12 +63,16 @@ export default function ComedyClub() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-muted p-3 sm:p-6">
+    <div className="min-h-screen bg-background p-3 sm:p-6">
       <div className="max-w-7xl mx-auto space-y-4 sm:space-y-6 mt-14 sm:mt-16">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
           <div>
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold">🎤 Comedy Club</h1>
-            <p className="text-sm sm:text-base text-muted-foreground mt-1 sm:mt-2">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-xs text-primary mb-2">
+              <Mic2 className="w-3 h-3" />
+              <span className="font-medium">Live Entertainment</span>
+            </div>
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">Comedy Club</h1>
+            <p className="text-sm sm:text-base text-muted-foreground mt-1">
               Live stand-up • Battles • Earn money performing
             </p>
           </div>
@@ -125,7 +129,7 @@ export default function ComedyClub() {
 
         {/* How It Works Section */}
         <Card className="p-3 sm:p-6 bg-gradient-to-br from-primary/5 to-primary/10">
-          <h2 className="text-lg sm:text-2xl font-bold mb-3 sm:mb-4">How Comedy Club Works</h2>
+          <h2 className="text-lg sm:text-2xl font-black mb-3 sm:mb-4">How Comedy Club Works</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
             <div>
               <h3 className="font-bold text-base sm:text-lg mb-2 flex items-center">

@@ -9,7 +9,7 @@ const CoffeeBuddy = () => {
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
       <div className="mb-6 mt-12 sm:mt-0">
-        <h1 className="text-2xl sm:text-4xl font-bold mb-2">Coffee Buddy Matching</h1>
+        <h1 className="text-2xl sm:text-4xl font-black mb-2">Coffee Buddy Matching</h1>
         <p className="text-sm sm:text-base text-muted-foreground">Connect with coffee lovers who share your taste</p>
       </div>
 

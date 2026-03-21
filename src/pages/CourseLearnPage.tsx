@@ -330,7 +330,7 @@ export default function CourseLearnPage() {
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h1 className="text-3xl font-bold mb-2">{course.title}</h1>
+              <h1 className="text-3xl font-black mb-2">{course.title}</h1>
               <p className="text-muted-foreground">{course.description}</p>
             </div>
             <Button variant="outline" onClick={() => navigate(`/course/${courseId}`)}>
@@ -589,7 +589,7 @@ export default function CourseLearnPage() {
                       <Card className="bg-primary/5 border-primary/20">
                         <CardContent className="text-center py-8">
                           <Award className="h-16 w-16 text-primary mx-auto mb-4" />
-                          <h3 className="text-2xl font-bold mb-2">
+                          <h3 className="text-2xl font-black mb-2">
                             Congratulations! 🎉
                           </h3>
                           <p className="text-muted-foreground mb-4">

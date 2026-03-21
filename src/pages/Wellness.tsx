@@ -167,15 +167,18 @@ export default function Wellness() {
   }
 
   return (
-    <div className="container mx-auto px-3 sm:px-4 py-8 sm:py-16 pt-16 sm:pt-16 max-w-7xl">
+    <div className="container mx-auto px-3 sm:px-4 py-8 sm:py-16 pt-20 sm:pt-20 max-w-7xl">
       <div className="mb-8 sm:mb-12 space-y-4 sm:space-y-6">
         <div className="text-center max-w-4xl mx-auto">
-          <h1 className="text-2xl sm:text-5xl md:text-6xl font-bold mb-3 sm:mb-4 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3">
-            <Heart className="w-8 h-8 sm:w-12 sm:h-12 text-primary" />
-            <span>Wellness & Mental Health</span>
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-sm text-primary mb-4">
+            <Heart className="w-4 h-4" />
+            <span className="font-medium">Mental Health</span>
+          </div>
+          <h1 className="text-3xl sm:text-5xl font-black mb-3 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
+            Wellness & Mental Health
           </h1>
-          <p className="text-sm sm:text-xl text-muted-foreground px-2">
-            Professional tools for relaxation, mindfulness, and mental wellbeing.
+          <p className="text-sm sm:text-lg text-muted-foreground max-w-xl mx-auto">
+            Professional tools for relaxation, mindfulness, and mental wellbeing
           </p>
         </div>
 

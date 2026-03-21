@@ -71,10 +71,10 @@ const PhotoRestoration = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20 py-20 px-4">
+    <div className="min-h-screen bg-background py-20 px-4">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-8 mt-12">
-          <h1 className="text-3xl sm:text-4xl font-bold mb-4">AI Photo Restoration</h1>
+          <h1 className="text-3xl sm:text-4xl font-black mb-4">AI Photo Restoration</h1>
           <p className="text-muted-foreground text-base sm:text-lg">
             Bring your old memories back to life with artificial intelligence
           </p>
@@ -253,7 +253,7 @@ const PhotoRestoration = () => {
           <CardContent>
             <div className="grid md:grid-cols-3 gap-4">
               <div className="border rounded-lg p-4 text-center">
-                <p className="text-2xl font-bold mb-2">5 credits</p>
+                <p className="text-2xl font-black mb-2">5 credits</p>
                 <p className="text-3xl font-bold text-primary mb-4">€10</p>
                 <Button 
                   variant="outline" 
@@ -267,7 +267,7 @@ const PhotoRestoration = () => {
                 <div className="bg-primary text-primary-foreground text-xs px-2 py-1 rounded-full inline-block mb-2">
                   MOST POPULAR
                 </div>
-                <p className="text-2xl font-bold mb-2">20 credits</p>
+                <p className="text-2xl font-black mb-2">20 credits</p>
                 <p className="text-3xl font-bold text-primary mb-4">€30</p>
                 <Button 
                   className="w-full"
@@ -277,7 +277,7 @@ const PhotoRestoration = () => {
                 </Button>
               </div>
               <div className="border rounded-lg p-4 text-center">
-                <p className="text-2xl font-bold mb-2">50 credits</p>
+                <p className="text-2xl font-black mb-2">50 credits</p>
                 <p className="text-3xl font-bold text-primary mb-4">€60</p>
                 <Button 
                   variant="outline" 

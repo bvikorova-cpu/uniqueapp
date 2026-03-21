@@ -16,7 +16,7 @@ export default function FashionStudio() {
   const [activeTab, setActiveTab] = useState("generator");
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-background/80">
+    <div className="min-h-screen bg-background
       {/* Hero Section */}
       <div className="relative overflow-hidden bg-gradient-to-r from-pink-500/10 via-purple-500/10 to-blue-500/10 py-4 sm:py-6 pt-16 sm:pt-6">
         <div className="container mx-auto px-3 sm:px-4">
@@ -25,7 +25,7 @@ export default function FashionStudio() {
               <Sparkles className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
               <span className="text-xs sm:text-sm font-medium">AI Fashion Design Studio</span>
             </div>
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 bg-clip-text text-transparent">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
               Create Your Fashion Vision
             </h1>
             <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto px-2">

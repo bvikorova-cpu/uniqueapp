@@ -157,7 +157,7 @@ ${aiTips.map(t => `• ${t}`).join('\n')}
             <ArrowLeft className="h-5 w-5" />
           </Button>
           <div>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-emerald-400 to-green-400 bg-clip-text text-transparent">
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
               Budgeting & Saving Helper
             </h1>
             <p className="text-muted-foreground">AI-powered expense tracking and savings tips</p>

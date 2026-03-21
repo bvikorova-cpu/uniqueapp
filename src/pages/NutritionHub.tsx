@@ -23,7 +23,7 @@ export default function NutritionHub() {
   const [activeTab, setActiveTab] = useState("meal-planner");
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-b from-background to-background/80">
+    <div className="min-h-screen flex flex-col bg-background
       <Navbar />
       
       {/* Hero Section */}
@@ -34,7 +34,7 @@ export default function NutritionHub() {
               <Apple className="h-4 w-4 text-primary" />
               <span className="text-sm font-medium">AI Nutrition Hub</span>
             </div>
-            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-green-500 via-blue-500 to-purple-500 bg-clip-text text-transparent">
+            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
               Your Complete Nutrition & Fitness Platform
             </h1>
             <p className="text-muted-foreground max-w-2xl mx-auto">

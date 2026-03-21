@@ -43,7 +43,7 @@ const PastLife = () => {
     <div className="min-h-screen bg-background">
       <div className="border-b">
         <div className="container mx-auto px-4 py-8 sm:py-16">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2">Past Life Explorer</h1>
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-black mb-2">Past Life Explorer</h1>
           <p className="text-sm sm:text-base text-muted-foreground">
             Discover who you were in previous lifetimes through AI-powered mystical analysis
           </p>
@@ -55,7 +55,7 @@ const PastLife = () => {
         <Card className="p-6 sm:p-8 bg-gradient-to-br from-indigo-500/5 to-purple-500/5">
           <div className="space-y-6">
             <div>
-              <h2 className="text-2xl sm:text-3xl font-bold mb-3">Journey Through Time</h2>
+              <h2 className="text-2xl sm:text-3xl font-black mb-3">Journey Through Time</h2>
               <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
                 Past life regression reveals the eternal journey of your soul across different lifetimes. Our AI combines mystical wisdom with your personal information to uncover your previous incarnations, helping you understand your current life's purpose, relationships, and challenges through the lens of karma and soul evolution.
               </p>

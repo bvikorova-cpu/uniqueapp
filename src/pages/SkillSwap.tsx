@@ -482,14 +482,14 @@ export default function SkillSwap() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
+    <div className="min-h-screen bg-background
       <div className="container mx-auto px-4 py-16 max-w-7xl">
         {/* Header */}
         <div className="text-center mb-16 relative">
@@ -508,7 +508,7 @@ export default function SkillSwap() {
 
           <div className="flex items-center justify-center gap-3 mb-6">
             <ArrowLeftRight className="w-12 h-12 text-primary" />
-            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
               Global Skill Swap
             </h1>
           </div>
@@ -536,7 +536,7 @@ export default function SkillSwap() {
         {!subscription.hasSubscription && (
           <Card className="p-8 mb-12 border-primary/20 bg-gradient-to-br from-primary/5 to-background">
             <div className="text-center">
-              <h2 className="text-2xl font-bold mb-4">Unlock Premium Features</h2>
+              <h2 className="text-2xl font-black mb-4">Unlock Premium Features</h2>
               <div className="grid md:grid-cols-3 gap-6 mb-6">
                 <div className="flex flex-col items-center">
                   <Globe className="w-12 h-12 text-primary mb-2" />
@@ -554,7 +554,7 @@ export default function SkillSwap() {
                   <p className="text-sm text-muted-foreground">No limits on exchanges</p>
                 </div>
               </div>
-              <div className="text-3xl font-bold mb-4">€4.99<span className="text-lg text-muted-foreground">/month</span></div>
+              <div className="text-3xl font-black mb-4">€4.99<span className="text-lg text-muted-foreground">/month</span></div>
               <Button onClick={handleSubscribe} size="lg" className="px-8">
                 Subscribe Now
               </Button>

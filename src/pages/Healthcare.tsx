@@ -520,19 +520,21 @@ const Healthcare = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
+    <div className="min-h-screen bg-background">
       <Navbar />
       
       {/* Hero Section */}
       <section className="container mx-auto px-3 sm:px-4 py-12 sm:py-24 mt-16">
         <div className="text-center max-w-3xl mx-auto">
-          <Heart className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-4 sm:mb-6 text-primary" />
-          <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-sm text-primary mb-4">
+            <Heart className="w-4 h-4" />
+            <span className="font-medium">Healthcare Solutions</span>
+          </div>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black mb-4 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
             Healthcare Coloring Solutions
           </h1>
-          <p className="text-base sm:text-xl text-muted-foreground mb-6 sm:mb-8 px-2">
-            Transform waiting rooms and therapy sessions with therapeutic coloring content.
-            Reduce anxiety, engage children, and support healing through art.
+          <p className="text-sm sm:text-lg text-muted-foreground mb-6 max-w-xl mx-auto">
+            Transform waiting rooms and therapy sessions with therapeutic coloring content
           </p>
         </div>
       </section>
@@ -715,7 +717,7 @@ const Healthcare = () => {
         <div className="space-y-12 max-w-6xl mx-auto">
           {/* Age-Based Collections */}
           <div>
-            <h3 className="text-2xl font-bold mb-6 text-center">By Patient Age</h3>
+            <h3 className="text-2xl font-black mb-6 text-center">By Patient Age</h3>
             <div className="grid md:grid-cols-4 gap-6">
               {ageBasedCollections.map((collection) => (
                 <Card key={collection.age} className="p-6">
@@ -740,7 +742,7 @@ const Healthcare = () => {
 
           {/* Purpose-Based Collections */}
           <div>
-            <h3 className="text-2xl font-bold mb-6 text-center">By Treatment Stage</h3>
+            <h3 className="text-2xl font-black mb-6 text-center">By Treatment Stage</h3>
             <div className="grid md:grid-cols-4 gap-6">
               {purposeBasedCollections.map((collection) => {
                 const Icon = collection.icon;
@@ -758,7 +760,7 @@ const Healthcare = () => {
 
           {/* Condition-Based Collections */}
           <div>
-            <h3 className="text-2xl font-bold mb-6 text-center">By Medical Condition</h3>
+            <h3 className="text-2xl font-black mb-6 text-center">By Medical Condition</h3>
             <div className="grid md:grid-cols-4 gap-6">
               {conditionBasedCollections.map((collection) => {
                 const Icon = collection.icon;

@@ -285,7 +285,7 @@ const Vacationer = () => {
             <Plane className="h-4 w-4 mr-1" />
             Holiday Destinations
           </Badge>
-          <h1 className="text-4xl md:text-6xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+          <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
             Vacationer
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">

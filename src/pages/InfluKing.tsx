@@ -568,7 +568,7 @@ const InfluKing = () => {
         <div className="text-center mb-12">
           <div className="flex items-center justify-center gap-3 mb-4">
             <Crown className="h-12 w-12 text-yellow-500" />
-            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
               Influ-King
             </h1>
             <Crown className="h-12 w-12 text-yellow-500" />

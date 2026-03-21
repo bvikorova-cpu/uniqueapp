@@ -611,7 +611,7 @@ const CouponMarketplace = () => {
               <Ticket className="w-4 h-4" />
               <span className="text-sm font-medium">Exclusive Marketplace</span>
             </div>
-            <h1 className="text-3xl sm:text-5xl font-bold mb-4">
+            <h1 className="text-3xl sm:text-5xl font-black mb-4">
               Coupon{" "}
               <span className="bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent">
                 Marketplace
@@ -637,7 +637,7 @@ const CouponMarketplace = () => {
                 <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
                   <Crown className="w-10 h-10 text-primary" />
                 </div>
-                <h2 className="text-2xl font-bold mb-2">Monthly Subscription</h2>
+                <h2 className="text-2xl font-black mb-2">Monthly Subscription</h2>
                 <div className="flex items-center justify-center gap-2 mb-6">
                   <span className="text-5xl font-bold text-primary">€1</span>
                   <span className="text-muted-foreground">per month</span>
@@ -738,7 +738,7 @@ const CouponMarketplace = () => {
             <Ticket className="w-4 h-4" />
             <span className="text-sm font-medium">Save Big on Every Purchase</span>
           </div>
-          <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold mb-4">
+          <h1 className="text-3xl sm:text-5xl md:text-6xl font-black mb-4">
             Coupon{" "}
             <span className="bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent">
               Marketplace

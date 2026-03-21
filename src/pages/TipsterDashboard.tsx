@@ -163,7 +163,7 @@ export default function TipsterDashboard() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Tipster Dashboard</h1>
+        <h1 className="text-3xl font-black mb-2">Tipster Dashboard</h1>
         <p className="text-muted-foreground">Manage your predictions and track your performance</p>
       </div>
 

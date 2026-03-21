@@ -278,7 +278,7 @@ export default function PageDetail() {
   if (!page) {
     return (
       <div className="max-w-4xl mx-auto px-4 py-8 text-center">
-        <h1 className="text-2xl font-bold mb-4">Page not found</h1>
+        <h1 className="text-2xl font-black mb-4">Page not found</h1>
         <Button onClick={() => navigate("/wall/pages")}>
           <ArrowLeft className="h-4 w-4 mr-2" />
           Back to Pages

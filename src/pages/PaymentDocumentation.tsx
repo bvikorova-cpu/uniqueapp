@@ -12,7 +12,7 @@ const PaymentDocumentation = () => {
       <Navbar />
       <div className="flex-1 container mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2">Payment System Documentation</h1>
+          <h1 className="text-4xl font-black mb-2">Payment System Documentation</h1>
           <p className="text-muted-foreground">
             Complete guide to the platform's payment infrastructure
           </p>
@@ -45,19 +45,19 @@ const PaymentDocumentation = () => {
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <Card>
                       <CardContent className="pt-6">
-                        <div className="text-3xl font-bold mb-2">15</div>
+                        <div className="text-3xl font-black mb-2">15</div>
                         <p className="text-sm text-muted-foreground">Credit Systems</p>
                       </CardContent>
                     </Card>
                     <Card>
                       <CardContent className="pt-6">
-                        <div className="text-3xl font-bold mb-2">30</div>
+                        <div className="text-3xl font-black mb-2">30</div>
                         <p className="text-sm text-muted-foreground">Subscription Types</p>
                       </CardContent>
                     </Card>
                     <Card>
                       <CardContent className="pt-6">
-                        <div className="text-3xl font-bold mb-2">1</div>
+                        <div className="text-3xl font-black mb-2">1</div>
                         <p className="text-sm text-muted-foreground">Unified Verification</p>
                       </CardContent>
                     </Card>

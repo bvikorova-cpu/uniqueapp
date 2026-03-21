@@ -167,7 +167,7 @@ export default function KidsScienceAdmin() {
       <Navbar />
       <main className="flex-1 container mx-auto px-4 py-8 mt-20">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2">Kids Science Lab Admin</h1>
+          <h1 className="text-4xl font-black mb-2">Kids Science Lab Admin</h1>
           <p className="text-muted-foreground">Manage subscriptions and view statistics</p>
         </div>
 

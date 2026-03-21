@@ -125,11 +125,11 @@ const MusicianDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
+    <div className="min-h-screen bg-background
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2">Musician Dashboard</h1>
+          <h1 className="text-4xl font-black mb-2">Musician Dashboard</h1>
           <p className="text-muted-foreground">Welcome back, {profile?.stage_name}!</p>
         </div>
 

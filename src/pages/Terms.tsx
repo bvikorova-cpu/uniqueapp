@@ -5,14 +5,14 @@ import { Shield, AlertTriangle, Scale, CreditCard, Users, FileText, Lock, Gavel,
 
 const Terms = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-secondary/20 py-8 px-4">
+    <div className="min-h-screen bg-background py-8 px-4">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-8 mt-12">
           <div className="flex items-center justify-center gap-2 mb-4">
             <Shield className="h-8 w-8 text-primary" />
             <Badge className="text-lg px-4 py-1">UNITY V2.0 – PROTECTIVE EDITION</Badge>
           </div>
-          <h1 className="text-4xl font-bold mb-4 bg-gradient-primary bg-clip-text text-transparent">
+          <h1 className="text-4xl font-black mb-4 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
             🛡️ UNIQUE PLATFORM TERMS & CONDITIONS
           </h1>
           <p className="text-muted-foreground">

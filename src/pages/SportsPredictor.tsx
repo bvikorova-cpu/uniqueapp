@@ -251,29 +251,28 @@ export default function SportsPredictor() {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <section className="relative py-20 px-4 bg-gradient-to-br from-primary/20 via-background to-secondary/20 overflow-hidden">
-        <div className="absolute inset-0 bg-grid-white/[0.02] bg-[size:60px_60px]" />
+      <section className="relative py-16 sm:py-20 px-3 sm:px-4 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5" />
         <div className="container mx-auto text-center relative z-10 max-w-4xl">
           <div className="flex justify-end mb-4">
             {user && (
-              <Button onClick={() => navigate('/sports-admin')} variant="outline">
+              <Button onClick={() => navigate('/sports-admin')} variant="outline" size="sm">
                 ⚙️ Add Matches
               </Button>
             )}
           </div>
           
-          <Badge className="mb-4 animate-pulse" variant="secondary">
-            <Trophy className="h-3 w-3 mr-1" />
-            Expert + AI Sports Predictions
-          </Badge>
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-sm text-primary mb-4">
+            <Trophy className="w-4 h-4" />
+            <span className="font-medium">Expert + AI Predictions</span>
+          </div>
           
-          <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-primary via-purple-500 to-secondary bg-clip-text text-transparent">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black mb-4 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
             Sports Match Predictions
           </h1>
           
-          <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Get expert tips and AI-powered predictions for sports matches. 
-            Follow top tipsters or leverage advanced AI analytics.
+          <p className="text-sm sm:text-lg text-muted-foreground mb-6 max-w-xl mx-auto">
+            Expert tips and AI-powered predictions for sports matches
           </p>
           
           <div className="flex flex-wrap gap-4 justify-center mb-8">
@@ -322,7 +321,7 @@ export default function SportsPredictor() {
         <div className="container mx-auto max-w-6xl">
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h2 className="text-3xl font-bold mb-2">Top Tipsters Leaderboard</h2>
+              <h2 className="text-3xl font-black mb-2">Top Tipsters Leaderboard</h2>
               <p className="text-muted-foreground">Follow the best performers</p>
             </div>
             <Button 
@@ -347,7 +346,7 @@ export default function SportsPredictor() {
       {/* Upcoming Matches */}
       <section className="py-12 px-4">
         <div className="container mx-auto max-w-6xl">
-          <h2 className="text-3xl font-bold mb-8">Today's Predictions</h2>
+          <h2 className="text-3xl font-black mb-8">Today's Predictions</h2>
           
           <Tabs defaultValue="all" className="w-full">
             <TabsList>
@@ -469,7 +468,7 @@ export default function SportsPredictor() {
       <section className="py-12 px-4">
         <div className="container mx-auto max-w-6xl">
           <div className="mb-8">
-            <h2 className="text-3xl font-bold mb-2">Premium Expert Tips</h2>
+            <h2 className="text-3xl font-black mb-2">Premium Expert Tips</h2>
             <p className="text-muted-foreground">Purchase individual tips from top-performing tipsters</p>
           </div>
           <ExpertTips />
@@ -479,7 +478,7 @@ export default function SportsPredictor() {
       {/* Features */}
       <section className="py-12 px-4 bg-secondary/10">
         <div className="container mx-auto max-w-6xl">
-          <h2 className="text-3xl font-bold mb-8 text-center">Platform Features</h2>
+          <h2 className="text-3xl font-black mb-8 text-center">Platform Features</h2>
           
           <div className="grid md:grid-cols-3 gap-6">
             <Card>
@@ -525,7 +524,7 @@ export default function SportsPredictor() {
       <section className="py-12 px-4">
         <div className="container mx-auto max-w-6xl">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Choose Your Plan</h2>
+            <h2 className="text-3xl font-black mb-4">Choose Your Plan</h2>
             <p className="text-muted-foreground">All predictions are paid - subscribe to unlock expert insights</p>
           </div>
 
@@ -600,7 +599,7 @@ export default function SportsPredictor() {
       <section className="py-12 px-4 bg-gradient-to-br from-primary/10 to-secondary/10">
         <div className="container mx-auto max-w-4xl text-center">
           <Trophy className="h-16 w-16 text-primary mx-auto mb-6" />
-          <h2 className="text-3xl font-bold mb-4">Become a Professional Tipster</h2>
+          <h2 className="text-3xl font-black mb-4">Become a Professional Tipster</h2>
           <p className="text-xl text-muted-foreground mb-6">
             Share your expertise and earn 75% from every tip you sell. 
             Top performers get exclusive badges and higher visibility.

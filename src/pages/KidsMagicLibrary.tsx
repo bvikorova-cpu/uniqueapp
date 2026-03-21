@@ -159,7 +159,7 @@ export default function KidsMagicLibrary() {
 
         {/* Title */}
         <div className="text-center mb-10">
-          <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-purple-600 via-pink-500 to-blue-500 bg-clip-text text-transparent mb-4">
+          <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent mb-4">
             My Magic Library ✨📚
           </h1>
           <p className="text-xl text-muted-foreground">

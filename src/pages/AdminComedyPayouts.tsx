@@ -97,7 +97,7 @@ export default function AdminComedyPayouts() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-muted p-6">
+    <div className="min-h-screen bg-background p-6">
       <div className="max-w-7xl mx-auto space-y-6 mt-16">
         <div className="flex items-center gap-3">
           <DollarSign className="h-8 w-8 text-primary" />
@@ -135,7 +135,7 @@ export default function AdminComedyPayouts() {
         </div>
 
         <Card className="p-6">
-          <h2 className="text-2xl font-bold mb-4">Withdrawal Requests</h2>
+          <h2 className="text-2xl font-black mb-4">Withdrawal Requests</h2>
           <div className="space-y-3">
             {requests.map((request) => (
               <Card key={request.id} className="p-4">

@@ -2,9 +2,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { BookOpen, Brain, Send, Loader2, AlertCircle } from "lucide-react";
+import { BookOpen, Brain, Send, Loader2, AlertCircle, GraduationCap, Sparkles } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import ReactMarkdown from 'react-markdown';
@@ -15,6 +16,7 @@ import QuizList from "@/components/education/QuizList";
 import { TutoringCreditsPanel } from "@/components/education/TutoringCreditsPanel";
 import { useTutoringCredits } from "@/hooks/useTutoringCredits";
 import { toast as sonnerToast } from "sonner";
+import { motion } from "framer-motion";
 
 const quizCategories = [
   { id: "math", name: "Mathematics", icon: "📐" },
@@ -78,19 +80,15 @@ const Education = () => {
   const [chatMessage, setChatMessage] = useState("");
   const [chatHistory, setChatHistory] = useState<Array<{ role: string; content: string }>>([]);
   const [isLoading, setIsLoading] = useState(false);
-  
   const { credits, isLoading: creditsLoading, useCredit, addCredits, isUsingCredit } = useTutoringCredits();
 
-  // Handle purchase success
   useEffect(() => {
     const purchase = searchParams.get("purchase");
     const creditsParam = searchParams.get("credits");
-    
     if (purchase === "success" && creditsParam) {
       const creditsToAdd = parseInt(creditsParam, 10);
       if (!isNaN(creditsToAdd)) {
         addCredits(creditsToAdd);
-        // Clear URL params
         navigate("/education", { replace: true });
       }
     } else if (purchase === "canceled") {
@@ -101,253 +99,189 @@ const Education = () => {
 
   const handleSendMessage = async () => {
     if (!chatMessage.trim()) return;
-
-    // Check if user has credits
     if (credits < 1) {
-      toast({
-        title: "Insufficient Credits",
-        description: "Please purchase credits to continue using tutoring.",
-        variant: "destructive"
-      });
+      toast({ title: "Insufficient Credits", description: "Please purchase credits to continue.", variant: "destructive" });
       return;
     }
-
     const userMessage = chatMessage;
     setChatMessage("");
     setChatHistory(prev => [...prev, { role: "user", content: userMessage }]);
     setIsLoading(true);
-
     try {
-      // Deduct credit first
       await useCredit();
-
-      const { data, error } = await supabase.functions.invoke("tutoring-chat", {
-        body: { message: userMessage, history: chatHistory }
-      });
-
+      const { data, error } = await supabase.functions.invoke("tutoring-chat", { body: { message: userMessage, history: chatHistory } });
       if (error) throw error;
-
       setChatHistory(prev => [...prev, { role: "assistant", content: data.response }]);
     } catch (error) {
       console.error("Error:", error);
-      toast({
-        title: "Error",
-        description: "Failed to send message",
-        variant: "destructive"
-      });
+      toast({ title: "Error", description: "Failed to send message", variant: "destructive" });
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleStartQuiz = (categoryId: string) => {
-    navigate(`/quiz?category=${categoryId}`);
-  };
-
+  const handleStartQuiz = (categoryId: string) => navigate(`/quiz?category=${categoryId}`);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20 pt-20 pb-12">
+    <div className="min-h-screen bg-background pt-20 pb-12">
       <div className="container mx-auto px-2 sm:px-4">
-        <div className="text-center mb-6 sm:mb-12">
-          <h1 className="text-2xl sm:text-4xl font-bold mb-2 sm:mb-4 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-            Education
+        {/* Hero */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-8 sm:mb-12">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-sm text-primary mb-4">
+            <GraduationCap className="w-4 h-4" />
+            <span className="font-medium">AI-Powered Learning</span>
+          </div>
+          <h1 className="text-3xl sm:text-5xl font-black mb-3 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
+            Education Hub
           </h1>
-          <p className="text-muted-foreground text-sm sm:text-lg px-2">
-            Online tutoring and quizzes for your personal development
+          <p className="text-muted-foreground text-sm sm:text-lg max-w-lg mx-auto">
+            AI tutoring and 50+ quiz categories for your development
           </p>
-        </div>
+        </motion.div>
 
         <Tabs defaultValue="tutoring" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-4 sm:mb-8">
-            <TabsTrigger value="tutoring" className="gap-1 sm:gap-2 text-xs sm:text-sm">
-              <Brain className="h-3 w-3 sm:h-4 sm:w-4" />
-              Tutoring
+          <TabsList className="grid w-full grid-cols-2 mb-6 bg-card/80 backdrop-blur-sm border">
+            <TabsTrigger value="tutoring" className="gap-1.5 text-xs sm:text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+              <Brain className="h-4 w-4" /> Tutoring
             </TabsTrigger>
-            <TabsTrigger value="quiz" className="gap-1 sm:gap-2 text-xs sm:text-sm">
-              <BookOpen className="h-3 w-3 sm:h-4 sm:w-4" />
-              Quiz
+            <TabsTrigger value="quiz" className="gap-1.5 text-xs sm:text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+              <BookOpen className="h-4 w-4" /> Quiz
             </TabsTrigger>
           </TabsList>
 
           <TabsContent value="tutoring">
-            <div className="space-y-6">
-              {/* Credits Panel */}
+            <div className="space-y-4">
               <TutoringCreditsPanel />
-
               <Card>
                 <CardHeader>
-                  <CardTitle>Online Tutoring</CardTitle>
-                  <CardDescription>
-                    Ask anything and get an instant answer (1 credit per message)
-                  </CardDescription>
+                  <CardTitle className="flex items-center gap-2">
+                    <Brain className="h-5 w-5 text-primary" /> Online Tutoring
+                  </CardTitle>
+                  <CardDescription>Ask anything and get an instant answer (1 credit per message)</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  {/* Detailed Description */}
-                  <div className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-300/30 rounded-xl p-4 sm:p-6 mb-4">
-                    <h3 className="text-lg font-bold text-blue-600 dark:text-blue-400 mb-2">🎓 What is Online Tutoring?</h3>
-                    <p className="text-muted-foreground text-sm mb-3">
-                      Our AI-powered tutoring system provides instant, personalized educational support across all subjects. Whether you're struggling with algebra, learning a new language, or exploring scientific concepts, our virtual tutor is available 24/7 to help.
-                    </p>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
-                      <div className="flex items-start gap-2">
-                        <span className="text-green-500">✓</span>
-                        <span><strong>Instant Answers:</strong> Get explanations within seconds</span>
+                  {/* Features */}
+                  <div className="grid grid-cols-2 gap-2 sm:gap-3">
+                    {[
+                      { icon: "⚡", title: "Instant Answers", desc: "Within seconds" },
+                      { icon: "📚", title: "All Subjects", desc: "Math, science, languages..." },
+                      { icon: "📝", title: "Step-by-Step", desc: "Detailed explanations" },
+                      { icon: "🕐", title: "24/7 Available", desc: "Learn anytime" },
+                    ].map((f, i) => (
+                      <div key={i} className="flex items-start gap-2 p-2.5 rounded-lg bg-muted/50 border border-border/50">
+                        <span className="text-lg">{f.icon}</span>
+                        <div>
+                          <p className="text-xs font-semibold">{f.title}</p>
+                          <p className="text-[10px] text-muted-foreground">{f.desc}</p>
+                        </div>
                       </div>
-                      <div className="flex items-start gap-2">
-                        <span className="text-green-500">✓</span>
-                        <span><strong>All Subjects:</strong> Math, science, languages, history & more</span>
-                      </div>
-                      <div className="flex items-start gap-2">
-                        <span className="text-green-500">✓</span>
-                        <span><strong>Step-by-Step:</strong> Detailed explanations with examples</span>
-                      </div>
-                      <div className="flex items-start gap-2">
-                        <span className="text-green-500">✓</span>
-                        <span><strong>24/7 Available:</strong> Learn anytime, anywhere</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* No credits warning */}
-                  {!creditsLoading && credits < 1 && (
-                    <div className="bg-destructive/10 border border-destructive/30 rounded-lg p-4 flex items-center gap-3">
-                      <AlertCircle className="h-5 w-5 text-destructive flex-shrink-0" />
-                      <div>
-                        <p className="font-medium text-destructive">No credits available</p>
-                        <p className="text-sm text-muted-foreground">Purchase credits above to start learning with our AI tutor.</p>
-                      </div>
-                    </div>
-                  )}
-
-                <div className="min-h-[300px] max-h-[500px] overflow-y-auto space-y-4 p-4 bg-muted/50 rounded-lg">
-                  {chatHistory.length === 0 ? (
-                    <div className="text-center text-muted-foreground py-12">
-                      <Brain className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                      <p>Start a conversation by asking a question</p>
-                    </div>
-                  ) : (
-                    chatHistory.map((msg, idx) => (
-                      <div
-                        key={idx}
-                        className={`p-4 rounded-lg ${
-                          msg.role === "user"
-                            ? "bg-primary text-primary-foreground ml-12"
-                            : "bg-background mr-12"
-                        }`}
-                      >
-                        {msg.role === "assistant" ? (
-                          <div className="prose prose-sm dark:prose-invert max-w-none">
-                            <ReactMarkdown
-                              remarkPlugins={[remarkMath]}
-                              rehypePlugins={[rehypeKatex]}
-                            >
-                              {msg.content}
-                            </ReactMarkdown>
-                          </div>
-                        ) : (
-                          <p className="whitespace-pre-wrap">{msg.content}</p>
-                        )}
-                      </div>
-                    ))
-                  )}
-                  {isLoading && (
-                    <div className="flex items-center gap-2 text-muted-foreground">
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                      <p>Teacher is thinking...</p>
-                    </div>
-                  )}
-                </div>
-                <div className="flex gap-2">
-                  <Textarea
-                    placeholder="Write your question..."
-                    value={chatMessage}
-                    onChange={(e) => setChatMessage(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" && !e.shiftKey) {
-                        e.preventDefault();
-                        handleSendMessage();
-                      }
-                    }}
-                    className="min-h-[80px]"
-                  />
-                  <Button
-                    onClick={handleSendMessage}
-                    disabled={isLoading || !chatMessage.trim() || credits < 1 || isUsingCredit}
-                    size="icon"
-                    className="h-[80px] w-[80px]"
-                  >
-                    <Send className="h-5 w-5" />
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-          </TabsContent>
-
-          <TabsContent value="quiz">
-            <div className="space-y-8">
-              {/* Detailed Description */}
-              <div className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-300/30 rounded-xl p-4 sm:p-6">
-                <h3 className="text-lg font-bold text-amber-600 dark:text-amber-400 mb-2">📝 What are Quizzes?</h3>
-                <p className="text-muted-foreground text-sm mb-3">
-                  Challenge yourself with our comprehensive quiz system featuring 50+ categories. Each quiz contains 20 carefully crafted questions with instant AI feedback to help you learn from your mistakes and track your progress.
-                </p>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
-                  <div className="flex items-start gap-2">
-                    <span className="text-green-500">✓</span>
-                    <span><strong>50+ Categories:</strong> From academics to pop culture</span>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <span className="text-green-500">✓</span>
-                    <span><strong>AI Feedback:</strong> Learn why answers are correct/wrong</span>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <span className="text-green-500">✓</span>
-                    <span><strong>Custom Quizzes:</strong> Create your own quizzes</span>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <span className="text-green-500">✓</span>
-                    <span><strong>Track Progress:</strong> See your improvement over time</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Custom Quizzes Section */}
-              <QuizList />
-              
-              {/* Original Quiz Categories Section */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-2xl">AI-Generated Quizzes by Category</CardTitle>
-                  <CardDescription>20 questions with instant AI feedback</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-4">
-                    {quizCategories.map((category) => (
-                      <Card key={category.id} className="hover:shadow-lg transition-shadow hover-scale">
-                        <CardHeader>
-                          <CardTitle className="flex items-center gap-2 text-base">
-                            <span className="text-3xl">{category.icon}</span>
-                            {category.name}
-                          </CardTitle>
-                          <CardDescription>20 questions</CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                          <Button
-                            onClick={() => handleStartQuiz(category.id)}
-                            className="w-full"
-                          >
-                            Start
-                          </Button>
-                        </CardContent>
-                      </Card>
                     ))}
+                  </div>
+
+                  {!creditsLoading && credits < 1 && (
+                    <div className="bg-destructive/10 border border-destructive/30 rounded-lg p-3 flex items-center gap-3">
+                      <AlertCircle className="h-5 w-5 text-destructive shrink-0" />
+                      <div>
+                        <p className="font-medium text-destructive text-sm">No credits available</p>
+                        <p className="text-xs text-muted-foreground">Purchase credits above to start learning.</p>
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="min-h-[280px] max-h-[450px] overflow-y-auto space-y-3 p-3 bg-muted/30 rounded-xl border">
+                    {chatHistory.length === 0 ? (
+                      <div className="text-center text-muted-foreground py-12">
+                        <Brain className="h-10 w-10 mx-auto mb-3 opacity-40" />
+                        <p className="text-sm">Start by asking a question</p>
+                      </div>
+                    ) : (
+                      chatHistory.map((msg, idx) => (
+                        <div key={idx} className={`p-3 rounded-xl text-sm ${msg.role === "user" ? "bg-primary text-primary-foreground ml-8" : "bg-card border mr-8"}`}>
+                          {msg.role === "assistant" ? (
+                            <div className="prose prose-sm dark:prose-invert max-w-none">
+                              <ReactMarkdown remarkPlugins={[remarkMath]} rehypePlugins={[rehypeKatex]}>{msg.content}</ReactMarkdown>
+                            </div>
+                          ) : (
+                            <p className="whitespace-pre-wrap">{msg.content}</p>
+                          )}
+                        </div>
+                      ))
+                    )}
+                    {isLoading && (
+                      <div className="flex items-center gap-2 text-muted-foreground text-sm">
+                        <Loader2 className="h-4 w-4 animate-spin" /> Thinking...
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="flex gap-2">
+                    <Textarea
+                      placeholder="Write your question..."
+                      value={chatMessage}
+                      onChange={(e) => setChatMessage(e.target.value)}
+                      onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSendMessage(); } }}
+                      className="min-h-[70px]"
+                    />
+                    <Button onClick={handleSendMessage} disabled={isLoading || !chatMessage.trim() || credits < 1 || isUsingCredit} size="icon" className="h-[70px] w-[70px]">
+                      <Send className="h-5 w-5" />
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
             </div>
           </TabsContent>
 
+          <TabsContent value="quiz">
+            <div className="space-y-6">
+              {/* Features */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
+                {[
+                  { icon: "🎯", title: "50+ Categories" },
+                  { icon: "🤖", title: "AI Feedback" },
+                  { icon: "✏️", title: "Custom Quizzes" },
+                  { icon: "📊", title: "Track Progress" },
+                ].map((f, i) => (
+                  <div key={i} className="flex items-center gap-2 p-3 rounded-xl bg-muted/50 border border-border/50">
+                    <span className="text-lg">{f.icon}</span>
+                    <p className="text-xs font-semibold">{f.title}</p>
+                  </div>
+                ))}
+              </div>
+
+              <QuizList />
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-xl">
+                    <Sparkles className="h-5 w-5 text-primary" /> AI-Generated Quizzes
+                  </CardTitle>
+                  <CardDescription>20 questions with instant AI feedback</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <motion.div
+                    variants={{ hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.02 } } }}
+                    initial="hidden"
+                    animate="show"
+                    className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3"
+                  >
+                    {quizCategories.map((category) => (
+                      <motion.div key={category.id} variants={{ hidden: { opacity: 0, scale: 0.95 }, show: { opacity: 1, scale: 1 } }}>
+                        <Card className="group cursor-pointer hover:border-primary/30 transition-all duration-200 hover:scale-[1.02]" onClick={() => handleStartQuiz(category.id)}>
+                          <CardContent className="p-3 sm:p-4 flex items-center gap-3">
+                            <span className="text-2xl">{category.icon}</span>
+                            <div className="min-w-0">
+                              <p className="text-xs sm:text-sm font-semibold line-clamp-1 group-hover:text-primary transition-colors">{category.name}</p>
+                              <p className="text-[10px] text-muted-foreground">20 questions</p>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </motion.div>
+                    ))}
+                  </motion.div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
         </Tabs>
       </div>
     </div>

@@ -94,7 +94,7 @@ export default function DisneyCastles() {
       <div className="max-w-7xl mx-auto px-6 py-12">
         {/* Hero Section */}
         <div className="text-center mb-12">
-          <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+          <h1 className="text-5xl font-black mb-4 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
             🏰 Disney Castle World Tour
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
@@ -227,7 +227,7 @@ export default function DisneyCastles() {
           <Card className="mt-12 p-8 bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-950/20 dark:to-orange-950/20">
             <div className="text-center">
               <Trophy className="h-16 w-16 text-yellow-600 mx-auto mb-4" />
-              <h2 className="text-3xl font-bold mb-2">Your Disney Explorer Collection</h2>
+              <h2 className="text-3xl font-black mb-2">Your Disney Explorer Collection</h2>
               <p className="text-muted-foreground mb-6">
                 Collect all 6 castle stamps to become a Master Disney Explorer!
               </p>

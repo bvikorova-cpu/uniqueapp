@@ -316,7 +316,7 @@ export default function TeacherDashboard() {
       <main className="flex-1 container mx-auto px-4 py-12 mt-16">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+          <h1 className="text-4xl font-black mb-2 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
             Teacher Dashboard
           </h1>
           <p className="text-muted-foreground">

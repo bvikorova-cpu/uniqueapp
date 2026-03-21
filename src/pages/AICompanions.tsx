@@ -149,12 +149,14 @@ const AICompanions = () => {
     <div className="min-h-screen bg-background pt-16 sm:pt-20 pb-12">
       <div className="container mx-auto px-3 sm:px-4 max-w-7xl">
         <div className="text-center mb-6 sm:mb-8">
-          <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold mb-3 sm:mb-4">
-            <span className="bg-gradient-to-r from-primary to-purple-500 bg-clip-text text-transparent">
-              Character Companions
-            </span>
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-sm text-primary mb-4">
+            <MessageCircle className="w-4 h-4" />
+            <span className="font-medium">AI Personalities</span>
+          </div>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black mb-3 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
+            Character Companions
           </h1>
-          <p className="text-base sm:text-xl text-muted-foreground mb-4 px-2">
+          <p className="text-sm sm:text-lg text-muted-foreground mb-4 max-w-lg mx-auto">
             Your personal companions with unique personalities
           </p>
 
