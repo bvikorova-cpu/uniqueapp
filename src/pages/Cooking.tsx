@@ -1094,44 +1094,34 @@ const Cooking = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-orange-950/30 px-6 pb-10 pt-28">
+    <div className="min-h-screen bg-background px-3 sm:px-6 pb-10 pt-24 sm:pt-28">
       <div className="max-w-7xl mx-auto">
-        <div className="mb-12">
-          <div className="flex items-center gap-4 mb-6">
-            <div className="p-4 rounded-2xl bg-gradient-to-br from-orange-500 to-red-600 shadow-lg shadow-orange-500/25 relative">
-              <ChefHat className="h-10 w-10 text-white" />
-              <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-orange-400/20 to-red-500/20 animate-pulse" />
+        <div className="mb-10">
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-sm text-primary mb-4">
+              <ChefHat className="w-4 h-4" />
+              <span className="font-medium">AI-Powered Kitchen</span>
             </div>
-            <div>
-              <h1 className="text-4xl font-bold bg-gradient-to-r from-orange-400 via-red-500 to-pink-500 bg-clip-text text-transparent">
-                AI Culinary Academy
-              </h1>
-              <p className="text-muted-foreground text-lg">Your personal AI-powered kitchen assistant</p>
-            </div>
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent mb-3">
+              AI Culinary Academy
+            </h1>
+            <p className="text-muted-foreground text-sm sm:text-lg max-w-xl mx-auto">Your personal AI-powered kitchen assistant</p>
           </div>
 
-          <Card className="bg-gradient-to-r from-orange-500/10 via-red-500/10 to-pink-500/10 border-orange-500/30 backdrop-blur-sm mb-8">
-            <CardContent className="pt-6">
-              <div className="grid md:grid-cols-3 gap-6">
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-orange-400">{totalRecipes}+</div>
-                  <div className="text-sm text-muted-foreground">Premium Recipes</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-red-400">6</div>
-                  <div className="text-sm text-muted-foreground">AI Cooking Tools</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-pink-400">14</div>
-                  <div className="text-sm text-muted-foreground">Recipe Categories</div>
-                </div>
-              </div>
-              <p className="text-center text-muted-foreground mt-4 max-w-3xl mx-auto">
-                Welcome to the ultimate culinary experience. Discover world-class recipes, generate custom meals from your ingredients,
-                scan food for instant nutrition facts, and chat with our AI chef for expert guidance.
-              </p>
-            </CardContent>
-          </Card>
+          <div className="grid grid-cols-3 gap-3 sm:gap-4 max-w-lg mx-auto mb-8">
+            <div className="text-center p-3 rounded-xl bg-muted/50 border border-border/50">
+              <div className="text-2xl font-bold text-primary">{totalRecipes}+</div>
+              <div className="text-xs text-muted-foreground">Recipes</div>
+            </div>
+            <div className="text-center p-3 rounded-xl bg-muted/50 border border-border/50">
+              <div className="text-2xl font-bold text-primary">6</div>
+              <div className="text-xs text-muted-foreground">AI Tools</div>
+            </div>
+            <div className="text-center p-3 rounded-xl bg-muted/50 border border-border/50">
+              <div className="text-2xl font-bold text-primary">14</div>
+              <div className="text-xs text-muted-foreground">Categories</div>
+            </div>
+          </div>
         </div>
 
         <div className="max-w-2xl mx-auto mb-8">
