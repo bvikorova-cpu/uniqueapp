@@ -66,18 +66,19 @@ const AIGeneration = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20">
-      <div className="container mx-auto px-4 py-8">
+    <div className="min-h-screen bg-background">
+      <div className="container mx-auto px-3 sm:px-4 py-8">
         {/* Hero Section */}
         <div className="text-center mb-8 pt-8">
-          <div className="inline-flex items-center gap-2 mb-4">
-            <Sparkles className="w-8 h-8 text-primary" />
-            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-              AI Image Generator
-            </h1>
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-sm text-primary mb-4">
+            <Sparkles className="w-4 h-4" />
+            <span className="font-medium">AI-Powered</span>
           </div>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Create stunning, unique images from text descriptions using advanced AI technology
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent mb-3">
+            AI Image Generator
+          </h1>
+          <p className="text-sm sm:text-lg text-muted-foreground max-w-2xl mx-auto">
+            Create stunning images from text descriptions using advanced AI
           </p>
           <div className="mt-4 flex items-center justify-center gap-4">
             <div className="flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-lg">

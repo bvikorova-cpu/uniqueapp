@@ -16,10 +16,17 @@ const Astrology = () => {
   return (
     <div className="min-h-screen bg-background p-2 sm:p-4">
       <div className="container mx-auto max-w-6xl pt-16 sm:pt-20">
-        <div className="text-center mb-4 sm:mb-6">
-          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-purple-600 via-pink-600 to-purple-700 bg-clip-text text-transparent px-2">
-            ✨ Astrology & Mystical Readings
+        <div className="text-center mb-6 sm:mb-8">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-sm text-primary mb-4">
+            <span>🔮</span>
+            <span className="font-medium">Mystical AI</span>
+          </div>
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent px-2">
+            Astrology & Mystical Readings
           </h1>
+          <p className="text-sm sm:text-base text-muted-foreground mt-2 max-w-lg mx-auto">
+            Discover your destiny through AI-powered ancient wisdom
+          </p>
         </div>
 
         {/* Description Section */}
