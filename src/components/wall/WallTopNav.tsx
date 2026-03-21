@@ -49,7 +49,7 @@ export function WallTopNav({ currentPath }: WallTopNavProps) {
   const isMoreActive = moreNavItems.some(item => currentPath === item.path);
 
   return (
-    <div className="fixed top-16 left-0 right-0 z-40 bg-card/95 backdrop-blur-xl border-b shadow-sm">
+    <div className="fixed top-16 left-0 right-0 z-40 bg-background/80 backdrop-blur-xl border-b border-border/50 shadow-[0_1px_12px_hsl(var(--primary)/0.04)]">
       <div className="max-w-7xl mx-auto px-2 sm:px-4">
         <div className="flex items-center justify-between gap-2 py-1.5 sm:py-2">
           <div className="flex items-center gap-1 sm:gap-2">
