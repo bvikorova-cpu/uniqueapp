@@ -286,12 +286,12 @@ const Navbar = () => {
   const isOtherServiceActive = otherServices.some(item => location.pathname === item.path);
 
   return (
-    <nav className="fixed top-0 w-full bg-background border-b border-border z-50">
+    <nav className="fixed top-0 w-full bg-background/80 backdrop-blur-xl border-b border-border/50 z-50 shadow-[0_1px_20px_hsl(var(--primary)/0.04)]">
       <div className="container mx-auto px-4">
         <div className="flex items-baseline justify-between h-16 pt-4">
-          <Link to="/" className="flex items-center">
-            <img src={uniqueLogo} alt="Unique Logo" className="h-8 w-8 object-contain" />
-            <span className="text-3xl font-bold bg-gradient-to-r from-[#6B21A8] via-[#A21CAF] to-[#DB2777] bg-clip-text text-transparent -ml-1">
+          <Link to="/" className="flex items-center group">
+            <img src={uniqueLogo} alt="Unique Logo" className="h-8 w-8 object-contain transition-transform duration-300 group-hover:scale-110" />
+            <span className="text-3xl font-extrabold bg-gradient-to-r from-primary via-accent to-primary bg-[length:200%_auto] bg-clip-text text-transparent -ml-1 transition-all duration-500 group-hover:bg-[position:100%_0]">
               nique
             </span>
           </Link>
