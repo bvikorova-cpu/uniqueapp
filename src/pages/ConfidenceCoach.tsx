@@ -107,7 +107,7 @@ const ConfidenceCoach = () => {
             <ArrowLeft className="h-5 w-5" />
           </Button>
           <div>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
               Confidence Coach
             </h1>
             <p className="text-muted-foreground">AI-powered coaching for self-esteem and mindset</p>

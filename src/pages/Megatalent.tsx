@@ -789,7 +789,7 @@ const Megatalent = () => {
               <Badge className="bg-gold text-gold-foreground animate-glow">
                 {t('megatalent.monthly_prize')}
               </Badge>
-              <h1 className="text-4xl md:text-6xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+              <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
                 {t('megatalent.enter_megatalent')}
               </h1>
               <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
@@ -907,7 +907,7 @@ const Megatalent = () => {
         
         {/* Featured Categories Section */}
         <div className="mb-8">
-          <h2 className="text-2xl font-bold mb-4">Explore by Category</h2>
+          <h2 className="text-2xl font-black mb-4">Explore by Category</h2>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
             <Card 
               className="cursor-pointer hover:shadow-lg transition-all group"

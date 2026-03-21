@@ -124,10 +124,10 @@ export default function AdminCorporateInquiries() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20 p-6">
+    <div className="min-h-screen bg-background p-6">
       <div className="container mx-auto max-w-7xl">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2">Corporate Inquiries Admin</h1>
+          <h1 className="text-4xl font-black mb-2">Corporate Inquiries Admin</h1>
           <p className="text-muted-foreground">Manage and respond to corporate event inquiries</p>
         </div>
 

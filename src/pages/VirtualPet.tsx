@@ -20,7 +20,7 @@ const VirtualPet = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-b from-background to-muted/20">
+    <div className="min-h-screen flex flex-col bg-background
       <Navbar />
       
       <main className="flex-1 container mx-auto px-3 sm:px-4 pt-16 sm:pt-24 pb-8">

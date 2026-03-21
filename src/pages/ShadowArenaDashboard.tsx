@@ -100,7 +100,7 @@ export default function ShadowArenaDashboard() {
             <CardContent className="pt-6">
               <div className="grid md:grid-cols-2 gap-8">
                 <div>
-                  <h2 className="text-3xl font-bold mb-4 flex items-center gap-2 text-red-400">
+                  <h2 className="text-3xl font-black mb-4 flex items-center gap-2 text-red-400">
                     <Ghost className="h-8 w-8 text-red-500 animate-pulse" />
                     What is Shadow Arena?
                   </h2>
@@ -151,7 +151,7 @@ export default function ShadowArenaDashboard() {
                 </div>
 
                 <div>
-                  <h2 className="text-3xl font-bold mb-4 text-red-400">How It Works</h2>
+                  <h2 className="text-3xl font-black mb-4 text-red-400">How It Works</h2>
                   <div className="space-y-4">
                     <div className="flex items-start gap-3 bg-gradient-to-r from-red-950/50 to-black/50 p-4 rounded-lg border border-red-900/30">
                       <div className="bg-red-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold flex-shrink-0 shadow-[0_0_15px_rgba(139,0,0,0.6)]">1</div>

@@ -464,7 +464,7 @@ export default function LotteryAI() {
             <Sparkles className="h-3 w-3 mr-1" />
             AI-Powered Predictions
           </Badge>
-          <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-primary via-purple-500 to-secondary bg-clip-text text-transparent">
+          <h1 className="text-4xl md:text-6xl font-black mb-6 bg-gradient-to-r from-primary via-purple-500 to-secondary bg-clip-text text-transparent">
             Lottery Numbers - AI Predictions
           </h1>
           <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
@@ -816,7 +816,7 @@ export default function LotteryAI() {
       <section className="py-20 px-4 bg-gradient-to-br from-primary/5 to-secondary/5">
         <div className="container mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Choose Your Plan</h2>
+            <h2 className="text-3xl md:text-4xl font-black mb-4">Choose Your Plan</h2>
             <p className="text-lg text-muted-foreground">
               Unlock advanced AI predictions and analytics
             </p>
@@ -884,7 +884,7 @@ export default function LotteryAI() {
       <section className="py-20 px-4">
         <div className="container mx-auto max-w-5xl">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Powerful Features</h2>
+            <h2 className="text-3xl md:text-4xl font-black mb-4">Powerful Features</h2>
             <p className="text-lg text-muted-foreground">
               Everything you need to maximize your lottery strategy
             </p>

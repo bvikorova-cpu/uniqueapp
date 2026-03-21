@@ -431,7 +431,7 @@ const FitSlim = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-green-950/30 px-6 pb-10 pt-28">
+    <div className="min-h-screen bg-background px-6 pb-10 pt-28">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-12">
@@ -441,7 +441,7 @@ const FitSlim = () => {
               <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-green-400/20 to-emerald-500/20 animate-pulse" />
             </div>
             <div>
-              <h1 className="text-4xl font-bold bg-gradient-to-r from-green-400 via-emerald-500 to-teal-500 bg-clip-text text-transparent">
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
                 Fit & Slim Academy
               </h1>
               <p className="text-muted-foreground text-lg">Your complete fitness and wellness companion</p>
@@ -505,7 +505,7 @@ const FitSlim = () => {
           <TabsContent value="personalized-plans" className="space-y-8">
             {/* Hero Section */}
             <div className="text-center space-y-4">
-              <h2 className="text-3xl font-bold bg-gradient-to-r from-yellow-400 via-orange-400 to-red-400 bg-clip-text text-transparent">
+              <h2 className="text-3xl font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
                 AI-Powered Personalized Weight Loss Plans
               </h2>
               <p className="text-muted-foreground max-w-2xl mx-auto">

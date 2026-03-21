@@ -277,7 +277,7 @@ const EditProfile = () => {
           Back
         </Button>
 
-        <h1 className="text-4xl font-bold mb-8 bg-gradient-primary bg-clip-text text-transparent">
+        <h1 className="text-4xl font-black mb-8 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
           Edit Profile
         </h1>
 

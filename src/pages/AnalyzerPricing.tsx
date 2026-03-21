@@ -81,7 +81,7 @@ export default function AnalyzerPricing() {
   const { credits } = useAnalyzerCredits();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/5 p-4 md:p-8">
+    <div className="min-h-screen bg-background p-4 md:p-8">
       <div className="max-w-7xl mx-auto space-y-12">
         {/* Header */}
         <div className="text-center space-y-4">
@@ -105,7 +105,7 @@ export default function AnalyzerPricing() {
 
         {/* Monthly Plans */}
         <div>
-          <h2 className="text-2xl font-bold mb-6 text-center">Monthly Subscriptions</h2>
+          <h2 className="text-2xl font-black mb-6 text-center">Monthly Subscriptions</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {PRICING_TIERS.map((tier) => {
               const Icon = tier.icon;
@@ -169,7 +169,7 @@ export default function AnalyzerPricing() {
 
         {/* Credit Packs */}
         <div>
-          <h2 className="text-2xl font-bold mb-6 text-center">Pay-Per-Use Credit Packs</h2>
+          <h2 className="text-2xl font-black mb-6 text-center">Pay-Per-Use Credit Packs</h2>
           <p className="text-center text-muted-foreground mb-8">
             Perfect for occasional use or to supplement your subscription
           </p>
@@ -223,7 +223,7 @@ export default function AnalyzerPricing() {
 
         {/* Features Comparison */}
         <div>
-          <h2 className="text-2xl font-bold mb-6 text-center">Feature Comparison</h2>
+          <h2 className="text-2xl font-black mb-6 text-center">Feature Comparison</h2>
           <Card className="p-6 overflow-x-auto">
             <table className="w-full">
               <thead>
@@ -306,7 +306,7 @@ export default function AnalyzerPricing() {
 
         {/* FAQ */}
         <div className="max-w-3xl mx-auto">
-          <h2 className="text-2xl font-bold mb-6 text-center">Frequently Asked Questions</h2>
+          <h2 className="text-2xl font-black mb-6 text-center">Frequently Asked Questions</h2>
           <div className="space-y-4">
             <Card className="p-6">
               <h3 className="font-semibold mb-2">Can I switch plans anytime?</h3>

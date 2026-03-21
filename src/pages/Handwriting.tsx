@@ -35,7 +35,7 @@ const Handwriting = () => {
     <div className="min-h-screen bg-background">
       <div className="border-b">
         <div className="container mx-auto px-4 py-8 sm:py-16">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2">Handwriting Analyzer</h1>
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-black mb-2">Handwriting Analyzer</h1>
           <p className="text-sm sm:text-base text-muted-foreground">
             Unlock personality insights through professional handwriting analysis
           </p>
@@ -47,7 +47,7 @@ const Handwriting = () => {
         <Card className="p-6 sm:p-8 bg-gradient-to-br from-purple-500/5 to-indigo-500/5">
           <div className="space-y-6">
             <div>
-              <h2 className="text-2xl sm:text-3xl font-bold mb-3">What is Handwriting Analysis?</h2>
+              <h2 className="text-2xl sm:text-3xl font-black mb-3">What is Handwriting Analysis?</h2>
               <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
                 Handwriting analysis, also known as graphology, is the scientific study of handwriting to reveal personality traits, emotional states, and behavioral patterns. Our AI-powered analyzer examines various aspects of your handwriting including pressure, slant, spacing, letter formations, and flow to provide deep insights into your unique personality.
               </p>

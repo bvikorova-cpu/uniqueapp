@@ -150,7 +150,7 @@ export default function CrystalEnergyNetwork() {
               Crystal & Energy Network
             </span>
           </div>
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-violet-500 via-pink-500 to-violet-600 bg-clip-text text-transparent">
+          <h1 className="text-5xl md:text-7xl font-black mb-6 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
             AI-Powered Energy & Crystal Healing
           </h1>
           <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed mb-8">
@@ -160,7 +160,7 @@ export default function CrystalEnergyNetwork() {
           {/* Detailed Description Section */}
           <Card className="max-w-4xl mx-auto text-left bg-card/80 backdrop-blur-sm border-violet-500/20">
             <CardContent className="p-6 md:p-8">
-              <h2 className="text-2xl font-bold mb-4 text-violet-600 dark:text-violet-400">What is Crystal & Energy Network?</h2>
+              <h2 className="text-2xl font-black mb-4 text-violet-600 dark:text-violet-400">What is Crystal & Energy Network?</h2>
               <p className="text-muted-foreground mb-6">
                 Crystal & Energy Network is an innovative AI-powered platform that combines ancient crystal healing wisdom with modern artificial intelligence technology. Our system analyzes your personal energy patterns through photos and provides tailored crystal recommendations to help balance and enhance your wellbeing.
               </p>
@@ -320,7 +320,7 @@ export default function CrystalEnergyNetwork() {
         </div>
 
         <div className="mt-20 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-12 bg-gradient-to-r from-violet-500 to-pink-500 bg-clip-text text-transparent">
+          <h2 className="text-3xl md:text-4xl font-black mb-12 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
             How It Works
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">

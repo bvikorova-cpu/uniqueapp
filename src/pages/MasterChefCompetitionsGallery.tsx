@@ -313,7 +313,7 @@ export default function MasterChefCompetitionsGallery() {
         <div className="mb-8">
           <div className="flex justify-between items-center mb-6">
             <div>
-              <h1 className="text-4xl md:text-5xl font-bold mb-2 bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">
+              <h1 className="text-4xl md:text-5xl font-black mb-2 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
                 MasterChef Competitions
               </h1>
               <p className="text-muted-foreground text-lg">

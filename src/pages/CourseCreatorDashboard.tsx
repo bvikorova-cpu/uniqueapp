@@ -70,7 +70,7 @@ export default function CourseCreatorDashboard() {
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-4xl font-bold mb-2">Course Creator Dashboard</h1>
+              <h1 className="text-4xl font-black mb-2">Course Creator Dashboard</h1>
               <p className="text-muted-foreground">Manage your courses and track your earnings</p>
             </div>
             <Button size="lg" onClick={() => setShowCourseForm(true)}>

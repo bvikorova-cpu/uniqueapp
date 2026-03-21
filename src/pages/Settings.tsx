@@ -79,7 +79,7 @@ export default function Settings() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/5">
+    <div className="min-h-screen bg-background
       <div className="max-w-4xl mx-auto px-4 pt-24 pb-8">
         {/* Header */}
         <div className="flex items-center gap-4 mb-8">
@@ -309,7 +309,7 @@ export default function Settings() {
                     <span className="text-xs">Dark</span>
                   </Button>
                   <Button variant="outline" className="h-20 flex-col gap-2">
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-background to-foreground" />
+                    <div className="w-8 h-8 rounded-full bg-background />
                     <span className="text-xs">Auto</span>
                   </Button>
                 </div>

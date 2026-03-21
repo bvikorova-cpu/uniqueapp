@@ -12,7 +12,7 @@ const CoffeeCheckins = () => {
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
       <div className="mb-6">
-        <h1 className="text-4xl font-bold mb-2">Coffee Check-ins & Reviews</h1>
+        <h1 className="text-4xl font-black mb-2">Coffee Check-ins & Reviews</h1>
         <p className="text-muted-foreground">Discover cafes, share your experiences, and earn rewards</p>
       </div>
 

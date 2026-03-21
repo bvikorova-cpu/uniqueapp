@@ -22,12 +22,12 @@ const KidsSciencePricing = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20">
+    <div className="min-h-screen bg-background
       <Navbar />
       <main className="container mx-auto px-4 py-8 mt-16">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+            <h1 className="text-4xl font-black mb-4 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
               Choose Your Plan
             </h1>
             <p className="text-muted-foreground text-lg">
@@ -54,7 +54,7 @@ const KidsSciencePricing = () => {
               </CardHeader>
               <CardContent className="space-y-6">
                 <div>
-                  <div className="text-4xl font-bold mb-2">
+                  <div className="text-4xl font-black mb-2">
                     €5
                     <span className="text-lg font-normal text-muted-foreground">/month</span>
                   </div>

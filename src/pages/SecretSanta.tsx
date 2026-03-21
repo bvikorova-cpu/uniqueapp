@@ -67,7 +67,7 @@ const SecretSanta = () => {
           </Button>
           
           <div className="text-center flex-1 pt-4">
-            <h1 className="text-2xl sm:text-4xl font-bold bg-gradient-to-r from-rose-600 via-amber-600 to-orange-600 bg-clip-text text-transparent drop-shadow-sm">
+            <h1 className="text-2xl sm:text-4xl font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent drop-shadow-sm">
               Secret Santa 365
             </h1>
             <p className="text-gray-600 text-sm mt-2">Year-Round Digital Gift Giving Platform</p>

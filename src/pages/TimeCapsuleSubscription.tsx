@@ -154,7 +154,7 @@ export default function TimeCapsuleSubscription() {
               Time Capsule Network
             </span>
           </div>
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-blue-500 via-cyan-500 to-blue-600 bg-clip-text text-transparent">
+          <h1 className="text-5xl md:text-7xl font-black mb-6 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
             Time Capsule 2.0
           </h1>
           <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
@@ -265,7 +265,7 @@ export default function TimeCapsuleSubscription() {
         </div>
 
         <div className="mt-20 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-12 bg-gradient-to-r from-blue-500 to-cyan-500 bg-clip-text text-transparent">
+          <h2 className="text-3xl md:text-4xl font-black mb-12 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
             How It Works
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">

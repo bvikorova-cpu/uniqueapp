@@ -75,7 +75,7 @@ const PetTranslatorPricing = () => {
   return (
     <div className="container mx-auto px-4 py-16">
       <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold mb-4">Choose Your Plan</h1>
+        <h1 className="text-4xl font-black mb-4">Choose Your Plan</h1>
         <p className="text-xl text-muted-foreground mb-8">
           Unlock the power of AI pet translation
         </p>
@@ -112,7 +112,7 @@ const PetTranslatorPricing = () => {
               )}
               
               <div className="mb-6">
-                <h3 className="text-2xl font-bold mb-2">{plan.name}</h3>
+                <h3 className="text-2xl font-black mb-2">{plan.name}</h3>
                 <div className="flex items-baseline gap-1">
                   <span className="text-4xl font-bold">{plan.price}</span>
                   <span className="text-muted-foreground">{plan.period}</span>
@@ -149,7 +149,7 @@ const PetTranslatorPricing = () => {
             <p className="text-sm text-muted-foreground mb-3">
               Try it once without subscription
             </p>
-            <p className="text-2xl font-bold mb-4">€2 <span className="text-sm font-normal text-muted-foreground">one-time</span></p>
+            <p className="text-2xl font-black mb-4">€2 <span className="text-sm font-normal text-muted-foreground">one-time</span></p>
             <Button
               size="lg"
               variant="outline"
@@ -167,7 +167,7 @@ const PetTranslatorPricing = () => {
             <p className="text-sm text-muted-foreground mb-3">
               Make your pet sound like a celebrity!
             </p>
-            <p className="text-2xl font-bold mb-4">€14.99 <span className="text-sm font-normal text-muted-foreground">one-time</span></p>
+            <p className="text-2xl font-black mb-4">€14.99 <span className="text-sm font-normal text-muted-foreground">one-time</span></p>
             <Button
               size="lg"
               variant="secondary"

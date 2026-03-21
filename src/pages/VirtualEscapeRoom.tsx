@@ -35,14 +35,14 @@ const VirtualEscapeRoom = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20">
+    <div className="min-h-screen bg-background
       <Navbar />
       
       <main className="container mx-auto px-4 py-8">
         <div className="text-center mb-8">
           <div className="h-24" />
           <Lock className="w-16 h-16 mx-auto mb-4 text-primary" />
-          <h1 className="text-4xl font-bold mb-6 bg-gradient-primary bg-clip-text text-transparent">
+          <h1 className="text-4xl font-black mb-6 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
             Virtual Escape Rooms
           </h1>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-4">
@@ -96,24 +96,24 @@ const VirtualEscapeRoom = () => {
           <TabsContent value="corporate">
             <div className="bg-card rounded-lg p-8 text-center">
               <Briefcase className="h-16 w-16 mx-auto mb-4 text-primary" />
-              <h2 className="text-2xl font-bold mb-4">Corporate Team Building</h2>
+              <h2 className="text-2xl font-black mb-4">Corporate Team Building</h2>
               <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
                 Custom branded escape rooms for your team. Boost collaboration, problem-solving skills, and team morale with our corporate packages.
               </p>
               <div className="grid md:grid-cols-3 gap-4 max-w-3xl mx-auto">
                 <div className="p-4 bg-secondary/30 rounded-lg">
                   <h3 className="font-semibold mb-2">Starter Package</h3>
-                  <p className="text-2xl font-bold mb-2">€50</p>
+                  <p className="text-2xl font-black mb-2">€50</p>
                   <p className="text-sm text-muted-foreground">Up to 10 players</p>
                 </div>
                 <div className="p-4 bg-primary/10 rounded-lg border-2 border-primary">
                   <h3 className="font-semibold mb-2">Business Package</h3>
-                  <p className="text-2xl font-bold mb-2">€100</p>
+                  <p className="text-2xl font-black mb-2">€100</p>
                   <p className="text-sm text-muted-foreground">Up to 30 players + Analytics</p>
                 </div>
                 <div className="p-4 bg-secondary/30 rounded-lg">
                   <h3 className="font-semibold mb-2">Enterprise</h3>
-                  <p className="text-2xl font-bold mb-2">€200</p>
+                  <p className="text-2xl font-black mb-2">€200</p>
                   <p className="text-sm text-muted-foreground">Unlimited + Custom Branding</p>
                 </div>
               </div>

@@ -252,14 +252,14 @@ export default function Quiz() {
   if (showResult) {
     const percentage = Math.round((score / questions.length) * 100);
     return (
-      <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20 pt-20 pb-12">
+      <div className="min-h-screen bg-background pt-20 pb-12">
         <div className="container mx-auto px-4 max-w-2xl">
           <Card>
             <CardHeader>
               <CardTitle className="text-3xl text-center">Quiz Results</CardTitle>
             </CardHeader>
             <CardContent className="space-y-6 text-center">
-              <div className="text-6xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+              <div className="text-6xl font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
                 {percentage}%
               </div>
               <p className="text-xl">
@@ -282,7 +282,7 @@ export default function Quiz() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20 pt-20 pb-12">
+    <div className="min-h-screen bg-background pt-20 pb-12">
       <div className="container mx-auto px-4 max-w-2xl">
         <Button 
           onClick={() => navigate("/education")} 

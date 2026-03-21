@@ -471,7 +471,7 @@ const Jobs = () => {
 
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-4 sm:mb-8">
           <div>
-            <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold mb-1 sm:mb-2 bg-gradient-primary bg-clip-text text-transparent">
+            <h1 className="text-2xl sm:text-3xl md:text-5xl font-black mb-1 sm:mb-2 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
               {t('jobs.title')}
             </h1>
             <p className="text-muted-foreground text-xs sm:text-sm md:text-base">

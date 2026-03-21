@@ -15,10 +15,10 @@ import {
 
 export default function HowItWorks() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20">
+    <div className="min-h-screen bg-background
       {/* Hero */}
       <section className="container mx-auto px-4 py-16 text-center">
-        <h1 className="text-5xl font-bold mb-4">How Our Platform Works</h1>
+        <h1 className="text-5xl font-black mb-4">How Our Platform Works</h1>
         <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
           A comprehensive guide to creating, selling, and teaching courses on our platform
         </p>
@@ -173,7 +173,7 @@ export default function HowItWorks() {
           <Badge variant="secondary" className="text-lg px-6 py-2 mb-4">
             Live Lesson Features
           </Badge>
-          <h2 className="text-4xl font-bold mb-4">Interactive Real-Time Teaching</h2>
+          <h2 className="text-4xl font-black mb-4">Interactive Real-Time Teaching</h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Engage students with professional video conferencing tools built for education
           </p>

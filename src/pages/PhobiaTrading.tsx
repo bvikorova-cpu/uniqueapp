@@ -357,7 +357,7 @@ const PhobiaTrading = () => {
                   <CardContent>
                     <div className="mb-6">
                       <div className="flex items-baseline gap-2 mb-2">
-                        <span className="text-5xl font-bold bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
+                        <span className="text-5xl font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
                           {service.price}
                         </span>
                         <span className="text-muted-foreground text-sm">
@@ -502,7 +502,7 @@ const PhobiaTrading = () => {
         
         <div className="container mx-auto relative z-10">
           <h2 className="text-4xl md:text-5xl font-bold text-center mb-6">
-            <span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
               Why Choose Phobia Trading?
             </span>
           </h2>
@@ -515,7 +515,7 @@ const PhobiaTrading = () => {
               <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-cyan-500/20 to-blue-500/20 border border-cyan-500/30 mb-6 group-hover:scale-110 transition-transform duration-300">
                 <Brain className="w-10 h-10 text-cyan-400" />
               </div>
-              <h3 className="text-2xl font-bold mb-4 group-hover:text-cyan-400 transition-colors">
+              <h3 className="text-2xl font-black mb-4 group-hover:text-cyan-400 transition-colors">
                 AI-Powered Analysis
               </h3>
               <p className="text-muted-foreground leading-relaxed">
@@ -527,7 +527,7 @@ const PhobiaTrading = () => {
               <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-blue-500/20 to-teal-500/20 border border-blue-500/30 mb-6 group-hover:scale-110 transition-transform duration-300">
                 <Shield className="w-10 h-10 text-blue-400" />
               </div>
-              <h3 className="text-2xl font-bold mb-4 group-hover:text-blue-400 transition-colors">
+              <h3 className="text-2xl font-black mb-4 group-hover:text-blue-400 transition-colors">
                 Secure & Private
               </h3>
               <p className="text-muted-foreground leading-relaxed">
@@ -539,7 +539,7 @@ const PhobiaTrading = () => {
               <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-teal-500/20 to-cyan-500/20 border border-teal-500/30 mb-6 group-hover:scale-110 transition-transform duration-300">
                 <HeartPulse className="w-10 h-10 text-teal-400" />
               </div>
-              <h3 className="text-2xl font-bold mb-4 group-hover:text-teal-400 transition-colors">
+              <h3 className="text-2xl font-black mb-4 group-hover:text-teal-400 transition-colors">
                 Proven Results
               </h3>
               <p className="text-muted-foreground leading-relaxed">

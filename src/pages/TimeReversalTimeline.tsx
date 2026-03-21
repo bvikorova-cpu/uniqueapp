@@ -123,7 +123,7 @@ export default function TimeReversalTimeline() {
               </div>
 
               <div className="flex-1 text-center md:text-left">
-                <h1 className="text-3xl font-bold mb-2">Your Reverse Life</h1>
+                <h1 className="text-3xl font-black mb-2">Your Reverse Life</h1>
                 <p className="text-muted-foreground mb-4">{profile?.bio || "Living life backwards..."}</p>
                 
                 <div className="flex flex-wrap gap-4 justify-center md:justify-start">

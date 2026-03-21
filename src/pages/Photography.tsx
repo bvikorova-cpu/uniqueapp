@@ -156,7 +156,7 @@ const Photography = () => {
                   </div>
                 </div>
 
-                <h3 className="text-lg sm:text-2xl font-bold mb-2">{masterclass.title}</h3>
+                <h3 className="text-lg sm:text-2xl font-black mb-2">{masterclass.title}</h3>
                 <p className="text-sm sm:text-base text-muted-foreground mb-3 sm:mb-4">{masterclass.description}</p>
 
                 <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm text-muted-foreground mb-3 sm:mb-4">

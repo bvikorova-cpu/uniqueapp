@@ -88,7 +88,7 @@ export default function CertificateGallery() {
             <Award className="h-8 w-8 text-white" />
           </div>
           <div>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
               My Certificates
             </h1>
             <p className="text-muted-foreground">

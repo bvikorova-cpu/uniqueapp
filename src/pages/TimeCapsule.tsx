@@ -161,7 +161,7 @@ export default function TimeCapsule() {
           <div className="inline-block p-2 sm:p-3 bg-blue-500/10 rounded-full mb-3 sm:mb-4">
             <Clock className="h-8 w-8 sm:h-12 sm:w-12 text-blue-600" />
           </div>
-          <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold mb-3 sm:mb-4 bg-gradient-to-r from-blue-500 to-cyan-500 bg-clip-text text-transparent">
+          <h1 className="text-2xl sm:text-4xl md:text-5xl font-black mb-3 sm:mb-4 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
             Create Your Time Capsule
           </h1>
           <p className="text-base sm:text-xl text-muted-foreground max-w-2xl mx-auto px-2">

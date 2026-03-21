@@ -107,7 +107,7 @@ export default function FundraisingHub() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
+    <div className="min-h-screen bg-background
       {/* Hero Section */}
       <section className="py-20 px-4">
         <div className="max-w-7xl mx-auto text-center">
@@ -206,7 +206,7 @@ export default function FundraisingHub() {
       {/* CTA Section */}
       <section className="py-20 px-4 bg-gradient-to-r from-primary to-purple-600 text-white">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-4xl font-bold mb-6">Ready to Start?</h2>
+          <h2 className="text-4xl font-black mb-6">Ready to Start?</h2>
           <p className="text-xl mb-8 opacity-90">
             Create your campaign today and get support from the community
           </p>

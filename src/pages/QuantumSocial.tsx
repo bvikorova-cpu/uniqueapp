@@ -8,7 +8,7 @@ import QuantumSubscriptions from "@/components/quantum-social/QuantumSubscriptio
 
 const QuantumSocial = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-cyan-950/30 px-6 pb-10 pt-32">
+    <div className="min-h-screen bg-background px-6 pb-10 pt-32">
       <div className="max-w-6xl mx-auto space-y-6">
         {/* Futuristic Header */}
         <div className="flex items-center gap-4 mb-8">
@@ -17,7 +17,7 @@ const QuantumSocial = () => {
             <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-cyan-400/20 to-purple-500/20 animate-pulse" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent">
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
               Quantum Social Network
             </h1>
             <p className="text-muted-foreground">Your profile exists in quantum superposition</p>

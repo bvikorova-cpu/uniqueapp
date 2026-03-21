@@ -229,7 +229,7 @@ const MegatalentCategory = () => {
         </Button>
 
         <div className="text-center mb-12">
-          <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent">
+          <h1 className="text-5xl font-black mb-4 bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent">
             {config.icon} {config.title}
           </h1>
           <p className="text-xl text-muted-foreground">

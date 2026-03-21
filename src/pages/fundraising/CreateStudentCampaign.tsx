@@ -180,7 +180,7 @@ export default function CreateStudentCampaign() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 py-12 px-4">
+    <div className="min-h-screen bg-background py-12 px-4">
       <div className="max-w-3xl mx-auto">
         <Button variant="outline" size="sm" onClick={() => navigate('/fundraising/student')} className="mb-6">
           <ArrowLeft className="mr-2 h-4 w-4" />

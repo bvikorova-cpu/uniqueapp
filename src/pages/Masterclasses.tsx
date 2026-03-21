@@ -131,10 +131,10 @@ const Masterclasses = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 p-6">
+    <div className="min-h-screen bg-background p-6">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12 mt-16">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+          <h1 className="text-4xl md:text-5xl font-black mb-4 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
             Expert Masterclasses
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
@@ -230,7 +230,7 @@ const Masterclasses = () => {
 
         <div className="mt-12">
           <Card className="p-8 bg-gradient-to-r from-primary/10 to-primary/5 text-center">
-            <h3 className="text-2xl font-bold mb-4">Want to host your own masterclass?</h3>
+            <h3 className="text-2xl font-black mb-4">Want to host your own masterclass?</h3>
             <p className="text-muted-foreground mb-6">
               Share your expertise with our global community of learners
             </p>

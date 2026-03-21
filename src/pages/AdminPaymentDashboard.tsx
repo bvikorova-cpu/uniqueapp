@@ -110,7 +110,7 @@ const AdminPaymentDashboard = () => {
       <Navbar />
       <div className="flex-1 container mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2">Payment Dashboard</h1>
+          <h1 className="text-4xl font-black mb-2">Payment Dashboard</h1>
           <p className="text-muted-foreground">
             Monitor all payments, credits, and conversion analytics
           </p>

@@ -150,7 +150,7 @@ const AntiqueAppraisal = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20 py-16 sm:py-20 px-3 sm:px-4">
+    <div className="min-h-screen bg-background py-16 sm:py-20 px-3 sm:px-4">
       <AlertDialog open={!!stripeUrl} onOpenChange={() => setStripeUrl(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -187,7 +187,7 @@ const AntiqueAppraisal = () => {
 
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-6 sm:mb-8 mt-8 sm:mt-12">
-          <h1 className="text-2xl sm:text-4xl font-bold mb-3 sm:mb-4">AI Antique Appraisal</h1>
+          <h1 className="text-2xl sm:text-4xl font-black mb-3 sm:mb-4">AI Antique Appraisal</h1>
           <p className="text-muted-foreground text-base sm:text-lg px-2">
             Discover the history and value of your antiques with AI
           </p>
@@ -371,7 +371,7 @@ const AntiqueAppraisal = () => {
           <CardContent>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
               <div className="border rounded-lg p-3 sm:p-4 text-center">
-                <p className="text-2xl font-bold mb-2">10 credits</p>
+                <p className="text-2xl font-black mb-2">10 credits</p>
                 <p className="text-3xl font-bold text-primary mb-4">€5</p>
                 <Button variant="outline" className="w-full" onClick={async () => {
                   const url = await purchaseCredits(10);
@@ -384,7 +384,7 @@ const AntiqueAppraisal = () => {
                 <div className="bg-primary text-primary-foreground text-xs px-2 py-1 rounded-full inline-block mb-2">
                   POPULAR
                 </div>
-                <p className="text-2xl font-bold mb-2">25 credits</p>
+                <p className="text-2xl font-black mb-2">25 credits</p>
                 <p className="text-3xl font-bold text-primary mb-4">€10</p>
                 <Button className="w-full" onClick={async () => {
                   const url = await purchaseCredits(25);
@@ -394,7 +394,7 @@ const AntiqueAppraisal = () => {
                 }}>Buy Now</Button>
               </div>
               <div className="border rounded-lg p-4 text-center">
-                <p className="text-2xl font-bold mb-2">60 credits</p>
+                <p className="text-2xl font-black mb-2">60 credits</p>
                 <p className="text-3xl font-bold text-primary mb-4">€20</p>
                 <Button variant="outline" className="w-full" onClick={async () => {
                   const url = await purchaseCredits(60);
@@ -407,7 +407,7 @@ const AntiqueAppraisal = () => {
                 <div className="bg-gold text-gold-foreground text-xs px-2 py-1 rounded-full inline-block mb-2">
                   BEST VALUE
                 </div>
-                <p className="text-2xl font-bold mb-2">150 credits</p>
+                <p className="text-2xl font-black mb-2">150 credits</p>
                 <p className="text-3xl font-bold text-primary mb-4">€40</p>
                 <Button variant="outline" className="w-full" onClick={async () => {
                   const url = await purchaseCredits(150);

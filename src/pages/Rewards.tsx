@@ -41,7 +41,7 @@ export default function Rewards() {
     <div className="min-h-screen bg-background pt-24 pb-8">
       <div className="container mx-auto px-4 max-w-6xl">
         <div className="flex items-center justify-between mb-8">
-          <h1 className="text-4xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
             {t('rewards.titleEmoji')}
           </h1>
           <Button onClick={() => navigate('/premium-store')} className="gap-2">

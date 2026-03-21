@@ -321,7 +321,7 @@ export default function SportsPredictor() {
         <div className="container mx-auto max-w-6xl">
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h2 className="text-3xl font-bold mb-2">Top Tipsters Leaderboard</h2>
+              <h2 className="text-3xl font-black mb-2">Top Tipsters Leaderboard</h2>
               <p className="text-muted-foreground">Follow the best performers</p>
             </div>
             <Button 
@@ -346,7 +346,7 @@ export default function SportsPredictor() {
       {/* Upcoming Matches */}
       <section className="py-12 px-4">
         <div className="container mx-auto max-w-6xl">
-          <h2 className="text-3xl font-bold mb-8">Today's Predictions</h2>
+          <h2 className="text-3xl font-black mb-8">Today's Predictions</h2>
           
           <Tabs defaultValue="all" className="w-full">
             <TabsList>
@@ -468,7 +468,7 @@ export default function SportsPredictor() {
       <section className="py-12 px-4">
         <div className="container mx-auto max-w-6xl">
           <div className="mb-8">
-            <h2 className="text-3xl font-bold mb-2">Premium Expert Tips</h2>
+            <h2 className="text-3xl font-black mb-2">Premium Expert Tips</h2>
             <p className="text-muted-foreground">Purchase individual tips from top-performing tipsters</p>
           </div>
           <ExpertTips />
@@ -478,7 +478,7 @@ export default function SportsPredictor() {
       {/* Features */}
       <section className="py-12 px-4 bg-secondary/10">
         <div className="container mx-auto max-w-6xl">
-          <h2 className="text-3xl font-bold mb-8 text-center">Platform Features</h2>
+          <h2 className="text-3xl font-black mb-8 text-center">Platform Features</h2>
           
           <div className="grid md:grid-cols-3 gap-6">
             <Card>
@@ -524,7 +524,7 @@ export default function SportsPredictor() {
       <section className="py-12 px-4">
         <div className="container mx-auto max-w-6xl">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Choose Your Plan</h2>
+            <h2 className="text-3xl font-black mb-4">Choose Your Plan</h2>
             <p className="text-muted-foreground">All predictions are paid - subscribe to unlock expert insights</p>
           </div>
 
@@ -599,7 +599,7 @@ export default function SportsPredictor() {
       <section className="py-12 px-4 bg-gradient-to-br from-primary/10 to-secondary/10">
         <div className="container mx-auto max-w-4xl text-center">
           <Trophy className="h-16 w-16 text-primary mx-auto mb-6" />
-          <h2 className="text-3xl font-bold mb-4">Become a Professional Tipster</h2>
+          <h2 className="text-3xl font-black mb-4">Become a Professional Tipster</h2>
           <p className="text-xl text-muted-foreground mb-6">
             Share your expertise and earn 75% from every tip you sell. 
             Top performers get exclusive badges and higher visibility.

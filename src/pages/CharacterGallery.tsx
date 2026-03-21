@@ -128,7 +128,7 @@ export default function CharacterGallery() {
             <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-yellow-300/30 to-transparent rounded-full -mr-16 -mt-16" />
             <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-pink-300/30 to-transparent rounded-full -ml-12 -mb-12" />
             <CardContent className="p-8 text-center relative z-10">
-              <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">
+              <h1 className="text-5xl font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent mb-2">
                 🖼️ My Hero Gallery
               </h1>
               <p className="text-xl text-gray-700 font-medium">
@@ -181,7 +181,7 @@ export default function CharacterGallery() {
                     </div>
                   </div>
                   <CardContent className="p-6">
-                    <h3 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-3">
+                    <h3 className="text-2xl font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent mb-3">
                       {character.name}
                     </h3>
                     <div className="space-y-2">

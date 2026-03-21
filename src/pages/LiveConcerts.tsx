@@ -152,7 +152,7 @@ const LiveConcerts = () => {
                 Premium Experience
               </Badge>
             </div>
-            <h1 className="text-5xl md:text-6xl font-bold mb-4 leading-tight">
+            <h1 className="text-5xl md:text-6xl font-black mb-4 leading-tight">
               Exclusive Live Concerts
             </h1>
             <p className="text-xl text-white/90 mb-6">

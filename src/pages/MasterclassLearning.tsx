@@ -103,7 +103,7 @@ export default function MasterclassLearning() {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center p-4">
         <Card className="max-w-md p-8 text-center">
-          <h2 className="text-2xl font-bold mb-4">Access Restricted</h2>
+          <h2 className="text-2xl font-black mb-4">Access Restricted</h2>
           <p className="text-muted-foreground mb-6">
             You need to purchase this masterclass to access the content.
           </p>
@@ -119,7 +119,7 @@ export default function MasterclassLearning() {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center p-4">
         <Card className="max-w-md p-8 text-center">
-          <h2 className="text-2xl font-bold mb-4">Content Not Available</h2>
+          <h2 className="text-2xl font-black mb-4">Content Not Available</h2>
           <p className="text-muted-foreground mb-6">
             Masterclass content is being prepared. Please check back soon.
           </p>
@@ -134,7 +134,7 @@ export default function MasterclassLearning() {
   const overallProgress = Math.round((completedTopics.length / topics.length) * 100);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
+    <div className="min-h-screen bg-background
       <div className="container mx-auto px-4 py-8 max-w-7xl">
         {/* Header */}
         <div className="mb-8">
@@ -151,7 +151,7 @@ export default function MasterclassLearning() {
             <div>
               <div className="flex items-center gap-2 mb-2">
                 <Video className="h-6 w-6 text-primary" />
-                <h1 className="text-4xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+                <h1 className="text-4xl font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
                   {masterclassTitle}
                 </h1>
               </div>

@@ -136,7 +136,7 @@ const DNAMemoryNetwork = () => {
               <Shield className="w-4 h-4 text-primary" />
               <span className="text-sm font-medium">Powered by Advanced AI & Genetics</span>
             </div>
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-primary via-accent to-primary">
+            <h1 className="text-5xl md:text-7xl font-black mb-6 bg-clip-text text-transparent bg-gradient-to-r from-primary via-accent to-primary">
               DNA Social Memory Network
             </h1>
             <p className="text-xl md:text-2xl text-muted-foreground mb-8">
@@ -161,7 +161,7 @@ const DNAMemoryNetwork = () => {
             {/* Detailed Description Card */}
             <Card className="max-w-4xl mx-auto text-left bg-card/80 backdrop-blur-sm border-primary/20">
               <CardContent className="p-6 md:p-8">
-                <h2 className="text-2xl font-bold mb-4 text-primary">What is DNA Social Memory Network?</h2>
+                <h2 className="text-2xl font-black mb-4 text-primary">What is DNA Social Memory Network?</h2>
                 <p className="text-muted-foreground mb-6">
                   DNA Social Memory Network is a revolutionary AI-powered platform that combines cutting-edge genetic analysis with artificial intelligence to help you discover your ancestral heritage, find genetically compatible partners, and create a lasting digital legacy. Our advanced algorithms reconstruct ancestral memories and provide deep insights into your genetic makeup.
                 </p>
@@ -227,7 +227,7 @@ const DNAMemoryNetwork = () => {
       <section className="py-12 px-4 bg-muted/30">
         <div className="container mx-auto">
           <div className="text-center mb-8">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Experience Your DNA Journey</h2>
+            <h2 className="text-3xl md:text-4xl font-black mb-4">Experience Your DNA Journey</h2>
             <p className="text-muted-foreground text-lg">Interactive tools to explore your genetic heritage</p>
           </div>
           <Tabs defaultValue="analysis" className="w-full">
@@ -269,7 +269,7 @@ const DNAMemoryNetwork = () => {
       <section className="py-20 px-4">
         <div className="container mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Choose Your DNA Service</h2>
+            <h2 className="text-3xl md:text-4xl font-black mb-4">Choose Your DNA Service</h2>
             <p className="text-muted-foreground text-lg">Unlock the power of your genetic code</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">

@@ -192,7 +192,7 @@ const PremiumStore = () => {
             Premium Store
           </Badge>
           
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">
+          <h1 className="text-4xl md:text-5xl font-black mb-4">
             Unlock{" "}
             <span className="bg-gradient-to-r from-primary to-purple-500 bg-clip-text text-transparent">
               Premium Features

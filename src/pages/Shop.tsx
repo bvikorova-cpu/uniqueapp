@@ -100,7 +100,7 @@ export default function Shop() {
       {/* Hero Section */}
       <section className="bg-gradient-subtle py-20">
         <div className="container mx-auto px-4 text-center">
-          <h1 className="text-4xl md:text-6xl font-bold mb-4">
+          <h1 className="text-4xl md:text-6xl font-black mb-4">
             Welcome to Our Toy Store
           </h1>
           <p className="text-xl text-muted-foreground mb-8">
@@ -144,7 +144,7 @@ export default function Shop() {
         ) : products.length === 0 ? (
           <div className="text-center py-20">
             <ShoppingBag className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
-            <h2 className="text-2xl font-bold mb-2">No Products</h2>
+            <h2 className="text-2xl font-black mb-2">No Products</h2>
             <p className="text-muted-foreground mb-4">
               We don't have any products yet.
             </p>
@@ -155,7 +155,7 @@ export default function Shop() {
         ) : filteredProducts.length === 0 ? (
           <div className="text-center py-20">
             <ShoppingBag className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
-            <h2 className="text-2xl font-bold mb-2">No matches found</h2>
+            <h2 className="text-2xl font-black mb-2">No matches found</h2>
             <p className="text-muted-foreground">
               Try adjusting your search or filter selection
             </p>

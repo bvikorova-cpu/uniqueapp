@@ -333,14 +333,14 @@ const Marketplace = () => {
 
   if (!isSubscribed) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
+      <div className="min-h-screen bg-background
         {/* Hero Section */}
         <div className="pt-24 pb-16 px-4">
           <div className="container max-w-6xl mx-auto text-center">
             <div className="mx-auto w-20 h-20 rounded-full bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center mb-6 shadow-lg">
               <Briefcase className="w-10 h-10 text-primary-foreground" />
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+            <h1 className="text-4xl md:text-5xl font-black mb-4 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
               Skills Marketplace
             </h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
@@ -618,12 +618,12 @@ const Marketplace = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 pt-20 sm:pt-24 pb-12">
+    <div className="min-h-screen bg-background pt-20 sm:pt-24 pb-12">
       <div className="container mx-auto px-2 sm:px-4">
         <div className="mb-4 sm:mb-8">
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 mb-4 sm:mb-6">
             <div className="flex-1">
-              <h1 className="text-2xl sm:text-4xl font-bold mb-2 flex items-center gap-2">
+              <h1 className="text-2xl sm:text-4xl font-black mb-2 flex items-center gap-2">
                 <Briefcase className="h-6 w-6 sm:h-8 sm:w-8 text-primary flex-shrink-0" />
                 Skills Marketplace
               </h1>

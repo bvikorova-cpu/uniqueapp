@@ -194,7 +194,7 @@ export default function UniversalAnalyzer() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/5 p-4 md:p-8">
+    <div className="min-h-screen bg-background p-4 md:p-8">
       <div className="max-w-6xl mx-auto space-y-6">
         {/* Credits Display */}
         <div className="flex justify-end mt-8">

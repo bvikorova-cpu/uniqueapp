@@ -160,7 +160,7 @@ const SustainableGuide = () => {
             <ArrowLeft className="h-5 w-5" />
           </Button>
           <div className="flex-1">
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
               Sustainable Living Guide
             </h1>
             <p className="text-muted-foreground">Daily challenges for a greener lifestyle</p>

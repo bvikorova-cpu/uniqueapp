@@ -94,7 +94,7 @@ export default function ShadowArenaBattles() {
         <div className="mb-8">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h1 className="text-4xl font-bold mb-2 flex items-center gap-3 bg-gradient-to-r from-purple-400 to-fuchsia-600 bg-clip-text text-transparent">
+              <h1 className="text-4xl font-black mb-2 flex items-center gap-3 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
                 <Swords className="h-10 w-10 text-purple-400" />
                 Battle Arena
               </h1>
@@ -160,7 +160,7 @@ export default function ShadowArenaBattles() {
                         </div>
                       )}
                     </div>
-                    <h3 className="text-2xl font-bold mb-2">{battle.challenge_theme}</h3>
+                    <h3 className="text-2xl font-black mb-2">{battle.challenge_theme}</h3>
                     <p className="text-muted-foreground line-clamp-2">
                       {battle.challenge_prompt}
                     </p>

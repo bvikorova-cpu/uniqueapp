@@ -717,7 +717,7 @@ const Healthcare = () => {
         <div className="space-y-12 max-w-6xl mx-auto">
           {/* Age-Based Collections */}
           <div>
-            <h3 className="text-2xl font-bold mb-6 text-center">By Patient Age</h3>
+            <h3 className="text-2xl font-black mb-6 text-center">By Patient Age</h3>
             <div className="grid md:grid-cols-4 gap-6">
               {ageBasedCollections.map((collection) => (
                 <Card key={collection.age} className="p-6">
@@ -742,7 +742,7 @@ const Healthcare = () => {
 
           {/* Purpose-Based Collections */}
           <div>
-            <h3 className="text-2xl font-bold mb-6 text-center">By Treatment Stage</h3>
+            <h3 className="text-2xl font-black mb-6 text-center">By Treatment Stage</h3>
             <div className="grid md:grid-cols-4 gap-6">
               {purposeBasedCollections.map((collection) => {
                 const Icon = collection.icon;
@@ -760,7 +760,7 @@ const Healthcare = () => {
 
           {/* Condition-Based Collections */}
           <div>
-            <h3 className="text-2xl font-bold mb-6 text-center">By Medical Condition</h3>
+            <h3 className="text-2xl font-black mb-6 text-center">By Medical Condition</h3>
             <div className="grid md:grid-cols-4 gap-6">
               {conditionBasedCollections.map((collection) => {
                 const Icon = collection.icon;

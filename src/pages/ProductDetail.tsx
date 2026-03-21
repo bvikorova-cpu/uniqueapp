@@ -60,7 +60,7 @@ export default function ProductDetail() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <ShoppingBag className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
-          <h2 className="text-2xl font-bold mb-2">Produkt sa nenašiel</h2>
+          <h2 className="text-2xl font-black mb-2">Produkt sa nenašiel</h2>
           <Link to="/shop">
             <Button>Späť do obchodu</Button>
           </Link>
@@ -128,7 +128,7 @@ export default function ProductDetail() {
           {/* Product Info */}
           <div className="space-y-6">
             <div>
-              <h1 className="text-3xl md:text-4xl font-bold mb-4">{product.title}</h1>
+              <h1 className="text-3xl md:text-4xl font-black mb-4">{product.title}</h1>
               <p className="text-3xl font-bold text-primary">
                 {selectedVariant?.price.currencyCode} {parseFloat(selectedVariant?.price.amount).toFixed(2)}
               </p>

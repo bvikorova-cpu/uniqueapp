@@ -140,7 +140,7 @@ export default function ShadowArenaBattleDetail() {
           <div className="flex items-start justify-between gap-4 mb-6">
             <div className="flex-1">
               <Badge className="mb-3">{battle.status.replace('_', ' ')}</Badge>
-              <h1 className="text-4xl font-bold mb-3">{battle.challenge_theme}</h1>
+              <h1 className="text-4xl font-black mb-3">{battle.challenge_theme}</h1>
               <p className="text-muted-foreground text-lg mb-4">
                 {battle.challenge_prompt}
               </p>
@@ -169,7 +169,7 @@ export default function ShadowArenaBattleDetail() {
           )}
         </Card>
 
-        <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
+        <h2 className="text-2xl font-black mb-4 flex items-center gap-2">
           <User className="h-6 w-6" />
           Participants ({participants.length})
         </h2>

@@ -109,7 +109,7 @@ export default function ShadowArenaStoryDetail() {
                 )}
                 <Badge variant="outline">Anonymous</Badge>
               </div>
-              <h1 className="text-4xl font-bold mb-4">{story.title}</h1>
+              <h1 className="text-4xl font-black mb-4">{story.title}</h1>
             </div>
             <div className="text-right">
               <p className="text-4xl font-bold text-primary">{story.votes_count}</p>

@@ -219,7 +219,7 @@ const HomeDesigner = () => {
       
       <div className="container mx-auto px-4 pt-20 sm:pt-24 pb-8">
         <div className="mb-6">
-          <h1 className="text-2xl sm:text-4xl font-bold mb-2 flex items-center gap-2">
+          <h1 className="text-2xl sm:text-4xl font-black mb-2 flex items-center gap-2">
             <Home className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
             Home Designer & Marketplace
           </h1>

@@ -134,7 +134,7 @@ export default function MyLearning() {
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2">My Learning</h1>
+          <h1 className="text-4xl font-black mb-2">My Learning</h1>
           <p className="text-muted-foreground">Track your progress and achievements</p>
         </div>
 

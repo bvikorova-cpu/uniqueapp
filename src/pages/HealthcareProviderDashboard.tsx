@@ -129,7 +129,7 @@ export default function HealthcareProviderDashboard() {
 
   if (loading || subLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
+      <div className="min-h-screen bg-background
         <Navbar />
         <div className="container mx-auto px-4 py-24 text-center">
           <Heart className="w-12 h-12 mx-auto mb-4 text-primary animate-pulse" />
@@ -140,14 +140,14 @@ export default function HealthcareProviderDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
+    <div className="min-h-screen bg-background
       <Navbar />
       
       <div className="container mx-auto px-4 py-24 mt-16">
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
           <div>
-            <h1 className="text-4xl font-bold mb-2">Healthcare Provider Dashboard</h1>
+            <h1 className="text-4xl font-black mb-2">Healthcare Provider Dashboard</h1>
             <p className="text-muted-foreground">Manage your therapeutic coloring content</p>
           </div>
           <div className="flex items-center gap-3">

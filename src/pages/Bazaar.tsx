@@ -461,7 +461,7 @@ const Bazaar = () => {
             <div className="max-w-3xl">
               <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold">
                 Online{" "}
-                <span className="bg-gradient-primary bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
                   Bazaar
                 </span>
               </h1>

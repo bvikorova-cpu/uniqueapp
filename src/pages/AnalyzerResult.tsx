@@ -100,7 +100,7 @@ export default function AnalyzerResult() {
   const confidencePercent = Math.round((info.confidence || 0) * 100);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/5 p-4 md:p-8">
+    <div className="min-h-screen bg-background p-4 md:p-8">
       <div className="max-w-6xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">

@@ -184,7 +184,7 @@ const Index = () => {
         <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} className="text-center pb-8">
           <Card className="border-primary/20 bg-gradient-to-r from-primary/5 via-background to-accent/5 max-w-2xl mx-auto">
             <CardContent className="py-8 sm:py-10">
-              <h3 className="text-xl sm:text-2xl font-bold mb-2">Ready to get started?</h3>
+              <h3 className="text-xl sm:text-2xl font-black mb-2">Ready to get started?</h3>
               <p className="text-muted-foreground mb-4">Choose a service above and begin your journey!</p>
               <Button variant="premium" size="lg" onClick={() => navigate('/wall')}>
                 <ArrowRight className="w-4 h-4" /> Get Started

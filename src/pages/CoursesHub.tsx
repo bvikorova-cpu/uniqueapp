@@ -254,7 +254,7 @@ export default function CoursesHub() {
           {/* Hero Section */}
           <section className="relative py-20 px-4 bg-gradient-to-br from-primary/10 via-background to-secondary/10">
             <div className="container mx-auto text-center">
-              <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+              <h1 className="text-4xl md:text-6xl font-black mb-6 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
                 Learn Anything, Anytime
               </h1>
               <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
@@ -411,7 +411,7 @@ export default function CoursesHub() {
           <section className="py-20 px-4 bg-gradient-to-br from-primary/10 to-secondary/10">
             <div className="container mx-auto">
               <div className="text-center mb-12">
-                <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                <h2 className="text-3xl md:text-4xl font-black mb-4">
                   Ready to Share Your Knowledge?
                 </h2>
                 <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
@@ -464,7 +464,7 @@ export default function CoursesHub() {
               </div>
 
               <div className="bg-card border rounded-lg p-8 mb-8">
-                <h3 className="text-2xl font-bold mb-4">How It Works</h3>
+                <h3 className="text-2xl font-black mb-4">How It Works</h3>
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
                     <div className="flex gap-3 mb-4">
@@ -538,7 +538,7 @@ export default function CoursesHub() {
           <div className="container mx-auto px-4 py-8">
             {/* Header */}
             <div className="mb-8">
-              <h1 className="text-3xl md:text-4xl font-bold mb-2">Creator Dashboard</h1>
+              <h1 className="text-3xl md:text-4xl font-black mb-2">Creator Dashboard</h1>
               <p className="text-muted-foreground">
                 Create and manage your courses, track earnings, and grow your student base
               </p>
@@ -628,7 +628,7 @@ export default function CoursesHub() {
         <TabsContent value="learning" className="mt-0">
           <div className="container mx-auto px-4 py-8">
             <div className="mb-8">
-              <h1 className="text-4xl font-bold mb-2">My Learning</h1>
+              <h1 className="text-4xl font-black mb-2">My Learning</h1>
               <p className="text-muted-foreground">Track your progress and achievements</p>
             </div>
 

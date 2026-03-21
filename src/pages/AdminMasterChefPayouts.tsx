@@ -224,7 +224,7 @@ export default function AdminMasterChefPayouts() {
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
             <ChefHat className="w-8 h-8 text-orange-500" />
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
               MasterChef Payouts
             </h1>
           </div>

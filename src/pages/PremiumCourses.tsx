@@ -159,11 +159,11 @@ const PremiumCourses = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-background via-background to-primary/5">
+    <div className="min-h-screen flex flex-col bg-background
       <Navbar />
       <main className="flex-1 container mx-auto px-4 pt-24 pb-12">
         <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+          <h1 className="text-4xl md:text-5xl font-black mb-4 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
             Premium Courses
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
@@ -201,7 +201,7 @@ const PremiumCourses = () => {
                       )}
                     </div>
 
-                    <h3 className="text-2xl font-bold mb-2">{course.title}</h3>
+                    <h3 className="text-2xl font-black mb-2">{course.title}</h3>
                     <p className="text-muted-foreground mb-4">{course.description}</p>
 
                     <div className="flex items-center gap-4 text-sm text-muted-foreground mb-4">

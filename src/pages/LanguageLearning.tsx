@@ -153,7 +153,7 @@ const LanguageLearning = () => {
                   </div>
                 </div>
 
-                <h3 className="text-2xl font-bold mb-2">{program.title}</h3>
+                <h3 className="text-2xl font-black mb-2">{program.title}</h3>
                 <p className="text-muted-foreground mb-4">{program.description}</p>
 
                 <div className="flex items-center gap-4 text-sm text-muted-foreground mb-4">
