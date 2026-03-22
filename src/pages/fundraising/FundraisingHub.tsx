@@ -107,7 +107,7 @@ export default function FundraisingHub() {
   ];
 
   return (
-    <div className="min-h-screen bg-background
+    <div className="min-h-screen bg-background">
       {/* Hero Section */}
       <section className="py-20 px-4">
         <div className="max-w-7xl mx-auto text-center">

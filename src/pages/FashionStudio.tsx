@@ -16,7 +16,7 @@ export default function FashionStudio() {
   const [activeTab, setActiveTab] = useState("generator");
 
   return (
-    <div className="min-h-screen bg-background
+    <div className="min-h-screen bg-background">
       {/* Hero Section */}
       <div className="relative overflow-hidden bg-gradient-to-r from-pink-500/10 via-purple-500/10 to-blue-500/10 py-4 sm:py-6 pt-16 sm:pt-6">
         <div className="container mx-auto px-3 sm:px-4">

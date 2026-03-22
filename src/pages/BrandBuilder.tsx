@@ -115,7 +115,7 @@ const BrandBuilder = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background
+    <div className="min-h-screen bg-background">
       <Navbar />
       
       <div className="container mx-auto px-3 sm:px-4 pt-16 sm:pt-24 pb-8 sm:pb-12 max-w-7xl">

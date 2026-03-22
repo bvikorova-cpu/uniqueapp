@@ -182,7 +182,7 @@ export default function MembershipCommunity() {
   };
 
   return (
-    <div className="min-h-screen bg-background
+    <div className="min-h-screen bg-background">
       {/* Hero Section */}
       <section className="container mx-auto px-4 py-16 text-center">
         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-6">

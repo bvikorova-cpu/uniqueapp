@@ -281,7 +281,7 @@ export default function PropertyMarketplace() {
   };
 
   return (
-    <div className="min-h-screen bg-background
+    <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-24">
         {/* Hero Section */}
         <div className="text-center mb-12 space-y-6 pt-12">

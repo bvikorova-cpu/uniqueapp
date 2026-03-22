@@ -375,7 +375,7 @@ export default function TeenCareerCounselor() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-background
+    <div className="min-h-screen flex flex-col bg-background">
       <Navbar />
       <main className="flex-1 container mx-auto px-4 pt-16 pb-8 max-w-4xl">
         <div className="text-center mb-8">

@@ -187,7 +187,7 @@ const Home = () => {
       </section>
 
       {/* Welcome Message Section */}
-      <section className="py-24 px-4 bg-background
+      <section className="py-24 px-4 bg-background">
         <div className="container mx-auto max-w-4xl">
           <Card className="relative overflow-hidden border-2 border-primary/30 bg-gradient-to-br from-card via-card/95 to-card/90 backdrop-blur-xl shadow-[0_0_60px_rgba(var(--primary),0.15)]">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(var(--primary),0.1),transparent_50%)]" />
