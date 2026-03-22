@@ -23,7 +23,7 @@ export default function NutritionHub() {
   const [activeTab, setActiveTab] = useState("meal-planner");
 
   return (
-    <div className="min-h-screen flex flex-col bg-background
+    <div className="min-h-screen flex flex-col bg-background">
       <Navbar />
       
       {/* Hero Section */}

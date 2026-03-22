@@ -129,7 +129,7 @@ export default function HealthcareProviderDashboard() {
 
   if (loading || subLoading) {
     return (
-      <div className="min-h-screen bg-background
+      <div className="min-h-screen bg-background">
         <Navbar />
         <div className="container mx-auto px-4 py-24 text-center">
           <Heart className="w-12 h-12 mx-auto mb-4 text-primary animate-pulse" />
@@ -140,7 +140,7 @@ export default function HealthcareProviderDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-background
+    <div className="min-h-screen bg-background">
       <Navbar />
       
       <div className="container mx-auto px-4 py-24 mt-16">

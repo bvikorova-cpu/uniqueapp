@@ -13,7 +13,7 @@ export default function ParallelLives() {
   const [activeTab, setActiveTab] = useState("my-lives");
 
   return (
-    <div className="min-h-screen bg-background
+    <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 pt-20 pb-8">
         {/* Hero Section */}
         <div className="text-center mb-20 space-y-4">
@@ -56,7 +56,7 @@ export default function ParallelLives() {
         </div>
 
         {/* How It Works Section */}
-        <Card className="max-w-4xl mx-auto border-primary/20 bg-background
+        <Card className="max-w-4xl mx-auto border-primary/20 bg-background">
           <CardHeader>
             <CardTitle className="text-2xl flex items-center gap-2">
               <Sparkles className="h-6 w-6 text-primary" />

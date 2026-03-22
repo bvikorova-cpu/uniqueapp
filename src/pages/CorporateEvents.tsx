@@ -19,7 +19,7 @@ const CorporateEvents = () => {
     }, 100);
   };
   return (
-    <div className="min-h-screen bg-background
+    <div className="min-h-screen bg-background">
       {/* Hero Section */}
       <section className="relative py-20 px-4">
         <div className="container mx-auto max-w-6xl text-center">

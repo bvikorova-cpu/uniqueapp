@@ -15,7 +15,7 @@ import {
 
 export default function HowItWorks() {
   return (
-    <div className="min-h-screen bg-background
+    <div className="min-h-screen bg-background">
       {/* Hero */}
       <section className="container mx-auto px-4 py-16 text-center">
         <h1 className="text-5xl font-black mb-4">How Our Platform Works</h1>

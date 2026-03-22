@@ -333,7 +333,7 @@ const Marketplace = () => {
 
   if (!isSubscribed) {
     return (
-      <div className="min-h-screen bg-background
+      <div className="min-h-screen bg-background">
         {/* Hero Section */}
         <div className="pt-24 pb-16 px-4">
           <div className="container max-w-6xl mx-auto text-center">
