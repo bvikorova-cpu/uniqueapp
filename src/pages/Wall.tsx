@@ -89,7 +89,7 @@ const Feed = () => {
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(0);
   const [showBackToTop, setShowBackToTop] = useState(false);
-  
+  const [feedTab, setFeedTab] = useState<FeedTab>("for-you");
   const [pullToRefresh, setPullToRefresh] = useState({
     pulling: false,
     pullDistance: 0,
