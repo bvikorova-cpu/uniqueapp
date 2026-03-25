@@ -504,9 +504,12 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
             </div>
           </TooltipProvider>
 
-          {/* Ephemeral + Drafts row */}
-          <div className="flex items-center justify-between mt-3 pt-3 border-t border-white/5">
-            <EphemeralPostToggle visibility={postVisibility} onVisibilityChange={setPostVisibility} />
+          {/* Ephemeral + Collab + Drafts row */}
+          <div className="flex items-center justify-between mt-3 pt-3 border-t border-white/5 gap-2 flex-wrap">
+            <div className="flex items-center gap-1">
+              <EphemeralPostToggle visibility={postVisibility} onVisibilityChange={setPostVisibility} />
+              <CollaborativePostEditor />
+            </div>
             <DraftsManager onSelectDraft={(draft: any) => setContent(draft.content || "")} />
           </div>
 
