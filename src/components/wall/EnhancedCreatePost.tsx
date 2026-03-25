@@ -482,8 +482,31 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
                 </TooltipTrigger>
                 <TooltipContent>Poll</TooltipContent>
               </Tooltip>
+
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="flex-shrink-0 flex-col h-auto py-1 px-1 hover:bg-pink-500/10 rounded-lg transition-all group"
+                    onClick={() => setShowVoiceRecorder(true)}
+                  >
+                    <div className="p-1 rounded-full bg-pink-500/10 group-hover:bg-pink-500/20 transition-all">
+                      <Mic className="h-3.5 w-3.5 text-pink-600" />
+                    </div>
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Voice Note</TooltipContent>
+              </Tooltip>
             </div>
           </TooltipProvider>
+
+          {/* Ephemeral + Drafts row */}
+          <div className="flex items-center justify-between mt-3 pt-3 border-t border-white/5">
+            <EphemeralPostToggle visibility={postVisibility} onVisibilityChange={setPostVisibility} />
+            <DraftsManager onSelectDraft={(draft: any) => setContent(draft.content || "")} />
+          </div>
 
           {/* Poll preview */}
           {pollData && (
