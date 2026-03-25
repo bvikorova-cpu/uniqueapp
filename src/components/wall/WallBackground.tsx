@@ -14,28 +14,24 @@ export const WallBackground = () => {
   const { animationsEnabled } = useAnimations();
   const [emojis, setEmojis] = useState<Emoji[]>([]);
 
-  const emojiList = [
-    "😊", "🎉", "❤️", "🔥", "✨", "🌟", "💫", "🎨", 
-    "🎭", "🎪", "🎯", "🎸", "🎵", "💎", "🌈", "⚡",
-    "🚀", "💪", "🏆", "👑", "🎬", "📸", "🎤", "🎧",
-    "🚗", "🚕", "🚙", "🚌", "🚎", "🏎️", "🚓", "🚑",
-    "🚒", "🚐", "✈️", "🛩️", "🚁", "🚂", "🚆", "🚊",
-    "🚲", "🛴", "🛹", "🏍️", "🚤", "⛵", "🚢", "🎈",
-    "🎀", "🎁", "🧸", "🎮", "🎲", "🎯", "⚽", "🏀"
+  const floatingSymbols = [
+    "◆", "◇", "○", "●", "△", "▽", "□", "■",
+    "⬡", "⬢", "✦", "✧", "⊹", "⊿", "◈", "◎",
+    "⟐", "⟡", "❖", "✶", "⬥", "⬦", "◉", "◌",
   ];
 
   useEffect(() => {
     // Generate random floating emojis
     const generateEmojis = () => {
       const newEmojis: Emoji[] = [];
-      for (let i = 0; i < 20; i++) {
+      for (let i = 0; i < 15; i++) {
         newEmojis.push({
           id: i,
-          emoji: emojiList[Math.floor(Math.random() * emojiList.length)],
+          emoji: floatingSymbols[Math.floor(Math.random() * floatingSymbols.length)],
           left: Math.random() * 100,
-          duration: 15 + Math.random() * 20,
-          delay: Math.random() * 5,
-          size: 20 + Math.random() * 30,
+          duration: 20 + Math.random() * 25,
+          delay: Math.random() * 8,
+          size: 12 + Math.random() * 18,
         });
       }
       setEmojis(newEmojis);
@@ -80,13 +76,13 @@ export const WallBackground = () => {
           {emojis.map((emoji) => (
             <div
               key={emoji.id}
-              className="absolute animate-float-up opacity-60 hover:opacity-90 transition-opacity cursor-default"
+              className="absolute animate-float-up opacity-20 hover:opacity-35 transition-opacity cursor-default font-light text-pink-300/40"
               style={{
                 left: `${emoji.left}%`,
                 fontSize: `${emoji.size}px`,
                 animationDuration: `${emoji.duration}s`,
                 animationDelay: `${emoji.delay}s`,
-                filter: 'drop-shadow(0 0 15px rgba(236, 72, 153, 0.7)) drop-shadow(0 0 10px rgba(99, 179, 237, 0.5))',
+                filter: 'drop-shadow(0 0 8px rgba(236, 72, 153, 0.3))',
                 willChange: 'transform, opacity'
               }}
             >

@@ -743,19 +743,6 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
           </p>
         )}
 
-        {/* Founder E-book Product Card - Only on founder posts mentioning e-book */}
-        {isVerifiedFounder(post.profiles?.full_name) && 
-         post.content?.toLowerCase().includes('e-book') && (
-          <div className="my-4">
-            <ProductCard 
-              productId="1ca13cf3-ef37-48a9-a41f-b045d3b9fb48"
-              title="Unique Founders E-book"
-              price={0}
-              imageUrl={null}
-              condition="FREE"
-            />
-          </div>
-        )}
 
         {/* Interaction Buttons */}
         <div className="flex items-center gap-2 pt-4 border-t">
