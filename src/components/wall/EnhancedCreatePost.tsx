@@ -102,6 +102,9 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
   const [showSchedule, setShowSchedule] = useState(false);
   const [showPoll, setShowPoll] = useState(false);
   const [showTagFriends, setShowTagFriends] = useState(false);
+  const [showVoiceRecorder, setShowVoiceRecorder] = useState(false);
+  const [voiceFile, setVoiceFile] = useState<File | null>(null);
+  const [postVisibility, setPostVisibility] = useState<PostVisibility>("normal");
   const [pollData, setPollData] = useState<{ question: string; options: string[]; endsAt: Date } | null>(null);
   const { toast } = useToast();
   const { createHashtagsForPost } = useHashtags();
