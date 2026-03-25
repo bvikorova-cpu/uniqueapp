@@ -15,7 +15,6 @@ import {
   MoreHorizontal,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { AnimationToggle } from "./AnimationToggle";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -105,7 +104,6 @@ export function WallTopNav({ currentPath }: WallTopNavProps) {
             </DropdownMenu>
           </div>
           
-          <AnimationToggle />
         </div>
       </div>
     </div>
