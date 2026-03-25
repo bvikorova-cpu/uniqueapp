@@ -19,7 +19,8 @@ import {
   ChevronDown,
   Clock,
   Sparkles,
-  BarChart3
+  BarChart3,
+  Mic
 } from "lucide-react";
 import {
   Tooltip,
@@ -44,6 +45,10 @@ import { SchedulePostDialog } from "./SchedulePostDialog";
 import { CreatePollDialog } from "./CreatePollDialog";
 import { HashtagInput } from "./HashtagInput";
 import { TagFriendsDialog } from "./TagFriendsDialog";
+import { VoiceRecorder } from "./VoiceRecorder";
+import { EphemeralPostToggle, type PostVisibility } from "./EphemeralPostToggle";
+import { DraftsManager } from "./DraftsManager";
+import { AnimatePresence } from "framer-motion";
 import { useHashtags } from "@/hooks/useHashtags";
 import { usePolls } from "@/hooks/usePolls";
 
@@ -97,6 +102,9 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
   const [showSchedule, setShowSchedule] = useState(false);
   const [showPoll, setShowPoll] = useState(false);
   const [showTagFriends, setShowTagFriends] = useState(false);
+  const [showVoiceRecorder, setShowVoiceRecorder] = useState(false);
+  const [voiceFile, setVoiceFile] = useState<File | null>(null);
+  const [postVisibility, setPostVisibility] = useState<PostVisibility>("normal");
   const [pollData, setPollData] = useState<{ question: string; options: string[]; endsAt: Date } | null>(null);
   const { toast } = useToast();
   const { createHashtagsForPost } = useHashtags();
@@ -474,8 +482,31 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
                 </TooltipTrigger>
                 <TooltipContent>Poll</TooltipContent>
               </Tooltip>
+
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="flex-shrink-0 flex-col h-auto py-1 px-1 hover:bg-pink-500/10 rounded-lg transition-all group"
+                    onClick={() => setShowVoiceRecorder(true)}
+                  >
+                    <div className="p-1 rounded-full bg-pink-500/10 group-hover:bg-pink-500/20 transition-all">
+                      <Mic className="h-3.5 w-3.5 text-pink-600" />
+                    </div>
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Voice Note</TooltipContent>
+              </Tooltip>
             </div>
           </TooltipProvider>
+
+          {/* Ephemeral + Drafts row */}
+          <div className="flex items-center justify-between mt-3 pt-3 border-t border-white/5">
+            <EphemeralPostToggle visibility={postVisibility} onVisibilityChange={setPostVisibility} />
+            <DraftsManager onSelectDraft={(draft: any) => setContent(draft.content || "")} />
+          </div>
 
           {/* Poll preview */}
           {pollData && (
@@ -517,6 +548,31 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
             onChange={handleFileSelect}
           />
         </div>
+
+        {/* Voice Recorder */}
+        <AnimatePresence>
+          {showVoiceRecorder && (
+            <VoiceRecorder
+              onRecorded={(file) => {
+                setVoiceFile(file);
+                setShowVoiceRecorder(false);
+                toast({ title: "🎙️ Voice note added!" });
+              }}
+              onCancel={() => setShowVoiceRecorder(false)}
+            />
+          )}
+        </AnimatePresence>
+
+        {/* Voice file preview */}
+        {voiceFile && !showVoiceRecorder && (
+          <div className="flex items-center gap-2 p-3 rounded-xl bg-accent/20 border border-white/5">
+            <Mic className="w-4 h-4 text-primary" />
+            <span className="text-sm font-medium flex-1">🎙️ Voice note attached</span>
+            <Button type="button" variant="ghost" size="sm" onClick={() => setVoiceFile(null)}>
+              <X className="w-4 h-4" />
+            </Button>
+          </div>
+        )}
 
         <Button 
           type="submit" 
