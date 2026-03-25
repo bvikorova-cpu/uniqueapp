@@ -23,6 +23,12 @@ import { PrivacySettingsDialog } from "./PrivacySettingsDialog";
 import { MediaGalleryDialog } from "./MediaGalleryDialog";
 import { EnhancedCreatePost } from "./EnhancedCreatePost";
 import { DailyXPVideoReward } from "@/components/gamification/DailyXPVideoReward";
+import { TrendingSidebar } from "./TrendingSidebar";
+import { ActivityFeedCard } from "./ActivityFeedCard";
+import { TrendingHashtags } from "./TrendingHashtags";
+import { StreaksAndChallenges } from "./StreaksAndChallenges";
+import { LiveStreamWidget } from "./LiveStreamWidget";
+import { AudioRooms } from "./AudioRooms";
 
 interface MobileWallMenuProps {
   onPostCreated?: () => void;
