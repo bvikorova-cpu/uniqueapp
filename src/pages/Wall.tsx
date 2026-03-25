@@ -672,10 +672,6 @@ const Feed = () => {
               {renderContent()}
             </div>
 
-            {/* Right sidebar content shown inline on mobile */}
-            <div className="md:hidden mt-6 px-1">
-              <WallRightbar />
-            </div>
           </div>
 
           {/* Right Sidebar - visible on md+ as sticky column */}

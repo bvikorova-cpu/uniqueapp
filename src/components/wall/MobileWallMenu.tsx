@@ -23,6 +23,12 @@ import { PrivacySettingsDialog } from "./PrivacySettingsDialog";
 import { MediaGalleryDialog } from "./MediaGalleryDialog";
 import { EnhancedCreatePost } from "./EnhancedCreatePost";
 import { DailyXPVideoReward } from "@/components/gamification/DailyXPVideoReward";
+import { TrendingSidebar } from "./TrendingSidebar";
+import { ActivityFeedCard } from "./ActivityFeedCard";
+import { TrendingHashtags } from "./TrendingHashtags";
+import { StreaksAndChallenges } from "./StreaksAndChallenges";
+import { LiveStreamWidget } from "./LiveStreamWidget";
+import { AudioRooms } from "./AudioRooms";
 
 interface MobileWallMenuProps {
   onPostCreated?: () => void;
@@ -223,6 +229,24 @@ export function MobileWallMenu({ onPostCreated }: MobileWallMenuProps) {
 
           <div className="h-px bg-border" />
 
+          {/* Streaks & Challenges */}
+          <StreaksAndChallenges />
+
+          {/* Trending */}
+          <TrendingSidebar />
+
+          {/* Live Streams & Audio Rooms */}
+          <LiveStreamWidget />
+          <AudioRooms />
+
+          {/* Activity Feed */}
+          <ActivityFeedCard />
+
+          {/* Trending Hashtags */}
+          <TrendingHashtags />
+
+          <div className="h-px bg-border" />
+
           {/* Quick Actions */}
           <div className="space-y-2">
             <PrivacySettingsDialog />
@@ -230,8 +254,6 @@ export function MobileWallMenu({ onPostCreated }: MobileWallMenuProps) {
           </div>
 
           <div className="h-px bg-border" />
-
-          {/* All Module Sections - same as desktop sidebar */}
           <ModuleSection title="Core Modules" icon={SparklesIcon} iconColor="text-primary" modules={coreModules} onNavigate={handleNavigate} />
           <ModuleSection title="Ecosystem Modules" icon={Crown} iconColor="text-yellow-500" modules={ecosystemModules} onNavigate={handleNavigate} />
           <ModuleSection title="Advanced Modules" icon={SparklesIcon} iconColor="text-primary" modules={advancedModules} onNavigate={handleNavigate} />
