@@ -299,9 +299,6 @@ function ChallengeCard({
           : "bg-accent/20 hover:bg-accent/30"
       )}
     >
-          : "bg-accent/20 hover:bg-accent/30"
-      )}
-    >
       <div className="flex items-center gap-3">
         <span className="text-xl">{challenge.icon}</span>
         <div className="flex-1 min-w-0">
