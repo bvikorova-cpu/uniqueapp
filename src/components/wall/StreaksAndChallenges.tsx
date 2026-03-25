@@ -295,7 +295,10 @@ function ChallengeCard({
       className={cn(
         "rounded-xl p-3 cursor-pointer transition-all",
         isComplete
-          ? "bg-green-500/10 border border-green-500/20"
+          ? "bg-primary/10 border border-primary/20"
+          : "bg-accent/20 hover:bg-accent/30"
+      )}
+    >
           : "bg-accent/20 hover:bg-accent/30"
       )}
     >
@@ -305,7 +308,7 @@ function ChallengeCard({
           <div className="flex items-center gap-2">
             <p className="text-xs font-semibold truncate">{challenge.title}</p>
             {isComplete && (
-              <Badge className="bg-green-500/20 text-green-600 text-[8px] px-1 h-4">
+              <Badge className="bg-primary/20 text-primary text-[8px] px-1 h-4">
                 ✓ Done
               </Badge>
             )}
