@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
-  Settings, Menu, Ticket, Building2, Users, Gem, Dna, RotateCcw, Link2, Bug,
+  Settings, LayoutDashboard, Ticket, Building2, Users, Gem, Dna, RotateCcw, Link2, Bug,
   Sparkles as SparklesIcon, Music, ChevronDown, ChevronUp, Crown, Clock, Timer,
   ChefHat, Car, MessageCircle, Star, MessageSquare, Brain, Palette, Apple,
   PawPrint, Trophy, Mic2, Image as ImageIcon, Gift, Plane, Heart, Bot, Globe, Atom
@@ -179,14 +179,15 @@ export function MobileWallMenu({ onPostCreated }: MobileWallMenuProps) {
         <Button
           variant="ghost"
           size="icon"
-          className="lg:hidden fixed top-[1.25rem] left-2 z-50 bg-primary/10 backdrop-blur-sm shadow-md hover:bg-primary/20 rounded-full"
+          className="lg:hidden fixed top-[4.5rem] right-3 z-50 bg-primary/90 text-primary-foreground shadow-lg hover:bg-primary rounded-full h-10 w-10"
+          aria-label="Wall Dashboard"
         >
-          <Menu className="h-5 w-5" />
+          <LayoutDashboard className="h-5 w-5" />
         </Button>
       </SheetTrigger>
-      <SheetContent side="left" className="w-[300px] sm:w-[350px] overflow-y-auto">
+      <SheetContent side="right" className="w-[300px] sm:w-[350px] overflow-y-auto">
         <SheetHeader>
-          <SheetTitle>Menu</SheetTitle>
+          <SheetTitle>Dashboard</SheetTitle>
         </SheetHeader>
         
         <div className="py-4 space-y-3">

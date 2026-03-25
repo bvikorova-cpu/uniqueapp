@@ -18,13 +18,6 @@ import megatalentLogo from "@/assets/megatalent-logo.png";
 import uniqueLogo from "@/assets/unique-logo.png";
 import { useTranslation } from "react-i18next";
 import GlobalSearch from "@/components/GlobalSearch";
-import { DailyXPVideoReward } from "@/components/gamification/DailyXPVideoReward";
-import { StreaksAndChallenges } from "@/components/wall/StreaksAndChallenges";
-import { TrendingSidebar } from "@/components/wall/TrendingSidebar";
-import { LiveStreamWidget } from "@/components/wall/LiveStreamWidget";
-import { AudioRooms } from "@/components/wall/AudioRooms";
-import { ActivityFeedCard } from "@/components/wall/ActivityFeedCard";
-import { TrendingHashtags } from "@/components/wall/TrendingHashtags";
 
 interface NotificationData {
   id: string;
@@ -53,7 +46,6 @@ const Navbar = () => {
   const [unreadCount, setUnreadCount] = useState(0);
   const [notifications, setNotifications] = useState<NotificationData[]>([]);
   const [isAdmin, setIsAdmin] = useState(false);
-  const isWallRoute = location.pathname.startsWith("/wall");
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -532,19 +524,6 @@ const Navbar = () => {
         {/* Mobile Navigation */}
         {isMenuOpen && (
           <div className="lg:hidden py-3 space-y-1 max-h-[calc(100vh-5rem)] overflow-y-auto">
-            {isWallRoute && user && (
-              <div className="mb-3 space-y-3 rounded-xl border border-border bg-card p-2">
-                <div className="px-2 pt-1 text-xs font-semibold text-muted-foreground">Wall menu</div>
-                <DailyXPVideoReward userId={user.id} />
-                <StreaksAndChallenges />
-                <TrendingSidebar />
-                <LiveStreamWidget />
-                <AudioRooms />
-                <ActivityFeedCard />
-                <TrendingHashtags />
-              </div>
-            )}
-
             {/* Main Navigation Items */}
             {mainNavItems.map((item) => {
               const Icon = item.icon;
