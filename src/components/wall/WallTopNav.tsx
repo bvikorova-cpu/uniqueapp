@@ -15,7 +15,6 @@ import {
   MoreHorizontal,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { AnimationToggle } from "./AnimationToggle";
 import {
   DropdownMenu,
   DropdownMenuContent,
