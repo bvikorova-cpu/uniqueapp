@@ -554,6 +554,14 @@ const Feed = () => {
             )}
 
             <div className="max-w-2xl mx-auto px-2 sm:px-4 py-3 sm:py-4 space-y-3 sm:space-y-4">
+              {/* Stories Bar */}
+              <div className="glass-card rounded-2xl p-3 backdrop-blur-xl border border-white/10">
+                <StoriesBar />
+              </div>
+
+              {/* Smart Feed Tabs */}
+              <SmartFeedTabs activeTab={feedTab} onTabChange={setFeedTab} />
+
               {/* Achievements Badge */}
               <div className="flex justify-end">
                 <AchievementsBadge />
@@ -577,7 +585,7 @@ const Feed = () => {
                     {filteredFeedItems.map((item, index) => (
                       <div 
                         key={`${item.type}-${item.data.id}`}
-                        className="animate-fade-in"
+                        className="animate-fade-in relative"
                         style={{ animationDelay: `${index * 0.05}s` }}
                       >
                         {item.type === 'post' ? (
@@ -591,6 +599,10 @@ const Feed = () => {
                             onDelete={fetchPosts}
                           />
                         )}
+                        {/* Floating reactions on each post */}
+                        <div className="absolute bottom-2 right-2 z-10">
+                          <FloatingReactions postId={item.data.id} />
+                        </div>
                       </div>
                     ))}
                     
