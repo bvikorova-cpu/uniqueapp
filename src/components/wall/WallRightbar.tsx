@@ -11,6 +11,8 @@ import { TrendingHashtags } from "./TrendingHashtags";
 import { DailyXPVideoReward } from "@/components/gamification/DailyXPVideoReward";
 import { CreatorAnalyticsPanel } from "./CreatorAnalyticsPanel";
 import { AudioRooms } from "./AudioRooms";
+import { LiveStreamWidget } from "./LiveStreamWidget";
+import { StreaksAndChallenges } from "./StreaksAndChallenges";
 
 export function WallRightbar() {
   const navigate = useNavigate();
@@ -87,8 +89,14 @@ export function WallRightbar() {
       {/* Daily XP Video Reward */}
       {user && <DailyXPVideoReward userId={user.id} />}
 
+      {/* Streaks & Challenges */}
+      <StreaksAndChallenges />
+
       {/* Trending Topics */}
       <TrendingSidebar />
+
+      {/* Live Streams */}
+      <LiveStreamWidget />
 
       {/* Audio Rooms */}
       <AudioRooms />
