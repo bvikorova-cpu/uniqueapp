@@ -105,7 +105,6 @@ export function WallTopNav({ currentPath }: WallTopNavProps) {
             </DropdownMenu>
           </div>
           
-          <AnimationToggle />
         </div>
       </div>
     </div>
