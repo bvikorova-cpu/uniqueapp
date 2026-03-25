@@ -6,7 +6,7 @@ export const WallBackground = () => {
   return (
     <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
       {/* Clean professional gradient base */}
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-zinc-100 to-stone-100 dark:from-slate-950 dark:via-zinc-950 dark:to-stone-950" />
+      <div className="absolute inset-0 bg-gradient-to-br from-background via-muted/30 to-background" />
       
       {/* Subtle warm accent overlays */}
       <div className="absolute inset-0 opacity-30" 

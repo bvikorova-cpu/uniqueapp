@@ -13,6 +13,8 @@ import { CreatorAnalyticsPanel } from "./CreatorAnalyticsPanel";
 import { AudioRooms } from "./AudioRooms";
 import { LiveStreamWidget } from "./LiveStreamWidget";
 import { StreaksAndChallenges } from "./StreaksAndChallenges";
+import { EngagementInsights } from "./EngagementInsights";
+import { AIContentSuggestions } from "./AIContentSuggestions";
 
 export function WallRightbar() {
   const navigate = useNavigate();
@@ -100,6 +102,12 @@ export function WallRightbar() {
 
       {/* Audio Rooms */}
       <AudioRooms />
+
+      {/* Engagement Insights */}
+      {user && <EngagementInsights />}
+
+      {/* AI Content Suggestions */}
+      {user && <AIContentSuggestions />}
 
       {/* Creator Analytics */}
       {user && <CreatorAnalyticsPanel />}
