@@ -42,7 +42,7 @@ export function ThreadedReplies({ postId, commentId, depth = 0, maxDepth = 3 }: 
   const { data: replies = [], refetch } = useQuery({
     queryKey: ["thread-replies", commentId],
     queryFn: async () => {
-      const { data } = await supabase
+      const { data } = await (supabase as any)
         .from("comments")
         .select(`
           id, content, created_at, user_id, parent_comment_id,
@@ -68,7 +68,7 @@ export function ThreadedReplies({ postId, commentId, depth = 0, maxDepth = 3 }: 
         ? `> ${quotedReply.profiles?.full_name}: "${quotedReply.content.slice(0, 100)}"\n\n${replyText}`
         : replyText;
 
-      const { error } = await supabase.from("comments").insert({
+      const { error } = await (supabase as any).from("comments").insert({
         post_id: postId,
         user_id: user.id,
         content,
