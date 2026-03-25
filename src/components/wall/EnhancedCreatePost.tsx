@@ -19,7 +19,8 @@ import {
   ChevronDown,
   Clock,
   Sparkles,
-  BarChart3
+  BarChart3,
+  Mic
 } from "lucide-react";
 import {
   Tooltip,
@@ -44,6 +45,10 @@ import { SchedulePostDialog } from "./SchedulePostDialog";
 import { CreatePollDialog } from "./CreatePollDialog";
 import { HashtagInput } from "./HashtagInput";
 import { TagFriendsDialog } from "./TagFriendsDialog";
+import { VoiceRecorder } from "./VoiceRecorder";
+import { EphemeralPostToggle, type PostVisibility } from "./EphemeralPostToggle";
+import { DraftsManager } from "./DraftsManager";
+import { AnimatePresence } from "framer-motion";
 import { useHashtags } from "@/hooks/useHashtags";
 import { usePolls } from "@/hooks/usePolls";
 
