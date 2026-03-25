@@ -549,6 +549,31 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
           />
         </div>
 
+        {/* Voice Recorder */}
+        <AnimatePresence>
+          {showVoiceRecorder && (
+            <VoiceRecorder
+              onRecorded={(file) => {
+                setVoiceFile(file);
+                setShowVoiceRecorder(false);
+                toast({ title: "🎙️ Voice note added!" });
+              }}
+              onCancel={() => setShowVoiceRecorder(false)}
+            />
+          )}
+        </AnimatePresence>
+
+        {/* Voice file preview */}
+        {voiceFile && !showVoiceRecorder && (
+          <div className="flex items-center gap-2 p-3 rounded-xl bg-accent/20 border border-white/5">
+            <Mic className="w-4 h-4 text-primary" />
+            <span className="text-sm font-medium flex-1">🎙️ Voice note attached</span>
+            <Button type="button" variant="ghost" size="sm" onClick={() => setVoiceFile(null)}>
+              <X className="w-4 h-4" />
+            </Button>
+          </div>
+        )}
+
         <Button 
           type="submit" 
           disabled={uploading} 
