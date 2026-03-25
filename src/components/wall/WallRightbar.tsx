@@ -10,6 +10,7 @@ import { ActivityFeedCard } from "./ActivityFeedCard";
 import { TrendingHashtags } from "./TrendingHashtags";
 import { DailyXPVideoReward } from "@/components/gamification/DailyXPVideoReward";
 import { CreatorAnalyticsPanel } from "./CreatorAnalyticsPanel";
+import { AudioRooms } from "./AudioRooms";
 
 export function WallRightbar() {
   const navigate = useNavigate();
@@ -88,6 +89,9 @@ export function WallRightbar() {
 
       {/* Trending Topics */}
       <TrendingSidebar />
+
+      {/* Audio Rooms */}
+      <AudioRooms />
 
       {/* Creator Analytics */}
       {user && <CreatorAnalyticsPanel />}
