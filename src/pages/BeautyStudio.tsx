@@ -114,3 +114,4 @@ const BeautyStudio = () => {
 };
 
 export default BeautyStudio;
+
