@@ -50,6 +50,7 @@ import { EphemeralPostToggle, type PostVisibility } from "./EphemeralPostToggle"
 import { DraftsManager } from "./DraftsManager";
 import { CollaborativePostEditor } from "./CollaborativePostEditor";
 import { MusicShareInput } from "./MusicShareCard";
+import { AIContentAssistant } from "./AIContentAssistant";
 import { AnimatePresence } from "framer-motion";
 import { useHashtags } from "@/hooks/useHashtags";
 import { usePolls } from "@/hooks/usePolls";
