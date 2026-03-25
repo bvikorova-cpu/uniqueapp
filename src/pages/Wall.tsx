@@ -23,6 +23,9 @@ import { AchievementsBadge } from "@/components/wall/AchievementsBadge";
 import { SearchBar } from "@/components/wall/SearchBar";
 import { WallTopNav } from "@/components/wall/WallTopNav";
 import { WallBackground } from "@/components/wall/WallBackground";
+import { StoriesBar } from "@/components/wall/StoriesBar";
+import { SmartFeedTabs, type FeedTab } from "@/components/wall/SmartFeedTabs";
+import { FloatingReactions } from "@/components/wall/FloatingReactions";
 import { useQuery } from "@tanstack/react-query";
 import { useTrendingPosts } from "@/hooks/useTrends";
 import WallMessages from "./wall/WallMessages";
@@ -86,7 +89,7 @@ const Feed = () => {
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(0);
   const [showBackToTop, setShowBackToTop] = useState(false);
-  
+  const [feedTab, setFeedTab] = useState<FeedTab>("for-you");
   const [pullToRefresh, setPullToRefresh] = useState({
     pulling: false,
     pullDistance: 0,
@@ -551,6 +554,14 @@ const Feed = () => {
             )}
 
             <div className="max-w-2xl mx-auto px-2 sm:px-4 py-3 sm:py-4 space-y-3 sm:space-y-4">
+              {/* Stories Bar */}
+              <div className="glass-card rounded-2xl p-3 backdrop-blur-xl border border-white/10">
+                <StoriesBar />
+              </div>
+
+              {/* Smart Feed Tabs */}
+              <SmartFeedTabs activeTab={feedTab} onTabChange={setFeedTab} />
+
               {/* Achievements Badge */}
               <div className="flex justify-end">
                 <AchievementsBadge />
@@ -574,7 +585,7 @@ const Feed = () => {
                     {filteredFeedItems.map((item, index) => (
                       <div 
                         key={`${item.type}-${item.data.id}`}
-                        className="animate-fade-in"
+                        className="animate-fade-in relative"
                         style={{ animationDelay: `${index * 0.05}s` }}
                       >
                         {item.type === 'post' ? (
@@ -588,6 +599,10 @@ const Feed = () => {
                             onDelete={fetchPosts}
                           />
                         )}
+                        {/* Floating reactions on each post */}
+                        <div className="absolute bottom-2 right-2 z-10">
+                          <FloatingReactions postId={item.data.id} />
+                        </div>
                       </div>
                     ))}
                     

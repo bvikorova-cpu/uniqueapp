@@ -1,22 +1,22 @@
 import { useState } from "react";
-import { Plus } from "lucide-react";
+import { Plus, Play, Camera, Video } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useStories } from "@/hooks/useStories";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { motion, AnimatePresence } from "framer-motion";
 
 export const StoriesBar = () => {
   const [open, setOpen] = useState(false);
+  const [viewingStory, setViewingStory] = useState<any>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [caption, setCaption] = useState("");
   const { stories, createStory, viewStory } = useStories();
 
   const handleCreateStory = () => {
     if (!selectedFile) return;
-    
     createStory(
       { mediaFile: selectedFile, caption },
       {
@@ -29,68 +29,196 @@ export const StoriesBar = () => {
     );
   };
 
+  const handleViewStory = (story: any) => {
+    setViewingStory(story);
+    viewStory(story.id);
+  };
+
   return (
     <>
-      <ScrollArea className="w-full">
-        <div className="flex gap-4 p-4 overflow-x-auto">
-          {/* Create Story */}
-          <button
+      <div className="relative">
+        <div className="flex gap-3 overflow-x-auto pb-2 px-1 scrollbar-hide" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+          {/* Create Story - Premium glass card */}
+          <motion.button
+            whileHover={{ scale: 1.05, y: -2 }}
+            whileTap={{ scale: 0.95 }}
             onClick={() => setOpen(true)}
-            className="flex flex-col items-center gap-2 min-w-[80px] hover:opacity-80 transition"
+            className="flex-shrink-0 relative w-[100px] h-[150px] rounded-2xl overflow-hidden group"
           >
-            <div className="relative">
-              <div className="w-16 h-16 rounded-full border-2 border-dashed border-primary flex items-center justify-center bg-accent">
-                <Plus className="w-6 h-6 text-primary" />
-              </div>
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/30 via-accent/20 to-primary/10 backdrop-blur-xl border border-white/10" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+            <div className="relative h-full flex flex-col items-center justify-center gap-2">
+              <motion.div 
+                className="w-10 h-10 rounded-full bg-primary/80 backdrop-blur-sm flex items-center justify-center ring-2 ring-primary/30 shadow-[0_0_20px_rgba(var(--primary),0.4)]"
+                animate={{ boxShadow: ['0 0 15px rgba(139,92,246,0.3)', '0 0 25px rgba(139,92,246,0.6)', '0 0 15px rgba(139,92,246,0.3)'] }}
+                transition={{ duration: 2, repeat: Infinity }}
+              >
+                <Plus className="w-5 h-5 text-primary-foreground" />
+              </motion.div>
+              <span className="text-[11px] font-semibold text-foreground/90">Your Story</span>
             </div>
-            <span className="text-xs font-medium">Your Story</span>
-          </button>
+          </motion.button>
 
-          {/* Stories */}
-          {stories.map((story) => (
-            <button
+          {/* Story items */}
+          {stories.map((story, index) => (
+            <motion.button
               key={story.id}
-              onClick={() => viewStory(story.id)}
-              className="flex flex-col items-center gap-2 min-w-[80px] hover:opacity-80 transition"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: index * 0.05 }}
+              whileHover={{ scale: 1.05, y: -4 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => handleViewStory(story)}
+              className="flex-shrink-0 relative w-[100px] h-[150px] rounded-2xl overflow-hidden group cursor-pointer"
             >
-              <div className="relative">
-                <div className="w-16 h-16 rounded-full ring-2 ring-primary ring-offset-2 ring-offset-background p-0.5">
-                  <Avatar className="w-full h-full">
+              {/* Story background */}
+              <div className="absolute inset-0 bg-gradient-to-br from-violet-500/20 to-fuchsia-500/20 backdrop-blur-xl" />
+              <div className="absolute inset-0">
+                {story.media_url ? (
+                  <img 
+                    src={story.media_url} 
+                    alt="" 
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" 
+                  />
+                ) : (
+                  <div className="w-full h-full bg-gradient-to-br from-primary/40 to-accent/40" />
+                )}
+              </div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+              
+              {/* Ring indicator */}
+              <div className="absolute top-2 left-2">
+                <div className="w-9 h-9 rounded-full p-[2px] bg-gradient-to-br from-primary via-accent to-primary">
+                  <Avatar className="w-full h-full border-2 border-background">
                     <AvatarImage src={story.profiles?.avatar_url || undefined} />
-                    <AvatarFallback>{story.profiles?.full_name?.[0] || "U"}</AvatarFallback>
+                    <AvatarFallback className="text-[10px] bg-accent">{story.profiles?.full_name?.[0] || "U"}</AvatarFallback>
                   </Avatar>
                 </div>
               </div>
-              <span className="text-xs font-medium truncate w-full text-center">
-                {story.profiles?.full_name || "User"}
-              </span>
-            </button>
-          ))}
-        </div>
-      </ScrollArea>
 
+              {/* Play icon for video */}
+              {story.media_type === 'video' && (
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                  <Play className="w-8 h-8 text-white drop-shadow-lg" />
+                </div>
+              )}
+              
+              {/* Name */}
+              <div className="absolute bottom-2 left-2 right-2">
+                <span className="text-[11px] font-semibold text-white drop-shadow-md line-clamp-2 leading-tight">
+                  {story.profiles?.full_name || "User"}
+                </span>
+              </div>
+            </motion.button>
+          ))}
+
+          {/* Placeholder stories for visual richness */}
+          {stories.length < 3 && (
+            <>
+              {[...Array(4 - stories.length)].map((_, i) => (
+                <div 
+                  key={`placeholder-${i}`}
+                  className="flex-shrink-0 w-[100px] h-[150px] rounded-2xl overflow-hidden bg-accent/30 backdrop-blur-sm border border-white/5 animate-pulse"
+                />
+              ))}
+            </>
+          )}
+        </div>
+      </div>
+
+      {/* Create Story Dialog */}
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent>
+        <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Create Story</DialogTitle>
+            <DialogTitle className="flex items-center gap-2">
+              <Camera className="w-5 h-5 text-primary" />
+              Create Story
+            </DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
-            <Input
-              type="file"
-              accept="image/*,video/*"
-              onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
-            />
+            <div className="border-2 border-dashed border-primary/30 rounded-xl p-6 text-center hover:border-primary/60 transition-colors cursor-pointer">
+              <Input
+                type="file"
+                accept="image/*,video/*"
+                onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
+                className="hidden"
+                id="story-file"
+              />
+              <label htmlFor="story-file" className="cursor-pointer space-y-2">
+                <div className="flex justify-center gap-3">
+                  <Camera className="w-8 h-8 text-primary/60" />
+                  <Video className="w-8 h-8 text-accent/60" />
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  {selectedFile ? selectedFile.name : "Tap to add photo or video"}
+                </p>
+              </label>
+            </div>
             <Textarea
               placeholder="Add a caption..."
               value={caption}
               onChange={(e) => setCaption(e.target.value)}
+              className="resize-none"
             />
             <Button onClick={handleCreateStory} disabled={!selectedFile} className="w-full">
-              Create Story
+              Share Story
             </Button>
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Fullscreen Story Viewer */}
+      <AnimatePresence>
+        {viewingStory && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] bg-black flex items-center justify-center"
+            onClick={() => setViewingStory(null)}
+          >
+            <button 
+              className="absolute top-4 right-4 z-10 text-white/80 hover:text-white text-2xl"
+              onClick={() => setViewingStory(null)}
+            >
+              ✕
+            </button>
+            {/* Story progress bar */}
+            <div className="absolute top-2 left-4 right-4 h-1 bg-white/20 rounded-full overflow-hidden">
+              <motion.div 
+                className="h-full bg-white rounded-full"
+                initial={{ width: "0%" }}
+                animate={{ width: "100%" }}
+                transition={{ duration: 5, ease: "linear" }}
+                onAnimationComplete={() => setViewingStory(null)}
+              />
+            </div>
+            
+            {/* Story header */}
+            <div className="absolute top-6 left-4 flex items-center gap-3">
+              <Avatar className="w-8 h-8 ring-2 ring-white/30">
+                <AvatarImage src={viewingStory.profiles?.avatar_url || undefined} />
+                <AvatarFallback>{viewingStory.profiles?.full_name?.[0]}</AvatarFallback>
+              </Avatar>
+              <span className="text-white text-sm font-medium">{viewingStory.profiles?.full_name}</span>
+            </div>
+
+            {viewingStory.media_url && (
+              <img 
+                src={viewingStory.media_url} 
+                alt="" 
+                className="max-w-full max-h-full object-contain"
+                onClick={(e) => e.stopPropagation()}
+              />
+            )}
+            {viewingStory.caption && (
+              <div className="absolute bottom-12 left-4 right-4 text-white text-center text-lg font-medium drop-shadow-lg">
+                {viewingStory.caption}
+              </div>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 };
