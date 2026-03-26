@@ -118,10 +118,15 @@ export function TemplateGallery({ onSelectTemplate }: TemplateGalleryProps) {
                     </Badge>
                   )}
 
-                  <div className="w-full aspect-square rounded-xl bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
-                    <span className="text-4xl">
-                      {CATEGORIES.find((c) => c.id === template.category)?.emoji || "🎨"}
-                    </span>
+                  <div className="w-full aspect-square rounded-xl overflow-hidden bg-muted flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
+                    <img
+                      src={template.image}
+                      alt={template.name}
+                      loading="lazy"
+                      width={512}
+                      height={512}
+                      className="w-full h-full object-cover"
+                    />
                   </div>
 
                   <h3 className="font-semibold text-sm mb-1 truncate">{template.name}</h3>
