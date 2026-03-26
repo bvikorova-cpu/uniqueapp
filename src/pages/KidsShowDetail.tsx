@@ -123,9 +123,9 @@ const KidsShowDetail = () => {
   };
 
   const episodeImageMap: Record<string, string> = {
-    "Prasiatko ide do škôlky": episodeImages.peppaEp1,
-    "Narodeninová oslava": episodeImages.peppaEp2,
-    "Záchrana mačičky": episodeImages.pawEp1,
+    "Peppa Goes to Playgroup": episodeImages.peppaEp1,
+    "Birthday Party": episodeImages.peppaEp2,
+    "Kitten Rescue": episodeImages.pawEp1,
   };
 
   useEffect(() => {

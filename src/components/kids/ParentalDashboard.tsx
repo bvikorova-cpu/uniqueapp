@@ -35,7 +35,7 @@ interface ParentalDashboardProps {
 const defaultChildren: ChildProfile[] = [
   {
     id: "1",
-    name: "Tomáško",
+    name: "Tommy",
     age: 7,
     watchTime: 45,
     maxWatchTime: 60,
@@ -44,7 +44,7 @@ const defaultChildren: ChildProfile[] = [
   },
   {
     id: "2",
-    name: "Emka",
+    name: "Emma",
     age: 5,
     watchTime: 30,
     maxWatchTime: 45,
@@ -75,11 +75,11 @@ export const ParentalDashboard = ({
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold flex items-center gap-2">
           <Shield className="h-6 w-6 text-primary" />
-          Rodičovský panel
+          Parental Dashboard
         </h2>
         <Badge variant="outline" className="text-green-500 border-green-500">
           <Lock className="h-3 w-3 mr-1" />
-          Zabezpečené
+          Secured
         </Badge>
       </div>
 
@@ -95,7 +95,7 @@ export const ParentalDashboard = ({
                   </div>
                   <div>
                     <p className="font-semibold">{child.name}</p>
-                    <p className="text-sm text-muted-foreground">{child.age} rokov</p>
+                    <p className="text-sm text-muted-foreground">{child.age} years old</p>
                   </div>
                 </div>
               </CardTitle>
@@ -106,7 +106,7 @@ export const ParentalDashboard = ({
                 <div className="flex items-center justify-between text-sm">
                   <span className="flex items-center gap-1">
                     <Clock className="h-4 w-4" />
-                    Sledovanie dnes
+                    Watch time today
                   </span>
                   <span>{child.watchTime}/{child.maxWatchTime} min</span>
                 </div>
@@ -130,7 +130,7 @@ export const ParentalDashboard = ({
               {/* Time Limit Slider */}
               <div className="space-y-2">
                 <label className="text-sm font-medium">
-                  Denný limit: {timeLimits[child.id]} min
+                  Daily limit: {timeLimits[child.id]} min
                 </label>
                 <Slider
                   value={[timeLimits[child.id]]}
@@ -148,12 +148,12 @@ export const ParentalDashboard = ({
                 <div className="p-3 bg-muted rounded-lg text-center">
                   <Award className="h-5 w-5 mx-auto mb-1 text-blue-500" />
                   <p className="text-lg font-bold">{child.completedLessons}</p>
-                  <p className="text-xs text-muted-foreground">Lekcie</p>
+                  <p className="text-xs text-muted-foreground">Lessons</p>
                 </div>
                 <div className="p-3 bg-muted rounded-lg text-center">
                   <Star className="h-5 w-5 mx-auto mb-1 text-yellow-500" />
                   <p className="text-lg font-bold">{child.earnedStars}</p>
-                  <p className="text-xs text-muted-foreground">Hviezdičky</p>
+                  <p className="text-xs text-muted-foreground">Stars</p>
                 </div>
               </div>
             </CardContent>
@@ -164,39 +164,39 @@ export const ParentalDashboard = ({
       {/* Settings */}
       <Card>
         <CardHeader>
-          <CardTitle>Nastavenia bezpečnosti</CardTitle>
+          <CardTitle>Safety Settings</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           {[
             {
               key: "contentFilter",
               icon: Eye,
-              label: "Filter obsahu",
-              description: "Blokovať nevhodný obsah",
+              label: "Content Filter",
+              description: "Block inappropriate content",
             },
             {
               key: "ageRestriction",
               icon: Users,
-              label: "Vekové obmedzenie",
-              description: "Zobrazovať len vekovo vhodný obsah",
+              label: "Age Restriction",
+              description: "Show only age-appropriate content",
             },
             {
               key: "adsFree",
               icon: Shield,
-              label: "Bez reklám",
-              description: "Odstrániť všetky reklamy",
+              label: "Ad-Free",
+              description: "Remove all advertisements",
             },
             {
               key: "notifications",
               icon: Bell,
-              label: "Upozornenia",
-              description: "Notifikácie o aktivite dieťaťa",
+              label: "Notifications",
+              description: "Get notified about child activity",
             },
             {
               key: "downloadEnabled",
               icon: BarChart3,
-              label: "Sťahovanie",
-              description: "Povoliť sťahovanie videí",
+              label: "Downloads",
+              description: "Allow video downloads",
             },
           ].map((setting) => (
             <div
