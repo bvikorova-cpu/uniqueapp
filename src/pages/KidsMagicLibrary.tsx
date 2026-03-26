@@ -1,17 +1,22 @@
-import { useState } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, BookOpen, Palette, Sparkles, Crown, Image, Download, Trash2, Calendar, PaintBucket } from "lucide-react";
+import { ArrowLeft, Download, Heart, Calendar, Share2 } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
+import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
 import { useKidsGoldPass } from "@/hooks/useKidsGoldPass";
-import castleBg from "@/assets/kids/disney-castle-bg.jpg";
+
+import { GalleryHero } from "@/components/kids/gallery/GalleryHero";
+import { GalleryStats } from "@/components/kids/gallery/GalleryStats";
+import { GalleryFilters, type GalleryCategory } from "@/components/kids/gallery/GalleryFilters";
+import { GalleryLightbox } from "@/components/kids/gallery/GalleryLightbox";
+import { GalleryAchievements } from "@/components/kids/gallery/GalleryAchievements";
+import { GalleryTimeline } from "@/components/kids/gallery/GalleryTimeline";
 
 interface Story {
   id: string;
@@ -50,36 +55,53 @@ interface ColoringPage {
   created_at: string;
 }
 
+interface GalleryItem {
+  id: string;
+  title: string;
+  imageUrl: string;
+  category: GalleryCategory;
+  type: "story" | "drawing" | "character" | "coloring";
+  date: string;
+  subtitle?: string;
+}
+
 export default function KidsMagicLibrary() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { hasGoldPass } = useKidsGoldPass();
-  const [activeTab, setActiveTab] = useState("stories");
+  const [activeCategory, setActiveCategory] = useState<GalleryCategory>("all");
+  const [search, setSearch] = useState("");
+  const [favorites, setFavorites] = useState<string[]>(() => {
+    if (!user) return [];
+    const stored = localStorage.getItem(`kids_gallery_favorites_${user?.id}`);
+    return stored ? JSON.parse(stored) : [];
+  });
+  const [lightboxIndex, setLightboxIndex] = useState(-1);
 
-  // Fetch stories - using localStorage for demo
-  const { data: stories = [], isLoading: storiesLoading } = useQuery({
+  // Fetch stories
+  const { data: stories = [] } = useQuery({
     queryKey: ["kids-stories", user?.id],
     queryFn: async () => {
       if (!user) return [];
       const stored = localStorage.getItem(`kids_stories_${user.id}`);
-      return stored ? JSON.parse(stored) as Story[] : [];
+      return stored ? (JSON.parse(stored) as Story[]) : [];
     },
     enabled: !!user,
   });
 
-  // Fetch drawings - using localStorage for demo
-  const { data: drawings = [], isLoading: drawingsLoading } = useQuery({
+  // Fetch drawings
+  const { data: drawings = [] } = useQuery({
     queryKey: ["kids-drawings", user?.id],
     queryFn: async () => {
       if (!user) return [];
       const stored = localStorage.getItem(`kids_drawings_${user.id}`);
-      return stored ? JSON.parse(stored) as Drawing[] : [];
+      return stored ? (JSON.parse(stored) as Drawing[]) : [];
     },
     enabled: !!user,
   });
 
   // Fetch characters
-  const { data: characters = [], isLoading: charactersLoading } = useQuery({
+  const { data: characters = [] } = useQuery({
     queryKey: ["kids-characters", user?.id],
     queryFn: async () => {
       if (!user) return [];
@@ -95,7 +117,7 @@ export default function KidsMagicLibrary() {
   });
 
   // Fetch coloring pages
-  const { data: coloringPages = [], isLoading: coloringLoading } = useQuery({
+  const { data: coloringPages = [] } = useQuery({
     queryKey: ["kids-coloring-pages", user?.id],
     queryFn: async () => {
       if (!user) return [];
@@ -110,6 +132,100 @@ export default function KidsMagicLibrary() {
     enabled: !!user,
   });
 
+  // Build unified gallery items
+  const allItems = useMemo<GalleryItem[]>(() => {
+    const items: GalleryItem[] = [];
+
+    stories.forEach((s) => {
+      if (s.illustration_url) {
+        items.push({
+          id: s.id,
+          title: s.title,
+          imageUrl: s.illustration_url,
+          category: "stories",
+          type: "story",
+          date: s.created_at,
+          subtitle: s.category,
+        });
+      }
+    });
+
+    drawings.forEach((d) => {
+      items.push({
+        id: d.id,
+        title: d.title,
+        imageUrl: d.image_url,
+        category: "drawings",
+        type: "drawing",
+        date: d.created_at,
+        subtitle: d.category,
+      });
+    });
+
+    characters.forEach((c) => {
+      if (c.image_url) {
+        items.push({
+          id: c.id,
+          title: c.name,
+          imageUrl: c.image_url,
+          category: "characters",
+          type: "character",
+          date: c.created_at,
+          subtitle: c.superpower,
+        });
+      }
+    });
+
+    coloringPages.forEach((p) => {
+      items.push({
+        id: p.id,
+        title: `${p.difficulty} Level`,
+        imageUrl: p.processed_image_url,
+        category: "coloring",
+        type: "coloring",
+        date: p.created_at,
+        subtitle: p.difficulty,
+      });
+    });
+
+    return items.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  }, [stories, drawings, characters, coloringPages]);
+
+  // Filtered items
+  const filteredItems = useMemo(() => {
+    let items = allItems;
+    if (activeCategory === "favorites") {
+      items = items.filter((i) => favorites.includes(i.id));
+    } else if (activeCategory !== "all") {
+      items = items.filter((i) => i.category === activeCategory);
+    }
+    if (search.trim()) {
+      const q = search.toLowerCase();
+      items = items.filter((i) => i.title.toLowerCase().includes(q) || i.subtitle?.toLowerCase().includes(q));
+    }
+    return items;
+  }, [allItems, activeCategory, search, favorites]);
+
+  const counts: Record<GalleryCategory, number> = {
+    all: allItems.length,
+    stories: allItems.filter((i) => i.category === "stories").length,
+    drawings: allItems.filter((i) => i.category === "drawings").length,
+    characters: allItems.filter((i) => i.category === "characters").length,
+    coloring: allItems.filter((i) => i.category === "coloring").length,
+    favorites: favorites.length,
+  };
+
+  const toggleFavorite = useCallback(
+    (id: string) => {
+      setFavorites((prev) => {
+        const next = prev.includes(id) ? prev.filter((f) => f !== id) : [...prev, id];
+        if (user) localStorage.setItem(`kids_gallery_favorites_${user.id}`, JSON.stringify(next));
+        return next;
+      });
+    },
+    [user]
+  );
+
   const handleDownload = async (url: string, filename: string) => {
     try {
       const response = await fetch(url);
@@ -118,301 +234,204 @@ export default function KidsMagicLibrary() {
       link.href = URL.createObjectURL(blob);
       link.download = filename;
       link.click();
-      toast.success("Downloaded successfully!");
-    } catch (error) {
+      toast.success("Downloaded successfully! 📥");
+    } catch {
       toast.error("Failed to download");
     }
   };
 
-  const isLoading = storiesLoading || drawingsLoading || charactersLoading || coloringLoading;
+  // Streak (simple localStorage-based)
+  const streak = useMemo(() => {
+    if (!user) return 0;
+    const stored = localStorage.getItem(`kids_gallery_streak_${user.id}`);
+    return stored ? parseInt(stored, 10) : 0;
+  }, [user]);
+
+  // Timeline items
+  const timelineItems = useMemo(
+    () =>
+      allItems.map((i) => ({
+        id: i.id,
+        title: i.title,
+        type: i.type,
+        date: i.date,
+        imageUrl: i.imageUrl,
+      })),
+    [allItems]
+  );
+
+  // Lightbox items for current filter
+  const lightboxItems = filteredItems.map((i) => ({
+    id: i.id,
+    imageUrl: i.imageUrl,
+    title: i.title,
+    category: i.subtitle || i.category,
+    date: format(new Date(i.date), "MMM d, yyyy"),
+  }));
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
-      {/* Background */}
-      <div className="fixed inset-0">
-        <img 
-          src={castleBg} 
-          alt="Disney Castle" 
-          className="w-full h-full object-cover object-center opacity-30"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-purple-100/80 via-pink-100/80 to-blue-100/80" />
+    <div className="min-h-screen bg-gradient-to-b from-purple-50/80 via-pink-50/80 to-blue-50/80 dark:from-gray-900 dark:via-purple-950/50 dark:to-blue-950/50">
+      {/* Header */}
+      <div className="bg-card/80 backdrop-blur-sm border-b border-border/50 sticky top-0 z-20">
+        <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
+          <Button variant="ghost" onClick={() => navigate("/kids-channel")}>
+            <ArrowLeft className="mr-2 h-4 w-4" /> Back
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            className="gap-1.5"
+            onClick={() => {
+              toast.success("Portfolio link copied! 🔗");
+            }}
+          >
+            <Share2 className="h-4 w-4" /> Share Portfolio
+          </Button>
+        </div>
       </div>
 
-      <div className="relative z-10 container mx-auto px-4 py-8 pt-24">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <Button
-            variant="ghost"
-            onClick={() => navigate("/kids-channel")}
-            className="hover:bg-white/70"
-          >
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Kids Channel
-          </Button>
-          
-          {hasGoldPass && (
-            <Badge className="bg-gradient-to-r from-yellow-500 to-amber-500 text-white gap-1">
-              <Crown className="w-4 h-4" /> Gold Pass
-            </Badge>
+      <div className="max-w-7xl mx-auto px-6 py-6 space-y-2">
+        <GalleryHero
+          totalCreations={allItems.length}
+          hasGoldPass={hasGoldPass}
+        />
+
+        <GalleryStats
+          stories={stories.length}
+          drawings={drawings.length}
+          characters={characters.length}
+          coloringPages={coloringPages.length}
+          streak={streak}
+        />
+
+        <GalleryFilters
+          active={activeCategory}
+          onChange={setActiveCategory}
+          search={search}
+          onSearchChange={setSearch}
+          counts={counts}
+        />
+
+        {/* Masonry grid */}
+        <div className="max-w-6xl mx-auto">
+          {filteredItems.length === 0 ? (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="text-center py-16"
+            >
+              <span className="text-6xl block mb-4">🎨</span>
+              <h3 className="text-xl font-bold mb-2">
+                {activeCategory === "favorites" ? "No favorites yet!" : "No creations yet!"}
+              </h3>
+              <p className="text-muted-foreground mb-6">
+                {activeCategory === "favorites"
+                  ? "Heart your favorite creations to see them here"
+                  : "Start creating magical art, stories and characters!"}
+              </p>
+              <div className="flex flex-wrap justify-center gap-3">
+                <Button onClick={() => navigate("/kids-story-creator")} className="bg-gradient-to-r from-purple-500 to-pink-500 text-white">
+                  Create Story ✨
+                </Button>
+                <Button onClick={() => navigate("/kids-drawing-buddy")} variant="outline">
+                  Start Drawing 🎨
+                </Button>
+              </div>
+            </motion.div>
+          ) : (
+            <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-4 space-y-4">
+              <AnimatePresence mode="popLayout">
+                {filteredItems.map((item, i) => (
+                  <motion.div
+                    key={item.id}
+                    layout
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    transition={{ delay: Math.min(i * 0.03, 0.3) }}
+                    className="break-inside-avoid group cursor-pointer"
+                    onClick={() => setLightboxIndex(i)}
+                  >
+                    <div className="relative rounded-2xl overflow-hidden border border-border/50 bg-card/80 backdrop-blur-sm shadow-sm hover:shadow-xl transition-all duration-300">
+                      <div className="relative overflow-hidden">
+                        <img
+                          src={item.imageUrl}
+                          alt={item.title}
+                          className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-105"
+                          loading="lazy"
+                        />
+
+                        {/* Hover overlay */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3">
+                          <div className="flex-1">
+                            <p className="text-white font-bold text-sm truncate">{item.title}</p>
+                            <p className="text-white/70 text-xs">{item.subtitle}</p>
+                          </div>
+                        </div>
+
+                        {/* Favorite button */}
+                        <button
+                          className="absolute top-2 right-2 w-8 h-8 rounded-full bg-black/30 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleFavorite(item.id);
+                          }}
+                        >
+                          <Heart
+                            className={`w-4 h-4 ${
+                              favorites.includes(item.id) ? "fill-red-500 text-red-500" : "text-white"
+                            }`}
+                          />
+                        </button>
+
+                        {/* Category badge */}
+                        <Badge
+                          variant="secondary"
+                          className="absolute top-2 left-2 text-xs bg-black/30 text-white backdrop-blur-sm border-0"
+                        >
+                          {item.type === "story" ? "📖" : item.type === "drawing" ? "🎨" : item.type === "character" ? "🦸" : "🖌️"}{" "}
+                          {item.category}
+                        </Badge>
+                      </div>
+
+                      <div className="px-3 py-2.5">
+                        <p className="font-semibold text-sm truncate">{item.title}</p>
+                        <p className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
+                          <Calendar className="w-3 h-3" />
+                          {format(new Date(item.date), "MMM d, yyyy")}
+                        </p>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </div>
           )}
         </div>
 
-        {/* Title */}
-        <div className="text-center mb-10">
-          <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent mb-4">
-            My Magic Library ✨📚
-          </h1>
-          <p className="text-xl text-muted-foreground">
-            All your magical creations in one place!
-          </p>
-        </div>
+        {/* Achievements */}
+        <GalleryAchievements
+          stories={stories.length}
+          drawings={drawings.length}
+          characters={characters.length}
+          coloringPages={coloringPages.length}
+        />
 
-        {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto mb-10">
-          <Card className="bg-gradient-to-br from-purple-100 to-purple-200 border-purple-300 text-center">
-            <CardContent className="pt-4 pb-4">
-              <BookOpen className="w-8 h-8 mx-auto text-purple-600 mb-2" />
-              <div className="text-3xl font-bold text-purple-700">{stories.length}</div>
-              <div className="text-sm text-purple-600">Stories</div>
-            </CardContent>
-          </Card>
-          <Card className="bg-gradient-to-br from-pink-100 to-pink-200 border-pink-300 text-center">
-            <CardContent className="pt-4 pb-4">
-              <Palette className="w-8 h-8 mx-auto text-pink-600 mb-2" />
-              <div className="text-3xl font-bold text-pink-700">{drawings.length}</div>
-              <div className="text-sm text-pink-600">Drawings</div>
-            </CardContent>
-          </Card>
-          <Card className="bg-gradient-to-br from-blue-100 to-blue-200 border-blue-300 text-center">
-            <CardContent className="pt-4 pb-4">
-              <Sparkles className="w-8 h-8 mx-auto text-blue-600 mb-2" />
-              <div className="text-3xl font-bold text-blue-700">{characters.length}</div>
-              <div className="text-sm text-blue-600">Characters</div>
-            </CardContent>
-          </Card>
-          <Card className="bg-gradient-to-br from-orange-100 to-amber-200 border-orange-300 text-center">
-            <CardContent className="pt-4 pb-4">
-              <PaintBucket className="w-8 h-8 mx-auto text-orange-600 mb-2" />
-              <div className="text-3xl font-bold text-orange-700">{coloringPages.length}</div>
-              <div className="text-sm text-orange-600">Coloring Books</div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Tabs */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="max-w-5xl mx-auto">
-          <TabsList className="grid w-full grid-cols-4 bg-white/80 backdrop-blur-sm mb-6">
-            <TabsTrigger value="stories" className="gap-2">
-              <BookOpen className="w-4 h-4" /> Stories
-            </TabsTrigger>
-            <TabsTrigger value="drawings" className="gap-2">
-              <Palette className="w-4 h-4" /> Drawings
-            </TabsTrigger>
-            <TabsTrigger value="characters" className="gap-2">
-              <Sparkles className="w-4 h-4" /> Characters
-            </TabsTrigger>
-            <TabsTrigger value="coloring" className="gap-2">
-              <PaintBucket className="w-4 h-4" /> Coloring
-            </TabsTrigger>
-          </TabsList>
-
-          {/* Stories Tab */}
-          <TabsContent value="stories">
-            {isLoading ? (
-              <div className="text-center py-12">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto" />
-              </div>
-            ) : stories.length === 0 ? (
-              <Card className="bg-white/80 backdrop-blur-sm text-center py-12">
-                <CardContent>
-                  <BookOpen className="w-16 h-16 mx-auto text-purple-300 mb-4" />
-                  <h3 className="text-xl font-semibold text-purple-700 mb-2">No Stories Yet!</h3>
-                  <p className="text-muted-foreground mb-4">Create your first magical story!</p>
-                  <Button onClick={() => navigate("/kids-story-creator")} className="bg-gradient-to-r from-purple-500 to-pink-500">
-                    Create a Story ✨
-                  </Button>
-                </CardContent>
-              </Card>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {stories.map((story) => (
-                  <Card key={story.id} className="bg-white/90 backdrop-blur-sm border-2 border-purple-200 hover:border-purple-400 transition-all hover:shadow-lg">
-                    {story.illustration_url && (
-                      <div className="aspect-video overflow-hidden rounded-t-lg">
-                        <img src={story.illustration_url} alt={story.title} className="w-full h-full object-cover" />
-                      </div>
-                    )}
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-lg text-purple-700">{story.title}</CardTitle>
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Badge variant="secondary">{story.category}</Badge>
-                        <span className="flex items-center gap-1">
-                          <Calendar className="w-3 h-3" />
-                          {format(new Date(story.created_at), "MMM d, yyyy")}
-                        </span>
-                      </div>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-sm text-gray-600 line-clamp-3">{story.story_content}</p>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            )}
-          </TabsContent>
-
-          {/* Drawings Tab */}
-          <TabsContent value="drawings">
-            {isLoading ? (
-              <div className="text-center py-12">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-600 mx-auto" />
-              </div>
-            ) : drawings.length === 0 ? (
-              <Card className="bg-white/80 backdrop-blur-sm text-center py-12">
-                <CardContent>
-                  <Palette className="w-16 h-16 mx-auto text-pink-300 mb-4" />
-                  <h3 className="text-xl font-semibold text-pink-700 mb-2">No Drawings Yet!</h3>
-                  <p className="text-muted-foreground mb-4">Start your artistic journey!</p>
-                  <Button onClick={() => navigate("/kids-drawing-buddy")} className="bg-gradient-to-r from-pink-500 to-rose-500">
-                    Start Drawing 🎨
-                  </Button>
-                </CardContent>
-              </Card>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {drawings.map((drawing) => (
-                  <Card key={drawing.id} className="bg-white/90 backdrop-blur-sm border-2 border-pink-200 hover:border-pink-400 transition-all hover:shadow-lg group">
-                    <div className="aspect-square overflow-hidden rounded-t-lg relative">
-                      <img src={drawing.image_url} alt={drawing.title} className="w-full h-full object-cover" />
-                      <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                        <Button size="sm" variant="secondary" onClick={() => handleDownload(drawing.image_url, `${drawing.title}.png`)}>
-                          <Download className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    </div>
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-lg text-pink-700">{drawing.title}</CardTitle>
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Badge variant="secondary">{drawing.category}</Badge>
-                        <span className="flex items-center gap-1">
-                          <Calendar className="w-3 h-3" />
-                          {format(new Date(drawing.created_at), "MMM d, yyyy")}
-                        </span>
-                      </div>
-                    </CardHeader>
-                  </Card>
-                ))}
-              </div>
-            )}
-          </TabsContent>
-
-          {/* Characters Tab */}
-          <TabsContent value="characters">
-            {isLoading ? (
-              <div className="text-center py-12">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto" />
-              </div>
-            ) : characters.length === 0 ? (
-              <Card className="bg-white/80 backdrop-blur-sm text-center py-12">
-                <CardContent>
-                  <Sparkles className="w-16 h-16 mx-auto text-blue-300 mb-4" />
-                  <h3 className="text-xl font-semibold text-blue-700 mb-2">No Characters Yet!</h3>
-                  <p className="text-muted-foreground mb-4">Create your first hero!</p>
-                  <Button onClick={() => navigate("/kids-stories/create-character")} className="bg-gradient-to-r from-blue-500 to-cyan-500">
-                    Create a Hero 🦸
-                  </Button>
-                </CardContent>
-              </Card>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {characters.map((character) => (
-                  <Card key={character.id} className="bg-white/90 backdrop-blur-sm border-2 border-blue-200 hover:border-blue-400 transition-all hover:shadow-lg">
-                    {character.image_url && (
-                      <div className="aspect-square overflow-hidden rounded-t-lg">
-                        <img src={character.image_url} alt={character.name} className="w-full h-full object-cover" />
-                      </div>
-                    )}
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-lg text-blue-700">{character.name}</CardTitle>
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Calendar className="w-3 h-3" />
-                        {format(new Date(character.created_at), "MMM d, yyyy")}
-                      </div>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="grid grid-cols-2 gap-2 text-sm">
-                        <div className="bg-blue-50 rounded px-2 py-1">
-                          <span className="text-blue-600">Power:</span> {character.superpower}
-                        </div>
-                        <div className="bg-purple-50 rounded px-2 py-1">
-                          <span className="text-purple-600">Hair:</span> {character.hair_color}
-                        </div>
-                        <div className="bg-pink-50 rounded px-2 py-1">
-                          <span className="text-pink-600">Eyes:</span> {character.eye_color}
-                        </div>
-                        <div className="bg-green-50 rounded px-2 py-1">
-                          <span className="text-green-600">Trait:</span> {character.personality}
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            )}
-          </TabsContent>
-
-          {/* Coloring Pages Tab */}
-          <TabsContent value="coloring">
-            {isLoading ? (
-              <div className="text-center py-12">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600 mx-auto" />
-              </div>
-            ) : coloringPages.length === 0 ? (
-              <Card className="bg-white/80 backdrop-blur-sm text-center py-12">
-                <CardContent>
-                  <PaintBucket className="w-16 h-16 mx-auto text-orange-300 mb-4" />
-                  <h3 className="text-xl font-semibold text-orange-700 mb-2">No Coloring Pages Yet!</h3>
-                  <p className="text-muted-foreground mb-4">Transform any image into a coloring page!</p>
-                  {hasGoldPass && (
-                    <Badge className="mb-4 bg-gradient-to-r from-yellow-500 to-amber-500 text-white">
-                      <Crown className="w-3 h-3 mr-1" /> Gold Pass: Unlimited HD Access
-                    </Badge>
-                  )}
-                  <div className="mt-4">
-                    <Button onClick={() => navigate("/coloring-pages")} className="bg-gradient-to-r from-orange-500 to-amber-500">
-                      Create Coloring Page 🎨
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {coloringPages.map((page) => (
-                  <Card key={page.id} className="bg-white/90 backdrop-blur-sm border-2 border-orange-200 hover:border-orange-400 transition-all hover:shadow-lg group">
-                    <div className="aspect-square overflow-hidden rounded-t-lg relative">
-                      <img src={page.processed_image_url} alt="Coloring page" className="w-full h-full object-cover" />
-                      <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                        <Button size="sm" variant="secondary" onClick={() => handleDownload(page.processed_image_url, `coloring-page-${page.id}.png`)}>
-                          <Download className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    </div>
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-lg text-orange-700 capitalize">{page.difficulty} Level</CardTitle>
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <span className="flex items-center gap-1">
-                          <Calendar className="w-3 h-3" />
-                          {format(new Date(page.created_at), "MMM d, yyyy")}
-                        </span>
-                      </div>
-                    </CardHeader>
-                  </Card>
-                ))}
-              </div>
-            )}
-          </TabsContent>
-        </Tabs>
+        {/* Timeline */}
+        <GalleryTimeline items={timelineItems} />
       </div>
+
+      {/* Lightbox */}
+      <GalleryLightbox
+        items={lightboxItems}
+        currentIndex={lightboxIndex}
+        isOpen={lightboxIndex >= 0}
+        onClose={() => setLightboxIndex(-1)}
+        onNavigate={setLightboxIndex}
+        onDownload={handleDownload}
+        onFavorite={toggleFavorite}
+        isFavorited={lightboxIndex >= 0 && favorites.includes(filteredItems[lightboxIndex]?.id || "")}
+      />
     </div>
   );
 }
