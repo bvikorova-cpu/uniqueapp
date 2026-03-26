@@ -10,6 +10,10 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Briefcase, MapPin, DollarSign, Clock, Search, Plus, Building2, Globe } from "lucide-react";
+import { JobsHeroSection } from "@/components/jobs/JobsHeroSection";
+import { QuickFilterChips } from "@/components/jobs/QuickFilterChips";
+import { JobsSidebar } from "@/components/jobs/JobsSidebar";
+import { JobCardRedesigned } from "@/components/jobs/JobCardRedesigned";
 import { User as SupabaseUser } from "@supabase/supabase-js";
 import { JobPreferencesDialog } from "@/components/jobs/JobPreferencesDialog";
 import { JobAIAssistant } from "@/components/jobs/JobAIAssistant";
@@ -139,6 +143,7 @@ const Jobs = () => {
   const [showApplyDialog, setShowApplyDialog] = useState(false);
   const [selectedJob, setSelectedJob] = useState<JobListing | null>(null);
   const [showJobDetailsDialog, setShowJobDetailsDialog] = useState(false);
+  const [quickFilter, setQuickFilter] = useState<string | null>(null);
   const [showJobSeekerDialog, setShowJobSeekerDialog] = useState(false);
   const [showPackageDialog, setShowPackageDialog] = useState(false);
   const [selectedPackage, setSelectedPackage] = useState<{ days: number; price: number; priceId: string } | null>(null);
@@ -417,6 +422,21 @@ const Jobs = () => {
     },
   });
 
+  // Apply quick filters on top of fetched jobs
+  const filteredJobs = jobs.filter((job) => {
+    if (!quickFilter) return true;
+    switch (quickFilter) {
+      case "remote": return job.job_type === "remote";
+      case "full_time": return job.job_type === "full_time";
+      case "part_time": return job.job_type === "part_time";
+      case "internship": return job.job_type === "internship";
+      case "it_software": return job.category === "it_software";
+      case "hot": return job.applications_count > 10;
+      case "new": return new Date(job.created_at) > new Date(Date.now() - 24 * 60 * 60 * 1000);
+      case "high_salary": return (job.salary_max ?? 0) > 50000;
+      default: return true;
+    }
+  });
 
   const handleApply = (job: JobListing) => {
     if (!user) {
@@ -447,6 +467,13 @@ const Jobs = () => {
   return (
     <div className="min-h-screen bg-background pt-16 sm:pt-20 pb-8 sm:pb-12">
       <div className="container mx-auto px-2 sm:px-4">
+        {/* Hero Section */}
+        <JobsHeroSection
+          totalJobs={jobs.length}
+          totalCompanies={new Set(jobs.map(j => j.company_name)).size}
+          totalApplications={jobs.reduce((sum, j) => sum + j.applications_count, 0)}
+        />
+
         {/* Info banner for non-authenticated users */}
         {!user && (
           <Card className="mb-6 border-primary/20 bg-primary/5">
@@ -456,63 +483,50 @@ const Jobs = () => {
                   <Briefcase className="h-5 w-5 text-primary" />
                 </div>
                 <div className="flex-1">
-                  <p className="font-semibold mb-1">{t('jobs.welcome', 'Welcome to the job portal!')}</p>
+                  <p className="font-semibold mb-1">Welcome to the Job Portal!</p>
                   <p className="text-sm text-muted-foreground">
-                    {t('jobs.welcomeDesc', 'You can freely browse all job listings. To apply for positions, you must log in.')}
+                    Browse all job listings for free. Sign in to apply for positions.
                   </p>
                 </div>
                 <Button onClick={() => window.location.href = "/auth"}>
-                  {t('jobs.login')}
+                  Sign In
                 </Button>
               </div>
             </CardContent>
           </Card>
         )}
 
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-4 sm:mb-8">
-          <div>
-            <h1 className="text-2xl sm:text-3xl md:text-5xl font-black mb-1 sm:mb-2 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
-              {t('jobs.title')}
-            </h1>
-            <p className="text-muted-foreground text-xs sm:text-sm md:text-base">
-              {user 
-                ? t('jobs.subtitle')
-                : t('jobs.browseDesc', 'Browse job listings for free - log in to apply')}
-            </p>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            <WorkUserGuide />
-            {user && (
-              <>
-                <JobPreferencesDialog userId={user.id} />
-                <JobAIAssistant />
-                <AIJobOptimizer />
-              </>
-            )}
-            {user && isEmployer && (
-              <Button onClick={() => navigate('/employer-dashboard')} size="sm" className="text-xs">
-                <Building2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" />
-                <span className="hidden sm:inline">{t('jobs.dashboard.title')}</span>
-                <span className="sm:hidden">Dashboard</span>
-              </Button>
-            )}
-            {user && !isEmployer && (
-              <Button onClick={() => registerEmployerMutation.mutate()} disabled={registerEmployerMutation.isPending} size="sm" className="text-xs">
-                <Building2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" />
-                <span className="hidden sm:inline">{registerEmployerMutation.isPending ? "Registering..." : "Register as Employer"}</span>
-                <span className="sm:hidden">{registerEmployerMutation.isPending ? "..." : "Employer"}</span>
-              </Button>
-            )}
-            {!user && (
-              <Button onClick={() => window.location.href = "/auth"}>
-                Sign In
-              </Button>
-            )}
-          </div>
+        {/* Action Buttons Row */}
+        <div className="flex flex-wrap gap-2 mb-4 sm:mb-6">
+          <WorkUserGuide />
+          {user && (
+            <>
+              <JobPreferencesDialog userId={user.id} />
+              <JobAIAssistant />
+              <AIJobOptimizer />
+            </>
+          )}
+          {user && isEmployer && (
+            <Button onClick={() => navigate('/employer-dashboard')} size="sm" className="text-xs">
+              <Building2 className="h-3.5 w-3.5 mr-1" />
+              Dashboard
+            </Button>
+          )}
+          {user && !isEmployer && (
+            <Button onClick={() => registerEmployerMutation.mutate()} disabled={registerEmployerMutation.isPending} size="sm" className="text-xs">
+              <Building2 className="h-3.5 w-3.5 mr-1" />
+              {registerEmployerMutation.isPending ? "Registering..." : "Register as Employer"}
+            </Button>
+          )}
+          {!user && (
+            <Button onClick={() => window.location.href = "/auth"} size="sm">
+              Sign In
+            </Button>
+          )}
         </div>
 
         {/* Filters */}
-        <Card className="mb-4 sm:mb-8">
+        <Card className="mb-4 sm:mb-6">
           <CardContent className="pt-4 sm:pt-6 p-3 sm:p-6">
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
               <div className="sm:col-span-2">
@@ -573,105 +587,54 @@ const Jobs = () => {
           </CardContent>
         </Card>
 
-        {/* Jobs List */}
-        {isLoading ? (
-          <div className="text-center py-12">
-            <p className="text-muted-foreground">Loading positions...</p>
+        {/* Quick Filter Chips */}
+        <QuickFilterChips activeFilter={quickFilter} onFilterChange={setQuickFilter} />
+
+        {/* Main Content: Jobs + Sidebar */}
+        <div className="flex gap-6">
+          {/* Jobs List */}
+          <div className="flex-1 min-w-0">
+            {isLoading ? (
+              <div className="text-center py-12">
+                <div className="animate-pulse space-y-4">
+                  {[1, 2, 3].map((i) => (
+                    <div key={i} className="h-40 rounded-2xl bg-muted/50" />
+                  ))}
+                </div>
+              </div>
+            ) : filteredJobs.length === 0 ? (
+              <div className="text-center py-16">
+                <div className="h-20 w-20 mx-auto mb-4 rounded-3xl bg-muted/50 flex items-center justify-center">
+                  <Briefcase className="h-10 w-10 text-muted-foreground" />
+                </div>
+                <p className="text-lg font-semibold mb-1">No positions found</p>
+                <p className="text-sm text-muted-foreground">Try adjusting your filters</p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                <p className="text-xs text-muted-foreground font-medium px-1">
+                  {filteredJobs.length} position{filteredJobs.length !== 1 ? "s" : ""} found
+                </p>
+                {filteredJobs.map((job) => (
+                  <JobCardRedesigned
+                    key={job.id}
+                    job={job}
+                    onViewDetails={handleViewDetails}
+                    onApply={handleApply}
+                    isLoggedIn={!!user}
+                  />
+                ))}
+              </div>
+            )}
           </div>
-        ) : jobs.length === 0 ? (
-          <div className="text-center py-12">
-            <Briefcase className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
-            <p className="text-muted-foreground">No positions found</p>
+
+          {/* Right Sidebar - Desktop only */}
+          <div className="hidden lg:block w-72 xl:w-80 shrink-0">
+            <div className="sticky top-24">
+              <JobsSidebar />
+            </div>
           </div>
-        ) : (
-          <div className="grid grid-cols-1 gap-6">
-            {jobs.map((job) => (
-              <Card key={job.id} className="hover:shadow-elegant transition-all">
-                <CardHeader>
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <CardTitle 
-                        className="text-xl mb-2 cursor-pointer hover:text-primary transition-colors"
-                        onClick={() => handleViewDetails(job)}
-                      >
-                        {job.title}
-                      </CardTitle>
-                      <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm text-muted-foreground mb-2">
-                        <div className="flex items-center gap-1">
-                          <Building2 className="h-3 w-3 sm:h-4 sm:w-4" />
-                          <span className="truncate max-w-[100px] sm:max-w-none">{job.company_name}</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <MapPin className="h-3 w-3 sm:h-4 sm:w-4" />
-                          <span className="truncate max-w-[80px] sm:max-w-none">{job.location}</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Globe className="h-3 w-3 sm:h-4 sm:w-4" />
-                          {job.country}
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary">
-                          {CATEGORIES[job.category as keyof typeof CATEGORIES]}
-                        </span>
-                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-secondary">
-                          <Clock className="h-3 w-3" />
-                          {JOB_TYPES[job.job_type as keyof typeof JOB_TYPES]}
-                        </span>
-                        {job.salary_min && job.salary_max && (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                            <DollarSign className="h-3 w-3" />
-                            {job.salary_min} - {job.salary_max} {job.salary_currency}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <h4 className="font-semibold text-sm mb-2">Job Description</h4>
-                    <p className="text-sm text-muted-foreground whitespace-pre-wrap break-words">
-                      {job.description}
-                    </p>
-                  </div>
-                  
-                  {job.requirements && (
-                    <div>
-                      <h4 className="font-semibold text-sm mb-2">Requirements</h4>
-                      <p className="text-sm text-muted-foreground whitespace-pre-wrap break-words">
-                        {job.requirements}
-                      </p>
-                    </div>
-                  )}
-                  
-                  {job.benefits && (
-                    <div>
-                      <h4 className="font-semibold text-sm mb-2">Benefits</h4>
-                      <p className="text-sm text-muted-foreground whitespace-pre-wrap break-words">
-                        {job.benefits}
-                      </p>
-                    </div>
-                  )}
-                  
-                  <div className="bg-muted/50 p-3 rounded-lg">
-                    <h4 className="font-semibold text-sm mb-2">Contact</h4>
-                    <p className="text-sm text-muted-foreground">{job.contact_email}</p>
-                  </div>
-                  
-                  <div className="flex items-center justify-between pt-2 border-t border-border">
-                    <span className="text-sm text-muted-foreground">
-                      {job.applications_count} applications
-                    </span>
-                    <Button onClick={() => handleApply(job)}>
-                      {user ? "Apply" : "Sign In to Apply"}
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        )}
+        </div>
 
         {/* Job Details Dialog */}
         <Dialog open={showJobDetailsDialog} onOpenChange={setShowJobDetailsDialog}>
