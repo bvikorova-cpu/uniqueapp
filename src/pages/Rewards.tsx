@@ -3,14 +3,19 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { PointsDisplay } from "@/components/gamification/PointsDisplay";
-import BadgesDisplay from "@/components/gamification/BadgesDisplay";
-import BadgeLeaderboard from "@/components/gamification/BadgeLeaderboard";
 import DailyRewardButton from "@/components/gamification/DailyRewardButton";
 import { DailyXPVideoReward } from "@/components/gamification/DailyXPVideoReward";
+import BadgesDisplay from "@/components/gamification/BadgesDisplay";
+import BadgeLeaderboard from "@/components/gamification/BadgeLeaderboard";
 import Leaderboard from "@/components/gamification/Leaderboard";
-import RewardsGuide from "@/components/gamification/RewardsGuide";
 import MyBadgesDisplay from "@/components/gamification/MyBadgesDisplay";
+import RewardsHeroSection from "@/components/rewards/RewardsHeroSection";
+import WeeklyChallenges from "@/components/rewards/WeeklyChallenges";
+import RewardHistoryTimeline from "@/components/rewards/RewardHistoryTimeline";
+import StreakHeatmap from "@/components/rewards/StreakHeatmap";
+import AchievementProgressCards from "@/components/rewards/AchievementProgressCards";
+import XPMultiplierBanner from "@/components/rewards/XPMultiplierBanner";
+import RewardsGuide from "@/components/gamification/RewardsGuide";
 import { Crown } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
@@ -40,44 +45,62 @@ export default function Rewards() {
   return (
     <div className="min-h-screen bg-background pt-24 pb-8">
       <div className="container mx-auto px-4 max-w-6xl">
-        <div className="flex items-center justify-between mb-8">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
-            {t('rewards.titleEmoji')}
-          </h1>
-          <Button onClick={() => navigate('/premium-store')} className="gap-2">
-            <Crown className="h-4 w-4" />
-            {t('rewards.premiumStore')}
-          </Button>
-        </div>
+        {/* XP Multiplier Banner (shows only when event active) */}
+        <XPMultiplierBanner />
 
-        <div className="grid md:grid-cols-3 gap-6 mb-8">
-          <PointsDisplay />
+        {/* Hero Section */}
+        <RewardsHeroSection />
+
+        {/* Action cards row */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
           <DailyRewardButton />
           <DailyXPVideoReward userId={user.id} />
+          <div className="sm:col-span-2 lg:col-span-1">
+            <Button
+              onClick={() => navigate('/premium-store')}
+              className="w-full h-full min-h-[120px] gap-2 text-lg bg-gradient-to-br from-primary to-accent hover:from-primary/90 hover:to-accent/90"
+              size="lg"
+            >
+              <Crown className="h-6 w-6" />
+              {t('rewards.premiumStore')}
+            </Button>
+          </div>
+        </div>
+
+        {/* Main content grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+          {/* Left column - 2/3 */}
+          <div className="lg:col-span-2 space-y-6">
+            <AchievementProgressCards userId={user.id} />
+            <WeeklyChallenges />
+          </div>
+
+          {/* Right column - 1/3 */}
+          <div className="space-y-6">
+            <StreakHeatmap userId={user.id} />
+            <RewardHistoryTimeline userId={user.id} />
+          </div>
         </div>
 
         <RewardsGuide />
 
         <Tabs defaultValue="my-badges" className="space-y-6 mt-4">
-          <TabsList className="grid w-full grid-cols-4 h-auto">
-            <TabsTrigger value="my-badges" className="py-2">🏅 My Badges</TabsTrigger>
-            <TabsTrigger value="badges" className="py-2">{t('rewards.badges')}</TabsTrigger>
-            <TabsTrigger value="badge-hunters" className="py-2">🏆 Hunters</TabsTrigger>
-            <TabsTrigger value="leaderboard" className="py-2">{t('rewards.leaderboard')}</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 h-auto">
+            <TabsTrigger value="my-badges" className="py-2 text-xs sm:text-sm">🏅 My Badges</TabsTrigger>
+            <TabsTrigger value="badges" className="py-2 text-xs sm:text-sm">{t('rewards.badges')}</TabsTrigger>
+            <TabsTrigger value="badge-hunters" className="py-2 text-xs sm:text-sm">🏆 Hunters</TabsTrigger>
+            <TabsTrigger value="leaderboard" className="py-2 text-xs sm:text-sm">{t('rewards.leaderboard')}</TabsTrigger>
           </TabsList>
 
           <TabsContent value="my-badges">
             <MyBadgesDisplay userId={user.id} />
           </TabsContent>
-
           <TabsContent value="badges">
             <BadgesDisplay userId={user.id} />
           </TabsContent>
-
           <TabsContent value="badge-hunters">
             <BadgeLeaderboard />
           </TabsContent>
-
           <TabsContent value="leaderboard">
             <Leaderboard />
           </TabsContent>
