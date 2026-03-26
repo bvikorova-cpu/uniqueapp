@@ -2,7 +2,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Check, BookOpen, Crown, Sparkles } from "lucide-react";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -212,7 +211,6 @@ const KidsStoryPricing = () => {
           </Card>
         </div>
       </main>
-      <Footer />
     </div>
   );
 };

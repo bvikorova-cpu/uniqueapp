@@ -4,7 +4,6 @@ import { AlertTriangle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import { useScienceSubscription } from "@/hooks/useScienceSubscription";
 import { ScienceLimitBanner } from "@/components/kids-science/ScienceLimitBanner";
 import { ScienceSubscriptionManagement } from "@/components/kids-science/ScienceSubscriptionManagement";
@@ -214,7 +213,6 @@ const KidsScienceLab = () => {
           </Tabs>
         </div>
       </main>
-      <Footer />
     </div>
   );
 };

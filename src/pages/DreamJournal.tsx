@@ -6,7 +6,6 @@ import { Moon, BookOpen, TrendingUp, Sparkles, Info, Star, Zap, CheckCircle, Cre
 import { useNavigate } from "react-router-dom";
 import { useAICredits } from "@/hooks/useAICredits";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import DreamEntryForm from "@/components/dream-journal/DreamEntryForm";
 import DreamList from "@/components/dream-journal/DreamList";
 import JournalEntryForm from "@/components/dream-journal/JournalEntryForm";
@@ -173,7 +172,6 @@ const DreamJournal = () => {
         </Tabs>
       </main>
 
-      <Footer />
     </div>
   );
 };

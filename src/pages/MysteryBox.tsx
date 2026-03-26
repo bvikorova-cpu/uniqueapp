@@ -7,7 +7,6 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Gift, Sparkles, Star, Crown, Package } from "lucide-react";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import { useAICredits } from "@/hooks/useAICredits";
 
 interface MysteryBox {
@@ -417,7 +416,6 @@ const MysteryBox = () => {
         )}
       </div>
 
-      <Footer />
     </div>
   );
 };

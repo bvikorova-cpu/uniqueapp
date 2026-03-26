@@ -7,7 +7,6 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Globe, History, Clock, Sparkles, MapPin, User, ChevronLeft, ChevronRight, Play, Pause, Trophy, Star, Zap, CheckCircle, Info, Compass, Navigation, Eye, Maximize2, Minimize2, RotateCcw, Camera, Footprints, ArrowUp, ArrowDown, ArrowLeft, ArrowRight, X } from "lucide-react";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import { useAICredits } from "@/hooks/useAICredits";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -827,7 +826,6 @@ const AIExperiences = () => {
       {/* Immersive Street View Overlay */}
       {renderStreetViewTour()}
 
-      <Footer />
     </div>
   );
 };

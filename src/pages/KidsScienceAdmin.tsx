@@ -6,7 +6,6 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import { Users, TrendingUp, DollarSign, Activity } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -274,7 +273,6 @@ export default function KidsScienceAdmin() {
           </CardContent>
         </Card>
       </main>
-      <Footer />
     </div>
   );
 }

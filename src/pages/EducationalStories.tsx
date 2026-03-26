@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft, Trophy, Star } from "lucide-react";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import { LessonViewer } from "@/components/educational/LessonViewer";
 import { QuizViewer } from "@/components/educational/QuizViewer";
 import { CompletionCelebration } from "@/components/educational/CompletionCelebration";
@@ -178,7 +177,6 @@ export default function EducationalStories() {
             <LessonViewer lessons={content.lessons} currentLesson={currentLesson} onLessonComplete={handleLessonComplete} onBack={handleBackToTopics} />
           </div>
         </div>
-        <Footer />
       </div>
     );
   }
@@ -193,7 +191,6 @@ export default function EducationalStories() {
             <QuizViewer questions={content.quiz} onQuizComplete={handleQuizComplete} onBack={handleBackToTopics} />
           </div>
         </div>
-        <Footer />
       </div>
     );
   }
@@ -230,7 +227,6 @@ export default function EducationalStories() {
             </motion.div>
           </div>
         </div>
-        <Footer />
       </div>
     );
   }
@@ -345,7 +341,6 @@ export default function EducationalStories() {
         </div>
       </div>
 
-      <Footer />
     </div>
   );
 }

@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ArrowLeft } from "lucide-react";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import { MemoryMatch } from "@/components/kids/games/MemoryMatch";
 import { WordPuzzle } from "@/components/kids/games/WordPuzzle";
 import { HiddenObjects } from "@/components/kids/games/HiddenObjects";
@@ -132,7 +131,6 @@ export default function StoryGames() {
         </div>
       </div>
 
-      <Footer />
     </div>
   );
 }

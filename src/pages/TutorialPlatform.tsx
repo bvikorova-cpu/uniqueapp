@@ -9,7 +9,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import { MyCourseEnrollments } from "@/components/tutorial-platform/MyCourseEnrollments";
 import { MyInstructorEarnings } from "@/components/tutorial-platform/MyInstructorEarnings";
 
@@ -255,7 +254,6 @@ const TutorialPlatform = () => {
         </Tabs>
       </main>
 
-      <Footer />
     </div>
   );
 };

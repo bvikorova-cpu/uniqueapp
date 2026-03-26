@@ -10,7 +10,6 @@ import { UploadContentDialog } from "@/components/stock-library/UploadContentDia
 import { ContentGrid } from "@/components/stock-library/ContentGrid";
 import { MyPurchases } from "@/components/stock-library/MyPurchases";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 
 const StockContentLibrary = () => {
   const [searchParams] = useSearchParams();
@@ -211,7 +210,6 @@ const StockContentLibrary = () => {
         </Tabs>
       </main>
 
-      <Footer />
 
       <UploadContentDialog
         open={uploadDialogOpen}

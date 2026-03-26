@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
 import { Sparkles, Palette, ShoppingBag, BookOpen, Info, Star, Zap, CheckCircle } from "lucide-react";
@@ -108,7 +107,6 @@ const BeautyStudio = () => {
         </Tabs>
       </div>
 
-      <Footer />
     </div>
   );
 };

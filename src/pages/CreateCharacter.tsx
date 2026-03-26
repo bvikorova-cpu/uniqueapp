@@ -6,7 +6,6 @@ import { ArrowLeft, Sparkles, Wand2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import heroImage from "@/assets/hero-blonde-magic.png";
 import confetti from "canvas-confetti";
 import { TradingCard } from "@/components/character/TradingCard";
@@ -431,7 +430,6 @@ export default function CreateCharacter() {
         </div>
       </div>
 
-      <Footer />
     </div>
   );
 }

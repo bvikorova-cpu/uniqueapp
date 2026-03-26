@@ -8,7 +8,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import { motion } from "framer-motion";
 
 // New components
@@ -319,7 +318,6 @@ export default function BedtimeStories() {
         </div>
       </div>
 
-      <Footer />
     </div>
   );
 }
