@@ -12,42 +12,42 @@ interface ColorTheme {
 
 const themes: ColorTheme[] = [
   {
-    name: "Fialová & Ružová",
+    name: "Purple & Pink",
     primary: "270 91% 58%",
     accent: "330 100% 60%",
     ring: "270 91% 58%",
     preview: ["#7c3aed", "#ff3399"],
   },
   {
-    name: "Oceán",
+    name: "Ocean",
     primary: "200 95% 48%",
     accent: "175 85% 45%",
     ring: "200 95% 48%",
     preview: ["#0891b2", "#14b8a6"],
   },
   {
-    name: "Západ slnka",
+    name: "Sunset",
     primary: "25 95% 55%",
     accent: "350 90% 55%",
     ring: "25 95% 55%",
     preview: ["#ea580c", "#e11d48"],
   },
   {
-    name: "Les",
+    name: "Forest",
     primary: "152 76% 36%",
     accent: "85 70% 45%",
     ring: "152 76% 36%",
     preview: ["#059669", "#65a30d"],
   },
   {
-    name: "Polnoc",
+    name: "Midnight",
     primary: "230 80% 55%",
     accent: "260 75% 60%",
     ring: "230 80% 55%",
     preview: ["#3b5fe3", "#8b5cf6"],
   },
   {
-    name: "Zlatý",
+    name: "Golden",
     primary: "42 100% 50%",
     accent: "25 100% 52%",
     ring: "42 100% 50%",
@@ -61,7 +61,7 @@ const themes: ColorTheme[] = [
     preview: ["#dc2626", "#db2777"],
   },
   {
-    name: "Arktický",
+    name: "Arctic",
     primary: "210 100% 55%",
     accent: "195 95% 50%",
     ring: "210 100% 55%",
@@ -85,7 +85,7 @@ const themes: ColorTheme[] = [
 
 export function ThemeColorSwitcher() {
   const [activeTheme, setActiveTheme] = useState<string>(() => {
-    return localStorage.getItem("app-color-theme") || "Fialová & Ružová";
+    return localStorage.getItem("app-color-theme") || "Purple & Pink";
   });
 
   useEffect(() => {
@@ -123,7 +123,7 @@ export function ThemeColorSwitcher() {
     <div className="space-y-2">
       <div className="flex items-center gap-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider px-1">
         <Paintbrush className="h-3.5 w-3.5" />
-        Farby témy
+        Theme Colors
       </div>
       <div className="grid grid-cols-5 gap-2">
         {themes.map((theme) => (
