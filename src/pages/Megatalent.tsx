@@ -127,6 +127,8 @@ const Megatalent = () => {
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [deletingSubmission, setDeletingSubmission] = useState<string | null>(null);
   const [expandedMedia, setExpandedMedia] = useState<{ url: string; type: 'image' | 'video' } | null>(null);
+  const [feedFilter, setFeedFilter] = useState<FeedFilter>("hot");
+  const [shareSheetSubmission, setShareSheetSubmission] = useState<any>(null);
 
   useEffect(() => {
     checkSubscription();
