@@ -35,15 +35,19 @@ export const StoryWizardFlow = ({ onGenerate, loading, disabled, initialData }: 
   const [characters, setCharacters] = useState(initialData?.characters || "");
   const [theme, setTheme] = useState(initialData?.theme || "");
   const [illustrationStyle, setIllustrationStyle] = useState("storybook");
+  const [appliedTemplate, setAppliedTemplate] = useState<string | null>(null);
 
   // Auto-fill from template
-  if (initialData && title !== initialData.title) {
-    setTitle(initialData.title);
-    setCharacters(initialData.characters);
-    setTheme(initialData.theme);
-    setCategory(initialData.category);
-    setStep(1);
-  }
+  useEffect(() => {
+    if (initialData && initialData.title !== appliedTemplate) {
+      setTitle(initialData.title);
+      setCharacters(initialData.characters);
+      setTheme(initialData.theme);
+      setCategory(initialData.category);
+      setStep(1);
+      setAppliedTemplate(initialData.title);
+    }
+  }, [initialData]);
 
   const canProceed =
     step === 0 ||
