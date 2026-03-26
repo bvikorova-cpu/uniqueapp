@@ -1,6 +1,6 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+
 import { KidsAcademyHero } from "@/components/kids/academy/KidsAcademyHero";
 import { AdventureWorldMap } from "@/components/kids/academy/AdventureWorldMap";
 import { KidsAcademyProgress } from "@/components/kids/academy/KidsAcademyProgress";
@@ -64,7 +64,7 @@ const KidsAcademy = () => {
           </Tabs>
         </div>
       </main>
-      <Footer />
+      
     </div>
   );
 };
