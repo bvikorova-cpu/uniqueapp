@@ -54,7 +54,7 @@ export const BattleHero = ({ totalVotes = 0, totalSponsors = 0 }: BattleHeroProp
         >
           <Badge className="bg-primary/15 text-primary border-primary/30 mb-4 text-sm px-4 py-1.5">
             <Swords className="h-4 w-4 mr-1.5" />
-            Live Brand Battle — Q1 2025
+            Live Brand Battle
           </Badge>
         </motion.div>
 
