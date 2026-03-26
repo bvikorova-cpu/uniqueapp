@@ -1,13 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
-import { Badge } from '@/components/ui/badge';
-import { Heart, AlertCircle, Users, Info } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
 import { toast } from '@/hooks/use-toast';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import { PetHero } from '@/components/fundraising/pet/PetHero';
+import { PetStepsWizard } from '@/components/fundraising/pet/PetStepsWizard';
+import { PetFilters } from '@/components/fundraising/pet/PetFilters';
+import { PetCampaignCard } from '@/components/fundraising/pet/PetCampaignCard';
+import { VerifiedShelters } from '@/components/fundraising/pet/VerifiedShelters';
+import { PetSuccessStories } from '@/components/fundraising/pet/PetSuccessStories';
 
 interface PetCampaign {
   id: string;
@@ -22,23 +21,15 @@ interface PetCampaign {
   shelter_name: string;
   images: string[];
   supporters_count: number;
-  status: string;
   created_at: string;
 }
-
-const petTypeLabels: Record<string, string> = {
-  dog: '🐕 Dog',
-  cat: '🐈 Cat',
-  bird: '🐦 Bird',
-  rabbit: '🐰 Rabbit',
-  other: '🐾 Other',
-};
 
 export default function PetRescue() {
   const [campaigns, setCampaigns] = useState<PetCampaign[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState<string>('all');
-  const navigate = useNavigate();
+  const [filter, setFilter] = useState('all');
+  const [search, setSearch] = useState('');
+  const [sort, setSort] = useState('urgent_first');
 
   useEffect(() => {
     fetchCampaigns();
@@ -61,160 +52,62 @@ export default function PetRescue() {
       }
 
       const { data, error } = await query;
-
       if (error) throw error;
       setCampaigns((data as unknown as PetCampaign[]) || []);
     } catch (error) {
       console.error('Error fetching campaigns:', error);
-      toast({
-        title: 'Error',
-        description: 'Failed to load campaigns',
-        variant: 'destructive',
-      });
+      toast({ title: 'Error', description: 'Failed to load campaigns', variant: 'destructive' });
     } finally {
       setLoading(false);
     }
   };
 
-  const getProgress = (current: number, target: number) => {
-    return Math.min((current / target) * 100, 100);
-  };
+  const filteredCampaigns = useMemo(() => {
+    let result = [...campaigns];
+    if (search) {
+      const q = search.toLowerCase();
+      result = result.filter(c =>
+        c.pet_name.toLowerCase().includes(q) || c.description.toLowerCase().includes(q) || c.medical_condition.toLowerCase().includes(q)
+      );
+    }
+    switch (sort) {
+      case 'urgent_first':
+        result.sort((a, b) => (b.urgent ? 1 : 0) - (a.urgent ? 1 : 0));
+        break;
+      case 'almost_funded':
+        result.sort((a, b) => (b.current_amount / b.target_amount) - (a.current_amount / a.target_amount));
+        break;
+      case 'most_supporters':
+        result.sort((a, b) => b.supporters_count - a.supporters_count);
+        break;
+      default:
+        result.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+    }
+    return result;
+  }, [campaigns, search, sort]);
 
   return (
-    <div className="min-h-screen bg-background pt-24 pb-12 px-4">
+    <div className="min-h-screen bg-background pt-20 pb-12 px-4">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-8">
-          <h1 className="text-5xl font-black mb-4 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
-            🐾 Pet Rescue Network
-          </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-6">
-            Help animals in need get the medical treatment and homes they deserve
-          </p>
-          <Button 
-            size="lg" 
-            onClick={() => navigate('/fundraising/pet/create')}
-            className="bg-gradient-to-r from-primary to-primary/80"
-          >
-            <Heart className="mr-2 h-5 w-5" />
-            Help an Animal
-          </Button>
+        <PetHero />
+        <PetStepsWizard />
+
+        <div className="mt-12 space-y-6">
+          <PetFilters search={search} onSearchChange={setSearch} filter={filter} onFilterChange={setFilter} sort={sort} onSortChange={setSort} />
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {loading ? (
+              <div className="col-span-full text-center py-12"><p className="text-muted-foreground">Loading campaigns...</p></div>
+            ) : filteredCampaigns.length === 0 ? (
+              <div className="col-span-full text-center py-12"><p className="text-muted-foreground">No active campaigns found</p></div>
+            ) : (
+              filteredCampaigns.map((campaign) => <PetCampaignCard key={campaign.id} campaign={campaign} />)
+            )}
+          </div>
         </div>
 
-        <Alert className="mb-8 border-primary/20 bg-primary/5">
-          <Info className="h-4 w-4" />
-          <AlertDescription className="text-sm">
-            <div className="space-y-2">
-              <p className="font-semibold">How Pet Rescue Network Works:</p>
-              <ul className="list-disc pl-5 space-y-1">
-                <li><strong>Create a Campaign:</strong> Animal shelters, rescue organizations, or individuals caring for animals can create campaigns. Include pet's story, medical condition, and shelter information.</li>
-                <li><strong>Urgent Cases Priority:</strong> Mark campaigns as urgent for critical medical situations. Urgent cases receive priority visibility for immediate support.</li>
-                <li><strong>Verified Organizations:</strong> Campaigns from registered shelters and rescues undergo verification to ensure legitimacy.</li>
-                <li><strong>Photo & Video Support:</strong> Upload multiple images and videos to help supporters connect with the animals.</li>
-                <li><strong>Platform Fee:</strong> 6% fee covers operations and secure payment processing. 94% goes directly to pet's care.</li>
-                <li><strong>Success Stories:</strong> Share updates and photos of recovered animals to show impact and inspire more support.</li>
-              </ul>
-            </div>
-          </AlertDescription>
-        </Alert>
-
-        <div className="flex gap-2 mb-8 overflow-x-auto pb-2" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-          <Button
-            variant={filter === 'all' ? 'default' : 'outline'}
-            onClick={() => setFilter('all')}
-          >
-            All Animals
-          </Button>
-          <Button
-            variant={filter === 'urgent' ? 'default' : 'outline'}
-            onClick={() => setFilter('urgent')}
-          >
-            <AlertCircle className="mr-2 h-4 w-4" />
-            Urgent Cases
-          </Button>
-          {Object.entries(petTypeLabels).map(([key, label]) => (
-            <Button
-              key={key}
-              variant={filter === key ? 'default' : 'outline'}
-              onClick={() => setFilter(key)}
-            >
-              {label}
-            </Button>
-          ))}
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {loading ? (
-            <div className="col-span-full text-center py-12">
-              <p className="text-muted-foreground">Loading campaigns...</p>
-            </div>
-          ) : campaigns.length === 0 ? (
-            <div className="col-span-full text-center py-12">
-              <p className="text-muted-foreground">No active campaigns</p>
-            </div>
-          ) : (
-            campaigns.map((campaign) => (
-              <Card key={campaign.id} className="overflow-hidden hover:shadow-lg transition-shadow">
-                {campaign.images && campaign.images.length > 0 && (
-                  <div className="h-48 overflow-hidden relative">
-                    <img
-                      src={campaign.images[0]}
-                      alt={campaign.pet_name}
-                      className="w-full h-full object-cover"
-                    />
-                    {campaign.urgent && (
-                      <Badge variant="destructive" className="absolute top-2 right-2">
-                        <AlertCircle className="h-3 w-3 mr-1" />
-                        Urgent
-                      </Badge>
-                    )}
-                  </div>
-                )}
-                <CardHeader>
-                  <div className="flex items-start justify-between">
-                    <CardTitle className="text-xl">{campaign.pet_name}</CardTitle>
-                    <Badge variant="secondary">
-                      {petTypeLabels[campaign.pet_type]}
-                    </Badge>
-                  </div>
-                  <CardDescription className="line-clamp-2">
-                    {campaign.description}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <div className="flex justify-between text-sm mb-2">
-                      <span className="font-semibold">
-                        €{campaign.current_amount.toFixed(2)}
-                      </span>
-                      <span className="text-muted-foreground">
-                        of €{campaign.target_amount.toFixed(2)}
-                      </span>
-                    </div>
-                    <Progress value={getProgress(campaign.current_amount, campaign.target_amount)} />
-                  </div>
-                  
-                  <div className="space-y-1 text-sm pt-2 border-t">
-                    <p><strong>Condition:</strong> {campaign.medical_condition}</p>
-                    <p><strong>Shelter:</strong> {campaign.shelter_name}</p>
-                    <div className="flex items-center gap-2 pt-2">
-                      <Users className="w-4 h-4 text-muted-foreground" />
-                      <span>{campaign.supporters_count} supporters</span>
-                    </div>
-                  </div>
-                </CardContent>
-                <CardFooter>
-                  <Button 
-                    className="w-full" 
-                    onClick={() => navigate(`/fundraising/pet/${campaign.id}`)}
-                  >
-                    <Heart className="mr-2 h-4 w-4" />
-                    Help {campaign.pet_name}
-                  </Button>
-                </CardFooter>
-              </Card>
-            ))
-          )}
-        </div>
+        <VerifiedShelters />
+        <PetSuccessStories />
       </div>
     </div>
   );
