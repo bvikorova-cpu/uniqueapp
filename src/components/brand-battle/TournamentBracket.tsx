@@ -19,18 +19,9 @@ interface TournamentBracketProps {
   sponsors: BrandSponsor[];
 }
 
-const SEASONS = [
-  { id: "q1-2025", name: "Q1 2025", status: "active", startDate: "Jan 1", endDate: "Mar 31", prizePool: "€10,000" },
-  { id: "q2-2025", name: "Q2 2025", status: "upcoming", startDate: "Apr 1", endDate: "Jun 30", prizePool: "€15,000" },
-  { id: "q3-2025", name: "Q3 2025", status: "upcoming", startDate: "Jul 1", endDate: "Sep 30", prizePool: "€20,000" },
-];
+const SEASONS: { id: string; name: string; status: string; startDate: string; endDate: string; prizePool: string }[] = [];
 
-const PHASES = [
-  { name: "Group Stage", dates: "Jan 1 - Jan 31", status: "completed", description: "All brands compete, top 8 advance" },
-  { name: "Quarter Finals", dates: "Feb 1 - Feb 14", status: "completed", description: "8 brands in head-to-head matchups" },
-  { name: "Semi Finals", dates: "Feb 15 - Mar 15", status: "active", description: "4 brands battle for the final" },
-  { name: "Grand Finale", dates: "Mar 16 - Mar 31", status: "upcoming", description: "Top 2 brands compete for the crown" },
-];
+const PHASES: { name: string; dates: string; status: string; description: string }[] = [];
 
 export const TournamentBracket = ({ sponsors }: TournamentBracketProps) => {
   const sorted = [...sponsors].sort((a, b) => b.total_votes - a.total_votes);
