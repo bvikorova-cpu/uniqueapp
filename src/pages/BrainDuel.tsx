@@ -7,7 +7,8 @@ import {
   Trophy, Zap, Users, ShoppingCart, Crown, Flame, Clock, 
   Globe, BookOpen, FlaskConical, Film, Dumbbell, Music, 
   Pizza, Briefcase, Palette, Gamepad2, Target, Brain,
-  TrendingUp, Heart, Sparkles, User, Radio, ChevronRight
+  TrendingUp, Heart, Sparkles, User, Radio, ChevronRight,
+  Swords, Calendar, Gift
 } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
@@ -20,6 +21,11 @@ import { GameModeSelector } from "@/components/brain-duel/GameModeSelector";
 import { LeagueSystem } from "@/components/brain-duel/LeagueSystem";
 import { QuestionPackStore } from "@/components/brain-duel/QuestionPackStore";
 import { LiveSpectatorMode } from "@/components/brain-duel/LiveSpectatorMode";
+import { BrainDuelHero } from "@/components/brain-duel/BrainDuelHero";
+import { PlayerStatsDisplay } from "@/components/brain-duel/PlayerStatsDisplay";
+import { DailyStreak } from "@/components/brain-duel/DailyStreak";
+import { BonusRoundCard, MysteryCategory, CustomChallenge } from "@/components/brain-duel/GameplayEnhancements";
+import { WeeklyTournaments } from "@/components/brain-duel/WeeklyTournaments";
 import { useBrainDuelPowerups } from "@/hooks/useBrainDuelPowerups";
 import { useBrainDuelOnlinePlayers } from "@/hooks/useBrainDuelOnlinePlayers";
 import { useBrainDuelRealTimeNotifications } from "@/hooks/useBrainDuelRealTimeNotifications";
@@ -48,7 +54,6 @@ const BrainDuel = () => {
   useEffect(() => {
     const payment = searchParams.get('payment');
     const sessionId = searchParams.get('session_id');
-
     if (payment === 'success' && sessionId) {
       handlePaymentSuccess(sessionId);
       searchParams.delete('payment');
@@ -66,9 +71,7 @@ const BrainDuel = () => {
       const { data, error } = await supabase.functions.invoke('verify-brain-duel-payment', {
         body: { sessionId },
       });
-
       if (error) throw error;
-
       if (data?.success) {
         toast.success(`Success! Added ${data.added} credits. Total: ${data.credits}`);
         queryClient.invalidateQueries({ queryKey: ['brain-duel-credits'] });
@@ -117,108 +120,79 @@ const BrainDuel = () => {
 
       <div className="container mx-auto max-w-7xl pt-20 sm:pt-24 px-3 sm:px-4 relative z-10">
         
-        {/* ===== HERO SECTION ===== */}
+        {/* ===== NEON HERO ===== */}
+        <BrainDuelHero onlineCount={onlineCount} userId={userId} />
+
+        {/* How it works */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+          className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-3xl mx-auto mb-8"
+        >
+          {howItWorks.map((item, i) => {
+            const Icon = item.icon;
+            return (
+              <motion.div
+                key={item.step}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.4 + i * 0.1 }}
+                className="relative group"
+              >
+                <div className="rounded-2xl border border-border/50 bg-card/50 backdrop-blur-sm p-4 text-center hover:border-primary/40 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300">
+                  <div className="text-[10px] font-bold text-primary/50 mb-2">{item.step}</div>
+                  <Icon className="w-6 h-6 mx-auto mb-2 text-primary" />
+                  <div className="text-xs sm:text-sm font-semibold text-foreground">{item.title}</div>
+                  <div className="text-[10px] sm:text-xs text-muted-foreground mt-1">{item.desc}</div>
+                </div>
+                {i < howItWorks.length - 1 && (
+                  <ChevronRight className="hidden sm:block absolute top-1/2 -right-3.5 w-4 h-4 text-muted-foreground/30 -translate-y-1/2" />
+                )}
+              </motion.div>
+            );
+          })}
+        </motion.div>
+
+        {/* My Stats button */}
+        {userId && (
+          <div className="flex justify-center mb-6">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => navigate(`/profile/${userId}?tab=brain-duel`)}
+              className="gap-2 text-xs sm:text-sm backdrop-blur-sm"
+            >
+              <User className="h-3 w-3 sm:h-4 sm:w-4" />
+              My Full Stats
+            </Button>
+          </div>
+        )}
+
+        {/* ===== XP & ELO + STREAK ===== */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-8 sm:mb-12"
+          transition={{ duration: 0.5, delay: 0.4 }}
+          className="max-w-4xl mx-auto mb-8 space-y-4"
         >
-          {/* Top bar */}
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 mb-6">
-            <div className="hidden sm:block flex-1" />
-            <div className="inline-flex items-center gap-2 flex-wrap justify-center">
-              <Badge className="bg-green-500/10 text-green-500 border-green-500/30 animate-pulse text-xs sm:text-sm">
-                <span className="w-2 h-2 bg-green-500 rounded-full mr-2 inline-block" />
-                Live Now
-              </Badge>
-              <Badge variant="outline" className="text-xs sm:text-sm backdrop-blur-sm">
-                <Flame className="w-3 h-3 mr-1 text-orange-500" />
-                {onlineCount} {onlineCount === 1 ? 'player' : 'players'} online
-              </Badge>
-            </div>
-            <div className="sm:flex-1 flex justify-center sm:justify-end">
-              {userId && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => navigate(`/profile/${userId}?tab=brain-duel`)}
-                  className="gap-2 text-xs sm:text-sm backdrop-blur-sm"
-                >
-                  <User className="h-3 w-3 sm:h-4 sm:w-4" />
-                  My Stats
-                </Button>
-              )}
+          <PlayerStatsDisplay />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <DailyStreak />
+            <div className="space-y-4">
+              <BrainDuelCreditsDisplay />
+              <BonusRoundCard />
             </div>
           </div>
-
-          {/* Title */}
-          <div className="relative inline-block mb-4">
-            <motion.div
-              animate={{ rotate: [0, 5, -5, 0] }}
-              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute -top-6 -left-6 sm:-top-8 sm:-left-10"
-            >
-              <Brain className="w-8 h-8 sm:w-12 sm:h-12 text-primary/30" />
-            </motion.div>
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black tracking-tight">
-              <span className="bg-gradient-to-r from-primary via-violet-500 to-cyan-500 bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient">
-                BrainDuel
-              </span>
-            </h1>
-            <motion.div
-              animate={{ rotate: [0, -5, 5, 0] }}
-              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-              className="absolute -bottom-2 -right-4 sm:-bottom-4 sm:-right-8"
-            >
-              <Zap className="w-6 h-6 sm:w-10 sm:h-10 text-yellow-500/30" />
-            </motion.div>
-          </div>
-          
-          <p className="text-base sm:text-lg lg:text-xl text-muted-foreground mb-8 max-w-md mx-auto">
-            Knowledge Battle Arena • Test Your Brain Power
-          </p>
-
-          {/* How it works - compact horizontal */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-3xl mx-auto mb-8"
-          >
-            {howItWorks.map((item, i) => {
-              const Icon = item.icon;
-              return (
-                <motion.div
-                  key={item.step}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.4 + i * 0.1 }}
-                  className="relative group"
-                >
-                  <div className="rounded-2xl border border-border/50 bg-card/50 backdrop-blur-sm p-4 text-center hover:border-primary/40 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300">
-                    <div className="text-[10px] font-bold text-primary/50 mb-2">{item.step}</div>
-                    <Icon className="w-6 h-6 mx-auto mb-2 text-primary" />
-                    <div className="text-xs sm:text-sm font-semibold text-foreground">{item.title}</div>
-                    <div className="text-[10px] sm:text-xs text-muted-foreground mt-1">{item.desc}</div>
-                  </div>
-                  {i < howItWorks.length - 1 && (
-                    <ChevronRight className="hidden sm:block absolute top-1/2 -right-3.5 w-4 h-4 text-muted-foreground/30 -translate-y-1/2" />
-                  )}
-                </motion.div>
-              );
-            })}
-          </motion.div>
         </motion.div>
 
-        {/* ===== CREDITS & GAME ===== */}
+        {/* ===== GAME ===== */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.5 }}
-          className="max-w-3xl mx-auto mb-10 space-y-6"
+          className="max-w-3xl mx-auto mb-10"
         >
-          <BrainDuelCreditsDisplay />
           <BrainDuelGame />
         </motion.div>
 
@@ -251,34 +225,32 @@ const BrainDuel = () => {
               </TabsTrigger>
               <TabsTrigger value="leagues" className="gap-1.5 text-xs sm:text-sm px-3 sm:px-4 py-2.5 rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-primary/20 transition-all flex-shrink-0">
                 <Trophy className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                <span className="hidden sm:inline">Leagues</span>
-                <span className="sm:hidden">League</span>
+                Leagues
               </TabsTrigger>
-              <TabsTrigger value="challenges" className="gap-1.5 text-xs sm:text-sm px-3 sm:px-4 py-2.5 rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-primary/20 transition-all flex-shrink-0">
-                <Users className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                <span className="hidden sm:inline">Challenges</span>
-                <span className="sm:hidden">Chal</span>
+              <TabsTrigger value="tournaments" className="gap-1.5 text-xs sm:text-sm px-3 sm:px-4 py-2.5 rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-primary/20 transition-all flex-shrink-0">
+                <Calendar className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                Tournaments
+              </TabsTrigger>
+              <TabsTrigger value="custom" className="gap-1.5 text-xs sm:text-sm px-3 sm:px-4 py-2.5 rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-primary/20 transition-all flex-shrink-0">
+                <Swords className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                Custom
               </TabsTrigger>
               <TabsTrigger value="powerups" className="gap-1.5 text-xs sm:text-sm px-3 sm:px-4 py-2.5 rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-primary/20 transition-all flex-shrink-0">
                 <Sparkles className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                <span className="hidden sm:inline">Power-ups</span>
-                <span className="sm:hidden">Power</span>
+                Power-ups
               </TabsTrigger>
               <TabsTrigger value="packs" className="gap-1.5 text-xs sm:text-sm px-3 sm:px-4 py-2.5 rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-primary/20 transition-all flex-shrink-0">
                 <ShoppingCart className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                <span className="hidden sm:inline">Packs</span>
-                <span className="sm:hidden">Packs</span>
+                Packs
               </TabsTrigger>
               <TabsTrigger value="audience" className="gap-1.5 text-xs sm:text-sm px-3 sm:px-4 py-2.5 rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-primary/20 transition-all flex-shrink-0">
                 <Radio className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                <span className="hidden sm:inline">Live</span>
-                <span className="sm:hidden">Live</span>
+                Live
               </TabsTrigger>
             </TabsList>
 
             {/* Play Now Tab */}
             <TabsContent value="play" className="space-y-6">
-              {/* Virtual Game Info */}
               <Card className="relative overflow-hidden border-primary/20">
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-violet-500/5 to-cyan-500/5" />
                 <CardHeader className="relative">
@@ -300,12 +272,14 @@ const BrainDuel = () => {
                 </CardContent>
               </Card>
 
-              {/* Game Mode Selector */}
               <GameModeSelector onSelectMode={(mode) => {
                 toast.info(`Selected ${mode.name} mode`, {
                   description: `${mode.questions} questions, ${mode.entry} credits entry`
                 });
               }} />
+
+              {/* Mystery Category */}
+              <MysteryCategory />
 
               {/* Categories */}
               <Card className="overflow-hidden">
@@ -316,9 +290,7 @@ const BrainDuel = () => {
                     </div>
                     Question Categories
                   </CardTitle>
-                  <CardDescription>
-                    Choose your expertise or go random for a surprise
-                  </CardDescription>
+                  <CardDescription>Choose your expertise or go random for a surprise</CardDescription>
                 </CardHeader>
                 <CardContent className="p-3 sm:p-6">
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 sm:gap-3">
@@ -352,8 +324,14 @@ const BrainDuel = () => {
               <LeagueSystem />
             </TabsContent>
 
-            {/* Friend Challenges Tab */}
-            <TabsContent value="challenges" className="space-y-6">
+            {/* Tournaments Tab */}
+            <TabsContent value="tournaments" className="space-y-6">
+              <WeeklyTournaments />
+            </TabsContent>
+
+            {/* Custom Challenges Tab */}
+            <TabsContent value="custom" className="space-y-6">
+              <CustomChallenge />
               <FriendChallenges />
             </TabsContent>
 
@@ -368,9 +346,7 @@ const BrainDuel = () => {
                     </div>
                     In-Game Power-ups
                   </CardTitle>
-                  <CardDescription>
-                    Boost your chances during battles with special abilities
-                  </CardDescription>
+                  <CardDescription>Boost your chances during battles with special abilities</CardDescription>
                 </CardHeader>
               </Card>
 
@@ -431,7 +407,7 @@ const BrainDuel = () => {
         <div className="max-w-3xl mx-auto mt-8 mb-12">
           <div className="rounded-2xl border border-border/50 bg-card/40 backdrop-blur-sm p-4 text-center">
             <p className="text-xs sm:text-sm text-muted-foreground">
-              <span className="text-primary font-semibold">💡 Tip:</span> Each game costs credits to enter. Win to earn rewards! Purchase credit packages or earn them by winning matches.
+              <span className="text-primary font-semibold">💡 Tip:</span> Each game costs credits to enter. Win to earn rewards! Complete daily challenges and maintain your streak for bonus multipliers.
             </p>
           </div>
         </div>
