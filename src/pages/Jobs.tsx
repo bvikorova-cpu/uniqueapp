@@ -422,6 +422,21 @@ const Jobs = () => {
     },
   });
 
+  // Apply quick filters on top of fetched jobs
+  const filteredJobs = jobs.filter((job) => {
+    if (!quickFilter) return true;
+    switch (quickFilter) {
+      case "remote": return job.job_type === "remote";
+      case "full_time": return job.job_type === "full_time";
+      case "part_time": return job.job_type === "part_time";
+      case "internship": return job.job_type === "internship";
+      case "it_software": return job.category === "it_software";
+      case "hot": return job.applications_count > 10;
+      case "new": return new Date(job.created_at) > new Date(Date.now() - 24 * 60 * 60 * 1000);
+      case "high_salary": return (job.salary_max ?? 0) > 50000;
+      default: return true;
+    }
+  });
 
   const handleApply = (job: JobListing) => {
     if (!user) {
