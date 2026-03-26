@@ -1,0 +1,72 @@
+import { useState, useRef } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { SlidersHorizontal } from "lucide-react";
+
+interface BeforeAfterSliderProps {
+  beforeUrl: string;
+  afterUrl: string;
+}
+
+export function BeforeAfterSlider({ beforeUrl, afterUrl }: BeforeAfterSliderProps) {
+  const [sliderPos, setSliderPos] = useState(50);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const isDragging = useRef(false);
+
+  const updatePosition = (clientX: number) => {
+    if (!containerRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    const pos = ((clientX - rect.left) / rect.width) * 100;
+    setSliderPos(Math.max(0, Math.min(100, pos)));
+  };
+
+  return (
+    <Card>
+      <CardHeader className="pb-2">
+        <CardTitle className="text-sm flex items-center gap-2">
+          <SlidersHorizontal className="h-4 w-4" />
+          Before / After Comparison
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div
+          ref={containerRef}
+          className="relative w-full aspect-square rounded-xl overflow-hidden cursor-col-resize select-none"
+          onMouseDown={() => { isDragging.current = true; }}
+          onMouseUp={() => { isDragging.current = false; }}
+          onMouseLeave={() => { isDragging.current = false; }}
+          onMouseMove={(e) => isDragging.current && updatePosition(e.clientX)}
+          onTouchStart={() => { isDragging.current = true; }}
+          onTouchEnd={() => { isDragging.current = false; }}
+          onTouchMove={(e) => isDragging.current && updatePosition(e.touches[0].clientX)}
+        >
+          {/* After (coloring page) — full */}
+          <img src={afterUrl} alt="After" className="absolute inset-0 w-full h-full object-cover" />
+
+          {/* Before (original) — clipped */}
+          <div className="absolute inset-0 overflow-hidden" style={{ width: `${sliderPos}%` }}>
+            <img
+              src={beforeUrl}
+              alt="Before"
+              className="absolute inset-0 w-full h-full object-cover"
+              style={{ width: containerRef.current?.offsetWidth || "100%" }}
+            />
+          </div>
+
+          {/* Slider line */}
+          <div
+            className="absolute top-0 bottom-0 w-1 bg-white shadow-lg z-10"
+            style={{ left: `${sliderPos}%`, transform: "translateX(-50%)" }}
+          >
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full shadow-xl flex items-center justify-center">
+              <SlidersHorizontal className="h-5 w-5 text-primary" />
+            </div>
+          </div>
+
+          {/* Labels */}
+          <div className="absolute top-3 left-3 bg-black/60 text-white text-xs px-2 py-1 rounded-full">Original</div>
+          <div className="absolute top-3 right-3 bg-black/60 text-white text-xs px-2 py-1 rounded-full">Coloring</div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
