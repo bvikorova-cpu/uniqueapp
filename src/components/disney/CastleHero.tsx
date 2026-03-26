@@ -7,7 +7,18 @@ interface CastleHeroProps {
   visitedCount: number;
 }
 
-const floatingItems = ["🏰", "👑", "✨", "🌟", "🎪", "🗺️", "🏆", "🇺🇸", "🇫🇷", "🇯🇵"];
+const floatingItems = [
+  { emoji: "🏰", left: 2, top: 10 },
+  { emoji: "👑", left: 8, top: 70 },
+  { emoji: "✨", left: 92, top: 15 },
+  { emoji: "🌟", left: 88, top: 65 },
+  { emoji: "🎪", left: 5, top: 45 },
+  { emoji: "🗺️", left: 95, top: 40 },
+  { emoji: "🏆", left: 90, top: 80 },
+  { emoji: "🇺🇸", left: 3, top: 85 },
+  { emoji: "🇫🇷", left: 12, top: 25 },
+  { emoji: "🇯🇵", left: 85, top: 5 },
+];
 
 export function CastleHero({ stampsCount, totalCastles, visitedCount }: CastleHeroProps) {
   const completionPercent = Math.round((stampsCount / totalCastles) * 100);
