@@ -1,10 +1,6 @@
 import { useState, useEffect } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { BookOpen, Wand2, Download, Sparkles, Lightbulb } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
@@ -17,18 +13,21 @@ import { StorySubscriptionManagement } from "@/components/kids-story/StorySubscr
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ParentalGate } from "@/components/kids/ParentalGate";
 import { SafeContentBadge } from "@/components/kids/SafeContentBadge";
+import { StoryCreatorHero } from "@/components/kids-story/StoryCreatorHero";
+import { StoryQuickTemplates } from "@/components/kids-story/StoryQuickTemplates";
+import { StoryWizardFlow } from "@/components/kids-story/StoryWizardFlow";
+import { StorybookDisplay } from "@/components/kids-story/StorybookDisplay";
+import { Download } from "lucide-react";
 
 const KidsStoryCreator = () => {
   const { user } = useAuth();
   const { storiesCreatedThisMonth, isPremium, loading: usageLoading, refreshUsage, manageSubscription } = useKidsStoryCreator();
-  const [title, setTitle] = useState("");
-  const [characters, setCharacters] = useState("");
-  const [theme, setTheme] = useState("");
-  const [category, setCategory] = useState("adventure");
   const [loading, setLoading] = useState(false);
+  const [continuingStory, setContinuingStory] = useState(false);
   const [story, setStory] = useState<any>(null);
-  
-  // PARENTAL GATE STATE - BLOCK BY DEFAULT
+  const [templateData, setTemplateData] = useState<{ title: string; characters: string; theme: string; category: string } | undefined>();
+
+  // PARENTAL GATE STATE
   const PARENTAL_GATE_KEY = "parental_gate_verified_kids_story_creator";
 
   const [isVerified, setIsVerified] = useState<boolean>(() => {
@@ -45,14 +44,10 @@ const KidsStoryCreator = () => {
     }
   });
 
-  // Keep session-based verification honest while the user stays on the page (no flash)
   useEffect(() => {
     const tick = () => {
       const stored = sessionStorage.getItem(PARENTAL_GATE_KEY);
-      if (!stored) {
-        if (isVerified) setIsVerified(false);
-        return;
-      }
+      if (!stored) { if (isVerified) setIsVerified(false); return; }
       try {
         const { expiresAt } = JSON.parse(stored);
         if (Date.now() >= expiresAt) {
@@ -64,40 +59,34 @@ const KidsStoryCreator = () => {
         if (isVerified) setIsVerified(false);
       }
     };
-
     const interval = setInterval(tick, 30_000);
     return () => clearInterval(interval);
   }, [isVerified]);
 
-  // When the gate succeeds, just unlock UI (ParentalGate writes sessionStorage)
-  const handleVerificationSuccess = () => {
-    setIsVerified(true);
-  };
+  const handleVerificationSuccess = () => setIsVerified(true);
 
-  const handleGenerate = async () => {
-    if (!title.trim() || !characters.trim() || !theme.trim()) {
+  const handleGenerate = async (data: { title: string; characters: string; theme: string; category: string; illustrationStyle: string }) => {
+    if (!data.title.trim() || !data.characters.trim() || !data.theme.trim()) {
       toast.error("Please fill in all fields");
       return;
     }
 
     setLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke('kids-story-creator', {
-        body: { title, characters, theme, category }
+      const { data: result, error } = await supabase.functions.invoke('kids-story-creator', {
+        body: { title: data.title, characters: data.characters, theme: data.theme, category: data.category, illustrationStyle: data.illustrationStyle }
       });
 
       if (error) {
         if (error.message?.includes('Monthly limit reached')) {
-          toast.error('Monthly limit reached! Upgrade to Premium for unlimited stories.', {
-            duration: 5000,
-          });
+          toast.error('Monthly limit reached! Upgrade to Premium for unlimited stories.', { duration: 5000 });
           refreshUsage();
           return;
         }
         throw error;
       }
-      
-      setStory(data);
+
+      setStory(result);
       refreshUsage();
       toast.success("Your story is ready! 📖");
     } catch (error: any) {
@@ -108,9 +97,39 @@ const KidsStoryCreator = () => {
     }
   };
 
+  const handleContinueStory = async () => {
+    if (!story) return;
+    setContinuingStory(true);
+    try {
+      const { data: result, error } = await supabase.functions.invoke('kids-story-creator', {
+        body: {
+          title: story.title + " — Part 2",
+          characters: story.characters || "same characters",
+          theme: "Continue the story: " + story.story.slice(-300),
+          category: story.category || "adventure",
+          continueFrom: story.story.slice(-500),
+        }
+      });
+
+      if (error) throw error;
+
+      setStory({
+        ...story,
+        title: story.title,
+        story: story.story + "\n\n--- Part 2 ---\n\n" + (result?.story || ""),
+      });
+      refreshUsage();
+      toast.success("Story continued! 📖✨");
+    } catch (err: any) {
+      console.error('Continue error:', err);
+      toast.error(err.message || "Failed to continue story");
+    } finally {
+      setContinuingStory(false);
+    }
+  };
+
   const handleSaveStory = () => {
     if (!story) return;
-    
     const storyText = `${story.title}\n\n${story.story}`;
     const blob = new Blob([storyText], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
@@ -124,8 +143,12 @@ const KidsStoryCreator = () => {
     toast.success("Story saved! 💾");
   };
 
-  // ========== BLOCKING PARENTAL GATE ==========
-  // If NOT verified, show ONLY the parental gate - NOTHING else is rendered
+  const handleTemplateSelect = (template: { title: string; characters: string; theme: string; category: string }) => {
+    setTemplateData({ ...template });
+    toast.success(`Template "${template.title}" loaded! Customize and create.`);
+  };
+
+  // BLOCKING PARENTAL GATE
   if (!isVerified) {
     return (
       <div className="min-h-screen">
@@ -133,225 +156,64 @@ const KidsStoryCreator = () => {
           isOpen={true}
           storageKey={PARENTAL_GATE_KEY}
           onSuccess={handleVerificationSuccess}
-          onCancel={() => {
-            // Hard redirect to Home - handled by ParentalGate component
-          }}
+          onCancel={() => {}}
           featureName="AI Story Creator"
         />
       </div>
     );
   }
 
-  // ========== VERIFIED USER CONTENT ==========
+  const isLimitReached = !isPremium && storiesCreatedThisMonth >= 1;
 
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
       <main className="container mx-auto px-4 py-8 mt-16">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-8">
-            <h1 className="text-4xl font-black mb-4 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
-              AI Story Creator ✨
-            </h1>
-            <p className="text-muted-foreground">
-              Create your own magical stories with AI illustrations!
-            </p>
-          </div>
-
-          {/* How It Works Section */}
-          <Card className="mb-8 bg-gradient-to-br from-primary/5 to-secondary/10 border-primary/20">
-            <CardHeader className="pb-3">
-              <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
-                <Lightbulb className="w-5 h-5 text-primary" />
-                How AI Story Creator Works
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4 px-6">
-              <p className="text-muted-foreground text-sm sm:text-base">
-                AI Story Creator is a magical tool that brings your imagination to life! Create personalized 
-                children's stories complete with AI-generated illustrations. Perfect for bedtime stories, 
-                creative writing, or just for fun!
-              </p>
-              
-              <div className="grid gap-3 sm:grid-cols-2">
-                <div className="flex items-start gap-3 p-3 bg-background/50 rounded-lg">
-                  <span className="flex items-center justify-center w-7 h-7 rounded-full bg-primary/20 text-primary font-bold text-sm shrink-0">1</span>
-                  <div>
-                    <h4 className="font-semibold text-sm">Choose Your Title</h4>
-                    <p className="text-xs text-muted-foreground">Give your story an exciting name that captures the adventure</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start gap-3 p-3 bg-background/50 rounded-lg">
-                  <span className="flex items-center justify-center w-7 h-7 rounded-full bg-primary/20 text-primary font-bold text-sm shrink-0">2</span>
-                  <div>
-                    <h4 className="font-semibold text-sm">Pick a Category</h4>
-                    <p className="text-xs text-muted-foreground">Adventure, Fantasy, Mystery, Space, Fairy Tale and more!</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start gap-3 p-3 bg-background/50 rounded-lg">
-                  <span className="flex items-center justify-center w-7 h-7 rounded-full bg-primary/20 text-primary font-bold text-sm shrink-0">3</span>
-                  <div>
-                    <h4 className="font-semibold text-sm">Create Characters</h4>
-                    <p className="text-xs text-muted-foreground">Describe your heroes - knights, dragons, wizards, animals or anyone!</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start gap-3 p-3 bg-background/50 rounded-lg">
-                  <span className="flex items-center justify-center w-7 h-7 rounded-full bg-primary/20 text-primary font-bold text-sm shrink-0">4</span>
-                  <div>
-                    <h4 className="font-semibold text-sm">Set the Scene</h4>
-                    <p className="text-xs text-muted-foreground">Describe where your story takes place - magical forests, castles, space!</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-background/50 p-3 rounded-lg border border-primary/10">
-                <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-primary" />
-                  AI Illustrations & Story Library
-                </h4>
-                <p className="text-xs text-muted-foreground">
-                  Each story comes with a beautiful AI-generated illustration! Save your stories to your 
-                  personal library and download them anytime. Free users get 1 story per month, or upgrade 
-                  to Premium for unlimited story creation!
-                </p>
-              </div>
-            </CardContent>
-          </Card>
+          <StoryCreatorHero />
 
           {user && !usageLoading && (
             <div className="mb-6 space-y-4">
-              <StoryLimitBanner
-                storiesCreatedThisMonth={storiesCreatedThisMonth}
-                isPremium={isPremium}
-              />
+              <StoryLimitBanner storiesCreatedThisMonth={storiesCreatedThisMonth} isPremium={isPremium} />
               {isPremium && (
-                <StorySubscriptionManagement
-                  subscribed={isPremium}
-                  onManageSubscription={manageSubscription}
-                />
+                <StorySubscriptionManagement subscribed={isPremium} onManageSubscription={manageSubscription} />
               )}
             </div>
           )}
 
           <Tabs defaultValue="create" className="w-full">
             <TabsList className="grid w-full grid-cols-2 mb-6">
-              <TabsTrigger value="create">Create Story</TabsTrigger>
-              <TabsTrigger value="library">My Library</TabsTrigger>
+              <TabsTrigger value="create">✨ Create Story</TabsTrigger>
+              <TabsTrigger value="library">📚 My Library</TabsTrigger>
             </TabsList>
 
-            <TabsContent value="create" className="space-y-6">
-
-          <Card className="mb-6">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Wand2 className="w-5 h-5" />
-                Story Details
-              </CardTitle>
-              <CardDescription>
-                Tell me about the story you want to create
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <label className="text-sm font-medium mb-2 block">Story Title</label>
-                <Input
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  placeholder="e.g., The Magic Dragon's Adventure"
-                />
-              </div>
-
-              <div>
-                <label className="text-sm font-medium mb-2 block">Category</label>
-                <Select value={category} onValueChange={setCategory}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a category" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="adventure">🗺️ Adventure</SelectItem>
-                    <SelectItem value="fantasy">✨ Fantasy</SelectItem>
-                    <SelectItem value="educational">📚 Educational</SelectItem>
-                    <SelectItem value="mystery">🔍 Mystery</SelectItem>
-                    <SelectItem value="friendship">🤝 Friendship</SelectItem>
-                    <SelectItem value="animal">🐾 Animal</SelectItem>
-                    <SelectItem value="space">🚀 Space</SelectItem>
-                    <SelectItem value="fairy-tale">👑 Fairy Tale</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <label className="text-sm font-medium mb-2 block">Characters</label>
-                <Input
-                  value={characters}
-                  onChange={(e) => setCharacters(e.target.value)}
-                  placeholder="e.g., A brave knight, a friendly dragon, a wise wizard"
-                />
-              </div>
-
-              <div>
-                <label className="text-sm font-medium mb-2 block">Theme or Setting</label>
-                <Textarea
-                  value={theme}
-                  onChange={(e) => setTheme(e.target.value)}
-                  placeholder="e.g., A magical forest where animals can talk"
-                  className="min-h-[100px]"
-                />
-              </div>
-
-              <Button onClick={handleGenerate} className="w-full" disabled={loading || (!isPremium && storiesCreatedThisMonth >= 1)}>
-                {loading ? (
-                  <>
-                    <Wand2 className="w-4 h-4 mr-2 animate-spin" />
-                    Creating your story...
-                  </>
-                ) : (!isPremium && storiesCreatedThisMonth >= 1) ? (
-                  'Monthly Limit Reached - Upgrade to Premium'
-                ) : (
-                  <>
-                    <Wand2 className="w-4 h-4 mr-2" />
-                    Create Story!
-                  </>
-                )}
-              </Button>
-            </CardContent>
-          </Card>
-
-          {story && (
-            <Card className="bg-gradient-to-br from-primary/5 to-secondary/10">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <BookOpen className="w-5 h-5 text-primary" />
-                  {story.title}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {story.illustration && (
-                  <div className="rounded-lg overflow-hidden">
-                    <img 
-                      src={story.illustration} 
-                      alt="Story illustration"
-                      className="w-full h-auto"
-                    />
+            <TabsContent value="create" className="space-y-8">
+              {story ? (
+                <div className="space-y-6">
+                  <StorybookDisplay
+                    story={story}
+                    onSave={handleSaveStory}
+                    onContinue={handleContinueStory}
+                    showContinue={isPremium}
+                    continuingStory={continuingStory}
+                  />
+                  <div className="text-center">
+                    <Button variant="outline" onClick={() => setStory(null)} className="gap-2">
+                      ✨ Create Another Story
+                    </Button>
                   </div>
-                )}
-
-                <div className="prose max-w-none">
-                  <p className="text-muted-foreground whitespace-pre-wrap leading-relaxed">
-                    {story.story}
-                  </p>
                 </div>
-
-                <Button variant="outline" className="w-full" onClick={handleSaveStory}>
-                  <Download className="w-4 h-4 mr-2" />
-                  Save Story
-                </Button>
-              </CardContent>
-            </Card>
-          )}
+              ) : (
+                <>
+                  <StoryQuickTemplates onSelect={handleTemplateSelect} />
+                  <StoryWizardFlow
+                    onGenerate={handleGenerate}
+                    loading={loading}
+                    disabled={isLimitReached}
+                    initialData={templateData}
+                  />
+                </>
+              )}
             </TabsContent>
 
             <TabsContent value="library">
@@ -367,8 +229,7 @@ const KidsStoryCreator = () => {
             </TabsContent>
           </Tabs>
         </div>
-        
-        {/* Safe Content Badge */}
+
         <div className="max-w-2xl mx-auto mt-8">
           <SafeContentBadge />
         </div>
