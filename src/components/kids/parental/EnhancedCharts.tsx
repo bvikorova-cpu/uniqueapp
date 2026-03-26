@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, BarChart, Bar, Legend } from "recharts";
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from "recharts";
 import { BarChart3, PieChartIcon } from "lucide-react";
 
 const COLORS = ["#8b5cf6", "#ec4899", "#06b6d4", "#10b981", "#f59e0b"];
@@ -29,7 +29,7 @@ const PieTooltip = ({ active, payload }: any) => {
         <span className="w-3 h-3 rounded-full" style={{ backgroundColor: payload[0].payload.fill }} />
         <span className="font-bold">{payload[0].name}</span>
       </div>
-      <p className="text-muted-foreground mt-1">{payload[0].value} aktivít</p>
+      <p className="text-muted-foreground mt-1">{payload[0].value} activities</p>
     </div>
   );
 };
@@ -47,7 +47,7 @@ export const EnhancedCharts = ({ weeklyData, categoryData }: EnhancedChartsProps
           <CardHeader className="pb-2">
             <CardTitle className="text-lg flex items-center gap-2">
               <BarChart3 className="w-5 h-5 text-purple-500" />
-              Týždenná aktivita
+              Weekly Activity
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -73,42 +73,29 @@ export const EnhancedCharts = ({ weeklyData, categoryData }: EnhancedChartsProps
                   <YAxis tick={{ fontSize: 12 }} />
                   <Tooltip content={<CustomTooltip />} />
                   <Legend iconType="circle" />
-                  <Area type="monotone" dataKey="homework" name="📚 Úlohy" stroke="#8b5cf6" fill="url(#gradHomework)" strokeWidth={2.5} />
-                  <Area type="monotone" dataKey="science" name="🔬 Veda" stroke="#ec4899" fill="url(#gradScience)" strokeWidth={2.5} />
-                  <Area type="monotone" dataKey="reading" name="📖 Čítanie" stroke="#06b6d4" fill="url(#gradReading)" strokeWidth={2.5} />
+                  <Area type="monotone" dataKey="homework" name="📚 Homework" stroke="#8b5cf6" fill="url(#gradHomework)" strokeWidth={2.5} />
+                  <Area type="monotone" dataKey="science" name="🔬 Science" stroke="#ec4899" fill="url(#gradScience)" strokeWidth={2.5} />
+                  <Area type="monotone" dataKey="reading" name="📖 Reading" stroke="#06b6d4" fill="url(#gradReading)" strokeWidth={2.5} />
                 </AreaChart>
               </ResponsiveContainer>
             </div>
           </CardContent>
         </Card>
       </motion.div>
-
       <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.4 }}>
         <Card className="overflow-hidden">
           <CardHeader className="pb-2">
             <CardTitle className="text-lg flex items-center gap-2">
               <PieChartIcon className="w-5 h-5 text-pink-500" />
-              Rozdelenie aktivít
+              Activity Distribution
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="h-72">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
-                  <Pie
-                    data={categoryData}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={55}
-                    outerRadius={90}
-                    paddingAngle={4}
-                    dataKey="value"
-                    animationBegin={300}
-                    animationDuration={1200}
-                  >
-                    {categoryData.map((_, index) => (
-                      <Cell key={index} fill={COLORS[index % COLORS.length]} stroke="none" />
-                    ))}
+                  <Pie data={categoryData} cx="50%" cy="50%" innerRadius={55} outerRadius={90} paddingAngle={4} dataKey="value" animationBegin={300} animationDuration={1200}>
+                    {categoryData.map((_, index) => (<Cell key={index} fill={COLORS[index % COLORS.length]} stroke="none" />))}
                   </Pie>
                   <Tooltip content={<PieTooltip />} />
                   <Legend iconType="circle" formatter={(value: string) => <span className="text-sm">{value}</span>} />

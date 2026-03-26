@@ -12,11 +12,10 @@ const floatingItems = [
 
 export const ParentalHero = () => {
   const hour = new Date().getHours();
-  const greeting = hour < 12 ? "Dobré ráno" : hour < 18 ? "Dobrý deň" : "Dobrý večer";
+  const greeting = hour < 12 ? "Good Morning" : hour < 18 ? "Good Afternoon" : "Good Evening";
 
   return (
     <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-violet-600 via-purple-600 to-fuchsia-600 p-8 md:p-12 text-white">
-      {/* Floating emojis */}
       {floatingItems.map((item, i) => (
         <motion.span
           key={i}
@@ -28,49 +27,19 @@ export const ParentalHero = () => {
           {item.emoji}
         </motion.span>
       ))}
-
-      {/* Glow orbs */}
       <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl" />
       <div className="absolute bottom-0 left-0 w-48 h-48 bg-pink-400/20 rounded-full blur-3xl" />
-
-      <motion.div
-        className="relative z-10 text-center"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-      >
-        <motion.div
-          className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm rounded-full px-4 py-2 mb-4"
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ delay: 0.2 }}
-        >
+      <motion.div className="relative z-10 text-center" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
+        <motion.div className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm rounded-full px-4 py-2 mb-4" initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.2 }}>
           <Shield className="w-4 h-4" />
           <span className="text-sm font-medium">Parental Dashboard</span>
           <Sparkles className="w-4 h-4" />
         </motion.div>
-
-        <h1 className="text-3xl md:text-5xl font-bold mb-3">
-          {greeting}, rodič! 👋
-        </h1>
-        <p className="text-white/80 text-lg max-w-xl mx-auto">
-          Sledujte pokrok vášho dieťaťa, nastavte limity a udržujte bezpečné digitálne prostredie
-        </p>
-
-        <motion.div
-          className="flex flex-wrap justify-center gap-4 mt-6"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
-        >
-          {[
-            { label: "Bezpečné", icon: "🔒" },
-            { label: "Sledované", icon: "👁️" },
-            { label: "Vzdelávacie", icon: "📚" },
-          ].map((tag, i) => (
-            <span key={i} className="bg-white/10 backdrop-blur-sm rounded-full px-4 py-1.5 text-sm flex items-center gap-2">
-              {tag.icon} {tag.label}
-            </span>
+        <h1 className="text-3xl md:text-5xl font-bold mb-3">{greeting}, Parent! 👋</h1>
+        <p className="text-white/80 text-lg max-w-xl mx-auto">Track your child's progress, set limits, and maintain a safe digital environment</p>
+        <motion.div className="flex flex-wrap justify-center gap-4 mt-6" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }}>
+          {[{ label: "Secure", icon: "🔒" }, { label: "Monitored", icon: "👁️" }, { label: "Educational", icon: "📚" }].map((tag, i) => (
+            <span key={i} className="bg-white/10 backdrop-blur-sm rounded-full px-4 py-1.5 text-sm flex items-center gap-2">{tag.icon} {tag.label}</span>
           ))}
         </motion.div>
       </motion.div>
