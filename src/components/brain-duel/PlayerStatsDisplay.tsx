@@ -1,0 +1,181 @@
+import { motion } from "framer-motion";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import { TrendingUp, TrendingDown, Star, Zap, Award, Crown } from "lucide-react";
+
+interface PlayerStatsDisplayProps {
+  xp?: number;
+  level?: number;
+  elo?: number;
+  eloChange?: number;
+  wins?: number;
+  losses?: number;
+  streak?: number;
+}
+
+const LEVELS = [
+  { level: 1, xpRequired: 0, title: "Novice", icon: "🧠" },
+  { level: 2, xpRequired: 100, title: "Learner", icon: "📚" },
+  { level: 3, xpRequired: 300, title: "Scholar", icon: "🎓" },
+  { level: 4, xpRequired: 600, title: "Expert", icon: "⚡" },
+  { level: 5, xpRequired: 1000, title: "Master", icon: "🏆" },
+  { level: 6, xpRequired: 1500, title: "Grandmaster", icon: "👑" },
+  { level: 7, xpRequired: 2500, title: "Legend", icon: "💎" },
+  { level: 8, xpRequired: 4000, title: "Mythic", icon: "🔮" },
+  { level: 9, xpRequired: 6000, title: "Immortal", icon: "⭐" },
+  { level: 10, xpRequired: 10000, title: "Transcendent", icon: "🌟" },
+];
+
+const ELO_RANKS = [
+  { min: 0, name: "Unranked", color: "text-muted-foreground", bg: "bg-muted" },
+  { min: 800, name: "Bronze", color: "text-amber-700", bg: "bg-amber-700/10" },
+  { min: 1000, name: "Silver", color: "text-slate-400", bg: "bg-slate-400/10" },
+  { min: 1200, name: "Gold", color: "text-yellow-500", bg: "bg-yellow-500/10" },
+  { min: 1400, name: "Platinum", color: "text-cyan-400", bg: "bg-cyan-400/10" },
+  { min: 1600, name: "Diamond", color: "text-violet-500", bg: "bg-violet-500/10" },
+  { min: 1800, name: "Master", color: "text-rose-500", bg: "bg-rose-500/10" },
+  { min: 2000, name: "Grandmaster", color: "text-primary", bg: "bg-primary/10" },
+];
+
+export const PlayerStatsDisplay = ({
+  xp = 0,
+  level = 1,
+  elo = 1000,
+  eloChange = 0,
+  wins = 0,
+  losses = 0,
+  streak = 0,
+}: PlayerStatsDisplayProps) => {
+  const currentLevelData = LEVELS.find(l => l.level === level) || LEVELS[0];
+  const nextLevelData = LEVELS.find(l => l.level === level + 1);
+  const xpProgress = nextLevelData
+    ? ((xp - currentLevelData.xpRequired) / (nextLevelData.xpRequired - currentLevelData.xpRequired)) * 100
+    : 100;
+
+  const eloRank = ELO_RANKS.slice().reverse().find(r => elo >= r.min) || ELO_RANKS[0];
+  const nextEloRank = ELO_RANKS.find(r => r.min > elo);
+  const winRate = wins + losses > 0 ? Math.round((wins / (wins + losses)) * 100) : 0;
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {/* XP & Level Card */}
+      <Card className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-violet-500/5" />
+        <CardHeader className="relative pb-3">
+          <CardTitle className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="text-2xl">{currentLevelData.icon}</span>
+              <span className="text-lg">Level {level}</span>
+            </div>
+            <Badge variant="outline" className="text-xs">{currentLevelData.title}</Badge>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="relative space-y-3">
+          <div>
+            <div className="flex justify-between text-sm mb-1">
+              <span className="text-muted-foreground">{xp} XP</span>
+              {nextLevelData && (
+                <span className="text-muted-foreground">{nextLevelData.xpRequired} XP</span>
+              )}
+            </div>
+            <div className="relative">
+              <Progress value={xpProgress} className="h-3" />
+              <motion.div
+                className="absolute top-0 left-0 h-full bg-gradient-to-r from-primary/50 to-primary rounded-full"
+                style={{ width: `${xpProgress}%` }}
+                animate={{ opacity: [0.7, 1, 0.7] }}
+                transition={{ duration: 2, repeat: Infinity }}
+              />
+            </div>
+            {nextLevelData && (
+              <p className="text-xs text-muted-foreground mt-1 text-center">
+                {nextLevelData.xpRequired - xp} XP to Level {level + 1} ({nextLevelData.title})
+              </p>
+            )}
+          </div>
+
+          <div className="grid grid-cols-3 gap-2 pt-2">
+            <div className="text-center p-2 rounded-lg bg-muted/50">
+              <div className="text-lg font-bold text-green-500">{wins}</div>
+              <div className="text-[10px] text-muted-foreground">Wins</div>
+            </div>
+            <div className="text-center p-2 rounded-lg bg-muted/50">
+              <div className="text-lg font-bold text-red-500">{losses}</div>
+              <div className="text-[10px] text-muted-foreground">Losses</div>
+            </div>
+            <div className="text-center p-2 rounded-lg bg-muted/50">
+              <div className="text-lg font-bold text-primary">{winRate}%</div>
+              <div className="text-[10px] text-muted-foreground">Win Rate</div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* ELO Rating Card */}
+      <Card className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-transparent to-primary/5" />
+        <CardHeader className="relative pb-3">
+          <CardTitle className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Award className="h-5 w-5 text-primary" />
+              <span className="text-lg">ELO Rating</span>
+            </div>
+            <Badge className={`${eloRank.bg} ${eloRank.color} border-0`}>{eloRank.name}</Badge>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="relative space-y-3">
+          <div className="text-center py-2">
+            <motion.div
+              className="text-5xl font-black text-primary"
+              key={elo}
+              initial={{ scale: 1.2, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ type: "spring", stiffness: 200 }}
+            >
+              {elo}
+            </motion.div>
+            {eloChange !== 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: eloChange > 0 ? 10 : -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className={`flex items-center justify-center gap-1 mt-1 text-sm font-bold ${
+                  eloChange > 0 ? "text-green-500" : "text-red-500"
+                }`}
+              >
+                {eloChange > 0 ? <TrendingUp className="h-4 w-4" /> : <TrendingDown className="h-4 w-4" />}
+                {eloChange > 0 ? "+" : ""}{eloChange}
+              </motion.div>
+            )}
+          </div>
+
+          {nextEloRank && (
+            <div className="space-y-1">
+              <div className="flex justify-between text-xs">
+                <span className={eloRank.color}>{eloRank.name}</span>
+                <span className={nextEloRank.color}>{nextEloRank.name}</span>
+              </div>
+              <Progress
+                value={((elo - (ELO_RANKS.find(r => r.name === eloRank.name)?.min || 0)) /
+                  (nextEloRank.min - (ELO_RANKS.find(r => r.name === eloRank.name)?.min || 0))) * 100}
+                className="h-2"
+              />
+              <p className="text-[10px] text-muted-foreground text-center">
+                {nextEloRank.min - elo} points to {nextEloRank.name}
+              </p>
+            </div>
+          )}
+
+          {streak > 0 && (
+            <div className="flex items-center justify-center gap-2 pt-1">
+              <Badge className="bg-orange-500/15 text-orange-500 border-orange-500/30 gap-1">
+                <Zap className="h-3 w-3" />
+                {streak} Win Streak
+              </Badge>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </div>
+  );
+};
