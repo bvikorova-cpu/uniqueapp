@@ -907,136 +907,29 @@ const Megatalent = () => {
     );
   }
 
+  const sortedSubmissions = [...submissions].sort((a, b) => {
+    if (feedFilter === "top") return (b.votes_count || 0) - (a.votes_count || 0);
+    if (feedFilter === "new") return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+    // "hot" — mix of recency and votes
+    const scoreA = (a.votes_count || 0) + (new Date(a.created_at).getTime() / 1e10);
+    const scoreB = (b.votes_count || 0) + (new Date(b.created_at).getTime() / 1e10);
+    return scoreB - scoreA;
+  });
+
   return (
     <div className="min-h-screen bg-background pt-20 pb-12">
       <div className="container mx-auto px-4 max-w-6xl">
+        {/* Hero */}
+        <MegaTalentHero
+          totalVotes={totalVotes}
+          isSubscribed={isSubscribed}
+          subscriptionTier={subscriptionTier}
+        />
+
+        {/* Category Grid */}
+        <MegaTalentCategoryGrid />
+
         <MegaTalentGuide />
-        
-        {/* Featured Categories Section */}
-        <div className="mb-8">
-          <h2 className="text-2xl font-black mb-4">Explore by Category</h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-            <Card 
-              className="cursor-pointer hover:shadow-lg transition-all group"
-              onClick={() => navigate('/megatalent/art')}
-            >
-              <CardContent className="p-6 text-center">
-                <div className="text-4xl mb-2">🎨</div>
-                <h3 className="font-semibold mb-1">Art</h3>
-                <p className="text-xs text-muted-foreground">Drawing, Painting & More</p>
-                <ArrowRight className="w-4 h-4 mx-auto mt-2 group-hover:translate-x-1 transition-transform" />
-              </CardContent>
-            </Card>
-            
-            <Card 
-              className="cursor-pointer hover:shadow-lg transition-all group"
-              onClick={() => navigate('/megatalent/music')}
-            >
-              <CardContent className="p-6 text-center">
-                <div className="text-4xl mb-2">🎤</div>
-                <h3 className="font-semibold mb-1">Music</h3>
-                <p className="text-xs text-muted-foreground">Singing & Instruments</p>
-                <ArrowRight className="w-4 h-4 mx-auto mt-2 group-hover:translate-x-1 transition-transform" />
-              </CardContent>
-            </Card>
-            
-            <Card 
-              className="cursor-pointer hover:shadow-lg transition-all group"
-              onClick={() => navigate('/megatalent/dance')}
-            >
-              <CardContent className="p-6 text-center">
-                <div className="text-4xl mb-2">💃</div>
-                <h3 className="font-semibold mb-1">Dance</h3>
-                <p className="text-xs text-muted-foreground">All Dance Styles</p>
-                <ArrowRight className="w-4 h-4 mx-auto mt-2 group-hover:translate-x-1 transition-transform" />
-              </CardContent>
-            </Card>
-            
-            <Card 
-              className="cursor-pointer hover:shadow-lg transition-all group"
-              onClick={() => navigate('/megatalent/photography')}
-            >
-              <CardContent className="p-6 text-center">
-                <div className="text-4xl mb-2">📸</div>
-                <h3 className="font-semibold mb-1">Photography</h3>
-                <p className="text-xs text-muted-foreground">Best Photos</p>
-                <ArrowRight className="w-4 h-4 mx-auto mt-2 group-hover:translate-x-1 transition-transform" />
-              </CardContent>
-            </Card>
-            
-            <Card 
-              className="cursor-pointer hover:shadow-lg transition-all group"
-              onClick={() => navigate('/megatalent/cooking')}
-            >
-              <CardContent className="p-6 text-center">
-                <div className="text-4xl mb-2">👨‍🍳</div>
-                <h3 className="font-semibold mb-1">Cooking</h3>
-                <p className="text-xs text-muted-foreground">Culinary Creations</p>
-                <ArrowRight className="w-4 h-4 mx-auto mt-2 group-hover:translate-x-1 transition-transform" />
-              </CardContent>
-            </Card>
-            
-            <Card 
-              className="cursor-pointer hover:shadow-lg transition-all group"
-              onClick={() => navigate('/megatalent/digital_art')}
-            >
-              <CardContent className="p-6 text-center">
-                <div className="text-4xl mb-2">💻</div>
-                <h3 className="font-semibold mb-1">Digital Art</h3>
-                <p className="text-xs text-muted-foreground">Digital Creations</p>
-                <ArrowRight className="w-4 h-4 mx-auto mt-2 group-hover:translate-x-1 transition-transform" />
-              </CardContent>
-            </Card>
-            
-            <Card 
-              className="cursor-pointer hover:shadow-lg transition-all group"
-              onClick={() => navigate('/megatalent/makeup_art')}
-            >
-              <CardContent className="p-6 text-center">
-                <div className="text-4xl mb-2">💄</div>
-                <h3 className="font-semibold mb-1">Makeup Art</h3>
-                <p className="text-xs text-muted-foreground">Beauty Artistry</p>
-                <ArrowRight className="w-4 h-4 mx-auto mt-2 group-hover:translate-x-1 transition-transform" />
-              </CardContent>
-            </Card>
-            
-            <Card 
-              className="cursor-pointer hover:shadow-lg transition-all group"
-              onClick={() => navigate('/megatalent/sports')}
-            >
-              <CardContent className="p-6 text-center">
-                <div className="text-4xl mb-2">💪</div>
-                <h3 className="font-semibold mb-1">Sports</h3>
-                <p className="text-xs text-muted-foreground">Fitness & Training</p>
-                <ArrowRight className="w-4 h-4 mx-auto mt-2 group-hover:translate-x-1 transition-transform" />
-              </CardContent>
-            </Card>
-            
-            <Card 
-              className="cursor-pointer hover:shadow-lg transition-all group"
-              onClick={() => navigate('/megatalent/entertainment')}
-            >
-              <CardContent className="p-6 text-center">
-                <div className="text-4xl mb-2">😂</div>
-                <h3 className="font-semibold mb-1">Entertainment</h3>
-                <p className="text-xs text-muted-foreground">Comedy & Fun</p>
-                <ArrowRight className="w-4 h-4 mx-auto mt-2 group-hover:translate-x-1 transition-transform" />
-              </CardContent>
-            </Card>
-            
-            <Card 
-              className="cursor-pointer hover:shadow-lg transition-all group"
-              onClick={() => navigate('/megatalent/education')}
-            >
-              <CardContent className="p-6 text-center">
-                <div className="text-4xl mb-2">💡</div>
-                <h3 className="font-semibold mb-1">Education</h3>
-                <p className="text-xs text-muted-foreground">Tutorials & Tips</p>
-                <ArrowRight className="w-4 h-4 mx-auto mt-2 group-hover:translate-x-1 transition-transform" />
-              </CardContent>
-            </Card>
-          </div>
-        </div>
 
         <Tabs defaultValue="feed" className="w-full">
           <TabsList className="grid w-full grid-cols-2 mb-6">
@@ -1047,433 +940,140 @@ const Megatalent = () => {
           <TabsContent value="feed" className="mt-0">
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
               {/* Upload Section */}
-              <div className="lg:col-span-1">
-            <Card className="sticky top-24">
-              <CardHeader>
-                {(subscriptionTier === 'premium' || subscriptionTier === 'top_premium') && (
-                  <div className={`p-4 rounded-lg border ${subscriptionTier === 'top_premium' ? 'bg-gradient-to-r from-gold/20 via-yellow-400/10 to-gold/20 border-gold/50 shadow-[0_0_15px_rgba(255,215,0,0.2)]' : 'bg-gradient-primary border-gold/30'}`}>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm font-medium">{t('megatalent.your_votes')}</span>
-                        <VoteBoostTooltip isTopPremium={subscriptionTier === 'top_premium'} />
-                      </div>
-                      <AnimatedVoteCounter 
-                        targetValue={totalVotes}
-                        bonusVotes={subscriptionTier === 'top_premium' ? 100000 : 0}
-                        isTopPremium={subscriptionTier === 'top_premium'}
-                      />
-                    </div>
-                    {subscriptionTier === 'top_premium' && (
-                      <p className="text-xs text-gold mt-2 flex items-center gap-1">
-                        🏆 {t('megatalent.bonus_votes')}
-                      </p>
-                    )}
-                  </div>
-                )}
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <p className="text-sm font-medium">{t('megatalent.select_category')}</p>
-                  <Badge variant="outline" className="text-sm">
-                    {categoryGroups.flatMap(g => g.categories).find(c => c.value === selectedCategory)?.label || t('megatalent.select_category')}
-                  </Badge>
-                </div>
-                
-                <ScrollArea className="h-[400px] rounded-md border p-4">
-                  <Accordion type="single" collapsible className="w-full">
-                    {categoryGroups.map((group, idx) => (
-                      <AccordionItem key={idx} value={`group-${idx}`}>
-                        <AccordionTrigger className="text-sm font-medium">
-                          {group.group}
-                        </AccordionTrigger>
-                        <AccordionContent>
-                          <div className="space-y-1">
-                            {group.categories.map((cat) => (
-                              <Button
-                                key={cat.value}
-                                variant={selectedCategory === cat.value ? "default" : "ghost"}
-                                className="w-full justify-start text-sm"
-                                onClick={() => setSelectedCategory(cat.value)}
-                              >
-                                {cat.label}
-                              </Button>
-                            ))}
+              <div className="lg:col-span-1 order-2 lg:order-1">
+                <Card className="sticky top-24 backdrop-blur-xl bg-card/80 border-border/30">
+                  <CardHeader>
+                    {(subscriptionTier === 'premium' || subscriptionTier === 'top_premium') && (
+                      <div className={`p-4 rounded-lg border ${subscriptionTier === 'top_premium' ? 'bg-gradient-to-r from-yellow-500/10 via-amber-500/5 to-yellow-500/10 border-yellow-500/30' : 'bg-primary/5 border-primary/20'}`}>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm font-medium">{t('megatalent.your_votes')}</span>
+                            <VoteBoostTooltip isTopPremium={subscriptionTier === 'top_premium'} />
                           </div>
-                        </AccordionContent>
-                      </AccordionItem>
-                    ))}
-                  </Accordion>
-                </ScrollArea>
-                
-                <input
-                  ref={photoInputRef}
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={(e) => handleFileSelect(e, 'image')}
-                />
-                <input
-                  ref={videoInputRef}
-                  type="file"
-                  accept="video/*"
-                  className="hidden"
-                  onChange={(e) => handleFileSelect(e, 'video')}
-                />
-                
-                <Button 
-                  variant="premium" 
-                  className="w-full"
-                  onClick={() => photoInputRef.current?.click()}
-                  disabled={uploading}
-                >
-                  <Camera className="h-4 w-4" />
-                  {uploading ? t('megatalent.uploading') : t('megatalent.upload_photo')}
-                </Button>
-                <Button 
-                  variant="premium" 
-                  className="w-full"
-                  onClick={() => videoInputRef.current?.click()}
-                  disabled={uploading}
-                >
-                  <Video className="h-4 w-4" />
-                  {uploading ? t('megatalent.uploading') : t('megatalent.upload_video')}
-                </Button>
-                
-                {uploadedFile && (
-                  <div className="mt-4">
-                    {uploadedFile.type === 'image' ? (
-                      <img src={uploadedFile.url} alt="Uploaded" className="w-full rounded-lg" />
-                    ) : (
-                      <video src={uploadedFile.url} controls className="w-full rounded-lg" />
+                          <AnimatedVoteCounter
+                            targetValue={totalVotes}
+                            bonusVotes={subscriptionTier === 'top_premium' ? 100000 : 0}
+                            isTopPremium={subscriptionTier === 'top_premium'}
+                          />
+                        </div>
+                      </div>
                     )}
-                  </div>
-                )}
-                
-                <Input 
-                  placeholder={t('megatalent.submit_title_placeholder')}
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  maxLength={100}
-                />
-                <Textarea 
-                  placeholder={t('megatalent.submit_description_placeholder')}
-                  className="min-h-20"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  maxLength={500}
-                />
-                <Button 
-                  variant="hero" 
-                  className="w-full"
-                  onClick={handleSubmit}
-                  disabled={submitting || uploading}
-                >
-                  {submitting ? t('megatalent.publishing') : t('megatalent.publish')}
-                </Button>
-              </CardContent>
-              </Card>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="space-y-2">
+                      <p className="text-sm font-medium">{t('megatalent.select_category')}</p>
+                      <Badge variant="outline" className="text-sm">
+                        {categoryGroups.flatMap(g => g.categories).find(c => c.value === selectedCategory)?.label || t('megatalent.select_category')}
+                      </Badge>
+                    </div>
+
+                    <ScrollArea className="h-[300px] rounded-md border p-3">
+                      <Accordion type="single" collapsible className="w-full">
+                        {categoryGroups.map((group, idx) => (
+                          <AccordionItem key={idx} value={`group-${idx}`}>
+                            <AccordionTrigger className="text-sm font-medium">
+                              {group.group}
+                            </AccordionTrigger>
+                            <AccordionContent>
+                              <div className="space-y-1">
+                                {group.categories.map((cat) => (
+                                  <Button
+                                    key={cat.value}
+                                    variant={selectedCategory === cat.value ? "default" : "ghost"}
+                                    className="w-full justify-start text-sm"
+                                    onClick={() => setSelectedCategory(cat.value)}
+                                  >
+                                    {cat.label}
+                                  </Button>
+                                ))}
+                              </div>
+                            </AccordionContent>
+                          </AccordionItem>
+                        ))}
+                      </Accordion>
+                    </ScrollArea>
+
+                    <input ref={photoInputRef} type="file" accept="image/*" className="hidden" onChange={(e) => handleFileSelect(e, 'image')} />
+                    <input ref={videoInputRef} type="file" accept="video/*" className="hidden" onChange={(e) => handleFileSelect(e, 'video')} />
+
+                    <Button variant="premium" className="w-full" onClick={() => photoInputRef.current?.click()} disabled={uploading}>
+                      <Camera className="h-4 w-4" />
+                      {uploading ? t('megatalent.uploading') : t('megatalent.upload_photo')}
+                    </Button>
+                    <Button variant="premium" className="w-full" onClick={() => videoInputRef.current?.click()} disabled={uploading}>
+                      <Video className="h-4 w-4" />
+                      {uploading ? t('megatalent.uploading') : t('megatalent.upload_video')}
+                    </Button>
+
+                    {uploadedFile && (
+                      <div className="mt-4 rounded-lg overflow-hidden border border-border/20">
+                        {uploadedFile.type === 'image' ? (
+                          <img src={uploadedFile.url} alt="Uploaded" className="w-full rounded-lg" />
+                        ) : (
+                          <video src={uploadedFile.url} controls className="w-full rounded-lg" />
+                        )}
+                      </div>
+                    )}
+
+                    <Input placeholder={t('megatalent.submit_title_placeholder')} value={title} onChange={(e) => setTitle(e.target.value)} maxLength={100} />
+                    <Textarea placeholder={t('megatalent.submit_description_placeholder')} className="min-h-20" value={description} onChange={(e) => setDescription(e.target.value)} maxLength={500} />
+                    <Button variant="hero" className="w-full" onClick={handleSubmit} disabled={submitting || uploading}>
+                      {submitting ? t('megatalent.publishing') : t('megatalent.publish')}
+                    </Button>
+                  </CardContent>
+                </Card>
               </div>
 
               {/* Feed */}
-              <div className="lg:col-span-2 space-y-6">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold">
-                {categoryGroups.flatMap(g => g.categories).find(c => c.value === selectedCategory)?.label || "Posts"}
-              </h2>
-              <Badge className="bg-gold text-gold-foreground">
-                <TrendingUp className="h-4 w-4 mr-1" />
-                Trending
-              </Badge>
-            </div>
+              <div className="lg:col-span-2 space-y-4 order-1 lg:order-2">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-xl sm:text-2xl font-bold">
+                    {categoryGroups.flatMap(g => g.categories).find(c => c.value === selectedCategory)?.label || "Posts"}
+                  </h2>
+                </div>
 
-            {/* Real Posts from Database */}
-            {submissions.length === 0 ? (
-              <Card className="p-8 text-center">
-                <p className="text-muted-foreground">
-                  No posts in this category yet. Be the first!
-                </p>
-              </Card>
-            ) : (
-              submissions.map((submission) => (
-                <Card key={submission.id} className={`overflow-hidden ${submission.subscriptionTier === 'top_premium' ? 'ring-2 ring-gold/50' : ''}`}>
-                  <CardHeader className="pb-3">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-3">
-                        <div className="relative">
-                          <div className="w-10 h-10 bg-gradient-primary rounded-full flex items-center justify-center text-white font-semibold">
-                            {submission.profiles?.full_name?.[0] || 'U'}
-                          </div>
-                          {submission.subscriptionTier === 'top_premium' && (
-                            <TopPremiumBadge variant="small" className="absolute -bottom-1 -right-1" showIcon={false} />
-                          )}
-                        </div>
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <p className="font-semibold">
-                              {submission.profiles?.full_name || 'User'}
-                            </p>
-                            {submission.subscriptionTier === 'top_premium' && (
-                              <TopPremiumBadge variant="inline" />
-                            )}
-                          </div>
-                          <p className="text-sm text-muted-foreground">
-                            {new Date(submission.created_at).toLocaleDateString('en-US')}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Badge variant="secondary">
-                          {categoryGroups.flatMap(g => g.categories).find(c => c.value === selectedCategory)?.label}
-                        </Badge>
-                        {currentUserId === submission.user_id && (
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => handleDeleteSubmission(submission.id)}
-                            disabled={deletingSubmission === submission.id}
-                            className="text-destructive hover:text-destructive hover:bg-destructive/10"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        )}
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <h3 className="font-semibold text-lg">{submission.title}</h3>
-                    {submission.media_type === 'image' ? (
-                      <img 
-                        src={submission.media_url} 
-                        alt={submission.title}
-                        className="w-full aspect-video object-cover rounded-lg cursor-pointer hover:opacity-90 transition-opacity"
-                        onClick={() => setExpandedMedia({ url: submission.media_url, type: 'image' })}
-                      />
-                    ) : (
-                      <video 
-                        src={submission.media_url} 
-                        controls
-                        className="w-full aspect-video rounded-lg cursor-pointer"
-                        onClick={(e) => {
-                          // Only open modal if clicking on video (not controls)
-                          if (e.target === e.currentTarget) {
-                            setExpandedMedia({ url: submission.media_url, type: 'video' });
-                          }
-                        }}
-                      />
-                    )}
-                    <p className="text-sm">
-                      {submission.description}
-                    </p>
-                    <div className="flex items-center justify-between pt-2">
-                      <div className="flex items-center space-x-4">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleVote(submission.id)}
-                          className={likedSubmissions.has(submission.id) ? "text-red-500" : ""}
-                        >
-                          <Heart className={`h-4 w-4 mr-1 ${likedSubmissions.has(submission.id) ? 'fill-current' : ''}`} />
-                          {submission.subscriptionTier === 'top_premium' 
-                            ? ((submission.votes_count || 0) + 100000).toLocaleString()
-                            : (submission.votes_count || 0)
-                          }
-                        </Button>
-                        {submission.subscriptionTier === 'top_premium' && (
-                          <VoteBoostTooltip isTopPremium={true} />
-                        )}
-                        
-                        <Dialog open={commentDialogOpen === submission.id} onOpenChange={(open) => {
-                          setCommentDialogOpen(open ? submission.id : null);
-                          if (open) fetchComments(submission.id);
-                        }}>
-                          <DialogTrigger asChild>
-                            <Button variant="ghost" size="sm">
-                              <MessageCircle className="h-4 w-4 mr-1" />
-                              {commentCounts[submission.id] || 0}
-                            </Button>
-                          </DialogTrigger>
-                          <DialogContent className="max-w-lg max-h-[80vh]">
-                            <DialogHeader>
-                              <DialogTitle>Comments</DialogTitle>
-                            </DialogHeader>
-                            <ScrollArea className="h-[400px] pr-4">
-                              {comments[submission.id]?.length > 0 ? (
-                                <div className="space-y-4">
-                                  {comments[submission.id].map((comment: any) => (
-                                    <div key={comment.id} className="flex gap-3">
-                                      <div className="w-8 h-8 bg-gradient-primary rounded-full flex items-center justify-center text-white text-sm font-semibold flex-shrink-0">
-                                        {comment.profiles?.full_name?.[0] || 'U'}
-                                      </div>
-                                      <div className="flex-1">
-                                        <p className="font-semibold text-sm">{comment.profiles?.full_name || 'User'}</p>
-                                        <p className="text-sm text-muted-foreground mt-1">{comment.comment_text}</p>
-                                        <p className="text-xs text-muted-foreground mt-1">
-                                          {new Date(comment.created_at).toLocaleDateString('en-US')}
-                                        </p>
-                                      </div>
-                                    </div>
-                                  ))}
-                                </div>
-                              ) : (
-                                <p className="text-center text-muted-foreground py-8">No comments yet</p>
-                              )}
-                            </ScrollArea>
-                            <div className="flex gap-2 mt-4">
-                              <Input
-                                placeholder="Add a comment..."
-                                value={commentText}
-                                onChange={(e) => setCommentText(e.target.value)}
-                                onKeyPress={(e) => {
-                                  if (e.key === 'Enter' && !e.shiftKey) {
-                                    e.preventDefault();
-                                    handleComment(submission.id);
-                                  }
-                                }}
-                              />
-                              <Button size="sm" onClick={() => handleComment(submission.id)}>
-                                <Send className="h-4 w-4" />
-                              </Button>
-                            </div>
-                          </DialogContent>
-                        </Dialog>
-                      </div>
-                      
-                      <Sheet>
-                        <SheetTrigger asChild>
-                          <Button variant="ghost" size="sm">
-                            <Share2 className="h-4 w-4" />
-                          </Button>
-                        </SheetTrigger>
-                        <SheetContent>
-                          <SheetHeader>
-                            <SheetTitle>Share</SheetTitle>
-                          </SheetHeader>
-                          <div className="space-y-4 mt-6">
-                            <Button
-                              variant="outline"
-                              className="w-full justify-start"
-                              onClick={() => copyMediaLink(submission.media_url)}
-                            >
-                              <Copy className="h-4 w-4 mr-2" />
-                              Copy media link
-                            </Button>
-                            
-                            <Button
-                              variant="outline"
-                              className="w-full justify-start"
-                              onClick={() => shareToFacebook(submission)}
-                            >
-                              <Facebook className="h-4 w-4 mr-2" />
-                              Share on Facebook
-                            </Button>
-                            
-                            <Button
-                              variant="outline"
-                              className="w-full justify-start"
-                              onClick={() => shareToTwitter(submission)}
-                            >
-                              <svg className="h-4 w-4 mr-2" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-                              </svg>
-                              Share on X (Twitter)
-                            </Button>
-                            
-                            <Button
-                              variant="outline"
-                              className="w-full justify-start"
-                              onClick={() => shareToWhatsApp(submission)}
-                            >
-                              <svg className="h-4 w-4 mr-2" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
-                              </svg>
-                              Share via WhatsApp
-                            </Button>
-                          </div>
-                        </SheetContent>
-                      </Sheet>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))
-              )}
+                <MegaTalentFeedFilters active={feedFilter} onChange={setFeedFilter} />
+
+                {sortedSubmissions.length === 0 ? (
+                  <Card className="p-8 text-center backdrop-blur-xl bg-card/80 border-border/30">
+                    <p className="text-muted-foreground">No posts in this category yet. Be the first!</p>
+                  </Card>
+                ) : (
+                  sortedSubmissions.map((submission, index) => (
+                    <MegaTalentSubmissionCard
+                      key={submission.id}
+                      submission={submission}
+                      categoryLabel={categoryGroups.flatMap(g => g.categories).find(c => c.value === selectedCategory)?.label || ""}
+                      isLiked={likedSubmissions.has(submission.id)}
+                      commentCount={commentCounts[submission.id] || 0}
+                      isOwner={currentUserId === submission.user_id}
+                      isDeleting={deletingSubmission === submission.id}
+                      index={index}
+                      onVote={handleVote}
+                      onComment={(id) => {
+                        setCommentDialogOpen(id);
+                        fetchComments(id);
+                      }}
+                      onShare={(s) => setShareSheetSubmission(s)}
+                      onDelete={handleDeleteSubmission}
+                      onMediaClick={(url, type) => setExpandedMedia({ url, type })}
+                    />
+                  ))
+                )}
               </div>
 
               {/* Sidebar */}
-              <div className="lg:col-span-1 space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Monthly Contest</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-gold">€10,000</div>
-                  <p className="text-sm text-muted-foreground">Grand Prize</p>
+              <div className="lg:col-span-1 order-3">
+                <div className="sticky top-24">
+                  <ContestStatsSidebar subscriptionTier={subscriptionTier} totalVotes={totalVotes} />
                 </div>
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span>Current Month:</span>
-                    <span className="font-semibold">
-                      {(() => {
-                        const now = new Date();
-                        const startDate = new Date('2026-01-01');
-                        
-                        if (now < startDate) {
-                          return 'Starts 01.01.2026';
-                        }
-                        
-                        const currentMonth = now.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-                        return currentMonth;
-                      })()}
-                    </span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span>Remaining:</span>
-                    <span className="font-semibold">
-                      {(() => {
-                        const now = new Date();
-                        const startDate = new Date('2026-01-01');
-                        
-                        if (now < startDate) {
-                          const daysUntilStart = Math.ceil((startDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-                          return `Starts in ${daysUntilStart} days`;
-                        }
-                        
-                        const lastDayOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-                        const daysLeft = Math.ceil((lastDayOfMonth.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-                        return `${daysLeft} ${daysLeft === 1 ? 'day' : 'days'}`;
-                      })()}
-                    </span>
-                  </div>
-                  <div className="w-full bg-secondary rounded-full h-2">
-                    <div 
-                      className="bg-gold h-2 rounded-full transition-all" 
-                      style={{
-                        width: `${(() => {
-                          const now = new Date();
-                          const startDate = new Date('2026-01-01');
-                          
-                          if (now < startDate) return '0%';
-                          
-                          const currentDay = now.getDate();
-                          const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
-                          return `${(currentDay / daysInMonth) * 100}%`;
-                        })()}`
-                      }}
-                    ></div>
-                  </div>
-                </div>
-                </CardContent>
-              </Card>
               </div>
             </div>
           </TabsContent>
 
-
           <TabsContent value="referral" className="mt-0">
             <div className="max-w-4xl mx-auto space-y-6">
               <ReferralProgram />
-              
-              {/* Subscription Management */}
               {isSubscribed && (
                 <Card>
                   <CardHeader>
@@ -1489,17 +1089,14 @@ const Megatalent = () => {
                       </div>
                       <Badge variant="default">Active</Badge>
                     </div>
-                    
                     <div className="p-4 border rounded-lg bg-muted/50">
                       <p className="text-sm text-muted-foreground">
-                        If you cancel your subscription, it will remain active until the end of the paid period. 
-                        The paid amount is non-refundable.
+                        If you cancel your subscription, it will remain active until the end of the paid period. The paid amount is non-refundable.
                       </p>
                     </div>
-                    
-                    <Button 
-                      variant="outline" 
-                      className="w-full text-red-500 border-red-500 hover:bg-red-50 dark:hover:bg-red-950"
+                    <Button
+                      variant="outline"
+                      className="w-full text-destructive border-destructive hover:bg-destructive/10"
                       onClick={handleCancelSubscription}
                       disabled={cancelingSubscription}
                     >
@@ -1512,72 +1109,127 @@ const Megatalent = () => {
           </TabsContent>
         </Tabs>
 
+        {/* Comment Dialog */}
+        <Dialog open={!!commentDialogOpen} onOpenChange={(open) => { if (!open) setCommentDialogOpen(null); }}>
+          <DialogContent className="max-w-lg max-h-[80vh]">
+            <DialogHeader>
+              <DialogTitle>Comments</DialogTitle>
+            </DialogHeader>
+            <ScrollArea className="h-[400px] pr-4">
+              {commentDialogOpen && comments[commentDialogOpen]?.length > 0 ? (
+                <div className="space-y-4">
+                  {comments[commentDialogOpen].map((comment: any) => (
+                    <div key={comment.id} className="flex gap-3">
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-primary-foreground text-sm font-semibold shrink-0">
+                        {comment.profiles?.full_name?.[0] || 'U'}
+                      </div>
+                      <div className="flex-1">
+                        <p className="font-semibold text-sm">{comment.profiles?.full_name || 'User'}</p>
+                        <p className="text-sm text-muted-foreground mt-1">{comment.comment_text}</p>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          {new Date(comment.created_at).toLocaleDateString('en-US')}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-center text-muted-foreground py-8">No comments yet</p>
+              )}
+            </ScrollArea>
+            <div className="flex gap-2 mt-4">
+              <Input
+                placeholder="Add a comment..."
+                value={commentText}
+                onChange={(e) => setCommentText(e.target.value)}
+                onKeyPress={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey && commentDialogOpen) {
+                    e.preventDefault();
+                    handleComment(commentDialogOpen);
+                  }
+                }}
+              />
+              <Button size="sm" onClick={() => commentDialogOpen && handleComment(commentDialogOpen)}>
+                <Send className="h-4 w-4" />
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Share Sheet */}
+        <Sheet open={!!shareSheetSubmission} onOpenChange={(open) => { if (!open) setShareSheetSubmission(null); }}>
+          <SheetContent>
+            <SheetHeader>
+              <SheetTitle>Share</SheetTitle>
+            </SheetHeader>
+            {shareSheetSubmission && (
+              <div className="space-y-4 mt-6">
+                <Button variant="outline" className="w-full justify-start" onClick={() => copyMediaLink(shareSheetSubmission.media_url)}>
+                  <Copy className="h-4 w-4 mr-2" /> Copy media link
+                </Button>
+                <Button variant="outline" className="w-full justify-start" onClick={() => shareToFacebook(shareSheetSubmission)}>
+                  <Facebook className="h-4 w-4 mr-2" /> Share on Facebook
+                </Button>
+                <Button variant="outline" className="w-full justify-start" onClick={() => shareToTwitter(shareSheetSubmission)}>
+                  Share on X (Twitter)
+                </Button>
+                <Button variant="outline" className="w-full justify-start" onClick={() => shareToWhatsApp(shareSheetSubmission)}>
+                  Share via WhatsApp
+                </Button>
+              </div>
+            )}
+          </SheetContent>
+        </Sheet>
+
         {/* Expanded Media Dialog */}
         <Dialog open={!!expandedMedia} onOpenChange={() => setExpandedMedia(null)}>
           <DialogContent className="max-w-[95vw] max-h-[95vh] w-auto h-auto p-0">
             <div className="relative flex items-center justify-center bg-black/95">
               {expandedMedia?.type === 'image' ? (
-                <img 
-                  src={expandedMedia.url} 
-                  alt="Zväčšený obrázok"
-                  className="max-w-full max-h-[95vh] object-contain"
-                />
+                <img src={expandedMedia.url} alt="Expanded" className="max-w-full max-h-[95vh] object-contain" />
               ) : expandedMedia?.type === 'video' ? (
-                <video 
-                  src={expandedMedia.url} 
-                  controls
-                  autoPlay
-                  className="max-w-full max-h-[95vh]"
-                />
+                <video src={expandedMedia.url} controls autoPlay className="max-w-full max-h-[95vh]" />
               ) : null}
             </div>
           </DialogContent>
         </Dialog>
 
-        {/* Copyright Protection Section */}
-        <Card className="mt-12 border-muted">
+        {/* Copyright */}
+        <Card className="mt-12 border-muted backdrop-blur-xl bg-card/80">
           <CardHeader>
             <CardTitle className="text-xl">⚖️ Copyright Protection</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4 text-sm text-muted-foreground">
-            <div className="space-y-3">
-              <p className="font-semibold text-foreground">
-                Important information for all Megatalent contest participants:
+            <p className="font-semibold text-foreground">Important information for all Megatalent contest participants:</p>
+            <div className="space-y-2">
+              <h3 className="font-medium text-foreground">📸 Rights to Uploaded Content:</h3>
+              <ul className="list-disc list-inside space-y-1 pl-2">
+                <li>By uploading a post, you confirm that you are the author or have the right to publish the content</li>
+                <li>You must not upload others' photos, videos, or other protected content without permission</li>
+                <li>The author of the post bears full responsibility for uploading others' content</li>
+              </ul>
+            </div>
+            <div className="space-y-2">
+              <h3 className="font-medium text-foreground">🛡️ Our Responsibilities:</h3>
+              <ul className="list-disc list-inside space-y-1 pl-2">
+                <li>The Megatalent platform serves only as a space for publishing content</li>
+                <li>The platform operator is not responsible for content uploaded by users</li>
+                <li>In case of copyright infringement, the content will be immediately removed</li>
+                <li>We reserve the right to block users who violate the rules</li>
+              </ul>
+            </div>
+            <div className="space-y-2">
+              <h3 className="font-medium text-foreground">⚠️ Warning:</h3>
+              <ul className="list-disc list-inside space-y-1 pl-2">
+                <li>Copyright infringement can have serious legal consequences</li>
+                <li>By uploading content, you agree to these terms</li>
+                <li>In case of doubts about the authenticity of content, we may request verification of authorship</li>
+              </ul>
+            </div>
+            <div className="mt-4 p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
+              <p className="text-destructive font-medium">
+                🚨 Upload only your own original content. Copyright infringement may disqualify you from the contest and expose you to legal consequences.
               </p>
-              
-              <div className="space-y-2">
-                <h3 className="font-medium text-foreground">📸 Rights to Uploaded Content:</h3>
-                <ul className="list-disc list-inside space-y-1 pl-2">
-                  <li>By uploading a post, you confirm that you are the author or have the right to publish the content</li>
-                  <li>You must not upload others' photos, videos, or other protected content without permission</li>
-                  <li>The author of the post bears full responsibility for uploading others' content</li>
-                </ul>
-              </div>
-
-              <div className="space-y-2">
-                <h3 className="font-medium text-foreground">🛡️ Our Responsibilities:</h3>
-                <ul className="list-disc list-inside space-y-1 pl-2">
-                  <li>The Megatalent platform serves only as a space for publishing content</li>
-                  <li>The platform operator is not responsible for content uploaded by users</li>
-                  <li>In case of copyright infringement, the content will be immediately removed</li>
-                  <li>We reserve the right to block users who violate the rules</li>
-                </ul>
-              </div>
-
-              <div className="space-y-2">
-                <h3 className="font-medium text-foreground">⚠️ Warning:</h3>
-                <ul className="list-disc list-inside space-y-1 pl-2">
-                  <li>Copyright infringement can have serious legal consequences</li>
-                  <li>By uploading content, you agree to these terms</li>
-                  <li>In case of doubts about the authenticity of content, we may request verification of authorship</li>
-                </ul>
-              </div>
-
-              <div className="mt-4 p-4 bg-amber-500/10 border border-amber-500/20 rounded-lg">
-                <p className="text-amber-700 dark:text-amber-400 font-medium">
-                  🚨 Upload only your own original content. Copyright infringement may disqualify you from the contest and expose you to legal consequences.
-                </p>
-              </div>
             </div>
           </CardContent>
         </Card>
