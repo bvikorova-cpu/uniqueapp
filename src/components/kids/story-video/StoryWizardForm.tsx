@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -30,9 +30,16 @@ const LANGUAGES = [
 
 const MAX_SCENES = 6;
 
-export const StoryWizardForm = ({ onGenerate, loading }: StoryWizardFormProps) => {
+export const StoryWizardForm = ({ onGenerate, loading, initialTheme }: StoryWizardFormProps) => {
   const [step, setStep] = useState(0);
-  const [theme, setTheme] = useState('');
+  const [theme, setTheme] = useState(initialTheme || '');
+
+  useEffect(() => {
+    if (initialTheme) {
+      setTheme(initialTheme);
+      setStep(1); // Jump to theme step
+    }
+  }, [initialTheme]);
   const [language, setLanguage] = useState('english');
   const [sceneCount, setSceneCount] = useState(4);
   const [sceneDuration, setSceneDuration] = useState(5);
