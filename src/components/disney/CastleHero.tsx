@@ -7,7 +7,18 @@ interface CastleHeroProps {
   visitedCount: number;
 }
 
-const floatingItems = ["🏰", "👑", "✨", "🌟", "🎪", "🗺️", "🏆", "🇺🇸", "🇫🇷", "🇯🇵"];
+const floatingItems = [
+  { emoji: "🏰", left: 2, top: 10 },
+  { emoji: "👑", left: 8, top: 70 },
+  { emoji: "✨", left: 92, top: 15 },
+  { emoji: "🌟", left: 88, top: 65 },
+  { emoji: "🎪", left: 5, top: 45 },
+  { emoji: "🗺️", left: 95, top: 40 },
+  { emoji: "🏆", left: 90, top: 80 },
+  { emoji: "🇺🇸", left: 3, top: 85 },
+  { emoji: "🇫🇷", left: 12, top: 25 },
+  { emoji: "🇯🇵", left: 85, top: 5 },
+];
 
 export function CastleHero({ stampsCount, totalCastles, visitedCount }: CastleHeroProps) {
   const completionPercent = Math.round((stampsCount / totalCastles) * 100);
@@ -19,14 +30,14 @@ export function CastleHero({ stampsCount, totalCastles, visitedCount }: CastleHe
         <motion.span
           key={i}
           className="absolute text-2xl md:text-3xl pointer-events-none select-none opacity-60"
-          style={{ left: `${5 + i * 9.5}%`, top: `${15 + (i % 4) * 20}%` }}
+          style={{ left: `${item.left}%`, top: `${item.top}%` }}
           animate={{
             y: [0, -15, 0],
             rotate: [0, i % 2 === 0 ? 10 : -10, 0],
           }}
           transition={{ duration: 3 + i * 0.4, repeat: Infinity, ease: "easeInOut", delay: i * 0.15 }}
         >
-          {item}
+          {item.emoji}
         </motion.span>
       ))}
 
