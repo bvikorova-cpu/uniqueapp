@@ -143,6 +143,7 @@ const Jobs = () => {
   const [showApplyDialog, setShowApplyDialog] = useState(false);
   const [selectedJob, setSelectedJob] = useState<JobListing | null>(null);
   const [showJobDetailsDialog, setShowJobDetailsDialog] = useState(false);
+  const [quickFilter, setQuickFilter] = useState<string | null>(null);
   const [showJobSeekerDialog, setShowJobSeekerDialog] = useState(false);
   const [showPackageDialog, setShowPackageDialog] = useState(false);
   const [selectedPackage, setSelectedPackage] = useState<{ days: number; price: number; priceId: string } | null>(null);
