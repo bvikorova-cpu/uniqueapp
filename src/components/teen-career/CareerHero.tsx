@@ -29,8 +29,8 @@ export const CareerHero = () => {
           key={i}
           className="absolute text-xl sm:text-2xl pointer-events-none select-none"
           style={{
-            left: `${10 + (i * 11) % 80}%`,
-            top: `${5 + (i * 17) % 70}%`,
+            left: emojiPositions[i].left,
+            top: emojiPositions[i].top,
           }}
           animate={{
             y: [0, -15, 0],
