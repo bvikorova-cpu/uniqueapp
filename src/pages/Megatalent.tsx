@@ -20,6 +20,11 @@ import { useTranslation } from "react-i18next";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { triggerTopPremiumConfetti } from "@/utils/confetti";
+import MegaTalentHero from "@/components/megatalent/MegaTalentHero";
+import MegaTalentCategoryGrid from "@/components/megatalent/MegaTalentCategoryGrid";
+import ContestStatsSidebar from "@/components/megatalent/ContestStatsSidebar";
+import MegaTalentSubmissionCard from "@/components/megatalent/MegaTalentSubmissionCard";
+import MegaTalentFeedFilters, { type FeedFilter } from "@/components/megatalent/MegaTalentFeedFilters";
 
 const categoryGroups = [
   {
