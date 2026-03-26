@@ -17,20 +17,12 @@ interface Comment {
   date: string;
 }
 
-const MOCK_COMMENTS: Comment[] = [
-  { id: "1", brandId: "a", brandName: "TechNova", text: "Amazing innovation and customer support!", rating: 5, likes: 24, author: "User***82", date: "2 hours ago" },
-  { id: "2", brandId: "b", brandName: "EcoStyle", text: "Love their sustainable approach. Great quality products.", rating: 4, likes: 18, author: "User***15", date: "5 hours ago" },
-  { id: "3", brandId: "c", brandName: "FoodCraft", text: "Best artisan food delivery. Fresh every time!", rating: 5, likes: 31, author: "User***47", date: "1 day ago" },
-  { id: "4", brandId: "a", brandName: "TechNova", text: "Their new AI assistant is game-changing.", rating: 4, likes: 12, author: "User***93", date: "1 day ago" },
-  { id: "5", brandId: "d", brandName: "HealthPlus", text: "Reliable wellness products. Highly recommend.", rating: 5, likes: 15, author: "User***61", date: "2 days ago" },
-];
-
 interface BrandCommentsProps {
   isAuthenticated: boolean;
 }
 
 export const BrandComments = ({ isAuthenticated }: BrandCommentsProps) => {
-  const [comments] = useState(MOCK_COMMENTS);
+  const [comments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState("");
   const [selectedRating, setSelectedRating] = useState(5);
   const [likedIds, setLikedIds] = useState<Set<string>>(new Set());

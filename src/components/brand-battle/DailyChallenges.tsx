@@ -18,17 +18,9 @@ interface Challenge {
   type: "daily" | "weekly" | "special";
 }
 
-const DAILY_CHALLENGES: Challenge[] = [
-  { id: "vote-3", title: "Triple Threat", description: "Cast 3 votes today", icon: Target, reward: 15, target: 3, current: 0, type: "daily" },
-  { id: "streak-3", title: "Streak Starter", description: "Maintain a 3-day voting streak", icon: Flame, reward: 25, target: 3, current: 0, type: "daily" },
-  { id: "category-2", title: "Category Explorer", description: "Vote in 2 different categories", icon: Star, reward: 10, target: 2, current: 0, type: "daily" },
-];
+const DAILY_CHALLENGES: Challenge[] = [];
 
-const WEEKLY_CHALLENGES: Challenge[] = [
-  { id: "vote-20", title: "Voting Machine", description: "Cast 20 votes this week", icon: Zap, reward: 50, target: 20, current: 0, type: "weekly" },
-  { id: "share-3", title: "Brand Ambassador", description: "Share 3 brand battles on social", icon: Share2, reward: 30, target: 3, current: 0, type: "weekly" },
-  { id: "refer-1", title: "Recruit a Voter", description: "Invite a friend who casts a vote", icon: Users, reward: 100, target: 1, current: 0, type: "weekly" },
-];
+const WEEKLY_CHALLENGES: Challenge[] = [];
 
 const MULTIPLIER_TIERS = [
   { threshold: 3, multiplier: "1.5x", label: "3-day streak" },
