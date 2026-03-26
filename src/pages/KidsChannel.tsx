@@ -4,7 +4,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Heart, Play, Star, Sparkles, Crown, BookOpen, Volume2, Trophy, Moon, CreditCard, Video, Castle, Palette, Unlock, Shield, Library, BarChart3 } from "lucide-react";
 import { toast } from "sonner";
 import { showImages } from "@/components/kids/ShowImages";
@@ -13,6 +12,16 @@ import { ParentalGate, useParentalGate } from "@/components/kids/ParentalGate";
 import { SafeContentBadge } from "@/components/kids/SafeContentBadge";
 import { useKidsGoldPass } from "@/hooks/useKidsGoldPass";
 import { SmartSleepTimer } from "@/components/kids/SmartSleepTimer";
+import { motion } from "framer-motion";
+
+// New components
+import { KidsHero } from "@/components/kids/KidsHero";
+import { MascotGuide } from "@/components/kids/MascotGuide";
+import { WhatsNewSpotlight } from "@/components/kids/WhatsNewSpotlight";
+import { DailyStars } from "@/components/kids/DailyStars";
+import { AdventureMap } from "@/components/kids/AdventureMap";
+import { WeeklyTheme } from "@/components/kids/WeeklyTheme";
+import { KidsProfileBadges } from "@/components/kids/KidsProfileBadges";
 
 interface Show {
   id: string;
@@ -26,6 +35,71 @@ interface Show {
   created_at: string;
 }
 
+// Feature card component with playful animations
+const FeatureCard = ({
+  title,
+  description,
+  icon: Icon,
+  iconColor,
+  gradient,
+  badges: cardBadges,
+  onClick,
+  delay = 0,
+  hasGoldPass,
+  showUnlocked,
+}: {
+  title: string;
+  description: string;
+  icon: any;
+  iconColor: string;
+  gradient: string;
+  badges: Array<{ text: string; color: string; icon?: any }>;
+  onClick: () => void;
+  delay?: number;
+  hasGoldPass?: boolean;
+  showUnlocked?: boolean;
+}) => (
+  <motion.div
+    initial={{ opacity: 0, y: 20, scale: 0.95 }}
+    animate={{ opacity: 1, y: 0, scale: 1 }}
+    transition={{ delay, type: "spring", bounce: 0.3 }}
+    whileHover={{ scale: 1.05, y: -5 }}
+    whileTap={{ scale: 0.98 }}
+  >
+    <Card
+      className={`group overflow-hidden bg-gradient-to-br ${gradient} backdrop-blur-sm border-4 transition-all duration-300 cursor-pointer shadow-2xl ${
+        showUnlocked && hasGoldPass ? 'border-green-400 ring-2 ring-green-300' : 'border-white/60'
+      }`}
+      onClick={onClick}
+    >
+      <div className="p-6 text-center relative">
+        {showUnlocked && hasGoldPass && (
+          <div className="absolute top-2 right-2">
+            <Badge className="bg-green-500 text-white gap-1"><Unlock className="w-3 h-3" /> Unlocked</Badge>
+          </div>
+        )}
+        <motion.div
+          className="bg-white rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center shadow-lg"
+          whileHover={{ rotate: [0, -10, 10, -5, 0] }}
+          transition={{ duration: 0.5 }}
+        >
+          <Icon className={`w-10 h-10 ${iconColor}`} />
+        </motion.div>
+        <h3 className="text-xl font-bold mb-2">{title}</h3>
+        <p className="text-gray-700 text-sm mb-3">{description}</p>
+        <div className="flex gap-2 justify-center flex-wrap">
+          {cardBadges.map((b, i) => (
+            <Badge key={i} className={`${b.color} shadow-md`}>
+              {b.icon && <b.icon className="w-3 h-3 mr-1" />}
+              {b.text}
+            </Badge>
+          ))}
+        </div>
+      </div>
+    </Card>
+  </motion.div>
+);
+
 const KidsChannel = () => {
   const navigate = useNavigate();
   const [shows, setShows] = useState<Show[]>([]);
@@ -34,16 +108,12 @@ const KidsChannel = () => {
   const [user, setUser] = useState<any>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   
-  // Parental Gate state
   const [showParentalGate, setShowParentalGate] = useState(false);
   const [pendingNavigation, setPendingNavigation] = useState<string | null>(null);
   const [pendingFeatureName, setPendingFeatureName] = useState<string>("");
   const { isVerified, checkVerification } = useParentalGate();
-  
-  // Gold Pass status
   const { hasGoldPass, loading: goldPassLoading } = useKidsGoldPass();
 
-  // AI-interactive features that require parental gate
   const AI_FEATURES = [
     { path: '/kids-stories/voice-chat', name: 'Character Chat' },
     { path: '/kids-story-creator', name: 'Story Creator' },
@@ -136,9 +206,7 @@ const KidsChannel = () => {
   const checkUser = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     setUser(user);
-    if (user) {
-      fetchFavorites(user.id);
-    }
+    if (user) fetchFavorites(user.id);
   };
 
   const fetchShows = async () => {
@@ -147,7 +215,6 @@ const KidsChannel = () => {
         .from("kids_shows")
         .select("*")
         .order("created_at", { ascending: false });
-
       if (error) throw error;
       setShows(data || []);
     } catch (error) {
@@ -164,7 +231,6 @@ const KidsChannel = () => {
         .from("kids_favorites")
         .select("show_id")
         .eq("user_id", userId);
-
       if (error) throw error;
       setFavorites(new Set(data?.map(f => f.show_id) || []));
     } catch (error) {
@@ -178,24 +244,13 @@ const KidsChannel = () => {
       navigate("/auth");
       return;
     }
-
     try {
       if (favorites.has(showId)) {
-        await supabase
-          .from("kids_favorites")
-          .delete()
-          .eq("user_id", user.id)
-          .eq("show_id", showId);
-        setFavorites(prev => {
-          const newSet = new Set(prev);
-          newSet.delete(showId);
-          return newSet;
-        });
+        await supabase.from("kids_favorites").delete().eq("user_id", user.id).eq("show_id", showId);
+        setFavorites(prev => { const s = new Set(prev); s.delete(showId); return s; });
         toast.success("Removed from favorites");
       } else {
-        await supabase
-          .from("kids_favorites")
-          .insert({ user_id: user.id, show_id: showId });
+        await supabase.from("kids_favorites").insert({ user_id: user.id, show_id: showId });
         setFavorites(prev => new Set(prev).add(showId));
         toast.success("Added to favorites");
       }
@@ -205,16 +260,8 @@ const KidsChannel = () => {
     }
   };
 
-  const categories = ["All", ...Array.from(new Set(shows.map(s => s.category)))];
-
-  const filteredShows = selectedCategory === "All" 
-    ? shows 
-    : shows.filter(s => s.category === selectedCategory);
-
-  // Handle navigation with parental gate for AI features
   const handleFeatureNavigation = (path: string, featureName: string, requiresGate: boolean) => {
     if (requiresGate) {
-      // Check if already verified
       if (checkVerification()) {
         navigate(path);
       } else {
@@ -236,21 +283,16 @@ const KidsChannel = () => {
     }
   };
 
-  // Check if a feature is AI-interactive (requires parental gate)
-  const isAIFeature = (path: string) => {
-    return AI_FEATURES.some(f => f.path === path);
-  };
-
-  // Get feature name for parental gate
-  const getFeatureName = (path: string) => {
-    const feature = AI_FEATURES.find(f => f.path === path);
-    return feature?.name || "this feature";
-  };
-
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-600 via-pink-500 to-blue-400">
-        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-white"></div>
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+          className="text-6xl"
+        >
+          ✨
+        </motion.div>
       </div>
     );
   }
@@ -259,324 +301,172 @@ const KidsChannel = () => {
     <div className="min-h-screen relative overflow-hidden">
       {/* Disney Castle Background */}
       <div className="fixed inset-0">
-        <img 
-          src={castleBg} 
-          alt="Disney Castle" 
-          className="w-full h-full object-cover object-center"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-purple-900/20 via-transparent to-purple-900/50"></div>
-        
-        {/* Floating Elements */}
-        <div className="absolute top-20 left-10 animate-float">
-          <Sparkles className="text-yellow-300 w-12 h-12 opacity-70 drop-shadow-lg" />
-        </div>
-        <div className="absolute top-40 right-20 animate-float-delayed">
-          <Star className="text-yellow-200 w-16 h-16 opacity-60 drop-shadow-lg" />
-        </div>
-        <div className="absolute top-1/2 left-20 animate-float">
-          <Sparkles className="text-pink-300 w-10 h-10 opacity-70 drop-shadow-lg" />
-        </div>
-        <div className="absolute top-1/3 right-1/4 animate-float-delayed">
-          <Star className="text-purple-300 w-14 h-14 opacity-60 drop-shadow-lg" />
-        </div>
+        <img src={castleBg} alt="Disney Castle" className="w-full h-full object-cover object-center" />
+        <div className="absolute inset-0 bg-gradient-to-b from-purple-900/20 via-transparent to-purple-900/50" />
       </div>
 
       {/* Content */}
       <div className="relative z-10 container mx-auto px-4 py-8">
-        {/* Header - Positioned to show castle */}
-        <div className="text-center mb-16 animate-fade-in pt-8">
-          <h1 className="text-7xl md:text-8xl font-bold text-white mb-4 font-signature drop-shadow-2xl">
-            Kids Channel ✨
-          </h1>
-          <p className="text-2xl md:text-3xl text-white/95 mb-3 drop-shadow-lg font-semibold">
-            Magical Stories for Little Dreamers
-          </p>
-          <div className="flex items-center justify-center gap-2 text-white/95 drop-shadow-md text-lg">
-            <Crown className="w-6 h-6 text-yellow-300 drop-shadow-lg" />
-            <span className="font-medium">Premium content available for subscribers</span>
-          </div>
+        {/* Animated Hero */}
+        <KidsHero />
+
+        {/* Engagement row: Stars + Weekly Theme */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+          <DailyStars starsCollected={0} totalStarsToday={5} />
+          <WeeklyTheme />
         </div>
 
-        {/* Interactive Features - Grid Layout */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
-          {/* 1. Talk to Characters - AI Feature with Parental Gate */}
-          <Card 
-            className={`group overflow-hidden bg-gradient-to-br from-green-100/95 to-emerald-100/95 backdrop-blur-sm border-4 transition-all duration-300 hover:scale-105 cursor-pointer shadow-2xl hover:shadow-green-300/50 animate-fade-in ${hasGoldPass ? 'border-green-400 ring-2 ring-green-300' : 'border-white/60 hover:border-green-400'}`}
+        {/* What's New */}
+        <WhatsNewSpotlight />
+
+        {/* Interactive Features Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto mb-8">
+          <FeatureCard
+            title="Chat with Characters! 💬"
+            description="Have real conversations with your favorite characters!"
+            icon={Volume2}
+            iconColor="text-green-500"
+            gradient="from-green-100/95 to-emerald-100/95"
+            badges={[
+              { text: "Voice Interactive", color: "bg-green-500 text-white" },
+              { text: "Parent Check", color: "border-purple-300 text-purple-600", icon: Shield },
+            ]}
             onClick={() => handleFeatureNavigation('/kids-stories/voice-chat', 'Character Chat', true)}
-          >
-            <div className="p-6 text-center relative">
-              {hasGoldPass && (
-                <div className="absolute top-2 right-2">
-                  <Badge className="bg-green-500 text-white gap-1"><Unlock className="w-3 h-3" /> Unlocked</Badge>
-                </div>
-              )}
-              <div className="bg-white rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center shadow-lg">
-                <Volume2 className="w-10 h-10 text-green-500" />
-              </div>
-              <h3 className="text-xl font-bold text-green-700 mb-2">
-                Chat with Characters! 💬
-              </h3>
-              <p className="text-gray-700 text-sm mb-3">
-                Have real conversations with your favorite characters!
-              </p>
-              <div className="flex gap-2 justify-center flex-wrap">
-                <Badge className="bg-green-500 text-white shadow-md">Voice Interactive</Badge>
-                <Badge variant="outline" className="border-purple-300 text-purple-600"><Shield className="w-3 h-3 mr-1" />Parent Check</Badge>
-              </div>
-            </div>
-          </Card>
+            delay={0}
+            hasGoldPass={hasGoldPass}
+            showUnlocked
+          />
 
-          {/* 2. Story Games */}
-          <Card 
-            className="group overflow-hidden bg-gradient-to-br from-red-100/95 to-rose-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-red-400 transition-all duration-300 hover:scale-105 cursor-pointer shadow-2xl hover:shadow-red-300/50 animate-fade-in"
-            style={{ animationDelay: "0.1s" }}
+          <FeatureCard
+            title="Story Games! 🎮"
+            description="Solve puzzles and play games to unlock the next part of your story!"
+            icon={Play}
+            iconColor="text-red-500"
+            gradient="from-red-100/95 to-rose-100/95"
+            badges={[{ text: "Interactive Games", color: "bg-red-500 text-white" }]}
             onClick={() => navigate('/kids-stories/games')}
-          >
-            <div className="p-6 text-center">
-              <div className="bg-white rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center shadow-lg">
-                <Play className="w-10 h-10 text-red-500" />
-              </div>
-              <h3 className="text-xl font-bold text-red-700 mb-2">
-                Story Games! 🎮
-              </h3>
-              <p className="text-gray-700 text-sm mb-3">
-                Solve puzzles and play games to unlock the next part of your story!
-              </p>
-              <Badge className="bg-red-500 text-white shadow-md">Interactive Games</Badge>
-            </div>
-          </Card>
+            delay={0.05}
+          />
 
-          {/* 3. Bedtime Stories */}
-          <Card 
-            className="group overflow-hidden bg-gradient-to-br from-indigo-100/95 to-violet-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-indigo-400 transition-all duration-300 hover:scale-105 cursor-pointer shadow-2xl hover:shadow-indigo-300/50 animate-fade-in"
-            style={{ animationDelay: "0.2s" }}
+          <FeatureCard
+            title="Bedtime Stories! 🌙"
+            description="Calming stories with soft music to help you fall asleep peacefully."
+            icon={Moon}
+            iconColor="text-indigo-500"
+            gradient="from-indigo-100/95 to-violet-100/95"
+            badges={[{ text: "Relaxing", color: "bg-indigo-500 text-white" }]}
             onClick={() => navigate('/kids-stories/bedtime')}
-          >
-            <div className="p-6 text-center">
-              <div className="bg-white rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center shadow-lg">
-                <Moon className="w-10 h-10 text-indigo-500" />
-              </div>
-              <h3 className="text-xl font-bold text-indigo-700 mb-2">
-                Bedtime Stories! 🌙
-              </h3>
-              <p className="text-gray-700 text-sm mb-3">
-                Calming stories with soft music to help you fall asleep peacefully.
-              </p>
-              <Badge className="bg-indigo-500 text-white shadow-md">Relaxing</Badge>
-            </div>
-          </Card>
+            delay={0.1}
+          />
 
-          {/* 4. Story Videos */}
-          <Card 
-            className="group overflow-hidden bg-gradient-to-br from-purple-100/95 to-fuchsia-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-purple-400 transition-all duration-300 hover:scale-105 cursor-pointer shadow-2xl hover:shadow-purple-300/50 animate-fade-in"
-            style={{ animationDelay: "0.3s" }}
+          <FeatureCard
+            title="Story Videos! 🎬"
+            description="Watch magical animated stories come to life with AI!"
+            icon={Video}
+            iconColor="text-purple-500"
+            gradient="from-purple-100/95 to-fuchsia-100/95"
+            badges={[{ text: "AI Video", color: "bg-purple-500 text-white" }]}
             onClick={() => navigate('/story-video-demo')}
-          >
-            <div className="p-6 text-center">
-              <div className="bg-white rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center shadow-lg">
-                <Video className="w-10 h-10 text-purple-500" />
-              </div>
-              <h3 className="text-xl font-bold text-purple-700 mb-2">
-                Story Videos! 🎬
-              </h3>
-              <p className="text-gray-700 text-sm mb-3">
-                Watch magical animated stories come to life with AI!
-              </p>
-              <Badge className="bg-purple-500 text-white shadow-md">AI Video</Badge>
-            </div>
-          </Card>
+            delay={0.15}
+          />
 
-          {/* 5. Create Your Hero */}
-          <Card 
-            className="group overflow-hidden bg-gradient-to-br from-blue-100/95 to-cyan-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-blue-400 transition-all duration-300 hover:scale-105 cursor-pointer shadow-2xl hover:shadow-blue-300/50 animate-fade-in"
-            style={{ animationDelay: "0.4s" }}
+          <FeatureCard
+            title="Create Your Hero! 🦸‍♀️"
+            description="Design your own character and become the star of amazing adventures!"
+            icon={Sparkles}
+            iconColor="text-blue-500"
+            gradient="from-blue-100/95 to-cyan-100/95"
+            badges={[{ text: "Personalization", color: "bg-blue-500 text-white" }]}
             onClick={() => navigate('/kids-stories/create-character')}
-          >
-            <div className="p-6 text-center">
-              <div className="bg-white rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center shadow-lg">
-                <Sparkles className="w-10 h-10 text-blue-500" />
-              </div>
-              <h3 className="text-xl font-bold text-blue-700 mb-2">
-                Create Your Hero! 🦸‍♀️
-              </h3>
-              <p className="text-gray-700 text-sm mb-3">
-                Design your own character and become the star of amazing adventures!
-              </p>
-              <Badge className="bg-blue-500 text-white shadow-md">Personalization</Badge>
-            </div>
-          </Card>
+            delay={0.2}
+          />
 
-          {/* 6. Learn & Play */}
-          <Card 
-            className="group overflow-hidden bg-gradient-to-br from-yellow-100/95 to-orange-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-yellow-400 transition-all duration-300 hover:scale-105 cursor-pointer shadow-2xl hover:shadow-yellow-300/50 animate-fade-in"
-            style={{ animationDelay: "0.5s" }}
+          <FeatureCard
+            title="Learn & Play! 🎓"
+            description="Fun stories that teach you about numbers, letters, and the world!"
+            icon={Trophy}
+            iconColor="text-yellow-500"
+            gradient="from-yellow-100/95 to-orange-100/95"
+            badges={[{ text: "Educational", color: "bg-yellow-500 text-white" }]}
             onClick={() => navigate('/kids-stories/educational')}
-          >
-            <div className="p-6 text-center">
-              <div className="bg-white rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center shadow-lg">
-                <Trophy className="w-10 h-10 text-yellow-500" />
-              </div>
-              <h3 className="text-xl font-bold text-orange-700 mb-2">
-                Learn & Play! 🎓
-              </h3>
-              <p className="text-gray-700 text-sm mb-3">
-                Fun stories that teach you about numbers, letters, and the world!
-              </p>
-              <Badge className="bg-yellow-500 text-white shadow-md">Educational</Badge>
-            </div>
-          </Card>
+            delay={0.25}
+          />
 
-          {/* 7. Pricing & Plans */}
-          <Card 
-            className="group overflow-hidden bg-gradient-to-br from-pink-100/95 to-rose-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-pink-400 transition-all duration-300 hover:scale-105 cursor-pointer shadow-2xl hover:shadow-pink-300/50 animate-fade-in"
-            style={{ animationDelay: "0.6s" }}
+          <FeatureCard
+            title="Pricing & Plans! 💎"
+            description="Unlock unlimited stories and premium features for your family!"
+            icon={CreditCard}
+            iconColor="text-pink-500"
+            gradient="from-pink-100/95 to-rose-100/95"
+            badges={[{ text: "Premium", color: "bg-pink-500 text-white" }]}
             onClick={() => navigate('/kids-pricing')}
-          >
-            <div className="p-6 text-center">
-              <div className="bg-white rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center shadow-lg">
-                <CreditCard className="w-10 h-10 text-pink-500" />
-              </div>
-              <h3 className="text-xl font-bold text-pink-700 mb-2">
-                Pricing & Plans! 💎
-              </h3>
-              <p className="text-gray-700 text-sm mb-3">
-                Unlock unlimited stories and premium features for your family!
-              </p>
-              <Badge className="bg-pink-500 text-white shadow-md">Premium</Badge>
-            </div>
-          </Card>
+            delay={0.3}
+          />
 
-          {/* 9. Disney Castle World Tour */}
-          <Card 
-            className="group overflow-hidden bg-gradient-to-br from-blue-100/95 to-sky-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-blue-400 transition-all duration-300 hover:scale-105 cursor-pointer shadow-2xl hover:shadow-blue-300/50 animate-fade-in"
-            style={{ animationDelay: "0.8s" }}
+          <FeatureCard
+            title="Disney Castles! 🏰"
+            description="Explore all 6 magical Disney castles around the world in HD 360° tours!"
+            icon={Castle}
+            iconColor="text-blue-500"
+            gradient="from-blue-100/95 to-sky-100/95"
+            badges={[{ text: "Virtual Tour", color: "bg-blue-500 text-white" }]}
             onClick={() => navigate('/kids-channel/disney-castles')}
-          >
-            <div className="p-6 text-center">
-              <div className="bg-white rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center shadow-lg">
-                <Castle className="w-10 h-10 text-blue-500" />
-              </div>
-              <h3 className="text-xl font-bold text-blue-700 mb-2">
-                Disney Castles! 🏰
-              </h3>
-              <p className="text-gray-700 text-sm mb-3">
-                Explore all 6 magical Disney castles around the world in HD 360° tours!
-              </p>
-              <Badge className="bg-blue-500 text-white shadow-md">Virtual Tour</Badge>
-            </div>
-          </Card>
+            delay={0.35}
+          />
 
-          {/* 10. My Magic Library */}
-          <Card 
-            className={`group overflow-hidden bg-gradient-to-br from-amber-100/95 to-yellow-100/95 backdrop-blur-sm border-4 transition-all duration-300 hover:scale-105 cursor-pointer shadow-2xl hover:shadow-amber-300/50 animate-fade-in ${hasGoldPass ? 'border-amber-400 ring-2 ring-amber-300' : 'border-white/60 hover:border-amber-400'}`}
-            style={{ animationDelay: "0.9s" }}
+          <FeatureCard
+            title="My Magic Library! 📚"
+            description="See all your saved stories, drawings, and characters in one place!"
+            icon={Library}
+            iconColor="text-amber-500"
+            gradient="from-amber-100/95 to-yellow-100/95"
+            badges={[{ text: "Portfolio", color: "bg-amber-500 text-white" }]}
             onClick={() => navigate('/kids-channel/my-gallery')}
-          >
-            <div className="p-6 text-center relative">
-              {hasGoldPass && (
-                <div className="absolute top-2 right-2">
-                  <Badge className="bg-green-500 text-white gap-1"><Unlock className="w-3 h-3" /> Unlocked</Badge>
-                </div>
-              )}
-              <div className="bg-white rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center shadow-lg">
-                <Library className="w-10 h-10 text-amber-500" />
-              </div>
-              <h3 className="text-xl font-bold text-amber-700 mb-2">
-                My Magic Library! 📚
-              </h3>
-              <p className="text-gray-700 text-sm mb-3">
-                See all your saved stories, drawings, and characters in one place!
-              </p>
-              <Badge className="bg-amber-500 text-white shadow-md">Portfolio</Badge>
-            </div>
-          </Card>
+            delay={0.4}
+            hasGoldPass={hasGoldPass}
+            showUnlocked
+          />
 
-          {/* 11. Parent Dashboard - Only shown when logged in */}
           {user && (
-            <Card 
-              className={`group overflow-hidden bg-gradient-to-br from-slate-100/95 to-gray-100/95 backdrop-blur-sm border-4 transition-all duration-300 hover:scale-105 cursor-pointer shadow-2xl hover:shadow-slate-300/50 animate-fade-in ${hasGoldPass ? 'border-slate-400 ring-2 ring-slate-300' : 'border-white/60 hover:border-slate-400'}`}
-              style={{ animationDelay: "1.0s" }}
+            <FeatureCard
+              title="Parent Dashboard 👨‍👩‍👧"
+              description="View progress reports and set screen time limits."
+              icon={BarChart3}
+              iconColor="text-slate-500"
+              gradient="from-slate-100/95 to-gray-100/95"
+              badges={[
+                { text: "Analytics", color: "bg-slate-500 text-white" },
+                ...(!hasGoldPass ? [{ text: "Gold Pass", color: "border-amber-400 text-amber-600" }] : []),
+              ]}
               onClick={() => navigate('/kids-channel/parental-dashboard')}
-            >
-              <div className="p-6 text-center relative">
-                {hasGoldPass && (
-                  <div className="absolute top-2 right-2">
-                    <Badge className="bg-green-500 text-white gap-1"><Unlock className="w-3 h-3" /> Unlocked</Badge>
-                  </div>
-                )}
-                <div className="bg-white rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center shadow-lg">
-                  <BarChart3 className="w-10 h-10 text-slate-500" />
-                </div>
-                <h3 className="text-xl font-bold text-slate-700 mb-2">
-                  Parent Dashboard 👨‍👩‍👧
-                </h3>
-                <p className="text-gray-700 text-sm mb-3">
-                  View progress reports and set screen time limits.
-                </p>
-                <div className="flex gap-2 justify-center flex-wrap">
-                  <Badge className="bg-slate-500 text-white shadow-md">Analytics</Badge>
-                  {!hasGoldPass && <Badge variant="outline" className="border-amber-400 text-amber-600">Gold Pass</Badge>}
-                </div>
-              </div>
-            </Card>
+              delay={0.45}
+              hasGoldPass={hasGoldPass}
+              showUnlocked
+            />
           )}
+        </div>
+
+        {/* Adventure Map + Badges */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-7xl mx-auto mb-8">
+          <AdventureMap />
+          <KidsProfileBadges />
         </div>
       </div>
 
       <style>{`
-        @keyframes gradient-shift {
-          0%, 100% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-        }
-        
         @keyframes float {
           0%, 100% { transform: translateY(0px) rotate(0deg); }
           50% { transform: translateY(-20px) rotate(10deg); }
         }
-        
-        @keyframes float-delayed {
-          0%, 100% { transform: translateY(0px) rotate(0deg); }
-          50% { transform: translateY(-30px) rotate(-10deg); }
-        }
-        
-        @keyframes cloud {
-          0% { transform: translateX(-100px); }
-          100% { transform: translateX(100vw); }
-        }
-        
-        @keyframes cloud-slow {
-          0% { transform: translateX(-200px); }
-          100% { transform: translateX(100vw); }
-        }
-        
-        .animate-gradient-shift {
-          background-size: 200% 200%;
-          animation: gradient-shift 15s ease infinite;
-        }
-        
-        .animate-float {
-          animation: float 6s ease-in-out infinite;
-        }
-        
-        .animate-float-delayed {
-          animation: float-delayed 8s ease-in-out infinite;
-        }
-        
-        .animate-cloud {
-          animation: cloud 60s linear infinite;
-        }
-        
-        .animate-cloud-slow {
-          animation: cloud-slow 90s linear infinite;
-        }
+        .animate-float { animation: float 6s ease-in-out infinite; }
       `}</style>
 
-      {/* Safe Content Badge Footer */}
+      {/* Footer */}
       <div className="relative z-10 container mx-auto px-4 pb-8">
         <SafeContentBadge />
       </div>
 
-      {/* Parental Gate Dialog */}
+      {/* Parental Gate */}
       <ParentalGate
         isOpen={showParentalGate}
         onSuccess={handleParentalGateSuccess}
@@ -587,6 +477,9 @@ const KidsChannel = () => {
         }}
         featureName={pendingFeatureName}
       />
+
+      {/* Mascot Guide */}
+      <MascotGuide />
 
       {/* Smart Sleep Timer */}
       <SmartSleepTimer />
