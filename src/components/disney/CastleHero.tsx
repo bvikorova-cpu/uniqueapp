@@ -30,14 +30,14 @@ export function CastleHero({ stampsCount, totalCastles, visitedCount }: CastleHe
         <motion.span
           key={i}
           className="absolute text-2xl md:text-3xl pointer-events-none select-none opacity-60"
-          style={{ left: `${5 + i * 9.5}%`, top: `${15 + (i % 4) * 20}%` }}
+          style={{ left: `${item.left}%`, top: `${item.top}%` }}
           animate={{
             y: [0, -15, 0],
             rotate: [0, i % 2 === 0 ? 10 : -10, 0],
           }}
           transition={{ duration: 3 + i * 0.4, repeat: Infinity, ease: "easeInOut", delay: i * 0.15 }}
         >
-          {item}
+          {item.emoji}
         </motion.span>
       ))}
 
