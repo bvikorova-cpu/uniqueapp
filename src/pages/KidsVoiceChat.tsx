@@ -2,15 +2,25 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, MessageCircle } from "lucide-react";
+import { ArrowLeft, MessageCircle, Sparkles } from "lucide-react";
 import { characterCategories } from "@/data/kidsCharacters";
 import type { Character } from "@/data/kidsCharacters";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
-import { CharacterCard } from "@/components/kids/CharacterCard";
 import { ParentalGate, useParentalGate } from "@/components/kids/ParentalGate";
 import { SafeContentBadge } from "@/components/kids/SafeContentBadge";
+import { AnimatePresence, motion } from "framer-motion";
+
+// New chat components
+import { AnimatedChatBubble } from "@/components/kids/chat/AnimatedChatBubble";
+import { TypingIndicator } from "@/components/kids/chat/TypingIndicator";
+import { VoiceInputWaveform } from "@/components/kids/chat/VoiceInputWaveform";
+import { CharacterMoodIndicator } from "@/components/kids/chat/CharacterMoodIndicator";
+import { ChatAchievements } from "@/components/kids/chat/ChatAchievements";
+import { StoryModePrompt } from "@/components/kids/chat/StoryModePrompt";
+import { ImmersiveCharacterCard } from "@/components/kids/chat/ImmersiveCharacterCard";
+import { MagicalParticles } from "@/components/kids/chat/MagicalParticles";
 
 export default function KidsVoiceChat() {
   const navigate = useNavigate();
@@ -19,35 +29,40 @@ export default function KidsVoiceChat() {
   const [messages, setMessages] = useState<Array<{ role: string; content: string }>>([]);
   const [inputMessage, setInputMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  
+  const [showStoryMode, setShowStoryMode] = useState(false);
+
+  // Stats tracking (starts from zero)
+  const [messagesSent, setMessagesSent] = useState(0);
+  const [charactersUsed, setCharactersUsed] = useState<Set<string>>(new Set());
+  const [reactionsGiven, setReactionsGiven] = useState(0);
+
   // Parental Gate
   const { checkVerification } = useParentalGate();
   const [showParentalGate, setShowParentalGate] = useState(false);
 
   useEffect(() => {
-    // Check parental gate on mount
     if (!checkVerification()) {
       setShowParentalGate(true);
     }
   }, []);
 
-  const sendMessage = async () => {
-    if (!inputMessage.trim() || !selectedCharacter || isLoading) return;
+  const sendMessage = async (overrideMessage?: string) => {
+    const msgText = overrideMessage || inputMessage.trim();
+    if (!msgText || !selectedCharacter || isLoading) return;
 
-    const userMessage = { role: "user", content: inputMessage };
+    const userMessage = { role: "user", content: msgText };
     const newMessages = [...messages, userMessage];
     setMessages(newMessages);
     setInputMessage("");
     setIsLoading(true);
+    setMessagesSent(prev => prev + 1);
 
     try {
       const response = await fetch(
         'https://jufrdzeonywluwutvyxz.supabase.co/functions/v1/kids-character-chat',
         {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             messages: newMessages,
             characterName: selectedCharacter.name,
@@ -56,9 +71,7 @@ export default function KidsVoiceChat() {
         }
       );
 
-      if (!response.ok || !response.body) {
-        throw new Error('Failed to get response');
-      }
+      if (!response.ok || !response.body) throw new Error('Failed to get response');
 
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
@@ -74,9 +87,7 @@ export default function KidsVoiceChat() {
         const lines = chunk.split('\n');
 
         for (const line of lines) {
-          if (!line.trim() || line.startsWith(':')) continue;
-          if (!line.startsWith('data: ')) continue;
-
+          if (!line.trim() || line.startsWith(':') || !line.startsWith('data: ')) continue;
           const jsonStr = line.slice(6).trim();
           if (jsonStr === '[DONE]') break;
 
@@ -91,18 +102,12 @@ export default function KidsVoiceChat() {
                 return updated;
               });
             }
-          } catch (e) {
-            // Ignore parsing errors for incomplete JSON
-          }
+          } catch {}
         }
       }
     } catch (error) {
       console.error('Chat error:', error);
-      toast({
-        title: "Error",
-        description: "Failed to send message. Please try again.",
-        variant: "destructive",
-      });
+      toast({ title: "Error", description: "Failed to send message. Please try again.", variant: "destructive" });
       setMessages(prev => prev.slice(0, -1));
     } finally {
       setIsLoading(false);
@@ -111,134 +116,228 @@ export default function KidsVoiceChat() {
 
   const startNewChat = (character: Character) => {
     setSelectedCharacter(character);
+    setCharactersUsed(prev => new Set(prev).add(character.id));
+    setShowStoryMode(true);
     setMessages([
-      {
-        role: "assistant",
-        content: `Hi! I'm ${character.name}! What would you like to talk about?`,
-      },
+      { role: "assistant", content: `Hi! I'm ${character.name}! ${character.emoji} What would you like to talk about? We can chat, or try Story Mode for an interactive adventure!` },
     ]);
   };
 
+  const handleStorySelect = (prompt: string) => {
+    setShowStoryMode(false);
+    sendMessage(prompt);
+  };
+
+  const lastUserMessage = messages.filter(m => m.role === "user").pop()?.content;
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-100 via-emerald-100 to-teal-100">
-      <div className="container mx-auto px-4 pt-24 pb-12">
-        <Button
-          variant="ghost"
-          onClick={() => navigate("/kids-channel")}
-          className="mb-6 hover:bg-white/50"
-        >
+    <div className="min-h-screen bg-gradient-to-b from-violet-100 via-pink-50 to-cyan-100 relative overflow-hidden">
+      <MagicalParticles count={10} />
+
+      <div className="container mx-auto px-4 pt-24 pb-12 relative z-10">
+        <Button variant="ghost" onClick={() => navigate("/kids-channel")} className="mb-6 hover:bg-white/50">
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Kids Channel
         </Button>
 
-        <div className="max-w-6xl mx-auto space-y-8">
-          <div className="text-center">
-            <h1 className="text-5xl font-bold text-green-700 mb-4">
-              💬 Chat with Characters!
-            </h1>
-            <p className="text-xl text-gray-700">
-              Choose a character and start chatting!
-            </p>
-          </div>
+        <div className="max-w-7xl mx-auto">
+          {/* Hero */}
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center mb-8"
+          >
+            <motion.h1
+              className="text-5xl md:text-6xl font-black bg-gradient-to-r from-violet-600 via-pink-500 to-cyan-500 bg-clip-text text-transparent mb-3"
+              animate={{ backgroundPosition: ["0%", "100%", "0%"] }}
+              transition={{ duration: 5, repeat: Infinity }}
+              style={{ backgroundSize: "200%" }}
+            >
+              💬 Character Chat
+            </motion.h1>
+            <p className="text-lg text-gray-600">Choose a character and start an amazing conversation!</p>
+          </motion.div>
 
           {!selectedCharacter ? (
+            /* Character Selection */
             <div className="space-y-8">
-              {characterCategories.map((category) => (
-                <Card key={category.id} className="p-6 bg-white/90 backdrop-blur-sm">
-                  <h2 className="text-2xl font-bold text-gray-800 mb-4">
-                    {category.name}
-                  </h2>
-                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-                    {category.characters.map((character) => (
-                      <CharacterCard
-                        key={character.id}
-                        character={character}
-                        onClick={() => startNewChat(character)}
-                      />
-                    ))}
-                  </div>
-                </Card>
+              {characterCategories.map((category, catIdx) => (
+                <motion.div
+                  key={category.id}
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: catIdx * 0.1 }}
+                >
+                  <Card className="p-6 bg-white/80 backdrop-blur-md border-white/50 shadow-xl">
+                    <h2 className="text-2xl font-bold text-gray-800 mb-4">{category.name}</h2>
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                      {category.characters.map((character, charIdx) => (
+                        <ImmersiveCharacterCard
+                          key={character.id}
+                          character={character}
+                          onClick={() => startNewChat(character)}
+                          index={charIdx}
+                        />
+                      ))}
+                    </div>
+                  </Card>
+                </motion.div>
               ))}
             </div>
           ) : (
-            <Card className="p-6 bg-white/90 backdrop-blur-sm">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-3">
-                  <span className="text-4xl">{selectedCharacter.emoji}</span>
-                  <h2 className="text-2xl font-bold text-gray-800">
-                    {selectedCharacter.name}
-                  </h2>
-                </div>
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    setSelectedCharacter(null);
-                    setMessages([]);
-                  }}
-                >
-                  Choose Another Character
-                </Button>
-              </div>
-
-              <ScrollArea className="h-[400px] mb-4 p-4 border rounded-lg bg-white/50">
-                <div className="space-y-4">
-                  {messages.map((message, index) => (
-                    <div
-                      key={index}
-                      className={`flex ${
-                        message.role === "user" ? "justify-end" : "justify-start"
-                      }`}
-                    >
-                      <div
-                        className={`max-w-[80%] rounded-lg p-3 ${
-                          message.role === "user"
-                            ? "bg-blue-500 text-white"
-                            : `bg-gradient-to-br ${selectedCharacter.color} text-white`
-                        }`}
-                      >
-                        {message.content}
+            /* Chat Interface */
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+              {/* Main Chat */}
+              <div className="lg:col-span-3">
+                <Card className="bg-white/85 backdrop-blur-md border-white/50 shadow-xl overflow-hidden">
+                  {/* Chat Header */}
+                  <div className={`bg-gradient-to-r ${selectedCharacter.color} p-4`}>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <motion.span
+                          className="text-4xl"
+                          animate={{ rotate: [0, -10, 10, 0] }}
+                          transition={{ repeat: Infinity, duration: 3 }}
+                        >
+                          {selectedCharacter.emoji}
+                        </motion.span>
+                        <div>
+                          <h2 className="text-xl font-bold text-white">{selectedCharacter.name}</h2>
+                          <CharacterMoodIndicator
+                            character={selectedCharacter}
+                            messageCount={messages.length}
+                            lastMessage={lastUserMessage}
+                          />
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          variant="secondary"
+                          size="sm"
+                          onClick={() => setShowStoryMode(!showStoryMode)}
+                          className="bg-white/20 text-white hover:bg-white/30 border-0"
+                        >
+                          <Sparkles className="h-4 w-4 mr-1" /> Story Mode
+                        </Button>
+                        <Button
+                          variant="secondary"
+                          size="sm"
+                          onClick={() => { setSelectedCharacter(null); setMessages([]); setShowStoryMode(false); }}
+                          className="bg-white/20 text-white hover:bg-white/30 border-0"
+                        >
+                          Change Character
+                        </Button>
                       </div>
                     </div>
-                  ))}
-                </div>
-              </ScrollArea>
+                  </div>
 
-              <div className="flex gap-2">
-                <Input
-                  value={inputMessage}
-                  onChange={(e) => setInputMessage(e.target.value)}
-                  onKeyPress={(e) => e.key === "Enter" && sendMessage()}
-                  placeholder="Type your message..."
-                  disabled={isLoading}
-                  className="flex-1"
-                />
-                <Button
-                  onClick={sendMessage}
-                  disabled={isLoading || !inputMessage.trim()}
-                  className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600"
-                >
-                  <MessageCircle className="h-4 w-4" />
-                </Button>
+                  {/* Story Mode Prompt */}
+                  <AnimatePresence>
+                    {showStoryMode && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        className="overflow-hidden"
+                      >
+                        <div className="p-4 border-b">
+                          <StoryModePrompt
+                            characterName={selectedCharacter.name}
+                            onSelectStory={handleStorySelect}
+                          />
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+
+                  {/* Messages */}
+                  <ScrollArea className="h-[450px] p-4">
+                    <div className="space-y-4">
+                      {messages.map((message, index) => (
+                        <AnimatedChatBubble
+                          key={index}
+                          message={message}
+                          character={selectedCharacter}
+                          index={index}
+                          onReaction={() => setReactionsGiven(prev => prev + 1)}
+                        />
+                      ))}
+                      <AnimatePresence>
+                        {isLoading && <TypingIndicator character={selectedCharacter} />}
+                      </AnimatePresence>
+                    </div>
+                  </ScrollArea>
+
+                  {/* Input Area */}
+                  <div className="p-4 border-t bg-white/50">
+                    <div className="flex gap-2 items-center">
+                      <Input
+                        value={inputMessage}
+                        onChange={(e) => setInputMessage(e.target.value)}
+                        onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+                        placeholder="Type your message..."
+                        disabled={isLoading}
+                        className="flex-1 rounded-full border-2 border-purple-200 focus:border-purple-400 px-4"
+                      />
+                      <VoiceInputWaveform
+                        onTranscript={(text) => { setInputMessage(text); }}
+                        disabled={isLoading}
+                      />
+                      <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+                        <Button
+                          onClick={() => sendMessage()}
+                          disabled={isLoading || !inputMessage.trim()}
+                          className="rounded-full h-10 w-10 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 p-0"
+                        >
+                          <MessageCircle className="h-4 w-4" />
+                        </Button>
+                      </motion.div>
+                    </div>
+                  </div>
+                </Card>
               </div>
-            </Card>
+
+              {/* Sidebar */}
+              <div className="space-y-4">
+                <Card className="p-4 bg-white/85 backdrop-blur-md border-white/50 shadow-xl">
+                  <ChatAchievements
+                    messagesSent={messagesSent}
+                    charactersUsed={charactersUsed.size}
+                    reactionsGiven={reactionsGiven}
+                  />
+                </Card>
+
+                <Card className="p-4 bg-white/85 backdrop-blur-md border-white/50 shadow-xl">
+                  <h3 className="text-sm font-bold text-gray-700 mb-3">📊 Chat Stats</h3>
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-500">Messages Sent</span>
+                      <span className="font-bold text-purple-600">{messagesSent}</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-500">Characters Met</span>
+                      <span className="font-bold text-pink-600">{charactersUsed.size}</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-500">Reactions Given</span>
+                      <span className="font-bold text-orange-600">{reactionsGiven}</span>
+                    </div>
+                  </div>
+                </Card>
+
+                <SafeContentBadge />
+              </div>
+            </div>
           )}
         </div>
-        
-        {/* Safe Content Badge */}
-        <div className="max-w-2xl mx-auto mt-8">
-          <SafeContentBadge />
-        </div>
       </div>
-      
-      {/* Parental Gate Dialog */}
+
+      {/* Parental Gate */}
       <ParentalGate
         isOpen={showParentalGate}
         onSuccess={() => setShowParentalGate(false)}
         onClose={() => {
-          // Redirect back if gate not verified
-          if (!checkVerification()) {
-            navigate('/kids-channel');
-          }
+          if (!checkVerification()) navigate('/kids-channel');
           setShowParentalGate(false);
         }}
         featureName="Character Chat"
