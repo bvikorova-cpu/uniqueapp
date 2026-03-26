@@ -77,23 +77,23 @@ const KidsScienceLab = () => {
     setCategory(template.category);
     setHypothesis(template.hypothesis);
     setObservations(template.observations);
-    toast.success("Šablóna načítaná! Prejdi na experiment.");
+    toast.success("Template loaded! Go to the Experiment tab.");
   };
 
   const handleAnalyze = async () => {
     if (!category || !hypothesis.trim() || !observations.trim()) {
-      toast.error("Vyplň všetky polia");
+      toast.error("Please fill in all fields");
       return;
     }
     if (!subscription.subscribed && subscription.experiments_used >= subscription.experiments_limit) {
-      toast.error("Mesačný limit dosiahnutý! Upgradni na Premium.");
+      toast.error("Monthly limit reached! Upgrade to Premium.");
       return;
     }
 
     setLoading(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) { toast.error("Prihlás sa na analýzu experimentov"); return; }
+      if (!user) { toast.error("Please sign in to analyze experiments"); return; }
 
       const { data, error } = await supabase.functions.invoke('kids-science-lab', {
         body: { category, hypothesis, observations, difficulty }
@@ -103,10 +103,10 @@ const KidsScienceLab = () => {
       setResult(data);
       setShowQuiz(true);
       await incrementUsage();
-      toast.success("AI analyzovala tvoj experiment! 🔬");
+      toast.success("AI analyzed your experiment! 🔬");
     } catch (error: any) {
       console.error('Error:', error);
-      toast.error(error.message || "Nepodarilo sa analyzovať experiment");
+      toast.error(error.message || "Failed to analyze experiment");
     } finally {
       setLoading(false);
     }
@@ -139,14 +139,14 @@ const KidsScienceLab = () => {
           <Alert className="border-2 border-orange-500 bg-gradient-to-r from-orange-500/20 to-red-500/20 shadow-lg">
             <AlertTriangle className="h-6 w-6 text-orange-600" />
             <AlertDescription className="ml-2 text-base font-semibold text-orange-800 dark:text-orange-200">
-              ⚠️ BEZPEČNOSŤ: Všetky experimenty rob s dospelým! Vždy použi ochranné okuliare a rukavice.
+              ⚠️ SAFETY: Always do experiments with an adult! Use protective goggles and gloves.
             </AlertDescription>
           </Alert>
 
           {/* Subscription Banner */}
           {subscription.loading ? (
             <div className="animate-pulse text-center py-4 text-muted-foreground">
-              Načítavam stav predplatného...
+              Loading subscription status...
             </div>
           ) : (
             <ScienceLimitBanner
@@ -168,8 +168,8 @@ const KidsScienceLab = () => {
           <Tabs defaultValue="experiment" className="space-y-6">
             <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="experiment">🔬 Experiment</TabsTrigger>
-              <TabsTrigger value="templates">⚡ Šablóny</TabsTrigger>
-              <TabsTrigger value="tracker">🏅 Úspechy</TabsTrigger>
+              <TabsTrigger value="templates">⚡ Templates</TabsTrigger>
+              <TabsTrigger value="tracker">🏅 Achievements</TabsTrigger>
             </TabsList>
 
             <TabsContent value="experiment" className="space-y-6">
@@ -197,7 +197,7 @@ const KidsScienceLab = () => {
                 <ScienceComprehensionQuiz
                   category={category}
                   onComplete={(xp) => {
-                    toast.success(`Získal/a si +${xp} XP za kvíz! 🧠`);
+                    toast.success(`You earned +${xp} XP from the quiz! 🧠`);
                     setShowQuiz(false);
                   }}
                 />

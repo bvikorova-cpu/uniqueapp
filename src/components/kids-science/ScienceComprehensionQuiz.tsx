@@ -10,33 +10,32 @@ interface QuizQuestion {
   correctIndex: number;
 }
 
-// Generate simple questions based on result
 const generateQuestions = (category: string): QuizQuestion[] => {
   const questions: Record<string, QuizQuestion[]> = {
     physics: [
-      { question: "Čo je sila?", options: ["Pôsobenie na teleso", "Druh energie", "Typ svetla"], correctIndex: 0 },
-      { question: "Čo je gravitácia?", options: ["Magnetizmus", "Príťažlivá sila Zeme", "Typ elektriny"], correctIndex: 1 },
-      { question: "Čo meria teplomer?", options: ["Hmotnosť", "Teplotu", "Rýchlosť"], correctIndex: 1 },
+      { question: "What is force?", options: ["An action on an object", "A type of energy", "A type of light"], correctIndex: 0 },
+      { question: "What is gravity?", options: ["Magnetism", "Earth's attractive force", "A type of electricity"], correctIndex: 1 },
+      { question: "What does a thermometer measure?", options: ["Mass", "Temperature", "Speed"], correctIndex: 1 },
     ],
     chemistry: [
-      { question: "Čo je chemická reakcia?", options: ["Premena látok", "Zmena teploty", "Pohyb molekúl"], correctIndex: 0 },
-      { question: "Čo je H2O?", options: ["Kyslík", "Voda", "Vodík"], correctIndex: 1 },
-      { question: "Čo sú atómy?", options: ["Veľké častice", "Najmenšie častice prvkov", "Typ buniek"], correctIndex: 1 },
+      { question: "What is a chemical reaction?", options: ["Transformation of substances", "Change in temperature", "Movement of molecules"], correctIndex: 0 },
+      { question: "What is H2O?", options: ["Oxygen", "Water", "Hydrogen"], correctIndex: 1 },
+      { question: "What are atoms?", options: ["Large particles", "The smallest particles of elements", "A type of cell"], correctIndex: 1 },
     ],
     biology: [
-      { question: "Čo je bunka?", options: ["Základná jednotka života", "Typ energie", "Druh minerálu"], correctIndex: 0 },
-      { question: "Čo je fotosyntéza?", options: ["Rast zvierat", "Tvorba potravy rastlinami", "Dýchanie"], correctIndex: 1 },
-      { question: "Čo je DNA?", options: ["Typ bunky", "Genetický materiál", "Druh vitamínu"], correctIndex: 1 },
+      { question: "What is a cell?", options: ["The basic unit of life", "A type of energy", "A type of mineral"], correctIndex: 0 },
+      { question: "What is photosynthesis?", options: ["Animal growth", "Food production by plants", "Breathing"], correctIndex: 1 },
+      { question: "What is DNA?", options: ["A type of cell", "Genetic material", "A type of vitamin"], correctIndex: 1 },
     ],
     earth: [
-      { question: "Čo sú tektonické dosky?", options: ["Vrstvy atmosféry", "Kusy zemskej kôry", "Typy hornín"], correctIndex: 1 },
-      { question: "Čo spôsobuje zemetrasenia?", options: ["Vietor", "Pohyb dosiek", "Dážď"], correctIndex: 1 },
-      { question: "Čo je magma?", options: ["Studená hornina", "Roztavená hornina", "Typ minerálu"], correctIndex: 1 },
+      { question: "What are tectonic plates?", options: ["Layers of the atmosphere", "Pieces of Earth's crust", "Types of rocks"], correctIndex: 1 },
+      { question: "What causes earthquakes?", options: ["Wind", "Plate movement", "Rain"], correctIndex: 1 },
+      { question: "What is magma?", options: ["Cold rock", "Molten rock", "A type of mineral"], correctIndex: 1 },
     ],
     astronomy: [
-      { question: "Čo je hviezda?", options: ["Planéta", "Guľa žiariaceho plynu", "Mesiac"], correctIndex: 1 },
-      { question: "Čo je galaxia?", options: ["Jedna hviezda", "Zoskupenie miliárd hviezd", "Planéta"], correctIndex: 1 },
-      { question: "Aká je najbližšia hviezda k Zemi?", options: ["Polárka", "Sirius", "Slnko"], correctIndex: 2 },
+      { question: "What is a star?", options: ["A planet", "A ball of glowing gas", "A moon"], correctIndex: 1 },
+      { question: "What is a galaxy?", options: ["A single star", "A collection of billions of stars", "A planet"], correctIndex: 1 },
+      { question: "What is the closest star to Earth?", options: ["Polaris", "Sirius", "The Sun"], correctIndex: 2 },
     ],
   };
   return questions[category] || questions.physics;
@@ -84,10 +83,10 @@ export const ScienceComprehensionQuiz = ({ category, onComplete }: ScienceCompre
             {score === questions.length ? "🏆" : score >= 2 ? "🎉" : "📚"}
           </motion.div>
           <h3 className="text-xl font-bold mb-2">
-            {score === questions.length ? "Perfektné!" : score >= 2 ? "Skvelé!" : "Pokračuj v učení!"}
+            {score === questions.length ? "Perfect!" : score >= 2 ? "Great job!" : "Keep learning!"}
           </h3>
           <p className="text-muted-foreground">
-            {score}/{questions.length} správne • <span className="text-emerald-500 font-bold">+{score * 5} XP</span>
+            {score}/{questions.length} correct • <span className="text-emerald-500 font-bold">+{score * 5} XP</span>
           </p>
         </CardContent>
       </Card>
@@ -100,7 +99,7 @@ export const ScienceComprehensionQuiz = ({ category, onComplete }: ScienceCompre
     <Card className="border-purple-500/30 bg-gradient-to-br from-purple-500/10 to-indigo-500/10">
       <CardHeader>
         <CardTitle className="text-lg flex items-center gap-2">
-          🧠 Kvíz — Pochopil/a si?
+          🧠 Quiz — Did you understand?
           <span className="text-sm font-normal text-muted-foreground ml-auto">
             {currentQ + 1}/{questions.length}
           </span>
