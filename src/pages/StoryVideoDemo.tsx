@@ -131,7 +131,7 @@ const StoryVideoDemo = () => {
         ) : (
           <div className="grid lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2 space-y-6">
-              <StoryWizardForm onGenerate={handleGenerate} loading={loading} />
+              <StoryWizardForm onGenerate={handleGenerate} loading={loading} initialTheme={templateTheme} />
             </div>
             <div className="space-y-6">
               <StoryTemplates onSelect={handleTemplateSelect} />

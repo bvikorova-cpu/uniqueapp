@@ -13,6 +13,7 @@ interface StoryWizardFormProps {
     sceneDuration: number;
   }) => void;
   loading: boolean;
+  initialTheme?: string;
 }
 
 const LANGUAGES = [
