@@ -5,6 +5,23 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Sparkles, Star } from "lucide-react";
 
+import templateCutePuppy from "@/assets/coloring/template-cute-puppy.jpg";
+import templateMajesticLion from "@/assets/coloring/template-majestic-lion.jpg";
+import templateMandalaFlower from "@/assets/coloring/template-mandala-flower.jpg";
+import templateOceanMandala from "@/assets/coloring/template-ocean-mandala.jpg";
+import templateFireDragon from "@/assets/coloring/template-fire-dragon.jpg";
+import templateUnicornCastle from "@/assets/coloring/template-unicorn-castle.jpg";
+import templateSpringGarden from "@/assets/coloring/template-spring-garden.jpg";
+import templateForestScene from "@/assets/coloring/template-forest-scene.jpg";
+import templateRaceCar from "@/assets/coloring/template-race-car.jpg";
+import templateSpaceShuttle from "@/assets/coloring/template-space-shuttle.jpg";
+import templateChristmasTree from "@/assets/coloring/template-christmas-tree.jpg";
+import templateEasterEggs from "@/assets/coloring/template-easter-eggs.jpg";
+import templateSolarSystem from "@/assets/coloring/template-solar-system.jpg";
+import templateHumanBody from "@/assets/coloring/template-human-body.jpg";
+import templateButterflyCollection from "@/assets/coloring/template-butterfly-collection.jpg";
+import templateZenGarden from "@/assets/coloring/template-zen-garden.jpg";
+
 const CATEGORIES = [
   { id: "all", label: "All", emoji: "✨" },
   { id: "animals", label: "Animals", emoji: "🐾" },
