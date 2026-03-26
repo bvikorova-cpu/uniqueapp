@@ -29,6 +29,7 @@ import { TrendingHashtags } from "./TrendingHashtags";
 import { StreaksAndChallenges } from "./StreaksAndChallenges";
 import { LiveStreamWidget } from "./LiveStreamWidget";
 import { AudioRooms } from "./AudioRooms";
+import { ThemeColorSwitcher } from "./ThemeColorSwitcher";
 
 interface MobileWallMenuProps {
   onPostCreated?: () => void;
@@ -211,6 +212,11 @@ export function MobileWallMenu({ onPostCreated }: MobileWallMenuProps) {
             </Button>
             <NotificationBell />
           </div>
+
+          <div className="h-px bg-border" />
+
+          {/* Theme Color Switcher */}
+          <ThemeColorSwitcher />
 
           <div className="h-px bg-border" />
 
