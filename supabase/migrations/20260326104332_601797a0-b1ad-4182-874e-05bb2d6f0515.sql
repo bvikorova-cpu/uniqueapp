@@ -1,0 +1,1 @@
+UPDATE disney_castles SET name = 'Tokyo Cinderella Castle' WHERE id = 'd60bcb41-1044-4d6b-8931-993aa4c08d42';
