@@ -3,6 +3,17 @@ import { Briefcase, Sparkles, Rocket, GraduationCap, Target, TrendingUp } from "
 
 const floatingEmojis = ["🎓", "💼", "🚀", "⭐", "🎯", "💡", "🏆", "📊"];
 
+const emojiPositions = [
+  { left: "8%", top: "8%" },
+  { left: "20%", top: "55%" },
+  { left: "75%", top: "10%" },
+  { left: "40%", top: "45%" },
+  { left: "85%", top: "55%" },
+  { left: "65%", top: "30%" },
+  { left: "80%", top: "3%" },
+  { left: "90%", top: "42%" },
+];
+
 const mascots = [
   { icon: GraduationCap, color: "text-primary", label: "Education" },
   { icon: Briefcase, color: "text-accent", label: "Career" },
@@ -18,8 +29,8 @@ export const CareerHero = () => {
           key={i}
           className="absolute text-xl sm:text-2xl pointer-events-none select-none"
           style={{
-            left: `${10 + (i * 11) % 80}%`,
-            top: `${5 + (i * 17) % 70}%`,
+            left: emojiPositions[i].left,
+            top: emojiPositions[i].top,
           }}
           animate={{
             y: [0, -15, 0],
