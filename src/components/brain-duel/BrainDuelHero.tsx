@@ -34,11 +34,6 @@ export const BrainDuelHero = ({ onlineCount, userId, totalMatches = 0 }: BrainDu
         transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
       />
 
-      {/* Grid pattern overlay */}
-      <div className="absolute inset-0 opacity-[0.03]" style={{
-        backgroundImage: "linear-gradient(hsl(var(--primary)) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--primary)) 1px, transparent 1px)",
-        backgroundSize: "40px 40px"
-      }} />
 
       {/* Floating icons */}
       {floatingIcons.map((item, i) => {
