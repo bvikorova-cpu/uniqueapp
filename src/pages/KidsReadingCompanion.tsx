@@ -2,32 +2,46 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { BookOpen, HelpCircle, Award, Sparkles, Lock } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { BookOpen, Lock, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { useTranslation } from "react-i18next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useKidsReadingSubscription } from "@/hooks/useKidsReadingSubscription";
 import { Progress } from "@/components/ui/progress";
 import { ParentalGate } from "@/components/kids/ParentalGate";
 import { useNavigate } from "react-router-dom";
+import { ReadingHero } from "@/components/kids-reading/ReadingHero";
+import { ReadingLevelSelector } from "@/components/kids-reading/ReadingLevelSelector";
+import { ReadingStreakDashboard } from "@/components/kids-reading/ReadingStreakDashboard";
+import { TextDifficultyScanner } from "@/components/kids-reading/TextDifficultyScanner";
+import { InteractiveResults } from "@/components/kids-reading/InteractiveResults";
+import { VocabularyFlashcardGame } from "@/components/kids-reading/VocabularyFlashcardGame";
+import { MultiQuestionQuiz } from "@/components/kids-reading/MultiQuestionQuiz";
 
 const PARENTAL_GATE_KEY = "parental_gate_verified_kids_reading_companion";
 
 const KidsReadingCompanion = () => {
-  const { t } = useTranslation();
   const navigate = useNavigate();
   const [bookText, setBookText] = useState("");
   const [loading, setLoading] = useState(false);
   const [analysis, setAnalysis] = useState<any>(null);
-  const [showQuiz, setShowQuiz] = useState(false);
   const [quiz, setQuiz] = useState<any>(null);
-  const [selectedAnswer, setSelectedAnswer] = useState<string>("");
+  const [readingLevel, setReadingLevel] = useState("intermediate");
+  const [activeView, setActiveView] = useState<"input" | "results" | "flashcards" | "quiz">("input");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const { subscription, createCheckout, incrementAnalysisUsage, incrementQuizUsage } = useKidsReadingSubscription();
 
-  // PARENTAL GATE STATE - BLOCK BY DEFAULT
+  // Stats (local for now)
+  const [stats, setStats] = useState({
+    textsAnalyzed: 0,
+    wordsLearned: 0,
+    quizzesTaken: 0,
+    currentStreak: 0,
+  });
+
+  // Parental gate
   const [isVerified, setIsVerified] = useState<boolean>(() => {
     const stored = sessionStorage.getItem(PARENTAL_GATE_KEY);
     if (!stored) return false;
@@ -42,14 +56,10 @@ const KidsReadingCompanion = () => {
     }
   });
 
-  // Keep session-based verification honest while the user stays on the page
   useEffect(() => {
     const tick = () => {
       const stored = sessionStorage.getItem(PARENTAL_GATE_KEY);
-      if (!stored) {
-        if (isVerified) setIsVerified(false);
-        return;
-      }
+      if (!stored) { if (isVerified) setIsVerified(false); return; }
       try {
         const { expiresAt } = JSON.parse(stored);
         if (Date.now() >= expiresAt) {
@@ -61,40 +71,23 @@ const KidsReadingCompanion = () => {
         if (isVerified) setIsVerified(false);
       }
     };
-
     const interval = setInterval(tick, 30_000);
     return () => clearInterval(interval);
   }, [isVerified]);
-
-  const handleVerificationSuccess = () => {
-    setIsVerified(true);
-  };
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setIsAuthenticated(!!session);
     });
-
-    const { data: { subscription: authSubscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: { subscription: authSub } } = supabase.auth.onAuthStateChange((_, session) => {
       setIsAuthenticated(!!session);
     });
-
-    return () => {
-      authSubscription.unsubscribe();
-    };
+    return () => { authSub.unsubscribe(); };
   }, []);
 
   const analyzeText = async () => {
-    if (!bookText.trim()) {
-      toast.error("Please paste some text to read");
-      return;
-    }
-
-    if (!isAuthenticated) {
-      toast.error("Please sign in to use this feature");
-      return;
-    }
-
+    if (!bookText.trim()) { toast.error("Please paste some text to analyze"); return; }
+    if (!isAuthenticated) { toast.error("Please sign in to use this feature"); return; }
     if (!subscription.subscribed && subscription.analyses_used >= subscription.analyses_limit) {
       toast.error("You've reached your free limit. Subscribe for unlimited access!");
       return;
@@ -103,13 +96,17 @@ const KidsReadingCompanion = () => {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke('kids-reading-companion', {
-        body: { text: bookText, action: 'analyze' }
+        body: { text: bookText, action: 'analyze', level: readingLevel }
       });
-
       if (error) throw error;
-      
       setAnalysis(data);
+      setActiveView("results");
       await incrementAnalysisUsage();
+      setStats(prev => ({
+        ...prev,
+        textsAnalyzed: prev.textsAnalyzed + 1,
+        wordsLearned: prev.wordsLearned + (data.vocabulary?.length || 0),
+      }));
       toast.success("Text analyzed! 📖");
     } catch (error: any) {
       console.error('Error:', error);
@@ -120,11 +117,7 @@ const KidsReadingCompanion = () => {
   };
 
   const generateQuiz = async () => {
-    if (!isAuthenticated) {
-      toast.error("Please sign in to use this feature");
-      return;
-    }
-
+    if (!isAuthenticated) { toast.error("Please sign in to use this feature"); return; }
     if (!subscription.subscribed && subscription.quizzes_used >= subscription.quizzes_limit) {
       toast.error("You've reached your free limit. Subscribe for unlimited access!");
       return;
@@ -133,13 +126,11 @@ const KidsReadingCompanion = () => {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke('kids-reading-companion', {
-        body: { text: bookText, action: 'quiz' }
+        body: { text: bookText, action: 'multi-quiz', level: readingLevel }
       });
-
       if (error) throw error;
-      
       setQuiz(data);
-      setShowQuiz(true);
+      setActiveView("quiz");
       await incrementQuizUsage();
       toast.success("Quiz ready! 🎯");
     } catch (error: any) {
@@ -150,28 +141,14 @@ const KidsReadingCompanion = () => {
     }
   };
 
-  const checkAnswer = () => {
-    if (!selectedAnswer || !quiz) return;
-
-    const isCorrect = selectedAnswer === quiz.correctAnswer;
-    if (isCorrect) {
-      toast.success("Correct! Great job! 🎉");
-    } else {
-      toast.error(`Not quite! The answer is: ${quiz.correctAnswer}`);
-    }
-  };
-
-  // ========== BLOCKING PARENTAL GATE ==========
   if (!isVerified) {
     return (
       <div className="min-h-screen">
         <ParentalGate
           isOpen={true}
           storageKey={PARENTAL_GATE_KEY}
-          onSuccess={handleVerificationSuccess}
-          onCancel={() => {
-            navigate("/");
-          }}
+          onSuccess={() => setIsVerified(true)}
+          onCancel={() => navigate("/")}
           featureName="AI Reading Companion"
         />
       </div>
@@ -183,237 +160,206 @@ const KidsReadingCompanion = () => {
       <Navbar />
       <main className="container mx-auto px-4 py-8 mt-16">
         <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-8">
-            <h1 className="text-4xl font-black mb-4 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
-              Kids Reading Companion
-            </h1>
-            <p className="text-muted-foreground mb-4">
-              AI-powered reading assistant that helps children understand texts better through simplified explanations and interactive quizzes
-            </p>
-          </div>
+          <ReadingHero />
 
-          {/* How to Use Section */}
-          <Card className="mb-6 border-2 border-primary/20">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-xl">
-                <HelpCircle className="w-5 h-5 text-primary" />
-                How to Use This Tool
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-3">
-                <div className="flex gap-3">
-                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary">
-                    1
-                  </div>
-                  <div>
-                    <h4 className="font-semibold mb-1">Copy Your Text</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Copy any text from your book, article, homework, or any reading material you want to understand better.
-                    </p>
-                  </div>
-                </div>
+          <ReadingStreakDashboard {...stats} />
 
-                <div className="flex gap-3">
-                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary">
-                    2
+          {/* Subscription status */}
+          {!subscription.loading && (
+            <Card className="mb-6 border border-border/50">
+              <CardContent className="pt-4 pb-4">
+                {subscription.subscribed ? (
+                  <div className="flex items-center justify-center gap-2 text-sm">
+                    <Sparkles className="w-4 h-4 text-primary" />
+                    <span className="font-semibold text-primary">Premium Active — Unlimited Access</span>
                   </div>
-                  <div>
-                    <h4 className="font-semibold mb-1">Paste & Analyze</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Paste the text in the box below and click "Analyze Text". Our AI will create a simple summary and explain difficult words in a kid-friendly way.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex gap-3">
-                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary">
-                    3
-                  </div>
-                  <div>
-                    <h4 className="font-semibold mb-1">Test Your Understanding</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Click "Take Quiz" to answer a fun question about the text. This helps you check if you really understood what you read!
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex gap-3">
-                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary">
-                    4
-                  </div>
-                  <div>
-                    <h4 className="font-semibold mb-1">Learn & Grow</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Free users get 1 analysis and 1 quiz per month. Premium members enjoy unlimited access to help with all their reading!
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-primary/5 p-4 rounded-lg border border-primary/10">
-                <p className="text-sm text-muted-foreground">
-                  <span className="font-semibold text-foreground">💡 Pro Tip:</span> The longer and more detailed your text, the better the AI can help you understand it. Try pasting a full paragraph or several sentences for best results!
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-
-          <div className="text-center">            
-            {!subscription.loading && (
-              <Card className="mb-6">
-                <CardContent className="pt-6">
-                  {subscription.subscribed ? (
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-center gap-2 text-green-600">
-                        <Sparkles className="w-5 h-5" />
-                        <span className="font-semibold">Premium Active - Unlimited Access</span>
-                      </div>
-                      <p className="text-sm text-muted-foreground">
-                        Active until: {subscription.subscription_end ? new Date(subscription.subscription_end).toLocaleDateString() : 'N/A'}
-                      </p>
+                ) : isAuthenticated ? (
+                  <div className="space-y-3">
+                    <div className="flex justify-between text-xs text-muted-foreground">
+                      <span>Analyses: {subscription.analyses_used}/{subscription.analyses_limit === 999999 ? '∞' : subscription.analyses_limit}</span>
+                      <span>Quizzes: {subscription.quizzes_used}/{subscription.quizzes_limit === 999999 ? '∞' : subscription.quizzes_limit}</span>
                     </div>
-                  ) : isAuthenticated ? (
-                    <div className="space-y-4">
-                      <div className="space-y-2">
-                        <div className="flex justify-between text-sm">
-                          <span>Text Analyses: {subscription.analyses_used}/{subscription.analyses_limit === 999999 ? 'Unlimited' : subscription.analyses_limit}</span>
-                          <span>Quizzes: {subscription.quizzes_used}/{subscription.quizzes_limit === 999999 ? 'Unlimited' : subscription.quizzes_limit}</span>
-                        </div>
-                        <Progress value={subscription.analyses_limit === 999999 ? 0 : (subscription.analyses_used / subscription.analyses_limit) * 100} className="h-2" />
-                      </div>
-                      <div className="flex items-center justify-center gap-4 pt-2">
-                        <Button onClick={createCheckout} size="lg" className="gap-2">
-                          <Sparkles className="w-4 h-4" />
-                          Get Premium - €5/month
-                        </Button>
-                      </div>
-                      <p className="text-xs text-muted-foreground">
-                        Unlimited analyses & quizzes • Cancel anytime
-                      </p>
-                    </div>
-                  ) : (
-                    <div className="space-y-3">
-                      <p className="text-muted-foreground">Sign in to start your free trial</p>
-                      <Button size="lg" variant="outline">Sign In</Button>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            )}
-          </div>
-
-          <Card className="mb-6">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <BookOpen className="w-5 h-5" />
-                Paste Your Text
-              </CardTitle>
-              <CardDescription>
-                Copy and paste any text from your book, article, or homework assignment
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <Textarea
-                value={bookText}
-                onChange={(e) => setBookText(e.target.value)}
-                placeholder="Paste your text here... (e.g., a paragraph from your book, a story, or any text you want to understand better)"
-                className="min-h-[200px]"
-              />
-
-              <div className="grid grid-cols-2 gap-2">
-                <Button 
-                  onClick={analyzeText} 
-                  disabled={loading || !bookText.trim() || (!subscription.subscribed && subscription.analyses_used >= subscription.analyses_limit)}
-                >
-                  {(!subscription.subscribed && subscription.analyses_used >= subscription.analyses_limit) ? (
-                    <><Lock className="w-4 h-4 mr-2" />Premium Only</>
-                  ) : (
-                    <><HelpCircle className="w-4 h-4 mr-2" />Get Explanations</>
-                  )}
-                </Button>
-                <Button 
-                  onClick={generateQuiz} 
-                  disabled={loading || !bookText.trim() || (!subscription.subscribed && subscription.quizzes_used >= subscription.quizzes_limit)} 
-                  variant="outline"
-                >
-                  {(!subscription.subscribed && subscription.quizzes_used >= subscription.quizzes_limit) ? (
-                    <><Lock className="w-4 h-4 mr-2" />Premium Only</>
-                  ) : (
-                    <><Award className="w-4 h-4 mr-2" />Take Quiz</>
-                  )}
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-
-          {analysis && !showQuiz && (
-            <Card className="bg-gradient-to-br from-primary/5 to-secondary/10">
-              <CardHeader>
-                <CardTitle>Understanding Your Text</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <h3 className="font-semibold mb-2">Summary</h3>
-                  <p className="text-muted-foreground">{analysis.summary}</p>
-                </div>
-
-                {analysis.vocabulary && analysis.vocabulary.length > 0 && (
-                  <div>
-                    <h3 className="font-semibold mb-2">New Words to Learn</h3>
-                    <div className="space-y-2">
-                      {analysis.vocabulary.map((word: any, index: number) => (
-                        <div key={index} className="bg-background/50 p-3 rounded-lg">
-                          <p className="font-medium">{word.word}</p>
-                          <p className="text-sm text-muted-foreground">{word.definition}</p>
-                        </div>
-                      ))}
+                    <Progress value={subscription.analyses_limit === 999999 ? 0 : (subscription.analyses_used / subscription.analyses_limit) * 100} className="h-1.5" />
+                    <div className="text-center">
+                      <Button onClick={createCheckout} size="sm" className="gap-1 text-xs">
+                        <Sparkles className="w-3 h-3" />
+                        Get Premium — €5/month
+                      </Button>
                     </div>
                   </div>
+                ) : (
+                  <p className="text-center text-sm text-muted-foreground">Sign in to start reading</p>
                 )}
               </CardContent>
             </Card>
           )}
 
-          {showQuiz && quiz && (
-            <Card className="bg-gradient-to-br from-primary/5 to-secondary/10">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Award className="w-5 h-5 text-primary" />
-                  Reading Comprehension Quiz
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <h3 className="font-semibold mb-4">{quiz.question}</h3>
-                  <div className="space-y-2">
-                    {quiz.options.map((option: string, index: number) => (
-                      <div
-                        key={index}
-                        onClick={() => setSelectedAnswer(option)}
-                        className={`p-3 rounded-lg border-2 cursor-pointer transition-colors ${
-                          selectedAnswer === option
-                            ? 'border-primary bg-primary/10'
-                            : 'border-border hover:border-primary/50'
-                        }`}
-                      >
-                        {option}
-                      </div>
-                    ))}
-                  </div>
-                </div>
+          <Tabs defaultValue="read" className="w-full">
+            <TabsList className="grid w-full grid-cols-3 mb-6">
+              <TabsTrigger value="read">📖 Read</TabsTrigger>
+              <TabsTrigger value="flashcards" disabled={!analysis?.vocabulary?.length}>🃏 Flashcards</TabsTrigger>
+              <TabsTrigger value="howto">❓ How To</TabsTrigger>
+            </TabsList>
 
-                <div className="grid grid-cols-2 gap-2">
-                  <Button onClick={checkAnswer} disabled={!selectedAnswer}>
-                    Check Answer
-                  </Button>
-                  <Button variant="outline" onClick={() => setShowQuiz(false)}>
-                    Back to Reading
-                  </Button>
+            <TabsContent value="read">
+              {activeView === "input" && (
+                <div className="space-y-4">
+                  <ReadingLevelSelector selected={readingLevel} onSelect={setReadingLevel} />
+
+                  <Card>
+                    <CardHeader className="pb-3">
+                      <CardTitle className="flex items-center gap-2 text-lg">
+                        <BookOpen className="w-5 h-5 text-primary" />
+                        Paste Your Text
+                      </CardTitle>
+                      <CardDescription className="text-xs">
+                        Copy any text from a book, article, or homework assignment
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <Textarea
+                        value={bookText}
+                        onChange={(e) => setBookText(e.target.value)}
+                        placeholder="Paste your text here... (a paragraph from your book, a story, or any text you want to understand better)"
+                        className="min-h-[160px] text-sm"
+                      />
+
+                      <TextDifficultyScanner text={bookText} />
+
+                      <div className="grid grid-cols-2 gap-2">
+                        <Button
+                          onClick={analyzeText}
+                          disabled={loading || !bookText.trim() || (!subscription.subscribed && subscription.analyses_used >= subscription.analyses_limit)}
+                          className="text-sm"
+                        >
+                          {loading ? "Analyzing..." : (!subscription.subscribed && subscription.analyses_used >= subscription.analyses_limit) ? (
+                            <><Lock className="w-3 h-3 mr-1" />Premium</>
+                          ) : "📝 Analyze Text"}
+                        </Button>
+                        <Button
+                          onClick={generateQuiz}
+                          disabled={loading || !bookText.trim() || (!subscription.subscribed && subscription.quizzes_used >= subscription.quizzes_limit)}
+                          variant="outline"
+                          className="text-sm"
+                        >
+                          {(!subscription.subscribed && subscription.quizzes_used >= subscription.quizzes_limit) ? (
+                            <><Lock className="w-3 h-3 mr-1" />Premium</>
+                          ) : "🎯 Quick Quiz"}
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
                 </div>
-              </CardContent>
-            </Card>
-          )}
+              )}
+
+              {activeView === "results" && analysis && (
+                <div className="space-y-4">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setActiveView("input")}
+                    className="text-xs"
+                  >
+                    ← Back to Text
+                  </Button>
+                  <InteractiveResults
+                    summary={analysis.summary}
+                    vocabulary={analysis.vocabulary || []}
+                    onStartFlashcards={() => setActiveView("flashcards")}
+                    onStartQuiz={generateQuiz}
+                  />
+                </div>
+              )}
+
+              {activeView === "flashcards" && analysis?.vocabulary?.length > 0 && (
+                <div className="space-y-4">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setActiveView("results")}
+                    className="text-xs"
+                  >
+                    ← Back to Results
+                  </Button>
+                  <VocabularyFlashcardGame
+                    vocabulary={analysis.vocabulary}
+                    onComplete={(score) => {
+                      toast.success(`Flashcards complete! Score: ${score}`);
+                      setActiveView("results");
+                    }}
+                  />
+                </div>
+              )}
+
+              {activeView === "quiz" && quiz && (
+                <div className="space-y-4">
+                  <MultiQuestionQuiz
+                    questions={Array.isArray(quiz) ? quiz : quiz.questions || [quiz]}
+                    onComplete={(score, total) => {
+                      setStats(prev => ({ ...prev, quizzesTaken: prev.quizzesTaken + 1 }));
+                      toast.success(`Quiz complete! ${score}/${total}`);
+                    }}
+                    onBack={() => setActiveView("input")}
+                  />
+                </div>
+              )}
+            </TabsContent>
+
+            <TabsContent value="flashcards">
+              {analysis?.vocabulary?.length > 0 ? (
+                <VocabularyFlashcardGame
+                  vocabulary={analysis.vocabulary}
+                  onComplete={(score) => {
+                    toast.success(`Great job! Score: ${score}`);
+                  }}
+                />
+              ) : (
+                <Card className="border-dashed border-2">
+                  <CardContent className="py-12 text-center space-y-3">
+                    <div className="text-4xl">🃏</div>
+                    <h3 className="font-bold">No Flashcards Yet</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Analyze a text first to generate vocabulary flashcards!
+                    </p>
+                  </CardContent>
+                </Card>
+              )}
+            </TabsContent>
+
+            <TabsContent value="howto">
+              <Card className="border-2 border-primary/20">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    ❓ How to Use This Tool
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {[
+                    { step: 1, title: "Choose Your Level", desc: "Select your reading level — Beginner, Intermediate, or Advanced — so the AI adapts explanations to you." },
+                    { step: 2, title: "Paste Your Text", desc: "Copy any text from your book, article, or homework. The difficulty scanner will show you stats instantly." },
+                    { step: 3, title: "Analyze & Learn", desc: "Click 'Analyze Text' to get a simple summary and new vocabulary words explained in a kid-friendly way." },
+                    { step: 4, title: "Practice & Quiz", desc: "Use flashcards to memorize new words, then take the quiz to test your understanding. Track your streak!" },
+                  ].map((item) => (
+                    <div key={item.step} className="flex gap-3">
+                      <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary text-sm">
+                        {item.step}
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-sm mb-0.5">{item.title}</h4>
+                        <p className="text-xs text-muted-foreground">{item.desc}</p>
+                      </div>
+                    </div>
+                  ))}
+
+                  <div className="bg-primary/5 p-3 rounded-xl border border-primary/10">
+                    <p className="text-xs text-muted-foreground">
+                      <span className="font-semibold text-foreground">💡 Pro Tip:</span> The longer your text, the better the AI can help. Try pasting a full paragraph for best results!
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
         </div>
       </main>
       <Footer />
