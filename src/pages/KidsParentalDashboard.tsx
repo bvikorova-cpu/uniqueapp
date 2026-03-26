@@ -1,23 +1,26 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { ArrowLeft, BarChart3, BookOpen, Brain, FlaskConical, Clock, Mail, Shield, AlertTriangle, Crown, Timer } from "lucide-react";
+import { ArrowLeft, BarChart3, Shield, Crown, Timer, Trophy, Eye, Clock, Brain, BookOpen, Mail } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
 import { useKidsGoldPass } from "@/hooks/useKidsGoldPass";
-import { format, subDays, startOfWeek, endOfWeek } from "date-fns";
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell } from "recharts";
 
-const COLORS = ["#8b5cf6", "#ec4899", "#06b6d4", "#10b981", "#f59e0b"];
+import { ParentalHero } from "@/components/kids/parental/ParentalHero";
+import { ChildProfileCards } from "@/components/kids/parental/ChildProfileCards";
+import { AnimatedStats } from "@/components/kids/parental/AnimatedStats";
+import { EnhancedCharts } from "@/components/kids/parental/EnhancedCharts";
+import { WeeklyDigest } from "@/components/kids/parental/WeeklyDigest";
+import { ContentBlocking } from "@/components/kids/parental/ContentBlocking";
+import { AchievementTracking } from "@/components/kids/parental/AchievementTracking";
+import { ActivityTimeline } from "@/components/kids/parental/ActivityTimeline";
 
 interface UsageStats {
   homework_tasks: number;
@@ -33,28 +36,24 @@ export default function KidsParentalDashboard() {
   const { user } = useAuth();
   const { hasGoldPass } = useKidsGoldPass();
   const queryClient = useQueryClient();
-  
+
   const [sleepTimerEnabled, setSleepTimerEnabled] = useState(false);
   const [dailyLimit, setDailyLimit] = useState("60");
   const [emailReports, setEmailReports] = useState(true);
 
-  // Fetch usage statistics - using simulated data for demo
   const { data: stats } = useQuery({
     queryKey: ["parental-stats", user?.id],
-    queryFn: async () => {
-      return {
-        homework_tasks: Math.floor(Math.random() * 30) + 10,
-        science_experiments: Math.floor(Math.random() * 15) + 5,
-        vocabulary_learned: Math.floor(Math.random() * 50) + 20,
-        stories_created: Math.floor(Math.random() * 10) + 2,
-        drawings_made: Math.floor(Math.random() * 8) + 3,
-        total_time_minutes: Math.floor(Math.random() * 300) + 100,
-      } as UsageStats;
-    },
+    queryFn: async () => ({
+      homework_tasks: Math.floor(Math.random() * 30) + 10,
+      science_experiments: Math.floor(Math.random() * 15) + 5,
+      vocabulary_learned: Math.floor(Math.random() * 50) + 20,
+      stories_created: Math.floor(Math.random() * 10) + 2,
+      drawings_made: Math.floor(Math.random() * 8) + 3,
+      total_time_minutes: Math.floor(Math.random() * 300) + 100,
+    } as UsageStats),
     enabled: !!user,
   });
 
-  // Fetch parental settings from localStorage for demo
   const { data: settings } = useQuery({
     queryKey: ["parental-settings", user?.id],
     queryFn: async () => {
@@ -65,7 +64,6 @@ export default function KidsParentalDashboard() {
     enabled: !!user,
   });
 
-  // Load settings
   useEffect(() => {
     if (settings) {
       setSleepTimerEnabled(settings.sleep_timer_enabled || false);
@@ -74,7 +72,6 @@ export default function KidsParentalDashboard() {
     }
   }, [settings]);
 
-  // Save settings mutation - using localStorage for demo
   const saveMutation = useMutation({
     mutationFn: async (data: { sleep_timer_enabled: boolean; daily_limit_minutes: number; email_reports: boolean }) => {
       if (!user) throw new Error("Not authenticated");
@@ -82,10 +79,10 @@ export default function KidsParentalDashboard() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["parental-settings"] });
-      toast.success("Settings saved!");
+      toast.success("Nastavenia uložené!");
     },
     onError: () => {
-      toast.error("Failed to save settings");
+      toast.error("Nepodarilo sa uložiť nastavenia");
     },
   });
 
@@ -97,23 +94,22 @@ export default function KidsParentalDashboard() {
     });
   };
 
-  // Chart data
   const weeklyData = [
-    { day: "Mon", homework: 12, science: 5, reading: 8 },
-    { day: "Tue", homework: 8, science: 3, reading: 10 },
-    { day: "Wed", homework: 15, science: 7, reading: 6 },
-    { day: "Thu", homework: 10, science: 4, reading: 12 },
-    { day: "Fri", homework: 6, science: 8, reading: 9 },
-    { day: "Sat", homework: 3, science: 10, reading: 15 },
-    { day: "Sun", homework: 5, science: 6, reading: 11 },
+    { day: "Po", homework: 12, science: 5, reading: 8 },
+    { day: "Ut", homework: 8, science: 3, reading: 10 },
+    { day: "St", homework: 15, science: 7, reading: 6 },
+    { day: "Št", homework: 10, science: 4, reading: 12 },
+    { day: "Pi", homework: 6, science: 8, reading: 9 },
+    { day: "So", homework: 3, science: 10, reading: 15 },
+    { day: "Ne", homework: 5, science: 6, reading: 11 },
   ];
 
   const categoryData = [
-    { name: "Homework", value: stats?.homework_tasks || 0 },
-    { name: "Science", value: stats?.science_experiments || 0 },
-    { name: "Reading", value: stats?.vocabulary_learned || 0 },
-    { name: "Stories", value: stats?.stories_created || 0 },
-    { name: "Drawing", value: stats?.drawings_made || 0 },
+    { name: "Úlohy", value: stats?.homework_tasks || 0 },
+    { name: "Veda", value: stats?.science_experiments || 0 },
+    { name: "Čítanie", value: stats?.vocabulary_learned || 0 },
+    { name: "Príbehy", value: stats?.stories_created || 0 },
+    { name: "Kresby", value: stats?.drawings_made || 0 },
   ];
 
   if (!hasGoldPass) {
@@ -122,20 +118,20 @@ export default function KidsParentalDashboard() {
         <Card className="max-w-md w-full text-center">
           <CardHeader>
             <Crown className="w-16 h-16 mx-auto text-amber-500 mb-4" />
-            <CardTitle className="text-2xl text-amber-700">Gold Pass Required</CardTitle>
+            <CardTitle className="text-2xl text-amber-700">Vyžaduje sa Gold Pass</CardTitle>
             <CardDescription>
-              Parental Analytics Dashboard is available with the Unique Kids Gold Pass subscription.
+              Rodičovský analytický panel je dostupný s predplatným Unique Kids Gold Pass.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <Button 
+            <Button
               onClick={() => navigate("/kids-pricing")}
               className="w-full bg-gradient-to-r from-yellow-500 to-amber-500"
             >
-              Get Gold Pass
+              Získať Gold Pass
             </Button>
             <Button variant="outline" onClick={() => navigate("/kids-channel")}>
-              Back to Kids Channel
+              Späť na Kids Channel
             </Button>
           </CardContent>
         </Card>
@@ -146,25 +142,22 @@ export default function KidsParentalDashboard() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 py-8 px-4 pt-24">
       <div className="max-w-6xl mx-auto space-y-8">
-        {/* Header */}
+        {/* Navigation */}
         <div className="flex items-center justify-between">
           <Button variant="ghost" onClick={() => navigate("/kids-channel")}>
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Kids Channel
+            Späť na Kids Channel
           </Button>
           <Badge className="bg-gradient-to-r from-yellow-500 to-amber-500 gap-1">
             <Crown className="w-4 h-4" /> Gold Pass Active
           </Badge>
         </div>
 
-        <div className="text-center">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent mb-2">
-            Parental Dashboard 👨‍👩‍👧
-          </h1>
-          <p className="text-muted-foreground">
-            Track your child's educational progress and manage screen time
-          </p>
-        </div>
+        {/* Hero */}
+        <ParentalHero />
+
+        {/* Child Profiles */}
+        <ChildProfileCards />
 
         {/* Email Report Notice */}
         <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
@@ -173,205 +166,82 @@ export default function KidsParentalDashboard() {
               <Mail className="w-6 h-6 text-blue-600" />
             </div>
             <div className="flex-1">
-              <p className="font-medium text-blue-800">Monthly Educational Progress Reports</p>
-              <p className="text-sm text-blue-600">Detailed progress report will be sent to your email at the end of each month.</p>
+              <p className="font-medium text-blue-800">Mesačné reporty o pokroku</p>
+              <p className="text-sm text-blue-600">Podrobný report bude zaslaný na váš email na konci každého mesiaca.</p>
             </div>
-            <Badge className="bg-blue-500">Active</Badge>
+            <Badge className="bg-blue-500">Aktívne</Badge>
           </CardContent>
         </Card>
 
         <Tabs defaultValue="progress" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3 max-w-md mx-auto">
-            <TabsTrigger value="progress" className="gap-2">
-              <BarChart3 className="w-4 h-4" /> Progress
+          <TabsList className="grid w-full grid-cols-6 max-w-2xl mx-auto">
+            <TabsTrigger value="progress" className="gap-1 text-xs">
+              <BarChart3 className="w-3.5 h-3.5" /> Pokrok
             </TabsTrigger>
-            <TabsTrigger value="time" className="gap-2">
-              <Clock className="w-4 h-4" /> Time Limits
+            <TabsTrigger value="time" className="gap-1 text-xs">
+              <Timer className="w-3.5 h-3.5" /> Limity
             </TabsTrigger>
-            <TabsTrigger value="safety" className="gap-2">
-              <Shield className="w-4 h-4" /> Safety
+            <TabsTrigger value="safety" className="gap-1 text-xs">
+              <Shield className="w-3.5 h-3.5" /> Bezpečnosť
+            </TabsTrigger>
+            <TabsTrigger value="digest" className="gap-1 text-xs">
+              <Trophy className="w-3.5 h-3.5" /> Prehľad
+            </TabsTrigger>
+            <TabsTrigger value="achievements" className="gap-1 text-xs">
+              <Crown className="w-3.5 h-3.5" /> Odznaky
+            </TabsTrigger>
+            <TabsTrigger value="timeline" className="gap-1 text-xs">
+              <Clock className="w-3.5 h-3.5" /> Aktivita
             </TabsTrigger>
           </TabsList>
 
           {/* Progress Tab */}
           <TabsContent value="progress" className="space-y-6">
-            {/* Stats Overview */}
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-              <Card className="bg-white/80">
-                <CardContent className="pt-4">
-                  <div className="flex items-center gap-3">
-                    <div className="bg-purple-100 rounded-full p-2">
-                      <Brain className="w-5 h-5 text-purple-600" />
-                    </div>
-                    <div>
-                      <p className="text-2xl font-bold text-purple-700">{stats?.homework_tasks || 0}</p>
-                      <p className="text-xs text-muted-foreground">Homework Tasks</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-              
-              <Card className="bg-white/80">
-                <CardContent className="pt-4">
-                  <div className="flex items-center gap-3">
-                    <div className="bg-pink-100 rounded-full p-2">
-                      <FlaskConical className="w-5 h-5 text-pink-600" />
-                    </div>
-                    <div>
-                      <p className="text-2xl font-bold text-pink-700">{stats?.science_experiments || 0}</p>
-                      <p className="text-xs text-muted-foreground">Experiments</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-              
-              <Card className="bg-white/80">
-                <CardContent className="pt-4">
-                  <div className="flex items-center gap-3">
-                    <div className="bg-cyan-100 rounded-full p-2">
-                      <BookOpen className="w-5 h-5 text-cyan-600" />
-                    </div>
-                    <div>
-                      <p className="text-2xl font-bold text-cyan-700">{stats?.vocabulary_learned || 0}</p>
-                      <p className="text-xs text-muted-foreground">Words Learned</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-              
-              <Card className="bg-white/80">
-                <CardContent className="pt-4">
-                  <div className="flex items-center gap-3">
-                    <div className="bg-green-100 rounded-full p-2">
-                      <BookOpen className="w-5 h-5 text-green-600" />
-                    </div>
-                    <div>
-                      <p className="text-2xl font-bold text-green-700">{stats?.stories_created || 0}</p>
-                      <p className="text-xs text-muted-foreground">Stories Created</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-              
-              <Card className="bg-white/80">
-                <CardContent className="pt-4">
-                  <div className="flex items-center gap-3">
-                    <div className="bg-amber-100 rounded-full p-2">
-                      <Clock className="w-5 h-5 text-amber-600" />
-                    </div>
-                    <div>
-                      <p className="text-2xl font-bold text-amber-700">{stats?.total_time_minutes || 0}m</p>
-                      <p className="text-xs text-muted-foreground">Total Time</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Charts */}
-            <div className="grid md:grid-cols-2 gap-6">
-              <Card className="bg-white/80">
-                <CardHeader>
-                  <CardTitle className="text-lg">Weekly Activity</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="h-64">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <AreaChart data={weeklyData}>
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="day" />
-                        <YAxis />
-                        <Tooltip />
-                        <Area type="monotone" dataKey="homework" stackId="1" stroke="#8b5cf6" fill="#8b5cf6" fillOpacity={0.6} />
-                        <Area type="monotone" dataKey="science" stackId="1" stroke="#ec4899" fill="#ec4899" fillOpacity={0.6} />
-                        <Area type="monotone" dataKey="reading" stackId="1" stroke="#06b6d4" fill="#06b6d4" fillOpacity={0.6} />
-                      </AreaChart>
-                    </ResponsiveContainer>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="bg-white/80">
-                <CardHeader>
-                  <CardTitle className="text-lg">Activity Distribution</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="h-64">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <PieChart>
-                        <Pie
-                          data={categoryData}
-                          cx="50%"
-                          cy="50%"
-                          innerRadius={60}
-                          outerRadius={80}
-                          paddingAngle={5}
-                          dataKey="value"
-                          label={({ name, value }) => `${name}: ${value}`}
-                        >
-                          {categoryData.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                          ))}
-                        </Pie>
-                        <Tooltip />
-                      </PieChart>
-                    </ResponsiveContainer>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+            <AnimatedStats stats={stats} />
+            <EnhancedCharts weeklyData={weeklyData} categoryData={categoryData} />
           </TabsContent>
 
           {/* Time Limits Tab */}
           <TabsContent value="time" className="space-y-6">
-            <Card className="bg-white/80">
+            <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Timer className="w-5 h-5 text-purple-600" />
                   Smart Sleep Timer
                 </CardTitle>
                 <CardDescription>
-                  Set daily usage limits. When the limit is reached, a friendly message will suggest a break.
+                  Nastavte denné limity používania. Po dosiahnutí limitu sa zobrazí priateľská správa.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="flex items-center justify-between">
                   <div className="space-y-1">
-                    <Label htmlFor="sleep-timer">Enable Sleep Timer</Label>
-                    <p className="text-sm text-muted-foreground">
-                      Automatically remind your child to take breaks
-                    </p>
+                    <Label htmlFor="sleep-timer">Zapnúť Sleep Timer</Label>
+                    <p className="text-sm text-muted-foreground">Automaticky pripomenie dieťaťu prestávku</p>
                   </div>
-                  <Switch
-                    id="sleep-timer"
-                    checked={sleepTimerEnabled}
-                    onCheckedChange={setSleepTimerEnabled}
-                  />
+                  <Switch id="sleep-timer" checked={sleepTimerEnabled} onCheckedChange={setSleepTimerEnabled} />
                 </div>
 
                 {sleepTimerEnabled && (
                   <div className="space-y-4 pt-4 border-t">
                     <div className="space-y-2">
-                      <Label>Daily Usage Limit</Label>
+                      <Label>Denný limit</Label>
                       <Select value={dailyLimit} onValueChange={setDailyLimit}>
-                        <SelectTrigger className="w-48">
-                          <SelectValue />
-                        </SelectTrigger>
+                        <SelectTrigger className="w-48"><SelectValue /></SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="30">30 minutes</SelectItem>
-                          <SelectItem value="45">45 minutes</SelectItem>
-                          <SelectItem value="60">1 hour</SelectItem>
-                          <SelectItem value="90">1.5 hours</SelectItem>
-                          <SelectItem value="120">2 hours</SelectItem>
+                          <SelectItem value="30">30 minút</SelectItem>
+                          <SelectItem value="45">45 minút</SelectItem>
+                          <SelectItem value="60">1 hodina</SelectItem>
+                          <SelectItem value="90">1,5 hodiny</SelectItem>
+                          <SelectItem value="120">2 hodiny</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
-
                     <Card className="bg-blue-50 border-blue-200">
                       <CardContent className="pt-4">
                         <p className="text-sm text-blue-700">
-                          💡 When the limit is reached, your child will see a friendly message from a magical character 
-                          suggesting they take a break to play outside, read a book, or spend time with family.
+                          💡 Po dosiahnutí limitu dieťa uvidí priateľskú správu od magickej postavy,
+                          ktorá mu navrhne ísť sa hrať von, čítať knihu alebo tráviť čas s rodinou.
                         </p>
                       </CardContent>
                     </Card>
@@ -380,24 +250,18 @@ export default function KidsParentalDashboard() {
 
                 <div className="flex items-center justify-between pt-4 border-t">
                   <div className="space-y-1">
-                    <Label htmlFor="email-reports">Monthly Email Reports</Label>
-                    <p className="text-sm text-muted-foreground">
-                      Receive detailed progress reports via email
-                    </p>
+                    <Label htmlFor="email-reports">Mesačné emailové reporty</Label>
+                    <p className="text-sm text-muted-foreground">Dostávajte podrobné reporty o pokroku</p>
                   </div>
-                  <Switch
-                    id="email-reports"
-                    checked={emailReports}
-                    onCheckedChange={setEmailReports}
-                  />
+                  <Switch id="email-reports" checked={emailReports} onCheckedChange={setEmailReports} />
                 </div>
 
-                <Button 
+                <Button
                   onClick={handleSaveSettings}
                   disabled={saveMutation.isPending}
                   className="w-full bg-gradient-to-r from-purple-500 to-pink-500"
                 >
-                  {saveMutation.isPending ? "Saving..." : "Save Settings"}
+                  {saveMutation.isPending ? "Ukladám..." : "Uložiť nastavenia"}
                 </Button>
               </CardContent>
             </Card>
@@ -405,54 +269,49 @@ export default function KidsParentalDashboard() {
 
           {/* Safety Tab */}
           <TabsContent value="safety" className="space-y-6">
-            <Card className="bg-white/80">
+            <ContentBlocking />
+
+            <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Shield className="w-5 h-5 text-green-600" />
-                  Safety Features
+                  Bezpečnostné funkcie
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center justify-between p-4 bg-green-50 rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <div className="bg-green-100 rounded-full p-2">
-                      <Shield className="w-5 h-5 text-green-600" />
+              <CardContent className="space-y-3">
+                {[
+                  { icon: <Shield className="w-5 h-5 text-green-600" />, bg: "bg-green-50", label: "AI moderácia obsahu", desc: "Všetky AI odpovede sú dvojito moderované", color: "text-green-800", descColor: "text-green-600", badge: "bg-green-500" },
+                  { icon: <Brain className="w-5 h-5 text-purple-600" />, bg: "bg-purple-50", label: "Rodičovská brána", desc: "Matematické overenie pre AI funkcie", color: "text-purple-800", descColor: "text-purple-600", badge: "bg-purple-500" },
+                  { icon: <BookOpen className="w-5 h-5 text-blue-600" />, bg: "bg-blue-50", label: "Vekovo vhodný obsah", desc: "Všetok obsah je kurátorsky vybraný pre deti", color: "text-blue-800", descColor: "text-blue-600", badge: "bg-blue-500" },
+                ].map((item, i) => (
+                  <div key={i} className={`flex items-center justify-between p-4 ${item.bg} rounded-xl`}>
+                    <div className="flex items-center gap-3">
+                      <div className={`${item.bg} rounded-full p-2`}>{item.icon}</div>
+                      <div>
+                        <p className={`font-medium ${item.color}`}>{item.label}</p>
+                        <p className={`text-sm ${item.descColor}`}>{item.desc}</p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="font-medium text-green-800">AI Content Moderation</p>
-                      <p className="text-sm text-green-600">All AI responses are double-moderated for safety</p>
-                    </div>
+                    <Badge className={item.badge}>Aktívne</Badge>
                   </div>
-                  <Badge className="bg-green-500">Active</Badge>
-                </div>
-
-                <div className="flex items-center justify-between p-4 bg-purple-50 rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <div className="bg-purple-100 rounded-full p-2">
-                      <Brain className="w-5 h-5 text-purple-600" />
-                    </div>
-                    <div>
-                      <p className="font-medium text-purple-800">Parental Gate</p>
-                      <p className="text-sm text-purple-600">Math verification required for AI features</p>
-                    </div>
-                  </div>
-                  <Badge className="bg-purple-500">Active</Badge>
-                </div>
-
-                <div className="flex items-center justify-between p-4 bg-blue-50 rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <div className="bg-blue-100 rounded-full p-2">
-                      <BookOpen className="w-5 h-5 text-blue-600" />
-                    </div>
-                    <div>
-                      <p className="font-medium text-blue-800">Age-Appropriate Content</p>
-                      <p className="text-sm text-blue-600">All content is curated for children</p>
-                    </div>
-                  </div>
-                  <Badge className="bg-blue-500">Active</Badge>
-                </div>
+                ))}
               </CardContent>
             </Card>
+          </TabsContent>
+
+          {/* Weekly Digest Tab */}
+          <TabsContent value="digest">
+            <WeeklyDigest />
+          </TabsContent>
+
+          {/* Achievements Tab */}
+          <TabsContent value="achievements">
+            <AchievementTracking />
+          </TabsContent>
+
+          {/* Timeline Tab */}
+          <TabsContent value="timeline">
+            <ActivityTimeline />
           </TabsContent>
         </Tabs>
       </div>
