@@ -19,8 +19,8 @@ export const QuickChallenge = () => {
               <Zap className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <h3 className="font-bold text-sm">Rýchla výzva</h3>
-              <p className="text-[10px] text-muted-foreground">30 sekúnd • 5 otázok • 2x XP</p>
+              <h3 className="font-bold text-sm">Quick Challenge</h3>
+              <p className="text-[10px] text-muted-foreground">30 seconds • 5 questions • 2x XP</p>
             </div>
           </div>
 
@@ -35,7 +35,7 @@ export const QuickChallenge = () => {
             size="sm"
           >
             <Zap className="w-4 h-4 mr-2" />
-            Spustiť výzvu
+            Start Challenge
           </Button>
         </CardContent>
       </Card>

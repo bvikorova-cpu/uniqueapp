@@ -9,10 +9,10 @@ import rehypeKatex from "rehype-katex";
 import { motion, AnimatePresence } from "framer-motion";
 
 const suggestedQuestions = [
-  "Vysvetli mi Pytagorovu vetu",
-  "Čo je fotosyntéza?",
-  "Ako funguje gravitácia?",
-  "Vysvetli World War II",
+  "Explain the Pythagorean theorem",
+  "What is photosynthesis?",
+  "How does gravity work?",
+  "Explain World War II",
 ];
 
 interface EnhancedChatProps {
@@ -46,22 +46,21 @@ export const EnhancedChat = ({
             </div>
             <div>
               <CardTitle className="text-lg">AI Tutoring</CardTitle>
-              <CardDescription className="text-xs">1 kredit = 1 správa</CardDescription>
+              <CardDescription className="text-xs">1 credit = 1 message</CardDescription>
             </div>
           </div>
           <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">
-            {creditsLoading ? "..." : credits} kreditov
+            {creditsLoading ? "..." : credits} credits
           </Badge>
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
-        {/* Features row */}
         <div className="grid grid-cols-2 gap-2">
           {[
-            { icon: "⚡", title: "Okamžité odpovede" },
-            { icon: "📚", title: "Všetky predmety" },
-            { icon: "📝", title: "Krok za krokom" },
-            { icon: "🕐", title: "Dostupné 24/7" },
+            { icon: "⚡", title: "Instant Answers" },
+            { icon: "📚", title: "All Subjects" },
+            { icon: "📝", title: "Step by Step" },
+            { icon: "🕐", title: "Available 24/7" },
           ].map((f, i) => (
             <div key={i} className="flex items-center gap-2 p-2 rounded-lg bg-muted/30 border border-border/30">
               <span className="text-sm">{f.icon}</span>
@@ -74,20 +73,19 @@ export const EnhancedChat = ({
           <div className="bg-destructive/10 border border-destructive/30 rounded-lg p-3 flex items-center gap-3">
             <AlertCircle className="h-5 w-5 text-destructive shrink-0" />
             <div>
-              <p className="font-medium text-destructive text-sm">Žiadne kredity</p>
-              <p className="text-xs text-muted-foreground">Zakúpte kredity vyššie pre pokračovanie.</p>
+              <p className="font-medium text-destructive text-sm">No credits available</p>
+              <p className="text-xs text-muted-foreground">Purchase credits above to continue learning.</p>
             </div>
           </div>
         )}
 
-        {/* Chat area */}
         <div className="min-h-[280px] max-h-[450px] overflow-y-auto space-y-3 p-3 bg-muted/20 rounded-xl border border-border/50">
           {chatHistory.length === 0 ? (
             <div className="text-center py-8">
               <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
                 <Bot className="h-8 w-8 text-primary/50" />
               </div>
-              <p className="text-sm text-muted-foreground mb-4">Začni konverzáciu alebo vyskúšaj:</p>
+              <p className="text-sm text-muted-foreground mb-4">Start a conversation or try:</p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 {suggestedQuestions.map((q, i) => (
                   <motion.button
@@ -154,10 +152,9 @@ export const EnhancedChat = ({
           )}
         </div>
 
-        {/* Input */}
         <div className="flex gap-2">
           <Textarea
-            placeholder="Napíš svoju otázku..."
+            placeholder="Write your question..."
             value={chatMessage}
             onChange={(e) => setChatMessage(e.target.value)}
             onKeyDown={(e) => {

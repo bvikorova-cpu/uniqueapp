@@ -24,10 +24,10 @@ const AnimatedCounter = ({ target, suffix = "" }: { target: number; suffix?: str
 };
 
 const stats = [
-  { icon: BookOpen, label: "Kategórií", value: 50, suffix: "+" },
-  { icon: Zap, label: "Otázok denne", value: 1000, suffix: "+" },
-  { icon: Trophy, label: "Aktívnych študentov", value: 250, suffix: "+" },
-  { icon: Flame, label: "Priemerný streak", value: 7, suffix: " dní" },
+  { icon: BookOpen, label: "Categories", value: 50, suffix: "+" },
+  { icon: Zap, label: "Questions Daily", value: 1000, suffix: "+" },
+  { icon: Trophy, label: "Active Students", value: 250, suffix: "+" },
+  { icon: Flame, label: "Avg. Streak", value: 7, suffix: " days" },
 ];
 
 export const EducationHero = () => {
@@ -62,7 +62,7 @@ export const EducationHero = () => {
         transition={{ delay: 0.2 }}
         className="text-muted-foreground text-sm sm:text-lg max-w-2xl mx-auto mb-8"
       >
-        AI tutoring, 50+ kvízových kategórií, denné výzvy a learning streaky
+        AI tutoring, 50+ quiz categories, daily challenges & learning streaks
       </motion.p>
 
       <motion.div
