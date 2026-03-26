@@ -179,7 +179,7 @@ export function MobileWallMenu({ onPostCreated }: MobileWallMenuProps) {
         <Button
           variant="ghost"
           size="icon"
-          className="lg:hidden fixed top-[4.5rem] right-[8.5rem] z-50 bg-primary/90 text-primary-foreground shadow-lg hover:bg-primary rounded-full h-10 w-10"
+          className="lg:hidden fixed top-[6.75rem] right-3 z-50 bg-primary/90 text-primary-foreground shadow-lg hover:bg-primary rounded-full h-10 w-10"
           aria-label="Wall Dashboard"
         >
           <LayoutDashboard className="h-5 w-5" />
