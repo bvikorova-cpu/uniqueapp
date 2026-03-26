@@ -28,9 +28,8 @@ const castleImages: Record<string, string> = {
 };
 
 const getCastleImage = (name: string, parkName: string): string => {
-  if (name === "Cinderella Castle") {
-    return parkName.includes("Tokyo") ? tokyoCastle : cinderellaFlorida;
-  }
+  if (name === "Tokyo Cinderella Castle") return tokyoCastle;
+  if (name === "Cinderella Castle") return cinderellaFlorida;
   return castleImages[name] || "";
 };
 
