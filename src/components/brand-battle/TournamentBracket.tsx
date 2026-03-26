@@ -70,7 +70,7 @@ export const TournamentBracket = ({ sponsors }: TournamentBracketProps) => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Swords className="h-5 w-5 text-primary" />
-            Tournament Progress — Q1 2025
+            Tournament Progress
           </CardTitle>
         </CardHeader>
         <CardContent>

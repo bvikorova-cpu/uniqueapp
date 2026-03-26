@@ -40,10 +40,10 @@ export const RewardsSection = () => {
         .select("*", { count: "exact", head: true })
         .eq("subscription_status", "active");
 
-      // Calculate days remaining in Q1 2025
-      const q1End = new Date("2025-03-31");
+      // Calculate days remaining in current season
       const now = new Date();
-      const daysRemaining = Math.max(0, Math.ceil((q1End.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)));
+      const currentQuarterEnd = new Date(now.getFullYear(), Math.ceil((now.getMonth() + 1) / 3) * 3, 0);
+      const daysRemaining = Math.max(0, Math.ceil((currentQuarterEnd.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)));
 
       return {
         totalVotes: totalVotes || 0,
@@ -129,10 +129,10 @@ export const RewardsSection = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Target className="h-5 w-5 text-primary" />
-            Q1 2025 Campaign
+            Current Season Campaign
           </CardTitle>
           <CardDescription>
-            Current battle period: January 1 - March 31, 2025
+            Active battle period — vote daily to earn rewards!
           </CardDescription>
         </CardHeader>
         <CardContent>
