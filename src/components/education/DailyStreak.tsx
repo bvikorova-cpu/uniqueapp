@@ -9,7 +9,7 @@ interface DailyStreakProps {
 }
 
 export const DailyStreak = ({ currentStreak, bestStreak, todayCompleted }: DailyStreakProps) => {
-  const days = ["Po", "Ut", "St", "Št", "Pi", "So", "Ne"];
+  const days = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
   const today = new Date().getDay();
   const adjustedToday = today === 0 ? 6 : today - 1;
 
@@ -20,11 +20,11 @@ export const DailyStreak = ({ currentStreak, bestStreak, todayCompleted }: Daily
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
               <Flame className="w-5 h-5 text-orange-500" />
-              <span className="font-bold text-sm">Denný Streak</span>
+              <span className="font-bold text-sm">Daily Streak</span>
             </div>
             <div className="flex items-center gap-1">
               <span className="text-2xl font-black text-orange-500">{currentStreak}</span>
-              <span className="text-xs text-muted-foreground">dní</span>
+              <span className="text-xs text-muted-foreground">days</span>
             </div>
           </div>
 
@@ -33,10 +33,7 @@ export const DailyStreak = ({ currentStreak, bestStreak, todayCompleted }: Daily
               const isActive = i <= adjustedToday && i >= adjustedToday - currentStreak + 1;
               const isToday = i === adjustedToday;
               return (
-                <div
-                  key={day}
-                  className={`flex-1 flex flex-col items-center gap-1`}
-                >
+                <div key={day} className="flex-1 flex flex-col items-center gap-1">
                   <div
                     className={`w-full aspect-square rounded-lg flex items-center justify-center text-xs font-bold transition-all
                       ${isToday && todayCompleted ? "bg-orange-500 text-orange-50 ring-2 ring-orange-400 ring-offset-1 ring-offset-background" : ""}
@@ -55,11 +52,11 @@ export const DailyStreak = ({ currentStreak, bestStreak, todayCompleted }: Daily
           <div className="flex items-center justify-between text-xs text-muted-foreground">
             <span className="flex items-center gap-1">
               <Calendar className="w-3 h-3" />
-              Najlepší: {bestStreak} dní
+              Best: {bestStreak} days
             </span>
             {!todayCompleted && (
               <span className="text-orange-500 font-semibold animate-pulse">
-                Dokonči dnes! 🎯
+                Complete today! 🎯
               </span>
             )}
           </div>

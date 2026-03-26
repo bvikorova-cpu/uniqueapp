@@ -99,7 +99,7 @@ const Education = () => {
   const handleSendMessage = async () => {
     if (!chatMessage.trim()) return;
     if (credits < 1) {
-      toast({ title: "Nedostatok kreditov", description: "Zakúpte kredity pre pokračovanie.", variant: "destructive" });
+      toast({ title: "Insufficient Credits", description: "Please purchase credits to continue.", variant: "destructive" });
       return;
     }
     const userMessage = chatMessage;
@@ -113,7 +113,7 @@ const Education = () => {
       setChatHistory(prev => [...prev, { role: "assistant", content: data.response }]);
     } catch (error) {
       console.error("Error:", error);
-      toast({ title: "Chyba", description: "Nepodarilo sa odoslať správu", variant: "destructive" });
+      toast({ title: "Error", description: "Failed to send message", variant: "destructive" });
     } finally {
       setIsLoading(false);
     }
@@ -132,9 +132,9 @@ const Education = () => {
 
         {/* Stats row: Streak + Quick Challenge + Learning Path */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-          <DailyStreak currentStreak={3} bestStreak={12} todayCompleted={false} />
+          <DailyStreak currentStreak={0} bestStreak={0} todayCompleted={false} />
           <QuickChallenge />
-          <LearningPathProgress currentXP={320} />
+          <LearningPathProgress currentXP={0} />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
@@ -146,7 +146,7 @@ const Education = () => {
                   <Brain className="h-4 w-4" /> Tutoring
                 </TabsTrigger>
                 <TabsTrigger value="quiz" className="gap-1.5 text-xs sm:text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-                  <BookOpen className="h-4 w-4" /> Kvízy
+                  <BookOpen className="h-4 w-4" /> Quizzes
                 </TabsTrigger>
               </TabsList>
 
@@ -170,10 +170,10 @@ const Education = () => {
                 <div className="space-y-6">
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
                     {[
-                      { icon: "🎯", title: "50+ Kategórií" },
+                      { icon: "🎯", title: "50+ Categories" },
                       { icon: "🤖", title: "AI Feedback" },
-                      { icon: "✏️", title: "Vlastné kvízy" },
-                      { icon: "📊", title: "Sleduj progres" },
+                      { icon: "✏️", title: "Custom Quizzes" },
+                      { icon: "📊", title: "Track Progress" },
                     ].map((f, i) => (
                       <div key={i} className="flex items-center gap-2 p-3 rounded-xl bg-muted/50 border border-border/50">
                         <span className="text-lg">{f.icon}</span>

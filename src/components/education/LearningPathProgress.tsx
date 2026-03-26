@@ -1,15 +1,14 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Map, Lock, CheckCircle, Star } from "lucide-react";
+import { Map, Lock } from "lucide-react";
 import { motion } from "framer-motion";
 
 const learningPaths = [
-  { name: "Začiatočník", level: 1, xpNeeded: 100, icon: "🌱", color: "from-green-500/20 to-emerald-500/20", borderColor: "border-green-500/30" },
-  { name: "Študent", level: 2, xpNeeded: 500, icon: "📖", color: "from-blue-500/20 to-cyan-500/20", borderColor: "border-blue-500/30" },
-  { name: "Pokročilý", level: 3, xpNeeded: 1500, icon: "🎯", color: "from-purple-500/20 to-violet-500/20", borderColor: "border-purple-500/30" },
-  { name: "Expert", level: 4, xpNeeded: 5000, icon: "🏆", color: "from-yellow-500/20 to-amber-500/20", borderColor: "border-yellow-500/30" },
-  { name: "Majster", level: 5, xpNeeded: 10000, icon: "👑", color: "from-red-500/20 to-orange-500/20", borderColor: "border-red-500/30" },
+  { name: "Beginner", xpNeeded: 0, icon: "🌱", color: "from-green-500/20 to-emerald-500/20", borderColor: "border-green-500/30" },
+  { name: "Student", xpNeeded: 100, icon: "📖", color: "from-blue-500/20 to-cyan-500/20", borderColor: "border-blue-500/30" },
+  { name: "Advanced", xpNeeded: 500, icon: "🎯", color: "from-purple-500/20 to-violet-500/20", borderColor: "border-purple-500/30" },
+  { name: "Expert", xpNeeded: 1500, icon: "🏆", color: "from-yellow-500/20 to-amber-500/20", borderColor: "border-yellow-500/30" },
+  { name: "Master", xpNeeded: 5000, icon: "👑", color: "from-red-500/20 to-orange-500/20", borderColor: "border-red-500/30" },
 ];
 
 interface LearningPathProgressProps {
@@ -28,7 +27,9 @@ export const LearningPathProgress = ({ currentXP }: LearningPathProgressProps) =
   const nextLevel = Math.min(currentLevel + 1, learningPaths.length - 1);
   const progressToNext = currentLevel === learningPaths.length - 1
     ? 100
-    : ((currentXP - learningPaths[currentLevel].xpNeeded) / (learningPaths[nextLevel].xpNeeded - learningPaths[currentLevel].xpNeeded)) * 100;
+    : learningPaths[nextLevel].xpNeeded === learningPaths[currentLevel].xpNeeded
+      ? 0
+      : ((currentXP - learningPaths[currentLevel].xpNeeded) / (learningPaths[nextLevel].xpNeeded - learningPaths[currentLevel].xpNeeded)) * 100;
 
   return (
     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }}>
@@ -36,7 +37,7 @@ export const LearningPathProgress = ({ currentXP }: LearningPathProgressProps) =
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center gap-2 text-base">
             <Map className="w-4 h-4 text-primary" />
-            Cesta učenia
+            Learning Path
           </CardTitle>
         </CardHeader>
         <CardContent>
