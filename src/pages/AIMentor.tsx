@@ -1,19 +1,16 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
-import {
-  Briefcase,
-  Dumbbell,
-  Brain,
-  Heart,
-  ArrowRight,
-  Check,
-} from "lucide-react";
+import { Briefcase, Dumbbell, Brain, Heart } from "lucide-react";
+import { MentorHero } from "@/components/mentor/MentorHero";
+import { MentorCard } from "@/components/mentor/MentorCard";
+import { TestimonialsCarousel } from "@/components/mentor/TestimonialsCarousel";
+import { ComparisonTable } from "@/components/mentor/ComparisonTable";
+import { SessionStreak } from "@/components/mentor/SessionStreak";
+import { ProgressPreview } from "@/components/mentor/ProgressPreview";
+import { AchievementBadges } from "@/components/mentor/AchievementBadges";
 
 const MENTOR_AREAS = [
   {
@@ -108,20 +105,15 @@ const AIMentor = () => {
       .select('*')
       .eq('user_id', userId)
       .eq('status', 'active');
-    
     setSubscriptions(data || []);
   };
 
   const handleSelectMentor = async (areaId: string) => {
-    // Admin má vždy prístup ku všetkým mentor oblastiam
     if (isAdmin) {
       navigate(`/ai-mentor/${areaId}`);
       return;
     }
-
-    // Check if user has subscription for this area
     const hasSub = subscriptions.some(s => s.mentor_area === areaId);
-    
     if (!hasSub) {
       toast({
         title: "Subscription required",
@@ -130,128 +122,73 @@ const AIMentor = () => {
       navigate('/subscription');
       return;
     }
-
     navigate(`/ai-mentor/${areaId}`);
   };
 
   if (loading || adminLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">Loading...</div>
+        <div className="text-center text-muted-foreground">Loading...</div>
       </div>
     );
   }
 
   return (
     <div className="min-h-screen bg-background pt-20 pb-12">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-black mb-4">
-            Your{" "}
-            <span className="bg-gradient-to-r from-primary to-purple-500 bg-clip-text text-transparent">
-              Personal Mentor
-            </span>
-          </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Choose your area of growth and get personalized guidance, daily check-ins, and long-term progress tracking
-          </p>
+      <div className="container mx-auto px-2 sm:px-4">
+        <MentorHero />
+
+        {/* Engagement widgets row */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+          <SessionStreak />
+          <ProgressPreview />
+          <AchievementBadges />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-6xl mx-auto">
-          {MENTOR_AREAS.map((area) => {
-            const Icon = area.icon;
-            const hasSubscription = isAdmin || subscriptions.some(s => s.mentor_area === area.id);
-            
-            return (
-              <Card
-                key={area.id}
-                className={`relative overflow-hidden transition-all hover:scale-105 ${
-                  hasSubscription ? 'ring-2 ring-primary' : ''
-                }`}
-              >
-                {hasSubscription && (
-                  <div className="absolute -top-3 -right-3">
-                    <Badge className="bg-green-500 text-white">Active</Badge>
-                  </div>
-                )}
+        {/* Main content: Mentor cards + sidebar */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+          <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+            {MENTOR_AREAS.map((area, i) => {
+              const hasSubscription = isAdmin || subscriptions.some(s => s.mentor_area === area.id);
+              return (
+                <MentorCard
+                  key={area.id}
+                  area={area}
+                  hasSubscription={hasSubscription}
+                  isOnline={true}
+                  onSelect={() => handleSelectMentor(area.id)}
+                  index={i}
+                />
+              );
+            })}
+          </div>
 
-                <div className={`h-2 bg-gradient-to-r ${area.color}`} />
-                
-                <CardHeader>
-                  <div className="flex items-start gap-4">
-                    <div className={`p-3 rounded-full bg-gradient-to-r ${area.color}`}>
-                      <Icon className="h-8 w-8 text-white" />
-                    </div>
-                    <div className="flex-1">
-                      <CardTitle className="text-2xl mb-2">{area.name}</CardTitle>
-                      <CardDescription>{area.description}</CardDescription>
-                    </div>
-                  </div>
-                </CardHeader>
-
-                <CardContent className="space-y-4">
-                  <ul className="space-y-2">
-                    {area.features.map((feature, i) => (
-                      <li key={i} className="flex items-center gap-2">
-                        <Check className="h-4 w-4 text-green-500" />
-                        <span className="text-sm">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-
-                  <Button
-                    className="w-full"
-                    onClick={() => handleSelectMentor(area.id)}
-                  >
-                    {hasSubscription ? (
-                      <>
-                        Start Session <ArrowRight className="ml-2 h-4 w-4" />
-                      </>
-                    ) : (
-                      "Subscribe to Access"
-                    )}
-                  </Button>
-                </CardContent>
-              </Card>
-            );
-          })}
+          <div className="space-y-4">
+            <TestimonialsCarousel />
+            <ComparisonTable />
+          </div>
         </div>
 
-        <div className="mt-12 text-center">
-          <Card className="max-w-2xl mx-auto">
-            <CardHeader>
-              <CardTitle>How it works</CardTitle>
-            </CardHeader>
-            <CardContent className="grid md:grid-cols-3 gap-6">
-              <div className="text-center">
+        {/* How it works */}
+        <div className="max-w-3xl mx-auto">
+          <div className="text-center mb-6">
+            <h2 className="text-2xl font-bold">How It Works</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[
+              { step: "1", title: "Choose Your Area", desc: "Select the area you want to focus on" },
+              { step: "2", title: "Daily Check-ins", desc: "Track your progress with daily reflections" },
+              { step: "3", title: "Get Guidance", desc: "Receive personalized AI coaching" },
+            ].map((item, i) => (
+              <div key={i} className="text-center">
                 <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3">
-                  <span className="text-2xl font-bold text-primary">1</span>
+                  <span className="text-2xl font-bold text-primary">{item.step}</span>
                 </div>
-                <h3 className="font-semibold mb-2">Choose Your Area</h3>
-                <p className="text-sm text-muted-foreground">
-                  Select the area you want to focus on
-                </p>
+                <h3 className="font-semibold mb-2">{item.title}</h3>
+                <p className="text-sm text-muted-foreground">{item.desc}</p>
               </div>
-              <div className="text-center">
-                <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3">
-                  <span className="text-2xl font-bold text-primary">2</span>
-                </div>
-                <h3 className="font-semibold mb-2">Daily Check-ins</h3>
-                <p className="text-sm text-muted-foreground">
-                  Track your progress with daily reflections
-                </p>
-              </div>
-              <div className="text-center">
-                <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3">
-                  <span className="text-2xl font-bold text-primary">3</span>
-                </div>
-                <h3 className="font-semibold mb-2">Get Guidance</h3>
-                <p className="text-sm text-muted-foreground">
-                  Receive personalized coaching
-                </p>
-              </div>
-            </CardContent>
-          </Card>
+            ))}
+          </div>
         </div>
       </div>
     </div>
