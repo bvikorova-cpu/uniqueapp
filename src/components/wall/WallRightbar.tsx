@@ -15,6 +15,7 @@ import { LiveStreamWidget } from "./LiveStreamWidget";
 import { StreaksAndChallenges } from "./StreaksAndChallenges";
 import { EngagementInsights } from "./EngagementInsights";
 import { AIContentSuggestions } from "./AIContentSuggestions";
+import { ThemeColorSwitcher } from "./ThemeColorSwitcher";
 
 export function WallRightbar() {
   const navigate = useNavigate();
@@ -88,6 +89,11 @@ export function WallRightbar() {
 
   return (
     <div className="w-full md:w-64 xl:w-80 md:h-[calc(100vh-112px)] md:sticky md:top-0 p-2 xl:p-4 pt-6 space-y-4 md:overflow-y-auto touch-auto -webkit-overflow-scrolling-touch">
+      {/* Theme Color Switcher */}
+      <Card className="p-3">
+        <ThemeColorSwitcher />
+      </Card>
+
       {/* Daily XP Video Reward */}
       {user && <DailyXPVideoReward userId={user.id} />}
 
