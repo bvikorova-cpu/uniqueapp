@@ -1,0 +1,133 @@
+import { motion } from "framer-motion";
+import { useState } from "react";
+import { ShoppingBag, Coins, Sparkles, Lock } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+
+const SHOP_ITEMS = [
+  { id: "avatar-robot", name: "Robot Avatar", emoji: "🤖", price: 50, category: "avatar", owned: false },
+  { id: "avatar-dragon", name: "Dragon Avatar", emoji: "🐉", price: 100, category: "avatar", owned: false },
+  { id: "avatar-unicorn", name: "Unicorn Avatar", emoji: "🦄", price: 150, category: "avatar", owned: false },
+  { id: "avatar-wizard", name: "Wizard Avatar", emoji: "🧙‍♂️", price: 200, category: "avatar", owned: false },
+  { id: "bg-galaxy", name: "Galaxy Background", emoji: "🌌", price: 75, category: "background", owned: false },
+  { id: "bg-forest", name: "Enchanted Forest", emoji: "🌳", price: 75, category: "background", owned: false },
+  { id: "bg-ocean", name: "Deep Ocean", emoji: "🌊", price: 100, category: "background", owned: false },
+  { id: "story-pirate", name: "Pirate Adventure", emoji: "🏴‍☠️", price: 120, category: "story", owned: false },
+  { id: "story-space", name: "Space Odyssey", emoji: "🚀", price: 120, category: "story", owned: false },
+  { id: "power-2x", name: "2x XP Boost (1hr)", emoji: "⚡", price: 30, category: "powerup", owned: false },
+  { id: "power-hint", name: "Quiz Hint Pack (5)", emoji: "💡", price: 25, category: "powerup", owned: false },
+  { id: "power-skip", name: "Challenge Skip", emoji: "⏭️", price: 15, category: "powerup", owned: false },
+];
+
+const CATEGORIES = [
+  { id: "all", label: "All", emoji: "🛒" },
+  { id: "avatar", label: "Avatars", emoji: "👤" },
+  { id: "background", label: "Backgrounds", emoji: "🎨" },
+  { id: "story", label: "Stories", emoji: "📖" },
+  { id: "powerup", label: "Power-ups", emoji: "⚡" },
+];
+
+export const KidsAcademyShop = () => {
+  const [stars] = useState(() => {
+    const saved = localStorage.getItem("kids-academy-stars");
+    return saved ? parseInt(saved, 10) : 0;
+  });
+  const [filter, setFilter] = useState("all");
+
+  const filteredItems = filter === "all" ? SHOP_ITEMS : SHOP_ITEMS.filter(i => i.category === filter);
+
+  return (
+    <div className="space-y-4">
+      {/* Star balance */}
+      <Card className="border-2 border-amber-500/20">
+        <CardContent className="py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <motion.div
+                animate={{ rotate: [0, 10, -10, 0] }}
+                transition={{ duration: 3, repeat: Infinity }}
+                className="w-12 h-12 rounded-full bg-amber-500/20 flex items-center justify-center text-2xl"
+              >
+                ⭐
+              </motion.div>
+              <div>
+                <div className="text-2xl font-black text-foreground">{stars}</div>
+                <div className="text-xs text-muted-foreground">Stars earned</div>
+              </div>
+            </div>
+            <Badge className="bg-primary/15 text-primary border-primary/30">
+              <Coins className="w-3 h-3 mr-1" />
+              Earn stars by completing challenges!
+            </Badge>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Shop */}
+      <Card className="border-2 border-primary/20">
+        <CardHeader className="pb-3">
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <ShoppingBag className="w-5 h-5 text-primary" />
+            Rewards Shop
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {/* Category filter */}
+          <div className="flex flex-wrap gap-2">
+            {CATEGORIES.map(cat => (
+              <Button
+                key={cat.id}
+                variant={filter === cat.id ? "default" : "outline"}
+                size="sm"
+                onClick={() => setFilter(cat.id)}
+                className="text-xs"
+              >
+                {cat.emoji} {cat.label}
+              </Button>
+            ))}
+          </div>
+
+          {/* Items grid */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+            {filteredItems.map((item, i) => {
+              const canAfford = stars >= item.price;
+              return (
+                <motion.div
+                  key={item.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.04 }}
+                  className={`relative p-3 rounded-xl border-2 text-center transition-all ${
+                    canAfford
+                      ? "border-primary/30 bg-card hover:border-primary/50 hover:shadow-md"
+                      : "border-border/50 bg-muted/20 opacity-70"
+                  }`}
+                >
+                  <motion.span
+                    className="text-3xl block mb-2"
+                    whileHover={{ scale: 1.2, rotate: 5 }}
+                  >
+                    {item.emoji}
+                  </motion.span>
+                  <h4 className="text-xs font-bold text-foreground mb-1 truncate">{item.name}</h4>
+                  <div className="flex items-center justify-center gap-1 text-xs">
+                    <span>⭐</span>
+                    <span className={`font-bold ${canAfford ? "text-amber-600" : "text-muted-foreground"}`}>
+                      {item.price}
+                    </span>
+                  </div>
+                  {!canAfford && (
+                    <div className="absolute inset-0 flex items-center justify-center rounded-xl bg-background/50">
+                      <Lock className="w-4 h-4 text-muted-foreground" />
+                    </div>
+                  )}
+                </motion.div>
+              );
+            })}
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+};
