@@ -11,7 +11,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Loader2, Search, Download, TrendingUp, CreditCard, Users, DollarSign } from "lucide-react";
 import { format } from "date-fns";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 
 const AdminPaymentDashboard = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -409,7 +408,6 @@ const AdminPaymentDashboard = () => {
           </TabsContent>
         </Tabs>
       </div>
-      <Footer />
     </div>
   );
 };

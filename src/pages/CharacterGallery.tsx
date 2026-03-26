@@ -6,7 +6,6 @@ import { ArrowLeft, Trash2, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 
 interface Character {
   id: string;
@@ -208,7 +207,6 @@ export default function CharacterGallery() {
         </div>
       </div>
 
-      <Footer />
     </div>
   );
 }

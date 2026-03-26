@@ -7,7 +7,6 @@ import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useHealthcareSubscription } from "@/hooks/useHealthcareSubscription";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import { useNavigate } from "react-router-dom";
 
 const Healthcare = () => {

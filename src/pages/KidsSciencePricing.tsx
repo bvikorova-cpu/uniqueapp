@@ -2,7 +2,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Check, Sparkles, Crown } from "lucide-react";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import { useScienceSubscription } from "@/hooks/useScienceSubscription";
 import { useNavigate } from "react-router-dom";
 
@@ -142,7 +141,6 @@ const KidsSciencePricing = () => {
           </div>
         </div>
       </main>
-      <Footer />
     </div>
   );
 };

@@ -1,6 +1,5 @@
 import { useState } from "react";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Leaf, Camera, Calendar, Stethoscope } from "lucide-react";
 import { PlantIdentifier } from "@/components/plant-care/PlantIdentifier";
@@ -61,7 +60,6 @@ const PlantCare = () => {
         </Tabs>
       </div>
 
-      <Footer />
     </div>
   );
 };

@@ -4,7 +4,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import { useAuth } from "@/contexts/AuthContext";
 import { useKidsStoryCreator } from "@/hooks/useKidsStoryCreator";
 import { StoryLimitBanner } from "@/components/kids-story/StoryLimitBanner";
@@ -234,7 +233,6 @@ const KidsStoryCreator = () => {
           <SafeContentBadge />
         </div>
       </main>
-      <Footer />
     </div>
   );
 };

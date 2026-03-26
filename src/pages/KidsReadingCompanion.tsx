@@ -7,7 +7,6 @@ import { BookOpen, Lock, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import { useKidsReadingSubscription } from "@/hooks/useKidsReadingSubscription";
 import { Progress } from "@/components/ui/progress";
 import { ParentalGate } from "@/components/kids/ParentalGate";
@@ -362,7 +361,6 @@ const KidsReadingCompanion = () => {
           </Tabs>
         </div>
       </main>
-      <Footer />
     </div>
   );
 };

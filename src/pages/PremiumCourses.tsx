@@ -8,7 +8,6 @@ import { BookOpen, Clock, CheckCircle, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 
 interface Course {
   id: string;
@@ -153,7 +152,6 @@ const PremiumCourses = () => {
         <div className="flex-1 flex items-center justify-center">
           <Loader2 className="w-8 h-8 animate-spin text-primary" />
         </div>
-        <Footer />
       </div>
     );
   }
@@ -277,7 +275,6 @@ const PremiumCourses = () => {
           </div>
         )}
       </main>
-      <Footer />
     </div>
   );
 };

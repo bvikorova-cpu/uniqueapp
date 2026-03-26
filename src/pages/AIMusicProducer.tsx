@@ -1,6 +1,5 @@
 import { useState } from "react";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Music, Wand2, Disc3, Download } from "lucide-react";
 import { SongGenerator } from "@/components/music-producer/SongGenerator";
@@ -55,7 +54,6 @@ const AIMusicProducer = () => {
         </Tabs>
       </div>
 
-      <Footer />
     </div>
   );
 };

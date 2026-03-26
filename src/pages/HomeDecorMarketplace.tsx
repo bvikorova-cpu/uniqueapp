@@ -10,7 +10,6 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import { useNavigate } from "react-router-dom";
 import { AIRoomDesigner } from "@/components/home-decor/AIRoomDesigner";
 import { useDecorSubscription } from "@/hooks/useDecorSubscription";
@@ -540,7 +539,6 @@ const HomeDecorMarketplace = () => {
         </Tabs>
       </div>
 
-      <Footer />
     </div>
   );
 };

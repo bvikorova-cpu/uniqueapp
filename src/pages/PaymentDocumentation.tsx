@@ -4,7 +4,6 @@ import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { CheckCircle2, CreditCard, Database, Webhook, FileText, TestTube } from "lucide-react";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 
 const PaymentDocumentation = () => {
   return (
@@ -361,7 +360,6 @@ console.log(credits.total_credits_purchased);`}
           </TabsContent>
         </Tabs>
       </div>
-      <Footer />
     </div>
   );
 };

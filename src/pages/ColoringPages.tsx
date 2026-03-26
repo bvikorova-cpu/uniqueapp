@@ -1,7 +1,6 @@
 import { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -393,7 +392,6 @@ export default function ColoringPages() {
           <TabsContent value="healthcare"><HealthcareTab /></TabsContent>
         </Tabs>
       </main>
-      <Footer />
     </div>
   );
 }

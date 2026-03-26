@@ -10,7 +10,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Upload, Sparkles, Home, ShoppingCart, Search, Store, ShoppingBag, CheckCircle, Info, Star, Zap, Palette, Image } from "lucide-react";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AIRoomDesigner } from "@/components/home-decor/AIRoomDesigner";
@@ -542,7 +541,6 @@ const HomeDesigner = () => {
         </Tabs>
       </div>
 
-      <Footer />
     </div>
   );
 };

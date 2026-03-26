@@ -13,7 +13,6 @@ import { toast } from "sonner";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import confetti from "canvas-confetti";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import { BrandVotesDisplay } from "@/components/brand-battle/BrandVotesDisplay";
 import { VotingStreakCard } from "@/components/brand-battle/VotingStreakCard";
 import { RewardsSection } from "@/components/brand-battle/RewardsSection";
@@ -421,7 +420,6 @@ export default function BrandBattle() {
           </TabsContent>
         </Tabs>
       </main>
-      <Footer />
     </div>
   );
 }

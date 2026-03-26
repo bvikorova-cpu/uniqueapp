@@ -9,7 +9,6 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Palette, Lightbulb, Share2, Sparkles, Download, Target, TrendingUp, Info, Star, Zap, CheckCircle } from "lucide-react";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import { useAICredits } from "@/hooks/useAICredits";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -475,7 +474,6 @@ ${kit.visual_identity?.tone || 'Not specified'}
         </Tabs>
       </div>
 
-      <Footer />
     </div>
   );
 };

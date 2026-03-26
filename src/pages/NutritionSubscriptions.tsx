@@ -1,5 +1,4 @@
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import SubscriptionPlans from "@/components/nutrition/SubscriptionPlans";
 import { Card, CardContent } from "@/components/ui/card";
 import { useNutritionSubscription } from "@/hooks/useNutritionSubscription";
@@ -49,7 +48,6 @@ export default function NutritionSubscriptions() {
         </div>
       </main>
 
-      <Footer />
     </div>
   );
 }

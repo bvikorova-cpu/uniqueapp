@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Lock, Trophy, Users, GraduationCap, Briefcase } from "lucide-react";
 import RoomGallery from "@/components/escape-room/RoomGallery";
@@ -122,7 +121,6 @@ const VirtualEscapeRoom = () => {
         </Tabs>
       </main>
 
-      <Footer />
     </div>
   );
 };
