@@ -4,14 +4,14 @@ import { Briefcase, Sparkles, Rocket, GraduationCap, Target, TrendingUp } from "
 const floatingEmojis = ["🎓", "💼", "🚀", "⭐", "🎯", "💡", "🏆", "📊"];
 
 const emojiPositions = [
-  { left: "8%", top: "8%" },
-  { left: "20%", top: "55%" },
-  { left: "75%", top: "10%" },
-  { left: "40%", top: "45%" },
-  { left: "85%", top: "55%" },
-  { left: "65%", top: "30%" },
-  { left: "80%", top: "3%" },
-  { left: "90%", top: "42%" },
+  { left: "2%", top: "2%" },
+  { left: "3%", top: "28%" },
+  { left: "88%", top: "5%" },
+  { left: "90%", top: "25%" },
+  { left: "2%", top: "50%" },
+  { left: "92%", top: "48%" },
+  { left: "5%", top: "75%" },
+  { left: "88%", top: "72%" },
 ];
 
 const mascots = [
