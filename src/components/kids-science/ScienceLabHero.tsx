@@ -84,7 +84,7 @@ export const ScienceLabHero = () => {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3 }}
         >
-          Objav vedu cez virtuálne experimenty a AI-powered analýzu!
+          Discover science through virtual experiments and AI-powered analysis!
         </motion.p>
 
         {/* Pulsing atom */}

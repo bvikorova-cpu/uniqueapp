@@ -29,7 +29,7 @@ export const LabNotebookResult = ({ result, category }: LabNotebookResultProps) 
           📓
         </motion.div>
         <h2 className="text-2xl font-black bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
-          Vedecký zápisník
+          Science Notebook
         </h2>
       </div>
 
@@ -38,7 +38,7 @@ export const LabNotebookResult = ({ result, category }: LabNotebookResultProps) 
         <CardHeader className="pb-2">
           <CardTitle className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
             <FlaskConical className="w-5 h-5" />
-            Záver experimentu
+            Experiment Conclusion
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -58,7 +58,7 @@ export const LabNotebookResult = ({ result, category }: LabNotebookResultProps) 
         <CardHeader className="pb-2">
           <CardTitle className="flex items-center gap-2 text-blue-600 dark:text-blue-400">
             <BookOpen className="w-5 h-5" />
-            Vedecké vysvetlenie
+            Scientific Explanation
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -79,7 +79,7 @@ export const LabNotebookResult = ({ result, category }: LabNotebookResultProps) 
           <CardTitle className="flex items-center gap-2 text-amber-600 dark:text-amber-400">
             <Lightbulb className="w-5 h-5" />
             <Sparkles className="w-4 h-4" />
-            Zaujímavé fakty
+            Fun Facts
           </CardTitle>
         </CardHeader>
         <CardContent>

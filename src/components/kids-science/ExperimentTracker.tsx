@@ -2,11 +2,11 @@ import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const badges = [
-  { id: "first", label: "Prvý experiment", icon: "🥇", requirement: 1 },
-  { id: "five", label: "5 experimentov", icon: "🧪", requirement: 5 },
-  { id: "ten", label: "Vedecký nadšenec", icon: "🔬", requirement: 10 },
-  { id: "twenty", label: "Laboratórny expert", icon: "🧫", requirement: 20 },
-  { id: "fifty", label: "Vedec roka", icon: "🏆", requirement: 50 },
+  { id: "first", label: "First Experiment", icon: "🥇", requirement: 1 },
+  { id: "five", label: "5 Experiments", icon: "🧪", requirement: 5 },
+  { id: "ten", label: "Science Enthusiast", icon: "🔬", requirement: 10 },
+  { id: "twenty", label: "Lab Expert", icon: "🧫", requirement: 20 },
+  { id: "fifty", label: "Scientist of the Year", icon: "🏆", requirement: 50 },
 ];
 
 interface ExperimentTrackerProps {
@@ -18,13 +18,13 @@ export const ExperimentTracker = ({ experimentsCompleted }: ExperimentTrackerPro
     <Card className="border-indigo-500/30 bg-gradient-to-br from-indigo-500/10 to-purple-500/10">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          🏅 Tvoje úspechy
+          🏅 Your Achievements
         </CardTitle>
       </CardHeader>
       <CardContent>
         <div className="mb-4 text-center">
           <p className="text-3xl font-black text-indigo-500">{experimentsCompleted}</p>
-          <p className="text-sm text-muted-foreground">dokončených experimentov</p>
+          <p className="text-sm text-muted-foreground">experiments completed</p>
         </div>
         <div className="grid grid-cols-5 gap-3">
           {badges.map((badge, i) => {

@@ -1,9 +1,9 @@
 import { motion } from "framer-motion";
 
 const levels = [
-  { id: "young", label: "Malý vedec", age: "6-8 rokov", icon: "🌱", color: "from-green-500/20 to-lime-500/20", border: "border-green-500/40" },
-  { id: "explorer", label: "Objaviteľ", age: "9-10 rokov", icon: "🔍", color: "from-blue-500/20 to-cyan-500/20", border: "border-blue-500/40" },
-  { id: "researcher", label: "Výskumník", age: "11-12 rokov", icon: "🎓", color: "from-purple-500/20 to-pink-500/20", border: "border-purple-500/40" },
+  { id: "young", label: "Young Scientist", age: "6-8 years", icon: "🌱", color: "from-green-500/20 to-lime-500/20", border: "border-green-500/40" },
+  { id: "explorer", label: "Explorer", age: "9-10 years", icon: "🔍", color: "from-blue-500/20 to-cyan-500/20", border: "border-blue-500/40" },
+  { id: "researcher", label: "Researcher", age: "11-12 years", icon: "🎓", color: "from-purple-500/20 to-pink-500/20", border: "border-purple-500/40" },
 ];
 
 interface DifficultySelectorProps {
@@ -15,7 +15,7 @@ export const DifficultySelector = ({ selected, onSelect }: DifficultySelectorPro
   return (
     <div>
       <h3 className="text-lg font-bold mb-3 flex items-center gap-2">
-        🎯 Vyber úroveň
+        🎯 Choose Your Level
       </h3>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         {levels.map((level, i) => (

@@ -1,11 +1,11 @@
 import { motion } from "framer-motion";
 
 const categories = [
-  { id: "physics", label: "Fyzika", icon: "⚡", color: "from-yellow-500/20 to-orange-500/20", border: "border-yellow-500/40", glow: "shadow-yellow-500/20" },
-  { id: "chemistry", label: "Chémia", icon: "🧪", color: "from-green-500/20 to-emerald-500/20", border: "border-green-500/40", glow: "shadow-green-500/20" },
-  { id: "biology", label: "Biológia", icon: "🧬", color: "from-pink-500/20 to-rose-500/20", border: "border-pink-500/40", glow: "shadow-pink-500/20" },
-  { id: "earth", label: "Zemeveda", icon: "🌍", color: "from-blue-500/20 to-cyan-500/20", border: "border-blue-500/40", glow: "shadow-blue-500/20" },
-  { id: "astronomy", label: "Astronómia", icon: "🔭", color: "from-purple-500/20 to-indigo-500/20", border: "border-purple-500/40", glow: "shadow-purple-500/20" },
+  { id: "physics", label: "Physics", icon: "⚡", color: "from-yellow-500/20 to-orange-500/20", border: "border-yellow-500/40", glow: "shadow-yellow-500/20" },
+  { id: "chemistry", label: "Chemistry", icon: "🧪", color: "from-green-500/20 to-emerald-500/20", border: "border-green-500/40", glow: "shadow-green-500/20" },
+  { id: "biology", label: "Biology", icon: "🧬", color: "from-pink-500/20 to-rose-500/20", border: "border-pink-500/40", glow: "shadow-pink-500/20" },
+  { id: "earth", label: "Earth Science", icon: "🌍", color: "from-blue-500/20 to-cyan-500/20", border: "border-blue-500/40", glow: "shadow-blue-500/20" },
+  { id: "astronomy", label: "Astronomy", icon: "🔭", color: "from-purple-500/20 to-indigo-500/20", border: "border-purple-500/40", glow: "shadow-purple-500/20" },
 ];
 
 interface ScienceCategorySelectorProps {
@@ -18,7 +18,7 @@ export const ScienceCategorySelector = ({ selected, onSelect, disabled }: Scienc
   return (
     <div>
       <h3 className="text-lg font-bold mb-3 flex items-center gap-2">
-        🔬 Vyber kategóriu
+        🔬 Choose a Category
       </h3>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
         {categories.map((cat, i) => (

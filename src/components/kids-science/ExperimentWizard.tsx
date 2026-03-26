@@ -21,10 +21,10 @@ interface ExperimentWizardProps {
 }
 
 const steps = [
-  { label: "Kategória", icon: "🔬" },
-  { label: "Hypotéza", icon: "💡" },
-  { label: "Pozorovania", icon: "👁️" },
-  { label: "Analýza", icon: "🚀" },
+  { label: "Category", icon: "🔬" },
+  { label: "Hypothesis", icon: "💡" },
+  { label: "Observations", icon: "👁️" },
+  { label: "Analysis", icon: "🚀" },
 ];
 
 export const ExperimentWizard = ({
@@ -67,7 +67,7 @@ export const ExperimentWizard = ({
       </div>
 
       <div className="text-sm text-muted-foreground text-center">
-        Krok {step + 1} z {steps.length}: <strong>{steps[step].label}</strong>
+        Step {step + 1} of {steps.length}: <strong>{steps[step].label}</strong>
       </div>
 
       {/* Step content */}
@@ -93,15 +93,15 @@ export const ExperimentWizard = ({
           {step === 1 && (
             <div className="space-y-3">
               <h3 className="text-lg font-bold flex items-center gap-2">
-                💡 Tvoja hypotéza
+                💡 Your Hypothesis
               </h3>
               <p className="text-sm text-muted-foreground">
-                Čo si myslíš, že sa stane? Začni s "Myslím, že..."
+                What do you think will happen? Start with "I think that..."
               </p>
               <Textarea
                 value={hypothesis}
                 onChange={(e) => setHypothesis(e.target.value)}
-                placeholder="Myslím, že keď..."
+                placeholder="I think that when..."
                 className="min-h-[120px] text-base"
                 disabled={!canAnalyze}
               />
@@ -111,15 +111,15 @@ export const ExperimentWizard = ({
           {step === 2 && (
             <div className="space-y-3">
               <h3 className="text-lg font-bold flex items-center gap-2">
-                👁️ Tvoje pozorovania
+                👁️ Your Observations
               </h3>
               <p className="text-sm text-muted-foreground">
-                Čo si videl/a, počul/a alebo nameral/a? Buď čo najpresnejší/ia!
+                What did you see, hear, or measure? Be as precise as possible!
               </p>
               <Textarea
                 value={observations}
                 onChange={(e) => setObservations(e.target.value)}
-                placeholder="Pozoroval/a som, že..."
+                placeholder="I observed that..."
                 className="min-h-[120px] text-base"
                 disabled={!canAnalyze}
               />
@@ -135,10 +135,10 @@ export const ExperimentWizard = ({
               >
                 🚀
               </motion.div>
-              <h3 className="text-xl font-bold">Všetko je pripravené!</h3>
+              <h3 className="text-xl font-bold">Everything is ready!</h3>
               <p className="text-muted-foreground">
-                Kategória: <strong className="capitalize">{category}</strong> • 
-                Hypotéza aj pozorovania sú vyplnené
+                Category: <strong className="capitalize">{category}</strong> • 
+                Hypothesis and observations are filled in
               </p>
               <Button
                 size="lg"
@@ -149,12 +149,12 @@ export const ExperimentWizard = ({
                 {loading ? (
                   <>
                     <Microscope className="mr-2 h-5 w-5 animate-spin" />
-                    AI analyzuje...
+                    AI is analyzing...
                   </>
                 ) : (
                   <>
                     <Microscope className="mr-2 h-5 w-5" />
-                    Spustiť AI analýzu 🔬
+                    Run AI Analysis 🔬
                   </>
                 )}
               </Button>
@@ -171,14 +171,14 @@ export const ExperimentWizard = ({
           disabled={step === 0}
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
-          Späť
+          Back
         </Button>
         {step < 3 && (
           <Button
             onClick={() => setStep(step + 1)}
             disabled={!canNext()}
           >
-            Ďalej
+            Next
             <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
         )}
