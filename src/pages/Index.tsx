@@ -185,7 +185,7 @@ const Index = () => {
     visitedCategories.forEach(c => { catCounts[c] = (catCounts[c] || 0) + 1; });
     const topCats = Object.entries(catCounts).sort((a, b) => b[1] - a[1]).map(e => e[0]);
 
-    if (topCats.length === 0) return uniqueModules.filter(m => m.featured).slice(0, 4);
+    if (topCats.length === 0) return uniqueModules.filter(m => (m as any).featured).slice(0, 4);
 
     return uniqueModules
       .filter(m => topCats.includes(m.category || '') && !recent.includes(m.path))
