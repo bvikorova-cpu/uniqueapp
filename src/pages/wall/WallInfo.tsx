@@ -483,50 +483,51 @@ export default function WallInfo() {
   ];
 
   return (
-    <div className="max-w-4xl mx-auto px-2 sm:px-4 py-3 sm:py-4">
-      <Card className="mb-6">
-        <CardHeader className="text-center">
-          <div className="flex items-center justify-center gap-2 mb-2">
-            <Info className="h-8 w-8 text-primary" />
-            <CardTitle className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
-              Wall Features Guide
-            </CardTitle>
-          </div>
-          <p className="text-muted-foreground text-sm sm:text-base">
-            Discover all the special features available on Wall - your social networking hub
+    <div className="max-w-4xl mx-auto px-2 sm:px-4 py-6">
+      {/* Hero */}
+      <div className="flex items-center gap-3 mb-8">
+        <div className="p-3 rounded-2xl bg-gradient-to-br from-primary to-accent shadow-lg">
+          <Info className="h-6 w-6 text-white" />
+        </div>
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
+            Wall Features Guide
+          </h1>
+          <p className="text-sm text-muted-foreground">
+            Discover all features available on Wall
           </p>
-        </CardHeader>
-      </Card>
+        </div>
+      </div>
 
       <div className="space-y-6">
         {featureSections.map((section, sectionIndex) => (
-          <Card key={sectionIndex} className="overflow-hidden">
-            <CardHeader className="bg-gradient-to-r from-violet-500/10 to-purple-500/10 border-b">
+          <Card key={sectionIndex} className="overflow-hidden border-border/50 hover:border-primary/20 transition-colors">
+            <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b border-border/50 py-4">
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-primary/10 text-primary">
+                <div className="p-2.5 rounded-xl bg-gradient-to-br from-primary to-accent text-white shadow-md">
                   {section.icon}
                 </div>
-                <CardTitle className="text-lg sm:text-xl">{section.title}</CardTitle>
-                <Badge variant="secondary" className="ml-auto">
-                  {section.features.length} features
+                <CardTitle className="text-lg sm:text-xl font-bold">{section.title}</CardTitle>
+                <Badge variant="secondary" className="ml-auto text-xs">
+                  {section.features.length}
                 </Badge>
               </div>
             </CardHeader>
             <CardContent className="p-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {section.features.map((feature, featureIndex) => (
                   <div
                     key={featureIndex}
-                    className="flex gap-3 p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors"
+                    className="group flex gap-3 p-3 rounded-xl border border-transparent hover:border-primary/20 hover:bg-primary/5 transition-all duration-200"
                   >
-                    <div className="p-2 rounded-md bg-primary/10 text-primary h-fit">
+                    <div className="p-2 rounded-lg bg-primary/10 text-primary h-fit group-hover:bg-primary group-hover:text-white transition-colors">
                       {feature.icon}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h4 className="font-semibold text-sm sm:text-base mb-1">
+                      <h4 className="font-bold text-sm mb-0.5 group-hover:text-primary transition-colors">
                         {feature.name}
                       </h4>
-                      <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                      <p className="text-xs text-muted-foreground leading-relaxed">
                         {feature.description}
                       </p>
                     </div>
