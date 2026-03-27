@@ -38,6 +38,9 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { LotteryHero } from "@/components/lottery/LotteryHero";
+import { LotteryStreak } from "@/components/lottery/LotteryStreak";
+import { LotteryProgress } from "@/components/lottery/LotteryProgress";
+import { LotteryAchievements } from "@/components/lottery/LotteryAchievements";
 
 const LOTTERY_TYPES = [
   { id: "eurojackpot", name: "EuroJackpot", maxNumber: 50, bonusBalls: 12, mainBalls: 5, bonusCount: 2 },
