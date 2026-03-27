@@ -1,493 +1,198 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { 
-  Info, 
-  Heart, 
-  MessageCircle, 
-  Share2, 
-  Repeat2, 
-  Bookmark, 
-  Image, 
-  Video, 
-  Smile, 
-  MapPin,
-  Clock,
-  Hash, 
-  AtSign,
-  Users,
-  Bell,
-  Lock,
-  Sparkles,
-  TrendingUp,
-  Calendar,
-  Flag,
-  Eye,
-  ThumbsUp,
-  Star,
-  Zap,
-  Camera,
-  FileImage,
-  MessageSquare,
-  UserPlus,
-  Search,
-  Filter,
+import {
+  Info, Heart, MessageCircle, Share2, Repeat2, Bookmark, Image, Video, Smile, MapPin,
+  Clock, Hash, AtSign, Users, Bell, Lock, Sparkles, TrendingUp, Calendar, Flag, Eye,
+  ThumbsUp, Star, Zap, Camera, FileImage, MessageSquare, UserPlus, Search, Filter,
+  Radio, Mic, BarChart3, Crown, Gift, Shield, Globe, Palette,
 } from "lucide-react";
-import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 
 interface FeatureSection {
   title: string;
   icon: React.ReactNode;
-  features: {
-    name: string;
-    description: string;
-    icon: React.ReactNode;
-  }[];
+  features: { name: string; description: string; icon: React.ReactNode }[];
 }
 
 export default function WallInfo() {
-  const { t } = useTranslation();
-
   const featureSections: FeatureSection[] = [
     {
-      title: "Post Creation Features",
+      title: "Post Creation",
       icon: <FileImage className="h-5 w-5" />,
       features: [
-        {
-          name: "Text Posts",
-          description: "Create text-based posts to share your thoughts, updates, and stories with your followers.",
-          icon: <MessageSquare className="h-4 w-4" />,
-        },
-        {
-          name: "Photo & Image Upload",
-          description: "Upload multiple photos and images to your posts. Supports JPEG, PNG, GIF, and WebP formats.",
-          icon: <Image className="h-4 w-4" />,
-        },
-        {
-          name: "Video Upload",
-          description: "Share video content directly in your posts. Supports MP4, MOV, and WebM formats.",
-          icon: <Video className="h-4 w-4" />,
-        },
-        {
-          name: "Feelings & Activities",
-          description: "Express how you're feeling or what you're doing with emoji-based mood indicators.",
-          icon: <Smile className="h-4 w-4" />,
-        },
-        {
-          name: "Location Tagging",
-          description: "Add your current location or any place to your posts to show where you are.",
-          icon: <MapPin className="h-4 w-4" />,
-        },
-        {
-          name: "Hashtags",
-          description: "Use #hashtags to categorize your posts and make them discoverable by others.",
-          icon: <Hash className="h-4 w-4" />,
-        },
-        {
-          name: "User Mentions",
-          description: "Mention other users with @username to notify them and link to their profiles.",
-          icon: <AtSign className="h-4 w-4" />,
-        },
+        { name: "Text Posts", description: "Share thoughts, updates, and stories with text-based posts.", icon: <MessageSquare className="h-4 w-4" /> },
+        { name: "Photo & Image Upload", description: "Upload multiple photos. Supports JPEG, PNG, GIF, and WebP.", icon: <Image className="h-4 w-4" /> },
+        { name: "Video Upload", description: "Share video content in MP4, MOV, and WebM formats.", icon: <Video className="h-4 w-4" /> },
+        { name: "Voice Posts", description: "Record and share voice-based posts with your followers.", icon: <Mic className="h-4 w-4" /> },
+        { name: "Feelings & Activities", description: "Express mood with emoji-based feelings and activity indicators.", icon: <Smile className="h-4 w-4" /> },
+        { name: "Location Tagging", description: "Tag locations to your posts to show where you are.", icon: <MapPin className="h-4 w-4" /> },
+        { name: "Hashtags", description: "Use #hashtags to categorize posts and improve discoverability.", icon: <Hash className="h-4 w-4" /> },
+        { name: "User Mentions", description: "Mention users with @username to notify and link to profiles.", icon: <AtSign className="h-4 w-4" /> },
+        { name: "Post Scheduling", description: "Schedule posts for future publishing with the creator tools.", icon: <Clock className="h-4 w-4" /> },
       ],
     },
     {
-      title: "Post Interaction Features",
+      title: "Post Interactions",
       icon: <Heart className="h-5 w-5" />,
       features: [
-        {
-          name: "Like Posts",
-          description: "Show appreciation for posts by liking them. See who liked your posts.",
-          icon: <Heart className="h-4 w-4" />,
-        },
-        {
-          name: "Reactions",
-          description: "Express different emotions with reaction emojis: Love, Haha, Wow, Sad, Angry, and more.",
-          icon: <ThumbsUp className="h-4 w-4" />,
-        },
-        {
-          name: "Comments",
-          description: "Engage in conversations by commenting on posts. Reply to other comments.",
-          icon: <MessageCircle className="h-4 w-4" />,
-        },
-        {
-          name: "Share Posts",
-          description: "Share posts externally via link, copy to clipboard, or share to other platforms.",
-          icon: <Share2 className="h-4 w-4" />,
-        },
-        {
-          name: "Repost / Quote Post",
-          description: "Repost content to your feed with your own commentary added.",
-          icon: <Repeat2 className="h-4 w-4" />,
-        },
-        {
-          name: "Save Posts",
-          description: "Bookmark posts to save them for later. Access all saved posts in the Saved section.",
-          icon: <Bookmark className="h-4 w-4" />,
-        },
+        { name: "Likes", description: "Like posts and see who liked yours.", icon: <Heart className="h-4 w-4" /> },
+        { name: "Animated Reactions", description: "Express emotions with animated reactions: Love, Haha, Wow, Sad, Angry.", icon: <ThumbsUp className="h-4 w-4" /> },
+        { name: "Threaded Comments", description: "Engage in conversations with up to 3 levels of threaded replies.", icon: <MessageCircle className="h-4 w-4" /> },
+        { name: "Share Posts", description: "Share via link, clipboard, or to other platforms.", icon: <Share2 className="h-4 w-4" /> },
+        { name: "Repost / Quote Post", description: "Repost content with your own commentary.", icon: <Repeat2 className="h-4 w-4" /> },
+        { name: "Save Posts", description: "Bookmark posts and access them later in the Saved section.", icon: <Bookmark className="h-4 w-4" /> },
+        { name: "Quick Polls", description: "Create and vote on quick polls directly in the feed.", icon: <BarChart3 className="h-4 w-4" /> },
       ],
     },
     {
-      title: "Social Features",
-      icon: <Users className="h-5 w-5" />,
+      title: "Stories & Reels",
+      icon: <Camera className="h-5 w-5" />,
       features: [
-        {
-          name: "Follow Users",
-          description: "Follow other users to see their posts in your feed. Build your network.",
-          icon: <UserPlus className="h-4 w-4" />,
-        },
-        {
-          name: "Friends System",
-          description: "Manage your friends list, see friend requests, and find people you may know.",
-          icon: <Users className="h-4 w-4" />,
-        },
-        {
-          name: "Direct Messages",
-          description: "Send private messages to other users. Full messaging features available in Messenger.",
-          icon: <MessageCircle className="h-4 w-4" />,
-        },
-        {
-          name: "User Profiles",
-          description: "View detailed profiles with bio, posts, followers, and following counts.",
-          icon: <Eye className="h-4 w-4" />,
-        },
-        {
-          name: "Notifications",
-          description: "Get notified when someone likes, comments, follows, or mentions you.",
-          icon: <Bell className="h-4 w-4" />,
-        },
+        { name: "Stories", description: "Share ephemeral photo/video stories that disappear after 24 hours.", icon: <Camera className="h-4 w-4" /> },
+        { name: "Story Reactions", description: "React to friends' stories with emojis and quick replies.", icon: <Heart className="h-4 w-4" /> },
+        { name: "Reels", description: "Create and discover short-form video content.", icon: <Video className="h-4 w-4" /> },
       ],
     },
     {
-      title: "Discovery Features",
+      title: "Feed & Discovery",
       icon: <Search className="h-5 w-5" />,
       features: [
-        {
-          name: "Search Posts",
-          description: "Search through all posts by content, hashtags, or author name.",
-          icon: <Search className="h-4 w-4" />,
-        },
-        {
-          name: "Trending Content",
-          description: "Discover trending posts, hashtags, and popular content from the community.",
-          icon: <TrendingUp className="h-4 w-4" />,
-        },
-        {
-          name: "User Search",
-          description: "Find and discover new users by searching their names or usernames.",
-          icon: <Users className="h-4 w-4" />,
-        },
-        {
-          name: "Hashtag Discovery",
-          description: "Explore posts by clicking on hashtags to see all related content.",
-          icon: <Hash className="h-4 w-4" />,
-        },
+        { name: "Smart Feed Tabs", description: "Switch between For You, Following, Trending, and Latest feeds.", icon: <Filter className="h-4 w-4" /> },
+        { name: "Trending Content", description: "Discover trending posts, hashtags, and popular content.", icon: <TrendingUp className="h-4 w-4" /> },
+        { name: "Search", description: "Search posts by content, hashtags, or author. Find users by name.", icon: <Search className="h-4 w-4" /> },
+        { name: "Hashtag Discovery", description: "Explore posts by clicking hashtags to find related content.", icon: <Hash className="h-4 w-4" /> },
+        { name: "Videos Section", description: "Browse and watch video content from creators and the community.", icon: <Video className="h-4 w-4" /> },
       ],
     },
     {
-      title: "AI Studio Features",
-      icon: <Sparkles className="h-5 w-5" />,
+      title: "Social & Friends",
+      icon: <Users className="h-5 w-5" />,
       features: [
-        {
-          name: "AI Image Generation",
-          description: "Generate unique AI images from text prompts to use in your posts.",
-          icon: <Sparkles className="h-4 w-4" />,
-        },
-        {
-          name: "AI Content Suggestions",
-          description: "Get AI-powered suggestions for your post content and captions.",
-          icon: <Zap className="h-4 w-4" />,
-        },
-        {
-          name: "Image Enhancement",
-          description: "Enhance your photos with AI-powered filters and improvements.",
-          icon: <Camera className="h-4 w-4" />,
-        },
-        {
-          name: "AI Mood Analysis",
-          description: "AI analyzes your posts and mood logs to detect emotional patterns and provide insights about your wellbeing.",
-          icon: <Heart className="h-4 w-4" />,
-        },
-        {
-          name: "Time Capsule Messages",
-          description: "Write messages to your future self. Schedule delivery for any date and receive emotional reminders from the past.",
-          icon: <Calendar className="h-4 w-4" />,
-        },
-        {
-          name: "AI Mood Trends",
-          description: "Track your emotional journey over time with AI-generated trend analysis, patterns, and personalized recommendations.",
-          icon: <TrendingUp className="h-4 w-4" />,
-        },
-        {
-          name: "Journal with AI Insights",
-          description: "Write private journal entries and get AI-powered emotional analysis and supportive feedback.",
-          icon: <FileImage className="h-4 w-4" />,
-        },
-        {
-          name: "AI Voice Messages",
-          description: "Generate AI voice responses and audio content for a more personal touch.",
-          icon: <Zap className="h-4 w-4" />,
-        },
+        { name: "Follow Users", description: "Follow others to see their posts in your feed.", icon: <UserPlus className="h-4 w-4" /> },
+        { name: "Friends System", description: "Send/receive friend requests, see mutual friends, and manage connections.", icon: <Users className="h-4 w-4" /> },
+        { name: "Friend Suggestions", description: "Discover people you may know based on mutual friends.", icon: <Sparkles className="h-4 w-4" /> },
+        { name: "User Profiles", description: "View profiles with bio, posts, followers, and activity.", icon: <Eye className="h-4 w-4" /> },
+        { name: "Notifications", description: "Real-time notifications for likes, comments, follows, and mentions.", icon: <Bell className="h-4 w-4" /> },
       ],
     },
     {
-      title: "Messenger AI Features",
+      title: "Messenger",
       icon: <MessageCircle className="h-5 w-5" />,
       features: [
-        {
-          name: "AI Smart Reply",
-          description: "Get AI-generated smart reply suggestions based on conversation context. Costs 1 credit per use.",
-          icon: <Zap className="h-4 w-4" />,
-        },
-        {
-          name: "Conversation Summarizer",
-          description: "Summarize long conversations with AI to get key points, decisions, and action items. Costs 5 credits.",
-          icon: <MessageSquare className="h-4 w-4" />,
-        },
-        {
-          name: "Real-time Messaging",
-          description: "Send and receive messages instantly with real-time updates and typing indicators.",
-          icon: <MessageCircle className="h-4 w-4" />,
-        },
-        {
-          name: "Message Reactions",
-          description: "React to messages with emojis to express your feelings quickly.",
-          icon: <ThumbsUp className="h-4 w-4" />,
-        },
-        {
-          name: "Voice Messages",
-          description: "Record and send voice messages when typing is not convenient.",
-          icon: <Zap className="h-4 w-4" />,
-        },
-        {
-          name: "Media Sharing",
-          description: "Share photos, videos, and files directly in conversations.",
-          icon: <Image className="h-4 w-4" />,
-        },
-        {
-          name: "Message Search",
-          description: "Search through your conversation history to find specific messages.",
-          icon: <Search className="h-4 w-4" />,
-        },
-        {
-          name: "Read Receipts",
-          description: "See when your messages have been read by the recipient.",
-          icon: <Eye className="h-4 w-4" />,
-        },
+        { name: "Real-time Messaging", description: "Instant messaging with real-time updates and typing indicators.", icon: <MessageCircle className="h-4 w-4" /> },
+        { name: "AI Smart Reply", description: "AI-generated smart reply suggestions based on context (1 credit).", icon: <Zap className="h-4 w-4" /> },
+        { name: "Conversation Summarizer", description: "AI summarization of long conversations with key points (5 credits).", icon: <MessageSquare className="h-4 w-4" /> },
+        { name: "Voice Messages", description: "Record and send voice messages in conversations.", icon: <Mic className="h-4 w-4" /> },
+        { name: "Media Sharing", description: "Share photos, videos, and files in conversations.", icon: <Image className="h-4 w-4" /> },
+        { name: "Message Reactions", description: "React to messages with emojis.", icon: <ThumbsUp className="h-4 w-4" /> },
+        { name: "Read Receipts", description: "See when messages have been read.", icon: <Eye className="h-4 w-4" /> },
       ],
     },
     {
-      title: "Creator Features",
-      icon: <Star className="h-5 w-5" />,
+      title: "AI Studio",
+      icon: <Sparkles className="h-5 w-5" />,
       features: [
-        {
-          name: "Creator Profiles",
-          description: "Set up a creator profile to share exclusive content with your subscribers.",
-          icon: <UserPlus className="h-4 w-4" />,
-        },
-        {
-          name: "Subscription Tiers",
-          description: "Create different subscription tiers with varying benefits and pricing.",
-          icon: <Star className="h-4 w-4" />,
-        },
-        {
-          name: "Exclusive Content",
-          description: "Post exclusive content visible only to your paying subscribers.",
-          icon: <Lock className="h-4 w-4" />,
-        },
-        {
-          name: "Creator Messaging",
-          description: "Direct messaging with subscribers for personalized interactions.",
-          icon: <MessageCircle className="h-4 w-4" />,
-        },
-        {
-          name: "Analytics Dashboard",
-          description: "View detailed analytics about your content performance and subscriber growth.",
-          icon: <TrendingUp className="h-4 w-4" />,
-        },
-        {
-          name: "Earnings Tracking",
-          description: "Track your earnings from subscriptions and tips in real-time.",
-          icon: <Zap className="h-4 w-4" />,
-        },
+        { name: "AI Content Assistant", description: "AI-powered content suggestions and caption generation (gpt-4o-mini, 1 credit).", icon: <Sparkles className="h-4 w-4" /> },
+        { name: "AI Image Generation", description: "Generate unique images from text prompts for your posts.", icon: <Palette className="h-4 w-4" /> },
+        { name: "Image Enhancement", description: "Enhance photos with AI-powered filters and improvements.", icon: <Camera className="h-4 w-4" /> },
+        { name: "AI Mood Analysis", description: "AI detects emotional patterns from posts and mood logs.", icon: <Heart className="h-4 w-4" /> },
+        { name: "AI Mood Trends", description: "Track emotional journey with AI trend analysis and recommendations.", icon: <TrendingUp className="h-4 w-4" /> },
+        { name: "Journal with AI Insights", description: "Private journal entries with AI emotional analysis and feedback.", icon: <FileImage className="h-4 w-4" /> },
+        { name: "Time Capsule Messages", description: "Write messages to your future self with scheduled delivery.", icon: <Calendar className="h-4 w-4" /> },
+      ],
+    },
+    {
+      title: "Creator Tools",
+      icon: <Crown className="h-5 w-5" />,
+      features: [
+        { name: "Analytics Dashboard", description: "Detailed analytics on content performance and audience growth.", icon: <BarChart3 className="h-4 w-4" /> },
+        { name: "Post Scheduling", description: "Schedule posts for optimal publishing times.", icon: <Clock className="h-4 w-4" /> },
+        { name: "AI Content Suggestions", description: "AI-driven topic and content recommendations.", icon: <Sparkles className="h-4 w-4" /> },
+        { name: "Subscription Tiers", description: "Create subscription tiers with different benefits and pricing.", icon: <Star className="h-4 w-4" /> },
+        { name: "Exclusive Content", description: "Post content visible only to paying subscribers.", icon: <Lock className="h-4 w-4" /> },
+        { name: "Earnings Tracking", description: "Track earnings from subscriptions and tips in real-time.", icon: <Zap className="h-4 w-4" /> },
       ],
     },
     {
       title: "Groups",
       icon: <Users className="h-5 w-5" />,
       features: [
-        {
-          name: "Create Groups",
-          description: "Create public or private groups for communities with shared interests. Name, description, and privacy settings.",
-          icon: <Users className="h-4 w-4" />,
-        },
-        {
-          name: "Join & Discover Groups",
-          description: "Search and discover groups by name, browse popular groups, and join with one click.",
-          icon: <Search className="h-4 w-4" />,
-        },
-        {
-          name: "Group Management",
-          description: "Manage group members, assign admin roles, and moderate content as group admin.",
-          icon: <Lock className="h-4 w-4" />,
-        },
-        {
-          name: "Group Discussions",
-          description: "Post and engage in discussions within your groups, share media, and interact with members.",
-          icon: <MessageCircle className="h-4 w-4" />,
-        },
-        {
-          name: "Member Count & Stats",
-          description: "View member counts, activity statistics, and group growth over time.",
-          icon: <TrendingUp className="h-4 w-4" />,
-        },
-        {
-          name: "Leave Groups",
-          description: "Leave any group you've joined with a single click.",
-          icon: <UserPlus className="h-4 w-4" />,
-        },
+        { name: "Create & Join Groups", description: "Create public/private groups or join existing communities.", icon: <Users className="h-4 w-4" /> },
+        { name: "Group Discussions", description: "Post, share media, and engage in group conversations.", icon: <MessageCircle className="h-4 w-4" /> },
+        { name: "Group Management", description: "Manage members, assign admin roles, and moderate content.", icon: <Shield className="h-4 w-4" /> },
+        { name: "Member Stats", description: "View member counts and group activity statistics.", icon: <TrendingUp className="h-4 w-4" /> },
       ],
     },
     {
       title: "Pages",
-      icon: <FileImage className="h-5 w-5" />,
+      icon: <Flag className="h-5 w-5" />,
       features: [
-        {
-          name: "Create Pages",
-          description: "Create pages for businesses, brands, artists, or public figures with custom categories.",
-          icon: <FileImage className="h-4 w-4" />,
-        },
-        {
-          name: "Page Categories",
-          description: "Choose from categories: Business, Entertainment, Community, Artist, Brand, Public Figure, and more.",
-          icon: <Filter className="h-4 w-4" />,
-        },
-        {
-          name: "Page Insights",
-          description: "View analytics and insights for your page's reach, followers, and engagement metrics.",
-          icon: <TrendingUp className="h-4 w-4" />,
-        },
-        {
-          name: "Page Followers",
-          description: "Build a following for your page separate from personal connections.",
-          icon: <UserPlus className="h-4 w-4" />,
-        },
-        {
-          name: "Page Posts",
-          description: "Share updates, announcements, and content as your page identity.",
-          icon: <MessageSquare className="h-4 w-4" />,
-        },
-        {
-          name: "Discover Pages",
-          description: "Search and discover pages by name, browse by category, and follow pages you're interested in.",
-          icon: <Search className="h-4 w-4" />,
-        },
+        { name: "Create Pages", description: "Pages for businesses, brands, artists, or public figures.", icon: <Flag className="h-4 w-4" /> },
+        { name: "Page Categories", description: "Categories: Business, Entertainment, Community, Art, Technology, Sports.", icon: <Filter className="h-4 w-4" /> },
+        { name: "Page Followers", description: "Build a following separate from personal connections.", icon: <UserPlus className="h-4 w-4" /> },
+        { name: "Discover Pages", description: "Search and browse pages by name or category.", icon: <Search className="h-4 w-4" /> },
       ],
     },
     {
       title: "Events",
       icon: <Calendar className="h-5 w-5" />,
       features: [
-        {
-          name: "Create Events",
-          description: "Create public events with title, description, location, date and time settings.",
-          icon: <Calendar className="h-4 w-4" />,
-        },
-        {
-          name: "Event RSVP",
-          description: "RSVP to events as 'Going' or 'Interested' to let organizers know you're attending.",
-          icon: <ThumbsUp className="h-4 w-4" />,
-        },
-        {
-          name: "Upcoming Events",
-          description: "Discover upcoming events in your network and community.",
-          icon: <Clock className="h-4 w-4" />,
-        },
-        {
-          name: "My Events",
-          description: "View and manage events you've created, see attendee counts and responses.",
-          icon: <Star className="h-4 w-4" />,
-        },
-        {
-          name: "Event Details",
-          description: "View full event details including location, time, description, and attendee list.",
-          icon: <Eye className="h-4 w-4" />,
-        },
-        {
-          name: "Event Reminders",
-          description: "Get notifications for upcoming events you've RSVPed to.",
-          icon: <Bell className="h-4 w-4" />,
-        },
+        { name: "Create Events", description: "Create events with title, description, location, cover image, and timing.", icon: <Calendar className="h-4 w-4" /> },
+        { name: "RSVP", description: "RSVP as 'Going' or 'Interested' to community events.", icon: <ThumbsUp className="h-4 w-4" /> },
+        { name: "Upcoming Events", description: "Discover upcoming events in your network.", icon: <Clock className="h-4 w-4" /> },
+        { name: "Event Management", description: "Manage your created events and track attendees.", icon: <Star className="h-4 w-4" /> },
       ],
     },
     {
-      title: "Privacy & Security Features",
-      icon: <Lock className="h-5 w-5" />,
+      title: "Live Streaming",
+      icon: <Radio className="h-5 w-5" />,
       features: [
-        {
-          name: "Privacy Settings",
-          description: "Control who can see your posts, profile, and activity with granular privacy controls.",
-          icon: <Lock className="h-4 w-4" />,
-        },
-        {
-          name: "Block Users",
-          description: "Block users to prevent them from seeing your content or contacting you.",
-          icon: <Eye className="h-4 w-4" />,
-        },
-        {
-          name: "Report Content",
-          description: "Report inappropriate posts or users for review by moderators.",
-          icon: <Flag className="h-4 w-4" />,
-        },
-        {
-          name: "Post Visibility",
-          description: "Choose who can see each post: Everyone, Friends Only, or Only Me.",
-          icon: <Users className="h-4 w-4" />,
-        },
+        { name: "Go Live", description: "Start live streams visible to your followers and community.", icon: <Radio className="h-4 w-4" /> },
+        { name: "Live Chat", description: "Real-time chat with viewers during live streams.", icon: <MessageCircle className="h-4 w-4" /> },
+        { name: "Live Reactions", description: "Viewers can send floating emoji reactions during streams.", icon: <Heart className="h-4 w-4" /> },
+        { name: "Viewer Count", description: "Track live viewer count in real-time.", icon: <Eye className="h-4 w-4" /> },
       ],
     },
     {
-      title: "Additional Features",
-      icon: <Star className="h-5 w-5" />,
+      title: "Gamification",
+      icon: <Gift className="h-5 w-5" />,
       features: [
-        {
-          name: "Media Gallery",
-          description: "View all your uploaded photos and videos in a beautiful gallery format.",
-          icon: <FileImage className="h-4 w-4" />,
-        },
-        {
-          name: "Videos Section",
-          description: "Browse and watch video content from users you follow and discover new creators.",
-          icon: <Video className="h-4 w-4" />,
-        },
-        {
-          name: "Pull to Refresh",
-          description: "Pull down on mobile to refresh your feed and see the latest posts.",
-          icon: <Zap className="h-4 w-4" />,
-        },
-        {
-          name: "Infinite Scroll",
-          description: "Seamlessly load more posts as you scroll down your feed.",
-          icon: <Filter className="h-4 w-4" />,
-        },
-        {
-          name: "Real-time Updates",
-          description: "See new posts and interactions in real-time without refreshing the page.",
-          icon: <Zap className="h-4 w-4" />,
-        },
-        {
-          name: "Achievements & Badges",
-          description: "Earn badges and achievements for your activity and engagement on the platform.",
-          icon: <Star className="h-4 w-4" />,
-        },
+        { name: "Daily Streaks", description: "Maintain daily activity streaks for bonus XP.", icon: <Zap className="h-4 w-4" /> },
+        { name: "XP & Levels", description: "Earn experience points and level up through engagement.", icon: <TrendingUp className="h-4 w-4" /> },
+        { name: "Achievements & Badges", description: "Unlock badges for milestones and special activities.", icon: <Star className="h-4 w-4" /> },
+        { name: "Challenges", description: "Participate in community challenges to earn rewards.", icon: <Gift className="h-4 w-4" /> },
+      ],
+    },
+    {
+      title: "Privacy & Security",
+      icon: <Shield className="h-5 w-5" />,
+      features: [
+        { name: "Privacy Settings", description: "Control who sees your posts, profile, and activity.", icon: <Lock className="h-4 w-4" /> },
+        { name: "Block Users", description: "Block users from seeing your content or contacting you.", icon: <Shield className="h-4 w-4" /> },
+        { name: "Report Content", description: "Report inappropriate posts or users for moderation.", icon: <Flag className="h-4 w-4" /> },
+        { name: "Post Visibility", description: "Set visibility per post: Everyone, Friends Only, or Only Me.", icon: <Eye className="h-4 w-4" /> },
+      ],
+    },
+    {
+      title: "Platform Features",
+      icon: <Globe className="h-5 w-5" />,
+      features: [
+        { name: "10 Color Themes", description: "Choose from 10 different color themes to personalize your experience.", icon: <Palette className="h-4 w-4" /> },
+        { name: "Mobile Dashboard", description: "Optimized mobile experience with responsive design.", icon: <Globe className="h-4 w-4" /> },
+        { name: "Real-time Updates", description: "Live updates via Supabase for posts, messages, and notifications.", icon: <Zap className="h-4 w-4" /> },
+        { name: "Infinite Scroll", description: "Seamless content loading as you scroll through your feed.", icon: <Filter className="h-4 w-4" /> },
+        { name: "Media Gallery", description: "Browse all uploaded photos and videos in gallery format.", icon: <Image className="h-4 w-4" /> },
       ],
     },
   ];
 
+  const totalFeatures = featureSections.reduce((a, s) => a + s.features.length, 0);
+
   return (
     <div className="max-w-4xl mx-auto px-2 sm:px-4 py-6 space-y-6">
       {/* Hero Banner */}
-      <motion.div 
-        initial={{ opacity: 0, y: -20 }} 
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/20 via-accent/10 to-primary/5 border border-primary/20 p-6 sm:p-8"
       >
@@ -501,7 +206,7 @@ export default function WallInfo() {
               Wall Features Guide
             </h1>
             <p className="text-sm text-muted-foreground mt-0.5">
-              Discover all {featureSections.reduce((a, s) => a + s.features.length, 0)} features available on Wall
+              Discover all {totalFeatures} features across {featureSections.length} categories
             </p>
           </div>
         </div>
@@ -509,11 +214,11 @@ export default function WallInfo() {
 
       <div className="space-y-5">
         {featureSections.map((section, sectionIndex) => (
-          <motion.div 
+          <motion.div
             key={sectionIndex}
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: sectionIndex * 0.05 }}
+            transition={{ delay: sectionIndex * 0.03 }}
           >
             <Card className="overflow-hidden border-border/40 bg-card/80 backdrop-blur-sm hover:border-primary/30 transition-all duration-300">
               <CardHeader className="bg-gradient-to-r from-primary/5 via-transparent to-accent/5 border-b border-border/30 py-4">
@@ -530,20 +235,14 @@ export default function WallInfo() {
               <CardContent className="p-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {section.features.map((feature, featureIndex) => (
-                    <div
-                      key={featureIndex}
-                      className="group flex gap-3 p-3 rounded-xl border border-border/30 hover:border-primary/30 hover:bg-primary/5 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300"
-                    >
+                    <div key={featureIndex}
+                      className="group flex gap-3 p-3 rounded-xl border border-border/30 hover:border-primary/30 hover:bg-primary/5 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300">
                       <div className="p-2 rounded-lg bg-primary/10 text-primary h-fit group-hover:bg-gradient-to-br group-hover:from-primary group-hover:to-accent group-hover:text-white transition-all duration-300 shadow-sm">
                         {feature.icon}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h4 className="font-black text-sm mb-0.5 group-hover:text-primary transition-colors">
-                          {feature.name}
-                        </h4>
-                        <p className="text-xs text-muted-foreground leading-relaxed">
-                          {feature.description}
-                        </p>
+                        <h4 className="font-black text-sm mb-0.5 group-hover:text-primary transition-colors">{feature.name}</h4>
+                        <p className="text-xs text-muted-foreground leading-relaxed">{feature.description}</p>
                       </div>
                     </div>
                   ))}
