@@ -2,8 +2,14 @@ import { motion } from "framer-motion";
 import { Sparkles, PenTool } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
+interface ForgeHeroProps {
+  credits: number;
+  creditsLoading: boolean;
+}
 
-
+export function ForgeHero({ credits, creditsLoading }: ForgeHeroProps) {
+  return (
+    <section className="relative py-10 text-center overflow-hidden">
       <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
         <motion.div
           animate={{ scale: [1, 1.06, 1] }}
