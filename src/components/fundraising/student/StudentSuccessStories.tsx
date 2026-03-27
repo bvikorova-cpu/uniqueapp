@@ -4,10 +4,10 @@ import { Badge } from "@/components/ui/badge";
 import { GraduationCap, Briefcase } from "lucide-react";
 
 const stories = [
-  { name: "Ana M.", field: "Computer Science", outcome: "Now a Software Engineer", emoji: "👩‍💻", raised: 2400 },
-  { name: "Tomáš K.", field: "Medicine", outcome: "Finishing residency", emoji: "👨‍⚕️", raised: 5200 },
-  { name: "Sofia L.", field: "Architecture", outcome: "Started her own studio", emoji: "👷‍♀️", raised: 3100 },
-  { name: "Marek R.", field: "Engineering", outcome: "Working at major tech firm", emoji: "🔧", raised: 1800 },
+  { name: "Priya S.", field: "Computer Science", outcome: "Now a Software Engineer", emoji: "👩‍💻", raised: 2400 },
+  { name: "James O.", field: "Medicine", outcome: "Finishing residency", emoji: "👨‍⚕️", raised: 5200 },
+  { name: "Mei L.", field: "Architecture", outcome: "Started her own studio", emoji: "👷‍♀️", raised: 3100 },
+  { name: "Carlos R.", field: "Engineering", outcome: "Working at major tech firm", emoji: "🔧", raised: 1800 },
 ];
 
 export function StudentSuccessStories() {

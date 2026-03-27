@@ -4,11 +4,11 @@ import { Badge } from "@/components/ui/badge";
 import { RefreshCw, ArrowRight } from "lucide-react";
 
 const chain = [
-  { giver: "Ana M.", receiver: "Peter B.", amount: 150, field: "CS" },
-  { giver: "Tomáš K.", receiver: "Jana S.", amount: 200, field: "Medicine" },
-  { giver: "Sofia L.", receiver: "Martin H.", amount: 100, field: "Architecture" },
-  { giver: "Marek R.", receiver: "Eva D.", amount: 120, field: "Engineering" },
-  { giver: "Jana S.", receiver: "Lucia T.", amount: 80, field: "Biology" },
+  { giver: "Priya S.", receiver: "Amir K.", amount: 150, field: "CS" },
+  { giver: "James O.", receiver: "Yuki T.", amount: 200, field: "Medicine" },
+  { giver: "Mei L.", receiver: "David N.", amount: 100, field: "Architecture" },
+  { giver: "Carlos R.", receiver: "Fatima A.", amount: 120, field: "Engineering" },
+  { giver: "Yuki T.", receiver: "Lena W.", amount: 80, field: "Biology" },
 ];
 
 export function PayItForwardBoard() {
