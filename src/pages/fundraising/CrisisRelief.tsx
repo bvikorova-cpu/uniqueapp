@@ -3,11 +3,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 import { CrisisHero } from '@/components/fundraising/crisis/CrisisHero';
 import { CrisisStepsWizard } from '@/components/fundraising/crisis/CrisisStepsWizard';
-import { CrisisImpactTicker } from '@/components/fundraising/crisis/CrisisImpactTicker';
 import { CrisisFilters } from '@/components/fundraising/crisis/CrisisFilters';
 import { CrisisCampaignCard } from '@/components/fundraising/crisis/CrisisCampaignCard';
-import { CrisisZoneOverview } from '@/components/fundraising/crisis/CrisisZoneOverview';
-import { ResolvedEmergencies } from '@/components/fundraising/crisis/ResolvedEmergencies';
 
 interface CrisisCampaign {
   id: string;
