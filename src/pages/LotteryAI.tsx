@@ -13,6 +13,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Sparkles, TrendingUp, Star, Save, Zap, BarChart3, Coins, Check,
   ArrowRight, Dices, Target, BookOpen, Shield, Settings, AlertTriangle,
+  Bell, Share2, Trophy, Radio, ArrowLeft,
 } from "lucide-react";
 import { LotteryHero } from "@/components/lottery/LotteryHero";
 import { LotteryStreak } from "@/components/lottery/LotteryStreak";
@@ -20,6 +21,12 @@ import { LotteryProgress } from "@/components/lottery/LotteryProgress";
 import { LotteryAchievements } from "@/components/lottery/LotteryAchievements";
 import { LotterySidebar } from "@/components/lottery/LotterySidebar";
 import { LotteryQuestionnaire } from "@/components/lottery/LotteryQuestionnaire";
+import { LotteryPushNotifications } from "@/components/lottery/LotteryPushNotifications";
+import { LotterySocialSharing } from "@/components/lottery/LotterySocialSharing";
+import { LotteryWinTracker } from "@/components/lottery/LotteryWinTracker";
+import { LotterySmartPicks } from "@/components/lottery/LotterySmartPicks";
+import { LotteryLiveDraws } from "@/components/lottery/LotteryLiveDraws";
+import { LotteryLeaderboard } from "@/components/lottery/LotteryLeaderboard";
 
 const LOTTERY_TYPES = [
   { id: "eurojackpot", name: "EuroJackpot", maxNumber: 50, bonusBalls: 12, mainBalls: 5, bonusCount: 2 },
@@ -62,6 +69,7 @@ export default function LotteryAI() {
   const [subscription, setSubscription] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [checkingSubscription, setCheckingSubscription] = useState(false);
+  const [activeView, setActiveView] = useState<"hub" | "notifications" | "sharing" | "wintracker" | "smartpicks" | "livedraws" | "leaderboard">("hub");
 
   const [selectedLottery, setSelectedLottery] = useState(LOTTERY_TYPES[0]);
   const [generatedNumbers, setGeneratedNumbers] = useState<number[]>([]);
@@ -69,6 +77,15 @@ export default function LotteryAI() {
   const [savedCombinations, setSavedCombinations] = useState<any[]>([]);
   const [aiAnalysis, setAiAnalysis] = useState<any>(null);
   const [isGenerating, setIsGenerating] = useState(false);
+
+  const FEATURE_CARDS = [
+    { id: "notifications" as const, icon: Bell, label: "Push Notifications", desc: "Lucky day alerts", color: "from-violet-500 to-purple-600" },
+    { id: "sharing" as const, icon: Share2, label: "Social Sharing", desc: "Share combos with friends", color: "from-blue-500 to-cyan-500" },
+    { id: "wintracker" as const, icon: Target, label: "Win Tracker", desc: "Track your results", color: "from-emerald-500 to-green-600" },
+    { id: "smartpicks" as const, icon: Zap, label: "Smart Picks", desc: "AI top 3 combos", color: "from-orange-500 to-red-500" },
+    { id: "livedraws" as const, icon: Radio, label: "Live Draws", desc: "Real-time results", color: "from-red-500 to-pink-500" },
+    { id: "leaderboard" as const, icon: Trophy, label: "Leaderboard", desc: "Top players ranking", color: "from-yellow-500 to-amber-500" },
+  ];
 
   useEffect(() => {
     checkAuth();
@@ -238,11 +255,67 @@ export default function LotteryAI() {
     );
   }
 
+  if (activeView === "notifications") return (
+    <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-2 sm:px-4 max-w-4xl">
+      <LotteryPushNotifications onBack={() => setActiveView("hub")} />
+    </div></div>
+  );
+  if (activeView === "sharing") return (
+    <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-2 sm:px-4 max-w-4xl">
+      <LotterySocialSharing onBack={() => setActiveView("hub")} />
+    </div></div>
+  );
+  if (activeView === "wintracker") return (
+    <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-2 sm:px-4 max-w-4xl">
+      <LotteryWinTracker onBack={() => setActiveView("hub")} />
+    </div></div>
+  );
+  if (activeView === "smartpicks") return (
+    <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-2 sm:px-4 max-w-4xl">
+      <LotterySmartPicks onBack={() => setActiveView("hub")} />
+    </div></div>
+  );
+  if (activeView === "livedraws") return (
+    <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-2 sm:px-4 max-w-4xl">
+      <LotteryLiveDraws onBack={() => setActiveView("hub")} />
+    </div></div>
+  );
+  if (activeView === "leaderboard") return (
+    <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-2 sm:px-4 max-w-4xl">
+      <LotteryLeaderboard onBack={() => setActiveView("hub")} />
+    </div></div>
+  );
+
   return (
     <div className="min-h-screen bg-background pt-20 pb-12">
       <div className="container mx-auto px-2 sm:px-4">
         {/* Hero */}
         <LotteryHero />
+
+        {/* Feature Cards Grid */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-8">
+          {FEATURE_CARDS.map((card, i) => (
+            <motion.div
+              key={card.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.05 }}
+            >
+              <Card
+                className="bg-card/80 backdrop-blur-xl border-border/50 cursor-pointer hover:border-primary/30 hover:scale-[1.03] transition-all"
+                onClick={() => setActiveView(card.id)}
+              >
+                <CardContent className="pt-4 pb-4 text-center">
+                  <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${card.color} flex items-center justify-center mx-auto mb-2`}>
+                    <card.icon className="h-5 w-5 text-white" />
+                  </div>
+                  <p className="font-bold text-xs">{card.label}</p>
+                  <p className="text-[10px] text-muted-foreground">{card.desc}</p>
+                </CardContent>
+              </Card>
+            </motion.div>
+          ))}
+        </div>
 
         {/* Engagement Row: Streak + Progress + Achievements */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
