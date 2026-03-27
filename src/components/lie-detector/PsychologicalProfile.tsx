@@ -4,8 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { useLieDetectorCredits } from "@/hooks/useLieDetectorCredits";
-import { Loader2, Plus, X, Brain } from "lucide-react";
+import { Loader2, Plus, X, Brain, MessageCircle, Info } from "lucide-react";
 import { AnalysisResults } from "./AnalysisResults";
+import { motion } from "framer-motion";
+import { Badge } from "@/components/ui/badge";
 
 export const PsychologicalProfile = () => {
   const [messages, setMessages] = useState<string[]>([""]);
@@ -13,9 +15,7 @@ export const PsychologicalProfile = () => {
   const [result, setResult] = useState<any>(null);
   const { analyzeProfile, isAnalyzingProfile } = useLieDetectorCredits();
 
-  const addMessage = () => {
-    setMessages([...messages, ""]);
-  };
+  const addMessage = () => setMessages([...messages, ""]);
 
   const removeMessage = (index: number) => {
     setMessages(messages.filter((_, i) => i !== index));
@@ -30,96 +30,113 @@ export const PsychologicalProfile = () => {
   const handleAnalyze = () => {
     const validMessages = messages.filter(m => m.trim());
     if (validMessages.length === 0) return;
-    
     const formatted = validMessages.map(text => ({ text }));
     analyzeProfile({ messages: formatted, context }, {
-      onSuccess: (data) => {
-        setResult(data.analysis);
-      },
+      onSuccess: (data) => setResult(data.analysis),
     });
   };
 
   return (
-    <div className="space-y-4 sm:space-y-6">
-      <Card className="glassmorphism">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
-            <Brain className="h-4 w-4 sm:h-5 sm:w-5" />
-            Deep Psychological Profile (50 credits)
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3 sm:space-y-4">
-          <div>
-            <label className="text-xs sm:text-sm font-medium mb-1.5 sm:mb-2 block">
-              Context (Optional)
-            </label>
-            <Input
-              placeholder="Relationship type, situation, etc..."
-              value={context}
-              onChange={(e) => setContext(e.target.value)}
-              className="text-sm sm:text-base"
-            />
-          </div>
-
-          <div>
-            <label className="text-xs sm:text-sm font-medium mb-1.5 sm:mb-2 block">
-              Messages from Person
-            </label>
-            <div className="space-y-2 sm:space-y-3">
-              {messages.map((message, index) => (
-                <div key={index} className="flex gap-2">
-                  <Textarea
-                    placeholder={`Message ${index + 1}...`}
-                    value={message}
-                    onChange={(e) => updateMessage(index, e.target.value)}
-                    className="min-h-20 sm:min-h-24 text-sm sm:text-base"
-                  />
-                  {messages.length > 1 && (
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => removeMessage(index)}
-                      className="flex-shrink-0 h-9 w-9 sm:h-10 sm:w-10"
-                    >
-                      <X className="h-4 w-4" />
-                    </Button>
-                  )}
-                </div>
-              ))}
+    <div className="space-y-6">
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+        <Card className="bg-card/60 backdrop-blur-sm border-border/50 overflow-hidden">
+          <div className="h-1.5 bg-gradient-to-r from-amber-500 to-orange-500" />
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+                <Brain className="h-5 w-5 text-primary" />
+                Deep Psychological Profile
+              </CardTitle>
+              <Badge variant="secondary" className="text-xs">50 credits</Badge>
             </div>
-          </div>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {/* Info */}
+            <div className="flex items-start gap-2 p-3 rounded-xl bg-primary/5 border border-primary/10">
+              <Info className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+              <p className="text-xs text-muted-foreground">
+                Provide multiple messages from the same person for the most accurate psychological profile. Add context about your relationship for better insights.
+              </p>
+            </div>
 
-          <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
-            <Button
-              onClick={addMessage}
-              variant="outline"
-              className="w-full sm:w-auto text-sm sm:text-base"
-              size="sm"
-            >
-              <Plus className="mr-2 h-4 w-4" />
-              Add Message
-            </Button>
-            <Button
-              onClick={handleAnalyze}
-              disabled={messages.filter(m => m.trim()).length === 0 || isAnalyzingProfile}
-              className="w-full sm:w-auto text-sm sm:text-base"
-              size="lg"
-            >
-              {isAnalyzingProfile ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Analyzing...
-                </>
-              ) : (
-                <>
-                  <Brain className="mr-2 h-4 w-4" />
-                  Create Profile (50 credits)
-                </>
-              )}
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+            {/* Context */}
+            <div>
+              <label className="text-xs font-medium mb-1.5 block text-muted-foreground">
+                Context (Optional)
+              </label>
+              <Input
+                placeholder="e.g., Partner, Colleague, Online contact, Dating app match..."
+                value={context}
+                onChange={(e) => setContext(e.target.value)}
+                className="text-sm bg-background/50"
+              />
+            </div>
+
+            {/* Messages */}
+            <div>
+              <label className="text-xs font-medium mb-2 block text-muted-foreground">
+                Messages from Person ({messages.length})
+              </label>
+              <div className="space-y-3">
+                {messages.map((message, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.05 }}
+                    className="flex gap-2 items-start"
+                  >
+                    <div className="flex items-center justify-center w-8 h-8 rounded-full bg-amber-500/10 border border-amber-500/20 flex-shrink-0 mt-1">
+                      <MessageCircle className="w-3.5 h-3.5 text-amber-500" />
+                    </div>
+                    <Textarea
+                      placeholder={`Message ${index + 1}...`}
+                      value={message}
+                      onChange={(e) => updateMessage(index, e.target.value)}
+                      className="min-h-20 text-sm bg-background/50"
+                    />
+                    {messages.length > 1 && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => removeMessage(index)}
+                        className="flex-shrink-0 h-8 w-8 text-muted-foreground hover:text-red-500"
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    )}
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-3 pt-2">
+              <Button onClick={addMessage} variant="outline" className="gap-2" size="sm">
+                <Plus className="h-4 w-4" />
+                Add Message
+              </Button>
+              <Button
+                onClick={handleAnalyze}
+                disabled={messages.filter(m => m.trim()).length === 0 || isAnalyzingProfile}
+                className="bg-gradient-to-r from-amber-500 to-orange-500 hover:opacity-90 text-white"
+                size="lg"
+              >
+                {isAnalyzingProfile ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Creating Profile...
+                  </>
+                ) : (
+                  <>
+                    <Brain className="mr-2 h-4 w-4" />
+                    Create Profile
+                  </>
+                )}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
 
       {result && <AnalysisResults analysis={result} />}
     </div>
