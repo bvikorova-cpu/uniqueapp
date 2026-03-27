@@ -8,13 +8,12 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Calendar, Plus, MapPin, Clock, Sparkles, Star, Users, CalendarDays, Zap } from "lucide-react";
+import { Calendar, Plus, MapPin, Clock, Sparkles, Star, CalendarDays } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
-import { SuggestedEvents } from "@/components/events/SuggestedEvents";
 import { CoverImageUpload } from "@/components/shared/CoverImageUpload";
 import { Label } from "@/components/ui/label";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 
 export default function WallEvents() {
   const { toast } = useToast();
@@ -82,55 +81,39 @@ export default function WallEvents() {
     const startDate = new Date(event.start_time);
     const grad = gradients[index % gradients.length];
     const isToday = new Date().toDateString() === startDate.toDateString();
-    
     return (
-      <motion.div 
-        initial={{ opacity: 0, y: 12 }} 
-        animate={{ opacity: 1, y: 0 }} 
-        transition={{ delay: index * 0.06, type: "spring", stiffness: 200 }}
-        whileHover={{ y: -2 }}
-      >
+      <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.06, type: "spring", stiffness: 200 }} whileHover={{ y: -2 }}>
         <Card className="group overflow-hidden border-border/40 bg-card/80 backdrop-blur-sm hover:border-primary/50 hover:shadow-2xl hover:shadow-primary/10 transition-all duration-500 cursor-pointer"
           onClick={() => navigate(`/wall/events/${event.id}`)}>
           <div className="flex">
             {event.cover_image ? (
               <div className="w-28 sm:w-36 shrink-0 relative overflow-hidden">
                 <img src={event.cover_image} alt={event.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent to-background/10" />
               </div>
             ) : (
               <div className={`w-24 sm:w-28 shrink-0 bg-gradient-to-br ${grad} flex flex-col items-center justify-center text-white p-3 relative overflow-hidden`}>
-                <div className="absolute inset-0 opacity-20" style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23fff' fill-opacity='0.15'%3E%3Cpath fill-rule='evenodd' d='M0 40L40 0H20L0 20M40 40V20L20 40'/%3E%3C/g%3E%3C/svg%3E\")" }} />
                 <span className="text-3xl font-black relative z-10">{format(startDate, "dd")}</span>
                 <span className="text-sm font-bold uppercase relative z-10">{format(startDate, "MMM")}</span>
-                {isToday && (
-                  <Badge className="mt-1 bg-white/20 text-white border-0 text-[9px] px-1.5">TODAY</Badge>
-                )}
+                {isToday && <Badge className="mt-1 bg-white/20 text-white border-0 text-[9px] px-1.5">TODAY</Badge>}
               </div>
             )}
             <CardContent className="flex-1 p-4">
-              <div className="flex items-start justify-between gap-2">
-                <div className="flex-1 min-w-0">
-                  <h4 className="font-black text-base group-hover:text-primary transition-colors line-clamp-1">{event.title}</h4>
-                  <div className="flex items-center gap-1.5 text-xs text-muted-foreground mt-1.5">
-                    <Clock className="h-3.5 w-3.5 text-primary/60" />
-                    <span>{format(startDate, "EEE, MMM d · h:mm a")}</span>
-                  </div>
-                  {event.location && (
-                    <div className="flex items-center gap-1.5 text-xs text-muted-foreground mt-1">
-                      <MapPin className="h-3.5 w-3.5 text-accent/60" />
-                      <span className="truncate">{event.location}</span>
-                    </div>
-                  )}
-                  {event.description && <p className="text-xs text-muted-foreground mt-2 line-clamp-2 leading-relaxed">{event.description}</p>}
-                </div>
+              <h4 className="font-black text-base group-hover:text-primary transition-colors line-clamp-1">{event.title}</h4>
+              <div className="flex items-center gap-1.5 text-xs text-muted-foreground mt-1.5">
+                <Clock className="h-3.5 w-3.5 text-primary/60" />
+                <span>{format(startDate, "EEE, MMM d · h:mm a")}</span>
               </div>
+              {event.location && (
+                <div className="flex items-center gap-1.5 text-xs text-muted-foreground mt-1">
+                  <MapPin className="h-3.5 w-3.5 text-accent/60" />
+                  <span className="truncate">{event.location}</span>
+                </div>
+              )}
+              {event.description && <p className="text-xs text-muted-foreground mt-2 line-clamp-2 leading-relaxed">{event.description}</p>}
               {showRsvp && (
                 <div className="flex items-center gap-2 mt-3">
                   <Button size="sm" className="text-xs bg-gradient-to-r from-primary to-accent text-white hover:opacity-90 shadow-lg shadow-primary/20 active:scale-95"
-                    onClick={(e) => { e.stopPropagation(); rsvpToEvent(event.id, "going"); }}>
-                    ✓ Going
-                  </Button>
+                    onClick={(e) => { e.stopPropagation(); rsvpToEvent(event.id, "going"); }}>✓ Going</Button>
                   <Button variant="outline" size="sm" className="text-xs hover:border-primary/30"
                     onClick={(e) => { e.stopPropagation(); rsvpToEvent(event.id, "interested"); }}>
                     <Star className="w-3 h-3 mr-1" /> Interested
@@ -147,11 +130,8 @@ export default function WallEvents() {
   return (
     <div className="max-w-5xl mx-auto px-4 pt-6 pb-8 space-y-6">
       {/* Hero Banner */}
-      <motion.div 
-        initial={{ opacity: 0, y: -20 }} 
-        animate={{ opacity: 1, y: 0 }}
-        className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-500/15 via-primary/10 to-accent/5 border border-primary/20 p-6 sm:p-8"
-      >
+      <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}
+        className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-500/15 via-primary/10 to-accent/5 border border-primary/20 p-6 sm:p-8">
         <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-primary/15 to-transparent rounded-full blur-3xl -translate-y-1/2 translate-x-1/4" />
         <div className="relative flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-center gap-4">
@@ -182,8 +162,6 @@ export default function WallEvents() {
             </DialogContent>
           </Dialog>
         </div>
-
-        {/* Stats */}
         <div className="relative flex items-center gap-6 mt-6">
           {[
             { icon: <Star className="w-4 h-4" />, label: "My Events", value: myEvents.length },
@@ -199,8 +177,6 @@ export default function WallEvents() {
           ))}
         </div>
       </motion.div>
-
-      <SuggestedEvents />
 
       {/* My Events */}
       {myEvents.length > 0 && (
