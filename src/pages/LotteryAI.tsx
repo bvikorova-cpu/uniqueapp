@@ -69,6 +69,7 @@ export default function LotteryAI() {
   const [subscription, setSubscription] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [checkingSubscription, setCheckingSubscription] = useState(false);
+  const [activeView, setActiveView] = useState<"hub" | "notifications" | "sharing" | "wintracker" | "smartpicks" | "livedraws" | "leaderboard">("hub");
 
   const [selectedLottery, setSelectedLottery] = useState(LOTTERY_TYPES[0]);
   const [generatedNumbers, setGeneratedNumbers] = useState<number[]>([]);
@@ -76,6 +77,15 @@ export default function LotteryAI() {
   const [savedCombinations, setSavedCombinations] = useState<any[]>([]);
   const [aiAnalysis, setAiAnalysis] = useState<any>(null);
   const [isGenerating, setIsGenerating] = useState(false);
+
+  const FEATURE_CARDS = [
+    { id: "notifications" as const, icon: Bell, label: "Push Notifications", desc: "Lucky day alerts", color: "from-violet-500 to-purple-600" },
+    { id: "sharing" as const, icon: Share2, label: "Social Sharing", desc: "Share combos with friends", color: "from-blue-500 to-cyan-500" },
+    { id: "wintracker" as const, icon: Target, label: "Win Tracker", desc: "Track your results", color: "from-emerald-500 to-green-600" },
+    { id: "smartpicks" as const, icon: Zap, label: "Smart Picks", desc: "AI top 3 combos", color: "from-orange-500 to-red-500" },
+    { id: "livedraws" as const, icon: Radio, label: "Live Draws", desc: "Real-time results", color: "from-red-500 to-pink-500" },
+    { id: "leaderboard" as const, icon: Trophy, label: "Leaderboard", desc: "Top players ranking", color: "from-yellow-500 to-amber-500" },
+  ];
 
   useEffect(() => {
     checkAuth();
