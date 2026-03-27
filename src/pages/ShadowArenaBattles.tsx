@@ -3,10 +3,11 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { SubscriptionGate } from '@/components/shadow-arena/SubscriptionGate';
-import { Swords, Trophy, Clock } from 'lucide-react';
+import { Swords, Trophy, Clock, ArrowLeft, Sparkles, Shield, Gift, Timer, Users } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { motion } from 'framer-motion';
 
 interface Battle {
   id: string;
@@ -18,11 +19,32 @@ interface Battle {
   total_prize_pool: number;
 }
 
+function LiveCountdown({ endsAt }: { endsAt: string }) {
+  const [timeLeft, setTimeLeft] = useState("");
+
+  useEffect(() => {
+    const update = () => {
+      const diff = new Date(endsAt).getTime() - Date.now();
+      if (diff <= 0) { setTimeLeft("Ended"); return; }
+      const d = Math.floor(diff / 86400000);
+      const h = Math.floor((diff % 86400000) / 3600000);
+      const m = Math.floor((diff % 3600000) / 60000);
+      setTimeLeft(d > 0 ? `${d}d ${h}h ${m}m` : `${h}h ${m}m`);
+    };
+    update();
+    const id = setInterval(update, 60000);
+    return () => clearInterval(id);
+  }, [endsAt]);
+
+  return <span className="font-mono">{timeLeft}</span>;
+}
+
 export default function ShadowArenaBattles() {
   const navigate = useNavigate();
   const [battles, setBattles] = useState<Battle[]>([]);
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
+  const [filter, setFilter] = useState<string>("all");
 
   useEffect(() => {
     fetchBattles();
@@ -49,11 +71,8 @@ export default function ShadowArenaBattles() {
     try {
       setCreating(true);
       toast.info('Creating new battle with AI challenge...');
-
-      const { data, error } = await supabase.functions.invoke('create-shadow-battle');
-      
+      const { error } = await supabase.functions.invoke('create-shadow-battle');
       if (error) throw error;
-
       toast.success('New battle created!');
       fetchBattles();
     } catch (error) {
@@ -64,127 +83,187 @@ export default function ShadowArenaBattles() {
     }
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'waiting_for_participants': return 'bg-yellow-500';
-      case 'active': return 'bg-green-500';
-      case 'completed': return 'bg-gray-500';
-      default: return 'bg-blue-500';
-    }
+  const filtered = filter === "all" ? battles : battles.filter(b => {
+    if (filter === "active") return b.status === "active" || b.status === "waiting_for_participants";
+    return b.status === filter;
+  });
+
+  const activeBattles = battles.filter(b => b.status === "active" || b.status === "waiting_for_participants");
+  const totalPool = activeBattles.reduce((s, b) => s + b.total_prize_pool, 0);
+
+  const statusConfig: Record<string, { label: string; className: string }> = {
+    waiting_for_participants: { label: "Open", className: "bg-yellow-600/80 text-yellow-100" },
+    active: { label: "Live", className: "bg-green-600/80 text-green-100" },
+    completed: { label: "Ended", className: "bg-muted text-muted-foreground" },
   };
 
-  const getTimeRemaining = (endsAt: string | null) => {
-    if (!endsAt) return 'Not started';
-    const now = new Date();
-    const end = new Date(endsAt);
-    const diff = end.getTime() - now.getTime();
-    
-    if (diff <= 0) return 'Ended';
-    
-    const hours = Math.floor(diff / (1000 * 60 * 60));
-    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-    
-    return `${hours}h ${minutes}m remaining`;
-  };
+  const infoItems = [
+    { icon: Sparkles, label: "AI-generated themes every month" },
+    { icon: Shield, label: "Anonymous submissions for fair judging" },
+    { icon: Gift, label: "Digital gifts = weighted votes" },
+    { icon: Trophy, label: "80% to winners, Top 3 split" },
+    { icon: Timer, label: "14-day battle duration" },
+    { icon: Users, label: "€1 entry — all goes to prize pool" },
+  ];
 
   return (
     <SubscriptionGate>
-      <div className="container mx-auto px-4 sm:px-6 pt-24 pb-8 max-w-7xl">
-        {/* Header Section */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-6">
+      <div className="container mx-auto px-4 sm:px-6 pt-24 pb-8 max-w-5xl">
+        {/* Back nav */}
+        <Button variant="ghost" size="sm" onClick={() => navigate('/shadow-arena/dashboard')} className="mb-4">
+          <ArrowLeft className="w-4 h-4 mr-2" /> Back to Dashboard
+        </Button>
+
+        {/* Hero header */}
+        <motion.div
+          className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[hsl(280,30%,8%)] via-[hsl(0,20%,6%)] to-[hsl(0,0%,4%)] p-8 mb-8"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-purple-900/15 rounded-full blur-[80px]" />
+
+          <div className="relative z-10 flex items-center justify-between gap-6 flex-wrap">
             <div>
-              <h1 className="text-4xl font-black mb-2 flex items-center gap-3 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
-                <Swords className="h-10 w-10 text-purple-400" />
-                Battle Arena
-              </h1>
-              <p className="text-lg text-muted-foreground">
+              <div className="flex items-center gap-3 mb-2">
+                <Swords className="h-8 w-8 text-purple-400" />
+                <h1 className="text-3xl md:text-4xl font-black bg-gradient-to-r from-red-400 via-purple-400 to-red-400 bg-clip-text text-transparent">
+                  Battle Arena
+                </h1>
+              </div>
+              <p className="text-red-200/60 text-sm max-w-md">
                 Monthly horror storytelling competitions with real cash prizes
               </p>
             </div>
-            <Button 
-              onClick={createNewBattle}
-              disabled={creating}
-              size="lg"
-            >
-              {creating ? 'Creating...' : 'Create New Battle'}
-            </Button>
-          </div>
 
-          {/* Battle Explanation Card */}
-          <Card className="bg-gradient-to-br from-purple-500/10 to-fuchsia-500/10 border-purple-500/20">
-            <CardContent className="pt-6">
-              <div className="space-y-3 text-sm text-muted-foreground">
-                <p>🎯 <strong>How Battles Work:</strong> Every month, new challenges are created with AI-generated themes</p>
-                <p>💶 <strong>Entry Fee:</strong> €1 to participate | All entries go into the prize pool</p>
-                <p>🎭 <strong>Anonymous Competition:</strong> Stories are submitted anonymously for fair judging</p>
-                <p>🎁 <strong>Voting System:</strong> Readers vote using digital gifts (each gift = weighted vote)</p>
-                <p>🏆 <strong>Prize Distribution:</strong> 80% to winners, 20% platform fee | Top 3 places win prizes</p>
-                <p>⏰ <strong>Duration:</strong> Each battle runs for 14 days from start</p>
-              </div>
-            </CardContent>
-          </Card>
+            <div className="flex items-center gap-4">
+              {totalPool > 0 && (
+                <div className="text-center px-4 py-2 rounded-xl bg-yellow-950/30 border border-yellow-800/30">
+                  <p className="text-xs text-yellow-400/70">Active Pools</p>
+                  <p className="text-xl font-black text-yellow-400">€{totalPool.toFixed(2)}</p>
+                </div>
+              )}
+              <Button
+                onClick={createNewBattle}
+                disabled={creating}
+                className="bg-gradient-to-r from-red-700 to-purple-800 hover:from-red-800 hover:to-purple-900 text-white"
+              >
+                <Swords className="w-4 h-4 mr-2" />
+                {creating ? 'Creating...' : 'Create New Battle'}
+              </Button>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Info grid */}
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-8">
+          {infoItems.map((item, i) => (
+            <motion.div
+              key={i}
+              className="flex items-center gap-3 p-3 rounded-xl bg-card/30 border border-border/20"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.06 }}
+            >
+              <item.icon className="w-4 h-4 text-purple-400 shrink-0" />
+              <span className="text-xs text-muted-foreground">{item.label}</span>
+            </motion.div>
+          ))}
         </div>
 
+        {/* Filter tabs */}
+        <div className="flex items-center gap-2 mb-6">
+          {[
+            { key: "all", label: "All Battles" },
+            { key: "active", label: "Active" },
+            { key: "completed", label: "Ended" },
+          ].map((f) => (
+            <Button
+              key={f.key}
+              variant={filter === f.key ? "default" : "outline"}
+              size="sm"
+              onClick={() => setFilter(f.key)}
+              className="text-xs"
+            >
+              {f.label}
+              {f.key === "active" && activeBattles.length > 0 && (
+                <Badge className="ml-2 bg-green-600/80 text-xs px-1.5">{activeBattles.length}</Badge>
+              )}
+            </Button>
+          ))}
+        </div>
+
+        {/* Battle list */}
         {loading ? (
           <div className="text-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary mx-auto" />
           </div>
-        ) : battles.length === 0 ? (
+        ) : filtered.length === 0 ? (
           <Card className="p-12 text-center">
-            <Swords className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
-            <p className="text-xl font-semibold mb-2">No battles yet</p>
-            <p className="text-muted-foreground mb-6">Create the first battle to get started!</p>
+            <Swords className="h-14 w-14 mx-auto mb-4 text-muted-foreground" />
+            <p className="text-lg font-semibold mb-2">No battles found</p>
+            <p className="text-muted-foreground mb-6">
+              {filter !== "all" ? "Try a different filter or create a new battle." : "Create the first battle to get started!"}
+            </p>
             <Button onClick={createNewBattle} disabled={creating}>
               {creating ? 'Creating...' : 'Create First Battle'}
             </Button>
           </Card>
         ) : (
-          <div className="grid gap-6">
-            {battles.map((battle) => (
-              <Card 
-                key={battle.id} 
-                className="p-6 hover:border-primary transition-colors cursor-pointer"
-                onClick={() => navigate(`/shadow-arena/battle/${battle.id}`)}
-              >
-                <div className="flex items-start justify-between gap-4 mb-4">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-3">
-                      <Badge className={getStatusColor(battle.status)}>
-                        {battle.status.replace('_', ' ')}
-                      </Badge>
-                      {battle.ends_at && (
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <Clock className="h-4 w-4" />
-                          {getTimeRemaining(battle.ends_at)}
-                        </div>
-                      )}
-                    </div>
-                    <h3 className="text-2xl font-black mb-2">{battle.challenge_theme}</h3>
-                    <p className="text-muted-foreground line-clamp-2">
-                      {battle.challenge_prompt}
-                    </p>
-                  </div>
-                  <div className="text-right">
-                    <Trophy className="h-8 w-8 text-primary mb-2 ml-auto" />
-                    <p className="text-3xl font-bold text-primary">
-                      €{battle.total_prize_pool.toFixed(2)}
-                    </p>
-                    <p className="text-sm text-muted-foreground">Prize Pool</p>
-                  </div>
-                </div>
-
-                <Button 
-                  className="w-full"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    navigate(`/shadow-arena/battle/${battle.id}`);
-                  }}
+          <div className="grid gap-4">
+            {filtered.map((battle, i) => {
+              const cfg = statusConfig[battle.status] || { label: battle.status, className: "bg-muted" };
+              return (
+                <motion.div
+                  key={battle.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.05 }}
                 >
-                  View Battle Details
-                </Button>
-              </Card>
-            ))}
+                  <Card
+                    className="group p-5 hover:border-purple-700/40 transition-all cursor-pointer"
+                    onClick={() => navigate(`/shadow-arena/battle/${battle.id}`)}
+                  >
+                    <div className="flex items-start justify-between gap-4 mb-3">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-2">
+                          <Badge className={`text-xs ${cfg.className}`}>{cfg.label}</Badge>
+                          {battle.ends_at && battle.status !== "completed" && (
+                            <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                              <Clock className="w-3 h-3" />
+                              <LiveCountdown endsAt={battle.ends_at} />
+                            </span>
+                          )}
+                        </div>
+                        <h3 className="text-xl font-bold text-foreground group-hover:text-purple-400 transition-colors">
+                          {battle.challenge_theme}
+                        </h3>
+                        <p className="text-sm text-muted-foreground line-clamp-2 mt-1">
+                          {battle.challenge_prompt}
+                        </p>
+                      </div>
+                      <div className="text-right shrink-0">
+                        <Trophy className="h-6 w-6 text-yellow-500 mb-1 ml-auto" />
+                        <p className="text-2xl font-black text-yellow-400">
+                          €{battle.total_prize_pool.toFixed(2)}
+                        </p>
+                        <p className="text-xs text-muted-foreground">Prize Pool</p>
+                      </div>
+                    </div>
+
+                    <Button
+                      variant="outline"
+                      className="w-full group-hover:bg-purple-950/20 group-hover:border-purple-700/40 transition-colors"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        navigate(`/shadow-arena/battle/${battle.id}`);
+                      }}
+                    >
+                      View Battle Details
+                    </Button>
+                  </Card>
+                </motion.div>
+              );
+            })}
           </div>
         )}
       </div>
