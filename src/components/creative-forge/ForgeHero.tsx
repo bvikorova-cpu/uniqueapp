@@ -2,16 +2,6 @@ import { motion } from "framer-motion";
 import { Sparkles, PenTool } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
-const floatingIcons = [
-  { emoji: "🎵", left: 5, top: 14 },
-  { emoji: "📖", left: 92, top: 9 },
-  { emoji: "🎬", left: 4, top: 68 },
-  { emoji: "✍️", left: 90, top: 62 },
-  { emoji: "🎭", left: 3, top: 40 },
-  { emoji: "🎤", left: 95, top: 36 },
-  { emoji: "💡", left: 48, top: 5 },
-];
-
 interface ForgeHeroProps {
   credits: number;
   creditsLoading: boolean;
@@ -20,18 +10,6 @@ interface ForgeHeroProps {
 export function ForgeHero({ credits, creditsLoading }: ForgeHeroProps) {
   return (
     <section className="relative py-10 text-center overflow-hidden">
-      {floatingIcons.map((item, i) => (
-        <motion.span
-          key={i}
-          className="absolute text-2xl pointer-events-none select-none opacity-25"
-          style={{ left: `${item.left}%`, top: `${item.top}%` }}
-          animate={{ y: [0, -14, 0], rotate: [0, i % 2 === 0 ? 10 : -10, 0] }}
-          transition={{ duration: 3.5 + i * 0.3, repeat: Infinity, ease: "easeInOut", delay: i * 0.2 }}
-        >
-          {item.emoji}
-        </motion.span>
-      ))}
-
       <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
         <motion.div
           animate={{ scale: [1, 1.06, 1] }}
