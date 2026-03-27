@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Building2, MapPin, Maximize2, BedDouble, DollarSign, Camera, Video, Megaphone, TrendingUp, Calculator, MessageSquare, Check, Plus, Sparkles, Loader2, Map, Brain, BarChart3, Wand2, Bell, ArrowLeft } from "lucide-react";
+import { Building2, MapPin, Maximize2, BedDouble, DollarSign, Camera, Video, Megaphone, TrendingUp, Calculator, MessageSquare, Check, Plus, Sparkles, Loader2, Map, Brain, BarChart3, Wand2, Bell, ArrowLeft, Home, ImagePlus, GitCompare, Bot, FileText, Tag } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { PropertyCard } from "@/components/property/PropertyCard";
@@ -21,10 +21,16 @@ import { PropertyMarketAnalytics } from "@/components/property/PropertyMarketAna
 import { PropertyAIStaging } from "@/components/property/PropertyAIStaging";
 import { PropertyMortgageCalc } from "@/components/property/PropertyMortgageCalc";
 import { PropertyAlerts } from "@/components/property/PropertyAlerts";
+import { PropertyNeighborhood } from "@/components/property/PropertyNeighborhood";
+import { PropertyPhotoEnhancer } from "@/components/property/PropertyPhotoEnhancer";
+import { PropertyComparison } from "@/components/property/PropertyComparison";
+import { PropertyChatbot } from "@/components/property/PropertyChatbot";
+import { PropertyDocManager } from "@/components/property/PropertyDocManager";
+import { PropertyNegotiation } from "@/components/property/PropertyNegotiation";
 import { usePropertyExpiration } from "@/hooks/usePropertyExpiration";
 import { motion } from "framer-motion";
 
-type ViewType = "hub" | "map" | "valuator" | "analytics" | "staging" | "mortgage" | "alerts";
+type ViewType = "hub" | "map" | "valuator" | "analytics" | "staging" | "mortgage" | "alerts" | "neighborhood" | "photos" | "compare" | "chatbot" | "documents" | "negotiate";
 
 const LISTING_PACKAGES = [
   {
@@ -57,6 +63,12 @@ const FEATURE_CARDS = [
   { id: "staging", icon: Wand2, label: "AI Staging", desc: "Virtual staging", color: "from-pink-500 to-rose-600" },
   { id: "mortgage", icon: Calculator, label: "Mortgage Calc", desc: "Payment calculator", color: "from-amber-500 to-orange-600" },
   { id: "alerts", icon: Bell, label: "Property Alerts", desc: "Smart notifications", color: "from-red-500 to-rose-600" },
+  { id: "neighborhood", icon: Home, label: "Neighborhood", desc: "Area insights", color: "from-teal-500 to-emerald-600" },
+  { id: "photos", icon: ImagePlus, label: "Photo Enhance", desc: "AI photo boost", color: "from-orange-500 to-pink-600" },
+  { id: "compare", icon: GitCompare, label: "Compare", desc: "Side by side", color: "from-cyan-500 to-blue-600" },
+  { id: "chatbot", icon: Bot, label: "AI Assistant", desc: "Ask anything", color: "from-violet-500 to-purple-600" },
+  { id: "documents", icon: FileText, label: "Documents", desc: "Manage docs", color: "from-sky-500 to-blue-600" },
+  { id: "negotiate", icon: Tag, label: "Negotiate", desc: "Price strategy", color: "from-amber-500 to-orange-600" },
 ];
 
 export default function PropertyMarketplace() {
@@ -157,12 +169,21 @@ export default function PropertyMarketplace() {
   };
 
   // Sub-view rendering
-  if (activeView === "map") return <div className="min-h-screen bg-background"><div className="container mx-auto px-4 py-24"><PropertyMapView onBack={() => setActiveView("hub")} /></div></div>;
-  if (activeView === "valuator") return <div className="min-h-screen bg-background"><div className="container mx-auto px-4 py-24"><PropertyAIValuator onBack={() => setActiveView("hub")} /></div></div>;
-  if (activeView === "analytics") return <div className="min-h-screen bg-background"><div className="container mx-auto px-4 py-24"><PropertyMarketAnalytics onBack={() => setActiveView("hub")} /></div></div>;
-  if (activeView === "staging") return <div className="min-h-screen bg-background"><div className="container mx-auto px-4 py-24"><PropertyAIStaging onBack={() => setActiveView("hub")} /></div></div>;
-  if (activeView === "mortgage") return <div className="min-h-screen bg-background"><div className="container mx-auto px-4 py-24"><PropertyMortgageCalc onBack={() => setActiveView("hub")} /></div></div>;
-  if (activeView === "alerts") return <div className="min-h-screen bg-background"><div className="container mx-auto px-4 py-24"><PropertyAlerts onBack={() => setActiveView("hub")} /></div></div>;
+  const wrap = (Component: React.FC<{ onBack: () => void }>) => (
+    <div className="min-h-screen bg-background"><div className="container mx-auto px-4 py-24"><Component onBack={() => setActiveView("hub")} /></div></div>
+  );
+  if (activeView === "map") return wrap(PropertyMapView);
+  if (activeView === "valuator") return wrap(PropertyAIValuator);
+  if (activeView === "analytics") return wrap(PropertyMarketAnalytics);
+  if (activeView === "staging") return wrap(PropertyAIStaging);
+  if (activeView === "mortgage") return wrap(PropertyMortgageCalc);
+  if (activeView === "alerts") return wrap(PropertyAlerts);
+  if (activeView === "neighborhood") return wrap(PropertyNeighborhood);
+  if (activeView === "photos") return wrap(PropertyPhotoEnhancer);
+  if (activeView === "compare") return wrap(PropertyComparison);
+  if (activeView === "chatbot") return wrap(PropertyChatbot);
+  if (activeView === "documents") return wrap(PropertyDocManager);
+  if (activeView === "negotiate") return wrap(PropertyNegotiation);
 
   return (
     <div className="min-h-screen bg-background">
@@ -178,7 +199,7 @@ export default function PropertyMarketplace() {
         </div>
 
         {/* Feature Cards */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-8">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 mb-8">
           {FEATURE_CARDS.map((card, i) => (
             <motion.div
               key={card.id}
