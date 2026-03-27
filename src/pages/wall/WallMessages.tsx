@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { MessageCircle, Send, ArrowRight, Sparkles } from "lucide-react";
+import { MessageCircle, Send, ArrowRight, Sparkles, Zap } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 
@@ -31,51 +31,70 @@ export default function WallMessages() {
   });
 
   return (
-    <div className="max-w-3xl mx-auto px-4 pt-6 pb-8 space-y-8">
-      {/* Hero */}
-      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <div className="p-3 rounded-2xl bg-gradient-to-br from-primary to-accent shadow-lg">
-            <MessageCircle className="h-6 w-6 text-white" />
+    <div className="max-w-3xl mx-auto px-4 pt-6 pb-8 space-y-6">
+      {/* Hero Banner */}
+      <motion.div 
+        initial={{ opacity: 0, y: -20 }} 
+        animate={{ opacity: 1, y: 0 }}
+        className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-500/15 via-primary/10 to-cyan-500/5 border border-blue-500/20 p-6 sm:p-8"
+      >
+        <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-blue-500/15 to-transparent rounded-full blur-3xl -translate-y-1/2 translate-x-1/4" />
+        <div className="relative flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <motion.div className="p-4 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-600 shadow-xl shadow-blue-500/30" whileHover={{ rotate: -5, scale: 1.05 }}>
+              <MessageCircle className="h-7 w-7 text-white" />
+            </motion.div>
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-black bg-gradient-to-r from-foreground via-blue-500 to-cyan-500 bg-clip-text text-transparent">
+                {t('wall.messages.title')}
+              </h1>
+              <p className="text-sm text-muted-foreground mt-0.5">{t('wall.messages.quickAccess')}</p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-black">{t('wall.messages.title')}</h1>
-            <p className="text-sm text-muted-foreground">{t('wall.messages.quickAccess')}</p>
-          </div>
+          <Button onClick={() => navigate("/messenger")} className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white hover:opacity-90 gap-2 shadow-xl shadow-blue-500/25 active:scale-[0.97]">
+            <Send className="h-4 w-4" /> {t('wall.messages.openMessenger')}
+          </Button>
         </div>
-        <Button onClick={() => navigate("/messenger")} className="bg-gradient-to-r from-primary to-accent text-white hover:opacity-90 gap-2 shadow-lg">
-          <Send className="h-4 w-4" /> {t('wall.messages.openMessenger')}
-        </Button>
       </motion.div>
 
       {friends.length === 0 ? (
-        <Card className="border-dashed border-2 border-primary/20 bg-primary/5">
-          <CardContent className="py-16 text-center">
-            <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
-              <MessageCircle className="h-8 w-8 text-primary" />
-            </div>
-            <h3 className="text-lg font-bold mb-2">{t('wall.messages.noConversations')}</h3>
-            <p className="text-sm text-muted-foreground">{t('wall.messages.connectFriends')}</p>
+        <Card className="border-dashed border-2 border-primary/20 bg-gradient-to-br from-blue-500/5 via-background to-cyan-500/5 overflow-hidden relative">
+          <div className="absolute top-0 right-0 w-40 h-40 bg-blue-500/10 rounded-full blur-3xl" />
+          <CardContent className="py-16 text-center relative">
+            <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring" }} className="w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-500/20 to-cyan-500/20 flex items-center justify-center mx-auto mb-5">
+              <MessageCircle className="h-10 w-10 text-blue-500" />
+            </motion.div>
+            <h3 className="text-xl font-black mb-2">{t('wall.messages.noConversations')}</h3>
+            <p className="text-sm text-muted-foreground max-w-xs mx-auto">{t('wall.messages.connectFriends')}</p>
           </CardContent>
         </Card>
       ) : (
         <div className="space-y-2">
           {friends.map((friend, i) => (
-            <motion.div key={friend.id} initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.04 }}>
+            <motion.div 
+              key={friend.id} 
+              initial={{ opacity: 0, x: -12 }} 
+              animate={{ opacity: 1, x: 0 }} 
+              transition={{ delay: i * 0.05, type: "spring", stiffness: 200 }}
+              whileHover={{ x: 4 }}
+            >
               <Card
-                className="group p-4 hover:shadow-lg hover:shadow-primary/5 hover:border-primary/30 transition-all duration-300 cursor-pointer"
+                className="group p-4 border-border/40 bg-card/80 backdrop-blur-sm hover:shadow-xl hover:shadow-blue-500/5 hover:border-blue-500/30 transition-all duration-300 cursor-pointer"
                 onClick={() => navigate("/messenger")}
               >
                 <div className="flex items-center gap-3">
-                  <Avatar className="h-12 w-12 border-2 border-primary/20 group-hover:border-primary/50 transition-colors">
-                    <AvatarImage src={friend.avatar_url || undefined} />
-                    <AvatarFallback className="bg-gradient-to-br from-primary/20 to-accent/20 font-bold">{friend.full_name?.[0]}</AvatarFallback>
-                  </Avatar>
+                  <div className="relative">
+                    <Avatar className="h-12 w-12 border-2 border-blue-500/20 group-hover:border-blue-500/50 transition-colors shadow-lg">
+                      <AvatarImage src={friend.avatar_url || undefined} />
+                      <AvatarFallback className="bg-gradient-to-br from-blue-500/20 to-cyan-500/20 font-black">{friend.full_name?.[0]}</AvatarFallback>
+                    </Avatar>
+                    <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-500 rounded-full border-2 border-card" />
+                  </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-bold text-sm group-hover:text-primary transition-colors">{friend.full_name}</p>
+                    <p className="font-black text-sm group-hover:text-blue-500 transition-colors">{friend.full_name}</p>
                     <p className="text-xs text-muted-foreground">{t('wall.messages.clickToOpen')}</p>
                   </div>
-                  <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors group-hover:translate-x-1 duration-300" />
+                  <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-blue-500 transition-all group-hover:translate-x-1 duration-300" />
                 </div>
               </Card>
             </motion.div>
@@ -84,17 +103,20 @@ export default function WallMessages() {
       )}
 
       {/* CTA */}
-      <Card className="border-primary/20 bg-gradient-to-r from-primary/5 via-background to-accent/5">
-        <CardContent className="py-6 text-center">
-          <Sparkles className="w-6 h-6 text-primary mx-auto mb-2" />
-          <p className="text-sm text-muted-foreground">
-            {t('wall.messages.fullFeatures')}{" "}
-            <button onClick={() => navigate("/messenger")} className="text-primary hover:underline font-semibold">
-              {t('wall.messages.messengerApp')}
-            </button>
-          </p>
-        </CardContent>
-      </Card>
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
+        <Card className="border-blue-500/20 bg-gradient-to-r from-blue-500/5 via-background to-cyan-500/5 overflow-hidden relative">
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-cyan-500/5 opacity-50" />
+          <CardContent className="py-6 text-center relative">
+            <Sparkles className="w-6 h-6 text-blue-500 mx-auto mb-2" />
+            <p className="text-sm text-muted-foreground">
+              {t('wall.messages.fullFeatures')}{" "}
+              <button onClick={() => navigate("/messenger")} className="text-blue-500 hover:underline font-bold">
+                {t('wall.messages.messengerApp')}
+              </button>
+            </p>
+          </CardContent>
+        </Card>
+      </motion.div>
     </div>
   );
 }
