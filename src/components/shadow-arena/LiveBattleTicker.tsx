@@ -34,7 +34,10 @@ function CountdownTimer({ endsAt }: { endsAt: string }) {
 
 export function LiveBattleTicker({ battles }: { battles: Battle[] }) {
   const navigate = useNavigate();
-  const activeBattles = battles.filter(b => b.status === "active" || b.status === "waiting_for_participants");
+  const isExpired = (b: Battle) => b.ends_at && new Date(b.ends_at).getTime() <= Date.now();
+  const activeBattles = battles.filter(b =>
+    (b.status === "active" || b.status === "waiting_for_participants") && !isExpired(b)
+  );
 
   if (activeBattles.length === 0) return null;
 
