@@ -451,7 +451,7 @@ export default function LotteryAI() {
                       ))}
                     </CardContent>
                   </Card>
-                </div>
+
                   {/* Questionnaire */}
                   <LotteryQuestionnaire />
                 </div>
