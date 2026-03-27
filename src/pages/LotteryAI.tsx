@@ -393,6 +393,17 @@ export default function LotteryAI() {
         </div>
       </section>
 
+      {/* Engagement Widgets Row */}
+      <section className="px-4 -mt-4">
+        <div className="container mx-auto max-w-6xl">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+            <LotteryStreak />
+            <LotteryProgress />
+            <LotteryAchievements />
+          </div>
+        </div>
+      </section>
+
       {/* How It Works */}
       <section className="py-8 px-4">
         <div className="container mx-auto max-w-5xl">
