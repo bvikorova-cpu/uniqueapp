@@ -83,18 +83,24 @@ export default function ShadowArenaBattles() {
     }
   };
 
+  const isExpired = (b: Battle) => b.ends_at ? new Date(b.ends_at).getTime() < Date.now() : false;
+  const isReallyActive = (b: Battle) =>
+    (b.status === "active" || b.status === "waiting_for_participants") && !isExpired(b);
+
   const filtered = filter === "all" ? battles : battles.filter(b => {
-    if (filter === "active") return b.status === "active" || b.status === "waiting_for_participants";
+    if (filter === "active") return isReallyActive(b);
+    if (filter === "completed") return b.status === "completed" || isExpired(b);
     return b.status === filter;
   });
 
-  const activeBattles = battles.filter(b => b.status === "active" || b.status === "waiting_for_participants");
+  const activeBattles = battles.filter(isReallyActive);
   const totalPool = activeBattles.reduce((s, b) => s + b.total_prize_pool, 0);
 
   const statusConfig: Record<string, { label: string; className: string }> = {
     waiting_for_participants: { label: "Open", className: "bg-yellow-600/80 text-yellow-100" },
     active: { label: "Live", className: "bg-green-600/80 text-green-100" },
     completed: { label: "Ended", className: "bg-muted text-muted-foreground" },
+    expired: { label: "Expired", className: "bg-red-900/60 text-red-300" },
   };
 
   const infoItems = [
@@ -211,7 +217,9 @@ export default function ShadowArenaBattles() {
         ) : (
           <div className="grid gap-4">
             {filtered.map((battle, i) => {
-              const cfg = statusConfig[battle.status] || { label: battle.status, className: "bg-muted" };
+              const battleExpired = isExpired(battle);
+              const displayStatus = battleExpired && battle.status !== "completed" ? "expired" : battle.status;
+              const cfg = statusConfig[displayStatus] || { label: battle.status, className: "bg-muted" };
               return (
                 <motion.div
                   key={battle.id}
@@ -227,7 +235,7 @@ export default function ShadowArenaBattles() {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-2">
                           <Badge className={`text-xs ${cfg.className}`}>{cfg.label}</Badge>
-                          {battle.ends_at && battle.status !== "completed" && (
+                          {battle.ends_at && !battleExpired && battle.status !== "completed" && (
                             <span className="flex items-center gap-1 text-xs text-muted-foreground">
                               <Clock className="w-3 h-3" />
                               <LiveCountdown endsAt={battle.ends_at} />
