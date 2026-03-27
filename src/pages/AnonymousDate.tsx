@@ -228,7 +228,7 @@ export default function AnonymousDate() {
     return (
       <div className="min-h-screen bg-background relative overflow-hidden">
         <FloatingParticles />
-        <div className="container mx-auto px-4 py-6 sm:py-10 max-w-2xl relative z-10">
+        <div className="container mx-auto px-4 py-6 sm:py-10 relative z-10">
           <ProfileSetup onComplete={() => { setHasProfile(true); checkProfile(); }} />
         </div>
       </div>
