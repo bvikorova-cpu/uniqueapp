@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { useAnonymousDate } from "@/hooks/useAnonymousDate";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowLeft, Search, UserPlus, Heart, MessageCircle, CreditCard, Eye, Mic, Loader2, Gift, Sparkles } from "lucide-react";
+import { ArrowLeft, Search, UserPlus, Heart, MessageCircle, CreditCard, Eye, Mic, Loader2, Gift, Sparkles, Shield } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
