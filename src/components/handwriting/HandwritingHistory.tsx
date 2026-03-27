@@ -1,10 +1,32 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { HandwritingAnalysisResult } from "./HandwritingAnalysisResult";
 import { useState } from "react";
-import { Loader2 } from "lucide-react";
+import { Loader2, PenTool, Clock, ArrowLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { motion } from "framer-motion";
+
+const getTypeLabel = (type: string) => {
+  const labels: Record<string, string> = {
+    personal: "Personal",
+    professional: "Professional",
+    relationship: "Relationship",
+    business: "Business",
+  };
+  return labels[type] || type;
+};
+
+const getTypeColor = (type: string) => {
+  const colors: Record<string, string> = {
+    personal: "from-purple-500 to-violet-500",
+    professional: "from-blue-500 to-cyan-500",
+    relationship: "from-pink-500 to-rose-500",
+    business: "from-emerald-500 to-teal-500",
+  };
+  return colors[type] || "from-primary to-accent";
+};
 
 export const HandwritingHistory = () => {
   const [selectedAnalysis, setSelectedAnalysis] = useState<any>(null);
@@ -26,35 +48,17 @@ export const HandwritingHistory = () => {
     },
   });
 
-  const getTypeLabel = (type: string) => {
-    const labels = {
-      personal: "Personal",
-      professional: "Professional",
-      relationship: "Relationship",
-      business: "Business",
-    };
-    return labels[type as keyof typeof labels] || type;
-  };
-
-  const getTypeColor = (type: string) => {
-    const colors = {
-      personal: "bg-purple-500",
-      professional: "bg-blue-500",
-      relationship: "bg-pink-500",
-      business: "bg-green-500",
-    };
-    return colors[type as keyof typeof colors] || "bg-gray-500";
-  };
-
   if (selectedAnalysis) {
     return (
-      <div>
-        <button
+      <div className="space-y-4">
+        <Button
+          variant="ghost"
           onClick={() => setSelectedAnalysis(null)}
-          className="text-sm text-muted-foreground hover:text-foreground mb-4"
+          className="gap-2"
         >
-          ← Back to history
-        </button>
+          <ArrowLeft className="w-4 h-4" />
+          Back to history
+        </Button>
         <HandwritingAnalysisResult analysis={selectedAnalysis} />
       </div>
     );
@@ -62,51 +66,68 @@ export const HandwritingHistory = () => {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center p-12">
-        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      <div className="flex items-center justify-center py-12">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     );
   }
 
   if (!analyses || analyses.length === 0) {
     return (
-      <Card className="p-12 text-center">
-        <p className="text-muted-foreground">No analyses yet. Upload a handwriting sample to get started!</p>
+      <Card className="bg-card/60 backdrop-blur-sm border-border/50">
+        <CardContent className="py-12">
+          <div className="text-center">
+            <PenTool className="w-12 h-12 text-muted-foreground/30 mx-auto mb-3" />
+            <p className="text-muted-foreground text-sm">No analyses yet. Upload a handwriting sample to get started!</p>
+          </div>
+        </CardContent>
       </Card>
     );
   }
 
   return (
-    <div className="space-y-4">
-      <h2 className="text-xl sm:text-2xl font-bold mb-6">Analysis History</h2>
-      
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {analyses.map((analysis) => (
-          <Card
+    <div className="space-y-3">
+      {analyses.map((analysis, i) => {
+        const color = getTypeColor(analysis.analysis_type);
+        return (
+          <motion.div
             key={analysis.id}
-            className="p-4 cursor-pointer hover:shadow-lg transition-all"
-            onClick={() => setSelectedAnalysis(analysis)}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.05 }}
           >
-            <img
-              src={analysis.image_url}
-              alt="Handwriting sample"
-              className="w-full h-40 object-cover rounded-lg mb-3"
-            />
-            
-            <Badge className={getTypeColor(analysis.analysis_type)}>
-              {getTypeLabel(analysis.analysis_type)}
-            </Badge>
-            
-            <div className="mt-2 text-sm text-muted-foreground">
-              {new Date(analysis.created_at).toLocaleDateString()}
-            </div>
-            
-            <div className="mt-1 text-xs text-muted-foreground">
-              {analysis.credits_used} credits used
-            </div>
-          </Card>
-        ))}
-      </div>
+            <Card
+              className="bg-card/60 backdrop-blur-sm border-border/50 hover:border-primary/30 transition-all cursor-pointer overflow-hidden"
+              onClick={() => setSelectedAnalysis(analysis)}
+            >
+              <div className={`h-1 bg-gradient-to-r ${color}`} />
+              <CardContent className="p-4">
+                <div className="flex items-center gap-4">
+                  {analysis.image_url && (
+                    <img
+                      src={analysis.image_url}
+                      alt="Handwriting"
+                      className="w-16 h-16 object-cover rounded-lg border border-border/30 flex-shrink-0"
+                    />
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <Badge className={`bg-gradient-to-r ${color} text-white border-0 text-[10px]`}>
+                        {getTypeLabel(analysis.analysis_type)}
+                      </Badge>
+                      <Badge variant="outline" className="text-[10px]">{analysis.credits_used} cr</Badge>
+                    </div>
+                    <p className="text-xs text-muted-foreground flex items-center gap-1">
+                      <Clock className="w-3 h-3" />
+                      {new Date(analysis.created_at).toLocaleDateString()}
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+        );
+      })}
     </div>
   );
 };

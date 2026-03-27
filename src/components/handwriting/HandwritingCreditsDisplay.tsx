@@ -1,107 +1,99 @@
 import { useState } from "react";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { useHandwritingCredits } from "@/hooks/useHandwritingCredits";
-import { PenTool, Plus } from "lucide-react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog";
+import { Coins, Plus, Sparkles, Crown, Zap, PenTool } from "lucide-react";
 
 export const HandwritingCreditsDisplay = () => {
   const { credits, isLoading, purchaseCredits } = useHandwritingCredits();
-  const [showBuyDialog, setShowBuyDialog] = useState(false);
   const [isPurchasing, setIsPurchasing] = useState(false);
 
   const handlePurchase = async (amount: number) => {
     setIsPurchasing(true);
     const url = await purchaseCredits(amount);
-    if (url) {
-      window.open(url, "_blank");
-    }
+    if (url) window.open(url, "_blank");
     setIsPurchasing(false);
-    setShowBuyDialog(false);
   };
 
   if (isLoading) return null;
 
   const packages = [
-    { credits: 10, price: "€5", popular: false },
-    { credits: 25, price: "€12", popular: true },
-    { credits: 50, price: "€20", popular: false },
-    { credits: 100, price: "€35", popular: false },
+    { credits: 10, price: 5, label: "Starter", icon: Coins, description: "2 personal analyses" },
+    { credits: 25, price: 12, label: "Explorer", icon: Zap, description: "5 analyses mix", popular: true },
+    { credits: 50, price: 20, label: "Professional", icon: Sparkles, description: "10+ analyses" },
+    { credits: 100, price: 35, label: "Master", icon: Crown, description: "Best value", bestValue: true },
   ];
 
   return (
-    <>
-      <Card className="p-4 sm:p-6 bg-gradient-to-r from-purple-500/10 to-indigo-500/10">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <PenTool className="h-6 w-6 sm:h-8 sm:w-8 text-purple-500" />
-            <div>
-              <p className="text-xs sm:text-sm text-muted-foreground">Analysis Credits</p>
-              <p className="text-2xl sm:text-3xl font-bold">{credits?.credits_remaining || 0}</p>
-              <p className="text-xs text-muted-foreground mt-1">
-                Total purchased: {credits?.total_credits_purchased || 0}
-              </p>
+    <div className="space-y-4">
+      {/* Balance */}
+      <Card className="bg-card/60 backdrop-blur-sm border-border/50">
+        <CardContent className="p-4 sm:p-6">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <PenTool className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
+              <div>
+                <p className="text-xs text-muted-foreground">Available Credits</p>
+                <p className="text-2xl sm:text-3xl font-bold">{credits?.credits_remaining || 0}</p>
+              </div>
+            </div>
+            <div className="text-xs text-muted-foreground">
+              <div className="flex flex-col sm:flex-row gap-1 sm:gap-4">
+                <span>• Personal: 5 cr</span>
+                <span>• Professional: 10 cr</span>
+                <span>• Relationship: 15 cr</span>
+                <span>• Business: 20 cr</span>
+              </div>
             </div>
           </div>
-
-          <Button onClick={() => setShowBuyDialog(true)} className="gap-2 w-full sm:w-auto">
-            <Plus className="h-4 w-4" />
-            <span className="text-sm sm:text-base">Buy Credits</span>
-          </Button>
-        </div>
+        </CardContent>
       </Card>
 
-      <Dialog open={showBuyDialog} onOpenChange={setShowBuyDialog}>
-        <DialogContent className="sm:max-w-[600px]">
-          <DialogHeader>
-            <DialogTitle>Purchase Analysis Credits</DialogTitle>
-            <DialogDescription>
-              Choose a credit package to start analyzing handwriting samples
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
-            {packages.map((pkg) => (
-              <Card
-                key={pkg.credits}
-                className={`p-6 cursor-pointer transition-all hover:shadow-lg ${
-                  pkg.popular ? "border-purple-500 border-2" : ""
-                }`}
-              >
-                {pkg.popular && (
-                  <div className="text-xs font-bold text-purple-500 mb-2">POPULAR</div>
-                )}
-                <div className="text-center">
-                  <div className="text-4xl font-bold mb-2">{pkg.credits}</div>
-                  <div className="text-sm text-muted-foreground mb-4">Credits</div>
-                  <div className="text-2xl font-bold text-purple-500 mb-4">{pkg.price}</div>
-                  <Button
-                    onClick={() => handlePurchase(pkg.credits)}
-                    disabled={isPurchasing}
-                    className="w-full"
-                    variant={pkg.popular ? "default" : "outline"}
-                  >
-                    Purchase
-                  </Button>
+      {/* Packages */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        {packages.map((pkg) => {
+          const Icon = pkg.icon;
+          return (
+            <Card
+              key={pkg.credits}
+              className={`bg-card/60 backdrop-blur-sm overflow-hidden transition-all hover:border-primary/30 ${
+                pkg.popular ? "border-primary/50" : pkg.bestValue ? "border-accent/50" : "border-border/50"
+              }`}
+            >
+              <CardContent className="p-4 space-y-3">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <div className="flex items-center gap-1.5 mb-1">
+                      <Icon className="h-4 w-4 text-primary" />
+                      <p className="font-semibold text-sm">{pkg.label}</p>
+                    </div>
+                    <p className="text-[10px] text-muted-foreground">{pkg.description}</p>
+                  </div>
+                  {pkg.popular && <Badge variant="secondary" className="text-[9px]">Popular</Badge>}
+                  {pkg.bestValue && <Badge className="bg-accent text-accent-foreground text-[9px]">Best</Badge>}
                 </div>
-              </Card>
-            ))}
-          </div>
 
-          <div className="mt-4 text-xs text-muted-foreground text-center">
-            <p>• Personal Analysis: 5 credits</p>
-            <p>• Professional Analysis: 10 credits</p>
-            <p>• Relationship Analysis: 15 credits</p>
-            <p>• Business Analysis: 20 credits</p>
-          </div>
-        </DialogContent>
-      </Dialog>
-    </>
+                <div>
+                  <p className="text-xl font-bold">€{pkg.price}</p>
+                  <p className="text-xs text-muted-foreground">{pkg.credits} credits</p>
+                </div>
+
+                <Button
+                  onClick={() => handlePurchase(pkg.credits)}
+                  disabled={isPurchasing}
+                  variant={pkg.popular ? "default" : "outline"}
+                  size="sm"
+                  className="w-full text-xs"
+                >
+                  <Plus className="mr-1.5 h-3 w-3" />
+                  Purchase
+                </Button>
+              </CardContent>
+            </Card>
+          );
+        })}
+      </div>
+    </div>
   );
 };
