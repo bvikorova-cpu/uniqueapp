@@ -133,6 +133,7 @@ const Index = () => {
   const [search, setSearch] = useState("");
   const [spotlightIdx, setSpotlightIdx] = useState(0);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [videoLoaded, setVideoLoaded] = useState(false);
 
   useEffect(() => {
     const timer = setInterval(() => setSpotlightIdx(i => (i + 1) % spotlightServices.length), 5000);
@@ -186,7 +187,7 @@ const Index = () => {
     return (
       <motion.div variants={itemVariant}>
         <Card
-          className={`group cursor-pointer overflow-hidden relative border-border/50 hover:border-primary/40 transition-all duration-300 hover:scale-[1.03] hover:shadow-xl hover:shadow-primary/5 ${mod.featured ? 'ring-1 ring-primary/20' : ''}`}
+          className={`group cursor-pointer overflow-hidden relative border-border/50 hover:border-primary/40 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-primary/5 bg-card ${mod.featured ? 'ring-1 ring-primary/20' : ''}`}
           onClick={() => handleNavigate(mod.path)}
         >
           <div className={`h-1 bg-gradient-to-r ${mod.gradient} opacity-70 group-hover:opacity-100 transition-opacity`} />
@@ -230,7 +231,7 @@ const Index = () => {
       <div className="p-2 rounded-xl bg-primary/10">
         <Icon className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
       </div>
-      <h2 className="text-lg sm:text-2xl font-bold">{title}</h2>
+      <h2 className="text-lg sm:text-2xl font-black">{title}</h2>
       {badge && <Badge className={badgeClass || "bg-primary/10 text-primary border-primary/20"}>{badge}</Badge>}
       {action}
     </motion.div>
@@ -238,31 +239,50 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* ── Video Hero ───────────────────────────────── */}
-      <div className="relative overflow-hidden h-[70vh] sm:h-[80vh] min-h-[500px]">
-        {/* Video background */}
-        <video
-          ref={videoRef}
-          autoPlay
-          muted
-          loop
-          playsInline
-          className="absolute inset-0 w-full h-full object-cover"
-          src="/beach-hero-sm.mp4"
-        />
-        {/* Dark overlay for text readability */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-black/70" />
+      {/* ── Hero Section ─────────────────────────────── */}
+      <div className="relative overflow-hidden h-[65vh] sm:h-[75vh] min-h-[450px]">
+        {/* Video background with gradient fallback */}
+        <div className={`absolute inset-0 transition-opacity duration-1000 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}>
+          <video
+            ref={videoRef}
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover"
+            src="/beach-hero-sm.mp4"
+            onCanPlay={() => setVideoLoaded(true)}
+          />
+        </div>
+        {/* Animated gradient fallback when video hasn't loaded */}
+        <div className={`absolute inset-0 bg-gradient-to-br from-primary/90 via-accent/80 to-primary/70 animate-gradient-shift transition-opacity duration-1000 ${videoLoaded ? 'opacity-0' : 'opacity-100'}`} />
+        
+        {/* Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-black/70" />
 
-        {/* Content over video */}
+        {/* Floating particles */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          {[...Array(6)].map((_, i) => (
+            <motion.div
+              key={i}
+              className="absolute w-2 h-2 rounded-full bg-white/20"
+              style={{ left: `${15 + i * 15}%`, top: `${20 + (i % 3) * 25}%` }}
+              animate={{ y: [-20, 20, -20], opacity: [0.2, 0.5, 0.2] }}
+              transition={{ duration: 3 + i * 0.5, repeat: Infinity, ease: "easeInOut", delay: i * 0.3 }}
+            />
+          ))}
+        </div>
+
+        {/* Content */}
         <div className="relative z-10 flex flex-col items-center justify-center h-full px-4 text-center">
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-            className="mb-6"
+            className="mb-4"
           >
             <motion.div
-              className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white/90 text-sm mb-8"
+              className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white/90 text-sm mb-6"
               animate={{ boxShadow: ["0 0 0 0 rgba(255,255,255,0)", "0 0 30px 4px rgba(255,255,255,0.1)", "0 0 0 0 rgba(255,255,255,0)"] }}
               transition={{ duration: 3, repeat: Infinity }}
             >
@@ -274,12 +294,12 @@ const Index = () => {
           <motion.h1
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-            className="text-4xl sm:text-6xl lg:text-8xl font-black text-white mb-4 tracking-tight"
+            transition={{ duration: 1, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            className="text-4xl sm:text-6xl lg:text-8xl font-black text-white mb-3 tracking-tight"
             style={{ textShadow: "0 4px 30px rgba(0,0,0,0.5)" }}
           >
             Welcome to{" "}
-            <span className="bg-gradient-to-r from-amber-300 via-yellow-200 to-amber-300 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-amber-300 via-yellow-200 to-amber-300 bg-clip-text text-transparent drop-shadow-lg">
               Unique
             </span>
           </motion.h1>
@@ -287,19 +307,19 @@ const Index = () => {
           <motion.p
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
-            className="text-lg sm:text-xl text-white/80 max-w-2xl mb-10 font-light"
+            transition={{ duration: 0.8, delay: 0.5 }}
+            className="text-base sm:text-xl text-white/80 max-w-2xl mb-8 font-light"
             style={{ textShadow: "0 2px 10px rgba(0,0,0,0.4)" }}
           >
             Discover, create, connect — your digital universe starts here
           </motion.p>
 
-          {/* Search bar over video */}
+          {/* Search bar */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.9 }}
-            className="relative w-full max-w-xl mb-8"
+            transition={{ duration: 0.8, delay: 0.7 }}
+            className="relative w-full max-w-xl mb-6"
           >
             <div className="relative">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/60" />
@@ -307,7 +327,7 @@ const Index = () => {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search services... (e.g. education, dating, AI)"
-                className="pl-12 pr-10 h-14 text-base rounded-2xl bg-white/10 backdrop-blur-md border-white/20 text-white placeholder:text-white/50 focus:border-white/40 focus:bg-white/15 shadow-2xl"
+                className="pl-12 pr-10 h-14 text-base rounded-2xl bg-white/15 backdrop-blur-lg border-white/20 text-white placeholder:text-white/50 focus:border-white/40 focus:bg-white/20 shadow-2xl transition-all"
               />
               {search && (
                 <button onClick={() => setSearch("")} className="absolute right-4 top-1/2 -translate-y-1/2">
@@ -352,27 +372,27 @@ const Index = () => {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 1.1 }}
+            transition={{ duration: 0.8, delay: 0.9 }}
             className="flex flex-wrap justify-center gap-3"
           >
-            <Button size="lg" onClick={() => handleNavigate('/wall')} className="bg-white text-black hover:bg-white/90 shadow-2xl font-bold rounded-xl px-8">
+            <Button size="lg" onClick={() => handleNavigate('/wall')} className="bg-white text-foreground hover:bg-white/90 shadow-2xl font-bold rounded-xl px-8">
               <Zap className="w-4 h-4" /> Explore Now
             </Button>
-            <Button size="lg" variant="outline" onClick={() => handleNavigate('/ai-experiences')} className="border-white/30 text-black bg-white/80 hover:bg-white/90 rounded-xl px-8">
+            <Button size="lg" onClick={() => handleNavigate('/ai-experiences')} className="bg-foreground/90 text-background hover:bg-foreground shadow-2xl font-bold rounded-xl px-8">
               <Sparkles className="w-4 h-4" /> Discover AI
             </Button>
           </motion.div>
         </div>
 
-        {/* Bottom fade to content */}
+        {/* Bottom fade */}
         <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent" />
       </div>
 
-      <div className="max-w-7xl mx-auto px-2 sm:px-6 py-6 sm:py-10 space-y-8 sm:space-y-14">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 py-6 sm:py-10 space-y-10 sm:space-y-14">
 
         {/* ── Stats ────────────────────────────────────── */}
         <motion.div
-          className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 -mt-16 relative z-20"
+          className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 -mt-20 relative z-20"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -380,16 +400,17 @@ const Index = () => {
           {stats.map((stat, i) => (
             <motion.div
               key={i}
-              className="text-center p-4 sm:p-6 rounded-2xl bg-card border border-border/30 hover:border-primary/30 transition-colors shadow-lg"
+              className="text-center p-5 sm:p-7 rounded-2xl bg-card border border-border/40 hover:border-primary/40 transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-primary/5 group"
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
+              whileHover={{ y: -4 }}
             >
-              <p className="text-2xl sm:text-4xl font-black text-primary">
+              <p className="text-3xl sm:text-5xl font-black bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">
                 <AnimatedCounter target={stat.value} suffix={stat.suffix} />
               </p>
-              <p className="text-xs sm:text-sm text-muted-foreground mt-1">{stat.label}</p>
+              <p className="text-xs sm:text-sm text-muted-foreground mt-1 font-medium">{stat.label}</p>
             </motion.div>
           ))}
         </motion.div>
@@ -401,7 +422,7 @@ const Index = () => {
             {quickActions.map((action, i) => (
               <motion.div key={i} variants={itemVariant}>
                 <Card
-                  className="group cursor-pointer text-center p-4 sm:p-5 hover:border-primary/40 hover:scale-105 transition-all duration-300 hover:shadow-lg hover:shadow-primary/5"
+                  className="group cursor-pointer text-center p-4 sm:p-5 hover:border-primary/40 hover:scale-105 transition-all duration-300 hover:shadow-lg hover:shadow-primary/5 bg-card"
                   onClick={() => handleNavigate(action.path)}
                 >
                   <div className={`w-12 h-12 sm:w-14 sm:h-14 mx-auto rounded-2xl bg-gradient-to-br ${action.gradient} flex items-center justify-center mb-2 sm:mb-3 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-lg`}>
@@ -421,7 +442,7 @@ const Index = () => {
           viewport={{ once: true }}
         >
           <SectionHeader icon={Star} title="Spotlight" badge="Featured" badgeClass="bg-gradient-to-r from-yellow-500/20 to-amber-500/20 text-yellow-600 border-yellow-500/30" />
-          <Card className="overflow-hidden border-border/30">
+          <Card className="overflow-hidden border-border/30 shadow-xl">
             <AnimatePresence mode="wait">
               <motion.div
                 key={spotlightIdx}
@@ -442,14 +463,14 @@ const Index = () => {
                     <h3 className="text-xl sm:text-3xl font-black text-white mb-1">{currentSpotlight.title}</h3>
                     <p className="text-white/70 text-sm sm:text-base">{currentSpotlight.description}</p>
                   </div>
-                  <ArrowRight className="w-8 h-8 text-white/60 shrink-0" />
+                  <ArrowRight className="w-8 h-8 text-white/60 shrink-0 group-hover:translate-x-1 transition-transform" />
                 </div>
                 <div className="relative z-10 flex justify-center gap-2 mt-6">
                   {spotlightServices.map((_, i) => (
                     <button
                       key={i}
                       onClick={(e) => { e.stopPropagation(); setSpotlightIdx(i); }}
-                      className={`w-2 h-2 rounded-full transition-all ${i === spotlightIdx ? 'bg-white w-6' : 'bg-white/40'}`}
+                      className={`h-2 rounded-full transition-all ${i === spotlightIdx ? 'bg-white w-8' : 'bg-white/40 w-2'}`}
                     />
                   ))}
                 </div>
@@ -514,11 +535,11 @@ const Index = () => {
 
         {/* ── Footer CTA ───────────────────────────────── */}
         <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} className="text-center pb-8">
-          <Card className="border-primary/20 bg-gradient-to-r from-primary/5 via-background to-accent/5 max-w-2xl mx-auto">
+          <Card className="border-primary/20 bg-gradient-to-r from-primary/5 via-background to-accent/5 max-w-2xl mx-auto shadow-lg">
             <CardContent className="py-8 sm:py-10">
               <h3 className="text-xl sm:text-2xl font-black mb-2">Ready to get started?</h3>
               <p className="text-muted-foreground mb-4">Choose a service above and begin your journey!</p>
-              <Button size="lg" onClick={() => handleNavigate('/wall')} className="bg-gradient-to-r from-primary to-accent text-primary-foreground hover:opacity-90">
+              <Button size="lg" onClick={() => handleNavigate('/wall')} className="bg-gradient-to-r from-primary to-accent text-white hover:opacity-90 shadow-lg">
                 <ArrowRight className="w-4 h-4" /> Get Started
               </Button>
             </CardContent>
