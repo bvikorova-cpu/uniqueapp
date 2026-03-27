@@ -21,10 +21,16 @@ import { PropertyMarketAnalytics } from "@/components/property/PropertyMarketAna
 import { PropertyAIStaging } from "@/components/property/PropertyAIStaging";
 import { PropertyMortgageCalc } from "@/components/property/PropertyMortgageCalc";
 import { PropertyAlerts } from "@/components/property/PropertyAlerts";
+import { PropertyNeighborhood } from "@/components/property/PropertyNeighborhood";
+import { PropertyPhotoEnhancer } from "@/components/property/PropertyPhotoEnhancer";
+import { PropertyComparison } from "@/components/property/PropertyComparison";
+import { PropertyChatbot } from "@/components/property/PropertyChatbot";
+import { PropertyDocManager } from "@/components/property/PropertyDocManager";
+import { PropertyNegotiation } from "@/components/property/PropertyNegotiation";
 import { usePropertyExpiration } from "@/hooks/usePropertyExpiration";
 import { motion } from "framer-motion";
 
-type ViewType = "hub" | "map" | "valuator" | "analytics" | "staging" | "mortgage" | "alerts";
+type ViewType = "hub" | "map" | "valuator" | "analytics" | "staging" | "mortgage" | "alerts" | "neighborhood" | "photos" | "compare" | "chatbot" | "documents" | "negotiate";
 
 const LISTING_PACKAGES = [
   {
@@ -57,6 +63,12 @@ const FEATURE_CARDS = [
   { id: "staging", icon: Wand2, label: "AI Staging", desc: "Virtual staging", color: "from-pink-500 to-rose-600" },
   { id: "mortgage", icon: Calculator, label: "Mortgage Calc", desc: "Payment calculator", color: "from-amber-500 to-orange-600" },
   { id: "alerts", icon: Bell, label: "Property Alerts", desc: "Smart notifications", color: "from-red-500 to-rose-600" },
+  { id: "neighborhood", icon: Home, label: "Neighborhood", desc: "Area insights", color: "from-teal-500 to-emerald-600" },
+  { id: "photos", icon: ImagePlus, label: "Photo Enhance", desc: "AI photo boost", color: "from-orange-500 to-pink-600" },
+  { id: "compare", icon: GitCompare, label: "Compare", desc: "Side by side", color: "from-cyan-500 to-blue-600" },
+  { id: "chatbot", icon: Bot, label: "AI Assistant", desc: "Ask anything", color: "from-violet-500 to-purple-600" },
+  { id: "documents", icon: FileText, label: "Documents", desc: "Manage docs", color: "from-sky-500 to-blue-600" },
+  { id: "negotiate", icon: Tag, label: "Negotiate", desc: "Price strategy", color: "from-amber-500 to-orange-600" },
 ];
 
 export default function PropertyMarketplace() {
