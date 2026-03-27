@@ -226,7 +226,7 @@ const Index = () => {
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-black/60" />
 
         {/* Content */}
-        <div className="relative z-10 flex flex-col items-center justify-center min-h-[500px] sm:min-h-[550px] px-4 text-center pt-20">
+        <div className="relative z-10 flex flex-col items-center justify-center min-h-[480px] sm:min-h-[550px] px-4 text-center pt-16 pb-8">
           <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white/90 text-sm mb-6">
             <Sparkles className="w-4 h-4" />
             <span className="font-medium">All-in-One Digital Platform</span>
@@ -299,11 +299,11 @@ const Index = () => {
             </AnimatePresence>
           </div>
 
-          <div className="flex flex-wrap justify-center gap-3">
-            <Button size="lg" onClick={() => handleNavigate('/wall')} className="bg-white text-foreground hover:bg-white/90 shadow-2xl font-bold rounded-xl px-8">
+          <div className="flex flex-col sm:flex-row justify-center items-center gap-3 w-full px-4">
+            <Button size="lg" onClick={() => handleNavigate('/wall')} className="bg-white text-foreground hover:bg-white/90 shadow-2xl font-bold rounded-xl px-8 w-full sm:w-auto">
               <Zap className="w-4 h-4" /> Explore Now
             </Button>
-            <Button size="lg" onClick={() => handleNavigate('/ai-experiences')} className="bg-foreground/90 text-background hover:bg-foreground shadow-2xl font-bold rounded-xl px-8">
+            <Button size="lg" onClick={() => handleNavigate('/ai-experiences')} className="bg-foreground/90 text-background hover:bg-foreground shadow-2xl font-bold rounded-xl px-8 w-full sm:w-auto">
               <Sparkles className="w-4 h-4" /> Discover AI
             </Button>
           </div>
