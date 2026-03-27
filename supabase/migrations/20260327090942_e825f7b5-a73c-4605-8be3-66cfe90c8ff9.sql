@@ -1,0 +1,1 @@
+DELETE FROM page_followers WHERE page_id = 'b938a5aa-9609-4a88-a64b-33cefa1c66cc'; DELETE FROM pages WHERE id = 'b938a5aa-9609-4a88-a64b-33cefa1c66cc';
