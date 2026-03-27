@@ -13,45 +13,16 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useCreativeForgeCredits, CREDIT_COSTS, CreativeCategory } from "@/hooks/useCreativeForgeCredits";
 import { useQuery } from "@tanstack/react-query";
-import { 
-  Music, 
-  Film, 
-  Theater, 
-  BookOpen, 
-  Feather, 
-  Mic2, 
-  Podcast, 
-  Megaphone,
-  Sparkles,
-  Download,
-  Copy,
-  Star,
-  History,
-  CreditCard,
-  Loader2,
-  RefreshCw,
-  ArrowLeft
+import {
+  Sparkles, Download, Copy, Star, History, CreditCard, Loader2, RefreshCw,
+  Music, Film, Theater, BookOpen, Feather, Mic2, Podcast, Megaphone
 } from "lucide-react";
+import { ForgeHero } from "@/components/creative-forge/ForgeHero";
+import { ForgeCategorySelector, CATEGORIES } from "@/components/creative-forge/ForgeCategorySelector";
+import { ForgeTemplates, QuickTemplate } from "@/components/creative-forge/ForgeTemplates";
+import { ForgeCreditPackages } from "@/components/creative-forge/ForgeCreditPackages";
 
-const CATEGORIES = [
-  { id: "song_lyrics", name: "Song Lyrics", icon: Music, description: "Professional song lyrics with verses, chorus, bridge" },
-  { id: "screenplay", name: "Screenplay", icon: Film, description: "Hollywood-format screenplays and scenes" },
-  { id: "theater_play", name: "Theater Play", icon: Theater, description: "Stage plays with directions and dialogue" },
-  { id: "novel_chapter", name: "Novel Chapter", icon: BookOpen, description: "Compelling prose and storytelling" },
-  { id: "poetry", name: "Poetry", icon: Feather, description: "Beautiful poems in various forms" },
-  { id: "standup", name: "Stand-up Comedy", icon: Mic2, description: "Comedy routines with setups and punchlines" },
-  { id: "podcast_script", name: "Podcast Script", icon: Podcast, description: "Engaging podcast episodes and segments" },
-  { id: "ad_copy", name: "Ad Copy", icon: Megaphone, description: "Persuasive advertising content" },
-];
-
-const CREDIT_PACKAGES = [
-  { credits: 30, price: 8, label: "Starter" },
-  { credits: 75, price: 18, label: "Creator" },
-  { credits: 150, price: 32, label: "Professional", popular: true },
-  { credits: 400, price: 75, label: "Studio" },
-];
-
-const STYLE_REFERENCES = {
+const STYLE_REFERENCES: Record<string, string[]> = {
   song_lyrics: ["Ed Sheeran", "Taylor Swift", "The Beatles", "Bob Dylan", "Adele", "Billie Eilish"],
   screenplay: ["Aaron Sorkin", "Quentin Tarantino", "Nora Ephron", "Christopher Nolan", "Greta Gerwig"],
   theater_play: ["Shakespeare", "Arthur Miller", "Tennessee Williams", "Lin-Manuel Miranda", "August Wilson"],
@@ -62,17 +33,23 @@ const STYLE_REFERENCES = {
   ad_copy: ["David Ogilvy", "Apple Style", "Nike Style", "Old Spice Style", "Wendy's Style"],
 };
 
+const ICON_MAP: Record<string, any> = {
+  song_lyrics: Music, screenplay: Film, theater_play: Theater, novel_chapter: BookOpen,
+  poetry: Feather, standup: Mic2, podcast_script: Podcast, ad_copy: Megaphone,
+};
+
 export default function CreativeForge() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { toast } = useToast();
   const { credits, isLoading: creditsLoading, purchaseCredits, verifyPayment, refreshCredits } = useCreativeForgeCredits();
-  
+
   const [activeTab, setActiveTab] = useState("create");
   const [selectedCategory, setSelectedCategory] = useState<CreativeCategory>("song_lyrics");
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedContent, setGeneratedContent] = useState<string | null>(null);
-  
+  const [previousContent, setPreviousContent] = useState<string | null>(null);
+
   // Form state
   const [title, setTitle] = useState("");
   const [genre, setGenre] = useState("");
@@ -84,53 +61,41 @@ export default function CreativeForge() {
   const [styleReference, setStyleReference] = useState("");
   const [contentLength, setContentLength] = useState("medium");
 
-  // Fetch projects history
+  // History filter
+  const [historySearch, setHistorySearch] = useState("");
+  const [historyFilter, setHistoryFilter] = useState("all");
+
   const { data: projects, refetch: refetchProjects } = useQuery({
     queryKey: ["creative-forge-projects"],
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return [];
-
       const { data, error } = await supabase
         .from("creative_forge_projects")
         .select("*")
         .eq("user_id", user.id)
         .order("created_at", { ascending: false });
-
       if (error) throw error;
       return data || [];
     },
   });
 
-  // Handle payment success
   useEffect(() => {
     const payment = searchParams.get("payment");
     const creditsParam = searchParams.get("credits");
     const sessionId = searchParams.get("session_id");
-
     if (payment === "success" && creditsParam) {
       const addCredits = async () => {
         try {
-          if (sessionId) {
-            await verifyPayment(sessionId, parseInt(creditsParam));
-          }
-          toast({
-            title: "Payment Successful!",
-            description: `${creditsParam} credits have been added to your account.`,
-          });
+          if (sessionId) await verifyPayment(sessionId, parseInt(creditsParam));
+          toast({ title: "Payment Successful!", description: `${creditsParam} credits added.` });
           refreshCredits();
-        } catch (error) {
-          console.error("Error verifying payment:", error);
-        }
+        } catch (error) { console.error("Error verifying payment:", error); }
       };
       addCredits();
       navigate("/creative-forge", { replace: true });
     } else if (payment === "canceled") {
-      toast({
-        title: "Payment Canceled",
-        description: "Your payment was canceled.",
-        variant: "destructive",
-      });
+      toast({ title: "Payment Canceled", description: "Your payment was canceled.", variant: "destructive" });
       navigate("/creative-forge", { replace: true });
     }
   }, [searchParams]);
@@ -140,110 +105,58 @@ export default function CreativeForge() {
       toast({ title: "Error", description: "Please enter a title or theme", variant: "destructive" });
       return;
     }
-
     const cost = CREDIT_COSTS[selectedCategory];
     if ((credits?.credits_remaining || 0) < cost) {
-      toast({ 
-        title: "Insufficient Credits", 
-        description: `You need ${cost} credits. Please purchase more.`,
-        variant: "destructive" 
-      });
+      toast({ title: "Insufficient Credits", description: `You need ${cost} credits.`, variant: "destructive" });
       setActiveTab("credits");
       return;
     }
-
     setIsGenerating(true);
+    if (generatedContent) setPreviousContent(generatedContent);
     setGeneratedContent(null);
-
     try {
       const { data, error } = await supabase.functions.invoke("generate-creative-content", {
         body: {
-          category: selectedCategory,
-          title,
-          inputData: {
-            genre,
-            mood,
-            description,
-            characters,
-            setting,
-            targetAudience,
-            length: contentLength,
-          },
+          category: selectedCategory, title,
+          inputData: { genre, mood, description, characters, setting, targetAudience, length: contentLength },
           styleReference: styleReference === "none" ? "" : styleReference,
         },
       });
-
       if (error) throw error;
-
       setGeneratedContent(data.content);
       refreshCredits();
       refetchProjects();
-      
-      toast({
-        title: "Content Generated!",
-        description: `Used ${data.creditsUsed} credits. ${data.creditsRemaining} remaining.`,
-      });
+      toast({ title: "Content Generated!", description: `Used ${data.creditsUsed} credits. ${data.creditsRemaining} remaining.` });
     } catch (error: any) {
       console.error("Generation error:", error);
-      toast({
-        title: "Generation Failed",
-        description: error.message || "Failed to generate content",
-        variant: "destructive",
-      });
-    } finally {
-      setIsGenerating(false);
-    }
+      toast({ title: "Generation Failed", description: error.message || "Failed to generate content", variant: "destructive" });
+    } finally { setIsGenerating(false); }
   };
 
   const handleRevision = async (originalContent: string, revisionNotes: string) => {
     if ((credits?.credits_remaining || 0) < CREDIT_COSTS.revision) {
-      toast({ 
-        title: "Insufficient Credits", 
-        description: `You need ${CREDIT_COSTS.revision} credits for revision.`,
-        variant: "destructive" 
-      });
+      toast({ title: "Insufficient Credits", description: `You need ${CREDIT_COSTS.revision} credits.`, variant: "destructive" });
       return;
     }
-
     setIsGenerating(true);
-
+    setPreviousContent(originalContent);
     try {
       const { data, error } = await supabase.functions.invoke("generate-creative-content", {
-        body: {
-          category: selectedCategory,
-          title,
-          inputData: { revisionNotes },
-          isRevision: true,
-          originalContent,
-        },
+        body: { category: selectedCategory, title, inputData: { revisionNotes }, isRevision: true, originalContent },
       });
-
       if (error) throw error;
-
       setGeneratedContent(data.content);
       refreshCredits();
       refetchProjects();
-      
-      toast({
-        title: "Revision Complete!",
-        description: `Used ${data.creditsUsed} credits.`,
-      });
+      toast({ title: "Revision Complete!", description: `Used ${data.creditsUsed} credits.` });
     } catch (error: any) {
-      toast({
-        title: "Revision Failed",
-        description: error.message,
-        variant: "destructive",
-      });
-    } finally {
-      setIsGenerating(false);
-    }
+      toast({ title: "Revision Failed", description: error.message, variant: "destructive" });
+    } finally { setIsGenerating(false); }
   };
 
   const handlePurchase = async (creditAmount: number) => {
     const url = await purchaseCredits(creditAmount);
-    if (url) {
-      window.open(url, "_blank");
-    }
+    if (url) window.open(url, "_blank");
   };
 
   const copyToClipboard = (text: string) => {
@@ -264,291 +177,187 @@ export default function CreativeForge() {
     toast({ title: "Downloaded!", description: "Content saved to file" });
   };
 
+  const applyTemplate = (t: QuickTemplate) => {
+    setTitle(t.title);
+    setGenre(t.genre);
+    setMood(t.mood);
+    setDescription(t.description);
+    setCharacters(t.characters);
+    setSetting(t.setting);
+    setStyleReference(t.styleReference);
+    toast({ title: "Template Applied", description: `"${t.label}" loaded — customize and generate!` });
+  };
+
+  const shareContent = (content: string, title: string) => {
+    if (navigator.share) {
+      navigator.share({ title: `CreativeForge: ${title}`, text: content }).catch(() => {});
+    } else {
+      copyToClipboard(content);
+    }
+  };
+
+  const filteredProjects = (projects || []).filter((p: any) => {
+    if (historyFilter !== "all" && p.category !== historyFilter) return false;
+    if (historySearch) {
+      const q = historySearch.toLowerCase();
+      return p.title.toLowerCase().includes(q) || p.generated_content?.toLowerCase().includes(q);
+    }
+    return true;
+  });
+
   const selectedCategoryData = CATEGORIES.find(c => c.id === selectedCategory);
 
   return (
     <div className="min-h-screen bg-background pt-20 pb-12 overflow-x-hidden">
       <div className="w-full max-w-7xl mx-auto px-3 sm:px-4">
-        {/* Header */}
-        <div className="flex items-center gap-4 mb-8">
-          <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
-            <ArrowLeft className="h-5 w-5" />
-          </Button>
-          <div className="flex-1">
-            <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent">
-              CreativeForge
-            </h1>
-            <p className="text-muted-foreground mt-1">AI-Powered Creative Writing Studio</p>
-          </div>
-          <Badge variant="outline" className="text-sm sm:text-lg px-2 sm:px-4 py-1 sm:py-2 flex-shrink-0">
-            <Sparkles className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-            {creditsLoading ? "..." : credits?.credits_remaining || 0} Credits
-          </Badge>
-        </div>
-
-        {/* About Section */}
-        <Card className="mb-6 bg-gradient-to-r from-primary/5 via-purple-500/5 to-pink-500/5 border-primary/20">
-          <CardContent className="pt-6">
-            <div className="space-y-4">
-              <div>
-                <h2 className="text-lg font-semibold mb-2 flex items-center gap-2">
-                  <Sparkles className="h-5 w-5 text-primary" />
-                  What is CreativeForge?
-                </h2>
-                <p className="text-sm text-muted-foreground">
-                  CreativeForge is an AI-powered creative writing studio that helps you generate professional-quality content across multiple formats. Whether you need song lyrics, screenplays, novels, poetry, stand-up comedy scripts, podcast content, or advertising copy — our AI assistant creates compelling content tailored to your vision.
-                </p>
-              </div>
-              
-              <div>
-                <h3 className="text-md font-semibold mb-2">How to Use</h3>
-                <ol className="text-sm text-muted-foreground space-y-1.5 list-decimal list-inside">
-                  <li><strong>Choose Content Type:</strong> Select the type of content you want to create (Song Lyrics, Screenplay, Novel, etc.)</li>
-                  <li><strong>Describe Your Vision:</strong> Enter your title/theme, genre, mood, and any additional details</li>
-                  <li><strong>Optional Style Reference:</strong> Choose to write in the style of famous artists or writers</li>
-                  <li><strong>Generate:</strong> Click the Generate button — the AI will create your content instantly</li>
-                  <li><strong>Revise if Needed:</strong> Request revisions to fine-tune your content (costs 3 credits)</li>
-                  <li><strong>Download or Copy:</strong> Save your masterpiece to your device or clipboard</li>
-                </ol>
-              </div>
-
-              <p className="text-xs text-muted-foreground border-t pt-3">
-                <strong>Credits:</strong> Each generation costs credits based on content type. Purchase credit packages in the Credits tab. Your generated projects are saved in History for easy access anytime.
-              </p>
-            </div>
-          </CardContent>
-        </Card>
+        <ForgeHero credits={credits?.credits_remaining || 0} creditsLoading={creditsLoading} />
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3 max-w-md">
-            <TabsTrigger value="create" className="gap-2">
-              <Sparkles className="h-4 w-4" />
-              Create
-            </TabsTrigger>
-            <TabsTrigger value="history" className="gap-2">
-              <History className="h-4 w-4" />
-              History
-            </TabsTrigger>
-            <TabsTrigger value="credits" className="gap-2">
-              <CreditCard className="h-4 w-4" />
-              Credits
-            </TabsTrigger>
+          <TabsList className="grid w-full grid-cols-3 max-w-md mx-auto">
+            <TabsTrigger value="create" className="gap-2"><Sparkles className="h-4 w-4" /> Create</TabsTrigger>
+            <TabsTrigger value="history" className="gap-2"><History className="h-4 w-4" /> History</TabsTrigger>
+            <TabsTrigger value="credits" className="gap-2"><CreditCard className="h-4 w-4" /> Credits</TabsTrigger>
           </TabsList>
 
           {/* Create Tab */}
           <TabsContent value="create" className="space-y-6">
-            <div className="grid lg:grid-cols-3 gap-4 sm:gap-6">
-              {/* Category Selection */}
-              <Card className="lg:col-span-1 overflow-hidden">
-                <CardHeader>
-                  <CardTitle className="text-lg">Content Type</CardTitle>
-                  <CardDescription>Choose what you want to create</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <ScrollArea className="h-[400px] pr-4">
-                    <div className="space-y-2">
-                      {CATEGORIES.map((category) => {
-                        const Icon = category.icon;
-                        const isSelected = selectedCategory === category.id;
-                        return (
-                          <button
-                            key={category.id}
-                            onClick={() => setSelectedCategory(category.id as CreativeCategory)}
-                            className={`w-full p-3 rounded-lg border text-left transition-all ${
-                              isSelected 
-                                ? "border-primary bg-primary/10" 
-                                : "border-border hover:border-primary/50 hover:bg-muted/50"
-                            }`}
-                          >
-                            <div className="flex items-start gap-3">
-                              <div className={`p-2 rounded-lg flex-shrink-0 ${isSelected ? "bg-primary text-primary-foreground" : "bg-muted"}`}>
-                                <Icon className="h-5 w-5" />
-                              </div>
-                              <div className="flex-1 min-w-0">
-                                <div className="flex items-center gap-2 flex-wrap">
-                                  <span className="font-medium text-sm">{category.name}</span>
-                                  <Badge variant="secondary" className="text-xs">
-                                    {CREDIT_COSTS[category.id as CreativeCategory]} cr
-                                  </Badge>
-                                </div>
-                                <p className="text-xs text-muted-foreground mt-0.5">{category.description}</p>
-                              </div>
-                            </div>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </ScrollArea>
-                </CardContent>
-              </Card>
+            {/* Category Selection */}
+            <div>
+              <h2 className="text-lg font-bold text-foreground mb-3">Choose Content Type</h2>
+              <ForgeCategorySelector selected={selectedCategory} onSelect={setSelectedCategory} />
+            </div>
 
+            {/* Templates */}
+            <ForgeTemplates category={selectedCategory} onApply={applyTemplate} />
+
+            <div className="grid lg:grid-cols-2 gap-6">
               {/* Input Form */}
-              <Card className="lg:col-span-1 overflow-hidden">
-                <CardHeader>
+              <Card className="border-border/50">
+                <CardHeader className="pb-3">
                   <CardTitle className="text-lg flex items-center gap-2">
-                    {selectedCategoryData && <selectedCategoryData.icon className="h-5 w-5" />}
+                    {selectedCategoryData && <span className="text-xl">{CATEGORIES.find(c => c.id === selectedCategory)?.emoji}</span>}
                     {selectedCategoryData?.name}
                   </CardTitle>
                   <CardDescription>Describe your creative vision</CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="space-y-3">
                   <div>
                     <Label>Title / Theme *</Label>
-                    <Input 
-                      placeholder="Enter the main theme or title..."
-                      value={title}
-                      onChange={(e) => setTitle(e.target.value)}
-                    />
+                    <Input placeholder="Enter the main theme or title..." value={title} onChange={(e) => setTitle(e.target.value)} />
                   </div>
-
-                  <div>
-                    <Label>Genre / Style</Label>
-                    <Input 
-                      placeholder="e.g., Romance, Thriller, Comedy..."
-                      value={genre}
-                      onChange={(e) => setGenre(e.target.value)}
-                    />
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <Label>Genre / Style</Label>
+                      <Input placeholder="e.g., Romance, Thriller..." value={genre} onChange={(e) => setGenre(e.target.value)} />
+                    </div>
+                    <div>
+                      <Label>Mood / Tone</Label>
+                      <Input placeholder="e.g., Melancholic, Upbeat..." value={mood} onChange={(e) => setMood(e.target.value)} />
+                    </div>
                   </div>
-
-                  <div>
-                    <Label>Mood / Tone</Label>
-                    <Input 
-                      placeholder="e.g., Melancholic, Upbeat, Dark..."
-                      value={mood}
-                      onChange={(e) => setMood(e.target.value)}
-                    />
-                  </div>
-
                   <div>
                     <Label>Description</Label>
-                    <Textarea 
-                      placeholder="Describe what you want in detail..."
-                      value={description}
-                      onChange={(e) => setDescription(e.target.value)}
-                      rows={3}
-                    />
+                    <Textarea placeholder="Describe what you want in detail..." value={description} onChange={(e) => setDescription(e.target.value)} rows={3} />
                   </div>
 
                   {(selectedCategory === "screenplay" || selectedCategory === "theater_play" || selectedCategory === "novel_chapter") && (
-                    <>
+                    <div className="grid grid-cols-2 gap-3">
                       <div>
                         <Label>Characters</Label>
-                        <Input 
-                          placeholder="Main characters and their traits..."
-                          value={characters}
-                          onChange={(e) => setCharacters(e.target.value)}
-                        />
+                        <Input placeholder="Main characters..." value={characters} onChange={(e) => setCharacters(e.target.value)} />
                       </div>
                       <div>
                         <Label>Setting</Label>
-                        <Input 
-                          placeholder="Time and place..."
-                          value={setting}
-                          onChange={(e) => setSetting(e.target.value)}
-                        />
+                        <Input placeholder="Time and place..." value={setting} onChange={(e) => setSetting(e.target.value)} />
                       </div>
-                    </>
+                    </div>
                   )}
 
-                  <div>
-                    <Label>Style Reference (Optional)</Label>
-                    <Select value={styleReference} onValueChange={setStyleReference}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Write in the style of..." />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="none">No specific style</SelectItem>
-                        {STYLE_REFERENCES[selectedCategory]?.map((ref) => (
-                          <SelectItem key={ref} value={ref}>{ref}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                  {selectedCategory === "ad_copy" && (
+                    <div>
+                      <Label>Target Audience</Label>
+                      <Input placeholder="Who is this for..." value={targetAudience} onChange={(e) => setTargetAudience(e.target.value)} />
+                    </div>
+                  )}
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <Label>Style Reference</Label>
+                      <Select value={styleReference} onValueChange={setStyleReference}>
+                        <SelectTrigger><SelectValue placeholder="Write in the style of..." /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="none">No specific style</SelectItem>
+                          {STYLE_REFERENCES[selectedCategory]?.map((ref) => (
+                            <SelectItem key={ref} value={ref}>{ref}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label>Content Length</Label>
+                      <Select value={contentLength} onValueChange={setContentLength}>
+                        <SelectTrigger><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="short">Short</SelectItem>
+                          <SelectItem value="medium">Medium</SelectItem>
+                          <SelectItem value="long">Long</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </div>
 
-                  <div>
-                    <Label>Content Length</Label>
-                    <Select value={contentLength} onValueChange={setContentLength}>
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="short">Short</SelectItem>
-                        <SelectItem value="medium">Medium</SelectItem>
-                        <SelectItem value="long">Long</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <Button 
-                    onClick={handleGenerate} 
-                    disabled={isGenerating || !title.trim()}
-                    className="w-full"
-                    size="lg"
-                  >
+                  <Button onClick={handleGenerate} disabled={isGenerating || !title.trim()} className="w-full" size="lg">
                     {isGenerating ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Generating...
-                      </>
+                      <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Generating...</>
                     ) : (
-                      <>
-                        <Sparkles className="mr-2 h-4 w-4" />
-                        Generate ({CREDIT_COSTS[selectedCategory]} credits)
-                      </>
+                      <><Sparkles className="mr-2 h-4 w-4" /> Generate ({CREDIT_COSTS[selectedCategory]} credits)</>
                     )}
                   </Button>
                 </CardContent>
               </Card>
 
               {/* Output */}
-              <Card className="lg:col-span-1 overflow-hidden">
-                <CardHeader>
+              <Card className="border-border/50">
+                <CardHeader className="pb-3">
                   <CardTitle className="text-lg">Generated Content</CardTitle>
                   <CardDescription>Your AI-created masterpiece</CardDescription>
                 </CardHeader>
                 <CardContent>
                   {generatedContent ? (
-                    <div className="space-y-4">
-                      <ScrollArea className="h-[350px] border rounded-lg p-4 bg-muted/30">
-                        <pre className="whitespace-pre-wrap font-mono text-sm">{generatedContent}</pre>
+                    <div className="space-y-3">
+                      {/* Side-by-side compare */}
+                      {previousContent && (
+                        <div className="grid grid-cols-2 gap-2 mb-2">
+                          <Button size="sm" variant="outline" className="text-xs" onClick={() => { setGeneratedContent(previousContent); setPreviousContent(null); }}>
+                            ← Previous Version
+                          </Button>
+                          <Badge variant="secondary" className="flex items-center justify-center text-xs">Current Version</Badge>
+                        </div>
+                      )}
+                      <ScrollArea className="h-[300px] border rounded-xl p-4 bg-muted/20">
+                        <pre className="whitespace-pre-wrap font-mono text-sm leading-relaxed">{generatedContent}</pre>
                       </ScrollArea>
                       <div className="flex gap-2">
-                        <Button 
-                          variant="outline" 
-                          size="sm" 
-                          onClick={() => copyToClipboard(generatedContent)}
-                          className="flex-1"
-                        >
-                          <Copy className="mr-2 h-4 w-4" />
-                          Copy
+                        <Button variant="outline" size="sm" onClick={() => copyToClipboard(generatedContent)} className="flex-1">
+                          <Copy className="mr-1.5 h-3.5 w-3.5" /> Copy
                         </Button>
-                        <Button 
-                          variant="outline" 
-                          size="sm" 
-                          onClick={() => downloadContent(generatedContent, `${selectedCategory}-${title}`)}
-                          className="flex-1"
-                        >
-                          <Download className="mr-2 h-4 w-4" />
-                          Download
+                        <Button variant="outline" size="sm" onClick={() => downloadContent(generatedContent, `${selectedCategory}-${title}`)} className="flex-1">
+                          <Download className="mr-1.5 h-3.5 w-3.5" /> Download
+                        </Button>
+                        <Button variant="outline" size="sm" onClick={() => shareContent(generatedContent, title)} className="flex-1">
+                          <Star className="mr-1.5 h-3.5 w-3.5" /> Share
                         </Button>
                       </div>
                       <div className="pt-2 border-t">
-                        <Label className="text-xs">Request Revision (3 credits)</Label>
+                        <Label className="text-xs">Request Revision ({CREDIT_COSTS.revision} credits)</Label>
                         <div className="flex gap-2 mt-1">
-                          <Input 
-                            placeholder="What should be changed..."
-                            id="revision-notes"
-                            className="text-sm"
-                          />
-                          <Button 
-                            size="sm" 
-                            variant="secondary"
+                          <Input placeholder="What should be changed..." id="revision-notes" className="text-sm" />
+                          <Button size="sm" variant="secondary"
                             onClick={() => {
                               const notes = (document.getElementById("revision-notes") as HTMLInputElement)?.value;
                               if (notes) handleRevision(generatedContent, notes);
                             }}
-                            disabled={isGenerating}
-                          >
+                            disabled={isGenerating}>
                             <RefreshCw className="h-4 w-4" />
                           </Button>
                         </div>
@@ -557,8 +366,9 @@ export default function CreativeForge() {
                   ) : (
                     <div className="h-[400px] flex items-center justify-center text-muted-foreground">
                       <div className="text-center">
-                        <Sparkles className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                        <p>Your generated content will appear here</p>
+                        <Sparkles className="h-12 w-12 mx-auto mb-4 opacity-30" />
+                        <p className="text-sm">Select a template or describe your vision</p>
+                        <p className="text-xs text-muted-foreground mt-1">Generated content will appear here</p>
                       </div>
                     </div>
                   )}
@@ -569,53 +379,56 @@ export default function CreativeForge() {
 
           {/* History Tab */}
           <TabsContent value="history">
-            <Card className="overflow-hidden">
+            <Card className="border-border/50">
               <CardHeader>
                 <CardTitle>Your Projects</CardTitle>
                 <CardDescription>Previously generated content</CardDescription>
+                <div className="flex flex-col sm:flex-row gap-3 mt-3">
+                  <Input placeholder="Search projects..." value={historySearch} onChange={(e) => setHistorySearch(e.target.value)} className="flex-1" />
+                  <Select value={historyFilter} onValueChange={setHistoryFilter}>
+                    <SelectTrigger className="w-full sm:w-48"><SelectValue placeholder="All types" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Types</SelectItem>
+                      {CATEGORIES.map((c) => (
+                        <SelectItem key={c.id} value={c.id}>{c.emoji} {c.name}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
               </CardHeader>
               <CardContent>
-                {projects && projects.length > 0 ? (
-                  <div className="space-y-4">
-                    {projects.map((project: any) => {
+                {filteredProjects.length > 0 ? (
+                  <div className="space-y-3">
+                    {filteredProjects.map((project: any) => {
                       const category = CATEGORIES.find(c => c.id === project.category);
-                      const Icon = category?.icon || Sparkles;
+                      const Icon = ICON_MAP[project.category] || Sparkles;
                       return (
-                        <Card key={project.id} className="p-4">
-                          <div className="flex items-start gap-4">
-                            <div className="p-2 bg-primary/10 rounded-lg">
+                        <Card key={project.id} className="p-4 border-border/50">
+                          <div className="flex items-start gap-3">
+                            <div className="p-2 bg-primary/10 rounded-lg flex-shrink-0">
                               <Icon className="h-5 w-5 text-primary" />
                             </div>
                             <div className="flex-1 min-w-0">
-                              <div className="flex items-center gap-2 mb-1">
-                                <h4 className="font-medium">{project.title}</h4>
+                              <div className="flex items-center gap-2 mb-1 flex-wrap">
+                                <h4 className="font-medium text-sm">{project.title}</h4>
                                 <Badge variant="outline" className="text-xs">{category?.name}</Badge>
                                 <Badge variant="secondary" className="text-xs">{project.credits_used} cr</Badge>
                               </div>
                               <p className="text-xs text-muted-foreground mb-2">
                                 {new Date(project.created_at).toLocaleDateString()}
                               </p>
-                              <ScrollArea className="h-24 border rounded p-2 bg-muted/30">
-                                <pre className="whitespace-pre-wrap text-xs font-mono">
-                                  {project.generated_content?.substring(0, 500)}...
-                                </pre>
+                              <ScrollArea className="h-20 border rounded-lg p-2 bg-muted/20">
+                                <pre className="whitespace-pre-wrap text-xs font-mono">{project.generated_content?.substring(0, 500)}...</pre>
                               </ScrollArea>
                               <div className="flex gap-2 mt-2">
-                                <Button 
-                                  size="sm" 
-                                  variant="outline"
-                                  onClick={() => copyToClipboard(project.generated_content)}
-                                >
-                                  <Copy className="h-3 w-3 mr-1" />
-                                  Copy
+                                <Button size="sm" variant="outline" onClick={() => copyToClipboard(project.generated_content)}>
+                                  <Copy className="h-3 w-3 mr-1" /> Copy
                                 </Button>
-                                <Button 
-                                  size="sm" 
-                                  variant="outline"
-                                  onClick={() => downloadContent(project.generated_content, project.title)}
-                                >
-                                  <Download className="h-3 w-3 mr-1" />
-                                  Download
+                                <Button size="sm" variant="outline" onClick={() => downloadContent(project.generated_content, project.title)}>
+                                  <Download className="h-3 w-3 mr-1" /> Download
+                                </Button>
+                                <Button size="sm" variant="outline" onClick={() => shareContent(project.generated_content, project.title)}>
+                                  <Star className="h-3 w-3 mr-1" /> Share
                                 </Button>
                               </div>
                             </div>
@@ -626,8 +439,8 @@ export default function CreativeForge() {
                   </div>
                 ) : (
                   <div className="text-center py-12 text-muted-foreground">
-                    <History className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                    <p>No projects yet. Start creating!</p>
+                    <History className="h-12 w-12 mx-auto mb-4 opacity-30" />
+                    <p className="text-sm">{historySearch || historyFilter !== "all" ? "No matching projects" : "No projects yet. Start creating!"}</p>
                   </div>
                 )}
               </CardContent>
@@ -635,68 +448,35 @@ export default function CreativeForge() {
           </TabsContent>
 
           {/* Credits Tab */}
-          <TabsContent value="credits">
-            <div className="grid md:grid-cols-2 gap-4 sm:gap-6">
-              <Card className="overflow-hidden">
-                <CardHeader>
-                  <CardTitle>Credit Packages</CardTitle>
-                  <CardDescription>Purchase credits to create content</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid gap-4">
-                    {CREDIT_PACKAGES.map((pkg) => (
-                      <div 
-                        key={pkg.credits}
-                        className={`p-4 border rounded-lg flex items-center justify-between ${
-                          pkg.popular ? "border-primary bg-primary/5" : ""
-                        }`}
-                      >
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <span className="font-bold text-lg">{pkg.credits} Credits</span>
-                            {pkg.popular && <Badge>Most Popular</Badge>}
-                          </div>
-                          <p className="text-sm text-muted-foreground">{pkg.label} Package</p>
-                        </div>
-                        <Button onClick={() => handlePurchase(pkg.credits)}>
-                          €{pkg.price}
-                        </Button>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
+          <TabsContent value="credits" className="space-y-6">
+            <ForgeCreditPackages onPurchase={handlePurchase} />
 
-              <Card className="overflow-hidden">
-                <CardHeader>
-                  <CardTitle>Credit Costs</CardTitle>
-                  <CardDescription>How many credits each type costs</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    {CATEGORIES.map((category) => {
-                      const Icon = category.icon;
-                      return (
-                        <div key={category.id} className="flex items-center justify-between p-2 border rounded">
-                          <div className="flex items-center gap-3">
-                            <Icon className="h-4 w-4 text-muted-foreground" />
-                            <span className="text-sm">{category.name}</span>
-                          </div>
-                          <Badge variant="secondary">{CREDIT_COSTS[category.id as CreativeCategory]} credits</Badge>
-                        </div>
-                      );
-                    })}
-                    <div className="flex items-center justify-between p-2 border rounded border-dashed">
-                      <div className="flex items-center gap-3">
-                        <RefreshCw className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-sm">Revision</span>
+            <Card className="border-border/50">
+              <CardHeader>
+                <CardTitle>Credit Costs</CardTitle>
+                <CardDescription>How many credits each content type uses</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid sm:grid-cols-2 gap-2">
+                  {CATEGORIES.map((category) => (
+                    <div key={category.id} className="flex items-center justify-between p-2.5 border border-border/50 rounded-lg">
+                      <div className="flex items-center gap-2">
+                        <span>{category.emoji}</span>
+                        <span className="text-sm font-medium">{category.name}</span>
                       </div>
-                      <Badge variant="outline">{CREDIT_COSTS.revision} credits</Badge>
+                      <Badge variant="secondary">{CREDIT_COSTS[category.id as CreativeCategory]} credits</Badge>
                     </div>
+                  ))}
+                  <div className="flex items-center justify-between p-2.5 border border-dashed border-border/50 rounded-lg">
+                    <div className="flex items-center gap-2">
+                      <RefreshCw className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-sm font-medium">Revision</span>
+                    </div>
+                    <Badge variant="outline">{CREDIT_COSTS.revision} credits</Badge>
                   </div>
-                </CardContent>
-              </Card>
-            </div>
+                </div>
+              </CardContent>
+            </Card>
           </TabsContent>
         </Tabs>
       </div>
