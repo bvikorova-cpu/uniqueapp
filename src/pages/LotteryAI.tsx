@@ -255,11 +255,67 @@ export default function LotteryAI() {
     );
   }
 
+  if (activeView === "notifications") return (
+    <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-2 sm:px-4 max-w-4xl">
+      <LotteryPushNotifications onBack={() => setActiveView("hub")} />
+    </div></div>
+  );
+  if (activeView === "sharing") return (
+    <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-2 sm:px-4 max-w-4xl">
+      <LotterySocialSharing onBack={() => setActiveView("hub")} />
+    </div></div>
+  );
+  if (activeView === "wintracker") return (
+    <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-2 sm:px-4 max-w-4xl">
+      <LotteryWinTracker onBack={() => setActiveView("hub")} />
+    </div></div>
+  );
+  if (activeView === "smartpicks") return (
+    <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-2 sm:px-4 max-w-4xl">
+      <LotterySmartPicks onBack={() => setActiveView("hub")} />
+    </div></div>
+  );
+  if (activeView === "livedraws") return (
+    <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-2 sm:px-4 max-w-4xl">
+      <LotteryLiveDraws onBack={() => setActiveView("hub")} />
+    </div></div>
+  );
+  if (activeView === "leaderboard") return (
+    <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-2 sm:px-4 max-w-4xl">
+      <LotteryLeaderboard onBack={() => setActiveView("hub")} />
+    </div></div>
+  );
+
   return (
     <div className="min-h-screen bg-background pt-20 pb-12">
       <div className="container mx-auto px-2 sm:px-4">
         {/* Hero */}
         <LotteryHero />
+
+        {/* Feature Cards Grid */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-8">
+          {FEATURE_CARDS.map((card, i) => (
+            <motion.div
+              key={card.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.05 }}
+            >
+              <Card
+                className="bg-card/80 backdrop-blur-xl border-border/50 cursor-pointer hover:border-primary/30 hover:scale-[1.03] transition-all"
+                onClick={() => setActiveView(card.id)}
+              >
+                <CardContent className="pt-4 pb-4 text-center">
+                  <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${card.color} flex items-center justify-center mx-auto mb-2`}>
+                    <card.icon className="h-5 w-5 text-white" />
+                  </div>
+                  <p className="font-bold text-xs">{card.label}</p>
+                  <p className="text-[10px] text-muted-foreground">{card.desc}</p>
+                </CardContent>
+              </Card>
+            </motion.div>
+          ))}
+        </div>
 
         {/* Engagement Row: Streak + Progress + Achievements */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
