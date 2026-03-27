@@ -4,10 +4,9 @@ import { Target, TrendingUp } from "lucide-react";
 import { motion } from "framer-motion";
 
 export const ProgressPreview = () => {
-  // Start from zero — no progress yet
   return (
     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }}>
-      <Card>
+      <Card className="backdrop-blur-xl bg-card/80 border-primary/20">
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center gap-2 text-base">
             <TrendingUp className="w-4 h-4 text-primary" />
@@ -16,26 +15,26 @@ export const ProgressPreview = () => {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="text-center py-4">
-            <Target className="w-10 h-10 mx-auto mb-3 text-muted-foreground/30" />
+            <div className="w-12 h-12 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center mx-auto mb-3">
+              <Target className="w-6 h-6 text-primary/40" />
+            </div>
             <p className="text-sm text-muted-foreground mb-1">No goals set yet</p>
             <p className="text-xs text-muted-foreground">Start a mentor session to set your first goal!</p>
           </div>
 
           <div className="space-y-3">
-            <div>
-              <div className="flex items-center justify-between text-xs mb-1">
-                <span className="text-muted-foreground">Sessions completed</span>
-                <span className="font-bold">0</span>
+            {[
+              { label: "Sessions completed", value: 0 },
+              { label: "Goals achieved", value: 0 },
+            ].map((item) => (
+              <div key={item.label}>
+                <div className="flex items-center justify-between text-xs mb-1">
+                  <span className="text-muted-foreground">{item.label}</span>
+                  <span className="font-bold">{item.value}</span>
+                </div>
+                <Progress value={item.value} className="h-1.5" />
               </div>
-              <Progress value={0} className="h-1.5" />
-            </div>
-            <div>
-              <div className="flex items-center justify-between text-xs mb-1">
-                <span className="text-muted-foreground">Goals achieved</span>
-                <span className="font-bold">0</span>
-              </div>
-              <Progress value={0} className="h-1.5" />
-            </div>
+            ))}
           </div>
         </CardContent>
       </Card>

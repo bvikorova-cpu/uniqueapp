@@ -14,7 +14,7 @@ const badges = [
 export const AchievementBadges = () => {
   return (
     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
-      <Card>
+      <Card className="backdrop-blur-xl bg-card/80 border-primary/20">
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center gap-2 text-base">
             <Award className="w-4 h-4 text-yellow-500" />
@@ -29,16 +29,16 @@ export const AchievementBadges = () => {
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.45 + i * 0.05 }}
-                className={`relative flex flex-col items-center p-3 rounded-xl border text-center transition-all
+                className={`relative flex flex-col items-center p-3 rounded-xl border text-center transition-all hover:scale-105
                   ${badge.unlocked
-                    ? "bg-yellow-500/10 border-yellow-500/30"
-                    : "bg-muted/30 border-border/50 opacity-60"
+                    ? "bg-gradient-to-br from-yellow-500/15 to-amber-500/10 border-yellow-500/30"
+                    : "bg-muted/20 border-border/30 opacity-60"
                   }
                 `}
               >
                 <div className="text-2xl mb-1">
                   {badge.unlocked ? badge.icon : (
-                    <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
+                    <div className="w-8 h-8 rounded-full bg-muted/50 flex items-center justify-center">
                       <Lock className="w-3.5 h-3.5 text-muted-foreground" />
                     </div>
                   )}
