@@ -8,7 +8,7 @@ import {
   Globe, BookOpen, FlaskConical, Film, Dumbbell, Music, 
   Pizza, Briefcase, Palette, Gamepad2, Target, Brain,
   TrendingUp, Heart, Sparkles, User, Radio, ChevronRight,
-  Swords, Calendar, Gift, Bot, BarChart3, Crown, Bell
+  Swords, Calendar, Gift, Bot, BarChart3, Bell
 } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
