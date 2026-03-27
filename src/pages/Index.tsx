@@ -358,7 +358,7 @@ const Index = () => {
             <Button size="lg" onClick={() => handleNavigate('/wall')} className="bg-white text-black hover:bg-white/90 shadow-2xl font-bold rounded-xl px-8">
               <Zap className="w-4 h-4" /> Explore Now
             </Button>
-            <Button size="lg" variant="outline" onClick={() => handleNavigate('/ai-experiences')} className="border-white/30 text-white hover:bg-white/10 rounded-xl px-8">
+            <Button size="lg" variant="outline" onClick={() => handleNavigate('/ai-experiences')} className="border-white/30 text-black bg-white/80 hover:bg-white/90 rounded-xl px-8">
               <Sparkles className="w-4 h-4" /> Discover AI
             </Button>
           </motion.div>
