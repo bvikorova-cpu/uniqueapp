@@ -30,7 +30,7 @@ export const AIContentSuggestions = () => {
     try {
       const topic = topics[Math.floor(Math.random() * topics.length)];
       const { data, error } = await supabase.functions.invoke("wall-ai-assistant", {
-        body: { type: "caption", content: topic, language: "sk" },
+        body: { type: "caption", content: topic, language: "en" },
       });
 
       if (error) throw error;
@@ -40,8 +40,8 @@ export const AIContentSuggestions = () => {
     } catch (err) {
       console.error("AI suggestions error:", err);
       toast({
-        title: "Chyba",
-        description: "Nepodarilo sa načítať AI návrhy",
+        title: "Error",
+        description: "Failed to load AI suggestions",
         variant: "destructive",
       });
     } finally {
@@ -52,7 +52,7 @@ export const AIContentSuggestions = () => {
   const handleCopy = (text: string, index: number) => {
     navigator.clipboard.writeText(text);
     setCopied(index);
-    toast({ title: "Skopírované!", description: "Text bol skopírovaný do schránky" });
+    toast({ title: "Copied!", description: "Text copied to clipboard" });
     setTimeout(() => setCopied(null), 2000);
   };
 
@@ -61,7 +61,7 @@ export const AIContentSuggestions = () => {
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <Sparkles className="w-4 h-4 text-primary" />
-          <h3 className="text-sm font-semibold">AI návrhy príspevkov</h3>
+          <h3 className="text-sm font-semibold">AI Post Suggestions</h3>
         </div>
         <Button
           variant="ghost"
@@ -75,13 +75,13 @@ export const AIContentSuggestions = () => {
           ) : (
             <RefreshCw className="w-3 h-3 mr-1" />
           )}
-          {suggestions.length ? "Nové" : "Generovať"}
+          {suggestions.length ? "New" : "Generate"}
         </Button>
       </div>
 
       {suggestions.length === 0 && !loading && (
         <p className="text-xs text-muted-foreground text-center py-4">
-          Klikni na "Generovať" pre AI návrhy obsahu
+          Click "Generate" for AI content suggestions
         </p>
       )}
 
@@ -98,7 +98,7 @@ export const AIContentSuggestions = () => {
               <div className="flex items-start justify-between gap-2">
                 <div className="flex-1">
                   <span className="inline-block text-[10px] font-medium text-primary/80 uppercase tracking-wider mb-1">
-                    {s.tone === "casual" ? "💬 Casual" : s.tone === "professional" ? "💼 Profesionálny" : "🎉 Zábavný"}
+                    {s.tone === "casual" ? "💬 Casual" : s.tone === "professional" ? "💼 Professional" : "🎉 Fun"}
                   </span>
                   <p className="text-xs leading-relaxed">{s.text}</p>
                 </div>

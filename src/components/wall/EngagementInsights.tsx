@@ -58,16 +58,16 @@ export const EngagementInsights = () => {
   if (loading || !insights) return null;
 
   const stats = [
-    { icon: Eye, label: "Zobrazenia", value: insights.totalViews.toLocaleString(), color: "text-blue-500" },
-    { icon: Heart, label: "Lajky", value: insights.totalLikes.toLocaleString(), color: "text-rose-500" },
-    { icon: MessageSquare, label: "Komentáre", value: insights.totalComments.toLocaleString(), color: "text-emerald-500" },
+    { icon: Eye, label: "Views", value: insights.totalViews.toLocaleString(), color: "text-blue-500" },
+    { icon: Heart, label: "Likes", value: insights.totalLikes.toLocaleString(), color: "text-rose-500" },
+    { icon: MessageSquare, label: "Comments", value: insights.totalComments.toLocaleString(), color: "text-emerald-500" },
   ];
 
   return (
     <Card className="p-4 bg-card/80 backdrop-blur-sm border-border/50">
       <div className="flex items-center gap-2 mb-3">
         <BarChart3 className="w-4 h-4 text-primary" />
-        <h3 className="text-sm font-semibold">Tvoje štatistiky</h3>
+        <h3 className="text-sm font-semibold">Your Statistics</h3>
       </div>
 
       <div className="grid grid-cols-3 gap-2 mb-3">
@@ -92,7 +92,7 @@ export const EngagementInsights = () => {
           <span className="font-semibold text-primary">{insights.engagementRate.toFixed(1)}%</span>
         </div>
         <div className="text-muted-foreground">
-          Najlepší čas: <span className="font-semibold text-foreground">{insights.bestTime}</span>
+          Best time: <span className="font-semibold text-foreground">{insights.bestTime}</span>
         </div>
       </div>
     </Card>

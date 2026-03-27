@@ -17,44 +17,8 @@ interface AudioRoom {
   isLive: boolean;
 }
 
-const MOCK_ROOMS: AudioRoom[] = [
-  {
-    id: "1",
-    name: "Late Night Talks",
-    topic: "Life, Universe & Everything",
-    speakers: [
-      { id: "1", name: "Alex", isMuted: false, isSpeaking: true },
-      { id: "2", name: "Maya", isMuted: true, isSpeaking: false },
-      { id: "3", name: "Jordan", isMuted: false, isSpeaking: false },
-    ],
-    listeners: 47,
-    isLive: true,
-  },
-  {
-    id: "2",
-    name: "Music Corner",
-    topic: "Underground Hip-Hop Discussion",
-    speakers: [
-      { id: "4", name: "Beats", isMuted: false, isSpeaking: true },
-      { id: "5", name: "Vinyl", isMuted: false, isSpeaking: false },
-    ],
-    listeners: 23,
-    isLive: true,
-  },
-  {
-    id: "3",
-    name: "Tech & Startups",
-    topic: "AI Revolution 2026",
-    speakers: [
-      { id: "6", name: "Dev", isMuted: false, isSpeaking: false },
-    ],
-    listeners: 89,
-    isLive: true,
-  },
-];
-
 export const AudioRooms = () => {
-  const [rooms] = useState<AudioRoom[]>(MOCK_ROOMS);
+  const [rooms] = useState<AudioRoom[]>([]);
   const [activeRoom, setActiveRoom] = useState<AudioRoom | null>(null);
   const [isMuted, setIsMuted] = useState(true);
   const [handRaised, setHandRaised] = useState(false);
