@@ -4,177 +4,224 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Calendar, Loader2 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Calendar, Loader2, Sparkles, Clock, Heart } from "lucide-react";
+import { motion } from "framer-motion";
 
 interface PastLifeFormProps {
   onSubmit: (data: any) => void;
   isAnalyzing: boolean;
+  defaultReadingType?: string;
 }
 
-export const PastLifeForm = ({ onSubmit, isAnalyzing }: PastLifeFormProps) => {
+const readingTypes = [
+  {
+    value: "basic",
+    label: "Basic Reading",
+    cost: 5,
+    description: "1 past life story with karmic lessons",
+    icon: Clock,
+    gradient: "from-blue-500 to-cyan-500",
+  },
+  {
+    value: "full",
+    label: "Full Reading",
+    cost: 15,
+    description: "3 past lives with AI illustrations",
+    icon: Sparkles,
+    gradient: "from-primary to-accent",
+  },
+  {
+    value: "soulmate",
+    label: "Soul Mate Connection",
+    cost: 20,
+    description: "Partner analysis + past life connections",
+    icon: Heart,
+    gradient: "from-pink-500 to-rose-500",
+  },
+];
+
+const examplePrompts = [
+  "I often dream of medieval castles and knights...",
+  "I have an unexplained fear of deep water since childhood...",
+  "I feel an inexplicable connection to ancient Japanese culture...",
+];
+
+export const PastLifeForm = ({ onSubmit, isAnalyzing, defaultReadingType }: PastLifeFormProps) => {
   const [birthDate, setBirthDate] = useState("");
   const [dreamsDejavu, setDreamsDejavu] = useState("");
   const [talentsPhobias, setTalentsPhobias] = useState("");
-  const [readingType, setReadingType] = useState("full");
+  const [readingType, setReadingType] = useState(defaultReadingType || "full");
   const [partnerBirthDate, setPartnerBirthDate] = useState("");
   const [partnerInfo, setPartnerInfo] = useState("");
 
   const handleSubmit = () => {
     if (!birthDate) return;
-    
     onSubmit({
       birthDate,
       dreamsDejavu: dreamsDejavu || undefined,
       talentsPhobias: talentsPhobias || undefined,
       readingType,
-      partnerBirthDate: readingType === 'soulmate' ? partnerBirthDate : undefined,
-      partnerInfo: readingType === 'soulmate' ? partnerInfo : undefined,
+      partnerBirthDate: readingType === "soulmate" ? partnerBirthDate : undefined,
+      partnerInfo: readingType === "soulmate" ? partnerInfo : undefined,
     });
   };
 
-  const readingTypes = [
-    {
-      value: "basic",
-      label: "Basic Reading",
-      cost: 5,
-      description: "1 past life story with karmic lessons",
-    },
-    {
-      value: "full",
-      label: "Full Reading",
-      cost: 15,
-      description: "3 past lives with AI illustrations",
-    },
-    {
-      value: "soulmate",
-      label: "Soul Mate Connection",
-      cost: 20,
-      description: "Partner analysis + past life connections",
-    },
-  ];
+  const selectedType = readingTypes.find(t => t.value === readingType);
 
   return (
-    <Card className="p-4 sm:p-6">
-      <h2 className="text-xl sm:text-2xl font-bold mb-6">Discover Your Past Lives</h2>
-
-      <div className="space-y-6">
-        <div>
-          <Label htmlFor="birthDate">Your Birth Date *</Label>
-          <div className="relative">
-            <Calendar className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-            <Input
-              id="birthDate"
-              type="date"
-              value={birthDate}
-              onChange={(e) => setBirthDate(e.target.value)}
-              className="pl-10"
-              required
-            />
+    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+      <Card className="overflow-hidden bg-card/80 backdrop-blur-xl border-border/50">
+        <div className={`h-1.5 bg-gradient-to-r ${selectedType?.gradient || "from-primary to-accent"}`} />
+        <div className="p-5 sm:p-8 space-y-6">
+          <div>
+            <h2 className="text-xl sm:text-2xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
+              Discover Your Past Lives
+            </h2>
+            <p className="text-sm text-muted-foreground mt-1">
+              Fill in your details to unlock the mysteries of your soul's journey
+            </p>
           </div>
-        </div>
 
-        <div>
-          <Label htmlFor="dreams">Dreams & Déjà Vu Experiences (Optional)</Label>
-          <Textarea
-            id="dreams"
-            placeholder="Describe any recurring dreams, vivid historical visions, or strong déjà vu moments..."
-            value={dreamsDejavu}
-            onChange={(e) => setDreamsDejavu(e.target.value)}
-            rows={3}
-          />
-        </div>
-
-        <div>
-          <Label htmlFor="talents">Unusual Talents or Phobias (Optional)</Label>
-          <Textarea
-            id="talents"
-            placeholder="Any unexplained skills, natural talents, or irrational fears..."
-            value={talentsPhobias}
-            onChange={(e) => setTalentsPhobias(e.target.value)}
-            rows={3}
-          />
-        </div>
-
-        <div>
-          <Label className="mb-3 block">Reading Type</Label>
-          <RadioGroup value={readingType} onValueChange={setReadingType}>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          {/* Reading Type Selector */}
+          <div>
+            <Label className="mb-3 block text-sm font-semibold">Reading Type</Label>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               {readingTypes.map((type) => (
-                <Card
+                <div
                   key={type.value}
-                  className={`p-4 cursor-pointer transition-all ${
-                    readingType === type.value
-                      ? "border-indigo-500 border-2"
-                      : ""
-                  }`}
                   onClick={() => setReadingType(type.value)}
+                  className={`relative p-4 rounded-xl cursor-pointer transition-all border ${
+                    readingType === type.value
+                      ? "border-primary bg-primary/5 shadow-lg shadow-primary/10"
+                      : "border-border/50 bg-muted/10 hover:border-border"
+                  }`}
                 >
-                  <div className="flex items-start gap-3">
-                    <RadioGroupItem value={type.value} id={type.value} />
-                    <div className="flex-1">
-                      <Label htmlFor={type.value} className="cursor-pointer">
-                        <div className="font-semibold text-sm">{type.label}</div>
-                        <div className="text-xs text-muted-foreground mt-1">
-                          {type.description}
-                        </div>
-                        <div className="text-sm font-bold text-indigo-500 mt-2">
-                          {type.cost} Credits
-                        </div>
-                      </Label>
-                    </div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <type.icon className={`h-4 w-4 ${readingType === type.value ? "text-primary" : "text-muted-foreground"}`} />
+                    <span className="font-semibold text-sm">{type.label}</span>
                   </div>
-                </Card>
+                  <p className="text-xs text-muted-foreground">{type.description}</p>
+                  <Badge variant="secondary" className="mt-2 text-[10px]">{type.cost} Credits</Badge>
+                </div>
               ))}
             </div>
-          </RadioGroup>
-        </div>
+          </div>
 
-        {readingType === 'soulmate' && (
-          <>
-            <div>
-              <Label htmlFor="partnerBirthDate">Partner's Birth Date</Label>
-              <div className="relative">
-                <Calendar className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                <Input
-                  id="partnerBirthDate"
-                  type="date"
-                  value={partnerBirthDate}
-                  onChange={(e) => setPartnerBirthDate(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
-            </div>
-
-            <div>
-              <Label htmlFor="partnerInfo">About Your Partner (Optional)</Label>
-              <Textarea
-                id="partnerInfo"
-                placeholder="Any details about your partner's personality, interests, or relationship dynamics..."
-                value={partnerInfo}
-                onChange={(e) => setPartnerInfo(e.target.value)}
-                rows={3}
+          {/* Birth Date */}
+          <div>
+            <Label htmlFor="birthDate" className="text-sm font-semibold">Your Birth Date *</Label>
+            <div className="relative mt-1.5">
+              <Calendar className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+              <Input
+                id="birthDate"
+                type="date"
+                value={birthDate}
+                onChange={(e) => setBirthDate(e.target.value)}
+                className="pl-10 bg-muted/10 border-border/50"
+                required
               />
             </div>
-          </>
-        )}
+          </div>
 
-        <Button
-          onClick={handleSubmit}
-          disabled={!birthDate || isAnalyzing}
-          className="w-full"
-          size="lg"
-        >
-          {isAnalyzing ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Unveiling Your Past...
-            </>
-          ) : (
-            "Reveal My Past Lives"
+          {/* Dreams */}
+          <div>
+            <Label htmlFor="dreams" className="text-sm font-semibold">Dreams & Déjà Vu Experiences</Label>
+            <p className="text-xs text-muted-foreground mb-2">Optional — helps create more accurate readings</p>
+            <Textarea
+              id="dreams"
+              placeholder="Describe any recurring dreams, vivid historical visions, or strong déjà vu moments..."
+              value={dreamsDejavu}
+              onChange={(e) => setDreamsDejavu(e.target.value)}
+              rows={3}
+              className="bg-muted/10 border-border/50"
+            />
+            <div className="flex flex-wrap gap-2 mt-2">
+              {examplePrompts.map((p, i) => (
+                <button
+                  key={i}
+                  onClick={() => setDreamsDejavu(p)}
+                  className="text-[10px] px-2 py-1 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+                >
+                  {p.slice(0, 40)}...
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Talents */}
+          <div>
+            <Label htmlFor="talents" className="text-sm font-semibold">Unusual Talents or Phobias</Label>
+            <p className="text-xs text-muted-foreground mb-2">Optional — unexplained skills or irrational fears</p>
+            <Textarea
+              id="talents"
+              placeholder="Any unexplained skills, natural talents, or irrational fears..."
+              value={talentsPhobias}
+              onChange={(e) => setTalentsPhobias(e.target.value)}
+              rows={3}
+              className="bg-muted/10 border-border/50"
+            />
+          </div>
+
+          {/* Soulmate Fields */}
+          {readingType === "soulmate" && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              className="space-y-4 p-4 rounded-xl bg-pink-500/5 border border-pink-500/20"
+            >
+              <h3 className="font-semibold text-sm flex items-center gap-2">
+                <Heart className="h-4 w-4 text-pink-500" />
+                Partner Details
+              </h3>
+              <div>
+                <Label htmlFor="partnerBirthDate" className="text-sm">Partner's Birth Date</Label>
+                <div className="relative mt-1.5">
+                  <Calendar className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    id="partnerBirthDate"
+                    type="date"
+                    value={partnerBirthDate}
+                    onChange={(e) => setPartnerBirthDate(e.target.value)}
+                    className="pl-10 bg-muted/10 border-border/50"
+                  />
+                </div>
+              </div>
+              <div>
+                <Label htmlFor="partnerInfo" className="text-sm">About Your Partner (Optional)</Label>
+                <Textarea
+                  id="partnerInfo"
+                  placeholder="Personality, interests, or relationship dynamics..."
+                  value={partnerInfo}
+                  onChange={(e) => setPartnerInfo(e.target.value)}
+                  rows={3}
+                  className="bg-muted/10 border-border/50"
+                />
+              </div>
+            </motion.div>
           )}
-        </Button>
-      </div>
-    </Card>
+
+          <Button
+            onClick={handleSubmit}
+            disabled={!birthDate || isAnalyzing}
+            className="w-full"
+            size="lg"
+          >
+            {isAnalyzing ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Unveiling Your Past Lives...
+              </>
+            ) : (
+              <>
+                <Sparkles className="mr-2 h-4 w-4" />
+                Reveal My Past Lives — {selectedType?.cost || 15} Credits
+              </>
+            )}
+          </Button>
+        </div>
+      </Card>
+    </motion.div>
   );
 };
