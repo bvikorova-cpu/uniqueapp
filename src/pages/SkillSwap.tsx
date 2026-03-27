@@ -54,7 +54,7 @@ interface SkillOffering {
   };
 }
 
-type ViewType = "hub" | "browse" | "matches" | "messages" | "add";
+type ViewType = "hub" | "browse" | "matches" | "messages" | "add" | "skillmap" | "advisor" | "progress" | "lessons" | "leaderboard" | "scheduler";
 
 const SWAP_TOOLS = [
   {
@@ -92,6 +92,60 @@ const SWAP_TOOLS = [
     badge: "Create",
     gradient: "bg-gradient-to-r from-pink-500 to-rose-500",
     features: ["Media upload support", "Category selection", "Custom description", "Instant publishing"],
+  },
+  {
+    id: "skillmap",
+    title: "Skill Map",
+    description: "Interactive world map showing swappers across the globe",
+    icon: Globe,
+    badge: "New",
+    gradient: "bg-gradient-to-r from-cyan-500 to-blue-500",
+    features: ["Global visualization", "Filter by continent", "Connect instantly", "Location-based"],
+  },
+  {
+    id: "advisor",
+    title: "AI Skill Advisor",
+    description: "AI chatbot recommending skills to learn based on market trends",
+    icon: Sparkles,
+    badge: "AI",
+    gradient: "bg-gradient-to-r from-violet-500 to-purple-500",
+    features: ["Market analysis", "Personalized advice", "Trending skills", "Career paths"],
+  },
+  {
+    id: "progress",
+    title: "Learning Progress",
+    description: "Track your learning journey with milestones and goals",
+    icon: BookOpen,
+    badge: "Track",
+    gradient: "bg-gradient-to-r from-green-500 to-emerald-500",
+    features: ["Milestone tracking", "Hours logged", "Progress bars", "Goal setting"],
+  },
+  {
+    id: "lessons",
+    title: "Lesson Library",
+    description: "Watch recorded lessons from top-rated skill swappers",
+    icon: Video,
+    badge: "Video",
+    gradient: "bg-gradient-to-r from-red-500 to-rose-500",
+    features: ["HD recordings", "Multi-category", "Expert instructors", "Free & premium"],
+  },
+  {
+    id: "leaderboard",
+    title: "Leaderboard",
+    description: "See the most active and top-rated swappers worldwide",
+    icon: Award,
+    badge: "Rank",
+    gradient: "bg-gradient-to-r from-yellow-500 to-amber-500",
+    features: ["Global rankings", "Multiple metrics", "Weekly updates", "Achievement badges"],
+  },
+  {
+    id: "scheduler",
+    title: "Session Scheduler",
+    description: "Plan and manage your exchange sessions with a calendar",
+    icon: CalendarDays,
+    badge: "Plan",
+    gradient: "bg-gradient-to-r from-indigo-500 to-blue-500",
+    features: ["Calendar view", "Video call links", "Reminders", "Session history"],
   },
 ];
 
