@@ -66,64 +66,6 @@ export const LotteryHero = () => {
         Advanced machine learning analyzes historical data and statistical patterns to generate optimized number combinations for your favorite lotteries.
       </motion.p>
 
-      {/* Lucky Wheel Animation */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 0.25, duration: 0.6 }}
-        className="mb-8 flex justify-center"
-      >
-        <div className="relative w-32 h-32 sm:w-40 sm:h-40">
-          <svg className="w-full h-full" viewBox="0 0 120 120">
-            <circle cx="60" cy="60" r="52" fill="none" stroke="hsl(var(--muted))" strokeWidth="6" opacity="0.3" />
-            <motion.circle
-              cx="60" cy="60" r="52"
-              fill="none"
-              stroke="hsl(var(--primary))"
-              strokeWidth="6"
-              strokeLinecap="round"
-              strokeDasharray={`${2 * Math.PI * 52}`}
-              initial={{ strokeDashoffset: 2 * Math.PI * 52 }}
-              animate={{ strokeDashoffset: 2 * Math.PI * 52 * 0.06 }}
-              transition={{ duration: 2, ease: "easeOut", delay: 0.5 }}
-              transform="rotate(-90 60 60)"
-            />
-            <motion.circle
-              cx="60" cy="60" r="40"
-              fill="none"
-              stroke="hsl(var(--primary) / 0.15)"
-              strokeWidth="2"
-              strokeDasharray="6 4"
-              initial={{ rotate: 0 }}
-              animate={{ rotate: 360 }}
-              transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-              style={{ transformOrigin: "60px 60px" }}
-            />
-            <motion.circle
-              cx="60" cy="60" r="30"
-              fill="none"
-              stroke="hsl(var(--accent) / 0.1)"
-              strokeWidth="1.5"
-              strokeDasharray="4 6"
-              initial={{ rotate: 360 }}
-              animate={{ rotate: 0 }}
-              transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
-              style={{ transformOrigin: "60px 60px" }}
-            />
-          </svg>
-          <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <motion.span
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1 }}
-              className="text-3xl sm:text-4xl"
-            >
-              🎰
-            </motion.span>
-            <span className="text-[10px] sm:text-xs text-muted-foreground font-medium mt-1">AI POWERED</span>
-          </div>
-        </div>
-      </motion.div>
 
       {/* Stats Grid */}
       <motion.div

@@ -38,6 +38,9 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { LotteryHero } from "@/components/lottery/LotteryHero";
+import { LotteryStreak } from "@/components/lottery/LotteryStreak";
+import { LotteryProgress } from "@/components/lottery/LotteryProgress";
+import { LotteryAchievements } from "@/components/lottery/LotteryAchievements";
 
 const LOTTERY_TYPES = [
   { id: "eurojackpot", name: "EuroJackpot", maxNumber: 50, bonusBalls: 12, mainBalls: 5, bonusCount: 2 },
@@ -387,6 +390,17 @@ export default function LotteryAI() {
         </div>
         <div className="container mx-auto max-w-6xl relative z-10">
           <LotteryHero />
+        </div>
+      </section>
+
+      {/* Engagement Widgets Row */}
+      <section className="px-4 -mt-4">
+        <div className="container mx-auto max-w-6xl">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+            <LotteryStreak />
+            <LotteryProgress />
+            <LotteryAchievements />
+          </div>
         </div>
       </section>
 
