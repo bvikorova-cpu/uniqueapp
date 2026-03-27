@@ -1,6 +1,5 @@
 import { motion } from "framer-motion";
-import { Sparkles, TrendingUp, Users, Zap, Target } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { Sparkles, TrendingUp, Users, Zap, Target, Dices } from "lucide-react";
 import { useEffect, useState } from "react";
 
 const AnimatedCounter = ({ target, suffix = "" }: { target: number; suffix?: string }) => {
@@ -31,65 +30,99 @@ const stats = [
   { icon: Zap, label: "AI Analyses", value: 52, suffix: "K" },
 ];
 
+const floatingEmojis = ["🎰", "🍀", "💰", "🎲", "⭐", "🔮", "💎", "🎯"];
+
 export const LotteryHero = () => {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="text-center mb-8 sm:mb-12"
-    >
-      <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 0.1 }}
-        className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-sm text-primary mb-4"
-      >
-        <Sparkles className="w-4 h-4" />
-        <span className="font-medium">AI-Powered Predictions</span>
-      </motion.div>
+    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-violet-600 via-primary to-accent p-6 sm:p-10 mb-8">
+      {/* Floating emojis */}
+      {floatingEmojis.map((emoji, i) => (
+        <motion.div
+          key={i}
+          className="absolute text-xl md:text-3xl opacity-20 select-none pointer-events-none"
+          style={{
+            left: `${(i * 12) + 5}%`,
+            top: `${(i % 3) * 30 + 10}%`,
+          }}
+          animate={{
+            y: [0, -15, 0],
+            rotate: [0, i % 2 === 0 ? 12 : -12, 0],
+            scale: [1, 1.1, 1],
+          }}
+          transition={{
+            duration: 3 + (i * 0.3),
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: i * 0.3,
+          }}
+        >
+          {emoji}
+        </motion.div>
+      ))}
 
-      <motion.h1
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.15 }}
-        className="text-3xl sm:text-5xl lg:text-6xl font-black mb-3 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent"
-      >
-        Lottery AI Predictions
-      </motion.h1>
+      {/* Glowing orbs */}
+      <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl" />
+      <div className="absolute bottom-0 left-0 w-48 h-48 bg-pink-400/20 rounded-full blur-3xl" />
 
-      <motion.p
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.2 }}
-        className="text-muted-foreground text-sm sm:text-lg max-w-2xl mx-auto mb-8"
-      >
-        Advanced machine learning analyzes historical data and statistical patterns to generate optimized number combinations for your favorite lotteries.
-      </motion.p>
+      <div className="relative z-10">
+        {/* Badge */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex justify-center mb-4"
+        >
+          <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/20 backdrop-blur-sm text-white text-sm font-semibold border border-white/30">
+            <Dices className="w-4 h-4" />
+            AI-Powered Predictions
+            <Sparkles className="w-4 h-4" />
+          </span>
+        </motion.div>
 
+        {/* Title */}
+        <motion.h1
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="text-3xl md:text-5xl font-black text-center text-white mb-3"
+        >
+          Lottery AI 🎰
+        </motion.h1>
 
-      {/* Stats Grid */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 }}
-        className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-3xl mx-auto"
-      >
-        {stats.map((stat, i) => (
-          <motion.div
-            key={stat.label}
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.35 + i * 0.05 }}
-            className="relative group p-4 rounded-2xl bg-card/60 backdrop-blur-sm border border-border/50 hover:border-primary/30 transition-all"
-          >
-            <stat.icon className="w-5 h-5 text-primary mx-auto mb-2" />
-            <div className="text-2xl sm:text-3xl font-black text-foreground">
-              <AnimatedCounter target={stat.value} suffix={stat.suffix} />
-            </div>
-            <p className="text-[11px] text-muted-foreground mt-1">{stat.label}</p>
-          </motion.div>
-        ))}
-      </motion.div>
-    </motion.div>
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2 }}
+          className="text-base md:text-lg text-white/80 text-center mb-6 max-w-2xl mx-auto"
+        >
+          Advanced ML analyzes historical data to generate optimized number combinations
+        </motion.p>
+
+        {/* Stats row */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-3xl mx-auto"
+        >
+          {stats.map((stat, i) => (
+            <motion.div
+              key={stat.label}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.35 + i * 0.05 }}
+              className="bg-white/15 backdrop-blur-sm rounded-xl p-3 text-center border border-white/20"
+            >
+              <div className="flex items-center justify-center gap-1.5 mb-1">
+                <stat.icon className="w-4 h-4 text-white/80" />
+                <span className="text-xl font-black text-white">
+                  <AnimatedCounter target={stat.value} suffix={stat.suffix} />
+                </span>
+              </div>
+              <span className="text-xs text-white/70 font-medium">{stat.label}</span>
+            </motion.div>
+          ))}
+        </motion.div>
+      </div>
+    </div>
   );
 };
