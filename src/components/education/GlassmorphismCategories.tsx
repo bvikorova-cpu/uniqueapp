@@ -34,7 +34,7 @@ export const GlassmorphismCategories = ({ categories, onStartQuiz }: Glassmorphi
   );
 
   return (
-    <Card>
+    <Card className="backdrop-blur-xl bg-card/80 border-primary/20">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-xl">
           <Sparkles className="h-5 w-5 text-primary" /> AI-Generated Quizzes
@@ -68,7 +68,7 @@ export const GlassmorphismCategories = ({ categories, onStartQuiz }: Glassmorphi
           placeholder="Search category..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="mt-2 w-full px-3 py-2 text-sm rounded-lg bg-muted/50 border border-border/50 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/30 transition-all"
+          className="mt-2 w-full px-3 py-2 text-sm rounded-xl bg-muted/30 border border-border/30 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/30 transition-all"
         />
       </CardHeader>
       <CardContent>
@@ -85,7 +85,7 @@ export const GlassmorphismCategories = ({ categories, onStartQuiz }: Glassmorphi
             >
               <div
                 onClick={() => onStartQuiz(category.id, selectedDifficulty !== "all" ? selectedDifficulty : undefined)}
-                className="group cursor-pointer p-3 sm:p-4 rounded-xl bg-card/60 backdrop-blur-sm border border-border/50 
+                className="group cursor-pointer p-3 sm:p-4 rounded-xl bg-card/60 backdrop-blur-sm border border-border/30 
                   hover:border-primary/30 hover:bg-primary/5 hover:shadow-lg hover:shadow-primary/5 
                   transition-all duration-300 hover:scale-[1.03] active:scale-[0.98]"
               >
