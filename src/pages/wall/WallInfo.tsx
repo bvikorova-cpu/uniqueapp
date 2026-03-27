@@ -483,59 +483,73 @@ export default function WallInfo() {
   ];
 
   return (
-    <div className="max-w-4xl mx-auto px-2 sm:px-4 py-6">
-      {/* Hero */}
-      <div className="flex items-center gap-3 mb-8">
-        <div className="p-3 rounded-2xl bg-gradient-to-br from-primary to-accent shadow-lg">
-          <Info className="h-6 w-6 text-white" />
+    <div className="max-w-4xl mx-auto px-2 sm:px-4 py-6 space-y-6">
+      {/* Hero Banner */}
+      <motion.div 
+        initial={{ opacity: 0, y: -20 }} 
+        animate={{ opacity: 1, y: 0 }}
+        className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/20 via-accent/10 to-primary/5 border border-primary/20 p-6 sm:p-8"
+      >
+        <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-primary/20 to-transparent rounded-full blur-3xl -translate-y-1/2 translate-x-1/4" />
+        <div className="relative flex items-center gap-4">
+          <motion.div className="p-4 rounded-2xl bg-gradient-to-br from-primary to-accent shadow-xl shadow-primary/30" whileHover={{ rotate: 5, scale: 1.05 }}>
+            <Info className="h-7 w-7 text-white" />
+          </motion.div>
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
+              Wall Features Guide
+            </h1>
+            <p className="text-sm text-muted-foreground mt-0.5">
+              Discover all {featureSections.reduce((a, s) => a + s.features.length, 0)} features available on Wall
+            </p>
+          </div>
         </div>
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
-            Wall Features Guide
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            Discover all features available on Wall
-          </p>
-        </div>
-      </div>
+      </motion.div>
 
-      <div className="space-y-6">
+      <div className="space-y-5">
         {featureSections.map((section, sectionIndex) => (
-          <Card key={sectionIndex} className="overflow-hidden border-border/50 hover:border-primary/20 transition-colors">
-            <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 border-b border-border/50 py-4">
-              <div className="flex items-center gap-3">
-                <div className="p-2.5 rounded-xl bg-gradient-to-br from-primary to-accent text-white shadow-md">
-                  {section.icon}
-                </div>
-                <CardTitle className="text-lg sm:text-xl font-bold">{section.title}</CardTitle>
-                <Badge variant="secondary" className="ml-auto text-xs">
-                  {section.features.length}
-                </Badge>
-              </div>
-            </CardHeader>
-            <CardContent className="p-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {section.features.map((feature, featureIndex) => (
-                  <div
-                    key={featureIndex}
-                    className="group flex gap-3 p-3 rounded-xl border border-transparent hover:border-primary/20 hover:bg-primary/5 transition-all duration-200"
-                  >
-                    <div className="p-2 rounded-lg bg-primary/10 text-primary h-fit group-hover:bg-primary group-hover:text-white transition-colors">
-                      {feature.icon}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h4 className="font-bold text-sm mb-0.5 group-hover:text-primary transition-colors">
-                        {feature.name}
-                      </h4>
-                      <p className="text-xs text-muted-foreground leading-relaxed">
-                        {feature.description}
-                      </p>
-                    </div>
+          <motion.div 
+            key={sectionIndex}
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: sectionIndex * 0.05 }}
+          >
+            <Card className="overflow-hidden border-border/40 bg-card/80 backdrop-blur-sm hover:border-primary/30 transition-all duration-300">
+              <CardHeader className="bg-gradient-to-r from-primary/5 via-transparent to-accent/5 border-b border-border/30 py-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-2.5 rounded-xl bg-gradient-to-br from-primary to-accent text-white shadow-lg shadow-primary/20">
+                    {section.icon}
                   </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
+                  <CardTitle className="text-lg sm:text-xl font-black">{section.title}</CardTitle>
+                  <Badge variant="secondary" className="ml-auto text-xs bg-primary/10 text-primary border-0">
+                    {section.features.length}
+                  </Badge>
+                </div>
+              </CardHeader>
+              <CardContent className="p-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {section.features.map((feature, featureIndex) => (
+                    <div
+                      key={featureIndex}
+                      className="group flex gap-3 p-3 rounded-xl border border-border/30 hover:border-primary/30 hover:bg-primary/5 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300"
+                    >
+                      <div className="p-2 rounded-lg bg-primary/10 text-primary h-fit group-hover:bg-gradient-to-br group-hover:from-primary group-hover:to-accent group-hover:text-white transition-all duration-300 shadow-sm">
+                        {feature.icon}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-black text-sm mb-0.5 group-hover:text-primary transition-colors">
+                          {feature.name}
+                        </h4>
+                        <p className="text-xs text-muted-foreground leading-relaxed">
+                          {feature.description}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
         ))}
       </div>
     </div>
