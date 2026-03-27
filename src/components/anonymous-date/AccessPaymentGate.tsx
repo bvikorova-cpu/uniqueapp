@@ -1,6 +1,8 @@
-import { Heart, Lock, Shield, Users, MessageCircle, Sparkles, Eye } from "lucide-react";
+import { Heart, Lock, Shield, Users, MessageCircle, Sparkles, Eye, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { motion } from "framer-motion";
 
 interface AccessPaymentGateProps {
   onPayAccess: () => void;
@@ -8,196 +10,134 @@ interface AccessPaymentGateProps {
 }
 
 export function AccessPaymentGate({ onPayAccess, loading }: AccessPaymentGateProps) {
+  const steps = [
+    { icon: Shield, title: "Create Anonymous Profile", desc: "Set up your hidden identity with interests and traits", gradient: "from-pink-500 to-rose-500" },
+    { icon: Users, title: "Find Your Match", desc: "Algorithm pairs you based on compatibility (5 credits)", gradient: "from-primary to-accent" },
+    { icon: MessageCircle, title: "Chat Anonymously (7 Days)", desc: "Text (1 cr) or voice messages (3 cr) to connect", gradient: "from-amber-500 to-orange-500" },
+    { icon: Eye, title: "Identity Reveal", desc: "Free after 7 days, or 15 credits for early reveal", gradient: "from-emerald-500 to-teal-500" },
+  ];
+
+  const included = [
+    "Full platform access",
+    "Anonymous profile creation",
+    "Interest-based matching",
+    "Secure messaging system",
+    "7-day mystery period",
+    "Match history & archive",
+  ];
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-pink-50 to-purple-50 flex items-center justify-center p-2 sm:p-4">
-      <Card className="max-w-3xl w-full">
-        <div className="pt-8 sm:pt-16"></div>
-        <CardHeader className="text-center space-y-3 sm:space-y-4 px-3 sm:px-6">
-          <div className="flex justify-center">
-            <div className="bg-gradient-to-r from-pink-500 to-purple-600 p-3 sm:p-4 rounded-full">
-              <Heart className="h-8 w-8 sm:h-12 sm:w-12 text-white" />
-            </div>
-          </div>
-          <CardTitle className="text-2xl sm:text-3xl font-bold">
+    <div className="min-h-screen bg-background flex items-center justify-center p-4">
+      <div className="max-w-3xl w-full space-y-6">
+        {/* Hero */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center space-y-4"
+        >
+          <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-pink-500/10 text-pink-500 text-xs font-medium">
+            <Heart className="h-3 w-3" />
+            Anonymous Date
+          </span>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black bg-gradient-to-r from-foreground via-pink-500 to-accent bg-clip-text text-transparent">
             Welcome to Anonymous Date
-          </CardTitle>
-          <CardDescription className="text-sm sm:text-base px-2">
-            A unique anonymous dating experience for adults (18+)
-          </CardDescription>
-        </CardHeader>
-        
-        <CardContent className="space-y-4 sm:space-y-6 px-3 sm:px-6">
-          <div className="bg-gradient-to-r from-pink-100 to-purple-100 p-4 sm:p-6 rounded-lg space-y-3 sm:space-y-4">
-            <h3 className="font-semibold text-lg sm:text-xl flex items-center gap-2 justify-center flex-wrap">
-              <Lock className="h-5 w-5 sm:h-6 sm:w-6" />
-              <span className="text-center">Monthly Subscription: €1/month</span>
-            </h3>
-            <p className="text-xs sm:text-sm text-gray-700 text-center px-2">
-              To maintain a quality, safe environment and prevent spam, we require a monthly subscription of just €1. 
-              This gives you full access to all Anonymous Date features.
-            </p>
-          </div>
-
-          <div className="space-y-3 sm:space-y-4">
-            <h3 className="font-semibold text-base sm:text-lg text-center">How Anonymous Date Works</h3>
-            
-            <div className="grid gap-3 sm:gap-4 md:grid-cols-2">
-              <div className="bg-white p-3 sm:p-4 rounded-lg shadow-sm border-2 border-pink-100">
-                <div className="flex items-start gap-2 sm:gap-3">
-                  <div className="bg-pink-100 p-1.5 sm:p-2 rounded-full flex-shrink-0">
-                    <Shield className="h-4 w-4 sm:h-5 sm:w-5 text-pink-600" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold mb-1 text-sm sm:text-base">Step 1: Create Anonymous Profile</h4>
-                    <p className="text-xs text-gray-600">
-                      Set up your anonymous identity with interests, age range, and personality traits. Your real identity stays hidden.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-white p-3 sm:p-4 rounded-lg shadow-sm border-2 border-purple-100">
-                <div className="flex items-start gap-2 sm:gap-3">
-                  <div className="bg-purple-100 p-1.5 sm:p-2 rounded-full flex-shrink-0">
-                    <Users className="h-4 w-4 sm:h-5 sm:w-5 text-purple-600" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold mb-1 text-sm sm:text-base">Step 2: Find Your Match</h4>
-                    <p className="text-xs text-gray-600">
-                      Our system matches you with someone based on common interests and compatibility (costs 5 credits).
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-white p-3 sm:p-4 rounded-lg shadow-sm border-2 border-red-100">
-                <div className="flex items-start gap-2 sm:gap-3">
-                  <div className="bg-red-100 p-1.5 sm:p-2 rounded-full flex-shrink-0">
-                    <MessageCircle className="h-4 w-4 sm:h-5 sm:w-5 text-red-600" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold mb-1 text-sm sm:text-base">Step 3: Anonymous Chat (7 Days)</h4>
-                    <p className="text-xs text-gray-600">
-                      Chat for 7 days without knowing each other's identity. Text (1 credit) or voice messages (3 credits).
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-white p-3 sm:p-4 rounded-lg shadow-sm border-2 border-blue-100">
-                <div className="flex items-start gap-2 sm:gap-3">
-                  <div className="bg-blue-100 p-1.5 sm:p-2 rounded-full flex-shrink-0">
-                    <Eye className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold mb-1 text-sm sm:text-base">Step 4: Identity Reveal</h4>
-                    <p className="text-xs text-gray-600">
-                      After 7 days, reveal identities for free. Or pay 15 credits for early reveal if the connection is strong.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-3 sm:p-4 rounded-lg">
-            <h4 className="font-semibold mb-2 sm:mb-3 flex items-center gap-2 text-sm sm:text-base">
-              <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 text-indigo-600" />
-              Premium Features Available
-            </h4>
-            <ul className="space-y-1.5 sm:space-y-2 text-xs sm:text-sm">
-              <li className="flex items-start gap-2">
-                <span className="text-indigo-600 mt-0.5">•</span>
-                <span><strong>Hints:</strong> Get subtle clues about your match's personality or appearance (5 credits)</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-indigo-600 mt-0.5">•</span>
-                <span><strong>Virtual Gifts:</strong> Send special gifts to show interest and connection (10 credits)</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-indigo-600 mt-0.5">•</span>
-                <span><strong>Voice Messages:</strong> Add a personal touch with anonymous voice recordings (3 credits)</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-indigo-600 mt-0.5">•</span>
-                <span><strong>Early Reveal:</strong> Can't wait 7 days? Reveal identities early (15 credits)</span>
-              </li>
-            </ul>
-          </div>
-
-          <div className="space-y-2 sm:space-y-3">
-            <h4 className="font-semibold text-sm sm:text-base">Your Monthly Subscription Includes:</h4>
-            <ul className="space-y-1.5 sm:space-y-2 text-xs sm:text-sm">
-              <li className="flex items-start gap-2">
-                <span className="text-green-600 mt-0.5">✓</span>
-                <span>Full access to Anonymous Date platform</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-green-600 mt-0.5">✓</span>
-                <span>Create and manage your anonymous profile</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-green-600 mt-0.5">✓</span>
-                <span>Interest-based matching algorithm</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-green-600 mt-0.5">✓</span>
-                <span>Secure anonymous messaging system</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-green-600 mt-0.5">✓</span>
-                <span>7-day mystery period with automatic reveal</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-green-600 mt-0.5">✓</span>
-                <span>Match history and conversation archive</span>
-              </li>
-            </ul>
-          </div>
-
-          <div className="bg-yellow-50 border border-yellow-200 p-3 sm:p-4 rounded-lg">
-            <p className="text-xs sm:text-sm text-yellow-800">
-              <strong>Important:</strong> The €1 monthly subscription gives you platform access. 
-              You'll need to purchase credits separately for matching (5 credits) and messaging (1-3 credits per message). 
-              Credits are available in packages from €5.
-            </p>
-          </div>
-
-          <div className="bg-gradient-to-r from-pink-50 to-purple-50 p-3 sm:p-4 rounded-lg border border-pink-200">
-            <h4 className="font-semibold mb-2 text-center text-sm sm:text-base">Why Choose Anonymous Date?</h4>
-            <div className="grid gap-2 sm:gap-3 grid-cols-1 sm:grid-cols-3 text-center">
-              <div>
-                <Shield className="h-5 w-5 sm:h-6 sm:w-6 text-purple-600 mx-auto mb-1" />
-                <p className="text-xs font-semibold">100% Anonymous</p>
-                <p className="text-xs text-gray-600">Your identity protected until reveal</p>
-              </div>
-              <div>
-                <Users className="h-5 w-5 sm:h-6 sm:w-6 text-pink-600 mx-auto mb-1" />
-                <p className="text-xs font-semibold">Real Connections</p>
-                <p className="text-xs text-gray-600">Focus on personality, not appearance</p>
-              </div>
-              <div>
-                <Heart className="h-5 w-5 sm:h-6 sm:w-6 text-red-600 mx-auto mb-1" />
-                <p className="text-xs font-semibold">Safe Environment</p>
-                <p className="text-xs text-gray-600">Verified users only</p>
-              </div>
-            </div>
-          </div>
-
-          <Button
-            onClick={onPayAccess}
-            disabled={loading}
-            className="w-full h-12 sm:h-14 text-base sm:text-lg bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700"
-          >
-            {loading ? "Processing..." : "Subscribe for €1/month & Start Dating"}
-          </Button>
-
-          <p className="text-xs text-center text-gray-500 px-2">
-            Secure payment processed by Stripe. Cancel anytime. Your payment information is encrypted and protected. 
-            By subscribing, you confirm you are 18+ and agree to our terms.
+          </h1>
+          <p className="text-muted-foreground max-w-lg mx-auto">
+            A unique anonymous dating experience for adults (18+).
+            Connect based on personality, not appearance.
           </p>
-        </CardContent>
-      </Card>
+        </motion.div>
+
+        {/* Subscription Card */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+          <Card className="overflow-hidden bg-card/80 backdrop-blur-xl border-border/50">
+            <div className="h-1.5 bg-gradient-to-r from-pink-500 to-accent" />
+            <div className="p-6 sm:p-8 text-center space-y-4">
+              <div className="p-3 rounded-xl bg-pink-500/10 inline-flex">
+                <Lock className="h-8 w-8 text-pink-500" />
+              </div>
+              <div>
+                <h2 className="text-2xl font-black">Monthly Subscription</h2>
+                <div className="text-4xl font-black text-pink-500 mt-2">€1<span className="text-base font-medium text-muted-foreground">/month</span></div>
+              </div>
+              <p className="text-sm text-muted-foreground max-w-md mx-auto">
+                Safe, quality environment with verified users. Cancel anytime.
+              </p>
+
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-left max-w-md mx-auto">
+                {included.map((item) => (
+                  <div key={item} className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                    <Check className="h-3 w-3 text-pink-500 flex-shrink-0" />
+                    {item}
+                  </div>
+                ))}
+              </div>
+
+              <Button
+                onClick={onPayAccess}
+                disabled={loading}
+                size="lg"
+                className="w-full max-w-md"
+              >
+                {loading ? "Processing..." : "Subscribe for €1/month & Start Dating"}
+              </Button>
+              <p className="text-[10px] text-muted-foreground">
+                Secure payment via Stripe. By subscribing, you confirm you are 18+.
+              </p>
+            </div>
+          </Card>
+        </motion.div>
+
+        {/* How It Works */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {steps.map((step, i) => (
+            <motion.div
+              key={step.title}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 + i * 0.05 }}
+            >
+              <Card className="overflow-hidden bg-card/80 backdrop-blur-xl border-border/50 h-full">
+                <div className={`h-1 bg-gradient-to-r ${step.gradient}`} />
+                <div className="p-4 flex items-start gap-3">
+                  <div className="p-2 rounded-lg bg-pink-500/10 flex-shrink-0">
+                    <step.icon className="h-4 w-4 text-pink-500" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-sm">Step {i + 1}: {step.title}</h3>
+                    <p className="text-xs text-muted-foreground mt-1">{step.desc}</p>
+                  </div>
+                </div>
+              </Card>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Premium Features */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
+          <Card className="p-5 bg-card/80 backdrop-blur-xl border-border/50">
+            <h3 className="font-bold text-sm mb-3 flex items-center gap-2">
+              <Sparkles className="h-4 w-4 text-pink-500" />
+              Premium Features
+            </h3>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              {[
+                { icon: "💡", label: "Hints", cost: "5 cr", desc: "Clues about match" },
+                { icon: "🎁", label: "Gifts", cost: "10 cr", desc: "Show affection" },
+                { icon: "🎤", label: "Voice", cost: "3 cr", desc: "Personal touch" },
+                { icon: "👀", label: "Early Reveal", cost: "15 cr", desc: "Can't wait?" },
+              ].map((f) => (
+                <div key={f.label} className="text-center p-3 rounded-xl bg-muted/20 border border-border/30">
+                  <span className="text-xl">{f.icon}</span>
+                  <p className="text-xs font-medium mt-1">{f.label}</p>
+                  <Badge variant="secondary" className="text-[10px] mt-1">{f.cost}</Badge>
+                  <p className="text-[10px] text-muted-foreground mt-1">{f.desc}</p>
+                </div>
+              ))}
+            </div>
+          </Card>
+        </motion.div>
+      </div>
     </div>
   );
 }

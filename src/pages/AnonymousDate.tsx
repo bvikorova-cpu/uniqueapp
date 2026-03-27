@@ -1,16 +1,67 @@
 import { useEffect, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { useAnonymousDate } from "@/hooks/useAnonymousDate";
-import { AnonymousDateHeader } from "@/components/anonymous-date/AnonymousDateHeader";
+import { supabase } from "@/integrations/supabase/client";
+import { ArrowLeft, Search, UserPlus, Heart, MessageCircle, CreditCard, Eye, Gift, Mic, Users, Shield, Clock, Loader2 } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+
+import { AnonymousDateHero } from "@/components/anonymous-date/AnonymousDateHero";
+import { AnonymousDateStreak } from "@/components/anonymous-date/AnonymousDateStreak";
+import { AnonymousDateProgress } from "@/components/anonymous-date/AnonymousDateProgress";
+import { AnonymousDateAchievements } from "@/components/anonymous-date/AnonymousDateAchievements";
+import { AnonymousDateToolCard } from "@/components/anonymous-date/AnonymousDateToolCard";
+import { AnonymousDateTestimonials } from "@/components/anonymous-date/AnonymousDateTestimonials";
+import { AnonymousDateComparison } from "@/components/anonymous-date/AnonymousDateComparison";
 import { CreditPackages } from "@/components/anonymous-date/CreditPackages";
 import { ProfileSetup } from "@/components/anonymous-date/ProfileSetup";
 import { ActiveMatches } from "@/components/anonymous-date/ActiveMatches";
 import { AdultWarningModal } from "@/components/anonymous-date/AdultWarningModal";
 import { AccessPaymentGate } from "@/components/anonymous-date/AccessPaymentGate";
-import { supabase } from "@/integrations/supabase/client";
-import { Search, UserPlus } from "lucide-react";
+
+type ViewType = "hub" | "matches" | "find" | "credits" | "profile";
+
+const DATING_TOOLS = [
+  {
+    id: "find",
+    title: "Find New Match",
+    description: "Get matched with someone who shares your interests",
+    icon: Search,
+    credits: 5,
+    gradient: "bg-gradient-to-r from-pink-500 to-rose-500",
+    features: ["Interest-based matching", "Anonymous profiles", "7-day chat period", "Personality focus"],
+  },
+  {
+    id: "matches",
+    title: "Active Matches",
+    description: "Continue conversations with your current matches",
+    icon: MessageCircle,
+    credits: "1-3" as any,
+    gradient: "bg-gradient-to-r from-primary to-accent",
+    features: ["Text messages (1 credit)", "Voice messages (3 credits)", "Real-time chat", "Countdown timer"],
+  },
+  {
+    id: "credits",
+    title: "Credit Store",
+    description: "Purchase credits to unlock all dating features",
+    icon: CreditCard,
+    credits: "€5+" as any,
+    gradient: "bg-gradient-to-r from-amber-500 to-orange-500",
+    features: ["Multiple packages", "Instant delivery", "Secure payment", "Best value deals"],
+  },
+  {
+    id: "profile",
+    title: "Edit Profile",
+    description: "Update your anonymous identity and preferences",
+    icon: UserPlus,
+    credits: "Free" as any,
+    gradient: "bg-gradient-to-r from-emerald-500 to-teal-500",
+    features: ["Update interests", "Change personality traits", "Edit preferences", "Manage visibility"],
+  },
+];
 
 export default function AnonymousDate() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -18,12 +69,12 @@ export default function AnonymousDate() {
   const { toast } = useToast();
   const [hasProfile, setHasProfile] = useState(false);
   const [loadingProfile, setLoadingProfile] = useState(true);
-  const [showChat, setShowChat] = useState(false);
-  const [selectedMatchId, setSelectedMatchId] = useState<string | null>(null);
   const [showAdultWarning, setShowAdultWarning] = useState(false);
   const [hasAccess, setHasAccess] = useState(false);
   const [checkingAccess, setCheckingAccess] = useState(true);
   const [payingAccess, setPayingAccess] = useState(false);
+  const [activeView, setActiveView] = useState<ViewType>("hub");
+  const [subscriptionEnd, setSubscriptionEnd] = useState<string | null>(null);
 
   const {
     credits,
@@ -34,8 +85,6 @@ export default function AnonymousDate() {
     purchaseCredits,
     findMatch,
   } = useAnonymousDate();
-
-  const [subscriptionEnd, setSubscriptionEnd] = useState<string | null>(null);
 
   useEffect(() => {
     const adultWarningAccepted = sessionStorage.getItem("adult_warning_accepted");
@@ -48,58 +97,36 @@ export default function AnonymousDate() {
 
   useEffect(() => {
     if (searchParams.get("success") === "true") {
-      toast({
-        title: "Payment Successful!",
-        description: "Your credits have been added",
-      });
+      toast({ title: "Payment Successful!", description: "Your credits have been added" });
       fetchCredits();
       setSearchParams({});
     } else if (searchParams.get("canceled") === "true") {
-      toast({
-        title: "Payment Canceled",
-        description: "You can try again anytime",
-        variant: "destructive",
-      });
+      toast({ title: "Payment Canceled", description: "You can try again anytime", variant: "destructive" });
       setSearchParams({});
     } else if (searchParams.get("subscription") === "success") {
-      toast({
-        title: "Subscription Active!",
-        description: "Welcome to Anonymous Date - your monthly subscription is now active",
-      });
+      toast({ title: "Subscription Active!", description: "Welcome to Anonymous Date" });
       checkAccess();
       setSearchParams({});
     } else if (searchParams.get("subscription") === "cancelled") {
-      toast({
-        title: "Subscription Canceled",
-        description: "Subscription payment was canceled",
-        variant: "destructive",
-      });
+      toast({ title: "Subscription Canceled", description: "Payment was canceled", variant: "destructive" });
       setSearchParams({});
     }
   }, [searchParams]);
 
   useEffect(() => {
-    if (hasAccess) {
-      checkProfile();
-    }
+    if (hasAccess) checkProfile();
   }, [hasAccess]);
 
   const checkAccess = async () => {
     try {
       setCheckingAccess(true);
       const { data, error } = await supabase.functions.invoke("check-anonymous-date-access");
-      
       if (error) throw error;
-      
       setHasAccess(data.hasAccess);
       setSubscriptionEnd(data.subscriptionEnd);
     } catch (error) {
       console.error("Error checking access:", error);
-      toast({
-        title: "Error",
-        description: "Failed to verify subscription",
-        variant: "destructive",
-      });
+      toast({ title: "Error", description: "Failed to verify subscription", variant: "destructive" });
     } finally {
       setCheckingAccess(false);
     }
@@ -108,19 +135,11 @@ export default function AnonymousDate() {
   const handleManageSubscription = async () => {
     try {
       const { data, error } = await supabase.functions.invoke("customer-portal-anonymous-date");
-      
       if (error) throw error;
-      
-      if (data?.url) {
-        window.open(data.url, "_blank");
-      }
+      if (data?.url) window.open(data.url, "_blank");
     } catch (error: any) {
       console.error("Error opening portal:", error);
-      toast({
-        title: "Error",
-        description: error.message || "Failed to open subscription management",
-        variant: "destructive",
-      });
+      toast({ title: "Error", description: error.message || "Failed to open portal", variant: "destructive" });
     }
   };
 
@@ -128,19 +147,11 @@ export default function AnonymousDate() {
     try {
       setPayingAccess(true);
       const { data, error } = await supabase.functions.invoke("pay-anonymous-date-access");
-      
       if (error) throw error;
-      
-      if (data?.url) {
-        window.open(data.url, "_blank");
-      }
+      if (data?.url) window.open(data.url, "_blank");
     } catch (error: any) {
       console.error("Error paying access:", error);
-      toast({
-        title: "Error",
-        description: error.message || "Failed to process payment",
-        variant: "destructive",
-      });
+      toast({ title: "Error", description: error.message || "Failed to process payment", variant: "destructive" });
     } finally {
       setPayingAccess(false);
     }
@@ -161,17 +172,12 @@ export default function AnonymousDate() {
   const checkProfile = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        setLoadingProfile(false);
-        return;
-      }
-
+      if (!user) { setLoadingProfile(false); return; }
       const { data } = await supabase
         .from("anonymous_dating_profiles")
         .select("*")
         .eq("user_id", user.id)
         .single();
-
       setHasProfile(!!data);
     } catch (error) {
       console.error("Error checking profile:", error);
@@ -180,25 +186,22 @@ export default function AnonymousDate() {
     }
   };
 
-  const handleOpenChat = (matchId: string) => {
-    setSelectedMatchId(matchId);
-    setShowChat(true);
+  const handleToolSelect = (toolId: string) => {
+    if (toolId === "find") {
+      findMatch();
+      return;
+    }
+    setActiveView(toolId as ViewType);
   };
 
   if (showAdultWarning) {
-    return (
-      <AdultWarningModal
-        open={showAdultWarning}
-        onAccept={handleAcceptAdultWarning}
-        onDecline={handleDeclineAdultWarning}
-      />
-    );
+    return <AdultWarningModal open={showAdultWarning} onAccept={handleAcceptAdultWarning} onDecline={handleDeclineAdultWarning} />;
   }
 
   if (checkingAccess) {
     return (
-      <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-8">
-        <div className="text-center text-sm sm:text-base">Checking access...</div>
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
       </div>
     );
   }
@@ -209,153 +212,157 @@ export default function AnonymousDate() {
 
   if (loadingProfile) {
     return (
-      <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-8">
-        <div className="text-center text-sm sm:text-base">Loading...</div>
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
       </div>
     );
   }
 
   if (!hasProfile) {
     return (
-      <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-8">
-        <AnonymousDateHeader />
-        <div className="max-w-4xl mx-auto">
-          <ProfileSetup onComplete={() => {
-            setHasProfile(true);
-            checkProfile();
-          }} />
+      <div className="min-h-screen bg-background">
+        <div className="container mx-auto px-4 py-6 sm:py-10 max-w-2xl">
+          <ProfileSetup onComplete={() => { setHasProfile(true); checkProfile(); }} />
         </div>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-8 space-y-4 sm:space-y-8">
-      <AnonymousDateHeader />
+    <div className="min-h-screen bg-background">
+      <div className="container mx-auto px-4 py-6 sm:py-10 space-y-6">
+        <AnimatePresence mode="wait">
+          {activeView === "hub" ? (
+            <motion.div
+              key="hub"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="space-y-6"
+            >
+              <AnonymousDateHero />
 
-      {subscriptionEnd && (
-        <div className="max-w-6xl mx-auto bg-green-50 border border-green-200 p-3 sm:p-4 rounded-lg flex items-center justify-between flex-wrap gap-3 sm:gap-4">
-          <div>
-            <p className="font-semibold text-sm sm:text-base text-green-800">Active Subscription</p>
-            <p className="text-xs sm:text-sm text-green-700">
-              Your subscription renews on {new Date(subscriptionEnd).toLocaleDateString()}
-            </p>
-          </div>
-          <Button
-            onClick={handleManageSubscription}
-            variant="outline"
-            size="sm"
-            className="text-xs sm:text-sm"
-          >
-            Manage Subscription
-          </Button>
-        </div>
-      )}
+              {/* Subscription Badge */}
+              {subscriptionEnd && (
+                <Card className="p-4 bg-card/80 backdrop-blur-xl border-border/50">
+                  <div className="flex items-center justify-between flex-wrap gap-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                      <div>
+                        <p className="font-semibold text-sm">Active Subscription</p>
+                        <p className="text-xs text-muted-foreground">
+                          Renews {new Date(subscriptionEnd).toLocaleDateString()} • 
+                          <span className="font-medium text-pink-500 ml-1">{credits} credits remaining</span>
+                        </p>
+                      </div>
+                    </div>
+                    <Button variant="outline" size="sm" onClick={handleManageSubscription} className="text-xs">
+                      Manage
+                    </Button>
+                  </div>
+                </Card>
+              )}
 
-      <div className="max-w-6xl mx-auto space-y-4 sm:space-y-8">
-        <CreditPackages onPurchase={purchaseCredits} currentCredits={credits} />
-
-        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-2">
-          <Button
-            onClick={findMatch}
-            disabled={loading || credits < 5}
-            size="lg"
-            className="bg-gradient-to-r from-pink-500 to-purple-600 hover:opacity-90 text-white text-sm sm:text-base h-12 sm:h-auto"
-          >
-            <Search className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
-            Find New Match (5 credits)
-          </Button>
-          
-          <Button
-            onClick={() => {
-              setHasProfile(false);
-              checkProfile();
-            }}
-            variant="outline"
-            size="lg"
-            className="text-sm sm:text-base h-12 sm:h-auto"
-          >
-            <UserPlus className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
-            Edit Profile
-          </Button>
-        </div>
-
-        <ActiveMatches matches={activeMatches} onOpenChat={handleOpenChat} />
-
-        <div className="bg-card border border-border rounded-lg p-3 sm:p-6 space-y-3 sm:space-y-4">
-          <h3 className="text-lg sm:text-xl font-bold">How Anonymous Date Works - Complete Guide</h3>
-          <div className="space-y-3 sm:space-y-4 text-xs sm:text-sm">
-            <div className="bg-gradient-to-r from-pink-50 to-purple-50 p-3 sm:p-4 rounded-lg">
-              <p className="font-semibold text-sm sm:text-base mb-1.5 sm:mb-2">💳 Monthly Subscription (€1/month)</p>
-              <p className="text-muted-foreground text-xs sm:text-sm">
-                Your monthly subscription gives you full platform access. This includes profile creation, 
-                match viewing, and access to all features. You can cancel anytime.
-              </p>
-            </div>
-
-            <div className="grid gap-3 sm:gap-4 md:grid-cols-2">
-              <div className="bg-white border rounded-lg p-3 sm:p-4">
-                <p className="font-semibold mb-1.5 sm:mb-2 text-sm">📝 Step 1: Create Your Profile</p>
-                <p className="text-muted-foreground text-xs">
-                  Set up your anonymous identity with an alias, age range, interests, and personality traits. 
-                  Your real name, photo, and contact info remain completely hidden until you choose to reveal them.
-                </p>
+              {/* Engagement Row */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <AnonymousDateStreak />
+                <AnonymousDateProgress />
+                <AnonymousDateAchievements />
               </div>
 
-              <div className="bg-white border rounded-lg p-3 sm:p-4">
-                <p className="font-semibold mb-1.5 sm:mb-2 text-sm">🔍 Step 2: Find a Match (5 credits)</p>
-                <p className="text-muted-foreground text-xs">
-                  Our algorithm matches you with someone based on shared interests and compatibility. 
-                  Each match costs 5 credits to start the anonymous dating experience.
-                </p>
+              {/* Main Content */}
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="lg:col-span-2 space-y-4">
+                  <h2 className="text-lg font-bold flex items-center gap-2">
+                    <Heart className="h-5 w-5 text-pink-500" />
+                    Dating Tools
+                  </h2>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {DATING_TOOLS.map((tool, i) => (
+                      <AnonymousDateToolCard
+                        key={tool.id}
+                        tool={tool}
+                        onSelect={() => handleToolSelect(tool.id)}
+                        index={i}
+                      />
+                    ))}
+                  </div>
+
+                  {/* How It Works */}
+                  <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 mt-4">
+                    {[
+                      { step: "1", title: "Create Profile", desc: "Set up your anonymous identity", icon: "🎭" },
+                      { step: "2", title: "Find Match", desc: "Get paired by interests", icon: "🔍" },
+                      { step: "3", title: "Chat 7 Days", desc: "Build real connection", icon: "💬" },
+                      { step: "4", title: "Reveal", desc: "Discover each other", icon: "👀" },
+                    ].map((s) => (
+                      <div key={s.step} className="flex flex-col items-center text-center p-4 rounded-xl bg-card/60 backdrop-blur border border-border/30">
+                        <span className="text-2xl mb-2">{s.icon}</span>
+                        <h4 className="font-semibold text-xs">{s.title}</h4>
+                        <p className="text-[10px] text-muted-foreground mt-0.5">{s.desc}</p>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Credit Costs Quick Reference */}
+                  <Card className="p-4 bg-card/80 backdrop-blur-xl border-border/50">
+                    <h3 className="font-bold text-sm mb-3">Credit Costs</h3>
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                      {[
+                        { icon: Search, label: "New Match", cost: "5", color: "text-pink-500" },
+                        { icon: MessageCircle, label: "Text Msg", cost: "1", color: "text-primary" },
+                        { icon: Mic, label: "Voice Msg", cost: "3", color: "text-accent" },
+                        { icon: Eye, label: "Early Reveal", cost: "15", color: "text-chart-3" },
+                      ].map((item) => (
+                        <div key={item.label} className="text-center p-3 rounded-lg bg-muted/20 border border-border/30">
+                          <item.icon className={`h-4 w-4 mx-auto ${item.color} mb-1`} />
+                          <p className="text-xs font-medium">{item.label}</p>
+                          <Badge variant="secondary" className="text-[10px] mt-1">{item.cost} cr</Badge>
+                        </div>
+                      ))}
+                    </div>
+                  </Card>
+                </div>
+
+                {/* Sidebar */}
+                <div className="space-y-4">
+                  <AnonymousDateComparison />
+                  <AnonymousDateTestimonials />
+                </div>
               </div>
+            </motion.div>
+          ) : (
+            <motion.div
+              key={activeView}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.3 }}
+              className="space-y-6"
+            >
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setActiveView("hub")}
+                className="gap-2 text-muted-foreground hover:text-foreground"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                Back to Hub
+              </Button>
 
-              <div className="bg-white border rounded-lg p-3 sm:p-4">
-                <p className="font-semibold mb-1.5 sm:mb-2 text-sm">💬 Step 3: Chat Anonymously (7 Days)</p>
-                <p className="text-muted-foreground text-xs">
-                  Text messages: 1 credit each • Voice messages: 3 credits each
-                  <br />Get to know each other through personality and conversation, not appearance.
-                </p>
-              </div>
-
-              <div className="bg-white border rounded-lg p-3 sm:p-4">
-                <p className="font-semibold mb-1.5 sm:mb-2 text-sm">👀 Step 4: Identity Reveal</p>
-                <p className="text-muted-foreground text-xs">
-                  After 7 days, both can reveal identities for FREE. 
-                  Or pay 15 credits for early reveal if there's a strong connection.
-                </p>
-              </div>
-            </div>
-
-            <div className="bg-blue-50 border border-blue-200 p-3 sm:p-4 rounded-lg">
-              <p className="font-semibold mb-1.5 sm:mb-2 text-sm">✨ Premium Features</p>
-              <ul className="space-y-1 text-xs text-muted-foreground">
-                <li>• <strong>Hints (5 credits):</strong> Get subtle clues about your match's appearance or personality</li>
-                <li>• <strong>Virtual Gifts (10 credits):</strong> Send special gifts to show interest and affection</li>
-                <li>• <strong>Voice Messages (3 credits):</strong> Add a personal, emotional touch to your conversations</li>
-                <li>• <strong>Early Reveal (15 credits):</strong> Can't wait 7 days? Reveal identities early</li>
-              </ul>
-            </div>
-
-            <div className="bg-yellow-50 border border-yellow-200 p-3 sm:p-4 rounded-lg">
-              <p className="font-semibold mb-1 sm:mb-1.5 text-sm">💰 Credit Packages Available</p>
-              <p className="text-xs text-muted-foreground">
-                Credits are separate from your monthly subscription and are used for matching and messaging:
-                <br />• Basic: 10 credits for €5 • Standard: 30 credits for €12
-                <br />• Premium: 100 credits for €25 • Ultimate: 300 credits for €60
-              </p>
-            </div>
-
-            <div className="bg-green-50 border border-green-200 p-3 sm:p-4 rounded-lg">
-              <p className="font-semibold mb-1 sm:mb-1.5 text-sm">🎯 Why Anonymous Date?</p>
-              <p className="text-xs text-muted-foreground">
-                Connect based on personality and compatibility, not looks. Build genuine connections 
-                through conversation. No pressure from photos or social media profiles. Safe, verified 
-                community with monthly subscription ensuring real, committed users.
-              </p>
-            </div>
-          </div>
-        </div>
+              {activeView === "matches" && (
+                <ActiveMatches matches={activeMatches} onOpenChat={() => {}} />
+              )}
+              {activeView === "credits" && (
+                <CreditPackages onPurchase={purchaseCredits} currentCredits={credits} />
+              )}
+              {activeView === "profile" && (
+                <ProfileSetup onComplete={() => { setHasProfile(true); setActiveView("hub"); }} />
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );
