@@ -169,12 +169,21 @@ export default function PropertyMarketplace() {
   };
 
   // Sub-view rendering
-  if (activeView === "map") return <div className="min-h-screen bg-background"><div className="container mx-auto px-4 py-24"><PropertyMapView onBack={() => setActiveView("hub")} /></div></div>;
-  if (activeView === "valuator") return <div className="min-h-screen bg-background"><div className="container mx-auto px-4 py-24"><PropertyAIValuator onBack={() => setActiveView("hub")} /></div></div>;
-  if (activeView === "analytics") return <div className="min-h-screen bg-background"><div className="container mx-auto px-4 py-24"><PropertyMarketAnalytics onBack={() => setActiveView("hub")} /></div></div>;
-  if (activeView === "staging") return <div className="min-h-screen bg-background"><div className="container mx-auto px-4 py-24"><PropertyAIStaging onBack={() => setActiveView("hub")} /></div></div>;
-  if (activeView === "mortgage") return <div className="min-h-screen bg-background"><div className="container mx-auto px-4 py-24"><PropertyMortgageCalc onBack={() => setActiveView("hub")} /></div></div>;
-  if (activeView === "alerts") return <div className="min-h-screen bg-background"><div className="container mx-auto px-4 py-24"><PropertyAlerts onBack={() => setActiveView("hub")} /></div></div>;
+  const wrap = (Component: React.FC<{ onBack: () => void }>) => (
+    <div className="min-h-screen bg-background"><div className="container mx-auto px-4 py-24"><Component onBack={() => setActiveView("hub")} /></div></div>
+  );
+  if (activeView === "map") return wrap(PropertyMapView);
+  if (activeView === "valuator") return wrap(PropertyAIValuator);
+  if (activeView === "analytics") return wrap(PropertyMarketAnalytics);
+  if (activeView === "staging") return wrap(PropertyAIStaging);
+  if (activeView === "mortgage") return wrap(PropertyMortgageCalc);
+  if (activeView === "alerts") return wrap(PropertyAlerts);
+  if (activeView === "neighborhood") return wrap(PropertyNeighborhood);
+  if (activeView === "photos") return wrap(PropertyPhotoEnhancer);
+  if (activeView === "compare") return wrap(PropertyComparison);
+  if (activeView === "chatbot") return wrap(PropertyChatbot);
+  if (activeView === "documents") return wrap(PropertyDocManager);
+  if (activeView === "negotiate") return wrap(PropertyNegotiation);
 
   return (
     <div className="min-h-screen bg-background">
