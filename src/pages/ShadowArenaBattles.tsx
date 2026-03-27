@@ -217,7 +217,9 @@ export default function ShadowArenaBattles() {
         ) : (
           <div className="grid gap-4">
             {filtered.map((battle, i) => {
-              const cfg = statusConfig[battle.status] || { label: battle.status, className: "bg-muted" };
+              const battleExpired = isExpired(battle);
+              const displayStatus = battleExpired && battle.status !== "completed" ? "expired" : battle.status;
+              const cfg = statusConfig[displayStatus] || { label: battle.status, className: "bg-muted" };
               return (
                 <motion.div
                   key={battle.id}
@@ -233,7 +235,7 @@ export default function ShadowArenaBattles() {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-2">
                           <Badge className={`text-xs ${cfg.className}`}>{cfg.label}</Badge>
-                          {battle.ends_at && battle.status !== "completed" && (
+                          {battle.ends_at && !battleExpired && battle.status !== "completed" && (
                             <span className="flex items-center gap-1 text-xs text-muted-foreground">
                               <Clock className="w-3 h-3" />
                               <LiveCountdown endsAt={battle.ends_at} />
