@@ -2,9 +2,9 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
-import { Badge } from "@/components/ui/badge";
+import { motion } from "framer-motion";
 import {
-  Brush, Eraser, Download, RotateCcw, Palette, Pipette, Undo2, Redo2,
+  Brush, Eraser, Download, RotateCcw, Pipette, Undo2, Redo2,
   ZoomIn, ZoomOut, PenTool
 } from "lucide-react";
 
@@ -36,7 +36,6 @@ export function ColoringCanvas({ imageUrl, onSave }: ColoringCanvasProps) {
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
-
     const img = new Image();
     img.crossOrigin = "anonymous";
     img.onload = () => {
@@ -72,10 +71,7 @@ export function ColoringCanvas({ imageUrl, onSave }: ColoringCanvasProps) {
     };
   };
 
-  const startDraw = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    setIsDrawing(true);
-    lastPos.current = getPos(e);
-  };
+  const startDraw = (e: React.MouseEvent<HTMLCanvasElement>) => { setIsDrawing(true); lastPos.current = getPos(e); };
 
   const draw = (e: React.MouseEvent<HTMLCanvasElement>) => {
     if (!isDrawing || !lastPos.current) return;
@@ -83,7 +79,6 @@ export function ColoringCanvas({ imageUrl, onSave }: ColoringCanvasProps) {
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
-
     const pos = getPos(e);
     ctx.beginPath();
     ctx.moveTo(lastPos.current.x, lastPos.current.y);
@@ -98,13 +93,7 @@ export function ColoringCanvas({ imageUrl, onSave }: ColoringCanvasProps) {
     lastPos.current = pos;
   };
 
-  const endDraw = () => {
-    if (isDrawing) {
-      setIsDrawing(false);
-      lastPos.current = null;
-      saveToHistory();
-    }
-  };
+  const endDraw = () => { if (isDrawing) { setIsDrawing(false); lastPos.current = null; saveToHistory(); } };
 
   const undo = () => {
     if (historyIndex <= 0) return;
@@ -149,125 +138,76 @@ export function ColoringCanvas({ imageUrl, onSave }: ColoringCanvasProps) {
     link.click();
   };
 
-  const handleSave = () => {
-    const canvas = canvasRef.current;
-    if (!canvas || !onSave) return;
-    onSave(canvas.toDataURL("image/png"));
-  };
-
   return (
-    <Card className="overflow-hidden">
-      <CardHeader className="pb-3">
-        <div className="flex items-center justify-between flex-wrap gap-2">
-          <CardTitle className="flex items-center gap-2">
-            <PenTool className="h-5 w-5 text-primary" />
-            Color It Online
-          </CardTitle>
-          <div className="flex gap-2">
-            <Button size="sm" variant="outline" onClick={undo} disabled={historyIndex <= 0}>
-              <Undo2 className="h-4 w-4" />
-            </Button>
-            <Button size="sm" variant="outline" onClick={redo} disabled={historyIndex >= history.length - 1}>
-              <Redo2 className="h-4 w-4" />
-            </Button>
-            <Button size="sm" variant="outline" onClick={resetCanvas}>
-              <RotateCcw className="h-4 w-4" />
-            </Button>
-            <Button size="sm" onClick={downloadCanvas}>
-              <Download className="h-4 w-4 mr-1" /> Save
-            </Button>
+    <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }}>
+      <Card className="overflow-hidden backdrop-blur-xl bg-card/80 border-primary/20">
+        <CardHeader className="pb-3">
+          <div className="flex items-center justify-between flex-wrap gap-2">
+            <CardTitle className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center">
+                <PenTool className="h-4 w-4 text-primary" />
+              </div>
+              Color It Online
+            </CardTitle>
+            <div className="flex gap-1.5">
+              <Button size="sm" variant="outline" onClick={undo} disabled={historyIndex <= 0} className="h-8 w-8 p-0"><Undo2 className="h-3.5 w-3.5" /></Button>
+              <Button size="sm" variant="outline" onClick={redo} disabled={historyIndex >= history.length - 1} className="h-8 w-8 p-0"><Redo2 className="h-3.5 w-3.5" /></Button>
+              <Button size="sm" variant="outline" onClick={resetCanvas} className="h-8 w-8 p-0"><RotateCcw className="h-3.5 w-3.5" /></Button>
+              <Button size="sm" onClick={downloadCanvas} className="h-8 gap-1"><Download className="h-3.5 w-3.5" /> Save</Button>
+            </div>
           </div>
-        </div>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        {/* Toolbar */}
-        <div className="flex flex-wrap items-center gap-3 p-3 bg-muted rounded-xl">
-          <div className="flex gap-1">
-            <Button
-              size="sm"
-              variant={tool === "brush" ? "default" : "outline"}
-              onClick={() => setTool("brush")}
-            >
-              <Brush className="h-4 w-4" />
-            </Button>
-            <Button
-              size="sm"
-              variant={tool === "eraser" ? "default" : "outline"}
-              onClick={() => setTool("eraser")}
-            >
-              <Eraser className="h-4 w-4" />
-            </Button>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {/* Toolbar */}
+          <div className="flex flex-wrap items-center gap-3 p-3 bg-muted/30 rounded-xl border border-border/30">
+            <div className="flex gap-1">
+              <Button size="sm" variant={tool === "brush" ? "default" : "outline"} onClick={() => setTool("brush")} className="h-8 w-8 p-0"><Brush className="h-3.5 w-3.5" /></Button>
+              <Button size="sm" variant={tool === "eraser" ? "default" : "outline"} onClick={() => setTool("eraser")} className="h-8 w-8 p-0"><Eraser className="h-3.5 w-3.5" /></Button>
+            </div>
+            <div className="flex items-center gap-2 min-w-[140px]">
+              <span className="text-xs text-muted-foreground">Size:</span>
+              <Slider value={[brushSize]} onValueChange={([v]) => setBrushSize(v)} min={1} max={30} step={1} className="flex-1" />
+              <span className="text-xs font-mono w-6 text-right">{brushSize}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <ZoomOut className="h-3.5 w-3.5 text-muted-foreground" />
+              <Slider value={[zoom]} onValueChange={([v]) => setZoom(v)} min={0.5} max={2} step={0.1} className="w-20" />
+              <ZoomIn className="h-3.5 w-3.5 text-muted-foreground" />
+            </div>
           </div>
 
-          <div className="flex items-center gap-2 min-w-[140px]">
-            <span className="text-xs text-muted-foreground">Size:</span>
-            <Slider
-              value={[brushSize]}
-              onValueChange={([v]) => setBrushSize(v)}
-              min={1}
-              max={30}
-              step={1}
-              className="flex-1"
-            />
-            <span className="text-xs font-mono w-6 text-right">{brushSize}</span>
+          {/* Color palette */}
+          <div className="flex flex-wrap gap-1.5 p-3 bg-muted/30 rounded-xl border border-border/30">
+            {COLOR_PALETTE.map((c) => (
+              <button
+                key={c}
+                className={`w-7 h-7 rounded-full border-2 transition-all hover:scale-110 ${
+                  color === c ? "border-primary ring-2 ring-primary/30 scale-110" : "border-transparent"
+                }`}
+                style={{ backgroundColor: c }}
+                onClick={() => { setColor(c); setTool("brush"); }}
+              />
+            ))}
+            <div className="flex items-center gap-1 ml-2">
+              <Pipette className="h-3.5 w-3.5 text-muted-foreground" />
+              <input type="color" value={color} onChange={(e) => { setColor(e.target.value); setTool("brush"); }} className="w-7 h-7 rounded cursor-pointer border-0" />
+            </div>
           </div>
 
-          <div className="flex items-center gap-2">
-            <ZoomOut className="h-4 w-4 text-muted-foreground" />
-            <Slider
-              value={[zoom]}
-              onValueChange={([v]) => setZoom(v)}
-              min={0.5}
-              max={2}
-              step={0.1}
-              className="w-20"
-            />
-            <ZoomIn className="h-4 w-4 text-muted-foreground" />
-          </div>
-        </div>
-
-        {/* Color palette */}
-        <div className="flex flex-wrap gap-1.5 p-3 bg-muted rounded-xl">
-          {COLOR_PALETTE.map((c) => (
-            <button
-              key={c}
-              className={`w-8 h-8 rounded-full border-2 transition-all hover:scale-110 ${
-                color === c ? "border-primary ring-2 ring-primary/30 scale-110" : "border-transparent"
-              }`}
-              style={{ backgroundColor: c }}
-              onClick={() => {
-                setColor(c);
-                setTool("brush");
-              }}
-            />
-          ))}
-          <div className="flex items-center gap-1 ml-2">
-            <Pipette className="h-4 w-4 text-muted-foreground" />
-            <input
-              type="color"
-              value={color}
-              onChange={(e) => {
-                setColor(e.target.value);
-                setTool("brush");
-              }}
-              className="w-8 h-8 rounded cursor-pointer border-0"
+          {/* Canvas */}
+          <div className="flex justify-center overflow-auto bg-[repeating-conic-gradient(#e5e5e5_0%_25%,#fff_0%_50%)] bg-[length:16px_16px] rounded-xl border border-border/30 p-2">
+            <canvas
+              ref={canvasRef}
+              className="max-w-full cursor-crosshair rounded-lg"
+              style={{ transform: `scale(${zoom})`, transformOrigin: "top left" }}
+              onMouseDown={startDraw}
+              onMouseMove={draw}
+              onMouseUp={endDraw}
+              onMouseLeave={endDraw}
             />
           </div>
-        </div>
-
-        {/* Canvas */}
-        <div className="flex justify-center overflow-auto bg-[repeating-conic-gradient(#e5e5e5_0%_25%,#fff_0%_50%)] bg-[length:16px_16px] rounded-xl border p-2">
-          <canvas
-            ref={canvasRef}
-            className="max-w-full cursor-crosshair rounded-lg"
-            style={{ transform: `scale(${zoom})`, transformOrigin: "top left" }}
-            onMouseDown={startDraw}
-            onMouseMove={draw}
-            onMouseUp={endDraw}
-            onMouseLeave={endDraw}
-          />
-        </div>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </motion.div>
   );
 }

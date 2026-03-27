@@ -1,12 +1,10 @@
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import {
-  Heart, FolderPlus, Download, Share2, Printer, Trash2, Eye
-} from "lucide-react";
+import { Heart, FolderPlus, Download, Share2, Printer, Eye } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 
@@ -26,21 +24,13 @@ interface ColoringFavoritesProps {
   favoriteIds: Set<string>;
 }
 
-export function ColoringFavorites({
-  pages,
-  onToggleFavorite,
-  onDelete,
-  onColorOnline,
-  favoriteIds,
-}: ColoringFavoritesProps) {
+export function ColoringFavorites({ pages, onToggleFavorite, onDelete, onColorOnline, favoriteIds }: ColoringFavoritesProps) {
   const [viewMode, setViewMode] = useState<"all" | "favorites">("all");
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
   const [collections, setCollections] = useState<string[]>(["Animals", "Mandalas", "My Best"]);
   const [newCollection, setNewCollection] = useState("");
 
-  const displayedPages = viewMode === "favorites"
-    ? pages.filter((p) => favoriteIds.has(p.id))
-    : pages;
+  const displayedPages = viewMode === "favorites" ? pages.filter((p) => favoriteIds.has(p.id)) : pages;
 
   const handleShare = async (url: string) => {
     if (navigator.share) {
@@ -71,47 +61,27 @@ export function ColoringFavorites({
       {/* Controls */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div className="flex gap-2">
-          <Button
-            size="sm"
-            variant={viewMode === "all" ? "default" : "outline"}
-            onClick={() => setViewMode("all")}
-          >
+          <Button size="sm" variant={viewMode === "all" ? "default" : "outline"} onClick={() => setViewMode("all")}>
             All ({pages.length})
           </Button>
-          <Button
-            size="sm"
-            variant={viewMode === "favorites" ? "default" : "outline"}
-            onClick={() => setViewMode("favorites")}
-          >
+          <Button size="sm" variant={viewMode === "favorites" ? "default" : "outline"} onClick={() => setViewMode("favorites")}>
             <Heart className="h-4 w-4 mr-1 fill-current" /> Favorites ({favoriteIds.size})
           </Button>
         </div>
-
         <Dialog>
           <DialogTrigger asChild>
-            <Button size="sm" variant="outline">
-              <FolderPlus className="h-4 w-4 mr-1" /> Collections
-            </Button>
+            <Button size="sm" variant="outline"><FolderPlus className="h-4 w-4 mr-1" /> Collections</Button>
           </DialogTrigger>
           <DialogContent>
-            <DialogHeader>
-              <DialogTitle>My Collections</DialogTitle>
-            </DialogHeader>
+            <DialogHeader><DialogTitle>My Collections</DialogTitle></DialogHeader>
             <div className="space-y-3">
               <div className="flex gap-2">
-                <Input
-                  placeholder="New collection name..."
-                  value={newCollection}
-                  onChange={(e) => setNewCollection(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && addCollection()}
-                />
+                <Input placeholder="New collection name..." value={newCollection} onChange={(e) => setNewCollection(e.target.value)} onKeyDown={(e) => e.key === "Enter" && addCollection()} />
                 <Button onClick={addCollection}>Add</Button>
               </div>
               <div className="flex flex-wrap gap-2">
                 {collections.map((c) => (
-                  <Badge key={c} variant="secondary" className="text-sm py-1.5 px-3">
-                    📁 {c}
-                  </Badge>
+                  <Badge key={c} variant="secondary" className="text-sm py-1.5 px-3">📁 {c}</Badge>
                 ))}
               </div>
             </div>
@@ -121,71 +91,32 @@ export function ColoringFavorites({
 
       {/* Grid */}
       {displayedPages.length === 0 ? (
-        <Card>
+        <Card className="backdrop-blur-xl bg-card/80 border-primary/20">
           <CardContent className="py-12 text-center text-muted-foreground">
-            {viewMode === "favorites" ? (
-              <p>No favorites yet. Click the ❤️ on any page to save it!</p>
-            ) : (
-              <p>No coloring pages yet. Generate your first one!</p>
-            )}
+            {viewMode === "favorites" ? <p>No favorites yet. Click the ❤️ on any page to save it!</p> : <p>No coloring pages yet. Generate your first one!</p>}
           </CardContent>
         </Card>
       ) : (
         <motion.div layout className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           <AnimatePresence mode="popLayout">
-            {displayedPages.map((page) => (
-              <motion.div
-                key={page.id}
-                layout
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.8 }}
-              >
-                <Card className="group overflow-hidden">
+            {displayedPages.map((page, i) => (
+              <motion.div key={page.id} layout initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }} transition={{ delay: i * 0.03 }}>
+                <Card className="group overflow-hidden backdrop-blur-xl bg-card/80 border-border/30 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 transition-all">
                   <div className="relative">
-                    <img
-                      src={page.processed_image_url}
-                      alt="Coloring page"
-                      className="w-full aspect-square object-cover cursor-pointer"
-                      onClick={() => setLightboxImage(page.processed_image_url)}
-                    />
-
-                    {/* Overlay actions */}
+                    <img src={page.processed_image_url} alt="Coloring page" className="w-full aspect-square object-cover cursor-pointer" onClick={() => setLightboxImage(page.processed_image_url)} />
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100">
-                      <Button size="icon" variant="secondary" className="h-8 w-8" onClick={() => setLightboxImage(page.processed_image_url)}>
-                        <Eye className="h-4 w-4" />
-                      </Button>
-                      <Button size="icon" variant="secondary" className="h-8 w-8" onClick={() => onColorOnline?.(page.processed_image_url)}>
-                        🎨
-                      </Button>
-                      <Button size="icon" variant="secondary" className="h-8 w-8" onClick={() => handleShare(page.processed_image_url)}>
-                        <Share2 className="h-4 w-4" />
-                      </Button>
-                      <Button size="icon" variant="secondary" className="h-8 w-8" onClick={() => handlePrint(page.processed_image_url)}>
-                        <Printer className="h-4 w-4" />
-                      </Button>
+                      <Button size="icon" variant="secondary" className="h-8 w-8" onClick={() => setLightboxImage(page.processed_image_url)}><Eye className="h-4 w-4" /></Button>
+                      <Button size="icon" variant="secondary" className="h-8 w-8" onClick={() => onColorOnline?.(page.processed_image_url)}>🎨</Button>
+                      <Button size="icon" variant="secondary" className="h-8 w-8" onClick={() => handleShare(page.processed_image_url)}><Share2 className="h-4 w-4" /></Button>
+                      <Button size="icon" variant="secondary" className="h-8 w-8" onClick={() => handlePrint(page.processed_image_url)}><Printer className="h-4 w-4" /></Button>
                     </div>
-
-                    {/* Favorite button */}
-                    <button
-                      className="absolute top-2 right-2 z-10"
-                      onClick={() => onToggleFavorite?.(page.id)}
-                    >
-                      <Heart
-                        className={`h-6 w-6 drop-shadow-md transition-all ${
-                          favoriteIds.has(page.id) ? "fill-red-500 text-red-500" : "text-white"
-                        }`}
-                      />
+                    <button className="absolute top-2 right-2 z-10" onClick={() => onToggleFavorite?.(page.id)}>
+                      <Heart className={`h-6 w-6 drop-shadow-md transition-all ${favoriteIds.has(page.id) ? "fill-red-500 text-red-500" : "text-white"}`} />
                     </button>
-
-                    <Badge className="absolute bottom-2 left-2 text-xs" variant="secondary">
-                      {page.difficulty}
-                    </Badge>
+                    <Badge className="absolute bottom-2 left-2 text-xs backdrop-blur-sm" variant="secondary">{page.difficulty}</Badge>
                   </div>
                   <CardContent className="p-2">
-                    <p className="text-xs text-muted-foreground">
-                      {new Date(page.created_at).toLocaleDateString()}
-                    </p>
+                    <p className="text-xs text-muted-foreground">{new Date(page.created_at).toLocaleDateString()}</p>
                   </CardContent>
                 </Card>
               </motion.div>
@@ -200,12 +131,7 @@ export function ColoringFavorites({
           <DialogContent className="max-w-3xl p-2">
             <img src={lightboxImage} alt="Full size" className="w-full rounded-lg" />
             <div className="flex justify-center gap-2 mt-2">
-              <Button size="sm" onClick={() => {
-                const link = document.createElement("a");
-                link.href = lightboxImage;
-                link.download = "coloring-page.png";
-                link.click();
-              }}>
+              <Button size="sm" onClick={() => { const link = document.createElement("a"); link.href = lightboxImage; link.download = "coloring-page.png"; link.click(); }}>
                 <Download className="h-4 w-4 mr-1" /> Download
               </Button>
               <Button size="sm" variant="outline" onClick={() => handlePrint(lightboxImage)}>
