@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Briefcase, Users, Eye, TrendingUp, Mail, FileText, ArrowLeft, Download, MessageSquare, CreditCard } from "lucide-react";
+import { Briefcase, Users, Eye, TrendingUp, Mail, FileText, ArrowLeft, Download, MessageSquare, CheckCircle2, AlertCircle, Sparkles, Crown, BarChart3 } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -22,11 +22,10 @@ import jsPDF from "jspdf";
 import { ResponseTemplatesManager } from "@/components/jobs/ResponseTemplatesManager";
 import { useEmployerPaymentStatus } from "@/hooks/useEmployerPaymentStatus";
 import { useEmployerVerification } from "@/hooks/useEmployerVerification";
-import { useTranslation } from "react-i18next";
 import { CreateJobDialog } from "@/components/jobs/CreateJobDialog";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { CheckCircle2, AlertCircle } from "lucide-react";
 import { EmployerSubscriptionTiers } from "@/components/employer/EmployerSubscriptionTiers";
+import { motion } from "framer-motion";
 
 interface JobWithStats {
   id: string;
@@ -67,7 +66,6 @@ export default function EmployerDashboard() {
   const [searchQuery, setSearchQuery] = useState("");
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { t } = useTranslation();
   const { subscribed, loading: paymentLoading } = useEmployerPaymentStatus();
   const { verificationStatus, isApproved, loading: verificationLoading } = useEmployerVerification();
 
@@ -80,86 +78,48 @@ export default function EmployerDashboard() {
   const loadDashboardData = async () => {
     try {
       const { data: { user: currentUser } } = await supabase.auth.getUser();
-      if (!currentUser) {
-        navigate("/");
-        return;
-      }
-
+      if (!currentUser) { navigate("/"); return; }
       setUser(currentUser);
 
-      // Check subscription status before loading data
-      if (!subscribed) {
-        setLoading(false);
-        return;
-      }
+      if (!subscribed) { setLoading(false); return; }
 
-      // Load jobs
       const { data: jobsData, error: jobsError } = await supabase
         .from('job_listings')
         .select('*')
         .eq('employer_id', currentUser.id)
         .order('created_at', { ascending: false });
-
       if (jobsError) throw jobsError;
 
       const jobsWithStats = jobsData.map(job => ({
-        id: job.id,
-        title: job.title,
-        company_name: job.company_name,
-        location: job.location,
-        created_at: job.created_at,
-        is_active: job.is_active || false,
-        applications_count: job.applications_count || 0,
+        id: job.id, title: job.title, company_name: job.company_name,
+        location: job.location, created_at: job.created_at,
+        is_active: job.is_active || false, applications_count: job.applications_count || 0,
         views_count: job.views_count || 0,
       }));
-
       setJobs(jobsWithStats);
 
-      // Load applications for user's jobs
       const jobIds = jobsWithStats.map(j => j.id);
       if (jobIds.length > 0) {
         const { data: applicationsData, error: applicationsError } = await supabase
           .from('job_applications')
-          .select(`
-            *,
-            job_listings!inner(title, employer_id)
-          `)
+          .select(`*, job_listings!inner(title, employer_id)`)
           .in('job_id', jobIds)
           .order('created_at', { ascending: false });
-
         if (applicationsError) throw applicationsError;
 
-        const formattedApplications = applicationsData.map((app: any) => ({
-          id: app.id,
-          created_at: app.created_at,
-          status: app.status || 'pending',
-          cover_letter: app.cover_letter || '',
-          resume_url: app.resume_url,
-          applicant_id: app.applicant_id,
-          job_id: app.job_id,
-          job_title: app.job_listings.title,
-        }));
-
-        setApplications(formattedApplications);
+        setApplications(applicationsData.map((app: any) => ({
+          id: app.id, created_at: app.created_at, status: app.status || 'pending',
+          cover_letter: app.cover_letter || '', resume_url: app.resume_url,
+          applicant_id: app.applicant_id, job_id: app.job_id, job_title: app.job_listings.title,
+        })));
       }
 
-      // Calculate stats
       const totalApplications = jobsWithStats.reduce((sum, job) => sum + job.applications_count, 0);
       const totalViews = jobsWithStats.reduce((sum, job) => sum + job.views_count, 0);
       const activeJobs = jobsWithStats.filter(job => job.is_active).length;
-
-      setStats({
-        totalJobs: jobsWithStats.length,
-        activeJobs,
-        totalApplications,
-        totalViews,
-      });
+      setStats({ totalJobs: jobsWithStats.length, activeJobs, totalApplications, totalViews });
     } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to load data.",
-        variant: "destructive",
-      });
+      toast({ title: "Error", description: error.message || "Failed to load data.", variant: "destructive" });
     } finally {
       setLoading(false);
     }
@@ -167,53 +127,26 @@ export default function EmployerDashboard() {
 
   const updateApplicationStatus = async (applicationId: string, newStatus: string) => {
     try {
-      const { error } = await supabase
-        .from('job_applications')
-        .update({ status: newStatus })
-        .eq('id', applicationId);
-
+      const { error } = await supabase.from('job_applications').update({ status: newStatus }).eq('id', applicationId);
       if (error) throw error;
-
-      toast({
-        title: "Success",
-        description: "Application status has been updated.",
-      });
-
+      toast({ title: "Success", description: "Application status updated." });
       loadDashboardData();
     } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to update status.",
-        variant: "destructive",
-      });
+      toast({ title: "Error", description: error.message, variant: "destructive" });
     }
   };
 
-  // Filter and sort applications
   const filteredApplications = applications
     .filter(app => {
-      // Filter by status
       if (statusFilter !== "all" && app.status !== statusFilter) return false;
-      
-      // Filter by job
       if (jobFilter !== "all" && app.job_id !== jobFilter) return false;
-      
-      // Search in cover letter
-      if (searchQuery && !app.cover_letter.toLowerCase().includes(searchQuery.toLowerCase())) {
-        return false;
-      }
-      
+      if (searchQuery && !app.cover_letter.toLowerCase().includes(searchQuery.toLowerCase())) return false;
       return true;
     })
     .sort((a, b) => {
       const dateA = new Date(a.created_at).getTime();
       const dateB = new Date(b.created_at).getTime();
-      
-      if (sortBy === "newest") {
-        return dateB - dateA;
-      } else {
-        return dateA - dateB;
-      }
+      return sortBy === "newest" ? dateB - dateA : dateA - dateB;
     });
 
   const exportToCSV = () => {
@@ -221,28 +154,17 @@ export default function EmployerDashboard() {
     const rows = filteredApplications.map(app => [
       app.job_title,
       format(new Date(app.created_at), 'dd.MM.yyyy HH:mm'),
-      app.status === 'pending' ? 'Pending' :
-       app.status === 'accepted' ? 'Accepted' :
-       app.status === 'rejected' ? 'Rejected' : app.status,
+      app.status === 'pending' ? 'Pending' : app.status === 'accepted' ? 'Accepted' : 'Rejected',
       `"${app.cover_letter.replace(/"/g, '""')}"`,
       app.resume_url || 'No'
     ]);
-
-    const csvContent = [
-      headers.join(','),
-      ...rows.map(row => row.join(','))
-    ].join('\n');
-
+    const csvContent = [headers.join(','), ...rows.map(row => row.join(','))].join('\n');
     const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
     link.download = `applications_${format(new Date(), 'yyyy-MM-dd')}.csv`;
     link.click();
-
-    toast({
-      title: t('jobs.dashboard.exportSuccess', 'Export Successful'),
-      description: `Exported ${filteredApplications.length} applications to CSV.`,
-    });
+    toast({ title: "Export Successful", description: `Exported ${filteredApplications.length} applications to CSV.` });
   };
 
   const exportToPDF = () => {
@@ -252,275 +174,213 @@ export default function EmployerDashboard() {
     const margin = 15;
     let yPosition = margin;
 
-    // Title
     doc.setFontSize(18);
     doc.text('Job Applications', margin, yPosition);
     yPosition += 10;
-
     doc.setFontSize(10);
     doc.text(`Exported: ${format(new Date(), 'dd.MM.yyyy HH:mm')}`, margin, yPosition);
     yPosition += 5;
-    doc.text(`Number of applications: ${filteredApplications.length}`, margin, yPosition);
+    doc.text(`Total: ${filteredApplications.length}`, margin, yPosition);
     yPosition += 10;
 
-    // Applications
     filteredApplications.forEach((app, index) => {
-      // Check if we need a new page
-      if (yPosition > pageHeight - 40) {
-        doc.addPage();
-        yPosition = margin;
-      }
-
+      if (yPosition > pageHeight - 40) { doc.addPage(); yPosition = margin; }
       doc.setFontSize(12);
-      doc.setFont(undefined, 'bold');
+      doc.setFont(undefined!, 'bold');
       doc.text(`${index + 1}. ${app.job_title}`, margin, yPosition);
       yPosition += 7;
-
       doc.setFontSize(10);
-      doc.setFont(undefined, 'normal');
+      doc.setFont(undefined!, 'normal');
       doc.text(`Date: ${format(new Date(app.created_at), 'dd.MM.yyyy HH:mm')}`, margin, yPosition);
       yPosition += 5;
-
-      const statusText = app.status === 'pending' ? 'Pending' :
-                         app.status === 'accepted' ? 'Accepted' :
-                         app.status === 'rejected' ? 'Rejected' : app.status;
-      doc.text(`Status: ${statusText}`, margin, yPosition);
+      doc.text(`Status: ${app.status}`, margin, yPosition);
       yPosition += 5;
-
       doc.text('Cover Letter:', margin, yPosition);
       yPosition += 5;
-
-      // Wrap text for cover letter
-      const coverLetterLines = doc.splitTextToSize(
-        app.cover_letter,
-        pageWidth - 2 * margin
-      );
-      
-      coverLetterLines.forEach((line: string) => {
-        if (yPosition > pageHeight - 20) {
-          doc.addPage();
-          yPosition = margin;
-        }
+      const lines = doc.splitTextToSize(app.cover_letter, pageWidth - 2 * margin);
+      lines.forEach((line: string) => {
+        if (yPosition > pageHeight - 20) { doc.addPage(); yPosition = margin; }
         doc.text(line, margin + 5, yPosition);
         yPosition += 5;
       });
-
-      if (app.resume_url) {
-        yPosition += 2;
-        doc.text(`Resume: ${app.resume_url}`, margin, yPosition);
-        yPosition += 5;
-      }
-
       yPosition += 5;
       doc.line(margin, yPosition, pageWidth - margin, yPosition);
       yPosition += 5;
     });
 
     doc.save(`applications_${format(new Date(), 'yyyy-MM-dd')}.pdf`);
-
-    toast({
-      title: t('jobs.dashboard.exportSuccess', 'Export Successful'),
-      description: `Exported ${filteredApplications.length} applications to PDF.`,
-    });
+    toast({ title: "Export Successful", description: `Exported ${filteredApplications.length} applications to PDF.` });
   };
 
   if (loading) {
     return (
-      <div className="container mx-auto p-6">
-        <div className="flex items-center justify-center min-h-[400px]">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-        </div>
+      <div className="min-h-screen bg-background pt-20 pb-12 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
       </div>
     );
   }
 
+  const statCards = [
+    { label: "Total Positions", value: stats.totalJobs, sub: `${stats.activeJobs} active`, icon: <Briefcase className="h-5 w-5" />, gradient: "from-blue-500 to-indigo-500" },
+    { label: "Applications", value: stats.totalApplications, sub: `${applications.filter(a => a.status === 'pending').length} pending`, icon: <Users className="h-5 w-5" />, gradient: "from-emerald-500 to-teal-500" },
+    { label: "Total Views", value: stats.totalViews, sub: "All positions", icon: <Eye className="h-5 w-5" />, gradient: "from-purple-500 to-fuchsia-500" },
+    { label: "Conversion Rate", value: `${stats.totalViews > 0 ? ((stats.totalApplications / stats.totalViews) * 100).toFixed(1) : 0}%`, sub: "Applications / Views", icon: <TrendingUp className="h-5 w-5" />, gradient: "from-orange-500 to-rose-500" },
+  ];
+
   return (
     <div className="min-h-screen bg-background pt-20 pb-12">
-      <div className="container mx-auto p-6 space-y-6">
-        <div className="flex items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => navigate("/jobs")}
-            >
-              <ArrowLeft className="h-5 w-5" />
-            </Button>
-            <div>
-              <h1 className="text-3xl font-bold">{t('jobs.dashboard.title')}</h1>
-              <p className="text-muted-foreground">{t('jobs.dashboard.overview')}</p>
-            </div>
-          </div>
-          {user && isApproved && (
-            <CreateJobDialog 
-              userId={user.id} 
-              subscribed={subscribed}
-              onRenewSubscription={() => {
-                const element = document.getElementById('subscription-tiers');
-                element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-              }}
-            />
-          )}
-        </div>
-
-        {/* Verification and Payment Status Alerts */}
-        {!isApproved && (
-          <Alert>
-            <AlertCircle className="h-4 w-4" />
-            <AlertDescription className="flex items-center justify-between">
+      <div className="container mx-auto px-4 space-y-6 max-w-6xl">
+        {/* Hero Banner */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/15 via-accent/10 to-primary/5 border border-primary/20 p-6 sm:p-8"
+        >
+          <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-primary/15 to-transparent rounded-full blur-3xl -translate-y-1/2 translate-x-1/4" />
+          <div className="relative flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-4">
+              <Button variant="ghost" size="icon" onClick={() => navigate("/jobs")} className="shrink-0">
+                <ArrowLeft className="h-5 w-5" />
+              </Button>
+              <motion.div className="p-3 rounded-2xl bg-gradient-to-br from-primary to-accent shadow-xl shadow-primary/30" whileHover={{ rotate: -5, scale: 1.05 }}>
+                <Crown className="h-6 w-6 text-white" />
+              </motion.div>
               <div>
-                {verificationStatus === null && (
-                  <span>{t('jobs.dashboard.verification.notVerified')}</span>
-                )}
-                {verificationStatus === 'pending' && (
-                  <span>{t('jobs.dashboard.verification.pending')}</span>
-                )}
-                {verificationStatus === 'rejected' && (
-                  <span>{t('jobs.dashboard.verification.rejected')}</span>
-                )}
-                {verificationStatus === 'requires_resubmission' && (
-                  <span>{t('jobs.dashboard.verification.requiresResubmission')}</span>
-                )}
+                <h1 className="text-2xl sm:text-3xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
+                  Employer Dashboard
+                </h1>
+                <p className="text-sm text-muted-foreground mt-0.5">Manage your job listings and applications</p>
               </div>
-              <Button 
-                size="sm" 
-                onClick={() => navigate('/employer-verification')}
-                variant={verificationStatus === null ? "default" : "outline"}
-              >
-                {verificationStatus === null ? t('jobs.dashboard.verification.startVerification') : t('jobs.dashboard.verification.viewStatus')}
+            </div>
+            {user && isApproved && (
+              <CreateJobDialog
+                userId={user.id}
+                subscribed={subscribed}
+                onRenewSubscription={() => {
+                  document.getElementById('subscription-tiers')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }}
+              />
+            )}
+          </div>
+        </motion.div>
+
+        {/* Verification & Payment Alerts */}
+        {!isApproved && (
+          <Alert className="border-amber-500/30 bg-amber-500/5">
+            <AlertCircle className="h-4 w-4 text-amber-500" />
+            <AlertDescription className="flex items-center justify-between">
+              <span className="text-sm">
+                {verificationStatus === null && "Your company has not been verified yet. Start the verification process to post jobs."}
+                {verificationStatus === 'pending' && "Your verification is being reviewed. This usually takes 1-2 business days."}
+                {verificationStatus === 'rejected' && "Your verification was rejected. Please resubmit with updated documents."}
+                {verificationStatus === 'requires_resubmission' && "Additional documents required. Please resubmit your verification."}
+              </span>
+              <Button size="sm" onClick={() => navigate('/employer-verification')} variant={verificationStatus === null ? "default" : "outline"}>
+                {verificationStatus === null ? "Start Verification" : "View Status"}
               </Button>
             </AlertDescription>
           </Alert>
         )}
 
         {isApproved && !subscribed && (
-          <Alert>
-            <CheckCircle2 className="h-4 w-4 text-green-600" />
-            <AlertDescription className="flex items-center justify-between">
-              <div>
-                <span className="font-semibold text-green-600">{t('jobs.dashboard.verification.approved')}</span>
-                <span className="ml-2">{t('jobs.dashboard.verification.approvedDesc')}</span>
-              </div>
+          <Alert className="border-emerald-500/30 bg-emerald-500/5">
+            <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+            <AlertDescription>
+              <span className="font-semibold text-emerald-600">Verified!</span>
+              <span className="ml-2 text-sm">Choose a subscription plan below to start posting jobs.</span>
             </AlertDescription>
           </Alert>
         )}
 
-        {/* Subscription Section */}
         {isApproved && (
           <div id="subscription-tiers">
             <EmployerSubscriptionTiers />
           </div>
         )}
 
-        <div className="grid gap-4 md:grid-cols-4">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">{t('jobs.dashboard.totalJobs')}</CardTitle>
-              <Briefcase className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stats.totalJobs}</div>
-              <p className="text-xs text-muted-foreground">
-                {stats.activeJobs} {t('jobs.dashboard.activeJobs', 'active')}
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">{t('jobs.dashboard.totalApplications')}</CardTitle>
-              <Users className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stats.totalApplications}</div>
-              <p className="text-xs text-muted-foreground">
-                {applications.filter(a => a.status === 'pending').length} {t('jobs.dashboard.pending', 'pending')}
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">{t('jobs.dashboard.totalViews')}</CardTitle>
-              <Eye className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stats.totalViews}</div>
-              <p className="text-xs text-muted-foreground">
-                {t('jobs.dashboard.allJobs', 'All positions combined')}
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">{t('jobs.dashboard.avgConversion', 'Avg. conversion')}</CardTitle>
-              <TrendingUp className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                {stats.totalViews > 0 
-                  ? ((stats.totalApplications / stats.totalViews) * 100).toFixed(1) 
-                  : 0}%
-              </div>
-              <p className="text-xs text-muted-foreground">
-                {t('jobs.dashboard.applicationsViews', 'Applications/Views')}
-              </p>
-            </CardContent>
-          </Card>
+        {/* Stats Grid */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+          {statCards.map((stat, i) => (
+            <motion.div
+              key={stat.label}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.1 }}
+            >
+              <Card className="border-border/40 bg-card/80 backdrop-blur-sm hover:shadow-lg hover:shadow-primary/5 transition-all">
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs font-medium text-muted-foreground">{stat.label}</span>
+                    <div className={`p-2 rounded-xl bg-gradient-to-br ${stat.gradient} text-white shadow-lg`}>
+                      {stat.icon}
+                    </div>
+                  </div>
+                  <div className="text-2xl font-black">{typeof stat.value === 'number' ? stat.value.toLocaleString() : stat.value}</div>
+                  <p className="text-[11px] text-muted-foreground mt-0.5">{stat.sub}</p>
+                </CardContent>
+              </Card>
+            </motion.div>
+          ))}
         </div>
 
+        {/* Tabs */}
         <Tabs defaultValue="jobs" className="space-y-4">
-          <TabsList>
-            <TabsTrigger value="jobs">{t('jobs.dashboard.myJobs', 'My Positions')}</TabsTrigger>
-            <TabsTrigger value="applications">{t('jobs.dashboard.applications')}</TabsTrigger>
-            <TabsTrigger value="templates">
-              <MessageSquare className="h-4 w-4 mr-2" />
-              {t('jobs.dashboard.templates')}
+          <TabsList className="bg-muted/50 border border-border/50 p-1 rounded-xl">
+            <TabsTrigger value="jobs" className="rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-accent data-[state=active]:text-white gap-1.5">
+              <Briefcase className="h-3.5 w-3.5" /> My Positions
+            </TabsTrigger>
+            <TabsTrigger value="applications" className="rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-accent data-[state=active]:text-white gap-1.5">
+              <Users className="h-3.5 w-3.5" /> Applications
+            </TabsTrigger>
+            <TabsTrigger value="templates" className="rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-accent data-[state=active]:text-white gap-1.5">
+              <MessageSquare className="h-3.5 w-3.5" /> Templates
             </TabsTrigger>
           </TabsList>
 
           <TabsContent value="jobs" className="space-y-4">
-            <Card>
+            <Card className="border-border/40 bg-card/80 backdrop-blur-sm">
               <CardHeader>
-                <CardTitle>{t('jobs.dashboard.yourJobPositions', 'Your Job Positions')}</CardTitle>
-                <CardDescription>
-                  {t('jobs.dashboard.jobStats', 'Statistics of your listings')}
-                </CardDescription>
+                <CardTitle className="flex items-center gap-2">
+                  <BarChart3 className="h-5 w-5 text-primary" />
+                  Your Job Positions
+                </CardTitle>
+                <CardDescription>Performance statistics for your listings</CardDescription>
               </CardHeader>
               <CardContent>
                 <Table>
                   <TableHeader>
-                    <TableRow>
-                      <TableHead>{t('jobs.dashboard.jobTitle')}</TableHead>
-                      <TableHead>{t('jobs.dashboard.location')}</TableHead>
-                      <TableHead>{t('jobs.dashboard.status')}</TableHead>
-                      <TableHead className="text-right">{t('jobs.dashboard.applications')}</TableHead>
-                      <TableHead className="text-right">{t('jobs.dashboard.views')}</TableHead>
-                      <TableHead className="text-right">{t('jobs.dashboard.createdAt')}</TableHead>
+                    <TableRow className="border-border/30">
+                      <TableHead>Position</TableHead>
+                      <TableHead>Location</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead className="text-right">Applications</TableHead>
+                      <TableHead className="text-right">Views</TableHead>
+                      <TableHead className="text-right">Posted</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {jobs.map((job) => (
-                      <TableRow key={job.id}>
-                        <TableCell className="font-medium">{job.title}</TableCell>
-                        <TableCell>{job.location}</TableCell>
+                      <TableRow key={job.id} className="border-border/20 hover:bg-primary/5 transition-colors">
+                        <TableCell className="font-semibold">{job.title}</TableCell>
+                        <TableCell className="text-muted-foreground">{job.location}</TableCell>
                         <TableCell>
-                          <Badge variant={job.is_active ? 'default' : 'secondary'}>
-                            {job.is_active ? t('jobs.dashboard.active') : t('jobs.dashboard.inactive')}
+                          <Badge className={job.is_active
+                            ? "bg-emerald-500/15 text-emerald-600 border-emerald-500/20 hover:bg-emerald-500/20"
+                            : "bg-muted text-muted-foreground"
+                          }>
+                            {job.is_active ? "Active" : "Inactive"}
                           </Badge>
                         </TableCell>
-                        <TableCell className="text-right">{job.applications_count}</TableCell>
-                        <TableCell className="text-right">{job.views_count}</TableCell>
-                        <TableCell className="text-right">
-                          {format(new Date(job.created_at), 'dd.MM.yyyy')}
-                        </TableCell>
+                        <TableCell className="text-right font-bold">{job.applications_count}</TableCell>
+                        <TableCell className="text-right text-muted-foreground">{job.views_count}</TableCell>
+                        <TableCell className="text-right text-muted-foreground text-sm">{format(new Date(job.created_at), 'MMM d, yyyy')}</TableCell>
                       </TableRow>
                     ))}
                     {jobs.length === 0 && (
                       <TableRow>
-                        <TableCell colSpan={6} className="text-center text-muted-foreground">
-                          {t('jobs.dashboard.noJobs')}
+                        <TableCell colSpan={6} className="text-center py-12">
+                          <Briefcase className="h-10 w-10 text-muted-foreground/40 mx-auto mb-3" />
+                          <p className="text-muted-foreground">No job positions yet. Create your first listing!</p>
                         </TableCell>
                       </TableRow>
                     )}
@@ -531,171 +391,126 @@ export default function EmployerDashboard() {
           </TabsContent>
 
           <TabsContent value="applications" className="space-y-4">
-            <Card>
+            <Card className="border-border/40 bg-card/80 backdrop-blur-sm">
               <CardHeader>
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between flex-wrap gap-3">
                   <div>
-                    <CardTitle>{t('jobs.dashboard.receivedApplications', 'Received Applications')}</CardTitle>
-                    <CardDescription>
-                      {t('jobs.dashboard.manageApplications', 'Manage job applications')}
-                    </CardDescription>
+                    <CardTitle className="flex items-center gap-2">
+                      <Sparkles className="h-5 w-5 text-primary" />
+                      Received Applications
+                    </CardTitle>
+                    <CardDescription>Review and manage candidate applications</CardDescription>
                   </div>
                   <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={exportToCSV}
-                      disabled={filteredApplications.length === 0}
-                    >
-                      <Download className="h-4 w-4 mr-2" />
-                      {t('jobs.dashboard.exportCSV')}
+                    <Button variant="outline" size="sm" onClick={exportToCSV} disabled={filteredApplications.length === 0} className="gap-1.5 text-xs">
+                      <Download className="h-3.5 w-3.5" /> CSV
                     </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={exportToPDF}
-                      disabled={filteredApplications.length === 0}
-                    >
-                      <Download className="h-4 w-4 mr-2" />
-                      {t('jobs.dashboard.exportPDF')}
+                    <Button variant="outline" size="sm" onClick={exportToPDF} disabled={filteredApplications.length === 0} className="gap-1.5 text-xs">
+                      <Download className="h-3.5 w-3.5" /> PDF
                     </Button>
                   </div>
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4 mb-6">
-                  {/* Filters and Search */}
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <div className="space-y-2">
-                      <Label>{t('jobs.dashboard.search')}</Label>
-                      <Input
-                        placeholder={t('jobs.dashboard.searchPlaceholder', 'Search...')}
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                      />
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label>{t('jobs.dashboard.filterByStatus')}</Label>
-                      <select
-                        className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                        value={statusFilter}
-                        onChange={(e) => setStatusFilter(e.target.value)}
-                      >
-                        <option value="all">{t('jobs.dashboard.allStatuses')}</option>
-                        <option value="pending">{t('jobs.dashboard.pending')}</option>
-                        <option value="accepted">{t('jobs.dashboard.accepted')}</option>
-                        <option value="rejected">{t('jobs.dashboard.rejected')}</option>
-                      </select>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label>{t('jobs.dashboard.filterByJob')}</Label>
-                      <select
-                        className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                        value={jobFilter}
-                        onChange={(e) => setJobFilter(e.target.value)}
-                      >
-                        <option value="all">{t('jobs.dashboard.allJobs')}</option>
-                        {jobs.map(job => (
-                          <option key={job.id} value={job.id}>{job.title}</option>
-                        ))}
-                      </select>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label>{t('jobs.dashboard.sortBy')}</Label>
-                      <select
-                        className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                        value={sortBy}
-                        onChange={(e) => setSortBy(e.target.value)}
-                      >
-                        <option value="newest">{t('jobs.dashboard.newest')}</option>
-                        <option value="oldest">{t('jobs.dashboard.oldest')}</option>
-                      </select>
-                    </div>
+                {/* Filters */}
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-3 mb-4">
+                  <div>
+                    <Label className="text-xs font-medium">Search</Label>
+                    <Input placeholder="Search cover letters..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="mt-1 bg-muted/30 border-border/50" />
                   </div>
-
-                  {/* Results summary */}
-                  <div className="text-sm text-muted-foreground">
-                    {t('jobs.dashboard.showingResults', `Showing ${filteredApplications.length} of ${applications.length} applications`)}
+                  <div>
+                    <Label className="text-xs font-medium">Status</Label>
+                    <select className="w-full mt-1 h-9 rounded-md border border-border/50 bg-muted/30 px-3 py-1 text-sm" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
+                      <option value="all">All Statuses</option>
+                      <option value="pending">Pending</option>
+                      <option value="accepted">Accepted</option>
+                      <option value="rejected">Rejected</option>
+                    </select>
+                  </div>
+                  <div>
+                    <Label className="text-xs font-medium">Position</Label>
+                    <select className="w-full mt-1 h-9 rounded-md border border-border/50 bg-muted/30 px-3 py-1 text-sm" value={jobFilter} onChange={(e) => setJobFilter(e.target.value)}>
+                      <option value="all">All Positions</option>
+                      {jobs.map(job => <option key={job.id} value={job.id}>{job.title}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <Label className="text-xs font-medium">Sort</Label>
+                    <select className="w-full mt-1 h-9 rounded-md border border-border/50 bg-muted/30 px-3 py-1 text-sm" value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+                      <option value="newest">Newest First</option>
+                      <option value="oldest">Oldest First</option>
+                    </select>
                   </div>
                 </div>
 
-                <div className="space-y-4">
-                  {filteredApplications.map((application) => (
-                    <Card key={application.id}>
-                      <CardHeader>
-                        <div className="flex items-start justify-between">
-                          <div>
-                            <CardTitle className="text-lg">{application.job_title}</CardTitle>
-                            <CardDescription>
-                              {t('jobs.dashboard.appliedDate', 'Applied')} {format(new Date(application.created_at), 'dd.MM.yyyy HH:mm')}
-                            </CardDescription>
-                          </div>
-                          <Badge variant={
-                            application.status === 'pending' ? 'secondary' :
-                            application.status === 'accepted' ? 'default' :
-                            application.status === 'rejected' ? 'destructive' : 'secondary'
-                          }>
-                            {application.status === 'pending' ? t('jobs.dashboard.pending') :
-                             application.status === 'accepted' ? t('jobs.dashboard.accepted') :
-                             application.status === 'rejected' ? t('jobs.dashboard.rejected') : application.status}
-                          </Badge>
-                        </div>
-                      </CardHeader>
-                      <CardContent className="space-y-4">
-                        <div>
-                          <h4 className="font-semibold mb-2 flex items-center gap-2">
-                            <Mail className="h-4 w-4" />
-                            {t('jobs.dashboard.coverLetter')}
-                          </h4>
-                          <p className="text-sm text-muted-foreground whitespace-pre-wrap">
-                            {application.cover_letter}
-                          </p>
-                        </div>
-                        
-                        {application.resume_url && (
-                          <div>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => window.open(application.resume_url!, '_blank')}
-                            >
-                              <FileText className="mr-2 h-4 w-4" />
-                              {t('jobs.dashboard.viewResume')}
-                            </Button>
-                          </div>
-                        )}
+                <p className="text-xs text-muted-foreground mb-4">
+                  Showing {filteredApplications.length} of {applications.length} applications
+                </p>
 
-                        {application.status === 'pending' && (
-                          <div className="flex gap-2">
-                            <Button
-                              size="sm"
-                              onClick={() => updateApplicationStatus(application.id, 'accepted')}
-                            >
-                              {t('jobs.dashboard.accept', 'Accept')}
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="destructive"
-                              onClick={() => updateApplicationStatus(application.id, 'rejected')}
-                            >
-                              {t('jobs.dashboard.reject', 'Reject')}
-                            </Button>
+                <div className="space-y-3">
+                  {filteredApplications.map((application, i) => (
+                    <motion.div
+                      key={application.id}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: i * 0.05 }}
+                    >
+                      <Card className="border-border/30 bg-card/60 hover:border-primary/30 transition-all">
+                        <CardContent className="p-4">
+                          <div className="flex items-start justify-between gap-3 mb-3">
+                            <div>
+                              <h4 className="font-bold text-sm">{application.job_title}</h4>
+                              <p className="text-xs text-muted-foreground">
+                                Applied {format(new Date(application.created_at), 'MMM d, yyyy · h:mm a')}
+                              </p>
+                            </div>
+                            <Badge className={
+                              application.status === 'pending' ? "bg-amber-500/15 text-amber-600 border-amber-500/20" :
+                              application.status === 'accepted' ? "bg-emerald-500/15 text-emerald-600 border-emerald-500/20" :
+                              "bg-destructive/15 text-destructive border-destructive/20"
+                            }>
+                              {application.status === 'pending' ? 'Pending' : application.status === 'accepted' ? 'Accepted' : 'Rejected'}
+                            </Badge>
                           </div>
-                        )}
-                      </CardContent>
-                    </Card>
+
+                          <div className="bg-muted/30 rounded-lg p-3 mb-3">
+                            <div className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground mb-1.5">
+                              <Mail className="h-3 w-3" /> Cover Letter
+                            </div>
+                            <p className="text-xs text-foreground/80 whitespace-pre-wrap line-clamp-4">{application.cover_letter}</p>
+                          </div>
+
+                          <div className="flex items-center gap-2 flex-wrap">
+                            {application.resume_url && (
+                              <Button variant="outline" size="sm" className="text-xs gap-1.5 h-8" onClick={() => window.open(application.resume_url!, '_blank')}>
+                                <FileText className="h-3 w-3" /> View Resume
+                              </Button>
+                            )}
+                            {application.status === 'pending' && (
+                              <>
+                                <Button size="sm" className="text-xs h-8 bg-emerald-600 hover:bg-emerald-700 text-white gap-1" onClick={() => updateApplicationStatus(application.id, 'accepted')}>
+                                  <CheckCircle2 className="h-3 w-3" /> Accept
+                                </Button>
+                                <Button size="sm" variant="destructive" className="text-xs h-8 gap-1" onClick={() => updateApplicationStatus(application.id, 'rejected')}>
+                                  Reject
+                                </Button>
+                              </>
+                            )}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </motion.div>
                   ))}
                   {filteredApplications.length === 0 && applications.length > 0 && (
-                    <div className="text-center text-muted-foreground py-8">
-                      {t('jobs.dashboard.noMatchingApplications', 'No applications match the selected filters')}
+                    <div className="text-center py-12">
+                      <Users className="h-10 w-10 text-muted-foreground/40 mx-auto mb-3" />
+                      <p className="text-muted-foreground text-sm">No applications match the selected filters</p>
                     </div>
                   )}
                   {applications.length === 0 && (
-                    <div className="text-center text-muted-foreground py-8">
-                      {t('jobs.dashboard.noApplications')}
+                    <div className="text-center py-12">
+                      <Users className="h-10 w-10 text-muted-foreground/40 mx-auto mb-3" />
+                      <p className="text-muted-foreground text-sm">No applications received yet</p>
                     </div>
                   )}
                 </div>
