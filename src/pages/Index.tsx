@@ -357,7 +357,7 @@ const Index = () => {
             </div>
 
             <div className="flex flex-wrap justify-center gap-3">
-              <Button size="lg" variant="premium" onClick={() => handleNavigate('/wall')}>
+              <Button size="lg" onClick={() => handleNavigate('/wall')} className="bg-gradient-to-r from-primary to-accent text-primary-foreground hover:opacity-90 shadow-lg shadow-primary/20">
                 <Zap className="w-4 h-4" /> Explore Now
               </Button>
               <Button size="lg" variant="outline" onClick={() => handleNavigate('/games')}>
