@@ -1,6 +1,7 @@
 import { FRIEND_CHALLENGE_ACHIEVEMENTS, getRarityColor } from "@/types/brain-duel-achievements";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
+import { motion } from "framer-motion";
 
 interface AchievementBadgeProps {
   achievementType: string;
@@ -19,25 +20,29 @@ export default function AchievementBadge({
 
   const Icon = achievement.icon;
   const sizeClasses = {
-    sm: 'h-6 w-6',
-    md: 'h-8 w-8',
-    lg: 'h-12 w-12',
+    sm: 'h-7 w-7',
+    md: 'h-9 w-9',
+    lg: 'h-14 w-14',
   };
   
   const iconSizes = {
-    sm: 'h-3 w-3',
-    md: 'h-4 w-4',
-    lg: 'h-6 w-6',
+    sm: 'h-3.5 w-3.5',
+    md: 'h-4.5 w-4.5',
+    lg: 'h-7 w-7',
   };
 
   return (
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <div className="inline-flex items-center gap-2">
+          <motion.div 
+            className="inline-flex items-center gap-2"
+            whileHover={{ scale: 1.15 }}
+            whileTap={{ scale: 0.95 }}
+          >
             <div
               className={cn(
-                'rounded-full border-2 flex items-center justify-center transition-transform hover:scale-110',
+                'rounded-full border-2 flex items-center justify-center transition-all shadow-md backdrop-blur-sm',
                 getRarityColor(achievement.rarity),
                 sizeClasses[size]
               )}
@@ -45,15 +50,15 @@ export default function AchievementBadge({
               <Icon className={cn(achievement.color, iconSizes[size])} />
             </div>
             {showLabel && (
-              <span className="text-xs font-medium">{achievement.name}</span>
+              <span className="text-xs font-semibold">{achievement.name}</span>
             )}
-          </div>
+          </motion.div>
         </TooltipTrigger>
-        <TooltipContent>
+        <TooltipContent className="backdrop-blur-xl bg-card/90 border-primary/20">
           <div className="space-y-1">
-            <p className="font-semibold">{achievement.name}</p>
+            <p className="font-bold">{achievement.name}</p>
             <p className="text-xs text-muted-foreground">{achievement.description}</p>
-            <p className="text-xs font-medium capitalize">
+            <p className="text-xs font-semibold capitalize text-primary">
               {achievement.rarity} Achievement
             </p>
           </div>

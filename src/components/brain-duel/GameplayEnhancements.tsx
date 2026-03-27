@@ -2,12 +2,10 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import {
-  Sparkles, HelpCircle, Gift, Clock, Target, Swords, Share2,
-  Copy, Link, Users, Zap, Trophy
+  Sparkles, Gift, Clock, Swords, Share2,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
@@ -19,36 +17,39 @@ const CATEGORIES = [
 
 export const BonusRoundCard = () => {
   return (
-    <Card className="relative overflow-hidden border-2 border-dashed border-yellow-500/30 bg-gradient-to-br from-yellow-500/5 to-amber-500/5">
+    <Card className="relative overflow-hidden border-2 border-dashed border-yellow-500/30 backdrop-blur-xl bg-card/80">
+      <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/5 to-amber-500/5" />
       <div className="absolute top-2 right-2">
-        <Badge className="bg-yellow-500 text-white gap-1 animate-pulse">
+        <Badge className="bg-yellow-500 text-white gap-1 animate-pulse shadow-md">
           <Sparkles className="h-3 w-3" /> Bonus
         </Badge>
       </div>
-      <CardHeader>
+      <CardHeader className="relative">
         <CardTitle className="flex items-center gap-2">
           <Sparkles className="h-5 w-5 text-yellow-500" />
           Bonus Round
         </CardTitle>
         <CardDescription>Special questions worth 2x points. Appear randomly during matches!</CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="relative">
         <div className="grid grid-cols-3 gap-3">
-          <div className="text-center p-3 bg-yellow-500/10 rounded-xl">
-            <div className="text-2xl mb-1">⚡</div>
-            <div className="text-xs font-semibold">Speed Bonus</div>
-            <div className="text-[10px] text-muted-foreground">Answer in &lt;5s for 3x</div>
-          </div>
-          <div className="text-center p-3 bg-purple-500/10 rounded-xl">
-            <div className="text-2xl mb-1">🎯</div>
-            <div className="text-xs font-semibold">Perfect Round</div>
-            <div className="text-[10px] text-muted-foreground">All correct = bonus XP</div>
-          </div>
-          <div className="text-center p-3 bg-cyan-500/10 rounded-xl">
-            <div className="text-2xl mb-1">🔮</div>
-            <div className="text-xs font-semibold">Mystery Q</div>
-            <div className="text-[10px] text-muted-foreground">Random category, 5x reward</div>
-          </div>
+          {[
+            { emoji: "⚡", title: "Speed Bonus", desc: "Answer in <5s for 3x", bg: "bg-yellow-500/10 border-yellow-500/20" },
+            { emoji: "🎯", title: "Perfect Round", desc: "All correct = bonus XP", bg: "bg-purple-500/10 border-purple-500/20" },
+            { emoji: "🔮", title: "Mystery Q", desc: "Random category, 5x reward", bg: "bg-cyan-500/10 border-cyan-500/20" },
+          ].map((item, i) => (
+            <motion.div
+              key={item.title}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.1 }}
+              className={`text-center p-3 rounded-xl border backdrop-blur-sm ${item.bg}`}
+            >
+              <div className="text-2xl mb-1">{item.emoji}</div>
+              <div className="text-xs font-semibold">{item.title}</div>
+              <div className="text-[10px] text-muted-foreground">{item.desc}</div>
+            </motion.div>
+          ))}
         </div>
       </CardContent>
     </Card>
@@ -58,8 +59,9 @@ export const BonusRoundCard = () => {
 export const MysteryCategory = () => {
   return (
     <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-      <Card className="relative overflow-hidden cursor-pointer border-primary/30 bg-gradient-to-br from-primary/10 via-violet-500/5 to-cyan-500/10">
-        <CardContent className="p-6 text-center">
+      <Card className="relative overflow-hidden cursor-pointer border-primary/30 backdrop-blur-xl bg-card/80">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-violet-500/5 to-cyan-500/10" />
+        <CardContent className="p-6 text-center relative">
           <motion.div
             animate={{ rotate: [0, 10, -10, 0] }}
             transition={{ duration: 3, repeat: Infinity }}
@@ -92,20 +94,21 @@ export const CustomChallenge = () => {
   };
 
   return (
-    <Card className="border-primary/20">
-      <CardHeader>
+    <Card className="border-primary/20 backdrop-blur-xl bg-card/80 relative overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5" />
+      <CardHeader className="relative">
         <CardTitle className="flex items-center gap-2">
           <Swords className="h-5 w-5 text-primary" />
           Create Custom Challenge
         </CardTitle>
         <CardDescription>Set your own rules and challenge anyone!</CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="relative space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="text-sm font-medium mb-1 block">Category</label>
             <Select value={category} onValueChange={setCategory}>
-              <SelectTrigger>
+              <SelectTrigger className="backdrop-blur-sm">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -133,7 +136,7 @@ export const CustomChallenge = () => {
           </div>
         </div>
 
-        <div className="bg-muted/50 rounded-xl p-4">
+        <div className="bg-muted/30 backdrop-blur-sm rounded-xl p-4 border border-primary/5">
           <div className="flex items-center justify-between text-sm">
             <span className="text-muted-foreground">Winner gets:</span>
             <Badge variant="outline" className="text-green-500 border-green-500/30 font-bold">

@@ -7,12 +7,13 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { 
-  Users, Eye, MessageCircle, Heart, Gift, Trophy, 
-  Diamond, Crown, Zap, Send, Radio 
+  Users, Eye, MessageCircle, Gift, 
+  Send, Radio 
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useBrainDuelCredits } from '@/hooks/useBrainDuelCredits';
+import { motion } from 'framer-motion';
 
 interface VirtualGift {
   id: string;
@@ -71,7 +72,6 @@ export const LiveSpectatorMode = () => {
     });
   }, []);
 
-  // Fetch live matches
   const { data: liveMatches, isLoading } = useQuery({
     queryKey: ['brain-duel-live-matches'],
     queryFn: async () => {
@@ -85,7 +85,6 @@ export const LiveSpectatorMode = () => {
 
       if (!matches) return [];
 
-      // Get player profiles and spectator counts
       const playerIds = new Set<string>();
       matches.forEach(m => {
         playerIds.add(m.player1_id);
@@ -97,7 +96,6 @@ export const LiveSpectatorMode = () => {
         .select('id, full_name, avatar_url')
         .in('id', Array.from(playerIds));
 
-      // Get spectator counts
       const matchIds = matches.map(m => m.id);
       const { data: spectators } = await supabase
         .from('brain_duel_spectators')
@@ -120,11 +118,9 @@ export const LiveSpectatorMode = () => {
     refetchInterval: 5000,
   });
 
-  // Subscribe to chat messages for selected match
   useEffect(() => {
     if (!selectedMatch) return;
 
-    // Fetch existing messages
     const fetchMessages = async () => {
       const { data } = await supabase
         .from('brain_duel_match_chat')
@@ -134,7 +130,6 @@ export const LiveSpectatorMode = () => {
         .limit(100);
 
       if (data) {
-        // Fetch profiles
         const userIds = [...new Set(data.map(m => m.user_id))];
         const { data: profiles } = await supabase
           .from('profiles')
@@ -150,127 +145,69 @@ export const LiveSpectatorMode = () => {
 
     fetchMessages();
 
-    // Subscribe to new messages
     const channel = supabase
       .channel(`match-chat-${selectedMatch}`)
       .on(
         'postgres_changes',
-        {
-          event: 'INSERT',
-          schema: 'public',
-          table: 'brain_duel_match_chat',
-          filter: `match_id=eq.${selectedMatch}`,
-        },
+        { event: 'INSERT', schema: 'public', table: 'brain_duel_match_chat', filter: `match_id=eq.${selectedMatch}` },
         async (payload) => {
           const { data: profile } = await supabase
             .from('profiles')
             .select('id, full_name, avatar_url')
             .eq('id', payload.new.user_id)
             .single();
-
           setChatMessages(prev => [...prev, { ...payload.new as ChatMessage, profile }]);
         }
       )
       .subscribe();
 
-    return () => {
-      supabase.removeChannel(channel);
-    };
+    return () => { supabase.removeChannel(channel); };
   }, [selectedMatch]);
 
-  // Join as spectator
   const joinAsSpectator = useMutation({
     mutationFn: async (matchId: string) => {
       const { error } = await supabase
         .from('brain_duel_spectators')
-        .upsert({
-          match_id: matchId,
-          user_id: userId!,
-          joined_at: new Date().toISOString(),
-          left_at: null,
-        });
-
+        .upsert({ match_id: matchId, user_id: userId!, joined_at: new Date().toISOString(), left_at: null });
       if (error) throw error;
       return matchId;
     },
     onSuccess: (matchId) => {
       setSelectedMatch(matchId);
-      toast({
-        title: 'Joined as spectator! 👀',
-        description: 'You can now watch the match and chat',
-      });
+      toast({ title: 'Joined as spectator! 👀', description: 'You can now watch the match and chat' });
     },
   });
 
-  // Send chat message
   const sendMessage = useMutation({
     mutationFn: async () => {
       if (!chatMessage.trim() || !selectedMatch || !userId) return;
-
       const { error } = await supabase
         .from('brain_duel_match_chat')
-        .insert({
-          match_id: selectedMatch,
-          user_id: userId,
-          message: chatMessage,
-          message_type: 'chat',
-        });
-
+        .insert({ match_id: selectedMatch, user_id: userId, message: chatMessage, message_type: 'chat' });
       if (error) throw error;
     },
-    onSuccess: () => {
-      setChatMessage('');
-    },
+    onSuccess: () => { setChatMessage(''); },
   });
 
-  // Send gift
   const sendGift = useMutation({
     mutationFn: async ({ gift, recipientId }: { gift: VirtualGift; recipientId: string }) => {
-      if (credits < gift.cost) {
-        throw new Error('Insufficient credits');
-      }
-
-      // Deduct credits
+      if (credits < gift.cost) throw new Error('Insufficient credits');
       spendCredits(gift.cost);
-
-      // Record gift
       const { error } = await supabase
         .from('brain_duel_gifts')
-        .insert({
-          match_id: selectedMatch!,
-          sender_id: userId!,
-          recipient_id: recipientId,
-          gift_type: gift.id,
-          gift_cost: gift.cost,
-        });
-
+        .insert({ match_id: selectedMatch!, sender_id: userId!, recipient_id: recipientId, gift_type: gift.id, gift_cost: gift.cost });
       if (error) throw error;
-
-      // Add gift message to chat
       await supabase
         .from('brain_duel_match_chat')
-        .insert({
-          match_id: selectedMatch!,
-          user_id: userId!,
-          message: `sent ${gift.emoji} to the player!`,
-          message_type: 'gift',
-        });
-
+        .insert({ match_id: selectedMatch!, user_id: userId!, message: `sent ${gift.emoji} to the player!`, message_type: 'gift' });
       return gift;
     },
     onSuccess: (gift) => {
       queryClient.invalidateQueries({ queryKey: ['brain-duel-credits'] });
-      toast({
-        title: `${gift.emoji} Gift sent!`,
-        description: `You sent a ${gift.name} (${gift.cost} credits)`,
-      });
+      toast({ title: `${gift.emoji} Gift sent!`, description: `You sent a ${gift.name} (${gift.cost} credits)` });
     },
     onError: (error: Error) => {
-      toast({
-        title: 'Failed to send gift',
-        description: error.message,
-        variant: 'destructive',
-      });
+      toast({ title: 'Failed to send gift', description: error.message, variant: 'destructive' });
     },
   });
 
@@ -279,15 +216,16 @@ export const LiveSpectatorMode = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <Card className="border-primary/50 bg-gradient-to-br from-primary/5 to-purple-500/5">
-        <CardHeader>
+      <Card className="border-primary/20 backdrop-blur-xl bg-card/80 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-purple-500/5" />
+        <CardHeader className="relative">
           <CardTitle className="flex items-center gap-2">
-            <Radio className="h-5 w-5 text-red-500 animate-pulse" />
+            <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ duration: 1.5, repeat: Infinity }}>
+              <Radio className="h-5 w-5 text-red-500" />
+            </motion.div>
             Live Spectator Mode
           </CardTitle>
-          <CardDescription>
-            Watch live battles and support your favorite players with virtual gifts
-          </CardDescription>
+          <CardDescription>Watch live battles and support your favorite players with virtual gifts</CardDescription>
         </CardHeader>
       </Card>
 
@@ -302,72 +240,78 @@ export const LiveSpectatorMode = () => {
           {isLoading ? (
             <div className="grid md:grid-cols-2 gap-4">
               {[1, 2, 3, 4].map(i => (
-                <Card key={i} className="animate-pulse">
+                <Card key={i} className="animate-pulse backdrop-blur-xl bg-card/80">
                   <CardContent className="p-6 h-32" />
                 </Card>
               ))}
             </div>
           ) : liveMatches && liveMatches.length > 0 ? (
             <div className="grid md:grid-cols-2 gap-4">
-              {liveMatches.map((match: LiveMatch) => (
-                <Card 
+              {liveMatches.map((match: LiveMatch, i: number) => (
+                <motion.div
                   key={match.id}
-                  className={`cursor-pointer transition-all hover:shadow-lg ${
-                    selectedMatch === match.id ? 'ring-2 ring-primary' : ''
-                  }`}
-                  onClick={() => joinAsSpectator.mutate(match.id)}
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.08 }}
                 >
-                  <CardContent className="p-4">
-                    <div className="flex items-center justify-between mb-3">
-                      <Badge variant="secondary" className="flex items-center gap-1">
-                        <Radio className="h-3 w-3 text-red-500" />
-                        LIVE
-                      </Badge>
-                      <Badge variant="outline" className="flex items-center gap-1">
-                        <Eye className="h-3 w-3" />
-                        {match.spectator_count}
-                      </Badge>
-                    </div>
-                    
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <Avatar className="h-10 w-10">
-                          <AvatarImage src={match.player1_profile?.avatar_url} />
-                          <AvatarFallback>P1</AvatarFallback>
-                        </Avatar>
-                        <div>
-                          <p className="font-medium text-sm">{match.player1_profile?.full_name || 'Player 1'}</p>
-                          <p className="text-2xl font-bold text-primary">{match.player1_score}</p>
+                  <Card 
+                    className={`cursor-pointer backdrop-blur-xl bg-card/80 transition-all hover:shadow-lg ${
+                      selectedMatch === match.id ? 'ring-2 ring-primary border-primary/30' : 'border-primary/10'
+                    }`}
+                    onClick={() => joinAsSpectator.mutate(match.id)}
+                  >
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between mb-3">
+                        <Badge variant="secondary" className="flex items-center gap-1">
+                          <Radio className="h-3 w-3 text-red-500 animate-pulse" />
+                          LIVE
+                        </Badge>
+                        <Badge variant="outline" className="flex items-center gap-1 border-primary/20">
+                          <Eye className="h-3 w-3" />
+                          {match.spectator_count}
+                        </Badge>
+                      </div>
+                      
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <Avatar className="h-10 w-10 ring-2 ring-primary/20">
+                            <AvatarImage src={match.player1_profile?.avatar_url} />
+                            <AvatarFallback className="bg-primary/10">P1</AvatarFallback>
+                          </Avatar>
+                          <div>
+                            <p className="font-medium text-sm">{match.player1_profile?.full_name || 'Player 1'}</p>
+                            <p className="text-2xl font-black text-primary">{match.player1_score}</p>
+                          </div>
+                        </div>
+                        
+                        <span className="text-muted-foreground font-bold">VS</span>
+                        
+                        <div className="flex items-center gap-2">
+                          <div className="text-right">
+                            <p className="font-medium text-sm">{match.player2_profile?.full_name || 'Player 2'}</p>
+                            <p className="text-2xl font-black text-orange-500">{match.player2_score}</p>
+                          </div>
+                          <Avatar className="h-10 w-10 ring-2 ring-orange-500/20">
+                            <AvatarImage src={match.player2_profile?.avatar_url} />
+                            <AvatarFallback className="bg-orange-500/10">P2</AvatarFallback>
+                          </Avatar>
                         </div>
                       </div>
                       
-                      <span className="text-muted-foreground font-bold">VS</span>
-                      
-                      <div className="flex items-center gap-2">
-                        <div className="text-right">
-                          <p className="font-medium text-sm">{match.player2_profile?.full_name || 'Player 2'}</p>
-                          <p className="text-2xl font-bold text-primary">{match.player2_score}</p>
-                        </div>
-                        <Avatar className="h-10 w-10">
-                          <AvatarImage src={match.player2_profile?.avatar_url} />
-                          <AvatarFallback>P2</AvatarFallback>
-                        </Avatar>
+                      <div className="mt-3 flex items-center justify-center gap-2">
+                        <Badge variant="secondary">{match.category}</Badge>
+                        <Badge variant="outline" className="border-primary/20">{match.game_mode || 'Quick'}</Badge>
                       </div>
-                    </div>
-                    
-                    <div className="mt-3 flex items-center justify-center gap-2">
-                      <Badge>{match.category}</Badge>
-                      <Badge variant="outline">{match.game_mode || 'Quick'}</Badge>
-                    </div>
-                  </CardContent>
-                </Card>
+                    </CardContent>
+                  </Card>
+                </motion.div>
               ))}
             </div>
           ) : (
-            <Card>
+            <Card className="backdrop-blur-xl bg-card/80 border-primary/10">
               <CardContent className="p-8 text-center">
-                <Users className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                <p className="text-muted-foreground">No live matches right now</p>
+                <Users className="h-12 w-12 mx-auto mb-4 text-muted-foreground/30" />
+                <p className="text-muted-foreground font-medium">No live matches right now</p>
                 <p className="text-sm text-muted-foreground mt-1">Check back later or start your own match!</p>
               </CardContent>
             </Card>
@@ -378,13 +322,12 @@ export const LiveSpectatorMode = () => {
         <div className="space-y-4">
           {selectedMatch && selectedMatchData ? (
             <>
-              {/* Selected Match Info */}
-              <Card className="bg-primary/5">
+              <Card className="backdrop-blur-xl bg-card/80 border-primary/10">
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between mb-2">
                     <span className="font-semibold">Watching:</span>
                     <Badge variant="secondary">
-                      <Radio className="h-3 w-3 mr-1 text-red-500" />
+                      <Radio className="h-3 w-3 mr-1 text-red-500 animate-pulse" />
                       LIVE
                     </Badge>
                   </div>
@@ -394,11 +337,10 @@ export const LiveSpectatorMode = () => {
                 </CardContent>
               </Card>
 
-              {/* Virtual Gifts */}
-              <Card>
+              <Card className="backdrop-blur-xl bg-card/80 border-primary/10">
                 <CardHeader className="pb-2">
                   <CardTitle className="text-sm flex items-center gap-2">
-                    <Gift className="h-4 w-4" />
+                    <Gift className="h-4 w-4 text-primary" />
                     Send Virtual Gifts
                   </CardTitle>
                 </CardHeader>
@@ -409,29 +351,25 @@ export const LiveSpectatorMode = () => {
                         key={gift.id}
                         variant="outline"
                         size="sm"
-                        onClick={() => sendGift.mutate({ 
-                          gift, 
-                          recipientId: selectedMatchData.player1_id 
-                        })}
+                        onClick={() => sendGift.mutate({ gift, recipientId: selectedMatchData.player1_id })}
                         disabled={credits < gift.cost || sendGift.isPending}
-                        className="flex-1 min-w-[60px]"
+                        className="flex-1 min-w-[60px] border-primary/10 hover:bg-primary/10"
                       >
                         <span className="text-lg mr-1">{gift.emoji}</span>
                         <span className="text-xs">{gift.cost}</span>
                       </Button>
                     ))}
                   </div>
-                  <p className="text-xs text-muted-foreground mt-2 text-center">
+                  <p className="text-[10px] text-muted-foreground mt-2 text-center">
                     Your credits: {credits}
                   </p>
                 </CardContent>
               </Card>
 
-              {/* Chat */}
-              <Card className="flex-1">
+              <Card className="flex-1 backdrop-blur-xl bg-card/80 border-primary/10">
                 <CardHeader className="pb-2">
                   <CardTitle className="text-sm flex items-center gap-2">
-                    <MessageCircle className="h-4 w-4" />
+                    <MessageCircle className="h-4 w-4 text-primary" />
                     Live Chat
                   </CardTitle>
                 </CardHeader>
@@ -460,6 +398,7 @@ export const LiveSpectatorMode = () => {
                       value={chatMessage}
                       onChange={(e) => setChatMessage(e.target.value)}
                       onKeyDown={(e) => e.key === 'Enter' && sendMessage.mutate()}
+                      className="backdrop-blur-sm"
                     />
                     <Button 
                       size="icon" 
@@ -473,9 +412,9 @@ export const LiveSpectatorMode = () => {
               </Card>
             </>
           ) : (
-            <Card>
+            <Card className="backdrop-blur-xl bg-card/80 border-primary/10">
               <CardContent className="p-8 text-center">
-                <Eye className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
+                <Eye className="h-8 w-8 mx-auto mb-2 text-muted-foreground/30" />
                 <p className="text-muted-foreground text-sm">
                   Select a match to watch and chat
                 </p>

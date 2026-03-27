@@ -6,6 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Users, TrendingUp, TrendingDown } from "lucide-react";
 import AchievementBadge from "./AchievementBadge";
+import { motion } from "framer-motion";
 
 export default function FriendChallengesLeaderboard() {
   const { user } = useAuth();
@@ -13,8 +14,9 @@ export default function FriendChallengesLeaderboard() {
   const { achievements } = useFriendChallengeAchievements(user?.id);
 
   return (
-    <Card className="overflow-hidden">
-      <CardHeader className="pb-3">
+    <Card className="overflow-hidden backdrop-blur-xl bg-card/80 border-primary/10 relative">
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5" />
+      <CardHeader className="pb-3 relative">
         <div className="space-y-3">
           <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
             <Users className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
@@ -33,27 +35,35 @@ export default function FriendChallengesLeaderboard() {
           )}
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="relative">
         {isLoading ? (
-          <p className="text-sm text-muted-foreground text-center py-4">Loading...</p>
+          <div className="flex justify-center py-6">
+            <div className="h-8 w-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+          </div>
         ) : friendStats.length === 0 ? (
-          <p className="text-sm text-muted-foreground text-center py-4">
-            No friend matches yet
-          </p>
+          <div className="text-center py-8">
+            <Users className="h-10 w-10 text-muted-foreground/30 mx-auto mb-2" />
+            <p className="text-sm text-muted-foreground">No friend matches yet</p>
+          </div>
         ) : (
-          <div className="space-y-3">
+          <div className="space-y-2">
             {friendStats.map((stats, index) => (
-              <div
+              <motion.div
                 key={stats.friend_id}
-                className="flex items-center gap-3 p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
+                initial={{ opacity: 0, x: -15 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.06 }}
+                className={`flex items-center gap-3 p-3 rounded-lg backdrop-blur-sm transition-all hover:scale-[1.01] ${
+                  index === 0 ? 'bg-primary/10 border border-primary/20' : 'bg-muted/30 border border-primary/5 hover:bg-muted/50'
+                }`}
               >
-                <div className="w-6 text-center font-semibold text-muted-foreground">
-                  #{index + 1}
+                <div className="w-6 text-center font-bold text-muted-foreground">
+                  {index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `#${index + 1}`}
                 </div>
 
-                <Avatar className="h-10 w-10">
+                <Avatar className={`h-10 w-10 ${index === 0 ? 'ring-2 ring-primary/30' : ''}`}>
                   <AvatarImage src={stats.friend_avatar || undefined} />
-                  <AvatarFallback>{stats.friend_name[0] || "?"}</AvatarFallback>
+                  <AvatarFallback className="bg-primary/10">{stats.friend_name[0] || "?"}</AvatarFallback>
                 </Avatar>
 
                 <div className="flex-1 min-w-0">
@@ -83,9 +93,9 @@ export default function FriendChallengesLeaderboard() {
                       {stats.net_credits}
                     </span>
                   </div>
-                  <p className="text-xs text-muted-foreground">credits</p>
+                  <p className="text-[10px] text-muted-foreground">credits</p>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         )}

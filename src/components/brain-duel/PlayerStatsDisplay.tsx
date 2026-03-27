@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { TrendingUp, TrendingDown, Star, Zap, Award, Crown } from "lucide-react";
+import { TrendingUp, TrendingDown, Zap, Award } from "lucide-react";
 
 interface PlayerStatsDisplayProps {
   xp?: number;
@@ -60,15 +60,21 @@ export const PlayerStatsDisplay = ({
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       {/* XP & Level Card */}
-      <Card className="relative overflow-hidden">
+      <Card className="relative overflow-hidden backdrop-blur-xl bg-card/80 border-primary/10">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-violet-500/5" />
         <CardHeader className="relative pb-3">
           <CardTitle className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className="text-2xl">{currentLevelData.icon}</span>
+              <motion.span
+                className="text-2xl"
+                animate={{ rotate: [0, 10, -10, 0] }}
+                transition={{ duration: 3, repeat: Infinity }}
+              >
+                {currentLevelData.icon}
+              </motion.span>
               <span className="text-lg">Level {level}</span>
             </div>
-            <Badge variant="outline" className="text-xs">{currentLevelData.title}</Badge>
+            <Badge variant="outline" className="text-xs border-primary/20">{currentLevelData.title}</Badge>
           </CardTitle>
         </CardHeader>
         <CardContent className="relative space-y-3">
@@ -96,24 +102,28 @@ export const PlayerStatsDisplay = ({
           </div>
 
           <div className="grid grid-cols-3 gap-2 pt-2">
-            <div className="text-center p-2 rounded-lg bg-muted/50">
-              <div className="text-lg font-bold text-green-500">{wins}</div>
-              <div className="text-[10px] text-muted-foreground">Wins</div>
-            </div>
-            <div className="text-center p-2 rounded-lg bg-muted/50">
-              <div className="text-lg font-bold text-red-500">{losses}</div>
-              <div className="text-[10px] text-muted-foreground">Losses</div>
-            </div>
-            <div className="text-center p-2 rounded-lg bg-muted/50">
-              <div className="text-lg font-bold text-primary">{winRate}%</div>
-              <div className="text-[10px] text-muted-foreground">Win Rate</div>
-            </div>
+            {[
+              { value: wins, label: "Wins", color: "text-green-500" },
+              { value: losses, label: "Losses", color: "text-red-500" },
+              { value: `${winRate}%`, label: "Win Rate", color: "text-primary" },
+            ].map((stat, i) => (
+              <motion.div
+                key={stat.label}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.08 }}
+                className="text-center p-2 rounded-lg bg-muted/30 backdrop-blur-sm border border-primary/5"
+              >
+                <div className={`text-lg font-bold ${stat.color}`}>{stat.value}</div>
+                <div className="text-[10px] text-muted-foreground">{stat.label}</div>
+              </motion.div>
+            ))}
           </div>
         </CardContent>
       </Card>
 
       {/* ELO Rating Card */}
-      <Card className="relative overflow-hidden">
+      <Card className="relative overflow-hidden backdrop-blur-xl bg-card/80 border-primary/10">
         <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-transparent to-primary/5" />
         <CardHeader className="relative pb-3">
           <CardTitle className="flex items-center justify-between">
