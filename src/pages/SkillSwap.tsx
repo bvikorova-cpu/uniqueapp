@@ -867,6 +867,18 @@ export default function SkillSwap() {
               </Button>
               <SkillSwapMessages />
             </motion.div>
+          ) : activeView === "skillmap" ? (
+            <SkillMap onBack={() => setActiveView("hub")} />
+          ) : activeView === "advisor" ? (
+            <AISkillAdvisor onBack={() => setActiveView("hub")} />
+          ) : activeView === "progress" ? (
+            <LearningProgressTracker onBack={() => setActiveView("hub")} />
+          ) : activeView === "lessons" ? (
+            <RecordedLessons onBack={() => setActiveView("hub")} />
+          ) : activeView === "leaderboard" ? (
+            <SwapLeaderboard onBack={() => setActiveView("hub")} />
+          ) : activeView === "scheduler" ? (
+            <SessionScheduler onBack={() => setActiveView("hub")} />
           ) : null}
         </AnimatePresence>
 
