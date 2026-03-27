@@ -3,15 +3,72 @@ import { HandwritingCreditsDisplay } from "@/components/handwriting/HandwritingC
 import { HandwritingUpload } from "@/components/handwriting/HandwritingUpload";
 import { HandwritingAnalysisResult } from "@/components/handwriting/HandwritingAnalysisResult";
 import { HandwritingHistory } from "@/components/handwriting/HandwritingHistory";
+import { HandwritingHero } from "@/components/handwriting/HandwritingHero";
+import { HandwritingStreak } from "@/components/handwriting/HandwritingStreak";
+import { HandwritingProgressPreview } from "@/components/handwriting/HandwritingProgressPreview";
+import { HandwritingAchievements } from "@/components/handwriting/HandwritingAchievements";
+import { HandwritingToolCard } from "@/components/handwriting/HandwritingToolCard";
+import { HandwritingTestimonials } from "@/components/handwriting/HandwritingTestimonials";
+import { HandwritingComparisonTable } from "@/components/handwriting/HandwritingComparisonTable";
 import { useHandwritingCredits } from "@/hooks/useHandwritingCredits";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card } from "@/components/ui/card";
-import { Brain, Zap } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { ArrowLeft, Coins, History, Sparkles, PenTool, Briefcase, Heart, Building2, Upload, Info } from "lucide-react";
 import { toast } from "sonner";
 import { useSearchParams } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
+import { FloatingParticles } from "@/components/wellness/FloatingParticles";
+
+const ANALYSIS_TOOLS = [
+  {
+    id: "personal",
+    name: "Personal Analysis",
+    icon: PenTool,
+    description: "Discover personality traits, emotional states, and self-awareness insights from your handwriting",
+    color: "from-purple-500 to-violet-500",
+    features: ["Personality traits", "Emotional intelligence", "Stress indicators", "Creativity level"],
+    credits: 5,
+  },
+  {
+    id: "professional",
+    name: "Professional Analysis",
+    icon: Briefcase,
+    description: "Career strengths, work style assessment, and leadership qualities analysis",
+    color: "from-blue-500 to-cyan-500",
+    features: ["Work style", "Leadership qualities", "Decision making", "Career strengths"],
+    credits: 10,
+  },
+  {
+    id: "relationship",
+    name: "Relationship Analysis",
+    icon: Heart,
+    description: "Communication patterns, compatibility insights, and relationship dynamics",
+    color: "from-pink-500 to-rose-500",
+    features: ["Communication style", "Compatibility traits", "Emotional patterns", "Trust indicators"],
+    credits: 15,
+  },
+  {
+    id: "business",
+    name: "Business Analysis",
+    icon: Building2,
+    description: "Strategic thinking, decision-making patterns, and negotiation style insights",
+    color: "from-emerald-500 to-teal-500",
+    features: ["Strategic thinking", "Risk assessment", "Negotiation style", "Innovation capacity"],
+    credits: 20,
+  },
+];
+
+const HOW_IT_WORKS = [
+  { step: "1", title: "Upload Sample", desc: "Take a clear photo of your handwriting — at least 3-4 lines of natural text" },
+  { step: "2", title: "Choose Analysis", desc: "Select from Personal, Professional, Relationship, or Business analysis types" },
+  { step: "3", title: "Get Insights", desc: "Receive a comprehensive report with personality traits, strengths, and recommendations" },
+];
 
 const Handwriting = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const [activeView, setActiveView] = useState<"hub" | "analyze" | "history" | "credits">("hub");
+  const [selectedType, setSelectedType] = useState("personal");
   const [currentAnalysis, setCurrentAnalysis] = useState<any>(null);
   const { analyzeHandwriting, isAnalyzing } = useHandwritingCredits();
 
@@ -31,151 +88,185 @@ const Handwriting = () => {
     toast.success("Analysis complete!");
   };
 
+  const openTool = (toolId: string) => {
+    setSelectedType(toolId);
+    setActiveView("analyze");
+  };
+
+  const getViewLabel = () => {
+    if (activeView === "analyze") return ANALYSIS_TOOLS.find(t => t.id === selectedType)?.name || "Analysis";
+    if (activeView === "history") return "Analysis History";
+    if (activeView === "credits") return "Credits";
+    return "";
+  };
+
   return (
-    <div className="min-h-screen bg-background">
-      <div className="border-b">
-        <div className="container mx-auto px-4 py-8 sm:py-16">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-black mb-2">Handwriting Analyzer</h1>
-          <p className="text-sm sm:text-base text-muted-foreground">
-            Unlock personality insights through professional handwriting analysis
-          </p>
-        </div>
-      </div>
+    <div className="min-h-screen bg-background pt-16 sm:pt-20 pb-8 sm:pb-12 relative overflow-hidden">
+      <FloatingParticles />
+      <div className="container mx-auto px-3 sm:px-4 max-w-6xl relative z-10">
+        <AnimatePresence mode="wait">
+          {activeView === "hub" ? (
+            <motion.div
+              key="hub"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="space-y-6 sm:space-y-8"
+            >
+              <HandwritingHero />
 
-      <div className="container mx-auto px-4 py-8 space-y-8">
-        {/* Informative Section */}
-        <Card className="p-6 sm:p-8 bg-gradient-to-br from-purple-500/5 to-indigo-500/5">
-          <div className="space-y-6">
-            <div>
-              <h2 className="text-2xl sm:text-3xl font-black mb-3">What is Handwriting Analysis?</h2>
-              <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
-                Handwriting analysis, also known as graphology, is the scientific study of handwriting to reveal personality traits, emotional states, and behavioral patterns. Our AI-powered analyzer examines various aspects of your handwriting including pressure, slant, spacing, letter formations, and flow to provide deep insights into your unique personality.
-              </p>
-            </div>
+              {/* Quick Actions */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+                className="flex justify-center gap-3 flex-wrap"
+              >
+                <Button
+                  variant="outline"
+                  className="gap-2 bg-card/60 backdrop-blur-sm border-border/50 hover:border-primary/30"
+                  onClick={() => setActiveView("credits")}
+                >
+                  <Coins className="w-4 h-4 text-primary" />
+                  Buy Credits
+                </Button>
+                <Button
+                  variant="outline"
+                  className="gap-2 bg-card/60 backdrop-blur-sm border-border/50 hover:border-primary/30"
+                  onClick={() => setActiveView("history")}
+                >
+                  <History className="w-4 h-4 text-primary" />
+                  View History
+                </Button>
+              </motion.div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <h3 className="text-lg sm:text-xl font-semibold mb-3 flex items-center gap-2">
-                  <Brain className="h-5 w-5 text-purple-500" />
-                  What You Can Discover
-                </h3>
-                <ul className="space-y-2 text-sm sm:text-base text-muted-foreground">
-                  <li className="flex items-start gap-2">
-                    <span className="text-purple-500 mt-1">•</span>
-                    <span>Personality traits and character strengths</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-purple-500 mt-1">•</span>
-                    <span>Communication style and social patterns</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-purple-500 mt-1">•</span>
-                    <span>Emotional intelligence and stress levels</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-purple-500 mt-1">•</span>
-                    <span>Decision-making approach and work style</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-purple-500 mt-1">•</span>
-                    <span>Leadership qualities and creativity level</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-purple-500 mt-1">•</span>
-                    <span>Relationship patterns and compatibility insights</span>
-                  </li>
-                </ul>
+              {/* 3-Column Engagement Row */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <HandwritingStreak />
+                <HandwritingProgressPreview />
+                <HandwritingAchievements />
               </div>
 
-              <div>
-                <h3 className="text-lg sm:text-xl font-semibold mb-3 flex items-center gap-2">
-                  <Zap className="h-5 w-5 text-indigo-500" />
-                  How to Use
-                </h3>
-                <ol className="space-y-3 text-sm sm:text-base text-muted-foreground">
-                  <li className="flex items-start gap-3">
-                    <span className="font-bold text-indigo-500 min-w-[24px]">1.</span>
-                    <span>Purchase analysis credits using the packages below</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="font-bold text-indigo-500 min-w-[24px]">2.</span>
-                    <span>Upload a clear handwriting sample (image URL or file)</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="font-bold text-indigo-500 min-w-[24px]">3.</span>
-                    <span>Choose your analysis type based on your needs</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="font-bold text-indigo-500 min-w-[24px]">4.</span>
-                    <span>Receive detailed AI-powered insights instantly</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="font-bold text-indigo-500 min-w-[24px]">5.</span>
-                    <span>Review your analysis history anytime</span>
-                  </li>
-                </ol>
-              </div>
-            </div>
+              {/* Main Content: Tools + Sidebar */}
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="lg:col-span-2">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {ANALYSIS_TOOLS.map((tool, i) => (
+                      <HandwritingToolCard
+                        key={tool.id}
+                        tool={tool}
+                        onSelect={() => openTool(tool.id)}
+                        index={i}
+                      />
+                    ))}
+                  </div>
+                </div>
 
-            <div className="bg-background/50 rounded-lg p-4 sm:p-6 border">
-              <h3 className="text-lg sm:text-xl font-semibold mb-4">Available Analysis Types</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-purple-500"></div>
-                    <span className="font-semibold text-sm sm:text-base">Personal Analysis</span>
-                  </div>
-                  <p className="text-xs sm:text-sm text-muted-foreground pl-4">5 credits • Focus on personal growth and self-awareness</p>
-                </div>
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-blue-500"></div>
-                    <span className="font-semibold text-sm sm:text-base">Professional Analysis</span>
-                  </div>
-                  <p className="text-xs sm:text-sm text-muted-foreground pl-4">10 credits • Career strengths and work style assessment</p>
-                </div>
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-pink-500"></div>
-                    <span className="font-semibold text-sm sm:text-base">Relationship Analysis</span>
-                  </div>
-                  <p className="text-xs sm:text-sm text-muted-foreground pl-4">15 credits • Communication and compatibility patterns</p>
-                </div>
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-green-500"></div>
-                    <span className="font-semibold text-sm sm:text-base">Business Analysis</span>
-                  </div>
-                  <p className="text-xs sm:text-sm text-muted-foreground pl-4">20 credits • Decision-making and strategic thinking</p>
+                <div className="space-y-4">
+                  <HandwritingTestimonials />
+                  <HandwritingComparisonTable />
                 </div>
               </div>
-            </div>
-          </div>
-        </Card>
 
-        <HandwritingCreditsDisplay />
+              {/* How It Works */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 }}
+              >
+                <Card className="bg-card/60 backdrop-blur-sm border-border/50">
+                  <CardHeader>
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <Sparkles className="w-5 h-5 text-primary" />
+                      How It Works
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                      {HOW_IT_WORKS.map((item, i) => (
+                        <motion.div
+                          key={i}
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: 0.6 + i * 0.1 }}
+                          className="text-center p-4 rounded-xl bg-muted/10 border border-border/20"
+                        >
+                          <div className="w-10 h-10 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center mx-auto mb-3">
+                            <span className="text-sm font-bold text-primary">{item.step}</span>
+                          </div>
+                          <h3 className="font-semibold text-sm mb-1">{item.title}</h3>
+                          <p className="text-[11px] text-muted-foreground">{item.desc}</p>
+                        </motion.div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
 
-        <Tabs defaultValue="analyze" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="analyze">New Analysis</TabsTrigger>
-            <TabsTrigger value="history">My Analyses</TabsTrigger>
-          </TabsList>
+              {/* Tips */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.7 }}
+              >
+                <Card className="bg-card/60 backdrop-blur-sm border-primary/20">
+                  <CardContent className="p-4 sm:p-6">
+                    <div className="flex items-start gap-3">
+                      <Info className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                      <div>
+                        <h3 className="font-semibold text-sm mb-2">Tips for Best Results</h3>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] text-muted-foreground">
+                          <p>• Use clear, high-resolution images</p>
+                          <p>• Ensure good lighting without shadows</p>
+                          <p>• Include at least 3-4 lines of handwriting</p>
+                          <p>• Natural, unforced writing works best</p>
+                          <p>• Write on white unlined paper if possible</p>
+                          <p>• Use a pen rather than pencil</p>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            </motion.div>
+          ) : (
+            <motion.div
+              key={activeView}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              className="space-y-6"
+            >
+              <div className="flex items-center gap-3">
+                <Button
+                  variant="ghost"
+                  onClick={() => { setActiveView("hub"); setCurrentAnalysis(null); }}
+                  className="gap-2"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  Back to Handwriting
+                </Button>
+                <Badge variant="outline" className="text-xs">{getViewLabel()}</Badge>
+              </div>
 
-          <TabsContent value="analyze" className="space-y-6">
-            <HandwritingUpload
-              onAnalysisComplete={handleAnalysisComplete}
-              isAnalyzing={isAnalyzing}
-            />
+              {activeView === "analyze" && (
+                <div className="space-y-6">
+                  <HandwritingUpload
+                    onAnalysisComplete={handleAnalysisComplete}
+                    isAnalyzing={isAnalyzing}
+                    preselectedType={selectedType}
+                  />
+                  {currentAnalysis && (
+                    <HandwritingAnalysisResult analysis={currentAnalysis} />
+                  )}
+                </div>
+              )}
 
-            {currentAnalysis && (
-              <HandwritingAnalysisResult analysis={currentAnalysis} />
-            )}
-          </TabsContent>
-
-          <TabsContent value="history">
-            <HandwritingHistory />
-          </TabsContent>
-        </Tabs>
+              {activeView === "history" && <HandwritingHistory />}
+              {activeView === "credits" && <HandwritingCreditsDisplay />}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );
