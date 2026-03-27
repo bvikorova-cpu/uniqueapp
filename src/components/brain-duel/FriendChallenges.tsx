@@ -275,8 +275,9 @@ export const FriendChallenges = () => {
   });
 
   return (
-    <Card className="overflow-hidden">
-      <CardHeader className="pb-3">
+    <Card className="overflow-hidden backdrop-blur-xl bg-card/80 border-primary/10 relative">
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5" />
+      <CardHeader className="pb-3 relative">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
             <Swords className="h-4 w-4 sm:h-5 sm:w-5" />
@@ -289,7 +290,7 @@ export const FriendChallenges = () => {
                 Challenge Friend
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-md">
+            <DialogContent className="max-w-md backdrop-blur-xl bg-card/95">
               <DialogHeader>
                 <DialogTitle className="flex items-center gap-2">
                   <Swords className="h-5 w-5 text-primary" />
@@ -413,7 +414,7 @@ export const FriendChallenges = () => {
           </Dialog>
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="relative">
         {challenges && challenges.length > 0 ? (
           <div className="space-y-3">
             {challenges.map((challenge) => {
@@ -425,10 +426,10 @@ export const FriendChallenges = () => {
               return (
                 <div 
                   key={challenge.id} 
-                  className={`p-4 rounded-lg border transition-all ${
+                  className={`p-4 rounded-lg border backdrop-blur-sm transition-all ${
                     challenge.status === 'pending' && !isChallenger 
-                      ? 'border-primary bg-primary/5 animate-pulse' 
-                      : 'border-border'
+                      ? 'border-primary/30 bg-primary/5 animate-pulse' 
+                      : 'border-primary/10 bg-muted/20 hover:bg-muted/30'
                   }`}
                 >
                   <div className="flex items-start justify-between mb-3">
