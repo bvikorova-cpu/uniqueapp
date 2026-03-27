@@ -66,15 +66,15 @@ export const DailySpinWheel = () => {
     const today = new Date().toISOString().split('T')[0];
 
     const { data } = await supabase
-      .from('brain_duel_daily_spins')
+      .from('brain_duel_daily_spins' as any)
       .select('*')
       .eq('user_id', user.id)
       .order('spin_date', { ascending: false })
       .limit(1);
 
     if (data && data.length > 0) {
-      const lastSpin = data[0].spin_date;
-      setLastSpinDate(data[0].created_at);
+      const lastSpin = (data[0] as any).spin_date;
+      setLastSpinDate((data[0] as any).created_at);
       setCanSpin(lastSpin !== today);
     } else {
       setCanSpin(true);
