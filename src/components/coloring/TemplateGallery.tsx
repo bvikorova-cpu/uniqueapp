@@ -64,10 +64,7 @@ interface TemplateGalleryProps {
 
 export function TemplateGallery({ onSelectTemplate }: TemplateGalleryProps) {
   const [activeCategory, setActiveCategory] = useState("all");
-
-  const filtered = activeCategory === "all"
-    ? TEMPLATES
-    : TEMPLATES.filter((t) => t.category === activeCategory);
+  const filtered = activeCategory === "all" ? TEMPLATES : TEMPLATES.filter((t) => t.category === activeCategory);
 
   return (
     <div className="space-y-6">
@@ -84,8 +81,8 @@ export function TemplateGallery({ onSelectTemplate }: TemplateGalleryProps) {
             onClick={() => setActiveCategory(cat.id)}
             className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
               activeCategory === cat.id
-                ? "bg-primary text-primary-foreground shadow-lg"
-                : "bg-muted hover:bg-muted/80 text-muted-foreground"
+                ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
+                : "bg-muted/50 hover:bg-muted/80 text-muted-foreground border border-border/30"
             }`}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
@@ -98,17 +95,17 @@ export function TemplateGallery({ onSelectTemplate }: TemplateGalleryProps) {
       {/* Template grid */}
       <motion.div layout className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         <AnimatePresence mode="popLayout">
-          {filtered.map((template) => (
+          {filtered.map((template, i) => (
             <motion.div
               key={template.id}
               layout
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.8 }}
-              transition={{ duration: 0.3 }}
+              transition={{ duration: 0.3, delay: i * 0.02 }}
             >
               <Card
-                className="group cursor-pointer hover:shadow-xl transition-all duration-300 hover:-translate-y-1 overflow-hidden"
+                className="group cursor-pointer backdrop-blur-xl bg-card/80 border-border/30 hover:border-primary/30 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 hover:-translate-y-1 overflow-hidden"
                 onClick={() => onSelectTemplate(template.prompt, template.difficulty)}
               >
                 <CardContent className="p-4 relative">
@@ -117,30 +114,16 @@ export function TemplateGallery({ onSelectTemplate }: TemplateGalleryProps) {
                       <Star className="w-3 h-3" /> Popular
                     </Badge>
                   )}
-
-                  <div className="w-full aspect-square rounded-xl overflow-hidden bg-muted flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
-                    <img
-                      src={template.image}
-                      alt={template.name}
-                      loading="lazy"
-                      width={512}
-                      height={512}
-                      className="w-full h-full object-cover"
-                    />
+                  <div className="w-full aspect-square rounded-xl overflow-hidden bg-muted/30 flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
+                    <img src={template.image} alt={template.name} loading="lazy" width={512} height={512} className="w-full h-full object-cover" />
                   </div>
-
-                  <h3 className="font-semibold text-sm mb-1 truncate">{template.name}</h3>
+                  <h3 className="font-semibold text-sm mb-1 truncate group-hover:text-primary transition-colors">{template.name}</h3>
                   <div className="flex items-center gap-2">
-                    <Badge variant="outline" className={`text-xs ${difficultyColors[template.difficulty]}`}>
-                      {template.difficulty}
-                    </Badge>
+                    <Badge variant="outline" className={`text-xs ${difficultyColors[template.difficulty]}`}>{template.difficulty}</Badge>
                     <span className="text-xs text-muted-foreground capitalize">{template.category}</span>
                   </div>
-
                   <div className="mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <Button size="sm" className="w-full text-xs gap-1">
-                      <Sparkles className="w-3 h-3" /> Generate
-                    </Button>
+                    <Button size="sm" className="w-full text-xs gap-1"><Sparkles className="w-3 h-3" /> Generate</Button>
                   </div>
                 </CardContent>
               </Card>

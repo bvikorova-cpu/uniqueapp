@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -18,18 +19,47 @@ export function CorporateTab() {
     }, 100);
   };
 
+  const renderPricingCard = (props: { title: string; icon: any; desc: string; price: string; priceLabel: string; features: string[]; popular?: boolean; onClick: () => void; buttonText: string }, index: number) => {
+    const Icon = props.icon;
+    return (
+      <motion.div key={props.title} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.08 }}>
+        <Card className={`backdrop-blur-xl bg-card/80 hover:shadow-lg hover:shadow-primary/5 transition-all hover:-translate-y-1 ${props.popular ? "border-2 border-primary" : "border-border/30 hover:border-primary/30"}`}>
+          <CardHeader>
+            {props.popular && <Badge className="w-fit mb-2">Popular</Badge>}
+            <CardTitle className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center">
+                <Icon className="w-4 h-4 text-primary" />
+              </div>
+              {props.title}
+            </CardTitle>
+            <CardDescription>{props.desc}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="text-3xl font-bold mb-4">{props.price}<span className="text-sm text-muted-foreground">{props.priceLabel}</span></div>
+            <ul className="space-y-2 text-sm mb-4">
+              {props.features.map((f) => (
+                <li key={f} className="flex items-start gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-primary mt-0.5 shrink-0" />
+                  <span>{f}</span>
+                </li>
+              ))}
+            </ul>
+            <Button className="w-full" onClick={props.onClick}>{props.buttonText}</Button>
+          </CardContent>
+        </Card>
+      </motion.div>
+    );
+  };
+
   return (
     <div className="space-y-8">
-      <div className="text-center">
-        <Badge className="mb-4" variant="secondary">
-          <Building2 className="w-4 h-4 mr-2" />
-          B2B Solutions
-        </Badge>
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="text-center">
+        <Badge className="mb-4" variant="secondary"><Building2 className="w-4 h-4 mr-2" />B2B Solutions</Badge>
         <h2 className="text-4xl font-bold mb-4">Corporate & Event Solutions</h2>
         <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
           Professional coloring book solutions for companies, restaurants, weddings and events. Strengthen your brand with creativity.
         </p>
-      </div>
+      </motion.div>
 
       <Tabs defaultValue="corporate" className="w-full">
         <TabsList className="grid w-full grid-cols-2 lg:grid-cols-4">
@@ -41,326 +71,44 @@ export function CorporateTab() {
 
         <TabsContent value="corporate" className="space-y-6 mt-6">
           <div className="grid md:grid-cols-3 gap-6">
-            <Card className="border-2 hover:border-primary/50 transition-all">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Sparkles className="w-5 h-5 text-primary" />
-                  Startup
-                </CardTitle>
-                <CardDescription>For small companies</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold mb-4">€15<span className="text-sm text-muted-foreground">/event</span></div>
-                <ul className="space-y-2 text-sm mb-4">
-                  <li className="flex items-start gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                    <span>Company logo on 10 pages</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                    <span>Basic brand colors</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                    <span>PDF download</span>
-                  </li>
-                </ul>
-                <Button className="w-full" onClick={() => scrollToForm("startup", "corporate")}>Order</Button>
-              </CardContent>
-            </Card>
-
-            <Card className="border-2 hover:border-primary/50 transition-all">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Building2 className="w-5 h-5 text-primary" />
-                  Business
-                </CardTitle>
-                <CardDescription>For medium companies</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold mb-4">€30<span className="text-sm text-muted-foreground">/event</span></div>
-                <ul className="space-y-2 text-sm mb-4">
-                  <li className="flex items-start gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                    <span>20 custom pages</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                    <span>Full branding</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                    <span>Multiple formats</span>
-                  </li>
-                </ul>
-                <Button className="w-full" onClick={() => scrollToForm("business", "corporate")}>Order</Button>
-              </CardContent>
-            </Card>
-
-            <Card className="border-2 border-primary">
-              <CardHeader>
-                <Badge className="w-fit mb-2">Popular</Badge>
-                <CardTitle className="flex items-center gap-2">
-                  <Building2 className="w-5 h-5 text-primary" />
-                  Enterprise
-                </CardTitle>
-                <CardDescription>For large corporations</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold mb-4">€60<span className="text-sm text-muted-foreground">/event</span></div>
-                <ul className="space-y-2 text-sm mb-4">
-                  <li className="flex items-start gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                    <span>Unlimited pages</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                    <span>Complete branding</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                    <span>Dedicated support</span>
-                  </li>
-                </ul>
-                <Button className="w-full" onClick={() => scrollToForm("enterprise", "corporate")}>Order</Button>
-              </CardContent>
-            </Card>
+            {renderPricingCard({ title: "Startup", icon: Sparkles, desc: "For small companies", price: "€15", priceLabel: "/event", features: ["Company logo on 10 pages", "Basic brand colors", "PDF download"], onClick: () => scrollToForm("startup", "corporate"), buttonText: "Order" }, 0)}
+            {renderPricingCard({ title: "Business", icon: Building2, desc: "For medium companies", price: "€30", priceLabel: "/event", features: ["20 custom pages", "Full branding", "Multiple formats"], onClick: () => scrollToForm("business", "corporate"), buttonText: "Order" }, 1)}
+            {renderPricingCard({ title: "Enterprise", icon: Building2, desc: "For large corporations", price: "€60", priceLabel: "/event", features: ["Unlimited pages", "Complete branding", "Dedicated support"], popular: true, onClick: () => scrollToForm("enterprise", "corporate"), buttonText: "Order" }, 2)}
           </div>
         </TabsContent>
 
         <TabsContent value="restaurants" className="space-y-6 mt-6">
           <div className="grid md:grid-cols-3 gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Utensils className="w-5 h-5 text-primary" />
-                  Restaurant Basic
-                </CardTitle>
-                <CardDescription>For small cafes</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold mb-4">€10<span className="text-sm text-muted-foreground">/month</span></div>
-                <ul className="space-y-2 text-sm mb-4">
-                  <li className="flex items-start gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                    <span>10 themed pages</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                    <span>Restaurant logo</span>
-                  </li>
-                </ul>
-                <Button className="w-full" onClick={() => scrollToForm("basic", "restaurant")}>Subscribe</Button>
-              </CardContent>
-            </Card>
-
-            <Card className="border-2 border-primary">
-              <CardHeader>
-                <Badge className="w-fit mb-2">Best Value</Badge>
-                <CardTitle className="flex items-center gap-2">
-                  <Utensils className="w-5 h-5 text-primary" />
-                  Restaurant Premium
-                </CardTitle>
-                <CardDescription>For family restaurants</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold mb-4">€25<span className="text-sm text-muted-foreground">/month</span></div>
-                <ul className="space-y-2 text-sm mb-4">
-                  <li className="flex items-start gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                    <span>Unlimited pages</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                    <span>Menu-themed content</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                    <span>QR code integration</span>
-                  </li>
-                </ul>
-                <Button className="w-full" onClick={() => scrollToForm("premium", "restaurant")}>Subscribe</Button>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Utensils className="w-5 h-5 text-primary" />
-                  Chain Solution
-                </CardTitle>
-                <CardDescription>For restaurant chains</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold mb-4">Custom</div>
-                <ul className="space-y-2 text-sm mb-4">
-                  <li className="flex items-start gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                    <span>Multi-location</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                    <span>API integration</span>
-                  </li>
-                </ul>
-                <Button className="w-full" onClick={() => scrollToForm("chain", "restaurant")}>Contact</Button>
-              </CardContent>
-            </Card>
+            {renderPricingCard({ title: "Restaurant Basic", icon: Utensils, desc: "For small cafes", price: "€10", priceLabel: "/month", features: ["10 themed pages", "Restaurant logo"], onClick: () => scrollToForm("basic", "restaurant"), buttonText: "Subscribe" }, 0)}
+            {renderPricingCard({ title: "Restaurant Premium", icon: Utensils, desc: "For family restaurants", price: "€25", priceLabel: "/month", features: ["Unlimited pages", "Menu-themed content", "QR code integration"], popular: true, onClick: () => scrollToForm("premium", "restaurant"), buttonText: "Subscribe" }, 1)}
+            {renderPricingCard({ title: "Chain Solution", icon: Utensils, desc: "For restaurant chains", price: "Custom", priceLabel: "", features: ["Multi-location", "API integration"], onClick: () => scrollToForm("chain", "restaurant"), buttonText: "Contact" }, 2)}
           </div>
         </TabsContent>
 
         <TabsContent value="weddings" className="space-y-6 mt-6">
           <div className="grid md:grid-cols-2 gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Heart className="w-5 h-5 text-primary" />
-                  Wedding Basic
-                </CardTitle>
-                <CardDescription>For intimate weddings</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold mb-4">€25<span className="text-sm text-muted-foreground">/wedding</span></div>
-                <ul className="space-y-2 text-sm mb-4">
-                  <li className="flex items-start gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                    <span>15 personalized pages</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                    <span>Couple names & date</span>
-                  </li>
-                </ul>
-                <Button className="w-full" onClick={() => scrollToForm("basic", "wedding")}>Order</Button>
-              </CardContent>
-            </Card>
-
-            <Card className="border-2 border-primary">
-              <CardHeader>
-                <Badge className="w-fit mb-2">Most Popular</Badge>
-                <CardTitle className="flex items-center gap-2">
-                  <Heart className="w-5 h-5 text-primary" />
-                  Wedding Premium
-                </CardTitle>
-                <CardDescription>For grand celebrations</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold mb-4">€50<span className="text-sm text-muted-foreground">/wedding</span></div>
-                <ul className="space-y-2 text-sm mb-4">
-                  <li className="flex items-start gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                    <span>30+ custom pages</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                    <span>Photo integration</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                    <span>Kids activity packs</span>
-                  </li>
-                </ul>
-                <Button className="w-full" onClick={() => scrollToForm("premium", "wedding")}>Order</Button>
-              </CardContent>
-            </Card>
+            {renderPricingCard({ title: "Wedding Basic", icon: Heart, desc: "For intimate weddings", price: "€25", priceLabel: "/wedding", features: ["15 personalized pages", "Couple names & date"], onClick: () => scrollToForm("basic", "wedding"), buttonText: "Order" }, 0)}
+            {renderPricingCard({ title: "Wedding Premium", icon: Heart, desc: "For grand celebrations", price: "€50", priceLabel: "/wedding", features: ["30+ custom pages", "Photo integration", "Kids activity packs"], popular: true, onClick: () => scrollToForm("premium", "wedding"), buttonText: "Order" }, 1)}
           </div>
         </TabsContent>
 
         <TabsContent value="events" className="space-y-6 mt-6">
           <div className="grid md:grid-cols-3 gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Calendar className="w-5 h-5 text-primary" />
-                  Event Starter
-                </CardTitle>
-                <CardDescription>For small events</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold mb-4">€20<span className="text-sm text-muted-foreground">/event</span></div>
-                <ul className="space-y-2 text-sm mb-4">
-                  <li className="flex items-start gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                    <span>15 event pages</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                    <span>Event branding</span>
-                  </li>
-                </ul>
-                <Button className="w-full" onClick={() => scrollToForm("starter", "event")}>Order</Button>
-              </CardContent>
-            </Card>
-
-            <Card className="border-2 border-primary">
-              <CardHeader>
-                <Badge className="w-fit mb-2">Recommended</Badge>
-                <CardTitle className="flex items-center gap-2">
-                  <Calendar className="w-5 h-5 text-primary" />
-                  Event Professional
-                </CardTitle>
-                <CardDescription>For professional organizers</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold mb-4">€40<span className="text-sm text-muted-foreground">/event</span></div>
-                <ul className="space-y-2 text-sm mb-4">
-                  <li className="flex items-start gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                    <span>Unlimited pages</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                    <span>Full customization</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                    <span>Priority support</span>
-                  </li>
-                </ul>
-                <Button className="w-full" onClick={() => scrollToForm("professional", "event")}>Order</Button>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Calendar className="w-5 h-5 text-primary" />
-                  Agency Partner
-                </CardTitle>
-                <CardDescription>For event agencies</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold mb-4">Custom</div>
-                <ul className="space-y-2 text-sm mb-4">
-                  <li className="flex items-start gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                    <span>White label solution</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                    <span>API access</span>
-                  </li>
-                </ul>
-                <Button className="w-full" onClick={() => scrollToForm("agency", "event")}>Contact</Button>
-              </CardContent>
-            </Card>
+            {renderPricingCard({ title: "Event Starter", icon: Calendar, desc: "For small events", price: "€20", priceLabel: "/event", features: ["15 event pages", "Event branding"], onClick: () => scrollToForm("starter", "event"), buttonText: "Order" }, 0)}
+            {renderPricingCard({ title: "Event Professional", icon: Calendar, desc: "For professional organizers", price: "€40", priceLabel: "/event", features: ["Unlimited pages", "Full customization", "Priority support"], popular: true, onClick: () => scrollToForm("professional", "event"), buttonText: "Order" }, 1)}
+            {renderPricingCard({ title: "Agency Partner", icon: Calendar, desc: "For event agencies", price: "Custom", priceLabel: "", features: ["White label solution", "API access"], onClick: () => scrollToForm("agency", "event"), buttonText: "Contact" }, 2)}
           </div>
         </TabsContent>
       </Tabs>
 
       <div id="corporate-inquiry-form" className="mt-12">
-        <Card>
+        <Card className="backdrop-blur-xl bg-card/80 border-primary/20">
           <CardHeader>
             <CardTitle>Contact Form</CardTitle>
-            <CardDescription>
-              Fill out the form below and we'll get back to you within 24 hours
-            </CardDescription>
+            <CardDescription>Fill out the form below and we'll get back to you within 24 hours</CardDescription>
           </CardHeader>
           <CardContent>
-            <CorporateInquiryForm 
-              defaultPackage={selectedPackage}
-              defaultCategory={selectedCategory}
-            />
+            <CorporateInquiryForm defaultPackage={selectedPackage} defaultCategory={selectedCategory} />
           </CardContent>
         </Card>
       </div>
