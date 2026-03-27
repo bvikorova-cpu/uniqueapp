@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Brain, Send, Loader2, AlertCircle, Bot, User, Sparkles } from "lucide-react";
+import { Brain, Send, AlertCircle, Bot, User, Sparkles } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
@@ -37,12 +37,12 @@ export const EnhancedChat = ({
   isUsingCredit,
 }: EnhancedChatProps) => {
   return (
-    <Card className="border-primary/10">
+    <Card className="backdrop-blur-xl bg-card/80 border-primary/20">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center">
-              <Brain className="h-4 w-4 text-primary" />
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary/30 to-accent/30 flex items-center justify-center">
+              <Brain className="h-5 w-5 text-primary" />
             </div>
             <div>
               <CardTitle className="text-lg">AI Tutoring</CardTitle>
@@ -62,15 +62,17 @@ export const EnhancedChat = ({
             { icon: "📝", title: "Step by Step" },
             { icon: "🕐", title: "Available 24/7" },
           ].map((f, i) => (
-            <div key={i} className="flex items-center gap-2 p-2 rounded-lg bg-muted/30 border border-border/30">
+            <motion.div key={i} initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 * i }}
+              className="flex items-center gap-2 p-2 rounded-xl bg-muted/30 border border-border/30 hover:border-primary/20 transition-colors"
+            >
               <span className="text-sm">{f.icon}</span>
               <p className="text-[11px] font-medium">{f.title}</p>
-            </div>
+            </motion.div>
           ))}
         </div>
 
         {!creditsLoading && credits < 1 && (
-          <div className="bg-destructive/10 border border-destructive/30 rounded-lg p-3 flex items-center gap-3">
+          <div className="bg-destructive/10 border border-destructive/30 rounded-xl p-3 flex items-center gap-3">
             <AlertCircle className="h-5 w-5 text-destructive shrink-0" />
             <div>
               <p className="font-medium text-destructive text-sm">No credits available</p>
@@ -79,10 +81,10 @@ export const EnhancedChat = ({
           </div>
         )}
 
-        <div className="min-h-[280px] max-h-[450px] overflow-y-auto space-y-3 p-3 bg-muted/20 rounded-xl border border-border/50">
+        <div className="min-h-[280px] max-h-[450px] overflow-y-auto space-y-3 p-3 bg-muted/10 rounded-xl border border-border/30">
           {chatHistory.length === 0 ? (
             <div className="text-center py-8">
-              <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center mx-auto mb-4">
                 <Bot className="h-8 w-8 text-primary/50" />
               </div>
               <p className="text-sm text-muted-foreground mb-4">Start a conversation or try:</p>
@@ -94,7 +96,7 @@ export const EnhancedChat = ({
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.1 + i * 0.05 }}
                     onClick={() => setChatMessage(q)}
-                    className="text-left text-xs p-2.5 rounded-lg bg-card border border-border/50 hover:border-primary/30 hover:bg-primary/5 transition-all"
+                    className="text-left text-xs p-2.5 rounded-xl bg-card border border-border/50 hover:border-primary/30 hover:bg-primary/5 transition-all"
                   >
                     <Sparkles className="w-3 h-3 text-primary inline mr-1.5" />
                     {q}
@@ -158,12 +160,9 @@ export const EnhancedChat = ({
             value={chatMessage}
             onChange={(e) => setChatMessage(e.target.value)}
             onKeyDown={(e) => {
-              if (e.key === "Enter" && !e.shiftKey) {
-                e.preventDefault();
-                handleSendMessage();
-              }
+              if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSendMessage(); }
             }}
-            className="min-h-[60px] resize-none"
+            className="min-h-[60px] resize-none rounded-xl"
           />
           <Button
             onClick={handleSendMessage}
