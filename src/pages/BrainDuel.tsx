@@ -261,6 +261,20 @@ const BrainDuel = () => {
                 <Radio className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                 Live
               </TabsTrigger>
+              <TabsTrigger value="season" className="gap-1.5 text-xs sm:text-sm px-3 sm:px-4 py-2.5 rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-primary/20 transition-all flex-shrink-0">
+                <Crown className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                <span className="hidden sm:inline">Season</span>
+                <span className="sm:hidden">Pass</span>
+              </TabsTrigger>
+              <TabsTrigger value="ai-training" className="gap-1.5 text-xs sm:text-sm px-3 sm:px-4 py-2.5 rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-primary/20 transition-all flex-shrink-0">
+                <Bot className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                <span className="hidden sm:inline">AI Training</span>
+                <span className="sm:hidden">AI</span>
+              </TabsTrigger>
+              <TabsTrigger value="replay" className="gap-1.5 text-xs sm:text-sm px-3 sm:px-4 py-2.5 rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-primary/20 transition-all flex-shrink-0">
+                <BarChart3 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                Replay
+              </TabsTrigger>
             </TabsList>
 
             {/* Play Now Tab */}
