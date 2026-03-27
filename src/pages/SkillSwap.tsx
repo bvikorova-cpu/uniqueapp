@@ -745,7 +745,7 @@ export default function SkillSwap() {
                     </h2>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     {SWAP_TOOLS.map((tool, i) => (
                       <SkillSwapToolCard key={tool.id} tool={tool} onSelect={() => setActiveView(tool.id as ViewType)} index={i} />
                     ))}
