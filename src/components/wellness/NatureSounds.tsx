@@ -2,22 +2,24 @@ import { useState, useRef, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
-import { Cloud, Waves, Trees, Play, Pause, Volume2, VolumeX, Zap, Flame, Wind, Droplets, Clock, X } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Cloud, Waves, Trees, Play, Pause, Volume2, VolumeX, Zap, Flame, Droplets, Clock, X, Moon } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const NATURE_SOUNDS = [
-  { id: "rain", name: "Rain", icon: Cloud, description: "Gentle rain sounds for calming the mind", src: "/sounds/rain.mp3" },
-  { id: "waves", name: "Ocean Waves", icon: Waves, description: "Relaxing sounds of ocean waves", src: "/sounds/ocean.mp3" },
-  { id: "forest", name: "Forest", icon: Trees, description: "Peaceful nature sounds with birds", src: "/sounds/forest.mp3" },
-  { id: "thunderstorm", name: "Thunderstorm", icon: Zap, description: "Powerful thunder and rain for deep relaxation", src: "/sounds/thunderstorm.mp3" },
-  { id: "campfire", name: "Campfire", icon: Flame, description: "Crackling fire sounds for cozy atmosphere", src: "/sounds/campfire.mp3" },
-  
-  { id: "waterfall", name: "Waterfall", icon: Droplets, description: "Flowing water for meditation and focus", src: "/sounds/waterfall.mp3" },
+  { id: "rain", name: "Rain", icon: Cloud, description: "Gentle rain for calming the mind", src: "/sounds/rain.mp3", color: "text-blue-400", bg: "from-blue-500/10 to-cyan-500/5" },
+  { id: "waves", name: "Ocean Waves", icon: Waves, description: "Relaxing ocean waves", src: "/sounds/ocean.mp3", color: "text-cyan-400", bg: "from-cyan-500/10 to-teal-500/5" },
+  { id: "forest", name: "Forest", icon: Trees, description: "Peaceful birds & nature", src: "/sounds/forest.mp3", color: "text-green-400", bg: "from-green-500/10 to-emerald-500/5" },
+  { id: "thunderstorm", name: "Thunderstorm", icon: Zap, description: "Deep thunder for relaxation", src: "/sounds/thunderstorm.mp3", color: "text-violet-400", bg: "from-violet-500/10 to-purple-500/5" },
+  { id: "campfire", name: "Campfire", icon: Flame, description: "Crackling fire ambience", src: "/sounds/campfire.mp3", color: "text-orange-400", bg: "from-orange-500/10 to-amber-500/5" },
+  { id: "waterfall", name: "Waterfall", icon: Droplets, description: "Flowing water for focus", src: "/sounds/waterfall.mp3", color: "text-sky-400", bg: "from-sky-500/10 to-blue-500/5" },
 ];
 
 const TIMER_PRESETS = [
   { label: "15 min", minutes: 15 },
   { label: "30 min", minutes: 30 },
-  { label: "1 hour", minutes: 60 }
+  { label: "1 hour", minutes: 60 },
+  { label: "Sleep", minutes: 120, icon: Moon },
 ];
 
 export function NatureSounds() {
@@ -30,14 +32,10 @@ export function NatureSounds() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  // Update volume
   useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.volume = isMuted ? 0 : volume / 100;
-    }
+    if (audioRef.current) audioRef.current.volume = isMuted ? 0 : volume / 100;
   }, [volume, isMuted]);
 
-  // Timer countdown
   useEffect(() => {
     if (remainingSeconds !== null && remainingSeconds > 0 && isPlaying) {
       timerRef.current = setInterval(() => {
@@ -51,13 +49,8 @@ export function NatureSounds() {
           return prev - 1;
         });
       }, 1000);
-
-      return () => {
-        if (timerRef.current) clearInterval(timerRef.current);
-      };
-    } else if (!isPlaying && timerRef.current) {
-      clearInterval(timerRef.current);
-    }
+      return () => { if (timerRef.current) clearInterval(timerRef.current); };
+    } else if (!isPlaying && timerRef.current) { clearInterval(timerRef.current); }
   }, [remainingSeconds, isPlaying]);
 
   const handleSoundSelect = (soundId: string) => {
@@ -66,53 +59,20 @@ export function NatureSounds() {
       setIsPlaying(false);
       return;
     }
-
-    // Stop current
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current = null;
-    }
-
+    if (audioRef.current) { audioRef.current.pause(); audioRef.current = null; }
     const sound = NATURE_SOUNDS.find(s => s.id === soundId);
     if (!sound) return;
-
     const audio = new Audio(sound.src);
     audio.loop = true;
     audio.volume = isMuted ? 0 : volume / 100;
     audioRef.current = audio;
-    audio.play().then(() => {
-      setIsPlaying(true);
-      setSelectedSound(soundId);
-    }).catch(err => {
-      console.error("Error playing sound:", err);
-    });
+    audio.play().then(() => { setIsPlaying(true); setSelectedSound(soundId); }).catch(console.error);
   };
 
   const togglePlayPause = () => {
     if (!audioRef.current || !selectedSound) return;
-
-    if (isPlaying) {
-      audioRef.current.pause();
-      setIsPlaying(false);
-    } else {
-      audioRef.current.play();
-      setIsPlaying(true);
-    }
-  };
-
-  const toggleMute = () => {
-    setIsMuted(!isMuted);
-  };
-
-  const setTimer = (minutes: number) => {
-    setTimerMinutes(minutes);
-    setRemainingSeconds(minutes * 60);
-  };
-
-  const clearTimer = () => {
-    setTimerMinutes(null);
-    setRemainingSeconds(null);
-    if (timerRef.current) clearInterval(timerRef.current);
+    if (isPlaying) { audioRef.current.pause(); setIsPlaying(false); }
+    else { audioRef.current.play(); setIsPlaying(true); }
   };
 
   const formatTime = (seconds: number) => {
@@ -121,136 +81,133 @@ export function NatureSounds() {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
-  // Cleanup
   useEffect(() => {
-    return () => {
-      audioRef.current?.pause();
-      audioRef.current = null;
-      if (timerRef.current) clearInterval(timerRef.current);
-    };
+    return () => { audioRef.current?.pause(); audioRef.current = null; if (timerRef.current) clearInterval(timerRef.current); };
   }, []);
+
+  const activeSound = NATURE_SOUNDS.find(s => s.id === selectedSound);
 
   return (
     <div className="space-y-6 mt-6">
-      <Card>
-        <CardHeader>
+      <Card className="relative overflow-hidden border-primary/20 backdrop-blur-xl bg-card/80">
+        <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 via-primary/5 to-sky-500/5" />
+        <CardHeader className="relative">
           <CardTitle className="flex items-center gap-2">
-            <Volume2 className="w-5 h-5 text-primary" />
+            <div className="p-2 rounded-xl bg-emerald-500/10">
+              <Volume2 className="w-5 h-5 text-emerald-400" />
+            </div>
             Nature Sounds
+            {isPlaying && (
+              <Badge className="bg-green-500/20 text-green-400 border-green-500/30 text-[10px] animate-pulse">
+                Playing
+              </Badge>
+            )}
           </CardTitle>
-          <CardDescription>
-            Choose a nature sound for deeper relaxation and peace of mind
-          </CardDescription>
+          <CardDescription>Immerse yourself in calming nature soundscapes for relaxation and focus</CardDescription>
         </CardHeader>
-        <CardContent>
-          <div className="grid md:grid-cols-3 gap-4 mb-6">
+        <CardContent className="relative">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-6">
             {NATURE_SOUNDS.map((sound) => {
               const Icon = sound.icon;
               const isActive = selectedSound === sound.id;
-              
               return (
-                <Card
+                <motion.div
                   key={sound.id}
-                  className={`cursor-pointer transition-all hover:border-primary/50 ${
-                    isActive ? "border-primary bg-primary/5" : ""
-                  }`}
-                  onClick={() => handleSoundSelect(sound.id)}
+                  whileHover={{ y: -2, scale: 1.02 }}
+                  whileTap={{ scale: 0.97 }}
                 >
-                  <CardContent className="pt-6 text-center">
-                    <Icon
-                      className={`w-12 h-12 mx-auto mb-3 ${
-                        isActive ? "text-primary" : "text-muted-foreground"
-                      }`}
-                    />
-                    <h3 className="font-semibold mb-1">{sound.name}</h3>
-                    <p className="text-sm text-muted-foreground">
-                      {sound.description}
-                    </p>
-                    {isActive && isPlaying && (
-                      <div className="mt-2 flex items-center justify-center gap-1">
-                        <div className="w-1 h-3 bg-primary rounded-full animate-pulse" />
-                        <div className="w-1 h-4 bg-primary rounded-full animate-pulse" style={{ animationDelay: '0.2s' }} />
-                        <div className="w-1 h-3 bg-primary rounded-full animate-pulse" style={{ animationDelay: '0.4s' }} />
-                        <div className="w-1 h-5 bg-primary rounded-full animate-pulse" style={{ animationDelay: '0.1s' }} />
-                        <div className="w-1 h-3 bg-primary rounded-full animate-pulse" style={{ animationDelay: '0.3s' }} />
+                  <Card
+                    className={`cursor-pointer transition-all border ${
+                      isActive
+                        ? "border-primary/40 ring-1 ring-primary/20"
+                        : "border-border/50 hover:border-primary/30"
+                    } bg-gradient-to-br ${sound.bg} backdrop-blur-xl`}
+                    onClick={() => handleSoundSelect(sound.id)}
+                  >
+                    <CardContent className="pt-5 pb-4 text-center">
+                      <div className={`mx-auto w-12 h-12 rounded-full flex items-center justify-center mb-2 ${
+                        isActive ? 'bg-primary/20' : 'bg-muted/30'
+                      }`}>
+                        <Icon className={`w-6 h-6 ${isActive ? sound.color : 'text-muted-foreground'}`} />
                       </div>
-                    )}
-                  </CardContent>
-                </Card>
+                      <h3 className="font-semibold text-sm mb-0.5">{sound.name}</h3>
+                      <p className="text-[11px] text-muted-foreground">{sound.description}</p>
+                      {isActive && isPlaying && (
+                        <div className="mt-2 flex items-center justify-center gap-1">
+                          {[3, 4, 3, 5, 3].map((h, i) => (
+                            <motion.div
+                              key={i}
+                              className={`w-1 rounded-full ${sound.color.replace('text-', 'bg-')}`}
+                              animate={{ height: [h * 2, h * 4, h * 2] }}
+                              transition={{ duration: 0.6, repeat: Infinity, delay: i * 0.1 }}
+                              style={{ height: h * 2 }}
+                            />
+                          ))}
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                </motion.div>
               );
             })}
           </div>
 
-          {selectedSound && (
-            <Card className="bg-muted/50">
-              <CardContent className="pt-6">
-                <div className="flex flex-col gap-4">
-                  <div className="flex items-center justify-between">
+          <AnimatePresence>
+            {selectedSound && (
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }}>
+                <Card className="bg-card/60 backdrop-blur-sm border-border/30">
+                  <CardContent className="pt-5 space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <Button variant="outline" size="icon" onClick={togglePlayPause} className="h-10 w-10">
+                          {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+                        </Button>
+                        <div>
+                          <span className="font-semibold text-sm">{activeSound?.name}</span>
+                          {remainingSeconds !== null && (
+                            <p className="text-xs text-muted-foreground">⏱ {formatTime(remainingSeconds)} remaining</p>
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        {TIMER_PRESETS.map(preset => (
+                          <Button
+                            key={preset.minutes}
+                            variant={timerMinutes === preset.minutes ? "default" : "outline"}
+                            size="sm"
+                            onClick={() => { setTimerMinutes(preset.minutes); setRemainingSeconds(preset.minutes * 60); }}
+                            className="text-xs gap-1 h-7"
+                          >
+                            {preset.icon ? <Moon className="w-3 h-3" /> : <Clock className="w-3 h-3" />}
+                            {preset.label}
+                          </Button>
+                        ))}
+                        {timerMinutes && (
+                          <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => { setTimerMinutes(null); setRemainingSeconds(null); if (timerRef.current) clearInterval(timerRef.current); }}>
+                            <X className="w-3.5 h-3.5" />
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+
                     <div className="flex items-center gap-3">
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        onClick={togglePlayPause}
-                      >
-                        {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+                      <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setIsMuted(!isMuted)}>
+                        {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
                       </Button>
-                      <span className="font-medium">
-                        {NATURE_SOUNDS.find(s => s.id === selectedSound)?.name}
-                      </span>
+                      <Slider
+                        value={[isMuted ? 0 : volume]}
+                        onValueChange={(value) => { setVolume(value[0]); if (isMuted && value[0] > 0) setIsMuted(false); }}
+                        max={100}
+                        step={1}
+                        className="flex-1"
+                      />
+                      <span className="text-xs text-muted-foreground w-8 text-right">{isMuted ? 0 : volume}%</span>
                     </div>
-                    
-                    <div className="flex items-center gap-2">
-                      {TIMER_PRESETS.map(preset => (
-                        <Button
-                          key={preset.minutes}
-                          variant={timerMinutes === preset.minutes ? "default" : "outline"}
-                          size="sm"
-                          onClick={() => setTimer(preset.minutes)}
-                          className="flex items-center gap-1"
-                        >
-                          <Clock className="w-3 h-3" />
-                          {preset.label}
-                        </Button>
-                      ))}
-                      {timerMinutes && (
-                        <Button variant="ghost" size="icon" onClick={clearTimer}>
-                          <X className="w-4 h-4" />
-                        </Button>
-                      )}
-                    </div>
-                  </div>
-
-                  {remainingSeconds !== null && (
-                    <div className="text-center text-sm text-muted-foreground">
-                      Time remaining: {formatTime(remainingSeconds)}
-                    </div>
-                  )}
-
-                  <div className="flex items-center gap-3">
-                    <Button variant="ghost" size="icon" onClick={toggleMute}>
-                      {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
-                    </Button>
-                    <Slider
-                      value={[isMuted ? 0 : volume]}
-                      onValueChange={(value) => {
-                        setVolume(value[0]);
-                        if (isMuted && value[0] > 0) {
-                          setIsMuted(false);
-                        }
-                      }}
-                      max={100}
-                      step={1}
-                      className="flex-1"
-                    />
-                  </div>
-                </div>
-                
-                <p className="text-sm text-center text-muted-foreground mt-4">
-                  Sound is playing on loop. Relax and let the sounds of nature carry you away.
-                </p>
-              </CardContent>
-            </Card>
-          )}
+                  </CardContent>
+                </Card>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </CardContent>
       </Card>
     </div>

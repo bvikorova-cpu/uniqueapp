@@ -3,16 +3,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
 import { 
-  Smile, 
-  Meh, 
-  Frown, 
-  Heart, 
-  Sun, 
-  Cloud, 
-  CloudRain,
-  Sparkles,
-  TrendingUp
+  Smile, Meh, Frown, Heart, Sun, Cloud, CloudRain, Sparkles, TrendingUp
 } from "lucide-react";
 
 interface MoodEntry {
@@ -22,13 +15,13 @@ interface MoodEntry {
 }
 
 const moodOptions = [
-  { value: 1, icon: Frown, label: "Veľmi zle", color: "text-red-500" },
-  { value: 2, icon: CloudRain, label: "Zle", color: "text-orange-500" },
-  { value: 3, icon: Cloud, label: "Neutrálne", color: "text-gray-500" },
-  { value: 4, icon: Meh, label: "Dobre", color: "text-blue-500" },
-  { value: 5, icon: Smile, label: "Výborne", color: "text-green-500" },
-  { value: 6, icon: Sun, label: "Fantasticky", color: "text-yellow-500" },
-  { value: 7, icon: Heart, label: "Úžasne", color: "text-pink-500" },
+  { value: 1, icon: Frown, label: "Terrible", color: "text-red-400", bg: "bg-red-500/10" },
+  { value: 2, icon: CloudRain, label: "Bad", color: "text-orange-400", bg: "bg-orange-500/10" },
+  { value: 3, icon: Cloud, label: "Neutral", color: "text-muted-foreground", bg: "bg-muted/30" },
+  { value: 4, icon: Meh, label: "Good", color: "text-blue-400", bg: "bg-blue-500/10" },
+  { value: 5, icon: Smile, label: "Great", color: "text-green-400", bg: "bg-green-500/10" },
+  { value: 6, icon: Sun, label: "Amazing", color: "text-yellow-400", bg: "bg-yellow-500/10" },
+  { value: 7, icon: Heart, label: "Wonderful", color: "text-pink-400", bg: "bg-pink-500/10" },
 ];
 
 interface MoodTrackerProps {
@@ -43,22 +36,11 @@ export const MoodTracker = ({ onSaveMood }: MoodTrackerProps) => {
 
   const handleSave = () => {
     if (selectedMood === null) return;
-
-    const entry: MoodEntry = {
-      mood: selectedMood,
-      note,
-      timestamp: new Date(),
-    };
-
+    const entry: MoodEntry = { mood: selectedMood, note, timestamp: new Date() };
     setRecentMoods((prev) => [entry, ...prev.slice(0, 6)]);
     onSaveMood?.(entry);
     setSaved(true);
-
-    setTimeout(() => {
-      setSaved(false);
-      setSelectedMood(null);
-      setNote("");
-    }, 2000);
+    setTimeout(() => { setSaved(false); setSelectedMood(null); setNote(""); }, 2000);
   };
 
   const averageMood = recentMoods.length > 0
@@ -67,109 +49,90 @@ export const MoodTracker = ({ onSaveMood }: MoodTrackerProps) => {
 
   return (
     <div className="space-y-6">
-      <Card>
-        <CardHeader>
+      <Card className="relative overflow-hidden border-primary/20 backdrop-blur-xl bg-card/80">
+        <div className="absolute inset-0 bg-gradient-to-br from-pink-500/5 via-primary/5 to-violet-500/5" />
+        <CardHeader className="relative">
           <CardTitle className="flex items-center gap-2">
-            <Sparkles className="h-5 w-5 text-primary" />
-            Ako sa dnes cítite?
+            <div className="p-2 rounded-xl bg-pink-500/10">
+              <Sparkles className="h-5 w-5 text-pink-400" />
+            </div>
+            How are you feeling today?
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-6">
-          {/* Mood Selection */}
+        <CardContent className="relative space-y-6">
           <div className="flex flex-wrap justify-center gap-3">
             {moodOptions.map((option) => {
               const Icon = option.icon;
               const isSelected = selectedMood === option.value;
-
               return (
                 <motion.button
                   key={option.value}
-                  whileHover={{ scale: 1.1 }}
+                  whileHover={{ scale: 1.1, y: -2 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => setSelectedMood(option.value)}
-                  className={`flex flex-col items-center gap-1 p-3 rounded-xl transition-all ${
+                  className={`flex flex-col items-center gap-1.5 p-3 rounded-xl transition-all border ${
                     isSelected
-                      ? "bg-primary/20 ring-2 ring-primary"
-                      : "bg-muted hover:bg-muted/80"
+                      ? `${option.bg} ring-2 ring-primary border-primary/30`
+                      : "border-border/50 bg-card/60 hover:border-primary/20"
                   }`}
                 >
-                  <Icon className={`h-8 w-8 ${option.color}`} />
-                  <span className="text-xs font-medium">{option.label}</span>
+                  <Icon className={`h-7 w-7 ${option.color}`} />
+                  <span className="text-[10px] font-semibold">{option.label}</span>
                 </motion.button>
               );
             })}
           </div>
 
-          {/* Note Input */}
           <AnimatePresence>
             {selectedMood !== null && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={{ opacity: 0, height: 0 }}
-              >
+              <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}>
                 <Textarea
-                  placeholder="Poznámka k vašej nálade (voliteľné)..."
+                  placeholder="Add a note about your mood (optional)..."
                   value={note}
                   onChange={(e) => setNote(e.target.value)}
-                  className="resize-none"
+                  className="resize-none backdrop-blur-sm"
                   rows={3}
                 />
               </motion.div>
             )}
           </AnimatePresence>
 
-          {/* Save Button */}
-          <Button
-            onClick={handleSave}
-            disabled={selectedMood === null || saved}
-            className="w-full"
-          >
+          <Button onClick={handleSave} disabled={selectedMood === null || saved} className="w-full active:scale-[0.97] transition-transform">
             {saved ? (
-              <motion.span
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="flex items-center gap-2"
-              >
-                <Sparkles className="h-4 w-4" />
-                Uložené!
+              <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center gap-2">
+                <Sparkles className="h-4 w-4" /> Saved!
               </motion.span>
-            ) : (
-              "Uložiť náladu"
-            )}
+            ) : "Save Mood"}
           </Button>
         </CardContent>
       </Card>
 
-      {/* Recent Moods Graph */}
       {recentMoods.length > 0 && (
-        <Card>
-          <CardHeader>
+        <Card className="relative overflow-hidden border-primary/20 backdrop-blur-xl bg-card/80">
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent" />
+          <CardHeader className="relative">
             <CardTitle className="flex items-center justify-between">
               <span className="flex items-center gap-2">
-                <TrendingUp className="h-5 w-5" />
-                Vývoj nálady
+                <TrendingUp className="h-5 w-5 text-primary" />
+                Mood Trend
               </span>
               {averageMood && (
-                <span className="text-sm font-normal text-muted-foreground">
-                  Priemer: {averageMood}/7
-                </span>
+                <Badge variant="outline" className="text-xs">Average: {averageMood}/7</Badge>
               )}
             </CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="relative">
             <div className="flex items-end justify-between h-32 gap-2">
               {recentMoods.slice(0, 7).reverse().map((entry, index) => {
                 const height = (entry.mood / 7) * 100;
                 const option = moodOptions.find((o) => o.value === entry.mood);
-
                 return (
                   <motion.div
                     key={index}
                     initial={{ height: 0 }}
                     animate={{ height: `${height}%` }}
-                    transition={{ delay: index * 0.1 }}
-                    className={`flex-1 rounded-t-lg bg-gradient-to-t from-primary/50 to-primary relative group`}
+                    transition={{ delay: index * 0.1, type: "spring" }}
+                    className="flex-1 rounded-t-lg bg-gradient-to-t from-primary/50 to-primary/80 relative group cursor-pointer"
                   >
                     <div className="absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity">
                       {option && <option.icon className={`h-5 w-5 ${option.color}`} />}
@@ -179,8 +142,8 @@ export const MoodTracker = ({ onSaveMood }: MoodTrackerProps) => {
               })}
             </div>
             <div className="flex justify-between mt-2 text-xs text-muted-foreground">
-              <span>Staršie</span>
-              <span>Teraz</span>
+              <span>Earlier</span>
+              <span>Now</span>
             </div>
           </CardContent>
         </Card>
