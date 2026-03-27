@@ -1,24 +1,64 @@
 import { useState, useEffect } from "react";
-import { PastLifeCreditsDisplay } from "@/components/past-life/PastLifeCreditsDisplay";
+import { useSearchParams } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
+import { ArrowLeft, Clock, Sparkles, Heart, History, CreditCard, Compass } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+
+import { PastLifeHero } from "@/components/past-life/PastLifeHero";
+import { PastLifeStreak } from "@/components/past-life/PastLifeStreak";
+import { PastLifeProgressPreview } from "@/components/past-life/PastLifeProgressPreview";
+import { PastLifeAchievements } from "@/components/past-life/PastLifeAchievements";
+import { PastLifeToolCard } from "@/components/past-life/PastLifeToolCard";
+import { PastLifeTestimonials } from "@/components/past-life/PastLifeTestimonials";
+import { PastLifeComparisonTable } from "@/components/past-life/PastLifeComparisonTable";
 import { PastLifeForm } from "@/components/past-life/PastLifeForm";
 import { PastLifeResult } from "@/components/past-life/PastLifeResult";
 import { PastLifeHistory } from "@/components/past-life/PastLifeHistory";
+import { PastLifeCreditsDisplay } from "@/components/past-life/PastLifeCreditsDisplay";
 import { usePastLifeCredits } from "@/hooks/usePastLifeCredits";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card } from "@/components/ui/card";
-import { Clock, Sparkles, Heart } from "lucide-react";
-import { toast } from "sonner";
-import { useSearchParams } from "react-router-dom";
+
+type ViewType = "hub" | "basic" | "full" | "soulmate" | "history" | "credits";
+
+const PAST_LIFE_TOOLS = [
+  {
+    id: "basic",
+    title: "Basic Reading",
+    description: "Discover a single past life with detailed karmic lessons",
+    icon: Clock,
+    credits: 5,
+    gradient: "bg-gradient-to-r from-blue-500 to-cyan-500",
+    features: ["1 detailed past life story", "Historical period & location", "Profession & life events", "Karmic lesson"],
+  },
+  {
+    id: "full",
+    title: "Full Reading",
+    description: "Deep dive into 3 past lives with AI illustrations",
+    icon: Sparkles,
+    credits: 15,
+    gradient: "bg-gradient-to-r from-primary to-accent",
+    features: ["3 complete past life stories", "AI-generated illustrations", "Overall karmic theme", "Soul evolution analysis"],
+  },
+  {
+    id: "soulmate",
+    title: "Soul Mate Connection",
+    description: "Discover past life connections with your partner",
+    icon: Heart,
+    credits: 20,
+    gradient: "bg-gradient-to-r from-pink-500 to-rose-500",
+    features: ["Your 3 past lives + illustrations", "Partner's past life analysis", "Shared past life connections", "Relationship karmic patterns"],
+  },
+];
 
 const PastLife = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const [activeView, setActiveView] = useState<ViewType>("hub");
   const [currentReading, setCurrentReading] = useState<any>(null);
   const { analyzePastLife, isAnalyzing } = usePastLifeCredits();
 
   useEffect(() => {
     const payment = searchParams.get("payment");
     const credits = searchParams.get("credits");
-    
     if (payment === "success" && credits) {
       toast.success(`Payment successful! ${credits} credits added to your account.`);
       setSearchParams({});
@@ -34,133 +74,139 @@ const PastLife = () => {
   };
 
   const handleSubmit = (data: any) => {
-    analyzePastLife(data, {
-      onSuccess: handleAnalysisComplete,
-    });
+    analyzePastLife(data, { onSuccess: handleAnalysisComplete });
+  };
+
+  const openTool = (toolId: string) => {
+    setActiveView(toolId as ViewType);
+    setCurrentReading(null);
   };
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="border-b">
-        <div className="container mx-auto px-4 py-8 sm:py-16">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-black mb-2">Past Life Explorer</h1>
-          <p className="text-sm sm:text-base text-muted-foreground">
-            Discover who you were in previous lifetimes through AI-powered mystical analysis
-          </p>
-        </div>
-      </div>
+      <div className="container mx-auto px-4 py-6 sm:py-10 space-y-6">
+        <AnimatePresence mode="wait">
+          {activeView === "hub" ? (
+            <motion.div
+              key="hub"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="space-y-6"
+            >
+              <PastLifeHero />
 
-      <div className="container mx-auto px-4 py-8 space-y-8">
-        {/* Informative Section */}
-        <Card className="p-6 sm:p-8 bg-gradient-to-br from-indigo-500/5 to-purple-500/5">
-          <div className="space-y-6">
-            <div>
-              <h2 className="text-2xl sm:text-3xl font-black mb-3">Journey Through Time</h2>
-              <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
-                Past life regression reveals the eternal journey of your soul across different lifetimes. Our AI combines mystical wisdom with your personal information to uncover your previous incarnations, helping you understand your current life's purpose, relationships, and challenges through the lens of karma and soul evolution.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div>
-                <h3 className="text-lg sm:text-xl font-semibold mb-3 flex items-center gap-2">
-                  <Clock className="h-5 w-5 text-blue-500" />
-                  Basic Reading
-                </h3>
-                <p className="text-sm text-muted-foreground mb-2">5 Credits</p>
-                <ul className="space-y-2 text-sm text-muted-foreground">
-                  <li className="flex items-start gap-2">
-                    <span className="text-blue-500 mt-1">•</span>
-                    <span>1 detailed past life story</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-blue-500 mt-1">•</span>
-                    <span>Historical period and location</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-blue-500 mt-1">•</span>
-                    <span>Your profession and life events</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-blue-500 mt-1">•</span>
-                    <span>Karmic lesson for current life</span>
-                  </li>
-                </ul>
+              {/* Engagement Row */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <PastLifeStreak />
+                <PastLifeProgressPreview />
+                <PastLifeAchievements />
               </div>
 
-              <div>
-                <h3 className="text-lg sm:text-xl font-semibold mb-3 flex items-center gap-2">
-                  <Sparkles className="h-5 w-5 text-indigo-500" />
-                  Full Reading
-                </h3>
-                <p className="text-sm text-muted-foreground mb-2">15 Credits</p>
-                <ul className="space-y-2 text-sm text-muted-foreground">
-                  <li className="flex items-start gap-2">
-                    <span className="text-indigo-500 mt-1">•</span>
-                    <span>3 complete past life stories</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-indigo-500 mt-1">•</span>
-                    <span>AI-generated mystical illustrations</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-indigo-500 mt-1">•</span>
-                    <span>Overall karmic theme analysis</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-indigo-500 mt-1">•</span>
-                    <span>Deep dive into soul evolution</span>
-                  </li>
-                </ul>
+              {/* Main Content */}
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                {/* Tools */}
+                <div className="lg:col-span-2 space-y-4">
+                  <div className="flex items-center justify-between">
+                    <h2 className="text-lg font-bold flex items-center gap-2">
+                      <Compass className="h-5 w-5 text-primary" />
+                      Reading Types
+                    </h2>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setActiveView("history")}
+                        className="text-xs gap-1.5"
+                      >
+                        <History className="h-3.5 w-3.5" />
+                        History
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setActiveView("credits")}
+                        className="text-xs gap-1.5"
+                      >
+                        <CreditCard className="h-3.5 w-3.5" />
+                        Credits
+                      </Button>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {PAST_LIFE_TOOLS.map((tool, i) => (
+                      <PastLifeToolCard
+                        key={tool.id}
+                        tool={tool}
+                        onSelect={() => openTool(tool.id)}
+                        index={i}
+                      />
+                    ))}
+                  </div>
+
+                  {/* How It Works */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4">
+                    {[
+                      { step: "1", title: "Enter Details", desc: "Provide your birth date and personal experiences" },
+                      { step: "2", title: "AI Analysis", desc: "Our AI channels mystical wisdom to reveal your past" },
+                      { step: "3", title: "Discover", desc: "Explore detailed stories of your previous incarnations" },
+                    ].map((s) => (
+                      <div key={s.step} className="flex items-start gap-3 p-4 rounded-xl bg-card/60 backdrop-blur border border-border/30">
+                        <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm flex-shrink-0">
+                          {s.step}
+                        </div>
+                        <div>
+                          <h4 className="font-semibold text-sm">{s.title}</h4>
+                          <p className="text-xs text-muted-foreground mt-0.5">{s.desc}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Sidebar */}
+                <div className="space-y-4">
+                  <PastLifeComparisonTable />
+                  <PastLifeTestimonials />
+                </div>
               </div>
+            </motion.div>
+          ) : (
+            <motion.div
+              key={activeView}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.3 }}
+              className="space-y-6"
+            >
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => { setActiveView("hub"); setCurrentReading(null); }}
+                className="gap-2 text-muted-foreground hover:text-foreground"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                Back to Hub
+              </Button>
 
-              <div>
-                <h3 className="text-lg sm:text-xl font-semibold mb-3 flex items-center gap-2">
-                  <Heart className="h-5 w-5 text-pink-500" />
-                  Soul Mate Connection
-                </h3>
-                <p className="text-sm text-muted-foreground mb-2">20 Credits</p>
-                <ul className="space-y-2 text-sm text-muted-foreground">
-                  <li className="flex items-start gap-2">
-                    <span className="text-pink-500 mt-1">•</span>
-                    <span>Your 3 past lives with illustrations</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-pink-500 mt-1">•</span>
-                    <span>Partner's past life analysis</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-pink-500 mt-1">•</span>
-                    <span>Shared past life connections</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-pink-500 mt-1">•</span>
-                    <span>Relationship karmic patterns</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </Card>
+              {(activeView === "basic" || activeView === "full" || activeView === "soulmate") && (
+                <div className="space-y-6">
+                  <PastLifeForm
+                    onSubmit={handleSubmit}
+                    isAnalyzing={isAnalyzing}
+                    defaultReadingType={activeView}
+                  />
+                  {currentReading && <PastLifeResult reading={currentReading} />}
+                </div>
+              )}
 
-        <PastLifeCreditsDisplay />
-
-        <Tabs defaultValue="explore" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="explore">Explore Past Lives</TabsTrigger>
-            <TabsTrigger value="history">My Readings</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="explore" className="space-y-6">
-            <PastLifeForm onSubmit={handleSubmit} isAnalyzing={isAnalyzing} />
-
-            {currentReading && <PastLifeResult reading={currentReading} />}
-          </TabsContent>
-
-          <TabsContent value="history">
-            <PastLifeHistory />
-          </TabsContent>
-        </Tabs>
+              {activeView === "history" && <PastLifeHistory />}
+              {activeView === "credits" && <PastLifeCreditsDisplay />}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );

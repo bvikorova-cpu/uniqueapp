@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { usePastLifeCredits } from "@/hooks/usePastLifeCredits";
-import { Clock, Plus } from "lucide-react";
+import { Clock, Plus, Sparkles, Zap } from "lucide-react";
+import { motion } from "framer-motion";
 import {
   Dialog,
   DialogContent,
@@ -19,9 +21,7 @@ export const PastLifeCreditsDisplay = () => {
   const handlePurchase = async (amount: number) => {
     setIsPurchasing(true);
     const url = await purchaseCredits(amount);
-    if (url) {
-      window.open(url, "_blank");
-    }
+    if (url) window.open(url, "_blank");
     setIsPurchasing(false);
     setShowBuyDialog(false);
   };
@@ -29,75 +29,96 @@ export const PastLifeCreditsDisplay = () => {
   if (isLoading) return null;
 
   const packages = [
-    { credits: 10, price: "€5", popular: false },
-    { credits: 25, price: "€12", popular: true },
-    { credits: 50, price: "€22", popular: false },
-    { credits: 100, price: "€40", popular: false },
+    { credits: 10, price: "€5", popular: false, icon: Clock },
+    { credits: 25, price: "€12", popular: true, icon: Sparkles },
+    { credits: 50, price: "€22", popular: false, icon: Zap },
+    { credits: 100, price: "€40", popular: false, icon: Zap },
   ];
 
   return (
     <>
-      <Card className="p-4 sm:p-6 bg-gradient-to-r from-indigo-500/10 to-purple-500/10">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <Clock className="h-6 w-6 sm:h-8 sm:w-8 text-indigo-500" />
-            <div>
-              <p className="text-xs sm:text-sm text-muted-foreground">Reading Credits</p>
-              <p className="text-2xl sm:text-3xl font-bold">{credits?.credits_remaining || 0}</p>
-              <p className="text-xs text-muted-foreground mt-1">
-                Total purchased: {credits?.total_credits_purchased || 0}
-              </p>
+      <Card className="overflow-hidden bg-card/80 backdrop-blur-xl border-border/50">
+        <div className="h-1.5 bg-gradient-to-r from-primary to-accent" />
+        <div className="p-5 sm:p-8">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-4">
+              <div className="p-3 rounded-xl bg-primary/10">
+                <Clock className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">Reading Credits</p>
+                <p className="text-3xl sm:text-4xl font-black">{credits?.credits_remaining || 0}</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Total purchased: {credits?.total_credits_purchased || 0}
+                </p>
+              </div>
             </div>
+            <Button onClick={() => setShowBuyDialog(true)} className="gap-2 w-full sm:w-auto">
+              <Plus className="h-4 w-4" />
+              Buy Credits
+            </Button>
           </div>
 
-          <Button onClick={() => setShowBuyDialog(true)} className="gap-2 w-full sm:w-auto">
-            <Plus className="h-4 w-4" />
-            <span className="text-sm sm:text-base">Buy Credits</span>
-          </Button>
+          {/* Credit costs */}
+          <div className="grid grid-cols-3 gap-3 mt-6">
+            {[
+              { label: "Basic Reading", cost: 5, icon: "📜" },
+              { label: "Full Reading", cost: 15, icon: "✨" },
+              { label: "Soul Mate", cost: 20, icon: "💕" },
+            ].map((item) => (
+              <div key={item.label} className="text-center p-3 rounded-xl bg-muted/20 border border-border/30">
+                <span className="text-lg">{item.icon}</span>
+                <p className="text-xs font-medium mt-1">{item.label}</p>
+                <p className="text-xs text-muted-foreground">{item.cost} credits</p>
+              </div>
+            ))}
+          </div>
         </div>
       </Card>
 
       <Dialog open={showBuyDialog} onOpenChange={setShowBuyDialog}>
         <DialogContent className="sm:max-w-[600px]">
           <DialogHeader>
-            <DialogTitle>Purchase Reading Credits</DialogTitle>
+            <DialogTitle className="font-black">Purchase Reading Credits</DialogTitle>
             <DialogDescription>
               Choose a credit package to unlock your past life mysteries
             </DialogDescription>
           </DialogHeader>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
-            {packages.map((pkg) => (
-              <Card
+            {packages.map((pkg, i) => (
+              <motion.div
                 key={pkg.credits}
-                className={`p-6 cursor-pointer transition-all hover:shadow-lg ${
-                  pkg.popular ? "border-indigo-500 border-2" : ""
-                }`}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.05 }}
               >
-                {pkg.popular && (
-                  <div className="text-xs font-bold text-indigo-500 mb-2">POPULAR</div>
-                )}
-                <div className="text-center">
-                  <div className="text-4xl font-bold mb-2">{pkg.credits}</div>
-                  <div className="text-sm text-muted-foreground mb-4">Credits</div>
-                  <div className="text-2xl font-bold text-indigo-500 mb-4">{pkg.price}</div>
-                  <Button
-                    onClick={() => handlePurchase(pkg.credits)}
-                    disabled={isPurchasing}
-                    className="w-full"
-                    variant={pkg.popular ? "default" : "outline"}
-                  >
-                    Purchase
-                  </Button>
-                </div>
-              </Card>
+                <Card
+                  className={`p-6 cursor-pointer transition-all hover:shadow-lg bg-card/80 backdrop-blur-xl ${
+                    pkg.popular ? "border-primary border-2 shadow-lg shadow-primary/10" : "border-border/50"
+                  }`}
+                >
+                  {pkg.popular && (
+                    <Badge className="mb-2 bg-primary/10 text-primary border-primary/20 text-[10px]">
+                      POPULAR
+                    </Badge>
+                  )}
+                  <div className="text-center">
+                    <div className="text-4xl font-black mb-1">{pkg.credits}</div>
+                    <div className="text-sm text-muted-foreground mb-3">Credits</div>
+                    <div className="text-2xl font-black text-primary mb-4">{pkg.price}</div>
+                    <Button
+                      onClick={() => handlePurchase(pkg.credits)}
+                      disabled={isPurchasing}
+                      className="w-full"
+                      variant={pkg.popular ? "default" : "outline"}
+                    >
+                      Purchase
+                    </Button>
+                  </div>
+                </Card>
+              </motion.div>
             ))}
-          </div>
-
-          <div className="mt-4 text-xs text-muted-foreground text-center space-y-1">
-            <p>• Basic Reading (1 life): 5 credits</p>
-            <p>• Full Reading (3 lives + illustrations): 15 credits</p>
-            <p>• Soul Mate Connection (partner analysis): 20 credits</p>
           </div>
         </DialogContent>
       </Dialog>
