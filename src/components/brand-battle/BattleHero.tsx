@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Trophy, Swords, Flame, Zap, Star, Crown, Target, Shield } from "lucide-react";
+import { Trophy, Swords, Flame, Zap, Star, Crown, Target, Shield, TrendingUp } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 interface BattleHeroProps {
@@ -18,9 +18,19 @@ const floatingIcons = [
   { icon: Target, x: "60%", y: "75%", delay: 0.6, size: 20 },
 ];
 
+const statItems = [
+  { label: "Total Votes", icon: TrendingUp, key: "votes" as const },
+  { label: "Active Brands", icon: Crown, key: "sponsors" as const },
+  { label: "Prize Pool", icon: Trophy, key: "prize" as const },
+];
+
 export const BattleHero = ({ totalVotes = 0, totalSponsors = 0 }: BattleHeroProps) => {
   return (
-    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary/20 via-accent/10 to-primary/5 border border-primary/20 p-8 md:p-12 mb-10">
+    <div className="relative overflow-hidden rounded-3xl backdrop-blur-xl bg-card/60 border border-primary/20 p-8 md:p-12 mb-10">
+      {/* Animated gradient orbs */}
+      <div className="absolute -top-24 -left-24 w-64 h-64 bg-primary/10 rounded-full blur-3xl animate-pulse" />
+      <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-accent/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: "1s" }} />
+
       {/* Floating icons */}
       {floatingIcons.map((item, i) => {
         const Icon = item.icon;
@@ -52,7 +62,8 @@ export const BattleHero = ({ totalVotes = 0, totalSponsors = 0 }: BattleHeroProp
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <Badge className="bg-primary/15 text-primary border-primary/30 mb-4 text-sm px-4 py-1.5">
+          <Badge className="bg-primary/15 text-primary border-primary/30 mb-4 text-sm px-4 py-1.5 backdrop-blur-sm">
+            <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse mr-2" />
             <Swords className="h-4 w-4 mr-1.5" />
             Live Brand Battle
           </Badge>
@@ -77,29 +88,29 @@ export const BattleHero = ({ totalVotes = 0, totalSponsors = 0 }: BattleHeroProp
           Top brands get premium placement.
         </motion.p>
 
-        {/* Live stats bar */}
+        {/* Live stats */}
         <motion.div
-          className="flex flex-wrap justify-center gap-6 md:gap-10"
+          className="flex flex-wrap justify-center gap-4 md:gap-6"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.3 }}
         >
-          <div className="flex items-center gap-2">
-            <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
-            <span className="text-sm font-semibold text-muted-foreground">Live</span>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl md:text-3xl font-black text-primary">{totalVotes.toLocaleString()}</div>
-            <div className="text-xs text-muted-foreground">Total Votes</div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl md:text-3xl font-black text-primary">{totalSponsors}</div>
-            <div className="text-xs text-muted-foreground">Active Brands</div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl md:text-3xl font-black text-primary">€10K</div>
-            <div className="text-xs text-muted-foreground">Prize Pool</div>
-          </div>
+          {[
+            { value: totalVotes.toLocaleString(), label: "Total Votes", icon: TrendingUp },
+            { value: totalSponsors.toString(), label: "Active Brands", icon: Crown },
+            { value: "€10K", label: "Prize Pool", icon: Trophy },
+          ].map((stat, i) => (
+            <motion.div
+              key={stat.label}
+              className="text-center px-5 py-3 rounded-xl backdrop-blur-sm bg-background/30 border border-primary/10"
+              whileHover={{ scale: 1.05, borderColor: "hsl(var(--primary) / 0.3)" }}
+              transition={{ type: "spring", stiffness: 300 }}
+            >
+              <stat.icon className="h-4 w-4 text-primary mx-auto mb-1" />
+              <div className="text-2xl md:text-3xl font-black text-primary">{stat.value}</div>
+              <div className="text-xs text-muted-foreground">{stat.label}</div>
+            </motion.div>
+          ))}
         </motion.div>
       </div>
     </div>
