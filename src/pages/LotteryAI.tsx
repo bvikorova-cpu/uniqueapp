@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Sparkles,
   TrendingUp,
@@ -28,7 +29,15 @@ import {
   User,
   Settings,
   History,
+  Shield,
+  AlertTriangle,
+  BookOpen,
+  Dices,
+  Target,
+  Flame,
+  ArrowRight,
 } from "lucide-react";
+import { LotteryHero } from "@/components/lottery/LotteryHero";
 
 const LOTTERY_TYPES = [
   { id: "eurojackpot", name: "EuroJackpot", maxNumber: 50, bonusBalls: 12, mainBalls: 5, bonusCount: 2 },
@@ -77,9 +86,16 @@ const PRICING_TIERS = [
       "Priority AI processing",
     ],
     icon: Zap,
-    color: "from-purple-500 to-pink-500",
+    color: "from-primary to-accent",
     popular: true,
   },
+];
+
+const HOW_IT_WORKS = [
+  { step: 1, title: "Choose Lottery", description: "Select from EuroJackpot, Powerball, Mega Millions & more", icon: Dices },
+  { step: 2, title: "AI Analyzes", description: "Machine learning processes millions of historical draws", icon: BarChart3 },
+  { step: 3, title: "Get Numbers", description: "Receive optimized combinations with confidence scores", icon: Target },
+  { step: 4, title: "Track & Save", description: "Save favorites and monitor your generation history", icon: Save },
 ];
 
 export default function LotteryAI() {
@@ -87,13 +103,11 @@ export default function LotteryAI() {
   const [searchParams] = useSearchParams();
   const { toast } = useToast();
   
-  // Auth & Subscription state
   const [user, setUser] = useState<any>(null);
   const [subscription, setSubscription] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [checkingSubscription, setCheckingSubscription] = useState(false);
   
-  // Generator state
   const [selectedLottery, setSelectedLottery] = useState(LOTTERY_TYPES[0]);
   const [generatedNumbers, setGeneratedNumbers] = useState<number[]>([]);
   const [bonusNumbers, setBonusNumbers] = useState<number[]>([]);
@@ -101,11 +115,8 @@ export default function LotteryAI() {
   const [aiAnalysis, setAiAnalysis] = useState<any>(null);
   const [isGenerating, setIsGenerating] = useState(false);
 
-  // Check authentication on mount
   useEffect(() => {
     checkAuth();
-    
-    // Listen for auth changes
     const { data: { subscription: authSubscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(session?.user ?? null);
       if (session?.user) {
@@ -116,19 +127,12 @@ export default function LotteryAI() {
         setSavedCombinations([]);
       }
     });
-
-    return () => {
-      authSubscription.unsubscribe();
-    };
+    return () => { authSubscription.unsubscribe(); };
   }, []);
 
-  // Check for successful payment
   useEffect(() => {
     if (searchParams.get("success") === "true") {
-      toast({
-        title: "Payment Successful! 🎉",
-        description: "Your subscription is now active.",
-      });
+      toast({ title: "Payment Successful! 🎉", description: "Your subscription is now active." });
       setTimeout(() => checkSubscription(), 1000);
     }
   }, [searchParams]);
@@ -145,7 +149,6 @@ export default function LotteryAI() {
 
   const checkSubscription = async () => {
     if (!user && !await supabase.auth.getSession().then(({ data }) => data.session?.user)) return;
-    
     setCheckingSubscription(true);
     try {
       const { data, error } = await supabase.functions.invoke("check-lottery-subscription");
@@ -165,7 +168,6 @@ export default function LotteryAI() {
         .select("*")
         .order("created_at", { ascending: false })
         .limit(10);
-      
       if (error) throw error;
       setSavedCombinations(data || []);
     } catch (error) {
@@ -174,27 +176,16 @@ export default function LotteryAI() {
   };
 
   const handleSubscribe = async (tier: "basic" | "pro") => {
-    if (!user) {
-      navigate("/auth");
-      return;
-    }
-
+    if (!user) { navigate("/auth"); return; }
     try {
       const priceId = SUBSCRIPTION_TIERS[tier].price_id;
       const { data, error } = await supabase.functions.invoke("create-lottery-subscription", {
         body: { priceId },
       });
-
       if (error) throw error;
-      if (data.url) {
-        window.open(data.url, "_blank");
-      }
+      if (data.url) window.open(data.url, "_blank");
     } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to start checkout",
-        variant: "destructive",
-      });
+      toast({ title: "Error", description: error.message || "Failed to start checkout", variant: "destructive" });
     }
   };
 
@@ -202,15 +193,9 @@ export default function LotteryAI() {
     try {
       const { data, error } = await supabase.functions.invoke("customer-portal");
       if (error) throw error;
-      if (data.url) {
-        window.open(data.url, "_blank");
-      }
+      if (data.url) window.open(data.url, "_blank");
     } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to open customer portal",
-        variant: "destructive",
-      });
+      toast({ title: "Error", description: error.message || "Failed to open customer portal", variant: "destructive" });
     }
   };
 
@@ -220,40 +205,23 @@ export default function LotteryAI() {
   };
 
   const generateNumbers = async () => {
-    if (!user) {
-      navigate("/auth");
-      return;
-    }
-
+    if (!user) { navigate("/auth"); return; }
     if (!subscription?.subscribed) {
-      toast({
-        title: "Subscription Required",
-        description: "You need an active subscription to generate lucky numbers. Choose a plan below!",
-        variant: "destructive",
-      });
+      toast({ title: "Subscription Required", description: "You need an active subscription to generate lucky numbers.", variant: "destructive" });
       return;
     }
 
-    // Check generation limits for Basic tier (10 generations per month)
     if (subscription.isBasic && !subscription.isPro) {
-      // Get the start of the current month
       const now = new Date();
       const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
-      
       const { count, error: countError } = await supabase
         .from("lottery_generations")
         .select("*", { count: 'exact', head: true })
         .eq("user_id", user.id)
         .gte("created_at", monthStart);
-      
-      if (countError) {
-        console.error("Error checking generation count:", countError);
-      } else if (count !== null && count >= 10) {
-        toast({
-          title: "Generation Limit Reached",
-          description: "You've used all 10 generations this month. Upgrade to Pro for unlimited generations!",
-          variant: "destructive",
-        });
+      if (countError) console.error("Error checking generation count:", countError);
+      else if (count !== null && count >= 10) {
+        toast({ title: "Generation Limit Reached", description: "Upgrade to Pro for more generations!", variant: "destructive" });
         return;
       }
     }
@@ -262,42 +230,23 @@ export default function LotteryAI() {
     let generatedData: any = null;
     
     try {
-      // Call AI edge function for real predictions
       const { data: aiResult, error: aiError } = await supabase.functions.invoke(
         'generate-lottery-numbers',
-        {
-          body: {
-            lotteryType: selectedLottery.id,
-            preferences: {} // Can be extended with user preferences
-          }
-        }
+        { body: { lotteryType: selectedLottery.id, preferences: {} } }
       );
-
       if (aiError) throw aiError;
       generatedData = aiResult;
-
-      console.log('AI generated numbers:', aiResult);
-      
       setGeneratedNumbers(aiResult.numbers);
       setBonusNumbers(aiResult.bonusNumbers || []);
       setAiAnalysis(aiResult.analysis);
-
-      toast({
-        title: "AI Analysis Complete! 🤖",
-        description: aiResult.analysis.reasoning,
-      });
+      toast({ title: "AI Analysis Complete! 🤖", description: aiResult.analysis.reasoning });
     } catch (error: any) {
       console.error('Error generating numbers:', error);
-      toast({
-        title: "Generation Error",
-        description: error.message || "Failed to generate numbers. Please try again.",
-        variant: "destructive",
-      });
+      toast({ title: "Generation Error", description: error.message || "Failed to generate numbers.", variant: "destructive" });
       setIsGenerating(false);
       return;
     }
 
-    // Save to database
     try {
       await supabase.from("lottery_generations").insert({
         user_id: user.id,
@@ -305,39 +254,21 @@ export default function LotteryAI() {
         main_numbers: generatedData.numbers,
         bonus_numbers: generatedData.bonusNumbers && generatedData.bonusNumbers.length > 0 ? generatedData.bonusNumbers : null,
       });
-
       await loadHistory();
-      
       setIsGenerating(false);
-      toast({
-        title: "Numbers Generated! 🎰",
-        description: "Your AI-predicted lucky numbers are ready!",
-      });
+      toast({ title: "Numbers Generated! 🎰", description: "Your AI-predicted lucky numbers are ready!" });
     } catch (error) {
       console.error("Error saving generation:", error);
       setIsGenerating(false);
-      toast({
-        title: "Saved with warnings",
-        description: "Numbers generated but may not be saved to history.",
-      });
     }
   };
 
   const saveCombination = async () => {
-    if (!user) {
-      navigate("/auth");
-      return;
-    }
-
+    if (!user) { navigate("/auth"); return; }
     if (generatedNumbers.length === 0) {
-      toast({
-        title: "No Numbers",
-        description: "Generate numbers first before saving",
-        variant: "destructive",
-      });
+      toast({ title: "No Numbers", description: "Generate numbers first before saving", variant: "destructive" });
       return;
     }
-
     try {
       const { data: existing } = await supabase
         .from("lottery_generations")
@@ -345,181 +276,150 @@ export default function LotteryAI() {
         .eq("user_id", user.id)
         .eq("main_numbers", generatedNumbers)
         .maybeSingle();
-
       if (existing) {
-        await supabase
-          .from("lottery_generations")
-          .update({ is_favorite: true })
-          .eq("id", existing.id);
+        await supabase.from("lottery_generations").update({ is_favorite: true }).eq("id", existing.id);
       }
-
       await loadHistory();
-      
-      toast({
-        title: "Combination Saved! 💾",
-        description: "Your lucky numbers have been marked as favorite.",
-      });
+      toast({ title: "Combination Saved! 💾", description: "Your lucky numbers have been marked as favorite." });
     } catch (error) {
       console.error("Error saving combination:", error);
-      toast({
-        title: "Error",
-        description: "Failed to save combination",
-        variant: "destructive",
-      });
+      toast({ title: "Error", description: "Failed to save combination", variant: "destructive" });
     }
   };
 
-  // Mock hot and cold numbers
   const hotNumbers = [12, 23, 34, 41, 17, 29];
   const coldNumbers = [5, 18, 27, 36, 45, 8];
 
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-background">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary" />
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-background pt-20 pb-12">
+        <div className="container mx-auto px-4 max-w-lg">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+            <Card className="bg-card/80 backdrop-blur-xl border-border/50 text-center">
+              <CardHeader>
+                <Sparkles className="h-16 w-16 text-primary mx-auto mb-4" />
+                <CardTitle className="text-2xl font-black">Sign In Required</CardTitle>
+                <CardDescription>Please sign in to access AI-powered lottery predictions</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button onClick={() => navigate("/auth")} className="w-full" size="lg">
+                  Sign In to Continue
+                </Button>
+              </CardContent>
+            </Card>
+          </motion.div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background">
-      {loading ? (
-        <div className="flex items-center justify-center min-h-screen">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-        </div>
-      ) : !user ? (
-        <div className="flex items-center justify-center min-h-screen px-4">
-          <Card className="max-w-md w-full text-center">
-            <CardHeader>
-              <Sparkles className="h-16 w-16 text-primary mx-auto mb-4" />
-              <CardTitle className="text-2xl">Sign In Required</CardTitle>
-              <CardDescription>
-                Please sign in to access AI-powered lottery predictions
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button onClick={() => navigate("/auth")} className="w-full">
-                Sign In to Continue
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-      ) : (
-        <>
-          {/* User Header */}
-          <div className="border-b bg-card/50 backdrop-blur-sm">
-            <div className="container mx-auto px-4 py-3 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <User className="h-5 w-5 text-muted-foreground" />
-                <span className="font-medium">{user.email}</span>
-                {subscription?.subscribed && (
-                  <Badge className={subscription.tier === "pro" ? "bg-purple-500" : ""}>
-                    {subscription.tier === "pro" ? "Pro" : "Basic"}
-                  </Badge>
-                )}
-              </div>
-              <div className="flex items-center gap-2">
-                <Button variant="outline" size="sm" onClick={() => navigate("/lottery-history")}>
-                  <History className="mr-2 h-4 w-4" />
-                  History
-                </Button>
-                {subscription?.subscribed && (
-                  <Button variant="outline" size="sm" onClick={handleManageSubscription}>
-                    <Settings className="mr-2 h-4 w-4" />
-                    Manage Subscription
-                  </Button>
-                )}
-                <Button variant="ghost" size="sm" onClick={checkSubscription} disabled={checkingSubscription}>
-                  Refresh Status
-                </Button>
-                <Button variant="ghost" size="sm" onClick={handleLogout}>
-                  <LogOut className="mr-2 h-4 w-4" />
-                  Logout
-                </Button>
-              </div>
-            </div>
+      {/* User Header Bar */}
+      <div className="border-b border-border/50 bg-card/50 backdrop-blur-xl sticky top-0 z-50">
+        <div className="container mx-auto px-4 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <User className="h-5 w-5 text-muted-foreground" />
+            <span className="font-medium text-sm hidden sm:inline">{user.email}</span>
+            {subscription?.subscribed && (
+              <Badge className={`${subscription.tier === "pro" ? "bg-gradient-to-r from-primary to-accent text-primary-foreground" : "bg-primary/20 text-primary"}`}>
+                {subscription.tier === "pro" ? "Pro" : "Basic"}
+              </Badge>
+            )}
           </div>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" onClick={() => navigate("/lottery-history")} className="border-border/50 bg-card/50 backdrop-blur-sm">
+              <History className="mr-2 h-4 w-4" />
+              <span className="hidden sm:inline">History</span>
+            </Button>
+            {subscription?.subscribed && (
+              <Button variant="outline" size="sm" onClick={handleManageSubscription} className="border-border/50 bg-card/50 backdrop-blur-sm hidden sm:flex">
+                <Settings className="mr-2 h-4 w-4" />
+                Manage
+              </Button>
+            )}
+            <Button variant="ghost" size="sm" onClick={handleLogout}>
+              <LogOut className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+      </div>
 
-          {/* Subscription Status Banner */}
-          {subscription?.subscribed ? (
-            <div className="bg-gradient-to-r from-primary/10 to-secondary/10 border-b">
-              <div className="container mx-auto px-4 py-3 text-center">
-                <p className="text-sm">
-                  Your <strong>{subscription.tier === "pro" ? "Pro" : "Basic"}</strong> plan is active. 
-                  {subscription.tier === "pro" ? (
-                    <strong className="ml-1">Unlimited generations remaining</strong>
-                  ) : (
-                    <strong className="ml-1">{subscription.limit - (subscription.generations_used || 0)} generations remaining this month</strong>
-                  )}
-                </p>
-              </div>
-            </div>
-          ) : (
-            <div className="bg-gradient-to-r from-orange-500/10 to-red-500/10 border-b border-orange-200">
-              <div className="container mx-auto px-4 py-3 text-center">
-                <p className="text-sm font-medium">
-                  ⚠️ No active subscription. <strong>Subscribe now to start generating lucky numbers!</strong>
-                </p>
-              </div>
-            </div>
-          )}
+      {/* Subscription Status Banner */}
+      {subscription?.subscribed ? (
+        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="bg-gradient-to-r from-primary/10 via-accent/5 to-primary/10 border-b border-primary/20">
+          <div className="container mx-auto px-4 py-2.5 text-center">
+            <p className="text-sm flex items-center justify-center gap-2">
+              <Check className="h-4 w-4 text-green-500" />
+              <strong>{subscription.tier === "pro" ? "Pro" : "Basic"}</strong> plan active
+              {subscription.tier === "pro" ? (
+                <span className="text-muted-foreground">• Unlimited generations</span>
+              ) : (
+                <span className="text-muted-foreground">• {subscription.limit - (subscription.generations_used || 0)} generations left</span>
+              )}
+            </p>
+          </div>
+        </motion.div>
+      ) : (
+        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="bg-gradient-to-r from-orange-500/10 to-red-500/10 border-b border-orange-500/20">
+          <div className="container mx-auto px-4 py-2.5 text-center">
+            <p className="text-sm font-medium flex items-center justify-center gap-2">
+              <AlertTriangle className="h-4 w-4 text-orange-500" />
+              No active subscription. <button onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })} className="text-primary font-bold underline underline-offset-2">Subscribe now!</button>
+            </p>
+          </div>
+        </motion.div>
+      )}
 
       {/* Hero Section */}
-      <section className="relative py-20 px-4 bg-gradient-to-br from-primary/20 via-background to-secondary/20 overflow-hidden">
-        <div className="absolute inset-0 bg-grid-white/[0.02] bg-[size:60px_60px]" />
-        <div className="container mx-auto text-center relative z-10">
-          <Badge className="mb-4" variant="secondary">
-            <Sparkles className="h-3 w-3 mr-1" />
-            AI-Powered Predictions
-          </Badge>
-          <h1 className="text-4xl md:text-6xl font-black mb-6 bg-gradient-to-r from-primary via-purple-500 to-secondary bg-clip-text text-transparent">
-            Lottery Numbers - AI Predictions
-          </h1>
-          <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-            AI generates "lucky" numbers based on historical data and your personal preferences
-          </p>
-          
-          {/* Detailed Description */}
-          <div className="bg-card/50 backdrop-blur-sm rounded-xl p-6 max-w-4xl mx-auto text-left border border-border/50 mb-8">
-            <h2 className="text-xl font-bold mb-4 text-center">About Lottery AI Predictions</h2>
-            <p className="text-muted-foreground mb-4">
-              Lottery AI is an advanced analytical tool that uses machine learning algorithms to analyze historical lottery data and generate number combinations based on statistical patterns. Our AI examines millions of past draws to identify trends, frequencies, and patterns that may help inform your number selection.
-            </p>
-            
-            <h3 className="font-semibold mb-2">How to Use:</h3>
-            <ul className="text-muted-foreground space-y-2 mb-4 list-disc list-inside">
-              <li><strong>Select Lottery Type:</strong> Choose from EuroJackpot, Lotto 6/49, Powerball, or Mega Millions</li>
-              <li><strong>Generate Numbers:</strong> Click the "Generate Lucky Numbers" button to receive AI-analyzed combinations</li>
-              <li><strong>View Statistics:</strong> Explore hot/cold numbers, frequency analysis, and pattern insights</li>
-              <li><strong>Save Favorites:</strong> Store your preferred combinations for easy access later</li>
-              <li><strong>Save Favorites:</strong> Mark your preferred combinations for quick access</li>
-            </ul>
-            
-            <h3 className="font-semibold mb-2">Features:</h3>
-            <ul className="text-muted-foreground space-y-1 list-disc list-inside">
-              <li>Support for multiple international lottery formats</li>
-              <li>Real-time statistical analysis of historical draw data</li>
-              <li>Hot numbers (frequently drawn) and cold numbers (rarely drawn) tracking</li>
-              <li>Pattern analysis including odd/even ratio and high/low balance</li>
-              <li>Personal combination history and favorites management</li>
-              <li>Pro plan includes unlimited generations and advanced analytics</li>
-            </ul>
-          </div>
-          
-          <div className="flex flex-wrap gap-4 justify-center">
-            <Button 
-              size="lg" 
-              onClick={generateNumbers}
-              disabled={isGenerating}
-            >
-              <Sparkles className="mr-2 h-5 w-5" />
-              {isGenerating ? "Generating..." : "Generate Lucky Numbers"}
-            </Button>
-            <Button size="lg" variant="outline">
-              <BarChart3 className="mr-2 h-5 w-5" />
-              View Statistics
-            </Button>
-          </div>
+      <section className="relative pt-12 sm:pt-16 pb-8 px-4 overflow-hidden">
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute -top-40 -right-40 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
+          <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-accent/5 rounded-full blur-3xl" />
+        </div>
+        <div className="container mx-auto max-w-6xl relative z-10">
+          <LotteryHero />
+        </div>
+      </section>
+
+      {/* How It Works */}
+      <section className="py-8 px-4">
+        <div className="container mx-auto max-w-5xl">
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+            {HOW_IT_WORKS.map((item, i) => (
+              <motion.div
+                key={item.step}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                className="relative p-4 rounded-2xl bg-card/60 backdrop-blur-sm border border-border/50 text-center group hover:border-primary/30 transition-all"
+              >
+                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3">
+                  <item.icon className="w-4 h-4 text-primary" />
+                </div>
+                <div className="text-xs font-bold text-primary mb-1">Step {item.step}</div>
+                <h3 className="font-bold text-sm mb-1">{item.title}</h3>
+                <p className="text-[11px] text-muted-foreground">{item.description}</p>
+              </motion.div>
+            ))}
+          </motion.div>
         </div>
       </section>
 
       {/* Main Generator Section */}
-      <section className="py-12 px-4">
+      <section className="py-8 sm:py-12 px-4">
         <div className="container mx-auto max-w-6xl">
           <Tabs defaultValue="generator" className="w-full">
-            <TabsList className="grid w-full max-w-md mx-auto grid-cols-3">
+            <TabsList className="grid w-full max-w-md mx-auto grid-cols-3 bg-card/80 backdrop-blur-sm border border-border/50">
               <TabsTrigger value="generator">Generator</TabsTrigger>
               <TabsTrigger value="statistics">Statistics</TabsTrigger>
               <TabsTrigger value="saved">Saved ({savedCombinations.length})</TabsTrigger>
@@ -528,11 +428,10 @@ export default function LotteryAI() {
             {/* Generator Tab */}
             <TabsContent value="generator" className="mt-8">
               <div className="grid lg:grid-cols-3 gap-6">
-                {/* Main Generator */}
                 <div className="lg:col-span-2 space-y-6">
-                  <Card>
+                  <Card className="bg-card/80 backdrop-blur-xl border-border/50">
                     <CardHeader>
-                      <CardTitle>Select Lottery Type</CardTitle>
+                      <CardTitle className="font-black">Select Lottery Type</CardTitle>
                       <CardDescription>Choose your preferred lottery game</CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -543,7 +442,7 @@ export default function LotteryAI() {
                           if (lottery) setSelectedLottery(lottery);
                         }}
                       >
-                        <SelectTrigger>
+                        <SelectTrigger className="bg-background/50 border-border/50">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -557,9 +456,9 @@ export default function LotteryAI() {
                     </CardContent>
                   </Card>
 
-                  <Card className="border-2 border-primary/20">
+                  <Card className="bg-card/80 backdrop-blur-xl border-2 border-primary/20">
                     <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
+                      <CardTitle className="flex items-center gap-2 font-black">
                         <Sparkles className="h-5 w-5 text-primary" />
                         Your AI-Generated Lucky Numbers
                       </CardTitle>
@@ -571,94 +470,102 @@ export default function LotteryAI() {
                     <CardContent className="space-y-6">
                       {generatedNumbers.length === 0 ? (
                         <div className="text-center py-12">
-                          <Coins className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-                          <p className="text-muted-foreground mb-4">
-                            Click "Generate Lucky Numbers" to get your AI predictions
-                          </p>
-                          <Button onClick={generateNumbers} size="lg" disabled={isGenerating}>
+                          <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: "spring" }}>
+                            <Coins className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+                          </motion.div>
+                          <p className="text-muted-foreground mb-4">Click "Generate Lucky Numbers" to get your AI predictions</p>
+                          <Button onClick={generateNumbers} size="lg" disabled={isGenerating} className="bg-gradient-to-r from-primary to-accent text-primary-foreground">
                             <Sparkles className="mr-2 h-5 w-5" />
                             {isGenerating ? "Analyzing..." : "Generate Now"}
                           </Button>
                         </div>
                       ) : (
-                        <>
-                          {/* Main Numbers */}
-                          <div>
-                            <p className="text-sm font-medium mb-3">Main Numbers:</p>
-                            <div className="flex flex-wrap gap-3">
-                              {generatedNumbers.map((num, idx) => (
-                                <div
-                                  key={idx}
-                                  className="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-2xl font-bold text-primary-foreground shadow-lg"
-                                >
-                                  {num}
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-
-                          {/* Bonus Numbers */}
-                          {bonusNumbers.length > 0 && (
+                        <AnimatePresence>
+                          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
                             <div>
-                              <p className="text-sm font-medium mb-3">Bonus Numbers:</p>
+                              <p className="text-sm font-bold mb-3">Main Numbers:</p>
                               <div className="flex flex-wrap gap-3">
-                                {bonusNumbers.map((num, idx) => (
-                                  <div
+                                {generatedNumbers.map((num, idx) => (
+                                  <motion.div
                                     key={idx}
-                                    className="w-16 h-16 rounded-full bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center text-2xl font-bold text-white shadow-lg"
+                                    initial={{ scale: 0, rotate: -180 }}
+                                    animate={{ scale: 1, rotate: 0 }}
+                                    transition={{ delay: idx * 0.1, type: "spring" }}
+                                    className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-xl sm:text-2xl font-black text-primary-foreground shadow-lg shadow-primary/20"
                                   >
                                     {num}
-                                  </div>
+                                  </motion.div>
                                 ))}
                               </div>
                             </div>
-                          )}
 
-                          {/* AI Analysis Section */}
-                          {aiAnalysis && (
-                            <div className="border-t pt-4 space-y-3">
-                              <h4 className="font-semibold flex items-center gap-2">
-                                <BarChart3 className="h-4 w-4 text-primary" />
-                                AI Analysis & Insights
-                              </h4>
-                              <div className="space-y-2 text-sm">
-                                <p><strong>Confidence:</strong> <Badge variant={aiAnalysis.confidence === 'high' ? 'default' : 'secondary'}>{aiAnalysis.confidence}</Badge></p>
-                                <p><strong>Strategy:</strong> {aiAnalysis.reasoning}</p>
-                                <div>
-                                  <strong>Statistics:</strong>
-                                  <div className="grid grid-cols-2 gap-2 mt-1 text-xs">
-                                    <div>Even: {aiAnalysis.statistics?.evenCount || 0}</div>
-                                    <div>Odd: {aiAnalysis.statistics?.oddCount || 0}</div>
-                                    <div>High: {aiAnalysis.statistics?.highCount || 0}</div>
-                                    <div>Low: {aiAnalysis.statistics?.lowCount || 0}</div>
-                                  </div>
+                            {bonusNumbers.length > 0 && (
+                              <div>
+                                <p className="text-sm font-bold mb-3">Bonus Numbers:</p>
+                                <div className="flex flex-wrap gap-3">
+                                  {bonusNumbers.map((num, idx) => (
+                                    <motion.div
+                                      key={idx}
+                                      initial={{ scale: 0, rotate: 180 }}
+                                      animate={{ scale: 1, rotate: 0 }}
+                                      transition={{ delay: (generatedNumbers.length + idx) * 0.1, type: "spring" }}
+                                      className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center text-xl sm:text-2xl font-black text-white shadow-lg shadow-orange-500/20"
+                                    >
+                                      {num}
+                                    </motion.div>
+                                  ))}
                                 </div>
                               </div>
-                            </div>
-                          )}
+                            )}
 
-                          {/* Actions */}
-                          <div className="flex gap-3 pt-4">
-                            <Button onClick={generateNumbers} className="flex-1" disabled={isGenerating}>
-                              <Sparkles className="mr-2 h-4 w-4" />
-                              {isGenerating ? "Analyzing..." : "Generate New"}
-                            </Button>
-                            <Button onClick={saveCombination} variant="outline">
-                              <Save className="mr-2 h-4 w-4" />
-                              Save Combination
-                            </Button>
-                          </div>
-                        </>
+                            {aiAnalysis && (
+                              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="border-t border-border/50 pt-4 space-y-3">
+                                <h4 className="font-black flex items-center gap-2">
+                                  <BarChart3 className="h-4 w-4 text-primary" />
+                                  AI Analysis & Insights
+                                </h4>
+                                <div className="space-y-2 text-sm">
+                                  <p><strong>Confidence:</strong> <Badge className={aiAnalysis.confidence === 'high' ? 'bg-green-500/20 text-green-400 border-green-500/30' : 'bg-muted'}>{aiAnalysis.confidence}</Badge></p>
+                                  <p><strong>Strategy:</strong> {aiAnalysis.reasoning}</p>
+                                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-2">
+                                    {[
+                                      { label: "Even", value: aiAnalysis.statistics?.evenCount || 0 },
+                                      { label: "Odd", value: aiAnalysis.statistics?.oddCount || 0 },
+                                      { label: "High", value: aiAnalysis.statistics?.highCount || 0 },
+                                      { label: "Low", value: aiAnalysis.statistics?.lowCount || 0 },
+                                    ].map(s => (
+                                      <div key={s.label} className="p-2 rounded-lg bg-background/50 border border-border/30 text-center">
+                                        <div className="text-lg font-black">{s.value}</div>
+                                        <div className="text-[10px] text-muted-foreground">{s.label}</div>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              </motion.div>
+                            )}
+
+                            <div className="flex gap-3 pt-4">
+                              <Button onClick={generateNumbers} className="flex-1 bg-gradient-to-r from-primary to-accent text-primary-foreground" disabled={isGenerating}>
+                                <Sparkles className="mr-2 h-4 w-4" />
+                                {isGenerating ? "Analyzing..." : "Generate New"}
+                              </Button>
+                              <Button onClick={saveCombination} variant="outline" className="border-border/50">
+                                <Save className="mr-2 h-4 w-4" />
+                                Save
+                              </Button>
+                            </div>
+                          </motion.div>
+                        </AnimatePresence>
                       )}
                     </CardContent>
                   </Card>
                 </div>
 
-                {/* Hot & Cold Numbers Sidebar */}
+                {/* Sidebar */}
                 <div className="space-y-6">
-                  <Card>
+                  <Card className="bg-card/80 backdrop-blur-xl border-border/50">
                     <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
+                      <CardTitle className="flex items-center gap-2 font-black text-base">
                         <TrendingUp className="h-5 w-5 text-red-500" />
                         Hot Numbers
                       </CardTitle>
@@ -667,10 +574,7 @@ export default function LotteryAI() {
                     <CardContent>
                       <div className="grid grid-cols-3 gap-2">
                         {hotNumbers.map((num) => (
-                          <div
-                            key={num}
-                            className="aspect-square rounded-lg bg-red-500/10 border border-red-500/20 flex items-center justify-center font-bold text-red-500"
-                          >
+                          <div key={num} className="aspect-square rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center font-black text-red-500 text-lg">
                             {num}
                           </div>
                         ))}
@@ -678,9 +582,9 @@ export default function LotteryAI() {
                     </CardContent>
                   </Card>
 
-                  <Card>
+                  <Card className="bg-card/80 backdrop-blur-xl border-border/50">
                     <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
+                      <CardTitle className="flex items-center gap-2 font-black text-base">
                         <TrendingDown className="h-5 w-5 text-blue-500" />
                         Cold Numbers
                       </CardTitle>
@@ -689,10 +593,7 @@ export default function LotteryAI() {
                     <CardContent>
                       <div className="grid grid-cols-3 gap-2">
                         {coldNumbers.map((num) => (
-                          <div
-                            key={num}
-                            className="aspect-square rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center font-bold text-blue-500"
-                          >
+                          <div key={num} className="aspect-square rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center font-black text-blue-500 text-lg">
                             {num}
                           </div>
                         ))}
@@ -700,6 +601,25 @@ export default function LotteryAI() {
                     </CardContent>
                   </Card>
 
+                  {/* Quick Actions */}
+                  <Card className="bg-card/80 backdrop-blur-xl border-border/50">
+                    <CardHeader>
+                      <CardTitle className="font-black text-base">Quick Actions</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-2">
+                      <Button variant="outline" size="sm" className="w-full justify-start border-border/50" onClick={() => navigate("/lottery-history")}>
+                        <History className="mr-2 h-4 w-4" /> View Full History
+                      </Button>
+                      <Button variant="outline" size="sm" className="w-full justify-start border-border/50" onClick={checkSubscription} disabled={checkingSubscription}>
+                        <Zap className="mr-2 h-4 w-4" /> Refresh Status
+                      </Button>
+                      {subscription?.subscribed && (
+                        <Button variant="outline" size="sm" className="w-full justify-start border-border/50" onClick={handleManageSubscription}>
+                          <Settings className="mr-2 h-4 w-4" /> Manage Subscription
+                        </Button>
+                      )}
+                    </CardContent>
+                  </Card>
                 </div>
               </div>
             </TabsContent>
@@ -707,9 +627,9 @@ export default function LotteryAI() {
             {/* Statistics Tab */}
             <TabsContent value="statistics" className="mt-8">
               <div className="grid md:grid-cols-2 gap-6">
-                <Card>
+                <Card className="bg-card/80 backdrop-blur-xl border-border/50">
                   <CardHeader>
-                    <CardTitle>Historical Frequency Analysis</CardTitle>
+                    <CardTitle className="font-black">Historical Frequency Analysis</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-3">
@@ -721,39 +641,38 @@ export default function LotteryAI() {
                         { num: 35, freq: 28, color: "bg-blue-500" },
                       ].map((item) => (
                         <div key={item.num} className="flex items-center gap-3">
-                          <div className="w-12 text-center font-bold">{item.num}</div>
-                          <div className="flex-1 h-8 bg-secondary rounded-full overflow-hidden">
-                            <div
-                              className={`h-full ${item.color} transition-all`}
-                              style={{ width: `${item.freq}%` }}
+                          <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center font-black text-sm">{item.num}</div>
+                          <div className="flex-1 h-6 bg-muted rounded-full overflow-hidden">
+                            <motion.div
+                              initial={{ width: 0 }}
+                              whileInView={{ width: `${item.freq}%` }}
+                              viewport={{ once: true }}
+                              transition={{ duration: 1, delay: 0.2 }}
+                              className={`h-full ${item.color} rounded-full`}
                             />
                           </div>
-                          <div className="w-16 text-right text-sm text-muted-foreground">
-                            {item.freq}%
-                          </div>
+                          <div className="w-12 text-right text-sm font-bold">{item.freq}%</div>
                         </div>
                       ))}
                     </div>
                   </CardContent>
                 </Card>
 
-                <Card>
+                <Card className="bg-card/80 backdrop-blur-xl border-border/50">
                   <CardHeader>
-                    <CardTitle>Pattern Analysis</CardTitle>
+                    <CardTitle className="font-black">Pattern Analysis</CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="flex items-center justify-between p-3 rounded-lg bg-secondary/50">
-                      <span className="font-medium">Odd/Even Ratio</span>
-                      <Badge>3:3 Optimal</Badge>
-                    </div>
-                    <div className="flex items-center justify-between p-3 rounded-lg bg-secondary/50">
-                      <span className="font-medium">High/Low Balance</span>
-                      <Badge>Balanced</Badge>
-                    </div>
-                    <div className="flex items-center justify-between p-3 rounded-lg bg-secondary/50">
-                      <span className="font-medium">Consecutive Numbers</span>
-                      <Badge variant="outline">Low Probability</Badge>
-                    </div>
+                  <CardContent className="space-y-3">
+                    {[
+                      { label: "Odd/Even Ratio", value: "3:3 Optimal", variant: "default" as const },
+                      { label: "High/Low Balance", value: "Balanced", variant: "default" as const },
+                      { label: "Consecutive Numbers", value: "Low Probability", variant: "outline" as const },
+                    ].map(item => (
+                      <div key={item.label} className="flex items-center justify-between p-3 rounded-xl bg-background/50 border border-border/30">
+                        <span className="font-bold text-sm">{item.label}</span>
+                        <Badge variant={item.variant} className={item.variant === "default" ? "bg-primary/20 text-primary border-primary/30" : ""}>{item.value}</Badge>
+                      </div>
+                    ))}
                   </CardContent>
                 </Card>
               </div>
@@ -762,48 +681,42 @@ export default function LotteryAI() {
             {/* Saved Combinations Tab */}
             <TabsContent value="saved" className="mt-8">
               {savedCombinations.length === 0 ? (
-                <Card>
+                <Card className="bg-card/80 backdrop-blur-xl border-border/50">
                   <CardContent className="pt-6 text-center py-12">
                     <Save className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-                    <p className="text-lg font-medium mb-2">No saved combinations yet</p>
-                    <p className="text-sm text-muted-foreground">
-                      Generate and save your favorite number combinations
-                    </p>
+                    <p className="text-lg font-black mb-2">No saved combinations yet</p>
+                    <p className="text-sm text-muted-foreground">Generate and save your favorite number combinations</p>
                   </CardContent>
                 </Card>
               ) : (
                 <div className="grid md:grid-cols-2 gap-4">
-                  {savedCombinations.map((combo) => (
-                    <Card key={combo.id}>
-                      <CardHeader>
-                        <div className="flex items-center justify-between">
-                          <CardTitle className="text-base">{combo.lottery_type}</CardTitle>
-                          <Badge variant="secondary">
-                            {new Date(combo.created_at).toLocaleDateString()}
-                          </Badge>
-                        </div>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="flex flex-wrap gap-2 mb-3">
-                          {combo.main_numbers?.map((num: number, idx: number) => (
-                            <div
-                              key={idx}
-                              className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary"
-                            >
-                              {num}
-                            </div>
-                          ))}
-                          {combo.bonus_numbers?.map((num: number, idx: number) => (
-                            <div
-                              key={`bonus-${idx}`}
-                              className="w-10 h-10 rounded-full bg-orange-500/10 flex items-center justify-center font-bold text-orange-500"
-                            >
-                              {num}
-                            </div>
-                          ))}
-                        </div>
-                      </CardContent>
-                    </Card>
+                  {savedCombinations.map((combo, i) => (
+                    <motion.div key={combo.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
+                      <Card className="bg-card/80 backdrop-blur-xl border-border/50 hover:border-primary/30 transition-all">
+                        <CardHeader className="pb-2">
+                          <div className="flex items-center justify-between">
+                            <CardTitle className="text-sm font-black">{combo.lottery_type}</CardTitle>
+                            <Badge variant="secondary" className="text-[10px]">
+                              {new Date(combo.created_at).toLocaleDateString()}
+                            </Badge>
+                          </div>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="flex flex-wrap gap-2">
+                            {combo.main_numbers?.map((num: number, idx: number) => (
+                              <div key={idx} className="w-10 h-10 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center font-black text-primary text-sm">
+                                {num}
+                              </div>
+                            ))}
+                            {combo.bonus_numbers?.map((num: number, idx: number) => (
+                              <div key={`bonus-${idx}`} className="w-10 h-10 rounded-full bg-orange-500/10 border border-orange-500/20 flex items-center justify-center font-black text-orange-500 text-sm">
+                                {num}
+                              </div>
+                            ))}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </motion.div>
                   ))}
                 </div>
               )}
@@ -813,67 +726,69 @@ export default function LotteryAI() {
       </section>
 
       {/* Pricing Section */}
-      <section className="py-20 px-4 bg-gradient-to-br from-primary/5 to-secondary/5">
-        <div className="container mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-black mb-4">Choose Your Plan</h2>
-            <p className="text-lg text-muted-foreground">
-              Unlock advanced AI predictions and analytics
-            </p>
-          </div>
+      <section id="pricing" className="py-16 sm:py-20 px-4">
+        <div className="container mx-auto max-w-4xl">
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} className="text-center mb-10">
+            <h2 className="text-3xl sm:text-4xl font-black mb-3 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">Choose Your Plan</h2>
+            <p className="text-muted-foreground">Unlock advanced AI predictions and analytics</p>
+          </motion.div>
 
-          <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-            {PRICING_TIERS.map((tier) => {
+          <div className="grid md:grid-cols-2 gap-6">
+            {PRICING_TIERS.map((tier, i) => {
               const Icon = tier.icon;
               const isCurrentPlan = subscription?.tier === tier.tier;
               return (
-                <Card
+                <motion.div
                   key={tier.name}
-                  className={`relative ${
-                    tier.popular ? "border-2 border-primary shadow-xl scale-105" : ""
-                  } ${isCurrentPlan ? "border-2 border-green-500" : ""}`}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
                 >
-                  {tier.popular && !isCurrentPlan && (
-                    <Badge className="absolute -top-3 left-1/2 -translate-x-1/2">
-                      Most Popular
-                    </Badge>
-                  )}
-                  {isCurrentPlan && (
-                    <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-green-500">
-                      Current Plan
-                    </Badge>
-                  )}
-                  <CardHeader>
-                    <div
-                      className={`w-12 h-12 rounded-full bg-gradient-to-br ${tier.color} flex items-center justify-center mb-4`}
-                    >
-                      <Icon className="h-6 w-6 text-white" />
-                    </div>
-                    <CardTitle>{tier.name}</CardTitle>
-                    <div className="flex items-baseline gap-1">
-                      <span className="text-3xl font-bold">€{tier.price}</span>
-                      <span className="text-muted-foreground">/{tier.period}</span>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <ul className="space-y-3">
-                      {tier.features.map((feature, idx) => (
-                        <li key={idx} className="flex items-start gap-2">
-                          <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                          <span className="text-sm">{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
-                    <Button
-                      className="w-full mt-6"
-                      variant={tier.popular ? "default" : "outline"}
-                      onClick={() => handleSubscribe(tier.tier as "basic" | "pro")}
-                      disabled={isCurrentPlan}
-                    >
-                      {isCurrentPlan ? "Current Plan" : "Subscribe Now"}
-                    </Button>
-                  </CardContent>
-                </Card>
+                  <Card className={`relative bg-card/80 backdrop-blur-xl ${
+                    tier.popular ? "border-2 border-primary shadow-xl shadow-primary/10 scale-[1.02]" : "border-border/50"
+                  } ${isCurrentPlan ? "border-2 border-green-500" : ""}`}>
+                    {tier.popular && !isCurrentPlan && (
+                      <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-primary to-accent text-primary-foreground">
+                        Most Popular
+                      </Badge>
+                    )}
+                    {isCurrentPlan && (
+                      <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-green-500 text-white">
+                        Current Plan
+                      </Badge>
+                    )}
+                    <CardHeader>
+                      <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${tier.color} flex items-center justify-center mb-4`}>
+                        <Icon className="h-6 w-6 text-white" />
+                      </div>
+                      <CardTitle className="font-black">{tier.name}</CardTitle>
+                      <div className="flex items-baseline gap-1">
+                        <span className="text-3xl font-black">€{tier.price}</span>
+                        <span className="text-muted-foreground">/{tier.period}</span>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <ul className="space-y-3">
+                        {tier.features.map((feature, idx) => (
+                          <li key={idx} className="flex items-start gap-2">
+                            <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                            <span className="text-sm">{feature}</span>
+                          </li>
+                        ))}
+                      </ul>
+                      <Button
+                        className={`w-full mt-6 ${tier.popular ? "bg-gradient-to-r from-primary to-accent text-primary-foreground" : ""}`}
+                        variant={tier.popular ? "default" : "outline"}
+                        onClick={() => handleSubscribe(tier.tier as "basic" | "pro")}
+                        disabled={isCurrentPlan}
+                      >
+                        {isCurrentPlan ? "Current Plan" : "Subscribe Now"}
+                        {!isCurrentPlan && <ArrowRight className="ml-2 h-4 w-4" />}
+                      </Button>
+                    </CardContent>
+                  </Card>
+                </motion.div>
               );
             })}
           </div>
@@ -881,187 +796,149 @@ export default function LotteryAI() {
       </section>
 
       {/* Features Section */}
-      <section className="py-20 px-4">
+      <section className="py-16 px-4">
         <div className="container mx-auto max-w-5xl">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-black mb-4">Powerful Features</h2>
-            <p className="text-lg text-muted-foreground">
-              Everything you need to maximize your lottery strategy
-            </p>
-          </div>
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} className="text-center mb-10">
+            <h2 className="text-3xl sm:text-4xl font-black mb-3 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">Powerful Features</h2>
+            <p className="text-muted-foreground">Everything you need to maximize your lottery strategy</p>
+          </motion.div>
 
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {[
-              {
-                icon: Sparkles,
-                title: "Multiple Lottery Types",
-                description: "Support for EuroJackpot, Lotto 6/49, Powerball, Mega Millions, and more",
-              },
-              {
-                icon: BarChart3,
-                title: "Historical Statistics",
-                description: "Deep analysis of past draws and number frequency patterns",
-              },
-              {
-                icon: TrendingUp,
-                title: "Hot & Cold Analysis",
-                description: "Track frequently and rarely drawn numbers for informed decisions",
-              },
-              {
-                icon: Save,
-                title: "Saved Combinations",
-                description: "Store and manage your favorite number combinations",
-              },
-              {
-                icon: Calendar,
-                title: "Generation History",
-                description: "Track all your generated combinations with dates and statistics",
-              },
-              {
-                icon: Zap,
-                title: "AI-Powered Predictions",
-                description: "Advanced machine learning algorithms analyze patterns",
-              },
-            ].map((feature, idx) => {
-              const Icon = feature.icon;
-              return (
-                <Card key={idx}>
+              { icon: Sparkles, title: "Multiple Lottery Types", description: "EuroJackpot, Lotto 6/49, Powerball, Mega Millions and more" },
+              { icon: BarChart3, title: "Historical Statistics", description: "Deep analysis of past draws and number frequency patterns" },
+              { icon: TrendingUp, title: "Hot & Cold Analysis", description: "Track frequently and rarely drawn numbers" },
+              { icon: Save, title: "Saved Combinations", description: "Store and manage your favorite number combinations" },
+              { icon: Calendar, title: "Generation History", description: "Track all generated combinations with dates" },
+              { icon: Zap, title: "AI-Powered Predictions", description: "Advanced ML algorithms analyze patterns" },
+            ].map((feature, idx) => (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.05 }}
+              >
+                <Card className="bg-card/80 backdrop-blur-xl border-border/50 hover:border-primary/30 transition-all h-full">
                   <CardHeader>
-                    <Icon className="h-8 w-8 text-primary mb-2" />
-                    <CardTitle className="text-xl">{feature.title}</CardTitle>
+                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center mb-2">
+                      <feature.icon className="h-5 w-5 text-primary" />
+                    </div>
+                    <CardTitle className="text-base font-black">{feature.title}</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-muted-foreground">{feature.description}</p>
+                    <p className="text-sm text-muted-foreground">{feature.description}</p>
                   </CardContent>
                 </Card>
-              );
-            })}
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* Disclaimer & Consumer Protection */}
-      <section className="py-12 px-4 bg-muted/50">
+      <section className="py-12 px-4">
         <div className="container mx-auto max-w-4xl">
-          <h2 className="text-2xl font-bold text-center mb-6">Disclaimer & Consumer Protection</h2>
-          <p className="text-sm text-muted-foreground text-center mb-6">
-            Please read the following points carefully to clearly understand the nature of this service.
-          </p>
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
+            <h2 className="text-2xl font-black text-center mb-2 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">Disclaimer & Consumer Protection</h2>
+            <p className="text-sm text-muted-foreground text-center mb-6">
+              Please read the following points carefully to understand the nature of this service.
+            </p>
+          </motion.div>
           
-          <div className="space-y-6 text-sm text-muted-foreground">
-            <div className="bg-card p-4 rounded-lg border border-border">
-              <h3 className="font-bold text-foreground mb-2">1. Purpose of Service</h3>
-              <p className="mb-2">
-                This tool (including AI predictions, pattern analysis, and notifications) is intended solely for entertainment, informational, and analytical purposes.
-              </p>
-              <p className="font-medium text-destructive">
-                This is NOT investment advice, financial advice, or a guaranteed path to winning in gambling.
-              </p>
-            </div>
-            
-            <div className="bg-card p-4 rounded-lg border border-border">
-              <h3 className="font-bold text-foreground mb-2">2. About AI Predictions</h3>
-              <ul className="space-y-2 list-disc list-inside">
-                <li>Machine Learning algorithms analyze exclusively historical data and patterns from past draws.</li>
-                <li>AI does NOT have the ability to predict the future or influence the random lottery drawing process.</li>
-                <li>The probability of winning the lottery is fixed, and no software predictions, patterns, or notifications can increase it. Each draw is an independent event.</li>
-              </ul>
-            </div>
-            
-            <div className="bg-card p-4 rounded-lg border border-border">
-              <h3 className="font-bold text-foreground mb-2">3. Notifications & Subscription</h3>
-              <ul className="space-y-2 list-disc list-inside">
-                <li>Notifications are based on historical statistical analysis, numerological data, or personalized preferences. They do NOT represent a prediction of an actual day with a higher chance of winning.</li>
-                <li>The subscription fee ("Pro Plan") is charged for access to advanced analytical and notification software tools, NOT for an increased chance of winning.</li>
-              </ul>
-            </div>
-            
-            <div className="bg-card p-4 rounded-lg border border-border">
-              <h3 className="font-bold text-foreground mb-2">4. Disclaimer of Liability</h3>
-              <ul className="space-y-2 list-disc list-inside">
-                <li><strong>There is NO guarantee of winning.</strong> The operator provides no guarantees of success, winnings, or profit when using numbers or notifications generated by this tool.</li>
-                <li>Users are solely responsible for their gambling decisions and any financial losses that may arise from gambling.</li>
-                <li className="font-medium text-primary">Play responsibly. If you suspect a gambling problem, seek help immediately.</li>
-              </ul>
-            </div>
+          <div className="space-y-4 text-sm text-muted-foreground">
+            {[
+              { title: "1. Purpose of Service", icon: BookOpen, content: "This tool is intended solely for entertainment, informational, and analytical purposes.", warning: "This is NOT investment advice, financial advice, or a guaranteed path to winning in gambling." },
+              { title: "2. About AI Predictions", icon: Sparkles, list: [
+                "Machine Learning algorithms analyze exclusively historical data and patterns from past draws.",
+                "AI does NOT have the ability to predict the future or influence the random lottery drawing process.",
+                "The probability of winning the lottery is fixed. Each draw is an independent event."
+              ]},
+              { title: "3. Notifications & Subscription", icon: Settings, list: [
+                "Notifications are based on historical statistical analysis, NOT a prediction of an actual day with a higher chance of winning.",
+                "The subscription fee is charged for access to advanced analytical tools, NOT for an increased chance of winning."
+              ]},
+              { title: "4. Disclaimer of Liability", icon: Shield, list: [
+                "There is NO guarantee of winning. The operator provides no guarantees of success or profit.",
+                "Users are solely responsible for their gambling decisions and any financial losses.",
+                "Play responsibly. If you suspect a gambling problem, seek help immediately."
+              ]},
+            ].map((section, i) => (
+              <motion.div key={i} initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.05 }}>
+                <Card className="bg-card/80 backdrop-blur-xl border-border/50">
+                  <CardContent className="pt-4 pb-4">
+                    <h3 className="font-black text-foreground mb-2 flex items-center gap-2">
+                      <section.icon className="h-4 w-4 text-primary" />
+                      {section.title}
+                    </h3>
+                    {section.content && <p className="mb-2">{section.content}</p>}
+                    {section.warning && <p className="font-bold text-destructive">{section.warning}</p>}
+                    {section.list && (
+                      <ul className="space-y-1.5 list-disc list-inside">
+                        {section.list.map((item, j) => <li key={j}>{item}</li>)}
+                      </ul>
+                    )}
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* Terms of Service */}
-      <section className="py-12 px-4 bg-card border-t">
+      <section className="py-12 px-4 border-t border-border/30">
         <div className="container mx-auto max-w-4xl">
-          <h2 className="text-2xl font-bold text-center mb-6">Terms of Service</h2>
+          <h2 className="text-2xl font-black text-center mb-2 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">Terms of Service</h2>
           <p className="text-sm text-muted-foreground text-center mb-6">
             By using Lottery AI, you agree to the following terms and conditions.
           </p>
           
-          <div className="space-y-6 text-sm text-muted-foreground">
-            <div className="bg-muted/50 p-4 rounded-lg border border-border">
-              <h3 className="font-bold text-foreground mb-2">1. Purpose of Service</h3>
-              <p className="mb-2">
-                This tool (including AI predictions, pattern analysis, and notifications) is intended solely for entertainment, informational, and analytical purposes.
-              </p>
-              <p className="font-medium text-destructive">
-                This is NOT investment advice, financial advice, or a guaranteed path to winning in gambling.
-              </p>
-            </div>
-            
-            <div className="bg-muted/50 p-4 rounded-lg border border-border">
-              <h3 className="font-bold text-foreground mb-2">2. About AI Predictions</h3>
-              <ul className="space-y-2 list-disc list-inside">
-                <li>Machine Learning algorithms analyze exclusively historical data and patterns from past draws.</li>
-                <li>AI does NOT have the ability to predict the future or influence the random lottery drawing process.</li>
-                <li>The probability of winning the lottery is fixed, and no software predictions, patterns, or notifications can increase it. Each draw is an independent event.</li>
-              </ul>
-            </div>
-            
-            <div className="bg-muted/50 p-4 rounded-lg border border-border">
-              <h3 className="font-bold text-foreground mb-2">3. Notifications & Subscription</h3>
-              <ul className="space-y-2 list-disc list-inside">
-                <li>Notifications are based on historical statistical analysis, numerological data, or personalized preferences. They do NOT represent a prediction of an actual day with a higher chance of winning.</li>
-                <li>The subscription fee ("Pro Plan") is charged for access to advanced analytical and notification software tools, NOT for an increased chance of winning.</li>
-              </ul>
-            </div>
-            
-            <div className="bg-muted/50 p-4 rounded-lg border border-border">
-              <h3 className="font-bold text-foreground mb-2">4. Disclaimer of Liability</h3>
-              <ul className="space-y-2 list-disc list-inside">
-                <li><strong>There is NO guarantee of winning.</strong> The operator provides no guarantees of success, winnings, or profit when using numbers or notifications generated by this tool.</li>
-                <li>Users are solely responsible for their gambling decisions and any financial losses that may arise from gambling.</li>
-                <li className="font-medium text-primary">Play responsibly. If you suspect a gambling problem, seek help immediately.</li>
-              </ul>
-            </div>
-
-            <div className="bg-muted/50 p-4 rounded-lg border border-border">
-              <h3 className="font-bold text-foreground mb-2">5. User Responsibilities</h3>
-              <ul className="space-y-2 list-disc list-inside">
-                <li>Users must be of legal gambling age in their jurisdiction to use this service.</li>
-                <li>Users are responsible for complying with all local laws and regulations regarding lottery participation.</li>
-                <li>Users agree not to misrepresent the nature of this service to others.</li>
-              </ul>
-            </div>
-
-            <div className="bg-muted/50 p-4 rounded-lg border border-border">
-              <h3 className="font-bold text-foreground mb-2">6. Subscription & Payment Terms</h3>
-              <ul className="space-y-2 list-disc list-inside">
-                <li>Subscriptions are billed monthly and can be cancelled at any time through the customer portal.</li>
-                <li>Refunds are handled according to Stripe's refund policies.</li>
-                <li>The operator reserves the right to modify pricing with 30 days advance notice.</li>
-              </ul>
-            </div>
-
-            <div className="bg-muted/50 p-4 rounded-lg border border-border">
-              <h3 className="font-bold text-foreground mb-2">7. Acceptance of Terms</h3>
-              <p>
-                By subscribing to or using the Lottery AI service, you acknowledge that you have read, understood, and agree to be bound by these Terms of Service and the Disclaimer above. If you do not agree to these terms, please do not use this service.
-              </p>
-            </div>
+          <div className="space-y-4 text-sm text-muted-foreground">
+            {[
+              { title: "1. Purpose of Service", content: "This tool is intended solely for entertainment, informational, and analytical purposes.", warning: "This is NOT investment advice, financial advice, or a guaranteed path to winning in gambling." },
+              { title: "2. About AI Predictions", list: [
+                "Machine Learning algorithms analyze exclusively historical data.",
+                "AI does NOT have the ability to predict the future.",
+                "The probability of winning is fixed. Each draw is an independent event."
+              ]},
+              { title: "3. Notifications & Subscription", list: [
+                "Notifications are based on historical statistical analysis.",
+                "The subscription fee is for access to advanced analytical tools."
+              ]},
+              { title: "4. Disclaimer of Liability", list: [
+                "There is NO guarantee of winning.",
+                "Users are solely responsible for their decisions.",
+                "Play responsibly."
+              ]},
+              { title: "5. User Responsibilities", list: [
+                "Users must be of legal gambling age in their jurisdiction.",
+                "Users are responsible for complying with all local laws.",
+                "Users agree not to misrepresent the nature of this service."
+              ]},
+              { title: "6. Subscription & Payment Terms", list: [
+                "Subscriptions are billed monthly and can be cancelled at any time.",
+                "Refunds are handled according to Stripe's refund policies.",
+                "The operator reserves the right to modify pricing with 30 days notice."
+              ]},
+              { title: "7. Acceptance of Terms", content: "By subscribing to or using the Lottery AI service, you acknowledge that you have read, understood, and agree to be bound by these Terms of Service." },
+            ].map((section, i) => (
+              <Card key={i} className="bg-card/60 backdrop-blur-sm border-border/30">
+                <CardContent className="pt-4 pb-4">
+                  <h3 className="font-black text-foreground mb-2">{section.title}</h3>
+                  {section.content && <p>{section.content}</p>}
+                  {section.warning && <p className="font-bold text-destructive mt-1">{section.warning}</p>}
+                  {section.list && (
+                    <ul className="space-y-1 list-disc list-inside">
+                      {section.list.map((item, j) => <li key={j}>{item}</li>)}
+                    </ul>
+                  )}
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </div>
       </section>
-      </>
-    )}
     </div>
   );
 }
