@@ -33,6 +33,7 @@ import {
   Filter,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { motion } from "framer-motion";
 
 interface FeatureSection {
   title: string;
