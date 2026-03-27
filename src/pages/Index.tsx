@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,8 +12,8 @@ import {
   Video, Mic, ShoppingBag, Brain, TrendingUp, Ghost, Building2, Crown,
   Clock, Timer, ChefHat, MessageCircle, Star, MessageSquare, Palette,
   Camera, Gem, Shirt, ArrowRight, Rocket, Zap, Search, X,
-  Gamepad2, PenTool, Globe, ChevronRight, TrendingDown, BookOpen,
-  Pin, PinOff
+  PenTool, Globe, ChevronRight,
+  Pin, PinOff, BookOpen
 } from "lucide-react";
 
 // ── Data ──────────────────────────────────────────────
@@ -23,7 +23,7 @@ const ecosystemModules = [
   { title: "Time Capsule 2.0", description: "Send messages to the future (1-20 years)", icon: Clock, path: "/time-capsule-subscription", badge: "Future", gradient: "from-blue-600 to-cyan-600", category: "social" },
   { title: "Time Reversal Social", description: "Live your life backwards with AI transformation", icon: Timer, path: "/time-reversal-subscription", badge: "Social", gradient: "from-violet-600 to-purple-600", category: "social" },
   { title: "MasterChef Platform", description: "Online cooking competitions with prizes", icon: ChefHat, path: "/masterchef-subscription", badge: "Competition", gradient: "from-orange-600 to-red-600", category: "entertainment" },
-  { title: "GP Fantasy Racing", description: "3D racing with team management & leaderboards", icon: Car, path: "/f1-racing", badge: "3D Racing", gradient: "from-red-600 to-orange-600", featured: true, category: "games" },
+  { title: "GP Fantasy Racing", description: "3D racing with team management & leaderboards", icon: Car, path: "/f1-racing", badge: "3D Racing", gradient: "from-red-600 to-orange-600", featured: true, category: "racing" },
   { title: "Messenger", description: "Real-time chat with reactions & voice messages", icon: MessageCircle, path: "/messenger", badge: "Chat", gradient: "from-cyan-600 to-blue-600", category: "social" },
   { title: "Influ-King", description: "Creator profiles with 12 categories & virtual gifts", icon: Star, path: "/influ-king", badge: "Creators", gradient: "from-yellow-600 to-amber-600", category: "social" },
   { title: "Megaforum", description: "Open community forum with 9 categories (FREE)", icon: MessageSquare, path: "/megaforum", badge: "Free", gradient: "from-emerald-600 to-green-600", category: "social" },
@@ -39,27 +39,26 @@ const coreModules = [
   { title: "Beauty Studio", description: "Virtual makeup & hair styling with AI", icon: Star, path: "/beauty-studio", badge: "2-5 Credits", gradient: "from-rose-600 to-pink-600", category: "creative" },
   { title: "Photo Restoration", description: "AI colorization & enhance old photos", icon: Camera, path: "/photo-restoration", badge: "1 Credit", gradient: "from-amber-600 to-yellow-600", category: "creative" },
   { title: "Antique Appraisal", description: "AI identification & valuation", icon: Gem, path: "/antique-appraisal", badge: "3-20 Credits", gradient: "from-orange-600 to-amber-600", category: "creative" },
-  { title: "Collectibles", description: "Mystery boxes & AI item generator", icon: Crown, path: "/collectibles", badge: "10 Credits", gradient: "from-violet-600 to-purple-600", category: "games" },
+  { title: "Collectibles", description: "Mystery boxes & AI item generator", icon: Crown, path: "/collectibles", badge: "10 Credits", gradient: "from-violet-600 to-purple-600", category: "entertainment" },
   { title: "Dream Journal", description: "AI dream analysis & mood tracking", icon: Brain, path: "/dream-journal", badge: "Wellness", gradient: "from-blue-600 to-indigo-600", category: "wellness" },
   { title: "Fashion Studio", description: "AI fashion generator & design challenges", icon: Shirt, path: "/fashion-studio", badge: "Creative", gradient: "from-fuchsia-600 to-pink-600", category: "creative" },
 ];
 
 const services = [
-  { title: "GP Fantasy Racing", icon: Car, path: "/f1-subscription", badge: "Premium", gradient: "from-red-600 to-orange-600", featured: true, category: "games" },
+  { title: "GP Fantasy Racing", icon: Car, path: "/f1-subscription", badge: "Premium", gradient: "from-red-600 to-orange-600", featured: true, category: "racing" },
   { title: "Kids Channel", icon: Baby, path: "/kids-channel", badge: "Family", gradient: "from-blue-500 to-cyan-500", category: "entertainment" },
   { title: "Education & AI Tutor", icon: GraduationCap, path: "/education", badge: "Learning", gradient: "from-green-500 to-emerald-500", category: "learning" },
   { title: "Jobs & Career", icon: Briefcase, path: "/jobs", badge: "Career", gradient: "from-purple-500 to-indigo-500", category: "career" },
   { title: "Dating", icon: Heart, path: "/dating", badge: "Social", gradient: "from-pink-500 to-rose-500", category: "social" },
   { title: "AI Generation", icon: Sparkles, path: "/ai-generation", badge: "Creative", gradient: "from-yellow-500 to-amber-500", category: "creative" },
-  { title: "Games", icon: Trophy, path: "/games", badge: "Entertainment", gradient: "from-orange-500 to-red-500", category: "games" },
   { title: "Social Wall", icon: Users, path: "/wall", badge: "Social", gradient: "from-teal-500 to-cyan-500", category: "social" },
   { title: "Live Streaming", icon: Video, path: "/livestream", badge: "Entertainment", gradient: "from-indigo-500 to-purple-500", category: "entertainment" },
   { title: "Comedy Club", icon: Mic, path: "/comedy-club", badge: "Entertainment", gradient: "from-fuchsia-500 to-pink-500", category: "entertainment" },
   { title: "Marketplace", icon: ShoppingBag, path: "/marketplace", badge: "Shopping", gradient: "from-violet-500 to-purple-500", category: "shopping" },
   { title: "AI Services", icon: Brain, path: "/psychology-chat", badge: "Wellness", gradient: "from-emerald-500 to-teal-500", category: "wellness" },
   { title: "IQ Platform", icon: Brain, path: "/iq-platform", badge: "Intelligence", gradient: "from-blue-600 to-indigo-600", category: "learning" },
-  { title: "Shadow Arena", icon: Ghost, path: "/shadow-arena", badge: "Horror", gradient: "from-purple-600 to-fuchsia-600", category: "games" },
-  { title: "Lottery AI", icon: TrendingUp, path: "/lottery-ai", badge: "AI Predictions", gradient: "from-amber-600 to-yellow-500", category: "games" },
+  { title: "Shadow Arena", icon: Ghost, path: "/shadow-arena", badge: "Horror", gradient: "from-purple-600 to-fuchsia-600", category: "entertainment" },
+  { title: "Lottery AI", icon: TrendingUp, path: "/lottery-ai", badge: "AI Predictions", gradient: "from-amber-600 to-yellow-500", category: "entertainment" },
   { title: "Property Marketplace", icon: Building2, path: "/property-marketplace", badge: "Real Estate", gradient: "from-sky-600 to-blue-500", category: "shopping" },
   { title: "Membership Community", icon: Users, path: "/membership-community", badge: "Community", gradient: "from-rose-600 to-pink-500", category: "social" },
   { title: "Crystal Energy", icon: Sparkles, path: "/crystal-energy", badge: "Wellness", gradient: "from-violet-600 to-purple-500", category: "wellness" },
@@ -72,23 +71,22 @@ const services = [
 ];
 
 const allModules = [...ecosystemModules, ...coreModules, ...services.map(s => ({ ...s, description: "" }))];
-// dedupe by path
 const uniqueModules = allModules.filter((m, i, arr) => arr.findIndex(x => x.path === m.path) === i);
 
 const quickActions = [
-  { label: "Play Games", icon: Gamepad2, path: "/games", gradient: "from-orange-500 to-red-500" },
   { label: "Chat Now", icon: MessageCircle, path: "/messenger", gradient: "from-cyan-500 to-blue-500" },
   { label: "Create Content", icon: PenTool, path: "/content-studio", gradient: "from-purple-500 to-indigo-500" },
   { label: "AI Services", icon: Brain, path: "/psychology-chat", gradient: "from-emerald-500 to-teal-500" },
   { label: "Explore World", icon: Globe, path: "/ai-experiences", gradient: "from-blue-500 to-violet-500" },
   { label: "Go Live", icon: Video, path: "/livestream", gradient: "from-red-500 to-pink-500" },
+  { label: "Learn", icon: BookOpen, path: "/education", gradient: "from-green-500 to-emerald-500" },
 ];
 
 const stats = [
   { label: "Services", value: 40, suffix: "+" },
   { label: "AI Features", value: 25, suffix: "+" },
-  { label: "Active Games", value: 12, suffix: "" },
   { label: "Categories", value: 15, suffix: "" },
+  { label: "Experiences", value: 33, suffix: "+" },
 ];
 
 const spotlightServices = [
@@ -126,17 +124,6 @@ function AnimatedCounter({ target, suffix }: { target: number; suffix: string })
   return <>{count}{suffix}</>;
 }
 
-// ── Hero Particles ────────────────────────────────────
-
-const particles = Array.from({ length: 30 }, (_, i) => ({
-  id: i,
-  x: Math.random() * 100,
-  y: Math.random() * 100,
-  size: 2 + Math.random() * 4,
-  duration: 3 + Math.random() * 5,
-  delay: Math.random() * 3,
-}));
-
 // ── Component ─────────────────────────────────────────
 
 const Index = () => {
@@ -145,14 +132,13 @@ const Index = () => {
   const { recent, favorites, trackVisit, toggleFavorite, isFavorite } = useRecentServices();
   const [search, setSearch] = useState("");
   const [spotlightIdx, setSpotlightIdx] = useState(0);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
-  // Auto-rotate spotlight
   useEffect(() => {
     const timer = setInterval(() => setSpotlightIdx(i => (i + 1) % spotlightServices.length), 5000);
     return () => clearInterval(timer);
   }, []);
 
-  // Search results
   const searchResults = useMemo(() => {
     if (!search.trim()) return [];
     const q = search.toLowerCase();
@@ -164,19 +150,16 @@ const Index = () => {
     ).slice(0, 8);
   }, [search]);
 
-  // Recently visited modules
   const recentModules = useMemo(() =>
     recent.map(path => uniqueModules.find(m => m.path === path)).filter(Boolean).slice(0, 6),
     [recent]
   );
 
-  // Favorites modules
   const favoriteModules = useMemo(() =>
     favorites.map(path => uniqueModules.find(m => m.path === path)).filter(Boolean),
     [favorites]
   );
 
-  // Recommendations (simple: pick from categories user visits most)
   const recommendations = useMemo(() => {
     const visitedCategories = recent
       .map(path => uniqueModules.find(m => m.path === path)?.category)
@@ -184,9 +167,7 @@ const Index = () => {
     const catCounts: Record<string, number> = {};
     visitedCategories.forEach(c => { catCounts[c] = (catCounts[c] || 0) + 1; });
     const topCats = Object.entries(catCounts).sort((a, b) => b[1] - a[1]).map(e => e[0]);
-
     if (topCats.length === 0) return uniqueModules.filter(m => (m as any).featured).slice(0, 4);
-
     return uniqueModules
       .filter(m => topCats.includes(m.category || '') && !recent.includes(m.path))
       .slice(0, 4);
@@ -198,8 +179,6 @@ const Index = () => {
   };
 
   const currentSpotlight = spotlightServices[spotlightIdx];
-
-  // ── Module Card ───────────────────────────────────
 
   const ModuleCard = ({ mod, size = "sm", showFav = false }: { mod: any; size?: "sm" | "lg"; showFav?: boolean }) => {
     const Icon = mod.icon;
@@ -259,120 +238,141 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* ── Hero ─────────────────────────────────────── */}
-      <div className="relative overflow-hidden">
-        {/* Animated gradient background */}
-        <motion.div
-          className="absolute inset-0"
-          animate={{
-            background: [
-              "radial-gradient(ellipse at 20% 50%, hsl(var(--primary) / 0.08) 0%, transparent 60%)",
-              "radial-gradient(ellipse at 80% 50%, hsl(var(--accent) / 0.08) 0%, transparent 60%)",
-              "radial-gradient(ellipse at 50% 20%, hsl(var(--primary) / 0.08) 0%, transparent 60%)",
-            ]
-          }}
-          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+      {/* ── Video Hero ───────────────────────────────── */}
+      <div className="relative overflow-hidden h-[70vh] sm:h-[80vh] min-h-[500px]">
+        {/* Video background */}
+        <video
+          ref={videoRef}
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover"
+          src="/beach-hero-sm.mp4"
         />
+        {/* Dark overlay for text readability */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-black/70" />
 
-        {/* Floating particles */}
-        {particles.map(p => (
+        {/* Content over video */}
+        <div className="relative z-10 flex flex-col items-center justify-center h-full px-4 text-center">
           <motion.div
-            key={p.id}
-            className="absolute rounded-full bg-primary/20"
-            style={{ left: `${p.x}%`, top: `${p.y}%`, width: p.size, height: p.size }}
-            animate={{ y: [-10, 10, -10], opacity: [0.2, 0.5, 0.2] }}
-            transition={{ duration: p.duration, repeat: Infinity, delay: p.delay }}
-          />
-        ))}
-
-        <div className="absolute top-20 left-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-10 right-10 w-96 h-96 bg-accent/5 rounded-full blur-3xl" />
-
-        <div className="relative max-w-7xl mx-auto px-3 sm:px-6 pt-24 sm:pt-32 pb-8 sm:pb-16">
-          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="text-center">
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+            className="mb-6"
+          >
             <motion.div
-              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-sm text-primary mb-4 sm:mb-6"
-              animate={{ boxShadow: ["0 0 0 0 hsl(var(--primary) / 0)", "0 0 20px 2px hsl(var(--primary) / 0.15)", "0 0 0 0 hsl(var(--primary) / 0)"] }}
+              className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white/90 text-sm mb-8"
+              animate={{ boxShadow: ["0 0 0 0 rgba(255,255,255,0)", "0 0 30px 4px rgba(255,255,255,0.1)", "0 0 0 0 rgba(255,255,255,0)"] }}
               transition={{ duration: 3, repeat: Infinity }}
             >
-              <Rocket className="w-4 h-4" />
-              <span className="font-medium">All-in-One Platform</span>
+              <Sparkles className="w-4 h-4" />
+              <span className="font-medium">All-in-One Digital Platform</span>
             </motion.div>
-            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black mb-3 sm:mb-5 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent leading-tight">
-              {t('index.welcome')}
-            </h1>
-            <p className="text-base sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
-              {t('index.subtitle')}
-            </p>
+          </motion.div>
 
-            {/* Search bar */}
-            <div className="relative max-w-xl mx-auto mb-6">
-              <div className="relative">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-                <Input
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Search services... (e.g. games, education, dating)"
-                  className="pl-12 pr-10 h-12 sm:h-14 text-base rounded-2xl bg-background/80 backdrop-blur-sm border-border/50 focus:border-primary/50 shadow-lg shadow-primary/5"
-                />
-                {search && (
-                  <button onClick={() => setSearch("")} className="absolute right-4 top-1/2 -translate-y-1/2">
-                    <X className="w-4 h-4 text-muted-foreground hover:text-foreground transition-colors" />
-                  </button>
-                )}
-              </div>
+          <motion.h1
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            className="text-4xl sm:text-6xl lg:text-8xl font-black text-white mb-4 tracking-tight"
+            style={{ textShadow: "0 4px 30px rgba(0,0,0,0.5)" }}
+          >
+            Welcome to{" "}
+            <span className="bg-gradient-to-r from-amber-300 via-yellow-200 to-amber-300 bg-clip-text text-transparent">
+              Unique
+            </span>
+          </motion.h1>
 
-              {/* Search results dropdown */}
-              <AnimatePresence>
-                {searchResults.length > 0 && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -10, scale: 0.98 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: -10, scale: 0.98 }}
-                    className="absolute top-full mt-2 w-full bg-card border border-border/50 rounded-xl shadow-xl z-50 overflow-hidden"
-                  >
-                    {searchResults.map((mod) => {
-                      const Icon = mod.icon;
-                      return (
-                        <button
-                          key={mod.path}
-                          onClick={() => { setSearch(""); handleNavigate(mod.path); }}
-                          className="w-full flex items-center gap-3 px-4 py-3 hover:bg-primary/5 transition-colors text-left"
-                        >
-                          <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${mod.gradient} flex items-center justify-center shrink-0`}>
-                            <Icon className="w-4 h-4 text-white" />
-                          </div>
-                          <div className="min-w-0 flex-1">
-                            <p className="text-sm font-medium truncate">{mod.title}</p>
-                            {mod.description && <p className="text-xs text-muted-foreground truncate">{mod.description}</p>}
-                          </div>
-                          <Badge variant="secondary" className="text-[9px] shrink-0">{mod.badge}</Badge>
-                          <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0" />
-                        </button>
-                      );
-                    })}
-                  </motion.div>
-                )}
-              </AnimatePresence>
+          <motion.p
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.6 }}
+            className="text-lg sm:text-xl text-white/80 max-w-2xl mb-10 font-light"
+            style={{ textShadow: "0 2px 10px rgba(0,0,0,0.4)" }}
+          >
+            Discover, create, connect — your digital universe starts here
+          </motion.p>
+
+          {/* Search bar over video */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.9 }}
+            className="relative w-full max-w-xl mb-8"
+          >
+            <div className="relative">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/60" />
+              <Input
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search services... (e.g. education, dating, AI)"
+                className="pl-12 pr-10 h-14 text-base rounded-2xl bg-white/10 backdrop-blur-md border-white/20 text-white placeholder:text-white/50 focus:border-white/40 focus:bg-white/15 shadow-2xl"
+              />
+              {search && (
+                <button onClick={() => setSearch("")} className="absolute right-4 top-1/2 -translate-y-1/2">
+                  <X className="w-4 h-4 text-white/60 hover:text-white transition-colors" />
+                </button>
+              )}
             </div>
 
-            <div className="flex flex-wrap justify-center gap-3">
-              <Button size="lg" onClick={() => handleNavigate('/wall')} className="bg-gradient-to-r from-primary to-accent text-primary-foreground hover:opacity-90 shadow-lg shadow-primary/20">
-                <Zap className="w-4 h-4" /> Explore Now
-              </Button>
-              <Button size="lg" variant="outline" onClick={() => handleNavigate('/games')}>
-                <Trophy className="w-4 h-4" /> Play Games
-              </Button>
-            </div>
+            <AnimatePresence>
+              {searchResults.length > 0 && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10, scale: 0.98 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -10, scale: 0.98 }}
+                  className="absolute top-full mt-2 w-full bg-card border border-border/50 rounded-xl shadow-2xl z-50 overflow-hidden"
+                >
+                  {searchResults.map((mod) => {
+                    const Icon = mod.icon;
+                    return (
+                      <button
+                        key={mod.path}
+                        onClick={() => { setSearch(""); handleNavigate(mod.path); }}
+                        className="w-full flex items-center gap-3 px-4 py-3 hover:bg-primary/5 transition-colors text-left"
+                      >
+                        <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${mod.gradient} flex items-center justify-center shrink-0`}>
+                          <Icon className="w-4 h-4 text-white" />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-sm font-medium truncate">{mod.title}</p>
+                          {mod.description && <p className="text-xs text-muted-foreground truncate">{mod.description}</p>}
+                        </div>
+                        <Badge variant="secondary" className="text-[9px] shrink-0">{mod.badge}</Badge>
+                        <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0" />
+                      </button>
+                    );
+                  })}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 1.1 }}
+            className="flex flex-wrap justify-center gap-3"
+          >
+            <Button size="lg" onClick={() => handleNavigate('/wall')} className="bg-white text-black hover:bg-white/90 shadow-2xl font-bold rounded-xl px-8">
+              <Zap className="w-4 h-4" /> Explore Now
+            </Button>
+            <Button size="lg" variant="outline" onClick={() => handleNavigate('/ai-experiences')} className="border-white/30 text-white hover:bg-white/10 rounded-xl px-8">
+              <Sparkles className="w-4 h-4" /> Discover AI
+            </Button>
           </motion.div>
         </div>
+
+        {/* Bottom fade to content */}
+        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent" />
       </div>
 
       <div className="max-w-7xl mx-auto px-2 sm:px-6 py-6 sm:py-10 space-y-8 sm:space-y-14">
 
         {/* ── Stats ────────────────────────────────────── */}
         <motion.div
-          className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4"
+          className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 -mt-16 relative z-20"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -380,7 +380,7 @@ const Index = () => {
           {stats.map((stat, i) => (
             <motion.div
               key={i}
-              className="text-center p-4 sm:p-6 rounded-2xl bg-card/50 border border-border/30 hover:border-primary/30 transition-colors"
+              className="text-center p-4 sm:p-6 rounded-2xl bg-card border border-border/30 hover:border-primary/30 transition-colors shadow-lg"
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
@@ -444,7 +444,6 @@ const Index = () => {
                   </div>
                   <ArrowRight className="w-8 h-8 text-white/60 shrink-0" />
                 </div>
-                {/* Dots */}
                 <div className="relative z-10 flex justify-center gap-2 mt-6">
                   {spotlightServices.map((_, i) => (
                     <button
@@ -519,7 +518,7 @@ const Index = () => {
             <CardContent className="py-8 sm:py-10">
               <h3 className="text-xl sm:text-2xl font-black mb-2">Ready to get started?</h3>
               <p className="text-muted-foreground mb-4">Choose a service above and begin your journey!</p>
-              <Button variant="premium" size="lg" onClick={() => handleNavigate('/wall')}>
+              <Button size="lg" onClick={() => handleNavigate('/wall')} className="bg-gradient-to-r from-primary to-accent text-primary-foreground hover:opacity-90">
                 <ArrowRight className="w-4 h-4" /> Get Started
               </Button>
             </CardContent>
