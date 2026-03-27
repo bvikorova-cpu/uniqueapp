@@ -360,16 +360,6 @@ const Index = () => {
           </section>
         )}
 
-        {/* ── Recommendations ──────────────────────────── */}
-        {recommendations.length > 0 && (
-          <section>
-            <SectionHeader icon={Sparkles} title="Recommended for You" badge="AI" />
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3">
-              {recommendations.map((mod: any, i) => <ModuleCard key={i} mod={mod} showFav onNavigate={handleNavigate} isFavorite={isFavorite} toggleFavorite={toggleFavorite} />)}
-            </div>
-          </section>
-        )}
-
         {/* ── Ecosystem ────────────────────────────────── */}
         <section>
           <SectionHeader icon={Crown} title="Ecosystem Modules" badge="Premium" badgeClass="bg-gradient-to-r from-yellow-500/20 to-amber-500/20 text-yellow-600 border-yellow-500/30" />
@@ -391,6 +381,97 @@ const Index = () => {
           <SectionHeader icon={Zap} title="All Services" />
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3">
             {services.map((mod, i) => <ModuleCard key={i} mod={{ ...mod, description: "" }} size="lg" showFav onNavigate={handleNavigate} isFavorite={isFavorite} toggleFavorite={toggleFavorite} />)}
+          </div>
+        </section>
+
+        {/* ── About Unique ─────────────────────────────── */}
+        <section>
+          <Card className="relative overflow-hidden border border-primary/20 bg-gradient-to-br from-card via-card to-card/90 shadow-xl">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,hsl(var(--primary)/0.06),transparent_50%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,hsl(var(--accent)/0.05),transparent_50%)]" />
+            <CardHeader className="relative text-center pb-4">
+              <div className="flex justify-center mb-4">
+                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-glow">
+                  <Sparkles className="w-8 h-8 text-white" />
+                </div>
+              </div>
+              <CardTitle className="text-2xl sm:text-3xl font-black bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                {t('home.welcome_title')}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="relative space-y-5 text-center px-6 sm:px-10 pb-8">
+              <p className="text-base sm:text-lg text-foreground/85 leading-relaxed">
+                {t('home.welcome_intro')}
+              </p>
+              <div className="flex items-center gap-4">
+                <div className="flex-1 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
+                <span className="text-xs text-primary font-bold uppercase tracking-widest">{t('home.welcome_priority')}</span>
+                <div className="flex-1 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
+              </div>
+              <p className="text-base sm:text-lg text-foreground/85 leading-relaxed">
+                {t('home.welcome_feedback')}{" "}
+                <Link to="/contact" className="text-primary hover:underline font-semibold">{t('home.welcome_contact_link')}</Link>.{" "}
+                {t('home.welcome_feedback_value')}
+              </p>
+              <div className="bg-primary/5 rounded-2xl p-5 border border-primary/10">
+                <p className="text-base font-semibold text-foreground/90">
+                  {t('home.welcome_promise')}
+                </p>
+              </div>
+              <p className="text-lg font-black bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                {t('home.welcome_thanks')}
+              </p>
+            </CardContent>
+          </Card>
+        </section>
+
+        {/* ── Why Unique? ──────────────────────────────── */}
+        <section>
+          <div className="text-center mb-8">
+            <h2 className="text-3xl sm:text-4xl font-black mb-3">
+              {t('home.why_unique_title')}{" "}
+              <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Unique</span>?
+            </h2>
+            <p className="text-muted-foreground text-base sm:text-lg max-w-2xl mx-auto">
+              {t('home.why_unique_discover')}
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+            <Card className="group border border-primary/20 hover:border-primary/50 transition-all duration-300 hover:scale-[1.03] hover:shadow-xl hover:shadow-primary/10 bg-card">
+              <CardHeader>
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center mb-3 group-hover:scale-110 transition-transform shadow-lg">
+                  <Layers className="w-7 h-7 text-white" />
+                </div>
+                <CardTitle className="text-xl group-hover:text-primary transition-colors">{t('home.all_in_one_title')}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground leading-relaxed">{t('home.all_in_one_desc')}</p>
+              </CardContent>
+            </Card>
+
+            <Card className="group border border-accent/20 hover:border-accent/50 transition-all duration-300 hover:scale-[1.03] hover:shadow-xl hover:shadow-accent/10 bg-card">
+              <CardHeader>
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-accent to-purple-500 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform shadow-lg">
+                  <Sparkles className="w-7 h-7 text-white" />
+                </div>
+                <CardTitle className="text-xl group-hover:text-accent transition-colors">{t('home.premium_features_title')}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground leading-relaxed">{t('home.premium_features_desc')}</p>
+              </CardContent>
+            </Card>
+
+            <Card className="group border border-gold/20 hover:border-gold/50 transition-all duration-300 hover:scale-[1.03] hover:shadow-xl hover:shadow-gold/10 bg-card">
+              <CardHeader>
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-gold to-yellow-500 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform shadow-lg">
+                  <Coins className="w-7 h-7 text-white" />
+                </div>
+                <CardTitle className="text-xl group-hover:text-gold transition-colors">{t('home.earn_while_social_title')}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground leading-relaxed">{t('home.earn_while_social_desc')}</p>
+              </CardContent>
+            </Card>
           </div>
         </section>
 
