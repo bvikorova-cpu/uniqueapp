@@ -174,14 +174,19 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       {/* ── Hero Section ─────────────────────────────── */}
       <div className="relative overflow-hidden min-h-[500px] sm:min-h-[550px]">
-        {/* Animated gradient background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-primary via-accent to-primary animate-gradient-shift" />
-        <div className="absolute inset-0 bg-black/40" />
-        
-        {/* Decorative circles */}
-        <div className="absolute top-20 left-10 w-64 h-64 rounded-full bg-white/5 blur-3xl" />
-        <div className="absolute bottom-10 right-10 w-96 h-96 rounded-full bg-white/5 blur-3xl" />
-        <div className="absolute top-40 right-1/4 w-48 h-48 rounded-full bg-white/5 blur-2xl" />
+        {/* Video background */}
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover"
+          src="/beach-hero-sm.mp4"
+        />
+        {/* Gradient fallback behind video */}
+        <div className="absolute inset-0 bg-gradient-to-br from-primary via-accent to-primary animate-gradient-shift -z-10" />
+        {/* Dark overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-black/60" />
 
         {/* Content */}
         <div className="relative z-10 flex flex-col items-center justify-center min-h-[500px] sm:min-h-[550px] px-4 text-center pt-20">
