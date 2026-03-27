@@ -2,13 +2,15 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { SubscriptionGate } from '@/components/shadow-arena/SubscriptionGate';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { useAuth } from '@/contexts/AuthContext';
-import { Clock, CheckCircle } from 'lucide-react';
+import { Clock, CheckCircle, ArrowLeft, Swords, Sparkles } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 export default function ShadowArenaBattleSubmit() {
   const { battleId } = useParams();
@@ -37,16 +39,13 @@ export default function ShadowArenaBattleSubmit() {
       const { data, error } = await supabase.functions.invoke('verify-shadow-battle-payment', {
         body: { sessionId, battleId },
       });
-
       if (error) throw error;
-
       if (!data?.verified) {
         setPaymentVerified(false);
         toast.error('Payment not verified yet. Please complete checkout first.');
         navigate(`/shadow-arena/battle/${battleId}`);
         return;
       }
-
       setPaymentVerified(true);
       fetchBattle();
     } catch (err) {
@@ -64,7 +63,6 @@ export default function ShadowArenaBattleSubmit() {
         .select('*')
         .eq('id', battleId)
         .single();
-
       if (error) throw error;
       setBattle(data);
     } catch (error) {
@@ -75,25 +73,12 @@ export default function ShadowArenaBattleSubmit() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (!user || !battleId) {
-      toast.error('Authentication required');
-      return;
-    }
-
-    if (!title.trim() || !content.trim()) {
-      toast.error('Please fill in all fields');
-      return;
-    }
-
-    if (!paymentVerified) {
-      toast.error('Payment verification required before submitting');
-      return;
-    }
+    if (!user || !battleId) { toast.error('Authentication required'); return; }
+    if (!title.trim() || !content.trim()) { toast.error('Please fill in all fields'); return; }
+    if (!paymentVerified) { toast.error('Payment verification required before submitting'); return; }
 
     try {
       setSubmitting(true);
-
       const { error } = await supabase
         .from('shadow_battle_participants')
         .insert({
@@ -103,9 +88,7 @@ export default function ShadowArenaBattleSubmit() {
           story_content: content,
           entry_fee_paid: true
         });
-
       if (error) throw error;
-
       toast.success('Story submitted successfully!');
       navigate(`/shadow-arena/battle/${battleId}`);
     } catch (error) {
@@ -120,90 +103,137 @@ export default function ShadowArenaBattleSubmit() {
     return (
       <SubscriptionGate>
         <div className="flex items-center justify-center min-h-[400px]">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-500"></div>
         </div>
       </SubscriptionGate>
     );
   }
 
-  const timeRemaining = battle.ends_at ? 
-    Math.max(0, Math.floor((new Date(battle.ends_at).getTime() - Date.now()) / 1000 / 60)) : 60;
+  const timeRemaining = battle.ends_at
+    ? Math.max(0, Math.floor((new Date(battle.ends_at).getTime() - Date.now()) / 1000 / 60))
+    : 60;
+
+  const charCount = content.length;
 
   return (
     <SubscriptionGate>
       <div className="container mx-auto px-4 sm:px-6 pt-24 pb-8 max-w-4xl">
+        <Button variant="ghost" size="sm" onClick={() => navigate(`/shadow-arena/battle/${battleId}`)} className="mb-4">
+          <ArrowLeft className="w-4 h-4 mr-2" /> Back to Battle
+        </Button>
+
+        {/* Payment verified banner */}
         {paymentVerified && (
-          <Card className="p-4 mb-6 bg-green-500/10 border-green-500/20">
-            <div className="flex items-center gap-2 text-green-600">
+          <motion.div
+            className="mb-6 rounded-xl border border-green-800/30 bg-green-950/20 p-4"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
+            <div className="flex items-center gap-2 text-green-400">
               <CheckCircle className="h-5 w-5" />
-              <p className="font-semibold">Payment verified! You can now submit your story.</p>
+              <p className="font-semibold text-sm">Payment verified! You can now submit your story.</p>
             </div>
-          </Card>
+          </motion.div>
         )}
 
-        <Card className="p-8">
-          <div className="mb-6">
-            <h1 className="text-3xl font-black mb-2">Submit Your Battle Story</h1>
-            <div className="flex items-center gap-2 text-muted-foreground">
-              <Clock className="h-5 w-5" />
-              <p>{timeRemaining} minutes remaining</p>
+        {/* Hero */}
+        <motion.div
+          className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[hsl(280,30%,8%)] via-[hsl(0,20%,6%)] to-[hsl(0,0%,4%)] p-8 mb-8"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-purple-900/15 rounded-full blur-[80px]" />
+          <div className="relative z-10">
+            <div className="flex items-center gap-3 mb-3">
+              <Swords className="h-7 w-7 text-purple-400" />
+              <h1 className="text-3xl font-black bg-gradient-to-r from-red-400 via-purple-400 to-red-400 bg-clip-text text-transparent">
+                Submit Your Battle Story
+              </h1>
+            </div>
+            <div className="flex items-center gap-4 text-sm">
+              <span className="flex items-center gap-1 text-red-400">
+                <Clock className="w-4 h-4" />
+                <span className="font-mono">{timeRemaining} minutes remaining</span>
+              </span>
             </div>
           </div>
+        </motion.div>
 
-          <Card className="p-4 mb-6 bg-primary/5">
-            <h3 className="font-bold mb-2">Challenge: {battle.challenge_theme}</h3>
+        {/* Challenge card */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+        >
+          <Card className="p-5 mb-6 border-purple-900/20 bg-purple-950/10">
+            <div className="flex items-center gap-2 mb-2">
+              <Sparkles className="h-4 w-4 text-purple-400" />
+              <h3 className="font-bold text-sm text-purple-300">Challenge: {battle.challenge_theme}</h3>
+            </div>
             <p className="text-sm text-muted-foreground mb-3">{battle.challenge_prompt}</p>
             {battle.challenge_keywords && battle.challenge_keywords.length > 0 && (
               <div>
-                <p className="text-sm font-semibold mb-2">Required Keywords:</p>
+                <p className="text-xs font-semibold mb-2 text-red-200/60">Required Keywords:</p>
                 <div className="flex flex-wrap gap-2">
                   {battle.challenge_keywords.map((kw: string, i: number) => (
-                    <span key={i} className="px-2 py-1 bg-primary/10 rounded text-sm">
-                      {kw}
-                    </span>
+                    <Badge key={i} variant="outline" className="text-xs border-purple-800/40 text-purple-300">{kw}</Badge>
                   ))}
                 </div>
               </div>
             )}
           </Card>
+        </motion.div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label className="block font-medium mb-2">Story Title</label>
-              <Input 
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="Enter your story title..."
-                disabled={submitting}
-                required
-              />
-            </div>
+        {/* Form */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+        >
+          <Card className="p-8 border-red-900/20 bg-gradient-to-b from-card/80 to-card/40">
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div>
+                <label className="block font-medium mb-2 text-red-200/80">Story Title</label>
+                <Input
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  placeholder="Enter your story title..."
+                  disabled={submitting}
+                  required
+                  className="bg-background/50 border-red-900/20 focus:border-red-700/50"
+                />
+              </div>
 
-            <div>
-              <label className="block font-medium mb-2">Your Story</label>
-              <Textarea 
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-                placeholder="Write your horror story based on the challenge..."
-                rows={15}
-                disabled={submitting}
-                required
-              />
-              <p className="text-sm text-muted-foreground mt-2">
-                Make sure to include all required keywords in your story!
-              </p>
-            </div>
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="font-medium text-red-200/80">Your Story</label>
+                  <span className="text-xs text-muted-foreground">{charCount} characters</span>
+                </div>
+                <Textarea
+                  value={content}
+                  onChange={(e) => setContent(e.target.value)}
+                  placeholder="Write your horror story based on the challenge..."
+                  rows={16}
+                  disabled={submitting}
+                  required
+                  className="bg-background/50 border-red-900/20 focus:border-red-700/50 font-serif"
+                />
+                <p className="text-xs text-muted-foreground mt-2">
+                  Make sure to include all required keywords in your story!
+                </p>
+              </div>
 
-            <Button 
-              type="submit" 
-              size="lg" 
-              className="w-full"
-              disabled={submitting || !paymentVerified}
-            >
-              {submitting ? 'Submitting...' : 'Submit Story'}
-            </Button>
-          </form>
-        </Card>
+              <Button
+                type="submit"
+                size="lg"
+                className="w-full bg-gradient-to-r from-red-700 to-purple-800 hover:from-red-800 hover:to-purple-900 border border-red-700/40 shadow-lg"
+                disabled={submitting || !paymentVerified || !title.trim() || !content.trim()}
+              >
+                {submitting ? 'Submitting...' : 'Submit Story'}
+              </Button>
+            </form>
+          </Card>
+        </motion.div>
       </div>
     </SubscriptionGate>
   );

@@ -7,14 +7,29 @@ import { SubscriptionGate } from '@/components/shadow-arena/SubscriptionGate';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
-import { Sparkles, Image as ImageIcon } from 'lucide-react';
+import { Sparkles, Image as ImageIcon, ArrowLeft, Feather, Eye, Skull, Volume2, Pen } from 'lucide-react';
+import { motion } from 'framer-motion';
+
+const guidelines = [
+  { icon: Pen, title: "Be Original", desc: "Share your unique horror stories, experiences, or creative fiction" },
+  { icon: Skull, title: "Set the Mood", desc: "Use descriptive language to create atmosphere and tension" },
+  { icon: Eye, title: "Keep it Engaging", desc: "Hook readers from the first sentence to the last" },
+  { icon: ImageIcon, title: "AI Enhancement", desc: "Our AI will generate 2-3 illustrations and format your story" },
+  { icon: Feather, title: "Audience", desc: "Your story will be visible to all Shadow Arena subscribers" },
+  { icon: Sparkles, title: "Battle Ready", desc: "Quality stories may be selected for monthly creator battles" },
+];
+
+const aiFeatures = [
+  { icon: ImageIcon, label: "2-3 atmospheric horror illustrations" },
+  { icon: Volume2, label: "Ambient soundtrack for immersion" },
+  { icon: Sparkles, label: "Automatic formatting and styling" },
+];
 
 export default function ShadowArenaSubmitStory() {
   const navigate = useNavigate();
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [submitting, setSubmitting] = useState(false);
-  const [generatedImages, setGeneratedImages] = useState<string[]>([]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,84 +59,118 @@ export default function ShadowArenaSubmitStory() {
     }
   };
 
+  const charCount = content.length;
+
   return (
     <SubscriptionGate>
       <div className="container mx-auto px-4 sm:px-6 pt-24 pb-8 max-w-4xl">
-        <div className="mb-8">
-          <h1 className="text-4xl font-black mb-4 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
-            📝 Submit Your Horror Story
-          </h1>
-          <p className="text-lg text-muted-foreground mb-6">
-            Share your terrifying tale and let our AI enhance it with professional illustrations
-          </p>
-          
-          {/* Instructions Card */}
-          <Card className="mb-6 bg-gradient-to-br from-purple-500/10 to-fuchsia-500/10 border-purple-500/20">
-            <CardContent className="pt-6">
-              <h2 className="text-xl font-bold mb-4">📋 Story Submission Guidelines</h2>
-              <div className="space-y-3 text-sm text-muted-foreground">
-                <p>✍️ <strong>Be Original:</strong> Share your unique horror stories, experiences, or creative fiction</p>
-                <p>🎭 <strong>Set the Mood:</strong> Use descriptive language to create atmosphere and tension</p>
-                <p>📖 <strong>Keep it Engaging:</strong> Hook readers from the first sentence to the last</p>
-                <p>🎨 <strong>AI Enhancement:</strong> Our AI will automatically generate 2-3 illustrations and format your story</p>
-                <p>👥 <strong>Audience:</strong> Your story will be visible to all Shadow Arena subscribers</p>
-                <p>⚔️ <strong>Battle Ready:</strong> Quality stories may be selected for monthly creator battles</p>
+        <Button variant="ghost" size="sm" onClick={() => navigate('/shadow-arena/dashboard')} className="mb-4">
+          <ArrowLeft className="w-4 h-4 mr-2" /> Back to Dashboard
+        </Button>
+
+        {/* Hero */}
+        <motion.div
+          className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[hsl(0,20%,5%)] via-[hsl(280,30%,8%)] to-[hsl(0,0%,3%)] p-8 mb-8"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-red-900/15 rounded-full blur-[80px]" />
+          <div className="relative z-10">
+            <div className="flex items-center gap-3 mb-3">
+              <Feather className="h-7 w-7 text-red-400" />
+              <h1 className="text-3xl md:text-4xl font-black bg-gradient-to-r from-red-400 via-purple-400 to-red-400 bg-clip-text text-transparent">
+                Submit Your Horror Story
+              </h1>
+            </div>
+            <p className="text-red-200/60 text-sm max-w-lg">
+              Share your terrifying tale and let our AI enhance it with professional illustrations
+            </p>
+          </div>
+        </motion.div>
+
+        {/* Guidelines grid */}
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-8">
+          {guidelines.map((g, i) => (
+            <motion.div
+              key={i}
+              className="flex items-start gap-3 p-4 rounded-xl bg-card/30 border border-red-900/15 hover:border-red-700/30 transition-colors"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.06 }}
+            >
+              <g.icon className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
+              <div>
+                <p className="text-sm font-semibold text-foreground">{g.title}</p>
+                <p className="text-xs text-muted-foreground">{g.desc}</p>
               </div>
-            </CardContent>
-          </Card>
+            </motion.div>
+          ))}
         </div>
 
-        <Card className="p-8">
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label className="block font-medium mb-2">Story Title</label>
-              <Input 
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="The Shadow in the Basement..."
-                disabled={submitting}
-              />
-            </div>
-
-            <div>
-              <label className="block font-medium mb-2">Your Story</label>
-              <Textarea 
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-                placeholder="Tell us your terrifying experience..."
-                rows={12}
-                disabled={submitting}
-              />
-              <p className="text-sm text-muted-foreground mt-2">
-                Be as detailed as possible. The more vivid, the better the AI enhancements!
-              </p>
-            </div>
-
-            <div className="bg-primary/5 p-4 rounded-lg">
-              <div className="flex items-center gap-2 mb-2">
-                <Sparkles className="h-5 w-5 text-primary" />
-                <p className="font-semibold">AI Enhancements Included:</p>
+        {/* Form */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+        >
+          <Card className="p-8 border-red-900/20 bg-gradient-to-b from-card/80 to-card/40">
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div>
+                <label className="block font-medium mb-2 text-red-200/80">Story Title</label>
+                <Input
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  placeholder="The Shadow in the Basement..."
+                  disabled={submitting}
+                  className="bg-background/50 border-red-900/20 focus:border-red-700/50"
+                />
               </div>
-              <ul className="text-sm text-muted-foreground space-y-1">
-                <li className="flex items-center gap-2">
-                  <ImageIcon className="h-4 w-4" />
-                  2-3 atmospheric horror illustrations
-                </li>
-                <li>🔊 Ambient soundtrack for immersion</li>
-                <li>✨ Automatic formatting and styling</li>
-              </ul>
-            </div>
 
-            <Button 
-              type="submit" 
-              size="lg" 
-              className="w-full"
-              disabled={submitting}
-            >
-              {submitting ? 'Enhancing Story...' : 'Submit Story'}
-            </Button>
-          </form>
-        </Card>
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="font-medium text-red-200/80">Your Story</label>
+                  <span className="text-xs text-muted-foreground">{charCount} characters</span>
+                </div>
+                <Textarea
+                  value={content}
+                  onChange={(e) => setContent(e.target.value)}
+                  placeholder="Tell us your terrifying experience..."
+                  rows={14}
+                  disabled={submitting}
+                  className="bg-background/50 border-red-900/20 focus:border-red-700/50 font-serif"
+                />
+                <p className="text-xs text-muted-foreground mt-2">
+                  Be as detailed as possible. The more vivid, the better the AI enhancements!
+                </p>
+              </div>
+
+              {/* AI features */}
+              <div className="rounded-xl border border-purple-900/20 bg-purple-950/10 p-4">
+                <div className="flex items-center gap-2 mb-3">
+                  <Sparkles className="h-4 w-4 text-purple-400" />
+                  <p className="font-semibold text-sm text-purple-300">AI Enhancements Included</p>
+                </div>
+                <div className="space-y-2">
+                  {aiFeatures.map((f, i) => (
+                    <div key={i} className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <f.icon className="h-3.5 w-3.5 text-purple-400/70" />
+                      {f.label}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <Button
+                type="submit"
+                size="lg"
+                className="w-full bg-gradient-to-r from-red-700 to-red-900 hover:from-red-800 hover:to-red-950 border border-red-700/40 shadow-lg"
+                disabled={submitting || !title.trim() || !content.trim()}
+              >
+                {submitting ? 'Enhancing Story with AI...' : 'Submit Story'}
+              </Button>
+            </form>
+          </Card>
+        </motion.div>
       </div>
     </SubscriptionGate>
   );
