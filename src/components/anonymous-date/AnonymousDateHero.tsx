@@ -1,88 +1,85 @@
 import { motion } from "framer-motion";
-import { Heart, Users, MessageCircle, Shield } from "lucide-react";
+import { Heart, Users, MessageCircle, Shield, Sparkles, Eye } from "lucide-react";
 import { useEffect, useState } from "react";
 
-const AnimatedCounter = ({ end, duration = 2 }: { end: number; duration?: number }) => {
+const AnimatedCounter = ({ target, suffix = "" }: { target: number; suffix?: string }) => {
   const [count, setCount] = useState(0);
   useEffect(() => {
-    let start = 0;
-    const increment = end / (duration * 60);
+    const duration = 1500;
+    const steps = 40;
+    const increment = target / steps;
+    let current = 0;
     const timer = setInterval(() => {
-      start += increment;
-      if (start >= end) { setCount(end); clearInterval(timer); }
-      else setCount(Math.floor(start));
-    }, 1000 / 60);
+      current += increment;
+      if (current >= target) {
+        setCount(target);
+        clearInterval(timer);
+      } else {
+        setCount(Math.floor(current));
+      }
+    }, duration / steps);
     return () => clearInterval(timer);
-  }, [end, duration]);
-  return <span>{count.toLocaleString()}</span>;
+  }, [target]);
+  return <span>{count.toLocaleString()}{suffix}</span>;
 };
 
+const stats = [
+  { icon: Users, label: "Active Users", value: 12, suffix: "K+" },
+  { icon: Heart, label: "Matches Made", value: 8300, suffix: "+" },
+  { icon: MessageCircle, label: "Messages Sent", value: 94, suffix: "K" },
+  { icon: Eye, label: "Reveals", value: 5100, suffix: "+" },
+];
+
 export const AnonymousDateHero = () => {
-  const stats = [
-    { icon: Users, label: "Active Users", value: 12450 },
-    { icon: Heart, label: "Matches Made", value: 8320 },
-    { icon: MessageCircle, label: "Messages Sent", value: 94500 },
-    { icon: Shield, label: "Safe Reveals", value: 5100 },
-  ];
-
   return (
-    <div className="relative overflow-hidden rounded-2xl border bg-card/80 backdrop-blur-xl p-6 sm:p-10">
-      <div className="absolute inset-0 bg-gradient-to-br from-pink-500/5 via-transparent to-accent/5" />
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="text-center mb-8 sm:mb-12"
+    >
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 0.1 }}
+        className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-sm text-primary mb-4"
+      >
+        <Heart className="w-4 h-4" />
+        <span className="font-medium">Anonymous Dating Platform</span>
+      </motion.div>
 
-      <div className="relative flex flex-col lg:flex-row items-center gap-8">
-        <div className="flex-1 space-y-4">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-pink-500/10 text-pink-500 text-xs font-medium mb-4">
-              <Heart className="h-3 w-3" />
-              Anonymous Date
-            </span>
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-black bg-gradient-to-r from-foreground via-pink-500 to-accent bg-clip-text text-transparent">
-              Find Love Anonymously
-            </h1>
-            <p className="text-muted-foreground mt-3 max-w-lg leading-relaxed">
-              Connect based on personality, not appearance. Chat for 7 days before the big reveal.
-              Build genuine connections in a safe, verified environment.
-            </p>
-          </motion.div>
+      <motion.h1
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.15 }}
+        className="text-3xl sm:text-5xl lg:text-6xl font-black mb-3 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent"
+      >
+        Find Love Anonymously
+      </motion.h1>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.5 }}
-            className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-4"
-          >
-            {stats.map((stat) => (
-              <div key={stat.label} className="text-center space-y-1">
-                <stat.icon className="h-4 w-4 mx-auto text-pink-500/60" />
-                <div className="text-lg sm:text-xl font-bold">
-                  <AnimatedCounter end={stat.value} />
-                </div>
-                <div className="text-xs text-muted-foreground">{stat.label}</div>
-              </div>
-            ))}
-          </motion.div>
-        </div>
+      <motion.p
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.2 }}
+        className="text-muted-foreground text-sm sm:text-lg max-w-2xl mx-auto mb-8"
+      >
+        Connect based on personality, not appearance. Chat for 7 days before the big reveal — build genuine connections in a safe environment.
+      </motion.p>
 
-        {/* Animated Heart Ring */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.2, duration: 0.8 }}
-          className="relative w-32 h-32 sm:w-40 sm:h-40 flex-shrink-0"
-        >
-          <svg viewBox="0 0 120 120" className="w-full h-full">
-            <defs>
-              <linearGradient id="anonDateGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="hsl(var(--chart-1))" />
-                <stop offset="100%" stopColor="hsl(var(--accent))" />
-              </linearGradient>
-            </defs>
-            <circle cx="60" cy="60" r="52" fill="none" stroke="hsl(var(--border))" strokeWidth="3" />
+      {/* Heart Connection Ring */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 0.25, duration: 0.6 }}
+        className="mb-8 flex justify-center"
+      >
+        <div className="relative w-32 h-32 sm:w-40 sm:h-40">
+          <svg className="w-full h-full" viewBox="0 0 120 120">
+            <circle cx="60" cy="60" r="52" fill="none" stroke="hsl(var(--muted))" strokeWidth="6" opacity="0.3" />
             <motion.circle
               cx="60" cy="60" r="52"
               fill="none"
-              stroke="url(#anonDateGrad)"
-              strokeWidth="4"
+              stroke="hsl(var(--primary))"
+              strokeWidth="6"
               strokeLinecap="round"
               strokeDasharray={`${2 * Math.PI * 52}`}
               initial={{ strokeDashoffset: 2 * Math.PI * 52 }}
@@ -93,19 +90,63 @@ export const AnonymousDateHero = () => {
             <motion.circle
               cx="60" cy="60" r="40"
               fill="none"
-              stroke="hsl(var(--chart-1) / 0.2)"
+              stroke="hsl(var(--primary) / 0.15)"
               strokeWidth="2"
-              strokeDasharray="8 4"
+              strokeDasharray="6 4"
               initial={{ rotate: 0 }}
               animate={{ rotate: 360 }}
-              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+              transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
               style={{ transformOrigin: "60px 60px" }}
             />
-            <text x="60" y="55" textAnchor="middle" className="fill-foreground text-lg font-bold" fontSize="20">💕</text>
-            <text x="60" y="72" textAnchor="middle" className="fill-muted-foreground" fontSize="8">CONNECTIONS</text>
+            <motion.circle
+              cx="60" cy="60" r="30"
+              fill="none"
+              stroke="hsl(var(--accent) / 0.1)"
+              strokeWidth="1.5"
+              strokeDasharray="4 6"
+              initial={{ rotate: 360 }}
+              animate={{ rotate: 0 }}
+              transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
+              style={{ transformOrigin: "60px 60px" }}
+            />
           </svg>
-        </motion.div>
-      </div>
-    </div>
+          <div className="absolute inset-0 flex flex-col items-center justify-center">
+            <motion.span
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1 }}
+              className="text-3xl sm:text-4xl"
+            >
+              💕
+            </motion.span>
+            <span className="text-[10px] sm:text-xs text-muted-foreground font-medium mt-1">7-DAY MAGIC</span>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Stats Grid */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+        className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-3xl mx-auto"
+      >
+        {stats.map((stat, i) => (
+          <motion.div
+            key={stat.label}
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.35 + i * 0.05 }}
+            className="relative group p-4 rounded-2xl bg-card/60 backdrop-blur-sm border border-border/50 hover:border-primary/30 transition-all"
+          >
+            <stat.icon className="w-5 h-5 text-primary mx-auto mb-2" />
+            <div className="text-2xl sm:text-3xl font-black text-foreground">
+              <AnimatedCounter target={stat.value} suffix={stat.suffix} />
+            </div>
+            <p className="text-[11px] text-muted-foreground mt-1">{stat.label}</p>
+          </motion.div>
+        ))}
+      </motion.div>
+    </motion.div>
   );
 };
