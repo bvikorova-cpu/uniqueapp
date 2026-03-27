@@ -5,89 +5,58 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Building2, MapPin, Maximize2, BedDouble, DollarSign, Camera, Video, Megaphone, TrendingUp, Calculator, MessageSquare, Check, Plus, Sparkles, Loader2 } from "lucide-react";
+import { Building2, MapPin, Maximize2, BedDouble, DollarSign, Camera, Video, Megaphone, TrendingUp, Calculator, MessageSquare, Check, Plus, Sparkles, Loader2, Map, Brain, BarChart3, Wand2, Bell, ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { PropertyCard } from "@/components/property/PropertyCard";
 import { PropertyDetailDialog } from "@/components/property/PropertyDetailDialog";
 import { LeadBoostDialog } from "@/components/property/LeadBoostDialog";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { PropertyHero } from "@/components/property/PropertyHero";
+import { PropertyStreak } from "@/components/property/PropertyStreak";
+import { PropertyProgress } from "@/components/property/PropertyProgress";
+import { PropertyAchievements } from "@/components/property/PropertyAchievements";
+import { PropertyMapView } from "@/components/property/PropertyMapView";
+import { PropertyAIValuator } from "@/components/property/PropertyAIValuator";
+import { PropertyMarketAnalytics } from "@/components/property/PropertyMarketAnalytics";
+import { PropertyAIStaging } from "@/components/property/PropertyAIStaging";
+import { PropertyMortgageCalc } from "@/components/property/PropertyMortgageCalc";
+import { PropertyAlerts } from "@/components/property/PropertyAlerts";
 import { usePropertyExpiration } from "@/hooks/usePropertyExpiration";
+import { motion } from "framer-motion";
+
+type ViewType = "hub" | "map" | "valuator" | "analytics" | "staging" | "mortgage" | "alerts";
 
 const LISTING_PACKAGES = [
   {
-    id: "basic",
-    name: "Basic Listing",
-    price: 29,
-    duration: "30 days",
-    features: [
-      "Photo gallery",
-      "Property description",
-      "Standard location on listings",
-      "Email notifications"
-    ],
-    icon: Camera,
-    popular: false
+    id: "basic", name: "Basic Listing", price: 29, duration: "30 days",
+    features: ["Photo gallery", "Property description", "Standard location on listings", "Email notifications"],
+    icon: Camera, popular: false, gradient: "from-sky-500/10 to-blue-500/10", border: "border-sky-500/20"
   },
   {
-    id: "premium",
-    name: "Premium Listing",
-    price: 79,
-    duration: "60 days",
-    features: [
-      "Video tour upload support",
-      "Top placement in search",
-      "3D virtual walkthrough",
-      "Priority support",
-      "Featured badge"
-    ],
-    icon: Video,
-    popular: true
+    id: "premium", name: "Premium Listing", price: 79, duration: "60 days",
+    features: ["Video tour upload support", "Top placement in search", "3D virtual walkthrough", "Priority support", "Featured badge"],
+    icon: Video, popular: true, gradient: "from-primary/10 to-accent/10", border: "border-primary/20"
   },
   {
-    id: "featured",
-    name: "Featured Listing",
-    price: 149,
-    duration: "90 days",
-    features: [
-      "Homepage banner placement",
-      "Social media sharing tools",
-      "3D tour upload support",
-      "Premium placement",
-      "Priority customer support",
-      "Advanced analytics dashboard"
-    ],
-    icon: Megaphone,
-    popular: false
+    id: "featured", name: "Featured Listing", price: 149, duration: "90 days",
+    features: ["Homepage banner placement", "Social media sharing tools", "3D tour upload support", "Premium placement", "Priority customer support", "Advanced analytics dashboard"],
+    icon: Megaphone, popular: false, gradient: "from-amber-500/10 to-yellow-500/10", border: "border-amber-500/20"
   }
 ];
 
 const ADDITIONAL_SERVICES = [
-  {
-    id: "virtual_tour",
-    name: "Virtual Tour Hosting",
-    price: 99,
-    description: "Add interactive 3D virtual tours to your property listings",
-    icon: Video,
-    active: true
-  },
-  {
-    id: "lead_boost",
-    name: "Lead Boost",
-    price: 19,
-    description: "Push listing to 1000+ potential buyers via email",
-    icon: TrendingUp,
-    active: true
-  },
-  {
-    id: "home_decor",
-    name: "Home Decor Marketplace",
-    price: 7.99,
-    description: "AI-powered room design + marketplace for decorations with AR preview",
-    icon: Sparkles,
-    isSubscription: true,
-    link: "/home-decor"
-  }
+  { id: "virtual_tour", name: "Virtual Tour Hosting", price: 99, description: "Add interactive 3D virtual tours to your property listings", icon: Video, active: true },
+  { id: "lead_boost", name: "Lead Boost", price: 19, description: "Push listing to 1000+ potential buyers via email", icon: TrendingUp, active: true },
+  { id: "home_decor", name: "Home Decor Marketplace", price: 7.99, description: "AI-powered room design + marketplace for decorations with AR preview", icon: Sparkles, isSubscription: true, link: "/home-decor" }
+];
+
+const FEATURE_CARDS = [
+  { id: "map", icon: Map, label: "Property Map", desc: "Interactive map view", color: "from-sky-500 to-blue-600" },
+  { id: "valuator", icon: Brain, label: "AI Valuator", desc: "Instant valuation", color: "from-purple-500 to-violet-600" },
+  { id: "analytics", icon: BarChart3, label: "Market Analytics", desc: "Price trends", color: "from-emerald-500 to-green-600" },
+  { id: "staging", icon: Wand2, label: "AI Staging", desc: "Virtual staging", color: "from-pink-500 to-rose-600" },
+  { id: "mortgage", icon: Calculator, label: "Mortgage Calc", desc: "Payment calculator", color: "from-amber-500 to-orange-600" },
+  { id: "alerts", icon: Bell, label: "Property Alerts", desc: "Smart notifications", color: "from-red-500 to-rose-600" },
 ];
 
 export default function PropertyMarketplace() {
@@ -100,35 +69,21 @@ export default function PropertyMarketplace() {
   const [selectedProperty, setSelectedProperty] = useState<any>(null);
   const [showDetailDialog, setShowDetailDialog] = useState(false);
   const [leadBoostDialogOpen, setLeadBoostDialogOpen] = useState(false);
+  const [activeView, setActiveView] = useState<ViewType>("hub");
   const [searchFilters, setSearchFilters] = useState({
-    priceMin: "",
-    priceMax: "",
-    location: "",
-    area: "",
-    rooms: ""
+    priceMin: "", priceMax: "", location: "", area: "", rooms: ""
   });
 
-  // Hook for checking expired listings
   usePropertyExpiration();
 
   useEffect(() => {
     checkAuth();
     fetchProperties();
-    
-    // Handle payment success/cancel
     const payment = searchParams.get('payment');
-    
     if (payment === 'success') {
-      toast({
-        title: "Payment Successful!",
-        description: "Your listing has been activated.",
-      });
+      toast({ title: "Payment Successful!", description: "Your listing has been activated." });
     } else if (payment === 'cancelled') {
-      toast({
-        title: "Payment Canceled",
-        description: "You can complete the payment later.",
-        variant: "destructive"
-      });
+      toast({ title: "Payment Canceled", description: "You can complete the payment later.", variant: "destructive" });
     }
   }, [searchParams]);
 
@@ -142,24 +97,15 @@ export default function PropertyMarketplace() {
       setLoading(true);
       const { data, error } = await supabase
         .from('properties')
-        .select(`
-          *,
-          property_images(image_url, is_primary)
-        `)
+        .select(`*, property_images(image_url, is_primary)`)
         .eq('status', 'active')
         .order('is_featured', { ascending: false })
         .order('created_at', { ascending: false })
         .limit(50);
-
       if (error) throw error;
       setProperties(data || []);
     } catch (error) {
       console.error('Error fetching properties:', error);
-      toast({
-        title: "Error",
-        description: "Failed to load properties",
-        variant: "destructive",
-      });
     } finally {
       setLoading(false);
     }
@@ -168,23 +114,10 @@ export default function PropertyMarketplace() {
   const handleViewProperty = async (id: string) => {
     const { data, error } = await supabase
       .from('properties')
-      .select(`
-        *,
-        property_images (image_url, is_primary),
-        property_videos (video_url)
-      `)
+      .select(`*, property_images (image_url, is_primary), property_videos (video_url)`)
       .eq('id', id)
       .single();
-    
-    if (error) {
-      toast({
-        title: "Error",
-        description: "Failed to load property details",
-        variant: "destructive"
-      });
-      return;
-    }
-    
+    if (error) { toast({ title: "Error", description: "Failed to load property details", variant: "destructive" }); return; }
     setSelectedProperty(data);
     setShowDetailDialog(true);
   };
@@ -192,43 +125,17 @@ export default function PropertyMarketplace() {
   const handleSearch = async () => {
     try {
       setLoading(true);
-      let query = supabase
-        .from('properties')
-        .select(`
-          *,
-          property_images(image_url, is_primary)
-        `)
-        .eq('status', 'active');
-
-      if (searchFilters.location) {
-        query = query.or(`city.ilike.%${searchFilters.location}%,location.ilike.%${searchFilters.location}%`);
-      }
-      if (searchFilters.priceMin) {
-        query = query.gte('price', parseFloat(searchFilters.priceMin));
-      }
-      if (searchFilters.priceMax) {
-        query = query.lte('price', parseFloat(searchFilters.priceMax));
-      }
-      if (searchFilters.area) {
-        query = query.gte('area_sqm', parseInt(searchFilters.area));
-      }
-      if (searchFilters.rooms) {
-        query = query.gte('rooms', parseInt(searchFilters.rooms));
-      }
-
-      const { data, error } = await query
-        .order('is_featured', { ascending: false })
-        .order('created_at', { ascending: false });
-
+      let query = supabase.from('properties').select(`*, property_images(image_url, is_primary)`).eq('status', 'active');
+      if (searchFilters.location) query = query.or(`city.ilike.%${searchFilters.location}%,location.ilike.%${searchFilters.location}%`);
+      if (searchFilters.priceMin) query = query.gte('price', parseFloat(searchFilters.priceMin));
+      if (searchFilters.priceMax) query = query.lte('price', parseFloat(searchFilters.priceMax));
+      if (searchFilters.area) query = query.gte('area_sqm', parseInt(searchFilters.area));
+      if (searchFilters.rooms) query = query.gte('rooms', parseInt(searchFilters.rooms));
+      const { data, error } = await query.order('is_featured', { ascending: false }).order('created_at', { ascending: false });
       if (error) throw error;
       setProperties(data || []);
     } catch (error) {
-      console.error('Error searching properties:', error);
-      toast({
-        title: "Error",
-        description: "Failed to search properties",
-        variant: "destructive",
-      });
+      console.error('Error searching:', error);
     } finally {
       setLoading(false);
     }
@@ -236,87 +143,90 @@ export default function PropertyMarketplace() {
 
   const handleCreateListing = () => {
     if (!isAuthenticated) {
-      toast({
-        title: "Login Required",
-        description: "Please sign in to create a listing",
-        variant: "destructive"
-      });
+      toast({ title: "Login Required", description: "Please sign in to create a listing", variant: "destructive" });
       navigate("/auth");
       return;
     }
     navigate("/property-submission");
   };
 
-  const handlePurchaseListing = (packageId: string, price: number) => {
-    toast({
-      title: "Coming Soon",
-      description: `${packageId} listing package (€${price}) will be available soon!`,
-    });
-  };
-
   const handlePurchaseService = (serviceId: string, price: number, link?: string) => {
-    if (link) {
-      navigate(link);
-      return;
-    }
-    
-    if (serviceId === "virtual_tour") {
-      // Virtual Tour Hosting is now active
-      toast({
-        title: "Virtual Tour Hosting",
-        description: `After purchasing a property listing package, you can add 3D virtual tours to your properties from your dashboard.`,
-      });
-      return;
-    }
-
-    if (serviceId === "lead_boost") {
-      setLeadBoostDialogOpen(true);
-      return;
-    }
-    
-    toast({
-      title: "Coming Soon",
-      description: `This service (€${price}) will be available soon!`,
-    });
+    if (link) { navigate(link); return; }
+    if (serviceId === "lead_boost") { setLeadBoostDialogOpen(true); return; }
+    toast({ title: "Coming Soon", description: `This service (€${price}) will be available soon!` });
   };
+
+  // Sub-view rendering
+  if (activeView === "map") return <div className="min-h-screen bg-background"><div className="container mx-auto px-4 py-24"><PropertyMapView onBack={() => setActiveView("hub")} /></div></div>;
+  if (activeView === "valuator") return <div className="min-h-screen bg-background"><div className="container mx-auto px-4 py-24"><PropertyAIValuator onBack={() => setActiveView("hub")} /></div></div>;
+  if (activeView === "analytics") return <div className="min-h-screen bg-background"><div className="container mx-auto px-4 py-24"><PropertyMarketAnalytics onBack={() => setActiveView("hub")} /></div></div>;
+  if (activeView === "staging") return <div className="min-h-screen bg-background"><div className="container mx-auto px-4 py-24"><PropertyAIStaging onBack={() => setActiveView("hub")} /></div></div>;
+  if (activeView === "mortgage") return <div className="min-h-screen bg-background"><div className="container mx-auto px-4 py-24"><PropertyMortgageCalc onBack={() => setActiveView("hub")} /></div></div>;
+  if (activeView === "alerts") return <div className="min-h-screen bg-background"><div className="container mx-auto px-4 py-24"><PropertyAlerts onBack={() => setActiveView("hub")} /></div></div>;
 
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-24">
-        {/* Hero Section */}
-        <div className="text-center mb-12 space-y-6 pt-12">
-          <div className="inline-block p-3 bg-primary/10 rounded-full mb-4">
-            <Building2 className="h-12 w-12 text-primary" />
-          </div>
-          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
-            Property Marketplace
-          </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Professional platform for real estate agents and private sellers
-          </p>
-          <Button size="lg" className="mt-4" onClick={handleCreateListing}>
-            <Plus className="mr-2 h-5 w-5" />
-            Add Listing
-          </Button>
+        {/* Hero */}
+        <PropertyHero />
+
+        {/* Engagement Row */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+          <PropertyStreak />
+          <PropertyProgress />
+          <PropertyAchievements />
         </div>
 
+        {/* Feature Cards */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-8">
+          {FEATURE_CARDS.map((card, i) => (
+            <motion.div
+              key={card.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 + i * 0.05 }}
+              whileHover={{ scale: 1.05, y: -4 }}
+              whileTap={{ scale: 0.97 }}
+              onClick={() => setActiveView(card.id as ViewType)}
+              className="cursor-pointer"
+            >
+              <Card className="bg-card/60 backdrop-blur-xl border-border/30 hover:border-primary/30 transition-all h-full">
+                <CardContent className="p-4 text-center">
+                  <div className={`w-10 h-10 mx-auto rounded-xl bg-gradient-to-br ${card.color} flex items-center justify-center mb-2`}>
+                    <card.icon className="w-5 h-5 text-white" />
+                  </div>
+                  <p className="text-xs font-bold">{card.label}</p>
+                  <p className="text-[10px] text-muted-foreground">{card.desc}</p>
+                </CardContent>
+              </Card>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Add Listing CTA */}
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-8">
+          <Button size="lg" onClick={handleCreateListing} className="bg-gradient-to-r from-sky-500 to-blue-600 hover:opacity-90 text-white">
+            <Plus className="mr-2 h-5 w-5" /> Add Listing
+          </Button>
+        </motion.div>
+
         {/* About Section */}
-        <Card className="mb-12">
+        <Card className="mb-8 backdrop-blur-xl bg-card/80 border-border/50">
           <CardHeader>
-            <CardTitle className="text-2xl">What is Property Marketplace?</CardTitle>
+            <CardTitle className="text-2xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
+              What is Property Marketplace?
+            </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
             <p className="text-muted-foreground">
-              Property Marketplace is a comprehensive real estate platform designed for both professional agents and private sellers. 
-              Whether you're looking to buy your dream home, sell a property, or expand your real estate portfolio, our platform 
+              Property Marketplace is a comprehensive real estate platform designed for both professional agents and private sellers.
+              Whether you're looking to buy your dream home, sell a property, or expand your real estate portfolio, our platform
               provides all the tools you need for a successful transaction.
             </p>
-            
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-4">
-                <h3 className="font-semibold text-lg flex items-center gap-2">
-                  <Building2 className="h-5 w-5 text-primary" />
-                  How to List Your Property
+                <h3 className="font-bold text-lg flex items-center gap-2">
+                  <Building2 className="h-5 w-5 text-sky-500" /> How to List Your Property
                 </h3>
                 <ol className="list-decimal list-inside space-y-2 text-sm text-muted-foreground">
                   <li><strong>Sign in</strong> to your account or create a new one</li>
@@ -327,11 +237,9 @@ export default function PropertyMarketplace() {
                   <li>Complete payment and your listing goes live immediately</li>
                 </ol>
               </div>
-              
               <div className="space-y-4">
-                <h3 className="font-semibold text-lg flex items-center gap-2">
-                  <MapPin className="h-5 w-5 text-primary" />
-                  How to Find a Property
+                <h3 className="font-bold text-lg flex items-center gap-2">
+                  <MapPin className="h-5 w-5 text-sky-500" /> How to Find a Property
                 </h3>
                 <ol className="list-decimal list-inside space-y-2 text-sm text-muted-foreground">
                   <li>Use the <strong>search filters</strong> below to narrow your search</li>
@@ -343,40 +251,13 @@ export default function PropertyMarketplace() {
                 </ol>
               </div>
             </div>
-
-            <div className="bg-secondary/30 rounded-lg p-6 space-y-4">
-              <h3 className="font-semibold text-lg">Listing Package Benefits</h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-                <div className="space-y-2">
-                  <div className="font-medium text-primary">Basic (€29)</div>
-                  <p className="text-muted-foreground">30-day listing with photo gallery, property description, and email notifications. Perfect for private sellers.</p>
-                </div>
-                <div className="space-y-2">
-                  <div className="font-medium text-primary">Premium (€79)</div>
-                  <p className="text-muted-foreground">60-day listing with video tours, top search placement, 3D virtual walkthrough, featured badge, and priority support.</p>
-                </div>
-                <div className="space-y-2">
-                  <div className="font-medium text-primary">Featured (€149)</div>
-                  <p className="text-muted-foreground">90-day listing with homepage banner, social media tools, 3D tours, premium placement, and advanced analytics dashboard.</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-primary/5 rounded-lg p-6">
-              <h3 className="font-semibold text-lg mb-3">Additional Services</h3>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><strong>• Virtual Tour Hosting (€99):</strong> Add interactive 3D virtual tours to attract more buyers</li>
-                <li><strong>• Lead Boost (€19):</strong> Push your listing to 1000+ potential buyers via email marketing</li>
-                <li><strong>• Home Decor Marketplace (€7.99/month):</strong> AI-powered room design with AR preview for decorations</li>
-              </ul>
-            </div>
           </CardContent>
         </Card>
 
         {/* Advanced Search */}
-        <Card className="mb-12">
+        <Card className="mb-8 backdrop-blur-xl bg-card/80 border-border/50">
           <CardHeader>
-            <CardTitle>Find Your Perfect Property</CardTitle>
+            <CardTitle className="font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">Find Your Perfect Property</CardTitle>
             <CardDescription>Use advanced filters to search properties</CardDescription>
           </CardHeader>
           <CardContent>
@@ -385,53 +266,27 @@ export default function PropertyMarketplace() {
                 <label className="text-sm font-medium">Location</label>
                 <div className="relative">
                   <MapPin className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                  <Input 
-                    placeholder="City, district..."
-                    className="pl-9"
-                    value={searchFilters.location}
-                    onChange={(e) => setSearchFilters({...searchFilters, location: e.target.value})}
-                  />
+                  <Input placeholder="City, district..." className="pl-9" value={searchFilters.location} onChange={(e) => setSearchFilters({...searchFilters, location: e.target.value})} />
                 </div>
               </div>
-              
               <div className="space-y-2">
                 <label className="text-sm font-medium">Price Range</label>
                 <div className="flex gap-2">
-                  <Input 
-                    placeholder="Min €"
-                    type="number"
-                    value={searchFilters.priceMin}
-                    onChange={(e) => setSearchFilters({...searchFilters, priceMin: e.target.value})}
-                  />
-                  <Input 
-                    placeholder="Max €"
-                    type="number"
-                    value={searchFilters.priceMax}
-                    onChange={(e) => setSearchFilters({...searchFilters, priceMax: e.target.value})}
-                  />
+                  <Input placeholder="Min €" type="number" value={searchFilters.priceMin} onChange={(e) => setSearchFilters({...searchFilters, priceMin: e.target.value})} />
+                  <Input placeholder="Max €" type="number" value={searchFilters.priceMax} onChange={(e) => setSearchFilters({...searchFilters, priceMax: e.target.value})} />
                 </div>
               </div>
-
               <div className="space-y-2">
                 <label className="text-sm font-medium">Area (m²)</label>
                 <div className="relative">
                   <Maximize2 className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                  <Input 
-                    placeholder="Min area..."
-                    type="number"
-                    className="pl-9"
-                    value={searchFilters.area}
-                    onChange={(e) => setSearchFilters({...searchFilters, area: e.target.value})}
-                  />
+                  <Input placeholder="Min area..." type="number" className="pl-9" value={searchFilters.area} onChange={(e) => setSearchFilters({...searchFilters, area: e.target.value})} />
                 </div>
               </div>
-
               <div className="space-y-2">
                 <label className="text-sm font-medium">Rooms</label>
                 <Select value={searchFilters.rooms} onValueChange={(value) => setSearchFilters({...searchFilters, rooms: value})}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Number of rooms" />
-                  </SelectTrigger>
+                  <SelectTrigger><SelectValue placeholder="Number of rooms" /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="1">1 room</SelectItem>
                     <SelectItem value="2">2 rooms</SelectItem>
@@ -440,20 +295,17 @@ export default function PropertyMarketplace() {
                   </SelectContent>
                 </Select>
               </div>
-
               <div className="space-y-2 lg:col-span-2">
                 <label className="text-sm font-medium invisible">Search</label>
-                <Button className="w-full" onClick={handleSearch}>
-                  Search Properties
-                </Button>
+                <Button className="w-full bg-gradient-to-r from-sky-500 to-blue-600" onClick={handleSearch}>Search Properties</Button>
               </div>
             </div>
           </CardContent>
         </Card>
 
         {/* Properties Grid */}
-        <div className="mb-12">
-          <h2 className="text-3xl font-black mb-8">Available Properties</h2>
+        <div className="mb-8">
+          <h2 className="text-3xl font-black mb-8 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">Available Properties</h2>
           {loading ? (
             <div className="flex justify-center items-center py-20">
               <Loader2 className="h-12 w-12 animate-spin text-primary" />
@@ -461,61 +313,49 @@ export default function PropertyMarketplace() {
           ) : properties.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {properties.map((property) => (
-                <PropertyCard
-                  key={property.id}
-                  property={property}
-                  onViewDetails={handleViewProperty}
-                />
+                <PropertyCard key={property.id} property={property} onViewDetails={handleViewProperty} />
               ))}
             </div>
           ) : (
-            <Card className="p-12 text-center">
+            <Card className="p-12 text-center backdrop-blur-xl bg-card/80">
               <Building2 className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
               <p className="text-xl text-muted-foreground">No properties found</p>
               <p className="text-sm text-muted-foreground mt-2">Try adjusting your search filters</p>
             </Card>
           )}
         </div>
-        <div className="mb-12">
-          <h2 className="text-3xl font-bold text-center mb-8">Listing Packages</h2>
+
+        {/* Listing Packages */}
+        <div className="mb-8">
+          <h2 className="text-3xl font-black text-center mb-8 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">Listing Packages</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {LISTING_PACKAGES.map((pkg) => {
               const Icon = pkg.icon;
               return (
-                <Card key={pkg.id} className={`relative ${pkg.popular ? 'border-primary shadow-lg scale-105' : ''}`}>
+                <Card key={pkg.id} className={`relative backdrop-blur-xl bg-card/80 ${pkg.popular ? 'border-primary shadow-lg scale-105' : `border-border/50`} bg-gradient-to-br ${pkg.gradient} ${pkg.border}`}>
                   {pkg.popular && (
                     <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                      <span className="bg-primary text-primary-foreground text-xs font-bold px-3 py-1 rounded-full">
-                        MOST POPULAR
-                      </span>
+                      <span className="bg-gradient-to-r from-primary to-accent text-primary-foreground text-xs font-bold px-3 py-1 rounded-full">MOST POPULAR</span>
                     </div>
                   )}
                   <CardHeader className="text-center">
                     <div className="mx-auto p-3 bg-primary/10 rounded-full w-fit mb-4">
                       <Icon className="h-8 w-8 text-primary" />
                     </div>
-                    <CardTitle className="text-2xl">{pkg.name}</CardTitle>
-                    <div className="text-4xl font-bold text-primary mt-4">
-                      €{pkg.price}
-                    </div>
-                    <CardDescription className="text-base">
-                      {pkg.duration}
-                    </CardDescription>
+                    <CardTitle className="text-2xl font-black">{pkg.name}</CardTitle>
+                    <div className="text-4xl font-black bg-gradient-to-r from-sky-500 to-blue-600 bg-clip-text text-transparent mt-4">€{pkg.price}</div>
+                    <CardDescription className="text-base">{pkg.duration}</CardDescription>
                   </CardHeader>
                   <CardContent>
                     <ul className="space-y-3 mb-6">
                       {pkg.features.map((feature, index) => (
                         <li key={index} className="flex items-start gap-2">
-                          <Check className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                          <Check className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
                           <span className="text-sm">{feature}</span>
                         </li>
                       ))}
                     </ul>
-                    <Button 
-                      onClick={() => handlePurchaseListing(pkg.name, pkg.price)}
-                      className="w-full"
-                      variant={pkg.popular ? "default" : "outline"}
-                    >
+                    <Button className={`w-full ${pkg.popular ? "bg-gradient-to-r from-primary to-accent text-primary-foreground" : ""}`} variant={pkg.popular ? "default" : "outline"}>
                       Choose Plan
                     </Button>
                   </CardContent>
@@ -526,38 +366,32 @@ export default function PropertyMarketplace() {
         </div>
 
         {/* Additional Services */}
-        <div className="mb-12">
-          <h2 className="text-3xl font-bold text-center mb-8">Additional Services</h2>
+        <div className="mb-8">
+          <h2 className="text-3xl font-black text-center mb-8 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">Additional Services</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {ADDITIONAL_SERVICES.map((service) => {
               const Icon = service.icon;
               return (
-                <Card key={service.id}>
+                <Card key={service.id} className="backdrop-blur-xl bg-card/80 border-border/50">
                   <CardHeader>
                     <div className="flex items-start justify-between">
                       <div className="flex gap-4">
-                        <div className="p-3 bg-primary/10 rounded-lg">
-                          <Icon className="h-6 w-6 text-primary" />
+                        <div className="p-3 bg-sky-500/10 rounded-lg">
+                          <Icon className="h-6 w-6 text-sky-500" />
                         </div>
                         <div>
-                          <CardTitle className="text-xl">{service.name}</CardTitle>
+                          <CardTitle className="text-xl font-black">{service.name}</CardTitle>
                           <CardDescription className="mt-2">{service.description}</CardDescription>
-                          {service.isSubscription && (
-                            <Badge variant="secondary" className="mt-2">€{service.price}/month</Badge>
-                          )}
+                          {service.isSubscription && <Badge variant="secondary" className="mt-2">€{service.price}/month</Badge>}
                         </div>
                       </div>
-                      <div className="text-2xl font-bold text-primary">
+                      <div className="text-2xl font-black text-sky-500">
                         {service.isSubscription ? '' : `€${service.price}`}
                       </div>
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <Button 
-                      onClick={() => handlePurchaseService(service.id, service.price, service.link)}
-                      className="w-full"
-                      variant="outline"
-                    >
+                    <Button onClick={() => handlePurchaseService(service.id, service.price, service.link)} className="w-full" variant="outline">
                       {service.link ? "Explore" : service.active ? "Learn More" : "Coming Soon"}
                     </Button>
                   </CardContent>
@@ -567,40 +401,36 @@ export default function PropertyMarketplace() {
           </div>
         </div>
 
-        {/* Commission & Tools */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-          <Card>
+        {/* Commission & Mortgage */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <Card className="backdrop-blur-xl bg-card/80 border-border/50 bg-gradient-to-br from-green-500/10 to-emerald-500/10 border-green-500/20">
             <CardHeader>
               <div className="flex items-center gap-3">
-                <DollarSign className="h-8 w-8 text-primary" />
+                <DollarSign className="h-8 w-8 text-green-500" />
                 <div>
-                  <CardTitle>Commission Rate</CardTitle>
+                  <CardTitle className="font-black">Commission Rate</CardTitle>
                   <CardDescription>Fair and transparent pricing</CardDescription>
                 </div>
               </div>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                <div className="p-4 bg-secondary/50 rounded-lg">
-                  <p className="text-2xl font-bold text-primary">1% Commission</p>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    or minimum €500 per sale
-                  </p>
+                <div className="p-4 bg-background/50 rounded-lg border border-border/30">
+                  <p className="text-2xl font-black text-green-500">1% Commission</p>
+                  <p className="text-sm text-muted-foreground mt-1">or minimum €500 per sale</p>
                 </div>
-                <p className="text-sm">
-                  Only pay when your property sells successfully. No hidden fees, complete transparency.
-                </p>
+                <p className="text-sm">Only pay when your property sells successfully. No hidden fees, complete transparency.</p>
               </div>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="backdrop-blur-xl bg-card/80 border-border/50 bg-gradient-to-br from-sky-500/10 to-blue-500/10 border-sky-500/20">
             <CardHeader>
               <div className="flex items-center gap-3">
-                <Calculator className="h-8 w-8 text-primary" />
+                <Calculator className="h-8 w-8 text-sky-500" />
                 <div>
-                  <CardTitle>Mortgage Calculator</CardTitle>
-                  <CardDescription>Calculate monthly payments</CardDescription>
+                  <CardTitle className="font-black">Quick Mortgage Calc</CardTitle>
+                  <CardDescription>Estimate monthly payments</CardDescription>
                 </div>
               </div>
             </CardHeader>
@@ -609,78 +439,43 @@ export default function PropertyMarketplace() {
                 <Input placeholder="Property price" type="number" />
                 <Input placeholder="Down payment" type="number" />
                 <Input placeholder="Interest rate %" type="number" step="0.1" />
-                <Button variant="outline" className="w-full">
-                  Calculate Payment
+                <Button variant="outline" className="w-full" onClick={() => setActiveView("mortgage")}>
+                  <Calculator className="w-4 h-4 mr-2" /> Open Full Calculator
                 </Button>
               </div>
             </CardContent>
           </Card>
         </div>
 
-        {/* Features */}
-        <Card>
+        {/* Platform Features */}
+        <Card className="backdrop-blur-xl bg-card/80 border-border/50">
           <CardHeader className="text-center">
-            <CardTitle className="text-2xl">Platform Features</CardTitle>
+            <CardTitle className="text-2xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">Platform Features</CardTitle>
             <CardDescription>Everything you need for successful property sales</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div className="text-center space-y-3">
-                <div className="mx-auto p-3 bg-primary/10 rounded-full w-fit">
-                  <Video className="h-6 w-6 text-primary" />
-                </div>
-                <h3 className="font-semibold">Virtual Tours & 360°</h3>
-                <p className="text-sm text-muted-foreground">
-                  Immersive property viewing experience
-                </p>
-              </div>
-
-              <div className="text-center space-y-3">
-                <div className="mx-auto p-3 bg-primary/10 rounded-full w-fit">
-                  <MessageSquare className="h-6 w-6 text-primary" />
-                </div>
-                <h3 className="font-semibold">Direct Messaging</h3>
-                <p className="text-sm text-muted-foreground">
-                  Connect directly with agents and buyers
-                </p>
-              </div>
-
-              <div className="text-center space-y-3">
-                <div className="mx-auto p-3 bg-primary/10 rounded-full w-fit">
-                  <Calculator className="h-6 w-6 text-primary" />
-                </div>
-                <h3 className="font-semibold">Financial Tools</h3>
-                <p className="text-sm text-muted-foreground">
-                  Built-in mortgage and ROI calculators
-                </p>
-              </div>
-
-              <div className="text-center space-y-3">
-                <div className="mx-auto p-3 bg-primary/10 rounded-full w-fit">
-                  <TrendingUp className="h-6 w-6 text-primary" />
-                </div>
-                <h3 className="font-semibold">Market Analytics</h3>
-                <p className="text-sm text-muted-foreground">
-                  Real-time market trends and insights
-                </p>
-              </div>
+              {[
+                { icon: Video, title: "Virtual Tours & 360°", desc: "Immersive property viewing experience", color: "text-sky-500", bg: "bg-sky-500/10" },
+                { icon: MessageSquare, title: "Direct Messaging", desc: "Connect directly with agents and buyers", color: "text-blue-500", bg: "bg-blue-500/10" },
+                { icon: Calculator, title: "Financial Tools", desc: "Built-in mortgage and ROI calculators", color: "text-emerald-500", bg: "bg-emerald-500/10" },
+                { icon: TrendingUp, title: "Market Analytics", desc: "Real-time market trends and insights", color: "text-amber-500", bg: "bg-amber-500/10" },
+              ].map((feature, i) => (
+                <motion.div key={i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 + i * 0.05 }} className="text-center space-y-3">
+                  <div className={`mx-auto p-3 ${feature.bg} rounded-full w-fit`}>
+                    <feature.icon className={`h-6 w-6 ${feature.color}`} />
+                  </div>
+                  <h3 className="font-bold">{feature.title}</h3>
+                  <p className="text-sm text-muted-foreground">{feature.desc}</p>
+                </motion.div>
+              ))}
             </div>
           </CardContent>
         </Card>
       </div>
 
-      {/* Property Detail Dialog */}
-      <PropertyDetailDialog
-        property={selectedProperty}
-        open={showDetailDialog}
-        onOpenChange={setShowDetailDialog}
-      />
-
-      {/* Lead Boost Dialog */}
-      <LeadBoostDialog
-        open={leadBoostDialogOpen}
-        onOpenChange={setLeadBoostDialogOpen}
-      />
+      <PropertyDetailDialog property={selectedProperty} open={showDetailDialog} onOpenChange={setShowDetailDialog} />
+      <LeadBoostDialog open={leadBoostDialogOpen} onOpenChange={setLeadBoostDialogOpen} />
     </div>
   );
 }
