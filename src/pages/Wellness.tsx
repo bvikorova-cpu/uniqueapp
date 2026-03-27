@@ -1,10 +1,19 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Sparkles, Heart, Brain, Wind, Palette, BookOpen, Check, Volume2, TrendingUp, Crown, Zap, Shield, Lock, Moon, Target } from "lucide-react";
+import { Loader2, Sparkles, Heart, Brain, Wind, Palette, BookOpen, Check, Volume2, Crown, Zap, Shield, Moon, Target } from "lucide-react";
+import { FloatingParticles } from "@/components/wellness/FloatingParticles";
+import { WellnessHero } from "@/components/wellness/WellnessHero";
+import { WellnessStreak } from "@/components/wellness/WellnessStreak";
+import { WellnessProgressPreview } from "@/components/wellness/WellnessProgressPreview";
+import { WellnessAchievements } from "@/components/wellness/WellnessAchievements";
+import { WellnessToolCard } from "@/components/wellness/WellnessToolCard";
+import { WellnessTestimonials } from "@/components/wellness/WellnessTestimonials";
+import { WellnessComparisonTable } from "@/components/wellness/WellnessComparisonTable";
 import { MindfulnessChat } from "@/components/wellness/MindfulnessChat";
 import { BreathingExercises } from "@/components/wellness/BreathingExercises";
 import { GratitudeJournal } from "@/components/wellness/GratitudeJournal";
@@ -13,96 +22,94 @@ import { DigitalMandala } from "@/components/wellness/DigitalMandala";
 import { NatureSounds } from "@/components/wellness/NatureSounds";
 import { BodyScanMeditation } from "@/components/wellness/BodyScanMeditation";
 import { WellnessProgressDashboard } from "@/components/wellness/WellnessProgressDashboard";
-import { FloatingParticles } from "@/components/wellness/FloatingParticles";
-import { BreathingCircleHero } from "@/components/wellness/BreathingCircleHero";
 import { DailyWellnessChallenges } from "@/components/wellness/DailyWellnessChallenges";
 import { SleepStories } from "@/components/wellness/SleepStories";
 import { motion, AnimatePresence } from "framer-motion";
 
 const WELLNESS_PLANS = {
-  basicMonthly: {
-    name: "Basic Monthly",
-    price: "€4.99",
-    period: "/month",
-    priceId: "price_1SQQ0zGaXSfGtYFtXRewT2s9",
-    tier: "basic",
-    isLifetime: false,
-    icon: Wind,
-    gradient: "from-sky-500/15 to-cyan-500/5",
-    accentColor: "text-sky-400",
-    features: ["Breathing Exercises", "5-4-3-2-1 Grounding", "Nature Sounds", "Body Scan Meditation"],
-  },
-  premiumMonthly: {
-    name: "Premium Monthly",
-    price: "€9.99",
-    period: "/month",
-    priceId: "price_1SQQ1zGaXSfGtYFt773EG7rN",
-    tier: "premium",
-    isLifetime: false,
-    icon: Crown,
-    gradient: "from-violet-500/15 to-purple-500/5",
-    accentColor: "text-violet-400",
-    popular: true,
-    features: ["AI Mindfulness Coach", "Breathing Exercises", "Gratitude Journal with AI", "5-4-3-2-1 Grounding", "Digital Mandala Drawing", "Body Scan Meditation"],
-  },
-  basicLifetime: {
-    name: "Basic Lifetime",
-    price: "€29.99",
-    period: " once",
-    priceId: "price_1SQQ2OGaXSfGtYFtSFCDoDRg",
-    tier: "basic",
-    isLifetime: true,
-    icon: Shield,
-    gradient: "from-emerald-500/15 to-green-500/5",
-    accentColor: "text-emerald-400",
-    savings: "Save 50%+",
-    features: ["Lifetime Access", "Breathing Exercises", "5-4-3-2-1 Grounding", "Nature Sounds", "Body Scan Meditation"],
-  },
-  premiumLifetime: {
-    name: "Premium Lifetime",
-    price: "€49.99",
-    period: " once",
-    priceId: "price_1SQQ2gGaXSfGtYFtpMEdnEfw",
-    tier: "premium",
-    isLifetime: true,
-    icon: Zap,
-    gradient: "from-amber-500/15 to-orange-500/5",
-    accentColor: "text-amber-400",
-    savings: "Best Value",
-    features: ["Lifetime Access", "AI Mindfulness Coach", "Breathing Exercises", "Gratitude Journal with AI", "5-4-3-2-1 Grounding", "Digital Mandala Drawing", "Body Scan Meditation"],
-  },
+  basicMonthly: { name: "Basic Monthly", price: "€4.99", period: "/month", priceId: "price_1SQQ0zGaXSfGtYFtXRewT2s9", tier: "basic", isLifetime: false, icon: Wind, gradient: "from-sky-500/15 to-cyan-500/5", accentColor: "text-sky-400", features: ["Breathing Exercises", "5-4-3-2-1 Grounding", "Nature Sounds", "Body Scan Meditation", "Sleep Stories", "Daily Challenges"] },
+  premiumMonthly: { name: "Premium Monthly", price: "€9.99", period: "/month", priceId: "price_1SQQ1zGaXSfGtYFt773EG7rN", tier: "premium", isLifetime: false, icon: Crown, gradient: "from-violet-500/15 to-purple-500/5", accentColor: "text-violet-400", popular: true, features: ["All Basic features", "AI Mindfulness Coach", "Gratitude Journal with AI", "Digital Mandala Drawing", "Progress Dashboard"] },
+  basicLifetime: { name: "Basic Lifetime", price: "€29.99", period: " once", priceId: "price_1SQQ2OGaXSfGtYFtSFCDoDRg", tier: "basic", isLifetime: true, icon: Shield, gradient: "from-emerald-500/15 to-green-500/5", accentColor: "text-emerald-400", savings: "Save 50%+", features: ["Lifetime Access", "Breathing Exercises", "5-4-3-2-1 Grounding", "Nature Sounds", "Body Scan Meditation", "Sleep Stories"] },
+  premiumLifetime: { name: "Premium Lifetime", price: "€49.99", period: " once", priceId: "price_1SQQ2gGaXSfGtYFtpMEdnEfw", tier: "premium", isLifetime: true, icon: Zap, gradient: "from-amber-500/15 to-orange-500/5", accentColor: "text-amber-400", savings: "Best Value", features: ["Lifetime Access", "All Premium features", "AI Mindfulness Coach", "Gratitude Journal with AI", "Digital Mandala Drawing"] },
 };
 
-const TABS = [
-  { value: "progress", label: "Progress", icon: TrendingUp, requiresBasic: true, requiresPremium: false },
-  { value: "breathing", label: "Breathing", icon: Wind, requiresBasic: true, requiresPremium: false },
-  { value: "grounding", label: "Grounding", icon: Brain, requiresBasic: true, requiresPremium: false },
-  { value: "sounds", label: "Sounds", icon: Volume2, requiresBasic: true, requiresPremium: false },
-  { value: "bodyscan", label: "Body Scan", icon: Heart, requiresBasic: true, requiresPremium: false },
-  { value: "challenges", label: "Challenges", icon: Target, requiresBasic: true, requiresPremium: false },
-  { value: "sleep", label: "Sleep Stories", icon: Moon, requiresBasic: true, requiresPremium: false },
-  { value: "chat", label: "AI Coach", icon: Brain, requiresBasic: false, requiresPremium: true },
-  { value: "journal", label: "Journal", icon: BookOpen, requiresBasic: false, requiresPremium: true },
-  { value: "mandala", label: "Mandala", icon: Palette, requiresBasic: false, requiresPremium: true },
+const WELLNESS_TOOLS = [
+  {
+    id: "breathing", name: "Breathing Exercises", icon: Wind,
+    description: "Guided breathing techniques for stress relief and relaxation",
+    color: "from-sky-500 to-cyan-600",
+    features: ["4-7-8 Breathing", "Box Breathing", "Visual guidance", "Session tracking", "Multiple techniques"],
+    premium: false,
+  },
+  {
+    id: "grounding", name: "5-4-3-2-1 Grounding", icon: Brain,
+    description: "Sensory grounding exercise to reduce anxiety and panic",
+    color: "from-violet-500 to-purple-600",
+    features: ["Step-by-step guidance", "Anxiety relief", "Panic attack support", "Progress tracking", "Audio cues"],
+    premium: false,
+  },
+  {
+    id: "sounds", name: "Nature Sounds", icon: Volume2,
+    description: "Ambient soundscapes for relaxation, focus, and sleep",
+    color: "from-emerald-500 to-green-600",
+    features: ["Rain & thunder", "Ocean waves", "Forest ambience", "Volume control", "Sleep timer"],
+    premium: false,
+  },
+  {
+    id: "bodyscan", name: "Body Scan Meditation", icon: Heart,
+    description: "Progressive relaxation from head to toe with audio guidance",
+    color: "from-rose-500 to-pink-600",
+    features: ["Interactive body map", "Audio guidance", "Progressive relaxation", "Session completion", "Tension release"],
+    premium: false,
+  },
+  {
+    id: "sleep", name: "Sleep Stories", icon: Moon,
+    description: "Calming narratives and ambient sounds to help you drift off",
+    color: "from-indigo-500 to-blue-600",
+    features: ["Multiple stories", "Ambient themes", "Sleep timer", "Volume control", "New stories weekly"],
+    premium: false,
+  },
+  {
+    id: "challenges", name: "Daily Challenges", icon: Target,
+    description: "Gamified daily wellness tasks with XP and streak tracking",
+    color: "from-amber-500 to-orange-600",
+    features: ["Daily tasks", "XP rewards", "Streak tracking", "Multiple categories", "Progress gamification"],
+    premium: false,
+  },
+  {
+    id: "chat", name: "AI Mindfulness Coach", icon: Brain,
+    description: "24/7 AI coach trained in CBT, mindfulness, and therapeutic techniques",
+    color: "from-purple-500 to-violet-600",
+    features: ["24/7 availability", "CBT techniques", "Empathetic responses", "Quick prompts", "Session history"],
+    premium: true,
+  },
+  {
+    id: "journal", name: "Gratitude Journal", icon: BookOpen,
+    description: "Write gratitude entries and receive AI-powered insights",
+    color: "from-amber-500 to-yellow-600",
+    features: ["AI insights", "Mood tracking", "Writing prompts", "Entry history", "Emotional analysis"],
+    premium: true,
+  },
+  {
+    id: "mandala", name: "Digital Mandala", icon: Palette,
+    description: "Creative mindfulness through symmetrical drawing",
+    color: "from-pink-500 to-rose-600",
+    features: ["Symmetry modes", "Color palettes", "Export to image", "Creative expression", "Meditative drawing"],
+    premium: true,
+  },
 ];
 
 export default function Wellness() {
   const [subscriptionStatus, setSubscriptionStatus] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState("breathing");
-  const tabsRef = useRef<HTMLDivElement>(null);
-  const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, width: 0 });
+  const [activeTool, setActiveTool] = useState<string | null>(null);
   const { toast } = useToast();
 
   const checkSubscription = async () => {
     try {
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        setSubscriptionStatus({ subscribed: false });
-        setLoading(false);
-        return;
-      }
+      if (!session) { setSubscriptionStatus({ subscribed: false }); setLoading(false); return; }
       const { data, error } = await supabase.functions.invoke('check-wellness-subscription', {
         headers: { Authorization: `Bearer ${session.access_token}` },
       });
@@ -111,33 +118,15 @@ export default function Wellness() {
     } catch (error) {
       console.error('Error checking subscription:', error);
       toast({ title: "Error", description: "Failed to check subscription status", variant: "destructive" });
-    } finally {
-      setLoading(false);
-    }
+    } finally { setLoading(false); }
   };
 
   useEffect(() => { checkSubscription(); }, []);
 
-  // Animated tab indicator
-  useEffect(() => {
-    const container = tabsRef.current;
-    if (!container) return;
-    const activeBtn = container.querySelector(`[data-tab="${activeTab}"]`) as HTMLElement;
-    if (activeBtn) {
-      setIndicatorStyle({
-        left: activeBtn.offsetLeft,
-        width: activeBtn.offsetWidth,
-      });
-    }
-  }, [activeTab]);
-
   const handleCheckout = async (planKey: keyof typeof WELLNESS_PLANS) => {
     try {
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        toast({ title: "Authentication Required", description: "Please sign in to subscribe", variant: "destructive" });
-        return;
-      }
+      if (!session) { toast({ title: "Authentication Required", description: "Please sign in to subscribe", variant: "destructive" }); return; }
       setCheckoutLoading(planKey);
       const plan = WELLNESS_PLANS[planKey];
       const { data, error } = await supabase.functions.invoke('create-wellness-checkout', {
@@ -149,41 +138,22 @@ export default function Wellness() {
     } catch (error) {
       console.error('Checkout error:', error);
       toast({ title: "Error", description: "Failed to start checkout", variant: "destructive" });
-    } finally {
-      setCheckoutLoading(null);
-    }
+    } finally { setCheckoutLoading(null); }
   };
 
   const hasBasicAccess = subscriptionStatus?.subscribed && subscriptionStatus?.tier;
   const hasPremiumAccess = subscriptionStatus?.subscribed && subscriptionStatus?.tier === "premium";
 
-  const canAccess = (tab: typeof TABS[0]) => {
-    if (tab.requiresPremium) return hasPremiumAccess;
-    if (tab.requiresBasic) return hasBasicAccess;
-    return true;
-  };
-
-  const renderContent = () => {
-    const tab = TABS.find((t) => t.value === activeTab);
-    if (!tab) return null;
-
-    if (tab.requiresPremium && !hasPremiumAccess) return <PremiumRequired premium />;
-    if (tab.requiresBasic && !hasBasicAccess) return <PremiumRequired />;
-
-    const content: Record<string, JSX.Element> = {
-      progress: <WellnessProgressDashboard />,
-      breathing: <BreathingExercises />,
-      grounding: <GroundingExercise />,
-      sounds: <NatureSounds />,
-      bodyscan: <BodyScanMeditation />,
-      challenges: <DailyWellnessChallenges />,
-      sleep: <SleepStories />,
-      chat: <MindfulnessChat />,
-      journal: <GratitudeJournal />,
-      mandala: <DigitalMandala />,
-    };
-
-    return content[activeTab] || null;
+  const handleSelectTool = (toolId: string, isPremium: boolean) => {
+    if (isPremium && !hasPremiumAccess) {
+      toast({ title: "Premium Required", description: "Upgrade to Premium to access this tool" });
+      return;
+    }
+    if (!isPremium && !hasBasicAccess) {
+      toast({ title: "Subscription Required", description: "Subscribe to access wellness tools" });
+      return;
+    }
+    setActiveTool(toolId);
   };
 
   if (loading) {
@@ -197,159 +167,129 @@ export default function Wellness() {
     );
   }
 
+  // If a tool is active, show it full-screen
+  if (activeTool) {
+    const toolComponents: Record<string, JSX.Element> = {
+      breathing: <BreathingExercises />,
+      grounding: <GroundingExercise />,
+      sounds: <NatureSounds />,
+      bodyscan: <BodyScanMeditation />,
+      sleep: <SleepStories />,
+      challenges: <DailyWellnessChallenges />,
+      chat: <MindfulnessChat />,
+      journal: <GratitudeJournal />,
+      mandala: <DigitalMandala />,
+      progress: <WellnessProgressDashboard />,
+    };
+
+    return (
+      <div className="relative min-h-screen">
+        <div className="fixed inset-0 pointer-events-none z-0"><FloatingParticles /></div>
+        <div className="relative z-10 container mx-auto px-2 sm:px-4 pt-20 pb-12">
+          <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-4">
+            <Button variant="ghost" onClick={() => setActiveTool(null)} className="gap-2">
+              ← Back to Wellness
+            </Button>
+          </motion.div>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeTool}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+            >
+              {toolComponents[activeTool]}
+            </motion.div>
+          </AnimatePresence>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="relative min-h-screen">
-      {/* Floating Particles Background */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        <FloatingParticles />
-      </div>
+      {/* Floating Particles */}
+      <div className="fixed inset-0 pointer-events-none z-0"><FloatingParticles /></div>
 
-      <div className="relative z-10 container mx-auto px-3 sm:px-4 py-8 sm:py-16 pt-20 sm:pt-20 max-w-7xl">
-        {/* Hero Section with Breathing Circle */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="mb-8 sm:mb-12"
-        >
-          <div className="text-center max-w-4xl mx-auto mb-8">
-            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-sm text-primary mb-4">
-                <Heart className="w-4 h-4" />
-                <span className="font-medium">Mental Health & Wellness</span>
-              </div>
-            </motion.div>
+      <div className="relative z-10 container mx-auto px-2 sm:px-4 pt-20 pb-12">
+        {/* Hero */}
+        <WellnessHero />
 
-            <motion.h1
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.05 }}
-              className="text-3xl sm:text-5xl font-black mb-3 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent"
-            >
-              Your Wellness Sanctuary
-            </motion.h1>
-            <motion.p
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              className="text-sm sm:text-lg text-muted-foreground max-w-xl mx-auto mb-8"
-            >
-              Professional tools for relaxation, mindfulness, and inner peace
-            </motion.p>
+        {/* Engagement widgets row (like AI Mentor) */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+          <WellnessStreak />
+          <WellnessProgressPreview />
+          <WellnessAchievements />
+        </div>
 
-            {/* Breathing Circle Hero */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.2, duration: 0.6 }}
-              className="mb-8"
-            >
-              <BreathingCircleHero />
-            </motion.div>
-          </div>
-
-          {/* Stats Row */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4">
-            {[
-              { icon: Brain, label: "AI Coach", desc: "24/7 empathetic assistant", color: "text-violet-400", bg: "from-violet-500/10 to-purple-500/5" },
-              { icon: Wind, label: "Exercises", desc: "Breathing & body scan", color: "text-sky-400", bg: "from-sky-500/10 to-cyan-500/5" },
-              { icon: Moon, label: "Sleep Stories", desc: "Calming narratives", color: "text-indigo-400", bg: "from-indigo-500/10 to-blue-500/5" },
-              { icon: Target, label: "Challenges", desc: "Daily wellness goals", color: "text-amber-400", bg: "from-amber-500/10 to-orange-500/5" },
-            ].map((item, index) => {
-              const Icon = item.icon;
-              return (
-                <motion.div
-                  key={item.label}
-                  initial={{ opacity: 0, y: 15 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.15 + index * 0.05 }}
-                >
-                  <Card className="relative overflow-hidden border-primary/20 backdrop-blur-xl bg-card/80 hover:shadow-lg transition-all group">
-                    <div className={`absolute inset-0 bg-gradient-to-br ${item.bg} opacity-0 group-hover:opacity-100 transition-opacity`} />
-                    <CardContent className="relative pt-4 sm:pt-6 p-3 sm:p-6">
-                      <div className={`p-2 rounded-xl bg-card/60 w-fit mb-2 ${item.color}`}>
-                        <Icon className="w-5 h-5 sm:w-7 sm:h-7" />
-                      </div>
-                      <h3 className="font-semibold mb-1 text-xs sm:text-base">{item.label}</h3>
-                      <p className="text-xs sm:text-sm text-muted-foreground hidden sm:block">{item.desc}</p>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              );
-            })}
-          </div>
-        </motion.div>
-
-        {/* Info Section */}
-        <Card className="relative overflow-hidden border-primary/20 backdrop-blur-xl bg-card/80 mb-8">
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent" />
-          <CardContent className="relative pt-6">
-            <div className="space-y-6">
-              <div className="flex items-start gap-4">
-                <div className="p-2 rounded-xl bg-primary/10 flex-shrink-0">
+        {/* Active Plan Badge */}
+        {hasBasicAccess && (
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
+            <Card className="relative overflow-hidden border-primary/30 backdrop-blur-xl bg-card/80">
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-emerald-500/5" />
+              <CardContent className="relative py-4 flex items-center gap-4">
+                <div className="p-2 rounded-xl bg-primary/10">
                   <Sparkles className="w-5 h-5 text-primary" />
                 </div>
-                <div>
-                  <h3 className="font-semibold text-lg mb-2">What is Wellness & Mental Health?</h3>
-                  <p className="text-muted-foreground text-sm leading-relaxed">
-                    Our platform provides a comprehensive suite of professional-grade relaxation, mindfulness,
-                    and mental wellbeing tools. Whether you're dealing with daily stress, anxiety, trouble sleeping, or simply want to
-                    improve your overall mental health, our scientifically-backed techniques are designed to help you find inner peace.
-                  </p>
+                <div className="flex items-center gap-3">
+                  <span className="font-semibold">Active Plan:</span>
+                  <Badge variant="default" className="text-sm px-3 shadow-lg">
+                    {subscriptionStatus.tier.toUpperCase()}
+                  </Badge>
+                  {subscriptionStatus.is_lifetime && (
+                    <span className="text-sm flex items-center gap-1"><Sparkles className="w-4 h-4 text-amber-400" /> Lifetime</span>
+                  )}
                 </div>
-              </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+        )}
 
-              <div className="border-t border-border/50 pt-4">
-                <h4 className="font-semibold mb-3 flex items-center gap-2">
-                  <BookOpen className="w-5 h-5 text-primary" />
-                  How to Use
-                </h4>
-                <div className="grid sm:grid-cols-2 gap-2">
-                  {[
-                    { step: "1", text: "Subscribe to a Basic or Premium plan" },
-                    { step: "2", text: "Navigate between tabs for different exercises" },
-                    { step: "3", text: "Follow visual guides for breathing & body scan" },
-                    { step: "4", text: "Complete daily wellness challenges for XP" },
-                    { step: "5", text: "Play sleep stories or nature sounds before bed" },
-                    { step: "6", text: "Chat with AI Coach 24/7 (Premium)" },
-                    { step: "7", text: "Write gratitude entries with AI insights (Premium)" },
-                    { step: "8", text: "Track your progress and streaks over time" },
-                  ].map((item) => (
-                    <div key={item.step} className="flex items-start gap-2 p-2 rounded-lg bg-card/40">
-                      <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                        <span className="text-xs font-bold text-primary">{item.step}</span>
-                      </div>
-                      <span className="text-sm text-muted-foreground">{item.text}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
+        {/* Main content: Tool cards + sidebar (like AI Mentor) */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+          {/* Tool Cards Grid */}
+          <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+            {WELLNESS_TOOLS.slice(0, 6).map((tool, i) => (
+              <WellnessToolCard
+                key={tool.id}
+                tool={tool}
+                hasAccess={tool.premium ? hasPremiumAccess : hasBasicAccess}
+                isPremium={tool.premium}
+                onSelect={() => handleSelectTool(tool.id, tool.premium)}
+                index={i}
+              />
+            ))}
+          </div>
 
-              <div className="border-t border-border/50 pt-4">
-                <h4 className="font-semibold mb-3">Why Use Wellness Tools?</h4>
-                <div className="grid sm:grid-cols-2 gap-2">
-                  {[
-                    { text: "Reduce stress and anxiety", sub: "Breathing exercises provably lower cortisol" },
-                    { text: "Improve sleep quality", sub: "Sleep stories and nature sounds aid restful sleep" },
-                    { text: "Build healthy habits", sub: "Daily challenges create lasting wellness routines" },
-                    { text: "24/7 AI support", sub: "Mindfulness coach is always available" },
-                  ].map((item) => (
-                    <div key={item.text} className="flex items-start gap-2 p-2">
-                      <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                      <div>
-                        <span className="text-sm font-medium">{item.text}</span>
-                        <p className="text-xs text-muted-foreground">{item.sub}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
+          {/* Sidebar */}
+          <div className="space-y-4">
+            <WellnessTestimonials />
+            <WellnessComparisonTable />
+          </div>
+        </div>
 
-              <p className="text-xs text-muted-foreground border-t border-border/50 pt-3">
-                💡 <strong>Tip:</strong> Even 5 minutes daily can significantly improve your mental wellbeing over time.
-              </p>
-            </div>
-          </CardContent>
-        </Card>
+        {/* Premium Tools Section */}
+        <div className="mb-8">
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-4">
+            <h2 className="text-2xl font-black flex items-center gap-2">
+              <Crown className="w-6 h-6 text-amber-400" />
+              Premium Tools
+            </h2>
+            <p className="text-sm text-muted-foreground">Advanced AI-powered wellness features</p>
+          </motion.div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {WELLNESS_TOOLS.filter(t => t.premium).map((tool, i) => (
+              <WellnessToolCard
+                key={tool.id}
+                tool={tool}
+                hasAccess={hasPremiumAccess}
+                isPremium={true}
+                onSelect={() => handleSelectTool(tool.id, true)}
+                index={i}
+              />
+            ))}
+          </div>
+        </div>
 
         {/* Pricing */}
         {!hasBasicAccess && (
@@ -358,9 +298,7 @@ export default function Wellness() {
               <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-violet-500/5 to-transparent" />
               <CardHeader className="relative">
                 <CardTitle className="flex items-center gap-2 text-2xl">
-                  <div className="p-2 rounded-xl bg-primary/10">
-                    <Sparkles className="w-5 h-5 text-primary" />
-                  </div>
+                  <div className="p-2 rounded-xl bg-primary/10"><Sparkles className="w-5 h-5 text-primary" /></div>
                   Choose Your Wellness Plan
                 </CardTitle>
                 <CardDescription>Select a plan to unlock comprehensive relaxation and mindfulness tools</CardDescription>
@@ -371,20 +309,12 @@ export default function Wellness() {
                     const Icon = plan.icon;
                     return (
                       <motion.div key={key} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.08 }}>
-                        <Card className={`relative overflow-hidden border-border/50 backdrop-blur-xl bg-card/60 hover:border-primary/30 transition-all group h-full ${
-                          (plan as any).popular ? 'ring-2 ring-primary/30 border-primary/40' : ''
-                        }`}>
+                        <Card className={`relative overflow-hidden border-border/50 backdrop-blur-xl bg-card/60 hover:border-primary/30 transition-all group h-full ${(plan as any).popular ? 'ring-2 ring-primary/30 border-primary/40' : ''}`}>
                           <div className={`absolute inset-0 bg-gradient-to-br ${plan.gradient} opacity-0 group-hover:opacity-100 transition-opacity`} />
-                          {(plan as any).popular && (
-                            <div className="absolute top-0 right-0 bg-primary text-primary-foreground text-[10px] font-bold px-3 py-1 rounded-bl-xl">POPULAR</div>
-                          )}
-                          {(plan as any).savings && (
-                            <div className="absolute top-0 right-0 bg-emerald-500 text-white text-[10px] font-bold px-3 py-1 rounded-bl-xl">{(plan as any).savings}</div>
-                          )}
+                          {(plan as any).popular && <div className="absolute top-0 right-0 bg-primary text-primary-foreground text-[10px] font-bold px-3 py-1 rounded-bl-xl">POPULAR</div>}
+                          {(plan as any).savings && <div className="absolute top-0 right-0 bg-emerald-500 text-white text-[10px] font-bold px-3 py-1 rounded-bl-xl">{(plan as any).savings}</div>}
                           <CardHeader className="relative pb-2">
-                            <div className="p-2 rounded-xl bg-card/60 w-fit mb-2">
-                              <Icon className={`w-5 h-5 ${plan.accentColor}`} />
-                            </div>
+                            <div className="p-2 rounded-xl bg-card/60 w-fit mb-2"><Icon className={`w-5 h-5 ${plan.accentColor}`} /></div>
                             <CardTitle className="text-base">{plan.name}</CardTitle>
                             <div className="flex items-baseline gap-0.5">
                               <span className="text-3xl font-black text-foreground">{plan.price}</span>
@@ -419,122 +349,34 @@ export default function Wellness() {
           </motion.div>
         )}
 
-        {/* Active Plan */}
-        {hasBasicAccess && (
-          <Card className="mb-8 relative overflow-hidden border-primary/30 backdrop-blur-xl bg-card/80">
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-emerald-500/5" />
-            <CardHeader className="relative">
-              <CardTitle className="flex items-center gap-2">
-                <div className="p-2 rounded-xl bg-primary/10">
-                  <Sparkles className="w-5 h-5 text-primary" />
+        {/* How it works */}
+        <div className="max-w-3xl mx-auto">
+          <div className="text-center mb-6">
+            <h2 className="text-2xl font-bold">How It Works</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[
+              { step: "1", title: "Choose a Plan", desc: "Subscribe to Basic or Premium wellness" },
+              { step: "2", title: "Pick Your Tools", desc: "Open any available wellness tool" },
+              { step: "3", title: "Build Your Routine", desc: "Complete daily challenges and track progress" },
+            ].map((item, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 + i * 0.1 }}
+                className="text-center"
+              >
+                <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3">
+                  <span className="text-2xl font-bold text-primary">{item.step}</span>
                 </div>
-                Your Active Wellness Plan
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="relative">
-              <div className="flex items-center gap-4">
-                <Badge variant="default" className="text-lg px-4 py-1 shadow-lg">
-                  {subscriptionStatus.tier.toUpperCase()}
-                </Badge>
-                {subscriptionStatus.is_lifetime ? (
-                  <span className="text-sm flex items-center gap-1"><Sparkles className="w-4 h-4 text-amber-400" /> Lifetime Access</span>
-                ) : subscriptionStatus.subscription_end ? (
-                  <span className="text-sm text-muted-foreground">
-                    Active until {new Date(subscriptionStatus.subscription_end).toLocaleDateString()}
-                  </span>
-                ) : (
-                  <span className="text-sm text-muted-foreground">Active subscription</span>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Animated Tab Bar */}
-        <div className="relative mb-6">
-          <div
-            ref={tabsRef}
-            className="flex overflow-x-auto gap-1 p-1.5 rounded-2xl backdrop-blur-xl bg-card/60 border border-border/30 scrollbar-hide relative"
-          >
-            {/* Sliding indicator */}
-            <motion.div
-              className="absolute top-1.5 bottom-1.5 rounded-xl bg-primary/15 border border-primary/20"
-              animate={{ left: indicatorStyle.left, width: indicatorStyle.width }}
-              transition={{ type: "spring", stiffness: 350, damping: 30 }}
-              style={{ zIndex: 0 }}
-            />
-
-            {TABS.map((tab) => {
-              const Icon = tab.icon;
-              const isActive = activeTab === tab.value;
-              const isPremium = tab.requiresPremium;
-              const disabled = !canAccess(tab);
-
-              return (
-                <button
-                  key={tab.value}
-                  data-tab={tab.value}
-                  onClick={() => setActiveTab(tab.value)}
-                  className={`relative z-10 flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium whitespace-nowrap transition-colors flex-shrink-0 ${
-                    isActive
-                      ? "text-primary"
-                      : disabled
-                        ? "text-muted-foreground/40 cursor-not-allowed"
-                        : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                  <span className="hidden sm:inline">{tab.label}</span>
-                  {isPremium && !hasPremiumAccess && (
-                    <Crown className="w-3 h-3 text-amber-400" />
-                  )}
-                </button>
-              );
-            })}
+                <h3 className="font-semibold mb-2">{item.title}</h3>
+                <p className="text-sm text-muted-foreground">{item.desc}</p>
+              </motion.div>
+            ))}
           </div>
         </div>
-
-        {/* Tab Content with Transitions */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeTab}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.2 }}
-          >
-            {renderContent()}
-          </motion.div>
-        </AnimatePresence>
       </div>
     </div>
-  );
-}
-
-function PremiumRequired({ premium = false }: { premium?: boolean }) {
-  return (
-    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-      <Card className="mt-4 relative overflow-hidden border-primary/20 backdrop-blur-xl bg-card/80">
-        <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 via-primary/5 to-transparent" />
-        <CardContent className="relative pt-10 pb-10 text-center">
-          <div className="mx-auto w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4">
-            <Lock className="w-7 h-7 text-primary" />
-          </div>
-          <h3 className="text-xl font-bold mb-2">
-            {premium ? 'Premium Plan' : 'Subscription'} Required
-          </h3>
-          <p className="text-muted-foreground max-w-md mx-auto text-sm">
-            {premium
-              ? 'Upgrade to Premium to unlock AI Coach, Gratitude Journal, and Digital Mandala'
-              : 'Subscribe to unlock this wellness tool and discover inner peace'}
-          </p>
-          {premium && (
-            <Badge className="mt-3 bg-amber-500/20 text-amber-400 border-amber-500/30">
-              <Crown className="w-3 h-3 mr-1" /> Premium Feature
-            </Badge>
-          )}
-        </CardContent>
-      </Card>
-    </motion.div>
   );
 }
