@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Lock, Trophy } from "lucide-react";
 import { useEffect, useRef, useMemo } from "react";
 import { triggerBadgeConfetti } from "@/utils/confetti";
+import { motion } from "framer-motion";
 import {
   Tooltip,
   TooltipContent,
@@ -22,53 +23,30 @@ export default function BadgesDisplay({ userId }: BadgesDisplayProps) {
 
   const earnedBadgeIds = new Set(userBadges.map((ub: any) => ub.badge_id));
 
-  // Sort badges by requirement_value (ascending) so beginners come first
   const sortedBadges = useMemo(() => {
     return [...allBadges].sort((a: any, b: any) => {
-      // First by requirement_value
-      if (a.requirement_value !== b.requirement_value) {
-        return a.requirement_value - b.requirement_value;
-      }
-      // Then by name
+      if (a.requirement_value !== b.requirement_value) return a.requirement_value - b.requirement_value;
       return a.name.localeCompare(b.name);
     });
   }, [allBadges]);
 
-  // Group badges by requirement type for better organization
   const groupedBadges = useMemo(() => {
     const groups: Record<string, any[]> = {};
     sortedBadges.forEach((badge: any) => {
       const type = badge.requirement_type || 'other';
-      if (!groups[type]) {
-        groups[type] = [];
-      }
+      if (!groups[type]) groups[type] = [];
       groups[type].push(badge);
     });
     return groups;
   }, [sortedBadges]);
 
   const categoryLabels: Record<string, string> = {
-    level: "🎮 Level",
-    posts: "📝 Posts",
-    comments: "💬 Comments",
-    likes: "❤️ Likes",
-    friends: "👫 Friends",
-    login_streak: "🔥 Streaks",
-    videos: "🎬 Videos",
-    shares: "📤 Shares",
-    events: "🎉 Events",
-    groups: "👥 Groups",
-    photos: "📷 Photos",
-    messages: "💌 Messages",
-    reactions: "😊 Reactions",
-    followers: "👁️ Followers",
-    stories: "📖 Stories",
-    challenges: "⚔️ Challenges",
-    achievements: "🏆 Achievements",
-    xp: "⭐ XP",
-    trades: "🔄 Trades",
-    donations: "🎁 Donations",
-    other: "🏅 Other",
+    level: "🎮 Level", posts: "📝 Posts", comments: "💬 Comments", likes: "❤️ Likes",
+    friends: "👫 Friends", login_streak: "🔥 Streaks", videos: "🎬 Videos", shares: "📤 Shares",
+    events: "🎉 Events", groups: "👥 Groups", photos: "📷 Photos", messages: "💌 Messages",
+    reactions: "😊 Reactions", followers: "👁️ Followers", stories: "📖 Stories",
+    challenges: "⚔️ Challenges", achievements: "🏆 Achievements", xp: "⭐ XP",
+    trades: "🔄 Trades", donations: "🎁 Donations", other: "🏅 Other",
   };
 
   useEffect(() => {
@@ -83,12 +61,12 @@ export default function BadgesDisplay({ userId }: BadgesDisplayProps) {
     : 0;
 
   return (
-    <Card>
+    <Card className="backdrop-blur-xl bg-card/80 border-primary/20">
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Trophy className="h-5 w-5 text-yellow-500" />
-            🏅 Badge Collection
+            Badge Collection
           </div>
           <Badge variant="secondary" className="text-base px-3 py-1">
             {userBadges.length} / {allBadges.length}
@@ -112,19 +90,22 @@ export default function BadgesDisplay({ userId }: BadgesDisplayProps) {
               </Badge>
             </h3>
             <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-8 gap-2">
-              {badges.map((badge: any) => {
+              {badges.map((badge: any, i: number) => {
                 const earned = earnedBadgeIds.has(badge.id);
                 const userBadge = userBadges.find((ub: any) => ub.badge_id === badge.id);
 
                 return (
                   <Tooltip key={badge.id}>
                     <TooltipTrigger asChild>
-                      <div
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: i * 0.02 }}
                         className={`
-                          flex flex-col items-center gap-1 p-2 rounded-lg border-2 transition-all cursor-pointer
+                          flex flex-col items-center gap-1 p-2 rounded-xl border-2 transition-all cursor-pointer
                           ${earned 
-                            ? "border-primary bg-primary/5 hover:bg-primary/10 hover:scale-105 animate-scale-in" 
-                            : "border-muted bg-muted/50 opacity-40 hover:opacity-60"
+                            ? "border-primary bg-primary/5 hover:bg-primary/10 hover:scale-105" 
+                            : "border-muted bg-muted/30 opacity-40 hover:opacity-60"
                           }
                         `}
                       >
@@ -137,22 +118,16 @@ export default function BadgesDisplay({ userId }: BadgesDisplayProps) {
                         <p className="text-[10px] font-medium text-center line-clamp-1 w-full">
                           {badge.name}
                         </p>
-                      </div>
+                      </motion.div>
                     </TooltipTrigger>
                     <TooltipContent className="max-w-xs">
                       <div className="space-y-1">
                         <p className="font-semibold">{badge.icon} {badge.name}</p>
                         <p className="text-sm">{badge.description}</p>
-                        <p className="text-xs text-primary">
-                          Requirement: {badge.requirement_value} {badge.requirement_type}
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          +{badge.points_reward} points
-                        </p>
+                        <p className="text-xs text-primary">Requirement: {badge.requirement_value} {badge.requirement_type}</p>
+                        <p className="text-xs text-muted-foreground">+{badge.points_reward} points</p>
                         {earned && userBadge && (
-                          <p className="text-xs text-green-500">
-                            ✓ Earned: {new Date(userBadge.earned_at).toLocaleDateString("en-US")}
-                          </p>
+                          <p className="text-xs text-green-500">✓ Earned: {new Date(userBadge.earned_at).toLocaleDateString("en-US")}</p>
                         )}
                       </div>
                     </TooltipContent>
