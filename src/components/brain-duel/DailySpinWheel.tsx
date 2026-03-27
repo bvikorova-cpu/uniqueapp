@@ -127,13 +127,13 @@ export const DailySpinWheel = () => {
       const today = new Date().toISOString().split('T')[0];
 
       try {
-        await supabase.from('brain_duel_daily_spins').insert({
+        await supabase.from('brain_duel_daily_spins' as any).insert({
           user_id: user.id,
           spin_date: today,
           reward_type: selected.type || 'credits',
           reward_value: selected.value,
           reward_label: selected.label,
-        });
+        } as any);
 
         if (selected.value > 0 && !selected.type) {
           // Add credits
