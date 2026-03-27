@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -12,7 +12,7 @@ import {
   Video, Mic, ShoppingBag, Brain, TrendingUp, Ghost, Building2, Crown,
   Clock, Timer, ChefHat, MessageCircle, Star, MessageSquare, Palette,
   Camera, Gem, Shirt, ArrowRight, Zap, Search, X,
-  PenTool, Globe, ChevronRight,
+  PenTool, Globe, ChevronRight, Layers, Coins,
   Pin, PinOff, BookOpen
 } from "lucide-react";
 
