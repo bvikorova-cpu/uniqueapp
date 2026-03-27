@@ -330,7 +330,7 @@ export const BrainDuelGame = () => {
 
   if (gamePhase === 'category') {
     return (
-      <Card className="p-6">
+      <Card className="p-6 backdrop-blur-xl bg-card/80 border-primary/10">
         <div className="flex items-center gap-2 mb-6">
           <Brain className="h-6 w-6 text-primary" />
           <h2 className="text-2xl font-bold">Choose a Category</h2>
@@ -354,7 +354,7 @@ export const BrainDuelGame = () => {
 
   if (gamePhase === 'searching') {
     return (
-      <Card className="p-8 text-center">
+      <Card className="p-8 text-center backdrop-blur-xl bg-card/80 border-primary/10">
         <Brain className="h-16 w-16 text-primary mx-auto mb-4 animate-pulse" />
         <h2 className="text-2xl font-bold mb-2">Finding Opponent...</h2>
         <p className="text-muted-foreground">Category: {category}</p>
@@ -377,7 +377,8 @@ export const BrainDuelGame = () => {
 
     return (
       <div className="space-y-4">
-        <Card className="p-4 bg-gradient-to-r from-primary/10 to-primary/5">
+         <Card className="p-4 backdrop-blur-xl bg-card/80 border-primary/10 relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-primary/5" />
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
@@ -399,7 +400,8 @@ export const BrainDuelGame = () => {
         </Card>
 
         {/* Power-ups Panel */}
-        <Card className="p-3 bg-gradient-to-r from-primary/5 to-accent/5">
+        <Card className="p-3 backdrop-blur-xl bg-card/80 border-primary/10 relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-accent/5" />
           <div className="flex items-center gap-2 mb-2">
             <Sparkles className="h-4 w-4 text-primary" />
             <span className="text-sm font-semibold">Power-ups</span>
@@ -432,7 +434,7 @@ export const BrainDuelGame = () => {
           </div>
         </Card>
 
-        <Card className="p-6">
+        <Card className="p-6 backdrop-blur-xl bg-card/80 border-primary/10">
           <p className="text-sm text-muted-foreground mb-2">
             Question {currentQuestionIndex + 1} of {questions.length}
           </p>
@@ -487,7 +489,7 @@ export const BrainDuelGame = () => {
     const isDraw = match.winner_id === null;
 
     return (
-      <Card className="p-8 text-center">
+      <Card className="p-8 text-center backdrop-blur-xl bg-card/80 border-primary/10">
         <Trophy className={`h-20 w-20 mx-auto mb-4 ${isWinner ? 'text-yellow-500' : 'text-muted-foreground'}`} />
         
         <h2 className="text-3xl font-bold mb-2">
