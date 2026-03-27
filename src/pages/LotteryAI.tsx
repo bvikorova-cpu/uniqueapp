@@ -13,6 +13,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Sparkles, TrendingUp, Star, Save, Zap, BarChart3, Coins, Check,
   ArrowRight, Dices, Target, BookOpen, Shield, Settings, AlertTriangle,
+  Bell, Share2, Trophy, Radio, ArrowLeft,
 } from "lucide-react";
 import { LotteryHero } from "@/components/lottery/LotteryHero";
 import { LotteryStreak } from "@/components/lottery/LotteryStreak";
@@ -20,6 +21,12 @@ import { LotteryProgress } from "@/components/lottery/LotteryProgress";
 import { LotteryAchievements } from "@/components/lottery/LotteryAchievements";
 import { LotterySidebar } from "@/components/lottery/LotterySidebar";
 import { LotteryQuestionnaire } from "@/components/lottery/LotteryQuestionnaire";
+import { LotteryPushNotifications } from "@/components/lottery/LotteryPushNotifications";
+import { LotterySocialSharing } from "@/components/lottery/LotterySocialSharing";
+import { LotteryWinTracker } from "@/components/lottery/LotteryWinTracker";
+import { LotterySmartPicks } from "@/components/lottery/LotterySmartPicks";
+import { LotteryLiveDraws } from "@/components/lottery/LotteryLiveDraws";
+import { LotteryLeaderboard } from "@/components/lottery/LotteryLeaderboard";
 
 const LOTTERY_TYPES = [
   { id: "eurojackpot", name: "EuroJackpot", maxNumber: 50, bonusBalls: 12, mainBalls: 5, bonusCount: 2 },
