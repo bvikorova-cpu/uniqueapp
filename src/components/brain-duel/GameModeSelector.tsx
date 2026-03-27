@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Zap, Trophy, Crown, Clock, Users, Brain } from 'lucide-react';
 import { useBrainDuelCredits } from '@/hooks/useBrainDuelCredits';
 import { useToast } from '@/hooks/use-toast';
+import { motion } from 'framer-motion';
 
 export interface GameMode {
   id: string;
@@ -87,70 +88,76 @@ export const GameModeSelector = ({ onSelectMode, isSearching = false }: GameMode
       </div>
       
       <div className="grid md:grid-cols-3 gap-4">
-        {gameModes.map((mode) => {
+        {gameModes.map((mode, i) => {
           const Icon = mode.icon;
           const canAfford = credits >= mode.entry;
           
           return (
-            <Card 
+            <motion.div
               key={mode.id}
-              className={`relative hover:shadow-lg transition-all cursor-pointer ${
-                mode.featured ? 'border-primary/50 ring-2 ring-primary/20' : ''
-              } ${selectedMode === mode.id ? 'ring-2 ring-primary' : ''} ${
-                !canAfford ? 'opacity-60' : ''
-              }`}
-              onClick={() => !isSearching && handleSelectMode(mode)}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.1 }}
             >
-              {mode.featured && (
-                <div className="absolute -top-2 -right-2 bg-primary text-primary-foreground text-xs px-3 py-1 rounded-full font-bold">
-                  POPULAR
-                </div>
-              )}
-              <CardHeader className="pb-2">
-                <CardTitle className="flex items-center gap-2 text-lg">
-                  <Icon className={`h-5 w-5 ${mode.color}`} />
-                  {mode.name}
-                </CardTitle>
-                <CardDescription className="flex items-center gap-2">
-                  <Clock className="h-3 w-3" />
-                  {mode.duration} • {mode.questions} questions
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="space-y-1 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Time/question:</span>
-                    <span className="font-medium">{mode.timePerQuestion}s</span>
+              <Card 
+                className={`relative backdrop-blur-xl bg-card/80 hover:shadow-lg transition-all cursor-pointer ${
+                  mode.featured ? 'border-primary/50 ring-2 ring-primary/20' : 'border-primary/10'
+                } ${selectedMode === mode.id ? 'ring-2 ring-primary shadow-primary/10' : ''} ${
+                  !canAfford ? 'opacity-60' : ''
+                }`}
+                onClick={() => !isSearching && handleSelectMode(mode)}
+              >
+                {mode.featured && (
+                  <Badge className="absolute -top-2 -right-2 bg-primary text-primary-foreground shadow-md">
+                    POPULAR
+                  </Badge>
+                )}
+                <CardHeader className="pb-2">
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    <Icon className={`h-5 w-5 ${mode.color}`} />
+                    {mode.name}
+                  </CardTitle>
+                  <CardDescription className="flex items-center gap-2">
+                    <Clock className="h-3 w-3" />
+                    {mode.duration} • {mode.questions} questions
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="space-y-1.5 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Time/question:</span>
+                      <span className="font-medium">{mode.timePerQuestion}s</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Entry cost:</span>
+                      <Badge variant={canAfford ? "default" : "destructive"} className="font-bold">
+                        {mode.entry} credits
+                      </Badge>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Win reward:</span>
+                      <Badge variant="outline" className="font-bold text-green-500 border-green-500/30">
+                        +{mode.reward} credits
+                      </Badge>
+                    </div>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Entry cost:</span>
-                    <Badge variant={canAfford ? "default" : "destructive"} className="font-bold">
-                      {mode.entry} credits
-                    </Badge>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Win reward:</span>
-                    <Badge variant="outline" className="font-bold text-green-500 border-green-500">
-                      +{mode.reward} credits
-                    </Badge>
-                  </div>
-                </div>
-                <Button 
-                  className="w-full"
-                  disabled={isSearching || !canAfford}
-                  variant={selectedMode === mode.id ? "default" : "outline"}
-                >
-                  {isSearching && selectedMode === mode.id ? (
-                    <span className="flex items-center gap-2">
-                      <Users className="h-4 w-4 animate-pulse" />
-                      Finding opponent...
-                    </span>
-                  ) : (
-                    'Select Mode'
-                  )}
-                </Button>
-              </CardContent>
-            </Card>
+                  <Button 
+                    className="w-full"
+                    disabled={isSearching || !canAfford}
+                    variant={selectedMode === mode.id ? "default" : "outline"}
+                  >
+                    {isSearching && selectedMode === mode.id ? (
+                      <span className="flex items-center gap-2">
+                        <Users className="h-4 w-4 animate-pulse" />
+                        Finding opponent...
+                      </span>
+                    ) : (
+                      'Select Mode'
+                    )}
+                  </Button>
+                </CardContent>
+              </Card>
+            </motion.div>
           );
         })}
       </div>

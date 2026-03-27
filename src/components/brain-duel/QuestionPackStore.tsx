@@ -9,6 +9,7 @@ import {
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useBrainDuelCredits } from '@/hooks/useBrainDuelCredits';
+import { motion } from 'framer-motion';
 
 const categoryIcons: Record<string, typeof Globe> = {
   'Entertainment': Star,
@@ -26,7 +27,6 @@ export const QuestionPackStore = () => {
   const queryClient = useQueryClient();
   const { credits, spendCredits } = useBrainDuelCredits();
 
-  // Fetch available packs
   const { data: packs, isLoading } = useQuery({
     queryKey: ['brain-duel-question-packs'],
     queryFn: async () => {
@@ -38,60 +38,36 @@ export const QuestionPackStore = () => {
     },
   });
 
-  // Fetch user's purchased packs
   const { data: userPacks } = useQuery({
     queryKey: ['brain-duel-user-packs'],
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return [];
-
       const { data } = await supabase
         .from('brain_duel_user_packs')
         .select('pack_id')
         .eq('user_id', user.id);
-      
       return data?.map(p => p.pack_id) || [];
     },
   });
 
-  // Purchase pack mutation
   const purchasePack = useMutation({
     mutationFn: async (pack: { id: string; price_credits: number; name: string }) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
-
-      if (credits < pack.price_credits) {
-        throw new Error('Insufficient credits');
-      }
-
-      // Deduct credits
+      if (credits < pack.price_credits) throw new Error('Insufficient credits');
       spendCredits(pack.price_credits);
-
-      // Add pack to user
-      const { error } = await supabase
-        .from('brain_duel_user_packs')
-        .insert({
-          user_id: user.id,
-          pack_id: pack.id,
-        });
-
+      const { error } = await supabase.from('brain_duel_user_packs').insert({ user_id: user.id, pack_id: pack.id });
       if (error) throw error;
       return pack;
     },
     onSuccess: (pack) => {
       queryClient.invalidateQueries({ queryKey: ['brain-duel-user-packs'] });
       queryClient.invalidateQueries({ queryKey: ['brain-duel-credits'] });
-      toast({
-        title: 'Pack purchased! 📚',
-        description: `${pack.name} has been added to your collection`,
-      });
+      toast({ title: 'Pack purchased! 📚', description: `${pack.name} has been added to your collection` });
     },
     onError: (error: Error) => {
-      toast({
-        title: 'Purchase failed',
-        description: error.message,
-        variant: 'destructive',
-      });
+      toast({ title: 'Purchase failed', description: error.message, variant: 'destructive' });
     },
   });
 
@@ -100,20 +76,19 @@ export const QuestionPackStore = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <Card className="border-primary/50 bg-gradient-to-br from-primary/5 to-purple-500/5">
-        <CardHeader>
+      <Card className="border-primary/20 backdrop-blur-xl bg-card/80 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-purple-500/5" />
+        <CardHeader className="relative">
           <CardTitle className="flex items-center gap-2">
             <Package className="h-5 w-5 text-primary" />
             Question Packs Store
           </CardTitle>
-          <CardDescription>
-            Expand your question library with themed packs
-          </CardDescription>
+          <CardDescription>Expand your question library with themed packs</CardDescription>
         </CardHeader>
-        <CardContent>
-          <div className="flex items-center justify-between p-3 bg-background rounded-lg">
+        <CardContent className="relative">
+          <div className="flex items-center justify-between p-3 bg-background/50 backdrop-blur-sm rounded-lg border border-primary/5">
             <span className="text-sm text-muted-foreground">Your Credits:</span>
-            <Badge variant="outline" className="text-lg font-bold">
+            <Badge variant="outline" className="text-lg font-bold border-primary/20">
               <Brain className="h-4 w-4 mr-2" />
               {credits}
             </Badge>
@@ -125,108 +100,105 @@ export const QuestionPackStore = () => {
       {isLoading ? (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
           {[1, 2, 3, 4, 5, 6].map(i => (
-            <Card key={i} className="animate-pulse">
+            <Card key={i} className="animate-pulse backdrop-blur-xl bg-card/80">
               <CardContent className="p-6 h-48" />
             </Card>
           ))}
         </div>
       ) : (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {packs?.map((pack) => {
+          {packs?.map((pack, i) => {
             const Icon = categoryIcons[pack.category] || Package;
             const owned = isOwned(pack.id);
             const canAfford = credits >= pack.price_credits;
 
             return (
-              <Card 
+              <motion.div
                 key={pack.id}
-                className={`relative transition-all hover:shadow-lg ${
-                  owned ? 'border-green-500/50 bg-green-500/5' : ''
-                } ${pack.is_premium ? 'border-primary/50' : ''}`}
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.06 }}
               >
-                {pack.is_premium && !owned && (
-                  <div className="absolute -top-2 -right-2 bg-gradient-to-r from-primary to-purple-600 text-white text-xs px-3 py-1 rounded-full font-bold">
-                    PREMIUM
-                  </div>
-                )}
-                {owned && (
-                  <div className="absolute -top-2 -right-2 bg-green-500 text-white text-xs px-3 py-1 rounded-full font-bold flex items-center gap-1">
-                    <Check className="h-3 w-3" />
-                    OWNED
-                  </div>
-                )}
-                
-                <CardHeader className="pb-2">
-                  <CardTitle className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center text-2xl">
-                      {pack.icon || <Icon className="h-6 w-6 text-primary" />}
-                    </div>
-                    <div>
-                      <div className="text-lg">{pack.name}</div>
-                      <div className="text-sm font-normal text-muted-foreground">
-                        {pack.category}
-                      </div>
-                    </div>
-                  </CardTitle>
-                </CardHeader>
-                
-                <CardContent className="space-y-4">
-                  <p className="text-sm text-muted-foreground">
-                    {pack.description}
-                  </p>
-                  
-                  <div className="flex items-center justify-between">
-                    <Badge variant="secondary">
-                      {pack.question_count} questions
+                <Card 
+                  className={`relative backdrop-blur-xl bg-card/80 transition-all hover:shadow-lg ${
+                    owned ? 'border-green-500/30 bg-green-500/5' : 'border-primary/10'
+                  } ${pack.is_premium ? 'border-primary/30' : ''}`}
+                >
+                  {pack.is_premium && !owned && (
+                    <Badge className="absolute -top-2 -right-2 bg-gradient-to-r from-primary to-purple-600 text-white shadow-md">
+                      PREMIUM
                     </Badge>
-                    <span className="text-xl font-bold text-primary">
-                      {pack.price_credits} credits
-                    </span>
-                  </div>
+                  )}
+                  {owned && (
+                    <Badge className="absolute -top-2 -right-2 bg-green-500 text-white shadow-md gap-1">
+                      <Check className="h-3 w-3" /> OWNED
+                    </Badge>
+                  )}
                   
-                  <Button
-                    className="w-full"
-                    variant={owned ? "outline" : "default"}
-                    disabled={owned || !canAfford || purchasePack.isPending}
-                    onClick={() => purchasePack.mutate(pack)}
-                  >
-                    {owned ? (
-                      <span className="flex items-center gap-2">
-                        <Check className="h-4 w-4" />
-                        Owned
-                      </span>
-                    ) : purchasePack.isPending ? (
-                      'Purchasing...'
-                    ) : !canAfford ? (
-                      'Insufficient Credits'
-                    ) : (
-                      <span className="flex items-center gap-2">
-                        <ShoppingCart className="h-4 w-4" />
-                        Purchase
-                      </span>
-                    )}
-                  </Button>
-                </CardContent>
-              </Card>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="flex items-center gap-3">
+                      <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center text-2xl backdrop-blur-sm">
+                        {pack.icon || <Icon className="h-6 w-6 text-primary" />}
+                      </div>
+                      <div>
+                        <div className="text-lg">{pack.name}</div>
+                        <div className="text-sm font-normal text-muted-foreground">{pack.category}</div>
+                      </div>
+                    </CardTitle>
+                  </CardHeader>
+                  
+                  <CardContent className="space-y-4">
+                    <p className="text-sm text-muted-foreground">{pack.description}</p>
+                    
+                    <div className="flex items-center justify-between">
+                      <Badge variant="secondary">{pack.question_count} questions</Badge>
+                      <span className="text-xl font-black text-primary">{pack.price_credits} credits</span>
+                    </div>
+                    
+                    <Button
+                      className="w-full"
+                      variant={owned ? "outline" : "default"}
+                      disabled={owned || !canAfford || purchasePack.isPending}
+                      onClick={() => purchasePack.mutate(pack)}
+                    >
+                      {owned ? (
+                        <span className="flex items-center gap-2"><Check className="h-4 w-4" /> Owned</span>
+                      ) : purchasePack.isPending ? (
+                        'Purchasing...'
+                      ) : !canAfford ? (
+                        'Insufficient Credits'
+                      ) : (
+                        <span className="flex items-center gap-2"><ShoppingCart className="h-4 w-4" /> Purchase</span>
+                      )}
+                    </Button>
+                  </CardContent>
+                </Card>
+              </motion.div>
             );
           })}
 
           {/* Create Custom Pack Card */}
-          <Card className="border-dashed border-2 hover:border-primary/50 transition-all">
-            <CardContent className="p-6 h-full flex flex-col items-center justify-center text-center">
-              <Gift className="h-12 w-12 text-primary mb-4" />
-              <h3 className="font-semibold text-lg mb-2">Create Custom Pack</h3>
-              <p className="text-sm text-muted-foreground mb-4">
-                Build your own question pack with personalized questions
-              </p>
-              <Badge variant="outline">Coming Soon</Badge>
-            </CardContent>
-          </Card>
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+          >
+            <Card className="border-dashed border-2 border-primary/20 backdrop-blur-xl bg-card/80 hover:border-primary/40 transition-all">
+              <CardContent className="p-6 h-full flex flex-col items-center justify-center text-center">
+                <Gift className="h-12 w-12 text-primary mb-4" />
+                <h3 className="font-semibold text-lg mb-2">Create Custom Pack</h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Build your own question pack with personalized questions
+                </p>
+                <Badge variant="outline" className="border-primary/20">Coming Soon</Badge>
+              </CardContent>
+            </Card>
+          </motion.div>
         </div>
       )}
 
       {/* Categories Info */}
-      <Card>
+      <Card className="backdrop-blur-xl bg-card/80 border-primary/10">
         <CardHeader>
           <CardTitle className="text-lg">Available Categories</CardTitle>
         </CardHeader>
@@ -241,14 +213,17 @@ export const QuestionPackStore = () => {
               { name: 'Technology', icon: Cpu, color: 'text-cyan-500' },
               { name: 'Art', icon: Palette, color: 'text-violet-500' },
               { name: 'Entertainment', icon: Star, color: 'text-yellow-500' },
-            ].map((cat) => (
-              <div
+            ].map((cat, i) => (
+              <motion.div
                 key={cat.name}
-                className="flex items-center gap-2 p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: i * 0.04 }}
+                className="flex items-center gap-2 p-3 rounded-lg bg-muted/30 backdrop-blur-sm border border-primary/5 hover:bg-muted/50 transition-colors"
               >
                 <cat.icon className={`h-4 w-4 ${cat.color}`} />
                 <span className="text-sm font-medium">{cat.name}</span>
-              </div>
+              </motion.div>
             ))}
           </div>
         </CardContent>

@@ -1,7 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
 import { Trophy, Calendar, Clock, Users, Crown, Star, Flame, Gift } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -10,7 +9,6 @@ interface WeeklyTournamentsProps {
 }
 
 export const WeeklyTournaments = ({ currentStreak = 0 }: WeeklyTournamentsProps) => {
-  // Calculate current week end
   const now = new Date();
   const weekEnd = new Date(now);
   weekEnd.setDate(now.getDate() + (7 - now.getDay()));
@@ -20,7 +18,7 @@ export const WeeklyTournaments = ({ currentStreak = 0 }: WeeklyTournamentsProps)
   return (
     <div className="space-y-6">
       {/* Current Weekly Event */}
-      <Card className="relative overflow-hidden border-2 border-primary/20">
+      <Card className="relative overflow-hidden border-2 border-primary/20 backdrop-blur-xl bg-card/80">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-violet-500/5 to-cyan-500/5" />
         <CardHeader className="relative">
           <div className="flex items-center justify-between">
@@ -36,21 +34,23 @@ export const WeeklyTournaments = ({ currentStreak = 0 }: WeeklyTournamentsProps)
         </CardHeader>
         <CardContent className="relative space-y-4">
           <div className="grid grid-cols-3 gap-3">
-            <div className="text-center p-4 bg-yellow-500/10 rounded-xl border border-yellow-500/20">
-              <Crown className="h-6 w-6 text-yellow-500 mx-auto mb-2" />
-              <div className="text-sm font-bold">1st Place</div>
-              <div className="text-xs text-muted-foreground">500 Credits + Badge</div>
-            </div>
-            <div className="text-center p-4 bg-slate-400/10 rounded-xl border border-slate-400/20">
-              <Trophy className="h-6 w-6 text-slate-400 mx-auto mb-2" />
-              <div className="text-sm font-bold">2nd Place</div>
-              <div className="text-xs text-muted-foreground">300 Credits</div>
-            </div>
-            <div className="text-center p-4 bg-amber-600/10 rounded-xl border border-amber-600/20">
-              <Star className="h-6 w-6 text-amber-600 mx-auto mb-2" />
-              <div className="text-sm font-bold">3rd Place</div>
-              <div className="text-xs text-muted-foreground">150 Credits</div>
-            </div>
+            {[
+              { icon: Crown, title: "1st Place", reward: "500 Credits + Badge", bg: "bg-yellow-500/10 border-yellow-500/20", color: "text-yellow-500" },
+              { icon: Trophy, title: "2nd Place", reward: "300 Credits", bg: "bg-slate-400/10 border-slate-400/20", color: "text-slate-400" },
+              { icon: Star, title: "3rd Place", reward: "150 Credits", bg: "bg-amber-600/10 border-amber-600/20", color: "text-amber-600" },
+            ].map((place, i) => (
+              <motion.div
+                key={place.title}
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.1 }}
+                className={`text-center p-4 rounded-xl border backdrop-blur-sm ${place.bg}`}
+              >
+                <place.icon className={`h-6 w-6 ${place.color} mx-auto mb-2`} />
+                <div className="text-sm font-bold">{place.title}</div>
+                <div className="text-xs text-muted-foreground">{place.reward}</div>
+              </motion.div>
+            ))}
           </div>
 
           <Button className="w-full gap-2">
@@ -60,7 +60,7 @@ export const WeeklyTournaments = ({ currentStreak = 0 }: WeeklyTournamentsProps)
       </Card>
 
       {/* Seasonal Events */}
-      <Card>
+      <Card className="backdrop-blur-xl bg-card/80 border-primary/10">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Flame className="h-5 w-5 text-orange-500" />
@@ -98,8 +98,8 @@ export const WeeklyTournaments = ({ currentStreak = 0 }: WeeklyTournamentsProps)
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.1 }}
             >
-              <div className={`p-4 rounded-xl border ${
-                event.status === "active" ? "border-primary/30 bg-primary/5" : "border-muted"
+              <div className={`p-4 rounded-xl border backdrop-blur-sm ${
+                event.status === "active" ? "border-primary/30 bg-primary/5" : "border-muted bg-muted/20"
               }`}>
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex-1">
