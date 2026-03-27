@@ -16,6 +16,12 @@ import { SkillSwapProgress } from "@/components/skill-swap/SkillSwapProgress";
 import { SkillSwapAchievements } from "@/components/skill-swap/SkillSwapAchievements";
 import { SkillSwapToolCard } from "@/components/skill-swap/SkillSwapToolCard";
 import { SkillSwapTestimonials } from "@/components/skill-swap/SkillSwapTestimonials";
+import { SkillMap } from "@/components/skill-swap/SkillMap";
+import { AISkillAdvisor } from "@/components/skill-swap/AISkillAdvisor";
+import { LearningProgressTracker } from "@/components/skill-swap/LearningProgressTracker";
+import { RecordedLessons } from "@/components/skill-swap/RecordedLessons";
+import { SwapLeaderboard } from "@/components/skill-swap/SwapLeaderboard";
+import { SessionScheduler } from "@/components/skill-swap/SessionScheduler";
 import { FloatingParticles } from "@/components/wellness/FloatingParticles";
 import { motion, AnimatePresence } from "framer-motion";
 import {
