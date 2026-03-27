@@ -16,12 +16,18 @@ import { SkillSwapProgress } from "@/components/skill-swap/SkillSwapProgress";
 import { SkillSwapAchievements } from "@/components/skill-swap/SkillSwapAchievements";
 import { SkillSwapToolCard } from "@/components/skill-swap/SkillSwapToolCard";
 import { SkillSwapTestimonials } from "@/components/skill-swap/SkillSwapTestimonials";
+import { SkillMap } from "@/components/skill-swap/SkillMap";
+import { AISkillAdvisor } from "@/components/skill-swap/AISkillAdvisor";
+import { LearningProgressTracker } from "@/components/skill-swap/LearningProgressTracker";
+import { RecordedLessons } from "@/components/skill-swap/RecordedLessons";
+import { SwapLeaderboard } from "@/components/skill-swap/SwapLeaderboard";
+import { SessionScheduler } from "@/components/skill-swap/SessionScheduler";
 import { FloatingParticles } from "@/components/wellness/FloatingParticles";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowLeftRight, Globe, Video, Users, CheckCircle, MessageSquare, Star,
   Sparkles, Filter, X, Search, Upload, Edit, Trash2, LayoutDashboard,
-  ArrowLeft, Lock, Check, UserPlus, BookOpen, Shield, Zap
+  ArrowLeft, Lock, Check, UserPlus, BookOpen, Shield, Zap, Award, CalendarDays
 } from "lucide-react";
 import {
   Pagination, PaginationContent, PaginationItem, PaginationLink,
@@ -48,7 +54,7 @@ interface SkillOffering {
   };
 }
 
-type ViewType = "hub" | "browse" | "matches" | "messages" | "add";
+type ViewType = "hub" | "browse" | "matches" | "messages" | "add" | "skillmap" | "advisor" | "progress" | "lessons" | "leaderboard" | "scheduler";
 
 const SWAP_TOOLS = [
   {
@@ -86,6 +92,60 @@ const SWAP_TOOLS = [
     badge: "Create",
     gradient: "bg-gradient-to-r from-pink-500 to-rose-500",
     features: ["Media upload support", "Category selection", "Custom description", "Instant publishing"],
+  },
+  {
+    id: "skillmap",
+    title: "Skill Map",
+    description: "Interactive world map showing swappers across the globe",
+    icon: Globe,
+    badge: "New",
+    gradient: "bg-gradient-to-r from-cyan-500 to-blue-500",
+    features: ["Global visualization", "Filter by continent", "Connect instantly", "Location-based"],
+  },
+  {
+    id: "advisor",
+    title: "AI Skill Advisor",
+    description: "AI chatbot recommending skills to learn based on market trends",
+    icon: Sparkles,
+    badge: "AI",
+    gradient: "bg-gradient-to-r from-violet-500 to-purple-500",
+    features: ["Market analysis", "Personalized advice", "Trending skills", "Career paths"],
+  },
+  {
+    id: "progress",
+    title: "Learning Progress",
+    description: "Track your learning journey with milestones and goals",
+    icon: BookOpen,
+    badge: "Track",
+    gradient: "bg-gradient-to-r from-green-500 to-emerald-500",
+    features: ["Milestone tracking", "Hours logged", "Progress bars", "Goal setting"],
+  },
+  {
+    id: "lessons",
+    title: "Lesson Library",
+    description: "Watch recorded lessons from top-rated skill swappers",
+    icon: Video,
+    badge: "Video",
+    gradient: "bg-gradient-to-r from-red-500 to-rose-500",
+    features: ["HD recordings", "Multi-category", "Expert instructors", "Free & premium"],
+  },
+  {
+    id: "leaderboard",
+    title: "Leaderboard",
+    description: "See the most active and top-rated swappers worldwide",
+    icon: Award,
+    badge: "Rank",
+    gradient: "bg-gradient-to-r from-yellow-500 to-amber-500",
+    features: ["Global rankings", "Multiple metrics", "Weekly updates", "Achievement badges"],
+  },
+  {
+    id: "scheduler",
+    title: "Session Scheduler",
+    description: "Plan and manage your exchange sessions with a calendar",
+    icon: CalendarDays,
+    badge: "Plan",
+    gradient: "bg-gradient-to-r from-indigo-500 to-blue-500",
+    features: ["Calendar view", "Video call links", "Reminders", "Session history"],
   },
 ];
 
@@ -685,7 +745,7 @@ export default function SkillSwap() {
                     </h2>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     {SWAP_TOOLS.map((tool, i) => (
                       <SkillSwapToolCard key={tool.id} tool={tool} onSelect={() => setActiveView(tool.id as ViewType)} index={i} />
                     ))}
@@ -807,6 +867,18 @@ export default function SkillSwap() {
               </Button>
               <SkillSwapMessages />
             </motion.div>
+          ) : activeView === "skillmap" ? (
+            <SkillMap onBack={() => setActiveView("hub")} />
+          ) : activeView === "advisor" ? (
+            <AISkillAdvisor onBack={() => setActiveView("hub")} />
+          ) : activeView === "progress" ? (
+            <LearningProgressTracker onBack={() => setActiveView("hub")} />
+          ) : activeView === "lessons" ? (
+            <RecordedLessons onBack={() => setActiveView("hub")} />
+          ) : activeView === "leaderboard" ? (
+            <SwapLeaderboard onBack={() => setActiveView("hub")} />
+          ) : activeView === "scheduler" ? (
+            <SessionScheduler onBack={() => setActiveView("hub")} />
           ) : null}
         </AnimatePresence>
 
