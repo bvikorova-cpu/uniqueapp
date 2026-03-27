@@ -1,0 +1,1 @@
+DELETE FROM event_attendees WHERE event_id IN (SELECT id FROM events); DELETE FROM events;
