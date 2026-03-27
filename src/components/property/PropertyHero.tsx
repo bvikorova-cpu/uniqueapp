@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Building2, TrendingUp, Users, MapPin, Home, Sparkles } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 const AnimatedCounter = ({ target, suffix = "" }: { target: number; suffix?: string }) => {
   const [count, setCount] = useState(0);
@@ -30,41 +30,26 @@ const stats = [
   { icon: MapPin, label: "Cities Covered", value: 85, suffix: "+" },
 ];
 
-const floatingEmojis = ["🏠", "🏡", "🏢", "🔑", "💰", "📍", "🏗️", "✨"];
-
 export const PropertyHero = () => {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
   return (
-    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-sky-600 via-blue-600 to-indigo-700 p-6 sm:p-10 mb-8">
-      {/* Floating emojis */}
-      {floatingEmojis.map((emoji, i) => (
-        <motion.div
-          key={i}
-          className="absolute text-xl md:text-3xl opacity-20 select-none pointer-events-none"
-          style={{
-            left: `${(i * 12) + 5}%`,
-            top: `${(i % 3) * 30 + 10}%`,
-          }}
-          animate={{
-            y: [0, -15, 0],
-            rotate: [0, i % 2 === 0 ? 12 : -12, 0],
-            scale: [1, 1.1, 1],
-          }}
-          transition={{
-            duration: 3 + (i * 0.3),
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: i * 0.3,
-          }}
-        >
-          {emoji}
-        </motion.div>
-      ))}
+    <div className="relative overflow-hidden rounded-3xl mb-8">
+      {/* Video Background */}
+      <video
+        ref={videoRef}
+        autoPlay
+        loop
+        muted
+        playsInline
+        className="absolute inset-0 w-full h-full object-cover"
+        src="/videos/property-hero.mp4"
+      />
 
-      {/* Glowing orbs */}
-      <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl" />
-      <div className="absolute bottom-0 left-0 w-48 h-48 bg-cyan-400/20 rounded-full blur-3xl" />
+      {/* Dark overlay for readability */}
+      <div className="absolute inset-0 bg-black/40 backdrop-blur-[1px]" />
 
-      <div className="relative z-10">
+      <div className="relative z-10 p-6 sm:p-10">
         {/* Badge */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
