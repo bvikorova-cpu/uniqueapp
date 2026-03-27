@@ -428,6 +428,21 @@ const BrainDuel = () => {
             <TabsContent value="audience" className="space-y-6">
               <LiveSpectatorMode />
             </TabsContent>
+
+            {/* Season Pass Tab */}
+            <TabsContent value="season" className="space-y-6">
+              <SeasonPass />
+            </TabsContent>
+
+            {/* AI Training Tab */}
+            <TabsContent value="ai-training" className="space-y-6">
+              <AIOpponent />
+            </TabsContent>
+
+            {/* Match Replay Tab */}
+            <TabsContent value="replay" className="space-y-6">
+              <MatchReplay />
+            </TabsContent>
           </Tabs>
         </motion.div>
 
