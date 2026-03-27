@@ -19,6 +19,7 @@ import { LotteryStreak } from "@/components/lottery/LotteryStreak";
 import { LotteryProgress } from "@/components/lottery/LotteryProgress";
 import { LotteryAchievements } from "@/components/lottery/LotteryAchievements";
 import { LotterySidebar } from "@/components/lottery/LotterySidebar";
+import { LotteryQuestionnaire } from "@/components/lottery/LotteryQuestionnaire";
 
 const LOTTERY_TYPES = [
   { id: "eurojackpot", name: "EuroJackpot", maxNumber: 50, bonusBalls: 12, mainBalls: 5, bonusCount: 2 },
@@ -450,6 +451,9 @@ export default function LotteryAI() {
                       ))}
                     </CardContent>
                   </Card>
+
+                  {/* Questionnaire */}
+                  <LotteryQuestionnaire />
                 </div>
               </TabsContent>
 

@@ -1,41 +1,44 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
-import { Target, TrendingUp } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Zap, Sparkles, Target } from "lucide-react";
 import { motion } from "framer-motion";
 
 export const LotteryProgress = () => {
   return (
-    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }}>
-      <Card className="backdrop-blur-xl bg-card/80 border-primary/20 h-full">
-        <CardHeader className="pb-3">
-          <CardTitle className="flex items-center gap-2 text-base">
-            <TrendingUp className="w-4 h-4 text-primary" />
-            Your Stats
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="text-center py-4">
-            <div className="w-12 h-12 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center mx-auto mb-3">
-              <Target className="w-6 h-6 text-primary/40" />
+    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}>
+      <Card className="bg-gradient-to-r from-purple-500/10 via-primary/10 to-accent/10 border-primary/20 overflow-hidden relative h-full">
+        <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -translate-y-1/2 translate-x-1/2" />
+        <CardContent className="p-4">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center">
+              <Zap className="w-5 h-5 text-primary" />
             </div>
-            <p className="text-sm text-muted-foreground mb-1">No generations yet</p>
-            <p className="text-xs text-muted-foreground">Generate your first numbers to start tracking!</p>
+            <div>
+              <h3 className="font-bold text-sm">Quick Generate</h3>
+              <p className="text-[10px] text-muted-foreground">AI-powered • Smart picks • 2x accuracy</p>
+            </div>
           </div>
 
-          <div className="space-y-3">
-            {[
-              { label: "Numbers generated", value: 0 },
-              { label: "Combinations saved", value: 0 },
-            ].map((item) => (
-              <div key={item.label}>
-                <div className="flex items-center justify-between text-xs mb-1">
-                  <span className="text-muted-foreground">{item.label}</span>
-                  <span className="font-bold">{item.value}</span>
-                </div>
-                <Progress value={item.value} className="h-1.5" />
-              </div>
-            ))}
+          <div className="flex items-center gap-4 mb-3 text-xs text-muted-foreground">
+            <span className="flex items-center gap-1"><Sparkles className="w-3 h-3" /> AI Analysis</span>
+            <span className="flex items-center gap-1"><Target className="w-3 h-3" /> Pattern Match</span>
           </div>
+
+          <div className="grid grid-cols-2 gap-2 mb-3">
+            <div className="p-2 rounded-lg bg-background/50 border border-border/30 text-center">
+              <div className="text-lg font-black text-primary">0</div>
+              <div className="text-[10px] text-muted-foreground">Generated</div>
+            </div>
+            <div className="p-2 rounded-lg bg-background/50 border border-border/30 text-center">
+              <div className="text-lg font-black text-accent">0</div>
+              <div className="text-[10px] text-muted-foreground">Saved</div>
+            </div>
+          </div>
+
+          <Button className="w-full bg-gradient-to-r from-primary to-accent hover:opacity-90 text-primary-foreground" size="sm">
+            <Zap className="w-4 h-4 mr-2" />
+            Generate Now
+          </Button>
         </CardContent>
       </Card>
     </motion.div>
