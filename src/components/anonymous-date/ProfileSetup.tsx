@@ -4,9 +4,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { UserPlus, Sparkles, Loader2 } from "lucide-react";
+import { UserPlus, Sparkles, Loader2, Heart, Shield, Users, MessageCircle, Eye, Check, Star } from "lucide-react";
 import { motion } from "framer-motion";
 
 const INTERESTS = [
@@ -17,6 +18,20 @@ const INTERESTS = [
 const PERSONALITY_TRAITS = [
   "Funny", "Adventurous", "Calm", "Energetic", "Creative", "Logical",
   "Romantic", "Ambitious", "Easy-going", "Thoughtful", "Spontaneous", "Loyal"
+];
+
+const HOW_IT_WORKS = [
+  { step: "1", title: "Create Profile", desc: "Set up your anonymous identity", icon: "🎭", color: "from-pink-500 to-rose-500" },
+  { step: "2", title: "Find Match", desc: "AI pairs you by compatibility", icon: "🔍", color: "from-primary to-accent" },
+  { step: "3", title: "Chat 7 Days", desc: "Connect through personality", icon: "💬", color: "from-amber-500 to-orange-500" },
+  { step: "4", title: "Reveal", desc: "Discover each other", icon: "👀", color: "from-emerald-500 to-teal-500" },
+];
+
+const STATS = [
+  { icon: Users, label: "Active Users", value: "12K+" },
+  { icon: Heart, label: "Matches Made", value: "8.3K+" },
+  { icon: MessageCircle, label: "Messages Sent", value: "94K" },
+  { icon: Eye, label: "Reveals", value: "5.1K+" },
 ];
 
 export function ProfileSetup({ onComplete }: { onComplete: () => void }) {
@@ -42,8 +57,8 @@ export function ProfileSetup({ onComplete }: { onComplete: () => void }) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!anonymousName || !ageRange || selectedInterests.length === 0) {
-      toast({ title: "Missing Information", description: "Please fill in all required fields", variant: "destructive" });
+    if (!anonymousName || !ageRange || selectedInterests.length < 3) {
+      toast({ title: "Missing Information", description: "Please fill in all required fields and select at least 3 interests", variant: "destructive" });
       return;
     }
 
@@ -76,105 +91,355 @@ export function ProfileSetup({ onComplete }: { onComplete: () => void }) {
   };
 
   return (
-    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-      <Card className="overflow-hidden bg-card/80 backdrop-blur-xl border-border/50 max-w-2xl mx-auto">
-        <div className="h-1.5 bg-gradient-to-r from-pink-500 to-accent" />
-        <form onSubmit={handleSubmit} className="p-5 sm:p-8 space-y-6">
-          <div>
-            <div className="flex items-center gap-2 mb-1">
-              <UserPlus className="h-5 w-5 text-pink-500" />
-              <h2 className="text-xl sm:text-2xl font-black bg-gradient-to-r from-foreground via-pink-500 to-accent bg-clip-text text-transparent">
-                Create Your Anonymous Profile
-              </h2>
+    <div className="space-y-8 max-w-5xl mx-auto">
+      {/* Hero Section */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="text-center"
+      >
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.1 }}
+          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-sm text-primary mb-4"
+        >
+          <Heart className="w-4 h-4" />
+          <span className="font-medium">Anonymous Dating Platform</span>
+        </motion.div>
+
+        <motion.h1
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.15 }}
+          className="text-3xl sm:text-5xl lg:text-6xl font-black mb-3 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent"
+        >
+          Find Love Anonymously
+        </motion.h1>
+
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2 }}
+          className="text-muted-foreground text-sm sm:text-lg max-w-2xl mx-auto mb-6"
+        >
+          Connect based on personality, not appearance. Chat for 7 days before the big reveal.
+        </motion.p>
+
+        {/* Heart Connection Ring */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.25, duration: 0.6 }}
+          className="mb-6 flex justify-center"
+        >
+          <div className="relative w-32 h-32 sm:w-40 sm:h-40">
+            <svg className="w-full h-full" viewBox="0 0 120 120">
+              <circle cx="60" cy="60" r="52" fill="none" stroke="hsl(var(--muted))" strokeWidth="6" opacity="0.3" />
+              <motion.circle
+                cx="60" cy="60" r="52"
+                fill="none"
+                stroke="hsl(var(--primary))"
+                strokeWidth="6"
+                strokeLinecap="round"
+                strokeDasharray={`${2 * Math.PI * 52}`}
+                initial={{ strokeDashoffset: 2 * Math.PI * 52 }}
+                animate={{ strokeDashoffset: 2 * Math.PI * 52 * 0.06 }}
+                transition={{ duration: 2, ease: "easeOut", delay: 0.5 }}
+                transform="rotate(-90 60 60)"
+              />
+              <motion.circle
+                cx="60" cy="60" r="40"
+                fill="none"
+                stroke="hsl(var(--primary) / 0.15)"
+                strokeWidth="2"
+                strokeDasharray="6 4"
+                initial={{ rotate: 0 }}
+                animate={{ rotate: 360 }}
+                transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+                style={{ transformOrigin: "60px 60px" }}
+              />
+              <motion.circle
+                cx="60" cy="60" r="30"
+                fill="none"
+                stroke="hsl(var(--accent) / 0.1)"
+                strokeWidth="1.5"
+                strokeDasharray="4 6"
+                initial={{ rotate: 360 }}
+                animate={{ rotate: 0 }}
+                transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
+                style={{ transformOrigin: "60px 60px" }}
+              />
+            </svg>
+            <div className="absolute inset-0 flex flex-col items-center justify-center">
+              <motion.span
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1 }}
+                className="text-3xl sm:text-4xl"
+              >
+                💕
+              </motion.span>
+              <span className="text-[10px] sm:text-xs text-muted-foreground font-medium mt-1">7-DAY MAGIC</span>
             </div>
-            <p className="text-sm text-muted-foreground">Your real identity stays completely hidden until you reveal it</p>
           </div>
+        </motion.div>
 
-          <div className="space-y-4">
-            <div>
-              <Label className="text-sm font-semibold">Anonymous Name *</Label>
-              <Input
-                value={anonymousName}
-                onChange={(e) => setAnonymousName(e.target.value)}
-                placeholder="MysteryPerson123"
-                required
-                className="mt-1.5 bg-muted/10 border-border/50"
-              />
-            </div>
+        {/* Stats Row */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-3xl mx-auto"
+        >
+          {STATS.map((stat, i) => (
+            <motion.div
+              key={stat.label}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.35 + i * 0.05 }}
+              className="relative p-4 rounded-2xl bg-card/60 backdrop-blur-sm border border-border/50 hover:border-primary/30 transition-all"
+            >
+              <stat.icon className="w-5 h-5 text-primary mx-auto mb-2" />
+              <div className="text-2xl sm:text-3xl font-black text-foreground">{stat.value}</div>
+              <p className="text-[11px] text-muted-foreground mt-1">{stat.label}</p>
+            </motion.div>
+          ))}
+        </motion.div>
+      </motion.div>
 
-            <div>
-              <Label className="text-sm font-semibold">Age Range *</Label>
-              <Input
-                value={ageRange}
-                onChange={(e) => setAgeRange(e.target.value)}
-                placeholder="25-30"
-                required
-                className="mt-1.5 bg-muted/10 border-border/50"
-              />
-            </div>
-
-            <div>
-              <Label className="text-sm font-semibold">Looking For</Label>
-              <Textarea
-                value={lookingFor}
-                onChange={(e) => setLookingFor(e.target.value)}
-                placeholder="What are you looking for in a connection?"
-                rows={3}
-                className="mt-1.5 bg-muted/10 border-border/50"
-              />
-            </div>
-
-            <div>
-              <Label className="text-sm font-semibold">Select Interests * (Choose at least 3)</Label>
-              <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 mt-2">
-                {INTERESTS.map((interest) => (
-                  <button
-                    key={interest}
-                    type="button"
-                    onClick={() => toggleInterest(interest)}
-                    className={`text-xs px-3 py-2 rounded-lg border transition-all ${
-                      selectedInterests.includes(interest)
-                        ? "bg-pink-500/10 border-pink-500/30 text-pink-500 font-medium"
-                        : "border-border/50 text-muted-foreground hover:border-border"
-                    }`}
-                  >
-                    {interest}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <Label className="text-sm font-semibold">Personality Traits (Choose up to 5)</Label>
-              <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 mt-2">
-                {PERSONALITY_TRAITS.map((trait) => (
-                  <button
-                    key={trait}
-                    type="button"
-                    onClick={() => toggleTrait(trait)}
-                    disabled={selectedTraits.length >= 5 && !selectedTraits.includes(trait)}
-                    className={`text-xs px-3 py-2 rounded-lg border transition-all ${
-                      selectedTraits.includes(trait)
-                        ? "bg-accent/10 border-accent/30 text-accent font-medium"
-                        : "border-border/50 text-muted-foreground hover:border-border disabled:opacity-30"
-                    }`}
-                  >
-                    {trait}
-                  </button>
-                ))}
-              </div>
-            </div>
+      {/* How It Works */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4 }}
+      >
+        <Card className="p-5 sm:p-6 bg-card/60 backdrop-blur-sm border border-border/50">
+          <h3 className="text-lg font-black mb-4 flex items-center gap-2">
+            <Sparkles className="h-5 w-5 text-primary" />
+            How Anonymous Date Works
+          </h3>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            {HOW_IT_WORKS.map((s, i) => (
+              <motion.div
+                key={s.step}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.45 + i * 0.08 }}
+                className="relative text-center p-4 rounded-xl bg-muted/20 border border-border/30 hover:border-primary/30 transition-all"
+              >
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                  <span className={`bg-gradient-to-r ${s.color} text-white text-[10px] font-bold px-2 py-0.5 rounded-full`}>
+                    STEP {s.step}
+                  </span>
+                </div>
+                <span className="text-3xl block mb-2 mt-1">{s.icon}</span>
+                <h4 className="font-bold text-sm">{s.title}</h4>
+                <p className="text-[11px] text-muted-foreground mt-1 leading-relaxed">{s.desc}</p>
+              </motion.div>
+            ))}
           </div>
+        </Card>
+      </motion.div>
 
-          <Button type="submit" className="w-full" size="lg" disabled={loading}>
-            {loading ? (
-              <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Creating Profile...</>
-            ) : (
-              <><Sparkles className="mr-2 h-4 w-4" /> Create Profile & Start Matching</>
-            )}
-          </Button>
-        </form>
-      </Card>
-    </motion.div>
+      {/* Main Content: Form + Sidebar */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Profile Form */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+          className="lg:col-span-2"
+        >
+          <Card className="overflow-hidden bg-card/80 backdrop-blur-xl border-border/50">
+            <div className="h-1.5 bg-gradient-to-r from-pink-500 via-primary to-accent" />
+            <form onSubmit={handleSubmit} className="p-5 sm:p-8 space-y-6">
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <UserPlus className="h-5 w-5 text-primary" />
+                  <h2 className="text-xl sm:text-2xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
+                    Create Your Anonymous Profile
+                  </h2>
+                </div>
+                <p className="text-sm text-muted-foreground">Your real identity stays completely hidden until you choose to reveal it</p>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <Label className="text-sm font-semibold">Anonymous Name *</Label>
+                  <Input
+                    value={anonymousName}
+                    onChange={(e) => setAnonymousName(e.target.value)}
+                    placeholder="MysteryPerson123"
+                    required
+                    className="mt-1.5 bg-muted/10 border-border/50 focus:border-primary/50"
+                  />
+                  <p className="text-[10px] text-muted-foreground mt-1">This is the name your matches will see</p>
+                </div>
+
+                <div>
+                  <Label className="text-sm font-semibold">Age Range *</Label>
+                  <Input
+                    value={ageRange}
+                    onChange={(e) => setAgeRange(e.target.value)}
+                    placeholder="25-30"
+                    required
+                    className="mt-1.5 bg-muted/10 border-border/50 focus:border-primary/50"
+                  />
+                </div>
+
+                <div>
+                  <Label className="text-sm font-semibold">Looking For</Label>
+                  <Textarea
+                    value={lookingFor}
+                    onChange={(e) => setLookingFor(e.target.value)}
+                    placeholder="What are you looking for in a connection?"
+                    rows={3}
+                    className="mt-1.5 bg-muted/10 border-border/50 focus:border-primary/50"
+                  />
+                </div>
+
+                <div>
+                  <Label className="text-sm font-semibold flex items-center gap-2">
+                    Select Interests *
+                    <Badge variant="secondary" className="text-[10px]">{selectedInterests.length} selected</Badge>
+                  </Label>
+                  <p className="text-[10px] text-muted-foreground mb-2">Choose at least 3 interests for better matching</p>
+                  <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                    {INTERESTS.map((interest) => (
+                      <button
+                        key={interest}
+                        type="button"
+                        onClick={() => toggleInterest(interest)}
+                        className={`text-xs px-3 py-2.5 rounded-xl border transition-all active:scale-[0.97] ${
+                          selectedInterests.includes(interest)
+                            ? "bg-primary/10 border-primary/30 text-primary font-medium shadow-sm shadow-primary/10"
+                            : "border-border/50 text-muted-foreground hover:border-primary/20 hover:bg-muted/20"
+                        }`}
+                      >
+                        {interest}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <Label className="text-sm font-semibold flex items-center gap-2">
+                    Personality Traits
+                    <Badge variant="secondary" className="text-[10px]">{selectedTraits.length}/5</Badge>
+                  </Label>
+                  <p className="text-[10px] text-muted-foreground mb-2">Choose up to 5 traits that describe you</p>
+                  <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                    {PERSONALITY_TRAITS.map((trait) => (
+                      <button
+                        key={trait}
+                        type="button"
+                        onClick={() => toggleTrait(trait)}
+                        disabled={selectedTraits.length >= 5 && !selectedTraits.includes(trait)}
+                        className={`text-xs px-3 py-2.5 rounded-xl border transition-all active:scale-[0.97] ${
+                          selectedTraits.includes(trait)
+                            ? "bg-accent/10 border-accent/30 text-accent font-medium shadow-sm shadow-accent/10"
+                            : "border-border/50 text-muted-foreground hover:border-accent/20 hover:bg-muted/20 disabled:opacity-30"
+                        }`}
+                      >
+                        {trait}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <Button type="submit" className="w-full" size="lg" disabled={loading}>
+                {loading ? (
+                  <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Creating Profile...</>
+                ) : (
+                  <><Sparkles className="mr-2 h-4 w-4" /> Create Profile & Start Matching</>
+                )}
+              </Button>
+            </form>
+          </Card>
+        </motion.div>
+
+        {/* Right Sidebar */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.55 }}
+          className="space-y-4"
+        >
+          {/* Safety Card */}
+          <Card className="p-4 bg-card/80 backdrop-blur-xl border-border/50">
+            <h3 className="font-bold text-sm mb-3 flex items-center gap-2">
+              <Shield className="h-4 w-4 text-primary" />
+              Your Safety
+            </h3>
+            <div className="space-y-2">
+              {[
+                { icon: "🎭", label: "100% Anonymous until reveal" },
+                { icon: "🔒", label: "Encrypted messaging" },
+                { icon: "🛡️", label: "Verified subscribers only" },
+                { icon: "⏰", label: "7-day discovery period" },
+                { icon: "🚫", label: "Block & report system" },
+              ].map((item) => (
+                <div key={item.label} className="flex items-center gap-2.5 p-2 rounded-lg bg-muted/20 border border-border/30">
+                  <span className="text-sm">{item.icon}</span>
+                  <span className="text-xs text-muted-foreground">{item.label}</span>
+                </div>
+              ))}
+            </div>
+          </Card>
+
+          {/* Testimonials */}
+          <Card className="p-4 bg-card/80 backdrop-blur-xl border-border/50">
+            <h3 className="font-bold text-sm mb-3 flex items-center gap-2">
+              <Heart className="h-4 w-4 text-primary" />
+              Love Stories
+            </h3>
+            <div className="space-y-3">
+              {[
+                { name: "Anonymous M.", text: "We chatted for 7 days and fell in love with each other's personality!", rating: 5 },
+                { name: "Anonymous K.", text: "The reveal moment was incredibly exciting. Best dating experience!", rating: 5 },
+              ].map((t, i) => (
+                <div key={i} className="p-3 rounded-lg bg-muted/20 border border-border/30">
+                  <div className="flex items-center gap-1 mb-1">
+                    {Array.from({ length: t.rating }).map((_, j) => (
+                      <Star key={j} className="h-3 w-3 fill-yellow-500 text-yellow-500" />
+                    ))}
+                  </div>
+                  <p className="text-xs text-muted-foreground italic leading-relaxed">"{t.text}"</p>
+                  <p className="text-[10px] font-medium mt-1 text-foreground/70">— {t.name}</p>
+                </div>
+              ))}
+            </div>
+          </Card>
+
+          {/* Credit Costs */}
+          <Card className="p-4 bg-card/80 backdrop-blur-xl border-border/50">
+            <h3 className="font-bold text-sm mb-3 flex items-center gap-2">
+              <Sparkles className="h-4 w-4 text-primary" />
+              Credit Costs
+            </h3>
+            <div className="space-y-1.5">
+              {[
+                { label: "New Match", cost: "5 cr", emoji: "🔍" },
+                { label: "Text Message", cost: "1 cr", emoji: "💬" },
+                { label: "Voice Message", cost: "3 cr", emoji: "🎤" },
+                { label: "Profile Hint", cost: "5 cr", emoji: "💡" },
+                { label: "Virtual Gift", cost: "10 cr", emoji: "🎁" },
+                { label: "Early Reveal", cost: "15 cr", emoji: "👀" },
+              ].map((item) => (
+                <div key={item.label} className="flex items-center justify-between p-2 rounded-lg bg-muted/20 border border-border/30">
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm">{item.emoji}</span>
+                    <span className="text-xs text-muted-foreground">{item.label}</span>
+                  </div>
+                  <Badge variant="secondary" className="text-[10px]">{item.cost}</Badge>
+                </div>
+              ))}
+            </div>
+          </Card>
+        </motion.div>
+      </div>
+    </div>
   );
 }

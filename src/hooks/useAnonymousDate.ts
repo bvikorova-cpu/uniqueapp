@@ -54,11 +54,7 @@ export function useAnonymousDate() {
 
       const { data, error } = await supabase
         .from("anonymous_dating_matches")
-        .select(`
-          *,
-          anonymous_dating_profiles!anonymous_dating_matches_user1_id_fkey(anonymous_name, age_range, interests),
-          anonymous_dating_profiles_user2:anonymous_dating_profiles!anonymous_dating_matches_user2_id_fkey(anonymous_name, age_range, interests)
-        `)
+        .select("*")
         .or(`user1_id.eq.${user.id},user2_id.eq.${user.id}`)
         .in("status", ["active", "revealed"])
         .order("created_at", { ascending: false });
