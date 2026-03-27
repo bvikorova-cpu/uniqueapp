@@ -87,7 +87,6 @@ export default function CrisisRelief() {
       <div className="max-w-7xl mx-auto">
         <CrisisHero />
         <CrisisStepsWizard />
-        <CrisisImpactTicker />
 
         <div id="campaigns" className="mt-8 space-y-6">
           <CrisisFilters search={search} onSearchChange={setSearch} filter={filter} onFilterChange={setFilter} sort={sort} onSortChange={setSort} />
@@ -102,9 +101,6 @@ export default function CrisisRelief() {
             )}
           </div>
         </div>
-
-        <CrisisZoneOverview />
-        <ResolvedEmergencies />
       </div>
     </div>
   );
