@@ -2524,6 +2524,36 @@ export type Database = {
         }
         Relationships: []
       }
+      brain_duel_daily_spins: {
+        Row: {
+          created_at: string
+          id: string
+          reward_label: string
+          reward_type: string
+          reward_value: number
+          spin_date: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          reward_label?: string
+          reward_type?: string
+          reward_value?: number
+          spin_date?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          reward_label?: string
+          reward_type?: string
+          reward_value?: number
+          spin_date?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       brain_duel_friend_achievements: {
         Row: {
           achieved_at: string | null
