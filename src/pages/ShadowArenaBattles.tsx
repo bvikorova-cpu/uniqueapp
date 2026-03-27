@@ -83,12 +83,17 @@ export default function ShadowArenaBattles() {
     }
   };
 
+  const isExpired = (b: Battle) => b.ends_at ? new Date(b.ends_at).getTime() < Date.now() : false;
+  const isReallyActive = (b: Battle) =>
+    (b.status === "active" || b.status === "waiting_for_participants") && !isExpired(b);
+
   const filtered = filter === "all" ? battles : battles.filter(b => {
-    if (filter === "active") return b.status === "active" || b.status === "waiting_for_participants";
+    if (filter === "active") return isReallyActive(b);
+    if (filter === "completed") return b.status === "completed" || isExpired(b);
     return b.status === filter;
   });
 
-  const activeBattles = battles.filter(b => b.status === "active" || b.status === "waiting_for_participants");
+  const activeBattles = battles.filter(isReallyActive);
   const totalPool = activeBattles.reduce((s, b) => s + b.total_prize_pool, 0);
 
   const statusConfig: Record<string, { label: string; className: string }> = {
