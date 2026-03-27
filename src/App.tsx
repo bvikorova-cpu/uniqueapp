@@ -342,7 +342,7 @@ const App = () => {
                     <Suspense fallback={<PageLoader />}>
                       {/* All routes render inside this Suspense boundary */}
                       <Routes>
-                        <Route path="/" element={<Home />} />
+                        <Route path="/" element={<Index />} />
                         <Route path="/wall" element={<Wall />} />
                         <Route path="/search" element={<SearchResults />} />
                         <Route path="/wall/messages" element={<Wall />} />
