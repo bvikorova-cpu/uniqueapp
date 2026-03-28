@@ -352,7 +352,25 @@ export default function TipsterDashboard() {
               <CardDescription>Your pending predictions awaiting results</CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-muted-foreground">Coming soon...</p>
+              {predictions.filter(p => !p.result).length === 0 ? (
+                <p className="text-sm text-muted-foreground">No active predictions yet. Create one above!</p>
+              ) : (
+                <div className="space-y-3">
+                  {predictions.filter(p => !p.result).map(pred => (
+                    <div key={pred.id} className="flex items-center justify-between p-3 rounded-lg border">
+                      <div>
+                        <p className="font-medium text-sm">
+                          {pred.sports_matches?.home_team} vs {pred.sports_matches?.away_team}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {pred.prediction_type} • Odds: {pred.odds} • Confidence: {pred.confidence}%
+                        </p>
+                      </div>
+                      <Badge variant="secondary">Pending</Badge>
+                    </div>
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
@@ -364,7 +382,27 @@ export default function TipsterDashboard() {
               <CardDescription>View all your past predictions and results</CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-muted-foreground">Coming soon...</p>
+              {predictions.filter(p => p.result).length === 0 ? (
+                <p className="text-sm text-muted-foreground">No settled predictions yet.</p>
+              ) : (
+                <div className="space-y-3">
+                  {predictions.filter(p => p.result).map(pred => (
+                    <div key={pred.id} className="flex items-center justify-between p-3 rounded-lg border">
+                      <div>
+                        <p className="font-medium text-sm">
+                          {pred.sports_matches?.home_team} vs {pred.sports_matches?.away_team}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {pred.prediction_type} • Odds: {pred.odds} • {format(new Date(pred.created_at), 'MMM d, yyyy')}
+                        </p>
+                      </div>
+                      <Badge variant={pred.result === 'won' ? 'default' : 'destructive'}>
+                        {pred.result === 'won' ? '✅ Won' : '❌ Lost'}
+                      </Badge>
+                    </div>
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
