@@ -576,10 +576,10 @@ export default function EventDetail() {
                                 const { error } = await supabase.storage.from("user-uploads").upload(path, file);
                                 if (error) throw error;
                                 const { data: urlData } = supabase.storage.from("user-uploads").getPublicUrl(path);
-                                setPostContent(prev => prev + `\n${urlData.publicUrl}`);
-                                toast.success("Video uploaded!");
+                                setCommentContent(prev => prev + `\n${urlData.publicUrl}`);
+                                toast({ title: "Video uploaded!" });
                               } catch (err: any) {
-                                toast.error(err.message || "Upload failed");
+                                toast({ title: "Upload failed", description: err.message, variant: "destructive" });
                               }
                             }}
                           />
