@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Brain, Loader2, AlertCircle } from "lucide-react";
+import { Brain, Loader2 } from "lucide-react";
 
 interface PhobiaDetectorProps {
   onPhobiaDetected: () => void;
@@ -14,36 +14,7 @@ const PhobiaDetector = ({ onPhobiaDetected }: PhobiaDetectorProps) => {
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
-  const [hasAccess, setHasAccess] = useState(false);
-  const [checkingAccess, setCheckingAccess] = useState(true);
   const { toast } = useToast();
-
-  useEffect(() => {
-    checkAccess();
-  }, []);
-
-  const checkAccess = async () => {
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        setCheckingAccess(false);
-        return;
-      }
-
-      const { data, error } = await supabase.rpc('has_phobia_access', {
-        user_id_param: session.user.id,
-        service_type_param: 'exposure_therapy'
-      });
-
-      if (!error) {
-        setHasAccess(data);
-      }
-    } catch (error) {
-      console.error('Error checking access:', error);
-    } finally {
-      setCheckingAccess(false);
-    }
-  };
 
   const handleDetect = async () => {
     if (!description.trim()) {
