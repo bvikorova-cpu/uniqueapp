@@ -586,9 +586,9 @@ export default function PageDetail() {
                                   if (error) throw error;
                                   const { data: urlData } = supabase.storage.from("user-uploads").getPublicUrl(path);
                                   setPostContent(prev => prev + `\n${urlData.publicUrl}`);
-                                  toast.success("Video uploaded!");
+                                  toast({ title: "Video uploaded!" });
                                 } catch (err: any) {
-                                  toast.error(err.message || "Upload failed");
+                                  toast({ title: "Upload failed", description: err.message, variant: "destructive" });
                                 }
                               }}
                             />
