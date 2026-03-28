@@ -99,6 +99,38 @@ const toolDetails: Record<string, { title: string; description: string; features
     description: "Learn proper crystal cleansing and charging techniques. Follow guided rituals for full moon charging, sage cleansing, sunlight activation, and more.",
     features: ["Cleansing method guides", "Charging calendars", "Full moon reminders", "Sage ritual instructions", "Sound cleansing guide", "Crystal care tips"],
   },
+  "Live Crystal ID": {
+    title: "Live Crystal Identification",
+    description: "Use your device camera to identify crystals in real-time. Our AI instantly recognizes crystal types, provides detailed information about properties, origin, and healing applications.",
+    features: ["Real-time camera recognition", "Instant crystal identification", "Properties & healing info", "Origin & formation details", "Rarity assessment", "Save to your collection"],
+    price: "€2 per identification",
+  },
+  "Crystal Sound Bath": {
+    title: "Crystal Sound Bath",
+    description: "Immersive audio healing sessions using crystal singing bowl frequencies. Each session is tuned to specific chakras and energy centers for deep relaxation and healing.",
+    features: ["Crystal bowl frequencies", "Chakra-tuned sessions", "Binaural beat integration", "Session duration options", "Background ambient sounds", "Offline download access"],
+  },
+  "Crystal Origin Map": {
+    title: "Crystal Origin Map",
+    description: "Explore an interactive world map showing where different crystals are found. Learn about geological formations, mining regions, and the journey of each crystal type.",
+    features: ["Interactive world map", "Crystal mining regions", "Geological formation info", "Rarity by region", "Trade route history", "Filter by crystal type"],
+  },
+  "Crystal Community": {
+    title: "Crystal Community",
+    description: "Join a vibrant social network of crystal enthusiasts and healers. Share your experiences, ask questions, showcase your collection, and learn from experienced practitioners.",
+    features: ["Discussion forums", "Crystal photo sharing", "Expert Q&A sessions", "Collection showcases", "Local meetup events", "Healer directory"],
+  },
+  "Energy Leaderboard": {
+    title: "Energy Leaderboard",
+    description: "Gamified ranking system that tracks your healing journey progress. Earn points for readings, meditations, and collection growth. Compete with other healers worldwide.",
+    features: ["Global energy rankings", "Weekly challenges", "Achievement badges", "Point multipliers", "Seasonal tournaments", "Community rewards"],
+  },
+  "Crystal Sub Box": {
+    title: "Crystal Subscription Box",
+    description: "Receive a monthly curated box of crystals selected by AI based on your energy profile, healing goals, and collection gaps. Each box includes information cards and care instructions.",
+    features: ["AI-curated selection", "Monthly delivery", "Energy profile matching", "Information cards included", "Exclusive rare crystals", "Cancel anytime"],
+    price: "€29/month",
+  },
 };
 
 export const CrystalToolView = ({ toolName, onBack }: CrystalToolViewProps) => {
