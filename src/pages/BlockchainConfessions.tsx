@@ -23,18 +23,27 @@ import { CommunityLeaderboard } from "@/components/confessions/CommunityLeaderbo
 import { ConfessionJournal } from "@/components/confessions/ConfessionJournal";
 import { AbsolutionCeremony } from "@/components/confessions/AbsolutionCeremony";
 import { SinPatternAnalyzer } from "@/components/confessions/SinPatternAnalyzer";
+import { VoiceConfessions } from "@/components/confessions/VoiceConfessions";
+import { KarmaScoreSystem } from "@/components/confessions/KarmaScoreSystem";
+import { SinHeatmap } from "@/components/confessions/SinHeatmap";
+import { ConfessionRooms } from "@/components/confessions/ConfessionRooms";
 import heroPoster from "@/assets/confessions-hero-poster.jpg";
 // @ts-ignore
 import heroVideoAsset from "/public/videos/confessions-hero.mp4.asset.json";
 
 type ToolView = "hub" | "wall" | "post" | "redemption" | "analytics" |
-  "advisor" | "leaderboard" | "journal" | "ceremony" | "sin-patterns";
+  "advisor" | "leaderboard" | "journal" | "ceremony" | "sin-patterns" |
+  "voice" | "karma" | "heatmap" | "rooms";
 
 const tools: { id: ToolView; label: string; icon: any; color: string; desc: string }[] = [
   { id: "wall", label: "Confession Wall", icon: ScrollText, color: "from-slate-500 to-gray-600", desc: "Browse and vote on anonymous community confessions" },
   { id: "post", label: "Post Confession", icon: PenLine, color: "from-violet-500 to-purple-600", desc: "Share your confession anonymously with AI analysis" },
+  { id: "voice", label: "Voice Confessions", icon: Send, color: "from-pink-500 to-rose-600", desc: "Record voice confessions with AI emotional analysis" },
+  { id: "rooms", label: "Confession Rooms", icon: MessageSquare, color: "from-teal-500 to-cyan-600", desc: "Anonymous real-time chat rooms for group confessions" },
   { id: "redemption", label: "Redemption Path", icon: TrendingUp, color: "from-emerald-500 to-green-600", desc: "Track your redemption progress with AI coaching" },
   { id: "analytics", label: "Confession Analytics", icon: BarChart3, color: "from-cyan-500 to-blue-600", desc: "Deep data analysis of community confession patterns" },
+  { id: "heatmap", label: "Sin Heatmap", icon: Flame, color: "from-orange-500 to-red-600", desc: "Community-wide sin category visualization and trends" },
+  { id: "karma", label: "Karma Score", icon: Zap, color: "from-amber-500 to-yellow-600", desc: "XP, levels, badges and gamified spiritual progress" },
   { id: "advisor", label: "AI Spiritual Advisor", icon: Brain, color: "from-amber-500 to-orange-600", desc: "AI-powered spiritual guidance and counseling chat" },
   { id: "leaderboard", label: "Community Leaderboard", icon: Trophy, color: "from-yellow-500 to-amber-600", desc: "Top contributors and most active community members" },
   { id: "journal", label: "Confession Journal", icon: BookOpen, color: "from-pink-500 to-rose-600", desc: "Private journal for spiritual reflections and growth" },
