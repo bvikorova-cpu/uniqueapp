@@ -28,26 +28,18 @@ import dnaHeroVideoAsset from "/public/videos/dna-hero.mp4.asset.json";
 type ToolView = "hub" | "analysis" | "memories" | "dating" | "offspring" |
   "timeline" | "art" | "voice" | "health" | "family-tree" | "community";
 
-const floatingEmojis = [
-  { emoji: "🧬", x: 5, y: 15, delay: 0 },
-  { emoji: "🔬", x: 90, y: 20, delay: 0.5 },
-  { emoji: "💀", x: 8, y: 70, delay: 1 },
-  { emoji: "🌍", x: 88, y: 65, delay: 1.5 },
-  { emoji: "🧪", x: 15, y: 45, delay: 2 },
-  { emoji: "🏛️", x: 85, y: 40, delay: 2.5 },
-];
 
-const tools: { id: ToolView; label: string; icon: any; emoji: string; color: string; desc: string }[] = [
-  { id: "analysis", label: "DNA Analysis", icon: Dna, emoji: "🧬", color: "from-cyan-500 to-blue-600", desc: "Complete genetic sequencing & AI analysis" },
-  { id: "memories", label: "Ancestral Memories", icon: Sparkles, emoji: "✨", color: "from-purple-500 to-violet-600", desc: "AI-reconstructed stories from your ancestors" },
-  { id: "dating", label: "Genetic Dating", icon: Heart, emoji: "💕", color: "from-pink-500 to-rose-600", desc: "Find your DNA-compatible partner" },
-  { id: "offspring", label: "Digital Offspring", icon: Baby, emoji: "👶", color: "from-amber-500 to-orange-600", desc: "Create an AI clone with your traits" },
-  { id: "timeline", label: "Heritage Timeline", icon: Clock, emoji: "🏛️", color: "from-emerald-500 to-teal-600", desc: "Interactive timeline of your ancestral migrations" },
-  { id: "art", label: "DNA Art Generator", icon: Palette, emoji: "🎨", color: "from-fuchsia-500 to-pink-600", desc: "Transform your genetic profile into art" },
-  { id: "voice", label: "Ancestral Voice", icon: Mic, emoji: "🗣️", color: "from-indigo-500 to-blue-600", desc: "Hear AI-synthesized voices of ancestors" },
-  { id: "health", label: "Health Insights", icon: Activity, emoji: "💊", color: "from-green-500 to-emerald-600", desc: "AI-powered genetic health analysis" },
-  { id: "family-tree", label: "Family Tree", icon: GitBranch, emoji: "🌳", color: "from-lime-500 to-green-600", desc: "Build & visualize your family tree" },
-  { id: "community", label: "DNA Community", icon: MessageSquare, emoji: "👥", color: "from-sky-500 to-cyan-600", desc: "Connect with genetic relatives worldwide" },
+const tools: { id: ToolView; label: string; icon: any; color: string; desc: string }[] = [
+  { id: "analysis", label: "DNA Analysis", icon: Dna, color: "from-cyan-500 to-blue-600", desc: "Complete genetic sequencing & AI analysis" },
+  { id: "memories", label: "Ancestral Memories", icon: Sparkles, color: "from-purple-500 to-violet-600", desc: "AI-reconstructed stories from your ancestors" },
+  { id: "dating", label: "Genetic Dating", icon: Heart, color: "from-pink-500 to-rose-600", desc: "Find your DNA-compatible partner" },
+  { id: "offspring", label: "Digital Offspring", icon: Baby, color: "from-amber-500 to-orange-600", desc: "Create an AI clone with your traits" },
+  { id: "timeline", label: "Heritage Timeline", icon: Clock, color: "from-emerald-500 to-teal-600", desc: "Interactive timeline of your ancestral migrations" },
+  { id: "art", label: "DNA Art Generator", icon: Palette, color: "from-fuchsia-500 to-pink-600", desc: "Transform your genetic profile into art" },
+  { id: "voice", label: "Ancestral Voice", icon: Mic, color: "from-indigo-500 to-blue-600", desc: "Hear AI-synthesized voices of ancestors" },
+  { id: "health", label: "Health Insights", icon: Activity, color: "from-green-500 to-emerald-600", desc: "AI-powered genetic health analysis" },
+  { id: "family-tree", label: "Family Tree", icon: GitBranch, color: "from-lime-500 to-green-600", desc: "Build & visualize your family tree" },
+  { id: "community", label: "DNA Community", icon: MessageSquare, color: "from-sky-500 to-cyan-600", desc: "Connect with genetic relatives worldwide" },
 ];
 
 const DNAMemoryNetwork = () => {
@@ -109,7 +101,7 @@ const DNAMemoryNetwork = () => {
               <ArrowLeft className="h-4 w-4" /> Back to DNA Hub
             </Button>
             <div className="flex items-center gap-3 mb-6">
-              <span className="text-3xl">{tool?.emoji}</span>
+              {tool && <tool.icon className="h-7 w-7 text-primary" />}
               <h2 className="text-2xl sm:text-3xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
                 {tool?.label}
               </h2>
@@ -139,18 +131,6 @@ const DNAMemoryNetwork = () => {
           </video>
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
 
-          {/* Floating Emojis */}
-          {floatingEmojis.map((item, i) => (
-            <motion.div
-              key={i}
-              className="absolute text-2xl sm:text-3xl opacity-60 pointer-events-none"
-              style={{ left: `${item.x}%`, top: `${item.y}%` }}
-              animate={{ y: [0, -15, 0], rotate: [0, 10, -10, 0] }}
-              transition={{ duration: 4 + i * 0.5, repeat: Infinity, delay: item.delay }}
-            >
-              {item.emoji}
-            </motion.div>
-          ))}
 
           {/* Video Controls */}
           <div className="absolute top-4 right-4 flex gap-2 z-20">
@@ -212,7 +192,7 @@ const DNAMemoryNetwork = () => {
                 <div key={i} className="flex-1 text-center">
                   <div className={`w-full aspect-square rounded-lg flex items-center justify-center text-xs font-bold transition-all
                     ${d.active ? "bg-orange-500 text-white shadow-lg shadow-orange-500/30" : "bg-muted/30 text-muted-foreground"}`}>
-                    {d.active ? "🔥" : d.day[0]}
+                    {d.active ? "✓" : d.day[0]}
                   </div>
                 </div>
               ))}
@@ -256,10 +236,10 @@ const DNAMemoryNetwork = () => {
               <span className="font-black text-sm">Achievements</span>
             </div>
             <div className="grid grid-cols-4 gap-2">
-              {["🧬", "🏛️", "💕", "🎨", "🌳", "🔬", "🗣️", "👶"].map((e, i) => (
-                <div key={i} className={`aspect-square rounded-lg flex items-center justify-center text-lg transition-all
+              {[Dna, Clock, Heart, Palette, GitBranch, Sparkles, Mic, Baby].map((Icon, i) => (
+                <div key={i} className={`aspect-square rounded-lg flex items-center justify-center transition-all
                   ${i < 3 ? "bg-amber-500/20 shadow-inner" : "bg-muted/20 opacity-40"}`}>
-                  {e}
+                  <Icon className={`w-4 h-4 ${i < 3 ? "text-amber-500" : "text-muted-foreground"}`} />
                 </div>
               ))}
             </div>
@@ -291,7 +271,7 @@ const DNAMemoryNetwork = () => {
         {/* 10-Tool Grid */}
         <div>
           <h2 className="text-xl sm:text-2xl font-black mb-4 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
-            🧬 Explore Your DNA Tools
+            Explore Your DNA Tools
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
             {tools.map((tool, i) => (
@@ -307,8 +287,8 @@ const DNAMemoryNetwork = () => {
                   className="p-4 cursor-pointer bg-card/80 backdrop-blur-xl border-border/50 hover:border-primary/40 hover:shadow-xl hover:shadow-primary/10 transition-all group h-full"
                   onClick={() => setActiveView(tool.id)}
                 >
-                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${tool.color} flex items-center justify-center text-2xl mb-3 shadow-lg group-hover:scale-110 transition-transform`}>
-                    {tool.emoji}
+                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${tool.color} flex items-center justify-center mb-3 shadow-lg group-hover:scale-110 transition-transform`}>
+                    <tool.icon className="w-6 h-6 text-white" />
                   </div>
                   <h3 className="font-bold text-xs sm:text-sm mb-1">{tool.label}</h3>
                   <p className="text-[10px] text-muted-foreground line-clamp-2">{tool.desc}</p>
@@ -321,7 +301,7 @@ const DNAMemoryNetwork = () => {
         {/* Pricing Section */}
         <div>
           <h2 className="text-xl sm:text-2xl font-black mb-4 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
-            💎 Premium DNA Services
+            Premium DNA Services
           </h2>
           <PricingCards />
         </div>
@@ -336,10 +316,10 @@ const PricingCards = () => {
   const [loading, setLoading] = useState<string | null>(null);
 
   const services = [
-    { id: "dna_analysis", title: "DNA Analysis", price: "€99", type: "one-time", icon: "🧬", features: ["Complete genetic sequencing", "AI ancestral memories", "Heritage insights", "Interactive family tree"], highlighted: false },
-    { id: "ancestral_memories", title: "Ancestral Memories", price: "€12", type: "/month", icon: "✨", features: ["Monthly story updates", "Photo restoration", "Voice synthesis", "Historical context"], highlighted: true },
-    { id: "genetic_dating", title: "Genetic Dating", price: "€15", type: "/month", icon: "💕", features: ["DNA compatibility matching", "Health trait analysis", "Personality alignment", "Offspring predictions"], highlighted: true },
-    { id: "digital_offspring", title: "Digital Offspring", price: "€149", type: "one-time", icon: "👶", features: ["Interactive AI personality", "Genetic trait inheritance", "Voice & appearance", "Lifetime access"], highlighted: false },
+    { id: "dna_analysis", title: "DNA Analysis", price: "€99", type: "one-time", icon: Dna, features: ["Complete genetic sequencing", "AI ancestral memories", "Heritage insights", "Interactive family tree"], highlighted: false },
+    { id: "ancestral_memories", title: "Ancestral Memories", price: "€12", type: "/month", icon: Sparkles, features: ["Monthly story updates", "Photo restoration", "Voice synthesis", "Historical context"], highlighted: true },
+    { id: "genetic_dating", title: "Genetic Dating", price: "€15", type: "/month", icon: Heart, features: ["DNA compatibility matching", "Health trait analysis", "Personality alignment", "Offspring predictions"], highlighted: true },
+    { id: "digital_offspring", title: "Digital Offspring", price: "€149", type: "one-time", icon: Baby, features: ["Interactive AI personality", "Genetic trait inheritance", "Voice & appearance", "Lifetime access"], highlighted: false },
   ];
 
   const handlePurchase = async (serviceType: string) => {
