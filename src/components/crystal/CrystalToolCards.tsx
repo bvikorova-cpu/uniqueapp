@@ -44,7 +44,7 @@ export const CrystalToolCards = ({ onSelectTool }: CrystalToolCardsProps) => {
           Crystal & Energy Tools
         </h2>
         <p className="text-sm text-muted-foreground max-w-xl mx-auto">
-          16 powerful tools for energy healing, crystal analysis, and spiritual growth
+          22 powerful tools for energy healing, crystal analysis, and spiritual growth
         </p>
       </div>
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
