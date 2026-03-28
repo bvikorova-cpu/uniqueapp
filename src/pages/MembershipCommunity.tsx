@@ -8,7 +8,7 @@ import { MembershipHero } from "@/components/membership/MembershipHero";
 import { MembershipEngagementRow } from "@/components/membership/MembershipEngagementRow";
 import { MembershipToolCards } from "@/components/membership/MembershipToolCards";
 import { MembershipToolView } from "@/components/membership/MembershipToolView";
-import { MembershipCreators } from "@/components/membership/MembershipCreators";
+
 import { MembershipAbout } from "@/components/membership/MembershipAbout";
 
 interface Creator {
@@ -108,7 +108,6 @@ export default function MembershipCommunity() {
         ) : (
           <>
             <MembershipToolCards onSelectTool={setSelectedTool} />
-            <MembershipCreators />
             <MembershipAbout />
 
             {/* CTA */}
