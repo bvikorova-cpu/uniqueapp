@@ -162,7 +162,7 @@ export default function PropertyMarketplace() {
     navigate("/property-submission");
   };
 
-  const handlePurchaseService = (serviceId: string, price: number, link?: string) => {
+  const handlePurchaseService = async (serviceId: string, price: number, link?: string) => {
     if (link) { navigate(link); return; }
     if (serviceId === "lead_boost") { setLeadBoostDialogOpen(true); return; }
     try {

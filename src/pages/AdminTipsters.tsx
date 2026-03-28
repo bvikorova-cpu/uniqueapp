@@ -66,7 +66,7 @@ export default function AdminTipsters() {
         .eq("role", "admin")
         .maybeSingle();
       
-      if (!adminEmails.includes(user.email || "")) {
+      if (!roleData) {
         toast({
           title: "Access denied",
           description: "You don't have admin permissions",
