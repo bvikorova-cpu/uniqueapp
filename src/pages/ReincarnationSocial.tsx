@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -6,13 +6,13 @@ import { Badge } from "@/components/ui/badge";
 import {
   Sparkles, Heart, Crown, Eye, Infinity, Star, Globe, Shield,
   Play, Pause, Volume2, VolumeX, Flame, Trophy, Target, ArrowLeft,
-  MapPin, BookOpen, Users, Timer, MessageSquare, Loader2
+  MapPin, BookOpen, Users, Timer, MessageSquare, Loader2,
+  Headphones, Paintbrush, BarChart3, Link2
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useLiveStats } from "@/hooks/useLiveStats";
 import { useSearchParams } from "react-router-dom";
-import { useEffect } from "react";
 
 import { PastLifeRegressionSection } from "@/components/reincarnation/PastLifeRegressionSection";
 import { KarmicDebtTracker } from "@/components/reincarnation/KarmicDebtTracker";
@@ -24,12 +24,17 @@ import { PastLifeGallery } from "@/components/reincarnation/PastLifeGallery";
 import { SpiritualCommunity } from "@/components/reincarnation/SpiritualCommunity";
 import { LifeLessonJournal } from "@/components/reincarnation/LifeLessonJournal";
 import { MeditationChamber } from "@/components/reincarnation/MeditationChamber";
+import { PastLifeAudioStories } from "@/components/reincarnation/PastLifeAudioStories";
+import { SoulArtGenerator } from "@/components/reincarnation/SoulArtGenerator";
+import { KarmicAnalytics } from "@/components/reincarnation/KarmicAnalytics";
+import { SoulGroupFinder } from "@/components/reincarnation/SoulGroupFinder";
 import heroPoster from "@/assets/reincarnation-hero-poster.jpg";
 // @ts-ignore
 import heroVideoAsset from "/public/videos/reincarnation-hero.mp4.asset.json";
 
 type ToolView = "hub" | "regression" | "karma" | "soulmates" | "plan" |
-  "journey-map" | "akashic" | "gallery" | "community" | "journal" | "meditation";
+  "journey-map" | "akashic" | "gallery" | "community" | "journal" | "meditation" |
+  "audio-stories" | "soul-art" | "karmic-analytics" | "soul-groups";
 
 const tools: { id: ToolView; label: string; icon: any; color: string; desc: string }[] = [
   { id: "regression", label: "Past Life Regression", icon: Eye, color: "from-violet-500 to-purple-600", desc: "AI-guided exploration of your previous incarnations" },
@@ -42,6 +47,10 @@ const tools: { id: ToolView; label: string; icon: any; color: string; desc: stri
   { id: "community", label: "Spiritual Community", icon: Users, color: "from-fuchsia-500 to-pink-600", desc: "Connect with fellow seekers on their spiritual journey" },
   { id: "journal", label: "Life Lesson Journal", icon: MessageSquare, color: "from-lime-500 to-green-600", desc: "Record insights and karmic lessons learned" },
   { id: "meditation", label: "Meditation Chamber", icon: Timer, color: "from-purple-500 to-violet-600", desc: "Guided spiritual meditations for soul awakening" },
+  { id: "audio-stories", label: "Audio Stories", icon: Headphones, color: "from-rose-500 to-red-600", desc: "Listen to AI-narrated versions of your past life stories" },
+  { id: "soul-art", label: "Soul Art Generator", icon: Paintbrush, color: "from-teal-500 to-emerald-600", desc: "Transform past lives into vivid artistic visions" },
+  { id: "karmic-analytics", label: "Karmic Analytics", icon: BarChart3, color: "from-sky-500 to-blue-600", desc: "Deep data analysis of your spiritual journey patterns" },
+  { id: "soul-groups", label: "Soul Group Finder", icon: Link2, color: "from-orange-500 to-amber-600", desc: "Discover souls who share past life connections with you" },
 ];
 
 const ReincarnationSocial = () => {
@@ -130,6 +139,10 @@ const ReincarnationSocial = () => {
       case "community": return <SpiritualCommunity />;
       case "journal": return <LifeLessonJournal />;
       case "meditation": return <MeditationChamber />;
+      case "audio-stories": return <PastLifeAudioStories />;
+      case "soul-art": return <SoulArtGenerator />;
+      case "karmic-analytics": return <KarmicAnalytics />;
+      case "soul-groups": return <SoulGroupFinder />;
       default: return null;
     }
   };
