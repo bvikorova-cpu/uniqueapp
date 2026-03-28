@@ -24,6 +24,12 @@ const tools = [
   { icon: Moon, name: "Moon Phase Crystals", description: "Crystal recommendations by moon phase", gradient: "from-slate-500 to-gray-400", bgGlow: "bg-slate-500/10" },
   { icon: Eye, name: "Third Eye Training", description: "Guided intuition development exercises", gradient: "from-fuchsia-500 to-purple-400", bgGlow: "bg-fuchsia-500/10", isPaid: true },
   { icon: Zap, name: "Energy Cleansing", description: "Crystal cleansing & charging rituals", gradient: "from-amber-500 to-yellow-400", bgGlow: "bg-amber-500/10" },
+  { icon: Camera, name: "Live Crystal ID", description: "Real-time camera crystal identification", gradient: "from-red-500 to-orange-400", bgGlow: "bg-red-500/10", isPaid: true },
+  { icon: Music, name: "Crystal Sound Bath", description: "Audio healing with crystal frequencies", gradient: "from-violet-500 to-indigo-400", bgGlow: "bg-violet-500/10" },
+  { icon: Globe, name: "Crystal Origin Map", description: "Interactive global crystal origin explorer", gradient: "from-blue-500 to-teal-400", bgGlow: "bg-blue-500/10" },
+  { icon: MessageCircle, name: "Crystal Community", description: "Social network for crystal healers", gradient: "from-pink-500 to-fuchsia-400", bgGlow: "bg-pink-500/10" },
+  { icon: Trophy, name: "Energy Leaderboard", description: "Gamified rankings & energy achievements", gradient: "from-yellow-500 to-orange-400", bgGlow: "bg-yellow-500/10" },
+  { icon: Package, name: "Crystal Sub Box", description: "Monthly AI-curated crystal subscription", gradient: "from-emerald-500 to-teal-400", bgGlow: "bg-emerald-500/10", isPaid: true },
 ];
 
 interface CrystalToolCardsProps {
