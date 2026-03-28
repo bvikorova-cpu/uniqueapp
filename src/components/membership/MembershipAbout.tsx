@@ -1,13 +1,21 @@
+import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Crown, Heart, CheckCircle2, Star, DollarSign } from "lucide-react";
+import { Crown, Heart, CheckCircle2, Star, DollarSign, Shield, Zap, Globe } from "lucide-react";
 
 export const MembershipAbout = () => {
   return (
-    <div className="space-y-6 mb-8">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.2 }}
+      className="space-y-6 mb-8"
+    >
       {/* What is Membership Community */}
-      <Card className="bg-card/80 backdrop-blur-xl border-border/50">
+      <Card className="bg-card/80 backdrop-blur-xl border-border/50 hover:border-primary/20 transition-all">
         <CardHeader>
-          <CardTitle className="text-xl font-black">What is Membership Community?</CardTitle>
+          <CardTitle className="text-xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
+            What is Membership Community?
+          </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
           <p className="text-muted-foreground text-sm leading-relaxed">
@@ -18,9 +26,11 @@ export const MembershipAbout = () => {
           </p>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-3">
+            <div className="space-y-3 p-4 rounded-xl bg-primary/5 border border-primary/10">
               <h3 className="font-bold text-sm flex items-center gap-2">
-                <Crown className="h-4 w-4 text-primary" />
+                <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+                  <Crown className="h-3.5 w-3.5 text-white" />
+                </div>
                 For Creators: How to Start Earning
               </h3>
               <ol className="list-decimal list-inside space-y-1.5 text-xs text-muted-foreground">
@@ -34,9 +44,11 @@ export const MembershipAbout = () => {
               </ol>
             </div>
             
-            <div className="space-y-3">
+            <div className="space-y-3 p-4 rounded-xl bg-accent/5 border border-accent/10">
               <h3 className="font-bold text-sm flex items-center gap-2">
-                <Heart className="h-4 w-4 text-primary" />
+                <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-pink-500 to-rose-400 flex items-center justify-center">
+                  <Heart className="h-3.5 w-3.5 text-white" />
+                </div>
                 For Fans: How to Support Creators
               </h3>
               <ol className="list-decimal list-inside space-y-1.5 text-xs text-muted-foreground">
@@ -54,19 +66,23 @@ export const MembershipAbout = () => {
       </Card>
 
       {/* Revenue Model */}
-      <Card className="bg-card/80 backdrop-blur-xl border-border/50">
+      <Card className="bg-card/80 backdrop-blur-xl border-border/50 hover:border-primary/20 transition-all">
         <CardHeader>
-          <CardTitle className="text-xl font-black">Creator Revenue Model</CardTitle>
+          <CardTitle className="text-xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
+            Creator Revenue Model
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {[
-              { icon: DollarSign, title: "You Keep 90%", desc: "Industry-leading payout rate. For every €100 in subscriptions, you receive €90." },
-              { icon: CheckCircle2, title: "Monthly Payouts", desc: "Automatic monthly payments via Stripe Connect. No minimum threshold required." },
-              { icon: Star, title: "Multiple Revenue Streams", desc: "Earn from subscriptions, tips, gifts, merch, and exclusive paid content." },
+              { icon: DollarSign, title: "You Keep 90%", desc: "Industry-leading payout rate. For every €100 in subscriptions, you receive €90.", gradient: "from-green-500 to-emerald-400" },
+              { icon: CheckCircle2, title: "Monthly Payouts", desc: "Automatic monthly payments via Stripe Connect. No minimum threshold required.", gradient: "from-blue-500 to-cyan-400" },
+              { icon: Star, title: "Multiple Revenue Streams", desc: "Earn from subscriptions, tips, gifts, merch, and exclusive paid content.", gradient: "from-yellow-500 to-amber-400" },
             ].map((item) => (
-              <div key={item.title} className="p-4 rounded-xl bg-muted/30 border border-border/30 space-y-2">
-                <item.icon className="w-5 h-5 text-primary" />
+              <div key={item.title} className="p-4 rounded-xl bg-muted/30 border border-border/30 space-y-2 hover:border-primary/20 transition-all">
+                <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${item.gradient} flex items-center justify-center`}>
+                  <item.icon className="w-4 h-4 text-white" />
+                </div>
                 <h4 className="font-bold text-sm text-foreground">{item.title}</h4>
                 <p className="text-xs text-muted-foreground">{item.desc}</p>
               </div>
@@ -76,43 +92,35 @@ export const MembershipAbout = () => {
       </Card>
 
       {/* Why Choose Us */}
-      <Card className="bg-card/80 backdrop-blur-xl border-border/50">
+      <Card className="bg-card/80 backdrop-blur-xl border-border/50 hover:border-primary/20 transition-all">
         <CardHeader>
-          <CardTitle className="text-xl font-black">Why Choose Our Platform?</CardTitle>
+          <CardTitle className="text-xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
+            Why Choose Our Platform?
+          </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <h4 className="font-bold text-sm flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4 text-primary" />
-                Similar to Patreon/OnlyFans
-              </h4>
-              <ul className="space-y-1.5 text-xs text-muted-foreground">
-                {["Monthly recurring subscriptions", "Exclusive content for paying members", "Direct creator-fan relationships", "Multiple subscription tiers"].map((item) => (
-                  <li key={item} className="flex items-start gap-2">
-                    <CheckCircle2 className="h-3 w-3 text-primary mt-0.5 flex-shrink-0" />
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="space-y-2">
-              <h4 className="font-bold text-sm flex items-center gap-2">
-                <Star className="h-4 w-4 text-primary" />
-                Our Unique Features
-              </h4>
-              <ul className="space-y-1.5 text-xs text-muted-foreground">
-                {["Community-focused Discord-style group chats", "SFW-first: fitness, education, business mentors", "AI Content Assistant for creators", "16 integrated creator tools"].map((item) => (
-                  <li key={item} className="flex items-start gap-2">
-                    <Star className="h-3 w-3 text-primary mt-0.5 flex-shrink-0" />
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {[
+              { icon: Shield, label: "SFW First", desc: "Safe, community-focused", gradient: "from-emerald-500 to-green-400" },
+              { icon: Zap, label: "AI Powered", desc: "Smart content tools", gradient: "from-purple-500 to-violet-400" },
+              { icon: Globe, label: "16 Tools", desc: "Everything you need", gradient: "from-blue-500 to-cyan-400" },
+              { icon: DollarSign, label: "90% Revenue", desc: "Industry-leading rate", gradient: "from-yellow-500 to-amber-400" },
+            ].map((item) => (
+              <motion.div
+                key={item.label}
+                whileHover={{ scale: 1.02 }}
+                className="text-center p-4 rounded-xl bg-muted/20 border border-border/30 hover:border-primary/20 transition-all"
+              >
+                <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${item.gradient} flex items-center justify-center mx-auto mb-2`}>
+                  <item.icon className="w-5 h-5 text-white" />
+                </div>
+                <h4 className="font-bold text-sm text-foreground">{item.label}</h4>
+                <p className="text-[11px] text-muted-foreground">{item.desc}</p>
+              </motion.div>
+            ))}
           </div>
         </CardContent>
       </Card>
-    </div>
+    </motion.div>
   );
 };
