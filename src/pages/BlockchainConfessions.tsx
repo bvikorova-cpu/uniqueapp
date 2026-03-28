@@ -199,13 +199,13 @@ const BlockchainConfessions = () => {
           <div className="absolute inset-0 flex items-end z-10">
             <div className="container mx-auto px-4 pb-8 max-w-5xl">
               <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
-                <Badge className="bg-black/40 text-white border-white/20 mb-4 backdrop-blur-sm">
+                <Badge className="bg-purple-900/60 text-purple-100 border-purple-400/30 mb-4 backdrop-blur-sm">
                   <Shield className="w-3 h-3 mr-1" /> Anonymous Confession Platform
                 </Badge>
-                <h1 className="text-3xl sm:text-5xl md:text-6xl font-black mb-3 bg-clip-text text-transparent bg-gradient-to-r from-white via-amber-200 to-yellow-300">
+                <h1 className="text-3xl sm:text-5xl md:text-6xl font-black mb-3 bg-clip-text text-transparent bg-gradient-to-r from-violet-300 via-purple-200 to-fuchsia-300 drop-shadow-[0_2px_10px_rgba(139,92,246,0.5)]">
                   Blockchain Confessions
                 </h1>
-                <p className="text-sm sm:text-lg text-white/80 max-w-2xl mb-6">
+                <p className="text-sm sm:text-lg text-purple-100 max-w-2xl mb-6 drop-shadow-[0_1px_4px_rgba(0,0,0,0.5)]">
                   The world's first anonymous confession and redemption platform.
                   Share your burdens, seek community absolution, and track your spiritual journey.
                 </p>
@@ -217,10 +217,10 @@ const BlockchainConfessions = () => {
                     { label: "Votes Cast", value: stats["votes"], icon: Gavel },
                     { label: "Members", value: stats["users"], icon: Users },
                   ].map((s, i) => (
-                    <div key={i} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-card/30 backdrop-blur-xl border border-border/30">
-                      <s.icon className="w-4 h-4 text-primary" />
-                      <span className="font-black text-sm">{s.value || "—"}</span>
-                      <span className="text-xs text-muted-foreground">{s.label}</span>
+                    <div key={i} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-purple-900/40 backdrop-blur-xl border border-purple-400/30">
+                      <s.icon className="w-4 h-4 text-purple-300" />
+                      <span className="font-black text-sm text-white">{s.value || "—"}</span>
+                      <span className="text-xs text-purple-200">{s.label}</span>
                     </div>
                   ))}
                 </div>
