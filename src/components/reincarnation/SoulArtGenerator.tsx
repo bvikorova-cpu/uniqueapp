@@ -111,19 +111,20 @@ export const SoulArtGenerator = () => {
 
       setGeneratedArts(prev => [newArt, ...prev]);
 
-      // Save to database
-      await supabase.from("past_life_readings").insert({
+      // Save to ai_generated_content for persistence
+      await supabase.from("ai_generated_content").insert({
         user_id: user.id,
-        reading_type: "soul_art",
-        era: life?.era || "Timeless",
-        reading_result: {
+        content_type: "spiritual" as any,
+        title: `Soul Art: ${life?.name || "Custom Vision"}`,
+        prompt: prompt,
+        generated_text: data?.plan?.next_life_goal || prompt,
+        metadata: {
           type: "soul_art",
           art_style: styleLabel,
-          art_description: data?.plan?.next_life_goal || prompt,
-          soul_missions: data?.plan?.soul_missions || [],
           source_life: life?.name || "Custom",
           location: life?.location || "Universal",
           karmic_lesson: life?.karmic_theme || "Creative Expression",
+          soul_missions: data?.plan?.soul_missions || [],
         },
       });
 
