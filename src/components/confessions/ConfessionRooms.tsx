@@ -158,8 +158,8 @@ export const ConfessionRooms = () => {
       // Also save to confessions for persistence
       await supabase.from("confessions").insert({
         user_id: userId,
-        content: newMessage.trim(),
-        category: activeRoom.id,
+        confession_text: newMessage.trim(),
+        sin_category: activeRoom.id,
         is_anonymous: true,
       });
 

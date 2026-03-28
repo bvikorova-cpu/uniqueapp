@@ -149,8 +149,8 @@ Respond in markdown format, be compassionate and brief.`,
       // Also save to confessions table
       await supabase.from("confessions").insert({
         user_id: user.id,
-        content: confessionText,
-        category: "voice",
+        confession_text: confessionText,
+        sin_category: "voice",
         is_anonymous: true,
       });
 
