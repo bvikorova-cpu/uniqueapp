@@ -97,7 +97,7 @@ const toolDetails: Record<string, { title: string; description: string; features
 };
 
 export const MembershipToolView = ({ toolName, onBack }: MembershipToolViewProps) => {
-  const details = toolDetails[toolName] || { title: toolName, description: "Tool details coming soon.", features: [] };
+  const details = toolDetails[toolName] || { title: toolName, description: "Select a tool from the hub to view its details and features.", features: [] };
 
   return (
     <motion.div

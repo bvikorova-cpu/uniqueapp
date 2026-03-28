@@ -221,10 +221,26 @@ export default function TimeCapsule() {
                 <TabsContent value="video" className="space-y-4">
                   <div className="space-y-2">
                     <Label>Upload Video</Label>
-                    <div className="border-2 border-dashed rounded-lg p-8 text-center">
-                      <Video className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                      <p className="text-sm text-muted-foreground">Video upload coming soon</p>
-                    </div>
+                    <Input
+                      type="file"
+                      accept="video/*"
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        try {
+                          const { data: { session } } = await supabase.auth.getSession();
+                          if (!session) { toast({ title: "Please sign in", variant: "destructive" }); return; }
+                          const path = `time-capsule-videos/${session.user.id}/${Date.now()}-${file.name}`;
+                          const { error } = await supabase.storage.from("user-uploads").upload(path, file);
+                          if (error) throw error;
+                          const { data: urlData } = supabase.storage.from("user-uploads").getPublicUrl(path);
+                          setMessage(prev => prev + `\n[Video: ${urlData.publicUrl}]`);
+                          toast({ title: "Video uploaded!", description: "It will be included in your time capsule." });
+                        } catch (err: any) {
+                          toast({ title: "Upload failed", description: err.message, variant: "destructive" });
+                        }
+                      }}
+                    />
                   </div>
                 </TabsContent>
 
