@@ -75,34 +75,7 @@ export default function CalorieQuests() {
   const currentLevelXP = totalXP % xpForNextLevel;
   const xpProgress = (currentLevelXP / xpForNextLevel) * 100;
 
-  const sampleQuests = [
-    {
-      id: '1',
-      quest_type: 'daily_calories',
-      target_value: 2000,
-      current_value: 1200,
-      xp_reward: 50,
-      status: 'active'
-    },
-    {
-      id: '2',
-      quest_type: 'protein_goal',
-      target_value: 150,
-      current_value: 89,
-      xp_reward: 75,
-      status: 'active'
-    },
-    {
-      id: '3',
-      quest_type: 'meal_tracking',
-      target_value: 5,
-      current_value: 3,
-      xp_reward: 100,
-      status: 'active'
-    }
-  ];
-
-  const displayQuests = quests && quests.length > 0 ? quests : sampleQuests;
+  const displayQuests = quests && quests.length > 0 ? quests : [];
 
   return (
     <div className="space-y-6">

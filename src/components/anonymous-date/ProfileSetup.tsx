@@ -28,10 +28,10 @@ const HOW_IT_WORKS = [
 ];
 
 const STATS = [
-  { icon: Users, label: "Active Users", value: "12K+" },
-  { icon: Heart, label: "Matches Made", value: "8.3K+" },
-  { icon: MessageCircle, label: "Messages Sent", value: "94K" },
-  { icon: Eye, label: "Reveals", value: "5.1K+" },
+  { icon: Users, label: "Active Users", value: "—" },
+  { icon: Heart, label: "Matches Made", value: "—" },
+  { icon: MessageCircle, label: "Messages Sent", value: "—" },
+  { icon: Eye, label: "Reveals", value: "—" },
 ];
 
 export function ProfileSetup({ onComplete }: { onComplete: () => void }) {
