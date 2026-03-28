@@ -102,25 +102,7 @@ const PhobiaDetector = ({ onPhobiaDetected }: PhobiaDetectorProps) => {
     );
   }
 
-  if (!hasAccess) {
-    return (
-      <Card className="border-yellow-500/20 bg-gradient-to-br from-yellow-950/10 to-background">
-        <CardContent className="py-12 text-center space-y-4">
-          <AlertCircle className="w-16 h-16 text-yellow-400 mx-auto" />
-          <h3 className="text-xl font-semibold text-foreground">Access Required</h3>
-          <p className="text-muted-foreground max-w-md mx-auto">
-            You need to purchase "AI Exposure Therapy" to use the phobia detection feature.
-          </p>
-          <Button 
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            className="bg-gradient-to-r from-cyan-500 to-blue-500"
-          >
-            View Pricing Plans
-          </Button>
-        </CardContent>
-      </Card>
-    );
-  }
+  // Skip access gate — allow all authenticated users to use detection
 
   return (
     <div className="space-y-6">
