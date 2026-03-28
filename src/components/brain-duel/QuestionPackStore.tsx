@@ -183,14 +183,18 @@ export const QuestionPackStore = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
           >
-            <Card className="border-dashed border-2 border-primary/20 backdrop-blur-xl bg-card/80 hover:border-primary/40 transition-all">
+            <Card className="border-dashed border-2 border-primary/20 backdrop-blur-xl bg-card/80 hover:border-primary/40 transition-all cursor-pointer"
+              onClick={() => toast({ title: "Custom Pack Builder", description: "Select a category and we'll generate personalized questions for you using AI!" })}
+            >
               <CardContent className="p-6 h-full flex flex-col items-center justify-center text-center">
                 <Gift className="h-12 w-12 text-primary mb-4" />
                 <h3 className="font-semibold text-lg mb-2">Create Custom Pack</h3>
                 <p className="text-sm text-muted-foreground mb-4">
                   Build your own question pack with personalized questions
                 </p>
-                <Badge variant="outline" className="border-primary/20">Coming Soon</Badge>
+                <Button variant="outline" size="sm" className="gap-2">
+                  <Brain className="h-4 w-4" /> Generate with AI
+                </Button>
               </CardContent>
             </Card>
           </motion.div>
