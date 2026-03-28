@@ -89,6 +89,11 @@ const toolDetails: Record<string, { title: string; description: string; features
     description: "Earn additional revenue by bringing new creators to the platform. Track referrals and commissions.",
     features: ["Unique referral links", "Commission tracking", "Referral dashboard", "Bonus milestones", "Payout integration", "Marketing materials"],
   },
+  "Discover Creators": {
+    title: "Discover Creators",
+    description: "Browse, search, and discover creators across the platform. Find your next favorite content creator by category, popularity, or interests.",
+    features: ["Search by name or category", "Filter by subscription tier", "Sort by popularity or newest", "View creator profiles", "Follow & subscribe directly", "Personalized recommendations"],
+  },
 };
 
 export const MembershipToolView = ({ toolName, onBack }: MembershipToolViewProps) => {

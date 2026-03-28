@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import {
   FileText, Users, MessageCircle, BarChart3, Layers, Wallet,
   Calendar, Settings, Sparkles, Vote, ShoppingBag, Video,
-  Megaphone, Handshake, Award, Share2
+  Megaphone, Handshake, Award, Share2, Search
 } from "lucide-react";
 
 const tools = [
@@ -24,6 +24,7 @@ const tools = [
   { icon: Handshake, name: "Collaboration Hub", description: "Partner with other creators", gradient: "from-teal-500 to-cyan-400", bgGlow: "bg-teal-500/10" },
   { icon: Award, name: "NFT Badges", description: "Create collectible badges for top fans", gradient: "from-yellow-500 to-amber-400", bgGlow: "bg-yellow-500/10" },
   { icon: Share2, name: "Referral System", description: "Earn from bringing new creators", gradient: "from-sky-500 to-blue-400", bgGlow: "bg-sky-500/10" },
+  { icon: Search, name: "Discover Creators", description: "Browse and find your favorite creators", gradient: "from-fuchsia-500 to-pink-400", bgGlow: "bg-fuchsia-500/10" },
 ];
 
 interface MembershipToolCardsProps {
@@ -38,7 +39,7 @@ export const MembershipToolCards = ({ onSelectTool }: MembershipToolCardsProps) 
           Creator Tools
         </h2>
         <p className="text-sm text-muted-foreground max-w-xl mx-auto">
-          16 powerful tools to grow your community, manage content, and maximize earnings
+          17 powerful tools to grow your community, manage content, and maximize earnings
         </p>
       </div>
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">

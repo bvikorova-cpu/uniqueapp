@@ -10,6 +10,7 @@ import { MembershipToolCards } from "@/components/membership/MembershipToolCards
 import { MembershipToolView } from "@/components/membership/MembershipToolView";
 
 import { MembershipAbout } from "@/components/membership/MembershipAbout";
+import { MembershipFeaturedCreators } from "@/components/membership/MembershipFeaturedCreators";
 
 interface Creator {
   id: string;
@@ -108,6 +109,7 @@ export default function MembershipCommunity() {
         ) : (
           <>
             <MembershipToolCards onSelectTool={setSelectedTool} />
+            <MembershipFeaturedCreators onViewAll={() => setSelectedTool("Discover Creators")} />
             <MembershipAbout />
 
             {/* CTA */}
