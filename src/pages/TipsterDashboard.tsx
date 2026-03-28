@@ -104,6 +104,20 @@ export default function TipsterDashboard() {
     }
   };
 
+  const fetchPredictions = async (tipsterId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('sports_predictions')
+        .select('*, sports_matches(home_team, away_team, sport, match_date, league)')
+        .eq('tipster_id', tipsterId)
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      setPredictions(data || []);
+    } catch (error) {
+      console.error('Error fetching predictions:', error);
+    }
+  };
+
   const handleSubmitPrediction = async (e: React.FormEvent) => {
     e.preventDefault();
     
