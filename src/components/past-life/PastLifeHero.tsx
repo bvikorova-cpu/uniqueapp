@@ -1,28 +1,19 @@
 import { motion } from "framer-motion";
 import { Clock, Users, BookOpen, Star } from "lucide-react";
-import { useEffect, useState } from "react";
-
-const AnimatedCounter = ({ end, duration = 2, suffix = "" }: { end: number; duration?: number; suffix?: string }) => {
-  const [count, setCount] = useState(0);
-  useEffect(() => {
-    let start = 0;
-    const increment = end / (duration * 60);
-    const timer = setInterval(() => {
-      start += increment;
-      if (start >= end) { setCount(end); clearInterval(timer); }
-      else setCount(Math.floor(start));
-    }, 1000 / 60);
-    return () => clearInterval(timer);
-  }, [end, duration]);
-  return <span>{count.toLocaleString()}{suffix}</span>;
-};
+import { useLiveStats } from "@/hooks/useLiveStats";
 
 export const PastLifeHero = () => {
+  const { stats: liveStats, loading } = useLiveStats([
+    { key: "explorers", table: "past_life_readings" },
+    { key: "lives", table: "past_life_readings" },
+    { key: "credits", table: "ai_credits" },
+  ]);
+
   const stats = [
-    { icon: Users, label: "Explorers", value: 18420 },
-    { icon: BookOpen, label: "Lives Discovered", value: 54800 },
-    { icon: Clock, label: "Eras Explored", value: 3200 },
-    { icon: Star, label: "Karmic Insights", value: 41500 },
+    { icon: Users, label: "Explorers", value: liveStats.explorers },
+    { icon: BookOpen, label: "Lives Discovered", value: liveStats.lives },
+    { icon: Clock, label: "Eras Explored", value: liveStats.credits },
+    { icon: Star, label: "Karmic Insights", value: liveStats.lives },
   ];
 
   return (
@@ -55,11 +46,11 @@ export const PastLifeHero = () => {
             transition={{ delay: 0.3, duration: 0.5 }}
             className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-4"
           >
-            {stats.map((stat, i) => (
+            {stats.map((stat) => (
               <div key={stat.label} className="text-center space-y-1">
                 <stat.icon className="h-4 w-4 mx-auto text-primary/60" />
                 <div className="text-lg sm:text-xl font-bold">
-                  <AnimatedCounter end={stat.value} />
+                  {loading ? "—" : (stat.value || 0) > 0 ? stat.value!.toLocaleString() : "—"}
                 </div>
                 <div className="text-xs text-muted-foreground">{stat.label}</div>
               </div>
@@ -67,7 +58,6 @@ export const PastLifeHero = () => {
           </motion.div>
         </div>
 
-        {/* Animated Soul Wheel */}
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}

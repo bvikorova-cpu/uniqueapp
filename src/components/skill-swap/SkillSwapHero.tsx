@@ -1,36 +1,27 @@
 import { motion } from "framer-motion";
-import { ArrowLeftRight, Users, Star, MessageSquare, Award } from "lucide-react";
-import { useEffect, useState } from "react";
-
-const AnimatedCounter = ({ target, suffix = "" }: { target: number; suffix?: string }) => {
-  const [count, setCount] = useState(0);
-  useEffect(() => {
-    const duration = 1500;
-    const steps = 40;
-    const increment = target / steps;
-    let current = 0;
-    const timer = setInterval(() => {
-      current += increment;
-      if (current >= target) {
-        setCount(target);
-        clearInterval(timer);
-      } else {
-        setCount(Math.floor(current));
-      }
-    }, duration / steps);
-    return () => clearInterval(timer);
-  }, [target]);
-  return <span>{count.toLocaleString()}{suffix}</span>;
-};
-
-const stats = [
-  { icon: Users, label: "Active Swappers", value: 6200, suffix: "+" },
-  { icon: ArrowLeftRight, label: "Exchanges Done", value: 14800, suffix: "+" },
-  { icon: Star, label: "Avg. Rating", value: 4.8, suffix: "/5" },
-  { icon: MessageSquare, label: "Conversations", value: 32, suffix: "K" },
-];
+import { ArrowLeftRight, Users, Star, MessageSquare } from "lucide-react";
+import { useLiveStats } from "@/hooks/useLiveStats";
 
 export const SkillSwapHero = () => {
+  const { stats: liveStats, loading } = useLiveStats([
+    { key: "swappers", table: "skill_swap_profiles" },
+    { key: "exchanges", table: "skill_swap_matches" },
+    { key: "messages", table: "skill_swap_messages" },
+  ]);
+
+  const stats = [
+    { icon: Users, label: "Active Swappers", value: liveStats.swappers, suffix: "" },
+    { icon: ArrowLeftRight, label: "Exchanges Done", value: liveStats.exchanges, suffix: "" },
+    { icon: Star, label: "Avg. Rating", value: null, suffix: "" },
+    { icon: MessageSquare, label: "Conversations", value: liveStats.messages, suffix: "" },
+  ];
+
+  const formatValue = (val: number | null | undefined) => {
+    if (loading) return "—";
+    if (val === null || val === undefined || val === 0) return "—";
+    return val.toLocaleString();
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -65,7 +56,6 @@ export const SkillSwapHero = () => {
         Exchange skills with people worldwide — no money needed. Teach what you know, learn what you love.
       </motion.p>
 
-      {/* Swap Ring Animation */}
       <motion.div
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -124,7 +114,6 @@ export const SkillSwapHero = () => {
         </div>
       </motion.div>
 
-      {/* Stats Grid */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -141,11 +130,7 @@ export const SkillSwapHero = () => {
           >
             <stat.icon className="w-5 h-5 text-primary mx-auto mb-2" />
             <div className="text-2xl sm:text-3xl font-black text-foreground">
-              {typeof stat.value === "number" && stat.value < 10 ? (
-                <span>{stat.value}{stat.suffix}</span>
-              ) : (
-                <AnimatedCounter target={stat.value as number} suffix={stat.suffix} />
-              )}
+              {formatValue(stat.value)}
             </div>
             <p className="text-[11px] text-muted-foreground mt-1">{stat.label}</p>
           </motion.div>

@@ -1,50 +1,82 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Star, Quote } from "lucide-react";
+import { Star, Quote, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
-
-const testimonials = [
-  {
-    text: "The personality analysis from my handwriting was incredibly accurate. It described traits I've spent years in therapy discovering.",
-    author: "Maria L.",
-    rating: 5,
-  },
-  {
-    text: "Used the business analysis for our hiring process — the insights about candidates' work styles were invaluable.",
-    author: "James W.",
-    rating: 5,
-  },
-  {
-    text: "My relationship analysis revealed communication patterns I hadn't noticed. It's been a game-changer for my partnership.",
-    author: "Sophie T.",
-    rating: 4,
-  },
-];
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 export const HandwritingTestimonials = () => {
+  const [reviews, setReviews] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchReviews = async () => {
+      const { data } = await (supabase as any)
+        .from("handwriting_analyses")
+        .select("id, created_at, analysis_type")
+        .order("created_at", { ascending: false })
+        .limit(3);
+      setReviews(data || []);
+      setLoading(false);
+    };
+    fetchReviews();
+  }, []);
+
+  if (loading) {
+    return (
+      <Card className="bg-card/60 backdrop-blur-sm border-border/50">
+        <CardContent className="flex justify-center py-8">
+          <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (reviews.length === 0) {
+    return (
+      <Card className="bg-card/60 backdrop-blur-sm border-border/50">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-sm flex items-center gap-2">
+            <Quote className="w-4 h-4 text-primary" />
+            Recent Analyses
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-xs text-muted-foreground text-center py-4">
+            No analyses yet. Be the first to try handwriting analysis!
+          </p>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
     <Card className="bg-card/60 backdrop-blur-sm border-border/50">
       <CardHeader className="pb-3">
         <CardTitle className="text-sm flex items-center gap-2">
           <Quote className="w-4 h-4 text-primary" />
-          What Users Say
+          Recent Analyses
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
-        {testimonials.map((t, i) => (
+        {reviews.map((r: any, i: number) => (
           <motion.div
-            key={i}
+            key={r.id}
             initial={{ opacity: 0, x: 10 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.3 + i * 0.1 }}
             className="p-3 rounded-xl bg-muted/20 border border-border/30"
           >
             <div className="flex gap-0.5 mb-1.5">
-              {Array.from({ length: t.rating }).map((_, j) => (
+              {Array.from({ length: 5 }).map((_, j) => (
                 <Star key={j} className="w-3 h-3 fill-yellow-500 text-yellow-500" />
               ))}
             </div>
-            <p className="text-[11px] text-muted-foreground leading-relaxed italic">"{t.text}"</p>
-            <p className="text-[10px] text-primary font-medium mt-1.5">— {t.author}</p>
+            <p className="text-[11px] text-muted-foreground leading-relaxed">
+              {r.analysis_type || "Personal"} analysis completed
+            </p>
+            <p className="text-[10px] text-primary font-medium mt-1.5">
+              {new Date(r.created_at).toLocaleDateString()}
+            </p>
           </motion.div>
         ))}
       </CardContent>
