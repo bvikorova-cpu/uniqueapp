@@ -136,6 +136,10 @@ const BlockchainConfessions = () => {
       case "journal": return <ConfessionJournal />;
       case "ceremony": return <AbsolutionCeremony />;
       case "sin-patterns": return <SinPatternAnalyzer />;
+      case "voice": return <VoiceConfessions />;
+      case "karma": return <KarmaScoreSystem />;
+      case "heatmap": return <SinHeatmap />;
+      case "rooms": return <ConfessionRooms />;
       default: return null;
     }
   };
