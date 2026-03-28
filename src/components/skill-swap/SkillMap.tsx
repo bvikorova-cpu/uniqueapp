@@ -28,7 +28,7 @@ export const SkillMap = ({ onBack }: SkillMapProps) => {
       const userIds = [...new Set(offerings.map(o => o.user_id))];
       const { data: profiles } = await supabase
         .from('profiles')
-        .select('id, display_name, avatar_url, location')
+        .select('id, full_name, avatar_url, location')
         .in('id', userIds);
 
       const profileMap = new Map(profiles?.map(p => [p.id, p]) || []);
@@ -40,7 +40,7 @@ export const SkillMap = ({ onBack }: SkillMapProps) => {
         const y = 20 + ((i * 53) % 55);
         return {
           id: o.id,
-          name: profile?.display_name || 'User',
+          name: profile?.full_name || 'User',
           location: o.location || profile?.location || '—',
           skills: [o.title],
           category: o.category,

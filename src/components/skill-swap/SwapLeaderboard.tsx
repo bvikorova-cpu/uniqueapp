@@ -27,11 +27,11 @@ export const SwapLeaderboard = ({ onBack }: SwapLeaderboardProps) => {
 
       const { data: reviews } = await supabase
         .from('skill_swap_reviews')
-        .select('reviewer_id, reviewee_id, rating');
+        .select('reviewer_id, reviewed_user_id, rating');
 
       const { data: profiles } = await supabase
         .from('profiles')
-        .select('id, display_name, avatar_url, location');
+        .select('id, full_name, avatar_url, location');
 
       if (!profiles?.length) return [];
 
@@ -47,10 +47,10 @@ export const SwapLeaderboard = ({ onBack }: SwapLeaderboardProps) => {
       });
 
       reviews?.forEach(r => {
-        const s = userStats.get(r.reviewee_id) || { exchanges: 0, totalRating: 0, reviewCount: 0 };
+        const s = userStats.get(r.reviewed_user_id) || { exchanges: 0, totalRating: 0, reviewCount: 0 };
         s.totalRating += (r.rating || 0);
         s.reviewCount++;
-        userStats.set(r.reviewee_id, s);
+        userStats.set(r.reviewed_user_id, s);
       });
 
       // Build leaderboard entries
@@ -59,7 +59,7 @@ export const SwapLeaderboard = ({ onBack }: SwapLeaderboardProps) => {
         .map(p => {
           const s = userStats.get(p.id)!;
           return {
-            name: p.display_name || 'User',
+            name: p.full_name || 'User',
             avatar: p.avatar_url || '👤',
             country: p.location || '—',
             exchanges: s.exchanges,

@@ -31,7 +31,7 @@ export const RecordedLessons = ({ onBack }: RecordedLessonsProps) => {
       const userIds = [...new Set(offerings.map(o => o.user_id))];
       const { data: profiles } = await supabase
         .from('profiles')
-        .select('id, display_name')
+        .select('id, full_name')
         .in('id', userIds);
 
       const profileMap = new Map(profiles?.map(p => [p.id, p]) || []);
@@ -39,14 +39,14 @@ export const RecordedLessons = ({ onBack }: RecordedLessonsProps) => {
       // Get review averages
       const { data: reviews } = await supabase
         .from('skill_swap_reviews')
-        .select('reviewee_id, rating');
+        .select('reviewed_user_id, rating');
 
       const ratingMap = new Map<string, { total: number; count: number }>();
       reviews?.forEach(r => {
-        const s = ratingMap.get(r.reviewee_id) || { total: 0, count: 0 };
+        const s = ratingMap.get(r.reviewed_user_id) || { total: 0, count: 0 };
         s.total += (r.rating || 0);
         s.count++;
-        ratingMap.set(r.reviewee_id, s);
+        ratingMap.set(r.reviewed_user_id, s);
       });
 
       const categoryEmojis: Record<string, string> = {
@@ -61,7 +61,7 @@ export const RecordedLessons = ({ onBack }: RecordedLessonsProps) => {
         return {
           id: o.id,
           title: o.title,
-          instructor: profile?.display_name || 'User',
+          instructor: profile?.full_name || 'User',
           category: o.category,
           rating: r ? Math.round((r.total / r.count) * 10) / 10 : 0,
           emoji: categoryEmojis[o.category] || '✨',
