@@ -7,7 +7,7 @@ import {
   Scale, Users, TrendingUp, Flame, Shield, Lock, Award, Loader2,
   Play, Pause, Volume2, VolumeX, Trophy, Target, ArrowLeft,
   MessageSquare, Send, BarChart3, Brain, BookOpen, Eye, Heart,
-  Gavel, ScrollText, Sparkles, UserCheck, PenLine
+  Gavel, ScrollText, Sparkles, UserCheck, PenLine, Zap
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
