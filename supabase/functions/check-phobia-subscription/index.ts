@@ -59,7 +59,7 @@ serve(async (req) => {
     return new Response(JSON.stringify({
       subscribed,
       subscription_end: subscriptionEnd,
-      credits_remaining: creditsData?.credits_remaining || 5,
+      credits_remaining: creditsData?.credits_remaining || 0,
       total_credits_purchased: creditsData?.total_credits_purchased || 0,
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },

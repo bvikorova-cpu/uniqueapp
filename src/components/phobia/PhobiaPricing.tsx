@@ -26,7 +26,7 @@ export function PhobiaPricing() {
               <Brain className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
               <div>
                 <p className="text-xs text-muted-foreground">Your Balance</p>
-                <p className="text-2xl sm:text-3xl font-black">{status?.credits_remaining || 5} <span className="text-sm font-normal text-muted-foreground">credits</span></p>
+                <p className="text-2xl sm:text-3xl font-black">{status?.credits_remaining ?? 0} <span className="text-sm font-normal text-muted-foreground">credits</span></p>
               </div>
             </div>
             <div className="flex items-center gap-3">
@@ -35,7 +35,7 @@ export function PhobiaPricing() {
                   <Star className="h-3 w-3 mr-1" /> Premium Active
                 </Badge>
               ) : (
-                <Badge variant="secondary" className="text-xs">Free Plan</Badge>
+                <Badge variant="secondary" className="text-xs">No Subscription</Badge>
               )}
             </div>
           </div>
