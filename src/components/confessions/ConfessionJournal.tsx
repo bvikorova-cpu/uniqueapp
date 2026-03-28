@@ -44,6 +44,17 @@ export const ConfessionJournal = () => {
         .eq("content_type", "blog_article" as any)
         .like("title", "Journal:%")
         .order("created_at", { ascending: false });
+
+      if (data) {
+        setEntries(data.map((e: any) => ({
+          id: e.id,
+          title: (e.title || "").replace("Journal: ", ""),
+          content: e.generated_text || "",
+          mood: e.prompt || "Reflective",
+          tags: (e.metadata as any)?.tags || [],
+          created_at: e.created_at,
+        })));
+      }
     } catch (error) {
       console.error("Error:", error);
     } finally {

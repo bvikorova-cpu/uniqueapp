@@ -83,13 +83,13 @@ export const AbsolutionCeremony = () => {
           // Save completion
           supabase.auth.getUser().then(({ data: { user } }) => {
             if (user) {
-              supabase.from("life_lesson_journal").insert({
+              supabase.from("ai_generated_content").insert({
                 user_id: user.id,
-                title: `Completed: ${ceremony.title}`,
-                content: `Completed the ${ceremony.title} absolution ceremony. Duration: ${Math.round(ceremony.duration / 60)} minutes.`,
-                mood: "Peaceful",
-                tags: ["ceremony", "absolution", ceremony.id],
-                category: "ceremony_completion",
+                content_type: "blog_article" as any,
+                title: `Ceremony: ${ceremony.title}`,
+                prompt: "ceremony_completion",
+                generated_text: `Completed the ${ceremony.title} absolution ceremony. Duration: ${Math.round(ceremony.duration / 60)} minutes.`,
+                metadata: { type: "ceremony_completion", ceremony_id: ceremony.id },
               });
             }
           });
