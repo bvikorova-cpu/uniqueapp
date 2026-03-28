@@ -38,21 +38,12 @@ export const ConfessionJournal = () => {
       if (!user) { setLoading(false); return; }
 
       const { data } = await supabase
-        .from("life_lesson_journal")
+        .from("ai_generated_content")
         .select("*")
         .eq("user_id", user.id)
+        .eq("content_type", "blog_article" as any)
+        .like("title", "Journal:%")
         .order("created_at", { ascending: false });
-
-      if (data) {
-        setEntries(data.map((e: any) => ({
-          id: e.id,
-          title: e.title,
-          content: e.content,
-          mood: e.mood || "Reflective",
-          tags: e.tags || [],
-          created_at: e.created_at,
-        })));
-      }
     } catch (error) {
       console.error("Error:", error);
     } finally {
@@ -73,13 +64,13 @@ export const ConfessionJournal = () => {
 
       const tags = formData.tags.split(",").map(t => t.trim()).filter(Boolean);
 
-      const { error } = await supabase.from("life_lesson_journal").insert({
+      const { error } = await supabase.from("ai_generated_content").insert({
         user_id: user.id,
-        title: formData.title,
-        content: formData.content,
-        mood: formData.mood,
-        tags,
-        category: "confession_reflection",
+        content_type: "blog_article" as any,
+        title: `Journal: ${formData.title}`,
+        prompt: formData.mood,
+        generated_text: formData.content,
+        metadata: { tags, mood: formData.mood, type: "confession_journal" },
       });
 
       if (error) throw error;
@@ -97,7 +88,7 @@ export const ConfessionJournal = () => {
 
   const deleteEntry = async (id: string) => {
     try {
-      await supabase.from("life_lesson_journal").delete().eq("id", id);
+      await supabase.from("ai_generated_content").delete().eq("id", id);
       setEntries(prev => prev.filter(e => e.id !== id));
       toast({ title: "Entry removed" });
     } catch {
