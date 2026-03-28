@@ -215,13 +215,13 @@ const ReincarnationSocial = () => {
           <div className="absolute inset-0 flex items-end z-10">
             <div className="container mx-auto px-4 pb-8 max-w-5xl">
               <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
-                <Badge className="bg-primary/20 text-primary border-primary/30 mb-4 backdrop-blur-sm">
+                <Badge className="bg-black/40 text-white border-white/20 mb-4 backdrop-blur-sm">
                   <Shield className="w-3 h-3 mr-1" /> AI-Powered Spiritual Intelligence
                 </Badge>
-                <h1 className="text-3xl sm:text-5xl md:text-6xl font-black mb-3 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-primary to-accent">
+                <h1 className="text-3xl sm:text-5xl md:text-6xl font-black mb-3 bg-clip-text text-transparent bg-gradient-to-r from-white via-amber-200 to-yellow-300">
                   Reincarnation Social
                 </h1>
-                <p className="text-sm sm:text-lg text-muted-foreground max-w-2xl mb-6">
+                <p className="text-sm sm:text-lg text-white/80 max-w-2xl mb-6">
                   Journey through lifetimes. Discover your past lives, balance your karma,
                   and reconnect with souls through AI-powered spiritual intelligence.
                 </p>
