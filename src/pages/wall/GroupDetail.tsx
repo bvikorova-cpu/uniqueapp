@@ -614,7 +614,13 @@ export default function GroupDetail() {
                           variant="ghost"
                           size="icon"
                           className="h-8 w-8 text-purple-500 hover:bg-purple-50"
-                          onClick={() => toast({ title: "Tag friends", description: "Coming soon!" })}
+                          onClick={() => {
+                            const name = prompt("Enter username to tag:");
+                            if (name) {
+                              setPostContent(prev => prev + ` @${name} `);
+                              toast({ title: "Tagged!", description: `@${name} added to your post` });
+                            }
+                          }}
                         >
                           <UserPlus className="h-4 w-4" />
                         </Button>
