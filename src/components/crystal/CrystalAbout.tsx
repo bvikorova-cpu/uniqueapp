@@ -22,7 +22,7 @@ export const CrystalAbout = () => {
             Crystal & Energy Network is an innovative AI-powered platform that combines ancient crystal healing wisdom
             with modern artificial intelligence technology. Our system analyzes your personal energy patterns through
             photos and provides tailored crystal recommendations to help balance and enhance your wellbeing. Whether
-            you're a seasoned crystal healer or just beginning your journey, our 16 tools offer everything you need.
+            you're a seasoned crystal healer or just beginning your journey, our 22 tools offer everything you need.
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
