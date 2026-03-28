@@ -9078,6 +9078,75 @@ export type Database = {
           },
         ]
       }
+      crystal_chakra_progress: {
+        Row: {
+          chakra_name: string
+          completed: boolean | null
+          completed_at: string | null
+          created_at: string | null
+          day_number: number
+          id: string
+          notes: string | null
+          program_started_at: string
+          user_id: string
+        }
+        Insert: {
+          chakra_name: string
+          completed?: boolean | null
+          completed_at?: string | null
+          created_at?: string | null
+          day_number: number
+          id?: string
+          notes?: string | null
+          program_started_at: string
+          user_id: string
+        }
+        Update: {
+          chakra_name?: string
+          completed?: boolean | null
+          completed_at?: string | null
+          created_at?: string | null
+          day_number?: number
+          id?: string
+          notes?: string | null
+          program_started_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      crystal_community_posts: {
+        Row: {
+          category: string | null
+          content: string
+          created_at: string | null
+          id: string
+          image_url: string | null
+          likes_count: number | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          category?: string | null
+          content: string
+          created_at?: string | null
+          id?: string
+          image_url?: string | null
+          likes_count?: number | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          category?: string | null
+          content?: string
+          created_at?: string | null
+          id?: string
+          image_url?: string | null
+          likes_count?: number | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       crystal_energy_readings: {
         Row: {
           created_at: string | null
@@ -9215,6 +9284,63 @@ export type Database = {
           },
         ]
       }
+      crystal_meditation_sessions: {
+        Row: {
+          chakra_focus: string | null
+          completed_at: string | null
+          duration_seconds: number
+          frequency_type: string | null
+          id: string
+          user_id: string
+        }
+        Insert: {
+          chakra_focus?: string | null
+          completed_at?: string | null
+          duration_seconds: number
+          frequency_type?: string | null
+          id?: string
+          user_id: string
+        }
+        Update: {
+          chakra_focus?: string | null
+          completed_at?: string | null
+          duration_seconds?: number
+          frequency_type?: string | null
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      crystal_oracle_draws: {
+        Row: {
+          created_at: string | null
+          crystal_name: string
+          drawn_at: string | null
+          guidance: string | null
+          id: string
+          mantra: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          crystal_name: string
+          drawn_at?: string | null
+          guidance?: string | null
+          id?: string
+          mantra?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          crystal_name?: string
+          drawn_at?: string | null
+          guidance?: string | null
+          id?: string
+          mantra?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       crystal_purchases: {
         Row: {
           created_at: string
@@ -9247,6 +9373,84 @@ export type Database = {
           metadata?: Json | null
           status?: string
           stripe_session_id?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      crystal_user_collections: {
+        Row: {
+          acquired_date: string | null
+          created_at: string | null
+          crystal_name: string
+          crystal_type: string | null
+          energy_profile: string | null
+          id: string
+          notes: string | null
+          photo_url: string | null
+          user_id: string
+        }
+        Insert: {
+          acquired_date?: string | null
+          created_at?: string | null
+          crystal_name: string
+          crystal_type?: string | null
+          energy_profile?: string | null
+          id?: string
+          notes?: string | null
+          photo_url?: string | null
+          user_id: string
+        }
+        Update: {
+          acquired_date?: string | null
+          created_at?: string | null
+          crystal_name?: string
+          crystal_type?: string | null
+          energy_profile?: string | null
+          id?: string
+          notes?: string | null
+          photo_url?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      crystal_user_stats: {
+        Row: {
+          chakras_balanced: number | null
+          crystals_collected: number | null
+          current_streak: number | null
+          id: string
+          last_activity_date: string | null
+          longest_streak: number | null
+          total_meditations: number | null
+          total_points: number | null
+          total_readings: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          chakras_balanced?: number | null
+          crystals_collected?: number | null
+          current_streak?: number | null
+          id?: string
+          last_activity_date?: string | null
+          longest_streak?: number | null
+          total_meditations?: number | null
+          total_points?: number | null
+          total_readings?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          chakras_balanced?: number | null
+          crystals_collected?: number | null
+          current_streak?: number | null
+          id?: string
+          last_activity_date?: string | null
+          longest_streak?: number | null
+          total_meditations?: number | null
+          total_points?: number | null
+          total_readings?: number | null
+          updated_at?: string | null
           user_id?: string
         }
         Relationships: []
@@ -30242,6 +30446,10 @@ export type Database = {
       }
       increment_collection_pages: {
         Args: { p_collection_id: string }
+        Returns: undefined
+      }
+      increment_crystal_stat: {
+        Args: { p_stat: string; p_user_id: string; p_value?: number }
         Returns: undefined
       }
       increment_healthcare_collection_pages: {
