@@ -7,7 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import {
   Brain, ShoppingCart, HeartPulse, TrendingUp, Shield, Zap, ArrowLeft,
   Flame, Trophy, Check, BarChart3, BookOpen, Users, Eye, Activity,
-  Bot, MessageCircle, Star, Play, Pause, Volume2, VolumeX, ArrowRightLeft,
+  Bot, MessageCircle, Star, Play, Pause, Volume2, VolumeX, ArrowRightLeft, CreditCard,
 } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
@@ -23,10 +23,11 @@ import { AITherapistChat } from "@/components/phobia/AITherapistChat";
 import { ExposureSimulator } from "@/components/phobia/ExposureSimulator";
 import { PhobiaCommunity } from "@/components/phobia/PhobiaCommunity";
 import { AnxietyTracker } from "@/components/phobia/AnxietyTracker";
+import { PhobiaPricing } from "@/components/phobia/PhobiaPricing";
 
 import phobiaPoster from "@/assets/phobia-hero-poster.jpg";
 
-type ToolView = "hub" | "detect" | "my-phobias" | "marketplace" | "cure" | "journal" | "analytics" | "therapist" | "exposure" | "community" | "anxiety";
+type ToolView = "hub" | "detect" | "my-phobias" | "marketplace" | "cure" | "journal" | "analytics" | "therapist" | "exposure" | "community" | "anxiety" | "pricing";
 
 const tools = [
   { id: "detect" as ToolView, title: "AI Phobia Detector", description: "Identify your specific fears with AI analysis", icon: Brain, badge: "AI", gradient: "bg-gradient-to-r from-cyan-500 to-blue-500", features: ["Behavioral analysis", "Clinical accuracy", "Trigger identification"] },
@@ -39,6 +40,7 @@ const tools = [
   { id: "analytics" as ToolView, title: "Fear Analytics", description: "Visualize your fear patterns and trends", icon: BarChart3, badge: "Insights", gradient: "bg-gradient-to-r from-indigo-500 to-blue-500", features: ["Trend charts", "Phobia distribution", "Activity stats"] },
   { id: "community" as ToolView, title: "Support Community", description: "Connect with others facing similar fears", icon: Users, badge: "Social", gradient: "bg-gradient-to-r from-amber-500 to-orange-500", features: ["Share stories", "Ask questions", "Offer support"] },
   { id: "anxiety" as ToolView, title: "Anxiety Tracker", description: "Log anxiety episodes and grounding exercises", icon: Activity, badge: "Wellness", gradient: "bg-gradient-to-r from-red-500 to-pink-500", features: ["Symptom logging", "5-4-3-2-1 grounding", "Episode history"] },
+  { id: "pricing" as ToolView, title: "Credits & Premium", description: "Purchase credits or subscribe for unlimited access", icon: CreditCard, badge: "Pricing", gradient: "bg-gradient-to-r from-emerald-500 to-teal-500", features: ["Credit packages", "Monthly subscription", "Unlimited tools"] },
 ];
 
 const PhobiaTrading = () => {
@@ -107,6 +109,7 @@ const PhobiaTrading = () => {
       case "exposure": return <ExposureSimulator />;
       case "community": return <PhobiaCommunity />;
       case "anxiety": return <AnxietyTracker />;
+      case "pricing": return <PhobiaPricing />;
       default: return null;
     }
   };
