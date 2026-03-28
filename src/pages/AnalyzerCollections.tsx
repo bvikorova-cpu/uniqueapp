@@ -198,7 +198,7 @@ export default function AnalyzerCollections() {
               <Card
                 key={collection.id}
                 className="p-6 hover:shadow-lg transition-shadow cursor-pointer"
-                onClick={() => toast.info("Collection view coming soon!")}
+                onClick={() => navigate(`/analyzer-collections/${collection.id}`)}
               >
                 <div className="space-y-4">
                   <div className="flex items-start justify-between">
@@ -229,7 +229,16 @@ export default function AnalyzerCollections() {
                         size="sm"
                         onClick={(e) => {
                           e.stopPropagation();
-                          toast.info("Edit coming soon!");
+                          const newName = prompt("New collection name:", collection.name);
+                          if (newName && newName !== collection.name) {
+                            supabase.from("analyzer_collections").update({ name: newName }).eq("id", collection.id).then(({ error }) => {
+                              if (error) toast.error("Failed to update");
+                              else {
+                                setCollections(collections.map(c => c.id === collection.id ? { ...c, name: newName } : c));
+                                toast.success("Collection updated");
+                              }
+                            });
+                          }
                         }}
                       >
                         <Edit className="w-4 h-4" />

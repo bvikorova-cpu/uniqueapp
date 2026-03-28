@@ -59,11 +59,14 @@ export default function AdminTipsters() {
         return;
       }
 
-      // TODO: Replace with proper admin check from database
-      // For now, you can manually add admin emails here
-      const adminEmails = ["admin@example.com"]; // Add your admin email
+      const { data: roleData } = await (supabase as any)
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", user.id)
+        .eq("role", "admin")
+        .maybeSingle();
       
-      if (!adminEmails.includes(user.email || "")) {
+      if (!roleData) {
         toast({
           title: "Access denied",
           description: "You don't have admin permissions",

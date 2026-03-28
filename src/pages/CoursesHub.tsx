@@ -802,10 +802,24 @@ export default function CoursesHub() {
                         <CardContent>
                           <p className="text-sm mb-4">Student: {cert.student_name}</p>
                           <Button variant="outline" className="w-full" onClick={() => {
-                            toast({
-                              title: "Certificate",
-                              description: "Certificate download feature coming soon!",
-                            });
+                            const certWindow = window.open("", "_blank");
+                            if (certWindow) {
+                              certWindow.document.write(`
+                                <html><head><title>Certificate - ${cert.courses?.title}</title><style>
+                                  body{font-family:Georgia,serif;text-align:center;padding:60px;background:#fafafa}
+                                  .cert{border:3px double #333;padding:60px;max-width:700px;margin:auto;background:#fff}
+                                  h1{color:#333;font-size:2em}h2{color:#666}p{color:#888;font-size:1.1em}
+                                  .date{margin-top:40px;color:#999}
+                                </style></head><body><div class="cert">
+                                  <h2>Certificate of Completion</h2>
+                                  <h1>${cert.courses?.title || "Course"}</h1>
+                                  <p>Awarded to <strong>${cert.student_name}</strong></p>
+                                  <p class="date">Issued on ${new Date(cert.issued_at).toLocaleDateString()}</p>
+                                </div></body></html>
+                              `);
+                              certWindow.document.close();
+                              certWindow.print();
+                            }
                           }}>
                             <Download className="mr-2 h-4 w-4" />
                             Download Certificate
