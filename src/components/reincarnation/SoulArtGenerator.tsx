@@ -114,7 +114,7 @@ export const SoulArtGenerator = () => {
       // Save to ai_generated_content for persistence
       await supabase.from("ai_generated_content").insert({
         user_id: user.id,
-        content_type: "spiritual" as any,
+        content_type: "blog_article" as any,
         title: `Soul Art: ${life?.name || "Custom Vision"}`,
         prompt: prompt,
         generated_text: data?.plan?.next_life_goal || prompt,
@@ -122,9 +122,6 @@ export const SoulArtGenerator = () => {
           type: "soul_art",
           art_style: styleLabel,
           source_life: life?.name || "Custom",
-          location: life?.location || "Universal",
-          karmic_lesson: life?.karmic_theme || "Creative Expression",
-          soul_missions: data?.plan?.soul_missions || [],
         },
       });
 
