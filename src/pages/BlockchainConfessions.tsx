@@ -215,7 +215,13 @@ const BlockchainConfessions = () => {
                 <Badge className="bg-purple-900/60 text-purple-100 border-purple-400/30 mb-4 backdrop-blur-sm">
                   <Shield className="w-3 h-3 mr-1" /> Anonymous Confession Platform
                 </Badge>
-                <h1 className="text-3xl sm:text-5xl md:text-6xl font-black mb-3 bg-clip-text text-transparent bg-gradient-to-r from-violet-500 via-purple-400 to-fuchsia-500 drop-shadow-[0_2px_12px_rgba(139,92,246,0.7)]">
+                <h1 
+                  className="text-3xl sm:text-5xl md:text-6xl font-black mb-3 text-purple-200"
+                  style={{ 
+                    WebkitTextStroke: '1.5px rgba(88, 28, 135, 0.9)',
+                    textShadow: '0 0 20px rgba(139, 92, 246, 0.8), 0 0 40px rgba(139, 92, 246, 0.4), 0 2px 4px rgba(0,0,0,0.8)',
+                  }}
+                >
                   Blockchain Confessions
                 </h1>
                 <p className="text-sm sm:text-lg text-purple-100 max-w-2xl mb-6 drop-shadow-[0_1px_4px_rgba(0,0,0,0.5)]">
