@@ -1,379 +1,397 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+  Dna, Users, Heart, Baby, Sparkles, Shield, Award, Play, Pause,
+  Volume2, VolumeX, Flame, Trophy, Target, ArrowLeft,
+  Clock, GitBranch, Palette, Mic, Activity, MessageSquare
+} from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Dna, Users, Heart, Baby, Sparkles, Shield, Award, Check } from "lucide-react";
+import { useLiveStats } from "@/hooks/useLiveStats";
 import { DNAUploadSection } from "@/components/dna/DNAUploadSection";
 import { AncestralMemoryViewer } from "@/components/dna/AncestralMemoryViewer";
 import { GeneticDatingSection } from "@/components/dna/GeneticDatingSection";
 import { DigitalOffspringChat } from "@/components/dna/DigitalOffspringChat";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { HeritageTimeline } from "@/components/dna/HeritageTimeline";
+import { DNAArtGenerator } from "@/components/dna/DNAArtGenerator";
+import { AncestralVoiceSynth } from "@/components/dna/AncestralVoiceSynth";
+import { GeneticHealthInsights } from "@/components/dna/GeneticHealthInsights";
+import { FamilyTreeBuilder } from "@/components/dna/FamilyTreeBuilder";
+import { DNACommunityForum } from "@/components/dna/DNACommunityForum";
+import dnaHeroPoster from "@/assets/dna-hero-poster.jpg";
+// @ts-ignore
+import dnaHeroVideoAsset from "/public/videos/dna-hero.mp4.asset.json";
 
-interface Service {
-  id: string;
-  title: string;
-  description: string;
-  price: string;
-  priceType: string;
-  icon: any;
-  features: string[];
-  highlighted?: boolean;
-}
+type ToolView = "hub" | "analysis" | "memories" | "dating" | "offspring" |
+  "timeline" | "art" | "voice" | "health" | "family-tree" | "community";
+
+const floatingEmojis = [
+  { emoji: "🧬", x: 5, y: 15, delay: 0 },
+  { emoji: "🔬", x: 90, y: 20, delay: 0.5 },
+  { emoji: "💀", x: 8, y: 70, delay: 1 },
+  { emoji: "🌍", x: 88, y: 65, delay: 1.5 },
+  { emoji: "🧪", x: 15, y: 45, delay: 2 },
+  { emoji: "🏛️", x: 85, y: 40, delay: 2.5 },
+];
+
+const tools: { id: ToolView; label: string; icon: any; emoji: string; color: string; desc: string }[] = [
+  { id: "analysis", label: "DNA Analysis", icon: Dna, emoji: "🧬", color: "from-cyan-500 to-blue-600", desc: "Complete genetic sequencing & AI analysis" },
+  { id: "memories", label: "Ancestral Memories", icon: Sparkles, emoji: "✨", color: "from-purple-500 to-violet-600", desc: "AI-reconstructed stories from your ancestors" },
+  { id: "dating", label: "Genetic Dating", icon: Heart, emoji: "💕", color: "from-pink-500 to-rose-600", desc: "Find your DNA-compatible partner" },
+  { id: "offspring", label: "Digital Offspring", icon: Baby, emoji: "👶", color: "from-amber-500 to-orange-600", desc: "Create an AI clone with your traits" },
+  { id: "timeline", label: "Heritage Timeline", icon: Clock, emoji: "🏛️", color: "from-emerald-500 to-teal-600", desc: "Interactive timeline of your ancestral migrations" },
+  { id: "art", label: "DNA Art Generator", icon: Palette, emoji: "🎨", color: "from-fuchsia-500 to-pink-600", desc: "Transform your genetic profile into art" },
+  { id: "voice", label: "Ancestral Voice", icon: Mic, emoji: "🗣️", color: "from-indigo-500 to-blue-600", desc: "Hear AI-synthesized voices of ancestors" },
+  { id: "health", label: "Health Insights", icon: Activity, emoji: "💊", color: "from-green-500 to-emerald-600", desc: "AI-powered genetic health analysis" },
+  { id: "family-tree", label: "Family Tree", icon: GitBranch, emoji: "🌳", color: "from-lime-500 to-green-600", desc: "Build & visualize your family tree" },
+  { id: "community", label: "DNA Community", icon: MessageSquare, emoji: "👥", color: "from-sky-500 to-cyan-600", desc: "Connect with genetic relatives worldwide" },
+];
 
 const DNAMemoryNetwork = () => {
   const { toast } = useToast();
+  const [activeView, setActiveView] = useState<ToolView>("hub");
+  const [isPlaying, setIsPlaying] = useState(true);
+  const [isMuted, setIsMuted] = useState(true);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  const stats = useLiveStats([
+    { key: "analyses", table: "dna_analyses" },
+    { key: "memories", table: "ancestral_memories" },
+    { key: "users", table: "profiles" },
+  ]);
+
+  // Streak (simple 7-day display)
+  const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+  const today = new Date().getDay();
+  const streakDays = days.map((d, i) => ({ day: d, active: i <= (today === 0 ? 6 : today - 1) }));
+
+  const togglePlay = () => {
+    if (videoRef.current) {
+      if (isPlaying) videoRef.current.pause();
+      else videoRef.current.play();
+      setIsPlaying(!isPlaying);
+    }
+  };
+
+  const toggleMute = () => {
+    if (videoRef.current) {
+      videoRef.current.muted = !isMuted;
+      setIsMuted(!isMuted);
+    }
+  };
+
+  const renderToolView = () => {
+    switch (activeView) {
+      case "analysis": return <DNAUploadSection />;
+      case "memories": return <AncestralMemoryViewer />;
+      case "dating": return <GeneticDatingSection />;
+      case "offspring": return <DigitalOffspringChat />;
+      case "timeline": return <HeritageTimeline />;
+      case "art": return <DNAArtGenerator />;
+      case "voice": return <AncestralVoiceSynth />;
+      case "health": return <GeneticHealthInsights />;
+      case "family-tree": return <FamilyTreeBuilder />;
+      case "community": return <DNACommunityForum />;
+      default: return null;
+    }
+  };
+
+  if (activeView !== "hub") {
+    const tool = tools.find(t => t.id === activeView);
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="container mx-auto px-4 py-6 max-w-5xl">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
+            <Button variant="ghost" size="sm" onClick={() => setActiveView("hub")} className="gap-2 mb-4">
+              <ArrowLeft className="h-4 w-4" /> Back to DNA Hub
+            </Button>
+            <div className="flex items-center gap-3 mb-6">
+              <span className="text-3xl">{tool?.emoji}</span>
+              <h2 className="text-2xl sm:text-3xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
+                {tool?.label}
+              </h2>
+            </div>
+            {renderToolView()}
+          </motion.div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-background">
+      {/* Cinematic Video Hero */}
+      <section className="relative overflow-hidden">
+        <div className="relative w-full h-[50vh] sm:h-[55vh] min-h-[400px]">
+          <video
+            ref={videoRef}
+            autoPlay
+            muted
+            loop
+            playsInline
+            poster={dnaHeroPoster}
+            className="absolute inset-0 w-full h-full object-cover"
+          >
+            <source src={dnaHeroVideoAsset.url} type="video/mp4" />
+          </video>
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
+
+          {/* Floating Emojis */}
+          {floatingEmojis.map((item, i) => (
+            <motion.div
+              key={i}
+              className="absolute text-2xl sm:text-3xl opacity-60 pointer-events-none"
+              style={{ left: `${item.x}%`, top: `${item.y}%` }}
+              animate={{ y: [0, -15, 0], rotate: [0, 10, -10, 0] }}
+              transition={{ duration: 4 + i * 0.5, repeat: Infinity, delay: item.delay }}
+            >
+              {item.emoji}
+            </motion.div>
+          ))}
+
+          {/* Video Controls */}
+          <div className="absolute top-4 right-4 flex gap-2 z-20">
+            <Button size="icon" variant="ghost" onClick={togglePlay}
+              className="bg-black/30 backdrop-blur-md text-white hover:bg-black/50 h-9 w-9">
+              {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+            </Button>
+            <Button size="icon" variant="ghost" onClick={toggleMute}
+              className="bg-black/30 backdrop-blur-md text-white hover:bg-black/50 h-9 w-9">
+              {isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
+            </Button>
+          </div>
+
+          {/* Hero Content */}
+          <div className="absolute inset-0 flex items-end z-10">
+            <div className="container mx-auto px-4 pb-8 max-w-5xl">
+              <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
+                <Badge className="bg-primary/20 text-primary border-primary/30 mb-4 backdrop-blur-sm">
+                  <Shield className="w-3 h-3 mr-1" /> Powered by Advanced AI & Genetics
+                </Badge>
+                <h1 className="text-3xl sm:text-5xl md:text-6xl font-black mb-3 bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-primary to-accent">
+                  DNA Social Memory Network
+                </h1>
+                <p className="text-sm sm:text-lg text-muted-foreground max-w-2xl mb-6">
+                  Unlock the secrets encoded in your DNA. Connect with your ancestral past,
+                  find genetically compatible partners, and create your digital legacy.
+                </p>
+                {/* Glassmorphic Stats */}
+                <div className="flex flex-wrap gap-3">
+                  {[
+                    { label: "Analyses", value: stats["analyses"], icon: Dna },
+                    { label: "Memories", value: stats["memories"], icon: Sparkles },
+                    { label: "Members", value: stats["users"], icon: Users },
+                  ].map((s, i) => (
+                    <div key={i} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-card/30 backdrop-blur-xl border border-border/30">
+                      <s.icon className="w-4 h-4 text-primary" />
+                      <span className="font-black text-sm">{s.value || "—"}</span>
+                      <span className="text-xs text-muted-foreground">{s.label}</span>
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div className="container mx-auto px-4 max-w-5xl space-y-8 py-8">
+        {/* 3-Column Engagement Row */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          {/* Streak */}
+          <Card className="p-4 bg-gradient-to-br from-orange-500/10 to-red-500/10 border-orange-500/20">
+            <div className="flex items-center gap-2 mb-3">
+              <Flame className="w-5 h-5 text-orange-500" />
+              <span className="font-black text-sm">Daily Streak</span>
+            </div>
+            <div className="flex gap-1.5">
+              {streakDays.map((d, i) => (
+                <div key={i} className="flex-1 text-center">
+                  <div className={`w-full aspect-square rounded-lg flex items-center justify-center text-xs font-bold transition-all
+                    ${d.active ? "bg-orange-500 text-white shadow-lg shadow-orange-500/30" : "bg-muted/30 text-muted-foreground"}`}>
+                    {d.active ? "🔥" : d.day[0]}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Card>
+
+          {/* Progress */}
+          <Card className="p-4 bg-gradient-to-br from-purple-500/10 to-violet-500/10 border-purple-500/20">
+            <div className="flex items-center gap-2 mb-3">
+              <Target className="w-5 h-5 text-purple-500" />
+              <span className="font-black text-sm">Discovery Progress</span>
+            </div>
+            <div className="space-y-2">
+              {[
+                { label: "Heritage Map", pct: 45 },
+                { label: "Health Profile", pct: 20 },
+                { label: "Family Tree", pct: 10 },
+              ].map((p, i) => (
+                <div key={i}>
+                  <div className="flex justify-between text-[10px] mb-0.5">
+                    <span className="text-muted-foreground">{p.label}</span>
+                    <span className="font-bold">{p.pct}%</span>
+                  </div>
+                  <div className="h-1.5 bg-muted/30 rounded-full overflow-hidden">
+                    <motion.div
+                      className="h-full bg-gradient-to-r from-purple-500 to-violet-500 rounded-full"
+                      initial={{ width: 0 }}
+                      animate={{ width: `${p.pct}%` }}
+                      transition={{ delay: 0.5 + i * 0.2, duration: 0.8 }}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Card>
+
+          {/* Achievements */}
+          <Card className="p-4 bg-gradient-to-br from-amber-500/10 to-yellow-500/10 border-amber-500/20">
+            <div className="flex items-center gap-2 mb-3">
+              <Trophy className="w-5 h-5 text-amber-500" />
+              <span className="font-black text-sm">Achievements</span>
+            </div>
+            <div className="grid grid-cols-4 gap-2">
+              {["🧬", "🏛️", "💕", "🎨", "🌳", "🔬", "🗣️", "👶"].map((e, i) => (
+                <div key={i} className={`aspect-square rounded-lg flex items-center justify-center text-lg transition-all
+                  ${i < 3 ? "bg-amber-500/20 shadow-inner" : "bg-muted/20 opacity-40"}`}>
+                  {e}
+                </div>
+              ))}
+            </div>
+          </Card>
+        </div>
+
+        {/* Description Card */}
+        <Card className="p-6 bg-card/80 backdrop-blur-xl border-border/50">
+          <h2 className="text-xl font-black mb-3 text-primary">What is DNA Social Memory Network?</h2>
+          <p className="text-sm text-muted-foreground mb-4">
+            A revolutionary AI-powered platform combining cutting-edge genetic analysis with artificial intelligence
+            to discover your ancestral heritage, find genetically compatible partners, and create a lasting digital legacy.
+            Our advanced algorithms reconstruct ancestral memories and provide deep insights into your genetic makeup.
+          </p>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs text-muted-foreground">
+            {["Complete genetic sequencing", "AI ancestral memories", "Photo restoration", "Voice synthesis", "Genetic matching", "Bank-level security"].map((f, i) => (
+              <div key={i} className="flex items-center gap-1.5">
+                <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                <span>{f}</span>
+              </div>
+            ))}
+          </div>
+          <p className="text-[10px] text-muted-foreground mt-4 italic">
+            Disclaimer: DNA Social Memory Network provides entertainment and educational insights based on genetic data analysis.
+            Results are AI-generated interpretations and should not be used for medical decisions.
+          </p>
+        </Card>
+
+        {/* 10-Tool Grid */}
+        <div>
+          <h2 className="text-xl sm:text-2xl font-black mb-4 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
+            🧬 Explore Your DNA Tools
+          </h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+            {tools.map((tool, i) => (
+              <motion.div
+                key={tool.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.05 }}
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+              >
+                <Card
+                  className="p-4 cursor-pointer bg-card/80 backdrop-blur-xl border-border/50 hover:border-primary/40 hover:shadow-xl hover:shadow-primary/10 transition-all group h-full"
+                  onClick={() => setActiveView(tool.id)}
+                >
+                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${tool.color} flex items-center justify-center text-2xl mb-3 shadow-lg group-hover:scale-110 transition-transform`}>
+                    {tool.emoji}
+                  </div>
+                  <h3 className="font-bold text-xs sm:text-sm mb-1">{tool.label}</h3>
+                  <p className="text-[10px] text-muted-foreground line-clamp-2">{tool.desc}</p>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+
+        {/* Pricing Section */}
+        <div>
+          <h2 className="text-xl sm:text-2xl font-black mb-4 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
+            💎 Premium DNA Services
+          </h2>
+          <PricingCards />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Separated pricing component
+const PricingCards = () => {
+  const { toast } = useToast();
   const [loading, setLoading] = useState<string | null>(null);
 
-  const services: Service[] = [
-    {
-      id: "dna_analysis",
-      title: "DNA Analysis",
-      description: "Complete DNA analysis with AI-powered ancestral memory reconstruction",
-      price: "€99",
-      priceType: "one-time",
-      icon: Dna,
-      features: [
-        "Complete genetic sequencing",
-        "AI-reconstructed ancestral memories",
-        "Heritage insights and reports",
-        "Genetic health markers",
-        "Interactive family tree",
-      ],
-    },
-    {
-      id: "ancestral_memories",
-      title: "Ancestral Memories",
-      description: "Access AI-generated memories and stories of your ancestors",
-      price: "€12",
-      priceType: "per month",
-      icon: Sparkles,
-      features: [
-        "Monthly ancestral story updates",
-        "AI-generated memory reconstructions",
-        "Historical context integration",
-        "Photo restoration & colorization",
-        "Voice synthesis of ancestors",
-      ],
-      highlighted: true,
-    },
-    {
-      id: "genetic_dating",
-      title: "Genetic Dating",
-      description: "Find your perfect DNA-compatible partner",
-      price: "€15",
-      priceType: "per month",
-      icon: Heart,
-      features: [
-        "AI genetic compatibility matching",
-        "Health trait compatibility",
-        "Personality DNA alignment",
-        "Offspring trait predictions",
-        "Private & secure matching",
-      ],
-      highlighted: true,
-    },
-    {
-      id: "digital_offspring",
-      title: "Digital Offspring",
-      description: "Create an AI clone with your genetic traits",
-      price: "€149",
-      priceType: "one-time",
-      icon: Baby,
-      features: [
-        "Fully interactive AI personality",
-        "Genetic trait inheritance model",
-        "Voice and appearance generation",
-        "Memory & learning capabilities",
-        "Lifetime access & updates",
-      ],
-    },
+  const services = [
+    { id: "dna_analysis", title: "DNA Analysis", price: "€99", type: "one-time", icon: "🧬", features: ["Complete genetic sequencing", "AI ancestral memories", "Heritage insights", "Interactive family tree"], highlighted: false },
+    { id: "ancestral_memories", title: "Ancestral Memories", price: "€12", type: "/month", icon: "✨", features: ["Monthly story updates", "Photo restoration", "Voice synthesis", "Historical context"], highlighted: true },
+    { id: "genetic_dating", title: "Genetic Dating", price: "€15", type: "/month", icon: "💕", features: ["DNA compatibility matching", "Health trait analysis", "Personality alignment", "Offspring predictions"], highlighted: true },
+    { id: "digital_offspring", title: "Digital Offspring", price: "€149", type: "one-time", icon: "👶", features: ["Interactive AI personality", "Genetic trait inheritance", "Voice & appearance", "Lifetime access"], highlighted: false },
   ];
 
   const handlePurchase = async (serviceType: string) => {
     try {
       setLoading(serviceType);
-      
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
-        toast({
-          title: "Authentication Required",
-          description: "Please sign in to purchase this service",
-          variant: "destructive",
-        });
+        toast({ title: "Authentication Required", description: "Please sign in to purchase", variant: "destructive" });
         return;
       }
-
-      const { data, error } = await supabase.functions.invoke('create-dna-memory-checkout', {
-        body: { serviceType }
-      });
-
+      const { data, error } = await supabase.functions.invoke('create-dna-memory-checkout', { body: { serviceType } });
       if (error) throw error;
-
-      if (data?.url) {
-        window.location.href = data.url;
-      }
+      if (data?.url) window.location.href = data.url;
     } catch (error) {
       console.error('Error:', error);
-      toast({
-        title: "Error",
-        description: "Failed to process purchase. Please try again.",
-        variant: "destructive",
-      });
+      toast({ title: "Error", description: "Failed to process purchase", variant: "destructive" });
     } finally {
       setLoading(null);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-background">
-      {/* Hero Section */}
-      <section className="relative overflow-hidden py-20 px-4">
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10 animate-gradient" />
-        <div className="container mx-auto relative z-10">
-          <div className="text-center max-w-4xl mx-auto">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-6">
-              <Shield className="w-4 h-4 text-primary" />
-              <span className="text-sm font-medium">Powered by Advanced AI & Genetics</span>
-            </div>
-            <h1 className="text-5xl md:text-7xl font-black mb-6 bg-clip-text text-transparent bg-gradient-to-r from-primary via-accent to-primary">
-              DNA Social Memory Network
-            </h1>
-            <p className="text-xl md:text-2xl text-muted-foreground mb-8">
-              Unlock the secrets encoded in your DNA. Connect with your ancestral past, 
-              find genetically compatible partners, and create your digital legacy.
-            </p>
-            <div className="flex flex-wrap gap-6 justify-center text-sm mb-10">
-              <div className="flex items-center gap-2">
-                <Award className="w-5 h-5 text-primary" />
-                <span>AI-Powered Analysis</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Shield className="w-5 h-5 text-primary" />
-                <span>Secure & Private</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Users className="w-5 h-5 text-primary" />
-                <span>10K+ Users</span>
-              </div>
-            </div>
-            
-            {/* Detailed Description Card */}
-            <Card className="max-w-4xl mx-auto text-left bg-card/80 backdrop-blur-sm border-primary/20">
-              <CardContent className="p-6 md:p-8">
-                <h2 className="text-2xl font-black mb-4 text-primary">What is DNA Social Memory Network?</h2>
-                <p className="text-muted-foreground mb-6">
-                  DNA Social Memory Network is a revolutionary AI-powered platform that combines cutting-edge genetic analysis with artificial intelligence to help you discover your ancestral heritage, find genetically compatible partners, and create a lasting digital legacy. Our advanced algorithms reconstruct ancestral memories and provide deep insights into your genetic makeup.
-                </p>
-                
-                <h3 className="text-xl font-semibold mb-3">How to Use This Service:</h3>
-                <ul className="space-y-3 text-muted-foreground mb-6">
-                  <li className="flex items-start gap-2">
-                    <span className="text-primary font-bold">1.</span>
-                    <span><strong>DNA Analysis (€99):</strong> Upload your genetic data or order a test kit. Receive complete sequencing, ancestral memory reconstruction, and an interactive family tree.</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-primary font-bold">2.</span>
-                    <span><strong>Ancestral Memories (€12/month):</strong> Access AI-generated stories and memories of your ancestors, including photo restoration and voice synthesis.</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-primary font-bold">3.</span>
-                    <span><strong>Genetic Dating (€15/month):</strong> Find your perfect DNA-compatible partner through AI matching, health trait compatibility, and offspring predictions.</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-primary font-bold">4.</span>
-                    <span><strong>Digital Offspring (€149):</strong> Create a fully interactive AI personality that inherits your genetic traits with voice and appearance generation.</span>
-                  </li>
-                </ul>
-                
-                <h3 className="text-xl font-semibold mb-3">Key Features:</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-muted-foreground">
-                  <div className="flex items-start gap-2">
-                    <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                    <span>Complete genetic sequencing analysis</span>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                    <span>AI-reconstructed ancestral memories</span>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                    <span>Photo restoration & colorization</span>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                    <span>Voice synthesis of ancestors</span>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                    <span>Genetic compatibility matching</span>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                    <span>Bank-level data security</span>
-                  </div>
-                </div>
-                
-                <p className="text-xs text-muted-foreground mt-6 italic">
-                  Disclaimer: DNA Social Memory Network provides entertainment and educational insights based on genetic data analysis. Results are AI-generated interpretations and should not be used for medical decisions. This service does not replace professional genetic counseling.
-                </p>
-              </CardContent>
-            </Card>
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      {services.map((s) => (
+        <Card key={s.id} className={`p-5 bg-card/80 backdrop-blur-xl border-border/50 hover:shadow-xl transition-all relative ${s.highlighted ? "border-primary/40 shadow-lg shadow-primary/10" : ""}`}>
+          {s.highlighted && (
+            <Badge className="absolute -top-2 right-3 bg-primary text-primary-foreground text-[10px]">POPULAR</Badge>
+          )}
+          <span className="text-3xl mb-3 block">{s.icon}</span>
+          <h3 className="font-black text-lg mb-1">{s.title}</h3>
+          <div className="flex items-baseline gap-1 mb-3">
+            <span className="text-2xl font-black text-primary">{s.price}</span>
+            <span className="text-xs text-muted-foreground">{s.type}</span>
           </div>
-        </div>
-      </section>
-
-      {/* Interactive Features Section */}
-      <section className="py-12 px-4 bg-muted/30">
-        <div className="container mx-auto">
-          <div className="text-center mb-8">
-            <h2 className="text-3xl md:text-4xl font-black mb-4">Experience Your DNA Journey</h2>
-            <p className="text-muted-foreground text-lg">Interactive tools to explore your genetic heritage</p>
-          </div>
-          <Tabs defaultValue="analysis" className="w-full">
-            <TabsList className="grid w-full grid-cols-4 mb-8">
-              <TabsTrigger value="analysis" className="flex items-center gap-2">
-                <Dna className="h-4 w-4" />
-                <span className="hidden sm:inline">DNA Analysis</span>
-              </TabsTrigger>
-              <TabsTrigger value="memories" className="flex items-center gap-2">
-                <Sparkles className="h-4 w-4" />
-                <span className="hidden sm:inline">Memories</span>
-              </TabsTrigger>
-              <TabsTrigger value="dating" className="flex items-center gap-2">
-                <Heart className="h-4 w-4" />
-                <span className="hidden sm:inline">Dating</span>
-              </TabsTrigger>
-              <TabsTrigger value="offspring" className="flex items-center gap-2">
-                <Baby className="h-4 w-4" />
-                <span className="hidden sm:inline">Offspring</span>
-              </TabsTrigger>
-            </TabsList>
-            <TabsContent value="analysis" className="mt-6">
-              <DNAUploadSection />
-            </TabsContent>
-            <TabsContent value="memories" className="mt-6">
-              <AncestralMemoryViewer />
-            </TabsContent>
-            <TabsContent value="dating" className="mt-6">
-              <GeneticDatingSection />
-            </TabsContent>
-            <TabsContent value="offspring" className="mt-6">
-              <DigitalOffspringChat />
-            </TabsContent>
-          </Tabs>
-        </div>
-      </section>
-
-      {/* Services Grid */}
-      <section className="py-20 px-4">
-        <div className="container mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-black mb-4">Choose Your DNA Service</h2>
-            <p className="text-muted-foreground text-lg">Unlock the power of your genetic code</p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {services.map((service) => {
-              const Icon = service.icon;
-              return (
-                <Card 
-                  key={service.id} 
-                  className={`relative overflow-hidden transition-all duration-300 hover:shadow-2xl hover:scale-105 ${
-                    service.highlighted 
-                      ? 'border-primary/50 shadow-lg shadow-primary/20' 
-                      : ''
-                  }`}
-                >
-                  {service.highlighted && (
-                    <div className="absolute top-4 right-4 bg-primary text-primary-foreground px-3 py-1 rounded-full text-xs font-bold">
-                      POPULAR
-                    </div>
-                  )}
-                  <CardHeader>
-                    <div className="mb-4 p-3 rounded-xl bg-primary/10 w-fit">
-                      <Icon className="w-8 h-8 text-primary" />
-                    </div>
-                    <CardTitle className="text-2xl mb-2">{service.title}</CardTitle>
-                    <CardDescription className="text-base">
-                      {service.description}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="mb-6">
-                      <div className="flex items-baseline gap-2 mb-1">
-                        <span className="text-4xl font-bold text-primary">
-                          {service.price}
-                        </span>
-                        <span className="text-muted-foreground">
-                          {service.priceType}
-                        </span>
-                      </div>
-                    </div>
-                    
-                    <ul className="space-y-3 mb-6">
-                      {service.features.map((feature, idx) => (
-                        <li key={idx} className="flex items-start gap-2 text-sm">
-                          <div className="mt-0.5 p-1 rounded-full bg-primary/10">
-                            <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-                          </div>
-                          <span>{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
-
-                    <Button 
-                      onClick={() => handlePurchase(service.id)}
-                      disabled={loading === service.id}
-                      className="w-full"
-                      variant={service.highlighted ? "default" : "outline"}
-                    >
-                      {loading === service.id ? "Processing..." : "Get Started"}
-                    </Button>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section className="py-20 px-4 bg-muted/30">
-        <div className="container mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
-            Why Choose DNA Memory Network?
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            <div className="text-center">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-4">
-                <Shield className="w-8 h-8 text-primary" />
-              </div>
-              <h3 className="text-xl font-semibold mb-2">Bank-Level Security</h3>
-              <p className="text-muted-foreground">
-                Your genetic data is encrypted and protected with military-grade security
-              </p>
-            </div>
-            <div className="text-center">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-4">
-                <Sparkles className="w-8 h-8 text-primary" />
-              </div>
-              <h3 className="text-xl font-semibold mb-2">AI-Powered Insights</h3>
-              <p className="text-muted-foreground">
-                Advanced machine learning algorithms analyze your genetic code
-              </p>
-            </div>
-            <div className="text-center">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-4">
-                <Users className="w-8 h-8 text-primary" />
-              </div>
-              <h3 className="text-xl font-semibold mb-2">Global Community</h3>
-              <p className="text-muted-foreground">
-                Join thousands discovering their heritage and finding connections
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
+          <ul className="space-y-1.5 mb-4">
+            {s.features.map((f, i) => (
+              <li key={i} className="text-xs text-muted-foreground flex items-center gap-1.5">
+                <div className="w-1 h-1 rounded-full bg-primary" /> {f}
+              </li>
+            ))}
+          </ul>
+          <Button
+            onClick={() => handlePurchase(s.id)}
+            disabled={loading === s.id}
+            className="w-full"
+            variant={s.highlighted ? "default" : "outline"}
+            size="sm"
+          >
+            {loading === s.id ? "Processing..." : "Get Started"}
+          </Button>
+        </Card>
+      ))}
     </div>
   );
 };
