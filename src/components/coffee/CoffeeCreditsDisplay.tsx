@@ -42,11 +42,24 @@ export const CoffeeCreditsDisplay = () => {
     }
   });
 
-  const handleUpgrade = (tier: string) => {
-    toast({
-      title: 'Coming Soon',
-      description: `${tier} subscription will be available soon!`
-    });
+  const handleUpgrade = async (tier: string) => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) { toast({ title: "Please sign in", variant: "destructive" }); return; }
+      const { data, error } = await supabase.functions.invoke("create-checkout", {
+        body: {
+          priceId: `coffee_${tier.toLowerCase()}`,
+          mode: "subscription",
+          successUrl: `${window.location.origin}/coffee-roulette?success=true`,
+          cancelUrl: `${window.location.origin}/coffee-roulette?canceled=true`,
+        },
+      });
+      if (error) throw error;
+      if (data?.url) window.open(data.url, "_blank");
+      else toast({ title: "Checkout not available", description: "Please try again later." });
+    } catch {
+      toast({ title: "Error", description: "Payment service unavailable. Please try again later.", variant: "destructive" });
+    }
   };
 
   if (!profile) return null;

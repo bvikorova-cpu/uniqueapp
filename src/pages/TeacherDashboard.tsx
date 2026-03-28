@@ -213,8 +213,31 @@ export default function TeacherDashboard() {
     setShowInviteDialog(true);
   };
 
-  const handleEditTeacher = (id: string) => {
-    toast.info(`Edit teacher ${id} - feature coming soon!`);
+  const [editingTeacher, setEditingTeacher] = useState<string | null>(null);
+  const [editTeacherRole, setEditTeacherRole] = useState("");
+
+  const handleEditTeacher = async (id: string) => {
+    const teacher = teachers.find(t => t.id === id);
+    if (teacher) {
+      setEditingTeacher(id);
+      setEditTeacherRole(teacher.role || "teacher");
+    }
+  };
+
+  const handleSaveTeacherEdit = async () => {
+    if (!editingTeacher) return;
+    try {
+      const { error } = await supabase
+        .from("school_team_members")
+        .update({ role: editTeacherRole })
+        .eq("id", editingTeacher);
+      if (error) throw error;
+      setTeachers(teachers.map(t => t.id === editingTeacher ? { ...t, role: editTeacherRole } : t));
+      toast.success("Teacher updated successfully");
+      setEditingTeacher(null);
+    } catch (error: any) {
+      toast.error(error.message || "Failed to update teacher");
+    }
   };
 
   const handleDeleteTeacher = async (id: string) => {
@@ -296,8 +319,19 @@ export default function TeacherDashboard() {
     navigate("/schools");
   };
 
-  const handleCancelSubscription = () => {
-    toast.info("Cancel subscription feature coming soon!");
+  const handleCancelSubscription = async () => {
+    if (!confirm("Are you sure you want to cancel your subscription?")) return;
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) { toast.error("Please sign in"); return; }
+      const { error } = await supabase.functions.invoke("cancel-subscription", {
+        body: { type: "school" },
+      });
+      if (error) throw error;
+      toast.success("Subscription cancelled. You'll retain access until the end of the billing period.");
+    } catch {
+      toast.error("Failed to cancel subscription. Please contact support.");
+    }
   };
 
   if (loading) {

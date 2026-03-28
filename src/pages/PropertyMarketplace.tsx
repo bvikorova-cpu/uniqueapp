@@ -165,7 +165,23 @@ export default function PropertyMarketplace() {
   const handlePurchaseService = (serviceId: string, price: number, link?: string) => {
     if (link) { navigate(link); return; }
     if (serviceId === "lead_boost") { setLeadBoostDialogOpen(true); return; }
-    toast({ title: "Coming Soon", description: `This service (€${price}) will be available soon!` });
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) { toast({ title: "Please sign in", variant: "destructive" }); navigate("/auth"); return; }
+      const { data, error } = await supabase.functions.invoke("create-checkout", {
+        body: {
+          priceId: `property_${serviceId}`,
+          mode: "payment",
+          successUrl: `${window.location.origin}/property-marketplace?success=true`,
+          cancelUrl: `${window.location.origin}/property-marketplace?canceled=true`,
+        },
+      });
+      if (error) throw error;
+      if (data?.url) window.open(data.url, "_blank");
+      else toast({ title: "Payment", description: "Checkout is being set up. Please try again." });
+    } catch {
+      toast({ title: "Error", description: "Payment service unavailable. Please try again later.", variant: "destructive" });
+    }
   };
 
   // Sub-view rendering
