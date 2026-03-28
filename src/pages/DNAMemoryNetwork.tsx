@@ -348,7 +348,9 @@ const PricingCards = () => {
           {s.highlighted && (
             <Badge className="absolute -top-2 right-3 bg-primary text-primary-foreground text-[10px]">POPULAR</Badge>
           )}
-          <span className="text-3xl mb-3 block">{s.icon}</span>
+          <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center mb-3">
+            <s.icon className="w-5 h-5 text-primary" />
+          </div>
           <h3 className="font-black text-lg mb-1">{s.title}</h3>
           <div className="flex items-baseline gap-1 mb-3">
             <span className="text-2xl font-black text-primary">{s.price}</span>
