@@ -1,554 +1,360 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useToast } from "@/hooks/use-toast";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
-import { ShoppingCart, HeartPulse, Brain, TrendingUp, AlertCircle, Shield, Zap, ArrowRightLeft, Star, Loader2 } from "lucide-react";
+import {
+  Brain, ShoppingCart, HeartPulse, TrendingUp, Shield, Zap, ArrowLeft,
+  Flame, Trophy, Check, BarChart3, BookOpen, Users, Eye, Activity,
+  Bot, MessageCircle, Star, Play, Pause, Volume2, VolumeX, ArrowRightLeft,
+} from "lucide-react";
 import { useSearchParams } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
+
 import PhobiaDetector from "@/components/phobia/PhobiaDetector";
 import PhobiaMarketplace from "@/components/phobia/PhobiaMarketplace";
 import PhobiaCureDashboard from "@/components/phobia/PhobiaCureDashboard";
 import MyPhobias from "@/components/phobia/MyPhobias";
 
-interface Service {
-  id: string;
-  title: string;
-  description: string;
-  price: string;
-  priceType: string;
-  icon: any;
-  features: string[];
-  highlighted?: boolean;
-}
+import { FearJournal } from "@/components/phobia/FearJournal";
+import { FearAnalytics } from "@/components/phobia/FearAnalytics";
+import { AITherapistChat } from "@/components/phobia/AITherapistChat";
+import { ExposureSimulator } from "@/components/phobia/ExposureSimulator";
+import { PhobiaCommunity } from "@/components/phobia/PhobiaCommunity";
+import { AnxietyTracker } from "@/components/phobia/AnxietyTracker";
+
+import phobiaPoster from "@/assets/phobia-hero-poster.jpg";
+
+type ToolView = "hub" | "detect" | "my-phobias" | "marketplace" | "cure" | "journal" | "analytics" | "therapist" | "exposure" | "community" | "anxiety";
+
+const tools = [
+  { id: "detect" as ToolView, title: "AI Phobia Detector", description: "Identify your specific fears with AI analysis", icon: Brain, badge: "AI", gradient: "bg-gradient-to-r from-cyan-500 to-blue-500", features: ["Behavioral analysis", "Clinical accuracy", "Trigger identification"] },
+  { id: "my-phobias" as ToolView, title: "My Phobias", description: "View and manage your fear collection", icon: Star, badge: "Collection", gradient: "bg-gradient-to-r from-blue-500 to-purple-500", features: ["Track severity", "List for trade", "Progress insights"] },
+  { id: "marketplace" as ToolView, title: "Fear Marketplace", description: "Trade phobias with the global community", icon: ShoppingCart, badge: "Trading", gradient: "bg-gradient-to-r from-purple-500 to-pink-500", features: ["Buy & sell fears", "AI pricing", "Secure transactions"] },
+  { id: "cure" as ToolView, title: "Cure Dashboard", description: "AI-powered personalized treatment plans", icon: HeartPulse, badge: "Premium", gradient: "bg-gradient-to-r from-pink-500 to-red-500", features: ["Personalized plans", "Session tracking", "Evidence-based"] },
+  { id: "therapist" as ToolView, title: "AI Fear Therapist", description: "Chat with an AI specialized in phobias", icon: Bot, badge: "AI Chat", gradient: "bg-gradient-to-r from-cyan-500 to-teal-500", features: ["CBT techniques", "24/7 support", "Coping strategies"] },
+  { id: "exposure" as ToolView, title: "Exposure Simulator", description: "Guided exposure therapy sessions", icon: Eye, badge: "Therapy", gradient: "bg-gradient-to-r from-teal-500 to-green-500", features: ["5-level system", "6 scenarios", "Safe environment"] },
+  { id: "journal" as ToolView, title: "Fear Journal", description: "Track your fear encounters and progress", icon: BookOpen, badge: "Tracking", gradient: "bg-gradient-to-r from-green-500 to-cyan-500", features: ["Log triggers", "Track intensity", "Coping review"] },
+  { id: "analytics" as ToolView, title: "Fear Analytics", description: "Visualize your fear patterns and trends", icon: BarChart3, badge: "Insights", gradient: "bg-gradient-to-r from-indigo-500 to-blue-500", features: ["Trend charts", "Phobia distribution", "Activity stats"] },
+  { id: "community" as ToolView, title: "Support Community", description: "Connect with others facing similar fears", icon: Users, badge: "Social", gradient: "bg-gradient-to-r from-amber-500 to-orange-500", features: ["Share stories", "Ask questions", "Offer support"] },
+  { id: "anxiety" as ToolView, title: "Anxiety Tracker", description: "Log anxiety episodes and grounding exercises", icon: Activity, badge: "Wellness", gradient: "bg-gradient-to-r from-red-500 to-pink-500", features: ["Symptom logging", "5-4-3-2-1 grounding", "Episode history"] },
+];
 
 const PhobiaTrading = () => {
-  const { toast } = useToast();
-  const [loading, setLoading] = useState<string | null>(null);
+  const { toast: showToast } = useToast();
+  const [activeView, setActiveView] = useState<ToolView>("hub");
   const [searchParams] = useSearchParams();
-  const [verifying, setVerifying] = useState(false);
   const [user, setUser] = useState<any>(null);
   const [checkingAuth, setCheckingAuth] = useState(true);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [isPlaying, setIsPlaying] = useState(true);
+  const [isMuted, setIsMuted] = useState(true);
+
+  const [stats, setStats] = useState({ phobias: 0, trades: 0, members: 0 });
 
   useEffect(() => {
     checkAuth();
+    loadStats();
   }, []);
 
   const checkAuth = async () => {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       setUser(session?.user || null);
-      
-      if (!session) {
-        window.location.href = '/auth';
-      }
-    } catch (error) {
-      console.error('Auth check error:', error);
-    } finally {
-      setCheckingAuth(false);
-    }
+      if (!session) window.location.href = "/auth";
+    } catch (e) { console.error(e); }
+    finally { setCheckingAuth(false); }
+  };
+
+  const loadStats = async () => {
+    try {
+      const [{ count: c1 }, { count: c2 }] = await Promise.all([
+        supabase.from("ai_generated_content").select("*", { count: "exact", head: true }).like("title", "fear_journal_%"),
+        supabase.from("profiles").select("*", { count: "exact", head: true }),
+      ]);
+      setStats({ phobias: c1 || 0, trades: 0, members: c2 || 0 });
+    } catch (e) { console.error(e); }
   };
 
   useEffect(() => {
-    const sessionId = searchParams.get('session_id');
-    if (sessionId && searchParams.get('payment') === 'success') {
-      verifyPayment(sessionId);
+    const sessionId = searchParams.get("session_id");
+    if (sessionId && searchParams.get("payment") === "success") {
+      supabase.functions.invoke("verify-phobia-payment", { body: { sessionId } }).then(({ data }) => {
+        if (data?.success) {
+          showToast({ title: "Payment Successful", description: `Access to ${data.serviceType} activated!` });
+          window.history.replaceState({}, "", "/phobia-trading");
+        }
+      });
     }
   }, [searchParams]);
 
-  const verifyPayment = async (sessionId: string) => {
-    try {
-      setVerifying(true);
-      const { data, error } = await supabase.functions.invoke('verify-phobia-payment', {
-        body: { sessionId }
-      });
+  const togglePlay = () => {
+    if (!videoRef.current) return;
+    isPlaying ? videoRef.current.pause() : videoRef.current.play();
+    setIsPlaying(!isPlaying);
+  };
 
-      if (error) throw error;
-
-      if (data.success) {
-        toast({
-          title: "Payment Successful",
-          description: `Access to ${data.serviceType} activated!`,
-        });
-        window.history.replaceState({}, '', '/phobia-trading');
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      toast({
-        title: "Verification Failed",
-        description: "Please contact support",
-        variant: "destructive",
-      });
-    } finally {
-      setVerifying(false);
+  const renderToolView = () => {
+    switch (activeView) {
+      case "detect": return <PhobiaDetector onPhobiaDetected={() => showToast({ title: "Phobia Detected", description: "Saved to your profile" })} />;
+      case "my-phobias": return <MyPhobias onPhobiaListed={() => showToast({ title: "Phobia Listed", description: "Check the Marketplace" })} />;
+      case "marketplace": return <PhobiaMarketplace />;
+      case "cure": return <PhobiaCureDashboard />;
+      case "journal": return <FearJournal />;
+      case "analytics": return <FearAnalytics />;
+      case "therapist": return <AITherapistChat />;
+      case "exposure": return <ExposureSimulator />;
+      case "community": return <PhobiaCommunity />;
+      case "anxiety": return <AnxietyTracker />;
+      default: return null;
     }
   };
 
-  const services: Service[] = [
-    {
-      id: "fear_marketplace",
-      title: "Fear Marketplace",
-      description: "Trade, buy, and sell phobias with the global community",
-      price: "€15",
-      priceType: "per month",
-      icon: ShoppingCart,
-      features: [
-        "Access global phobia exchange",
-        "Buy and sell unlimited fears",
-        "AI-powered pricing algorithm",
-        "Secure blockchain transactions",
-        "Real-time market analytics",
-      ],
-      highlighted: true,
-    },
-    {
-      id: "phobia_cure",
-      title: "Phobia Cure Premium",
-      description: "AI-powered personalized treatment for your fears",
-      price: "€39",
-      priceType: "per month",
-      icon: HeartPulse,
-      features: [
-        "Personalized cure strategies",
-        "AI therapy sessions",
-        "Progress tracking dashboard",
-        "24/7 AI support assistant",
-        "Evidence-based techniques",
-      ],
-      highlighted: true,
-    },
-    {
-      id: "exposure_therapy",
-      title: "AI Exposure Therapy",
-      description: "Complete virtual reality exposure therapy program",
-      price: "€69",
-      priceType: "one-time",
-      icon: Brain,
-      features: [
-        "VR-enabled exposure sessions",
-        "Gradual intensity control",
-        "AI-guided relaxation",
-        "Custom fear scenarios",
-        "Professional supervision mode",
-      ],
-    },
-    {
-      id: "rare_fear_collector",
-      title: "Rare Fear Collector",
-      description: "Collect and catalog unique and exotic phobias",
-      price: "€29",
-      priceType: "per month",
-      icon: Star,
-      features: [
-        "Access to rare phobia catalog",
-        "Exclusive collector community",
-        "Trading card system",
-        "Achievement & badge system",
-        "Phobia rarity scoring",
-      ],
-    },
+  if (checkingAuth || !user) {
+    return <div className="min-h-screen bg-background flex items-center justify-center"><Brain className="w-8 h-8 animate-spin text-primary" /></div>;
+  }
+
+  const days = ["M", "T", "W", "T", "F", "S", "S"];
+  const activeDays = [true, true, false, true, true, true, false];
+  const currentStreak = 5;
+
+  const badges = [
+    { icon: "🧠", label: "First Detection", unlocked: true },
+    { icon: "💪", label: "Fear Fighter", unlocked: true },
+    { icon: "🌟", label: "5-Star Therapist", unlocked: false },
+    { icon: "🏆", label: "Fear Conqueror", unlocked: false },
+    { icon: "🤝", label: "Community Hero", unlocked: true },
+    { icon: "📊", label: "Data Master", unlocked: false },
   ];
 
-  const handlePurchase = async (serviceType: string) => {
-    try {
-      setLoading(serviceType);
-      
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        toast({
-          title: "Authentication Required",
-          description: "Please sign in to access phobia services",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      const { data, error } = await supabase.functions.invoke('create-phobia-checkout', {
-        body: { serviceType }
-      });
-
-      if (error) throw error;
-
-      if (data?.url) {
-        window.location.href = data.url;
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      toast({
-        title: "Error",
-        description: "Failed to process purchase. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(null);
-    }
-  };
-
-  if (checkingAuth) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-cyan-400" />
-      </div>
-    );
-  }
-
-  if (!user) {
-    return null;
-  }
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-cyan-950/10 to-background">
-      {/* Hero Section */}
-      <section className="relative overflow-hidden py-24 px-4">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-cyan-900/20 via-background to-background" />
-        <div className="absolute inset-0 opacity-20">
-          <div className="absolute top-20 left-20 w-80 h-80 bg-cyan-500/30 rounded-full blur-3xl animate-pulse" />
-          <div className="absolute bottom-20 right-20 w-96 h-96 bg-blue-500/30 rounded-full blur-3xl animate-pulse" style={{ animationDelay: "1.5s" }} />
-          <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-teal-500/30 rounded-full blur-3xl animate-pulse" style={{ animationDelay: "3s" }} />
+    <div className="min-h-screen bg-background">
+      <section className="relative h-[60vh] sm:h-[70vh] overflow-hidden">
+        <video
+          ref={videoRef}
+          autoPlay muted loop playsInline
+          poster={phobiaPoster}
+          className="absolute inset-0 w-full h-full object-cover"
+        >
+          <source src="/__l5e/assets-v1/d34ed69c-5f7a-4d9f-9d37-df69a26b2878/phobia-hero.mp4" type="video/mp4" />
+        </video>
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-background" />
+
+        <div className="absolute top-4 right-4 flex gap-2 z-20">
+          <Button size="icon" variant="ghost" onClick={togglePlay} className="bg-black/30 backdrop-blur-sm hover:bg-black/50 text-white h-8 w-8">
+            {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+          </Button>
+          <Button size="icon" variant="ghost" onClick={() => { if (videoRef.current) { videoRef.current.muted = !isMuted; setIsMuted(!isMuted); } }} className="bg-black/30 backdrop-blur-sm hover:bg-black/50 text-white h-8 w-8">
+            {isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
+          </Button>
         </div>
-        
-        <div className="container mx-auto relative z-10">
-          <div className="text-center max-w-5xl mx-auto">
-            <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-gradient-to-r from-cyan-900/50 to-blue-900/50 border border-cyan-700/50 backdrop-blur-sm mb-8">
-              <AlertCircle className="w-5 h-5 text-cyan-400 animate-pulse" />
-              <span className="text-sm font-semibold text-cyan-300">
-                AI-Powered Fear Detection · Blockchain Trading · Clinical Support
-              </span>
-              <Shield className="w-5 h-5 text-cyan-400" />
-            </div>
-            
-            <h1 className="text-6xl md:text-8xl font-bold mb-8 leading-tight">
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-blue-400 to-teal-400">
-                Phobia Trading
-              </span>
-              <br />
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-teal-400 via-cyan-400 to-blue-400">
-                Network
-              </span>
-            </h1>
-            
-            <p className="text-xl md:text-3xl text-muted-foreground mb-12 leading-relaxed max-w-4xl mx-auto">
-              The world's first AI-powered phobia detection and trading platform. 
-              Exchange fears, discover cures, and connect with others facing similar challenges.
-            </p>
-            
-            <div className="flex flex-wrap gap-6 justify-center text-sm">
-              <div className="flex items-center gap-3 px-5 py-2.5 rounded-full bg-cyan-900/30 backdrop-blur-sm border border-cyan-700/50">
-                <Brain className="w-5 h-5 text-cyan-400" />
-                <span>AI Fear Detection</span>
-              </div>
-              <div className="flex items-center gap-3 px-5 py-2.5 rounded-full bg-blue-900/30 backdrop-blur-sm border border-blue-700/50">
-                <ArrowRightLeft className="w-5 h-5 text-blue-400" />
-                <span>Blockchain Trading</span>
-              </div>
-              <div className="flex items-center gap-3 px-5 py-2.5 rounded-full bg-teal-900/30 backdrop-blur-sm border border-teal-700/50">
-                <HeartPulse className="w-5 h-5 text-teal-400" />
-                <span>100K+ Users Helped</span>
-              </div>
-            </div>
+
+        <div className="absolute inset-0 flex items-center justify-center z-10">
+          <div className="text-center px-4 max-w-4xl mx-auto">
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+              <Badge className="mb-4 bg-cyan-500/20 text-cyan-300 border-cyan-500/30 backdrop-blur-sm">
+                <Shield className="h-3 w-3 mr-1" /> AI-Powered Fear Management Platform
+              </Badge>
+            </motion.div>
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
+              className="text-3xl sm:text-5xl md:text-6xl font-black mb-3 text-cyan-100"
+              style={{
+                WebkitTextStroke: "1px rgba(6, 182, 212, 0.6)",
+                textShadow: "0 0 30px rgba(6, 182, 212, 0.5), 0 0 60px rgba(6, 182, 212, 0.3), 0 2px 4px rgba(0,0,0,0.8)",
+              }}
+            >
+              Phobia Trading Network
+            </motion.h1>
+            <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
+              className="text-sm sm:text-lg text-cyan-100/80 max-w-2xl mx-auto mb-6"
+              style={{ textShadow: "0 1px 4px rgba(0,0,0,0.7)" }}>
+              The world's first AI-powered phobia detection and trading platform. Exchange fears, discover cures, and connect with others.
+            </motion.p>
+
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
+              className="flex flex-wrap justify-center gap-4">
+              {[
+                { icon: Brain, label: "Phobias Tracked", value: stats.phobias },
+                { icon: ArrowRightLeft, label: "Trades Made", value: stats.trades },
+                { icon: Users, label: "Members", value: stats.members },
+              ].map(s => (
+                <div key={s.label} className="flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-950/40 backdrop-blur-sm border border-cyan-500/20">
+                  <s.icon className="h-4 w-4 text-cyan-400" />
+                  <span className="text-lg font-black text-cyan-100">{s.value}</span>
+                  <span className="text-xs text-cyan-300/70">{s.label}</span>
+                </div>
+              ))}
+            </motion.div>
           </div>
         </div>
       </section>
 
-      {/* How It Works */}
-      <section className="py-16 px-4 bg-gradient-to-b from-cyan-950/10 to-background">
-        <div className="container mx-auto max-w-6xl">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-400">
-              How Phobia Trading Works
-            </span>
-          </h2>
-          <p className="text-center text-muted-foreground mb-12 text-lg">
-            A revolutionary approach to understanding and managing fears
-          </p>
-          
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div className="text-center group">
-              <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-blue-500/20 border border-cyan-500/30 mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
-                <Brain className="w-10 h-10 text-cyan-400" />
-              </div>
-              <h3 className="text-xl font-bold mb-3">1. AI Detection</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                Our AI analyzes your behavior and identifies specific phobias with clinical accuracy
-              </p>
-            </div>
-            
-            <div className="text-center group">
-              <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-500/20 to-teal-500/20 border border-blue-500/30 mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
-                <ShoppingCart className="w-10 h-10 text-blue-400" />
-              </div>
-              <h3 className="text-xl font-bold mb-3">2. Trade Fears</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                Exchange phobias in our secure marketplace or collect rare and unique fears
-              </p>
-            </div>
-            
-            <div className="text-center group">
-              <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-teal-500/20 to-cyan-500/20 border border-teal-500/30 mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
-                <HeartPulse className="w-10 h-10 text-teal-400" />
-              </div>
-              <h3 className="text-xl font-bold mb-3">3. Get Cured</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                Access AI-powered therapy programs designed to help you overcome your fears
-              </p>
-            </div>
-            
-            <div className="text-center group">
-              <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-blue-500/20 border border-cyan-500/30 mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
-                <TrendingUp className="w-10 h-10 text-cyan-400" />
-              </div>
-              <h3 className="text-xl font-bold mb-3">4. Track Progress</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                Monitor your journey to recovery with detailed analytics and insights
-              </p>
-            </div>
+      <div className="container mx-auto px-4 py-8 max-w-7xl">
+        {activeView !== "hub" ? (
+          <div className="space-y-4">
+            <Button variant="ghost" size="sm" onClick={() => setActiveView("hub")} className="mb-2">
+              <ArrowLeft className="h-4 w-4 mr-2" /> Back to Hub
+            </Button>
+            {renderToolView()}
           </div>
-        </div>
-      </section>
-
-      {/* Services Grid */}
-      <section className="py-20 px-4">
-        <div className="container mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-teal-400">
-              Choose Your Path
-            </span>
-          </h2>
-          <p className="text-center text-muted-foreground mb-12 text-lg">
-            Select the service that best fits your needs
-          </p>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {services.map((service) => {
-              const Icon = service.icon;
-              return (
-                <Card 
-                  key={service.id} 
-                  className={`group relative overflow-hidden transition-all duration-500 hover:shadow-2xl hover:scale-105 border-2 ${
-                    service.highlighted 
-                      ? 'border-cyan-500/50 shadow-xl shadow-cyan-500/20 bg-gradient-to-br from-cyan-950/30 to-background' 
-                      : 'border-cyan-700/30 hover:border-cyan-600/50'
-                  }`}
-                >
-                  <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-transparent to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-                  
-                  {service.highlighted && (
-                    <div className="absolute top-4 right-4 flex items-center gap-1 bg-gradient-to-r from-cyan-500 to-blue-500 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg">
-                      <Zap className="w-3 h-3" />
-                      POPULAR
-                    </div>
-                  )}
-                  
-                  <CardHeader>
-                    <div className="mb-6 relative">
-                      <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/20 to-blue-500/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500" />
-                      <div className="relative p-4 rounded-2xl bg-gradient-to-br from-cyan-900/30 to-blue-900/30 backdrop-blur-sm w-fit border border-cyan-700/30">
-                        <Icon className="w-10 h-10 text-cyan-400 group-hover:scale-110 transition-transform duration-300" />
+        ) : (
+          <div className="space-y-8">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <Card className="p-4 bg-card/80 backdrop-blur-xl border-border/50">
+                <div className="flex items-center gap-2 mb-3">
+                  <Flame className="h-5 w-5 text-orange-500" />
+                  <h3 className="font-bold text-sm">Fear Fighting Streak</h3>
+                  <span className="ml-auto text-lg font-black text-primary">{currentStreak}</span>
+                </div>
+                <div className="grid grid-cols-7 gap-1.5">
+                  {days.map((day, i) => (
+                    <div key={i} className="text-center">
+                      <span className="text-[10px] text-muted-foreground">{day}</span>
+                      <div className={`w-7 h-7 rounded-full flex items-center justify-center mt-1 text-xs font-medium ${
+                        activeDays[i] ? "bg-primary/20 text-primary border border-primary/30" : "bg-muted/30 text-muted-foreground"
+                      }`}>
+                        {activeDays[i] ? "✓" : "·"}
                       </div>
                     </div>
-                    <CardTitle className="text-2xl mb-3 group-hover:text-cyan-400 transition-colors">
-                      {service.title}
-                    </CardTitle>
-                    <CardDescription className="text-base leading-relaxed">
-                      {service.description}
-                    </CardDescription>
-                  </CardHeader>
-                  
-                  <CardContent>
-                    <div className="mb-6">
-                      <div className="flex items-baseline gap-2 mb-2">
-                        <span className="text-5xl font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
-                          {service.price}
-                        </span>
-                        <span className="text-muted-foreground text-sm">
-                          {service.priceType}
-                        </span>
+                  ))}
+                </div>
+              </Card>
+
+              <Card className="p-4 bg-card/80 backdrop-blur-xl border-border/50">
+                <div className="flex items-center gap-2 mb-3">
+                  <TrendingUp className="h-5 w-5 text-primary" />
+                  <h3 className="font-bold text-sm">Recovery Progress</h3>
+                </div>
+                <div className="space-y-3">
+                  {[
+                    { label: "Fears Faced", current: 8, max: 20, color: "bg-primary" },
+                    { label: "Sessions Done", current: 12, max: 30, color: "bg-accent" },
+                    { label: "Coping Skills", current: 5, max: 15, color: "bg-chart-3" },
+                  ].map(m => (
+                    <div key={m.label}>
+                      <div className="flex justify-between text-xs mb-1">
+                        <span className="text-muted-foreground">{m.label}</span>
+                        <span className="font-medium">{m.current}/{m.max}</span>
+                      </div>
+                      <div className="h-1.5 bg-muted/30 rounded-full overflow-hidden">
+                        <div className={`h-full ${m.color} rounded-full transition-all duration-1000`}
+                          style={{ width: `${(m.current / m.max) * 100}%` }} />
                       </div>
                     </div>
-                    
-                    <ul className="space-y-4 mb-8">
-                      {service.features.map((feature, idx) => (
-                        <li key={idx} className="flex items-start gap-3 text-sm">
-                          <div className="mt-1 p-1.5 rounded-full bg-gradient-to-br from-cyan-500/20 to-blue-500/20 border border-cyan-500/20">
-                            <div className="w-2 h-2 rounded-full bg-gradient-to-br from-cyan-400 to-blue-400" />
-                          </div>
-                          <span className="flex-1 leading-relaxed">{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
+                  ))}
+                </div>
+              </Card>
 
-                    <Button 
-                      onClick={() => handlePurchase(service.id)}
-                      disabled={loading === service.id}
-                      className={`w-full transition-all duration-300 ${
-                        service.highlighted
-                          ? 'bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 shadow-lg shadow-cyan-500/30'
-                          : ''
-                      }`}
-                      variant={service.highlighted ? "default" : "outline"}
-                    >
-                      {loading === service.id ? "Processing..." : "Get Started"}
-                    </Button>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
-        </div>
-      </section>
+              <Card className="p-4 bg-card/80 backdrop-blur-xl border-border/50">
+                <div className="flex items-center gap-2 mb-3">
+                  <Trophy className="h-5 w-5 text-yellow-500" />
+                  <h3 className="font-bold text-sm">Achievements</h3>
+                  <span className="ml-auto text-xs text-muted-foreground">
+                    {badges.filter(b => b.unlocked).length}/{badges.length}
+                  </span>
+                </div>
+                <div className="grid grid-cols-3 gap-2">
+                  {badges.map(badge => (
+                    <motion.div key={badge.label} whileHover={{ scale: 1.1 }}
+                      className={`flex flex-col items-center p-2 rounded-lg text-center ${
+                        badge.unlocked ? "bg-primary/10 border border-primary/20" : "bg-muted/20 opacity-40"
+                      }`}>
+                      <span className="text-lg">{badge.icon}</span>
+                      <span className="text-[9px] mt-1 text-muted-foreground leading-tight">{badge.label}</span>
+                    </motion.div>
+                  ))}
+                </div>
+              </Card>
+            </div>
 
-      {/* Functional Dashboard */}
-      <section className="py-20 px-4">
-        <div className="container mx-auto max-w-7xl">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-400">
-              Your Phobia Management Hub
-            </span>
-          </h2>
-          <p className="text-center text-muted-foreground mb-12 text-lg">
-            Detect, trade, and overcome your fears with AI-powered tools
-          </p>
-
-          {/* Feature Description */}
-          <Card className="mb-8 border-cyan-500/30 bg-gradient-to-br from-cyan-950/20 to-background">
-            <CardContent className="p-6">
-              <h3 className="text-xl font-bold text-cyan-400 mb-4">What is Phobia Trading Network?</h3>
-              <p className="text-muted-foreground mb-4 leading-relaxed">
-                Phobia Trading Network is the world's first AI-powered platform for detecting, understanding, trading, and overcoming your fears. Using advanced machine learning algorithms and evidence-based therapeutic techniques, we help you identify your phobias and provide personalized paths to recovery.
+            <Card className="p-6 bg-card/80 backdrop-blur-xl border-border/50">
+              <h2 className="text-xl font-black mb-3 text-primary">What is Phobia Trading Network?</h2>
+              <p className="text-sm text-muted-foreground mb-4">
+                Phobia Trading Network is the world's first AI-powered platform for detecting, understanding, trading, and overcoming your fears.
+                Using advanced machine learning algorithms and evidence-based therapeutic techniques, we help you identify your phobias,
+                connect with others facing similar challenges, and provide personalized paths to recovery through AI therapy, exposure simulation, and community support.
               </p>
-              
-              <h4 className="font-semibold text-foreground mb-3">How to Use:</h4>
-              <ul className="space-y-2 text-muted-foreground text-sm mb-4">
-                <li className="flex items-start gap-2">
-                  <span className="text-cyan-400 font-bold">1.</span>
-                  <span><strong>Detect Phobia:</strong> Use our AI-powered detection tool to identify your specific fears through a series of questions and behavioral analysis.</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-cyan-400 font-bold">2.</span>
-                  <span><strong>My Phobias:</strong> View and manage your detected phobias, track your progress, and access personalized insights about each fear.</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-cyan-400 font-bold">3.</span>
-                  <span><strong>Marketplace:</strong> Browse the global phobia exchange to trade fears with others, discover rare phobias, and connect with people facing similar challenges.</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-cyan-400 font-bold">4.</span>
-                  <span><strong>Cure Dashboard:</strong> Access AI-powered therapy sessions, VR exposure therapy, personalized treatment plans, and track your journey to recovery.</span>
-                </li>
-              </ul>
-              
-              <div className="p-3 bg-slate-800 border border-slate-600 rounded-lg">
-                <p className="text-xs text-slate-100">
-                  <strong className="text-white">Disclaimer:</strong> This platform is designed for entertainment and self-improvement purposes. It does not replace professional psychological or psychiatric treatment. If you experience severe anxiety or phobias, please consult a qualified mental health professional.
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+                {[
+                  { step: "1", title: "Detect", desc: "AI identifies your fears" },
+                  { step: "2", title: "Understand", desc: "Analyze patterns & triggers" },
+                  { step: "3", title: "Trade & Connect", desc: "Exchange in the marketplace" },
+                  { step: "4", title: "Overcome", desc: "AI therapy & exposure" },
+                ].map(s => (
+                  <div key={s.step} className="text-center p-3 rounded-lg bg-muted/20 border border-border/30">
+                    <div className="w-8 h-8 rounded-full bg-primary/20 text-primary font-black text-sm flex items-center justify-center mx-auto mb-2">{s.step}</div>
+                    <p className="text-xs font-bold">{s.title}</p>
+                    <p className="text-[10px] text-muted-foreground">{s.desc}</p>
+                  </div>
+                ))}
+              </div>
+              <div className="p-3 rounded-lg bg-muted/10 border border-border/30">
+                <p className="text-[10px] text-muted-foreground">
+                  <strong>Disclaimer:</strong> This platform is for entertainment and self-improvement. It does not replace professional psychological treatment.
+                  For severe anxiety or phobias, please consult a qualified mental health professional.
                 </p>
               </div>
-            </CardContent>
-          </Card>
+            </Card>
 
-          <Tabs defaultValue="detect" className="w-full">
-            <TabsList className="grid grid-cols-2 sm:grid-cols-4 w-full h-auto gap-2 p-2 mb-8">
-              <TabsTrigger value="detect" className="text-xs sm:text-sm py-2">
-                <Brain className="w-4 h-4 mr-1 sm:mr-2" />
-                Detect Phobia
-              </TabsTrigger>
-              <TabsTrigger value="my-phobias" className="text-xs sm:text-sm py-2">
-                <Brain className="w-4 h-4 mr-1 sm:mr-2" />
-                My Phobias
-              </TabsTrigger>
-              <TabsTrigger value="marketplace" className="text-xs sm:text-sm py-2">
-                <ShoppingCart className="w-4 h-4 mr-1 sm:mr-2" />
-                Marketplace
-              </TabsTrigger>
-              <TabsTrigger value="cure" className="text-xs sm:text-sm py-2">
-                <HeartPulse className="w-4 h-4 mr-1 sm:mr-2" />
-                Cure</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="detect">
-              <PhobiaDetector onPhobiaDetected={() => {
-                toast({
-                  title: "Phobia Added",
-                  description: "Your phobia has been saved to your profile",
-                });
-              }} />
-            </TabsContent>
-
-            <TabsContent value="my-phobias">
-              <MyPhobias onPhobiaListed={() => {
-                toast({
-                  title: "Phobia Listed",
-                  description: "Check the Marketplace tab to see your listing",
-                });
-              }} />
-            </TabsContent>
-
-            <TabsContent value="marketplace">
-              <PhobiaMarketplace />
-            </TabsContent>
-
-            <TabsContent value="cure">
-              <PhobiaCureDashboard />
-            </TabsContent>
-          </Tabs>
-        </div>
-      </section>
-
-      {/* Benefits Section */}
-      <section className="py-24 px-4 bg-gradient-to-b from-cyan-950/10 to-background relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-0 left-1/4 w-96 h-96 bg-cyan-500 rounded-full blur-3xl" />
-          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-500 rounded-full blur-3xl" />
-        </div>
-        
-        <div className="container mx-auto relative z-10">
-          <h2 className="text-4xl md:text-5xl font-bold text-center mb-6">
-            <span className="bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
-              Why Choose Phobia Trading?
-            </span>
-          </h2>
-          <p className="text-center text-muted-foreground mb-16 text-lg max-w-2xl mx-auto">
-            Revolutionary technology meets clinical psychology for effective fear management
-          </p>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 max-w-6xl mx-auto">
-            <div className="text-center group">
-              <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-cyan-500/20 to-blue-500/20 border border-cyan-500/30 mb-6 group-hover:scale-110 transition-transform duration-300">
-                <Brain className="w-10 h-10 text-cyan-400" />
+            <div>
+              <h2 className="text-xl font-black mb-4 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
+                Your Fear Management Tools
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {tools.map((tool, index) => (
+                  <motion.div key={tool.id}
+                    initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.06, duration: 0.4 }}>
+                    <Card className="group relative overflow-hidden cursor-pointer hover:shadow-xl transition-all duration-300 bg-card/80 backdrop-blur-xl border-border/50"
+                      onClick={() => setActiveView(tool.id)}>
+                      <div className={`h-1 ${tool.gradient}`} />
+                      <div className="p-5">
+                        <div className="flex items-start justify-between mb-3">
+                          <div className="p-2 rounded-lg bg-primary/10">
+                            <tool.icon className="h-5 w-5 text-primary" />
+                          </div>
+                          <Badge variant="secondary" className="text-[10px]">{tool.badge}</Badge>
+                        </div>
+                        <h3 className="font-bold text-sm mb-1">{tool.title}</h3>
+                        <p className="text-xs text-muted-foreground mb-3">{tool.description}</p>
+                        <ul className="space-y-1.5">
+                          {tool.features.map(f => (
+                            <li key={f} className="flex items-center gap-2 text-xs text-muted-foreground">
+                              <Check className="h-3 w-3 text-primary flex-shrink-0" />{f}
+                            </li>
+                          ))}
+                        </ul>
+                        <Button size="sm" className="w-full mt-4 opacity-0 group-hover:opacity-100 transition-opacity">Open</Button>
+                      </div>
+                    </Card>
+                  </motion.div>
+                ))}
               </div>
-              <h3 className="text-2xl font-black mb-4 group-hover:text-cyan-400 transition-colors">
-                AI-Powered Analysis
-              </h3>
-              <p className="text-muted-foreground leading-relaxed">
-                Advanced machine learning algorithms detect and analyze phobias with clinical precision
-              </p>
             </div>
-            
-            <div className="text-center group">
-              <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-blue-500/20 to-teal-500/20 border border-blue-500/30 mb-6 group-hover:scale-110 transition-transform duration-300">
-                <Shield className="w-10 h-10 text-blue-400" />
+
+            <Card className="p-6 bg-card/80 backdrop-blur-xl border-border/50">
+              <h2 className="text-xl font-black mb-4 text-primary">💡 Tips for Future Enhancements</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {[
+                  { title: "🎮 VR Fear Worlds", desc: "Immersive 3D environments for exposure therapy using WebXR — walk through virtual scenarios that gradually increase in intensity." },
+                  { title: "🧬 Fear DNA Analysis", desc: "Upload genetic data to discover inherited phobia predispositions and get personalized prevention strategies based on your genetics." },
+                  { title: "📹 Video Fear Diary", desc: "Record video entries during anxiety episodes for AI emotion analysis — track facial expressions, voice tone, and body language over time." },
+                  { title: "🏅 Fear Fighter Tournaments", desc: "Competitive exposure challenges where users earn points for facing fears — monthly leaderboards with rewards for the bravest participants." },
+                  { title: "🤖 AI Dream Analyzer", desc: "Log your nightmares and recurring dreams for AI analysis — discover hidden fear patterns and subconscious anxiety triggers." },
+                  { title: "👥 Live Group Therapy", desc: "Real-time video group sessions with AI moderation — connect with others facing similar phobias for mutual support and accountability." },
+                ].map(tip => (
+                  <div key={tip.title} className="p-4 rounded-lg bg-muted/10 border border-border/30">
+                    <h4 className="font-bold text-sm mb-1">{tip.title}</h4>
+                    <p className="text-xs text-muted-foreground">{tip.desc}</p>
+                  </div>
+                ))}
               </div>
-              <h3 className="text-2xl font-black mb-4 group-hover:text-blue-400 transition-colors">
-                Secure & Private
-              </h3>
-              <p className="text-muted-foreground leading-relaxed">
-                Your fear data is encrypted and protected with military-grade security protocols
-              </p>
-            </div>
-            
-            <div className="text-center group">
-              <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-teal-500/20 to-cyan-500/20 border border-teal-500/30 mb-6 group-hover:scale-110 transition-transform duration-300">
-                <HeartPulse className="w-10 h-10 text-teal-400" />
-              </div>
-              <h3 className="text-2xl font-black mb-4 group-hover:text-teal-400 transition-colors">
-                Proven Results
-              </h3>
-              <p className="text-muted-foreground leading-relaxed">
-                Join over 100,000 users who have successfully managed their fears with our platform
-              </p>
-            </div>
+            </Card>
           </div>
-        </div>
-      </section>
+        )}
+      </div>
     </div>
   );
 };
