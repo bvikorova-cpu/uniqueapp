@@ -50,6 +50,7 @@ export default function TipsterDashboard() {
   const [odds, setOdds] = useState("2.00");
   const [price, setPrice] = useState("9.99");
   const [analysis, setAnalysis] = useState("");
+  const [predictions, setPredictions] = useState<any[]>([]);
 
   useEffect(() => {
     if (user) {
@@ -78,6 +79,7 @@ export default function TipsterDashboard() {
 
       setProfile(tipster);
       await fetchMatches();
+      await fetchPredictions(tipster.id);
     } catch (error) {
       console.error('Error checking tipster status:', error);
       navigate('/sports-predictor');
