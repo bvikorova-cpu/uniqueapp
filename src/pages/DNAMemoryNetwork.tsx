@@ -22,6 +22,7 @@ import { GeneticHealthInsights } from "@/components/dna/GeneticHealthInsights";
 import { FamilyTreeBuilder } from "@/components/dna/FamilyTreeBuilder";
 import { DNACommunityForum } from "@/components/dna/DNACommunityForum";
 import dnaHeroPoster from "@/assets/dna-hero-poster.jpg";
+// @ts-ignore
 import dnaHeroVideoAsset from "/public/videos/dna-hero.mp4.asset.json";
 
 type ToolView = "hub" | "analysis" | "memories" | "dating" | "offspring" |
