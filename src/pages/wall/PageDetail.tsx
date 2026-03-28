@@ -574,7 +574,24 @@ export default function PageDetail() {
                             <DialogHeader>
                               <DialogTitle>Add Video</DialogTitle>
                             </DialogHeader>
-                            <p className="text-sm text-muted-foreground">Video upload coming soon!</p>
+                            <Input
+                              type="file"
+                              accept="video/*"
+                              onChange={async (e) => {
+                                const file = e.target.files?.[0];
+                                if (!file) return;
+                                try {
+                                  const path = `wall-videos/${Date.now()}-${file.name}`;
+                                  const { error } = await supabase.storage.from("user-uploads").upload(path, file);
+                                  if (error) throw error;
+                                  const { data: urlData } = supabase.storage.from("user-uploads").getPublicUrl(path);
+                                  setPostContent(prev => prev + `\n${urlData.publicUrl}`);
+                                  toast({ title: "Video uploaded!" });
+                                } catch (err: any) {
+                                  toast({ title: "Upload failed", description: err.message, variant: "destructive" });
+                                }
+                              }}
+                            />
                           </DialogContent>
                         </Dialog>
 

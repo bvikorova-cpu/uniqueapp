@@ -308,8 +308,18 @@ export default function BedtimeStories() {
 
               <Card className="p-4 bg-white/5 backdrop-blur-md border-purple-400/20 shadow-xl">
                 <CustomStoryGenerator
-                  onGenerate={(story) => {
-                    toast({ title: "✨ Coming Soon!", description: "Custom story generation will be available soon!" });
+                  onGenerate={async (story) => {
+                    try {
+                      const { data: { session } } = await supabase.auth.getSession();
+                      if (!session) { toast({ title: "Please sign in", variant: "destructive" }); return; }
+                      const { data, error } = await supabase.functions.invoke("kids-story-generate", {
+                        body: { prompt: story.text, title: story.title },
+                      });
+                      if (error) throw error;
+                      toast({ title: "✨ Story Created!", description: data?.title || story.title });
+                    } catch {
+                      toast({ title: "Story generation failed", description: "Please try again later.", variant: "destructive" });
+                    }
                   }}
                 />
               </Card>
