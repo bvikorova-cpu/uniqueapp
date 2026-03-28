@@ -23,10 +23,11 @@ import { AITherapistChat } from "@/components/phobia/AITherapistChat";
 import { ExposureSimulator } from "@/components/phobia/ExposureSimulator";
 import { PhobiaCommunity } from "@/components/phobia/PhobiaCommunity";
 import { AnxietyTracker } from "@/components/phobia/AnxietyTracker";
+import { PhobiaPricing } from "@/components/phobia/PhobiaPricing";
 
 import phobiaPoster from "@/assets/phobia-hero-poster.jpg";
 
-type ToolView = "hub" | "detect" | "my-phobias" | "marketplace" | "cure" | "journal" | "analytics" | "therapist" | "exposure" | "community" | "anxiety";
+type ToolView = "hub" | "detect" | "my-phobias" | "marketplace" | "cure" | "journal" | "analytics" | "therapist" | "exposure" | "community" | "anxiety" | "pricing";
 
 const tools = [
   { id: "detect" as ToolView, title: "AI Phobia Detector", description: "Identify your specific fears with AI analysis", icon: Brain, badge: "AI", gradient: "bg-gradient-to-r from-cyan-500 to-blue-500", features: ["Behavioral analysis", "Clinical accuracy", "Trigger identification"] },
