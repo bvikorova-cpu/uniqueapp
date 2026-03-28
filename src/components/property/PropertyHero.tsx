@@ -80,7 +80,7 @@ export const PropertyHero = () => {
         loop
         playsInline
       >
-        <source src="/__l5e/assets-v1/d8843186-0829-4e4b-a41b-41e87aa6fdb0/property-homepage-hero.mp4" type="video/mp4" />
+        <source src="/__l5e/assets-v1/876c9b9b-6ab6-49e9-82ea-b3995239c475/property-homepage-hero.mp4" type="video/mp4" />
       </video>
 
       <div className="absolute inset-0 bg-gradient-to-b from-background/15 via-background/30 to-background/70" />
