@@ -32,7 +32,7 @@ export function TimeReversalHero() {
   return (
     <div className="relative h-[78vh] min-h-[540px] w-full overflow-hidden rounded-3xl border border-border/40 mb-8">
       <video ref={videoRef} className="absolute inset-0 h-full w-full object-cover brightness-110 saturate-110" autoPlay muted loop playsInline>
-        <source src="/__l5e/assets-v1/98b87600-00f5-4c9b-a41f-5e670463ab3b/time-reversal-hero.mp4" type="video/mp4" />
+        <source src="/__l5e/assets-v1/7d3ecbfe-9bcb-4577-9a77-d3a46480a98f/time-reversal-hero-video.mp4" type="video/mp4" />
       </video>
 
       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
