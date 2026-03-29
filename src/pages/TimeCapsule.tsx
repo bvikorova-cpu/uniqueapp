@@ -1,379 +1,160 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Clock, Mail, Video, FileText, Calendar, Send, Loader2 } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import {
+  Clock, Send, FolderOpen, Users, Brain, Calendar, Eye, CreditCard, Info, Loader2, Shield, Sparkles, Mail
+} from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { useToast } from "@/hooks/use-toast";
+import { TimeCapsuleHero } from "@/components/time-capsule/TimeCapsuleHero";
+import { TimeCapsuleToolCard } from "@/components/time-capsule/TimeCapsuleToolCard";
+import { CapsuleCreator } from "@/components/time-capsule/CapsuleCreator";
+import { MyCapsules } from "@/components/time-capsule/MyCapsules";
+import { CapsuleGallery } from "@/components/time-capsule/CapsuleGallery";
+import { AITimingPredictor } from "@/components/time-capsule/AITimingPredictor";
+import { MemoryVault } from "@/components/time-capsule/MemoryVault";
+import { CollaborativeCapsule } from "@/components/time-capsule/CollaborativeCapsule";
+import { CapsuleTimeline } from "@/components/time-capsule/CapsuleTimeline";
+import { CapsulePlans } from "@/components/time-capsule/CapsulePlans";
+import { TimeCapsuleHowItWorks } from "@/components/time-capsule/TimeCapsuleHowItWorks";
+
+type ViewType = "hub" | "creator" | "my-capsules" | "gallery" | "ai-predictor" | "vault" | "collaborative" | "timeline" | "plans" | "how-it-works";
+
+const tools = [
+  { id: "creator" as ViewType, icon: Send, title: "Create Capsule", description: "Write messages, record videos, or letters for the future", color: "blue", badge: "Free" },
+  { id: "my-capsules" as ViewType, icon: Clock, title: "My Capsules", description: "View and manage all your time capsules", color: "amber" },
+  { id: "vault" as ViewType, icon: FolderOpen, title: "Memory Vault", description: "Upload and store photos, videos, and documents", color: "violet", badge: "New" },
+  { id: "ai-predictor" as ViewType, icon: Brain, title: "AI Timing", description: "AI predicts the perfect delivery moment", color: "emerald", badge: "AI" },
+  { id: "collaborative" as ViewType, icon: Users, title: "Group Capsule", description: "Create collaborative capsules with friends", color: "pink", badge: "New" },
+  { id: "timeline" as ViewType, icon: Calendar, title: "Timeline", description: "Visualize your capsules on a timeline", color: "cyan" },
+  { id: "gallery" as ViewType, icon: Eye, title: "Community Gallery", description: "Browse public capsule stories", color: "indigo" },
+  { id: "plans" as ViewType, icon: CreditCard, title: "Plans & Pricing", description: "Choose your capsule plan (€4.99–€49.99)", color: "orange", badge: "€4.99+" },
+  { id: "how-it-works" as ViewType, icon: Info, title: "How It Works", description: "Complete guide to Time Capsule 2.0", color: "rose" },
+];
 
 export default function TimeCapsule() {
-  const { toast } = useToast();
-  const navigate = useNavigate();
+  const [activeView, setActiveView] = useState<ViewType>("hub");
+  const [user, setUser] = useState<any>(null);
+  const [checkingAuth, setCheckingAuth] = useState(true);
   const [searchParams] = useSearchParams();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [capsules, setCapsules] = useState<any[]>([]);
-
-  // Form state
-  const [title, setTitle] = useState("");
-  const [message, setMessage] = useState("");
-  const [capsuleType, setCapsuleType] = useState<"text" | "video" | "letter">("text");
-  const [deliveryDate, setDeliveryDate] = useState("");
-  const [recipientEmail, setRecipientEmail] = useState("");
-  const [recipientName, setRecipientName] = useState("");
+  const navigate = useNavigate();
+  const { toast } = useToast();
 
   useEffect(() => {
-    checkAuth();
-    handlePaymentSuccess();
-    loadCapsules();
+    const check = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        setUser(session?.user || null);
+        if (!session) window.location.href = '/auth';
+      } catch (e) { console.error(e); }
+      finally { setCheckingAuth(false); }
+    };
+    check();
+  }, []);
+
+  useEffect(() => {
+    if (searchParams.get('success') === 'true') toast({ title: "Payment Successful!", description: "You can now create your time capsule." });
+    if (searchParams.get('premium_success') === 'true') toast({ title: "Premium Activated!", description: "Your Premium subscription is now active." });
   }, [searchParams]);
 
-  const checkAuth = async () => {
-    const { data: { session } } = await supabase.auth.getSession();
-    setIsAuthenticated(!!session);
-    if (!session) {
-      navigate("/auth");
+  if (checkingAuth) return <div className="min-h-screen bg-background flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>;
+  if (!user) return null;
+
+  const goBack = () => setActiveView("hub");
+
+  const renderView = () => {
+    switch (activeView) {
+      case "creator": return <CapsuleCreator onBack={goBack} />;
+      case "my-capsules": return <MyCapsules onBack={goBack} />;
+      case "gallery": return <CapsuleGallery onBack={goBack} />;
+      case "ai-predictor": return <AITimingPredictor onBack={goBack} />;
+      case "vault": return <MemoryVault onBack={goBack} />;
+      case "collaborative": return <CollaborativeCapsule onBack={goBack} />;
+      case "timeline": return <CapsuleTimeline onBack={goBack} />;
+      case "plans": return <CapsulePlans onBack={goBack} />;
+      case "how-it-works": return <TimeCapsuleHowItWorks onBack={goBack} />;
+      default: return null;
     }
-  };
-
-  const handlePaymentSuccess = () => {
-    const success = searchParams.get('success');
-    const premiumSuccess = searchParams.get('premium_success');
-
-    if (success === 'true') {
-      toast({
-        title: "Payment Successful!",
-        description: "You can now create your time capsule.",
-      });
-    } else if (premiumSuccess === 'true') {
-      toast({
-        title: "Premium Activated!",
-        description: "Your Premium subscription is now active.",
-      });
-    }
-  };
-
-  const loadCapsules = async () => {
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) return;
-
-      const { data, error } = await supabase
-        .from("time_capsules")
-        .select("*")
-        .eq("user_id", session.user.id)
-        .order("created_at", { ascending: false });
-
-      if (error) throw error;
-      setCapsules(data || []);
-    } catch (error) {
-      console.error("Error loading capsules:", error);
-    }
-  };
-
-  const calculateDuration = (deliveryDate: string) => {
-    const now = new Date();
-    const delivery = new Date(deliveryDate);
-    const years = Math.floor((delivery.getTime() - now.getTime()) / (1000 * 60 * 60 * 24 * 365));
-    return years;
-  };
-
-  const handleSubmit = async () => {
-    if (!title || !deliveryDate) {
-      toast({
-        title: "Missing Information",
-        description: "Please fill in title and delivery date.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    const durationYears = calculateDuration(deliveryDate);
-    if (durationYears < 0) {
-      toast({
-        title: "Invalid Date",
-        description: "Delivery date must be in the future.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setLoading(true);
-
-    try {
-      // For now, save as pending payment
-      const { error } = await supabase.functions.invoke("save-time-capsule", {
-        body: {
-          title,
-          message,
-          capsuleType,
-          deliveryDate,
-          recipientEmail,
-          recipientName,
-          durationYears,
-          pricePaid: null,
-          stripePaymentId: null,
-        },
-      });
-
-      if (error) throw error;
-
-      toast({
-        title: "Time Capsule Created!",
-        description: `Your message will be delivered on ${new Date(deliveryDate).toLocaleDateString()}.`,
-      });
-
-      // Reset form
-      setTitle("");
-      setMessage("");
-      setDeliveryDate("");
-      setRecipientEmail("");
-      setRecipientName("");
-      
-      loadCapsules();
-    } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to create time capsule",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-500/10 via-background to-cyan-500/10">
-      <div className="container mx-auto px-3 sm:px-4 py-8 sm:py-12 pt-16 sm:pt-12">
-        <div className="text-center mb-8 sm:mb-12">
-          <div className="inline-block p-2 sm:p-3 bg-blue-500/10 rounded-full mb-3 sm:mb-4">
-            <Clock className="h-8 w-8 sm:h-12 sm:w-12 text-blue-600" />
-          </div>
-          <h1 className="text-2xl sm:text-4xl md:text-5xl font-black mb-3 sm:mb-4 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
-            Create Your Time Capsule
-          </h1>
-          <p className="text-base sm:text-xl text-muted-foreground max-w-2xl mx-auto px-2">
-            Write a message to your future self or loved ones
-          </p>
-        </div>
+    <div className="min-h-screen bg-background">
+      <div className="container mx-auto px-4 pt-20 pb-8">
+        {activeView === "hub" ? (
+          <>
+            <TimeCapsuleHero />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mb-8 sm:mb-12">
-          {/* Create Capsule Form */}
-          <Card>
-            <CardHeader>
-              <CardTitle>New Time Capsule</CardTitle>
-              <CardDescription>
-                Create a message that will be delivered in the future
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="title">Capsule Title</Label>
-                <Input
-                  id="title"
-                  placeholder="E.g., Letter to my 30-year-old self"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                />
+            {/* Compact Engagement Row */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
+              {[
+                { icon: Clock, label: "Total Capsules", value: "12.4K", color: "text-blue-500" },
+                { icon: Mail, label: "Delivered", value: "3.2K", color: "text-emerald-500" },
+                { icon: Shield, label: "Encrypted Years", value: "847+", color: "text-amber-500" },
+                { icon: Sparkles, label: "Active Users", value: "5.6K", color: "text-violet-500" },
+              ].map((stat, i) => (
+                <Card key={i} className="border-border/40 bg-card/80 backdrop-blur-sm hover:border-primary/30 transition-all">
+                  <CardContent className="p-3 flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center">
+                      <stat.icon className={`w-5 h-5 ${stat.color}`} />
+                    </div>
+                    <div>
+                      <p className="text-lg font-black">{stat.value}</p>
+                      <p className="text-xs text-muted-foreground">{stat.label}</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+
+            {/* Tool Cards Grid */}
+            <div className="mb-8">
+              <h2 className="text-2xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent mb-6">
+                Time Capsule Tools
+              </h2>
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+                {tools.map((tool, i) => (
+                  <TimeCapsuleToolCard
+                    key={tool.id}
+                    icon={tool.icon}
+                    title={tool.title}
+                    description={tool.description}
+                    color={tool.color}
+                    onClick={() => setActiveView(tool.id)}
+                    index={i}
+                    badge={tool.badge}
+                  />
+                ))}
               </div>
+            </div>
 
-              <Tabs value={capsuleType} onValueChange={(v) => setCapsuleType(v as any)}>
-                <TabsList className="grid w-full grid-cols-3">
-                  <TabsTrigger value="text" className="text-xs sm:text-sm">
-                    <FileText className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-                    Text
-                  </TabsTrigger>
-                  <TabsTrigger value="video" className="text-xs sm:text-sm">
-                    <Video className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-                    Video
-                  </TabsTrigger>
-                  <TabsTrigger value="letter" className="text-xs sm:text-sm">
-                    <Mail className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-                    Letter
-                  </TabsTrigger>
-                </TabsList>
-
-                <TabsContent value="text" className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="message">Your Message</Label>
-                    <Textarea
-                      id="message"
-                      placeholder="Write your message here..."
-                      value={message}
-                      onChange={(e) => setMessage(e.target.value)}
-                      rows={6}
-                    />
-                  </div>
-                </TabsContent>
-
-                <TabsContent value="video" className="space-y-4">
-                  <div className="space-y-2">
-                    <Label>Upload Video</Label>
-                    <Input
-                      type="file"
-                      accept="video/*"
-                      onChange={async (e) => {
-                        const file = e.target.files?.[0];
-                        if (!file) return;
-                        try {
-                          const { data: { session } } = await supabase.auth.getSession();
-                          if (!session) { toast({ title: "Please sign in", variant: "destructive" }); return; }
-                          const path = `time-capsule-videos/${session.user.id}/${Date.now()}-${file.name}`;
-                          const { error } = await supabase.storage.from("user-uploads").upload(path, file);
-                          if (error) throw error;
-                          const { data: urlData } = supabase.storage.from("user-uploads").getPublicUrl(path);
-                          setMessage(prev => prev + `\n[Video: ${urlData.publicUrl}]`);
-                          toast({ title: "Video uploaded!", description: "It will be included in your time capsule." });
-                        } catch (err: any) {
-                          toast({ title: "Upload failed", description: err.message, variant: "destructive" });
-                        }
-                      }}
-                    />
-                  </div>
-                </TabsContent>
-
-                <TabsContent value="letter" className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="letter">Write Your Letter</Label>
-                    <Textarea
-                      id="letter"
-                      placeholder="Dear future me..."
-                      value={message}
-                      onChange={(e) => setMessage(e.target.value)}
-                      rows={8}
-                    />
-                  </div>
-                </TabsContent>
-              </Tabs>
-
-              <div className="space-y-2">
-                <Label htmlFor="delivery-date">
-                  <Calendar className="h-4 w-4 inline mr-2" />
-                  Delivery Date
-                </Label>
-                <Input
-                  id="delivery-date"
-                  type="date"
-                  value={deliveryDate}
-                  onChange={(e) => setDeliveryDate(e.target.value)}
-                  min={new Date().toISOString().split('T')[0]}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="recipient-name">Recipient Name (Optional)</Label>
-                <Input
-                  id="recipient-name"
-                  placeholder="Who should receive this?"
-                  value={recipientName}
-                  onChange={(e) => setRecipientName(e.target.value)}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="recipient-email">Recipient Email (Optional)</Label>
-                <Input
-                  id="recipient-email"
-                  type="email"
-                  placeholder="their@email.com"
-                  value={recipientEmail}
-                  onChange={(e) => setRecipientEmail(e.target.value)}
-                />
-              </div>
-
-              <Button
-                className="w-full"
-                size="lg"
-                onClick={handleSubmit}
-                disabled={loading}
-              >
-                {loading ? (
-                  <>
-                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                    Creating...
-                  </>
-                ) : (
-                  <>
-                    <Send className="mr-2 h-5 w-5" />
-                    Create Time Capsule
-                  </>
-                )}
-              </Button>
-            </CardContent>
-          </Card>
-
-          {/* My Capsules */}
-          <Card>
-            <CardHeader>
-              <CardTitle>My Time Capsules</CardTitle>
-              <CardDescription>
-                Your messages waiting to be delivered
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {capsules.length === 0 ? (
-                <div className="text-center py-12">
-                  <Clock className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                  <p className="text-muted-foreground">No time capsules yet</p>
-                  <p className="text-sm text-muted-foreground mt-2">
-                    Create your first one to get started
-                  </p>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {capsules.map((capsule) => (
-                    <Card key={capsule.id} className="overflow-hidden">
-                      <CardContent className="p-4">
-                        <div className="flex items-start justify-between mb-2">
-                          <h4 className="font-semibold">{capsule.title}</h4>
-                          <span className={`text-xs px-2 py-1 rounded ${
-                            capsule.is_delivered 
-                              ? 'bg-green-500/20 text-green-600' 
-                              : 'bg-blue-500/20 text-blue-600'
-                          }`}>
-                            {capsule.is_delivered ? 'Delivered' : 'Pending'}
-                          </span>
-                        </div>
-                        <p className="text-sm text-muted-foreground mb-2">
-                          {capsule.message?.substring(0, 100)}
-                          {capsule.message?.length > 100 && "..."}
-                        </p>
-                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                          <Calendar className="h-3 w-3" />
-                          Delivery: {formatDate(capsule.delivery_date)}
-                        </div>
-                        {capsule.recipient_name && (
-                          <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
-                            <Mail className="h-3 w-3" />
-                            To: {capsule.recipient_name}
-                          </div>
-                        )}
-                      </CardContent>
-                    </Card>
+            {/* How It Works Summary */}
+            <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-background">
+              <CardContent className="p-6 space-y-4">
+                <h3 className="text-xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">How It Works</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                  {[
+                    { icon: Send, title: "1. Create", desc: "Write messages, record videos, or compose letters for the future" },
+                    { icon: Brain, title: "2. AI Timing", desc: "Our AI suggests the perfect delivery moment for maximum impact" },
+                    { icon: Shield, title: "3. Secure", desc: "Military-grade encryption protects your memories for decades" },
+                    { icon: Calendar, title: "4. Deliver", desc: "Your capsule arrives exactly when it's meant to be received" },
+                  ].map((step, i) => (
+                    <div key={i} className="text-center space-y-2">
+                      <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-primary/10 border border-primary/20">
+                        <step.icon className="w-6 h-6 text-primary" />
+                      </div>
+                      <h4 className="font-bold text-sm">{step.title}</h4>
+                      <p className="text-xs text-muted-foreground">{step.desc}</p>
+                    </div>
                   ))}
                 </div>
-              )}
-            </CardContent>
-          </Card>
-        </div>
-
-        <div className="text-center">
-          <Button variant="outline" size="lg" onClick={() => navigate("/time-capsule-subscription")}>
-            View All Plans
-          </Button>
-        </div>
+              </CardContent>
+            </Card>
+          </>
+        ) : (
+          <div className="max-w-4xl mx-auto">
+            {renderView()}
+          </div>
+        )}
       </div>
     </div>
   );
