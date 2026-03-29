@@ -36,7 +36,7 @@ export function MasterChefHero() {
   };
 
   return (
-    <section className="relative h-[76svh] min-h-[520px] overflow-hidden rounded-2xl mx-2 md:mx-0">
+    <section className="relative h-[76svh] min-h-[520px] overflow-hidden rounded-2xl mx-2 md:mx-0 bg-black">
       {/* Video Background */}
       <video
         ref={videoRef}
