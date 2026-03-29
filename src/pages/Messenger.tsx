@@ -42,11 +42,11 @@ const messengerTools = [
   { id: "voice" as MessengerView, icon: Radio, title: "Voice Rooms", description: "Drop-in live audio conversations", color: "emerald", badge: "Live" },
   { id: "scheduler" as MessengerView, icon: Clock, title: "Message Scheduler", description: "Schedule messages for later delivery", color: "amber", badge: "New" },
   { id: "receipts" as MessengerView, icon: CheckCheck, title: "Read Receipts", description: "Who reads your messages fastest?", color: "teal", badge: "New" },
-  { id: "backup" as MessengerView, icon: ArrowLeft, title: "Backup & Export", description: "Download chats as TXT, JSON or PDF", color: "slate", badge: "New" },
-  { id: "mood" as MessengerView, icon: Smile, title: "Mood Detection", description: "AI analysis of your emotional tone", color: "rose", badge: "AI" },
+  { id: "backup" as MessengerView, icon: Download, title: "Backup & Export", description: "Download chats as TXT, JSON or PDF", color: "slate", badge: "New" },
+  { id: "mood" as MessengerView, icon: Brain, title: "Mood Detection", description: "AI analysis of your emotional tone", color: "rose", badge: "AI" },
   { id: "emoji" as MessengerView, icon: Smile, title: "Emoji Creator", description: "Design custom emojis for chats", color: "pink", badge: "New" },
-  { id: "games" as MessengerView, icon: Play, title: "Chat Games", description: "Trivia, RPS & more mini-games", color: "indigo", badge: "Fun" },
-  { id: "notifications" as MessengerView, icon: Users, title: "Smart Notifications", description: "AI-powered notification management", color: "lime", badge: "AI" },
+  { id: "games" as MessengerView, icon: Gamepad2, title: "Chat Games", description: "Trivia, RPS & more mini-games", color: "indigo", badge: "Fun" },
+  { id: "notifications" as MessengerView, icon: Bell, title: "Smart Notifications", description: "AI-powered notification management", color: "lime", badge: "AI" },
 ];
 
 interface Profile {
