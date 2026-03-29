@@ -228,6 +228,48 @@ export default function F1RacingArena() {
       </div>
     </div>
   );
+  if (activeView === "championship") return (
+    <div className="min-h-screen bg-slate-950 relative overflow-hidden">
+      <div className="relative z-10 max-w-7xl mx-auto p-4 sm:p-6 pt-20 sm:pt-24">
+        <SeasonalChampionship onBack={() => setActiveView("hub")} />
+      </div>
+    </div>
+  );
+  if (activeView === "teams") return (
+    <div className="min-h-screen bg-slate-950 relative overflow-hidden">
+      <div className="relative z-10 max-w-7xl mx-auto p-4 sm:p-6 pt-20 sm:pt-24">
+        <TeamRacing onBack={() => setActiveView("hub")} />
+      </div>
+    </div>
+  );
+  if (activeView === "telemetry") return (
+    <div className="min-h-screen bg-slate-950 relative overflow-hidden">
+      <div className="relative z-10 max-w-7xl mx-auto p-4 sm:p-6 pt-20 sm:pt-24">
+        <Telemetry onBack={() => setActiveView("hub")} />
+      </div>
+    </div>
+  );
+  if (activeView === "betting") return (
+    <div className="min-h-screen bg-slate-950 relative overflow-hidden">
+      <div className="relative z-10 max-w-7xl mx-auto p-4 sm:p-6 pt-20 sm:pt-24">
+        <BettingSystem onBack={() => setActiveView("hub")} />
+      </div>
+    </div>
+  );
+  if (activeView === "achievements") return (
+    <div className="min-h-screen bg-slate-950 relative overflow-hidden">
+      <div className="relative z-10 max-w-7xl mx-auto p-4 sm:p-6 pt-20 sm:pt-24">
+        <AchievementSystem onBack={() => setActiveView("hub")} />
+      </div>
+    </div>
+  );
+  if (activeView === "track-editor") return (
+    <div className="min-h-screen bg-slate-950 relative overflow-hidden">
+      <div className="relative z-10 max-w-7xl mx-auto p-4 sm:p-6 pt-20 sm:pt-24">
+        <TrackEditor onBack={() => setActiveView("hub")} />
+      </div>
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-slate-950 relative overflow-hidden">
