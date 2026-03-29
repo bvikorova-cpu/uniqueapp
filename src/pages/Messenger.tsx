@@ -786,6 +786,12 @@ const Messenger = () => {
       case "themes": return <AIChatThemes onBack={goToHub} userId={user.id} />;
       case "voice": return <VoiceRoom onBack={goToHub} userId={user.id} />;
       case "scheduler": return <MessageScheduler onBack={goToHub} userId={user.id} />;
+      case "receipts": return <ReadReceiptsAnalytics onBack={goToHub} userId={user.id} />;
+      case "backup": return <ChatBackupExport onBack={goToHub} userId={user.id} />;
+      case "mood": return <AIMoodDetection onBack={goToHub} userId={user.id} />;
+      case "emoji": return <CustomEmojiCreator onBack={goToHub} userId={user.id} />;
+      case "games": return <ChatGames onBack={goToHub} userId={user.id} />;
+      case "notifications": return <SmartNotifications onBack={goToHub} userId={user.id} />;
       default: return null;
     }
   };
@@ -808,6 +814,12 @@ const Messenger = () => {
       purple: "from-purple-500 to-pink-500",
       emerald: "from-emerald-500 to-teal-500",
       amber: "from-amber-500 to-orange-500",
+      teal: "from-teal-500 to-cyan-500",
+      slate: "from-slate-500 to-gray-500",
+      rose: "from-rose-500 to-pink-500",
+      pink: "from-pink-500 to-fuchsia-500",
+      indigo: "from-indigo-500 to-violet-500",
+      lime: "from-lime-500 to-green-500",
     };
 
     return (
