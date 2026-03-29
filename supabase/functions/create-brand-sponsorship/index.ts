@@ -82,6 +82,7 @@ serve(async (req) => {
       cancel_url: `${req.headers.get("origin")}/brand-battle?canceled=true`,
       metadata: {
         user_id: user.id,
+        type: "brand_sponsorship",
         tier: tier,
       },
     });

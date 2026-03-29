@@ -66,6 +66,7 @@ serve(async (req) => {
       cancel_url: `${req.headers.get('origin')}/brain-duel?payment=cancelled`,
       metadata: {
         user_id: user.id,
+        type: "brain_duel_credits",
         credits: CREDIT_PACKAGES[priceId as keyof typeof CREDIT_PACKAGES].credits.toString(),
       },
     });

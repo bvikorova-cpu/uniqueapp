@@ -76,6 +76,7 @@ serve(async (req) => {
       success_url: `${req.headers.get("origin")}/fit-slim?success=true&plan_id=${planRecord.id}`,
       cancel_url: `${req.headers.get("origin")}/fit-slim?canceled=true`,
       metadata: {
+        type: "fitslim_plan",
         plan_id: planRecord.id,
         plan_type: planType,
         user_id: user.id,

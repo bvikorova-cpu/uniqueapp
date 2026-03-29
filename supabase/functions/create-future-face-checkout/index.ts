@@ -52,6 +52,7 @@ serve(async (req) => {
       cancel_url: `${req.headers.get("origin")}/future-face`,
       metadata: {
         user_id: user.id,
+        type: "future_face",
         plan_type: planType
       }
     });

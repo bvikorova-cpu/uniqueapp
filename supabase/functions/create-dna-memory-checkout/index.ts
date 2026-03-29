@@ -62,6 +62,7 @@ serve(async (req) => {
       cancel_url: `${req.headers.get("origin")}/dna-memory-network?payment=canceled`,
       metadata: {
         user_id: user.id,
+        type: "dna_memory",
         service_type: serviceType,
       },
     });

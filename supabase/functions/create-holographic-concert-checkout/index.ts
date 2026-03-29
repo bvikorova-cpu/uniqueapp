@@ -62,6 +62,7 @@ serve(async (req) => {
       cancel_url: `${req.headers.get("origin")}/holographic-concerts?canceled=true`,
       metadata: {
         user_id: user.id,
+        type: "holographic_concert",
         feature: featureName,
       },
     });

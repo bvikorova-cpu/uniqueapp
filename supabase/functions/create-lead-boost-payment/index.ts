@@ -64,6 +64,7 @@ serve(async (req) => {
       success_url: `${req.headers.get("origin")}/my-properties?payment=success&property_id=${propertyId}&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${req.headers.get("origin")}/my-properties?payment=cancelled`,
       metadata: {
+        type: "lead_boost",
         property_id: propertyId,
         user_id: user.id,
       },

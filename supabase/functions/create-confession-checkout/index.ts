@@ -66,6 +66,7 @@ serve(async (req) => {
       cancel_url: `${req.headers.get("origin")}/blockchain-confessions?payment=canceled`,
       metadata: {
         user_id: user.id,
+        type: "confession_tokens",
         service_type: serviceType,
       },
     });

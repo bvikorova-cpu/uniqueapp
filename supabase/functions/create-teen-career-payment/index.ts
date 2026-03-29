@@ -50,6 +50,7 @@ serve(async (req) => {
       cancel_url: `${req.headers.get("origin")}/teen-career-counselor?payment=cancelled`,
       metadata: {
         user_id: user.id,
+        type: "teen_career",
         product_type: "teen_career_counselor",
       },
     });

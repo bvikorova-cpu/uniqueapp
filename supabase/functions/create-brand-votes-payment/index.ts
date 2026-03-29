@@ -59,6 +59,7 @@ serve(async (req) => {
       cancel_url: `${origin}/brand-battle?payment=canceled`,
       metadata: {
         user_id: user.id,
+        type: "brand_votes",
         price_id: priceId,
       },
     });

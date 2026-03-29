@@ -65,6 +65,7 @@ serve(async (req) => {
       cancel_url: `${req.headers.get("origin")}/crystal-energy-network?canceled=true`,
       metadata: {
         user_id: user.id,
+        type: "crystal_energy",
         feature: featureName,
         feature_key: featureKey,
       },
