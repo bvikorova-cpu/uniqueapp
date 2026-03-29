@@ -50,7 +50,7 @@ const coreModules = [
 
 const ecosystemModules = [
   { name: "Holographic Avatars", path: "/holographic-avatars", icon: Crown, color: "text-purple-500" },
-  { name: "Time Capsule 2.0", path: "/time-capsule-subscription", icon: Clock, color: "text-blue-500" },
+  { name: "Time Capsule 2.0", path: "/time-capsule", icon: Clock, color: "text-blue-500" },
   { name: "Time Reversal Social", path: "/time-reversal-subscription", icon: Timer, color: "text-violet-500" },
   { name: "MasterChef Platform", path: "/masterchef-subscription", icon: ChefHat, color: "text-orange-500" },
   { name: "GP Fantasy Racing", path: "/f1-racing", icon: Car, color: "text-red-500" },
