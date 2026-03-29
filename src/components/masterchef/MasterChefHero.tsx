@@ -93,7 +93,7 @@ export function MasterChefHero() {
               🏆 Browse Competitions
             </Button>
             <Button onClick={() => navigate("/masterchef/dashboard")} variant="outline" size={isMobile ? "default" : "lg"}
-              className="border-white/30 text-white hover:bg-white/10 backdrop-blur-sm active:scale-[0.97]">
+              className="border-white/30 text-white bg-black/40 hover:bg-black/60 backdrop-blur-sm active:scale-[0.97]">
               Dashboard
             </Button>
           </div>
