@@ -608,7 +608,7 @@ const App = () => {
                         <Route path="/time-reversal-subscription" element={<TimeReversalSubscription />} />
                         <Route path="/time-reversal/dashboard" element={<ProtectedRoute><TimeReversalDashboard /></ProtectedRoute>} />
                         <Route path="/time-reversal/timeline" element={<TimeReversalTimeline />} />
-                        <Route path="/time-capsule-subscription" element={<TimeCapsuleSubscription />} />
+                        <Route path="/time-capsule-subscription" element={<Navigate to="/time-capsule" replace />} />
                         <Route path="/time-capsule" element={<TimeCapsule />} />
                         <Route path="/home-decor-subscription" element={<HomeDecorSubscription />} />
                         <Route path="/holographic-avatars" element={<HolographicAvatars />} />
