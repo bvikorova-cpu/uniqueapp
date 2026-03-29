@@ -11,7 +11,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import {
   MessageSquare, ThumbsUp, Reply, Send, TrendingUp, Users, Trash2, Search,
-  BarChart3, Trophy, Swords, Sparkles, BookOpen, Flame
+  BarChart3, Trophy, Swords, Sparkles, BookOpen, Flame, Hash, Pin, Bell
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -22,6 +22,11 @@ import { ForumPolls } from "@/components/megaforum/ForumPolls";
 import { ReputationSystem } from "@/components/megaforum/ReputationSystem";
 import { LiveDebateRooms } from "@/components/megaforum/LiveDebateRooms";
 import { HotTopicsAI } from "@/components/megaforum/HotTopicsAI";
+import { WeeklyChallenges } from "@/components/megaforum/WeeklyChallenges";
+import { TagInput } from "@/components/megaforum/TagInput";
+import { ThreadSubscription } from "@/components/megaforum/ThreadSubscription";
+import { ForumNotifications } from "@/components/megaforum/ForumNotifications";
+import ReactMarkdown from "react-markdown";
 
 interface Profile {
   id: string;
@@ -38,15 +43,19 @@ interface ForumPost {
   likes_count: number;
   replies_count: number;
   created_at: string;
+  tags?: string[];
+  is_pinned?: boolean;
+  is_markdown?: boolean;
 }
 
-type ActiveView = "main" | "polls" | "reputation" | "debates" | "hot-topics";
+type ActiveView = "main" | "polls" | "reputation" | "debates" | "hot-topics" | "challenges";
 
 const TOOLS = [
   { id: "polls" as ActiveView, label: "Polls & Surveys", icon: BarChart3, emoji: "📊", desc: "Create & vote on community polls", gradient: "from-blue-600 to-cyan-600" },
   { id: "reputation" as ActiveView, label: "Reputation & Karma", icon: Trophy, emoji: "🏆", desc: "Levels, badges & leaderboard", gradient: "from-amber-600 to-orange-600" },
   { id: "debates" as ActiveView, label: "Live Debate Rooms", icon: Swords, emoji: "⚔️", desc: "Real-time debates with voting", gradient: "from-rose-600 to-pink-600" },
   { id: "hot-topics" as ActiveView, label: "Hot Topics AI", icon: Sparkles, emoji: "🤖", desc: "AI trend suggestions & summaries", gradient: "from-purple-600 to-violet-600", premium: true },
+  { id: "challenges" as ActiveView, label: "Weekly Challenges", icon: Flame, emoji: "🔥", desc: "Community challenges with karma", gradient: "from-orange-600 to-red-600" },
 ];
 
 const categories = ["General", "Technology", "Sports", "Culture", "Music", "Film & TV", "Games", "Health", "Other"];
@@ -62,6 +71,9 @@ const Megaforum = () => {
   const [selectedPost, setSelectedPost] = useState<string | null>(null);
   const [newComment, setNewComment] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+  const [newPostTags, setNewPostTags] = useState<string[]>([]);
+  const [useMarkdown, setUseMarkdown] = useState(false);
+  const [filterTag, setFilterTag] = useState<string | null>(null);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -150,8 +162,13 @@ const Megaforum = () => {
   const createPostMutation = useMutation({
     mutationFn: async () => {
       if (!user) throw new Error("Must be logged in");
-      const { error } = await supabase.from("forum_posts").insert([{
-        user_id: user.id, title: newPostTitle, content: newPostContent, category: selectedCategory,
+      const { error } = await (supabase as any).from("forum_posts").insert([{
+        user_id: user.id,
+        title: newPostTitle,
+        content: newPostContent,
+        category: selectedCategory,
+        tags: newPostTags,
+        is_markdown: useMarkdown,
       }]);
       if (error) throw error;
     },
@@ -159,6 +176,7 @@ const Megaforum = () => {
       queryClient.invalidateQueries({ queryKey: ["forumPosts"] });
       setNewPostTitle("");
       setNewPostContent("");
+      setNewPostTags([]);
       toast({ title: "Post Created!", description: "Your post has been successfully added." });
     },
     onError: (error: any) => {
@@ -187,11 +205,9 @@ const Megaforum = () => {
       if (!user) throw new Error("Must be logged in");
       const isLiked = likedPosts.includes(postId);
       if (isLiked) {
-        const { error } = await supabase.from("forum_post_likes").delete().eq("post_id", postId).eq("user_id", user.id);
-        if (error) throw error;
+        await supabase.from("forum_post_likes").delete().eq("post_id", postId).eq("user_id", user.id);
       } else {
-        const { error } = await supabase.from("forum_post_likes").insert([{ post_id: postId, user_id: user.id }]);
-        if (error) throw error;
+        await supabase.from("forum_post_likes").insert([{ post_id: postId, user_id: user.id }]);
       }
     },
     onSuccess: () => {
@@ -205,11 +221,9 @@ const Megaforum = () => {
       if (!user) throw new Error("Must be logged in");
       const isLiked = likedComments.includes(commentId);
       if (isLiked) {
-        const { error } = await supabase.from("forum_comment_likes").delete().eq("comment_id", commentId).eq("user_id", user.id);
-        if (error) throw error;
+        await supabase.from("forum_comment_likes").delete().eq("comment_id", commentId).eq("user_id", user.id);
       } else {
-        const { error } = await supabase.from("forum_comment_likes").insert([{ comment_id: commentId, user_id: user.id }]);
-        if (error) throw error;
+        await supabase.from("forum_comment_likes").insert([{ comment_id: commentId, user_id: user.id }]);
       }
     },
     onSuccess: () => {
@@ -221,8 +235,7 @@ const Megaforum = () => {
   const deletePostMutation = useMutation({
     mutationFn: async (postId: string) => {
       if (!user) throw new Error("Must be logged in");
-      const { error } = await supabase.from("forum_posts").delete().eq("id", postId).eq("user_id", user.id);
-      if (error) throw error;
+      await supabase.from("forum_posts").delete().eq("id", postId).eq("user_id", user.id);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["forumPosts"] });
@@ -230,10 +243,19 @@ const Megaforum = () => {
     },
   });
 
+  const pinPostMutation = useMutation({
+    mutationFn: async ({ postId, pin }: { postId: string; pin: boolean }) => {
+      if (!user) throw new Error("Must be logged in");
+      await (supabase as any).from("forum_posts").update({ is_pinned: pin }).eq("id", postId).eq("user_id", user.id);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["forumPosts"] });
+      toast({ title: "Post updated" });
+    },
+  });
+
   const getTimeSince = (dateString: string) => {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+    const diffInSeconds = Math.floor((Date.now() - new Date(dateString).getTime()) / 1000);
     if (diffInSeconds < 60) return "just now";
     const diffInMinutes = Math.floor(diffInSeconds / 60);
     if (diffInMinutes < 60) return `${diffInMinutes}m ago`;
@@ -242,39 +264,47 @@ const Megaforum = () => {
     return `${Math.floor(diffInHours / 24)}d ago`;
   };
 
-  const filteredPosts = posts.filter(post =>
-    (selectedCategory === "General" || post.category === selectedCategory) &&
-    (post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-     post.content.toLowerCase().includes(searchQuery.toLowerCase()))
-  );
+  // Get all tags from posts for filter
+  const allTags = [...new Set(posts.flatMap(p => (p.tags || [])))];
+
+  // Sort: pinned first, then by date. Filter by category, search, tag
+  const filteredPosts = posts
+    .filter(post =>
+      (selectedCategory === "General" || post.category === selectedCategory) &&
+      (post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+       post.content.toLowerCase().includes(searchQuery.toLowerCase())) &&
+      (!filterTag || (post.tags || []).includes(filterTag))
+    )
+    .sort((a, b) => {
+      if (a.is_pinned && !b.is_pinned) return -1;
+      if (!a.is_pinned && b.is_pinned) return 1;
+      return 0;
+    });
 
   // Render sub-views
   if (activeView === "polls") return (
     <div className="min-h-screen bg-background pt-20 pb-12">
-      <div className="container mx-auto px-4 max-w-5xl">
-        <ForumPolls onBack={() => setActiveView("main")} />
-      </div>
+      <div className="container mx-auto px-4 max-w-5xl"><ForumPolls onBack={() => setActiveView("main")} /></div>
     </div>
   );
   if (activeView === "reputation") return (
     <div className="min-h-screen bg-background pt-20 pb-12">
-      <div className="container mx-auto px-4 max-w-5xl">
-        <ReputationSystem onBack={() => setActiveView("main")} />
-      </div>
+      <div className="container mx-auto px-4 max-w-5xl"><ReputationSystem onBack={() => setActiveView("main")} /></div>
     </div>
   );
   if (activeView === "debates") return (
     <div className="min-h-screen bg-background pt-20 pb-12">
-      <div className="container mx-auto px-4 max-w-5xl">
-        <LiveDebateRooms onBack={() => setActiveView("main")} />
-      </div>
+      <div className="container mx-auto px-4 max-w-5xl"><LiveDebateRooms onBack={() => setActiveView("main")} /></div>
     </div>
   );
   if (activeView === "hot-topics") return (
     <div className="min-h-screen bg-background pt-20 pb-12">
-      <div className="container mx-auto px-4 max-w-5xl">
-        <HotTopicsAI onBack={() => setActiveView("main")} />
-      </div>
+      <div className="container mx-auto px-4 max-w-5xl"><HotTopicsAI onBack={() => setActiveView("main")} /></div>
+    </div>
+  );
+  if (activeView === "challenges") return (
+    <div className="min-h-screen bg-background pt-20 pb-12">
+      <div className="container mx-auto px-4 max-w-5xl"><WeeklyChallenges onBack={() => setActiveView("main")} /></div>
     </div>
   );
 
@@ -290,7 +320,7 @@ const Megaforum = () => {
         />
 
         {/* Tools Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 mb-8">
           {TOOLS.map((tool, i) => (
             <motion.button
               key={tool.id}
@@ -340,6 +370,34 @@ const Megaforum = () => {
               </CardContent>
             </Card>
 
+            {/* Tag Filter */}
+            {allTags.length > 0 && (
+              <Card className="bg-card/80 backdrop-blur-xl">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm flex items-center gap-2">
+                    <Hash className="h-4 w-4" /> Tags
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="flex flex-wrap gap-1">
+                  {filterTag && (
+                    <Badge variant="destructive" className="text-[10px] cursor-pointer" onClick={() => setFilterTag(null)}>
+                      ✕ Clear
+                    </Badge>
+                  )}
+                  {allTags.slice(0, 15).map((tag) => (
+                    <Badge
+                      key={tag}
+                      variant={filterTag === tag ? "default" : "outline"}
+                      className="text-[10px] cursor-pointer"
+                      onClick={() => setFilterTag(filterTag === tag ? null : tag)}
+                    >
+                      #{tag}
+                    </Badge>
+                  ))}
+                </CardContent>
+              </Card>
+            )}
+
             <Card className="bg-card/80 backdrop-blur-xl">
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm flex items-center gap-2">
@@ -348,9 +406,8 @@ const Megaforum = () => {
               </CardHeader>
               <CardContent>
                 <p className="text-xs text-muted-foreground">
-                  Megaforum is a free, open community where everyone can participate.
-                  Create posts, start polls, debate hot topics, and earn karma through quality contributions.
-                  AI-powered features are available for premium users.
+                  Megaforum is a free, open community. Create posts, start polls, debate topics, and earn karma.
+                  AI features are premium. Use Markdown for rich formatting!
                 </p>
               </CardContent>
             </Card>
@@ -361,17 +418,20 @@ const Megaforum = () => {
             {/* Create Post */}
             <Card className="bg-card/80 backdrop-blur-xl border-primary/10">
               <CardContent className="pt-4 space-y-3">
-                <div className="flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }}>
-                  {categories.map((cat) => (
-                    <Badge
-                      key={cat}
-                      variant={selectedCategory === cat ? "default" : "outline"}
-                      className="cursor-pointer text-[10px] whitespace-nowrap"
-                      onClick={() => setSelectedCategory(cat)}
-                    >
-                      {cat}
-                    </Badge>
-                  ))}
+                <div className="flex items-center justify-between">
+                  <div className="flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }}>
+                    {categories.map((cat) => (
+                      <Badge
+                        key={cat}
+                        variant={selectedCategory === cat ? "default" : "outline"}
+                        className="cursor-pointer text-[10px] whitespace-nowrap"
+                        onClick={() => setSelectedCategory(cat)}
+                      >
+                        {cat}
+                      </Badge>
+                    ))}
+                  </div>
+                  {user && <ForumNotifications userId={user.id} onViewPost={(id) => setSelectedPost(id)} />}
                 </div>
                 <Input
                   placeholder="Post title..."
@@ -379,12 +439,26 @@ const Megaforum = () => {
                   onChange={(e) => setNewPostTitle(e.target.value)}
                   className="text-sm"
                 />
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant={useMarkdown ? "default" : "outline"}
+                    size="sm"
+                    className="text-[10px] h-6"
+                    onClick={() => setUseMarkdown(!useMarkdown)}
+                  >
+                    Markdown {useMarkdown ? "ON" : "OFF"}
+                  </Button>
+                  <span className="text-[10px] text-muted-foreground">
+                    {useMarkdown ? "Use **bold**, *italic*, # headers, - lists" : "Plain text mode"}
+                  </span>
+                </div>
                 <Textarea
-                  placeholder="Share something with the community..."
-                  className="min-h-20 text-sm"
+                  placeholder={useMarkdown ? "Write in Markdown... **bold**, *italic*, # heading" : "Share something with the community..."}
+                  className="min-h-20 text-sm font-mono"
                   value={newPostContent}
                   onChange={(e) => setNewPostContent(e.target.value)}
                 />
+                <TagInput tags={newPostTags} onChange={setNewPostTags} />
                 <Button
                   variant="hero"
                   className="w-full"
@@ -423,7 +497,7 @@ const Megaforum = () => {
             ) : filteredPosts.length === 0 ? (
               <Card className="bg-card/80 backdrop-blur-xl">
                 <CardContent className="pt-6 text-center text-muted-foreground">
-                  {searchQuery ? "No posts found." : "No posts yet. Be the first!"}
+                  {searchQuery || filterTag ? "No posts found." : "No posts yet. Be the first!"}
                 </CardContent>
               </Card>
             ) : (
@@ -437,7 +511,7 @@ const Megaforum = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: idx * 0.03 }}
                   >
-                    <Card className="bg-card/80 backdrop-blur-xl hover:shadow-lg transition-all border-primary/5">
+                    <Card className={`bg-card/80 backdrop-blur-xl hover:shadow-lg transition-all ${post.is_pinned ? "border-primary/30 ring-1 ring-primary/10" : "border-primary/5"}`}>
                       <CardContent className="pt-4">
                         <div className="flex gap-3">
                           <Avatar className="h-10 w-10">
@@ -449,36 +523,72 @@ const Megaforum = () => {
                           <div className="flex-1 space-y-2">
                             <div className="flex items-start justify-between">
                               <div>
-                                <div className="flex items-center gap-2 mb-0.5">
+                                <div className="flex items-center gap-2 mb-0.5 flex-wrap">
+                                  {post.is_pinned && (
+                                    <Pin className="h-3.5 w-3.5 text-primary fill-current" />
+                                  )}
                                   <h3 className="font-bold text-sm">{post.title}</h3>
                                   <Badge variant="outline" className="text-[10px]">{post.category}</Badge>
                                 </div>
                                 <p className="text-xs text-muted-foreground">
                                   {profile?.full_name || "User"} • {getTimeSince(post.created_at)}
                                 </p>
+                                {(post.tags || []).length > 0 && (
+                                  <div className="flex gap-1 mt-1 flex-wrap">
+                                    {(post.tags || []).map(tag => (
+                                      <Badge
+                                        key={tag}
+                                        variant="secondary"
+                                        className="text-[9px] cursor-pointer"
+                                        onClick={() => setFilterTag(tag)}
+                                      >
+                                        #{tag}
+                                      </Badge>
+                                    ))}
+                                  </div>
+                                )}
                               </div>
-                              {user?.id === post.user_id && (
-                                <AlertDialog>
-                                  <AlertDialogTrigger asChild>
-                                    <Button variant="ghost" size="sm" className="text-destructive h-7 w-7 p-0">
-                                      <Trash2 className="h-3.5 w-3.5" />
+                              <div className="flex items-center gap-1">
+                                {user?.id === post.user_id && (
+                                  <>
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      className="h-7 w-7 p-0"
+                                      onClick={() => pinPostMutation.mutate({ postId: post.id, pin: !post.is_pinned })}
+                                      title={post.is_pinned ? "Unpin" : "Pin post"}
+                                    >
+                                      <Pin className={`h-3.5 w-3.5 ${post.is_pinned ? "text-primary fill-current" : ""}`} />
                                     </Button>
-                                  </AlertDialogTrigger>
-                                  <AlertDialogContent>
-                                    <AlertDialogHeader>
-                                      <AlertDialogTitle>Delete Post?</AlertDialogTitle>
-                                      <AlertDialogDescription>This action cannot be undone.</AlertDialogDescription>
-                                    </AlertDialogHeader>
-                                    <AlertDialogFooter>
-                                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                      <AlertDialogAction onClick={() => deletePostMutation.mutate(post.id)} className="bg-destructive">Delete</AlertDialogAction>
-                                    </AlertDialogFooter>
-                                  </AlertDialogContent>
-                                </AlertDialog>
-                              )}
+                                    <AlertDialog>
+                                      <AlertDialogTrigger asChild>
+                                        <Button variant="ghost" size="sm" className="text-destructive h-7 w-7 p-0">
+                                          <Trash2 className="h-3.5 w-3.5" />
+                                        </Button>
+                                      </AlertDialogTrigger>
+                                      <AlertDialogContent>
+                                        <AlertDialogHeader>
+                                          <AlertDialogTitle>Delete Post?</AlertDialogTitle>
+                                          <AlertDialogDescription>This action cannot be undone.</AlertDialogDescription>
+                                        </AlertDialogHeader>
+                                        <AlertDialogFooter>
+                                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                          <AlertDialogAction onClick={() => deletePostMutation.mutate(post.id)} className="bg-destructive">Delete</AlertDialogAction>
+                                        </AlertDialogFooter>
+                                      </AlertDialogContent>
+                                    </AlertDialog>
+                                  </>
+                                )}
+                              </div>
                             </div>
 
-                            <p className="text-sm text-foreground">{post.content}</p>
+                            {post.is_markdown ? (
+                              <div className="text-sm text-foreground prose prose-sm prose-invert max-w-none">
+                                <ReactMarkdown>{post.content}</ReactMarkdown>
+                              </div>
+                            ) : (
+                              <p className="text-sm text-foreground">{post.content}</p>
+                            )}
 
                             <div className="flex items-center gap-3 pt-2 border-t border-border/30">
                               <Button
@@ -550,6 +660,8 @@ const Megaforum = () => {
                                   </div>
                                 </SheetContent>
                               </Sheet>
+
+                              <ThreadSubscription postId={post.id} userId={user?.id} />
                             </div>
                           </div>
                         </div>
