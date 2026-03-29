@@ -384,7 +384,7 @@ export function createFlexibleCheckoutHandler(config: FlexibleCheckoutConfig) {
   };
 }
 
-export interface ServiceCheckoutConfig {
+ export interface ServiceCheckoutConfig {
   /** Function name for logging */
   functionName: string;
   /** Map of service type to price ID */
@@ -397,6 +397,8 @@ export interface ServiceCheckoutConfig {
   cancelPath: string;
   /** Key name for service type in body (default: "serviceType") */
   serviceKey?: string;
+  /** Additional metadata */
+  metadata?: Record<string, string>;
 }
 
 /**
@@ -456,7 +458,7 @@ export function createServiceCheckoutHandler(config: ServiceCheckoutConfig) {
         mode,
         success_url: `${origin}${config.successPath}`,
         cancel_url: `${origin}${config.cancelPath}`,
-        metadata: { user_id: userId, service_type: serviceType },
+        metadata: { user_id: userId, service_type: serviceType, ...config.metadata },
       });
 
       log("Checkout session created", { sessionId: session.id, serviceType, mode });
