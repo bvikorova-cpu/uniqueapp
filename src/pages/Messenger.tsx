@@ -108,6 +108,7 @@ const Messenger = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [activeView, setActiveView] = useState<MessengerView>("hub");
+  const [user, setUser] = useState<any>(null);
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [selectedConversation, setSelectedConversation] = useState<string | null>(null);
   const [messages, setMessages] = useState<MessageWithProfile[]>([]);
