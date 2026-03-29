@@ -318,6 +318,7 @@ const MasterChefGlobalMap = lazy(() => import("@/pages/MasterChefGlobalMap"));
 const MasterChefAICoach = lazy(() => import("@/pages/MasterChefAICoach"));
 const MasterChefRecipeFeed = lazy(() => import("@/pages/MasterChefRecipeFeed"));
 
+const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: 1000 * 60 * 5,
