@@ -21,8 +21,15 @@ import AIContentPlanner from "@/components/influking/AIContentPlanner";
 import CollabMatchmaker from "@/components/influking/CollabMatchmaker";
 import FanClubManager from "@/components/influking/FanClubManager";
 import BrandDealFinder from "@/components/influking/BrandDealFinder";
+import EngagementAnalytics from "@/components/influking/EngagementAnalytics";
+import HashtagGenerator from "@/components/influking/HashtagGenerator";
+import WeeklyChallenges from "@/components/influking/WeeklyChallenges";
+import AIThumbnailCreator from "@/components/influking/AIThumbnailCreator";
+import CrossPlatformPublisher from "@/components/influking/CrossPlatformPublisher";
+import AudienceInsights from "@/components/influking/AudienceInsights";
+import { BarChart3, Hash, Trophy, Image, Share2, PieChart } from "lucide-react";
 
-type InfluKingView = "hub" | "content-planner" | "collab" | "fan-club" | "brand-deals";
+type InfluKingView = "hub" | "content-planner" | "collab" | "fan-club" | "brand-deals" | "analytics" | "hashtags" | "challenges" | "thumbnails" | "publisher" | "audience";
 
 interface InfluencerProfile {
   id: string;
