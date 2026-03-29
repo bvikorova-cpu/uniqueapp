@@ -23212,6 +23212,60 @@ export type Database = {
           },
         ]
       }
+      psychology_emotion_analyses: {
+        Row: {
+          analysis_result: Json | null
+          created_at: string | null
+          credits_used: number | null
+          id: string
+          input_text: string
+          user_id: string
+        }
+        Insert: {
+          analysis_result?: Json | null
+          created_at?: string | null
+          credits_used?: number | null
+          id?: string
+          input_text: string
+          user_id: string
+        }
+        Update: {
+          analysis_result?: Json | null
+          created_at?: string | null
+          credits_used?: number | null
+          id?: string
+          input_text?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      psychology_meditation_sessions: {
+        Row: {
+          completed: boolean | null
+          created_at: string | null
+          duration_seconds: number
+          id: string
+          session_type: string
+          user_id: string
+        }
+        Insert: {
+          completed?: boolean | null
+          created_at?: string | null
+          duration_seconds: number
+          id?: string
+          session_type?: string
+          user_id: string
+        }
+        Update: {
+          completed?: boolean | null
+          created_at?: string | null
+          duration_seconds?: number
+          id?: string
+          session_type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       psychology_messages: {
         Row: {
           content: string
@@ -23243,6 +23297,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      psychology_mood_entries: {
+        Row: {
+          created_at: string | null
+          id: string
+          journal_entry: string | null
+          mood_label: string
+          mood_score: number
+          tags: string[] | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          journal_entry?: string | null
+          mood_label: string
+          mood_score: number
+          tags?: string[] | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          journal_entry?: string | null
+          mood_label?: string
+          mood_score?: number
+          tags?: string[] | null
+          user_id?: string
+        }
+        Relationships: []
       }
       psychology_sessions: {
         Row: {
