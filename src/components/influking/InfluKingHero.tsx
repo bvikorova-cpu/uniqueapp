@@ -2,7 +2,9 @@ import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Crown, Users, Heart, Eye, TrendingUp, Volume2, VolumeX, Play, Pause } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import heroVideo from "@/assets/influking-hero.mp4";
+import heroAsset from "@/assets/influking-hero.mp4.asset.json";
+
+const heroVideo = heroAsset.url;
 
 interface InfluKingHeroProps {
   totalInfluencers: number;
