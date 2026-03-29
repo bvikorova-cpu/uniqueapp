@@ -35,11 +35,16 @@ export default function MasterChefChefChat() {
     setCurrentUserId(session.user.id);
     await loadMessages();
     
-    // Real-time subscription
     const channel = supabase
       .channel("masterchef-chat")
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "masterchef_chat_messages" }, (payload) => {
-        const msg = payload.new as ChatMessage;
+        const raw = payload.new as Record<string, unknown>;
+        const msg: ChatMessage = {
+          id: raw.id as string,
+          user_id: raw.user_id as string,
+          message: raw.message as string,
+          created_at: raw.created_at as string,
+        };
         setMessages(prev => [...prev, msg]);
         setTimeout(() => scrollRef.current?.scrollIntoView({ behavior: "smooth" }), 100);
       })
@@ -49,22 +54,24 @@ export default function MasterChefChefChat() {
   };
 
   const loadMessages = async () => {
-    const { data, error } = await supabase
-      .from("masterchef_chat_messages")
+    const { data, error } = await supabase.rpc("get_masterchef_chat_messages" as never);
+    
+    // Fallback: direct query with type assertion
+    const { data: rawData, error: rawError } = await supabase
+      .from("masterchef_chat_messages" as "masterchef_chat_messages" & keyof (typeof supabase extends { from: (t: infer T) => unknown } ? T : never))
       .select("*")
       .order("created_at", { ascending: true })
-      .limit(100);
-    
-    if (!error && data) {
-      // Get profiles for user names
-      const userIds = [...new Set(data.map(m => m.user_id))];
+      .limit(100) as unknown as { data: ChatMessage[] | null; error: Error | null };
+
+    if (rawData) {
+      const userIds = [...new Set(rawData.map(m => m.user_id))];
       const { data: profiles } = await supabase
         .from("profiles")
         .select("id, full_name")
         .in("id", userIds);
       
       const profileMap = new Map((profiles || []).map(p => [p.id, p.full_name || "Chef"]));
-      setMessages(data.map(m => ({ ...m, user_name: profileMap.get(m.user_id) || "Chef" })));
+      setMessages(rawData.map(m => ({ ...m, user_name: profileMap.get(m.user_id) || "Chef" })));
     }
   };
 
@@ -72,7 +79,7 @@ export default function MasterChefChefChat() {
     if (!newMessage.trim() || !currentUserId) return;
     setLoading(true);
     try {
-      const { error } = await supabase
+      const { error } = await (supabase as any)
         .from("masterchef_chat_messages")
         .insert({ user_id: currentUserId, message: newMessage.trim() });
       if (error) throw error;
