@@ -10,15 +10,20 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { F1CurrencyDisplay } from "@/components/f1-racing/F1CurrencyDisplay";
 import { F1Leaderboard } from "@/components/f1-racing/F1Leaderboard";
+import { GPRacingHero } from "@/components/gp-racing/GPRacingHero";
+import { GPRacingLiveTicker } from "@/components/gp-racing/GPRacingLiveTicker";
+import { RaceReplayViewer } from "@/components/gp-racing/RaceReplayViewer";
+import { CarPaintStudio } from "@/components/gp-racing/CarPaintStudio";
+import { WeatherSystem } from "@/components/gp-racing/WeatherSystem";
+import { PitStrategyPlanner } from "@/components/gp-racing/PitStrategyPlanner";
 import { useUserCars, useF1Races, useJoinF1Race, useUpgradeCar, usePurchaseCarColor, useF1Currency } from "@/hooks/useF1Racing";
-import { Trophy, Wrench, Sparkles, Zap, TrendingUp, Car, LogIn, Info, Gauge, Wind, CircleDot, Compass, ShoppingCart, Box, Rocket, Shield, Target, Cpu, Flame } from "lucide-react";
+import { Trophy, Wrench, Sparkles, Zap, TrendingUp, Car, LogIn, Info, Gauge, Wind, CircleDot, Compass, ShoppingCart, Box, Rocket, Shield, Target, Cpu, Flame, Play, Palette, Cloud, Timer as TimerIcon } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { motion, AnimatePresence } from "framer-motion";
-import gpHeroBg from "@/assets/gp-racing-hero.jpg";
 
 // 3D F1 Car Component
 function F1Car3D({ position, color }: { position: [number, number, number]; color: string }) {
@@ -59,30 +64,22 @@ function RaceTrack3D({ participants, isRacing }: { participants: any[]; isRacing
         <ambientLight intensity={0.4} color="#4dd0e1" />
         <directionalLight position={[10, 10, 5]} intensity={1} color="#e0f7fa" castShadow />
         <pointLight position={[-10, 5, -10]} intensity={0.5} color="#00bcd4" />
-        
-        {/* Track */}
         <mesh position={[0, -0.5, 0]} rotation={[-Math.PI / 2, 0, 0]}>
           <planeGeometry args={[50, 100]} />
           <meshStandardMaterial color="#0a1628" />
         </mesh>
-        
-        {/* Glowing track lines */}
         {Array.from({ length: 20 }).map((_, i) => (
           <mesh key={i} position={[0, -0.48, -45 + i * 5]} rotation={[-Math.PI / 2, 0, 0]}>
             <planeGeometry args={[0.3, 2]} />
             <meshStandardMaterial color="#00e5ff" emissive="#00e5ff" emissiveIntensity={0.5} />
           </mesh>
         ))}
-        
-        {/* Cyan energy barriers */}
         {[-8, 8].map((x, i) => (
           <mesh key={i} position={[x, 0, 0]}>
             <boxGeometry args={[0.3, 1.5, 100]} />
             <meshStandardMaterial color="#00bcd4" emissive="#00bcd4" emissiveIntensity={0.3} transparent opacity={0.6} />
           </mesh>
         ))}
-        
-        {/* Cars */}
         {participants.map((p, i) => (
           <F1Car3D 
             key={p.id} 
@@ -90,7 +87,6 @@ function RaceTrack3D({ participants, isRacing }: { participants: any[]; isRacing
             color={p.f1_cars?.color || "#00e5ff"} 
           />
         ))}
-        
         <Environment preset="night" />
       </Suspense>
     </Canvas>
@@ -98,39 +94,16 @@ function RaceTrack3D({ participants, isRacing }: { participants: any[]; isRacing
 }
 
 const demoRaces = [
-  {
-    id: "demo-race-1",
-    track_name: "Nebula Drift Circuit",
-    distance: 5410,
-    entry_fee_coins: 24,
-    max_participants: 8,
-    weather: "solar_storm",
-    track_condition: "ion_charged",
-    status: "open",
-    f1_race_participants: []
-  },
-  {
-    id: "demo-race-2",
-    track_name: "Quantum Horizon Ring",
-    distance: 3340,
-    entry_fee_coins: 50,
-    max_participants: 6,
-    weather: "cosmic_clear",
-    track_condition: "plasma_smooth",
-    status: "open",
-    f1_race_participants: []
-  },
-  {
-    id: "demo-race-3",
-    track_name: "Asteroid Belt Gauntlet",
-    distance: 4200,
-    entry_fee_coins: 35,
-    max_participants: 10,
-    weather: "meteor_shower",
-    track_condition: "debris_field",
-    status: "open",
-    f1_race_participants: []
-  }
+  { id: "demo-race-1", track_name: "Nebula Drift Circuit", distance: 5410, entry_fee_coins: 24, max_participants: 8, weather: "solar_storm", track_condition: "ion_charged", status: "open", f1_race_participants: [] },
+  { id: "demo-race-2", track_name: "Quantum Horizon Ring", distance: 3340, entry_fee_coins: 50, max_participants: 6, weather: "cosmic_clear", track_condition: "plasma_smooth", status: "open", f1_race_participants: [] },
+  { id: "demo-race-3", track_name: "Asteroid Belt Gauntlet", distance: 4200, entry_fee_coins: 35, max_participants: 10, weather: "meteor_shower", track_condition: "debris_field", status: "open", f1_race_participants: [] },
+];
+
+const toolCards = [
+  { id: "replay", name: "Race Replay", icon: Play, desc: "Watch animated race replays", color: "text-amber-400", gradient: "from-amber-950/30 to-orange-950/20", border: "border-amber-500/20" },
+  { id: "paint", name: "Paint Studio", icon: Palette, desc: "Custom livery designer", color: "text-violet-400", gradient: "from-violet-950/30 to-purple-950/20", border: "border-violet-500/20" },
+  { id: "weather", name: "Weather System", icon: Cloud, desc: "Dynamic race conditions", color: "text-blue-400", gradient: "from-blue-950/30 to-cyan-950/20", border: "border-blue-500/20" },
+  { id: "pit", name: "Pit Strategy", icon: TimerIcon, desc: "Plan pit stops & tires", color: "text-emerald-400", gradient: "from-emerald-950/30 to-cyan-950/20", border: "border-emerald-500/20" },
 ];
 
 const statIcons: Record<string, React.ReactNode> = {
@@ -154,6 +127,7 @@ export default function F1RacingArena() {
   const cars = user ? userCars : [];
   const races = user ? userRaces : demoRaces;
   
+  const [activeView, setActiveView] = useState("hub");
   const [showBuyCar, setShowBuyCar] = useState(false);
   const [showJoinRace, setShowJoinRace] = useState(false);
   const [selectedRace, setSelectedRace] = useState<string | null>(null);
@@ -162,7 +136,6 @@ export default function F1RacingArena() {
   const [carName, setCarName] = useState("");
   const [carTeam, setCarTeam] = useState("Custom Racing");
   const [carColor, setCarColor] = useState("#00e5ff");
-  
   const [showShop, setShowShop] = useState(false);
   const [selectedCarForShop, setSelectedCarForShop] = useState("");
   const [shopColor, setShopColor] = useState("#00e5ff");
@@ -170,12 +143,9 @@ export default function F1RacingArena() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const paymentStatus = params.get("payment");
-
     if (paymentStatus === "success") {
       toast.success("Purchase successful! Your resources will be added shortly.");
-      setTimeout(() => {
-        queryClient.invalidateQueries({ queryKey: ["f1-currency"] });
-      }, 2000);
+      setTimeout(() => { queryClient.invalidateQueries({ queryKey: ["f1-currency"] }); }, 2000);
       window.history.replaceState({}, "", "/f1-racing");
     } else if (paymentStatus === "cancelled") {
       toast.info("Payment was cancelled");
@@ -184,53 +154,23 @@ export default function F1RacingArena() {
   }, [queryClient]);
 
   const requireAuth = (action: () => void) => {
-    if (!user) {
-      navigate('/auth');
-      return;
-    }
+    if (!user) { navigate('/auth'); return; }
     action();
   };
 
   const handleBuyCar = () => {
-    if (!carName) {
-      toast.error("Please enter a car name");
-      return;
-    }
-    
-    createCar.mutate({
-      name: carName,
-      team: carTeam,
-      color: carColor,
-      costCoins: 75,
-    }, {
-      onSuccess: () => {
-        setShowBuyCar(false);
-        setCarName("");
-      }
+    if (!carName) { toast.error("Please enter a car name"); return; }
+    createCar.mutate({ name: carName, team: carTeam, color: carColor, costCoins: 75 }, {
+      onSuccess: () => { setShowBuyCar(false); setCarName(""); }
     });
   };
 
-  const handleJoinRace = (raceId: string) => {
-    setSelectedRace(raceId);
-    setShowJoinRace(true);
-  };
+  const handleJoinRace = (raceId: string) => { setSelectedRace(raceId); setShowJoinRace(true); };
 
   const handleConfirmJoinRace = () => {
-    if (!selectedCarForRace || !selectedRace) {
-      toast.error("Please select a car");
-      return;
-    }
-
-    joinRace.mutate({
-      raceId: selectedRace,
-      carId: selectedCarForRace,
-      strategy: raceStrategy,
-    }, {
-      onSuccess: () => {
-        setShowJoinRace(false);
-        setSelectedCarForRace("");
-        setRaceStrategy("balanced");
-      }
+    if (!selectedCarForRace || !selectedRace) { toast.error("Please select a car"); return; }
+    joinRace.mutate({ raceId: selectedRace, carId: selectedCarForRace, strategy: raceStrategy }, {
+      onSuccess: () => { setShowJoinRace(false); setSelectedCarForRace(""); setRaceStrategy("balanced"); }
     });
   };
 
@@ -239,131 +179,82 @@ export default function F1RacingArena() {
   };
 
   const handlePurchaseColor = () => {
-    if (!selectedCarForShop) {
-      toast.error("Please select a car");
-      return;
-    }
-
-    purchaseColor.mutate({
-      carId: selectedCarForShop,
-      newColor: shopColor,
-    }, {
-      onSuccess: () => {
-        setShowShop(false);
-        setSelectedCarForShop("");
-      }
+    if (!selectedCarForShop) { toast.error("Please select a car"); return; }
+    purchaseColor.mutate({ carId: selectedCarForShop, newColor: shopColor }, {
+      onSuccess: () => { setShowShop(false); setSelectedCarForShop(""); }
     });
   };
 
   const activeRace = races?.find(r => r.id === selectedRace);
 
+  // Tool views
+  if (activeView === "replay") return (
+    <div className="min-h-screen bg-slate-950 relative overflow-hidden">
+      <div className="relative z-10 max-w-7xl mx-auto p-4 sm:p-6 pt-20 sm:pt-24">
+        <RaceReplayViewer onBack={() => setActiveView("hub")} />
+      </div>
+    </div>
+  );
+  if (activeView === "paint") return (
+    <div className="min-h-screen bg-slate-950 relative overflow-hidden">
+      <div className="relative z-10 max-w-7xl mx-auto p-4 sm:p-6 pt-20 sm:pt-24">
+        <CarPaintStudio onBack={() => setActiveView("hub")} />
+      </div>
+    </div>
+  );
+  if (activeView === "weather") return (
+    <div className="min-h-screen bg-slate-950 relative overflow-hidden">
+      <div className="relative z-10 max-w-7xl mx-auto p-4 sm:p-6 pt-20 sm:pt-24">
+        <WeatherSystem onBack={() => setActiveView("hub")} />
+      </div>
+    </div>
+  );
+  if (activeView === "pit") return (
+    <div className="min-h-screen bg-slate-950 relative overflow-hidden">
+      <div className="relative z-10 max-w-7xl mx-auto p-4 sm:p-6 pt-20 sm:pt-24">
+        <PitStrategyPlanner onBack={() => setActiveView("hub")} />
+      </div>
+    </div>
+  );
+
   return (
     <div className="min-h-screen bg-slate-950 relative overflow-hidden">
-      {/* Animated background */}
+      {/* Animated background particles */}
       <div className="fixed inset-0 z-0">
-        <div 
-          className="absolute inset-0 bg-cover bg-center opacity-30"
-          style={{ backgroundImage: `url(${gpHeroBg})` }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-slate-950/60 via-slate-950/80 to-slate-950" />
-        {/* Floating particles effect */}
+        <div className="absolute inset-0 bg-slate-950" />
         <div className="absolute inset-0">
           {Array.from({ length: 30 }).map((_, i) => (
-            <div
-              key={i}
-              className="absolute w-0.5 h-0.5 bg-cyan-400/40 rounded-full animate-pulse"
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 3}s`,
-                animationDuration: `${2 + Math.random() * 3}s`,
-              }}
-            />
+            <div key={i} className="absolute w-0.5 h-0.5 bg-cyan-400/40 rounded-full animate-pulse"
+              style={{ left: `${Math.random() * 100}%`, top: `${Math.random() * 100}%`, animationDelay: `${Math.random() * 3}s`, animationDuration: `${2 + Math.random() * 3}s` }} />
           ))}
         </div>
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto space-y-6 p-4 sm:p-6 pt-20 sm:pt-24">
-        {/* Hero Header */}
-        <motion.div 
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
-        >
-          <div>
-            <div className="flex items-center gap-2 mb-1">
-              <div className="h-1 w-8 bg-cyan-400 rounded-full" />
-              <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-cyan-400/60">Racing Command Center</span>
-            </div>
-            <h1 className="text-3xl sm:text-5xl font-bold text-white font-mono tracking-tight">
-              GP <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400">Racing Arena</span>
-            </h1>
-            <p className="text-cyan-400/50 mt-1 font-mono text-xs sm:text-sm tracking-wider">
-              Build • Upgrade • Dominate the Track
-            </p>
-          </div>
-          {!user && (
-            <motion.div whileHover={{ scale: 1.02 }}>
-              <Button 
-                onClick={() => navigate('/auth')} 
-                className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white border border-cyan-400/30 shadow-lg shadow-cyan-500/20 font-mono uppercase tracking-wider"
-              >
-                <LogIn className="mr-2 h-4 w-4" />
-                Sign In
-              </Button>
-            </motion.div>
-          )}
-        </motion.div>
+        {/* Cinematic Video Hero */}
+        <GPRacingHero onNavigate={(view) => setActiveView(view === "garage" ? "hub" : view)} />
 
-        {/* Info Panel */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-        >
-          <Card className="relative overflow-hidden bg-slate-900/60 border-cyan-500/20 backdrop-blur-sm">
-            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-400/50 to-transparent" />
-            <div className="p-4 sm:p-6">
-              <div className="flex items-start gap-3">
-                <div className="relative shrink-0 mt-1">
-                  <Info className="h-5 w-5 text-cyan-400" />
-                  <div className="absolute -inset-2 bg-cyan-400/10 rounded-full blur-md" />
-                </div>
-                <div className="space-y-3 text-sm">
-                  <h3 className="font-mono font-bold text-cyan-300 uppercase tracking-wider text-base">How to Play</h3>
-                   <p className="text-cyan-100/60 leading-relaxed">
-                     Welcome, Racer. Build your racing car, upgrade its components, and compete across circuits worldwide.
-                     Climb the rankings to become the ultimate GP Racing Champion.
-                   </p>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
-                    <div className="space-y-2 p-3 rounded-lg bg-cyan-950/30 border border-cyan-500/10">
-                      <h4 className="font-mono font-semibold text-cyan-300 text-xs uppercase tracking-wider flex items-center gap-2">
-                         <Rocket className="h-3.5 w-3.5" /> Quick Start Guide
-                       </h4>
-                       <ul className="text-cyan-100/50 space-y-1.5 text-xs font-mono">
-                         <li className="flex items-center gap-2"><span className="w-4 h-4 rounded bg-cyan-500/20 flex items-center justify-center text-[10px] text-cyan-400">1</span> Buy a car (75 Coins)</li>
-                         <li className="flex items-center gap-2"><span className="w-4 h-4 rounded bg-cyan-500/20 flex items-center justify-center text-[10px] text-cyan-400">2</span> Name & customize your car</li>
-                         <li className="flex items-center gap-2"><span className="w-4 h-4 rounded bg-cyan-500/20 flex items-center justify-center text-[10px] text-cyan-400">3</span> Join races on circuits</li>
-                         <li className="flex items-center gap-2"><span className="w-4 h-4 rounded bg-cyan-500/20 flex items-center justify-center text-[10px] text-cyan-400">4</span> Earn rewards & climb ranks</li>
-                      </ul>
-                    </div>
-                    <div className="space-y-2 p-3 rounded-lg bg-cyan-950/30 border border-cyan-500/10">
-                      <h4 className="font-mono font-semibold text-cyan-300 text-xs uppercase tracking-wider flex items-center gap-2">
-                        <Cpu className="h-3.5 w-3.5" /> Car Stats
-                      </h4>
-                      <ul className="text-cyan-100/50 space-y-1.5 text-xs font-mono">
-                        <li className="flex items-center gap-2"><Flame className="h-3 w-3 text-orange-400" /> Engine power & thrust</li>
-                        <li className="flex items-center gap-2"><Wind className="h-3 w-3 text-blue-400" /> Aero dynamics & efficiency</li>
-                        <li className="flex items-center gap-2"><CircleDot className="h-3 w-3 text-green-400" /> Tire grip & durability</li>
-                        <li className="flex items-center gap-2"><Compass className="h-3 w-3 text-violet-400" /> Handling & control</li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </Card>
-        </motion.div>
+        {/* Live Ticker */}
+        <GPRacingLiveTicker />
+
+        {/* Tool Cards Grid */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          {toolCards.map((tool, i) => (
+            <motion.div
+              key={tool.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 * i }}
+              whileHover={{ scale: 1.03, y: -2 }}
+              onClick={() => setActiveView(tool.id)}
+              className={`cursor-pointer p-4 rounded-xl bg-gradient-to-b ${tool.gradient} border ${tool.border} backdrop-blur-sm transition-all group`}
+            >
+              <tool.icon className={`h-6 w-6 ${tool.color} mb-2 group-hover:scale-110 transition-transform`} />
+              <h3 className="font-mono font-bold text-sm text-white">{tool.name}</h3>
+              <p className="text-[10px] font-mono text-cyan-400/40 mt-1">{tool.desc}</p>
+            </motion.div>
+          ))}
+        </div>
 
         {/* Currency Display */}
         <F1CurrencyDisplay />
@@ -378,11 +269,8 @@ export default function F1RacingArena() {
               { value: "shop", label: "Shop", icon: <ShoppingCart className="h-3.5 w-3.5" /> },
               { value: "leaderboard", label: "Rankings", icon: <Trophy className="h-3.5 w-3.5" /> },
             ].map(tab => (
-              <TabsTrigger 
-                key={tab.value}
-                value={tab.value} 
-                className="flex-1 min-w-fit text-xs sm:text-sm font-mono uppercase tracking-wider data-[state=active]:bg-gradient-to-r data-[state=active]:from-cyan-600 data-[state=active]:to-blue-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-cyan-500/20 text-cyan-400/60 rounded-lg transition-all flex items-center gap-1.5"
-              >
+              <TabsTrigger key={tab.value} value={tab.value}
+                className="flex-1 min-w-fit text-xs sm:text-sm font-mono uppercase tracking-wider data-[state=active]:bg-gradient-to-r data-[state=active]:from-cyan-600 data-[state=active]:to-blue-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-cyan-500/20 text-cyan-400/60 rounded-lg transition-all flex items-center gap-1.5">
                 {tab.icon}
                 <span className="hidden sm:inline">{tab.label}</span>
               </TabsTrigger>
@@ -396,27 +284,18 @@ export default function F1RacingArena() {
                 <h2 className="text-xl sm:text-2xl font-mono font-bold text-white uppercase tracking-wider">Your Cars</h2>
                 <p className="text-[10px] font-mono text-cyan-400/40 uppercase tracking-[0.3em]">Racing Machines</p>
               </div>
-              <Button 
-                onClick={() => requireAuth(() => setShowBuyCar(true))} 
-                className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 border border-cyan-400/30 shadow-lg shadow-cyan-500/20 font-mono uppercase tracking-wider text-xs"
-              >
-                <Zap className="mr-2 h-4 w-4" />
-                Buy Car (75 Coins)
+              <Button onClick={() => requireAuth(() => setShowBuyCar(true))}
+                className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 border border-cyan-400/30 shadow-lg shadow-cyan-500/20 font-mono uppercase tracking-wider text-xs">
+                <Zap className="mr-2 h-4 w-4" /> Buy Car (75 Coins)
               </Button>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {cars?.map((car, index) => (
-                <motion.div
-                  key={car.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                >
+                <motion.div key={car.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.1 }}>
                   <Card className="relative overflow-hidden bg-slate-900/60 border-cyan-500/20 backdrop-blur-sm group hover:border-cyan-400/40 transition-all duration-300">
                     <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-400/30 to-transparent" />
                     <div className="absolute inset-0 bg-gradient-to-b from-cyan-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                    
                     <div className="relative p-4">
                       <div className="flex items-start justify-between">
                         <div>
@@ -428,17 +307,10 @@ export default function F1RacingArena() {
                           </div>
                         </div>
                         <div className="relative">
-                          <div
-                            className="w-14 h-14 rounded-xl border-2 border-cyan-500/30"
-                            style={{ backgroundColor: car.color }}
-                          />
-                          <div 
-                            className="absolute -inset-1 rounded-xl blur-md opacity-30"
-                            style={{ backgroundColor: car.color }}
-                          />
+                          <div className="w-14 h-14 rounded-xl border-2 border-cyan-500/30" style={{ backgroundColor: car.color }} />
+                          <div className="absolute -inset-1 rounded-xl blur-md opacity-30" style={{ backgroundColor: car.color }} />
                         </div>
                       </div>
-
                       <div className="mt-4 space-y-2">
                         {[
                           { label: "Engine", value: car.engine_stat, icon: <Flame className="h-3.5 w-3.5 text-orange-400" />, color: "bg-orange-500" },
@@ -450,18 +322,13 @@ export default function F1RacingArena() {
                             {stat.icon}
                             <span className="text-xs font-mono text-cyan-400/60 w-16">{stat.label}</span>
                             <div className="flex-1 h-1.5 bg-slate-800 rounded-full overflow-hidden">
-                              <motion.div 
-                                initial={{ width: 0 }}
-                                animate={{ width: `${stat.value}%` }}
-                                transition={{ duration: 1, delay: 0.3 }}
-                                className={`h-full ${stat.color} rounded-full`}
-                              />
+                              <motion.div initial={{ width: 0 }} animate={{ width: `${stat.value}%` }} transition={{ duration: 1, delay: 0.3 }}
+                                className={`h-full ${stat.color} rounded-full`} />
                             </div>
                             <span className="text-xs font-mono font-bold text-white w-8 text-right">{stat.value}</span>
                           </div>
                         ))}
                       </div>
-
                       <div className="mt-4 pt-3 border-t border-cyan-500/10 flex items-center justify-between">
                         <span className="text-[10px] font-mono text-cyan-400/40 uppercase tracking-wider">
                           Races: {car.total_races} • Wins: {car.total_wins}
@@ -482,8 +349,7 @@ export default function F1RacingArena() {
                 <Car className="h-12 w-12 mx-auto mb-4 text-cyan-400/30" />
                 <p className="text-cyan-300/60 font-mono mb-4">Sign in to buy your first racing car</p>
                 <Button onClick={() => navigate('/auth')} className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 border border-cyan-400/30 font-mono uppercase tracking-wider text-xs">
-                  <LogIn className="mr-2 h-4 w-4" />
-                  Sign In
+                  <LogIn className="mr-2 h-4 w-4" /> Sign In
                 </Button>
               </Card>
             )}
@@ -501,60 +367,37 @@ export default function F1RacingArena() {
                 <Button variant="outline" onClick={() => setSelectedRace(null)} className="border-cyan-500/30 text-cyan-300 hover:bg-cyan-950/30 font-mono text-xs uppercase tracking-wider">
                   ← Back to Races
                 </Button>
-                
                 <div className="h-[400px] rounded-xl overflow-hidden border-2 border-cyan-500/30 shadow-lg shadow-cyan-500/10">
-                  <RaceTrack3D 
-                    participants={activeRace.f1_race_participants || []} 
-                    isRacing={activeRace.status === "running"} 
-                  />
+                  <RaceTrack3D participants={activeRace.f1_race_participants || []} isRacing={activeRace.status === "running"} />
                 </div>
-                
-                <Button 
+                <Button
                   className="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 border border-cyan-400/30 shadow-lg shadow-cyan-500/20 font-mono uppercase tracking-wider py-6 text-base"
                   onClick={() => requireAuth(async () => {
                     try {
-                      const { data, error } = await supabase.functions.invoke(
-                        "calculate-f1-race-results",
-                        { body: { raceId: selectedRace } }
-                      );
-
+                      const { data, error } = await supabase.functions.invoke("calculate-f1-race-results", { body: { raceId: selectedRace } });
                       if (error) throw error;
-
                       if (data?.results) {
                         const winner = data.results[0];
-                        toast.success(
-                          `Race complete! Victor: ${winner.carName}${
-                            winner.prize > 0 ? ` — Reward: ${winner.prize} coins` : ""
-                          } 🏆`
-                        );
+                        toast.success(`Race complete! Victor: ${winner.carName}${winner.prize > 0 ? ` — Reward: ${winner.prize} coins` : ""} 🏆`);
                       }
                     } catch (error) {
                       console.error("Error calculating results:", error);
                       toast.error("Error calculating race results");
                     }
-                    
                     queryClient.invalidateQueries({ queryKey: ["active-f1-races"] });
                     queryClient.invalidateQueries({ queryKey: ["user-f1-cars"] });
                     queryClient.invalidateQueries({ queryKey: ["f1-currency"] });
                     setSelectedRace(null);
-                  })}
-                >
-                  <Flame className="mr-2 h-5 w-5" />
-                  Start Race
+                  })}>
+                  <Flame className="mr-2 h-5 w-5" /> Start Race
                 </Button>
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {races?.map((race, index) => (
-                  <motion.div
-                    key={race.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                  >
+                  <motion.div key={race.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.1 }}>
                     <Card className="relative overflow-hidden bg-slate-900/60 border-cyan-500/20 backdrop-blur-sm group hover:border-cyan-400/40 transition-all duration-300">
                       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-400/30 to-transparent" />
-                      
                       <div className="p-4 space-y-3">
                         <div>
                           <h3 className="font-mono font-bold text-base text-white">{race.track_name}</h3>
@@ -575,19 +418,13 @@ export default function F1RacingArena() {
                             </span>
                           </div>
                         </div>
-                        
                         <div className="flex gap-2">
-                          <Button 
-                            onClick={() => setSelectedRace(race.id)} 
-                            variant="outline"
-                            className="flex-1 border-cyan-500/30 text-cyan-300 hover:bg-cyan-950/30 font-mono text-xs uppercase tracking-wider"
-                          >
+                          <Button onClick={() => setSelectedRace(race.id)} variant="outline"
+                            className="flex-1 border-cyan-500/30 text-cyan-300 hover:bg-cyan-950/30 font-mono text-xs uppercase tracking-wider">
                             Scan
                           </Button>
-                          <Button 
-                            onClick={() => requireAuth(() => handleJoinRace(race.id))} 
-                            className="flex-1 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 border border-cyan-400/20 font-mono text-xs uppercase tracking-wider"
-                          >
+                          <Button onClick={() => requireAuth(() => handleJoinRace(race.id))}
+                            className="flex-1 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 border border-cyan-400/20 font-mono text-xs uppercase tracking-wider">
                             Join Race
                           </Button>
                         </div>
@@ -606,7 +443,6 @@ export default function F1RacingArena() {
               <div className="p-4 sm:p-6">
                 <h2 className="text-xl sm:text-2xl font-mono font-bold mb-1 text-white uppercase tracking-wider">Car Upgrades</h2>
                 <p className="text-cyan-400/50 font-mono text-xs mb-6 uppercase tracking-wider">Upgrade car components — 25 Coins per upgrade</p>
-                
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {cars?.map((car) => (
                     <Card key={car.id} className="p-4 bg-slate-950/50 border-cyan-500/15 backdrop-blur-sm">
@@ -615,12 +451,8 @@ export default function F1RacingArena() {
                           <h3 className="font-mono font-bold text-base text-white">{car.name}</h3>
                           <span className="text-[10px] font-mono text-cyan-400/40 uppercase">Level {car.level}</span>
                         </div>
-                        <div
-                          className="w-8 h-8 rounded-lg border border-cyan-500/30"
-                          style={{ backgroundColor: car.color }}
-                        />
+                        <div className="w-8 h-8 rounded-lg border border-cyan-500/30" style={{ backgroundColor: car.color }} />
                       </div>
-                      
                       <div className="space-y-3 mb-4">
                         {[
                           { key: "engine" as const, label: "Engine", value: car.engine_stat, icon: <Flame className="h-3.5 w-3.5 text-orange-400" />, color: "bg-orange-500" },
@@ -637,16 +469,12 @@ export default function F1RacingArena() {
                           </div>
                         ))}
                       </div>
-
                       <div className="grid grid-cols-2 gap-2">
                         {(["engine", "aero", "tires", "handling"] as const).map(statType => (
-                          <Button
-                            key={statType}
-                            size="sm"
+                          <Button key={statType} size="sm"
                             onClick={() => requireAuth(() => handleUpgradeCar(car.id, statType))}
                             disabled={upgradeCar.isPending || car[`${statType}_stat`] >= 100}
-                            className="bg-cyan-600/20 hover:bg-cyan-600/40 border border-cyan-500/20 text-cyan-300 font-mono text-[10px] uppercase tracking-wider"
-                          >
+                            className="bg-cyan-600/20 hover:bg-cyan-600/40 border border-cyan-500/20 text-cyan-300 font-mono text-[10px] uppercase tracking-wider">
                             {statIcons[statType]}
                             <span className="ml-1">{statType}</span>
                           </Button>
@@ -666,7 +494,6 @@ export default function F1RacingArena() {
               <div className="p-4 sm:p-6">
                 <h2 className="text-xl sm:text-2xl font-mono font-bold mb-1 text-white uppercase tracking-wider">Parts & Tech Shop</h2>
                 <p className="text-cyan-400/50 font-mono text-xs mb-6 uppercase tracking-wider">Buy performance parts to dominate races</p>
-                
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                   {[
                     { emoji: "🔥", name: "Turbo Engine V8", desc: "+15 Engine Power", price: "150 Coins", tier: "standard" },
@@ -682,26 +509,21 @@ export default function F1RacingArena() {
                     { emoji: "⚙️", name: "Advanced Suspension", desc: "+18 Handling, +8 Stability", price: "200 Coins", tier: "standard" },
                     { emoji: "🤖", name: "AI Assist System", desc: "+25 Handling, Auto-correct", price: "90 Gems", tier: "premium" },
                   ].map((item, i) => (
-                    <motion.div
-                      key={i}
-                      whileHover={{ scale: 1.02 }}
+                    <motion.div key={i} whileHover={{ scale: 1.02 }}
                       className={`p-4 rounded-xl border backdrop-blur-sm transition-all ${
                         item.tier === "premium" 
                           ? "bg-gradient-to-b from-violet-950/40 to-slate-950/60 border-violet-500/30 hover:border-violet-400/50" 
                           : "bg-slate-950/40 border-cyan-500/15 hover:border-cyan-400/30"
-                      }`}
-                    >
+                      }`}>
                       <div className="text-2xl mb-2">{item.emoji}</div>
                       <h3 className="font-mono font-bold text-sm text-white">{item.name}</h3>
                       <p className="text-[10px] font-mono text-cyan-400/50 mt-1">{item.desc}</p>
-                      <p className={`font-mono font-bold text-sm mt-2 ${item.tier === "premium" ? "text-violet-400" : "text-amber-400"}`}>
-                        {item.price}
-                      </p>
+                      <p className={`font-mono font-bold text-sm mt-2 ${item.tier === "premium" ? "text-violet-400" : "text-amber-400"}`}>{item.price}</p>
                     </motion.div>
                   ))}
                 </div>
 
-                {/* Special Items */}
+                {/* Legendary */}
                 <div className="mt-6 pt-6 border-t border-cyan-500/10">
                   <h3 className="text-lg font-mono font-bold text-amber-300 mb-4 uppercase tracking-wider flex items-center gap-2">
                     <Sparkles className="h-4 w-4" /> Legendary Tech
@@ -712,11 +534,8 @@ export default function F1RacingArena() {
                       { emoji: "❄️", name: "Cryo Cooling System", desc: "Anti-overheat, +5 All", price: "350 Coins", gradient: "from-blue-950/40 to-cyan-950/30", border: "border-blue-500/30" },
                       { emoji: "⭐", name: "Legendary Engine Swap", desc: "+50 All Stats", price: "500 Gems", gradient: "from-violet-950/40 to-purple-950/30", border: "border-violet-400/40" },
                     ].map((item, i) => (
-                      <motion.div
-                        key={i}
-                        whileHover={{ scale: 1.02 }}
-                        className={`p-4 rounded-xl bg-gradient-to-b ${item.gradient} border ${item.border} backdrop-blur-sm`}
-                      >
+                      <motion.div key={i} whileHover={{ scale: 1.02 }}
+                        className={`p-4 rounded-xl bg-gradient-to-b ${item.gradient} border ${item.border} backdrop-blur-sm`}>
                         <div className="text-2xl mb-2">{item.emoji}</div>
                         <h3 className="font-mono font-bold text-sm text-white">{item.name}</h3>
                         <p className="text-[10px] font-mono text-cyan-400/50 mt-1">{item.desc}</p>
@@ -725,8 +544,8 @@ export default function F1RacingArena() {
                     ))}
                   </div>
                 </div>
-                
-                {/* Mystery Boxes */}
+
+                {/* Mystery Crates */}
                 <div className="mt-6 pt-6 border-t border-cyan-500/10">
                   <h3 className="text-lg font-mono font-bold text-cyan-300 mb-4 uppercase tracking-wider flex items-center gap-2">
                     <Box className="h-4 w-4" /> Mystery Crates
@@ -739,11 +558,8 @@ export default function F1RacingArena() {
                       { name: "Diamond", desc: "+30-60 stats", price: "50 Gems", gradient: "from-blue-900/30 to-violet-950/30", border: "border-blue-400/30" },
                       { name: "Legendary", desc: "+100 All + Skin", price: "300 Gems", gradient: "from-amber-600/20 via-orange-600/20 to-red-600/20", border: "border-amber-300/40", special: true },
                     ].map((box, i) => (
-                      <motion.div
-                        key={i}
-                        whileHover={{ scale: 1.03 }}
-                        className={`p-3 rounded-xl bg-gradient-to-b ${box.gradient} border ${box.border} text-center backdrop-blur-sm ${box.special ? "animate-pulse" : ""}`}
-                      >
+                      <motion.div key={i} whileHover={{ scale: 1.03 }}
+                        className={`p-3 rounded-xl bg-gradient-to-b ${box.gradient} border ${box.border} text-center backdrop-blur-sm ${box.special ? "animate-pulse" : ""}`}>
                         <div className="text-xl mb-1">{box.special ? "👑" : ["📦", "🎁", "✨", "💎"][i]}</div>
                         <h4 className="font-mono font-bold text-xs text-white">{box.name}</h4>
                         <p className="text-[9px] font-mono text-cyan-400/40 mt-0.5">{box.desc}</p>
@@ -752,19 +568,15 @@ export default function F1RacingArena() {
                     ))}
                   </div>
                 </div>
-                
-                {/* Livery Shop */}
+
+                {/* Livery */}
                 <div className="mt-6 pt-6 border-t border-cyan-500/10">
                   <h3 className="text-lg font-mono font-bold text-cyan-300 mb-4 uppercase tracking-wider flex items-center gap-2">
                     <Sparkles className="h-4 w-4" /> Livery Customization
                   </h3>
-                  <Button 
-                    onClick={() => requireAuth(() => setShowShop(true))} 
-                    disabled={!cars || cars.length === 0} 
-                    className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 border border-violet-400/30 font-mono uppercase tracking-wider text-xs"
-                  >
-                    <Sparkles className="mr-2 h-4 w-4" />
-                    Change Car Livery (50 Gems)
+                  <Button onClick={() => requireAuth(() => setShowShop(true))} disabled={!cars || cars.length === 0}
+                    className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 border border-violet-400/30 font-mono uppercase tracking-wider text-xs">
+                    <Sparkles className="mr-2 h-4 w-4" /> Change Car Livery (50 Gems)
                   </Button>
                 </div>
               </div>
@@ -781,31 +593,24 @@ export default function F1RacingArena() {
         </Tabs>
       </div>
 
-      {/* Buy Car Dialog */}
+      {/* Dialogs */}
       <Dialog open={showBuyCar} onOpenChange={setShowBuyCar}>
         <DialogContent className="bg-slate-950/95 border-cyan-500/30 backdrop-blur-xl">
           <DialogHeader>
             <DialogTitle className="text-cyan-300 font-mono uppercase tracking-wider flex items-center gap-2">
-              <Car className="h-5 w-5 text-cyan-400" />
-              Buy New Car
+              <Car className="h-5 w-5 text-cyan-400" /> Buy New Car
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <div>
               <Label className="text-cyan-300 font-mono text-xs uppercase tracking-wider">Car Name</Label>
-              <Input
-                value={carName}
-                onChange={(e) => setCarName(e.target.value)}
-                placeholder="Enter car name..."
-                className="bg-slate-900/50 border-cyan-500/30 text-white font-mono placeholder:text-cyan-400/30"
-              />
+              <Input value={carName} onChange={(e) => setCarName(e.target.value)} placeholder="Enter car name..."
+                className="bg-slate-900/50 border-cyan-500/30 text-white font-mono placeholder:text-cyan-400/30" />
             </div>
             <div>
               <Label className="text-cyan-300 font-mono text-xs uppercase tracking-wider">Team</Label>
               <Select value={carTeam} onValueChange={setCarTeam}>
-                <SelectTrigger className="bg-slate-900/50 border-cyan-500/30 text-white font-mono">
-                  <SelectValue />
-                </SelectTrigger>
+                <SelectTrigger className="bg-slate-900/50 border-cyan-500/30 text-white font-mono"><SelectValue /></SelectTrigger>
                 <SelectContent className="bg-slate-950 border-cyan-500/30">
                   <SelectItem value="Custom Racing">Custom Racing</SelectItem>
                   <SelectItem value="Speed Demons">Speed Demons</SelectItem>
@@ -816,12 +621,7 @@ export default function F1RacingArena() {
             </div>
             <div>
               <Label className="text-cyan-300 font-mono text-xs uppercase tracking-wider">Car Color</Label>
-              <Input
-                type="color"
-                value={carColor}
-                onChange={(e) => setCarColor(e.target.value)}
-                className="h-12 bg-slate-900/50 border-cyan-500/30"
-              />
+              <Input type="color" value={carColor} onChange={(e) => setCarColor(e.target.value)} className="h-12 bg-slate-900/50 border-cyan-500/30" />
             </div>
             <Button onClick={handleBuyCar} className="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 border border-cyan-400/20 font-mono uppercase tracking-wider" disabled={createCar.isPending}>
               {createCar.isPending ? "Building..." : "Buy Car (75 Coins)"}
@@ -830,35 +630,27 @@ export default function F1RacingArena() {
         </DialogContent>
       </Dialog>
 
-      {/* Join Race Dialog */}
       <Dialog open={showJoinRace} onOpenChange={setShowJoinRace}>
         <DialogContent className="bg-slate-950/95 border-cyan-500/30 backdrop-blur-xl">
           <DialogHeader>
             <DialogTitle className="text-cyan-300 font-mono uppercase tracking-wider flex items-center gap-2">
-              <Car className="h-5 w-5 text-cyan-400" />
-              Join Race
+              <Car className="h-5 w-5 text-cyan-400" /> Join Race
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <div>
               <Label className="text-cyan-300 font-mono text-xs uppercase tracking-wider">Select Car</Label>
               <Select value={selectedCarForRace} onValueChange={setSelectedCarForRace}>
-                <SelectTrigger className="bg-slate-900/50 border-cyan-500/30 text-white font-mono">
-                   <SelectValue placeholder="Choose car..." />
-                </SelectTrigger>
+                <SelectTrigger className="bg-slate-900/50 border-cyan-500/30 text-white font-mono"><SelectValue placeholder="Choose car..." /></SelectTrigger>
                 <SelectContent className="bg-slate-950 border-cyan-500/30">
-                  {cars?.map(car => (
-                    <SelectItem key={car.id} value={car.id}>{car.name}</SelectItem>
-                  ))}
+                  {cars?.map(car => <SelectItem key={car.id} value={car.id}>{car.name}</SelectItem>)}
                 </SelectContent>
               </Select>
             </div>
             <div>
               <Label className="text-cyan-300 font-mono text-xs uppercase tracking-wider">Race Strategy</Label>
               <Select value={raceStrategy} onValueChange={setRaceStrategy}>
-                <SelectTrigger className="bg-slate-900/50 border-cyan-500/30 text-white font-mono">
-                  <SelectValue />
-                </SelectTrigger>
+                <SelectTrigger className="bg-slate-900/50 border-cyan-500/30 text-white font-mono"><SelectValue /></SelectTrigger>
                 <SelectContent className="bg-slate-950 border-cyan-500/30">
                   <SelectItem value="aggressive">Aggressive — Max Speed</SelectItem>
                   <SelectItem value="balanced">Balanced — Optimal</SelectItem>
@@ -873,37 +665,26 @@ export default function F1RacingArena() {
         </DialogContent>
       </Dialog>
 
-      {/* Shop Dialog */}
       <Dialog open={showShop} onOpenChange={setShowShop}>
         <DialogContent className="bg-slate-950/95 border-cyan-500/30 backdrop-blur-xl">
           <DialogHeader>
             <DialogTitle className="text-cyan-300 font-mono uppercase tracking-wider flex items-center gap-2">
-              <Sparkles className="h-5 w-5 text-violet-400" />
-              Livery Bay
+              <Sparkles className="h-5 w-5 text-violet-400" /> Livery Bay
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <div>
               <Label className="text-cyan-300 font-mono text-xs uppercase tracking-wider">Select Car</Label>
               <Select value={selectedCarForShop} onValueChange={setSelectedCarForShop}>
-                <SelectTrigger className="bg-slate-900/50 border-cyan-500/30 text-white font-mono">
-                  <SelectValue placeholder="Choose car..." />
-                </SelectTrigger>
+                <SelectTrigger className="bg-slate-900/50 border-cyan-500/30 text-white font-mono"><SelectValue placeholder="Choose car..." /></SelectTrigger>
                 <SelectContent className="bg-slate-950 border-cyan-500/30">
-                  {cars?.map(car => (
-                    <SelectItem key={car.id} value={car.id}>{car.name}</SelectItem>
-                  ))}
+                  {cars?.map(car => <SelectItem key={car.id} value={car.id}>{car.name}</SelectItem>)}
                 </SelectContent>
               </Select>
             </div>
             <div>
               <Label className="text-cyan-300 font-mono text-xs uppercase tracking-wider">New Car Color</Label>
-              <Input
-                type="color"
-                value={shopColor}
-                onChange={(e) => setShopColor(e.target.value)}
-                className="h-12 bg-slate-900/50 border-cyan-500/30"
-              />
+              <Input type="color" value={shopColor} onChange={(e) => setShopColor(e.target.value)} className="h-12 bg-slate-900/50 border-cyan-500/30" />
             </div>
             <Button onClick={handlePurchaseColor} className="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 border border-violet-400/20 font-mono uppercase tracking-wider" disabled={purchaseColor.isPending}>
               {purchaseColor.isPending ? "Applying..." : "Apply Livery (50 Gems)"}
