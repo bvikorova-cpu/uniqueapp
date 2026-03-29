@@ -1,13 +1,13 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Send, Search, MessageCircle, Check, CheckCheck, X, Reply, Mic, Image, Smile, Square, Play, Pause, Users } from "lucide-react";
+import { Send, Search, MessageCircle, Check, CheckCheck, X, Reply, Mic, Image, Smile, Square, Play, Pause, Users, BarChart3, Palette, Radio, Clock, ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import VideoCall from "@/components/messenger/VideoCall";
 import { useOnlineStatus } from "@/hooks/useOnlineStatus";
@@ -15,11 +15,27 @@ import { OnlineIndicator } from "@/components/messenger/OnlineIndicator";
 import { SelfDestructingMessage } from "@/components/messenger/SelfDestructingMessage";
 import { GroupChatDialog } from "@/components/messenger/GroupChatDialog";
 import { MessengerAIFeatures } from "@/components/messenger/MessengerAIFeatures";
+import { MessengerHero } from "@/components/messenger/MessengerHero";
+import { ChatAnalyticsDashboard } from "@/components/messenger/ChatAnalyticsDashboard";
+import { AIChatThemes } from "@/components/messenger/AIChatThemes";
+import { VoiceRoom } from "@/components/messenger/VoiceRoom";
+import { MessageScheduler } from "@/components/messenger/MessageScheduler";
+import { motion } from "framer-motion";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+
+type MessengerView = "hub" | "chat" | "analytics" | "themes" | "voice" | "scheduler";
+
+const messengerTools = [
+  { id: "chat" as MessengerView, icon: MessageCircle, title: "Open Chat", description: "Real-time messaging with all features", color: "cyan", badge: "Core" },
+  { id: "analytics" as MessengerView, icon: BarChart3, title: "Chat Analytics", description: "Message stats, patterns & insights", color: "blue", badge: "New" },
+  { id: "themes" as MessengerView, icon: Palette, title: "Chat Themes", description: "AI-generated themes & wallpapers", color: "purple", badge: "AI" },
+  { id: "voice" as MessengerView, icon: Radio, title: "Voice Rooms", description: "Drop-in live audio conversations", color: "emerald", badge: "Live" },
+  { id: "scheduler" as MessengerView, icon: Clock, title: "Message Scheduler", description: "Schedule messages for later delivery", color: "amber", badge: "New" },
+];
 
 interface Profile {
   id: string;
@@ -91,6 +107,7 @@ const POPULAR_GIFS = [
 const Messenger = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [activeView, setActiveView] = useState<MessengerView>("hub");
   const [user, setUser] = useState<any>(null);
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [selectedConversation, setSelectedConversation] = useState<string | null>(null);
@@ -748,9 +765,130 @@ const Messenger = () => {
     return reactions?.some(r => r.reaction === reaction && r.user_id === user?.id) || false;
   };
 
+  const goToHub = () => setActiveView("hub");
+
+  const renderToolView = () => {
+    if (!user) return null;
+    switch (activeView) {
+      case "analytics": return <ChatAnalyticsDashboard onBack={goToHub} userId={user.id} />;
+      case "themes": return <AIChatThemes onBack={goToHub} userId={user.id} />;
+      case "voice": return <VoiceRoom onBack={goToHub} userId={user.id} />;
+      case "scheduler": return <MessageScheduler onBack={goToHub} userId={user.id} />;
+      default: return null;
+    }
+  };
+
+  // Hub view with hero + tools
+  if (activeView !== "hub" && activeView !== "chat") {
+    return (
+      <div className="min-h-screen bg-background pt-20 pb-12">
+        <div className="container mx-auto px-4 max-w-4xl">
+          {renderToolView()}
+        </div>
+      </div>
+    );
+  }
+
+  if (activeView === "hub") {
+    const colorMap: Record<string, string> = {
+      cyan: "from-cyan-500 to-blue-500",
+      blue: "from-blue-500 to-indigo-500",
+      purple: "from-purple-500 to-pink-500",
+      emerald: "from-emerald-500 to-teal-500",
+      amber: "from-amber-500 to-orange-500",
+    };
+
+    return (
+      <div className="min-h-screen bg-background pt-20 pb-12">
+        <div className="container mx-auto px-4 max-w-4xl">
+          <MessengerHero
+            onOpenChat={() => setActiveView("chat")}
+            stats={{
+              totalMessages: conversations.length * 12,
+              activeChats: conversations.length,
+              friendsOnline: allUsers.length,
+              aiCredits: 50,
+            }}
+          />
+
+          {/* Tools Grid */}
+          <div className="mb-8">
+            <h2 className="text-2xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent mb-6">
+              Messenger Tools
+            </h2>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+              {messengerTools.map((tool, i) => (
+                <motion.div
+                  key={tool.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.08, type: "spring", stiffness: 200 }}
+                  whileHover={{ y: -4, scale: 1.02 }}
+                  whileTap={{ scale: 0.97 }}
+                  onClick={() => setActiveView(tool.id)}
+                  className="cursor-pointer"
+                >
+                  <Card className="border-border/40 bg-card/80 backdrop-blur-sm hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 transition-all overflow-hidden group">
+                    <CardContent className="p-4 text-center">
+                      {tool.badge && (
+                        <span className="text-[9px] font-bold bg-primary/20 text-primary px-2 py-0.5 rounded-full mb-2 inline-block">
+                          {tool.badge}
+                        </span>
+                      )}
+                      <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${colorMap[tool.color] || "from-primary to-accent"} flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform`}>
+                        <tool.icon className="h-5 w-5 text-white" />
+                      </div>
+                      <h3 className="text-xs font-black mb-0.5">{tool.title}</h3>
+                      <p className="text-[10px] text-muted-foreground leading-tight">{tool.description}</p>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+
+          {/* Quick Features List */}
+          <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-background">
+            <CardContent className="p-6">
+              <h3 className="text-xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent mb-4">Built-in Features</h3>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                {[
+                  { icon: "💬", label: "Real-time Chat" },
+                  { icon: "🎙️", label: "Voice Messages" },
+                  { icon: "📸", label: "Image Sharing" },
+                  { icon: "😂", label: "Reactions & GIFs" },
+                  { icon: "🔥", label: "Self-Destruct" },
+                  { icon: "👥", label: "Group Chats" },
+                  { icon: "🤖", label: "AI Translation" },
+                  { icon: "📊", label: "Smart Replies" },
+                ].map((feat, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.3 + i * 0.05 }}
+                    className="flex items-center gap-2 p-2 rounded-lg bg-card/50 border border-border/30"
+                  >
+                    <span className="text-lg">{feat.icon}</span>
+                    <span className="text-xs font-bold">{feat.label}</span>
+                  </motion.div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background pt-20 pb-12">
-      <div className="container mx-auto px-4 h-[calc(100vh-8rem)]">
+      <div className="container mx-auto px-4">
+        <Button variant="ghost" onClick={goToHub} className="mb-3 gap-2 text-muted-foreground hover:text-foreground">
+          <ArrowLeft className="h-4 w-4" /> Back to Hub
+        </Button>
+      </div>
+      <div className="container mx-auto px-4 h-[calc(100vh-10rem)]">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 h-full">
           <Card className="col-span-1 p-4 flex flex-col">
             <div className="flex items-center justify-between mb-4">
