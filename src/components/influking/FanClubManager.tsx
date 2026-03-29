@@ -35,7 +35,7 @@ const FanClubManager = ({ onBack }: FanClubManagerProps) => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [showCreateDialog, setShowCreateDialog] = useState(false);
-  const [newClub, setNewClub] = useState({ name: "", description: "", tier: "bronze" as const, perks: "" });
+  const [newClub, setNewClub] = useState<{ name: string; description: string; tier: "bronze" | "silver" | "gold"; perks: string }>({ name: "", description: "", tier: "bronze", perks: "" });
 
   const { data: myProfile } = useQuery({
     queryKey: ["my-influencer-fanclub"],
