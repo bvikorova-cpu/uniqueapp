@@ -24,9 +24,16 @@ import { MerchStore } from "@/components/concerts/MerchStore";
 import { ConcertNotifications } from "@/components/concerts/ConcertNotifications";
 import { ConcertHowItWorks } from "@/components/concerts/ConcertHowItWorks";
 import { MusicianRegistration } from "@/components/musician/MusicianRegistration";
+import { SongRequests } from "@/components/concerts/SongRequests";
+import { MultiCamera } from "@/components/concerts/MultiCamera";
+import { FanBadges } from "@/components/concerts/FanBadges";
+import { ConcertStories } from "@/components/concerts/ConcertStories";
+import { CollectibleTickets } from "@/components/concerts/CollectibleTickets";
+import { ConcertAfterparty } from "@/components/concerts/ConcertAfterparty";
 
 type ViewType = "hub" | "browse" | "gifts" | "artists" | "leaderboard" | "replay" | 
-  "schedule" | "chat" | "analytics" | "vip" | "setlist" | "merch" | "notifications" | "how-it-works" | "musician";
+  "schedule" | "chat" | "analytics" | "vip" | "setlist" | "merch" | "notifications" | "how-it-works" | "musician" |
+  "song-requests" | "multi-camera" | "fan-badges" | "stories" | "collectibles" | "afterparty";
 
 const tools = [
   { id: "browse" as ViewType, icon: Ticket, title: "Browse Concerts", description: "Discover & buy tickets for upcoming live shows", color: "red" },
