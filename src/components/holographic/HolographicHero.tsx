@@ -41,7 +41,7 @@ export const HolographicHero = () => {
     <div className="relative h-[78vh] min-h-[540px] w-full overflow-hidden rounded-3xl border border-border/40 mb-8">
       {/* Video Background */}
       <video ref={videoRef} className="absolute inset-0 h-full w-full object-cover brightness-110 saturate-110" autoPlay muted loop playsInline>
-        <source src="/__l5e/assets-v1/58755969-c4d5-422c-87bb-ec571a45a251/crystal-energy-hero.mp4" type="video/mp4" />
+        <source src="/__l5e/assets-v1/120a4269-7298-4c83-86ad-c57c17c1cf72/holographic-avatar-hero.mp4" type="video/mp4" />
       </video>
 
       {/* Holographic scan lines overlay */}
