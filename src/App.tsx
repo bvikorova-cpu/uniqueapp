@@ -229,6 +229,19 @@ import {
   MasterChefCompetitions,
   MasterChefCompetitionsGallery,
   MasterChefEarnings,
+} from "@/pages/MasterChefSubscription";
+const MasterChefHub = lazy(() => import("@/pages/MasterChefHub"));
+const MasterChefAIRecipes = lazy(() => import("@/pages/MasterChefAIRecipes"));
+const MasterChefCookingTimer = lazy(() => import("@/pages/MasterChefCookingTimer"));
+const MasterChefIngredientScanner = lazy(() => import("@/pages/MasterChefIngredientScanner"));
+const MasterChefChefChat = lazy(() => import("@/pages/MasterChefChefChat"));
+const MasterChefLiveStream = lazy(() => import("@/pages/MasterChefLiveStream"));
+const MasterChefWeeklyAwards = lazy(() => import("@/pages/MasterChefWeeklyAwards"));
+const MasterChefNutritionAnalyzer = lazy(() => import("@/pages/MasterChefNutritionAnalyzer"));
+const MasterChefGlobalMap = lazy(() => import("@/pages/MasterChefGlobalMap"));
+const MasterChefAICoach = lazy(() => import("@/pages/MasterChefAICoach"));
+const MasterChefRecipeFeed = lazy(() => import("@/pages/MasterChefRecipeFeed"));
+// keep existing after MasterChefEarnings
   NutritionHub,
   NutritionSubscriptions,
   HealthcareProviderDashboard,
@@ -599,12 +612,22 @@ const App = () => {
                             <F1Leaderboard />
                           </SubscriptionGuard>
                         } />
-                        <Route path="/masterchef-subscription" element={<MasterChefSubscription />} />
+                        <Route path="/masterchef-subscription" element={<MasterChefHub />} />
                         <Route path="/masterchef/competitions-public" element={<MasterChefCompetitionsGallery />} />
                         <Route path="/masterchef/gallery" element={<MasterChefCompetitionsGallery />} />
                         <Route path="/masterchef/dashboard" element={<ProtectedRoute><MasterChefDashboard /></ProtectedRoute>} />
                         <Route path="/masterchef/competitions" element={<ProtectedRoute><MasterChefCompetitions /></ProtectedRoute>} />
                         <Route path="/masterchef/earnings" element={<ProtectedRoute><MasterChefEarnings /></ProtectedRoute>} />
+                        <Route path="/masterchef/ai-recipes" element={<ProtectedRoute><MasterChefAIRecipes /></ProtectedRoute>} />
+                        <Route path="/masterchef/cooking-timer" element={<MasterChefCookingTimer />} />
+                        <Route path="/masterchef/ingredient-scanner" element={<ProtectedRoute><MasterChefIngredientScanner /></ProtectedRoute>} />
+                        <Route path="/masterchef/chef-chat" element={<ProtectedRoute><MasterChefChefChat /></ProtectedRoute>} />
+                        <Route path="/masterchef/live-stream" element={<ProtectedRoute><MasterChefLiveStream /></ProtectedRoute>} />
+                        <Route path="/masterchef/weekly-awards" element={<MasterChefWeeklyAwards />} />
+                        <Route path="/masterchef/nutrition-analyzer" element={<ProtectedRoute><MasterChefNutritionAnalyzer /></ProtectedRoute>} />
+                        <Route path="/masterchef/global-map" element={<MasterChefGlobalMap />} />
+                        <Route path="/masterchef/ai-coach" element={<ProtectedRoute><MasterChefAICoach /></ProtectedRoute>} />
+                        <Route path="/masterchef/recipe-feed" element={<ProtectedRoute><MasterChefRecipeFeed /></ProtectedRoute>} />
                         <Route path="/influencer/earnings" element={<ProtectedRoute><InfluencerEarnings /></ProtectedRoute>} />
                         <Route path="/time-reversal-subscription" element={<Navigate to="/time-reversal" replace />} />
                         <Route path="/time-reversal" element={<TimeReversalSocial />} />
