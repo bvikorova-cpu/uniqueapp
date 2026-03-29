@@ -24,9 +24,16 @@ import { MerchStore } from "@/components/concerts/MerchStore";
 import { ConcertNotifications } from "@/components/concerts/ConcertNotifications";
 import { ConcertHowItWorks } from "@/components/concerts/ConcertHowItWorks";
 import { MusicianRegistration } from "@/components/musician/MusicianRegistration";
+import { SongRequests } from "@/components/concerts/SongRequests";
+import { MultiCamera } from "@/components/concerts/MultiCamera";
+import { FanBadges } from "@/components/concerts/FanBadges";
+import { ConcertStories } from "@/components/concerts/ConcertStories";
+import { CollectibleTickets } from "@/components/concerts/CollectibleTickets";
+import { ConcertAfterparty } from "@/components/concerts/ConcertAfterparty";
 
 type ViewType = "hub" | "browse" | "gifts" | "artists" | "leaderboard" | "replay" | 
-  "schedule" | "chat" | "analytics" | "vip" | "setlist" | "merch" | "notifications" | "how-it-works" | "musician";
+  "schedule" | "chat" | "analytics" | "vip" | "setlist" | "merch" | "notifications" | "how-it-works" | "musician" |
+  "song-requests" | "multi-camera" | "fan-badges" | "stories" | "collectibles" | "afterparty";
 
 const tools = [
   { id: "browse" as ViewType, icon: Ticket, title: "Browse Concerts", description: "Discover & buy tickets for upcoming live shows", color: "red" },
@@ -41,6 +48,12 @@ const tools = [
   { id: "merch" as ViewType, icon: ShoppingBag, title: "Artist Merch", description: "Exclusive merchandise from musicians", color: "orange" },
   { id: "analytics" as ViewType, icon: BarChart3, title: "Concert Analytics", description: "Platform performance metrics", color: "blue" },
   { id: "notifications" as ViewType, icon: Bell, title: "Notifications", description: "Customize your concert alerts", color: "red" },
+  { id: "song-requests" as ViewType, icon: Music, title: "Song Requests", description: "Pay to request songs during live shows", color: "pink", badge: "€1-5" },
+  { id: "multi-camera" as ViewType, icon: PlayCircle, title: "Multi-Camera", description: "Switch between 6 camera angles live", color: "cyan" },
+  { id: "fan-badges" as ViewType, icon: Star, title: "Fan Badges & Levels", description: "Earn XP, unlock badges, level up", color: "amber" },
+  { id: "stories" as ViewType, icon: Sparkles, title: "Concert Stories", description: "15s highlights from live performances", color: "violet" },
+  { id: "collectibles" as ViewType, icon: Ticket, title: "Collectible Tickets", description: "Limited edition digital collectibles", color: "emerald", badge: "New" },
+  { id: "afterparty" as ViewType, icon: Users, title: "Afterparty", description: "Exclusive post-concert hangout rooms", color: "red" },
   { id: "musician" as ViewType, icon: Music, title: "Become a Musician", description: "Register as an artist & start performing", color: "violet", badge: "Join" },
   { id: "how-it-works" as ViewType, icon: Info, title: "How It Works", description: "Learn about the concert platform", color: "cyan" },
 ];
@@ -85,6 +98,12 @@ const LiveConcerts = () => {
       case "merch": return <MerchStore onBack={goBack} />;
       case "notifications": return <ConcertNotifications onBack={goBack} />;
       case "how-it-works": return <ConcertHowItWorks onBack={goBack} />;
+      case "song-requests": return <SongRequests onBack={goBack} />;
+      case "multi-camera": return <MultiCamera onBack={goBack} />;
+      case "fan-badges": return <FanBadges onBack={goBack} />;
+      case "stories": return <ConcertStories onBack={goBack} />;
+      case "collectibles": return <CollectibleTickets onBack={goBack} />;
+      case "afterparty": return <ConcertAfterparty onBack={goBack} />;
       case "musician":
         navigate("/musician-dashboard");
         return null;
