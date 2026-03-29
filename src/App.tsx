@@ -201,6 +201,7 @@ import {
   DiscoverCreators,
   FutureFace,
   TimeReversalSubscription,
+  TimeReversalSocial,
   TimeReversalDashboard,
   TimeReversalTimeline,
   TimeCapsuleSubscription,

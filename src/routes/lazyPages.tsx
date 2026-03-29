@@ -225,6 +225,7 @@ export const DiscoverCreators = lazy(() => import("@/pages/DiscoverCreators"));
 // Ancestor & Time
 export const FutureFace = lazy(() => import("@/pages/FutureFace"));
 export const TimeReversalSubscription = lazy(() => import("@/pages/TimeReversalSubscription"));
+export const TimeReversalSocial = lazy(() => import("@/pages/TimeReversalSocial"));
 export const TimeReversalDashboard = lazy(() => import("@/pages/TimeReversalDashboard"));
 export const TimeReversalTimeline = lazy(() => import("@/pages/TimeReversalTimeline"));
 export const TimeCapsuleSubscription = lazy(() => import("@/pages/TimeCapsuleSubscription"));
