@@ -81,7 +81,7 @@ export function TimeReversalHero() {
         {/* Glassmorphic Stats */}
         <motion.div
           initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.45 }}
-          className="flex flex-wrap gap-3"
+          className="grid grid-cols-2 gap-2 w-full max-w-md"
         >
           {[
             { icon: Timer, label: "Years Reversed", value: "2.4K" },
