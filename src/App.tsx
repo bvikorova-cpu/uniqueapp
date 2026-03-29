@@ -306,7 +306,18 @@ import {
   QuizTaker,
 } from "@/routes/lazyPages";
 
-const queryClient = new QueryClient({
+const MasterChefHub = lazy(() => import("@/pages/MasterChefHub"));
+const MasterChefAIRecipes = lazy(() => import("@/pages/MasterChefAIRecipes"));
+const MasterChefCookingTimer = lazy(() => import("@/pages/MasterChefCookingTimer"));
+const MasterChefIngredientScanner = lazy(() => import("@/pages/MasterChefIngredientScanner"));
+const MasterChefChefChat = lazy(() => import("@/pages/MasterChefChefChat"));
+const MasterChefLiveStream = lazy(() => import("@/pages/MasterChefLiveStream"));
+const MasterChefWeeklyAwards = lazy(() => import("@/pages/MasterChefWeeklyAwards"));
+const MasterChefNutritionAnalyzer = lazy(() => import("@/pages/MasterChefNutritionAnalyzer"));
+const MasterChefGlobalMap = lazy(() => import("@/pages/MasterChefGlobalMap"));
+const MasterChefAICoach = lazy(() => import("@/pages/MasterChefAICoach"));
+const MasterChefRecipeFeed = lazy(() => import("@/pages/MasterChefRecipeFeed"));
+
   defaultOptions: {
     queries: {
       staleTime: 1000 * 60 * 5,
