@@ -553,6 +553,316 @@ serve(async (req) => {
       }
 
       // ============================================
+      // BRAIN DUEL CREDITS
+      // ============================================
+
+      if (paymentType === "brain_duel_credits") {
+        const cr = parseInt(meta.credits || "0");
+        if (cr > 0) {
+          await upsertCredits("brain_duel_credits", meta.user_id, cr);
+          await recordTransaction("brain_duel_credits", meta.user_id);
+        }
+      }
+
+      // ============================================
+      // BRAND BATTLE
+      // ============================================
+
+      if (paymentType === "brand_votes") {
+        log("Processing brand votes purchase");
+        await supabase.from("brand_battle_votes_purchases").insert({
+          user_id: meta.user_id, amount, stripe_session_id: sid, status: "completed",
+        }).then(r => { if (r.error) log("Brand votes insert (non-critical)", r.error); });
+        await recordTransaction("brand_votes", meta.user_id);
+      }
+
+      if (paymentType === "brand_sponsorship") {
+        log("Processing brand sponsorship");
+        await supabase.from("brand_sponsorships").insert({
+          user_id: meta.user_id, tier: meta.tier, amount, status: "active",
+          stripe_session_id: sid,
+        }).then(r => { if (r.error) log("Brand sponsorship insert (non-critical)", r.error); });
+        await recordTransaction("brand_sponsorship", meta.user_id);
+      }
+
+      // ============================================
+      // COMEDY COINS
+      // ============================================
+
+      if (paymentType === "comedy_coins") {
+        const coins = parseInt(meta.coins || "0");
+        if (coins > 0) {
+          const { data: existing } = await supabase.from("comedy_coins").select("id, balance").eq("user_id", meta.user_id).maybeSingle();
+          if (existing) {
+            await supabase.from("comedy_coins").update({
+              balance: (existing.balance || 0) + coins, updated_at: new Date().toISOString(),
+            }).eq("id", existing.id);
+          } else {
+            await supabase.from("comedy_coins").insert({ user_id: meta.user_id, balance: coins });
+          }
+          log("Comedy coins added", { coins });
+        }
+        await recordTransaction("comedy_coins", meta.user_id);
+      }
+
+      // ============================================
+      // CONFESSION TOKENS
+      // ============================================
+
+      if (paymentType === "confession_tokens") {
+        log("Processing confession tokens");
+        await upsertCredits("absolution_tokens", meta.user_id, meta.service_type === "premium" ? 50 : 10);
+        await recordTransaction("confession_tokens", meta.user_id);
+      }
+
+      // ============================================
+      // CONSULTATION
+      // ============================================
+
+      if (paymentType === "consultation") {
+        log("Processing consultation booking");
+        await supabase.from("consultation_bookings").insert({
+          user_id: meta.user_id, duration: meta.duration, amount,
+          stripe_session_id: sid, status: "confirmed",
+        }).then(r => { if (r.error) log("Consultation insert (non-critical)", r.error); });
+        await recordTransaction("consultation", meta.user_id);
+      }
+
+      // ============================================
+      // CRYSTAL PURCHASE
+      // ============================================
+
+      if (paymentType === "crystal_purchase") {
+        log("Processing crystal marketplace purchase");
+        await supabase.from("crystal_marketplace_orders").update({
+          status: "paid", paid_at: new Date().toISOString(),
+        }).eq("id", meta.order_id).eq("status", "pending");
+        await recordTransaction("crystal_purchase", meta.buyer_id, undefined, 0.15);
+      }
+
+      // ============================================
+      // CRYSTAL ENERGY NETWORK
+      // ============================================
+
+      if (paymentType === "crystal_energy") {
+        log("Processing crystal energy purchase");
+        await supabase.from("crystal_energy_purchases").insert({
+          user_id: meta.user_id, feature: meta.feature, feature_key: meta.feature_key,
+          amount, stripe_session_id: sid, status: "active",
+        }).then(r => { if (r.error) log("Crystal energy insert (non-critical)", r.error); });
+        await recordTransaction("crystal_energy", meta.user_id);
+      }
+
+      // ============================================
+      // DNA MEMORY NETWORK
+      // ============================================
+
+      if (paymentType === "dna_memory") {
+        log("Processing DNA memory service");
+        await supabase.from("dna_memory_purchases").insert({
+          user_id: meta.user_id, service_type: meta.service_type,
+          amount, stripe_session_id: sid, status: "active",
+        }).then(r => { if (r.error) log("DNA memory insert (non-critical)", r.error); });
+        await recordTransaction("dna_memory", meta.user_id);
+      }
+
+      // ============================================
+      // ESCAPE ROOM
+      // ============================================
+
+      if (paymentType === "escape_room") {
+        log("Processing escape room purchase");
+        await supabase.from("escape_room_purchases").insert({
+          user_id: meta.userId, room_id: meta.roomId,
+          amount, stripe_session_id: sid, status: "active",
+        }).then(r => { if (r.error) log("Escape room insert (non-critical)", r.error); });
+        await recordTransaction("escape_room", meta.userId);
+      }
+
+      // ============================================
+      // FASHION MARKETPLACE
+      // ============================================
+
+      if (paymentType === "fashion_purchase") {
+        log("Processing fashion purchase");
+        await supabase.from("fashion_marketplace_orders").insert({
+          buyer_id: meta.buyerId, design_id: meta.designId,
+          design_title: meta.designTitle, product_type: meta.productType,
+          amount, stripe_session_id: sid, status: "completed",
+        }).then(r => { if (r.error) log("Fashion order insert (non-critical)", r.error); });
+        await recordTransaction("fashion_purchase", meta.buyerId);
+      }
+
+      // ============================================
+      // FITSLIM PLAN
+      // ============================================
+
+      if (paymentType === "fitslim_plan") {
+        log("Processing fitslim plan");
+        await supabase.from("fitness_plans").update({
+          status: "active", paid_at: new Date().toISOString(),
+        }).eq("id", meta.plan_id).eq("user_id", meta.user_id);
+        await recordTransaction("fitslim_plan", meta.user_id);
+      }
+
+      // ============================================
+      // FUTURE FACE
+      // ============================================
+
+      if (paymentType === "future_face") {
+        log("Processing future face purchase");
+        await supabase.from("future_face_purchases").insert({
+          user_id: meta.user_id, plan_type: meta.plan_type,
+          amount, stripe_session_id: sid, status: "active",
+        }).then(r => { if (r.error) log("Future face insert (non-critical)", r.error); });
+        await recordTransaction("future_face", meta.user_id);
+      }
+
+      // ============================================
+      // HOLOGRAPHIC CONCERT
+      // ============================================
+
+      if (paymentType === "holographic_concert") {
+        log("Processing holographic concert");
+        await supabase.from("holographic_purchases").insert({
+          user_id: meta.user_id, service_type: meta.feature || "concert",
+          status: "active", stripe_session_id: sid,
+        }).then(r => { if (r.error) log("Holographic concert insert (non-critical)", r.error); });
+        await recordTransaction("holographic_concert", meta.user_id);
+      }
+
+      // ============================================
+      // HORSE RACING CURRENCY
+      // ============================================
+
+      if (paymentType === "horse_currency") {
+        log("Processing horse currency");
+        const coins = parseInt(meta.coins || "0");
+        const gems = parseInt(meta.gems || "0");
+        if (coins > 0 || gems > 0) {
+          const { data: existing } = await supabase.from("horse_racing_currency").select("id, coins, gems").eq("user_id", meta.user_id).maybeSingle();
+          if (existing) {
+            await supabase.from("horse_racing_currency").update({
+              coins: (existing.coins || 0) + coins,
+              gems: (existing.gems || 0) + gems,
+              updated_at: new Date().toISOString(),
+            }).eq("id", existing.id);
+          } else {
+            await supabase.from("horse_racing_currency").insert({ user_id: meta.user_id, coins, gems });
+          }
+          log("Horse currency added", { coins, gems });
+        }
+        await recordTransaction("horse_currency", meta.user_id);
+      }
+
+      // ============================================
+      // LEAD BOOST (Property)
+      // ============================================
+
+      if (paymentType === "lead_boost") {
+        log("Processing lead boost");
+        const expiresAt = new Date();
+        expiresAt.setDate(expiresAt.getDate() + 30);
+        await supabase.from("property_lead_boosts").insert({
+          user_id: meta.user_id, property_id: meta.property_id,
+          amount, stripe_session_id: sid, status: "active",
+          expires_at: expiresAt.toISOString(),
+        }).then(r => { if (r.error) log("Lead boost insert (non-critical)", r.error); });
+        await recordTransaction("lead_boost", meta.user_id);
+      }
+
+      // ============================================
+      // STORY PURCHASE
+      // ============================================
+
+      if (paymentType === "story_purchase") {
+        log("Processing story purchase");
+        await supabase.from("kids_story_purchases").insert({
+          user_id: meta.user_id, story_type: meta.story_type,
+          amount, stripe_session_id: sid, status: "active",
+        }).then(r => { if (r.error) log("Story purchase insert (non-critical)", r.error); });
+        await recordTransaction("story_purchase", meta.user_id);
+      }
+
+      // ============================================
+      // TEEN CAREER COUNSELOR
+      // ============================================
+
+      if (paymentType === "teen_career") {
+        log("Processing teen career counselor purchase");
+        await supabase.from("teen_career_purchases").insert({
+          user_id: meta.user_id, amount, stripe_session_id: sid, status: "active",
+        }).then(r => { if (r.error) log("Teen career insert (non-critical)", r.error); });
+        await recordTransaction("teen_career", meta.user_id);
+      }
+
+      // ============================================
+      // COLLECTIBLES CREDITS
+      // ============================================
+
+      if (paymentType === "collectibles_credits") {
+        log("Processing collectibles credits");
+        const cr = parseInt(meta.credits || "10");
+        await upsertCredits("collectibles_credits", meta.user_id, cr);
+        await recordTransaction("collectibles_credits", meta.user_id);
+      }
+
+      // ============================================
+      // VOICE CLONE
+      // ============================================
+
+      if (paymentType === "voice_clone") {
+        log("Processing voice clone purchase");
+        await supabase.from("voice_clone_purchases").insert({
+          user_id: meta.user_id, amount, stripe_session_id: sid, status: "active",
+        }).then(r => { if (r.error) log("Voice clone insert (non-critical)", r.error); });
+        await recordTransaction("voice_clone", meta.user_id);
+      }
+
+      // ============================================
+      // MULTIVERSE SERVICE
+      // ============================================
+
+      if (paymentType === "multiverse_service") {
+        log("Processing multiverse service");
+        await supabase.from("multiverse_purchases").insert({
+          user_id: meta.user_id, service_type: meta.service_type,
+          amount, stripe_session_id: sid, status: "active",
+        }).then(r => { if (r.error) log("Multiverse insert (non-critical)", r.error); });
+        await recordTransaction("multiverse_service", meta.user_id);
+      }
+
+      // ============================================
+      // REINCARNATION SERVICE
+      // ============================================
+
+      if (paymentType === "reincarnation_service") {
+        log("Processing reincarnation service");
+        await supabase.from("reincarnation_purchases").insert({
+          user_id: meta.user_id, service_type: meta.service_type,
+          amount, stripe_session_id: sid, status: "active",
+        }).then(r => { if (r.error) log("Reincarnation insert (non-critical)", r.error); });
+        await recordTransaction("reincarnation_service", meta.user_id);
+      }
+
+      // ============================================
+      // SUBSCRIPTION-BASED (check-* verified, record transaction only)
+      // ============================================
+
+      const SUBSCRIPTION_TYPES = [
+        "psychology_subscription", "best_friend_subscription", "science_subscription",
+        "shadow_subscription", "sports_subscription", "wellness_subscription",
+        "time_reversal_subscription", "voice_subscription", "companions",
+        "skill_swap_subscription", "tipster_subscription", "vip_subscription",
+        "lottery_subscription", "phobia_subscription", "school_subscription",
+      ];
+
+      if (SUBSCRIPTION_TYPES.includes(paymentType)) {
+        log(`Processing subscription: ${paymentType}`);
+        await recordTransaction(paymentType, meta.user_id);
+      }
+
+      // ============================================
       // UNHANDLED TYPE LOGGING
       // ============================================
 

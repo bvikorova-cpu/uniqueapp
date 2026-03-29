@@ -11,4 +11,5 @@ serve(createDynamicCheckoutHandler({
   successPath: "/sports-predictor",
   cancelPath: "/sports-predictor",
   tierKey: "tier",
+  metadata: { type: "sports_subscription" },
 }));

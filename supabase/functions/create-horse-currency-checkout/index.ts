@@ -61,6 +61,7 @@ serve(async (req) => {
       cancel_url: `${req.headers.get("origin")}/horse-racing?payment=cancelled`,
       metadata: {
         user_id: user.id,
+        type: "horse_currency",
         coins: selectedPackage.coins.toString(),
         gems: selectedPackage.gems.toString(),
       },

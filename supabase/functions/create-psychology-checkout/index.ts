@@ -11,5 +11,5 @@ serve(createCheckoutHandler({
   recurringInterval: "month",
   successPath: "/psychologist?success=true",
   cancelPath: "/psychologist?canceled=true",
-  metadata: { feature: "psychology" },
+  metadata: { type: "psychology_subscription", feature: "psychology" },
 }));

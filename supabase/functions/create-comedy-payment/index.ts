@@ -53,6 +53,7 @@ serve(async (req) => {
       cancel_url: `${req.headers.get("origin")}/comedy-club?payment=canceled`,
       metadata: {
         user_id: user.id,
+        type: "comedy_coins",
         coins: coins.toString(),
       },
     });

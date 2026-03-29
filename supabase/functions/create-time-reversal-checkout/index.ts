@@ -6,5 +6,6 @@ serve(createFlexibleCheckoutHandler({
   successPath: "/time-reversal/timeline?success=true",
   cancelPath: "/time-reversal-subscription?canceled=true",
   defaultMode: "subscription",
+  metadata: { type: "time_reversal_subscription" },
   metadataFields: ["featureName"],
 }));

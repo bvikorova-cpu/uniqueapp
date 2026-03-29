@@ -12,4 +12,5 @@ serve(createServiceCheckoutHandler({
   subscriptionServices: ["reality_jumping", "best_self_selection"],
   successPath: "/multiverse-network?payment=success&session_id={CHECKOUT_SESSION_ID}",
   cancelPath: "/multiverse-network?payment=canceled",
+  metadata: { type: "multiverse_service" },
 }));

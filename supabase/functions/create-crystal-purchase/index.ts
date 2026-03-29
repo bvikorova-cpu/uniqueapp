@@ -101,6 +101,7 @@ serve(async (req) => {
       success_url: `${req.headers.get("origin")}/crystal-marketplace?success=true&order_id=${order.id}`,
       cancel_url: `${req.headers.get("origin")}/crystal-marketplace?canceled=true`,
       metadata: {
+        type: "crystal_purchase",
         order_id: order.id,
         item_id: itemId,
         buyer_id: user.id,

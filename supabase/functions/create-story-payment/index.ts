@@ -67,6 +67,7 @@ serve(async (req) => {
       cancel_url: `${req.headers.get("origin")}/kids-pricing?payment=canceled`,
       metadata: {
         user_id: user.id,
+        type: "story_purchase",
         story_type: storyType,
         purchase_type: "single_story"
       },

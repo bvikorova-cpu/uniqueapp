@@ -62,6 +62,7 @@ serve(async (req) => {
       success_url: `${req.headers.get("origin")}/fashion-studio?payment=success`,
       cancel_url: `${req.headers.get("origin")}/fashion-studio?payment=canceled`,
       metadata: {
+        type: "fashion_purchase",
         designId,
         designTitle,
         productType,

@@ -7,4 +7,5 @@ serve(createCheckoutHandler({
   mode: "subscription",
   successPath: "/shadow-arena/dashboard?success=true",
   cancelPath: "/shadow-arena?canceled=true",
+  metadata: { type: "shadow_subscription" },
 }));

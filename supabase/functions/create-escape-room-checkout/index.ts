@@ -52,6 +52,7 @@ serve(async (req) => {
       success_url: `${req.headers.get("origin")}/virtual-escape-room?success=true&roomId=${roomId}`,
       cancel_url: `${req.headers.get("origin")}/virtual-escape-room?canceled=true`,
       metadata: {
+        type: "escape_room",
         roomId: roomId,
         userId: user.id,
       },

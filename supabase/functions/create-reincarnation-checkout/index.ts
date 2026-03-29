@@ -12,4 +12,5 @@ serve(createServiceCheckoutHandler({
   subscriptionServices: ["karmic_debt_calculator", "soulmate_matching"],
   successPath: "/reincarnation-social?payment=success&session_id={CHECKOUT_SESSION_ID}",
   cancelPath: "/reincarnation-social?payment=canceled",
+  metadata: { type: "reincarnation_service" },
 }));
