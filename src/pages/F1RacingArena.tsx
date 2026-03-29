@@ -292,7 +292,7 @@ export default function F1RacingArena() {
         <GPRacingLiveTicker />
 
         {/* Tool Cards Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
           {toolCards.map((tool, i) => (
             <motion.div
               key={tool.id}
