@@ -320,6 +320,28 @@ serve(async (req) => {
         }
       }
 
+      // Additional credit types
+      const CREDIT_TYPE_TABLE_MAP: Record<string, string> = {
+        analyzer_credits: "analyzer_credits",
+        astrology_credits: "astrology_credits",
+        cooking_credits: "cooking_credits",
+        ai_credits: "ai_credits",
+        handwriting_credits: "handwriting_credits",
+        iq_credits: "iq_credits",
+        photo_credits: "photo_credits",
+        phobia_credits: "phobia_credits",
+        video_ad_credits: "video_ad_credits",
+        tutoring_credits: "tutoring_credits",
+      };
+
+      if (CREDIT_TYPE_TABLE_MAP[paymentType]) {
+        const cr = parseInt(meta.credits || "0");
+        if (cr > 0) {
+          await upsertCredits(CREDIT_TYPE_TABLE_MAP[paymentType], meta.user_id, cr);
+          await recordTransaction(paymentType, meta.user_id);
+        }
+      }
+
       if (paymentType === "emotion_market_purchase") {
         const cr = parseInt(meta.credits || "0");
         if (cr > 0) {
