@@ -188,7 +188,7 @@ const SEARCHABLE_PAGES: SearchResult[] = [
   { id: "133", title: "Phobia Trading", category: "Mystical", path: "/phobia-trading" },
   { id: "134", title: "Multiverse Network", category: "Mystical", path: "/multiverse-network" },
   { id: "135", title: "Time Capsule", category: "Mystical", path: "/time-capsule" },
-  { id: "136", title: "Time Reversal", category: "Mystical", path: "/time-reversal-subscription" },
+  { id: "136", title: "Time Reversal", category: "Mystical", path: "/time-reversal" },
   
   // Community
   { id: "137", title: "Plant Care", category: "Community", path: "/plant-care" },

@@ -201,6 +201,7 @@ import {
   DiscoverCreators,
   FutureFace,
   TimeReversalSubscription,
+  TimeReversalSocial,
   TimeReversalDashboard,
   TimeReversalTimeline,
   TimeCapsuleSubscription,
@@ -605,7 +606,8 @@ const App = () => {
                         <Route path="/masterchef/competitions" element={<ProtectedRoute><MasterChefCompetitions /></ProtectedRoute>} />
                         <Route path="/masterchef/earnings" element={<ProtectedRoute><MasterChefEarnings /></ProtectedRoute>} />
                         <Route path="/influencer/earnings" element={<ProtectedRoute><InfluencerEarnings /></ProtectedRoute>} />
-                        <Route path="/time-reversal-subscription" element={<TimeReversalSubscription />} />
+                        <Route path="/time-reversal-subscription" element={<Navigate to="/time-reversal" replace />} />
+                        <Route path="/time-reversal" element={<TimeReversalSocial />} />
                         <Route path="/time-reversal/dashboard" element={<ProtectedRoute><TimeReversalDashboard /></ProtectedRoute>} />
                         <Route path="/time-reversal/timeline" element={<TimeReversalTimeline />} />
                         <Route path="/time-capsule-subscription" element={<Navigate to="/time-capsule" replace />} />
