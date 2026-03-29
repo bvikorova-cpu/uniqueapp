@@ -20,6 +20,12 @@ import { ChatAnalyticsDashboard } from "@/components/messenger/ChatAnalyticsDash
 import { AIChatThemes } from "@/components/messenger/AIChatThemes";
 import { VoiceRoom } from "@/components/messenger/VoiceRoom";
 import { MessageScheduler } from "@/components/messenger/MessageScheduler";
+import { ReadReceiptsAnalytics } from "@/components/messenger/ReadReceiptsAnalytics";
+import { ChatBackupExport } from "@/components/messenger/ChatBackupExport";
+import { AIMoodDetection } from "@/components/messenger/AIMoodDetection";
+import { CustomEmojiCreator } from "@/components/messenger/CustomEmojiCreator";
+import { ChatGames } from "@/components/messenger/ChatGames";
+import { SmartNotifications } from "@/components/messenger/SmartNotifications";
 import { motion } from "framer-motion";
 import {
   Popover,
@@ -27,7 +33,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-type MessengerView = "hub" | "chat" | "analytics" | "themes" | "voice" | "scheduler";
+type MessengerView = "hub" | "chat" | "analytics" | "themes" | "voice" | "scheduler" | "receipts" | "backup" | "mood" | "emoji" | "games" | "notifications";
 
 const messengerTools = [
   { id: "chat" as MessengerView, icon: MessageCircle, title: "Open Chat", description: "Real-time messaging with all features", color: "cyan", badge: "Core" },
@@ -35,6 +41,12 @@ const messengerTools = [
   { id: "themes" as MessengerView, icon: Palette, title: "Chat Themes", description: "AI-generated themes & wallpapers", color: "purple", badge: "AI" },
   { id: "voice" as MessengerView, icon: Radio, title: "Voice Rooms", description: "Drop-in live audio conversations", color: "emerald", badge: "Live" },
   { id: "scheduler" as MessengerView, icon: Clock, title: "Message Scheduler", description: "Schedule messages for later delivery", color: "amber", badge: "New" },
+  { id: "receipts" as MessengerView, icon: CheckCheck, title: "Read Receipts", description: "Who reads your messages fastest?", color: "teal", badge: "New" },
+  { id: "backup" as MessengerView, icon: ArrowLeft, title: "Backup & Export", description: "Download chats as TXT, JSON or PDF", color: "slate", badge: "New" },
+  { id: "mood" as MessengerView, icon: Smile, title: "Mood Detection", description: "AI analysis of your emotional tone", color: "rose", badge: "AI" },
+  { id: "emoji" as MessengerView, icon: Smile, title: "Emoji Creator", description: "Design custom emojis for chats", color: "pink", badge: "New" },
+  { id: "games" as MessengerView, icon: Play, title: "Chat Games", description: "Trivia, RPS & more mini-games", color: "indigo", badge: "Fun" },
+  { id: "notifications" as MessengerView, icon: Users, title: "Smart Notifications", description: "AI-powered notification management", color: "lime", badge: "AI" },
 ];
 
 interface Profile {
