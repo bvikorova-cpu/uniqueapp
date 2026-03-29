@@ -70,12 +70,12 @@ export const ArtistDiscovery = ({ onBack }: Props) => {
                     <p className="text-[10px] text-muted-foreground">Shows</p>
                   </div>
                   <div className="text-center">
-                    <p className="text-sm font-bold">{artist.followers_count || 0}</p>
-                    <p className="text-[10px] text-muted-foreground">Followers</p>
+                    <p className="text-sm font-bold">{artist.total_earnings?.toFixed(0) || 0}</p>
+                    <p className="text-[10px] text-muted-foreground">Earned (€)</p>
                   </div>
                   <div className="text-center">
                     <p className="text-sm font-bold flex items-center justify-center gap-1">
-                      <Star className="h-3 w-3 text-yellow-500 fill-yellow-500" />{artist.rating?.toFixed(1) || "0.0"}
+                      <Star className="h-3 w-3 fill-amber-500 text-amber-500" />{artist.total_concerts > 0 ? "★" : "—"}
                     </p>
                     <p className="text-[10px] text-muted-foreground">Rating</p>
                   </div>
