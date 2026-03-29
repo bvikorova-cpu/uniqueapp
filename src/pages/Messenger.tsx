@@ -107,7 +107,7 @@ const POPULAR_GIFS = [
 const Messenger = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [user, setUser] = useState<any>(null);
+  const [activeView, setActiveView] = useState<MessengerView>("hub");
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [selectedConversation, setSelectedConversation] = useState<string | null>(null);
   const [messages, setMessages] = useState<MessageWithProfile[]>([]);
