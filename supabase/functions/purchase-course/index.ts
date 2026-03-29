@@ -82,6 +82,7 @@ serve(async (req) => {
       success_url: `${req.headers.get("origin")}/course/${courseId}?enrolled=true`,
       cancel_url: `${req.headers.get("origin")}/course/${courseId}`,
       metadata: {
+        type: "course_purchase",
         courseId: courseId,
         userId: user.id,
         instructorAmount: instructorAmount.toFixed(2),

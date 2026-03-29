@@ -102,6 +102,7 @@ serve(async (req) => {
       success_url: `${req.headers.get("origin")}/marketplace?order_success=${order.id}`,
       cancel_url: `${req.headers.get("origin")}/marketplace?order_cancelled=${order.id}`,
       metadata: {
+        type: "service_order",
         order_id: order.id,
         seller_id: offering.user_id,
         commission_amount: commissionAmount.toString(),

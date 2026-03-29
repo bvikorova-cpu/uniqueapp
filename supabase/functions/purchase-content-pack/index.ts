@@ -70,6 +70,7 @@ serve(async (req) => {
       success_url: `${req.headers.get('origin')}/creator/${pack.creator_id}?purchase=success`,
       cancel_url: `${req.headers.get('origin')}/creator/${pack.creator_id}?purchase=cancelled`,
       metadata: {
+        type: "content_pack_purchase",
         pack_id: packId,
         buyer_id: user.id,
         creator_id: pack.creator_id,

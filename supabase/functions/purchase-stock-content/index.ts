@@ -92,6 +92,7 @@ serve(async (req) => {
       success_url: `${req.headers.get("origin")}/stock-content-library?purchase=success&content=${contentId}`,
       cancel_url: `${req.headers.get("origin")}/stock-content-library?purchase=cancelled`,
       metadata: {
+        type: "stock_content_purchase",
         contentId,
         creatorId: content.creator_id,
         platformFee: platformFee.toFixed(2),

@@ -83,6 +83,7 @@ serve(async (req) => {
       success_url: `${req.headers.get("origin")}/f1-racing?success=true&package=${packageType}`,
       cancel_url: `${req.headers.get("origin")}/f1-racing?canceled=true`,
       metadata: {
+        type: "f1_currency",
         user_id: user.id,
         package_type: packageType,
         coins: selectedPackage.coins.toString(),
