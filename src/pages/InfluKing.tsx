@@ -21,8 +21,15 @@ import AIContentPlanner from "@/components/influking/AIContentPlanner";
 import CollabMatchmaker from "@/components/influking/CollabMatchmaker";
 import FanClubManager from "@/components/influking/FanClubManager";
 import BrandDealFinder from "@/components/influking/BrandDealFinder";
+import EngagementAnalytics from "@/components/influking/EngagementAnalytics";
+import HashtagGenerator from "@/components/influking/HashtagGenerator";
+import WeeklyChallenges from "@/components/influking/WeeklyChallenges";
+import AIThumbnailCreator from "@/components/influking/AIThumbnailCreator";
+import CrossPlatformPublisher from "@/components/influking/CrossPlatformPublisher";
+import AudienceInsights from "@/components/influking/AudienceInsights";
+import { BarChart3, Hash, Trophy, Image, Share2, PieChart } from "lucide-react";
 
-type InfluKingView = "hub" | "content-planner" | "collab" | "fan-club" | "brand-deals";
+type InfluKingView = "hub" | "content-planner" | "collab" | "fan-club" | "brand-deals" | "analytics" | "hashtags" | "challenges" | "thumbnails" | "publisher" | "audience";
 
 interface InfluencerProfile {
   id: string;
@@ -63,6 +70,12 @@ const TOOLS = [
   { id: "collab" as const, icon: Handshake, label: "Collab Matchmaker", description: "Find collaboration partners", color: "text-pink-500", bg: "bg-pink-500/10", paid: false },
   { id: "fan-club" as const, icon: Crown, label: "Fan Club Manager", description: "Create exclusive paid fan clubs", color: "text-amber-500", bg: "bg-amber-500/10", paid: false },
   { id: "brand-deals" as const, icon: Briefcase, label: "Brand Deal Finder", description: "Browse sponsorship opportunities", color: "text-emerald-500", bg: "bg-emerald-500/10", paid: false },
+  { id: "analytics" as const, icon: BarChart3, label: "Engagement Analytics", description: "Track growth, likes & views over time", color: "text-cyan-500", bg: "bg-cyan-500/10", paid: false },
+  { id: "hashtags" as const, icon: Hash, label: "AI Hashtag Generator", description: "Generate viral hashtags for reach", color: "text-indigo-500", bg: "bg-indigo-500/10", paid: true },
+  { id: "challenges" as const, icon: Trophy, label: "Weekly Challenges", description: "Compete and win credits & badges", color: "text-orange-500", bg: "bg-orange-500/10", paid: false },
+  { id: "thumbnails" as const, icon: Image, label: "AI Thumbnail Creator", description: "Generate eye-catching thumbnails", color: "text-rose-500", bg: "bg-rose-500/10", paid: true },
+  { id: "publisher" as const, icon: Share2, label: "Cross-Platform Publisher", description: "Publish to multiple networks at once", color: "text-violet-500", bg: "bg-violet-500/10", paid: false },
+  { id: "audience" as const, icon: PieChart, label: "Audience Insights", description: "Demographics, behavior & interests", color: "text-teal-500", bg: "bg-teal-500/10", paid: false },
 ];
 
 const InfluKing = () => {
@@ -347,6 +360,36 @@ const InfluKing = () => {
   if (activeView === "brand-deals") return (
     <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-4">
       <BrandDealFinder onBack={() => setActiveView("hub")} />
+    </div></div>
+  );
+  if (activeView === "analytics") return (
+    <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-4">
+      <EngagementAnalytics onBack={() => setActiveView("hub")} />
+    </div></div>
+  );
+  if (activeView === "hashtags") return (
+    <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-4">
+      <HashtagGenerator onBack={() => setActiveView("hub")} />
+    </div></div>
+  );
+  if (activeView === "challenges") return (
+    <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-4">
+      <WeeklyChallenges onBack={() => setActiveView("hub")} />
+    </div></div>
+  );
+  if (activeView === "thumbnails") return (
+    <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-4">
+      <AIThumbnailCreator onBack={() => setActiveView("hub")} />
+    </div></div>
+  );
+  if (activeView === "publisher") return (
+    <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-4">
+      <CrossPlatformPublisher onBack={() => setActiveView("hub")} />
+    </div></div>
+  );
+  if (activeView === "audience") return (
+    <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-4">
+      <AudienceInsights onBack={() => setActiveView("hub")} />
     </div></div>
   );
 
