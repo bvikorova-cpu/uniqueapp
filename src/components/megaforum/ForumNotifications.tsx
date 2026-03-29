@@ -17,14 +17,14 @@ export const ForumNotifications = ({ userId, onViewPost }: ForumNotificationsPro
   const { data: notifications = [] } = useQuery({
     queryKey: ["forum-notifications", userId],
     queryFn: async () => {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from("forum_notifications")
         .select("*")
         .eq("user_id", userId)
         .order("created_at", { ascending: false })
         .limit(20);
       if (error) throw error;
-      return data;
+      return data || [];
     },
     refetchInterval: 15000,
   });
@@ -33,7 +33,7 @@ export const ForumNotifications = ({ userId, onViewPost }: ForumNotificationsPro
 
   const markAllRead = useMutation({
     mutationFn: async () => {
-      await supabase
+      await (supabase as any)
         .from("forum_notifications")
         .update({ is_read: true })
         .eq("user_id", userId)
@@ -79,7 +79,7 @@ export const ForumNotifications = ({ userId, onViewPost }: ForumNotificationsPro
               <button
                 key={n.id}
                 onClick={() => n.post_id && onViewPost?.(n.post_id)}
-                className={`w-full text-left p-3 border-b border-border/20 hover:bg-accent/30 transition-colors ${!n.is_read ? "bg-primary/5" : ""}`}
+                className="w-full text-left p-3 border-b border-border/20 hover:bg-accent/30 transition-colors"
               >
                 <div className="flex items-start gap-2">
                   <div className={`w-2 h-2 rounded-full mt-1.5 flex-shrink-0 ${!n.is_read ? "bg-primary" : "bg-transparent"}`} />

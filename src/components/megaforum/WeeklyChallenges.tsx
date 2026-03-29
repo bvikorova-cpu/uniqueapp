@@ -37,13 +37,13 @@ export const WeeklyChallenges = ({ onBack }: WeeklyChallengesProps) => {
   const { data: challenges = [] } = useQuery({
     queryKey: ["forum-challenges"],
     queryFn: async () => {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from("forum_challenges")
         .select("*")
         .eq("is_active", true)
         .order("created_at", { ascending: false });
       if (error) throw error;
-      return data;
+      return data || [];
     },
   });
 
@@ -52,13 +52,13 @@ export const WeeklyChallenges = ({ onBack }: WeeklyChallengesProps) => {
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return {};
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from("forum_challenge_progress")
         .select("*")
         .eq("user_id", user.id);
       if (error) throw error;
       const map: Record<string, any> = {};
-      data?.forEach(p => { map[p.challenge_id] = p; });
+      (data || []).forEach((p: any) => { map[p.challenge_id] = p; });
       return map;
     },
   });
@@ -68,7 +68,7 @@ export const WeeklyChallenges = ({ onBack }: WeeklyChallengesProps) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Login required");
       const endsAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
-      const { error } = await supabase.from("forum_challenges").insert({
+      const { error } = await (supabase as any).from("forum_challenges").insert({
         title,
         description,
         challenge_type: challengeType,
@@ -91,7 +91,7 @@ export const WeeklyChallenges = ({ onBack }: WeeklyChallengesProps) => {
     mutationFn: async (challengeId: string) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Login required");
-      const { error } = await supabase.from("forum_challenge_progress").insert({
+      const { error } = await (supabase as any).from("forum_challenge_progress").insert({
         user_id: user.id,
         challenge_id: challengeId,
         current_value: 0,
@@ -106,10 +106,7 @@ export const WeeklyChallenges = ({ onBack }: WeeklyChallengesProps) => {
 
   const getTypeInfo = (type: string) => CHALLENGE_TYPES.find(t => t.value === type) || CHALLENGE_TYPES[0];
   const isExpired = (endsAt: string) => new Date(endsAt) < new Date();
-  const daysLeft = (endsAt: string) => {
-    const diff = Math.max(0, Math.ceil((new Date(endsAt).getTime() - Date.now()) / 86400000));
-    return diff;
-  };
+  const daysLeft = (endsAt: string) => Math.max(0, Math.ceil((new Date(endsAt).getTime() - Date.now()) / 86400000));
 
   return (
     <div className="space-y-6">
@@ -178,7 +175,7 @@ export const WeeklyChallenges = ({ onBack }: WeeklyChallengesProps) => {
                       <Badge variant={expired ? "secondary" : "default"} className="text-[10px]">
                         {expired ? "Ended" : `${daysLeft(challenge.ends_at)}d left`}
                       </Badge>
-                      <p className="text-xs text-amber-400 font-bold mt-1">+{challenge.karma_reward} karma</p>
+                      <p className="text-xs text-accent font-bold mt-1">+{challenge.karma_reward} karma</p>
                     </div>
                   </div>
 
@@ -190,7 +187,11 @@ export const WeeklyChallenges = ({ onBack }: WeeklyChallengesProps) => {
                     <div className="space-y-1">
                       <div className="flex justify-between text-xs">
                         <span>{progress.current_value} / {challenge.target_value}</span>
-                        {progress.completed && <span className="text-green-400 flex items-center gap-1"><CheckCircle className="h-3 w-3" /> Completed!</span>}
+                        {progress.completed && (
+                          <span className="text-primary flex items-center gap-1">
+                            <CheckCircle className="h-3 w-3" /> Completed!
+                          </span>
+                        )}
                       </div>
                       <Progress value={pct} className="h-2" />
                     </div>

@@ -17,7 +17,7 @@ export const ThreadSubscription = ({ postId, userId }: ThreadSubscriptionProps) 
     queryKey: ["forum-sub", postId, userId],
     queryFn: async () => {
       if (!userId) return false;
-      const { data } = await supabase
+      const { data } = await (supabase as any)
         .from("forum_subscriptions")
         .select("id")
         .eq("post_id", postId)
@@ -32,9 +32,9 @@ export const ThreadSubscription = ({ postId, userId }: ThreadSubscriptionProps) 
     mutationFn: async () => {
       if (!userId) throw new Error("Login required");
       if (isSubscribed) {
-        await supabase.from("forum_subscriptions").delete().eq("post_id", postId).eq("user_id", userId);
+        await (supabase as any).from("forum_subscriptions").delete().eq("post_id", postId).eq("user_id", userId);
       } else {
-        await supabase.from("forum_subscriptions").insert({ post_id: postId, user_id: userId });
+        await (supabase as any).from("forum_subscriptions").insert({ post_id: postId, user_id: userId });
       }
     },
     onSuccess: () => {
