@@ -46,6 +46,7 @@ serve(async (req) => {
       mode: "payment",
       success_url: `${req.headers.get("origin")}/voice-memorial?setup=success`,
       cancel_url: `${req.headers.get("origin")}/voice-memorial-pricing?canceled=true`,
+      metadata: { user_id: user.id, type: "voice_clone" },
     });
 
     return new Response(JSON.stringify({ url: session.url }), {
