@@ -61,7 +61,7 @@ export default function MasterChefChefChat() {
       .limit(100);
 
     if (rawData) {
-      const userIds = [...new Set(rawData.map(m => m.user_id))];
+      const userIds = [...new Set(rawData.map((m: any) => m.user_id))] as string[];
       const { data: profiles } = await supabase
         .from("profiles")
         .select("id, full_name")
