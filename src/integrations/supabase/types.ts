@@ -12931,6 +12931,191 @@ export type Database = {
           },
         ]
       }
+      forum_debate_messages: {
+        Row: {
+          content: string
+          created_at: string | null
+          id: string
+          room_id: string
+          side: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          id?: string
+          room_id: string
+          side: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          id?: string
+          room_id?: string
+          side?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "forum_debate_messages_room_id_fkey"
+            columns: ["room_id"]
+            isOneToOne: false
+            referencedRelation: "forum_debate_rooms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      forum_debate_rooms: {
+        Row: {
+          created_at: string | null
+          creator_id: string
+          description: string | null
+          duration_minutes: number | null
+          ends_at: string | null
+          id: string
+          participants_count: number | null
+          side_a: string
+          side_b: string
+          status: string | null
+          topic: string
+          votes_a: number | null
+          votes_b: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          creator_id: string
+          description?: string | null
+          duration_minutes?: number | null
+          ends_at?: string | null
+          id?: string
+          participants_count?: number | null
+          side_a?: string
+          side_b?: string
+          status?: string | null
+          topic: string
+          votes_a?: number | null
+          votes_b?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          creator_id?: string
+          description?: string | null
+          duration_minutes?: number | null
+          ends_at?: string | null
+          id?: string
+          participants_count?: number | null
+          side_a?: string
+          side_b?: string
+          status?: string | null
+          topic?: string
+          votes_a?: number | null
+          votes_b?: number | null
+        }
+        Relationships: []
+      }
+      forum_debate_votes: {
+        Row: {
+          created_at: string | null
+          id: string
+          room_id: string
+          side: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          room_id: string
+          side: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          room_id?: string
+          side?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "forum_debate_votes_room_id_fkey"
+            columns: ["room_id"]
+            isOneToOne: false
+            referencedRelation: "forum_debate_rooms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      forum_poll_votes: {
+        Row: {
+          created_at: string | null
+          id: string
+          option_index: number
+          poll_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          option_index: number
+          poll_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          option_index?: number
+          poll_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "forum_poll_votes_poll_id_fkey"
+            columns: ["poll_id"]
+            isOneToOne: false
+            referencedRelation: "forum_polls"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      forum_polls: {
+        Row: {
+          created_at: string | null
+          ends_at: string | null
+          id: string
+          options: Json
+          post_id: string
+          question: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          ends_at?: string | null
+          id?: string
+          options?: Json
+          post_id: string
+          question: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          ends_at?: string | null
+          id?: string
+          options?: Json
+          post_id?: string
+          question?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "forum_polls_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "forum_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       forum_post_likes: {
         Row: {
           created_at: string
@@ -13006,6 +13191,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      forum_reputation: {
+        Row: {
+          badges: Json | null
+          helpful_count: number | null
+          id: string
+          level: number | null
+          points: number | null
+          posts_count: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          badges?: Json | null
+          helpful_count?: number | null
+          id?: string
+          level?: number | null
+          points?: number | null
+          posts_count?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          badges?: Json | null
+          helpful_count?: number | null
+          id?: string
+          level?: number | null
+          points?: number | null
+          posts_count?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
       }
       friendships: {
         Row: {
