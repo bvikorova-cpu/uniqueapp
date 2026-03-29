@@ -6716,6 +6716,59 @@ export type Database = {
           },
         ]
       }
+      concert_song_requests: {
+        Row: {
+          amount: number
+          artist_name: string | null
+          concert_id: string | null
+          created_at: string | null
+          id: string
+          musician_amount: number | null
+          platform_commission: number | null
+          song_title: string
+          status: string
+          stripe_session_id: string | null
+          tier: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          artist_name?: string | null
+          concert_id?: string | null
+          created_at?: string | null
+          id?: string
+          musician_amount?: number | null
+          platform_commission?: number | null
+          song_title: string
+          status?: string
+          stripe_session_id?: string | null
+          tier?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          artist_name?: string | null
+          concert_id?: string | null
+          created_at?: string | null
+          id?: string
+          musician_amount?: number | null
+          platform_commission?: number | null
+          song_title?: string
+          status?: string
+          stripe_session_id?: string | null
+          tier?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "concert_song_requests_concert_id_fkey"
+            columns: ["concert_id"]
+            isOneToOne: false
+            referencedRelation: "live_concert_streams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       concert_ticket_purchases: {
         Row: {
           amount: number
@@ -9810,28 +9863,40 @@ export type Database = {
       }
       dating_sent_gifts: {
         Row: {
+          amount: number | null
           created_at: string
           gift_id: string
           id: string
           match_id: string
+          message: string | null
           receiver_id: string
           sender_id: string
+          status: string | null
+          stripe_session_id: string | null
         }
         Insert: {
+          amount?: number | null
           created_at?: string
           gift_id: string
           id?: string
           match_id: string
+          message?: string | null
           receiver_id: string
           sender_id: string
+          status?: string | null
+          stripe_session_id?: string | null
         }
         Update: {
+          amount?: number | null
           created_at?: string
           gift_id?: string
           id?: string
           match_id?: string
+          message?: string | null
           receiver_id?: string
           sender_id?: string
+          status?: string | null
+          stripe_session_id?: string | null
         }
         Relationships: [
           {
@@ -24549,6 +24614,7 @@ export type Database = {
       }
       sent_platform_gifts: {
         Row: {
+          amount: number | null
           context_id: string | null
           context_type: string
           created_at: string | null
@@ -24557,8 +24623,11 @@ export type Database = {
           message: string | null
           receiver_id: string
           sender_id: string
+          status: string | null
+          stripe_session_id: string | null
         }
         Insert: {
+          amount?: number | null
           context_id?: string | null
           context_type: string
           created_at?: string | null
@@ -24567,8 +24636,11 @@ export type Database = {
           message?: string | null
           receiver_id: string
           sender_id: string
+          status?: string | null
+          stripe_session_id?: string | null
         }
         Update: {
+          amount?: number | null
           context_id?: string | null
           context_type?: string
           created_at?: string | null
@@ -24577,6 +24649,8 @@ export type Database = {
           message?: string | null
           receiver_id?: string
           sender_id?: string
+          status?: string | null
+          stripe_session_id?: string | null
         }
         Relationships: [
           {
@@ -25019,6 +25093,7 @@ export type Database = {
           id: string
           participant_id: string
           sender_id: string
+          status: string | null
           stripe_payment_id: string | null
         }
         Insert: {
@@ -25029,6 +25104,7 @@ export type Database = {
           id?: string
           participant_id: string
           sender_id: string
+          status?: string | null
           stripe_payment_id?: string | null
         }
         Update: {
@@ -25039,6 +25115,7 @@ export type Database = {
           id?: string
           participant_id?: string
           sender_id?: string
+          status?: string | null
           stripe_payment_id?: string | null
         }
         Relationships: [
