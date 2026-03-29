@@ -110,6 +110,12 @@ const toolCards = [
   { id: "paint", name: "Paint Studio", icon: Palette, desc: "Custom livery designer", color: "text-violet-400", gradient: "from-violet-950/30 to-purple-950/20", border: "border-violet-500/20" },
   { id: "weather", name: "Weather System", icon: Cloud, desc: "Dynamic race conditions", color: "text-blue-400", gradient: "from-blue-950/30 to-cyan-950/20", border: "border-blue-500/20" },
   { id: "pit", name: "Pit Strategy", icon: TimerIcon, desc: "Plan pit stops & tires", color: "text-emerald-400", gradient: "from-emerald-950/30 to-cyan-950/20", border: "border-emerald-500/20" },
+  { id: "championship", name: "Championship", icon: Crown, desc: "Seasonal league & standings", color: "text-amber-300", gradient: "from-amber-900/30 to-yellow-950/20", border: "border-amber-400/20" },
+  { id: "teams", name: "Team Racing", icon: Users, desc: "Form squads & compete", color: "text-pink-400", gradient: "from-pink-950/30 to-rose-950/20", border: "border-pink-500/20" },
+  { id: "telemetry", name: "Telemetry", icon: Activity, desc: "Real-time speed & G-force", color: "text-cyan-300", gradient: "from-cyan-900/30 to-blue-950/20", border: "border-cyan-400/20" },
+  { id: "betting", name: "Race Betting", icon: Coins, desc: "Wager coins on winners", color: "text-orange-400", gradient: "from-orange-950/30 to-red-950/20", border: "border-orange-500/20" },
+  { id: "achievements", name: "Achievements", icon: Award, desc: "Track racing milestones", color: "text-yellow-400", gradient: "from-yellow-950/30 to-amber-950/20", border: "border-yellow-500/20" },
+  { id: "track-editor", name: "Track Editor", icon: Map, desc: "Design custom circuits", color: "text-indigo-400", gradient: "from-indigo-950/30 to-violet-950/20", border: "border-indigo-500/20" },
 ];
 
 const statIcons: Record<string, React.ReactNode> = {
