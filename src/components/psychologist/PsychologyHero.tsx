@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Brain, Users, MessageCircle, Heart, Volume2, VolumeX, Play, Pause } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -9,10 +9,10 @@ export const PsychologyHero = () => {
   const [isMuted, setIsMuted] = useState(true);
   const [isPlaying, setIsPlaying] = useState(true);
   const { stats } = useLiveStats([
-    { key: "sessions", table: "psychology_sessions" as any, label: "Sessions" },
-    { key: "messages", table: "psychology_messages" as any, label: "Messages" },
-    { key: "moods", table: "psychology_mood_entries" as any, label: "Mood Logs" },
-    { key: "meditations", table: "psychology_meditation_sessions" as any, label: "Meditations" },
+    { key: "sessions", table: "psychology_sessions" as any },
+    { key: "messages", table: "psychology_messages" as any },
+    { key: "moods", table: "psychology_mood_entries" as any },
+    { key: "meditations", table: "psychology_meditation_sessions" as any },
   ]);
 
   const togglePlay = () => {
@@ -32,7 +32,7 @@ export const PsychologyHero = () => {
   ];
 
   return (
-    <div className="relative w-full h-[70vh] min-h-[500px] overflow-hidden bg-black">
+    <div className="relative w-full h-[70vh] min-h-[500px] overflow-hidden bg-background">
       <video
         id="psych-hero-video"
         autoPlay
@@ -40,16 +40,16 @@ export const PsychologyHero = () => {
         muted={isMuted}
         playsInline
         className="absolute inset-0 w-full h-full object-cover opacity-60"
-        src={heroVideo.url}
+        src={(heroVideo as any).url || heroVideo}
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20" />
+      <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-background/20" />
 
       {/* Controls */}
       <div className="absolute top-4 right-4 z-20 flex gap-2">
-        <Button size="icon" variant="ghost" onClick={togglePlay} className="bg-black/40 hover:bg-black/60 text-white">
+        <Button size="icon" variant="ghost" onClick={togglePlay} className="bg-background/40 hover:bg-background/60 text-foreground">
           {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
         </Button>
-        <Button size="icon" variant="ghost" onClick={() => setIsMuted(!isMuted)} className="bg-black/40 hover:bg-black/60 text-white">
+        <Button size="icon" variant="ghost" onClick={() => setIsMuted(!isMuted)} className="bg-background/40 hover:bg-background/60 text-foreground">
           {isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
         </Button>
       </div>
@@ -62,11 +62,11 @@ export const PsychologyHero = () => {
           transition={{ duration: 0.8 }}
           className="max-w-4xl"
         >
-          <h1 className="text-3xl sm:text-5xl md:text-6xl font-black text-white mb-2"
+          <h1 className="text-3xl sm:text-5xl md:text-6xl font-black text-foreground mb-2"
             style={{ WebkitTextStroke: "1.5px rgba(255,255,255,0.3)", textShadow: "0 4px 30px rgba(0,0,0,0.8)" }}>
             AI <span className="bg-gradient-to-r from-primary via-purple-400 to-accent bg-clip-text text-transparent">Psychologist</span>
           </h1>
-          <p className="text-base sm:text-lg text-white/80 max-w-xl mb-6" style={{ textShadow: "0 2px 10px rgba(0,0,0,0.8)" }}>
+          <p className="text-base sm:text-lg text-muted-foreground max-w-xl mb-6" style={{ textShadow: "0 2px 10px rgba(0,0,0,0.8)" }}>
             Your safe space for mental wellness. Anonymous, empathetic, available 24/7.
           </p>
         </motion.div>
@@ -84,11 +84,11 @@ export const PsychologyHero = () => {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.5 + i * 0.1 }}
-              className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-xl p-3 sm:p-4 text-center"
+              className="bg-card/30 backdrop-blur-xl border border-border/30 rounded-xl p-3 sm:p-4 text-center"
             >
               <stat.icon className="h-5 w-5 text-primary mx-auto mb-1" />
-              <p className="text-xl sm:text-2xl font-black text-white">{stat.value}</p>
-              <p className="text-[10px] sm:text-xs text-white/60">{stat.label}</p>
+              <p className="text-xl sm:text-2xl font-black text-foreground">{stat.value}</p>
+              <p className="text-[10px] sm:text-xs text-muted-foreground">{stat.label}</p>
             </motion.div>
           ))}
         </motion.div>
