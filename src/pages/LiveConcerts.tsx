@@ -98,6 +98,12 @@ const LiveConcerts = () => {
       case "merch": return <MerchStore onBack={goBack} />;
       case "notifications": return <ConcertNotifications onBack={goBack} />;
       case "how-it-works": return <ConcertHowItWorks onBack={goBack} />;
+      case "song-requests": return <SongRequests onBack={goBack} />;
+      case "multi-camera": return <MultiCamera onBack={goBack} />;
+      case "fan-badges": return <FanBadges onBack={goBack} />;
+      case "stories": return <ConcertStories onBack={goBack} />;
+      case "collectibles": return <CollectibleTickets onBack={goBack} />;
+      case "afterparty": return <ConcertAfterparty onBack={goBack} />;
       case "musician":
         navigate("/musician-dashboard");
         return null;
