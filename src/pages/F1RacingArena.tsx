@@ -23,7 +23,7 @@ import { BettingSystem } from "@/components/gp-racing/BettingSystem";
 import { AchievementSystem } from "@/components/gp-racing/AchievementSystem";
 import { TrackEditor } from "@/components/gp-racing/TrackEditor";
 import { useUserCars, useF1Races, useJoinF1Race, useUpgradeCar, usePurchaseCarColor, useF1Currency } from "@/hooks/useF1Racing";
-import { Trophy, Wrench, Sparkles, Zap, TrendingUp, Car, LogIn, Info, Gauge, Wind, CircleDot, Compass, ShoppingCart, Box, Rocket, Shield, Target, Cpu, Flame, Play, Palette, Cloud, Timer as TimerIcon, Users, Award, Coins, Map, Activity } from "lucide-react";
+import { Trophy, Wrench, Sparkles, Zap, TrendingUp, Car, LogIn, Info, Gauge, Wind, CircleDot, Compass, ShoppingCart, Box, Rocket, Shield, Target, Cpu, Flame, Play, Palette, Cloud, Timer as TimerIcon, Users, Award, Coins, Map, Activity, Crown } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
