@@ -85,7 +85,7 @@ export const ReputationSystem = ({ onBack }: ReputationSystemProps) => {
     enabled: leaderboard.length > 0,
   });
 
-  const currentLevel = LEVELS.findLast(l => (myRep?.points || 0) >= l.minPoints) || LEVELS[0];
+  const currentLevel = [...LEVELS].reverse().find(l => (myRep?.points || 0) >= l.minPoints) || LEVELS[0];
   const nextLevel = LEVELS.find(l => l.minPoints > (myRep?.points || 0));
   const progress = nextLevel
     ? ((myRep?.points || 0) - currentLevel.minPoints) / (nextLevel.minPoints - currentLevel.minPoints) * 100
@@ -171,7 +171,7 @@ export const ReputationSystem = ({ onBack }: ReputationSystemProps) => {
           <div className="space-y-2">
             {leaderboard.map((entry: any, i: number) => {
               const profile = leaderProfiles[entry.user_id];
-              const lvl = LEVELS.findLast(l => entry.points >= l.minPoints) || LEVELS[0];
+              const lvl = [...LEVELS].reverse().find(l => entry.points >= l.minPoints) || LEVELS[0];
               return (
                 <motion.div
                   key={entry.id}
