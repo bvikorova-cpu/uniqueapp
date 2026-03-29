@@ -229,19 +229,6 @@ import {
   MasterChefCompetitions,
   MasterChefCompetitionsGallery,
   MasterChefEarnings,
-} from "@/pages/MasterChefSubscription";
-const MasterChefHub = lazy(() => import("@/pages/MasterChefHub"));
-const MasterChefAIRecipes = lazy(() => import("@/pages/MasterChefAIRecipes"));
-const MasterChefCookingTimer = lazy(() => import("@/pages/MasterChefCookingTimer"));
-const MasterChefIngredientScanner = lazy(() => import("@/pages/MasterChefIngredientScanner"));
-const MasterChefChefChat = lazy(() => import("@/pages/MasterChefChefChat"));
-const MasterChefLiveStream = lazy(() => import("@/pages/MasterChefLiveStream"));
-const MasterChefWeeklyAwards = lazy(() => import("@/pages/MasterChefWeeklyAwards"));
-const MasterChefNutritionAnalyzer = lazy(() => import("@/pages/MasterChefNutritionAnalyzer"));
-const MasterChefGlobalMap = lazy(() => import("@/pages/MasterChefGlobalMap"));
-const MasterChefAICoach = lazy(() => import("@/pages/MasterChefAICoach"));
-const MasterChefRecipeFeed = lazy(() => import("@/pages/MasterChefRecipeFeed"));
-// keep existing after MasterChefEarnings
   NutritionHub,
   NutritionSubscriptions,
   HealthcareProviderDashboard,
