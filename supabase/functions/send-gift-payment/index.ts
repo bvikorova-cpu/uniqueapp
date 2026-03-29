@@ -66,6 +66,7 @@ serve(async (req) => {
       success_url: `${origin}/creator/${creatorId}?gift_success=true&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/creator/${creatorId}?gift_canceled=true`,
       metadata: {
+        type: "platform_gift",
         gift_id: giftId,
         creator_id: creatorId,
         sender_id: user.id,

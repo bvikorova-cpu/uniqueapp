@@ -69,6 +69,7 @@ serve(async (req) => {
       success_url: `${req.headers.get("origin")}/shadow-arena/battle/${battleId}?gift_success=true`,
       cancel_url: `${req.headers.get("origin")}/shadow-arena/battle/${battleId}?gift_canceled=true`,
       metadata: {
+        type: "shadow_gift",
         battleId,
         participantId,
         giftType,

@@ -153,6 +153,7 @@ serve(async (req) => {
       success_url: `${req.headers.get("origin")}/brand-collaboration?payment=success&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${req.headers.get("origin")}/brand-collaboration?payment=canceled`,
       metadata: {
+        type: "campaign_payment",
         payment_id: payment.id,
         application_id: applicationId,
         campaign_id: application.brand_campaigns.id,

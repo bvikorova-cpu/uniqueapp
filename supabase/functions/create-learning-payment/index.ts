@@ -107,6 +107,7 @@ serve(async (req) => {
       success_url: `${origin}/${baseRoute}?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/${baseRoute}`,
       metadata: {
+        type: "learning_content",
         user_id: user.id,
         content_id: contentId,
         content_type: contentType,

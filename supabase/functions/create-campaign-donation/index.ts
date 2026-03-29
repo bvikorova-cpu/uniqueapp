@@ -133,6 +133,7 @@ serve(async (req) => {
       success_url: `${req.headers.get("origin")}/fundraising/${campaignType}/${campaignId}?donation=success&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${req.headers.get("origin")}/fundraising/${campaignType}/${campaignId}?donation=cancelled`,
       metadata: {
+        type: "campaign_donation",
         campaign_id: campaignId,
         campaign_type: campaignType,
         donor_id: user?.id || 'guest',

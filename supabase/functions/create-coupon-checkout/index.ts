@@ -102,6 +102,7 @@ serve(async (req) => {
       success_url: `${req.headers.get("origin")}/coupon-marketplace?payment=success&session_id={CHECKOUT_SESSION_ID}&order_id=${order.id}`,
       cancel_url: `${req.headers.get("origin")}/coupon-marketplace?payment=cancelled`,
       metadata: {
+        type: "coupon_purchase",
         order_id: order.id,
         coupon_id: couponId,
         buyer_id: user.id,

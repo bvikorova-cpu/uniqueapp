@@ -72,6 +72,7 @@ serve(async (req) => {
       cancel_url: `${req.headers.get("origin")}/bazaar?payment=canceled`,
       client_reference_id: user.id,
       metadata: {
+        type: "bazaar_purchase",
         item_id: itemId,
         item_type: "bazaar",
         seller_id: item.user_id,

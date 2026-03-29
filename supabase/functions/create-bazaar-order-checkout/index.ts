@@ -85,6 +85,7 @@ serve(async (req) => {
       success_url: `${req.headers.get("origin")}/bazaar?payment=success&order_id=${order.id}`,
       cancel_url: `${req.headers.get("origin")}/bazaar?payment=cancelled`,
       metadata: {
+        type: "bazaar_order",
         order_id: order.id,
         item_id: itemId,
         buyer_id: user.id,
