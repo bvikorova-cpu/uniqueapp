@@ -54,14 +54,11 @@ export default function MasterChefChefChat() {
   };
 
   const loadMessages = async () => {
-    const { data, error } = await supabase.rpc("get_masterchef_chat_messages" as never);
-    
-    // Fallback: direct query with type assertion
-    const { data: rawData, error: rawError } = await supabase
-      .from("masterchef_chat_messages" as "masterchef_chat_messages" & keyof (typeof supabase extends { from: (t: infer T) => unknown } ? T : never))
+    const { data: rawData, error: rawError } = await (supabase as any)
+      .from("masterchef_chat_messages")
       .select("*")
       .order("created_at", { ascending: true })
-      .limit(100) as unknown as { data: ChatMessage[] | null; error: Error | null };
+      .limit(100);
 
     if (rawData) {
       const userIds = [...new Set(rawData.map(m => m.user_id))];

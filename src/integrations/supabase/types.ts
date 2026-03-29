@@ -17266,6 +17266,27 @@ export type Database = {
         }
         Relationships: []
       }
+      masterchef_chat_messages: {
+        Row: {
+          created_at: string
+          id: string
+          message: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          message: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          message?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       masterchef_competition_entries: {
         Row: {
           competition_id: string
