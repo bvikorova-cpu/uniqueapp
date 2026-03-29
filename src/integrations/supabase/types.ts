@@ -12861,6 +12861,83 @@ export type Database = {
         }
         Relationships: []
       }
+      forum_challenge_progress: {
+        Row: {
+          challenge_id: string
+          completed: boolean | null
+          completed_at: string | null
+          created_at: string | null
+          current_value: number | null
+          id: string
+          user_id: string
+        }
+        Insert: {
+          challenge_id: string
+          completed?: boolean | null
+          completed_at?: string | null
+          created_at?: string | null
+          current_value?: number | null
+          id?: string
+          user_id: string
+        }
+        Update: {
+          challenge_id?: string
+          completed?: boolean | null
+          completed_at?: string | null
+          created_at?: string | null
+          current_value?: number | null
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "forum_challenge_progress_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "forum_challenges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      forum_challenges: {
+        Row: {
+          challenge_type: string
+          created_at: string | null
+          description: string
+          ends_at: string
+          id: string
+          is_active: boolean | null
+          karma_reward: number
+          starts_at: string
+          target_value: number
+          title: string
+        }
+        Insert: {
+          challenge_type?: string
+          created_at?: string | null
+          description: string
+          ends_at?: string
+          id?: string
+          is_active?: boolean | null
+          karma_reward?: number
+          starts_at?: string
+          target_value?: number
+          title: string
+        }
+        Update: {
+          challenge_type?: string
+          created_at?: string | null
+          description?: string
+          ends_at?: string
+          id?: string
+          is_active?: boolean | null
+          karma_reward?: number
+          starts_at?: string
+          target_value?: number
+          title?: string
+        }
+        Relationships: []
+      }
       forum_comment_likes: {
         Row: {
           comment_id: string
@@ -13046,6 +13123,44 @@ export type Database = {
           },
         ]
       }
+      forum_notifications: {
+        Row: {
+          created_at: string | null
+          id: string
+          is_read: boolean | null
+          message: string
+          post_id: string | null
+          type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          message: string
+          post_id?: string | null
+          type?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          message?: string
+          post_id?: string | null
+          type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "forum_notifications_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "forum_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       forum_poll_votes: {
         Row: {
           created_at: string | null
@@ -13152,8 +13267,11 @@ export type Database = {
           created_at: string
           id: string
           is_active: boolean | null
+          is_markdown: boolean | null
+          is_pinned: boolean | null
           likes_count: number | null
           replies_count: number | null
+          tags: string[] | null
           title: string
           updated_at: string
           user_id: string
@@ -13164,8 +13282,11 @@ export type Database = {
           created_at?: string
           id?: string
           is_active?: boolean | null
+          is_markdown?: boolean | null
+          is_pinned?: boolean | null
           likes_count?: number | null
           replies_count?: number | null
+          tags?: string[] | null
           title: string
           updated_at?: string
           user_id: string
@@ -13176,8 +13297,11 @@ export type Database = {
           created_at?: string
           id?: string
           is_active?: boolean | null
+          is_markdown?: boolean | null
+          is_pinned?: boolean | null
           likes_count?: number | null
           replies_count?: number | null
+          tags?: string[] | null
           title?: string
           updated_at?: string
           user_id?: string
@@ -13224,6 +13348,35 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      forum_subscriptions: {
+        Row: {
+          created_at: string | null
+          id: string
+          post_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          post_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          post_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "forum_subscriptions_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "forum_posts"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       friendships: {
         Row: {
