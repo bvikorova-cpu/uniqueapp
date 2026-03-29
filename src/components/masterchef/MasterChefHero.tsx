@@ -4,7 +4,7 @@ import { Volume2, VolumeX, Play, Pause, Trophy, Users, Heart, DollarSign } from 
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useIsMobile } from "@/hooks/use-mobile";
-import heroVideo from "@/assets/masterchef-hero.mp4.asset.json";
+import heroVideo from "@/assets/masterchef-hero-v2.mp4.asset.json";
 
 const stats = [
   { icon: Trophy, value: "500+", label: "Competitions", shortLabel: "Comps" },
