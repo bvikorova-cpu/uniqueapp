@@ -17462,6 +17462,39 @@ export type Database = {
           },
         ]
       }
+      masterchef_recipe_posts: {
+        Row: {
+          comments_count: number | null
+          created_at: string
+          description: string | null
+          id: string
+          image_url: string | null
+          likes_count: number | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          comments_count?: number | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          likes_count?: number | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          comments_count?: number | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          likes_count?: number | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       masterchef_sent_gifts: {
         Row: {
           amount: number
