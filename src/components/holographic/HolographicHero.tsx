@@ -93,7 +93,8 @@ export const HolographicHero = () => {
         </motion.h1>
 
         <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}
-          className="text-sm sm:text-base md:text-lg text-foreground/85 text-center mb-7 max-w-3xl mx-auto px-2 py-1 rounded-lg bg-black/20">
+          className="text-sm sm:text-base md:text-lg text-white text-center mb-7 max-w-3xl mx-auto px-4 py-2.5 rounded-lg bg-black/60 backdrop-blur-sm"
+          style={{ textShadow: '0 1px 4px rgba(0,0,0,0.8)' }}>
           Create autonomous 3D AI avatars that evolve, battle, breed, and live their own virtual lives in a stunning holographic universe.
         </motion.p>
 
