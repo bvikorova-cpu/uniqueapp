@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Crown, Users, Heart, Eye, TrendingUp, Volume2, VolumeX, Play, Pause } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import heroAsset from "@/assets/influking-hero.mp4.asset.json";
+import heroAsset from "@/assets/influking-hero-v2.mp4.asset.json";
 
 const heroVideo = heroAsset.url;
 
@@ -47,7 +47,7 @@ const InfluKingHero = ({ totalInfluencers, totalFollowers, totalLikes, totalView
   ];
 
   return (
-    <div className="relative w-full h-[420px] md:h-[480px] rounded-2xl overflow-hidden mb-8">
+    <div className="relative w-full h-[76svh] min-h-[500px] sm:min-h-[540px] rounded-2xl sm:rounded-3xl overflow-hidden mb-8 border border-border/40">
       {/* Video Background */}
       <video
         ref={videoRef}
@@ -56,13 +56,13 @@ const InfluKingHero = ({ totalInfluencers, totalFollowers, totalLikes, totalView
         loop
         muted={isMuted}
         playsInline
-        className="absolute inset-0 w-full h-full object-cover"
+        className="absolute inset-0 w-full h-full object-cover brightness-110 saturate-110"
       />
 
-      {/* Sci-Fi Overlay */}
-      <div className="absolute inset-0 bg-black/50" />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/40" />
-      
+      {/* Dark overlays for text readability */}
+      <div className="absolute inset-0 bg-black/40" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-black/20" />
+
       {/* Scan line effect */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <motion.div
@@ -79,69 +79,64 @@ const InfluKingHero = ({ totalInfluencers, totalFollowers, totalLikes, totalView
       <div className="absolute bottom-4 right-4 w-8 h-8 border-b-2 border-r-2 border-primary/60" />
 
       {/* Controls */}
-      <div className="absolute top-6 right-6 flex gap-2 z-20">
+      <div className="absolute top-3 right-3 sm:top-4 sm:right-4 flex gap-2 z-20">
         <Button size="icon" variant="ghost" onClick={togglePlay}
-          className="bg-black/40 backdrop-blur-sm text-white hover:bg-black/60 h-9 w-9">
+          className="bg-black/40 hover:bg-black/60 text-white rounded-full h-9 w-9 sm:h-10 sm:w-10" aria-label={isPlaying ? "Pause" : "Play"}>
           {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
         </Button>
         <Button size="icon" variant="ghost" onClick={toggleMute}
-          className="bg-black/40 backdrop-blur-sm text-white hover:bg-black/60 h-9 w-9">
+          className="bg-black/40 hover:bg-black/60 text-white rounded-full h-9 w-9 sm:h-10 sm:w-10" aria-label={isMuted ? "Unmute" : "Mute"}>
           {isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
         </Button>
       </div>
 
-      {/* Hero Content */}
-      <div className="absolute inset-0 flex flex-col items-center justify-center z-10 px-4">
-        <motion.div
-          initial={{ scale: 0, rotate: -180 }}
-          animate={{ scale: 1, rotate: 0 }}
-          transition={{ type: "spring", duration: 1 }}
-          className="mb-4"
-        >
-          <Crown className="h-16 w-16 md:h-20 md:w-20 text-amber-400 drop-shadow-[0_0_20px_rgba(251,191,36,0.6)]" />
+      {/* Hero Content - bottom-left aligned for visibility */}
+      <div className="absolute inset-0 flex flex-col justify-end p-5 pt-20 sm:p-6 md:p-10 z-10">
+        <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
+          <div className="inline-flex items-center gap-2 mb-4 px-5 py-1.5 bg-amber-500/25 backdrop-blur-sm rounded-full border border-amber-400/40">
+            <Crown className="h-4 w-4 text-amber-300" />
+            <span className="text-amber-200 font-semibold text-sm uppercase tracking-wider">Influ-King</span>
+          </div>
         </motion.div>
 
         <motion.h1
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="text-4xl md:text-6xl lg:text-7xl font-black text-white text-center"
+          initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.15 }}
+          className="text-[clamp(2.2rem,11vw,3.5rem)] md:text-6xl lg:text-7xl font-black mb-3 leading-[1.02] max-w-[14ch]"
           style={{
-            WebkitTextStroke: "1.5px rgba(139,92,246,0.5)",
-            textShadow: "0 0 40px rgba(139,92,246,0.4), 0 4px 20px rgba(0,0,0,0.8)",
+            WebkitTextStroke: "1.5px rgba(0,0,0,0.5)",
+            textShadow: "0 0 40px rgba(251,191,36,0.3), 0 4px 15px rgba(0,0,0,0.8)",
+            background: "linear-gradient(135deg, #fff 0%, #fde68a 40%, #fbbf24 70%, #f59e0b 100%)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            backgroundClip: "text",
           }}
         >
-          INFLU-KING
+          Rise to the Top
         </motion.h1>
 
         <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.6 }}
-          className="text-white/80 text-lg md:text-xl mt-2 text-center font-medium"
-          style={{ textShadow: "0 2px 10px rgba(0,0,0,0.8)" }}
+          initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.3 }}
+          className="text-white/90 text-sm sm:text-base md:text-lg max-w-[38ch] mb-5 sm:mb-6 leading-relaxed"
+          style={{ textShadow: "0 2px 8px rgba(0,0,0,0.8)" }}
         >
-          Rise to the Top. Rule the Feed.
+          Rule the feed, grow your empire, and monetize your influence with AI-powered tools and real-time analytics.
         </motion.p>
-      </div>
 
-      {/* Stats Bar */}
-      <div className="absolute bottom-0 left-0 right-0 z-10">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 p-4">
+        {/* Stats */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.45 }}
+          className="grid grid-cols-2 gap-2.5 w-full max-w-md"
+        >
           {stats.map((stat, i) => (
-            <motion.div
-              key={stat.label}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.8 + i * 0.1 }}
-              className="bg-black/50 backdrop-blur-md border border-primary/20 rounded-lg p-3 text-center"
-            >
-              <stat.icon className={`h-4 w-4 mx-auto mb-1 ${stat.color}`} />
-              <p className="text-white font-bold text-lg">{stat.value}</p>
-              <p className="text-white/60 text-xs">{stat.label}</p>
-            </motion.div>
+            <div key={i} className="min-w-0 flex items-center gap-2 px-3 sm:px-4 py-2 bg-black/40 backdrop-blur-sm rounded-xl border border-white/10">
+              <stat.icon className={`h-4 w-4 ${stat.color} shrink-0`} />
+              <div className="min-w-0">
+                <div className="text-white font-bold text-sm sm:text-base leading-none">{stat.value}</div>
+                <div className="text-white/60 text-[10px] sm:text-xs leading-tight">{stat.label}</div>
+              </div>
+            </div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </div>
   );
