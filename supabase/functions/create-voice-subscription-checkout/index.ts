@@ -7,4 +7,5 @@ serve(createFlexibleCheckoutHandler({
   mode: "subscription",
   successPath: "/voice-memorial?success=true",
   cancelPath: "/voice-memorial-pricing?canceled=true",
+  metadata: { type: "voice_subscription" },
 }));

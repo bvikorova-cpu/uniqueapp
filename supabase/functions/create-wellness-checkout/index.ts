@@ -6,5 +6,6 @@ serve(createFlexibleCheckoutHandler({
   successPath: "/wellness?success=true",
   cancelPath: "/wellness",
   defaultMode: "subscription",
+  metadata: { type: "wellness_subscription" },
   metadataFields: ["tier"],
 }));

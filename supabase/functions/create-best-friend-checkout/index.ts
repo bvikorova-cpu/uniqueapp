@@ -11,5 +11,5 @@ serve(createCheckoutHandler({
   recurringInterval: "month",
   successPath: "/best-friend?success=true",
   cancelPath: "/best-friend?canceled=true",
-  metadata: { feature: "best_friend" },
+  metadata: { type: "best_friend_subscription", feature: "best_friend" },
 }));

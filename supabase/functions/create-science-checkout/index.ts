@@ -7,4 +7,5 @@ serve(createCheckoutHandler({
   mode: "subscription",
   successPath: "/kids-science-lab?success=true",
   cancelPath: "/kids-science-lab",
+  metadata: { type: "science_subscription" },
 }));
