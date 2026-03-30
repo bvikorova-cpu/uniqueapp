@@ -2139,6 +2139,45 @@ export type Database = {
           },
         ]
       }
+      beauty_gallery: {
+        Row: {
+          after_image_url: string
+          before_image_url: string
+          category: string | null
+          created_at: string | null
+          description: string | null
+          id: string
+          is_public: boolean | null
+          likes_count: number | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          after_image_url: string
+          before_image_url: string
+          category?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_public?: boolean | null
+          likes_count?: number | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          after_image_url?: string
+          before_image_url?: string
+          category?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_public?: boolean | null
+          likes_count?: number | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       beauty_product_recommendations: {
         Row: {
           concerns: string[] | null
