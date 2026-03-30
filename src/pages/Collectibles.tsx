@@ -21,9 +21,15 @@ import AIRarityPredictor from "@/components/collectibles/AIRarityPredictor";
 import AICollectionAdvisor from "@/components/collectibles/AICollectionAdvisor";
 import MysteryBoxSimulator from "@/components/collectibles/MysteryBoxSimulator";
 import CollectibleTradingHub from "@/components/collectibles/CollectibleTradingHub";
+import CollectorLeaderboard from "@/components/collectibles/CollectorLeaderboard";
+import AIItemCustomizer from "@/components/collectibles/AIItemCustomizer";
+import CollectorAchievements from "@/components/collectibles/CollectorAchievements";
+import CollectiblePriceAlerts from "@/components/collectibles/CollectiblePriceAlerts";
+import DailyLoginRewards from "@/components/collectibles/DailyLoginRewards";
+import CollectorGuilds from "@/components/collectibles/CollectorGuilds";
 import heroVideo from "@/assets/collectibles-hero.mp4.asset.json";
 
-type ActiveView = "hub" | "generate" | "collection" | "mystery" | "marketplace" | "vip" | "credits" | "history" | "rarity-predictor" | "collection-advisor" | "box-simulator" | "trading-hub";
+type ActiveView = "hub" | "generate" | "collection" | "mystery" | "marketplace" | "vip" | "credits" | "history" | "rarity-predictor" | "collection-advisor" | "box-simulator" | "trading-hub" | "leaderboard" | "item-customizer" | "achievements" | "price-alerts" | "daily-rewards" | "guilds";
 
 const containerVariants = {
   hidden: { opacity: 0 },
