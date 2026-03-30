@@ -36,7 +36,7 @@ const coreModules = [
   { title: "Exclusive Experiences", description: "33 global destinations & fantasy worlds", icon: Sparkles, path: "/ai-experiences", badge: "15 Credits", gradient: "from-purple-600 to-violet-600", category: "entertainment" },
   { title: "Brand Builder", description: "Generate complete brand kits with AI", icon: Palette, path: "/brand-builder", badge: "15 Credits", gradient: "from-indigo-600 to-blue-600", category: "creative" },
   { title: "Home Designer", description: "AI room redesign + furniture marketplace", icon: Building2, path: "/home-designer", badge: "Marketplace", gradient: "from-sky-600 to-cyan-600", category: "creative" },
-  { title: "Beauty Studio", description: "Virtual makeup & hair styling with AI", icon: Star, path: "/beauty-studio", badge: "2-5 Credits", gradient: "from-rose-600 to-pink-600", category: "creative" },
+  { title: "Beauty Studio", description: "AI makeup, skincare, nail art & celebrity look matching", icon: Star, path: "/beauty-studio", badge: "✨ 8 AI Tools", gradient: "from-rose-600 to-pink-600", featured: true, category: "creative" },
   { title: "Photo Restoration", description: "AI colorization & enhance old photos", icon: Camera, path: "/photo-restoration", badge: "1 Credit", gradient: "from-amber-600 to-yellow-600", category: "creative" },
   { title: "Antique Appraisal", description: "AI identification & valuation", icon: Gem, path: "/antique-appraisal", badge: "3-20 Credits", gradient: "from-orange-600 to-amber-600", category: "creative" },
   { title: "Collectibles", description: "Mystery boxes & AI item generator", icon: Crown, path: "/collectibles", badge: "10 Credits", gradient: "from-violet-600 to-purple-600", category: "entertainment" },
@@ -137,8 +137,10 @@ const stats = [
 import spotlightAvatars from "@/assets/spotlight-avatars.jpg";
 import spotlightRacing from "@/assets/spotlight-racing.jpg";
 import spotlightChef from "@/assets/spotlight-chef.jpg";
+import spotlightBeauty from "@/assets/spotlight-beauty.jpg";
 
 const spotlightServices = [
+  { ...coreModules[4], spotlight: "🔥 Hot Now", image: spotlightBeauty },
   { ...ecosystemModules[0], spotlight: "Most Popular", image: spotlightAvatars },
   { ...ecosystemModules[4], spotlight: "Trending", image: spotlightRacing },
   { ...ecosystemModules[3], spotlight: "New", image: spotlightChef },
