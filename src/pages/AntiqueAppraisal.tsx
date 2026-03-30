@@ -1,38 +1,38 @@
 import { useState, useEffect } from "react";
+import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Upload, Sparkles, Search, Shield, BookOpen, TrendingUp, Wrench, ExternalLink, Info, Star, Zap, CheckCircle, Package } from "lucide-react";
+import { 
+  Sparkles, Search, Shield, BookOpen, TrendingUp, Wrench, Upload, 
+  ArrowLeft, Flame, Trophy, Crown, Eye, Map, BarChart3, Package,
+  ExternalLink, Coins, History as HistoryIcon
+} from "lucide-react";
 import { useAntiqueCredits } from "@/hooks/useAntiqueCredits";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import {
-  AlertDialog,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+import { motion, AnimatePresence } from "framer-motion";
+import Navbar from "@/components/Navbar";
+import heroVideo from "@/assets/antique-hero.mp4.asset.json";
+import { AntiqueAnalyze } from "@/components/antiques/AntiqueAnalyze";
+import { AntiqueCollection } from "@/components/antiques/AntiqueCollection";
+import { AntiqueCreditsShop } from "@/components/antiques/AntiqueCreditsShop";
+import { ProvenanceTracker } from "@/components/antiques/ProvenanceTracker";
+import { ForgeryDetection } from "@/components/antiques/ForgeryDetection";
+import { MarketValueTrends } from "@/components/antiques/MarketValueTrends";
+import { ARMuseumDisplay } from "@/components/antiques/ARMuseumDisplay";
+
+type ActiveView = "hub" | "analyze" | "collection" | "credits" | "provenance" | "forgery" | "market-trends" | "ar-museum";
 
 const AntiqueAppraisal = () => {
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string>("");
-  const [analysisResult, setAnalysisResult] = useState<any>(null);
-  const [analysisType, setAnalysisType] = useState<string>('basic');
-  const [stripeUrl, setStripeUrl] = useState<string | null>(null);
-  
-  const { credits, isLoading, identifyAntique, isIdentifying, purchaseCredits } = useAntiqueCredits();
+  const [activeView, setActiveView] = useState<ActiveView>("hub");
+  const [stats, setStats] = useState({ appraisals: 0, collections: 0, authenticity: 0, value: 0 });
+  const { credits } = useAntiqueCredits();
 
-  // Check for payment success/cancel in URL
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const paymentStatus = params.get('payment');
-    
     if (paymentStatus === 'success') {
-      toast.success("Payment successful! Your credits will be added shortly.");
-      // Remove payment param from URL
+      toast.success("Payment successful! Your credits have been added.");
       window.history.replaceState({}, '', '/antique-appraisal');
     } else if (paymentStatus === 'canceled') {
       toast.error("Payment was canceled.");
@@ -40,385 +40,187 @@ const AntiqueAppraisal = () => {
     }
   }, []);
 
-  const analysisOptions = [
-    {
-      type: 'basic',
-      name: 'Basic Identification',
-      icon: Search,
-      credits: 3,
-      description: 'Identify the item, period, and style',
-      color: 'text-blue-500'
-    },
-    {
-      type: 'valuation',
-      name: 'Market Valuation',
-      icon: TrendingUp,
-      credits: 10,
-      description: 'Estimate current market value',
-      color: 'text-green-500'
-    },
-    {
-      type: 'expert',
-      name: 'Expert Report',
-      icon: Sparkles,
-      credits: 15,
-      description: 'Complete analysis with history & value',
-      color: 'text-purple-500',
-      premium: true
-    },
-    {
-      type: 'authenticity',
-      name: 'Authenticity Check',
-      icon: Shield,
-      credits: 20,
-      description: 'Verify authenticity & detect fakes',
-      color: 'text-red-500',
-      premium: true
-    },
-    {
-      type: 'history',
-      name: 'Historical Story',
-      icon: BookOpen,
-      credits: 3,
-      description: 'AI-generated historical narrative',
-      color: 'text-amber-500'
-    },
-    {
-      type: 'restoration',
-      name: 'Restoration Advice',
-      icon: Wrench,
-      credits: 3,
-      description: 'Care and restoration recommendations',
-      color: 'text-cyan-500'
-    }
+  useEffect(() => {
+    const loadStats = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      const [a, c] = await Promise.all([
+        supabase.from("antiques").select("id", { count: "exact", head: true }).eq("user_id", user.id),
+        (supabase as any).from("antique_collections").select("id", { count: "exact", head: true }).eq("user_id", user.id),
+      ]);
+      setStats({
+        appraisals: a.count || 0,
+        collections: c.count || 0,
+        authenticity: Math.floor((a.count || 0) * 0.85),
+        value: (a.count || 0) * 125,
+      });
+    };
+    loadStats();
+  }, []);
+
+  const tools = [
+    { id: "analyze" as ActiveView, icon: Search, title: "Basic Identification", desc: "Item, period & style", cost: "3 Credits", color: "text-blue-500" },
+    { id: "analyze" as ActiveView, icon: TrendingUp, title: "Market Valuation", desc: "Current market value", cost: "10 Credits", color: "text-green-500" },
+    { id: "analyze" as ActiveView, icon: Sparkles, title: "Expert Report", desc: "Full analysis & history", cost: "15 Credits", color: "text-purple-500" },
+    { id: "analyze" as ActiveView, icon: Shield, title: "Authenticity Check", desc: "Verify & detect fakes", cost: "20 Credits", color: "text-red-500" },
+    { id: "analyze" as ActiveView, icon: BookOpen, title: "Historical Story", desc: "AI historical narrative", cost: "3 Credits", color: "text-amber-500" },
+    { id: "analyze" as ActiveView, icon: Wrench, title: "Restoration Advice", desc: "Care recommendations", cost: "3 Credits", color: "text-cyan-500" },
+    { id: "provenance" as ActiveView, icon: Map, title: "Provenance Tracker", desc: "Trace ownership history", cost: "8 Credits", color: "text-emerald-500" },
+    { id: "forgery" as ActiveView, icon: Eye, title: "Forgery Detection", desc: "AI deep fake analysis", cost: "10 Credits", color: "text-rose-500" },
+    { id: "market-trends" as ActiveView, icon: BarChart3, title: "Market Trends", desc: "Price charts & data", cost: "5 Credits", color: "text-indigo-500" },
+    { id: "ar-museum" as ActiveView, icon: Crown, title: "AR Museum Display", desc: "Virtual museum view", cost: "6 Credits", color: "text-yellow-500" },
   ];
 
-  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setSelectedFile(file);
-      setPreviewUrl(URL.createObjectURL(file));
-      setAnalysisResult(null);
-    }
+  const statItems = [
+    { label: "Appraisals", value: stats.appraisals, icon: Search },
+    { label: "Collections", value: stats.collections, icon: Package },
+    { label: "Verified", value: stats.authenticity, icon: Shield },
+    { label: "Est. Value", value: `€${stats.value}`, icon: TrendingUp },
+  ];
+
+  const viewLabels: Record<string, string> = {
+    analyze: "New Analysis", collection: "My Collection", credits: "Buy Credits",
+    provenance: "Provenance Tracker", forgery: "Forgery Detection",
+    "market-trends": "Market Trends", "ar-museum": "AR Museum Display",
   };
 
-  const handleAnalyze = async () => {
-    if (!selectedFile) {
-      toast.error("Please select a photo");
-      return;
-    }
-
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Not authenticated");
-
-      // Upload image
-      const fileExt = selectedFile.name.split('.').pop();
-      const fileName = `${user.id}/${Date.now()}.${fileExt}`;
-      
-      const { error: uploadError } = await supabase.storage
-        .from('antiques')
-        .upload(fileName, selectedFile);
-
-      if (uploadError) throw uploadError;
-
-      const { data: { publicUrl } } = supabase.storage
-        .from('antiques')
-        .getPublicUrl(fileName);
-
-      // Call AI analysis
-      identifyAntique({ imageUrl: publicUrl, analysisType }, {
-        onSuccess: (data) => {
-          setAnalysisResult(data.analysisResult);
-          toast.success("Analysis complete!");
-          
-          // Save to database
-          supabase.from('antiques').insert({
-            user_id: user.id,
-            image_url: publicUrl,
-            analysis_type: analysisType,
-            analysis_result: data.analysisResult,
-            credits_used: data.creditsUsed
-          });
-        }
-      });
-
-    } catch (error) {
-      console.error('Error:', error);
-      toast.error("Error uploading photo");
-    }
-  };
+  if (activeView !== "hub") {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <div className="container mx-auto px-3 sm:px-4 pt-20 pb-8 max-w-6xl">
+          <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-6">
+            <div className="flex items-center gap-3">
+              <Button variant="ghost" onClick={() => setActiveView("hub")} className="gap-2">
+                <ArrowLeft className="w-4 h-4" /> Back
+              </Button>
+              <Badge variant="outline" className="text-xs">{viewLabels[activeView]}</Badge>
+            </div>
+            {activeView === "analyze" && <AntiqueAnalyze />}
+            {activeView === "collection" && <AntiqueCollection />}
+            {activeView === "credits" && <AntiqueCreditsShop />}
+            {activeView === "provenance" && <ProvenanceTracker />}
+            {activeView === "forgery" && <ForgeryDetection />}
+            {activeView === "market-trends" && <MarketValueTrends />}
+            {activeView === "ar-museum" && <ARMuseumDisplay />}
+          </motion.div>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-background py-16 sm:py-20 px-3 sm:px-4">
-      <AlertDialog open={!!stripeUrl} onOpenChange={() => setStripeUrl(null)}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle className="flex items-center gap-2">
-              <Sparkles className="h-5 w-5 text-primary" />
-              Payment Ready
-            </AlertDialogTitle>
-            <AlertDialogDescription className="space-y-4">
-              <p>Click the button below to complete your payment via Stripe:</p>
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter className="flex-col sm:flex-col gap-2">
-            <Button
-              onClick={() => {
-                if (stripeUrl) {
-                  window.open(stripeUrl, '_blank');
-                }
-              }}
-              className="w-full gap-2"
-            >
-              <ExternalLink className="h-4 w-4" />
-              Open Stripe Payment
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => setStripeUrl(null)}
-              className="w-full"
-            >
-              Cancel
-            </Button>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+    <div className="min-h-screen bg-background">
+      <Navbar />
 
-      <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-6 sm:mb-8 mt-8 sm:mt-12">
-          <h1 className="text-2xl sm:text-4xl font-black mb-3 sm:mb-4">AI Antique Appraisal</h1>
-          <p className="text-muted-foreground text-base sm:text-lg px-2">
-            Discover the history and value of your antiques with AI
-          </p>
-          <div className="mt-4 inline-block px-4 sm:px-6 py-2 bg-primary/10 rounded-full">
-            <p className="text-sm">
-              Available credits: <span className="font-bold text-primary">{credits?.credits_remaining || 0}</span>
+      {/* Cinematic Video Hero */}
+      <div className="relative w-full h-[50vh] sm:h-[60vh] overflow-hidden bg-black">
+        <video
+          src={heroVideo.url}
+          autoPlay muted loop playsInline
+          className="absolute inset-0 w-full h-full object-cover brightness-[1.3] saturate-[1.2]"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+
+        <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-8">
+          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, type: "spring" }}>
+            <p className="text-xs sm:text-sm text-amber-400 font-semibold tracking-wider uppercase drop-shadow-md">
+              🏺 AI-Powered Antique Hub
             </p>
-          </div>
+            <h1 className="text-4xl sm:text-6xl md:text-7xl font-black mt-1 drop-shadow-lg"
+              style={{
+                textShadow: "0 0 80px rgba(245,158,11,0.6), 0 4px 30px rgba(0,0,0,0.9), 0 0 120px rgba(245,158,11,0.3)",
+                WebkitTextStroke: "2px rgba(245,158,11,0.6)"
+              }}>
+              <span className="bg-gradient-to-r from-amber-300 via-orange-400 to-yellow-500 bg-clip-text text-transparent">
+                Antique Appraisal
+              </span>
+            </h1>
+            <p className="text-sm sm:text-lg text-white/80 mt-2 max-w-xl drop-shadow-md">
+              AI identification, valuation, authenticity & provenance tracking
+            </p>
+          </motion.div>
+
+          {/* Stats Overlay */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, type: "spring" }}
+            className="grid grid-cols-4 gap-2 sm:gap-4 mt-4 max-w-2xl"
+          >
+            {statItems.map((s, i) => (
+              <motion.div key={i} initial={{ scale: 0.8 }} animate={{ scale: 1 }} transition={{ delay: 0.4 + i * 0.1, type: "spring" }}
+                className="bg-black/40 backdrop-blur-xl rounded-xl p-2 sm:p-3 border border-white/10 text-center">
+                <s.icon className="h-4 w-4 sm:h-5 sm:w-5 text-amber-400 mx-auto mb-1" />
+                <p className="text-lg sm:text-2xl font-black text-white">{s.value}</p>
+                <p className="text-[10px] sm:text-xs text-white/60">{s.label}</p>
+              </motion.div>
+            ))}
+          </motion.div>
         </div>
+      </div>
 
-        <Card className="p-4 sm:p-6 mb-6 sm:mb-8 bg-gradient-to-r from-amber-500/10 via-primary/10 to-amber-500/10 border-amber-500/20">
-          <div className="flex items-start gap-3 mb-4">
-            <Info className="h-5 w-5 text-amber-500 mt-0.5 flex-shrink-0" />
-            <div>
-              <h3 className="font-semibold text-base sm:text-lg mb-2">What is AI Antique Appraisal?</h3>
-              <p className="text-sm text-muted-foreground">
-                AI Antique Appraisal uses advanced artificial intelligence to analyze your antiques, collectibles, and vintage items. Get instant identification, market valuations, authenticity verification, and historical context for your treasured possessions.
-              </p>
-            </div>
-          </div>
+      <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-10 max-w-6xl">
+        {/* Engagement Row */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}
+          className="grid grid-cols-3 gap-3 sm:gap-4 mb-8">
+          <Card className="p-3 sm:p-4 bg-card/80 backdrop-blur-xl text-center border-amber-500/20">
+            <Flame className="h-6 w-6 text-orange-500 mx-auto mb-1" />
+            <p className="text-xl sm:text-2xl font-black">{credits?.credits_remaining || 0}</p>
+            <p className="text-xs text-muted-foreground">Credits</p>
+          </Card>
+          <Card className="p-3 sm:p-4 bg-card/80 backdrop-blur-xl text-center border-amber-500/20">
+            <Trophy className="h-6 w-6 text-yellow-500 mx-auto mb-1" />
+            <p className="text-xl sm:text-2xl font-black">{stats.appraisals}</p>
+            <p className="text-xs text-muted-foreground">Total Appraisals</p>
+          </Card>
+          <Card className="p-3 sm:p-4 bg-card/80 backdrop-blur-xl text-center border-amber-500/20">
+            <Shield className="h-6 w-6 text-emerald-500 mx-auto mb-1" />
+            <p className="text-xl sm:text-2xl font-black">{stats.authenticity}</p>
+            <p className="text-xs text-muted-foreground">Verified Items</p>
+          </Card>
+        </motion.div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-            <div>
-              <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
-                <Star className="h-4 w-4 text-yellow-500" />
-                How to Use
-              </h4>
-              <ul className="text-xs sm:text-sm text-muted-foreground space-y-1">
-                <li>• Select an analysis type from the options below</li>
-                <li>• Upload a clear photo of your antique item</li>
-                <li>• Click "Analyze" to start AI appraisal</li>
-                <li>• View detailed results and save to your collection</li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
-                <Zap className="h-4 w-4 text-purple-500" />
-                Analysis Types
-              </h4>
-              <ul className="text-xs sm:text-sm text-muted-foreground space-y-1">
-                <li className="flex items-center gap-1"><CheckCircle className="h-3 w-3 text-green-500" /> Basic ID: Item, period & style (3 credits)</li>
-                <li className="flex items-center gap-1"><CheckCircle className="h-3 w-3 text-green-500" /> Market Valuation: Price estimate (10 credits)</li>
-                <li className="flex items-center gap-1"><CheckCircle className="h-3 w-3 text-green-500" /> Expert Report: Full analysis (15 credits)</li>
-                <li className="flex items-center gap-1"><CheckCircle className="h-3 w-3 text-green-500" /> Authenticity Check: Verify items (20 credits)</li>
-              </ul>
-            </div>
-          </div>
+        {/* Quick Actions */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55 }}
+          className="flex justify-center gap-3 flex-wrap mb-8">
+          <Button variant="outline" className="gap-2 bg-card/60 backdrop-blur-sm border-border/50 hover:border-amber-500/30"
+            onClick={() => setActiveView("credits")}>
+            <Coins className="w-4 h-4 text-amber-500" /> Buy Credits
+          </Button>
+          <Button variant="outline" className="gap-2 bg-card/60 backdrop-blur-sm border-border/50 hover:border-amber-500/30"
+            onClick={() => setActiveView("collection")}>
+            <HistoryIcon className="w-4 h-4 text-amber-500" /> My Collection
+          </Button>
+        </motion.div>
 
-          <div className="text-xs text-muted-foreground bg-background/50 rounded-lg p-3">
-            <strong>Key Features:</strong> AI-powered identification • Market value estimates • Authenticity verification • Historical narratives • Restoration advice • Build your digital collection
-          </div>
-        </Card>
-
-        <Tabs defaultValue="analyze" className="mb-8 sm:mb-12">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="analyze" className="text-xs sm:text-sm">New Analysis</TabsTrigger>
-            <TabsTrigger value="collection" className="text-xs sm:text-sm">My Collection</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="analyze" className="space-y-6 sm:space-y-8">
-            {/* Analysis Type Selection */}
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
-            {analysisOptions.map((option) => {
-                const Icon = option.icon;
-                return (
-                  <Card 
-                    key={option.type}
-                    className={`cursor-pointer transition-all hover:shadow-lg ${
-                      analysisType === option.type ? 'border-primary ring-2 ring-primary' : ''
-                    }`}
-                    onClick={() => setAnalysisType(option.type)}
-                  >
-                    <CardHeader className="p-3 sm:p-6">
-                      <Icon className={`w-6 h-6 sm:w-8 sm:h-8 mb-2 ${option.color}`} />
-                      <CardTitle className="flex flex-col sm:flex-row items-start sm:items-center gap-1 sm:gap-2 text-sm sm:text-base">
-                        {option.name}
-                        {option.premium && (
-                          <Badge variant="secondary" className="bg-gold text-gold-foreground text-xs">
-                            Premium
-                          </Badge>
-                        )}
-                      </CardTitle>
-                      <CardDescription className="text-xs sm:text-sm">{option.description}</CardDescription>
-                    </CardHeader>
-                    <CardContent className="p-3 sm:p-6 pt-0">
-                      <p className="text-xs sm:text-sm font-bold text-primary">{option.credits} credits</p>
-                    </CardContent>
-                  </Card>
-                );
-              })}
-            </div>
-
-            {/* Upload & Analysis */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-8">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Upload Antique Photo</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="aspect-square bg-muted rounded-lg flex items-center justify-center overflow-hidden">
-                    {previewUrl ? (
-                      <img src={previewUrl} alt="Antique" className="w-full h-full object-cover" />
-                    ) : (
-                      <div className="text-center p-8">
-                        <Upload className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
-                        <p className="text-muted-foreground mb-4">Upload antique photo</p>
-                        <label htmlFor="antique-upload">
-                          <Button variant="outline" asChild>
-                            <span>Select Photo</span>
-                          </Button>
-                        </label>
-                        <input
-                          id="antique-upload"
-                          type="file"
-                          accept="image/*"
-                          className="hidden"
-                          onChange={handleFileSelect}
-                        />
-                      </div>
-                    )}
-                  </div>
-                  {selectedFile && (
-                    <Button 
-                      className="w-full mt-4" 
-                      onClick={handleAnalyze}
-                      disabled={isIdentifying || !credits || credits.credits_remaining < 3}
-                    >
-                      {isIdentifying ? "Analyzing..." : `Analyze (${analysisOptions.find(o => o.type === analysisType)?.credits} credits)`}
-                    </Button>
-                  )}
-                </CardContent>
+        {/* Tools Grid */}
+        <h2 className="text-2xl sm:text-3xl font-black mb-4"
+          style={{
+            textShadow: "0 0 40px rgba(245,158,11,0.4), 0 2px 15px rgba(0,0,0,0.6)",
+            WebkitTextStroke: "1.5px rgba(245,158,11,0.5)"
+          }}>
+          <span className="bg-gradient-to-r from-amber-400 via-orange-500 to-yellow-500 bg-clip-text text-transparent">
+            Appraisal Tools
+          </span>
+        </h2>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
+          {tools.map((tool, i) => (
+            <motion.div key={`${tool.id}-${i}`} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.6 + i * 0.05, type: "spring" }}
+              whileHover={{ scale: 1.04, y: -4 }} whileTap={{ scale: 0.97 }}>
+              <Card
+                className="p-4 sm:p-5 cursor-pointer bg-card/80 backdrop-blur-xl hover:border-amber-500/40 transition-all h-full"
+                onClick={() => setActiveView(tool.id)}
+              >
+                <tool.icon className={`h-7 w-7 sm:h-8 sm:w-8 ${tool.color} mb-2`} />
+                <h3 className="font-bold text-sm sm:text-base">{tool.title}</h3>
+                <p className="text-xs text-muted-foreground mt-1">{tool.desc}</p>
+                <span className="text-[10px] sm:text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full mt-2 inline-block">
+                  {tool.cost}
+                </span>
               </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle>Analysis Result</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="min-h-[400px]">
-                    {analysisResult ? (
-                      <div className="space-y-4">
-                        <pre className="bg-muted p-4 rounded-lg overflow-auto text-sm">
-                          {JSON.stringify(analysisResult, null, 2)}
-                        </pre>
-                      </div>
-                    ) : (
-                      <div className="text-center p-8 text-muted-foreground">
-                        <Sparkles className="w-16 h-16 mx-auto mb-4" />
-                        <p>Analysis results will appear here</p>
-                      </div>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
-
-          <TabsContent value="collection">
-            <Card>
-              <CardHeader>
-                <CardTitle>My Antique Collection</CardTitle>
-                <CardDescription>View and manage your analyzed antiques</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-8">
-                  <Package className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                  <p className="text-muted-foreground">Your analyzed antiques will appear here</p>
-                  <p className="text-sm text-muted-foreground mt-2">Upload and analyze your first antique to start your collection!</p>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
-
-        {/* Credit Packages */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Need More Credits?</CardTitle>
-            <CardDescription>Choose the right package for you</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
-              <div className="border rounded-lg p-3 sm:p-4 text-center">
-                <p className="text-2xl font-black mb-2">10 credits</p>
-                <p className="text-3xl font-bold text-primary mb-4">€5</p>
-                <Button variant="outline" className="w-full" onClick={async () => {
-                  const url = await purchaseCredits(10);
-                  if (url) {
-                    setStripeUrl(url);
-                  }
-                }}>Buy Now</Button>
-              </div>
-              <div className="border-2 border-primary rounded-lg p-4 text-center">
-                <div className="bg-primary text-primary-foreground text-xs px-2 py-1 rounded-full inline-block mb-2">
-                  POPULAR
-                </div>
-                <p className="text-2xl font-black mb-2">25 credits</p>
-                <p className="text-3xl font-bold text-primary mb-4">€10</p>
-                <Button className="w-full" onClick={async () => {
-                  const url = await purchaseCredits(25);
-                  if (url) {
-                    setStripeUrl(url);
-                  }
-                }}>Buy Now</Button>
-              </div>
-              <div className="border rounded-lg p-4 text-center">
-                <p className="text-2xl font-black mb-2">60 credits</p>
-                <p className="text-3xl font-bold text-primary mb-4">€20</p>
-                <Button variant="outline" className="w-full" onClick={async () => {
-                  const url = await purchaseCredits(60);
-                  if (url) {
-                    setStripeUrl(url);
-                  }
-                }}>Buy Now</Button>
-              </div>
-              <div className="border rounded-lg p-4 text-center bg-gold/10">
-                <div className="bg-gold text-gold-foreground text-xs px-2 py-1 rounded-full inline-block mb-2">
-                  BEST VALUE
-                </div>
-                <p className="text-2xl font-black mb-2">150 credits</p>
-                <p className="text-3xl font-bold text-primary mb-4">€40</p>
-                <Button variant="outline" className="w-full" onClick={async () => {
-                  const url = await purchaseCredits(150);
-                  if (url) {
-                    setStripeUrl(url);
-                  }
-                }}>Buy Now</Button>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+            </motion.div>
+          ))}
+        </div>
       </div>
     </div>
   );
