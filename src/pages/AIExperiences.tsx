@@ -596,7 +596,7 @@ const AIExperiences = () => {
           <CardContent className="space-y-4">
             <p className="text-muted-foreground">
               Exclusive Experiences is your gateway to AI-powered virtual adventures and future visualizations.
-              Explore stunning destinations around the world through immersive AI-generated virtual tours with a Google Street View-like experience,
+              Explore stunning destinations around the world through immersive AI-generated panoramic tours,
               plan personalized trips with AI, send virtual postcards, or glimpse into your future with age progression technology.
             </p>
             <div className="space-y-2">
