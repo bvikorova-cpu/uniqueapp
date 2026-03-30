@@ -3062,6 +3062,39 @@ export type Database = {
         }
         Relationships: []
       }
+      brand_competitor_analyses: {
+        Row: {
+          business_name: string
+          competitors: Json
+          created_at: string | null
+          credits_used: number
+          id: string
+          industry: string
+          positioning: Json
+          user_id: string
+        }
+        Insert: {
+          business_name: string
+          competitors?: Json
+          created_at?: string | null
+          credits_used?: number
+          id?: string
+          industry: string
+          positioning?: Json
+          user_id: string
+        }
+        Update: {
+          business_name?: string
+          competitors?: Json
+          created_at?: string | null
+          credits_used?: number
+          id?: string
+          industry?: string
+          positioning?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
       brand_kits: {
         Row: {
           brand_values: string | null
@@ -3116,6 +3149,69 @@ export type Database = {
           updated_at?: string | null
           user_id?: string
           visual_identity?: Json | null
+        }
+        Relationships: []
+      }
+      brand_name_suggestions: {
+        Row: {
+          created_at: string | null
+          credits_used: number
+          id: string
+          industry: string
+          keywords: string | null
+          style: string
+          suggestions: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          credits_used?: number
+          id?: string
+          industry: string
+          keywords?: string | null
+          style: string
+          suggestions?: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          credits_used?: number
+          id?: string
+          industry?: string
+          keywords?: string | null
+          style?: string
+          suggestions?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
+      brand_social_media_kits: {
+        Row: {
+          brand_name: string
+          created_at: string | null
+          credits_used: number
+          id: string
+          industry: string
+          platforms: Json
+          user_id: string
+        }
+        Insert: {
+          brand_name: string
+          created_at?: string | null
+          credits_used?: number
+          id?: string
+          industry: string
+          platforms?: Json
+          user_id: string
+        }
+        Update: {
+          brand_name?: string
+          created_at?: string | null
+          credits_used?: number
+          id?: string
+          industry?: string
+          platforms?: Json
+          user_id?: string
         }
         Relationships: []
       }
