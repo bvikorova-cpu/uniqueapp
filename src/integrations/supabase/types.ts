@@ -23212,6 +23212,39 @@ export type Database = {
           },
         ]
       }
+      psychology_dream_entries: {
+        Row: {
+          ai_interpretation: string | null
+          created_at: string | null
+          description: string
+          dream_type: string | null
+          id: string
+          title: string | null
+          user_id: string
+          vividness_score: number | null
+        }
+        Insert: {
+          ai_interpretation?: string | null
+          created_at?: string | null
+          description: string
+          dream_type?: string | null
+          id?: string
+          title?: string | null
+          user_id: string
+          vividness_score?: number | null
+        }
+        Update: {
+          ai_interpretation?: string | null
+          created_at?: string | null
+          description?: string
+          dream_type?: string | null
+          id?: string
+          title?: string | null
+          user_id?: string
+          vividness_score?: number | null
+        }
+        Relationships: []
+      }
       psychology_emotion_analyses: {
         Row: {
           analysis_result: Json | null
@@ -23394,6 +23427,42 @@ export type Database = {
           subscription_status?: string | null
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      psychology_wellness_reports: {
+        Row: {
+          created_at: string | null
+          credits_used: number | null
+          id: string
+          meditation_count: number | null
+          mood_entries_count: number | null
+          report_content: string
+          user_id: string
+          week_end: string | null
+          week_start: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          credits_used?: number | null
+          id?: string
+          meditation_count?: number | null
+          mood_entries_count?: number | null
+          report_content: string
+          user_id: string
+          week_end?: string | null
+          week_start?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          credits_used?: number | null
+          id?: string
+          meditation_count?: number | null
+          mood_entries_count?: number | null
+          report_content?: string
+          user_id?: string
+          week_end?: string | null
+          week_start?: string | null
         }
         Relationships: []
       }
