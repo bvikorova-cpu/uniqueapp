@@ -258,8 +258,8 @@ const PhotoRestoration = () => {
         {/* Tools Grid */}
         <h2 className="text-2xl sm:text-3xl font-black mb-4"
           style={{ 
-            textShadow: "0 0 30px rgba(245,158,11,0.3)",
-            WebkitTextStroke: "0.5px rgba(245,158,11,0.2)"
+            textShadow: "0 0 40px rgba(245,158,11,0.4), 0 2px 15px rgba(0,0,0,0.6)",
+            WebkitTextStroke: "1.5px rgba(245,158,11,0.5)"
           }}>
           <span className="bg-gradient-to-r from-amber-400 via-orange-500 to-rose-500 bg-clip-text text-transparent">
             Restoration Tools
