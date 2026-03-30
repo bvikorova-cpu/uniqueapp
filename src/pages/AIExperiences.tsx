@@ -244,7 +244,7 @@ const AIExperiences = () => {
   ];
 
   const toolCards = [
-    { id: "tours", title: "Virtual Tours", description: "Walk through 33 global destinations in immersive 360° Street View", icon: Globe, gradient: "from-cyan-500 to-blue-600", credits: "15 credits/tour" },
+    { id: "tours", title: "Virtual Tours", description: "Walk through 33 global destinations in immersive 360° panoramic mode", icon: Globe, gradient: "from-cyan-500 to-blue-600", credits: "15 credits/tour" },
     { id: "future", title: "Future Preview", description: "AI age progression — see how you'll look 10-50 years from now", icon: Clock, gradient: "from-pink-500 to-rose-600", credits: "5 credits" },
     { id: "travel-planner", title: "AI Travel Planner", description: "Get a personalized multi-day itinerary with attractions, food & culture tips", icon: Map, gradient: "from-emerald-500 to-teal-600", credits: "10 credits" },
     { id: "postcards", title: "Virtual Postcards", description: "Generate and send beautiful AI postcards from any destination worldwide", icon: Mail, gradient: "from-amber-500 to-orange-600", credits: "8 credits" },
