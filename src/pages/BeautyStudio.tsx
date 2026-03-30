@@ -141,8 +141,14 @@ const BeautyStudio = () => {
         </motion.div>
 
         {/* Tools Grid */}
-        <h2 className="text-xl sm:text-2xl font-black mb-4 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
-          Beauty Tools
+        <h2 className="text-2xl sm:text-3xl font-black mb-4"
+          style={{ 
+            textShadow: "0 0 30px rgba(236,72,153,0.3)",
+            WebkitTextStroke: "0.5px rgba(236,72,153,0.2)"
+          }}>
+          <span className="bg-gradient-to-r from-pink-400 via-purple-500 to-rose-500 bg-clip-text text-transparent">
+            Beauty Tools
+          </span>
         </h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
           {tools.map((tool, i) => (
