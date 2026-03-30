@@ -21431,6 +21431,39 @@ export type Database = {
         }
         Relationships: []
       }
+      photo_gallery: {
+        Row: {
+          after_url: string
+          before_url: string
+          created_at: string | null
+          description: string | null
+          id: string
+          likes: number | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          after_url: string
+          before_url: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          likes?: number | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          after_url?: string
+          before_url?: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          likes?: number | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       photo_tags: {
         Row: {
           created_at: string | null
