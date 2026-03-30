@@ -341,7 +341,7 @@ const AIExperiences = () => {
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-4">
                       <Badge className="bg-white/15 text-white border-white/20 backdrop-blur-sm text-sm px-4 py-1.5"><Camera className="h-3.5 w-3.5 mr-2" />Scene {currentImageIndex + 1} of {images.length}</Badge>
-                      <Badge className="bg-blue-500/30 text-blue-200 border-blue-400/30 backdrop-blur-sm text-sm px-4 py-1.5"><Eye className="h-3.5 w-3.5 mr-2" />360° View</Badge>
+                      <Badge className="bg-blue-500/30 text-blue-200 border-blue-400/30 backdrop-blur-sm text-sm px-4 py-1.5"><Eye className="h-3.5 w-3.5 mr-2" />Panoramic</Badge>
                     </div>
                     <div className="flex items-center gap-2">
                       <Button variant="ghost" size="sm" className="bg-white/10 text-white hover:bg-white/20 rounded-xl border border-white/10" onClick={() => { setViewAngle({ x: 0, y: 0 }); setCompassAngle(0); }}>
