@@ -649,7 +649,7 @@ const AIExperiences = () => {
         )}
       </div>
 
-      {renderStreetViewTour()}
+      {renderPanoramicTour()}
     </div>
   );
 };
