@@ -46,7 +46,7 @@ const BrandVoiceTraining = ({ onBack }: Props) => {
   const loadVoices = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
-    const { data } = await supabase
+    const { data } = await (supabase as any)
       .from("brand_voices")
       .select("*")
       .eq("user_id", user.id)
@@ -65,7 +65,7 @@ const BrandVoiceTraining = ({ onBack }: Props) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      const { error } = await supabase.from("brand_voices").insert({
+      const { error } = await (supabase as any).from("brand_voices").insert({
         user_id: user.id,
         brand_name: form.brand_name,
         tone: form.tone,
@@ -85,7 +85,7 @@ const BrandVoiceTraining = ({ onBack }: Props) => {
   };
 
   const handleDelete = async (id: string) => {
-    const { error } = await supabase.from("brand_voices").delete().eq("id", id);
+    const { error } = await (supabase as any).from("brand_voices").delete().eq("id", id);
     if (error) toast.error("Failed to delete");
     else {
       toast.success("Brand voice deleted");

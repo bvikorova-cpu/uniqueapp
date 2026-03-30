@@ -53,7 +53,7 @@ const ContentCalendar = ({ onBack }: Props) => {
     if (!user) return;
     const start = startOfMonth(currentMonth);
     const end = endOfMonth(currentMonth);
-    const { data } = await supabase
+    const { data } = await (supabase as any)
       .from("content_calendar")
       .select("*")
       .eq("user_id", user.id)
@@ -70,7 +70,7 @@ const ContentCalendar = ({ onBack }: Props) => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
-      const { error } = await supabase.from("content_calendar").insert({
+      const { error } = await (supabase as any).from("content_calendar").insert({
         user_id: user.id,
         title: form.title,
         content_type: form.content_type,
@@ -92,14 +92,14 @@ const ContentCalendar = ({ onBack }: Props) => {
   };
 
   const handleDelete = async (id: string) => {
-    await supabase.from("content_calendar").delete().eq("id", id);
+    await (supabase as any).from("content_calendar").delete().eq("id", id);
     toast.success("Entry removed");
     loadEntries();
   };
 
   const handleToggleStatus = async (entry: CalendarEntry) => {
     const newStatus = entry.status === "published" ? "planned" : "published";
-    await supabase.from("content_calendar").update({ status: newStatus }).eq("id", entry.id);
+    await (supabase as any).from("content_calendar").update({ status: newStatus }).eq("id", entry.id);
     loadEntries();
   };
 

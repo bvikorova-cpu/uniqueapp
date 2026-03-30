@@ -4,18 +4,18 @@ import { useLiveStats } from "@/hooks/useLiveStats";
 import heroVideo from "@/assets/content-studio-hero.mp4.asset.json";
 
 const ContentStudioHero = () => {
-  const stats = useLiveStats([
-    { label: "Content Created", table: "ai_generated_content", icon: FileText },
-    { label: "Images Generated", table: "ai_generated_content", icon: ImageIcon, column: "generated_image_url" },
-    { label: "Active Creators", table: "ai_credits", icon: Users },
-    { label: "Templates Used", table: "ai_generated_content", icon: Sparkles },
+  const { stats } = useLiveStats([
+    { key: "content", table: "ai_generated_content" },
+    { key: "creators", table: "ai_credits" },
+    { key: "usage", table: "ai_usage_history" },
+    { key: "images", table: "ai_generated_content" },
   ]);
 
   const statItems = [
-    { label: "Content Created", value: stats.stats["ai_generated_content"] || 0, icon: FileText },
-    { label: "Images", value: stats.stats["ai_generated_content_generated_image_url"] || 0, icon: ImageIcon },
-    { label: "Creators", value: stats.stats["ai_credits"] || 0, icon: Users },
-    { label: "Templates", value: stats.stats["ai_generated_content_2"] || 0, icon: Sparkles },
+    { label: "Content Created", value: stats.content || 0, icon: FileText },
+    { label: "AI Generations", value: stats.usage || 0, icon: ImageIcon },
+    { label: "Active Creators", value: stats.creators || 0, icon: Users },
+    { label: "Total Uses", value: stats.images || 0, icon: Sparkles },
   ];
 
   return (
@@ -67,7 +67,7 @@ const ContentStudioHero = () => {
                 key={i}
                 className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-xl p-3 md:p-4 text-center"
               >
-                <Icon className="h-5 w-5 text-purple-400 mx-auto mb-1" />
+                <Icon className="h-5 w-5 text-primary mx-auto mb-1" />
                 <div className="text-xl md:text-2xl font-black text-white">
                   {stat.value || "—"}
                 </div>
