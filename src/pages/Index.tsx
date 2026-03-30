@@ -137,8 +137,10 @@ const stats = [
 import spotlightAvatars from "@/assets/spotlight-avatars.jpg";
 import spotlightRacing from "@/assets/spotlight-racing.jpg";
 import spotlightChef from "@/assets/spotlight-chef.jpg";
+import spotlightBeauty from "@/assets/spotlight-beauty.jpg";
 
 const spotlightServices = [
+  { ...coreModules[4], spotlight: "🔥 Hot Now", image: spotlightBeauty },
   { ...ecosystemModules[0], spotlight: "Most Popular", image: spotlightAvatars },
   { ...ecosystemModules[4], spotlight: "Trending", image: spotlightRacing },
   { ...ecosystemModules[3], spotlight: "New", image: spotlightChef },
