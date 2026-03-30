@@ -90,8 +90,8 @@ const BeautyStudio = () => {
             </p>
             <h1 className="text-4xl sm:text-6xl md:text-7xl font-black mt-1 drop-shadow-lg"
               style={{ 
-                textShadow: "0 0 60px rgba(236,72,153,0.5), 0 4px 20px rgba(0,0,0,0.8)",
-                WebkitTextStroke: "1px rgba(236,72,153,0.3)"
+                textShadow: "0 0 80px rgba(236,72,153,0.6), 0 4px 30px rgba(0,0,0,0.9), 0 0 120px rgba(236,72,153,0.3)",
+                WebkitTextStroke: "2px rgba(236,72,153,0.6)"
               }}>
               <span className="bg-gradient-to-r from-pink-300 via-purple-400 to-rose-500 bg-clip-text text-transparent">
                 Beauty Studio
@@ -143,8 +143,8 @@ const BeautyStudio = () => {
         {/* Tools Grid */}
         <h2 className="text-2xl sm:text-3xl font-black mb-4"
           style={{ 
-            textShadow: "0 0 30px rgba(236,72,153,0.3)",
-            WebkitTextStroke: "0.5px rgba(236,72,153,0.2)"
+            textShadow: "0 0 40px rgba(236,72,153,0.4), 0 2px 15px rgba(0,0,0,0.6)",
+            WebkitTextStroke: "1.5px rgba(236,72,153,0.5)"
           }}>
           <span className="bg-gradient-to-r from-pink-400 via-purple-500 to-rose-500 bg-clip-text text-transparent">
             Beauty Tools
