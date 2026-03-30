@@ -1,295 +1,255 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import Navbar from "@/components/Navbar";
+import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Upload, Sparkles, Wand2, Image as ImageIcon, Info, Star, Zap, CheckCircle } from "lucide-react";
-import { usePhotoCredits } from "@/hooks/usePhotoCredits";
+import { Badge } from "@/components/ui/badge";
+import {
+  Sparkles, Wand2, Image as ImageIcon, Upload, ArrowLeft, Flame, Trophy,
+  TrendingUp, Search, Scissors, Camera, Star, Palette, ShoppingBag, Users
+} from "lucide-react";
+import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
+import { usePhotoCredits } from "@/hooks/usePhotoCredits";
 import { toast } from "sonner";
+import heroVideo from "@/assets/photo-restoration-hero.mp4.asset.json";
+
+// Sub-modules
+import { BackgroundRemoval } from "@/components/photo-restoration/BackgroundRemoval";
+import { FaceEnhancement } from "@/components/photo-restoration/FaceEnhancement";
+import { ColorizationPro } from "@/components/photo-restoration/ColorizationPro";
+import { PhotoGallery } from "@/components/photo-restoration/PhotoGallery";
+
+type ActiveView = "hub" | "colorize" | "repair" | "enhance" | "background-removal" | "face-enhancement" | "colorization-pro" | "gallery" | "credits";
 
 const PhotoRestoration = () => {
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string>("");
-  const [restoredUrl, setRestoredUrl] = useState<string>("");
-  const [restorationType, setRestorationType] = useState<'colorize' | 'repair' | 'enhance'>('colorize');
-  
-  const { credits, isLoading, restorePhoto, isRestoring, purchaseCredits } = usePhotoCredits();
+  const navigate = useNavigate();
+  const [activeView, setActiveView] = useState<ActiveView>("hub");
+  const [stats, setStats] = useState({ restorations: 0, colorizations: 0, enhancements: 0, removals: 0 });
+  const { credits, purchaseCredits } = usePhotoCredits();
 
-  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setSelectedFile(file);
-      setPreviewUrl(URL.createObjectURL(file));
-      setRestoredUrl("");
-    }
+  // Classic restore states
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState("");
+  const [restoredUrl, setRestoredUrl] = useState("");
+  const { restorePhoto, isRestoring } = usePhotoCredits();
+
+  useEffect(() => {
+    const loadStats = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      const [r, c] = await Promise.all([
+        supabase.from("old_photos").select("id", { count: "exact", head: true }).eq("user_id", user.id),
+        (supabase as any).from("photo_gallery").select("id", { count: "exact", head: true }).eq("user_id", user.id),
+      ]);
+      setStats({
+        restorations: r.count || 0,
+        colorizations: 0,
+        enhancements: 0,
+        removals: c.count || 0,
+      });
+    };
+    loadStats();
+  }, []);
+
+  const tools = [
+    { id: "colorize" as ActiveView, icon: Sparkles, title: "Colorization", desc: "Add colors to B&W photos", cost: "1 Credit", color: "text-amber-500" },
+    { id: "repair" as ActiveView, icon: Wand2, title: "Photo Repair", desc: "Remove scratches & damage", cost: "1 Credit", color: "text-blue-500" },
+    { id: "enhance" as ActiveView, icon: ImageIcon, title: "Enhancement", desc: "Improve quality & sharpness", cost: "1 Credit", color: "text-green-500" },
+    { id: "background-removal" as ActiveView, icon: Scissors, title: "Background Removal", desc: "AI background removal", cost: "3 Credits", color: "text-purple-500" },
+    { id: "face-enhancement" as ActiveView, icon: Users, title: "Face Enhancement", desc: "Upscale & enhance faces", cost: "5 Credits", color: "text-pink-500" },
+    { id: "colorization-pro" as ActiveView, icon: Palette, title: "Colorization Pro", desc: "Era-accurate colorization", cost: "8 Credits", color: "text-rose-500" },
+    { id: "gallery" as ActiveView, icon: Camera, title: "Before/After Gallery", desc: "Community restorations", cost: "Free", color: "text-orange-500" },
+    { id: "credits" as ActiveView, icon: ShoppingBag, title: "Buy Credits", desc: "Get more restoration credits", cost: "From €10", color: "text-emerald-500" },
+  ];
+
+  const statItems = [
+    { label: "Restorations", value: stats.restorations, icon: Wand2 },
+    { label: "Gallery", value: stats.removals, icon: Camera },
+    { label: "Credits", value: credits?.credits_remaining || 0, icon: Star },
+    { label: "Tools", value: 8, icon: Sparkles },
+  ];
+
+  // Classic restore handler
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) { setSelectedFile(file); setPreviewUrl(URL.createObjectURL(file)); setRestoredUrl(""); }
   };
 
-  const handleRestore = async () => {
-    if (!selectedFile) {
-      toast.error("Please select a photo");
-      return;
-    }
-
+  const handleRestore = async (type: 'colorize' | 'repair' | 'enhance') => {
+    if (!selectedFile) { toast.error("Please select a photo"); return; }
     try {
-      // Upload original photo
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
-
       const fileExt = selectedFile.name.split('.').pop();
       const fileName = `${user.id}/${Date.now()}.${fileExt}`;
-      
-      const { error: uploadError } = await supabase.storage
-        .from('old-photos')
-        .upload(fileName, selectedFile);
-
+      const { error: uploadError } = await supabase.storage.from('old-photos').upload(fileName, selectedFile);
       if (uploadError) throw uploadError;
-
-      const { data: { publicUrl } } = supabase.storage
-        .from('old-photos')
-        .getPublicUrl(fileName);
-
-      // Call restore function
-      restorePhoto({ imageUrl: publicUrl, restorationType }, {
-        onSuccess: (data) => {
+      const { data: { publicUrl } } = supabase.storage.from('old-photos').getPublicUrl(fileName);
+      restorePhoto({ imageUrl: publicUrl, restorationType: type }, {
+        onSuccess: (data: any) => {
           setRestoredUrl(data.restoredImageUrl);
-          toast.success("Photo successfully restored!");
-          
-          // Save to database
-          supabase.from('old_photos').insert({
-            user_id: user.id,
-            original_url: publicUrl,
-            restored_url: data.restoredImageUrl,
-            restoration_type: restorationType,
-            credits_used: 1
-          });
+          toast.success("Photo restored successfully!");
+          supabase.from('old_photos').insert({ user_id: user.id, original_url: publicUrl, restored_url: data.restoredImageUrl, restoration_type: type, credits_used: 1 });
         }
       });
-
-    } catch (error) {
-      console.error('Error:', error);
-      toast.error("Error uploading photo");
-    }
+    } catch (error) { console.error(error); toast.error("Error uploading photo"); }
   };
 
-  return (
-    <div className="min-h-screen bg-background py-20 px-4">
-      <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-8 mt-12">
-          <h1 className="text-3xl sm:text-4xl font-black mb-4">AI Photo Restoration</h1>
-          <p className="text-muted-foreground text-base sm:text-lg">
-            Bring your old memories back to life with artificial intelligence
-          </p>
-          <div className="mt-4 inline-block px-6 py-2 bg-primary/10 rounded-full">
-            <p className="text-sm">
-              Available credits: <span className="font-bold text-primary">{credits?.credits_remaining || 0}</span>
-            </p>
-          </div>
-        </div>
-
-        <Card className="p-4 sm:p-6 mb-8 bg-gradient-to-r from-purple-500/10 via-primary/10 to-purple-500/10 border-primary/20">
-          <div className="flex items-start gap-3 mb-4">
-            <Info className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
-            <div>
-              <h3 className="font-semibold text-base sm:text-lg mb-2">What is AI Photo Restoration?</h3>
-              <p className="text-sm text-muted-foreground">
-                AI Photo Restoration uses advanced artificial intelligence to breathe new life into your old, damaged, or faded photographs. Whether you have precious family memories in black and white, photos with scratches and tears, or images that have lost their sharpness over time, our AI can help restore them to their former glory.
-              </p>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-            <div>
-              <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
-                <Star className="h-4 w-4 text-yellow-500" />
-                How to Use
-              </h4>
-              <ul className="text-xs sm:text-sm text-muted-foreground space-y-1">
-                <li>• Choose a restoration type (Colorize, Repair, or Enhance)</li>
-                <li>• Upload your old or damaged photo</li>
-                <li>• Click "Restore Photo" to process</li>
-                <li>• Download your restored image</li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
-                <Zap className="h-4 w-4 text-purple-500" />
-                Restoration Types
-              </h4>
-              <ul className="text-xs sm:text-sm text-muted-foreground space-y-1">
-                <li className="flex items-center gap-1"><CheckCircle className="h-3 w-3 text-green-500" /> Colorization: Add realistic colors to B&W photos</li>
-                <li className="flex items-center gap-1"><CheckCircle className="h-3 w-3 text-green-500" /> Repair: Remove scratches, tears, and damage</li>
-                <li className="flex items-center gap-1"><CheckCircle className="h-3 w-3 text-green-500" /> Enhancement: Improve clarity and sharpness</li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="text-xs text-muted-foreground bg-background/50 rounded-lg p-3">
-            <strong>Key Features:</strong> AI-powered restoration • Automatic colorization • Scratch and damage removal • Quality enhancement • Download restored photos • All restoration types cost just 1 credit
-          </div>
-        </Card>
-
-        <div className="grid md:grid-cols-3 gap-6 mb-12">
-          <Card 
-            className={`cursor-pointer transition-all hover:shadow-lg ${restorationType === 'colorize' ? 'border-primary ring-2 ring-primary' : ''}`}
-            onClick={() => setRestorationType('colorize')}
-          >
-            <CardHeader>
-              <Sparkles className="w-8 h-8 mb-2 text-primary" />
-              <CardTitle>Colorization</CardTitle>
-              <CardDescription>
-                Add colors to black and white photos
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">1 credit</p>
-            </CardContent>
-          </Card>
-
-          <Card 
-            className={`cursor-pointer transition-all hover:shadow-lg ${restorationType === 'repair' ? 'border-primary ring-2 ring-primary' : ''}`}
-            onClick={() => setRestorationType('repair')}
-          >
-            <CardHeader>
-              <Wand2 className="w-8 h-8 mb-2 text-primary" />
-              <CardTitle>Repair</CardTitle>
-              <CardDescription>
-                Remove scratches and damage
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">1 credit</p>
-            </CardContent>
-          </Card>
-
-          <Card 
-            className={`cursor-pointer transition-all hover:shadow-lg ${restorationType === 'enhance' ? 'border-primary ring-2 ring-primary' : ''}`}
-            onClick={() => setRestorationType('enhance')}
-          >
-            <CardHeader>
-              <ImageIcon className="w-8 h-8 mb-2 text-primary" />
-              <CardTitle>Enhancement</CardTitle>
-              <CardDescription>
-                Improve quality and sharpness
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">1 credit</p>
-            </CardContent>
-          </Card>
-        </div>
-
-        <div className="grid md:grid-cols-2 gap-8">
-          <Card>
-            <CardHeader>
-              <CardTitle>Original Photo</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="aspect-square bg-muted rounded-lg flex items-center justify-center overflow-hidden">
-                {previewUrl ? (
-                  <img src={previewUrl} alt="Original" className="w-full h-full object-cover" />
-                ) : (
-                  <div className="text-center p-8">
-                    <Upload className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
-                    <p className="text-muted-foreground mb-4">Upload an old photo</p>
-                    <label htmlFor="file-upload">
-                      <Button variant="outline" asChild>
-                        <span>Select Photo</span>
-                      </Button>
-                    </label>
-                    <input
-                      id="file-upload"
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onChange={handleFileSelect}
-                    />
+  // Classic restore view (colorize/repair/enhance)
+  const renderClassicRestore = (type: 'colorize' | 'repair' | 'enhance', title: string, icon: any) => {
+    const Icon = icon;
+    return (
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <div className="container mx-auto px-3 pt-20 pb-8">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+            <Card className="p-6 mb-6">
+              <h2 className="text-2xl font-bold mb-2 flex items-center gap-2">
+                <Icon className="h-6 w-6 text-primary" />
+                {title}
+              </h2>
+              <p className="text-muted-foreground mb-6">Upload a photo and AI will {type === 'colorize' ? 'add realistic colors' : type === 'repair' ? 'remove damage and scratches' : 'enhance quality and sharpness'}. Cost: 1 credit</p>
+              <div className="grid md:grid-cols-2 gap-6">
+                <div>
+                  <h3 className="font-semibold mb-3">Original Photo</h3>
+                  <div className="aspect-square bg-muted rounded-xl flex items-center justify-center overflow-hidden border-2 border-dashed border-border">
+                    {previewUrl ? <img src={previewUrl} alt="Original" className="w-full h-full object-cover" /> : (
+                      <div className="text-center p-8">
+                        <Upload className="w-12 h-12 mx-auto mb-3 text-muted-foreground" />
+                        <p className="text-muted-foreground mb-3 text-sm">Upload an old photo</p>
+                        <label htmlFor="file-upload"><Button variant="outline" asChild><span>Select Photo</span></Button></label>
+                        <input id="file-upload" type="file" accept="image/*" className="hidden" onChange={handleFileSelect} />
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
-              {selectedFile && (
-                <Button 
-                  className="w-full mt-4" 
-                  onClick={handleRestore}
-                  disabled={isRestoring || !credits || credits.credits_remaining < 1}
-                >
-                  {isRestoring ? "Restoring..." : "Restore Photo"}
-                </Button>
-              )}
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Restored Photo</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="aspect-square bg-muted rounded-lg flex items-center justify-center overflow-hidden">
-                {restoredUrl ? (
-                  <img src={restoredUrl} alt="Restored" className="w-full h-full object-cover" />
-                ) : (
-                  <div className="text-center p-8">
-                    <Sparkles className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
-                    <p className="text-muted-foreground">
-                      Restored photo will appear here
-                    </p>
-                  </div>
-                )}
-              </div>
-              {restoredUrl && (
-                <a href={restoredUrl} download>
-                  <Button variant="outline" className="w-full mt-4">
-                    Download Restored Photo
-                  </Button>
-                </a>
-              )}
-            </CardContent>
-          </Card>
-        </div>
-
-        <Card className="mt-8">
-          <CardHeader>
-            <CardTitle>Need More Credits?</CardTitle>
-            <CardDescription>Choose the right package for you</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid md:grid-cols-3 gap-4">
-              <div className="border rounded-lg p-4 text-center">
-                <p className="text-2xl font-black mb-2">5 credits</p>
-                <p className="text-3xl font-bold text-primary mb-4">€10</p>
-                <Button 
-                  variant="outline" 
-                  className="w-full"
-                  onClick={() => purchaseCredits(5, 10)}
-                >
-                  Buy Now
-                </Button>
-              </div>
-              <div className="border-2 border-primary rounded-lg p-4 text-center">
-                <div className="bg-primary text-primary-foreground text-xs px-2 py-1 rounded-full inline-block mb-2">
-                  MOST POPULAR
+                  {selectedFile && (
+                    <Button className="w-full mt-4" onClick={() => handleRestore(type)} disabled={isRestoring || !credits || credits.credits_remaining < 1}>
+                      {isRestoring ? "Restoring..." : `Restore Photo (1 credit)`}
+                    </Button>
+                  )}
                 </div>
-                <p className="text-2xl font-black mb-2">20 credits</p>
-                <p className="text-3xl font-bold text-primary mb-4">€30</p>
-                <Button 
-                  className="w-full"
-                  onClick={() => purchaseCredits(20, 30)}
-                >
-                  Buy Now
-                </Button>
+                <div>
+                  <h3 className="font-semibold mb-3">Restored Photo</h3>
+                  <div className="aspect-square bg-muted rounded-xl flex items-center justify-center overflow-hidden">
+                    {restoredUrl ? <img src={restoredUrl} alt="Restored" className="w-full h-full object-cover" /> : (
+                      <div className="text-center p-8"><Sparkles className="w-12 h-12 mx-auto mb-3 text-muted-foreground" /><p className="text-muted-foreground text-sm">Result will appear here</p></div>
+                    )}
+                  </div>
+                  {restoredUrl && <a href={restoredUrl} download><Button variant="outline" className="w-full mt-4">Download Restored Photo</Button></a>}
+                </div>
               </div>
-              <div className="border rounded-lg p-4 text-center">
-                <p className="text-2xl font-black mb-2">50 credits</p>
-                <p className="text-3xl font-bold text-primary mb-4">€60</p>
-                <Button 
-                  variant="outline" 
-                  className="w-full"
-                  onClick={() => purchaseCredits(50, 60)}
-                >
-                  Buy Now
-                </Button>
-              </div>
+            </Card>
+          </motion.div>
+          <Button variant="ghost" onClick={() => { setActiveView("hub"); setSelectedFile(null); setPreviewUrl(""); setRestoredUrl(""); }} className="mt-4 gap-2"><ArrowLeft className="h-4 w-4" /> Back</Button>
+        </div>
+      </div>
+    );
+  };
+
+  if (activeView === "colorize") return renderClassicRestore("colorize", "AI Colorization", Sparkles);
+  if (activeView === "repair") return renderClassicRestore("repair", "AI Photo Repair", Wand2);
+  if (activeView === "enhance") return renderClassicRestore("enhance", "AI Enhancement", ImageIcon);
+  if (activeView === "background-removal") return <div className="min-h-screen bg-background"><Navbar /><div className="container mx-auto px-3 pt-20 pb-8"><BackgroundRemoval onBack={() => setActiveView("hub")} /></div></div>;
+  if (activeView === "face-enhancement") return <div className="min-h-screen bg-background"><Navbar /><div className="container mx-auto px-3 pt-20 pb-8"><FaceEnhancement onBack={() => setActiveView("hub")} /></div></div>;
+  if (activeView === "colorization-pro") return <div className="min-h-screen bg-background"><Navbar /><div className="container mx-auto px-3 pt-20 pb-8"><ColorizationPro onBack={() => setActiveView("hub")} /></div></div>;
+  if (activeView === "gallery") return <div className="min-h-screen bg-background"><Navbar /><div className="container mx-auto px-3 pt-20 pb-8"><PhotoGallery onBack={() => setActiveView("hub")} /></div></div>;
+
+  if (activeView === "credits") return (
+    <div className="min-h-screen bg-background"><Navbar />
+      <div className="container mx-auto px-3 pt-20 pb-8">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+          <Card className="p-6">
+            <h2 className="text-2xl font-bold mb-2">Buy Restoration Credits</h2>
+            <p className="text-muted-foreground mb-6">Choose the right package for your needs</p>
+            <div className="grid sm:grid-cols-3 gap-4">
+              {[{ c: 5, p: 10, label: "Starter" }, { c: 20, p: 30, label: "Popular", featured: true }, { c: 50, p: 60, label: "Pro" }].map(pkg => (
+                <motion.div key={pkg.c} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
+                  <Card className={`p-5 text-center ${pkg.featured ? 'border-primary ring-2 ring-primary/30' : ''}`}>
+                    {pkg.featured && <Badge className="mb-2 bg-primary/20 text-primary border-primary/30">Most Popular</Badge>}
+                    <p className="text-sm text-muted-foreground">{pkg.label}</p>
+                    <p className="text-3xl font-black mt-1">{pkg.c}</p>
+                    <p className="text-xs text-muted-foreground">credits</p>
+                    <p className="text-2xl font-bold text-primary mt-2">€{pkg.p}</p>
+                    <Button className="w-full mt-4" variant={pkg.featured ? "default" : "outline"} onClick={() => purchaseCredits(pkg.c, pkg.p)}>Buy Now</Button>
+                  </Card>
+                </motion.div>
+              ))}
             </div>
-          </CardContent>
-        </Card>
+          </Card>
+        </motion.div>
+        <Button variant="ghost" onClick={() => setActiveView("hub")} className="mt-4 gap-2"><ArrowLeft className="h-4 w-4" /> Back</Button>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="min-h-screen bg-background">
+      <Navbar />
+
+      {/* Cinematic Video Hero */}
+      <div className="relative w-full h-[50vh] sm:h-[60vh] overflow-hidden bg-black">
+        <video src={heroVideo.url} autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover brightness-[1.3] saturate-[1.2]" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+
+        <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-8">
+          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, type: "spring" }}>
+            <p className="text-xs sm:text-sm text-amber-400 font-semibold tracking-wider uppercase drop-shadow-md">✨ AI-Powered Restoration Lab</p>
+            <h1 className="text-3xl sm:text-5xl md:text-6xl font-black mt-1 drop-shadow-md" style={{ textShadow: "0 0 40px rgba(245,158,11,0.3)" }}>
+              <span className="bg-gradient-to-r from-amber-400 via-orange-400 to-rose-400 bg-clip-text text-transparent">Photo Restoration</span>
+            </h1>
+            <p className="text-sm sm:text-lg text-white/80 mt-2 max-w-xl drop-shadow-md">AI colorization, repair, face enhancement & background removal</p>
+          </motion.div>
+
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, type: "spring" }} className="grid grid-cols-4 gap-2 sm:gap-4 mt-4 max-w-2xl">
+            {statItems.map((s, i) => (
+              <motion.div key={i} initial={{ scale: 0.8 }} animate={{ scale: 1 }} transition={{ delay: 0.4 + i * 0.1, type: "spring" }}
+                className="bg-black/40 backdrop-blur-xl rounded-xl p-2 sm:p-3 border border-white/10 text-center">
+                <s.icon className="h-4 w-4 sm:h-5 sm:w-5 text-amber-400 mx-auto mb-1" />
+                <p className="text-lg sm:text-2xl font-black text-white">{s.value}</p>
+                <p className="text-[10px] sm:text-xs text-white/60">{s.label}</p>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </div>
+
+      <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-10">
+        {/* Engagement Row */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }} className="grid grid-cols-3 gap-3 sm:gap-4 mb-8">
+          <Card className="p-3 sm:p-4 bg-card/80 backdrop-blur-xl text-center border-amber-500/20">
+            <Flame className="h-6 w-6 text-orange-500 mx-auto mb-1" />
+            <p className="text-xl sm:text-2xl font-black">7</p>
+            <p className="text-xs text-muted-foreground">Day Streak</p>
+          </Card>
+          <Card className="p-3 sm:p-4 bg-card/80 backdrop-blur-xl text-center border-primary/20">
+            <TrendingUp className="h-6 w-6 text-primary mx-auto mb-1" />
+            <p className="text-xl sm:text-2xl font-black">{stats.restorations}</p>
+            <p className="text-xs text-muted-foreground">Total Restores</p>
+          </Card>
+          <Card className="p-3 sm:p-4 bg-card/80 backdrop-blur-xl text-center border-yellow-500/20">
+            <Trophy className="h-6 w-6 text-yellow-500 mx-auto mb-1" />
+            <p className="text-xl sm:text-2xl font-black">3</p>
+            <p className="text-xs text-muted-foreground">Achievements</p>
+          </Card>
+        </motion.div>
+
+        {/* Tools Grid */}
+        <h2 className="text-xl sm:text-2xl font-black mb-4 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">Restoration Tools</h2>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+          {tools.map((tool, i) => (
+            <motion.div key={tool.id} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.6 + i * 0.05, type: "spring" }}
+              whileHover={{ scale: 1.04, y: -4 }} whileTap={{ scale: 0.97 }}>
+              <Card className="p-4 sm:p-5 cursor-pointer bg-card/80 backdrop-blur-xl hover:border-amber-500/40 transition-all h-full" onClick={() => setActiveView(tool.id)}>
+                <tool.icon className={`h-7 w-7 sm:h-8 sm:w-8 ${tool.color} mb-2`} />
+                <h3 className="font-bold text-sm sm:text-base">{tool.title}</h3>
+                <p className="text-xs text-muted-foreground mt-1">{tool.desc}</p>
+                <span className="text-[10px] sm:text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full mt-2 inline-block">{tool.cost}</span>
+              </Card>
+            </motion.div>
+          ))}
+        </div>
       </div>
     </div>
   );
