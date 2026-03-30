@@ -244,7 +244,7 @@ const AIExperiences = () => {
   ];
 
   const toolCards = [
-    { id: "tours", title: "Virtual Tours", description: "Walk through 33 global destinations in immersive 360° Street View", icon: Globe, gradient: "from-cyan-500 to-blue-600", credits: "15 credits/tour" },
+    { id: "tours", title: "Virtual Tours", description: "Walk through 33 global destinations in immersive 360° panoramic mode", icon: Globe, gradient: "from-cyan-500 to-blue-600", credits: "15 credits/tour" },
     { id: "future", title: "Future Preview", description: "AI age progression — see how you'll look 10-50 years from now", icon: Clock, gradient: "from-pink-500 to-rose-600", credits: "5 credits" },
     { id: "travel-planner", title: "AI Travel Planner", description: "Get a personalized multi-day itinerary with attractions, food & culture tips", icon: Map, gradient: "from-emerald-500 to-teal-600", credits: "10 credits" },
     { id: "postcards", title: "Virtual Postcards", description: "Generate and send beautiful AI postcards from any destination worldwide", icon: Mail, gradient: "from-amber-500 to-orange-600", credits: "8 credits" },
@@ -256,8 +256,8 @@ const AIExperiences = () => {
     return <div className="min-h-screen flex items-center justify-center"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>;
   }
 
-  // ====== IMMERSIVE STREET VIEW TOUR VIEWER ======
-  const renderStreetViewTour = () => {
+  // ====== IMMERSIVE PANORAMIC TOUR VIEWER ======
+  const renderPanoramicTour = () => {
     if (!selectedTour) return null;
     const images = selectedTour.image_urls || [];
     if (images.length === 0) return null;
@@ -341,7 +341,7 @@ const AIExperiences = () => {
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-4">
                       <Badge className="bg-white/15 text-white border-white/20 backdrop-blur-sm text-sm px-4 py-1.5"><Camera className="h-3.5 w-3.5 mr-2" />Scene {currentImageIndex + 1} of {images.length}</Badge>
-                      <Badge className="bg-blue-500/30 text-blue-200 border-blue-400/30 backdrop-blur-sm text-sm px-4 py-1.5"><Eye className="h-3.5 w-3.5 mr-2" />360° View</Badge>
+                      <Badge className="bg-blue-500/30 text-blue-200 border-blue-400/30 backdrop-blur-sm text-sm px-4 py-1.5"><Eye className="h-3.5 w-3.5 mr-2" />Panoramic</Badge>
                     </div>
                     <div className="flex items-center gap-2">
                       <Button variant="ghost" size="sm" className="bg-white/10 text-white hover:bg-white/20 rounded-xl border border-white/10" onClick={() => { setViewAngle({ x: 0, y: 0 }); setCompassAngle(0); }}>
@@ -396,7 +396,7 @@ const AIExperiences = () => {
         <MapPin className="h-6 w-6 text-primary" />
         <div>
           <h2 className="text-2xl font-bold">Choose Your Destination</h2>
-          <p className="text-muted-foreground text-sm">Walk through cities in immersive Street View mode</p>
+          <p className="text-muted-foreground text-sm">Walk through cities in immersive panoramic mode</p>
         </div>
       </div>
 
@@ -449,7 +449,7 @@ const AIExperiences = () => {
                   )}
                   <CardContent className="pt-3 pb-3">
                     <p className="text-sm text-muted-foreground line-clamp-2">{tour.description}</p>
-                    <Button variant="outline" className="w-full mt-3" size="sm"><Play className="h-4 w-4 mr-2" />Enter Street View</Button>
+                    <Button variant="outline" className="w-full mt-3" size="sm"><Play className="h-4 w-4 mr-2" />Enter Tour</Button>
                   </CardContent>
                 </Card>
               </motion.div>
@@ -519,7 +519,7 @@ const AIExperiences = () => {
       <div className="container mx-auto px-4 pt-20 pb-12 max-w-7xl">
         {/* ====== CINEMATIC VIDEO HERO ====== */}
         <div className="relative w-full h-[76svh] min-h-[500px] sm:min-h-[540px] rounded-2xl sm:rounded-3xl overflow-hidden mb-8 border border-border/40">
-          <video ref={videoRef} src={heroVideo.url} autoPlay loop muted={isMuted} playsInline className="absolute inset-0 w-full h-full object-cover brightness-110 saturate-110" />
+          <video ref={videoRef} src={heroVideo.url} autoPlay loop muted={isMuted} playsInline className="absolute inset-0 w-full h-full object-cover brightness-[1.35] saturate-[1.15] contrast-[1.05]" />
           <div className="absolute inset-0 bg-black/40" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-black/20" />
 
@@ -596,13 +596,13 @@ const AIExperiences = () => {
           <CardContent className="space-y-4">
             <p className="text-muted-foreground">
               Exclusive Experiences is your gateway to AI-powered virtual adventures and future visualizations.
-              Explore stunning destinations around the world through immersive AI-generated virtual tours with a Google Street View-like experience,
+              Explore stunning destinations around the world through immersive AI-generated panoramic tours,
               plan personalized trips with AI, send virtual postcards, or glimpse into your future with age progression technology.
             </p>
             <div className="space-y-2">
               <h4 className="font-semibold flex items-center gap-2"><Star className="h-4 w-4 text-primary" />How to Use</h4>
               <ul className="text-sm text-muted-foreground space-y-1 ml-6 list-disc">
-                <li><strong>Virtual Tours:</strong> Choose a destination and walk through it in an immersive 360° Street View experience</li>
+                <li><strong>Virtual Tours:</strong> Choose a destination and walk through it in an immersive 360° panoramic experience</li>
                 <li><strong>AI Travel Planner:</strong> Get a personalized multi-day itinerary with attractions, food & culture tips</li>
                 <li><strong>Virtual Postcards:</strong> Generate beautiful AI postcards from any destination and share them</li>
                 <li><strong>Future Preview:</strong> Upload your photo and see how you'll look 10-50 years in the future</li>
@@ -649,7 +649,7 @@ const AIExperiences = () => {
         )}
       </div>
 
-      {renderStreetViewTour()}
+      {renderPanoramicTour()}
     </div>
   );
 };
