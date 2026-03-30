@@ -14492,6 +14492,39 @@ export type Database = {
         }
         Relationships: []
       }
+      home_color_palettes: {
+        Row: {
+          created_at: string | null
+          credits_used: number | null
+          id: string
+          mood: string | null
+          palette: Json
+          room_image_url: string
+          room_type: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          credits_used?: number | null
+          id?: string
+          mood?: string | null
+          palette?: Json
+          room_image_url: string
+          room_type?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          credits_used?: number | null
+          id?: string
+          mood?: string | null
+          palette?: Json
+          room_image_url?: string
+          room_type?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       home_decor_items: {
         Row: {
           category: string
@@ -14657,6 +14690,120 @@ export type Database = {
           room_type?: string
           style_preference?: string
           updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      home_furniture_recommendations: {
+        Row: {
+          budget: string | null
+          created_at: string | null
+          credits_used: number | null
+          id: string
+          recommendations: Json
+          room_image_url: string
+          room_type: string | null
+          style: string | null
+          user_id: string
+        }
+        Insert: {
+          budget?: string | null
+          created_at?: string | null
+          credits_used?: number | null
+          id?: string
+          recommendations?: Json
+          room_image_url: string
+          room_type?: string | null
+          style?: string | null
+          user_id: string
+        }
+        Update: {
+          budget?: string | null
+          created_at?: string | null
+          credits_used?: number | null
+          id?: string
+          recommendations?: Json
+          room_image_url?: string
+          room_type?: string | null
+          style?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      home_transformations: {
+        Row: {
+          after_image_url: string
+          before_image_url: string
+          created_at: string | null
+          description: string | null
+          id: string
+          is_public: boolean | null
+          likes_count: number | null
+          room_type: string | null
+          style: string | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          after_image_url: string
+          before_image_url: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_public?: boolean | null
+          likes_count?: number | null
+          room_type?: string | null
+          style?: string | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          after_image_url?: string
+          before_image_url?: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_public?: boolean | null
+          likes_count?: number | null
+          room_type?: string | null
+          style?: string | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      home_virtual_staging: {
+        Row: {
+          created_at: string | null
+          credits_used: number | null
+          id: string
+          original_image_url: string
+          property_type: string | null
+          room_type: string | null
+          staged_image_url: string | null
+          staging_style: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          credits_used?: number | null
+          id?: string
+          original_image_url: string
+          property_type?: string | null
+          room_type?: string | null
+          staged_image_url?: string | null
+          staging_style?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          credits_used?: number | null
+          id?: string
+          original_image_url?: string
+          property_type?: string | null
+          room_type?: string | null
+          staged_image_url?: string | null
+          staging_style?: string | null
           user_id?: string
         }
         Relationships: []
