@@ -88,9 +88,12 @@ const BeautyStudio = () => {
             <p className="text-xs sm:text-sm text-pink-400 font-semibold tracking-wider uppercase drop-shadow-md">
               ✨ AI-Powered Beauty Hub
             </p>
-            <h1 className="text-3xl sm:text-5xl md:text-6xl font-black mt-1 drop-shadow-md"
-              style={{ textShadow: "0 0 40px rgba(236,72,153,0.3)" }}>
-              <span className="bg-gradient-to-r from-pink-400 via-purple-400 to-rose-400 bg-clip-text text-transparent">
+            <h1 className="text-4xl sm:text-6xl md:text-7xl font-black mt-1 drop-shadow-lg"
+              style={{ 
+                textShadow: "0 0 60px rgba(236,72,153,0.5), 0 4px 20px rgba(0,0,0,0.8)",
+                WebkitTextStroke: "1px rgba(236,72,153,0.3)"
+              }}>
+              <span className="bg-gradient-to-r from-pink-300 via-purple-400 to-rose-500 bg-clip-text text-transparent">
                 Beauty Studio
               </span>
             </h1>
@@ -138,8 +141,14 @@ const BeautyStudio = () => {
         </motion.div>
 
         {/* Tools Grid */}
-        <h2 className="text-xl sm:text-2xl font-black mb-4 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
-          Beauty Tools
+        <h2 className="text-2xl sm:text-3xl font-black mb-4"
+          style={{ 
+            textShadow: "0 0 30px rgba(236,72,153,0.3)",
+            WebkitTextStroke: "0.5px rgba(236,72,153,0.2)"
+          }}>
+          <span className="bg-gradient-to-r from-pink-400 via-purple-500 to-rose-500 bg-clip-text text-transparent">
+            Beauty Tools
+          </span>
         </h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
           {tools.map((tool, i) => (

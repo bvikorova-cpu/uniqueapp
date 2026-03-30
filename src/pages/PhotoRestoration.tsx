@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
   Sparkles, Wand2, Image as ImageIcon, Upload, ArrowLeft, Flame, Trophy,
-  TrendingUp, Search, Scissors, Camera, Star, Palette, ShoppingBag, Users
+  TrendingUp, Search, Scissors, Camera, Star, Palette, ShoppingBag, Users,
+  ScanLine, Layers, Move, Maximize
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
@@ -19,8 +20,12 @@ import { BackgroundRemoval } from "@/components/photo-restoration/BackgroundRemo
 import { FaceEnhancement } from "@/components/photo-restoration/FaceEnhancement";
 import { ColorizationPro } from "@/components/photo-restoration/ColorizationPro";
 import { PhotoGallery } from "@/components/photo-restoration/PhotoGallery";
+import { DamageDetection } from "@/components/photo-restoration/DamageDetection";
+import { BatchProcessing } from "@/components/photo-restoration/BatchProcessing";
+import { ComparisonSlider } from "@/components/photo-restoration/ComparisonSlider";
+import { AIUpscaling } from "@/components/photo-restoration/AIUpscaling";
 
-type ActiveView = "hub" | "colorize" | "repair" | "enhance" | "background-removal" | "face-enhancement" | "colorization-pro" | "gallery" | "credits";
+type ActiveView = "hub" | "colorize" | "repair" | "enhance" | "background-removal" | "face-enhancement" | "colorization-pro" | "gallery" | "credits" | "damage-detection" | "batch-processing" | "comparison-slider" | "ai-upscaling";
 
 const PhotoRestoration = () => {
   const navigate = useNavigate();
@@ -53,12 +58,16 @@ const PhotoRestoration = () => {
   }, []);
 
   const tools = [
+    { id: "damage-detection" as ActiveView, icon: ScanLine, title: "Damage Detection", desc: "AI scans for scratches & tears", cost: "4 Credits", color: "text-red-500" },
     { id: "colorize" as ActiveView, icon: Sparkles, title: "Colorization", desc: "Add colors to B&W photos", cost: "1 Credit", color: "text-amber-500" },
     { id: "repair" as ActiveView, icon: Wand2, title: "Photo Repair", desc: "Remove scratches & damage", cost: "1 Credit", color: "text-blue-500" },
     { id: "enhance" as ActiveView, icon: ImageIcon, title: "Enhancement", desc: "Improve quality & sharpness", cost: "1 Credit", color: "text-green-500" },
     { id: "background-removal" as ActiveView, icon: Scissors, title: "Background Removal", desc: "AI background removal", cost: "3 Credits", color: "text-purple-500" },
     { id: "face-enhancement" as ActiveView, icon: Users, title: "Face Enhancement", desc: "Upscale & enhance faces", cost: "5 Credits", color: "text-pink-500" },
     { id: "colorization-pro" as ActiveView, icon: Palette, title: "Colorization Pro", desc: "Era-accurate colorization", cost: "8 Credits", color: "text-rose-500" },
+    { id: "ai-upscaling" as ActiveView, icon: Maximize, title: "AI Upscaling 4K", desc: "Ultra-high resolution output", cost: "5-10 Credits", color: "text-teal-500" },
+    { id: "batch-processing" as ActiveView, icon: Layers, title: "Batch Processing", desc: "Restore up to 10 at once", cost: "Varies", color: "text-indigo-500" },
+    { id: "comparison-slider" as ActiveView, icon: Move, title: "Comparison Slider", desc: "Side-by-side before/after", cost: "Free", color: "text-cyan-500" },
     { id: "gallery" as ActiveView, icon: Camera, title: "Before/After Gallery", desc: "Community restorations", cost: "Free", color: "text-orange-500" },
     { id: "credits" as ActiveView, icon: ShoppingBag, title: "Buy Credits", desc: "Get more restoration credits", cost: "From €10", color: "text-emerald-500" },
   ];
@@ -67,7 +76,7 @@ const PhotoRestoration = () => {
     { label: "Restorations", value: stats.restorations, icon: Wand2 },
     { label: "Gallery", value: stats.removals, icon: Camera },
     { label: "Credits", value: credits?.credits_remaining || 0, icon: Star },
-    { label: "Tools", value: 8, icon: Sparkles },
+    { label: "Tools", value: 12, icon: Sparkles },
   ];
 
   // Classic restore handler
@@ -96,7 +105,7 @@ const PhotoRestoration = () => {
     } catch (error) { console.error(error); toast.error("Error uploading photo"); }
   };
 
-  // Classic restore view (colorize/repair/enhance)
+  // Classic restore view
   const renderClassicRestore = (type: 'colorize' | 'repair' | 'enhance', title: string, icon: any) => {
     const Icon = icon;
     return (
@@ -154,6 +163,10 @@ const PhotoRestoration = () => {
   if (activeView === "face-enhancement") return <div className="min-h-screen bg-background"><Navbar /><div className="container mx-auto px-3 pt-20 pb-8"><FaceEnhancement onBack={() => setActiveView("hub")} /></div></div>;
   if (activeView === "colorization-pro") return <div className="min-h-screen bg-background"><Navbar /><div className="container mx-auto px-3 pt-20 pb-8"><ColorizationPro onBack={() => setActiveView("hub")} /></div></div>;
   if (activeView === "gallery") return <div className="min-h-screen bg-background"><Navbar /><div className="container mx-auto px-3 pt-20 pb-8"><PhotoGallery onBack={() => setActiveView("hub")} /></div></div>;
+  if (activeView === "damage-detection") return <div className="min-h-screen bg-background"><Navbar /><div className="container mx-auto px-3 pt-20 pb-8"><DamageDetection onBack={() => setActiveView("hub")} /></div></div>;
+  if (activeView === "batch-processing") return <div className="min-h-screen bg-background"><Navbar /><div className="container mx-auto px-3 pt-20 pb-8"><BatchProcessing onBack={() => setActiveView("hub")} /></div></div>;
+  if (activeView === "comparison-slider") return <div className="min-h-screen bg-background"><Navbar /><div className="container mx-auto px-3 pt-20 pb-8"><ComparisonSlider onBack={() => setActiveView("hub")} /></div></div>;
+  if (activeView === "ai-upscaling") return <div className="min-h-screen bg-background"><Navbar /><div className="container mx-auto px-3 pt-20 pb-8"><AIUpscaling onBack={() => setActiveView("hub")} /></div></div>;
 
   if (activeView === "credits") return (
     <div className="min-h-screen bg-background"><Navbar />
@@ -195,10 +208,18 @@ const PhotoRestoration = () => {
         <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-8">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, type: "spring" }}>
             <p className="text-xs sm:text-sm text-amber-400 font-semibold tracking-wider uppercase drop-shadow-md">✨ AI-Powered Restoration Lab</p>
-            <h1 className="text-3xl sm:text-5xl md:text-6xl font-black mt-1 drop-shadow-md" style={{ textShadow: "0 0 40px rgba(245,158,11,0.3)" }}>
-              <span className="bg-gradient-to-r from-amber-400 via-orange-400 to-rose-400 bg-clip-text text-transparent">Photo Restoration</span>
+            <h1 className="text-4xl sm:text-6xl md:text-7xl font-black mt-1 drop-shadow-lg"
+              style={{ 
+                textShadow: "0 0 60px rgba(245,158,11,0.5), 0 4px 20px rgba(0,0,0,0.8)",
+                WebkitTextStroke: "1px rgba(245,158,11,0.3)"
+              }}>
+              <span className="bg-gradient-to-r from-amber-300 via-orange-400 to-rose-500 bg-clip-text text-transparent">
+                Photo Restoration
+              </span>
             </h1>
-            <p className="text-sm sm:text-lg text-white/80 mt-2 max-w-xl drop-shadow-md">AI colorization, repair, face enhancement & background removal</p>
+            <p className="text-sm sm:text-lg text-white/90 mt-2 max-w-xl drop-shadow-lg font-medium">
+              AI colorization, damage detection, upscaling 4K & batch processing
+            </p>
           </motion.div>
 
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, type: "spring" }} className="grid grid-cols-4 gap-2 sm:gap-4 mt-4 max-w-2xl">
@@ -235,7 +256,15 @@ const PhotoRestoration = () => {
         </motion.div>
 
         {/* Tools Grid */}
-        <h2 className="text-xl sm:text-2xl font-black mb-4 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">Restoration Tools</h2>
+        <h2 className="text-2xl sm:text-3xl font-black mb-4"
+          style={{ 
+            textShadow: "0 0 30px rgba(245,158,11,0.3)",
+            WebkitTextStroke: "0.5px rgba(245,158,11,0.2)"
+          }}>
+          <span className="bg-gradient-to-r from-amber-400 via-orange-500 to-rose-500 bg-clip-text text-transparent">
+            Restoration Tools
+          </span>
+        </h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
           {tools.map((tool, i) => (
             <motion.div key={tool.id} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
