@@ -1,115 +1,168 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
-import { Sparkles, Palette, ShoppingBag, BookOpen, Info, Star, Zap, CheckCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Sparkles, Palette, ShoppingBag, BookOpen, Search, Paintbrush, Crown, ImageIcon, ArrowLeft, Flame, Trophy, TrendingUp } from "lucide-react";
 import { VirtualMakeup } from "@/components/beauty/VirtualMakeup";
 import { HairStyleGenerator } from "@/components/beauty/HairStyleGenerator";
 import { ProductRecommender } from "@/components/beauty/ProductRecommender";
 import { MakeupTutorials } from "@/components/beauty/MakeupTutorials";
+import { SkinAnalysis } from "@/components/beauty/SkinAnalysis";
+import { NailArtDesigner } from "@/components/beauty/NailArtDesigner";
+import { CelebrityLookMatch } from "@/components/beauty/CelebrityLookMatch";
+import { BeautyGallery } from "@/components/beauty/BeautyGallery";
+import { motion } from "framer-motion";
+import { supabase } from "@/integrations/supabase/client";
+import heroVideo from "@/assets/beauty-studio-hero.mp4.asset.json";
+
+type ActiveView = "hub" | "makeup" | "hair" | "products" | "tutorials" | "skin-analysis" | "nail-art" | "celebrity-match" | "gallery";
 
 const BeautyStudio = () => {
   const navigate = useNavigate();
+  const [activeView, setActiveView] = useState<ActiveView>("hub");
+  const [stats, setStats] = useState({ transformations: 0, styles: 0, analyses: 0, designs: 0 });
+
+  useEffect(() => {
+    const loadStats = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      const [t, s, a, n] = await Promise.all([
+        supabase.from("beauty_transformations").select("id", { count: "exact", head: true }).eq("user_id", user.id),
+        supabase.from("beauty_celebrity_matches").select("id", { count: "exact", head: true }).eq("user_id", user.id),
+        supabase.from("beauty_skin_analyses").select("id", { count: "exact", head: true }).eq("user_id", user.id),
+        supabase.from("beauty_nail_designs").select("id", { count: "exact", head: true }).eq("user_id", user.id),
+      ]);
+      setStats({
+        transformations: t.count || 0,
+        styles: s.count || 0,
+        analyses: a.count || 0,
+        designs: n.count || 0,
+      });
+    };
+    loadStats();
+  }, []);
+
+  const tools = [
+    { id: "makeup" as ActiveView, icon: Sparkles, title: "Virtual Makeup", desc: "AI makeup try-on", cost: "5 Credits", color: "text-pink-500" },
+    { id: "hair" as ActiveView, icon: Palette, title: "Hair Styler", desc: "Try new hairstyles", cost: "5 Credits", color: "text-purple-500" },
+    { id: "skin-analysis" as ActiveView, icon: Search, title: "Skin Analysis", desc: "AI skincare routine", cost: "8 Credits", color: "text-blue-500" },
+    { id: "nail-art" as ActiveView, icon: Paintbrush, title: "Nail Art Designer", desc: "Custom nail designs", cost: "5 Credits", color: "text-rose-500" },
+    { id: "celebrity-match" as ActiveView, icon: Crown, title: "Celebrity Match", desc: "Find your twin", cost: "10 Credits", color: "text-yellow-500" },
+    { id: "products" as ActiveView, icon: ShoppingBag, title: "Product Advisor", desc: "Personalized picks", cost: "3 Credits", color: "text-green-500" },
+    { id: "tutorials" as ActiveView, icon: BookOpen, title: "Tutorials", desc: "Step-by-step guides", cost: "2 Credits", color: "text-indigo-500" },
+    { id: "gallery" as ActiveView, icon: ImageIcon, title: "Before/After", desc: "Community gallery", cost: "Free", color: "text-orange-500" },
+  ];
+
+  const statItems = [
+    { label: "Transformations", value: stats.transformations, icon: Sparkles },
+    { label: "Matches", value: stats.styles, icon: Crown },
+    { label: "Analyses", value: stats.analyses, icon: Search },
+    { label: "Designs", value: stats.designs, icon: Paintbrush },
+  ];
+
+  if (activeView === "makeup") return <div className="min-h-screen bg-background"><Navbar /><div className="container mx-auto px-3 pt-20 pb-8"><VirtualMakeup /><Button variant="ghost" onClick={() => setActiveView("hub")} className="mt-4 gap-2"><ArrowLeft className="h-4 w-4" /> Back</Button></div></div>;
+  if (activeView === "hair") return <div className="min-h-screen bg-background"><Navbar /><div className="container mx-auto px-3 pt-20 pb-8"><HairStyleGenerator /><Button variant="ghost" onClick={() => setActiveView("hub")} className="mt-4 gap-2"><ArrowLeft className="h-4 w-4" /> Back</Button></div></div>;
+  if (activeView === "products") return <div className="min-h-screen bg-background"><Navbar /><div className="container mx-auto px-3 pt-20 pb-8"><ProductRecommender /><Button variant="ghost" onClick={() => setActiveView("hub")} className="mt-4 gap-2"><ArrowLeft className="h-4 w-4" /> Back</Button></div></div>;
+  if (activeView === "tutorials") return <div className="min-h-screen bg-background"><Navbar /><div className="container mx-auto px-3 pt-20 pb-8"><MakeupTutorials /><Button variant="ghost" onClick={() => setActiveView("hub")} className="mt-4 gap-2"><ArrowLeft className="h-4 w-4" /> Back</Button></div></div>;
+  if (activeView === "skin-analysis") return <div className="min-h-screen bg-background"><Navbar /><div className="container mx-auto px-3 pt-20 pb-8"><SkinAnalysis onBack={() => setActiveView("hub")} /></div></div>;
+  if (activeView === "nail-art") return <div className="min-h-screen bg-background"><Navbar /><div className="container mx-auto px-3 pt-20 pb-8"><NailArtDesigner onBack={() => setActiveView("hub")} /></div></div>;
+  if (activeView === "celebrity-match") return <div className="min-h-screen bg-background"><Navbar /><div className="container mx-auto px-3 pt-20 pb-8"><CelebrityLookMatch onBack={() => setActiveView("hub")} /></div></div>;
+  if (activeView === "gallery") return <div className="min-h-screen bg-background"><Navbar /><div className="container mx-auto px-3 pt-20 pb-8"><BeautyGallery onBack={() => setActiveView("hub")} /></div></div>;
 
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      
-      <div className="container mx-auto px-3 sm:px-4 pt-20 sm:pt-24 pb-8 sm:pb-12">
-        <div className="text-center mb-6 sm:mb-8">
-          <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent mb-3 sm:mb-4">
-            ✨ Virtual Beauty Studio
-          </h1>
-          <p className="text-sm sm:text-lg text-muted-foreground max-w-2xl mx-auto px-2">
-            Try different makeup looks, hairstyles and get AI-powered beauty product recommendations
-          </p>
+
+      {/* Cinematic Video Hero */}
+      <div className="relative w-full h-[50vh] sm:h-[60vh] overflow-hidden bg-black">
+        <video
+          src={heroVideo.url}
+          autoPlay muted loop playsInline
+          className="absolute inset-0 w-full h-full object-cover brightness-[1.3] saturate-[1.2]"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+
+        <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-8">
+          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, type: "spring" }}>
+            <p className="text-xs sm:text-sm text-pink-400 font-semibold tracking-wider uppercase drop-shadow-md">
+              ✨ AI-Powered Beauty Hub
+            </p>
+            <h1 className="text-3xl sm:text-5xl md:text-6xl font-black mt-1 drop-shadow-md"
+              style={{ textShadow: "0 0 40px rgba(236,72,153,0.3)" }}>
+              <span className="bg-gradient-to-r from-pink-400 via-purple-400 to-rose-400 bg-clip-text text-transparent">
+                Beauty Studio
+              </span>
+            </h1>
+            <p className="text-sm sm:text-lg text-white/80 mt-2 max-w-xl drop-shadow-md">
+              AI makeup, skincare analysis, nail art & celebrity look matching
+            </p>
+          </motion.div>
+
+          {/* Stats Overlay */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, type: "spring" }}
+            className="grid grid-cols-4 gap-2 sm:gap-4 mt-4 max-w-2xl"
+          >
+            {statItems.map((s, i) => (
+              <motion.div key={i} initial={{ scale: 0.8 }} animate={{ scale: 1 }} transition={{ delay: 0.4 + i * 0.1, type: "spring" }}
+                className="bg-black/40 backdrop-blur-xl rounded-xl p-2 sm:p-3 border border-white/10 text-center">
+                <s.icon className="h-4 w-4 sm:h-5 sm:w-5 text-pink-400 mx-auto mb-1" />
+                <p className="text-lg sm:text-2xl font-black text-white">{s.value}</p>
+                <p className="text-[10px] sm:text-xs text-white/60">{s.label}</p>
+              </motion.div>
+            ))}
+          </motion.div>
         </div>
-
-        <Card className="p-4 sm:p-6 mb-6 sm:mb-8 bg-gradient-to-r from-pink-500/10 via-purple-500/10 to-pink-500/10 border-pink-500/20">
-          <div className="flex items-start gap-3 mb-4">
-            <Info className="h-5 w-5 text-pink-500 mt-0.5 flex-shrink-0" />
-            <div>
-              <h3 className="font-semibold text-base sm:text-lg mb-2">What is Virtual Beauty Studio?</h3>
-              <p className="text-sm text-muted-foreground">
-                Virtual Beauty Studio is your AI-powered personal beauty consultant. Upload your photo and explore different makeup looks, hairstyles, get personalized product recommendations, and learn step-by-step makeup tutorials tailored to your preferences.
-              </p>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-            <div>
-              <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
-                <Star className="h-4 w-4 text-yellow-500" />
-                How to Use
-              </h4>
-              <ul className="text-xs sm:text-sm text-muted-foreground space-y-1">
-                <li>• <strong>Makeup:</strong> Upload a selfie and AI applies different makeup styles</li>
-                <li>• <strong>Hair:</strong> Try various hairstyles and colors on your photo</li>
-                <li>• <strong>Products:</strong> Get personalized beauty product recommendations</li>
-                <li>• <strong>Tutorials:</strong> Generate step-by-step makeup guides</li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
-                <Zap className="h-4 w-4 text-purple-500" />
-                Credit Costs
-              </h4>
-              <ul className="text-xs sm:text-sm text-muted-foreground space-y-1">
-                <li className="flex items-center gap-1"><CheckCircle className="h-3 w-3 text-green-500" /> Virtual Makeup Try-On: 5 credits</li>
-                <li className="flex items-center gap-1"><CheckCircle className="h-3 w-3 text-green-500" /> Hairstyle Generator: 5 credits</li>
-                <li className="flex items-center gap-1"><CheckCircle className="h-3 w-3 text-green-500" /> Product Recommendations: 2 credits</li>
-                <li className="flex items-center gap-1"><CheckCircle className="h-3 w-3 text-green-500" /> Makeup Tutorials: 2 credits</li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="text-xs text-muted-foreground bg-background/50 rounded-lg p-3">
-            <strong>Key Features:</strong> AI-powered transformations • Multiple makeup styles (Natural, Glamour, Smoky, etc.) • Various hairstyle options • Personalized skincare recommendations • Detailed step-by-step tutorials with pro tips
-          </div>
-        </Card>
-
-        <Tabs defaultValue="makeup" className="w-full">
-          <TabsList className="grid w-full grid-cols-4 mb-4 sm:mb-8 h-auto">
-            <TabsTrigger value="makeup" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm py-2">
-              <Sparkles className="h-3 w-3 sm:h-4 sm:w-4" />
-              <span className="hidden sm:inline">Makeup</span>
-            </TabsTrigger>
-            <TabsTrigger value="hair" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm py-2">
-              <Palette className="h-3 w-3 sm:h-4 sm:w-4" />
-              <span className="hidden sm:inline">Hair</span>
-            </TabsTrigger>
-            <TabsTrigger value="products" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm py-2">
-              <ShoppingBag className="h-3 w-3 sm:h-4 sm:w-4" />
-              <span className="hidden sm:inline">Products</span>
-            </TabsTrigger>
-            <TabsTrigger value="tutorials" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm py-2">
-              <BookOpen className="h-3 w-3 sm:h-4 sm:w-4" />
-              <span className="hidden sm:inline">Tutorials</span>
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="makeup">
-            <VirtualMakeup />
-          </TabsContent>
-
-          <TabsContent value="hair">
-            <HairStyleGenerator />
-          </TabsContent>
-
-          <TabsContent value="products">
-            <ProductRecommender />
-          </TabsContent>
-
-          <TabsContent value="tutorials">
-            <MakeupTutorials />
-          </TabsContent>
-        </Tabs>
       </div>
 
+      <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-10">
+        {/* Engagement Row */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}
+          className="grid grid-cols-3 gap-3 sm:gap-4 mb-8">
+          <Card className="p-3 sm:p-4 bg-card/80 backdrop-blur-xl text-center border-pink-500/20">
+            <Flame className="h-6 w-6 text-orange-500 mx-auto mb-1" />
+            <p className="text-xl sm:text-2xl font-black">7</p>
+            <p className="text-xs text-muted-foreground">Day Streak</p>
+          </Card>
+          <Card className="p-3 sm:p-4 bg-card/80 backdrop-blur-xl text-center border-purple-500/20">
+            <TrendingUp className="h-6 w-6 text-primary mx-auto mb-1" />
+            <p className="text-xl sm:text-2xl font-black">{stats.transformations + stats.analyses}</p>
+            <p className="text-xs text-muted-foreground">Total Uses</p>
+          </Card>
+          <Card className="p-3 sm:p-4 bg-card/80 backdrop-blur-xl text-center border-yellow-500/20">
+            <Trophy className="h-6 w-6 text-yellow-500 mx-auto mb-1" />
+            <p className="text-xl sm:text-2xl font-black">3</p>
+            <p className="text-xs text-muted-foreground">Achievements</p>
+          </Card>
+        </motion.div>
+
+        {/* Tools Grid */}
+        <h2 className="text-xl sm:text-2xl font-black mb-4 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
+          Beauty Tools
+        </h2>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+          {tools.map((tool, i) => (
+            <motion.div key={tool.id} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.6 + i * 0.05, type: "spring" }}
+              whileHover={{ scale: 1.04, y: -4 }} whileTap={{ scale: 0.97 }}>
+              <Card
+                className="p-4 sm:p-5 cursor-pointer bg-card/80 backdrop-blur-xl hover:border-pink-500/40 transition-all h-full"
+                onClick={() => setActiveView(tool.id)}
+              >
+                <tool.icon className={`h-7 w-7 sm:h-8 sm:w-8 ${tool.color} mb-2`} />
+                <h3 className="font-bold text-sm sm:text-base">{tool.title}</h3>
+                <p className="text-xs text-muted-foreground mt-1">{tool.desc}</p>
+                <span className="text-[10px] sm:text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full mt-2 inline-block">
+                  {tool.cost}
+                </span>
+              </Card>
+            </motion.div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 };
 
 export default BeautyStudio;
-
