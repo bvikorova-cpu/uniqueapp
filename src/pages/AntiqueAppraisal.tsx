@@ -5,7 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import { 
   Sparkles, Search, Shield, BookOpen, TrendingUp, Wrench, Upload, 
   ArrowLeft, Flame, Trophy, Crown, Eye, Map, BarChart3, Package,
-  ExternalLink, Coins, History as HistoryIcon
+  ExternalLink, Coins, History as HistoryIcon, Layers, Users, Bell,
+  Award, Camera, MessageSquare
 } from "lucide-react";
 import { useAntiqueCredits } from "@/hooks/useAntiqueCredits";
 import { supabase } from "@/integrations/supabase/client";
@@ -20,8 +21,14 @@ import { ProvenanceTracker } from "@/components/antiques/ProvenanceTracker";
 import { ForgeryDetection } from "@/components/antiques/ForgeryDetection";
 import { MarketValueTrends } from "@/components/antiques/MarketValueTrends";
 import { ARMuseumDisplay } from "@/components/antiques/ARMuseumDisplay";
+import { AntiqueBatchAppraisal } from "@/components/antiques/AntiqueBatchAppraisal";
+import { AntiqueSocialFeed } from "@/components/antiques/AntiqueSocialFeed";
+import { AntiquePriceAlert } from "@/components/antiques/AntiquePriceAlert";
+import { AntiqueCertificate } from "@/components/antiques/AntiqueCertificate";
+import { AntiqueARTryInRoom } from "@/components/antiques/AntiqueARTryInRoom";
+import { AntiqueExpertMarketplace } from "@/components/antiques/AntiqueExpertMarketplace";
 
-type ActiveView = "hub" | "analyze" | "collection" | "credits" | "provenance" | "forgery" | "market-trends" | "ar-museum";
+type ActiveView = "hub" | "analyze" | "collection" | "credits" | "provenance" | "forgery" | "market-trends" | "ar-museum" | "batch" | "social" | "price-alert" | "certificate" | "ar-room" | "expert-marketplace";
 
 const AntiqueAppraisal = () => {
   const [activeView, setActiveView] = useState<ActiveView>("hub");
@@ -69,6 +76,12 @@ const AntiqueAppraisal = () => {
     { id: "forgery" as ActiveView, icon: Eye, title: "Forgery Detection", desc: "AI deep fake analysis", cost: "10 Credits", color: "text-rose-500" },
     { id: "market-trends" as ActiveView, icon: BarChart3, title: "Market Trends", desc: "Price charts & data", cost: "5 Credits", color: "text-indigo-500" },
     { id: "ar-museum" as ActiveView, icon: Crown, title: "AR Museum Display", desc: "Virtual museum view", cost: "6 Credits", color: "text-yellow-500" },
+    { id: "batch" as ActiveView, icon: Layers, title: "Batch Appraisal", desc: "Analyze multiple items", cost: "12 Credits", color: "text-teal-500" },
+    { id: "social" as ActiveView, icon: MessageSquare, title: "Social Feed", desc: "Community rare finds", cost: "Free", color: "text-pink-500" },
+    { id: "price-alert" as ActiveView, icon: Bell, title: "Price Alert", desc: "Market monitoring AI", cost: "5 Credits", color: "text-orange-500" },
+    { id: "certificate" as ActiveView, icon: Award, title: "AI Certificate", desc: "Digital authenticity cert", cost: "15 Credits", color: "text-sky-500" },
+    { id: "ar-room" as ActiveView, icon: Camera, title: "AR Try-In-Room", desc: "Visualize in your space", cost: "8 Credits", color: "text-violet-500" },
+    { id: "expert-marketplace" as ActiveView, icon: Users, title: "Expert Marketplace", desc: "Connect with dealers", cost: "10 Credits", color: "text-lime-500" },
   ];
 
   const statItems = [
@@ -82,6 +95,9 @@ const AntiqueAppraisal = () => {
     analyze: "New Analysis", collection: "My Collection", credits: "Buy Credits",
     provenance: "Provenance Tracker", forgery: "Forgery Detection",
     "market-trends": "Market Trends", "ar-museum": "AR Museum Display",
+    batch: "Batch Appraisal", social: "Social Feed", "price-alert": "Price Alert",
+    certificate: "AI Certificate", "ar-room": "AR Try-In-Room",
+    "expert-marketplace": "Expert Marketplace",
   };
 
   if (activeView !== "hub") {
@@ -103,6 +119,12 @@ const AntiqueAppraisal = () => {
             {activeView === "forgery" && <ForgeryDetection />}
             {activeView === "market-trends" && <MarketValueTrends />}
             {activeView === "ar-museum" && <ARMuseumDisplay />}
+            {activeView === "batch" && <AntiqueBatchAppraisal />}
+            {activeView === "social" && <AntiqueSocialFeed />}
+            {activeView === "price-alert" && <AntiquePriceAlert />}
+            {activeView === "certificate" && <AntiqueCertificate />}
+            {activeView === "ar-room" && <AntiqueARTryInRoom />}
+            {activeView === "expert-marketplace" && <AntiqueExpertMarketplace />}
           </motion.div>
         </div>
       </div>
@@ -124,15 +146,16 @@ const AntiqueAppraisal = () => {
 
         <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-8">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, type: "spring" }}>
-            <p className="text-xs sm:text-sm text-amber-400 font-semibold tracking-wider uppercase drop-shadow-md">
+            <p className="text-xs sm:text-sm font-semibold tracking-wider uppercase drop-shadow-md"
+              style={{ color: "#00e5ff", textShadow: "0 0 20px rgba(0,229,255,0.6)" }}>
               🏺 AI-Powered Antique Hub
             </p>
             <h1 className="text-4xl sm:text-6xl md:text-7xl font-black mt-1 drop-shadow-lg"
               style={{
-                textShadow: "0 0 80px rgba(245,158,11,0.6), 0 4px 30px rgba(0,0,0,0.9), 0 0 120px rgba(245,158,11,0.3)",
-                WebkitTextStroke: "2px rgba(245,158,11,0.6)"
+                textShadow: "0 0 80px rgba(0,229,255,0.6), 0 4px 30px rgba(0,0,0,0.9), 0 0 120px rgba(0,229,255,0.3)",
+                WebkitTextStroke: "2px rgba(0,229,255,0.6)"
               }}>
-              <span className="bg-gradient-to-r from-amber-300 via-orange-400 to-yellow-500 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-cyan-300 via-teal-400 to-emerald-400 bg-clip-text text-transparent">
                 Antique Appraisal
               </span>
             </h1>
@@ -149,7 +172,7 @@ const AntiqueAppraisal = () => {
             {statItems.map((s, i) => (
               <motion.div key={i} initial={{ scale: 0.8 }} animate={{ scale: 1 }} transition={{ delay: 0.4 + i * 0.1, type: "spring" }}
                 className="bg-black/40 backdrop-blur-xl rounded-xl p-2 sm:p-3 border border-white/10 text-center">
-                <s.icon className="h-4 w-4 sm:h-5 sm:w-5 text-amber-400 mx-auto mb-1" />
+                <s.icon className="h-4 w-4 sm:h-5 sm:w-5 text-cyan-400 mx-auto mb-1" />
                 <p className="text-lg sm:text-2xl font-black text-white">{s.value}</p>
                 <p className="text-[10px] sm:text-xs text-white/60">{s.label}</p>
               </motion.div>
@@ -162,17 +185,17 @@ const AntiqueAppraisal = () => {
         {/* Engagement Row */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}
           className="grid grid-cols-3 gap-3 sm:gap-4 mb-8">
-          <Card className="p-3 sm:p-4 bg-card/80 backdrop-blur-xl text-center border-amber-500/20">
+          <Card className="p-3 sm:p-4 bg-card/80 backdrop-blur-xl text-center border-cyan-500/20">
             <Flame className="h-6 w-6 text-orange-500 mx-auto mb-1" />
             <p className="text-xl sm:text-2xl font-black">{credits?.credits_remaining || 0}</p>
             <p className="text-xs text-muted-foreground">Credits</p>
           </Card>
-          <Card className="p-3 sm:p-4 bg-card/80 backdrop-blur-xl text-center border-amber-500/20">
+          <Card className="p-3 sm:p-4 bg-card/80 backdrop-blur-xl text-center border-cyan-500/20">
             <Trophy className="h-6 w-6 text-yellow-500 mx-auto mb-1" />
             <p className="text-xl sm:text-2xl font-black">{stats.appraisals}</p>
             <p className="text-xs text-muted-foreground">Total Appraisals</p>
           </Card>
-          <Card className="p-3 sm:p-4 bg-card/80 backdrop-blur-xl text-center border-amber-500/20">
+          <Card className="p-3 sm:p-4 bg-card/80 backdrop-blur-xl text-center border-cyan-500/20">
             <Shield className="h-6 w-6 text-emerald-500 mx-auto mb-1" />
             <p className="text-xl sm:text-2xl font-black">{stats.authenticity}</p>
             <p className="text-xs text-muted-foreground">Verified Items</p>
@@ -182,33 +205,33 @@ const AntiqueAppraisal = () => {
         {/* Quick Actions */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55 }}
           className="flex justify-center gap-3 flex-wrap mb-8">
-          <Button variant="outline" className="gap-2 bg-card/60 backdrop-blur-sm border-border/50 hover:border-amber-500/30"
+          <Button variant="outline" className="gap-2 bg-card/60 backdrop-blur-sm border-border/50 hover:border-cyan-500/30"
             onClick={() => setActiveView("credits")}>
-            <Coins className="w-4 h-4 text-amber-500" /> Buy Credits
+            <Coins className="w-4 h-4 text-cyan-500" /> Buy Credits
           </Button>
-          <Button variant="outline" className="gap-2 bg-card/60 backdrop-blur-sm border-border/50 hover:border-amber-500/30"
+          <Button variant="outline" className="gap-2 bg-card/60 backdrop-blur-sm border-border/50 hover:border-cyan-500/30"
             onClick={() => setActiveView("collection")}>
-            <HistoryIcon className="w-4 h-4 text-amber-500" /> My Collection
+            <HistoryIcon className="w-4 h-4 text-cyan-500" /> My Collection
           </Button>
         </motion.div>
 
         {/* Tools Grid */}
         <h2 className="text-2xl sm:text-3xl font-black mb-4"
           style={{
-            textShadow: "0 0 40px rgba(245,158,11,0.4), 0 2px 15px rgba(0,0,0,0.6)",
-            WebkitTextStroke: "1.5px rgba(245,158,11,0.5)"
+            textShadow: "0 0 40px rgba(0,229,255,0.4), 0 2px 15px rgba(0,0,0,0.6)",
+            WebkitTextStroke: "1.5px rgba(0,229,255,0.5)"
           }}>
-          <span className="bg-gradient-to-r from-amber-400 via-orange-500 to-yellow-500 bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-cyan-400 via-teal-500 to-emerald-500 bg-clip-text text-transparent">
             Appraisal Tools
           </span>
         </h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
           {tools.map((tool, i) => (
             <motion.div key={`${tool.id}-${i}`} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.6 + i * 0.05, type: "spring" }}
               whileHover={{ scale: 1.04, y: -4 }} whileTap={{ scale: 0.97 }}>
               <Card
-                className="p-4 sm:p-5 cursor-pointer bg-card/80 backdrop-blur-xl hover:border-amber-500/40 transition-all h-full"
+                className="p-4 sm:p-5 cursor-pointer bg-card/80 backdrop-blur-xl hover:border-cyan-500/40 transition-all h-full"
                 onClick={() => setActiveView(tool.id)}
               >
                 <tool.icon className={`h-7 w-7 sm:h-8 sm:w-8 ${tool.color} mb-2`} />
