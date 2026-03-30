@@ -90,8 +90,8 @@ const BeautyStudio = () => {
             </p>
             <h1 className="text-4xl sm:text-6xl md:text-7xl font-black mt-1 drop-shadow-lg"
               style={{ 
-                textShadow: "0 0 60px rgba(236,72,153,0.5), 0 4px 20px rgba(0,0,0,0.8)",
-                WebkitTextStroke: "1px rgba(236,72,153,0.3)"
+                textShadow: "0 0 80px rgba(236,72,153,0.6), 0 4px 30px rgba(0,0,0,0.9), 0 0 120px rgba(236,72,153,0.3)",
+                WebkitTextStroke: "2px rgba(236,72,153,0.6)"
               }}>
               <span className="bg-gradient-to-r from-pink-300 via-purple-400 to-rose-500 bg-clip-text text-transparent">
                 Beauty Studio
