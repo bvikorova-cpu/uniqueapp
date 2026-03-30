@@ -438,8 +438,43 @@ const Index = () => {
         {/* ── Core ─────────────────────────────────────── */}
         <section>
           <SectionHeader icon={Sparkles} title="Core Modules" badge="AI-Powered" />
+
+          {/* Beauty Studio Featured Banner */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            whileHover={{ scale: 1.01 }}
+            whileTap={{ scale: 0.99 }}
+            className="mb-4 cursor-pointer relative overflow-hidden rounded-xl border border-pink-500/30 bg-gradient-to-r from-rose-950/80 via-pink-950/60 to-purple-950/80 p-4 sm:p-6 shadow-xl shadow-pink-500/10"
+            onClick={() => navigate("/beauty-studio")}
+          >
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_rgba(244,63,94,0.15),_transparent_60%)]" />
+            <div className="absolute top-2 right-2 sm:top-3 sm:right-3">
+              <Badge className="bg-pink-500/20 text-pink-300 border-pink-500/30 text-[10px] sm:text-xs animate-pulse">
+                🔥 Featured
+              </Badge>
+            </div>
+            <div className="flex items-center gap-4 relative z-10">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-rose-500 to-pink-600 flex items-center justify-center shrink-0 shadow-lg shadow-pink-500/30">
+                <Sparkles className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <h3 className="text-lg sm:text-xl font-black text-white">✨ Beauty Studio</h3>
+                <p className="text-xs sm:text-sm text-pink-200/80 mt-0.5">AI makeup, skincare analysis, nail art & celebrity look matching</p>
+                <div className="flex flex-wrap gap-1.5 mt-2">
+                  {["Makeup", "Skin AI", "Nail Art", "Celebrity Match", "Hair", "Gallery"].map(tag => (
+                    <span key={tag} className="text-[9px] sm:text-[10px] px-2 py-0.5 rounded-full bg-pink-500/15 text-pink-300 border border-pink-500/20">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              <ArrowRight className="w-5 h-5 text-pink-400 shrink-0 hidden sm:block" />
+            </div>
+          </motion.div>
+
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3">
-            {coreModules.map((mod, i) => <ModuleCard key={i} mod={mod} showFav onNavigate={handleNavigate} isFavorite={isFavorite} toggleFavorite={toggleFavorite} />)}
+            {coreModules.filter(m => m.path !== "/beauty-studio").map((mod, i) => <ModuleCard key={i} mod={mod} showFav onNavigate={handleNavigate} isFavorite={isFavorite} toggleFavorite={toggleFavorite} />)}
           </div>
         </section>
 
