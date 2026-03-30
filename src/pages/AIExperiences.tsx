@@ -519,9 +519,9 @@ const AIExperiences = () => {
       <div className="container mx-auto px-4 pt-20 pb-12 max-w-7xl">
         {/* ====== CINEMATIC VIDEO HERO ====== */}
         <div className="relative w-full h-[76svh] min-h-[500px] sm:min-h-[540px] rounded-2xl sm:rounded-3xl overflow-hidden mb-8 border border-border/40">
-          <video ref={videoRef} src={heroVideo.url} autoPlay loop muted={isMuted} playsInline className="absolute inset-0 w-full h-full object-cover brightness-[1.35] saturate-[1.15] contrast-[1.05]" />
-          <div className="absolute inset-0 bg-black/40" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-black/20" />
+          <video ref={videoRef} src={heroVideo.url} autoPlay loop muted={isMuted} playsInline className="absolute inset-0 w-full h-full object-cover brightness-[1.5] saturate-[1.2] contrast-[1.08]" />
+          <div className="absolute inset-0 bg-black/25" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
 
           {/* Scan line */}
           <div className="absolute inset-0 pointer-events-none overflow-hidden">
