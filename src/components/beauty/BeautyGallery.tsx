@@ -31,7 +31,7 @@ export const BeautyGallery = ({ onBack }: BeautyGalleryProps) => {
 
   const loadGallery = async () => {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from("beauty_gallery")
         .select("*")
         .eq("is_public", true)
