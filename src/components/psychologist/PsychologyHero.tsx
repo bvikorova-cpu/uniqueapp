@@ -2,7 +2,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Brain, Users, MessageCircle, Heart, Volume2, VolumeX, Play, Pause } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import heroVideo from "@/assets/psychology-hero.mp4";
+import heroVideo from "@/assets/psychology-hero.mp4.asset.json";
 import { useLiveStats } from "@/hooks/useLiveStats";
 
 export const PsychologyHero = () => {
