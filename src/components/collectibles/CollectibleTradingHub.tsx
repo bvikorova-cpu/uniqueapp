@@ -58,8 +58,8 @@ export default function CollectibleTradingHub({ userId }: Props) {
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 {myCollectibles.slice(0, 6).map(item => (
                   <Card key={item.id} className="p-3 cursor-pointer hover:border-primary transition-colors">
-                    <p className="text-xs font-medium truncate">{item.name || "Collectible"}</p>
-                    <Badge variant="outline" className="text-[10px] mt-1">{item.rarity || "Common"}</Badge>
+                    <p className="text-xs font-medium truncate">{item.collectible_type || "Collectible"}</p>
+                    <Badge variant="outline" className="text-[10px] mt-1">{item.collectible_type || "Item"}</Badge>
                   </Card>
                 ))}
               </div>
