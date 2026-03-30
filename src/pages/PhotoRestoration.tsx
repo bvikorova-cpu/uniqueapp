@@ -210,8 +210,8 @@ const PhotoRestoration = () => {
             <p className="text-xs sm:text-sm text-amber-400 font-semibold tracking-wider uppercase drop-shadow-md">✨ AI-Powered Restoration Lab</p>
             <h1 className="text-4xl sm:text-6xl md:text-7xl font-black mt-1 drop-shadow-lg"
               style={{ 
-                textShadow: "0 0 60px rgba(245,158,11,0.5), 0 4px 20px rgba(0,0,0,0.8)",
-                WebkitTextStroke: "1px rgba(245,158,11,0.3)"
+                textShadow: "0 0 80px rgba(245,158,11,0.6), 0 4px 30px rgba(0,0,0,0.9), 0 0 120px rgba(245,158,11,0.3)",
+                WebkitTextStroke: "2px rgba(245,158,11,0.6)"
               }}>
               <span className="bg-gradient-to-r from-amber-300 via-orange-400 to-rose-500 bg-clip-text text-transparent">
                 Photo Restoration
