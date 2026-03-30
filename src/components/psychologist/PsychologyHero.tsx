@@ -2,7 +2,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Brain, Users, MessageCircle, Heart, Volume2, VolumeX, Play, Pause } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import heroVideo from "@/assets/psychology-hero.mp4";
+import heroVideo from "@/assets/psychology-hero.mp4.asset.json";
 import { useLiveStats } from "@/hooks/useLiveStats";
 
 export const PsychologyHero = () => {
@@ -40,7 +40,7 @@ export const PsychologyHero = () => {
         muted={isMuted}
         playsInline
         className="absolute inset-0 w-full h-full object-cover opacity-60"
-        src={(heroVideo as any).url || heroVideo}
+        src={heroVideo.url}
       />
       <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-background/20" />
 
