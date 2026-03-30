@@ -3176,6 +3176,39 @@ export type Database = {
         }
         Relationships: []
       }
+      brand_voices: {
+        Row: {
+          brand_name: string
+          created_at: string
+          id: string
+          sample_content: string | null
+          style_notes: string | null
+          tone: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          brand_name: string
+          created_at?: string
+          id?: string
+          sample_content?: string | null
+          style_notes?: string | null
+          tone: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          brand_name?: string
+          created_at?: string
+          id?: string
+          sample_content?: string | null
+          style_notes?: string | null
+          tone?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       brand_votes: {
         Row: {
           brand_id: string
@@ -7022,6 +7055,45 @@ export type Database = {
           name?: string
           subject?: string
           user_id?: string | null
+        }
+        Relationships: []
+      }
+      content_calendar: {
+        Row: {
+          content_type: string
+          created_at: string
+          id: string
+          notes: string | null
+          platform: string
+          scheduled_date: string
+          status: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          content_type?: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          platform?: string
+          scheduled_date: string
+          status?: string
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          content_type?: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          platform?: string
+          scheduled_date?: string
+          status?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
