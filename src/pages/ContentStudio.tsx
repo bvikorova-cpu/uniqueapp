@@ -11,7 +11,7 @@ import { motion } from "framer-motion";
 import {
   Sparkles, FileText, Video, Briefcase, Image as ImageIcon, Copy, Loader2,
   Star, Zap, Clock, CheckCircle, PenTool, ArrowLeft, LayoutTemplate,
-  Brain, Calendar, Shield, Download,
+  Brain, Calendar, Shield, Download, Recycle, BarChart3, FlaskConical, Layers, Search,
 } from "lucide-react";
 import ContentStudioHero from "@/components/content-studio/ContentStudioHero";
 import AIContentTemplates from "@/components/content-studio/AIContentTemplates";
