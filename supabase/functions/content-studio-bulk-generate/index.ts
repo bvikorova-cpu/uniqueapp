@@ -35,12 +35,13 @@ serve(async (req) => {
       email: "Email format with subject line and body. Compelling and action-oriented.",
     };
 
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
+    if (!OPENAI_API_KEY) throw new Error("OPENAI_API_KEY not configured");
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
-      headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+      headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
       body: JSON.stringify({
-        model: "google/gemini-3-flash-preview",
+        model: "gpt-4o-mini",
         messages: [
           { role: "system", content: "You are a social media content expert. Generate unique, engaging posts that each take a different angle on the topic." },
           { role: "user", content: `Generate ${postCount} unique ${platform || "social media"} posts about: ${topic}\n\nPlatform guidelines: ${platformGuide[platform] || "General social media"}\n${guidelines ? `Brand guidelines: ${guidelines}` : ""}\n\nEach post must be unique with a different angle, hook, or perspective.` },
