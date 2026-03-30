@@ -29,9 +29,9 @@ const BeautyStudio = () => {
       if (!user) return;
       const [t, s, a, n] = await Promise.all([
         supabase.from("beauty_transformations").select("id", { count: "exact", head: true }).eq("user_id", user.id),
-        supabase.from("beauty_celebrity_matches").select("id", { count: "exact", head: true }).eq("user_id", user.id),
-        supabase.from("beauty_skin_analyses").select("id", { count: "exact", head: true }).eq("user_id", user.id),
-        supabase.from("beauty_nail_designs").select("id", { count: "exact", head: true }).eq("user_id", user.id),
+        (supabase as any).from("beauty_celebrity_matches").select("id", { count: "exact", head: true }).eq("user_id", user.id),
+        (supabase as any).from("beauty_skin_analyses").select("id", { count: "exact", head: true }).eq("user_id", user.id),
+        (supabase as any).from("beauty_nail_designs").select("id", { count: "exact", head: true }).eq("user_id", user.id),
       ]);
       setStats({
         transformations: t.count || 0,

@@ -79,7 +79,7 @@ export const BeautyGallery = ({ onBack }: BeautyGalleryProps) => {
       ]);
       if (!beforeUrl || !afterUrl) throw new Error("Upload failed");
 
-      const { error } = await supabase.from("beauty_gallery").insert({
+      const { error } = await (supabase as any).from("beauty_gallery").insert({
         user_id: session.user.id,
         before_image_url: beforeUrl,
         after_image_url: afterUrl,
