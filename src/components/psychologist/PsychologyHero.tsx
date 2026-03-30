@@ -40,7 +40,7 @@ export const PsychologyHero = () => {
         muted={isMuted}
         playsInline
         className="absolute inset-0 w-full h-full object-cover opacity-60"
-        src={(heroVideo as any).url || heroVideo}
+        src={heroVideo.url}
       />
       <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-background/20" />
 
