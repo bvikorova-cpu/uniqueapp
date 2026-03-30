@@ -152,11 +152,11 @@ export default function Collectibles() {
               transition={{ type: "spring", stiffness: 200 }}
               className="text-3xl sm:text-5xl lg:text-6xl font-black mb-2"
               style={{
-                textShadow: "0 0 60px rgba(168,85,247,0.5), 0 4px 20px rgba(0,0,0,0.8)",
-                WebkitTextStroke: "1.5px rgba(168,85,247,0.4)"
+                textShadow: "0 0 80px rgba(0,229,255,0.6), 0 4px 30px rgba(0,0,0,0.9)",
+                WebkitTextStroke: "2px rgba(0,229,255,0.6)"
               }}
             >
-              <span className="bg-gradient-to-r from-purple-300 via-pink-400 to-amber-300 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-cyan-300 via-teal-400 to-emerald-300 bg-clip-text text-transparent">
                 Collectibles
               </span>
             </motion.h1>
