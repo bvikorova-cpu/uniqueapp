@@ -396,7 +396,7 @@ const AIExperiences = () => {
         <MapPin className="h-6 w-6 text-primary" />
         <div>
           <h2 className="text-2xl font-bold">Choose Your Destination</h2>
-          <p className="text-muted-foreground text-sm">Walk through cities in immersive Street View mode</p>
+          <p className="text-muted-foreground text-sm">Walk through cities in immersive panoramic mode</p>
         </div>
       </div>
 
