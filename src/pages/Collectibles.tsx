@@ -60,6 +60,12 @@ const tools: { id: ActiveView; icon: any; title: string; desc: string; cost?: st
   { id: "vip", icon: Crown, title: "VIP Membership", desc: "Exclusive perks & daily boxes", gradient: "from-yellow-500/20 to-amber-500/20" },
   { id: "credits", icon: Coins, title: "Buy Credits", desc: "Purchase credit packs", gradient: "from-indigo-500/20 to-violet-500/20" },
   { id: "history", icon: History, title: "Purchase History", desc: "View all transactions", gradient: "from-slate-500/20 to-gray-500/20" },
+  { id: "leaderboard", icon: BarChart3, title: "Leaderboard", desc: "Top collectors ranked by value", gradient: "from-yellow-500/20 to-orange-500/20" },
+  { id: "item-customizer", icon: Sparkles, title: "AI Item Customizer", desc: "AI visual modifications for items", cost: "12 Credits", gradient: "from-fuchsia-500/20 to-pink-500/20" },
+  { id: "achievements", icon: Crown, title: "Achievements", desc: "Badges & milestone rewards", gradient: "from-amber-500/20 to-yellow-500/20" },
+  { id: "price-alerts", icon: TrendingUp, title: "Price Alerts", desc: "Market value notifications", cost: "5 Credits", gradient: "from-red-500/20 to-rose-500/20" },
+  { id: "daily-rewards", icon: Gift, title: "Daily Rewards", desc: "Login bonuses & streaks", gradient: "from-lime-500/20 to-green-500/20" },
+  { id: "guilds", icon: Users, title: "Guilds", desc: "Community groups & perks", gradient: "from-sky-500/20 to-blue-500/20" },
 ];
 
 export default function Collectibles() {
