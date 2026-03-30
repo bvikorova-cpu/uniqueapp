@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Video, Calendar, Clock } from "lucide-react";
+import { Video, Calendar } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
@@ -14,57 +14,40 @@ export function DesignConsultations() {
 
   const packages = [
     {
-      duration: 30,
-      price: 29,
+      duration: 30, price: 29,
       features: [
-        "30-minútový video call",
-        "Základné odporúčania",
-        "Farebná paleta",
-        "Zoznam nakupovania"
+        "30-minute video call",
+        "Basic recommendations",
+        "Color palette guidance",
+        "Shopping list"
       ]
     },
     {
-      duration: 60,
-      price: 49,
+      duration: 60, price: 49, popular: true,
       features: [
-        "60-minútový video call",
-        "Kompletný návrh miestnosti",
-        "3D vizualizácia",
-        "Farebná paleta + layout",
-        "Detailný zoznam nakupovania",
-        "7-dňová podpora"
-      ],
-      popular: true
+        "60-minute video call",
+        "Complete room design plan",
+        "3D visualization concepts",
+        "Color palette + layout plan",
+        "Detailed shopping list",
+        "7-day follow-up support"
+      ]
     }
   ];
 
-  const handleBookConsultation = async (duration: 30 | 60, price: number) => {
+  const handleBookConsultation = async (duration: 30 | 60) => {
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      navigate("/auth");
-      return;
-    }
-
+    if (!user) { navigate("/auth"); return; }
     setLoading(duration);
     try {
       const { data, error } = await supabase.functions.invoke('create-consultation-checkout', {
         body: { duration: duration.toString() }
       });
-      
       if (error) throw error;
-      
-      if (data?.url) {
-        window.open(data.url, '_blank');
-      }
+      if (data?.url) window.open(data.url, '_blank');
     } catch (error: any) {
-      toast({
-        title: "Chyba",
-        description: error.message || "Nepodarilo sa vytvoriť checkout session",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(null);
-    }
+      toast({ title: "Error", description: error.message || "Failed to create checkout", variant: "destructive" });
+    } finally { setLoading(null); }
   };
 
   return (
@@ -74,10 +57,8 @@ export function DesignConsultations() {
           <div className="flex items-center gap-3">
             <Video className="h-8 w-8 text-primary" />
             <div>
-              <CardTitle className="text-2xl">Design Konzultácie</CardTitle>
-              <CardDescription>
-                Personalizované video konzultácie s interiérovými dizajnérmi
-              </CardDescription>
+              <CardTitle className="text-2xl">Design Consultations</CardTitle>
+              <CardDescription>Personalized video consultations with professional interior designers</CardDescription>
             </div>
           </div>
         </CardHeader>
@@ -87,19 +68,17 @@ export function DesignConsultations() {
         {packages.map((pkg) => (
           <Card key={pkg.duration} className={pkg.popular ? "border-primary border-2" : ""}>
             {pkg.popular && (
-              <div className="bg-primary text-primary-foreground text-center py-2 rounded-t-lg font-semibold">
-                Najpopulárnejšie
-              </div>
+              <div className="bg-primary text-primary-foreground text-center py-2 rounded-t-lg font-semibold">Most Popular</div>
             )}
             <CardHeader>
               <div className="flex items-center justify-between">
                 <div>
-                  <CardTitle className="text-2xl">{pkg.duration} minút</CardTitle>
-                  <CardDescription>Video konzultácia</CardDescription>
+                  <CardTitle className="text-2xl">{pkg.duration} Minutes</CardTitle>
+                  <CardDescription>Video Consultation</CardDescription>
                 </div>
                 <div className="text-right">
                   <div className="text-3xl font-bold">€{pkg.price}</div>
-                  <p className="text-sm text-muted-foreground">jednorazovo</p>
+                  <p className="text-sm text-muted-foreground">one-time</p>
                 </div>
               </div>
             </CardHeader>
@@ -112,15 +91,10 @@ export function DesignConsultations() {
                   </div>
                 ))}
               </div>
-
-              <Button
-                onClick={() => handleBookConsultation(pkg.duration as 30 | 60, pkg.price)}
-                className="w-full"
-                variant={pkg.popular ? "default" : "outline"}
-                disabled={loading === pkg.duration}
-              >
+              <Button onClick={() => handleBookConsultation(pkg.duration as 30 | 60)}
+                className="w-full" variant={pkg.popular ? "default" : "outline"} disabled={loading === pkg.duration}>
                 <Calendar className="mr-2 h-4 w-4" />
-                {loading === pkg.duration ? "Načítavam..." : "Rezervovať konzultáciu"}
+                {loading === pkg.duration ? "Loading..." : "Book Consultation"}
               </Button>
             </CardContent>
           </Card>
@@ -128,47 +102,25 @@ export function DesignConsultations() {
       </div>
 
       <Card>
-        <CardHeader>
-          <CardTitle>Ako to funguje?</CardTitle>
-        </CardHeader>
+        <CardHeader><CardTitle>How It Works</CardTitle></CardHeader>
         <CardContent>
           <div className="space-y-4">
-            <div className="flex gap-4">
-              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold">
-                1
+            {[
+              { step: 1, title: "Choose a Package", desc: "Select the consultation length that fits your needs" },
+              { step: 2, title: "Book a Time Slot", desc: "Pick a convenient time and pay securely online" },
+              { step: 3, title: "Video Call", desc: "Meet your designer via Zoom or Google Meet" },
+              { step: 4, title: "Receive Materials", desc: "Get a PDF with your design plan, colors, and product list" },
+            ].map((item) => (
+              <div key={item.step} className="flex gap-4">
+                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold">
+                  {item.step}
+                </div>
+                <div>
+                  <h4 className="font-semibold">{item.title}</h4>
+                  <p className="text-sm text-muted-foreground">{item.desc}</p>
+                </div>
               </div>
-              <div>
-                <h4 className="font-semibold">Vyberte balík</h4>
-                <p className="text-sm text-muted-foreground">Zvoľte si dĺžku konzultácie podľa vašich potrieb</p>
-              </div>
-            </div>
-            <div className="flex gap-4">
-              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold">
-                2
-              </div>
-              <div>
-                <h4 className="font-semibold">Rezervujte termín</h4>
-                <p className="text-sm text-muted-foreground">Vyberte si vhodný čas a zaplaťte online</p>
-              </div>
-            </div>
-            <div className="flex gap-4">
-              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold">
-                3
-              </div>
-              <div>
-                <h4 className="font-semibold">Video hovor</h4>
-                <p className="text-sm text-muted-foreground">Konzultácia cez Zoom/Google Meet s dizajnérom</p>
-              </div>
-            </div>
-            <div className="flex gap-4">
-              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold">
-                4
-              </div>
-              <div>
-                <h4 className="font-semibold">Dostanete materiály</h4>
-                <p className="text-sm text-muted-foreground">PDF s návrhom, farbami a zoznamom produktov</p>
-              </div>
-            </div>
+            ))}
           </div>
         </CardContent>
       </Card>
