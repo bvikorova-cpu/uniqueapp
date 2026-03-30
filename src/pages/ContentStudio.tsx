@@ -41,9 +41,12 @@ const TOOL_CARDS = [
   { id: "brand-voice" as const, name: "Brand Voice", icon: Brain, description: "Train AI on your brand's tone & style", gradient: "from-pink-600 to-rose-600", credits: "5" },
   { id: "calendar" as const, name: "Content Calendar", icon: Calendar, description: "Plan & schedule content across platforms", gradient: "from-emerald-600 to-teal-600", credits: "Free" },
   { id: "plagiarism" as const, name: "Plagiarism Checker", icon: Shield, description: "AI-powered originality verification", gradient: "from-amber-600 to-orange-600", credits: "3" },
+  { id: "repurpose" as const, name: "Content Repurposer", icon: Recycle, description: "Transform content into multiple formats", gradient: "from-violet-600 to-purple-600", credits: "3/fmt" },
+  { id: "analytics" as const, name: "Performance Analytics", icon: BarChart3, description: "Track content creation patterns & insights", gradient: "from-sky-600 to-blue-600", credits: "Free" },
+  { id: "ab-test" as const, name: "AI A/B Testing", icon: FlaskConical, description: "Generate & compare content variations", gradient: "from-red-600 to-rose-600", credits: "5" },
+  { id: "bulk" as const, name: "Bulk Generator", icon: Layers, description: "Generate multiple posts from one prompt", gradient: "from-lime-600 to-green-600", credits: "2/post" },
+  { id: "seo" as const, name: "SEO Optimizer", icon: Search, description: "AI keyword density & optimization analysis", gradient: "from-fuchsia-600 to-pink-600", credits: "4" },
 ];
-
-const ContentStudio = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [activeView, setActiveView] = useState<ActiveView>("main");
