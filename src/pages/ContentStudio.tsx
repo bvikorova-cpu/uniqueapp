@@ -47,6 +47,8 @@ const TOOL_CARDS = [
   { id: "bulk" as const, name: "Bulk Generator", icon: Layers, description: "Generate multiple posts from one prompt", gradient: "from-lime-600 to-green-600", credits: "2/post" },
   { id: "seo" as const, name: "SEO Optimizer", icon: Search, description: "AI keyword density & optimization analysis", gradient: "from-fuchsia-600 to-pink-600", credits: "4" },
 ];
+
+const ContentStudio = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [activeView, setActiveView] = useState<ActiveView>("main");
