@@ -107,6 +107,12 @@ export default function Collectibles() {
       case "collection-advisor": return <AICollectionAdvisor userId={user.id} />;
       case "box-simulator": return <MysteryBoxSimulator userId={user.id} />;
       case "trading-hub": return <CollectibleTradingHub userId={user.id} />;
+      case "leaderboard": return <CollectorLeaderboard userId={user.id} />;
+      case "item-customizer": return <AIItemCustomizer userId={user.id} />;
+      case "achievements": return <CollectorAchievements userId={user.id} />;
+      case "price-alerts": return <CollectiblePriceAlerts userId={user.id} />;
+      case "daily-rewards": return <DailyLoginRewards userId={user.id} />;
+      case "guilds": return <CollectorGuilds userId={user.id} />;
       default: return null;
     }
   };
