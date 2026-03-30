@@ -602,7 +602,7 @@ const AIExperiences = () => {
             <div className="space-y-2">
               <h4 className="font-semibold flex items-center gap-2"><Star className="h-4 w-4 text-primary" />How to Use</h4>
               <ul className="text-sm text-muted-foreground space-y-1 ml-6 list-disc">
-                <li><strong>Virtual Tours:</strong> Choose a destination and walk through it in an immersive 360° Street View experience</li>
+                <li><strong>Virtual Tours:</strong> Choose a destination and walk through it in an immersive 360° panoramic experience</li>
                 <li><strong>AI Travel Planner:</strong> Get a personalized multi-day itinerary with attractions, food & culture tips</li>
                 <li><strong>Virtual Postcards:</strong> Generate beautiful AI postcards from any destination and share them</li>
                 <li><strong>Future Preview:</strong> Upload your photo and see how you'll look 10-50 years in the future</li>
