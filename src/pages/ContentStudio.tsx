@@ -18,8 +18,13 @@ import AIContentTemplates from "@/components/content-studio/AIContentTemplates";
 import BrandVoiceTraining from "@/components/content-studio/BrandVoiceTraining";
 import ContentCalendar from "@/components/content-studio/ContentCalendar";
 import PlagiarismChecker from "@/components/content-studio/PlagiarismChecker";
+import ContentRepurposer from "@/components/content-studio/ContentRepurposer";
+import ContentAnalytics from "@/components/content-studio/ContentAnalytics";
+import ABABTesting from "@/components/content-studio/ABABTesting";
+import BulkContentGenerator from "@/components/content-studio/BulkContentGenerator";
+import SEOKeywordOptimizer from "@/components/content-studio/SEOKeywordOptimizer";
 
-type ActiveView = "main" | "templates" | "brand-voice" | "calendar" | "plagiarism" | "generate";
+type ActiveView = "main" | "templates" | "brand-voice" | "calendar" | "plagiarism" | "generate" | "repurpose" | "analytics" | "ab-test" | "bulk" | "seo";
 
 const CONTENT_TYPES = [
   { id: "social_post", name: "Social Media Post", icon: Sparkles, description: "Engaging posts with hashtags", credits: 1, placeholder: "Topic: Travel tips for summer vacation..." },
