@@ -136,35 +136,31 @@ export default function Collectibles() {
   return (
     <div className="min-h-screen bg-background">
       {/* Cinematic Video Hero */}
-      <div className="relative h-[50vh] sm:h-[55vh] overflow-hidden bg-black">
+      <div className="relative h-[62vh] sm:h-[55vh] overflow-hidden bg-black">
         <video
           autoPlay muted loop playsInline
           className="absolute inset-0 w-full h-full object-cover brightness-[1.3] saturate-[1.2]"
           src={heroVideo.url}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-black/40 to-black/20" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent" />
         
-        <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-8">
+        <div className="absolute bottom-0 left-0 right-0 px-4 pb-4 pt-16 sm:p-8">
           <div className="container mx-auto max-w-7xl">
-            <motion.h1
+            <motion.div
               initial={{ opacity: 0, x: -30 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ type: "spring", stiffness: 200 }}
-              className="text-3xl sm:text-5xl lg:text-6xl font-black mb-2"
-              style={{
-                textShadow: "0 0 80px rgba(0,229,255,0.6), 0 4px 30px rgba(0,0,0,0.9)",
-                WebkitTextStroke: "2px rgba(0,229,255,0.6)"
-              }}
+              className="mb-3 inline-flex max-w-fit rounded-2xl border border-border/50 bg-background/80 px-4 py-3 shadow-glow backdrop-blur-xl"
             >
-              <span className="bg-gradient-to-r from-cyan-300 via-teal-400 to-emerald-300 bg-clip-text text-transparent">
+              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-foreground">
                 Collectibles
-              </span>
-            </motion.h1>
+              </h1>
+            </motion.div>
             <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.2 }}
-              className="text-sm sm:text-lg text-white/80 max-w-xl mb-4 drop-shadow-lg"
+              className="mb-4 max-w-xl rounded-xl bg-background/55 px-4 py-2 text-sm text-foreground/90 backdrop-blur-md sm:text-lg"
             >
               AI-powered digital collectibles — generate, trade, open mystery boxes
             </motion.p>
