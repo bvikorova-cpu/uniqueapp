@@ -279,12 +279,16 @@ const ContentStudio = () => {
               From social media posts to professional CVs, create compelling content in seconds.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-muted-foreground">
-              <div className="flex items-center gap-2"><Zap className="h-4 w-4 text-yellow-500" /> Instant AI-powered generation</div>
-              <div className="flex items-center gap-2"><CheckCircle className="h-4 w-4 text-green-500" /> SEO-optimized content</div>
-              <div className="flex items-center gap-2"><ImageIcon className="h-4 w-4 text-pink-500" /> AI image generation</div>
-              <div className="flex items-center gap-2"><Clock className="h-4 w-4 text-blue-500" /> Content history & reuse</div>
-              <div className="flex items-center gap-2"><Brain className="h-4 w-4 text-purple-500" /> Brand voice training</div>
-              <div className="flex items-center gap-2"><Shield className="h-4 w-4 text-amber-500" /> Plagiarism checking</div>
+              <div className="flex items-center gap-2"><Zap className="h-4 w-4 text-primary" /> Instant AI-powered generation</div>
+              <div className="flex items-center gap-2"><CheckCircle className="h-4 w-4 text-primary" /> SEO-optimized content</div>
+              <div className="flex items-center gap-2"><ImageIcon className="h-4 w-4 text-primary" /> AI image generation</div>
+              <div className="flex items-center gap-2"><Clock className="h-4 w-4 text-primary" /> Content history & reuse</div>
+              <div className="flex items-center gap-2"><Brain className="h-4 w-4 text-primary" /> Brand voice training</div>
+              <div className="flex items-center gap-2"><Shield className="h-4 w-4 text-primary" /> Plagiarism checking</div>
+              <div className="flex items-center gap-2"><Recycle className="h-4 w-4 text-primary" /> Content repurposing</div>
+              <div className="flex items-center gap-2"><FlaskConical className="h-4 w-4 text-primary" /> A/B testing variants</div>
+              <div className="flex items-center gap-2"><Layers className="h-4 w-4 text-primary" /> Bulk content generation</div>
+              <div className="flex items-center gap-2"><Search className="h-4 w-4 text-primary" /> SEO keyword optimization</div>
             </div>
           </CardContent>
         </Card>
