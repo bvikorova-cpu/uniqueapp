@@ -6,7 +6,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   Send, Brain, Lock, Heart, Sparkles, Crown, CreditCard,
-  SmilePlus, Wind, Zap, Phone, MessageCircle
+  SmilePlus, Wind, Zap, Phone, MessageCircle, TrendingUp,
+  Moon, Target, Volume2, FileText
 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -14,30 +15,36 @@ import { usePsychologySubscription } from "@/hooks/usePsychologySubscription";
 import { motion, AnimatePresence } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
+  Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle,
 } from "@/components/ui/dialog";
 import { PsychologyHero } from "@/components/psychologist/PsychologyHero";
 import { MoodTracker } from "@/components/psychologist/MoodTracker";
 import { BreathingMeditation } from "@/components/psychologist/BreathingMeditation";
 import { AIEmotionAnalysis } from "@/components/psychologist/AIEmotionAnalysis";
 import { CrisisResources } from "@/components/psychologist/CrisisResources";
+import { MoodCharts } from "@/components/psychologist/MoodCharts";
+import { AIDreamJournal } from "@/components/psychologist/AIDreamJournal";
+import { GuidedCBT } from "@/components/psychologist/GuidedCBT";
+import { AmbientSounds } from "@/components/psychologist/AmbientSounds";
+import { WeeklyWellnessReport } from "@/components/psychologist/WeeklyWellnessReport";
 
 interface Message {
   role: 'user' | 'assistant';
   content: string;
 }
 
-type ActiveView = 'main' | 'chat' | 'mood' | 'breathing' | 'emotion' | 'crisis';
+type ActiveView = 'main' | 'chat' | 'mood' | 'breathing' | 'emotion' | 'crisis' | 'charts' | 'dreams' | 'cbt' | 'sounds' | 'report';
 
 const TOOLS = [
   { id: "chat" as const, icon: MessageCircle, title: "AI Chat Session", desc: "Talk to your AI psychologist in a safe, anonymous space", color: "from-purple-500 to-pink-500", badge: "Core" },
   { id: "mood" as const, icon: SmilePlus, title: "Mood Tracker & Journal", desc: "Log daily moods, track patterns, and journal your feelings", color: "from-yellow-500 to-orange-500", badge: "Free" },
+  { id: "charts" as const, icon: TrendingUp, title: "Mood Trends & Charts", desc: "Visualize emotional patterns with interactive charts over time", color: "from-indigo-500 to-blue-500", badge: "Free" },
   { id: "breathing" as const, icon: Wind, title: "Breathing & Meditation", desc: "Guided breathing exercises and meditation timer", color: "from-blue-500 to-cyan-500", badge: "Free" },
+  { id: "sounds" as const, icon: Volume2, title: "Ambient Sound Mixer", desc: "Nature sounds and white noise for relaxation and focus", color: "from-teal-500 to-green-500", badge: "Free" },
+  { id: "dreams" as const, icon: Moon, title: "AI Dream Journal", desc: "Log dreams and unlock AI psychological interpretations", color: "from-violet-500 to-purple-500", badge: "5 Credits" },
   { id: "emotion" as const, icon: Zap, title: "AI Emotion Analysis", desc: "Analyze text for emotional patterns and psychological insights", color: "from-emerald-500 to-green-500", badge: "5 Credits" },
+  { id: "cbt" as const, icon: Target, title: "Guided CBT Exercises", desc: "Interactive cognitive behavioral therapy tools for thought management", color: "from-amber-500 to-yellow-500", badge: "Free" },
+  { id: "report" as const, icon: FileText, title: "Weekly Wellness Report", desc: "AI-generated weekly summary of your emotional health", color: "from-rose-500 to-pink-500", badge: "10 Credits" },
   { id: "crisis" as const, icon: Phone, title: "Crisis Resources", desc: "Emergency hotlines and professional referral directory", color: "from-red-500 to-rose-500", badge: "Free" },
 ];
 
@@ -51,17 +58,11 @@ const Psychology = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { subscription, refresh: refreshSubscription, createCheckout, manageSubscription, purchaseMessages } = usePsychologySubscription();
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
+  const scrollToBottom = () => { messagesEndRef.current?.scrollIntoView({ behavior: "smooth" }); };
   useEffect(() => { scrollToBottom(); }, [messages]);
 
   useEffect(() => {
-    setMessages([{
-      role: 'assistant',
-      content: 'Hello 👋 I am here for you. This space is anonymous and safe. You can write anything that troubles you. How are you feeling today?'
-    }]);
+    setMessages([{ role: 'assistant', content: 'Hello 👋 I am here for you. This space is anonymous and safe. You can write anything that troubles you. How are you feeling today?' }]);
     setLoadingHistory(false);
   }, []);
 
@@ -70,14 +71,12 @@ const Psychology = () => {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) { toast.error("Please sign in to continue"); setIsLoading(false); return; }
-
       const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/psychology-chat`;
       const response = await fetch(CHAT_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.access_token}` },
         body: JSON.stringify({ messages: [...messages, { role: "user", content: userMessage }] }),
       });
-
       if (!response.ok) {
         if (response.status === 402) {
           const data = await response.json();
@@ -85,13 +84,11 @@ const Psychology = () => {
         }
         throw new Error("Failed to start stream");
       }
-
       if (!response.body) throw new Error("No response body");
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
       let textBuffer = "", assistantMessage = "";
       setMessages(prev => [...prev, { role: "assistant", content: "" }]);
-
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
@@ -110,11 +107,7 @@ const Psychology = () => {
             const content = parsed.choices?.[0]?.delta?.content as string | undefined;
             if (content) {
               assistantMessage += content;
-              setMessages(prev => {
-                const n = [...prev];
-                n[n.length - 1] = { role: "assistant", content: assistantMessage };
-                return n;
-              });
+              setMessages(prev => { const n = [...prev]; n[n.length - 1] = { role: "assistant", content: assistantMessage }; return n; });
             }
           } catch { textBuffer = line + "\n" + textBuffer; break; }
         }
@@ -146,10 +139,25 @@ const Psychology = () => {
   const messagesLeft = !subscription.subscribed ? Math.max(0, subscription.freeMessagesLimit - subscription.freeMessagesUsed) : null;
 
   // Render sub-views
-  if (activeView === 'mood') return <div className="min-h-screen bg-background pt-20 pb-8"><div className="container mx-auto px-4 max-w-4xl"><MoodTracker onBack={() => setActiveView('main')} /></div></div>;
-  if (activeView === 'breathing') return <div className="min-h-screen bg-background pt-20 pb-8"><div className="container mx-auto px-4 max-w-4xl"><BreathingMeditation onBack={() => setActiveView('main')} /></div></div>;
-  if (activeView === 'emotion') return <div className="min-h-screen bg-background pt-20 pb-8"><div className="container mx-auto px-4 max-w-4xl"><AIEmotionAnalysis onBack={() => setActiveView('main')} /></div></div>;
-  if (activeView === 'crisis') return <div className="min-h-screen bg-background pt-20 pb-8"><div className="container mx-auto px-4 max-w-4xl"><CrisisResources onBack={() => setActiveView('main')} /></div></div>;
+  const viewMap: Record<string, JSX.Element> = {
+    mood: <MoodTracker onBack={() => setActiveView('main')} />,
+    breathing: <BreathingMeditation onBack={() => setActiveView('main')} />,
+    emotion: <AIEmotionAnalysis onBack={() => setActiveView('main')} />,
+    crisis: <CrisisResources onBack={() => setActiveView('main')} />,
+    charts: <MoodCharts onBack={() => setActiveView('main')} />,
+    dreams: <AIDreamJournal onBack={() => setActiveView('main')} />,
+    cbt: <GuidedCBT onBack={() => setActiveView('main')} />,
+    sounds: <AmbientSounds onBack={() => setActiveView('main')} />,
+    report: <WeeklyWellnessReport onBack={() => setActiveView('main')} />,
+  };
+
+  if (activeView !== 'main' && activeView !== 'chat' && viewMap[activeView]) {
+    return (
+      <div className="min-h-screen bg-background pt-20 pb-8">
+        <div className="container mx-auto px-4 max-w-4xl">{viewMap[activeView]}</div>
+      </div>
+    );
+  }
 
   if (activeView === 'chat') {
     if (loadingHistory || subscription.loading) {
@@ -163,11 +171,8 @@ const Psychology = () => {
     return (
       <div className="min-h-screen bg-background pt-20 pb-8">
         <div className="container mx-auto px-4 max-w-4xl">
-          <Button variant="ghost" onClick={() => setActiveView('main')} className="gap-2 mb-4">
-            ← Back to Dashboard
-          </Button>
+          <Button variant="ghost" onClick={() => setActiveView('main')} className="gap-2 mb-4">← Back to Dashboard</Button>
 
-          {/* Subscription Status */}
           {subscription.subscribed ? (
             <div className="mb-4 space-y-2">
               <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 border border-primary/30 rounded-lg">
@@ -191,7 +196,6 @@ const Psychology = () => {
             </div>
           )}
 
-          {/* Chat */}
           <Card className="shadow-lg">
             <CardHeader className="border-b">
               <div className="flex items-center gap-3">
@@ -248,7 +252,6 @@ const Psychology = () => {
           </Card>
         </div>
 
-        {/* Subscription Dialog */}
         <Dialog open={showSubscriptionDialog} onOpenChange={setShowSubscriptionDialog}>
           <DialogContent>
             <DialogHeader>
@@ -276,14 +279,13 @@ const Psychology = () => {
       <PsychologyHero />
 
       <div className="container mx-auto px-4 max-w-6xl -mt-8 relative z-20 pb-12">
-        {/* Description */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
           <Card className="p-6 bg-card/80 backdrop-blur-xl border-border/50 mb-8">
             <h2 className="text-xl font-black mb-3">What is AI Psychologist?</h2>
             <p className="text-sm text-muted-foreground leading-relaxed mb-4">
               AI Psychologist is your personal mental wellness companion powered by advanced AI technology.
-              This intelligent platform provides empathetic support, mood tracking, breathing exercises, and emotional analysis
-              in a completely safe and anonymous environment. Available 24/7 whenever you need to talk.
+              This intelligent platform provides empathetic support, mood tracking, breathing exercises, dream analysis,
+              CBT tools, ambient sounds, and emotional analysis in a completely safe and anonymous environment. Available 24/7.
             </p>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               {[
@@ -304,7 +306,6 @@ const Psychology = () => {
           </Card>
         </motion.div>
 
-        {/* Tools Grid */}
         <h3 className="text-2xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent mb-4">
           Wellness Tools
         </h3>
@@ -314,7 +315,7 @@ const Psychology = () => {
               key={tool.id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 + i * 0.1 }}
+              transition={{ delay: 0.3 + i * 0.06 }}
               whileHover={{ scale: 1.03, y: -4 }}
               whileTap={{ scale: 0.97 }}
             >
@@ -339,7 +340,6 @@ const Psychology = () => {
           ))}
         </div>
 
-        {/* Pricing */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8 }}>
           <Card className="p-6 bg-card/80 backdrop-blur-xl border-border/50 mt-8">
             <h3 className="text-xl font-black mb-4">Pricing</h3>
@@ -347,17 +347,17 @@ const Psychology = () => {
               <div className="p-4 bg-muted/30 rounded-xl text-center">
                 <p className="text-sm font-bold mb-1">Free Trial</p>
                 <p className="text-2xl font-black text-primary">5</p>
-                <p className="text-xs text-muted-foreground">Free messages</p>
+                <p className="text-xs text-muted-foreground">Free chat messages</p>
               </div>
               <div className="p-4 bg-primary/10 rounded-xl text-center ring-2 ring-primary">
-                <p className="text-sm font-bold mb-1">Premium</p>
+                <p className="text-sm font-bold mb-1">Premium Chat</p>
                 <p className="text-2xl font-black text-primary">€15</p>
                 <p className="text-xs text-muted-foreground">1000 messages/month</p>
               </div>
               <div className="p-4 bg-muted/30 rounded-xl text-center">
-                <p className="text-sm font-bold mb-1">Extra Messages</p>
-                <p className="text-2xl font-black text-primary">€2</p>
-                <p className="text-xs text-muted-foreground">+100 messages</p>
+                <p className="text-sm font-bold mb-1">AI Credits</p>
+                <p className="text-2xl font-black text-primary">5-10</p>
+                <p className="text-xs text-muted-foreground">Per AI analysis/report</p>
               </div>
             </div>
           </Card>
