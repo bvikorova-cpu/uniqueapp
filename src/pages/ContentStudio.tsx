@@ -11,15 +11,20 @@ import { motion } from "framer-motion";
 import {
   Sparkles, FileText, Video, Briefcase, Image as ImageIcon, Copy, Loader2,
   Star, Zap, Clock, CheckCircle, PenTool, ArrowLeft, LayoutTemplate,
-  Brain, Calendar, Shield, Download,
+  Brain, Calendar, Shield, Download, Recycle, BarChart3, FlaskConical, Layers, Search,
 } from "lucide-react";
 import ContentStudioHero from "@/components/content-studio/ContentStudioHero";
 import AIContentTemplates from "@/components/content-studio/AIContentTemplates";
 import BrandVoiceTraining from "@/components/content-studio/BrandVoiceTraining";
 import ContentCalendar from "@/components/content-studio/ContentCalendar";
 import PlagiarismChecker from "@/components/content-studio/PlagiarismChecker";
+import ContentRepurposer from "@/components/content-studio/ContentRepurposer";
+import ContentAnalytics from "@/components/content-studio/ContentAnalytics";
+import ABABTesting from "@/components/content-studio/ABABTesting";
+import BulkContentGenerator from "@/components/content-studio/BulkContentGenerator";
+import SEOKeywordOptimizer from "@/components/content-studio/SEOKeywordOptimizer";
 
-type ActiveView = "main" | "templates" | "brand-voice" | "calendar" | "plagiarism" | "generate";
+type ActiveView = "main" | "templates" | "brand-voice" | "calendar" | "plagiarism" | "generate" | "repurpose" | "analytics" | "ab-test" | "bulk" | "seo";
 
 const CONTENT_TYPES = [
   { id: "social_post", name: "Social Media Post", icon: Sparkles, description: "Engaging posts with hashtags", credits: 1, placeholder: "Topic: Travel tips for summer vacation..." },
@@ -36,6 +41,11 @@ const TOOL_CARDS = [
   { id: "brand-voice" as const, name: "Brand Voice", icon: Brain, description: "Train AI on your brand's tone & style", gradient: "from-pink-600 to-rose-600", credits: "5" },
   { id: "calendar" as const, name: "Content Calendar", icon: Calendar, description: "Plan & schedule content across platforms", gradient: "from-emerald-600 to-teal-600", credits: "Free" },
   { id: "plagiarism" as const, name: "Plagiarism Checker", icon: Shield, description: "AI-powered originality verification", gradient: "from-amber-600 to-orange-600", credits: "3" },
+  { id: "repurpose" as const, name: "Content Repurposer", icon: Recycle, description: "Transform content into multiple formats", gradient: "from-violet-600 to-purple-600", credits: "3/fmt" },
+  { id: "analytics" as const, name: "Performance Analytics", icon: BarChart3, description: "Track content creation patterns & insights", gradient: "from-sky-600 to-blue-600", credits: "Free" },
+  { id: "ab-test" as const, name: "AI A/B Testing", icon: FlaskConical, description: "Generate & compare content variations", gradient: "from-red-600 to-rose-600", credits: "5" },
+  { id: "bulk" as const, name: "Bulk Generator", icon: Layers, description: "Generate multiple posts from one prompt", gradient: "from-lime-600 to-green-600", credits: "2/post" },
+  { id: "seo" as const, name: "SEO Optimizer", icon: Search, description: "AI keyword density & optimization analysis", gradient: "from-fuchsia-600 to-pink-600", credits: "4" },
 ];
 
 const ContentStudio = () => {
@@ -122,6 +132,11 @@ const ContentStudio = () => {
   if (activeView === "brand-voice") return <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-4 max-w-7xl"><BrandVoiceTraining onBack={() => setActiveView("main")} /></div></div>;
   if (activeView === "calendar") return <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-4 max-w-7xl"><ContentCalendar onBack={() => setActiveView("main")} /></div></div>;
   if (activeView === "plagiarism") return <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-4 max-w-7xl"><PlagiarismChecker onBack={() => setActiveView("main")} /></div></div>;
+  if (activeView === "repurpose") return <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-4 max-w-7xl"><ContentRepurposer onBack={() => setActiveView("main")} /></div></div>;
+  if (activeView === "analytics") return <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-4 max-w-7xl"><ContentAnalytics onBack={() => setActiveView("main")} /></div></div>;
+  if (activeView === "ab-test") return <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-4 max-w-7xl"><ABABTesting onBack={() => setActiveView("main")} /></div></div>;
+  if (activeView === "bulk") return <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-4 max-w-7xl"><BulkContentGenerator onBack={() => setActiveView("main")} /></div></div>;
+  if (activeView === "seo") return <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-4 max-w-7xl"><SEOKeywordOptimizer onBack={() => setActiveView("main")} /></div></div>;
 
   if (activeView === "generate") {
     return (
@@ -264,12 +279,16 @@ const ContentStudio = () => {
               From social media posts to professional CVs, create compelling content in seconds.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-muted-foreground">
-              <div className="flex items-center gap-2"><Zap className="h-4 w-4 text-yellow-500" /> Instant AI-powered generation</div>
-              <div className="flex items-center gap-2"><CheckCircle className="h-4 w-4 text-green-500" /> SEO-optimized content</div>
-              <div className="flex items-center gap-2"><ImageIcon className="h-4 w-4 text-pink-500" /> AI image generation</div>
-              <div className="flex items-center gap-2"><Clock className="h-4 w-4 text-blue-500" /> Content history & reuse</div>
-              <div className="flex items-center gap-2"><Brain className="h-4 w-4 text-purple-500" /> Brand voice training</div>
-              <div className="flex items-center gap-2"><Shield className="h-4 w-4 text-amber-500" /> Plagiarism checking</div>
+              <div className="flex items-center gap-2"><Zap className="h-4 w-4 text-primary" /> Instant AI-powered generation</div>
+              <div className="flex items-center gap-2"><CheckCircle className="h-4 w-4 text-primary" /> SEO-optimized content</div>
+              <div className="flex items-center gap-2"><ImageIcon className="h-4 w-4 text-primary" /> AI image generation</div>
+              <div className="flex items-center gap-2"><Clock className="h-4 w-4 text-primary" /> Content history & reuse</div>
+              <div className="flex items-center gap-2"><Brain className="h-4 w-4 text-primary" /> Brand voice training</div>
+              <div className="flex items-center gap-2"><Shield className="h-4 w-4 text-primary" /> Plagiarism checking</div>
+              <div className="flex items-center gap-2"><Recycle className="h-4 w-4 text-primary" /> Content repurposing</div>
+              <div className="flex items-center gap-2"><FlaskConical className="h-4 w-4 text-primary" /> A/B testing variants</div>
+              <div className="flex items-center gap-2"><Layers className="h-4 w-4 text-primary" /> Bulk content generation</div>
+              <div className="flex items-center gap-2"><Search className="h-4 w-4 text-primary" /> SEO keyword optimization</div>
             </div>
           </CardContent>
         </Card>
