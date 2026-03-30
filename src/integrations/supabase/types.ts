@@ -11881,6 +11881,36 @@ export type Database = {
         }
         Relationships: []
       }
+      explorer_achievements: {
+        Row: {
+          achievement_code: string
+          achievement_description: string | null
+          achievement_name: string
+          earned_at: string | null
+          icon: string | null
+          id: string
+          user_id: string
+        }
+        Insert: {
+          achievement_code: string
+          achievement_description?: string | null
+          achievement_name: string
+          earned_at?: string | null
+          icon?: string | null
+          id?: string
+          user_id: string
+        }
+        Update: {
+          achievement_code?: string
+          achievement_description?: string | null
+          achievement_name?: string
+          earned_at?: string | null
+          icon?: string | null
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       f1_car_marketplace: {
         Row: {
           car_id: string
@@ -28583,6 +28613,42 @@ export type Database = {
           },
         ]
       }
+      travel_plans: {
+        Row: {
+          budget_level: string | null
+          created_at: string | null
+          destination: string
+          duration_days: number
+          id: string
+          interests: string[] | null
+          plan_data: Json
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          budget_level?: string | null
+          created_at?: string | null
+          destination: string
+          duration_days?: number
+          id?: string
+          interests?: string[] | null
+          plan_data?: Json
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          budget_level?: string | null
+          created_at?: string | null
+          destination?: string
+          duration_days?: number
+          id?: string
+          interests?: string[] | null
+          plan_data?: Json
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       trending_posts: {
         Row: {
           calculated_at: string | null
@@ -30397,6 +30463,45 @@ export type Database = {
           status?: string | null
           total_earnings?: number | null
           updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      virtual_postcards: {
+        Row: {
+          created_at: string | null
+          credits_used: number | null
+          destination: string
+          id: string
+          message: string
+          postcard_image_url: string | null
+          postcard_text: string | null
+          recipient_name: string
+          style: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          credits_used?: number | null
+          destination: string
+          id?: string
+          message: string
+          postcard_image_url?: string | null
+          postcard_text?: string | null
+          recipient_name: string
+          style?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          credits_used?: number | null
+          destination?: string
+          id?: string
+          message?: string
+          postcard_image_url?: string | null
+          postcard_text?: string | null
+          recipient_name?: string
+          style?: string | null
           user_id?: string
         }
         Relationships: []
