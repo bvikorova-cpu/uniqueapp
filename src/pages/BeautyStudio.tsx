@@ -88,9 +88,12 @@ const BeautyStudio = () => {
             <p className="text-xs sm:text-sm text-pink-400 font-semibold tracking-wider uppercase drop-shadow-md">
               ✨ AI-Powered Beauty Hub
             </p>
-            <h1 className="text-3xl sm:text-5xl md:text-6xl font-black mt-1 drop-shadow-md"
-              style={{ textShadow: "0 0 40px rgba(236,72,153,0.3)" }}>
-              <span className="bg-gradient-to-r from-pink-400 via-purple-400 to-rose-400 bg-clip-text text-transparent">
+            <h1 className="text-4xl sm:text-6xl md:text-7xl font-black mt-1 drop-shadow-lg"
+              style={{ 
+                textShadow: "0 0 60px rgba(236,72,153,0.5), 0 4px 20px rgba(0,0,0,0.8)",
+                WebkitTextStroke: "1px rgba(236,72,153,0.3)"
+              }}>
+              <span className="bg-gradient-to-r from-pink-300 via-purple-400 to-rose-500 bg-clip-text text-transparent">
                 Beauty Studio
               </span>
             </h1>
