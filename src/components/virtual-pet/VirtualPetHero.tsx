@@ -1,12 +1,12 @@
 import { motion } from "framer-motion";
 import { Heart, Gamepad2, Trophy, Sparkles } from "lucide-react";
-import heroVideo from "@/assets/virtual-pet-hero-v5.mp4.asset.json";
+import heroVideo from "@/assets/virtual-pet-hero-v6.mp4.asset.json";
 
 const stats = [
-  { icon: Heart, label: "Active Pets", value: "12K+", color: "text-pink-400" },
-  { icon: Gamepad2, label: "Games Played", value: "89K", color: "text-cyan-400" },
-  { icon: Trophy, label: "Battles Won", value: "34K", color: "text-amber-400" },
-  { icon: Sparkles, label: "Evolutions", value: "7.2K", color: "text-emerald-400" },
+  { icon: Heart, label: "Active Pets", value: "12K+", gradient: "from-pink-500 to-rose-400", glow: "shadow-pink-500/30" },
+  { icon: Gamepad2, label: "Games Played", value: "89K", gradient: "from-cyan-500 to-blue-400", glow: "shadow-cyan-500/30" },
+  { icon: Trophy, label: "Battles Won", value: "34K", gradient: "from-amber-500 to-yellow-400", glow: "shadow-amber-500/30" },
+  { icon: Sparkles, label: "Evolutions", value: "7.2K", gradient: "from-emerald-500 to-teal-400", glow: "shadow-emerald-500/30" },
 ];
 
 export const VirtualPetHero = () => (
@@ -22,7 +22,6 @@ export const VirtualPetHero = () => (
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/30" />
       </div>
 
-      {/* Title only - top area */}
       <div className="relative z-10 h-full flex flex-col justify-start p-4 md:p-8 pt-6 md:pt-10">
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
@@ -54,22 +53,29 @@ export const VirtualPetHero = () => (
       </div>
     </div>
 
-    {/* Stats Row - below video */}
-    <div className="grid grid-cols-4 gap-2 mt-3">
+    {/* Stats Row - styled cards */}
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 -mt-6 relative z-20 px-2">
       {stats.map((stat, i) => (
         <motion.div
           key={stat.label}
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 + i * 0.1, type: "spring" }}
-          className="bg-card/80 backdrop-blur-sm border border-border/40 rounded-xl p-2.5 flex items-center gap-2"
+          initial={{ opacity: 0, y: 20, scale: 0.9 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ delay: 0.3 + i * 0.1, type: "spring", stiffness: 150 }}
+          className={`relative overflow-hidden rounded-xl border border-white/10 bg-card/90 backdrop-blur-xl p-3 shadow-lg ${stat.glow} hover:scale-105 transition-transform cursor-default`}
         >
-          <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-            <stat.icon className={`w-4 h-4 ${stat.color}`} />
-          </div>
-          <div>
-            <p className="font-black text-sm">{stat.value}</p>
-            <p className="text-muted-foreground text-[10px]">{stat.label}</p>
+          {/* Gradient accent bar */}
+          <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${stat.gradient}`} />
+          {/* Subtle glow background */}
+          <div className={`absolute -top-4 -right-4 w-16 h-16 rounded-full bg-gradient-to-br ${stat.gradient} opacity-10 blur-xl`} />
+
+          <div className="relative flex items-center gap-2.5">
+            <div className={`w-9 h-9 rounded-lg bg-gradient-to-br ${stat.gradient} flex items-center justify-center shadow-md`}>
+              <stat.icon className="w-4.5 h-4.5 text-white" />
+            </div>
+            <div>
+              <p className="font-black text-base leading-tight">{stat.value}</p>
+              <p className="text-muted-foreground text-[10px] font-medium">{stat.label}</p>
+            </div>
           </div>
         </motion.div>
       ))}
