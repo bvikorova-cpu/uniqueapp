@@ -1,5 +1,9 @@
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { AstrologyHero } from "@/components/astrology/AstrologyHero";
 import { AstrologyCreditsDisplay } from "@/components/astrology/AstrologyCreditsDisplay";
+import { DailyMysticalRitual } from "@/components/astrology/DailyMysticalRitual";
+import { MysticalProfile } from "@/components/astrology/MysticalProfile";
 import { TarotReader } from "@/components/astrology/TarotReader";
 import { DailyHoroscope } from "@/components/astrology/DailyHoroscope";
 import { DreamInterpretation } from "@/components/astrology/DreamInterpretation";
@@ -10,132 +14,165 @@ import { YesNoOracle } from "@/components/astrology/YesNoOracle";
 import { RuneReader } from "@/components/astrology/RuneReader";
 import { BirthChartAnalyzer } from "@/components/astrology/BirthChartAnalyzer";
 import { LiveChatWithAI } from "@/components/astrology/LiveChatWithAI";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import {
+  Star, Moon, Sparkles, Heart, HelpCircle, Hand, Calculator, Eye,
+  MessageCircle, ChevronLeft, Flame, Zap, Trophy, TrendingUp
+} from "lucide-react";
+import { CREDIT_COSTS } from "@/hooks/useAstrologyCredits";
+
+type ActiveView = "dashboard" | "horoscope" | "tarot" | "dream" | "numerology" | "palmistry" | "compatibility" | "yesno" | "rune" | "birthchart" | "livechat";
+
+const TOOLS = [
+  { id: "horoscope" as const, icon: Star, title: "Horoscope", desc: "Daily zodiac forecasts", cost: 1, gradient: "from-amber-500 to-yellow-400" },
+  { id: "tarot" as const, icon: Sparkles, title: "Tarot Reading", desc: "AI card interpretations", cost: 3, gradient: "from-purple-500 to-violet-400" },
+  { id: "dream" as const, icon: Moon, title: "Dream Analysis", desc: "Symbolic interpretation", cost: 5, gradient: "from-blue-500 to-cyan-400" },
+  { id: "numerology" as const, icon: Calculator, title: "Numerology", desc: "Life path numbers", cost: 5, gradient: "from-pink-500 to-rose-400" },
+  { id: "palmistry" as const, icon: Hand, title: "Palmistry", desc: "Palm line reading", cost: 10, gradient: "from-emerald-500 to-green-400" },
+  { id: "compatibility" as const, icon: Heart, title: "Love Match", desc: "Zodiac compatibility", cost: 7, gradient: "from-red-500 to-pink-400" },
+  { id: "yesno" as const, icon: HelpCircle, title: "Yes/No Oracle", desc: "Quick cosmic answers", cost: 2, gradient: "from-orange-500 to-amber-400" },
+  { id: "rune" as const, icon: Flame, title: "Rune Reading", desc: "Norse divination", cost: 1, gradient: "from-indigo-500 to-blue-400" },
+  { id: "birthchart" as const, icon: Eye, title: "Birth Chart", desc: "Full astro analysis", cost: 20, gradient: "from-violet-500 to-purple-400" },
+  { id: "livechat" as const, icon: MessageCircle, title: "AI Mystic Chat", desc: "Live cosmic advisor", cost: 1, gradient: "from-cyan-500 to-teal-400" },
+];
 
 const Astrology = () => {
+  const [activeView, setActiveView] = useState<ActiveView>("dashboard");
+
+  const renderToolView = () => {
+    switch (activeView) {
+      case "horoscope": return <DailyHoroscope />;
+      case "tarot": return <TarotReader />;
+      case "dream": return <DreamInterpretation />;
+      case "numerology": return <NumerologyCalculator />;
+      case "palmistry": return <PalmistryReader />;
+      case "compatibility": return <CompatibilityChecker />;
+      case "yesno": return <YesNoOracle />;
+      case "rune": return <RuneReader />;
+      case "birthchart": return <BirthChartAnalyzer />;
+      case "livechat": return <LiveChatWithAI />;
+      default: return null;
+    }
+  };
+
+  if (activeView !== "dashboard") {
+    const tool = TOOLS.find(t => t.id === activeView);
+    return (
+      <div className="min-h-screen bg-background p-2 sm:p-4">
+        <div className="container mx-auto max-w-4xl pt-16 sm:pt-20">
+          <Button variant="ghost" onClick={() => setActiveView("dashboard")} className="mb-4 gap-2 text-muted-foreground hover:text-foreground">
+            <ChevronLeft className="h-4 w-4" /> Back to Dashboard
+          </Button>
+          <div className="flex items-center gap-3 mb-6">
+            {tool && <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${tool.gradient} flex items-center justify-center`}>
+              <tool.icon className="w-5 h-5 text-white" />
+            </div>}
+            <div>
+              <h2 className="text-xl font-black text-foreground">{tool?.title}</h2>
+              <p className="text-xs text-muted-foreground">{tool?.cost} credits per reading</p>
+            </div>
+          </div>
+          <div className="mb-4">
+            <AstrologyCreditsDisplay />
+          </div>
+          {renderToolView()}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background p-2 sm:p-4">
       <div className="container mx-auto max-w-6xl pt-16 sm:pt-20">
-        <div className="text-center mb-6 sm:mb-8">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-sm text-primary mb-4">
-            <span>🔮</span>
-            <span className="font-medium">Mystical AI</span>
-          </div>
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent px-2">
-            Astrology & Mystical Readings
-          </h1>
-          <p className="text-sm sm:text-base text-muted-foreground mt-2 max-w-lg mx-auto">
-            Discover your destiny through AI-powered ancient wisdom
-          </p>
-        </div>
+        <AstrologyHero />
 
-        {/* Description Section */}
-        <Card className="mb-6 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30 border-purple-200 dark:border-purple-800">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-lg sm:text-xl text-purple-700 dark:text-purple-300">
-              🔮 What is Astrology & Mystical Readings?
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="text-sm sm:text-base text-muted-foreground space-y-4">
-            <p>
-              Explore the mysteries of the universe with our comprehensive AI-powered mystical reading platform. 
-              Get personalized insights into your life, relationships, and future through ancient wisdom combined with modern technology.
-            </p>
-            
-            <div>
-              <h4 className="font-semibold text-foreground mb-2">📖 How to Use:</h4>
-              <ol className="list-decimal list-inside space-y-1 ml-2">
-                <li><strong>Purchase Credits</strong> - Buy credit packages to unlock readings</li>
-                <li><strong>Choose a Reading Type</strong> - Select from 10 different mystical services</li>
-                <li><strong>Enter Your Details</strong> - Provide zodiac sign, birth date, or question</li>
-                <li><strong>Receive Your Reading</strong> - Get AI-generated personalized insights</li>
-                <li><strong>Save & Share</strong> - Keep your readings for future reference</li>
-              </ol>
+        {/* Engagement Row */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6 mt-4">
+          {/* Streak */}
+          <Card className="p-4 bg-card/90 backdrop-blur-xl border-border/30 relative overflow-hidden">
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-500 to-orange-400" />
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500/20 to-orange-500/20 flex items-center justify-center border border-amber-500/30">
+                <Zap className="w-6 h-6 text-amber-500" />
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">Mystical Streak</p>
+                <p className="text-2xl font-black text-foreground">7 Days</p>
+                <p className="text-[10px] text-amber-500 font-medium">🔥 Keep it going!</p>
+              </div>
             </div>
+          </Card>
 
-            <div>
-              <h4 className="font-semibold text-foreground mb-2">✨ Available Services:</h4>
-              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-1 ml-2 text-xs sm:text-sm">
-                <li>⭐ <strong>Horoscope</strong> - Daily, weekly & monthly zodiac forecasts</li>
-                <li>💳 <strong>Tarot</strong> - AI-powered tarot card readings</li>
-                <li>💭 <strong>Dreams</strong> - Dream interpretation & symbolism analysis</li>
-                <li>🔢 <strong>Numerology</strong> - Life path & destiny number calculations</li>
-                <li>🖐️ <strong>Palmistry</strong> - Upload palm photo for line analysis</li>
-                <li>💕 <strong>Love Compatibility</strong> - Zodiac relationship matching</li>
-                <li>❓ <strong>Yes/No Oracle</strong> - Quick answers to your questions</li>
-                <li>🗿 <strong>Rune Reading</strong> - Ancient Norse divination</li>
-                <li>🌌 <strong>Birth Chart</strong> - Full astrological chart analysis</li>
-                <li>💬 <strong>AI Chat</strong> - Live conversation with mystical AI</li>
-              </ul>
-            </div>
-
-            <p className="text-xs text-muted-foreground italic border-t pt-3 mt-3">
-              ⚠️ <strong>Disclaimer:</strong> All readings are generated by AI for entertainment purposes only. 
-              They should not be used as a substitute for professional advice in medical, legal, financial, or psychological matters.
-            </p>
-          </CardContent>
-        </Card>
-
-        <div className="mb-4 sm:mb-6">
+          {/* Credits */}
           <AstrologyCreditsDisplay />
+
+          {/* Achievements */}
+          <Card className="p-4 bg-card/90 backdrop-blur-xl border-border/30 relative overflow-hidden">
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 to-pink-400" />
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center border border-purple-500/30">
+                <Trophy className="w-6 h-6 text-purple-500" />
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">Achievements</p>
+                <p className="text-2xl font-black text-foreground">3 / 15</p>
+                <p className="text-[10px] text-purple-500 font-medium">⭐ Mystic Explorer</p>
+              </div>
+            </div>
+          </Card>
         </div>
 
-        <Tabs defaultValue="horoscope" className="w-full">
-          <TabsList className="flex overflow-x-auto gap-1 sm:gap-2 h-auto p-1 sm:p-2 w-full">
-            <TabsTrigger value="horoscope" className="text-xs sm:text-sm px-2 sm:px-3 py-1 whitespace-nowrap flex-shrink-0">⭐ Horoscope</TabsTrigger>
-            <TabsTrigger value="tarot" className="text-xs sm:text-sm px-2 sm:px-3 py-1 whitespace-nowrap flex-shrink-0">💳 Tarot</TabsTrigger>
-            <TabsTrigger value="dream" className="text-xs sm:text-sm px-2 sm:px-3 py-1 whitespace-nowrap flex-shrink-0">💭 Dreams</TabsTrigger>
-            <TabsTrigger value="numerology" className="text-xs sm:text-sm px-2 sm:px-3 py-1 whitespace-nowrap flex-shrink-0">🔢 Numerology</TabsTrigger>
-            <TabsTrigger value="palmistry" className="text-xs sm:text-sm px-2 sm:px-3 py-1 whitespace-nowrap flex-shrink-0">🖐️ Palmistry</TabsTrigger>
-            <TabsTrigger value="compatibility" className="text-xs sm:text-sm px-2 sm:px-3 py-1 whitespace-nowrap flex-shrink-0">💕 Love</TabsTrigger>
-            <TabsTrigger value="yesno" className="text-xs sm:text-sm px-2 sm:px-3 py-1 whitespace-nowrap flex-shrink-0">❓ Yes/No</TabsTrigger>
-            <TabsTrigger value="rune" className="text-xs sm:text-sm px-2 sm:px-3 py-1 whitespace-nowrap flex-shrink-0">🗿 Rune</TabsTrigger>
-            <TabsTrigger value="birthchart" className="text-xs sm:text-sm px-2 sm:px-3 py-1 whitespace-nowrap flex-shrink-0">🌌 Birth</TabsTrigger>
-            <TabsTrigger value="livechat" className="text-xs sm:text-sm px-2 sm:px-3 py-1 whitespace-nowrap flex-shrink-0">💬 Chat</TabsTrigger>
-          </TabsList>
-
-          <div className="mt-6">
-            <TabsContent value="horoscope">
-              <DailyHoroscope />
-            </TabsContent>
-
-            <TabsContent value="tarot">
-              <TarotReader />
-            </TabsContent>
-
-            <TabsContent value="dream">
-              <DreamInterpretation />
-            </TabsContent>
-
-            <TabsContent value="numerology">
-              <NumerologyCalculator />
-            </TabsContent>
-
-            <TabsContent value="palmistry">
-              <PalmistryReader />
-            </TabsContent>
-
-            <TabsContent value="compatibility">
-              <CompatibilityChecker />
-            </TabsContent>
-
-            <TabsContent value="yesno">
-              <YesNoOracle />
-            </TabsContent>
-
-            <TabsContent value="rune">
-              <RuneReader />
-            </TabsContent>
-
-            <TabsContent value="birthchart">
-              <BirthChartAnalyzer />
-            </TabsContent>
-
-            <TabsContent value="livechat">
-              <LiveChatWithAI />
-            </TabsContent>
+        {/* Sidebar + Tools Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
+          {/* Sidebar */}
+          <div className="lg:col-span-1 space-y-4">
+            <DailyMysticalRitual />
+            <MysticalProfile />
           </div>
-        </Tabs>
+
+          {/* Tools Grid */}
+          <div className="lg:col-span-3">
+            <div className="flex items-center gap-2 mb-4">
+              <Sparkles className="w-5 h-5 text-primary" />
+              <h2 className="text-lg font-black text-foreground">Mystical Tools</h2>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+              {TOOLS.map((tool, i) => (
+                <motion.div key={tool.id}
+                  initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.05, type: "spring", stiffness: 200 }}
+                >
+                  <Card
+                    className="p-3 sm:p-4 bg-card/90 backdrop-blur-xl border-border/30 cursor-pointer hover:scale-105 hover:shadow-lg transition-all group relative overflow-hidden"
+                    onClick={() => setActiveView(tool.id)}
+                  >
+                    <div className={`absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r ${tool.gradient} opacity-0 group-hover:opacity-100 transition-opacity`} />
+                    <div className={`w-9 h-9 rounded-lg bg-gradient-to-br ${tool.gradient} flex items-center justify-center mb-2 shadow-lg group-hover:scale-110 transition-transform`}>
+                      <tool.icon className="w-4 h-4 text-white" />
+                    </div>
+                    <h3 className="text-sm font-bold text-foreground leading-tight">{tool.title}</h3>
+                    <p className="text-[10px] text-muted-foreground mt-0.5">{tool.desc}</p>
+                    <div className="mt-2 flex items-center gap-1">
+                      <span className="text-[10px] font-semibold text-primary">{tool.cost} credits</span>
+                    </div>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* Description Card */}
+            <Card className="mt-4 p-4 bg-card/90 backdrop-blur-xl border-border/30">
+              <h3 className="text-sm font-black text-foreground mb-2">🔮 About Astrology & Mystical Readings</h3>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                Explore the mysteries of the universe with our AI-powered mystical reading platform. 
+                Get personalized insights into your life, relationships, and future through ancient wisdom 
+                combined with modern artificial intelligence. All readings are generated by AI for 
+                entertainment and self-reflection purposes.
+              </p>
+            </Card>
+          </div>
+        </div>
       </div>
     </div>
   );
