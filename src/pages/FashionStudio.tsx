@@ -165,6 +165,12 @@ export default function FashionStudio() {
       case "color-season": return <AIColorSeasonAnalysis />;
       case "outfit-remix": return <AIOutfitRemixEngine />;
       case "mood-ring": return <AIFashionMoodRing />;
+      case "outfit-cost": return <AIOutfitCostCalculator />;
+      case "history-explorer": return <AIFashionHistoryExplorer />;
+      case "dress-code": return <AIDressCodeAdvisor />;
+      case "fashion-compat": return <AIFashionCompatibility />;
+      case "trend-radar": return <AITrendAlertRadar />;
+      case "virtual-stylist": return <AIVirtualStylistSession />;
       default: return null;
     }
   };
