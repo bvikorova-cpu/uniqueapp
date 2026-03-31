@@ -66,6 +66,11 @@ const tools: { id: ActiveView; icon: any; title: string; description: string; co
   { id: "training-planner", icon: CalendarDays, title: "AI Training Planner", description: "Optimized daily training schedule", color: "blue", badge: "5 Cr", isNew: true },
   { id: "compatibility-checker", icon: HeartHandshake, title: "AI Compatibility", description: "Breeding compatibility & predictions", color: "pink", badge: "6 Cr", isNew: true },
   { id: "battle-strategy", icon: Target, title: "AI Battle Strategy", description: "Optimal formations & tactics", color: "red", badge: "4 Cr", isNew: true },
+  { id: "evolution-advisor", icon: Zap, title: "AI Evolution Advisor", description: "Predict optimal evolution paths", color: "amber", badge: "5 Cr", isNew: true },
+  { id: "diet-planner", icon: Apple, title: "AI Diet Planner", description: "Custom nutrition & feeding plans", color: "lime", badge: "3 Cr", isNew: true },
+  { id: "dream-interpreter", icon: Moon, title: "AI Dream Interpreter", description: "Discover your pet's dream world", color: "violet", badge: "4 Cr", isNew: true },
+  { id: "leaderboard", icon: Trophy, title: "Global Leaderboard", description: "Top pets across the platform", color: "amber" },
+  { id: "talent-scout", icon: Search, title: "AI Talent Scout", description: "Discover hidden abilities & moves", color: "teal", badge: "5 Cr", isNew: true },
 ];
 
 const VirtualPet = () => {
