@@ -1,6 +1,11 @@
+import { useState, useRef } from "react";
 import { motion } from "framer-motion";
-import { Swords, Users, Trophy, Flame } from "lucide-react";
-import heroVideo from "@/assets/horse-racing-hero-video.mp4.asset.json";
+import { Volume2, VolumeX, Play, Pause, Swords, Trophy, Users, Flame, Flag } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { useAuth } from "@/contexts/AuthContext";
+import heroVideo from "@/assets/horse-racing-hero-v2.mp4.asset.json";
 
 interface HorseRacingHeroProps {
   stats: {
@@ -9,82 +14,134 @@ interface HorseRacingHeroProps {
     activeRaces: number;
     onlineTrainers: number;
   };
+  onNavigate: (view: string) => void;
 }
 
-export const HorseRacingHero = ({ stats }: HorseRacingHeroProps) => {
-  return (
-    <div className="mb-8 space-y-3">
-      {/* Video Section */}
-      <div className="relative w-full h-[240px] sm:h-[320px] md:h-[380px] overflow-hidden rounded-2xl">
-        <div className="absolute inset-0 bg-black">
-          <video
-            autoPlay loop muted playsInline
-            className="w-full h-full object-cover brightness-[1.4] saturate-[1.2]"
-            src={heroVideo.url}
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/50" />
-        </div>
+const statItems = [
+  { icon: Swords, label: "Horses", color: "text-amber-400", key: "totalHorses" as const },
+  { icon: Flame, label: "Races Run", color: "text-red-400", key: "totalRaces" as const },
+  { icon: Flag, label: "Active Races", color: "text-emerald-400", key: "activeRaces" as const },
+  { icon: Users, label: "Trainers Online", color: "text-cyan-400", key: "onlineTrainers" as const },
+];
 
-        <div className="relative z-10 h-full flex flex-col justify-center items-center text-center p-4">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ type: "spring", stiffness: 100, damping: 15 }}
-          >
-            <h1
-              className="text-3xl sm:text-5xl lg:text-6xl font-black mb-3 leading-tight"
-              style={{
-                WebkitTextStroke: "2px rgba(0,0,0,0.6)",
-                textShadow: "0 0 40px rgba(168,85,247,0.6), 0 0 80px rgba(245,158,11,0.4), 0 4px 20px rgba(0,0,0,0.9)",
-                background: "linear-gradient(135deg, #a855f7, #ffffff, #f59e0b, #a855f7)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                filter: "drop-shadow(0 4px 12px rgba(0,0,0,0.8))",
-              }}
-            >
-              🏇 Horse Racing Arena
-            </h1>
-            <p
-              className="text-sm sm:text-lg text-white/90 max-w-2xl mx-auto"
-              style={{ textShadow: "0 2px 10px rgba(0,0,0,0.9)" }}
-            >
-              Breed enchanted steeds, train legendary champions, and dominate the mystical tracks
-            </p>
-          </motion.div>
-        </div>
+export const HorseRacingHero = ({ stats, onNavigate }: HorseRacingHeroProps) => {
+  const [isMuted, setIsMuted] = useState(true);
+  const [isPlaying, setIsPlaying] = useState(true);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const navigate = useNavigate();
+  const isMobile = useIsMobile();
+  const { user } = useAuth();
+
+  const toggleMute = () => {
+    if (videoRef.current) {
+      videoRef.current.muted = !isMuted;
+      setIsMuted(!isMuted);
+    }
+  };
+
+  const togglePlay = () => {
+    if (videoRef.current) {
+      if (isPlaying) videoRef.current.pause();
+      else videoRef.current.play();
+      setIsPlaying(!isPlaying);
+    }
+  };
+
+  return (
+    <section className="relative h-[70svh] min-h-[480px] overflow-hidden rounded-2xl mx-2 md:mx-0 bg-slate-950">
+      {/* Video */}
+      <video ref={videoRef} autoPlay loop muted playsInline
+        className="absolute inset-0 w-full h-full object-cover brightness-[1.1]"
+        src={heroVideo.url}
+      />
+
+      {/* Scanline overlay */}
+      <div className="absolute inset-0 pointer-events-none" style={{
+        background: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(218,165,32,0.02) 2px, rgba(218,165,32,0.02) 4px)',
+      }} />
+
+      {/* Gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-r from-slate-950/50 to-transparent" />
+
+      {/* HUD corner accents */}
+      <div className="absolute top-4 left-4 w-12 h-12 border-l-2 border-t-2 border-amber-400/40 rounded-tl-lg" />
+      <div className="absolute top-4 right-16 w-12 h-12 border-r-2 border-t-2 border-amber-400/40 rounded-tr-lg" />
+      <div className="absolute bottom-4 left-4 w-12 h-12 border-l-2 border-b-2 border-amber-400/40 rounded-bl-lg" />
+      <div className="absolute bottom-4 right-4 w-12 h-12 border-r-2 border-b-2 border-amber-400/40 rounded-br-lg" />
+
+      {/* Video Controls */}
+      <div className="absolute top-4 right-4 z-20 flex gap-2">
+        <Button size="icon" variant="ghost" onClick={togglePlay}
+          className="h-9 w-9 rounded-full bg-slate-950/60 backdrop-blur-sm text-amber-400 hover:bg-slate-950/80 border border-amber-500/20">
+          {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+        </Button>
+        <Button size="icon" variant="ghost" onClick={toggleMute}
+          className="h-9 w-9 rounded-full bg-slate-950/60 backdrop-blur-sm text-amber-400 hover:bg-slate-950/80 border border-amber-500/20">
+          {isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
+        </Button>
       </div>
 
-      {/* Stats Row */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 px-1">
-        {[
-          { icon: Swords, label: "Horses", value: stats.totalHorses, gradient: "from-purple-500 to-violet-600", glow: "shadow-purple-500/20" },
-          { icon: Flame, label: "Races", value: stats.totalRaces, gradient: "from-amber-500 to-orange-600", glow: "shadow-amber-500/20" },
-          { icon: Trophy, label: "Active Races", value: stats.activeRaces, gradient: "from-emerald-500 to-green-600", glow: "shadow-emerald-500/20" },
-          { icon: Users, label: "Trainers", value: stats.onlineTrainers, gradient: "from-cyan-500 to-blue-600", glow: "shadow-cyan-500/20" },
-        ].map((stat, i) => (
-          <motion.div
-            key={stat.label}
-            initial={{ opacity: 0, y: 20, scale: 0.9 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ delay: 0.3 + i * 0.1, type: "spring", stiffness: 150 }}
-            className={`relative overflow-hidden rounded-xl border border-white/10 bg-card/90 backdrop-blur-xl p-3 shadow-lg ${stat.glow} hover:scale-105 transition-transform cursor-default`}
-          >
-            <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${stat.gradient}`} />
-            <div className={`absolute -top-4 -right-4 w-16 h-16 rounded-full bg-gradient-to-br ${stat.gradient} opacity-10 blur-xl`} />
-            <div className="relative flex items-center gap-2.5">
-              <div className={`w-9 h-9 rounded-lg bg-gradient-to-br ${stat.gradient} flex items-center justify-center shadow-md`}>
-                <stat.icon className="w-4 h-4 text-white" />
+      {/* Content */}
+      <div className="absolute inset-0 z-10 flex flex-col justify-end p-4 md:p-10 pb-6 md:pb-10">
+        <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
+          <div className="inline-flex items-center gap-2 mb-3 px-4 py-1.5 bg-amber-500/15 backdrop-blur-sm rounded-full border border-amber-400/30">
+            <div className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
+            <span className="text-amber-300 font-mono text-xs uppercase tracking-[0.2em]">
+              Racing Command Center
+            </span>
+          </div>
+
+          <h1 className="text-[clamp(2.2rem,11vw,4.5rem)] font-black font-mono leading-[1.05] mb-3 max-w-[20ch]"
+            style={{
+              background: 'linear-gradient(135deg, #fff 0%, #f59e0b 50%, #dc2626 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+            }}>
+            🏇 Horse Racing Arena
+          </h1>
+
+          <p className="text-amber-100/70 text-sm md:text-lg max-w-xl mb-6 leading-relaxed font-mono">
+            Breed champions. Dominate the track. Claim the trophy.
+          </p>
+
+          <div className="flex gap-3 mb-6">
+            <Button onClick={() => onNavigate("stable")} size={isMobile ? "default" : "lg"}
+              className="bg-gradient-to-r from-amber-600 to-red-600 hover:from-amber-500 hover:to-red-500 text-white font-mono uppercase tracking-wider border border-amber-400/30 shadow-lg shadow-amber-500/30">
+              🏇 Enter Arena
+            </Button>
+            {!user && (
+              <Button onClick={() => navigate("/auth")} variant="outline" size={isMobile ? "default" : "lg"}
+                className="border-amber-400/30 text-amber-300 bg-slate-950/40 hover:bg-slate-950/60 backdrop-blur-sm font-mono uppercase tracking-wider">
+                Sign In
+              </Button>
+            )}
+          </div>
+        </motion.div>
+
+        {/* Stats bar */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4"
+        >
+          {statItems.map((stat, i) => (
+            <div key={i} className="flex items-center gap-3 px-4 py-3 rounded-xl bg-slate-950/60 backdrop-blur-md border border-amber-500/20">
+              <div className="relative">
+                <stat.icon className={`h-5 w-5 ${stat.color}`} />
+                <div className={`absolute -inset-2 rounded-full blur-md opacity-30 ${stat.color.replace('text-', 'bg-')}`} />
               </div>
               <div>
-                <p className="font-black text-base leading-tight">
-                  {stat.value === 0 ? "—" : stat.value.toLocaleString()}
+                <p className="font-mono font-bold text-white text-sm md:text-lg">
+                  {stats[stat.key] === 0 ? "—" : stats[stat.key].toLocaleString()}
                 </p>
-                <p className="text-muted-foreground text-[10px] font-medium">{stat.label}</p>
+                <p className="text-[10px] font-mono text-amber-400/50 uppercase tracking-wider">{stat.label}</p>
               </div>
             </div>
-          </motion.div>
-        ))}
+          ))}
+        </motion.div>
       </div>
-    </div>
+    </section>
   );
 };
