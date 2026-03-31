@@ -7,7 +7,7 @@ import {
   Palette, Sparkles, ShoppingBag, Trophy, Camera, Package, Heart,
   Shirt, ArrowLeft, TrendingUp, Brain, Zap, Eye, Gem,
   Leaf, Layers, Crown, Star, Target, Flame, Swords, MessageCircle,
-  Clapperboard
+  Clapperboard, Video, ScanLine, BarChart3, ShoppingCart, Globe
 } from "lucide-react";
 import FashionGenerator from "@/components/fashion/FashionGenerator";
 import FashionGallery from "@/components/fashion/FashionGallery";
@@ -28,6 +28,12 @@ import AIFashionShowSimulator from "@/components/fashion/AIFashionShowSimulator"
 import StyleBattleArena from "@/components/fashion/StyleBattleArena";
 import AIOotd from "@/components/fashion/AIOotd";
 import AIPersonalShopper from "@/components/fashion/AIPersonalShopper";
+import FashionShowVideoGenerator from "@/components/fashion/FashionShowVideoGenerator";
+import AIStyleScanner from "@/components/fashion/AIStyleScanner";
+import SeasonStyleLeagues from "@/components/fashion/SeasonStyleLeagues";
+import AIShoppingLinks from "@/components/fashion/AIShoppingLinks";
+import WardrobeAnalytics from "@/components/fashion/WardrobeAnalytics";
+import GlobalStreetStyleFeed from "@/components/fashion/GlobalStreetStyleFeed";
 import { useAICredits } from "@/hooks/useAICredits";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -38,7 +44,8 @@ type ActiveView =
   | "try-on" | "capsule" | "recommender" | "wardrobe" | "wishlist"
   | "style-dna" | "trend-forecaster" | "color-harmony" | "mood-board"
   | "body-shape" | "sustainable" | "fashion-show" | "style-battle"
-  | "ootd" | "personal-shopper";
+  | "ootd" | "personal-shopper" | "video-generator" | "style-scanner"
+  | "season-leagues" | "shopping-links" | "wardrobe-analytics" | "street-style";
 
 const useFashionStats = () => {
   return useQuery({
@@ -73,6 +80,13 @@ export default function FashionStudio() {
     { id: "style-battle", title: "Style Battle Arena", desc: "P2P outfit competitions with community voting", cost: "5 Credits", icon: Swords, gradient: "from-red-500 to-orange-600", isNew: true },
     { id: "ootd", title: "AI Outfit of the Day", desc: "Daily AI scoring of your outfit", cost: "5 Credits", icon: Camera, gradient: "from-amber-500 to-orange-600", isNew: true },
     { id: "personal-shopper", title: "AI Personal Shopper", desc: "Chat with Luna, your AI fashion consultant", cost: "2 Credits/msg", icon: MessageCircle, gradient: "from-violet-500 to-purple-600", isNew: true },
+    // Enhancement features
+    { id: "video-generator", title: "Fashion Video Generator", desc: "Cinematic runway video storyboards with AI direction", cost: "25 Credits", icon: Video, gradient: "from-red-500 to-pink-600", isNew: true },
+    { id: "style-scanner", title: "AI Style Scanner", desc: "Instant outfit recognition, scoring & brand detection", cost: "8 Credits", icon: ScanLine, gradient: "from-cyan-500 to-blue-600", isNew: true },
+    { id: "season-leagues", title: "Season Style Leagues", desc: "Competitive seasonal rankings & leaderboards", cost: "10 Credits", icon: Crown, gradient: "from-purple-500 to-pink-600", isNew: true },
+    { id: "shopping-links", title: "AI Shopping Links", desc: "Direct purchase recommendations for any outfit", cost: "6 Credits", icon: ShoppingCart, gradient: "from-emerald-500 to-teal-600", isNew: true },
+    { id: "wardrobe-analytics", title: "Wardrobe Analytics", desc: "Usage stats, cost-per-wear & optimization", cost: "10 Credits", icon: BarChart3, gradient: "from-indigo-500 to-purple-600", isNew: true },
+    { id: "street-style", title: "Global Street Style", desc: "Community feed with AI trend mapping", cost: "3 Credits/post", icon: Globe, gradient: "from-orange-500 to-red-600", isNew: true },
     // Existing tools
     { id: "generator", title: "AI Design Generator", desc: "Create unique clothing designs with AI", cost: "50-400 Credits", icon: Sparkles, gradient: "from-fuchsia-500 to-pink-600" },
     { id: "gallery", title: "Design Gallery", desc: "Browse & discover community creations", cost: "Free", icon: Eye, gradient: "from-purple-500 to-violet-600" },
@@ -112,6 +126,12 @@ export default function FashionStudio() {
       case "style-battle": return <StyleBattleArena />;
       case "ootd": return <AIOotd />;
       case "personal-shopper": return <AIPersonalShopper />;
+      case "video-generator": return <FashionShowVideoGenerator />;
+      case "style-scanner": return <AIStyleScanner />;
+      case "season-leagues": return <SeasonStyleLeagues />;
+      case "shopping-links": return <AIShoppingLinks />;
+      case "wardrobe-analytics": return <WardrobeAnalytics />;
+      case "street-style": return <GlobalStreetStyleFeed />;
       default: return null;
     }
   };
@@ -201,7 +221,7 @@ export default function FashionStudio() {
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
             <Card className="p-3 sm:p-4 bg-card/80 backdrop-blur-xl border-primary/20 text-center">
               <Gem className="h-5 w-5 sm:h-6 sm:w-6 text-accent mx-auto mb-1" />
-              <p className="text-lg sm:text-xl font-black">19</p>
+              <p className="text-lg sm:text-xl font-black">25</p>
               <p className="text-[10px] sm:text-xs text-muted-foreground">Tools</p>
             </Card>
           </motion.div>
@@ -224,8 +244,8 @@ export default function FashionStudio() {
           <div className="flex items-center gap-3 flex-wrap">
             <span className="text-2xl">🔥</span>
             <div className="flex-1 min-w-[180px]">
-              <p className="font-bold text-sm">4 New AI Features!</p>
-              <p className="text-xs text-muted-foreground">Fashion Show Simulator, Style Battles, OOTD Scoring & Personal Shopper Chat</p>
+              <p className="font-bold text-sm">10 New AI Features!</p>
+              <p className="text-xs text-muted-foreground">Video Generator, Style Scanner, Season Leagues, Shopping Links, Wardrobe Analytics & more</p>
             </div>
             <Button variant="outline" size="sm" onClick={() => setActiveView("fashion-show")} className="text-xs">
               Try Now
