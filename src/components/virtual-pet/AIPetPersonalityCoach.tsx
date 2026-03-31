@@ -15,7 +15,7 @@ export const AIPetPersonalityCoach = ({ onBack }: Props) => {
   const [selectedPetId, setSelectedPetId] = useState("");
   const [result, setResult] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const { credits, useCredits } = useAICredits();
+  const { credits, useCredit } = useAICredits();
 
   const { data: pets } = useQuery({
     queryKey: ['my-pets'],
