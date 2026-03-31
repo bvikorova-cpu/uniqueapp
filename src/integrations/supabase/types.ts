@@ -12479,6 +12479,79 @@ export type Database = {
         }
         Relationships: []
       }
+      fashion_battle_entries: {
+        Row: {
+          ai_feedback: string | null
+          ai_score: number | null
+          battle_id: string
+          created_at: string | null
+          id: string
+          image_url: string | null
+          outfit_description: string
+          user_id: string
+          vote_count: number | null
+        }
+        Insert: {
+          ai_feedback?: string | null
+          ai_score?: number | null
+          battle_id: string
+          created_at?: string | null
+          id?: string
+          image_url?: string | null
+          outfit_description: string
+          user_id: string
+          vote_count?: number | null
+        }
+        Update: {
+          ai_feedback?: string | null
+          ai_score?: number | null
+          battle_id?: string
+          created_at?: string | null
+          id?: string
+          image_url?: string | null
+          outfit_description?: string
+          user_id?: string
+          vote_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fashion_battle_entries_battle_id_fkey"
+            columns: ["battle_id"]
+            isOneToOne: false
+            referencedRelation: "fashion_style_battles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fashion_battle_votes: {
+        Row: {
+          created_at: string | null
+          entry_id: string
+          id: string
+          voter_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          entry_id: string
+          id?: string
+          voter_id: string
+        }
+        Update: {
+          created_at?: string | null
+          entry_id?: string
+          id?: string
+          voter_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fashion_battle_votes_entry_id_fkey"
+            columns: ["entry_id"]
+            isOneToOne: false
+            referencedRelation: "fashion_battle_entries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       fashion_categories: {
         Row: {
           created_at: string | null
@@ -12836,6 +12909,42 @@ export type Database = {
         }
         Relationships: []
       }
+      fashion_ootd: {
+        Row: {
+          ai_feedback: string | null
+          ai_score: number | null
+          created_at: string | null
+          credits_used: number | null
+          id: string
+          image_url: string | null
+          outfit_description: string
+          style_tags: string[] | null
+          user_id: string
+        }
+        Insert: {
+          ai_feedback?: string | null
+          ai_score?: number | null
+          created_at?: string | null
+          credits_used?: number | null
+          id?: string
+          image_url?: string | null
+          outfit_description: string
+          style_tags?: string[] | null
+          user_id: string
+        }
+        Update: {
+          ai_feedback?: string | null
+          ai_score?: number | null
+          created_at?: string | null
+          credits_used?: number | null
+          id?: string
+          image_url?: string | null
+          outfit_description?: string
+          style_tags?: string[] | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       fashion_purchases: {
         Row: {
           buyer_id: string
@@ -12886,6 +12995,60 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      fashion_shopper_chats: {
+        Row: {
+          created_at: string | null
+          id: string
+          messages: Json
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          messages?: Json
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          messages?: Json
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      fashion_style_battles: {
+        Row: {
+          created_at: string | null
+          created_by: string
+          ends_at: string
+          id: string
+          status: string
+          theme: string
+          title: string
+        }
+        Insert: {
+          created_at?: string | null
+          created_by: string
+          ends_at: string
+          id?: string
+          status?: string
+          theme: string
+          title: string
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string
+          ends_at?: string
+          id?: string
+          status?: string
+          theme?: string
+          title?: string
+        }
+        Relationships: []
       }
       fashion_styles: {
         Row: {
