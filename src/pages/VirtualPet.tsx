@@ -103,6 +103,11 @@ const VirtualPet = () => {
       case "fashion-show": return <PetFashionShow onBack={goBack} />;
       case "seasonal-events": return <SeasonalEvents onBack={goBack} />;
       case "multiplayer-coop": return <MultiplayerCoOp onBack={goBack} />;
+      case "evolution-advisor": return <AIPetEvolutionAdvisor onBack={goBack} />;
+      case "diet-planner": return <AIPetDietPlanner onBack={goBack} />;
+      case "dream-interpreter": return <AIPetDreamInterpreter onBack={goBack} />;
+      case "leaderboard": return <PetLeaderboard onBack={goBack} />;
+      case "talent-scout": return <AIPetTalentScout onBack={goBack} />;
       default: return null;
     }
   };
