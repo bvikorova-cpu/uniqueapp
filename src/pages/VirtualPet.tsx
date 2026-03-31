@@ -23,12 +23,18 @@ import { AIPetPhotoStudio } from "@/components/virtual-pet/AIPetPhotoStudio";
 import { PetFashionShow } from "@/components/virtual-pet/PetFashionShow";
 import { SeasonalEvents } from "@/components/virtual-pet/SeasonalEvents";
 import { MultiplayerCoOp } from "@/components/virtual-pet/MultiplayerCoOp";
+import { AIPetEvolutionAdvisor } from "@/components/virtual-pet/AIPetEvolutionAdvisor";
+import { AIPetDietPlanner } from "@/components/virtual-pet/AIPetDietPlanner";
+import { AIPetDreamInterpreter } from "@/components/virtual-pet/AIPetDreamInterpreter";
+import { PetLeaderboard } from "@/components/virtual-pet/PetLeaderboard";
+import { AIPetTalentScout } from "@/components/virtual-pet/AIPetTalentScout";
 import { VirtualPetHero } from "@/components/virtual-pet/VirtualPetHero";
 import {
   Heart, Store, Palette, ArrowLeftRight, Gamepad2, Swords, Dna,
   Brain, Wand2, Activity, BookOpen, Coins, CreditCard, Flame, Trophy, Star,
   SmilePlus, CalendarDays, HeartHandshake, Target,
-  MessageCircle, Camera, Crown, CalendarHeart, Users
+  MessageCircle, Camera, Crown, CalendarHeart, Users,
+  Zap, Apple, Moon, Search
 } from "lucide-react";
 import { useAICredits } from "@/hooks/useAICredits";
 import { motion } from "framer-motion";
@@ -36,7 +42,8 @@ import { motion } from "framer-motion";
 type ActiveView = "dashboard" | "pets" | "battle" | "shop" | "customize" | "trading" | "games" | "breeding" |
   "personality-coach" | "name-generator" | "health-predictor" | "story-generator" |
   "mood-analyzer" | "training-planner" | "compatibility-checker" | "battle-strategy" |
-  "voice-chat" | "photo-studio" | "fashion-show" | "seasonal-events" | "multiplayer-coop";
+  "voice-chat" | "photo-studio" | "fashion-show" | "seasonal-events" | "multiplayer-coop" |
+  "evolution-advisor" | "diet-planner" | "dream-interpreter" | "leaderboard" | "talent-scout";
 
 const tools: { id: ActiveView; icon: any; title: string; description: string; color: string; badge?: string; isNew?: boolean }[] = [
   { id: "pets", icon: Heart, title: "My Pets", description: "View, feed & care for your companions", color: "pink" },
@@ -59,6 +66,11 @@ const tools: { id: ActiveView; icon: any; title: string; description: string; co
   { id: "training-planner", icon: CalendarDays, title: "AI Training Planner", description: "Optimized daily training schedule", color: "blue", badge: "5 Cr", isNew: true },
   { id: "compatibility-checker", icon: HeartHandshake, title: "AI Compatibility", description: "Breeding compatibility & predictions", color: "pink", badge: "6 Cr", isNew: true },
   { id: "battle-strategy", icon: Target, title: "AI Battle Strategy", description: "Optimal formations & tactics", color: "red", badge: "4 Cr", isNew: true },
+  { id: "evolution-advisor", icon: Zap, title: "AI Evolution Advisor", description: "Predict optimal evolution paths", color: "amber", badge: "5 Cr", isNew: true },
+  { id: "diet-planner", icon: Apple, title: "AI Diet Planner", description: "Custom nutrition & feeding plans", color: "lime", badge: "3 Cr", isNew: true },
+  { id: "dream-interpreter", icon: Moon, title: "AI Dream Interpreter", description: "Discover your pet's dream world", color: "violet", badge: "4 Cr", isNew: true },
+  { id: "leaderboard", icon: Trophy, title: "Global Leaderboard", description: "Top pets across the platform", color: "amber" },
+  { id: "talent-scout", icon: Search, title: "AI Talent Scout", description: "Discover hidden abilities & moves", color: "teal", badge: "5 Cr", isNew: true },
 ];
 
 const VirtualPet = () => {
@@ -91,6 +103,11 @@ const VirtualPet = () => {
       case "fashion-show": return <PetFashionShow onBack={goBack} />;
       case "seasonal-events": return <SeasonalEvents onBack={goBack} />;
       case "multiplayer-coop": return <MultiplayerCoOp onBack={goBack} />;
+      case "evolution-advisor": return <AIPetEvolutionAdvisor onBack={goBack} />;
+      case "diet-planner": return <AIPetDietPlanner onBack={goBack} />;
+      case "dream-interpreter": return <AIPetDreamInterpreter onBack={goBack} />;
+      case "leaderboard": return <PetLeaderboard onBack={goBack} />;
+      case "talent-scout": return <AIPetTalentScout onBack={goBack} />;
       default: return null;
     }
   };
