@@ -32,7 +32,7 @@ export const BloodlineGenealogy = () => {
     queryKey: ["horse-bloodline", selectedHorse],
     queryFn: async () => {
       if (!selectedHorse) return [];
-      const { data } = await supabase
+      const { data } = await (supabase as any)
         .from("horse_bloodlines")
         .select("*, parent:horses!horse_bloodlines_parent_id_fkey(id, name, breed, color, level, speed_stat, stamina_stat, acceleration_stat, race_wins)")
         .eq("horse_id", selectedHorse)

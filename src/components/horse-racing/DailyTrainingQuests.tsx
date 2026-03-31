@@ -47,7 +47,7 @@ export const DailyTrainingQuests = () => {
     queryFn: async () => {
       const { data: { user: u } } = await supabase.auth.getUser();
       if (!u) return {};
-      const { data } = await supabase
+      const { data } = await (supabase as any)
         .from("horse_daily_quests")
         .select("*")
         .eq("user_id", u.id)
