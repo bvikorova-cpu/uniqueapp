@@ -20,7 +20,7 @@ export const AIPetStoryGenerator = ({ onBack }: Props) => {
   const [setting, setSetting] = useState("");
   const [result, setResult] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const { credits, useCredits } = useAICredits();
+  const { credits, useCredit } = useAICredits();
 
   const { data: pets } = useQuery({
     queryKey: ['my-pets'],
