@@ -35,7 +35,8 @@ import { motion } from "framer-motion";
 
 type ActiveView = "dashboard" | "pets" | "battle" | "shop" | "customize" | "trading" | "games" | "breeding" |
   "personality-coach" | "name-generator" | "health-predictor" | "story-generator" |
-  "mood-analyzer" | "training-planner" | "compatibility-checker" | "battle-strategy";
+  "mood-analyzer" | "training-planner" | "compatibility-checker" | "battle-strategy" |
+  "voice-chat" | "photo-studio" | "fashion-show" | "seasonal-events" | "multiplayer-coop";
 
 const tools: { id: ActiveView; icon: any; title: string; description: string; color: string; badge?: string; isNew?: boolean }[] = [
   { id: "pets", icon: Heart, title: "My Pets", description: "View, feed & care for your companions", color: "pink" },
@@ -45,6 +46,11 @@ const tools: { id: ActiveView; icon: any; title: string; description: string; co
   { id: "trading", icon: ArrowLeftRight, title: "Trading Post", description: "Trade rare pets with players", color: "orange" },
   { id: "games", icon: Gamepad2, title: "Mini Games", description: "Earn rewards & XP from games", color: "cyan" },
   { id: "breeding", icon: Dna, title: "Breeding Lab", description: "Combine pets for rare offspring", color: "emerald" },
+  { id: "voice-chat", icon: MessageCircle, title: "AI Pet Chat", description: "Talk to your pet in real-time", color: "cyan", badge: "2 Cr", isNew: true },
+  { id: "photo-studio", icon: Camera, title: "AI Photo Studio", description: "AI art portraits of your pets", color: "rose", badge: "7 Cr", isNew: true },
+  { id: "fashion-show", icon: Crown, title: "Pet Fashion Show", description: "AI-judged fashion competitions", color: "fuchsia", badge: "4 Cr", isNew: true },
+  { id: "seasonal-events", icon: CalendarHeart, title: "Seasonal Events", description: "Limited-time seasonal adventures", color: "emerald", badge: "5 Cr", isNew: true },
+  { id: "multiplayer-coop", icon: Users, title: "Multiplayer Co-Op", description: "Team dungeons & boss raids", color: "indigo", badge: "6 Cr", isNew: true },
   { id: "personality-coach", icon: Brain, title: "AI Personality Coach", description: "AI care routines & analysis", color: "violet", badge: "5 Cr", isNew: true },
   { id: "name-generator", icon: Wand2, title: "AI Name Generator", description: "Creative AI-generated pet names", color: "pink", badge: "3 Cr", isNew: true },
   { id: "health-predictor", icon: Activity, title: "AI Health Predictor", description: "Forecast evolution & health trends", color: "emerald", badge: "8 Cr", isNew: true },
