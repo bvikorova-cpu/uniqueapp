@@ -10,14 +10,14 @@ serve(async (req) => {
 
   try {
     const { petName, species, level, happiness, energy, hunger } = await req.json();
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
+    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
+    if (!OPENAI_API_KEY) throw new Error("OPENAI_API_KEY not configured");
 
-    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
-      headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+      headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
       body: JSON.stringify({
-        model: "google/gemini-3-flash-preview",
+        model: "gpt-4o-mini",
         messages: [
           { role: "system", content: "You are an expert virtual pet personality coach. Analyze the pet's stats and provide: 1) Personality type assessment, 2) Optimal daily care routine, 3) Training tips to boost stats, 4) Predicted evolution path, 5) Bonding activities. Be fun, engaging and specific." },
           { role: "user", content: `Analyze my pet:\nName: ${petName}\nSpecies: ${species}\nLevel: ${level}\nHappiness: ${happiness}/100\nEnergy: ${energy}/100\nHunger: ${hunger}/100\n\nProvide a detailed personality analysis and care plan.` }
@@ -25,9 +25,11 @@ serve(async (req) => {
       }),
     });
 
-    if (response.status === 429) return new Response(JSON.stringify({ error: "Rate limited, try again later" }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-    if (response.status === 402) return new Response(JSON.stringify({ error: "Payment required" }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-    if (!response.ok) throw new Error("AI gateway error");
+    if (!response.ok) {
+      const t = await response.text();
+      console.error("OpenAI error:", response.status, t);
+      throw new Error(`AI error: ${response.status}`);
+    }
 
     const data = await response.json();
     const result = data.choices?.[0]?.message?.content || "No analysis generated";
