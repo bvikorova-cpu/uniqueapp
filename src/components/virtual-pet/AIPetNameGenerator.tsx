@@ -20,7 +20,7 @@ export const AIPetNameGenerator = ({ onBack }: Props) => {
   const [names, setNames] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [copiedIdx, setCopiedIdx] = useState<number | null>(null);
-  const { credits, useCredits } = useAICredits();
+  const { credits, useCredit } = useAICredits();
 
   const generate = async () => {
     if (!species) return toast.error("Enter a species");
