@@ -91,7 +91,7 @@ export const TattooHero = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.6 }}
-              className="text-white/70 text-lg md:text-xl max-w-2xl mx-auto font-light tracking-wide"
+              className="text-white/70 text-sm md:text-base max-w-2xl mx-auto font-light tracking-wide"
             >
               Where Art Meets Artificial Intelligence — Bespoke Designs for the Bold
             </motion.p>
