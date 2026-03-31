@@ -10,14 +10,14 @@ serve(async (req) => {
 
   try {
     const { species, theme, personality } = await req.json();
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
+    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
+    if (!OPENAI_API_KEY) throw new Error("OPENAI_API_KEY not configured");
 
-    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
-      headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+      headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
       body: JSON.stringify({
-        model: "google/gemini-3-flash-preview",
+        model: "gpt-4o-mini",
         messages: [
           { role: "system", content: "You are a creative pet naming expert. Generate exactly 8 unique, creative pet names. Return ONLY a JSON array of strings, no other text." },
           { role: "user", content: `Generate 8 names for a ${species} pet.${theme ? ` Theme: ${theme}.` : ""}${personality ? ` Personality: ${personality}.` : ""} Return only JSON array.` }
@@ -25,9 +25,7 @@ serve(async (req) => {
       }),
     });
 
-    if (response.status === 429) return new Response(JSON.stringify({ error: "Rate limited" }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-    if (response.status === 402) return new Response(JSON.stringify({ error: "Payment required" }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-    if (!response.ok) throw new Error("AI gateway error");
+    if (!response.ok) throw new Error(`AI error: ${response.status}`);
 
     const data = await response.json();
     const content = data.choices?.[0]?.message?.content || "[]";
