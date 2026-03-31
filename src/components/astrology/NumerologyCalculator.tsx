@@ -6,8 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Calculator } from "lucide-react";
+import { Loader2, Calculator, Sparkles } from "lucide-react";
 import { toast } from "sonner";
+import { motion } from "framer-motion";
 
 export const NumerologyCalculator = () => {
   const [fullName, setFullName] = useState('');
@@ -17,26 +18,14 @@ export const NumerologyCalculator = () => {
   const calculateLifePath = (date: string) => {
     const digits = date.replace(/-/g, '').split('').map(Number);
     let sum = digits.reduce((a, b) => a + b, 0);
-    while (sum > 9 && ![11, 22, 33].includes(sum)) {
-      sum = sum.toString().split('').map(Number).reduce((a, b) => a + b, 0);
-    }
+    while (sum > 9 && ![11, 22, 33].includes(sum)) { sum = sum.toString().split('').map(Number).reduce((a, b) => a + b, 0); }
     return sum;
   };
 
   const calculateNameNumber = (name: string) => {
-    const values: { [key: string]: number } = {
-      a: 1, b: 2, c: 3, d: 4, e: 5, f: 6, g: 7, h: 8, i: 9,
-      j: 1, k: 2, l: 3, m: 4, n: 5, o: 6, p: 7, q: 8, r: 9,
-      s: 1, t: 2, u: 3, v: 4, w: 5, x: 6, y: 7, z: 8
-    };
-    
-    let sum = name.toLowerCase().split('').reduce((acc, char) => {
-      return acc + (values[char] || 0);
-    }, 0);
-    
-    while (sum > 9 && ![11, 22, 33].includes(sum)) {
-      sum = sum.toString().split('').map(Number).reduce((a, b) => a + b, 0);
-    }
+    const values: Record<string, number> = { a:1,b:2,c:3,d:4,e:5,f:6,g:7,h:8,i:9,j:1,k:2,l:3,m:4,n:5,o:6,p:7,q:8,r:9,s:1,t:2,u:3,v:4,w:5,x:6,y:7,z:8 };
+    let sum = name.toLowerCase().split('').reduce((acc, ch) => acc + (values[ch] || 0), 0);
+    while (sum > 9 && ![11, 22, 33].includes(sum)) { sum = sum.toString().split('').map(Number).reduce((a, b) => a + b, 0); }
     return sum;
   };
 
@@ -44,134 +33,84 @@ export const NumerologyCalculator = () => {
     mutationFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
-
       const lifePathNumber = calculateLifePath(birthDate);
       const destinyNumber = calculateNameNumber(fullName);
       const soulUrgeNumber = calculateNameNumber(fullName.replace(/[^aeiouAEIOU]/g, ''));
       const personalityNumber = calculateNameNumber(fullName.replace(/[aeiouAEIOU]/g, ''));
-
       const { data, error } = await supabase.functions.invoke('astrology-reading', {
-        body: {
-          type: 'numerology',
-          data: {
-            fullName,
-            birthDate,
-            lifePathNumber,
-            destinyNumber,
-            soulUrgeNumber,
-            personalityNumber
-          }
-        }
+        body: { type: 'numerology', data: { fullName, birthDate, lifePathNumber, destinyNumber, soulUrgeNumber, personalityNumber } }
       });
-
       if (error) throw error;
-
-      const numData = {
-        user_id: user.id,
-        full_name: fullName,
-        birth_date: birthDate,
-        life_path_number: lifePathNumber,
-        destiny_number: destinyNumber,
-        soul_urge_number: soulUrgeNumber,
-        personality_number: personalityNumber,
-        interpretation: data.interpretation,
-        lucky_numbers: data.luckyNumbers,
-        is_premium: false
-      };
-
-      await supabase.from('numerology_readings').insert([numData]);
+      await supabase.from('numerology_readings').insert([{
+        user_id: user.id, full_name: fullName, birth_date: birthDate, life_path_number: lifePathNumber,
+        destiny_number: destinyNumber, soul_urge_number: soulUrgeNumber, personality_number: personalityNumber,
+        interpretation: data.interpretation, lucky_numbers: data.luckyNumbers, is_premium: false
+      }]);
       return { ...data, lifePathNumber, destinyNumber, soulUrgeNumber, personalityNumber };
     },
-    onSuccess: (data) => {
-      setResult(data);
-      toast.success('Numerology reading complete!');
-    },
-    onError: (error: any) => {
-      toast.error(error.message || 'Failed to calculate numerology');
-    }
+    onSuccess: (data) => { setResult(data); toast.success('Numbers revealed! 🔢'); },
+    onError: (error: any) => { toast.error(error.message || 'Failed to calculate'); }
   });
 
+  const numberCards = result ? [
+    { label: "Life Path", value: result.lifePathNumber, gradient: "from-amber-500 to-yellow-400" },
+    { label: "Destiny", value: result.destinyNumber, gradient: "from-purple-500 to-violet-400" },
+    { label: "Soul Urge", value: result.soulUrgeNumber, gradient: "from-pink-500 to-rose-400" },
+    { label: "Personality", value: result.personalityNumber, gradient: "from-blue-500 to-cyan-400" },
+  ] : [];
+
   return (
-    <div className="space-y-6">
-      <Card className="p-6">
-        <div className="space-y-4">
-          <div className="flex items-center gap-2 mb-4">
-            <Calculator className="h-5 w-5 text-blue-500" />
-            <h3 className="text-xl font-semibold">Numerology Calculator</h3>
-          </div>
-
+    <div className="space-y-4">
+      <Card className="p-5 bg-card/90 backdrop-blur-xl border-border/30 relative overflow-hidden">
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500" />
+        <div className="flex items-center gap-2 mb-3">
+          <Calculator className="h-5 w-5 text-pink-500" />
+          <h3 className="text-lg font-black text-foreground">Numerology Calculator</h3>
+        </div>
+        <div className="space-y-3">
           <div>
-            <Label htmlFor="fullName">Full Name</Label>
-            <Input
-              id="fullName"
-              placeholder="John Doe"
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
-            />
+            <Label className="text-xs font-bold">Full Name</Label>
+            <Input placeholder="John Doe" value={fullName} onChange={(e) => setFullName(e.target.value)} className="bg-muted/30 border-border/30" />
           </div>
-
           <div>
-            <Label htmlFor="birthDate">Birth Date</Label>
-            <Input
-              id="birthDate"
-              type="date"
-              value={birthDate}
-              onChange={(e) => setBirthDate(e.target.value)}
-            />
+            <Label className="text-xs font-bold">Birth Date</Label>
+            <Input type="date" value={birthDate} onChange={(e) => setBirthDate(e.target.value)} className="bg-muted/30 border-border/30" />
           </div>
-
-          <Button
-            onClick={() => readingMutation.mutate()}
-            disabled={!fullName || !birthDate || readingMutation.isPending}
-            className="w-full"
-          >
-            {readingMutation.isPending ? (
-              <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Calculating...</>
-            ) : (
-              <>Calculate Numerology</>
-            )}
+          <Button onClick={() => readingMutation.mutate()} disabled={!fullName || !birthDate || readingMutation.isPending}
+            className="w-full bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-700 hover:to-purple-700 text-white font-bold">
+            {readingMutation.isPending ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Calculating...</> : <>🔢 Calculate Numbers</>}
           </Button>
         </div>
       </Card>
 
       {result && (
-        <Card className="p-6 space-y-6">
-          <h4 className="font-semibold text-lg">Your Numbers</h4>
-          
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="text-center p-4 bg-muted rounded-lg">
-              <p className="text-sm text-muted-foreground mb-2">Life Path</p>
-              <p className="text-3xl font-bold text-primary">{result.lifePathNumber}</p>
-            </div>
-            <div className="text-center p-4 bg-muted rounded-lg">
-              <p className="text-sm text-muted-foreground mb-2">Destiny</p>
-              <p className="text-3xl font-bold text-primary">{result.destinyNumber}</p>
-            </div>
-            <div className="text-center p-4 bg-muted rounded-lg">
-              <p className="text-sm text-muted-foreground mb-2">Soul Urge</p>
-              <p className="text-3xl font-bold text-primary">{result.soulUrgeNumber}</p>
-            </div>
-            <div className="text-center p-4 bg-muted rounded-lg">
-              <p className="text-sm text-muted-foreground mb-2">Personality</p>
-              <p className="text-3xl font-bold text-primary">{result.personalityNumber}</p>
-            </div>
-          </div>
-
-          <div className="prose prose-sm max-w-none">
-            <p className="text-foreground leading-relaxed whitespace-pre-wrap">{result.interpretation}</p>
-          </div>
-
-          <div>
-            <h4 className="font-semibold mb-3">Your Lucky Numbers</h4>
-            <div className="flex gap-2 flex-wrap">
-              {result.luckyNumbers?.map((num: number) => (
-                <Badge key={num} variant="outline" className="text-lg px-4 py-2">
-                  {num}
-                </Badge>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+          <Card className="p-5 bg-card/90 backdrop-blur-xl border-border/30 space-y-4 relative overflow-hidden">
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-pink-500 to-blue-500" />
+            <h4 className="text-sm font-black text-foreground">Your Core Numbers</h4>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              {numberCards.map((n, i) => (
+                <motion.div key={n.label} initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: i * 0.1, type: "spring" }}
+                  className="text-center p-3 bg-muted/30 rounded-xl border border-border/30 relative overflow-hidden">
+                  <div className={`absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r ${n.gradient}`} />
+                  <p className="text-[10px] text-muted-foreground mb-1">{n.label}</p>
+                  <p className="text-3xl font-black text-foreground">{n.value}</p>
+                </motion.div>
               ))}
             </div>
-          </div>
-        </Card>
+            <p className="text-sm text-foreground leading-relaxed whitespace-pre-wrap">{result.interpretation}</p>
+            {result.luckyNumbers && (
+              <div>
+                <h4 className="text-xs font-bold text-foreground mb-2">Lucky Numbers</h4>
+                <div className="flex gap-1.5 flex-wrap">
+                  {result.luckyNumbers.map((num: number) => (
+                    <span key={num} className="w-8 h-8 rounded-lg bg-primary/10 border border-primary/30 flex items-center justify-center text-sm font-bold text-primary">{num}</span>
+                  ))}
+                </div>
+              </div>
+            )}
+          </Card>
+        </motion.div>
       )}
     </div>
   );
