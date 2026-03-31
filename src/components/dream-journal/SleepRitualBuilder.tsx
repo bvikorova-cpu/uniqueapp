@@ -38,7 +38,7 @@ const SleepRitualBuilder = ({ onBack }: SleepRitualBuilderProps) => {
     }
     setLoading(true);
     try {
-      const used = await useCredit("sleep_ritual", "Sleep Ritual Builder");
+      const used = await useCredit("effect", "Sleep Ritual Builder");
       if (!used) throw new Error("Failed to use credit");
 
       const { data: { session } } = await supabase.auth.getSession();

@@ -34,7 +34,7 @@ const DreamDictionary = ({ onBack }: DreamDictionaryProps) => {
     }
     setLoading(true);
     try {
-      const used = await useCredit("dream_dictionary", "Dream Dictionary Lookup");
+      const used = await useCredit("effect", "Dream Dictionary Lookup");
       if (!used) throw new Error("Failed to use credit");
 
       const { data: { session } } = await supabase.auth.getSession();

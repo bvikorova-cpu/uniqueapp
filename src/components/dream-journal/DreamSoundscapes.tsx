@@ -41,7 +41,7 @@ const DreamSoundscapes = ({ onBack }: DreamSoundscapesProps) => {
     }
     setLoading(true);
     try {
-      const used = await useCredit("dream_soundscape", "Dream Soundscape Generation", 2);
+      const used = await useCredit("effect", "Dream Soundscape Generation");
       if (!used) throw new Error("Failed to use credits");
 
       const { data: { session } } = await supabase.auth.getSession();

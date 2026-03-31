@@ -176,7 +176,7 @@ const DreamInterpretationBattles = ({ onBack }: DreamInterpretationBattlesProps)
 
               {battle.interpretations.map((interp, j) => (
                 <div key={interp.id} className="flex items-start gap-2 p-2 rounded-lg bg-background/30 border border-border/20">
-                  {j === 0 && <Crown className="h-4 w-4 text-yellow-500 flex-shrink-0 mt-0.5" />}
+                  {j === 0 && <Crown className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />}
                   <p className="text-xs flex-1">{interp.interpretation_text}</p>
                   <Button size="sm" variant="ghost" className="h-6 px-2 gap-1 text-xs"
                     onClick={() => voteInterpretation(interp.id, interp.votes)}>

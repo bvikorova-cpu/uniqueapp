@@ -40,7 +40,7 @@ const AIDreamVisualizer = ({ onBack }: AIDreamVisualizerProps) => {
     }
     setLoading(true);
     try {
-      const used = await useCredit("dream_visualizer", "AI Dream Visualization", 3);
+      const used = await useCredit("effect", "AI Dream Visualization");
       if (!used) throw new Error("Failed to use credits");
 
       const { data: { session } } = await supabase.auth.getSession();

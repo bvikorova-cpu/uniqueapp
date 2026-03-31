@@ -24,7 +24,7 @@ const DreamMoodCorrelation = ({ onBack }: DreamMoodCorrelationProps) => {
     }
     setLoading(true);
     try {
-      const used = await useCredit("dream_mood_correlation", "Dream-Mood Correlation Analysis");
+      const used = await useCredit("effect", "Dream-Mood Correlation Analysis");
       if (!used) throw new Error("Failed to use credit");
 
       const { data: { session } } = await supabase.auth.getSession();
@@ -32,8 +32,8 @@ const DreamMoodCorrelation = ({ onBack }: DreamMoodCorrelationProps) => {
 
       // Fetch user's dream entries and mood data
       const [dreamsRes, moodsRes] = await Promise.all([
-        supabase.from("dream_entries").select("*").eq("user_id", session.user.id).order("created_at", { ascending: false }).limit(50),
-        supabase.from("mood_entries").select("*").eq("user_id", session.user.id).order("created_at", { ascending: false }).limit(50),
+        (supabase as any).from("dream_entries").select("*").eq("user_id", session.user.id).order("created_at", { ascending: false }).limit(50),
+        (supabase as any).from("dream_mood_entries").select("*").eq("user_id", session.user.id).order("created_at", { ascending: false }).limit(50),
       ]);
 
       const dreams = dreamsRes.data || [];
