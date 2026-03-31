@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Swords, Loader2 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Swords, Loader2, Shield, Zap, Heart } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { motion } from "framer-motion";
 
 export const CharacterBattleArena = () => {
   const [selectedChar1, setSelectedChar1] = useState<string | null>(null);
@@ -15,11 +17,7 @@ export const CharacterBattleArena = () => {
   const { data: characters } = useQuery({
     queryKey: ["characters"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("characters")
-        .select("*")
-        .order("created_at", { ascending: false });
-
+      const { data, error } = await supabase.from("characters").select("*").order("created_at", { ascending: false });
       if (error) throw error;
       return data;
     },
@@ -27,10 +25,7 @@ export const CharacterBattleArena = () => {
 
   const battle = useMutation({
     mutationFn: async (data: { character1Id: string; character2Id: string }) => {
-      const { data: result, error } = await supabase.functions.invoke('battle-characters', {
-        body: data
-      });
-
+      const { data: result, error } = await supabase.functions.invoke('battle-characters', { body: data });
       if (error) throw error;
       return result;
     },
@@ -39,122 +34,100 @@ export const CharacterBattleArena = () => {
       toast.success("Battle complete!");
       queryClient.invalidateQueries({ queryKey: ["characters"] });
     },
-    onError: (error: Error) => {
-      toast.error(error.message || "Failed to start battle");
-    },
+    onError: (error: Error) => toast.error(error.message || "Failed to start battle"),
   });
 
-  const startBattle = () => {
-    if (!selectedChar1 || !selectedChar2) {
-      toast.error("Please select two characters");
-      return;
-    }
-
-    if (selectedChar1 === selectedChar2) {
-      toast.error("Cannot battle the same character");
-      return;
-    }
-
-    battle.mutate({ character1Id: selectedChar1, character2Id: selectedChar2 });
-  };
+  const renderCharList = (selectedId: string | null, onSelect: (id: string) => void, label: string, accentColor: string) => (
+    <div>
+      <h3 className="font-bold text-sm mb-3 text-foreground flex items-center gap-2">
+        <Swords className="h-4 w-4" /> {label}
+      </h3>
+      <div className="space-y-2 max-h-[300px] overflow-y-auto pr-1">
+        {characters?.map((char) => (
+          <motion.div
+            key={char.id}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => onSelect(char.id)}
+            className={`p-3 rounded-xl cursor-pointer border transition-all ${
+              selectedId === char.id ? `border-${accentColor}-500 bg-${accentColor}-500/10 shadow-lg shadow-${accentColor}-500/20` : "border-border/30 bg-card/50 hover:border-primary/40"
+            }`}
+          >
+            <div className="flex items-center gap-3">
+              {char.image_url && <img src={char.image_url} alt={char.name} className="w-12 h-12 rounded-xl object-cover" />}
+              <div className="flex-1 min-w-0">
+                <p className="font-bold text-sm truncate">{char.name}</p>
+                <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
+                  <span>Lv.{char.level}</span>
+                  <span>•</span>
+                  <span className="text-green-400">{char.wins}W</span>
+                  <span className="text-red-400">{char.losses}L</span>
+                </div>
+              </div>
+              <div className="flex flex-col gap-1 text-[10px]">
+                <span className="flex items-center gap-1"><Heart className="h-3 w-3 text-red-400" />{char.hp}</span>
+                <span className="flex items-center gap-1"><Zap className="h-3 w-3 text-amber-400" />{char.attack}</span>
+              </div>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+    </div>
+  );
 
   return (
     <div className="space-y-6">
-      <Card className="p-6">
-        <div className="flex items-center gap-2 mb-6">
-          <Swords className="h-6 w-6 text-red-500" />
-          <h2 className="text-2xl font-bold text-foreground">Battle Arena</h2>
+      <Card className="relative overflow-hidden border-border/30 bg-card/90 backdrop-blur-xl p-6">
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-red-500 via-orange-500 to-red-500" />
+        <div className="flex items-center gap-3 mb-6">
+          <div className="p-2.5 rounded-xl bg-gradient-to-br from-red-500 to-orange-600">
+            <Swords className="h-6 w-6 text-white" />
+          </div>
+          <div>
+            <h2 className="text-2xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">Battle Arena</h2>
+            <p className="text-muted-foreground text-sm">Select two warriors and let them clash • 2 credits</p>
+          </div>
         </div>
 
         <div className="grid md:grid-cols-2 gap-6">
-          <div>
-            <h3 className="font-semibold text-base mb-3">Fighter 1</h3>
-            <div className="space-y-2 max-h-[300px] overflow-y-auto">
-              {characters?.map((char) => (
-                <Card
-                  key={char.id}
-                  className={`p-3 cursor-pointer transition-all ${
-                    selectedChar1 === char.id
-                      ? "border-blue-500 bg-blue-50 dark:bg-blue-950"
-                      : "hover:bg-accent"
-                  }`}
-                  onClick={() => setSelectedChar1(char.id)}
-                >
-                  <div className="flex items-center gap-3">
-                    {char.image_url && (
-                      <img src={char.image_url} alt={char.name} className="w-12 h-12 rounded object-cover" />
-                    )}
-                    <div>
-                      <p className="font-semibold">{char.name}</p>
-                      <p className="text-muted-foreground text-xs">Lvl {char.level} • {char.wins}W/{char.losses}L</p>
-                    </div>
-                  </div>
-                </Card>
-              ))}
-            </div>
-          </div>
-
-          <div>
-            <h3 className="font-semibold text-base mb-3">Fighter 2</h3>
-            <div className="space-y-2 max-h-[300px] overflow-y-auto">
-              {characters?.map((char) => (
-                <Card
-                  key={char.id}
-                  className={`p-3 cursor-pointer transition-all ${
-                    selectedChar2 === char.id
-                      ? "border-red-500 bg-red-50 dark:bg-red-950"
-                      : "hover:bg-accent"
-                  }`}
-                  onClick={() => setSelectedChar2(char.id)}
-                >
-                  <div className="flex items-center gap-3">
-                    {char.image_url && (
-                      <img src={char.image_url} alt={char.name} className="w-12 h-12 rounded object-cover" />
-                    )}
-                    <div>
-                      <p className="font-semibold">{char.name}</p>
-                      <p className="text-muted-foreground text-xs">Lvl {char.level} • {char.wins}W/{char.losses}L</p>
-                    </div>
-                  </div>
-                </Card>
-              ))}
-            </div>
-          </div>
+          {renderCharList(selectedChar1, setSelectedChar1, "Fighter 1", "blue")}
+          {renderCharList(selectedChar2, setSelectedChar2, "Fighter 2", "red")}
         </div>
 
         <Button
-          onClick={startBattle}
+          onClick={() => {
+            if (!selectedChar1 || !selectedChar2) { toast.error("Select two characters"); return; }
+            if (selectedChar1 === selectedChar2) { toast.error("Cannot battle the same character"); return; }
+            battle.mutate({ character1Id: selectedChar1, character2Id: selectedChar2 });
+          }}
           disabled={battle.isPending || !selectedChar1 || !selectedChar2}
-          className="w-full mt-6"
+          className="w-full mt-6 bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white font-bold"
           size="lg"
         >
           {battle.isPending ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Battle in Progress...
-            </>
+            <><Loader2 className="mr-2 h-5 w-5 animate-spin" /> Battle in Progress...</>
           ) : (
-            <>
-              <Swords className="mr-2 h-4 w-4" />
-              Start Battle (2 credits)
-            </>
+            <><Swords className="mr-2 h-5 w-5" /> Start Battle (2 Credits)</>
           )}
         </Button>
       </Card>
 
       {battleResult && (
-        <Card className="p-6 bg-gradient-to-br from-yellow-100 to-orange-100 dark:from-yellow-900/20 dark:to-orange-900/20 border-yellow-400/50">
-          <h3 className="text-2xl font-bold text-foreground mb-4">🏆 Battle Result</h3>
-          <div className="mb-4">
-            <p className="text-foreground text-lg">
-              <span className="font-bold text-yellow-600 dark:text-yellow-400">{battleResult.winner.name}</span> defeats{" "}
-              <span className="font-bold">{battleResult.loser.name}</span>!
-            </p>
-          </div>
-          <div className="bg-muted p-4 rounded-lg">
-            <p className="text-foreground whitespace-pre-wrap">{battleResult.commentary}</p>
-          </div>
-        </Card>
+        <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ type: "spring" }}>
+          <Card className="p-6 border-amber-500/30 bg-gradient-to-br from-amber-900/20 to-orange-900/20 backdrop-blur-xl">
+            <h3 className="text-2xl font-black text-amber-400 mb-4">🏆 Battle Result</h3>
+            <div className="mb-4">
+              <p className="text-lg">
+                <span className="font-black text-amber-400">{battleResult.winner.name}</span>{" "}
+                <span className="text-muted-foreground">defeats</span>{" "}
+                <span className="font-bold">{battleResult.loser.name}</span>!
+              </p>
+            </div>
+            <div className="bg-card/30 p-4 rounded-xl border border-border/20">
+              <p className="text-muted-foreground whitespace-pre-wrap text-sm">{battleResult.commentary}</p>
+            </div>
+          </Card>
+        </motion.div>
       )}
     </div>
   );
