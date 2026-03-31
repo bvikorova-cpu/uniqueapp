@@ -14,16 +14,22 @@ import { AIPetPersonalityCoach } from "@/components/virtual-pet/AIPetPersonality
 import { AIPetNameGenerator } from "@/components/virtual-pet/AIPetNameGenerator";
 import { AIPetHealthPredictor } from "@/components/virtual-pet/AIPetHealthPredictor";
 import { AIPetStoryGenerator } from "@/components/virtual-pet/AIPetStoryGenerator";
+import { AIPetMoodAnalyzer } from "@/components/virtual-pet/AIPetMoodAnalyzer";
+import { AIPetTrainingPlanner } from "@/components/virtual-pet/AIPetTrainingPlanner";
+import { AIPetCompatibilityChecker } from "@/components/virtual-pet/AIPetCompatibilityChecker";
+import { AIPetBattleStrategy } from "@/components/virtual-pet/AIPetBattleStrategy";
 import { VirtualPetHero } from "@/components/virtual-pet/VirtualPetHero";
 import {
   Heart, Store, Palette, ArrowLeftRight, Gamepad2, Swords, Dna,
-  Brain, Wand2, Activity, BookOpen, Coins, CreditCard, Flame, Trophy, Star
+  Brain, Wand2, Activity, BookOpen, Coins, CreditCard, Flame, Trophy, Star,
+  SmilePlus, CalendarDays, HeartHandshake, Target
 } from "lucide-react";
 import { useAICredits } from "@/hooks/useAICredits";
 import { motion } from "framer-motion";
 
 type ActiveView = "dashboard" | "pets" | "battle" | "shop" | "customize" | "trading" | "games" | "breeding" |
-  "personality-coach" | "name-generator" | "health-predictor" | "story-generator";
+  "personality-coach" | "name-generator" | "health-predictor" | "story-generator" |
+  "mood-analyzer" | "training-planner" | "compatibility-checker" | "battle-strategy";
 
 const tools: { id: ActiveView; icon: any; title: string; description: string; color: string; badge?: string; isNew?: boolean }[] = [
   { id: "pets", icon: Heart, title: "My Pets", description: "View, feed & care for your companions", color: "pink" },
@@ -33,10 +39,14 @@ const tools: { id: ActiveView; icon: any; title: string; description: string; co
   { id: "trading", icon: ArrowLeftRight, title: "Trading Post", description: "Trade rare pets with players", color: "orange" },
   { id: "games", icon: Gamepad2, title: "Mini Games", description: "Earn rewards & XP from games", color: "cyan" },
   { id: "breeding", icon: Dna, title: "Breeding Lab", description: "Combine pets for rare offspring", color: "emerald" },
-  { id: "personality-coach", icon: Brain, title: "AI Personality Coach", description: "Get AI care routines & analysis", color: "violet", badge: "5 Cr", isNew: true },
+  { id: "personality-coach", icon: Brain, title: "AI Personality Coach", description: "AI care routines & analysis", color: "violet", badge: "5 Cr", isNew: true },
   { id: "name-generator", icon: Wand2, title: "AI Name Generator", description: "Creative AI-generated pet names", color: "pink", badge: "3 Cr", isNew: true },
   { id: "health-predictor", icon: Activity, title: "AI Health Predictor", description: "Forecast evolution & health trends", color: "emerald", badge: "8 Cr", isNew: true },
   { id: "story-generator", icon: BookOpen, title: "AI Story Generator", description: "Adventure stories starring your pets", color: "amber", badge: "6 Cr", isNew: true },
+  { id: "mood-analyzer", icon: SmilePlus, title: "AI Mood Analyzer", description: "Deep emotional state analysis", color: "cyan", badge: "4 Cr", isNew: true },
+  { id: "training-planner", icon: CalendarDays, title: "AI Training Planner", description: "Optimized daily training schedule", color: "blue", badge: "5 Cr", isNew: true },
+  { id: "compatibility-checker", icon: HeartHandshake, title: "AI Compatibility", description: "Breeding compatibility & predictions", color: "pink", badge: "6 Cr", isNew: true },
+  { id: "battle-strategy", icon: Target, title: "AI Battle Strategy", description: "Optimal formations & tactics", color: "red", badge: "4 Cr", isNew: true },
 ];
 
 const VirtualPet = () => {
@@ -60,6 +70,10 @@ const VirtualPet = () => {
       case "name-generator": return <AIPetNameGenerator onBack={goBack} />;
       case "health-predictor": return <AIPetHealthPredictor onBack={goBack} />;
       case "story-generator": return <AIPetStoryGenerator onBack={goBack} />;
+      case "mood-analyzer": return <AIPetMoodAnalyzer onBack={goBack} />;
+      case "training-planner": return <AIPetTrainingPlanner onBack={goBack} />;
+      case "compatibility-checker": return <AIPetCompatibilityChecker onBack={goBack} />;
+      case "battle-strategy": return <AIPetBattleStrategy onBack={goBack} />;
       default: return null;
     }
   };
@@ -69,11 +83,8 @@ const VirtualPet = () => {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Navbar />
-
-      {/* Holographic scan lines */}
       <div className="fixed inset-0 pointer-events-none z-50 opacity-[0.03]"
-        style={{ background: 'repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(236,72,153,0.15) 3px, rgba(236,72,153,0.15) 4px)' }}
-      />
+        style={{ background: 'repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(236,72,153,0.15) 3px, rgba(236,72,153,0.15) 4px)' }} />
 
       <main className="flex-1 container mx-auto px-3 sm:px-4 pt-16 sm:pt-20 pb-8">
         <div className="max-w-6xl mx-auto">
@@ -85,7 +96,7 @@ const VirtualPet = () => {
               <div className="grid grid-cols-3 gap-3 mb-8">
                 {[
                   { icon: Flame, label: "Care Streak", value: "7 Days", color: "text-orange-500" },
-                  { icon: Coins, label: "Credits", value: `${credits.credits_remaining}`, color: "text-yellow-500", action: () => navigate('/ai-credits-store') },
+                  { icon: Coins, label: "Credits", value: `${credits.credits_remaining}`, color: "text-amber-500", action: () => navigate('/ai-credits-store') },
                   { icon: Trophy, label: "Pet Master", value: "Level 12", color: "text-amber-500" },
                 ].map((item, i) => (
                   <motion.div key={i} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 * i }}>
@@ -101,7 +112,6 @@ const VirtualPet = () => {
                 ))}
               </div>
 
-              {/* Buy Credits */}
               <div className="flex justify-center mb-6">
                 <Button onClick={() => navigate('/ai-credits-store')} className="gap-2">
                   <CreditCard className="h-4 w-4" />Buy Credits
@@ -115,16 +125,9 @@ const VirtualPet = () => {
                 </h2>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
                   {tools.map((tool, i) => (
-                    <motion.div
-                      key={tool.id}
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: i * 0.05, type: "spring" }}
-                    >
-                      <Card
-                        className="border-border/40 bg-card/80 backdrop-blur-sm hover:border-primary/30 transition-all cursor-pointer active:scale-[0.97] group relative overflow-hidden"
-                        onClick={() => setActiveView(tool.id)}
-                      >
+                    <motion.div key={tool.id} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: i * 0.03, type: "spring" }}>
+                      <Card className="border-border/40 bg-card/80 backdrop-blur-sm hover:border-primary/30 transition-all cursor-pointer active:scale-[0.97] group relative overflow-hidden"
+                        onClick={() => setActiveView(tool.id)}>
                         {tool.isNew && (
                           <div className="absolute top-1 right-1 bg-primary text-primary-foreground text-[9px] font-bold px-1.5 py-0.5 rounded-full">NEW</div>
                         )}
@@ -153,7 +156,7 @@ const VirtualPet = () => {
                       { icon: Heart, title: "1. Adopt", desc: "Choose from 28+ species including mythical creatures" },
                       { icon: Gamepad2, title: "2. Play & Care", desc: "Feed, play mini-games, and keep your pet happy" },
                       { icon: Swords, title: "3. Battle & Breed", desc: "Fight AI opponents and breed rare offspring" },
-                      { icon: Brain, title: "4. AI Services", desc: "Use AI coaches, predictors & story generators" },
+                      { icon: Brain, title: "4. AI Services", desc: "Use AI coaches, predictors & strategy advisors" },
                     ].map((step, i) => (
                       <div key={i} className="text-center space-y-2">
                         <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-primary/10 border border-primary/20">
@@ -167,15 +170,17 @@ const VirtualPet = () => {
                 </CardContent>
               </Card>
 
-              {/* Tips */}
+              {/* Pro Tips */}
               <Card className="border-border/40 bg-card/80 backdrop-blur-sm mt-6">
                 <CardContent className="p-4">
-                  <h3 className="font-bold text-sm mb-2 flex items-center gap-2"><Star className="w-4 h-4 text-yellow-500" />Pro Tips</h3>
+                  <h3 className="font-bold text-sm mb-2 flex items-center gap-2"><Star className="w-4 h-4 text-amber-500" />Pro Tips</h3>
                   <ul className="text-xs text-muted-foreground space-y-1">
                     <li>• Start with a Cat or Dog (20 credits each) — cheapest to adopt!</li>
-                    <li>• Battle winners get +25-40 XP per pet. Even losers earn +10-20 XP</li>
+                    <li>• Use AI Battle Strategy before arena fights for +30% win rate</li>
+                    <li>• AI Training Planner creates optimal XP routes — level up 2x faster</li>
+                    <li>• Check Compatibility before breeding to predict rare mutations</li>
+                    <li>• AI Mood Analyzer helps identify hidden stress — boost happiness by 25%</li>
                     <li>• Pets need Level 10+ to breed — feed and play daily to level up fast</li>
-                    <li>• Use AI Personality Coach to find optimal care routines</li>
                     <li>• Generate adventure stories to share with the community</li>
                   </ul>
                 </CardContent>
@@ -183,11 +188,8 @@ const VirtualPet = () => {
             </>
           ) : (
             <div className="max-w-4xl mx-auto">
-              {/* Back button for old views */}
               {oldViews.includes(activeView) && (
-                <Button variant="ghost" onClick={goBack} className="mb-4 gap-2">
-                  ← Back to Dashboard
-                </Button>
+                <Button variant="ghost" onClick={goBack} className="mb-4 gap-2">← Back to Dashboard</Button>
               )}
               {renderView()}
             </div>
