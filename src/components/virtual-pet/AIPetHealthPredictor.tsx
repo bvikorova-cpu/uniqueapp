@@ -16,7 +16,7 @@ export const AIPetHealthPredictor = ({ onBack }: Props) => {
   const [timeframe, setTimeframe] = useState("7");
   const [result, setResult] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const { credits, useCredits } = useAICredits();
+  const { credits, useCredit } = useAICredits();
 
   const { data: pets } = useQuery({
     queryKey: ['my-pets'],
