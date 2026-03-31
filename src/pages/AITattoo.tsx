@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { 
   Sparkles, Download, Heart, Loader2, Eye, Blend, Clock, 
   Store, Palette, Image as ImageIcon, Grid3X3, Star, Crown,
-  Flame, Gem, Zap, TrendingUp, Award
+  Gem, Zap, Award, BookOpen, RefreshCw, MapPin, ShieldCheck
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -20,8 +20,13 @@ import { TattooStyleMixer } from "@/components/tattoo/TattooStyleMixer";
 import { TattooAgingSimulator } from "@/components/tattoo/TattooAgingSimulator";
 import { TattooARPreview } from "@/components/tattoo/TattooARPreview";
 import { TattooArtistMarketplace } from "@/components/tattoo/TattooArtistMarketplace";
+import { TattooColorPalette } from "@/components/tattoo/TattooColorPalette";
+import { TattooMeaningEncyclopedia } from "@/components/tattoo/TattooMeaningEncyclopedia";
+import { TattooCoverUpGenerator } from "@/components/tattoo/TattooCoverUpGenerator";
+import { TattooPainMap } from "@/components/tattoo/TattooPainMap";
+import { TattooCareAssistant } from "@/components/tattoo/TattooCareAssistant";
 
-type ActiveView = "dashboard" | "generate" | "gallery" | "ar_preview" | "style_mixer" | "aging_sim" | "marketplace";
+type ActiveView = "dashboard" | "generate" | "gallery" | "ar_preview" | "style_mixer" | "aging_sim" | "marketplace" | "color_palette" | "meaning" | "cover_up" | "pain_map" | "care";
 
 interface TattooDesign {
   id: string;
@@ -33,26 +38,26 @@ interface TattooDesign {
   created_at: string;
 }
 
-const TOOLS = [
-  { id: "generate" as ActiveView, icon: Sparkles, label: "AI Design Generator", desc: "Create bespoke tattoo artwork with AI", cost: "8 credits", gradient: "from-amber-500 to-yellow-600" },
-  { id: "style_mixer" as ActiveView, icon: Blend, label: "Style Mixer", desc: "Blend two styles into a unique fusion", cost: "12 credits", gradient: "from-purple-500 to-pink-500" },
-  { id: "ar_preview" as ActiveView, icon: Eye, label: "AR Body Preview", desc: "See the design on your body in real-time", cost: "Free", gradient: "from-emerald-500 to-teal-500" },
-  { id: "aging_sim" as ActiveView, icon: Clock, label: "Aging Simulator", desc: "How your tattoo evolves over decades", cost: "10 credits", gradient: "from-blue-500 to-cyan-500" },
-  { id: "gallery" as ActiveView, icon: Grid3X3, label: "My Collection", desc: "Browse your personal design gallery", cost: "Free", gradient: "from-rose-500 to-orange-500" },
-  { id: "marketplace" as ActiveView, icon: Store, label: "Artist Marketplace", desc: "Connect with elite tattoo masters", cost: "Free", gradient: "from-indigo-500 to-violet-500" },
+const TOOLS: { id: ActiveView; icon: any; label: string; desc: string; cost: string; gradient: string }[] = [
+  { id: "generate", icon: Sparkles, label: "AI Design Generator", desc: "Create bespoke tattoo artwork with AI", cost: "8 credits", gradient: "from-amber-500 to-yellow-600" },
+  { id: "style_mixer", icon: Blend, label: "Style Mixer", desc: "Blend two styles into a unique fusion", cost: "12 credits", gradient: "from-purple-500 to-pink-500" },
+  { id: "cover_up", icon: RefreshCw, label: "Cover-Up Generator", desc: "AI designs to overlay your old tattoo", cost: "15 credits", gradient: "from-teal-500 to-emerald-500" },
+  { id: "ar_preview", icon: Eye, label: "AR Body Preview", desc: "See the design on your body in real-time", cost: "Free", gradient: "from-emerald-500 to-teal-500" },
+  { id: "aging_sim", icon: Clock, label: "Aging Simulator", desc: "How your tattoo evolves over decades", cost: "10 credits", gradient: "from-blue-500 to-cyan-500" },
+  { id: "color_palette", icon: Palette, label: "Color Palette AI", desc: "Perfect ink colors for your skin tone", cost: "6 credits", gradient: "from-pink-500 to-rose-500" },
+  { id: "meaning", icon: BookOpen, label: "Meaning Encyclopedia", desc: "Symbolism & history of any motif", cost: "5 credits", gradient: "from-orange-500 to-red-500" },
+  { id: "pain_map", icon: MapPin, label: "Pain Map", desc: "Detailed pain levels for every body part", cost: "3 credits", gradient: "from-red-500 to-orange-500" },
+  { id: "care", icon: ShieldCheck, label: "Care Assistant", desc: "AI healing guide & aftercare checklist", cost: "5 credits", gradient: "from-green-500 to-lime-500" },
+  { id: "gallery", icon: Grid3X3, label: "My Collection", desc: "Browse your personal design gallery", cost: "Free", gradient: "from-rose-500 to-orange-500" },
+  { id: "marketplace", icon: Store, label: "Artist Marketplace", desc: "Connect with elite tattoo masters", cost: "Free", gradient: "from-indigo-500 to-violet-500" },
 ];
 
 const styles = [
-  { value: "realistic", label: "Realistic" },
-  { value: "tribal", label: "Tribal" },
-  { value: "watercolor", label: "Watercolor" },
-  { value: "geometric", label: "Geometric" },
-  { value: "blackwork", label: "Blackwork" },
-  { value: "traditional", label: "Traditional" },
-  { value: "japanese", label: "Japanese" },
-  { value: "minimalist", label: "Minimalist" },
-  { value: "neo-traditional", label: "Neo-Traditional" },
-  { value: "dotwork", label: "Dotwork" },
+  { value: "realistic", label: "Realistic" }, { value: "tribal", label: "Tribal" },
+  { value: "watercolor", label: "Watercolor" }, { value: "geometric", label: "Geometric" },
+  { value: "blackwork", label: "Blackwork" }, { value: "traditional", label: "Traditional" },
+  { value: "japanese", label: "Japanese" }, { value: "minimalist", label: "Minimalist" },
+  { value: "neo-traditional", label: "Neo-Traditional" }, { value: "dotwork", label: "Dotwork" },
 ];
 
 const placements = [
@@ -149,6 +154,11 @@ const AITattoo = () => {
   if (activeView === "aging_sim") return wrapView(<TattooAgingSimulator onBack={goBack} />);
   if (activeView === "ar_preview") return wrapView(<TattooARPreview onBack={goBack} />);
   if (activeView === "marketplace") return wrapView(<TattooArtistMarketplace onBack={goBack} />);
+  if (activeView === "color_palette") return wrapView(<TattooColorPalette onBack={goBack} />);
+  if (activeView === "meaning") return wrapView(<TattooMeaningEncyclopedia onBack={goBack} />);
+  if (activeView === "cover_up") return wrapView(<TattooCoverUpGenerator onBack={goBack} />);
+  if (activeView === "pain_map") return wrapView(<TattooPainMap onBack={goBack} />);
+  if (activeView === "care") return wrapView(<TattooCareAssistant onBack={goBack} />);
 
   if (activeView === "generate") {
     return wrapView(
@@ -278,9 +288,9 @@ const AITattoo = () => {
                   <Palette className="h-6 w-6 text-white" />
                 </div>
                 <div>
-                  <p className="text-xs text-muted-foreground uppercase tracking-wider">Design Styles</p>
-                  <p className="text-2xl font-black">10+ Styles</p>
-                  <p className="text-xs text-muted-foreground">Realistic to Geometric</p>
+                  <p className="text-xs text-muted-foreground uppercase tracking-wider">Studio Tools</p>
+                  <p className="text-2xl font-black">11 Tools</p>
+                  <p className="text-xs text-muted-foreground">Full creative suite</p>
                 </div>
               </div>
             </Card>
@@ -318,7 +328,7 @@ const AITattoo = () => {
               key={tool.id}
               initial={{ opacity: 0, y: 30, scale: 0.9 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ delay: 0.1 + i * 0.08, type: "spring", stiffness: 200 }}
+              transition={{ delay: 0.1 + i * 0.06, type: "spring", stiffness: 200 }}
               whileHover={{ scale: 1.04, y: -4 }}
               whileTap={{ scale: 0.96 }}
             >
