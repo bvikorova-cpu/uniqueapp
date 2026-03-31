@@ -42,7 +42,6 @@ export const DrawingBuddyHero = () => {
               duration: 20 + ring * 5,
               repeat: Infinity,
               ease: "linear",
-              direction: ring % 2 === 0 ? "normal" : "reverse",
             }}
           />
         ))}

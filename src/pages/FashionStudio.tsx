@@ -8,7 +8,8 @@ import {
   Shirt, ArrowLeft, TrendingUp, Brain, Zap, Eye, Gem,
   Leaf, Layers, Crown, Star, Target, Flame, Swords, MessageCircle,
   Clapperboard, Video, ScanLine, BarChart3, ShoppingCart, Globe,
-  Calendar, Scissors, Repeat, Flower2
+  Calendar, Scissors, Repeat, Flower2, Calculator, BookOpen,
+  BadgeCheck, HeartHandshake, Radar, Wand2
 } from "lucide-react";
 import FashionGenerator from "@/components/fashion/FashionGenerator";
 import FashionGallery from "@/components/fashion/FashionGallery";
@@ -41,6 +42,12 @@ import AICelebrityStyleClone from "@/components/fashion/AICelebrityStyleClone";
 import AIColorSeasonAnalysis from "@/components/fashion/AIColorSeasonAnalysis";
 import AIOutfitRemixEngine from "@/components/fashion/AIOutfitRemixEngine";
 import AIFashionMoodRing from "@/components/fashion/AIFashionMoodRing";
+import AIOutfitCostCalculator from "@/components/fashion/AIOutfitCostCalculator";
+import AIFashionHistoryExplorer from "@/components/fashion/AIFashionHistoryExplorer";
+import AIDressCodeAdvisor from "@/components/fashion/AIDressCodeAdvisor";
+import AIFashionCompatibility from "@/components/fashion/AIFashionCompatibility";
+import AITrendAlertRadar from "@/components/fashion/AITrendAlertRadar";
+import AIVirtualStylistSession from "@/components/fashion/AIVirtualStylistSession";
 import { useAICredits } from "@/hooks/useAICredits";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -53,7 +60,8 @@ type ActiveView =
   | "body-shape" | "sustainable" | "fashion-show" | "style-battle"
   | "ootd" | "personal-shopper" | "video-generator" | "style-scanner"
   | "season-leagues" | "shopping-links" | "wardrobe-analytics" | "street-style"
-  | "forecast-calendar" | "fabric-analyzer" | "celebrity-clone" | "color-season" | "outfit-remix" | "mood-ring";
+  | "forecast-calendar" | "fabric-analyzer" | "celebrity-clone" | "color-season" | "outfit-remix" | "mood-ring"
+  | "outfit-cost" | "history-explorer" | "dress-code" | "fashion-compat" | "trend-radar" | "virtual-stylist";
 
 const useFashionStats = () => {
   return useQuery({
@@ -101,6 +109,12 @@ export default function FashionStudio() {
     { id: "color-season", title: "Color Season Analysis", desc: "Discover your Spring/Summer/Autumn/Winter palette", cost: "8 Credits", icon: Flower2, gradient: "from-rose-500 to-pink-600", isNew: true },
     { id: "outfit-remix", title: "Outfit Remix Engine", desc: "Transform 1 outfit into 10 different looks", cost: "10 Credits", icon: Repeat, gradient: "from-violet-500 to-fuchsia-600", isNew: true },
     { id: "mood-ring", title: "Fashion Mood Ring", desc: "AI reads your mood & suggests outfits", cost: "5 Credits", icon: Heart, gradient: "from-pink-500 to-purple-600", isNew: true },
+    { id: "outfit-cost", title: "Outfit Cost Calculator", desc: "Detailed cost breakdown with budget alternatives", cost: "8 Credits", icon: Calculator, gradient: "from-emerald-500 to-green-600", isNew: true },
+    { id: "history-explorer", title: "Fashion History Explorer", desc: "Discover historical eras & cultural influences", cost: "10 Credits", icon: BookOpen, gradient: "from-amber-500 to-yellow-600", isNew: true },
+    { id: "dress-code", title: "AI Dress Code Advisor", desc: "Event-specific outfit guidance & etiquette", cost: "6 Credits", icon: BadgeCheck, gradient: "from-blue-500 to-indigo-600", isNew: true },
+    { id: "fashion-compat", title: "Fashion Compatibility", desc: "Style compatibility analysis between outfits", cost: "8 Credits", icon: HeartHandshake, gradient: "from-pink-500 to-rose-600", isNew: true },
+    { id: "trend-radar", title: "Trend Alert Radar", desc: "Real-time trend scanning with virality scores", cost: "12 Credits", icon: Radar, gradient: "from-cyan-500 to-teal-600", isNew: true },
+    { id: "virtual-stylist", title: "Virtual Stylist Session", desc: "Premium AI styling consultation", cost: "15 Credits", icon: Wand2, gradient: "from-purple-500 to-violet-600", isNew: true },
     // Existing tools
     { id: "generator", title: "AI Design Generator", desc: "Create unique clothing designs with AI", cost: "50-400 Credits", icon: Sparkles, gradient: "from-fuchsia-500 to-pink-600" },
     { id: "gallery", title: "Design Gallery", desc: "Browse & discover community creations", cost: "Free", icon: Eye, gradient: "from-purple-500 to-violet-600" },
@@ -152,6 +166,12 @@ export default function FashionStudio() {
       case "color-season": return <AIColorSeasonAnalysis />;
       case "outfit-remix": return <AIOutfitRemixEngine />;
       case "mood-ring": return <AIFashionMoodRing />;
+      case "outfit-cost": return <AIOutfitCostCalculator />;
+      case "history-explorer": return <AIFashionHistoryExplorer />;
+      case "dress-code": return <AIDressCodeAdvisor />;
+      case "fashion-compat": return <AIFashionCompatibility />;
+      case "trend-radar": return <AITrendAlertRadar />;
+      case "virtual-stylist": return <AIVirtualStylistSession />;
       default: return null;
     }
   };
@@ -241,7 +261,7 @@ export default function FashionStudio() {
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
             <Card className="p-3 sm:p-4 bg-card/80 backdrop-blur-xl border-primary/20 text-center">
               <Gem className="h-5 w-5 sm:h-6 sm:w-6 text-accent mx-auto mb-1" />
-              <p className="text-lg sm:text-xl font-black">31</p>
+              <p className="text-lg sm:text-xl font-black">37</p>
               <p className="text-[10px] sm:text-xs text-muted-foreground">Tools</p>
             </Card>
           </motion.div>
@@ -264,8 +284,8 @@ export default function FashionStudio() {
           <div className="flex items-center gap-3 flex-wrap">
             <span className="text-2xl">🔥</span>
             <div className="flex-1 min-w-[180px]">
-              <p className="font-bold text-sm">16 New AI Features!</p>
-              <p className="text-xs text-muted-foreground">Forecast Calendar, Celebrity Clone, Fabric Analyzer, Color Season, Outfit Remix, Mood Ring & more</p>
+              <p className="font-bold text-sm">22 New AI Features!</p>
+              <p className="text-xs text-muted-foreground">Virtual Stylist, Trend Radar, Dress Code Advisor, Fashion Compatibility, Cost Calculator, History Explorer & more</p>
             </div>
             <Button variant="outline" size="sm" onClick={() => setActiveView("fashion-show")} className="text-xs">
               Try Now
