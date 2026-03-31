@@ -7,7 +7,8 @@ import {
   Palette, Sparkles, ShoppingBag, Trophy, Camera, Package, Heart,
   Shirt, ArrowLeft, TrendingUp, Brain, Zap, Eye, Gem,
   Leaf, Layers, Crown, Star, Target, Flame, Swords, MessageCircle,
-  Clapperboard, Video, ScanLine, BarChart3, ShoppingCart, Globe
+  Clapperboard, Video, ScanLine, BarChart3, ShoppingCart, Globe,
+  Calendar, Scissors, Repeat, Flower2
 } from "lucide-react";
 import FashionGenerator from "@/components/fashion/FashionGenerator";
 import FashionGallery from "@/components/fashion/FashionGallery";
@@ -34,6 +35,12 @@ import SeasonStyleLeagues from "@/components/fashion/SeasonStyleLeagues";
 import AIShoppingLinks from "@/components/fashion/AIShoppingLinks";
 import WardrobeAnalytics from "@/components/fashion/WardrobeAnalytics";
 import GlobalStreetStyleFeed from "@/components/fashion/GlobalStreetStyleFeed";
+import AIFashionForecastCalendar from "@/components/fashion/AIFashionForecastCalendar";
+import AIFabricAnalyzer from "@/components/fashion/AIFabricAnalyzer";
+import AICelebrityStyleClone from "@/components/fashion/AICelebrityStyleClone";
+import AIColorSeasonAnalysis from "@/components/fashion/AIColorSeasonAnalysis";
+import AIOutfitRemixEngine from "@/components/fashion/AIOutfitRemixEngine";
+import AIFashionMoodRing from "@/components/fashion/AIFashionMoodRing";
 import { useAICredits } from "@/hooks/useAICredits";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -45,7 +52,8 @@ type ActiveView =
   | "style-dna" | "trend-forecaster" | "color-harmony" | "mood-board"
   | "body-shape" | "sustainable" | "fashion-show" | "style-battle"
   | "ootd" | "personal-shopper" | "video-generator" | "style-scanner"
-  | "season-leagues" | "shopping-links" | "wardrobe-analytics" | "street-style";
+  | "season-leagues" | "shopping-links" | "wardrobe-analytics" | "street-style"
+  | "forecast-calendar" | "fabric-analyzer" | "celebrity-clone" | "color-season" | "outfit-remix" | "mood-ring";
 
 const useFashionStats = () => {
   return useQuery({
@@ -87,6 +95,12 @@ export default function FashionStudio() {
     { id: "shopping-links", title: "AI Shopping Links", desc: "Direct purchase recommendations for any outfit", cost: "6 Credits", icon: ShoppingCart, gradient: "from-emerald-500 to-teal-600", isNew: true },
     { id: "wardrobe-analytics", title: "Wardrobe Analytics", desc: "Usage stats, cost-per-wear & optimization", cost: "10 Credits", icon: BarChart3, gradient: "from-indigo-500 to-purple-600", isNew: true },
     { id: "street-style", title: "Global Street Style", desc: "Community feed with AI trend mapping", cost: "3 Credits/post", icon: Globe, gradient: "from-orange-500 to-red-600", isNew: true },
+    { id: "forecast-calendar", title: "Fashion Forecast Calendar", desc: "7-day personalized style predictions", cost: "12 Credits", icon: Calendar, gradient: "from-amber-500 to-orange-600", isNew: true },
+    { id: "fabric-analyzer", title: "AI Fabric Analyzer", desc: "Identify fabrics, quality & care from photos", cost: "10 Credits", icon: Scissors, gradient: "from-teal-500 to-cyan-600", isNew: true },
+    { id: "celebrity-clone", title: "Celebrity Style Clone", desc: "Recreate iconic looks with budget alternatives", cost: "15 Credits", icon: Crown, gradient: "from-yellow-500 to-amber-600", isNew: true },
+    { id: "color-season", title: "Color Season Analysis", desc: "Discover your Spring/Summer/Autumn/Winter palette", cost: "8 Credits", icon: Flower2, gradient: "from-rose-500 to-pink-600", isNew: true },
+    { id: "outfit-remix", title: "Outfit Remix Engine", desc: "Transform 1 outfit into 10 different looks", cost: "10 Credits", icon: Repeat, gradient: "from-violet-500 to-fuchsia-600", isNew: true },
+    { id: "mood-ring", title: "Fashion Mood Ring", desc: "AI reads your mood & suggests outfits", cost: "5 Credits", icon: Heart, gradient: "from-pink-500 to-purple-600", isNew: true },
     // Existing tools
     { id: "generator", title: "AI Design Generator", desc: "Create unique clothing designs with AI", cost: "50-400 Credits", icon: Sparkles, gradient: "from-fuchsia-500 to-pink-600" },
     { id: "gallery", title: "Design Gallery", desc: "Browse & discover community creations", cost: "Free", icon: Eye, gradient: "from-purple-500 to-violet-600" },
@@ -132,6 +146,12 @@ export default function FashionStudio() {
       case "shopping-links": return <AIShoppingLinks />;
       case "wardrobe-analytics": return <WardrobeAnalytics />;
       case "street-style": return <GlobalStreetStyleFeed />;
+      case "forecast-calendar": return <AIFashionForecastCalendar />;
+      case "fabric-analyzer": return <AIFabricAnalyzer />;
+      case "celebrity-clone": return <AICelebrityStyleClone />;
+      case "color-season": return <AIColorSeasonAnalysis />;
+      case "outfit-remix": return <AIOutfitRemixEngine />;
+      case "mood-ring": return <AIFashionMoodRing />;
       default: return null;
     }
   };
@@ -221,7 +241,7 @@ export default function FashionStudio() {
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
             <Card className="p-3 sm:p-4 bg-card/80 backdrop-blur-xl border-primary/20 text-center">
               <Gem className="h-5 w-5 sm:h-6 sm:w-6 text-accent mx-auto mb-1" />
-              <p className="text-lg sm:text-xl font-black">25</p>
+              <p className="text-lg sm:text-xl font-black">31</p>
               <p className="text-[10px] sm:text-xs text-muted-foreground">Tools</p>
             </Card>
           </motion.div>
@@ -244,8 +264,8 @@ export default function FashionStudio() {
           <div className="flex items-center gap-3 flex-wrap">
             <span className="text-2xl">🔥</span>
             <div className="flex-1 min-w-[180px]">
-              <p className="font-bold text-sm">10 New AI Features!</p>
-              <p className="text-xs text-muted-foreground">Video Generator, Style Scanner, Season Leagues, Shopping Links, Wardrobe Analytics & more</p>
+              <p className="font-bold text-sm">16 New AI Features!</p>
+              <p className="text-xs text-muted-foreground">Forecast Calendar, Celebrity Clone, Fabric Analyzer, Color Season, Outfit Remix, Mood Ring & more</p>
             </div>
             <Button variant="outline" size="sm" onClick={() => setActiveView("fashion-show")} className="text-xs">
               Try Now
