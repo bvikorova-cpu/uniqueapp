@@ -77,6 +77,11 @@ const tools: { id: ActiveView; icon: any; title: string; description: string; co
   { id: "dream-interpreter", icon: Moon, title: "AI Dream Interpreter", description: "Discover your pet's dream world", color: "violet", badge: "4 Cr", isNew: true },
   { id: "leaderboard", icon: Trophy, title: "Global Leaderboard", description: "Top pets across the platform", color: "amber" },
   { id: "talent-scout", icon: Search, title: "AI Talent Scout", description: "Discover hidden abilities & moves", color: "teal", badge: "5 Cr", isNew: true },
+  { id: "pet-translator", icon: Languages, title: "AI Pet Translator", description: "Decode pet behaviors into words", color: "sky", badge: "3 Cr", isNew: true },
+  { id: "habitat-designer", icon: Home, title: "Habitat Designer", description: "Design custom pet living spaces", color: "emerald", badge: "5 Cr", isNew: true },
+  { id: "pet-astrology", icon: Star, title: "AI Pet Astrology", description: "Cosmic destiny & horoscopes", color: "violet", badge: "4 Cr", isNew: true },
+  { id: "achievement-system", icon: Award, title: "Achievement System", description: "Unlock badges & milestones", color: "amber", badge: "3 Cr", isNew: true },
+  { id: "memory-album", icon: BookImage, title: "AI Memory Album", description: "Narrative albums of pet journey", color: "rose", badge: "5 Cr", isNew: true },
 ];
 
 const VirtualPet = () => {
