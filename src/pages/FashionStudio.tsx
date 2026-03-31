@@ -95,6 +95,12 @@ export default function FashionStudio() {
     { id: "shopping-links", title: "AI Shopping Links", desc: "Direct purchase recommendations for any outfit", cost: "6 Credits", icon: ShoppingCart, gradient: "from-emerald-500 to-teal-600", isNew: true },
     { id: "wardrobe-analytics", title: "Wardrobe Analytics", desc: "Usage stats, cost-per-wear & optimization", cost: "10 Credits", icon: BarChart3, gradient: "from-indigo-500 to-purple-600", isNew: true },
     { id: "street-style", title: "Global Street Style", desc: "Community feed with AI trend mapping", cost: "3 Credits/post", icon: Globe, gradient: "from-orange-500 to-red-600", isNew: true },
+    { id: "forecast-calendar", title: "Fashion Forecast Calendar", desc: "7-day personalized style predictions", cost: "12 Credits", icon: Calendar, gradient: "from-amber-500 to-orange-600", isNew: true },
+    { id: "fabric-analyzer", title: "AI Fabric Analyzer", desc: "Identify fabrics, quality & care from photos", cost: "10 Credits", icon: Scissors, gradient: "from-teal-500 to-cyan-600", isNew: true },
+    { id: "celebrity-clone", title: "Celebrity Style Clone", desc: "Recreate iconic looks with budget alternatives", cost: "15 Credits", icon: Crown, gradient: "from-yellow-500 to-amber-600", isNew: true },
+    { id: "color-season", title: "Color Season Analysis", desc: "Discover your Spring/Summer/Autumn/Winter palette", cost: "8 Credits", icon: Flower2, gradient: "from-rose-500 to-pink-600", isNew: true },
+    { id: "outfit-remix", title: "Outfit Remix Engine", desc: "Transform 1 outfit into 10 different looks", cost: "10 Credits", icon: Repeat, gradient: "from-violet-500 to-fuchsia-600", isNew: true },
+    { id: "mood-ring", title: "Fashion Mood Ring", desc: "AI reads your mood & suggests outfits", cost: "5 Credits", icon: Heart, gradient: "from-pink-500 to-purple-600", isNew: true },
     // Existing tools
     { id: "generator", title: "AI Design Generator", desc: "Create unique clothing designs with AI", cost: "50-400 Credits", icon: Sparkles, gradient: "from-fuchsia-500 to-pink-600" },
     { id: "gallery", title: "Design Gallery", desc: "Browse & discover community creations", cost: "Free", icon: Eye, gradient: "from-purple-500 to-violet-600" },
