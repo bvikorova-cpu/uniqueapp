@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Heart, Gamepad2, Trophy, Sparkles } from "lucide-react";
-import heroVideo from "@/assets/virtual-pet-hero-v2.mp4.asset.json";
+import heroVideo from "@/assets/virtual-pet-hero-v3.mp4.asset.json";
 
 const stats = [
   { icon: Heart, label: "Active Pets", value: "12K+", color: "text-pink-400" },
