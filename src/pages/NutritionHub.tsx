@@ -9,7 +9,8 @@ import { NutritionHero } from "@/components/nutrition/NutritionHero";
 import {
   Utensils, Camera, Trophy, Store, Dumbbell, Target,
   Sparkles, ShoppingBag, ArrowLeft, Flame, Droplets,
-  Pill, ShoppingCart, Activity, ChefHat, Wine, MessageCircle
+  Pill, ShoppingCart, Activity, ChefHat, Wine, Heart,
+  Scale, Salad, Apple, Zap
 } from "lucide-react";
 
 // Lazy sub-views
@@ -28,16 +29,16 @@ type ActiveView = "dashboard" | "meal-planner" | "food-scanner" | "macro-tracker
   "restaurant" | "quests" | "workout" | "hydration" | "supplements" | "grocery" | "body-predictor";
 
 const tools = [
-  { id: "meal-planner" as ActiveView, title: "AI Meal Planner", description: "Generate personalized meal plans", icon: Utensils, cost: "50 Credits", color: "text-orange-500" },
-  { id: "food-scanner" as ActiveView, title: "Smart Food Scanner", description: "Scan food for nutritional info", icon: Camera, cost: "10 Credits", color: "text-blue-500" },
-  { id: "macro-tracker" as ActiveView, title: "Macro Tracker", description: "Track daily calories & macros", icon: Target, cost: "Free", color: "text-emerald-500" },
-  { id: "restaurant" as ActiveView, title: "Restaurant Intelligence", description: "AI menu analysis & recommendations", icon: Store, cost: "25 Credits", color: "text-yellow-500" },
-  { id: "quests" as ActiveView, title: "Calorie Quests", description: "Gamified fitness challenges & XP", icon: Trophy, cost: "Free", color: "text-purple-500" },
-  { id: "workout" as ActiveView, title: "AI Workout Planner", description: "Personalized workout + nutrition", icon: Dumbbell, cost: "30 Credits", color: "text-red-500" },
-  { id: "hydration" as ActiveView, title: "AI Hydration Coach", description: "Smart water intake plan", icon: Droplets, cost: "3 Credits", color: "text-cyan-500", isNew: true },
-  { id: "supplements" as ActiveView, title: "AI Supplement Advisor", description: "Personalized vitamin recommendations", icon: Pill, cost: "8 Credits", color: "text-green-500", isNew: true },
-  { id: "grocery" as ActiveView, title: "Grocery Budget Optimizer", description: "Meal plans within your budget", icon: ShoppingCart, cost: "6 Credits", color: "text-teal-500", isNew: true },
-  { id: "body-predictor" as ActiveView, title: "Body Composition Predictor", description: "Predict body changes over time", icon: Activity, cost: "10 Credits", color: "text-violet-500", isNew: true },
+  { id: "meal-planner" as ActiveView, title: "AI Meal Planner", description: "Generate personalized meal plans with macros", icon: Utensils, cost: "50 Credits", gradient: "from-orange-500/20 to-amber-500/20", iconColor: "text-orange-500" },
+  { id: "food-scanner" as ActiveView, title: "Smart Food Scanner", description: "Scan food photos for nutritional info", icon: Camera, cost: "10 Credits", gradient: "from-blue-500/20 to-cyan-500/20", iconColor: "text-blue-500" },
+  { id: "macro-tracker" as ActiveView, title: "Macro Tracker", description: "Track daily calories & macros with goals", icon: Target, cost: "Free", gradient: "from-emerald-500/20 to-green-500/20", iconColor: "text-emerald-500" },
+  { id: "restaurant" as ActiveView, title: "Restaurant Intelligence", description: "AI menu analysis & healthy recommendations", icon: Store, cost: "25 Credits", gradient: "from-yellow-500/20 to-orange-500/20", iconColor: "text-yellow-500" },
+  { id: "quests" as ActiveView, title: "Calorie Quests", description: "Gamified fitness challenges & XP leveling", icon: Trophy, cost: "Free", gradient: "from-purple-500/20 to-pink-500/20", iconColor: "text-purple-500" },
+  { id: "workout" as ActiveView, title: "AI Workout Planner", description: "Personalized workout + nutrition match", icon: Dumbbell, cost: "30 Credits", gradient: "from-red-500/20 to-rose-500/20", iconColor: "text-red-500" },
+  { id: "hydration" as ActiveView, title: "AI Hydration Coach", description: "Smart water intake based on your body", icon: Droplets, cost: "3 Credits", gradient: "from-cyan-500/20 to-blue-500/20", iconColor: "text-cyan-500", isNew: true },
+  { id: "supplements" as ActiveView, title: "AI Supplement Advisor", description: "Personalized vitamin recommendations", icon: Pill, cost: "8 Credits", gradient: "from-green-500/20 to-emerald-500/20", iconColor: "text-green-500", isNew: true },
+  { id: "grocery" as ActiveView, title: "Grocery Budget Optimizer", description: "Meal plans within your budget", icon: ShoppingCart, cost: "6 Credits", gradient: "from-teal-500/20 to-cyan-500/20", iconColor: "text-teal-500", isNew: true },
+  { id: "body-predictor" as ActiveView, title: "Body Composition Predictor", description: "Predict body changes 30/60/90 days", icon: Activity, cost: "10 Credits", gradient: "from-violet-500/20 to-purple-500/20", iconColor: "text-violet-500", isNew: true },
 ];
 
 export default function NutritionHub() {
@@ -68,7 +69,7 @@ export default function NutritionHub() {
         <Navbar />
         <main className="flex-1 container mx-auto px-4 py-20">
           {!hasBackButton && (
-            <Button variant="ghost" onClick={() => setActiveView("dashboard")} className="gap-2 mb-4">
+            <Button variant="ghost" onClick={() => setActiveView("dashboard")} className="gap-2 mb-4 drop-shadow-md">
               <ArrowLeft className="h-4 w-4" /> Back to Dashboard
             </Button>
           )}
@@ -89,33 +90,33 @@ export default function NutritionHub() {
         {/* Engagement Row */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
-            <Card className="p-4 bg-card/80 backdrop-blur-xl border-border/60 hover:scale-[1.02] transition-transform">
+            <Card className="p-4 bg-card/80 backdrop-blur-xl border-border/60 hover:scale-[1.02] transition-transform group">
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-xl bg-orange-500/10">
+                <div className="p-2.5 rounded-xl bg-gradient-to-br from-orange-500/20 to-red-500/20 group-hover:from-orange-500/30 group-hover:to-red-500/30 transition-colors">
                   <Flame className="h-6 w-6 text-orange-500" />
                 </div>
                 <div>
-                  <p className="text-xs text-muted-foreground">Daily Streak</p>
-                  <p className="text-2xl font-black">0 Days</p>
+                  <p className="text-xs text-muted-foreground font-medium">Daily Streak</p>
+                  <p className="text-2xl font-black bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">0 Days</p>
                 </div>
               </div>
             </Card>
           </motion.div>
 
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}>
-            <Card className="p-4 bg-card/80 backdrop-blur-xl border-border/60 hover:scale-[1.02] transition-transform">
+            <Card className="p-4 bg-card/80 backdrop-blur-xl border-border/60 hover:scale-[1.02] transition-transform group">
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-xl bg-primary/10">
+                <div className="p-2.5 rounded-xl bg-gradient-to-br from-primary/20 to-accent/20 group-hover:from-primary/30 group-hover:to-accent/30 transition-colors">
                   <Sparkles className="h-6 w-6 text-primary" />
                 </div>
                 <div>
-                  <p className="text-xs text-muted-foreground">AI Credits</p>
-                  <p className="text-2xl font-black">
+                  <p className="text-xs text-muted-foreground font-medium">AI Credits</p>
+                  <p className="text-2xl font-black bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
                     {creditsLoading ? "..." : credits?.credits_remaining || 0}
                   </p>
                 </div>
                 {(!credits || credits.credits_remaining < 50) && (
-                  <Button size="sm" variant="outline" onClick={() => navigate('/ai-credits-store')} className="ml-auto gap-1">
+                  <Button size="sm" variant="outline" onClick={() => navigate('/ai-credits-store')} className="ml-auto gap-1 hover:scale-105 transition-transform">
                     <ShoppingBag className="h-3 w-3" /> Buy
                   </Button>
                 )}
@@ -124,14 +125,14 @@ export default function NutritionHub() {
           </motion.div>
 
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
-            <Card className="p-4 bg-card/80 backdrop-blur-xl border-border/60 hover:scale-[1.02] transition-transform">
+            <Card className="p-4 bg-card/80 backdrop-blur-xl border-border/60 hover:scale-[1.02] transition-transform group">
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-xl bg-green-500/10">
+                <div className="p-2.5 rounded-xl bg-gradient-to-br from-green-500/20 to-emerald-500/20 group-hover:from-green-500/30 group-hover:to-emerald-500/30 transition-colors">
                   <Trophy className="h-6 w-6 text-green-500" />
                 </div>
                 <div>
-                  <p className="text-xs text-muted-foreground">Achievements</p>
-                  <p className="text-2xl font-black">0</p>
+                  <p className="text-xs text-muted-foreground font-medium">Achievements</p>
+                  <p className="text-2xl font-black bg-gradient-to-r from-green-500 to-emerald-500 bg-clip-text text-transparent">0</p>
                 </div>
               </div>
             </Card>
@@ -140,27 +141,36 @@ export default function NutritionHub() {
 
         {/* Tool Cards Grid */}
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.25 }}>
-          <h2 className="text-2xl font-black mb-4 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
-            Nutrition Tools
+          <h2 className="text-2xl font-black mb-6 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
+            🍎 Nutrition AI Tools
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {tools.map((tool, i) => (
               <motion.div
                 key={tool.id}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.3 + i * 0.04 }}
+                initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                transition={{ delay: 0.3 + i * 0.04, type: "spring", stiffness: 200 }}
               >
                 <Card
-                  className="p-4 bg-card/80 backdrop-blur-xl border-border/60 cursor-pointer hover:scale-[1.03] hover:shadow-lg hover:shadow-primary/10 transition-all active:scale-[0.97] group relative overflow-hidden"
+                  className="p-4 bg-card/80 backdrop-blur-xl border-border/60 cursor-pointer hover:scale-[1.04] hover:shadow-xl hover:shadow-primary/10 transition-all duration-300 active:scale-[0.97] group relative overflow-hidden"
                   onClick={() => setActiveView(tool.id)}
                 >
+                  {/* Gradient background glow */}
+                  <div className={`absolute inset-0 bg-gradient-to-br ${tool.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
+                  
                   {(tool as any).isNew && (
-                    <span className="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-accent text-accent-foreground text-[10px] font-bold">NEW</span>
+                    <motion.span 
+                      initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.5 + i * 0.04, type: "spring" }}
+                      className="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-accent text-accent-foreground text-[10px] font-bold z-10 animate-pulse"
+                    >
+                      NEW
+                    </motion.span>
                   )}
-                  <div className="flex items-start gap-3">
-                    <div className="p-2.5 rounded-xl bg-primary/10 group-hover:bg-primary/20 transition-colors">
-                      <tool.icon className={`h-6 w-6 ${tool.color}`} />
+                  
+                  <div className="flex items-start gap-3 relative z-10">
+                    <div className={`p-2.5 rounded-xl bg-gradient-to-br ${tool.gradient} group-hover:scale-110 transition-transform duration-300`}>
+                      <tool.icon className={`h-6 w-6 ${tool.iconColor}`} />
                     </div>
                     <div className="flex-1 min-w-0">
                       <h3 className="font-bold text-sm truncate">{tool.title}</h3>
@@ -174,6 +184,31 @@ export default function NutritionHub() {
               </motion.div>
             ))}
           </div>
+        </motion.div>
+
+        {/* Enhancement Tips Section */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7 }} className="mt-10">
+          <Card className="p-6 bg-gradient-to-br from-primary/5 via-accent/5 to-primary/5 border-primary/20 backdrop-blur-xl">
+            <h3 className="text-lg font-black mb-3 flex items-center gap-2">
+              <Zap className="h-5 w-5 text-accent" />
+              Pro Tips to Maximize Your Nutrition Journey
+            </h3>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {[
+                { icon: "📸", tip: "Scan every meal to build accurate calorie history" },
+                { icon: "🎯", tip: "Set macro targets in Tracker for precision goals" },
+                { icon: "💧", tip: "Use Hydration Coach daily for energy optimization" },
+                { icon: "🏋️", tip: "Pair Workout Planner with Meal Plans for max results" },
+                { icon: "🛒", tip: "Budget Optimizer saves 20-40% on weekly groceries" },
+                { icon: "📊", tip: "Body Predictor shows progress before you see it" },
+              ].map((item, i) => (
+                <div key={i} className="flex items-start gap-2 p-2 rounded-lg bg-card/50">
+                  <span className="text-lg">{item.icon}</span>
+                  <p className="text-xs text-muted-foreground">{item.tip}</p>
+                </div>
+              ))}
+            </div>
+          </Card>
         </motion.div>
       </main>
     </div>
