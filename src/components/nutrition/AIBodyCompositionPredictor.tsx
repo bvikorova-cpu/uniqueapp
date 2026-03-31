@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Activity, Loader2, ArrowLeft, Sparkles, TrendingUp, TrendingDown } from "lucide-react";
+import { Activity, Loader2, ArrowLeft, Sparkles, TrendingUp, TrendingDown, Scale } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -26,10 +26,7 @@ export default function AIBodyCompositionPredictor({ onBack }: Props) {
   const mutation = useMutation({
     mutationFn: async () => {
       const { data, error } = await supabase.functions.invoke('nutrition-body-predictor', {
-        body: {
-          weight: Number(weight), height: Number(height), body_fat_percent: Number(bodyFat),
-          activity_level: activity, daily_calories: Number(calories), timeframe_days: Number(timeframe)
-        }
+        body: { weight: Number(weight), height: Number(height), body_fat_percent: Number(bodyFat), activity_level: activity, daily_calories: Number(calories), timeframe_days: Number(timeframe) }
       });
       if (error) throw error;
       return data;
@@ -40,7 +37,7 @@ export default function AIBodyCompositionPredictor({ onBack }: Props) {
 
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
-      <Button variant="ghost" onClick={onBack} className="gap-2 mb-2">
+      <Button variant="ghost" onClick={onBack} className="gap-2 mb-2 drop-shadow-md">
         <ArrowLeft className="h-4 w-4" /> Back to Dashboard
       </Button>
 
@@ -48,7 +45,9 @@ export default function AIBodyCompositionPredictor({ onBack }: Props) {
         <Card className="border-border/60 bg-card/80 backdrop-blur-xl">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Activity className="h-5 w-5 text-purple-500" />
+              <div className="p-1.5 rounded-lg bg-gradient-to-br from-violet-500/20 to-purple-500/20">
+                <Activity className="h-5 w-5 text-violet-500" />
+              </div>
               AI Body Composition Predictor
             </CardTitle>
             <CardDescription>Predict your body changes over 30/60/90 days (10 credits)</CardDescription>
@@ -57,28 +56,28 @@ export default function AIBodyCompositionPredictor({ onBack }: Props) {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Current Weight (kg)</Label>
-                <Input type="number" value={weight} onChange={(e) => setWeight(e.target.value)} />
+                <Input type="number" value={weight} onChange={(e) => setWeight(e.target.value)} className="bg-background/50" />
               </div>
               <div className="space-y-2">
                 <Label>Height (cm)</Label>
-                <Input type="number" value={height} onChange={(e) => setHeight(e.target.value)} />
+                <Input type="number" value={height} onChange={(e) => setHeight(e.target.value)} className="bg-background/50" />
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Body Fat %</Label>
-                <Input type="number" value={bodyFat} onChange={(e) => setBodyFat(e.target.value)} />
+                <Input type="number" value={bodyFat} onChange={(e) => setBodyFat(e.target.value)} className="bg-background/50" />
               </div>
               <div className="space-y-2">
                 <Label>Daily Calories</Label>
-                <Input type="number" value={calories} onChange={(e) => setCalories(e.target.value)} />
+                <Input type="number" value={calories} onChange={(e) => setCalories(e.target.value)} className="bg-background/50" />
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Activity Level</Label>
                 <Select value={activity} onValueChange={setActivity}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="bg-background/50"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="sedentary">Sedentary</SelectItem>
                     <SelectItem value="light">Light</SelectItem>
@@ -88,9 +87,9 @@ export default function AIBodyCompositionPredictor({ onBack }: Props) {
                 </Select>
               </div>
               <div className="space-y-2">
-                <Label>Timeframe (days)</Label>
+                <Label>Timeframe</Label>
                 <Select value={timeframe} onValueChange={setTimeframe}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="bg-background/50"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="30">30 Days</SelectItem>
                     <SelectItem value="60">60 Days</SelectItem>
@@ -109,10 +108,11 @@ export default function AIBodyCompositionPredictor({ onBack }: Props) {
           <CardHeader><CardTitle>Predicted Results</CardTitle></CardHeader>
           <CardContent>
             {result ? (
-              <div className="space-y-4">
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4">
                 <div className="grid grid-cols-2 gap-3">
-                  <div className="p-4 bg-primary/10 rounded-xl text-center">
-                    <p className="text-sm text-muted-foreground">Predicted Weight</p>
+                  <div className="p-4 bg-gradient-to-br from-primary/10 to-accent/10 rounded-xl border border-primary/20 text-center">
+                    <Scale className="h-5 w-5 mx-auto text-primary mb-1" />
+                    <p className="text-xs text-muted-foreground">Predicted Weight</p>
                     <p className="text-2xl font-black">{result.predicted_weight || "—"}kg</p>
                     {result.weight_change && (
                       <div className="flex items-center justify-center gap-1 mt-1">
@@ -121,8 +121,9 @@ export default function AIBodyCompositionPredictor({ onBack }: Props) {
                       </div>
                     )}
                   </div>
-                  <div className="p-4 bg-purple-500/10 rounded-xl text-center">
-                    <p className="text-sm text-muted-foreground">Predicted Body Fat</p>
+                  <div className="p-4 bg-gradient-to-br from-violet-500/10 to-purple-500/10 rounded-xl border border-violet-500/20 text-center">
+                    <Activity className="h-5 w-5 mx-auto text-violet-500 mb-1" />
+                    <p className="text-xs text-muted-foreground">Predicted Body Fat</p>
                     <p className="text-2xl font-black">{result.predicted_body_fat || "—"}%</p>
                     {result.fat_change && (
                       <div className="flex items-center justify-center gap-1 mt-1">
@@ -133,31 +134,31 @@ export default function AIBodyCompositionPredictor({ onBack }: Props) {
                   </div>
                 </div>
                 {result.muscle_mass && (
-                  <div className="p-3 bg-blue-500/10 rounded-xl text-center">
-                    <p className="text-sm text-muted-foreground">Predicted Muscle Mass</p>
+                  <div className="p-3 bg-gradient-to-br from-blue-500/10 to-cyan-500/10 rounded-xl border border-blue-500/20 text-center">
+                    <p className="text-xs text-muted-foreground">Predicted Muscle Mass</p>
                     <p className="text-xl font-black">{result.muscle_mass}kg</p>
                   </div>
                 )}
                 {result.recommendations && Array.isArray(result.recommendations) && (
                   <div className="space-y-2">
-                    <h4 className="font-semibold">AI Recommendations</h4>
+                    <h4 className="font-semibold text-sm">AI Recommendations</h4>
                     {result.recommendations.map((rec: string, i: number) => (
-                      <p key={i} className="text-sm text-muted-foreground p-2 bg-muted rounded-lg">💡 {rec}</p>
+                      <p key={i} className="text-sm text-muted-foreground p-2.5 bg-muted/50 rounded-xl border border-border/30">💡 {rec}</p>
                     ))}
                   </div>
                 )}
                 {result.milestones && Array.isArray(result.milestones) && (
                   <div className="space-y-2">
-                    <h4 className="font-semibold">Milestones</h4>
+                    <h4 className="font-semibold text-sm">🏆 Milestones</h4>
                     {result.milestones.map((m: any, i: number) => (
-                      <div key={i} className="p-2 bg-green-500/10 rounded-lg flex justify-between">
+                      <div key={i} className="p-2.5 bg-gradient-to-br from-green-500/10 to-emerald-500/10 rounded-xl border border-green-500/20 flex justify-between">
                         <span className="text-sm font-medium">{m.day ? `Day ${m.day}` : m.label}</span>
                         <span className="text-sm text-muted-foreground">{m.description || m.value}</span>
                       </div>
                     ))}
                   </div>
                 )}
-              </div>
+              </motion.div>
             ) : (
               <div className="flex items-center justify-center h-64 text-muted-foreground">
                 <div className="text-center">

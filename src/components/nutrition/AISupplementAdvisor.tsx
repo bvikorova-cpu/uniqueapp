@@ -36,7 +36,7 @@ export default function AISupplementAdvisor({ onBack }: Props) {
 
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
-      <Button variant="ghost" onClick={onBack} className="gap-2 mb-2">
+      <Button variant="ghost" onClick={onBack} className="gap-2 mb-2 drop-shadow-md">
         <ArrowLeft className="h-4 w-4" /> Back to Dashboard
       </Button>
 
@@ -44,7 +44,9 @@ export default function AISupplementAdvisor({ onBack }: Props) {
         <Card className="border-border/60 bg-card/80 backdrop-blur-xl">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Pill className="h-5 w-5 text-green-500" />
+              <div className="p-1.5 rounded-lg bg-gradient-to-br from-green-500/20 to-emerald-500/20">
+                <Pill className="h-5 w-5 text-green-500" />
+              </div>
               AI Supplement Advisor
             </CardTitle>
             <CardDescription>Personalized vitamin & supplement recommendations (8 credits)</CardDescription>
@@ -53,12 +55,12 @@ export default function AISupplementAdvisor({ onBack }: Props) {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Age</Label>
-                <Input type="number" value={age} onChange={(e) => setAge(e.target.value)} />
+                <Input type="number" value={age} onChange={(e) => setAge(e.target.value)} className="bg-background/50" />
               </div>
               <div className="space-y-2">
                 <Label>Gender</Label>
                 <Select value={gender} onValueChange={setGender}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="bg-background/50"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="male">Male</SelectItem>
                     <SelectItem value="female">Female</SelectItem>
@@ -69,11 +71,11 @@ export default function AISupplementAdvisor({ onBack }: Props) {
             </div>
             <div className="space-y-2">
               <Label>Current Diet Description</Label>
-              <Textarea value={diet} onChange={(e) => setDiet(e.target.value)} placeholder="Describe your typical daily diet..." rows={3} />
+              <Textarea value={diet} onChange={(e) => setDiet(e.target.value)} placeholder="Describe your typical daily diet..." rows={3} className="bg-background/50" />
             </div>
             <div className="space-y-2">
               <Label>Health Goals</Label>
-              <Input value={goals} onChange={(e) => setGoals(e.target.value)} placeholder="e.g. energy boost, muscle recovery, immunity" />
+              <Input value={goals} onChange={(e) => setGoals(e.target.value)} placeholder="e.g. energy boost, muscle recovery, immunity" className="bg-background/50" />
             </div>
             <Button onClick={() => mutation.mutate()} disabled={mutation.isPending || !credits || credits.credits_remaining < 8} className="w-full gap-2" size="lg">
               {mutation.isPending ? <><Loader2 className="h-5 w-5 animate-spin" /> Analyzing...</> : <><Sparkles className="h-5 w-5" /> Get Recommendations (8 credits)</>}
@@ -85,9 +87,9 @@ export default function AISupplementAdvisor({ onBack }: Props) {
           <CardHeader><CardTitle>Supplement Recommendations</CardTitle></CardHeader>
           <CardContent>
             {result ? (
-              <div className="space-y-4 max-h-[500px] overflow-y-auto">
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4 max-h-[500px] overflow-y-auto">
                 {result.supplements && Array.isArray(result.supplements) && result.supplements.map((supp: any, i: number) => (
-                  <div key={i} className="p-4 bg-green-500/10 rounded-xl border border-green-500/20">
+                  <div key={i} className="p-4 bg-gradient-to-br from-green-500/10 to-emerald-500/10 rounded-xl border border-green-500/20">
                     <h4 className="font-bold text-lg">{supp.name}</h4>
                     <p className="text-sm text-muted-foreground mt-1">{supp.reason}</p>
                     {supp.dosage && <p className="text-sm font-medium mt-2">💊 Dosage: {supp.dosage}</p>}
@@ -95,7 +97,7 @@ export default function AISupplementAdvisor({ onBack }: Props) {
                   </div>
                 ))}
                 {result.diet_gaps && Array.isArray(result.diet_gaps) && result.diet_gaps.length > 0 && (
-                  <div className="p-4 bg-orange-500/10 rounded-xl border border-orange-500/20">
+                  <div className="p-4 bg-gradient-to-br from-orange-500/10 to-amber-500/10 rounded-xl border border-orange-500/20">
                     <h4 className="font-semibold flex items-center gap-2">
                       <AlertTriangle className="h-4 w-4 text-orange-500" /> Diet Gaps Detected
                     </h4>
@@ -106,8 +108,8 @@ export default function AISupplementAdvisor({ onBack }: Props) {
                     </ul>
                   </div>
                 )}
-                <p className="text-xs text-muted-foreground italic">⚠️ This is AI-generated advice. Always consult a healthcare professional before starting supplements.</p>
-              </div>
+                <p className="text-xs text-muted-foreground italic">⚠️ AI-generated advice. Always consult a healthcare professional before starting supplements.</p>
+              </motion.div>
             ) : (
               <div className="flex items-center justify-center h-64 text-muted-foreground">
                 <div className="text-center">

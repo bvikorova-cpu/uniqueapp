@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Droplets, Loader2, ArrowLeft, Sparkles } from "lucide-react";
+import { Droplets, Loader2, ArrowLeft, Sparkles, GlassWater } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -34,7 +34,7 @@ export default function AIHydrationCoach({ onBack }: Props) {
 
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
-      <Button variant="ghost" onClick={onBack} className="gap-2 mb-2">
+      <Button variant="ghost" onClick={onBack} className="gap-2 mb-2 drop-shadow-md">
         <ArrowLeft className="h-4 w-4" /> Back to Dashboard
       </Button>
 
@@ -42,7 +42,9 @@ export default function AIHydrationCoach({ onBack }: Props) {
         <Card className="border-border/60 bg-card/80 backdrop-blur-xl">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Droplets className="h-5 w-5 text-blue-500" />
+              <div className="p-1.5 rounded-lg bg-gradient-to-br from-cyan-500/20 to-blue-500/20">
+                <Droplets className="h-5 w-5 text-cyan-500" />
+              </div>
               AI Hydration Coach
             </CardTitle>
             <CardDescription>Personalized water intake plan based on your body & lifestyle (3 credits)</CardDescription>
@@ -50,12 +52,12 @@ export default function AIHydrationCoach({ onBack }: Props) {
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <Label>Body Weight (kg)</Label>
-              <Input type="number" value={weight} onChange={(e) => setWeight(e.target.value)} />
+              <Input type="number" value={weight} onChange={(e) => setWeight(e.target.value)} className="bg-background/50" />
             </div>
             <div className="space-y-2">
               <Label>Activity Level</Label>
               <Select value={activity} onValueChange={setActivity}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectTrigger className="bg-background/50"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="sedentary">Sedentary</SelectItem>
                   <SelectItem value="light">Light Activity</SelectItem>
@@ -68,7 +70,7 @@ export default function AIHydrationCoach({ onBack }: Props) {
             <div className="space-y-2">
               <Label>Climate</Label>
               <Select value={climate} onValueChange={setClimate}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectTrigger className="bg-background/50"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="cold">Cold</SelectItem>
                   <SelectItem value="temperate">Temperate</SelectItem>
@@ -87,32 +89,32 @@ export default function AIHydrationCoach({ onBack }: Props) {
           <CardHeader><CardTitle>Your Hydration Plan</CardTitle></CardHeader>
           <CardContent>
             {result ? (
-              <div className="space-y-4">
-                <div className="text-center p-4 bg-blue-500/10 rounded-xl">
-                  <Droplets className="h-10 w-10 mx-auto text-blue-500 mb-2" />
-                  <p className="text-3xl font-black text-blue-500">{result.daily_target_ml || result.daily_target}ml</p>
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4">
+                <div className="text-center p-5 bg-gradient-to-br from-cyan-500/10 to-blue-500/10 rounded-xl border border-cyan-500/20">
+                  <Droplets className="h-10 w-10 mx-auto text-cyan-500 mb-2" />
+                  <p className="text-3xl font-black text-cyan-500">{result.daily_target_ml || result.daily_target}ml</p>
                   <p className="text-sm text-muted-foreground">Daily Target</p>
                 </div>
                 {result.schedule && Array.isArray(result.schedule) && (
                   <div className="space-y-2">
-                    <h4 className="font-semibold">Hydration Schedule</h4>
+                    <h4 className="font-semibold text-sm">Hydration Schedule</h4>
                     {result.schedule.map((item: any, i: number) => (
-                      <div key={i} className="p-3 bg-muted rounded-lg flex justify-between items-center">
-                        <span className="font-medium">{item.time}</span>
-                        <span className="text-sm text-muted-foreground">{item.amount || item.ml}ml - {item.note || item.reason}</span>
+                      <div key={i} className="p-3 bg-muted/50 rounded-xl border border-border/40 flex justify-between items-center">
+                        <span className="font-medium text-sm">{item.time}</span>
+                        <span className="text-xs text-muted-foreground">{item.amount || item.ml}ml - {item.note || item.reason}</span>
                       </div>
                     ))}
                   </div>
                 )}
                 {result.tips && Array.isArray(result.tips) && (
                   <div className="space-y-1">
-                    <h4 className="font-semibold">Tips</h4>
+                    <h4 className="font-semibold text-sm">Tips</h4>
                     {result.tips.map((tip: string, i: number) => (
                       <p key={i} className="text-sm text-muted-foreground">💧 {tip}</p>
                     ))}
                   </div>
                 )}
-              </div>
+              </motion.div>
             ) : (
               <div className="flex items-center justify-center h-64 text-muted-foreground">
                 <div className="text-center">
