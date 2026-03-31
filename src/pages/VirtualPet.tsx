@@ -48,7 +48,8 @@ type ActiveView = "dashboard" | "pets" | "battle" | "shop" | "customize" | "trad
   "personality-coach" | "name-generator" | "health-predictor" | "story-generator" |
   "mood-analyzer" | "training-planner" | "compatibility-checker" | "battle-strategy" |
   "voice-chat" | "photo-studio" | "fashion-show" | "seasonal-events" | "multiplayer-coop" |
-  "evolution-advisor" | "diet-planner" | "dream-interpreter" | "leaderboard" | "talent-scout";
+  "evolution-advisor" | "diet-planner" | "dream-interpreter" | "leaderboard" | "talent-scout" |
+  "pet-translator" | "habitat-designer" | "pet-astrology" | "achievement-system" | "memory-album";
 
 const tools: { id: ActiveView; icon: any; title: string; description: string; color: string; badge?: string; isNew?: boolean }[] = [
   { id: "pets", icon: Heart, title: "My Pets", description: "View, feed & care for your companions", color: "pink" },
