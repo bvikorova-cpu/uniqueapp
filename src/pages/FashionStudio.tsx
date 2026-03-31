@@ -80,6 +80,13 @@ export default function FashionStudio() {
     { id: "style-battle", title: "Style Battle Arena", desc: "P2P outfit competitions with community voting", cost: "5 Credits", icon: Swords, gradient: "from-red-500 to-orange-600", isNew: true },
     { id: "ootd", title: "AI Outfit of the Day", desc: "Daily AI scoring of your outfit", cost: "5 Credits", icon: Camera, gradient: "from-amber-500 to-orange-600", isNew: true },
     { id: "personal-shopper", title: "AI Personal Shopper", desc: "Chat with Luna, your AI fashion consultant", cost: "2 Credits/msg", icon: MessageCircle, gradient: "from-violet-500 to-purple-600", isNew: true },
+    // Enhancement features
+    { id: "video-generator", title: "Fashion Video Generator", desc: "Cinematic runway video storyboards with AI direction", cost: "25 Credits", icon: Video, gradient: "from-red-500 to-pink-600", isNew: true },
+    { id: "style-scanner", title: "AI Style Scanner", desc: "Instant outfit recognition, scoring & brand detection", cost: "8 Credits", icon: ScanLine, gradient: "from-cyan-500 to-blue-600", isNew: true },
+    { id: "season-leagues", title: "Season Style Leagues", desc: "Competitive seasonal rankings & leaderboards", cost: "10 Credits", icon: Crown, gradient: "from-purple-500 to-pink-600", isNew: true },
+    { id: "shopping-links", title: "AI Shopping Links", desc: "Direct purchase recommendations for any outfit", cost: "6 Credits", icon: ShoppingCart, gradient: "from-emerald-500 to-teal-600", isNew: true },
+    { id: "wardrobe-analytics", title: "Wardrobe Analytics", desc: "Usage stats, cost-per-wear & optimization", cost: "10 Credits", icon: BarChart3, gradient: "from-indigo-500 to-purple-600", isNew: true },
+    { id: "street-style", title: "Global Street Style", desc: "Community feed with AI trend mapping", cost: "3 Credits/post", icon: Globe, gradient: "from-orange-500 to-red-600", isNew: true },
     // Existing tools
     { id: "generator", title: "AI Design Generator", desc: "Create unique clothing designs with AI", cost: "50-400 Credits", icon: Sparkles, gradient: "from-fuchsia-500 to-pink-600" },
     { id: "gallery", title: "Design Gallery", desc: "Browse & discover community creations", cost: "Free", icon: Eye, gradient: "from-purple-500 to-violet-600" },
