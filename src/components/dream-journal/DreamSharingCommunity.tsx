@@ -60,8 +60,7 @@ const DreamSharingCommunity = ({ onBack }: DreamSharingCommunityProps) => {
         dream_date: new Date().toISOString().split("T")[0],
         themes: tags.split(",").map(t => t.trim()).filter(Boolean),
         user_id: user.id,
-        is_public: true,
-      });
+      } as any);
 
       if (error) throw error;
       toast.success("Dream shared with the community!");
