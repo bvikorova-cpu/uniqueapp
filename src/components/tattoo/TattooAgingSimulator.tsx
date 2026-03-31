@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useAICredits } from "@/hooks/useAICredits";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 
 interface Props { onBack: () => void; }
 
@@ -58,40 +59,47 @@ export const TattooAgingSimulator = ({ onBack }: Props) => {
 
   return (
     <div className="space-y-6 animate-fade-in">
-      <Button variant="ghost" onClick={onBack} className="gap-2">
-        <ArrowLeft className="h-4 w-4" /> Back to Hub
+      <Button variant="ghost" onClick={onBack} className="gap-2 text-amber-400 hover:text-amber-300">
+        <ArrowLeft className="h-4 w-4" /> Back to Atelier
       </Button>
 
-      <Card className="p-6 max-w-3xl mx-auto">
-        <div className="flex items-center gap-3 mb-6">
-          <Clock className="h-8 w-8 text-amber-500" />
-          <div>
-            <h2 className="text-2xl font-black">Tattoo Aging Simulator</h2>
-            <p className="text-muted-foreground text-sm">See how your tattoo will look over time (10 credits)</p>
+      <Card className="p-6 max-w-3xl mx-auto bg-card/80 backdrop-blur-xl border-amber-500/20 shadow-[0_0_30px_rgba(212,175,55,0.08)]">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="flex items-center gap-3 mb-6">
+          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-blue-500/20">
+            <Clock className="h-6 w-6 text-white" />
           </div>
-        </div>
-
-        <div className="space-y-4">
           <div>
-            <Label>Upload Tattoo Image or Design</Label>
-            <div className="mt-2 border-2 border-dashed border-amber-500/30 rounded-xl p-6 text-center cursor-pointer hover:border-amber-500/60 transition-colors" onClick={() => document.getElementById("aging-upload")?.click()}>
+            <h2 className="text-2xl font-black bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">Aging Simulator</h2>
+            <p className="text-muted-foreground text-sm">See how your tattoo evolves over decades</p>
+          </div>
+          <span className="ml-auto text-xs font-bold text-amber-400 bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/20">10 Credits</span>
+        </motion.div>
+
+        <div className="space-y-5">
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+            <Label className="text-amber-400/80 font-semibold">Upload Tattoo Image or Design</Label>
+            <div
+              className="mt-2 border-2 border-dashed border-amber-500/20 rounded-xl p-8 text-center cursor-pointer hover:border-amber-500/50 hover:bg-amber-500/5 transition-all duration-300"
+              onClick={() => document.getElementById("aging-upload")?.click()}
+            >
               {tattooImage ? (
-                <img src={tattooImage} alt="Tattoo" className="max-h-64 mx-auto rounded-lg" />
+                <img src={tattooImage} alt="Tattoo" className="max-h-64 mx-auto rounded-lg shadow-lg" />
               ) : (
                 <>
-                  <Upload className="h-10 w-10 mx-auto text-muted-foreground mb-2" />
-                  <p className="text-muted-foreground">Click to upload tattoo image</p>
+                  <Upload className="h-12 w-12 mx-auto text-amber-500/30 mb-3" />
+                  <p className="text-muted-foreground font-medium">Click to upload tattoo image</p>
+                  <p className="text-xs text-muted-foreground/60 mt-1">JPG, PNG, WebP supported</p>
                 </>
               )}
               <input id="aging-upload" type="file" accept="image/*" className="hidden" onChange={handleUpload} />
             </div>
-          </div>
+          </motion.div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="grid grid-cols-2 gap-4">
             <div>
-              <Label>Years Forward</Label>
+              <Label className="text-amber-400/80 font-semibold">Years Forward</Label>
               <Select value={years} onValueChange={setYears}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectTrigger className="border-amber-500/20 mt-1"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   {[5, 10, 15, 20, 30].map((y) => (
                     <SelectItem key={y} value={y.toString()}>{y} Years</SelectItem>
@@ -100,9 +108,9 @@ export const TattooAgingSimulator = ({ onBack }: Props) => {
               </Select>
             </div>
             <div>
-              <Label>Skin Type</Label>
+              <Label className="text-amber-400/80 font-semibold">Skin Type</Label>
               <Select value={skinType} onValueChange={setSkinType}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectTrigger className="border-amber-500/20 mt-1"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="fair">Fair</SelectItem>
                   <SelectItem value="medium">Medium</SelectItem>
@@ -111,19 +119,27 @@ export const TattooAgingSimulator = ({ onBack }: Props) => {
                 </SelectContent>
               </Select>
             </div>
-          </div>
+          </motion.div>
 
-          <Button onClick={simulate} disabled={loading || !tattooImage} className="w-full gap-2">
-            {loading ? <><Loader2 className="h-4 w-4 animate-spin" /> Simulating...</> : <><Sparkles className="h-4 w-4" /> Simulate Aging (10 credits)</>}
+          <Button
+            onClick={simulate}
+            disabled={loading || !tattooImage}
+            className="w-full gap-2 h-12 bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-black font-bold text-base shadow-lg shadow-amber-500/20"
+          >
+            {loading ? <><Loader2 className="h-5 w-5 animate-spin" /> Simulating...</> : <><Sparkles className="h-5 w-5" /> Simulate Aging — 10 Credits</>}
           </Button>
 
           {result && (
-            <Card className="p-4 mt-4 bg-amber-500/5 border-amber-500/20">
-              <h3 className="font-black text-lg mb-3">Aging Analysis — {years} Years</h3>
-              <div className="prose prose-sm max-w-none text-muted-foreground whitespace-pre-line">
-                {result.analysis}
-              </div>
-            </Card>
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+              <Card className="p-5 mt-2 bg-gradient-to-br from-amber-500/5 to-yellow-600/5 border-amber-500/20">
+                <h3 className="font-black text-lg mb-3 bg-gradient-to-r from-amber-400 to-yellow-500 bg-clip-text text-transparent">
+                  Aging Analysis — {years} Years
+                </h3>
+                <div className="prose prose-sm max-w-none text-muted-foreground whitespace-pre-line leading-relaxed">
+                  {result.analysis}
+                </div>
+              </Card>
+            </motion.div>
           )}
         </div>
       </Card>
