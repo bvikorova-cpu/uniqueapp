@@ -4,10 +4,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Loader2, Star, Heart, Briefcase, Activity } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Loader2, Star, Heart, Briefcase, Activity, Sparkles } from "lucide-react";
 import { toast } from "sonner";
+import { motion } from "framer-motion";
 
 const ZODIAC_SIGNS = [
   { value: 'aries', label: 'Aries ♈', emoji: '🐏' },
@@ -35,13 +36,7 @@ export const DailyHoroscope = () => {
     queryKey: ['daily-horoscope', selectedSign, today],
     queryFn: async () => {
       if (!selectedSign) return null;
-      const { data, error } = await supabase
-        .from('daily_horoscopes')
-        .select('*')
-        .eq('zodiac_sign', selectedSign)
-        .eq('date', today)
-        .maybeSingle();
-      
+      const { data, error } = await supabase.from('daily_horoscopes').select('*').eq('zodiac_sign', selectedSign).eq('date', today).maybeSingle();
       if (error) throw error;
       return data;
     },
@@ -53,172 +48,116 @@ export const DailyHoroscope = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
       if (!selectedSign) throw new Error('Sign required');
-
       const { data, error } = await supabase.functions.invoke('astrology-reading', {
-        body: {
-          type: 'daily_horoscope',
-          data: {
-            zodiacSign: selectedSign,
-            date: today
-          }
-        }
+        body: { type: 'daily_horoscope', data: { zodiacSign: selectedSign, date: today } }
       });
-
       if (error) throw error;
-
       const horoscopeData = {
-        user_id: user.id,
-        zodiac_sign: selectedSign,
-        date: today,
-        content: data.content,
-        lucky_numbers: data.luckyNumbers,
-        lucky_colors: data.luckyColors,
-        compatibility_signs: data.compatibilitySigns?.map((sign: string) => sign.toLowerCase()),
-        mood_score: data.moodScore,
-        love_score: data.loveScore,
-        career_score: data.careerScore,
-        health_score: data.healthScore,
-        is_premium: false
+        user_id: user.id, zodiac_sign: selectedSign, date: today, content: data.content,
+        lucky_numbers: data.luckyNumbers, lucky_colors: data.luckyColors,
+        compatibility_signs: data.compatibilitySigns?.map((s: string) => s.toLowerCase()),
+        mood_score: data.moodScore, love_score: data.loveScore, career_score: data.careerScore, health_score: data.healthScore, is_premium: false
       };
-
-      const { data: savedData, error: saveError } = await supabase
-        .from('daily_horoscopes')
-        .insert([horoscopeData])
-        .select()
-        .single();
-
+      const { data: saved, error: saveError } = await supabase.from('daily_horoscopes').insert([horoscopeData]).select().single();
       if (saveError) throw saveError;
-      return savedData;
+      return saved;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['daily-horoscope'] });
-      toast.success('Daily horoscope generated!');
-    },
-    onError: (error: any) => {
-      toast.error(error.message || 'Failed to generate horoscope');
-    }
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['daily-horoscope'] }); toast.success('Horoscope revealed! ✨'); },
+    onError: (error: any) => { toast.error(error.message || 'Failed to generate horoscope'); }
   });
 
   const signData = ZODIAC_SIGNS.find(s => s.value === selectedSign);
+  const scores = todayHoroscope ? [
+    { icon: Star, label: "Mood", value: todayHoroscope.mood_score, color: "text-amber-500", bg: "from-amber-500 to-yellow-400" },
+    { icon: Heart, label: "Love", value: todayHoroscope.love_score, color: "text-pink-500", bg: "from-pink-500 to-rose-400" },
+    { icon: Briefcase, label: "Career", value: todayHoroscope.career_score, color: "text-blue-500", bg: "from-blue-500 to-cyan-400" },
+    { icon: Activity, label: "Health", value: todayHoroscope.health_score, color: "text-emerald-500", bg: "from-emerald-500 to-green-400" },
+  ] : [];
 
   return (
-    <div className="space-y-6">
-      <Card className="p-6">
+    <div className="space-y-4">
+      <Card className="p-5 bg-card/90 backdrop-blur-xl border-border/30 relative overflow-hidden">
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-500 via-purple-500 to-pink-500" />
         <div className="space-y-4">
-          <div>
-            <label className="text-sm font-medium mb-2 block">Select Your Zodiac Sign</label>
-            <Select value={selectedSign} onValueChange={(v) => setSelectedSign(v as ZodiacSign)}>
-              <SelectTrigger>
-                <SelectValue placeholder="Choose your sign..." />
-              </SelectTrigger>
-              <SelectContent>
-                {ZODIAC_SIGNS.map((sign) => (
-                  <SelectItem key={sign.value} value={sign.value}>
-                    {sign.emoji} {sign.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+          <label className="text-sm font-bold text-foreground block">Select Your Zodiac Sign</label>
+          <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
+            {ZODIAC_SIGNS.map((sign) => (
+              <motion.button key={sign.value} whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}
+                onClick={() => setSelectedSign(sign.value)}
+                className={`p-2 rounded-xl text-center transition-all border ${selectedSign === sign.value
+                  ? 'bg-primary/10 border-primary shadow-lg shadow-primary/20' : 'bg-muted/30 border-border/30 hover:bg-muted/50'}`}>
+                <span className="text-xl block">{sign.emoji}</span>
+                <span className="text-[10px] text-muted-foreground font-medium">{sign.label.split(' ')[0]}</span>
+              </motion.button>
+            ))}
           </div>
 
           {selectedSign && !todayHoroscope && (
-            <Button
-              onClick={() => generateMutation.mutate()}
-              disabled={generateMutation.isPending}
-              className="w-full"
-            >
-              {generateMutation.isPending ? (
-                <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Consulting the stars...</>
-              ) : (
-                <>Get Today's Horoscope</>
-              )}
+            <Button onClick={() => generateMutation.mutate()} disabled={generateMutation.isPending}
+              className="w-full bg-gradient-to-r from-amber-600 to-purple-600 hover:from-amber-700 hover:to-purple-700 text-white font-bold">
+              {generateMutation.isPending ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Consulting the stars...</> : <>✨ Get Today's Horoscope</>}
             </Button>
           )}
         </div>
       </Card>
 
       {todayHoroscope && (
-        <Card className="p-6 space-y-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="text-2xl font-bold">{signData?.emoji} {signData?.label}</h3>
-              <p className="text-sm text-muted-foreground">
-                {new Date(todayHoroscope.date).toLocaleDateString('en-US', { 
-                  weekday: 'long', 
-                  year: 'numeric', 
-                  month: 'long', 
-                  day: 'numeric' 
-                })}
-              </p>
-            </div>
-          </div>
-
-          <div className="prose prose-sm max-w-none">
-            <p className="text-foreground leading-relaxed">{todayHoroscope.content}</p>
-          </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="space-y-2">
-              <div className="flex items-center gap-2 text-sm font-medium">
-                <Star className="h-4 w-4 text-yellow-500" />
-                <span>Mood</span>
-              </div>
-              <Progress value={todayHoroscope.mood_score * 10} className="h-2" />
-              <p className="text-xs text-muted-foreground">{todayHoroscope.mood_score}/10</p>
-            </div>
-
-            <div className="space-y-2">
-              <div className="flex items-center gap-2 text-sm font-medium">
-                <Heart className="h-4 w-4 text-red-500" />
-                <span>Love</span>
-              </div>
-              <Progress value={todayHoroscope.love_score * 10} className="h-2" />
-              <p className="text-xs text-muted-foreground">{todayHoroscope.love_score}/10</p>
-            </div>
-
-            <div className="space-y-2">
-              <div className="flex items-center gap-2 text-sm font-medium">
-                <Briefcase className="h-4 w-4 text-blue-500" />
-                <span>Career</span>
-              </div>
-              <Progress value={todayHoroscope.career_score * 10} className="h-2" />
-              <p className="text-xs text-muted-foreground">{todayHoroscope.career_score}/10</p>
-            </div>
-
-            <div className="space-y-2">
-              <div className="flex items-center gap-2 text-sm font-medium">
-                <Activity className="h-4 w-4 text-green-500" />
-                <span>Health</span>
-              </div>
-              <Progress value={todayHoroscope.health_score * 10} className="h-2" />
-              <p className="text-xs text-muted-foreground">{todayHoroscope.health_score}/10</p>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t">
-            <div>
-              <h4 className="font-semibold mb-2">Lucky Numbers</h4>
-              <div className="flex gap-2 flex-wrap">
-                {todayHoroscope.lucky_numbers?.map((num: number) => (
-                  <Badge key={num} variant="outline" className="text-lg">
-                    {num}
-                  </Badge>
-                ))}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+          <Card className="p-5 bg-card/90 backdrop-blur-xl border-border/30 space-y-5 relative overflow-hidden">
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-500 to-purple-500" />
+            <div className="flex items-center gap-3">
+              <motion.span initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring" }} className="text-4xl">{signData?.emoji}</motion.span>
+              <div>
+                <h3 className="text-xl font-black text-foreground">{signData?.label}</h3>
+                <p className="text-xs text-muted-foreground">
+                  {new Date(todayHoroscope.date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                </p>
               </div>
             </div>
 
-            <div>
-              <h4 className="font-semibold mb-2">Lucky Colors</h4>
-              <div className="flex gap-2 flex-wrap">
-                {todayHoroscope.lucky_colors?.map((color: string) => (
-                  <Badge key={color} variant="secondary">
-                    {color}
-                  </Badge>
-                ))}
+            <p className="text-sm text-foreground leading-relaxed">{todayHoroscope.content}</p>
+
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              {scores.map((s, i) => (
+                <motion.div key={s.label} initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: i * 0.1 }}
+                  className="bg-muted/30 rounded-xl p-3 border border-border/30 relative overflow-hidden">
+                  <div className={`absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r ${s.bg}`} />
+                  <div className="flex items-center gap-1 mb-2">
+                    <s.icon className={`w-3.5 h-3.5 ${s.color}`} />
+                    <span className="text-xs font-medium text-muted-foreground">{s.label}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
+                      <motion.div initial={{ width: 0 }} animate={{ width: `${s.value * 10}%` }}
+                        transition={{ delay: 0.3 + i * 0.1, duration: 0.8 }}
+                        className={`h-full rounded-full bg-gradient-to-r ${s.bg}`} />
+                    </div>
+                    <span className="text-xs font-black text-foreground">{s.value}</span>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+
+            <div className="grid grid-cols-2 gap-3 pt-3 border-t border-border/30">
+              <div>
+                <h4 className="text-xs font-bold text-foreground mb-2">Lucky Numbers</h4>
+                <div className="flex gap-1.5 flex-wrap">
+                  {todayHoroscope.lucky_numbers?.map((num: number) => (
+                    <span key={num} className="w-8 h-8 rounded-lg bg-primary/10 border border-primary/30 flex items-center justify-center text-sm font-bold text-primary">{num}</span>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <h4 className="text-xs font-bold text-foreground mb-2">Lucky Colors</h4>
+                <div className="flex gap-1.5 flex-wrap">
+                  {todayHoroscope.lucky_colors?.map((color: string) => (
+                    <Badge key={color} variant="secondary" className="text-xs">{color}</Badge>
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
-        </Card>
+          </Card>
+        </motion.div>
       )}
     </div>
   );

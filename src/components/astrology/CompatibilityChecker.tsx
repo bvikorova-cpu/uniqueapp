@@ -4,23 +4,17 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Progress } from "@/components/ui/progress";
-import { Loader2, Heart } from "lucide-react";
+import { Loader2, Heart, Sparkles } from "lucide-react";
 import { toast } from "sonner";
+import { motion } from "framer-motion";
 
 const ZODIAC_SIGNS = [
-  { value: 'aries', label: 'Aries ♈' },
-  { value: 'taurus', label: 'Taurus ♉' },
-  { value: 'gemini', label: 'Gemini ♊' },
-  { value: 'cancer', label: 'Cancer ♋' },
-  { value: 'leo', label: 'Leo ♌' },
-  { value: 'virgo', label: 'Virgo ♍' },
-  { value: 'libra', label: 'Libra ♎' },
-  { value: 'scorpio', label: 'Scorpio ♏' },
-  { value: 'sagittarius', label: 'Sagittarius ♐' },
-  { value: 'capricorn', label: 'Capricorn ♑' },
-  { value: 'aquarius', label: 'Aquarius ♒' },
-  { value: 'pisces', label: 'Pisces ♓' }
+  { value: 'aries', label: 'Aries ♈', emoji: '🐏' }, { value: 'taurus', label: 'Taurus ♉', emoji: '🐂' },
+  { value: 'gemini', label: 'Gemini ♊', emoji: '👯' }, { value: 'cancer', label: 'Cancer ♋', emoji: '🦀' },
+  { value: 'leo', label: 'Leo ♌', emoji: '🦁' }, { value: 'virgo', label: 'Virgo ♍', emoji: '👰' },
+  { value: 'libra', label: 'Libra ♎', emoji: '⚖️' }, { value: 'scorpio', label: 'Scorpio ♏', emoji: '🦂' },
+  { value: 'sagittarius', label: 'Sagittarius ♐', emoji: '🏹' }, { value: 'capricorn', label: 'Capricorn ♑', emoji: '🐐' },
+  { value: 'aquarius', label: 'Aquarius ♒', emoji: '🏺' }, { value: 'pisces', label: 'Pisces ♓', emoji: '🐟' }
 ] as const;
 
 type ZodiacSign = typeof ZODIAC_SIGNS[number]['value'];
@@ -34,148 +28,106 @@ export const CompatibilityChecker = () => {
     mutationFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
-
       if (!sign1 || !sign2) return;
-
       const { data, error } = await supabase.functions.invoke('astrology-reading', {
-        body: {
-          type: 'compatibility',
-          data: { sign1, sign2 }
-        }
+        body: { type: 'compatibility', data: { sign1, sign2 } }
       });
-
       if (error) throw error;
-
-      const compatData = {
-        user_id: user.id,
-        sign1,
-        sign2,
-        compatibility_score: data.compatibilityScore,
-        analysis: data.analysis,
-        strengths: data.strengths,
-        challenges: data.challenges,
-        advice: data.advice,
-        is_premium: false
-      };
-
-      await supabase.from('compatibility_readings').insert([compatData]);
+      await supabase.from('compatibility_readings').insert([{
+        user_id: user.id, sign1, sign2, compatibility_score: data.compatibilityScore,
+        analysis: data.analysis, strengths: data.strengths, challenges: data.challenges, advice: data.advice, is_premium: false
+      }]);
       return data;
     },
-    onSuccess: (data) => {
-      setResult(data);
-      toast.success('Compatibility analysis complete!');
-    },
-    onError: (error: any) => {
-      toast.error(error.message || 'Failed to analyze compatibility');
-    }
+    onSuccess: (data) => { setResult(data); toast.success('Compatibility revealed! 💕'); },
+    onError: (error: any) => { toast.error(error.message || 'Failed to analyze'); }
   });
 
+  const s1 = ZODIAC_SIGNS.find(s => s.value === sign1);
+  const s2 = ZODIAC_SIGNS.find(s => s.value === sign2);
+
   return (
-    <div className="space-y-6">
-      <Card className="p-6">
-        <div className="space-y-4">
-          <h3 className="text-xl font-semibold flex items-center gap-2">
-            <Heart className="h-5 w-5 text-red-500" />
-            Love Compatibility Analyzer
-          </h3>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="text-sm font-medium mb-2 block">First Sign</label>
-              <Select value={sign1} onValueChange={(v) => setSign1(v as ZodiacSign)}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Choose sign..." />
-                </SelectTrigger>
-                <SelectContent>
-                  {ZODIAC_SIGNS.map((sign) => (
-                    <SelectItem key={sign.value} value={sign.value}>
-                      {sign.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div>
-              <label className="text-sm font-medium mb-2 block">Second Sign</label>
-              <Select value={sign2} onValueChange={(v) => setSign2(v as ZodiacSign)}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Choose sign..." />
-                </SelectTrigger>
-                <SelectContent>
-                  {ZODIAC_SIGNS.map((sign) => (
-                    <SelectItem key={sign.value} value={sign.value}>
-                      {sign.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          <Button
-            onClick={() => checkMutation.mutate()}
-            disabled={!sign1 || !sign2 || checkMutation.isPending}
-            className="w-full"
-          >
-            {checkMutation.isPending ? (
-              <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Analyzing compatibility...</>
-            ) : (
-              <>Check Compatibility</>
-            )}
-          </Button>
+    <div className="space-y-4">
+      <Card className="p-5 bg-card/90 backdrop-blur-xl border-border/30 relative overflow-hidden">
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-pink-500 via-red-500 to-rose-500" />
+        <div className="flex items-center gap-2 mb-4">
+          <Heart className="h-5 w-5 text-pink-500" />
+          <h3 className="text-lg font-black text-foreground">Love Compatibility</h3>
         </div>
+
+        <div className="grid grid-cols-2 gap-4 mb-4">
+          <div>
+            <label className="text-xs font-bold text-foreground mb-1 block">First Sign</label>
+            <Select value={sign1} onValueChange={(v) => setSign1(v as ZodiacSign)}>
+              <SelectTrigger className="bg-muted/30 border-border/30"><SelectValue placeholder="Choose..." /></SelectTrigger>
+              <SelectContent>
+                {ZODIAC_SIGNS.map((s) => <SelectItem key={s.value} value={s.value}>{s.emoji} {s.label}</SelectItem>)}
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <label className="text-xs font-bold text-foreground mb-1 block">Second Sign</label>
+            <Select value={sign2} onValueChange={(v) => setSign2(v as ZodiacSign)}>
+              <SelectTrigger className="bg-muted/30 border-border/30"><SelectValue placeholder="Choose..." /></SelectTrigger>
+              <SelectContent>
+                {ZODIAC_SIGNS.map((s) => <SelectItem key={s.value} value={s.value}>{s.emoji} {s.label}</SelectItem>)}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        <Button onClick={() => checkMutation.mutate()} disabled={!sign1 || !sign2 || checkMutation.isPending}
+          className="w-full bg-gradient-to-r from-pink-600 to-red-600 hover:from-pink-700 hover:to-red-700 text-white font-bold">
+          {checkMutation.isPending ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Analyzing...</> : <>💕 Check Compatibility</>}
+        </Button>
       </Card>
 
       {result && (
-        <Card className="p-6 space-y-6">
-          <div className="text-center space-y-4">
-            <div className="inline-flex items-center justify-center w-32 h-32 rounded-full bg-gradient-to-br from-pink-500 to-purple-600">
-              <span className="text-5xl font-bold text-white">{result.compatibilityScore}%</span>
-            </div>
-            <h3 className="text-2xl font-bold">
-              {ZODIAC_SIGNS.find(s => s.value === sign1)?.label} ❤️ {ZODIAC_SIGNS.find(s => s.value === sign2)?.label}
-            </h3>
-            <Progress value={result.compatibilityScore} className="h-3" />
-          </div>
-
-          <div className="prose prose-sm max-w-none">
-            <p className="text-foreground leading-relaxed">{result.analysis}</p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-3">
-              <h4 className="font-semibold text-green-600 dark:text-green-400">💪 Strengths</h4>
-              <ul className="space-y-2">
-                {result.strengths?.map((strength: string, idx: number) => (
-                  <li key={idx} className="flex items-start gap-2">
-                    <span className="text-green-500 mt-0.5">✓</span>
-                    <span className="text-sm">{strength}</span>
-                  </li>
-                ))}
-              </ul>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+          <Card className="p-5 bg-card/90 backdrop-blur-xl border-border/30 space-y-5 relative overflow-hidden">
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-pink-500 to-rose-500" />
+            
+            <div className="text-center">
+              <div className="flex items-center justify-center gap-3 mb-3">
+                <span className="text-3xl">{s1?.emoji}</span>
+                <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring", stiffness: 200 }}
+                  className="w-20 h-20 rounded-full bg-gradient-to-br from-pink-500 to-rose-600 flex items-center justify-center shadow-lg shadow-pink-500/30">
+                  <span className="text-2xl font-black text-white">{result.compatibilityScore}%</span>
+                </motion.div>
+                <span className="text-3xl">{s2?.emoji}</span>
+              </div>
+              <h3 className="text-lg font-black text-foreground">{s1?.label} ❤️ {s2?.label}</h3>
             </div>
 
-            <div className="space-y-3">
-              <h4 className="font-semibold text-amber-600 dark:text-amber-400">⚠️ Challenges</h4>
-              <ul className="space-y-2">
-                {result.challenges?.map((challenge: string, idx: number) => (
-                  <li key={idx} className="flex items-start gap-2">
-                    <span className="text-amber-500 mt-0.5">!</span>
-                    <span className="text-sm">{challenge}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
+            <p className="text-sm text-foreground leading-relaxed">{result.analysis}</p>
 
-          {result.advice && (
-            <div className="pt-4 border-t">
-              <h4 className="font-semibold mb-2">💡 Relationship Advice</h4>
-              <p className="text-sm text-muted-foreground leading-relaxed">{result.advice}</p>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="bg-emerald-500/5 rounded-xl p-3 border border-emerald-500/20">
+                <h4 className="text-xs font-black text-emerald-600 dark:text-emerald-400 mb-2">💪 Strengths</h4>
+                <ul className="space-y-1">
+                  {result.strengths?.map((s: string, i: number) => (
+                    <li key={i} className="text-xs text-foreground flex items-start gap-1"><span className="text-emerald-500">✓</span>{s}</li>
+                  ))}
+                </ul>
+              </div>
+              <div className="bg-amber-500/5 rounded-xl p-3 border border-amber-500/20">
+                <h4 className="text-xs font-black text-amber-600 dark:text-amber-400 mb-2">⚠️ Challenges</h4>
+                <ul className="space-y-1">
+                  {result.challenges?.map((c: string, i: number) => (
+                    <li key={i} className="text-xs text-foreground flex items-start gap-1"><span className="text-amber-500">!</span>{c}</li>
+                  ))}
+                </ul>
+              </div>
             </div>
-          )}
-        </Card>
+
+            {result.advice && (
+              <div className="p-3 bg-muted/30 rounded-xl border border-border/30">
+                <h4 className="text-xs font-black text-foreground mb-1">💡 Advice</h4>
+                <p className="text-xs text-muted-foreground leading-relaxed">{result.advice}</p>
+              </div>
+            )}
+          </Card>
+        </motion.div>
       )}
     </div>
   );
