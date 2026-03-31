@@ -10801,6 +10801,62 @@ export type Database = {
         }
         Relationships: []
       }
+      dream_battle_dreams: {
+        Row: {
+          created_at: string | null
+          dream_text: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          dream_text: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          dream_text?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      dream_battle_interpretations: {
+        Row: {
+          created_at: string | null
+          dream_id: string
+          id: string
+          interpretation_text: string
+          user_id: string
+          votes: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          dream_id: string
+          id?: string
+          interpretation_text: string
+          user_id: string
+          votes?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          dream_id?: string
+          id?: string
+          interpretation_text?: string
+          user_id?: string
+          votes?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dream_battle_interpretations_dream_id_fkey"
+            columns: ["dream_id"]
+            isOneToOne: false
+            referencedRelation: "dream_battle_dreams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       dream_campaigns: {
         Row: {
           created_at: string | null
@@ -10932,6 +10988,39 @@ export type Database = {
           dream_description?: string
           id?: string
           interpretation?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      dream_mood_entries: {
+        Row: {
+          created_at: string | null
+          energy_level: number | null
+          id: string
+          mood_label: string | null
+          mood_score: number
+          notes: string | null
+          stress_level: number | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          energy_level?: number | null
+          id?: string
+          mood_label?: string | null
+          mood_score: number
+          notes?: string | null
+          stress_level?: number | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          energy_level?: number | null
+          id?: string
+          mood_label?: string | null
+          mood_score?: number
+          notes?: string | null
+          stress_level?: number | null
           user_id?: string
         }
         Relationships: []
