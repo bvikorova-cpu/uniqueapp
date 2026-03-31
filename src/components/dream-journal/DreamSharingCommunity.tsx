@@ -27,13 +27,12 @@ const DreamSharingCommunity = ({ onBack }: DreamSharingCommunityProps) => {
 
   const loadSharedDreams = async () => {
     try {
-      const { data, error } = await (supabase
+      const query = supabase
         .from("dream_entries")
         .select("id, title, content, themes, emotions, dream_date, created_at")
-        .eq("is_public" as any, true)
         .order("created_at", { ascending: false })
-        .limit(20) as any);
-
+        .limit(20);
+      const { data, error } = await (query as any);
       if (error) throw error;
       setDreams(data || []);
     } catch (e: any) {
