@@ -6347,6 +6347,33 @@ export type Database = {
         }
         Relationships: []
       }
+      comedy_open_mic: {
+        Row: {
+          content: string
+          created_at: string | null
+          id: string
+          title: string
+          user_id: string
+          votes: number | null
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          id?: string
+          title: string
+          user_id: string
+          votes?: number | null
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          id?: string
+          title?: string
+          user_id?: string
+          votes?: number | null
+        }
+        Relationships: []
+      }
       comedy_platform_earnings: {
         Row: {
           admin_notes: string | null
