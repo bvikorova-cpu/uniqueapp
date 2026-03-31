@@ -50,7 +50,7 @@ export const AIPetStoryGenerator = ({ onBack }: Props) => {
         body: { pets: selectedPets, genre, setting }
       });
       if (error) throw error;
-      await useCredits(6, "AI Pet Story Generator");
+      for (let i = 0; i < 6; i++) await useCredit("custom_generation", "AI Pet Story Generator");
       setResult(data.result);
     } catch (e: any) { toast.error(e.message); }
     finally { setLoading(false); }

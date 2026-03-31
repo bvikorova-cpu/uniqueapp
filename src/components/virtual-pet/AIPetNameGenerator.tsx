@@ -31,7 +31,7 @@ export const AIPetNameGenerator = ({ onBack }: Props) => {
         body: { species, theme, personality }
       });
       if (error) throw error;
-      await useCredits(3, "AI Pet Name Generator");
+      for (let i = 0; i < 3; i++) await useCredit("custom_generation", "AI Pet Name Generator");
       setNames(data.names || []);
     } catch (e: any) { toast.error(e.message); }
     finally { setLoading(false); }

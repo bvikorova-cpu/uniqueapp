@@ -37,7 +37,7 @@ export const AIPetHealthPredictor = ({ onBack }: Props) => {
         body: { petName: pet?.name, species: pet?.pet_types?.species, level: pet?.level, happiness: pet?.happiness, energy: pet?.energy, hunger: pet?.hunger, experience: pet?.experience, timeframeDays: parseInt(timeframe) }
       });
       if (error) throw error;
-      await useCredits(8, "AI Pet Health Predictor");
+      for (let i = 0; i < 8; i++) await useCredit("custom_generation", "AI Pet Health Predictor");
       setResult(data.result);
     } catch (e: any) { toast.error(e.message); }
     finally { setLoading(false); }

@@ -36,7 +36,7 @@ export const AIPetPersonalityCoach = ({ onBack }: Props) => {
         body: { petName: pet?.name, species: pet?.pet_types?.species, level: pet?.level, happiness: pet?.happiness, energy: pet?.energy, hunger: pet?.hunger }
       });
       if (error) throw error;
-      await useCredits(5, "AI Pet Personality Coach");
+      for (let i = 0; i < 5; i++) await useCredit("custom_generation", "AI Pet Personality Coach");
       setResult(data.result);
     } catch (e: any) { toast.error(e.message); }
     finally { setLoading(false); }
