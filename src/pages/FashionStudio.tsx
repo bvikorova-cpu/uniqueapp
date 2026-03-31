@@ -28,6 +28,12 @@ import AIFashionShowSimulator from "@/components/fashion/AIFashionShowSimulator"
 import StyleBattleArena from "@/components/fashion/StyleBattleArena";
 import AIOotd from "@/components/fashion/AIOotd";
 import AIPersonalShopper from "@/components/fashion/AIPersonalShopper";
+import FashionShowVideoGenerator from "@/components/fashion/FashionShowVideoGenerator";
+import AIStyleScanner from "@/components/fashion/AIStyleScanner";
+import SeasonStyleLeagues from "@/components/fashion/SeasonStyleLeagues";
+import AIShoppingLinks from "@/components/fashion/AIShoppingLinks";
+import WardrobeAnalytics from "@/components/fashion/WardrobeAnalytics";
+import GlobalStreetStyleFeed from "@/components/fashion/GlobalStreetStyleFeed";
 import { useAICredits } from "@/hooks/useAICredits";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
