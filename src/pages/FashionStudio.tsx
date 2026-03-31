@@ -59,7 +59,8 @@ type ActiveView =
   | "body-shape" | "sustainable" | "fashion-show" | "style-battle"
   | "ootd" | "personal-shopper" | "video-generator" | "style-scanner"
   | "season-leagues" | "shopping-links" | "wardrobe-analytics" | "street-style"
-  | "forecast-calendar" | "fabric-analyzer" | "celebrity-clone" | "color-season" | "outfit-remix" | "mood-ring";
+  | "forecast-calendar" | "fabric-analyzer" | "celebrity-clone" | "color-season" | "outfit-remix" | "mood-ring"
+  | "outfit-cost" | "history-explorer" | "dress-code" | "fashion-compat" | "trend-radar" | "virtual-stylist";
 
 const useFashionStats = () => {
   return useQuery({
