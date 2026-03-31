@@ -244,8 +244,8 @@ export default function FashionStudio() {
           <div className="flex items-center gap-3 flex-wrap">
             <span className="text-2xl">🔥</span>
             <div className="flex-1 min-w-[180px]">
-              <p className="font-bold text-sm">4 New AI Features!</p>
-              <p className="text-xs text-muted-foreground">Fashion Show Simulator, Style Battles, OOTD Scoring & Personal Shopper Chat</p>
+              <p className="font-bold text-sm">10 New AI Features!</p>
+              <p className="text-xs text-muted-foreground">Video Generator, Style Scanner, Season Leagues, Shopping Links, Wardrobe Analytics & more</p>
             </div>
             <Button variant="outline" size="sm" onClick={() => setActiveView("fashion-show")} className="text-xs">
               Try Now
