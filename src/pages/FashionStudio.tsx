@@ -8,7 +8,8 @@ import {
   Shirt, ArrowLeft, TrendingUp, Brain, Zap, Eye, Gem,
   Leaf, Layers, Crown, Star, Target, Flame, Swords, MessageCircle,
   Clapperboard, Video, ScanLine, BarChart3, ShoppingCart, Globe,
-  Calendar, Scissors, Repeat, Flower2
+  Calendar, Scissors, Repeat, Flower2, Calculator, BookOpen,
+  BadgeCheck, HeartHandshake, Radar, Wand2
 } from "lucide-react";
 import FashionGenerator from "@/components/fashion/FashionGenerator";
 import FashionGallery from "@/components/fashion/FashionGallery";
