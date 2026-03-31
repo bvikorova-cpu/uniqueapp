@@ -340,96 +340,110 @@ export const MyPets = ({ onSelectPet }: MyPetsProps) => {
             return pet.level >= (evoLevels[nextStage]?.level || 999);
           })();
 
+          const overallHealth = Math.round((pet.happiness + pet.hunger + pet.energy) / 3);
+          const healthGradient = overallHealth >= 70 ? 'from-emerald-500 to-teal-400' : overallHealth >= 40 ? 'from-amber-500 to-yellow-400' : 'from-red-500 to-rose-400';
+
           return (
-            <motion.div key={pet.id} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: i * 0.05, type: "spring" }}>
+            <motion.div key={pet.id} initial={{ opacity: 0, y: 20, scale: 0.95 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ delay: i * 0.08, type: "spring", stiffness: 120 }}>
               <Card
-                className="border-border/40 bg-card/80 backdrop-blur-xl hover:border-primary/30 transition-all cursor-pointer active:scale-[0.97] group overflow-hidden"
+                className="relative border-border/30 bg-card/90 backdrop-blur-xl hover:border-primary/40 transition-all duration-300 cursor-pointer active:scale-[0.97] group overflow-hidden hover:shadow-lg hover:shadow-primary/10"
                 onClick={() => onSelectPet(pet.id)}
               >
-                <CardContent className="p-4 space-y-3">
+                {/* Top accent gradient */}
+                <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${healthGradient}`} />
+                {/* Subtle glow */}
+                <div className={`absolute -top-8 -right-8 w-24 h-24 rounded-full bg-gradient-to-br ${healthGradient} opacity-[0.07] blur-2xl group-hover:opacity-[0.12] transition-opacity`} />
+
+                <CardContent className="p-4 space-y-3 relative">
                   {/* Pet Avatar & Info */}
                   <div className="flex items-center gap-3">
-                    <div className="relative w-16 h-16 flex items-center justify-center flex-shrink-0">
-                      {getPetImage(pet.pet_types?.name || '', pet.pet_types?.species || '') ? (
-                        <img src={getPetImage(pet.pet_types?.name || '', pet.pet_types?.species || '')!} alt={pet.name}
-                          className="w-full h-full object-contain group-hover:animate-[bounce_1s_ease-in-out_infinite]" />
-                      ) : (
-                        <div className="text-5xl group-hover:animate-[bounce_1s_ease-in-out_infinite]">
-                          {getPetEmoji(pet.pet_types?.species || '')}
-                        </div>
-                      )}
+                    <div className="relative">
+                      <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/10 to-accent/10 border border-primary/20 flex items-center justify-center overflow-hidden group-hover:border-primary/40 transition-colors">
+                        {getPetImage(pet.pet_types?.name || '', pet.pet_types?.species || '') ? (
+                          <img src={getPetImage(pet.pet_types?.name || '', pet.pet_types?.species || '')!} alt={pet.name}
+                            className="w-14 h-14 object-contain group-hover:scale-110 transition-transform duration-300" />
+                        ) : (
+                          <div className="text-4xl group-hover:scale-110 transition-transform duration-300">
+                            {getPetEmoji(pet.pet_types?.species || '')}
+                          </div>
+                        )}
+                      </div>
                       {canEvolve && (
-                        <div className="absolute -top-1 -right-1 bg-amber-500 text-white rounded-full p-1 animate-pulse">
+                        <div className="absolute -top-1.5 -right-1.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-full p-1 animate-pulse shadow-lg shadow-amber-500/30">
                           <Sparkles className="h-3 w-3" />
                         </div>
                       )}
+                      {/* Level badge */}
+                      <div className="absolute -bottom-1 -right-1 bg-gradient-to-r from-primary to-accent text-white text-[9px] font-black px-1.5 py-0.5 rounded-full shadow-md">
+                        Lv.{pet.level}
+                      </div>
                     </div>
                     <div className="flex-1 min-w-0">
                       <h3 className="text-base font-black truncate">{pet.name}</h3>
                       <p className="text-xs text-muted-foreground capitalize">{evolutionStage.name}</p>
-                      <div className="flex items-center gap-1 mt-0.5">
-                        <Star className="h-3 w-3 text-amber-500" />
-                        <span className="text-xs font-bold">Level {pet.level}</span>
+                      {/* Win/Loss compact */}
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className="text-[10px] font-bold text-emerald-500">{pet.battle_wins || 0}W</span>
+                        <span className="text-[10px] text-muted-foreground">/</span>
+                        <span className="text-[10px] font-bold text-red-400">{pet.battle_losses || 0}L</span>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <div className="flex items-center gap-1">
-                        <Shield className="h-3 w-3 text-primary" />
-                        <span className="text-xs font-bold">{pet.battle_wins || 0}W</span>
-                      </div>
-                      <span className="text-[10px] text-muted-foreground">{pet.battle_losses || 0}L</span>
+                    {/* Overall health ring */}
+                    <div className="relative w-12 h-12 flex items-center justify-center">
+                      <svg className="w-12 h-12 -rotate-90" viewBox="0 0 36 36">
+                        <circle cx="18" cy="18" r="15" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-muted/20" />
+                        <circle cx="18" cy="18" r="15" fill="none" strokeWidth="2.5" strokeLinecap="round"
+                          strokeDasharray={`${overallHealth * 0.942} 100`}
+                          className={overallHealth >= 70 ? 'stroke-emerald-500' : overallHealth >= 40 ? 'stroke-amber-500' : 'stroke-red-500'} />
+                      </svg>
+                      <span className="absolute text-[10px] font-black">{overallHealth}%</span>
                     </div>
                   </div>
 
-                  {/* Stats Bars */}
-                  <div className="space-y-1.5">
-                    <div className="flex items-center gap-2">
-                      <Heart className={`h-3 w-3 ${getHealthColor(pet.happiness)}`} />
-                      <Progress value={pet.happiness} className="flex-1 h-1.5" />
-                      <span className="text-[10px] font-bold w-8 text-right">{pet.happiness}%</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Utensils className={`h-3 w-3 ${getHealthColor(pet.hunger)}`} />
-                      <Progress value={pet.hunger} className="flex-1 h-1.5" />
-                      <span className="text-[10px] font-bold w-8 text-right">{pet.hunger}%</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Zap className={`h-3 w-3 ${getHealthColor(pet.energy)}`} />
-                      <Progress value={pet.energy} className="flex-1 h-1.5" />
-                      <span className="text-[10px] font-bold w-8 text-right">{pet.energy}%</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <TrendingUp className="h-3 w-3 text-primary" />
-                      <Progress value={xpProgress} className="flex-1 h-1.5" />
-                      <span className="text-[10px] font-bold w-8 text-right">{Math.round(xpProgress)}%</span>
-                    </div>
+                  {/* Stats Bars - styled */}
+                  <div className="space-y-2 bg-muted/30 rounded-xl p-2.5">
+                    {[
+                      { icon: Heart, label: "Happy", value: pet.happiness, color: "bg-pink-500" },
+                      { icon: Utensils, label: "Hunger", value: pet.hunger, color: "bg-orange-500" },
+                      { icon: Zap, label: "Energy", value: pet.energy, color: "bg-cyan-500" },
+                      { icon: TrendingUp, label: "XP", value: xpProgress, color: "bg-primary" },
+                    ].map((stat) => (
+                      <div key={stat.label} className="flex items-center gap-2">
+                        <stat.icon className="h-3 w-3 text-muted-foreground shrink-0" />
+                        <div className="flex-1 h-2 bg-muted/50 rounded-full overflow-hidden">
+                          <motion.div
+                            initial={{ width: 0 }}
+                            animate={{ width: `${stat.value}%` }}
+                            transition={{ duration: 0.8, delay: i * 0.05, ease: "easeOut" }}
+                            className={`h-full rounded-full ${stat.color}`}
+                          />
+                        </div>
+                        <span className="text-[10px] font-bold w-8 text-right text-muted-foreground">{Math.round(stat.value)}%</span>
+                      </div>
+                    ))}
                   </div>
 
-                  {/* Action Buttons */}
+                  {/* Action Buttons - styled */}
                   <div className="grid grid-cols-4 gap-1.5">
-                    <Button size="sm" variant="outline" className="h-8 text-[10px] px-1 active:scale-[0.95]"
-                      onClick={(e) => { e.stopPropagation(); feedPetMutation.mutate(pet.id); }}>
-                      <Utensils className="h-3 w-3" />
-                    </Button>
-                    <Button size="sm" variant="outline" className="h-8 text-[10px] px-1 active:scale-[0.95]"
-                      onClick={(e) => { e.stopPropagation(); playWithPetMutation.mutate(pet.id); }}>
-                      <Heart className="h-3 w-3" />
-                    </Button>
-                    <Button size="sm" variant="outline" className="h-8 text-[10px] px-1 active:scale-[0.95]"
-                      onClick={(e) => { e.stopPropagation(); trainPetMutation.mutate(pet.id); }}>
-                      <Dumbbell className="h-3 w-3" />
-                    </Button>
-                    <Button size="sm" variant="outline" className="h-8 text-[10px] px-1 active:scale-[0.95]"
-                      onClick={(e) => { e.stopPropagation(); restPetMutation.mutate(pet.id); }}>
-                      <Moon className="h-3 w-3" />
-                    </Button>
+                    {[
+                      { icon: Utensils, action: () => feedPetMutation.mutate(pet.id), tip: "Feed", gradient: "hover:bg-orange-500/10 hover:border-orange-500/30 hover:text-orange-500" },
+                      { icon: Heart, action: () => playWithPetMutation.mutate(pet.id), tip: "Play", gradient: "hover:bg-pink-500/10 hover:border-pink-500/30 hover:text-pink-500" },
+                      { icon: Dumbbell, action: () => trainPetMutation.mutate(pet.id), tip: "Train", gradient: "hover:bg-cyan-500/10 hover:border-cyan-500/30 hover:text-cyan-500" },
+                      { icon: Moon, action: () => restPetMutation.mutate(pet.id), tip: "Rest", gradient: "hover:bg-indigo-500/10 hover:border-indigo-500/30 hover:text-indigo-500" },
+                    ].map((btn) => (
+                      <Button key={btn.tip} size="sm" variant="outline"
+                        className={`h-9 px-1 active:scale-[0.93] transition-all duration-200 ${btn.gradient}`}
+                        onClick={(e) => { e.stopPropagation(); btn.action(); }}>
+                        <btn.icon className="h-3.5 w-3.5" />
+                      </Button>
+                    ))}
                   </div>
 
                   {/* Evolve Button */}
                   {canEvolve && (
-                    <Button size="sm" className="w-full gap-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white active:scale-[0.97]"
+                    <Button size="sm" className="w-full gap-2 bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 hover:from-amber-600 hover:via-orange-600 hover:to-rose-600 text-white active:scale-[0.97] shadow-lg shadow-amber-500/20 font-bold"
                       onClick={(e) => { e.stopPropagation(); evolvePetMutation.mutate(pet.id); }}>
-                      <Sparkles className="h-3 w-3" /> Evolve Now!
+                      <Sparkles className="h-3.5 w-3.5" /> Evolve Now!
                     </Button>
                   )}
                 </CardContent>
