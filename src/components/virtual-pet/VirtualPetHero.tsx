@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Heart, Gamepad2, Trophy, Sparkles } from "lucide-react";
-import heroVideo from "@/assets/virtual-pet-hero.mp4.asset.json";
+import heroVideo from "@/assets/virtual-pet-hero-v2.mp4.asset.json";
 
 const stats = [
   { icon: Heart, label: "Active Pets", value: "12K+", color: "text-pink-400" },
@@ -29,11 +29,13 @@ export const VirtualPetHero = () => (
         transition={{ type: "spring", stiffness: 100 }}
         className="text-3xl md:text-5xl font-black mb-2"
         style={{
-          WebkitTextStroke: "1.5px rgba(255,255,255,0.3)",
+          WebkitTextStroke: "2.5px rgba(0,0,0,0.7)",
           background: "linear-gradient(135deg, #fff, #f0abfc, #c084fc)",
           WebkitBackgroundClip: "text",
           WebkitTextFillColor: "transparent",
-          textShadow: "0 0 40px rgba(192,132,252,0.4)",
+          textShadow: "0 0 30px rgba(192,132,252,0.6), 0 0 60px rgba(192,132,252,0.3), 0 4px 20px rgba(0,0,0,0.7)",
+          filter: "drop-shadow(0 2px 8px rgba(0,0,0,0.8))",
+          letterSpacing: "-0.02em",
         }}
       >
         Virtual Pet Companion
