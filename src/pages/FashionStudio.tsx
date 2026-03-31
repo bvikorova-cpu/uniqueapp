@@ -7,7 +7,8 @@ import {
   Palette, Sparkles, ShoppingBag, Trophy, Camera, Package, Heart,
   Shirt, ArrowLeft, TrendingUp, Brain, Zap, Eye, Gem,
   Leaf, Layers, Crown, Star, Target, Flame, Swords, MessageCircle,
-  Clapperboard, Video, ScanLine, BarChart3, ShoppingCart, Globe
+  Clapperboard, Video, ScanLine, BarChart3, ShoppingCart, Globe,
+  Calendar, Scissors, Repeat, Flower2
 } from "lucide-react";
 import FashionGenerator from "@/components/fashion/FashionGenerator";
 import FashionGallery from "@/components/fashion/FashionGallery";
