@@ -28,13 +28,18 @@ import { AIPetDietPlanner } from "@/components/virtual-pet/AIPetDietPlanner";
 import { AIPetDreamInterpreter } from "@/components/virtual-pet/AIPetDreamInterpreter";
 import { PetLeaderboard } from "@/components/virtual-pet/PetLeaderboard";
 import { AIPetTalentScout } from "@/components/virtual-pet/AIPetTalentScout";
+import { AIPetTranslator } from "@/components/virtual-pet/AIPetTranslator";
+import { PetHabitatDesigner } from "@/components/virtual-pet/PetHabitatDesigner";
+import { AIPetAstrology } from "@/components/virtual-pet/AIPetAstrology";
+import { PetAchievementSystem } from "@/components/virtual-pet/PetAchievementSystem";
+import { AIPetMemoryAlbum } from "@/components/virtual-pet/AIPetMemoryAlbum";
 import { VirtualPetHero } from "@/components/virtual-pet/VirtualPetHero";
 import {
   Heart, Store, Palette, ArrowLeftRight, Gamepad2, Swords, Dna,
   Brain, Wand2, Activity, BookOpen, Coins, CreditCard, Flame, Trophy, Star,
   SmilePlus, CalendarDays, HeartHandshake, Target,
   MessageCircle, Camera, Crown, CalendarHeart, Users,
-  Zap, Apple, Moon, Search
+  Zap, Apple, Moon, Search, Languages, Home, Award, BookImage
 } from "lucide-react";
 import { useAICredits } from "@/hooks/useAICredits";
 import { motion } from "framer-motion";
