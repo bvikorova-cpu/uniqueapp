@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { Mic2, Users, Video, Trophy } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useLiveStats } from "@/hooks/useLiveStats";
-import heroVideo from "@/assets/comedy-club-hero.mp4.asset.json";
+import heroVideo from "@/assets/comedy-club-hero-v2.mp4.asset.json";
 
 const AnimatedCounter = ({ target, suffix = "" }: { target: number; suffix?: string }) => {
   const [count, setCount] = useState(0);
