@@ -22,7 +22,7 @@ export const VirtualPetHero = () => (
     </div>
 
     {/* Content */}
-    <div className="relative z-10 h-full flex flex-col justify-end p-4 md:p-8">
+    <div className="relative z-10 h-full flex flex-col justify-center p-4 md:p-8">
       <motion.h1
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
