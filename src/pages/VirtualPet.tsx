@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { MyPets } from "@/components/virtual-pet/MyPets";
 import { PetShop } from "@/components/virtual-pet/PetShop";
@@ -10,155 +9,191 @@ import { PetCustomization } from "@/components/virtual-pet/PetCustomization";
 import { PetTrading } from "@/components/virtual-pet/PetTrading";
 import { MiniGames } from "@/components/virtual-pet/MiniGames";
 import { PetBattle } from "@/components/virtual-pet/PetBattle";
-import { Heart, Store, Palette, ArrowLeftRight, Gamepad2, Coins, CreditCard, Info, Star, Zap, CheckCircle, Swords } from "lucide-react";
+import { PetBreeding } from "@/components/virtual-pet/PetBreeding";
+import { AIPetPersonalityCoach } from "@/components/virtual-pet/AIPetPersonalityCoach";
+import { AIPetNameGenerator } from "@/components/virtual-pet/AIPetNameGenerator";
+import { AIPetHealthPredictor } from "@/components/virtual-pet/AIPetHealthPredictor";
+import { AIPetStoryGenerator } from "@/components/virtual-pet/AIPetStoryGenerator";
+import { VirtualPetHero } from "@/components/virtual-pet/VirtualPetHero";
+import {
+  Heart, Store, Palette, ArrowLeftRight, Gamepad2, Swords, Dna,
+  Brain, Wand2, Activity, BookOpen, Coins, CreditCard, Flame, Trophy, Star
+} from "lucide-react";
 import { useAICredits } from "@/hooks/useAICredits";
+import { motion } from "framer-motion";
+
+type ActiveView = "dashboard" | "pets" | "battle" | "shop" | "customize" | "trading" | "games" | "breeding" |
+  "personality-coach" | "name-generator" | "health-predictor" | "story-generator";
+
+const tools: { id: ActiveView; icon: any; title: string; description: string; color: string; badge?: string; isNew?: boolean }[] = [
+  { id: "pets", icon: Heart, title: "My Pets", description: "View, feed & care for your companions", color: "pink" },
+  { id: "battle", icon: Swords, title: "Battle Arena", description: "PvP combat against AI opponents", color: "red", badge: "Hot" },
+  { id: "shop", icon: Store, title: "Pet Shop", description: "Buy accessories & mystery boxes", color: "blue" },
+  { id: "customize", icon: Palette, title: "Customize", description: "Equip skins & accessories", color: "purple" },
+  { id: "trading", icon: ArrowLeftRight, title: "Trading Post", description: "Trade rare pets with players", color: "orange" },
+  { id: "games", icon: Gamepad2, title: "Mini Games", description: "Earn rewards & XP from games", color: "cyan" },
+  { id: "breeding", icon: Dna, title: "Breeding Lab", description: "Combine pets for rare offspring", color: "emerald" },
+  { id: "personality-coach", icon: Brain, title: "AI Personality Coach", description: "Get AI care routines & analysis", color: "violet", badge: "5 Cr", isNew: true },
+  { id: "name-generator", icon: Wand2, title: "AI Name Generator", description: "Creative AI-generated pet names", color: "pink", badge: "3 Cr", isNew: true },
+  { id: "health-predictor", icon: Activity, title: "AI Health Predictor", description: "Forecast evolution & health trends", color: "emerald", badge: "8 Cr", isNew: true },
+  { id: "story-generator", icon: BookOpen, title: "AI Story Generator", description: "Adventure stories starring your pets", color: "amber", badge: "6 Cr", isNew: true },
+];
 
 const VirtualPet = () => {
+  const [activeView, setActiveView] = useState<ActiveView>("dashboard");
   const [selectedPetId, setSelectedPetId] = useState<string | null>(null);
   const { credits } = useAICredits();
   const navigate = useNavigate();
 
+  const goBack = () => setActiveView("dashboard");
+
+  const renderView = () => {
+    switch (activeView) {
+      case "pets": return <MyPets onSelectPet={setSelectedPetId} />;
+      case "battle": return <PetBattle />;
+      case "shop": return <PetShop />;
+      case "customize": return <PetCustomization selectedPetId={selectedPetId} />;
+      case "trading": return <PetTrading />;
+      case "games": return <MiniGames selectedPetId={selectedPetId} />;
+      case "breeding": return <PetBreeding selectedPetId={selectedPetId} />;
+      case "personality-coach": return <AIPetPersonalityCoach onBack={goBack} />;
+      case "name-generator": return <AIPetNameGenerator onBack={goBack} />;
+      case "health-predictor": return <AIPetHealthPredictor onBack={goBack} />;
+      case "story-generator": return <AIPetStoryGenerator onBack={goBack} />;
+      default: return null;
+    }
+  };
+
+  const oldViews: ActiveView[] = ["pets", "battle", "shop", "customize", "trading", "games", "breeding"];
+
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Navbar />
-      
-      <main className="flex-1 container mx-auto px-3 sm:px-4 pt-16 sm:pt-24 pb-8">
-        <div className="max-w-6xl mx-auto space-y-6 sm:space-y-8">
-          <div className="text-center space-y-3 sm:space-y-4">
-            <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
-              Virtual Pet Companion
-            </h1>
-            <p className="text-sm sm:text-lg text-muted-foreground max-w-2xl mx-auto px-2">
-              Adopt, raise, and evolve your virtual companion. Play mini-games, customize, breed, and trade!
-            </p>
-            
-            {/* Credits Display and Buy Button */}
-            <div className="flex items-center justify-center gap-3 mt-4">
-              <div className="flex items-center gap-2 bg-primary/10 px-4 py-2 rounded-full">
-                <Coins className="h-5 w-5 text-yellow-500" />
-                <span className="font-semibold">{credits.credits_remaining} Credits</span>
+
+      {/* Holographic scan lines */}
+      <div className="fixed inset-0 pointer-events-none z-50 opacity-[0.03]"
+        style={{ background: 'repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(236,72,153,0.15) 3px, rgba(236,72,153,0.15) 4px)' }}
+      />
+
+      <main className="flex-1 container mx-auto px-3 sm:px-4 pt-16 sm:pt-20 pb-8">
+        <div className="max-w-6xl mx-auto">
+          {activeView === "dashboard" ? (
+            <>
+              <VirtualPetHero />
+
+              {/* Engagement Row */}
+              <div className="grid grid-cols-3 gap-3 mb-8">
+                {[
+                  { icon: Flame, label: "Care Streak", value: "7 Days", color: "text-orange-500" },
+                  { icon: Coins, label: "Credits", value: `${credits.credits_remaining}`, color: "text-yellow-500", action: () => navigate('/ai-credits-store') },
+                  { icon: Trophy, label: "Pet Master", value: "Level 12", color: "text-amber-500" },
+                ].map((item, i) => (
+                  <motion.div key={i} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 * i }}>
+                    <Card className="border-border/40 bg-card/80 backdrop-blur-sm hover:border-primary/30 transition-all cursor-pointer active:scale-[0.97]"
+                      onClick={item.action}>
+                      <CardContent className="p-3 text-center">
+                        <item.icon className={`w-5 h-5 mx-auto mb-1 ${item.color}`} />
+                        <p className="text-lg font-black">{item.value}</p>
+                        <p className="text-[10px] text-muted-foreground">{item.label}</p>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                ))}
               </div>
-              <Button 
-                onClick={() => navigate('/ai-credits-store')}
-                className="gap-2"
-              >
-                <CreditCard className="h-4 w-4" />
-                Buy Credits
-              </Button>
-            </div>
-          </div>
 
-          {/* Description Section */}
-          <Card className="p-4 sm:p-6 bg-gradient-to-r from-pink-500/10 via-purple-500/10 to-blue-500/10 border-pink-500/20">
-            <div className="flex items-start gap-3 mb-4">
-              <Info className="h-5 w-5 text-pink-500 mt-0.5 flex-shrink-0" />
-              <div>
-                <h3 className="font-semibold text-base sm:text-lg mb-2">What is Virtual Pet Companion?</h3>
-                <p className="text-sm text-muted-foreground">
-                  Virtual Pet Companion is your ultimate digital pet experience! Adopt adorable virtual pets, care for them daily, watch them evolve, customize their appearance with accessories, play fun mini-games to earn rewards, battle against AI opponents, and trade rare pets with other users. Build your collection and become the ultimate pet master!
-                </p>
+              {/* Buy Credits */}
+              <div className="flex justify-center mb-6">
+                <Button onClick={() => navigate('/ai-credits-store')} className="gap-2">
+                  <CreditCard className="h-4 w-4" />Buy Credits
+                </Button>
               </div>
-            </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-              <div>
-                <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
-                  <Star className="h-4 w-4 text-yellow-500" />
-                  How to Use
-                </h4>
-                <ul className="text-xs sm:text-sm text-muted-foreground space-y-1">
-                  <li>• <strong>My Pets:</strong> View and care for your adopted pets</li>
-                  <li>• <strong>Battle:</strong> Select up to 4 pets and fight AI opponents! Power = Level×10 + Happiness/2 + Energy/2</li>
-                  <li>• <strong>Shop:</strong> Buy accessories and items for your pets</li>
-                  <li>• <strong>Customize:</strong> Personalize your pets with accessories</li>
-                  <li>• <strong>Trading:</strong> Trade pets with other users</li>
-                  <li>• <strong>Games:</strong> Play mini-games to earn rewards</li>
-                </ul>
+              {/* Tool Grid */}
+              <div className="mb-8">
+                <h2 className="text-xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent mb-4">
+                  Pet Tools & AI Services
+                </h2>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                  {tools.map((tool, i) => (
+                    <motion.div
+                      key={tool.id}
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: i * 0.05, type: "spring" }}
+                    >
+                      <Card
+                        className="border-border/40 bg-card/80 backdrop-blur-sm hover:border-primary/30 transition-all cursor-pointer active:scale-[0.97] group relative overflow-hidden"
+                        onClick={() => setActiveView(tool.id)}
+                      >
+                        {tool.isNew && (
+                          <div className="absolute top-1 right-1 bg-primary text-primary-foreground text-[9px] font-bold px-1.5 py-0.5 rounded-full">NEW</div>
+                        )}
+                        <CardContent className="p-3 text-center space-y-1.5">
+                          <div className={`w-10 h-10 mx-auto rounded-xl bg-${tool.color}-500/10 border border-${tool.color}-500/20 flex items-center justify-center group-hover:scale-110 transition-transform`}>
+                            <tool.icon className={`w-5 h-5 text-${tool.color}-500`} />
+                          </div>
+                          <h3 className="font-bold text-xs leading-tight">{tool.title}</h3>
+                          <p className="text-[10px] text-muted-foreground leading-tight">{tool.description}</p>
+                          {tool.badge && (
+                            <span className="inline-block text-[9px] font-semibold text-primary bg-primary/10 px-2 py-0.5 rounded-full">{tool.badge}</span>
+                          )}
+                        </CardContent>
+                      </Card>
+                    </motion.div>
+                  ))}
+                </div>
               </div>
-              <div>
-                <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
-                  <Zap className="h-4 w-4 text-blue-500" />
-                  Key Features
-                </h4>
-                <ul className="text-xs sm:text-sm text-muted-foreground space-y-1">
-                  <li className="flex items-center gap-1"><CheckCircle className="h-3 w-3 text-green-500" /> Multiple pet species to adopt</li>
-                  <li className="flex items-center gap-1"><CheckCircle className="h-3 w-3 text-green-500" /> Pet Battle Arena (win XP!)</li>
-                  <li className="flex items-center gap-1"><CheckCircle className="h-3 w-3 text-green-500" /> Pet evolution system (level up!)</li>
-                  <li className="flex items-center gap-1"><CheckCircle className="h-3 w-3 text-green-500" /> Fun mini-games with rewards</li>
-                  <li className="flex items-center gap-1"><CheckCircle className="h-3 w-3 text-green-500" /> Player-to-player trading system</li>
-                  <li className="flex items-center gap-1"><CheckCircle className="h-3 w-3 text-green-500" /> Rare and legendary pets</li>
-                </ul>
-              </div>
+
+              {/* How It Works */}
+              <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-background">
+                <CardContent className="p-6 space-y-4">
+                  <h3 className="text-lg font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">How It Works</h3>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    {[
+                      { icon: Heart, title: "1. Adopt", desc: "Choose from 28+ species including mythical creatures" },
+                      { icon: Gamepad2, title: "2. Play & Care", desc: "Feed, play mini-games, and keep your pet happy" },
+                      { icon: Swords, title: "3. Battle & Breed", desc: "Fight AI opponents and breed rare offspring" },
+                      { icon: Brain, title: "4. AI Services", desc: "Use AI coaches, predictors & story generators" },
+                    ].map((step, i) => (
+                      <div key={i} className="text-center space-y-2">
+                        <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-primary/10 border border-primary/20">
+                          <step.icon className="w-5 h-5 text-primary" />
+                        </div>
+                        <h4 className="font-bold text-xs">{step.title}</h4>
+                        <p className="text-[10px] text-muted-foreground">{step.desc}</p>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Tips */}
+              <Card className="border-border/40 bg-card/80 backdrop-blur-sm mt-6">
+                <CardContent className="p-4">
+                  <h3 className="font-bold text-sm mb-2 flex items-center gap-2"><Star className="w-4 h-4 text-yellow-500" />Pro Tips</h3>
+                  <ul className="text-xs text-muted-foreground space-y-1">
+                    <li>• Start with a Cat or Dog (20 credits each) — cheapest to adopt!</li>
+                    <li>• Battle winners get +25-40 XP per pet. Even losers earn +10-20 XP</li>
+                    <li>• Pets need Level 10+ to breed — feed and play daily to level up fast</li>
+                    <li>• Use AI Personality Coach to find optimal care routines</li>
+                    <li>• Generate adventure stories to share with the community</li>
+                  </ul>
+                </CardContent>
+              </Card>
+            </>
+          ) : (
+            <div className="max-w-4xl mx-auto">
+              {/* Back button for old views */}
+              {oldViews.includes(activeView) && (
+                <Button variant="ghost" onClick={goBack} className="mb-4 gap-2">
+                  ← Back to Dashboard
+                </Button>
+              )}
+              {renderView()}
             </div>
-
-            <div className="text-xs text-muted-foreground bg-background/50 rounded-lg p-3">
-              <strong>Tip:</strong> Start by adopting a Cat or Dog (20 credits each), then feed and play with them daily to level up. Battle with your pets to earn extra XP - winners get +25-40 XP per pet, even losers get +10-20 XP! Higher level pets with good happiness and energy have more battle power.
-            </div>
-          </Card>
-
-          <Tabs defaultValue="pets" className="w-full">
-            <div className="overflow-x-auto">
-              <TabsList className="inline-flex w-max min-w-full sm:grid sm:w-full sm:grid-cols-6 mb-6 sm:mb-8">
-                <TabsTrigger value="pets" className="gap-1 sm:gap-2 text-xs sm:text-sm px-2 sm:px-3">
-                  <Heart className="h-3 w-3 sm:h-4 sm:w-4" />
-                  <span className="hidden sm:inline">My Pets</span>
-                  <span className="sm:hidden">Pets</span>
-                </TabsTrigger>
-                <TabsTrigger value="battle" className="gap-1 sm:gap-2 text-xs sm:text-sm px-2 sm:px-3">
-                  <Swords className="h-3 w-3 sm:h-4 sm:w-4" />
-                  <span className="hidden sm:inline">Battle</span>
-                  <span className="sm:hidden">Battle</span>
-                </TabsTrigger>
-                <TabsTrigger value="shop" className="gap-1 sm:gap-2 text-xs sm:text-sm px-2 sm:px-3">
-                  <Store className="h-3 w-3 sm:h-4 sm:w-4" />
-                  <span className="hidden sm:inline">Shop</span>
-                  <span className="sm:hidden">Shop</span>
-                </TabsTrigger>
-                <TabsTrigger value="customize" className="gap-1 sm:gap-2 text-xs sm:text-sm px-2 sm:px-3">
-                  <Palette className="h-3 w-3 sm:h-4 sm:w-4" />
-                  <span className="hidden sm:inline">Customize</span>
-                  <span className="sm:hidden">Edit</span>
-                </TabsTrigger>
-                <TabsTrigger value="trading" className="gap-1 sm:gap-2 text-xs sm:text-sm px-2 sm:px-3">
-                  <ArrowLeftRight className="h-3 w-3 sm:h-4 sm:w-4" />
-                  <span className="hidden sm:inline">Trading</span>
-                  <span className="sm:hidden">Trade</span>
-                </TabsTrigger>
-                <TabsTrigger value="games" className="gap-1 sm:gap-2 text-xs sm:text-sm px-2 sm:px-3">
-                  <Gamepad2 className="h-3 w-3 sm:h-4 sm:w-4" />
-                  <span className="hidden sm:inline">Games</span>
-                  <span className="sm:hidden">Play</span>
-                </TabsTrigger>
-              </TabsList>
-            </div>
-
-            <TabsContent value="pets" className="space-y-4">
-              <MyPets onSelectPet={setSelectedPetId} />
-            </TabsContent>
-
-            <TabsContent value="battle" className="space-y-4">
-              <PetBattle />
-            </TabsContent>
-
-            <TabsContent value="shop" className="space-y-4">
-              <PetShop />
-            </TabsContent>
-
-            <TabsContent value="customize" className="space-y-4">
-              <PetCustomization selectedPetId={selectedPetId} />
-            </TabsContent>
-
-            <TabsContent value="trading" className="space-y-4">
-              <PetTrading />
-            </TabsContent>
-
-            <TabsContent value="games" className="space-y-4">
-              <MiniGames selectedPetId={selectedPetId} />
-            </TabsContent>
-          </Tabs>
+          )}
         </div>
       </main>
-
     </div>
   );
 };
