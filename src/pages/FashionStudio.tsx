@@ -44,7 +44,8 @@ type ActiveView =
   | "try-on" | "capsule" | "recommender" | "wardrobe" | "wishlist"
   | "style-dna" | "trend-forecaster" | "color-harmony" | "mood-board"
   | "body-shape" | "sustainable" | "fashion-show" | "style-battle"
-  | "ootd" | "personal-shopper";
+  | "ootd" | "personal-shopper" | "video-generator" | "style-scanner"
+  | "season-leagues" | "shopping-links" | "wardrobe-analytics" | "street-style";
 
 const useFashionStats = () => {
   return useQuery({
