@@ -45,7 +45,8 @@ type ActiveView =
   | "style-dna" | "trend-forecaster" | "color-harmony" | "mood-board"
   | "body-shape" | "sustainable" | "fashion-show" | "style-battle"
   | "ootd" | "personal-shopper" | "video-generator" | "style-scanner"
-  | "season-leagues" | "shopping-links" | "wardrobe-analytics" | "street-style";
+  | "season-leagues" | "shopping-links" | "wardrobe-analytics" | "street-style"
+  | "forecast-calendar" | "fabric-analyzer" | "celebrity-clone" | "color-season" | "outfit-remix" | "mood-ring";
 
 const useFashionStats = () => {
   return useQuery({
