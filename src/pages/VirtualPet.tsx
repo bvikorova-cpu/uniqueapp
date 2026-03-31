@@ -28,13 +28,18 @@ import { AIPetDietPlanner } from "@/components/virtual-pet/AIPetDietPlanner";
 import { AIPetDreamInterpreter } from "@/components/virtual-pet/AIPetDreamInterpreter";
 import { PetLeaderboard } from "@/components/virtual-pet/PetLeaderboard";
 import { AIPetTalentScout } from "@/components/virtual-pet/AIPetTalentScout";
+import { AIPetTranslator } from "@/components/virtual-pet/AIPetTranslator";
+import { PetHabitatDesigner } from "@/components/virtual-pet/PetHabitatDesigner";
+import { AIPetAstrology } from "@/components/virtual-pet/AIPetAstrology";
+import { PetAchievementSystem } from "@/components/virtual-pet/PetAchievementSystem";
+import { AIPetMemoryAlbum } from "@/components/virtual-pet/AIPetMemoryAlbum";
 import { VirtualPetHero } from "@/components/virtual-pet/VirtualPetHero";
 import {
   Heart, Store, Palette, ArrowLeftRight, Gamepad2, Swords, Dna,
   Brain, Wand2, Activity, BookOpen, Coins, CreditCard, Flame, Trophy, Star,
   SmilePlus, CalendarDays, HeartHandshake, Target,
   MessageCircle, Camera, Crown, CalendarHeart, Users,
-  Zap, Apple, Moon, Search
+  Zap, Apple, Moon, Search, Languages, Home, Award, BookImage
 } from "lucide-react";
 import { useAICredits } from "@/hooks/useAICredits";
 import { motion } from "framer-motion";
@@ -43,7 +48,8 @@ type ActiveView = "dashboard" | "pets" | "battle" | "shop" | "customize" | "trad
   "personality-coach" | "name-generator" | "health-predictor" | "story-generator" |
   "mood-analyzer" | "training-planner" | "compatibility-checker" | "battle-strategy" |
   "voice-chat" | "photo-studio" | "fashion-show" | "seasonal-events" | "multiplayer-coop" |
-  "evolution-advisor" | "diet-planner" | "dream-interpreter" | "leaderboard" | "talent-scout";
+  "evolution-advisor" | "diet-planner" | "dream-interpreter" | "leaderboard" | "talent-scout" |
+  "pet-translator" | "habitat-designer" | "pet-astrology" | "achievement-system" | "memory-album";
 
 const tools: { id: ActiveView; icon: any; title: string; description: string; color: string; badge?: string; isNew?: boolean }[] = [
   { id: "pets", icon: Heart, title: "My Pets", description: "View, feed & care for your companions", color: "pink" },
@@ -71,6 +77,11 @@ const tools: { id: ActiveView; icon: any; title: string; description: string; co
   { id: "dream-interpreter", icon: Moon, title: "AI Dream Interpreter", description: "Discover your pet's dream world", color: "violet", badge: "4 Cr", isNew: true },
   { id: "leaderboard", icon: Trophy, title: "Global Leaderboard", description: "Top pets across the platform", color: "amber" },
   { id: "talent-scout", icon: Search, title: "AI Talent Scout", description: "Discover hidden abilities & moves", color: "teal", badge: "5 Cr", isNew: true },
+  { id: "pet-translator", icon: Languages, title: "AI Pet Translator", description: "Decode pet behaviors into words", color: "sky", badge: "3 Cr", isNew: true },
+  { id: "habitat-designer", icon: Home, title: "Habitat Designer", description: "Design custom pet living spaces", color: "emerald", badge: "5 Cr", isNew: true },
+  { id: "pet-astrology", icon: Star, title: "AI Pet Astrology", description: "Cosmic destiny & horoscopes", color: "violet", badge: "4 Cr", isNew: true },
+  { id: "achievement-system", icon: Award, title: "Achievement System", description: "Unlock badges & milestones", color: "amber", badge: "3 Cr", isNew: true },
+  { id: "memory-album", icon: BookImage, title: "AI Memory Album", description: "Narrative albums of pet journey", color: "rose", badge: "5 Cr", isNew: true },
 ];
 
 const VirtualPet = () => {
@@ -108,6 +119,11 @@ const VirtualPet = () => {
       case "dream-interpreter": return <AIPetDreamInterpreter onBack={goBack} />;
       case "leaderboard": return <PetLeaderboard onBack={goBack} />;
       case "talent-scout": return <AIPetTalentScout onBack={goBack} />;
+      case "pet-translator": return <AIPetTranslator onBack={goBack} />;
+      case "habitat-designer": return <PetHabitatDesigner onBack={goBack} />;
+      case "pet-astrology": return <AIPetAstrology onBack={goBack} />;
+      case "achievement-system": return <PetAchievementSystem onBack={goBack} />;
+      case "memory-album": return <AIPetMemoryAlbum onBack={goBack} />;
       default: return null;
     }
   };
