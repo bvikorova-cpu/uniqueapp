@@ -261,7 +261,7 @@ export default function FashionStudio() {
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
             <Card className="p-3 sm:p-4 bg-card/80 backdrop-blur-xl border-primary/20 text-center">
               <Gem className="h-5 w-5 sm:h-6 sm:w-6 text-accent mx-auto mb-1" />
-              <p className="text-lg sm:text-xl font-black">31</p>
+              <p className="text-lg sm:text-xl font-black">37</p>
               <p className="text-[10px] sm:text-xs text-muted-foreground">Tools</p>
             </Card>
           </motion.div>
