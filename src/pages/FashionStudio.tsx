@@ -126,6 +126,12 @@ export default function FashionStudio() {
       case "style-battle": return <StyleBattleArena />;
       case "ootd": return <AIOotd />;
       case "personal-shopper": return <AIPersonalShopper />;
+      case "video-generator": return <FashionShowVideoGenerator />;
+      case "style-scanner": return <AIStyleScanner />;
+      case "season-leagues": return <SeasonStyleLeagues />;
+      case "shopping-links": return <AIShoppingLinks />;
+      case "wardrobe-analytics": return <WardrobeAnalytics />;
+      case "street-style": return <GlobalStreetStyleFeed />;
       default: return null;
     }
   };
