@@ -4,18 +4,20 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Sparkles, Loader2, Wand2 } from "lucide-react";
+import { Sparkles, Loader2, Wand2, Shield, Zap, Heart, Crown } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { motion } from "framer-motion";
 
 const CATEGORIES = [
-  "Superhero",
-  "Anime",
-  "Fantasy",
-  "Sci-Fi",
-  "Cartoon",
-  "Villain"
+  { name: "Superhero", icon: "🦸", color: "from-blue-500 to-cyan-500" },
+  { name: "Anime", icon: "⚡", color: "from-pink-500 to-rose-500" },
+  { name: "Fantasy", icon: "🧙", color: "from-purple-500 to-violet-500" },
+  { name: "Sci-Fi", icon: "🚀", color: "from-cyan-500 to-blue-500" },
+  { name: "Cartoon", icon: "🎨", color: "from-yellow-500 to-orange-500" },
+  { name: "Villain", icon: "💀", color: "from-red-500 to-rose-600" },
 ];
 
 export const CharacterCreator = () => {
@@ -27,141 +29,121 @@ export const CharacterCreator = () => {
 
   const createCharacter = useMutation({
     mutationFn: async (data: { name: string; category: string; description: string; isPremium: boolean }) => {
-      const { data: result, error } = await supabase.functions.invoke('create-character', {
-        body: data
-      });
-
+      const { data: result, error } = await supabase.functions.invoke('create-character', { body: data });
       if (error) throw error;
       return result;
     },
     onSuccess: async (aiResult) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
-
-      // Save character to database
-      const { error } = await supabase
-        .from('characters')
-        .insert({
-          user_id: user.id,
-          name,
-          category,
-          description,
-          backstory: aiResult.backstory,
-          image_url: aiResult.imageUrl,
-          hp: aiResult.stats.hp,
-          attack: aiResult.stats.attack,
-          defense: aiResult.stats.defense,
-          speed: aiResult.stats.speed,
-          is_premium: isPremium,
-        });
-
+      const { error } = await supabase.from('characters').insert({
+        user_id: user.id, name, category, description,
+        backstory: aiResult.backstory, image_url: aiResult.imageUrl,
+        hp: aiResult.stats.hp, attack: aiResult.stats.attack,
+        defense: aiResult.stats.defense, speed: aiResult.stats.speed,
+        is_premium: isPremium,
+      });
       if (error) throw error;
-
-      toast.success("Character created successfully!");
+      toast.success("Warrior forged successfully!");
       queryClient.invalidateQueries({ queryKey: ["character-credits"] });
       queryClient.invalidateQueries({ queryKey: ["characters"] });
-      
-      // Reset form
-      setName("");
-      setCategory("");
-      setDescription("");
-      setIsPremium(false);
+      setName(""); setCategory(""); setDescription(""); setIsPremium(false);
     },
-    onError: (error: Error) => {
-      toast.error(error.message || "Failed to create character");
-    },
+    onError: (error: Error) => toast.error(error.message || "Failed to forge warrior"),
   });
 
-  const handleCreate = () => {
-    if (!name || !category || !description) {
-      toast.error("Please fill in all fields");
-      return;
-    }
-
-    createCharacter.mutate({ name, category, description, isPremium });
-  };
-
   return (
-    <Card className="p-6">
-      <div className="flex items-center gap-2 mb-6">
-        <Sparkles className="h-6 w-6 text-purple-500" />
-        <h2 className="text-2xl font-bold text-foreground">Create Your Character</h2>
+    <Card className="relative overflow-hidden border-border/30 bg-card/90 backdrop-blur-xl p-6">
+      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-500 via-yellow-500 to-orange-500" />
+      
+      <div className="flex items-center gap-3 mb-6">
+        <div className="p-2.5 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600">
+          <Sparkles className="h-6 w-6 text-white" />
+        </div>
+        <div>
+          <h2 className="text-2xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">Forge Your Warrior</h2>
+          <p className="text-muted-foreground text-sm">Craft a legendary character with AI-generated powers</p>
+        </div>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-5">
         <div>
-          <label className="text-sm font-medium mb-2 block">Character Name</label>
-          <Input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Enter character name..."
-            disabled={createCharacter.isPending}
-          />
+          <label className="text-sm font-bold mb-2 block text-foreground">⚔️ Warrior Name</label>
+          <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Enter your warrior's name..." disabled={createCharacter.isPending} className="bg-card/50 border-border/30" />
         </div>
 
         <div>
-          <label className="text-sm font-medium mb-2 block">Category</label>
-          <Select value={category} onValueChange={setCategory} disabled={createCharacter.isPending}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select category" />
-            </SelectTrigger>
-            <SelectContent>
-              {CATEGORIES.map((cat) => (
-                <SelectItem key={cat} value={cat}>
-                  {cat}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <label className="text-sm font-bold mb-3 block text-foreground">🛡️ Category</label>
+          <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
+            {CATEGORIES.map((cat) => (
+              <motion.div
+                key={cat.name}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => !createCharacter.isPending && setCategory(cat.name)}
+                className={`p-3 rounded-xl cursor-pointer border text-center transition-all ${
+                  category === cat.name ? `border-primary bg-primary/10 shadow-lg shadow-primary/20` : "border-border/30 bg-card/50 hover:border-primary/40"
+                }`}
+              >
+                <span className="text-2xl block mb-1">{cat.icon}</span>
+                <span className="text-[10px] font-bold">{cat.name}</span>
+              </motion.div>
+            ))}
+          </div>
         </div>
 
         <div>
-          <label className="text-sm font-medium mb-2 block">Description</label>
-          <Textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="Describe your character's appearance, powers, and personality..."
-            className="min-h-[100px]"
-            disabled={createCharacter.isPending}
-          />
+          <label className="text-sm font-bold mb-2 block text-foreground">📜 Description</label>
+          <Textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Describe your warrior's appearance, powers, and personality..." className="min-h-[100px] bg-card/50 border-border/30" disabled={createCharacter.isPending} />
         </div>
 
-        <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
-          <Button
-            onClick={() => setIsPremium(false)}
-            variant={!isPremium ? "default" : "outline"}
-            disabled={createCharacter.isPending}
-            className="w-full sm:w-auto"
-          >
-            Basic (5 credits)
-          </Button>
-          <Button
-            onClick={() => setIsPremium(true)}
-            variant={isPremium ? "default" : "outline"}
-            disabled={createCharacter.isPending}
-            className="w-full sm:w-auto"
-          >
-            <Wand2 className="mr-2 h-4 w-4" />
-            Premium (15 credits)
-          </Button>
+        <div>
+          <label className="text-sm font-bold mb-3 block text-foreground">✨ Creation Tier</label>
+          <div className="grid grid-cols-2 gap-3">
+            <motion.div
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => !createCharacter.isPending && setIsPremium(false)}
+              className={`p-4 rounded-xl cursor-pointer border transition-all ${
+                !isPremium ? "border-blue-500 bg-blue-500/10 shadow-lg shadow-blue-500/20" : "border-border/30 bg-card/50"
+              }`}
+            >
+              <div className="flex items-center gap-2 mb-2">
+                <Shield className="h-5 w-5 text-blue-400" />
+                <span className="font-bold">Basic</span>
+              </div>
+              <p className="text-xs text-muted-foreground">Standard AI generation</p>
+              <Badge className="mt-2 bg-blue-500/20 text-blue-400 border-blue-500/30">5 Credits</Badge>
+            </motion.div>
+
+            <motion.div
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => !createCharacter.isPending && setIsPremium(true)}
+              className={`p-4 rounded-xl cursor-pointer border transition-all ${
+                isPremium ? "border-amber-500 bg-amber-500/10 shadow-lg shadow-amber-500/20" : "border-border/30 bg-card/50"
+              }`}
+            >
+              <div className="flex items-center gap-2 mb-2">
+                <Crown className="h-5 w-5 text-amber-400" />
+                <span className="font-bold">Premium</span>
+              </div>
+              <p className="text-xs text-muted-foreground">Enhanced AI + detailed backstory</p>
+              <Badge className="mt-2 bg-amber-500/20 text-amber-400 border-amber-500/30">15 Credits</Badge>
+            </motion.div>
+          </div>
         </div>
 
         <Button
-          onClick={handleCreate}
+          onClick={() => { if (!name || !category || !description) { toast.error("Fill in all fields"); return; } createCharacter.mutate({ name, category, description, isPremium }); }}
           disabled={createCharacter.isPending}
-          className="w-full"
+          className="w-full bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white font-bold"
           size="lg"
         >
           {createCharacter.isPending ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Creating Character...
-            </>
+            <><Loader2 className="mr-2 h-5 w-5 animate-spin" /> Forging Warrior...</>
           ) : (
-            <>
-              <Sparkles className="mr-2 h-4 w-4" />
-              Create Character
-            </>
+            <><Sparkles className="mr-2 h-5 w-5" /> Forge Warrior ({isPremium ? 15 : 5} Credits)</>
           )}
         </Button>
       </div>
