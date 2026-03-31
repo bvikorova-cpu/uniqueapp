@@ -10,7 +10,7 @@ const stats = [
 ];
 
 export const VirtualPetHero = () => (
-  <div className="relative rounded-2xl overflow-hidden mb-8 h-[320px] md:h-[380px]">
+  <div className="relative rounded-2xl overflow-hidden mb-8 h-[380px] md:h-[440px]">
     {/* Video Background */}
     <div className="absolute inset-0 bg-black">
       <video
@@ -18,7 +18,7 @@ export const VirtualPetHero = () => (
         className="w-full h-full object-cover brightness-[1.3] saturate-[1.2]"
         src={heroVideo.url}
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-black/10" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/10" />
     </div>
 
     {/* Content */}
