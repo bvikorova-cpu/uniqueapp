@@ -108,6 +108,12 @@ export default function FashionStudio() {
     { id: "color-season", title: "Color Season Analysis", desc: "Discover your Spring/Summer/Autumn/Winter palette", cost: "8 Credits", icon: Flower2, gradient: "from-rose-500 to-pink-600", isNew: true },
     { id: "outfit-remix", title: "Outfit Remix Engine", desc: "Transform 1 outfit into 10 different looks", cost: "10 Credits", icon: Repeat, gradient: "from-violet-500 to-fuchsia-600", isNew: true },
     { id: "mood-ring", title: "Fashion Mood Ring", desc: "AI reads your mood & suggests outfits", cost: "5 Credits", icon: Heart, gradient: "from-pink-500 to-purple-600", isNew: true },
+    { id: "outfit-cost", title: "Outfit Cost Calculator", desc: "Detailed cost breakdown with budget alternatives", cost: "8 Credits", icon: Calculator, gradient: "from-emerald-500 to-green-600", isNew: true },
+    { id: "history-explorer", title: "Fashion History Explorer", desc: "Discover historical eras & cultural influences", cost: "10 Credits", icon: BookOpen, gradient: "from-amber-500 to-yellow-600", isNew: true },
+    { id: "dress-code", title: "AI Dress Code Advisor", desc: "Event-specific outfit guidance & etiquette", cost: "6 Credits", icon: BadgeCheck, gradient: "from-blue-500 to-indigo-600", isNew: true },
+    { id: "fashion-compat", title: "Fashion Compatibility", desc: "Style compatibility analysis between outfits", cost: "8 Credits", icon: HeartHandshake, gradient: "from-pink-500 to-rose-600", isNew: true },
+    { id: "trend-radar", title: "Trend Alert Radar", desc: "Real-time trend scanning with virality scores", cost: "12 Credits", icon: Radar, gradient: "from-cyan-500 to-teal-600", isNew: true },
+    { id: "virtual-stylist", title: "Virtual Stylist Session", desc: "Premium AI styling consultation", cost: "15 Credits", icon: Wand2, gradient: "from-purple-500 to-violet-600", isNew: true },
     // Existing tools
     { id: "generator", title: "AI Design Generator", desc: "Create unique clothing designs with AI", cost: "50-400 Credits", icon: Sparkles, gradient: "from-fuchsia-500 to-pink-600" },
     { id: "gallery", title: "Design Gallery", desc: "Browse & discover community creations", cost: "Free", icon: Eye, gradient: "from-purple-500 to-violet-600" },
