@@ -18,38 +18,18 @@ import { AIPetMoodAnalyzer } from "@/components/virtual-pet/AIPetMoodAnalyzer";
 import { AIPetTrainingPlanner } from "@/components/virtual-pet/AIPetTrainingPlanner";
 import { AIPetCompatibilityChecker } from "@/components/virtual-pet/AIPetCompatibilityChecker";
 import { AIPetBattleStrategy } from "@/components/virtual-pet/AIPetBattleStrategy";
-import { AIPetVoiceChat } from "@/components/virtual-pet/AIPetVoiceChat";
-import { AIPetPhotoStudio } from "@/components/virtual-pet/AIPetPhotoStudio";
-import { PetFashionShow } from "@/components/virtual-pet/PetFashionShow";
-import { SeasonalEvents } from "@/components/virtual-pet/SeasonalEvents";
-import { MultiplayerCoOp } from "@/components/virtual-pet/MultiplayerCoOp";
-import { AIPetEvolutionAdvisor } from "@/components/virtual-pet/AIPetEvolutionAdvisor";
-import { AIPetDietPlanner } from "@/components/virtual-pet/AIPetDietPlanner";
-import { AIPetDreamInterpreter } from "@/components/virtual-pet/AIPetDreamInterpreter";
-import { PetLeaderboard } from "@/components/virtual-pet/PetLeaderboard";
-import { AIPetTalentScout } from "@/components/virtual-pet/AIPetTalentScout";
-import { AIPetTranslator } from "@/components/virtual-pet/AIPetTranslator";
-import { PetHabitatDesigner } from "@/components/virtual-pet/PetHabitatDesigner";
-import { AIPetAstrology } from "@/components/virtual-pet/AIPetAstrology";
-import { PetAchievementSystem } from "@/components/virtual-pet/PetAchievementSystem";
-import { AIPetMemoryAlbum } from "@/components/virtual-pet/AIPetMemoryAlbum";
 import { VirtualPetHero } from "@/components/virtual-pet/VirtualPetHero";
 import {
   Heart, Store, Palette, ArrowLeftRight, Gamepad2, Swords, Dna,
   Brain, Wand2, Activity, BookOpen, Coins, CreditCard, Flame, Trophy, Star,
-  SmilePlus, CalendarDays, HeartHandshake, Target,
-  MessageCircle, Camera, Crown, CalendarHeart, Users,
-  Zap, Apple, Moon, Search, Languages, Home, Award, BookImage
+  SmilePlus, CalendarDays, HeartHandshake, Target
 } from "lucide-react";
 import { useAICredits } from "@/hooks/useAICredits";
 import { motion } from "framer-motion";
 
 type ActiveView = "dashboard" | "pets" | "battle" | "shop" | "customize" | "trading" | "games" | "breeding" |
   "personality-coach" | "name-generator" | "health-predictor" | "story-generator" |
-  "mood-analyzer" | "training-planner" | "compatibility-checker" | "battle-strategy" |
-  "voice-chat" | "photo-studio" | "fashion-show" | "seasonal-events" | "multiplayer-coop" |
-  "evolution-advisor" | "diet-planner" | "dream-interpreter" | "leaderboard" | "talent-scout" |
-  "pet-translator" | "habitat-designer" | "pet-astrology" | "achievement-system" | "memory-album";
+  "mood-analyzer" | "training-planner" | "compatibility-checker" | "battle-strategy";
 
 const tools: { id: ActiveView; icon: any; title: string; description: string; color: string; badge?: string; isNew?: boolean }[] = [
   { id: "pets", icon: Heart, title: "My Pets", description: "View, feed & care for your companions", color: "pink" },
@@ -59,11 +39,6 @@ const tools: { id: ActiveView; icon: any; title: string; description: string; co
   { id: "trading", icon: ArrowLeftRight, title: "Trading Post", description: "Trade rare pets with players", color: "orange" },
   { id: "games", icon: Gamepad2, title: "Mini Games", description: "Earn rewards & XP from games", color: "cyan" },
   { id: "breeding", icon: Dna, title: "Breeding Lab", description: "Combine pets for rare offspring", color: "emerald" },
-  { id: "voice-chat", icon: MessageCircle, title: "AI Pet Chat", description: "Talk to your pet in real-time", color: "cyan", badge: "2 Cr", isNew: true },
-  { id: "photo-studio", icon: Camera, title: "AI Photo Studio", description: "AI art portraits of your pets", color: "rose", badge: "7 Cr", isNew: true },
-  { id: "fashion-show", icon: Crown, title: "Pet Fashion Show", description: "AI-judged fashion competitions", color: "fuchsia", badge: "4 Cr", isNew: true },
-  { id: "seasonal-events", icon: CalendarHeart, title: "Seasonal Events", description: "Limited-time seasonal adventures", color: "emerald", badge: "5 Cr", isNew: true },
-  { id: "multiplayer-coop", icon: Users, title: "Multiplayer Co-Op", description: "Team dungeons & boss raids", color: "indigo", badge: "6 Cr", isNew: true },
   { id: "personality-coach", icon: Brain, title: "AI Personality Coach", description: "AI care routines & analysis", color: "violet", badge: "5 Cr", isNew: true },
   { id: "name-generator", icon: Wand2, title: "AI Name Generator", description: "Creative AI-generated pet names", color: "pink", badge: "3 Cr", isNew: true },
   { id: "health-predictor", icon: Activity, title: "AI Health Predictor", description: "Forecast evolution & health trends", color: "emerald", badge: "8 Cr", isNew: true },
@@ -72,16 +47,6 @@ const tools: { id: ActiveView; icon: any; title: string; description: string; co
   { id: "training-planner", icon: CalendarDays, title: "AI Training Planner", description: "Optimized daily training schedule", color: "blue", badge: "5 Cr", isNew: true },
   { id: "compatibility-checker", icon: HeartHandshake, title: "AI Compatibility", description: "Breeding compatibility & predictions", color: "pink", badge: "6 Cr", isNew: true },
   { id: "battle-strategy", icon: Target, title: "AI Battle Strategy", description: "Optimal formations & tactics", color: "red", badge: "4 Cr", isNew: true },
-  { id: "evolution-advisor", icon: Zap, title: "AI Evolution Advisor", description: "Predict optimal evolution paths", color: "amber", badge: "5 Cr", isNew: true },
-  { id: "diet-planner", icon: Apple, title: "AI Diet Planner", description: "Custom nutrition & feeding plans", color: "lime", badge: "3 Cr", isNew: true },
-  { id: "dream-interpreter", icon: Moon, title: "AI Dream Interpreter", description: "Discover your pet's dream world", color: "violet", badge: "4 Cr", isNew: true },
-  { id: "leaderboard", icon: Trophy, title: "Global Leaderboard", description: "Top pets across the platform", color: "amber" },
-  { id: "talent-scout", icon: Search, title: "AI Talent Scout", description: "Discover hidden abilities & moves", color: "teal", badge: "5 Cr", isNew: true },
-  { id: "pet-translator", icon: Languages, title: "AI Pet Translator", description: "Decode pet behaviors into words", color: "sky", badge: "3 Cr", isNew: true },
-  { id: "habitat-designer", icon: Home, title: "Habitat Designer", description: "Design custom pet living spaces", color: "emerald", badge: "5 Cr", isNew: true },
-  { id: "pet-astrology", icon: Star, title: "AI Pet Astrology", description: "Cosmic destiny & horoscopes", color: "violet", badge: "4 Cr", isNew: true },
-  { id: "achievement-system", icon: Award, title: "Achievement System", description: "Unlock badges & milestones", color: "amber", badge: "3 Cr", isNew: true },
-  { id: "memory-album", icon: BookImage, title: "AI Memory Album", description: "Narrative albums of pet journey", color: "rose", badge: "5 Cr", isNew: true },
 ];
 
 const VirtualPet = () => {
@@ -109,21 +74,6 @@ const VirtualPet = () => {
       case "training-planner": return <AIPetTrainingPlanner onBack={goBack} />;
       case "compatibility-checker": return <AIPetCompatibilityChecker onBack={goBack} />;
       case "battle-strategy": return <AIPetBattleStrategy onBack={goBack} />;
-      case "voice-chat": return <AIPetVoiceChat onBack={goBack} />;
-      case "photo-studio": return <AIPetPhotoStudio onBack={goBack} />;
-      case "fashion-show": return <PetFashionShow onBack={goBack} />;
-      case "seasonal-events": return <SeasonalEvents onBack={goBack} />;
-      case "multiplayer-coop": return <MultiplayerCoOp onBack={goBack} />;
-      case "evolution-advisor": return <AIPetEvolutionAdvisor onBack={goBack} />;
-      case "diet-planner": return <AIPetDietPlanner onBack={goBack} />;
-      case "dream-interpreter": return <AIPetDreamInterpreter onBack={goBack} />;
-      case "leaderboard": return <PetLeaderboard onBack={goBack} />;
-      case "talent-scout": return <AIPetTalentScout onBack={goBack} />;
-      case "pet-translator": return <AIPetTranslator onBack={goBack} />;
-      case "habitat-designer": return <PetHabitatDesigner onBack={goBack} />;
-      case "pet-astrology": return <AIPetAstrology onBack={goBack} />;
-      case "achievement-system": return <PetAchievementSystem onBack={goBack} />;
-      case "memory-album": return <AIPetMemoryAlbum onBack={goBack} />;
       default: return null;
     }
   };
