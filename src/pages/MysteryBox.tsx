@@ -1,423 +1,184 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { useToast } from "@/hooks/use-toast";
-import { Loader2, Gift, Sparkles, Star, Crown, Package } from "lucide-react";
+import { useState } from "react";
 import Navbar from "@/components/Navbar";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { 
+  Gift, Brain, RotateCw, ArrowRightLeft, Trophy, Store,
+  Gem, Palette, Sparkles, Crown
+} from "lucide-react";
 import { useAICredits } from "@/hooks/useAICredits";
+import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import { MysteryBoxHero } from "@/components/mystery-box/MysteryBoxHero";
+import { MysteryBoxShop } from "@/components/mystery-box/MysteryBoxShop";
+import { LuckyWheel } from "@/components/mystery-box/LuckyWheel";
+import { MysteryBoxTrading } from "@/components/mystery-box/MysteryBoxTrading";
+import { AIRarityPredictor } from "@/components/mystery-box/AIRarityPredictor";
+import { MysteryBoxRewards } from "@/components/mystery-box/MysteryBoxRewards";
 
-interface MysteryBox {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  icon: string;
-}
+type ActiveView = "dashboard" | "shop" | "lucky_wheel" | "trading" | "ai_predictor" | "collection";
 
-const defaultBoxes: MysteryBox[] = [
-  { id: 'basic', name: 'Basic Mystery Box', description: 'A basic mystery box with random collectibles. Good chance for common and uncommon items.', price: 50, icon: '📦' },
-  { id: 'silver', name: 'Silver Mystery Box', description: 'Enhanced mystery box with better drop rates. Higher chance for rare items.', price: 100, icon: '🥈' },
-  { id: 'gold', name: 'Gold Mystery Box', description: 'Premium mystery box with guaranteed rare or better. Includes bonus rewards.', price: 200, icon: '🥇' },
-  { id: 'platinum', name: 'Platinum Mystery Box', description: 'Elite mystery box with epic drop rates. Contains exclusive limited items.', price: 350, icon: '💎' },
-  { id: 'diamond', name: 'Diamond Mystery Box', description: 'Luxury mystery box with legendary chances. Ultra-rare exclusive content.', price: 500, icon: '💠' },
-  { id: 'cosmic', name: 'Cosmic Mystery Box', description: 'Mythical mystery box with the best odds. Guaranteed epic or legendary item.', price: 750, icon: '🌟' },
-  { id: 'supreme', name: 'Supreme Mystery Box', description: 'The ultimate mystery box experience. Multiple legendary items possible.', price: 1000, icon: '👑' },
-  { id: 'celestial', name: 'Celestial Mystery Box', description: 'Divine mystery box with celestial rewards. Exclusive limited edition content.', price: 1500, icon: '✨' },
-  { id: 'universe', name: 'Universe Mystery Box', description: 'The rarest box in existence. Contains universe-exclusive items and mega rewards.', price: 2500, icon: '🌌' },
+const TOOLS: { id: ActiveView; icon: any; label: string; desc: string; cost: string; gradient: string }[] = [
+  { id: "shop", icon: Gift, label: "Mystery Box Shop", desc: "Buy & open gacha-style mystery boxes", cost: "50-2500 credits", gradient: "from-yellow-500 to-amber-600" },
+  { id: "lucky_wheel", icon: RotateCw, label: "Lucky Wheel", desc: "Spin to win credits, boxes & boosts", cost: "15 credits", gradient: "from-green-500 to-emerald-600" },
+  { id: "ai_predictor", icon: Brain, label: "AI Rarity Predictor", desc: "AI analyzes luck patterns & best boxes", cost: "10 credits", gradient: "from-violet-500 to-purple-600" },
+  { id: "trading", icon: ArrowRightLeft, label: "Trading & Gifting", desc: "Send credits or trade items with friends", cost: "Free", gradient: "from-pink-500 to-rose-600" },
+  { id: "collection", icon: Trophy, label: "My Collection", desc: "Browse your collected rewards & items", cost: "Free", gradient: "from-amber-500 to-orange-600" },
 ];
 
-interface UserBox {
-  id: string;
-  box_id: string;
-  is_opened: boolean;
-  purchased_at: string;
-  mystery_boxes: MysteryBox;
-}
-
-interface Reward {
-  id: string;
-  item_name: string;
-  rarity: string;
-  item_type: string;
-  expiresAt: string;
-  item_data: any;
-}
-
-const MysteryBox = () => {
+const MysteryBoxPage = () => {
+  const { credits } = useAICredits();
   const navigate = useNavigate();
-  const { toast } = useToast();
-  const { credits, loading: creditsLoading, refresh: refreshCredits } = useAICredits();
-  
-  const [boxes, setBoxes] = useState<MysteryBox[]>([]);
-  const [userBoxes, setUserBoxes] = useState<UserBox[]>([]);
-  const [rewards, setRewards] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [purchasing, setPurchasing] = useState<string | null>(null);
-  const [opening, setOpening] = useState<string | null>(null);
-  const [revealedReward, setRevealedReward] = useState<Reward | null>(null);
+  const [activeView, setActiveView] = useState<ActiveView>("dashboard");
 
-  useEffect(() => {
-    checkAuth();
-    loadData();
-  }, []);
+  const goBack = () => setActiveView("dashboard");
 
-  const checkAuth = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      navigate("/auth");
-      return;
-    }
-  };
+  const wrapView = (children: React.ReactNode) => (
+    <div className="min-h-screen bg-background">
+      <Navbar />
+      <main className="container mx-auto px-4 py-8 mt-20">{children}</main>
+    </div>
+  );
 
-  const loadData = async () => {
-    try {
-      const [boxesRes, userBoxesRes, rewardsRes] = await Promise.all([
-        supabase.from('mystery_boxes').select('*').order('price'),
-        supabase.from('user_mystery_boxes').select('*, mystery_boxes(*)'),
-        supabase.from('mystery_box_rewards').select('*, mystery_box_items(*)').eq('is_active', true),
-      ]);
-
-      if (boxesRes.data && boxesRes.data.length > 0) {
-        setBoxes(boxesRes.data);
-      } else {
-        setBoxes(defaultBoxes);
-      }
-      if (userBoxesRes.data) setUserBoxes(userBoxesRes.data);
-      if (rewardsRes.data) setRewards(rewardsRes.data);
-    } catch (error) {
-      console.error('Error loading data:', error);
-      setBoxes(defaultBoxes);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handlePurchase = async (box: MysteryBox) => {
-    try {
-      setPurchasing(box.id);
-
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        navigate("/auth");
-        return;
-      }
-
-      const currentCredits = typeof credits === 'number' ? credits : credits.credits_remaining;
-
-      if (currentCredits < box.price) {
-        toast({
-          title: "Insufficient Credits",
-          description: `You need ${box.price} credits. Redirecting to purchase...`,
-          variant: "destructive",
-        });
-        setTimeout(() => navigate("/ai-credits-store"), 2000);
-        return;
-      }
-
-      // Deduct credits
-      const newCredits = currentCredits - box.price;
-      const { error: updateError } = await supabase
-        .from('ai_credits')
-        .update({ credits_remaining: newCredits })
-        .eq('user_id', user.id);
-
-      if (updateError) throw updateError;
-
-      // Create user box
-      const { error: boxError } = await supabase
-        .from('user_mystery_boxes')
-        .insert({
-          user_id: user.id,
-          box_id: box.id,
-        });
-
-      if (boxError) throw boxError;
-
-      // Log usage
-      await supabase.from('ai_usage_history').insert({
-        user_id: user.id,
-        usage_type: 'mystery_box_purchase',
-        credits_used: box.price,
-        description: `Purchased ${box.name}`,
-      });
-
-      toast({
-        title: "Mystery Box Purchased!",
-        description: `${box.name} has been added to your collection.`,
-      });
-
-      await Promise.all([loadData(), refreshCredits()]);
-    } catch (error) {
-      console.error('Error purchasing box:', error);
-      toast({
-        title: "Error",
-        description: "Failed to purchase Mystery Box.",
-        variant: "destructive",
-      });
-    } finally {
-      setPurchasing(null);
-    }
-  };
-
-  const handleOpenBox = async (userBox: UserBox) => {
-    try {
-      setOpening(userBox.id);
-
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) throw new Error('Not authenticated');
-
-      const { data, error } = await supabase.functions.invoke('open-mystery-box', {
-        body: { userBoxId: userBox.id },
-      });
-
-      if (error) throw error;
-
-      if (data.success) {
-        setRevealedReward(data.reward);
-        await loadData();
-        
-        setTimeout(() => {
-          toast({
-            title: "🎉 You Won!",
-            description: `You received: ${data.reward.item_name}`,
-          });
-        }, 1000);
-      }
-    } catch (error) {
-      console.error('Error opening box:', error);
-      toast({
-        title: "Error",
-        description: "Failed to open Mystery Box.",
-        variant: "destructive",
-      });
-    } finally {
-      setOpening(null);
-    }
-  };
-
-  const getRarityColor = (rarity: string) => {
-    switch (rarity) {
-      case 'common': return 'bg-gray-500';
-      case 'rare': return 'bg-blue-500';
-      case 'epic': return 'bg-purple-500';
-      case 'legendary': return 'bg-yellow-500';
-      default: return 'bg-gray-500';
-    }
-  };
-
-  const getRarityIcon = (rarity: string) => {
-    switch (rarity) {
-      case 'legendary': return <Crown className="h-4 w-4" />;
-      case 'epic': return <Star className="h-4 w-4" />;
-      case 'rare': return <Sparkles className="h-4 w-4" />;
-      default: return <Package className="h-4 w-4" />;
-    }
-  };
-
-  if (loading || creditsLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
-  }
+  if (activeView === "shop") return wrapView(<MysteryBoxShop onBack={goBack} />);
+  if (activeView === "lucky_wheel") return wrapView(<LuckyWheel onBack={goBack} />);
+  if (activeView === "trading") return wrapView(<MysteryBoxTrading onBack={goBack} />);
+  if (activeView === "ai_predictor") return wrapView(<AIRarityPredictor onBack={goBack} />);
+  if (activeView === "collection") return wrapView(<MysteryBoxRewards onBack={goBack} />);
 
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      
-      <div className="container mx-auto px-4 pt-24 pb-12 max-w-7xl">
-        <div className="text-center mb-12">
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <Gift className="h-12 w-12 text-primary animate-bounce" />
-            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
-              Mystery Box Subscriptions
-            </h1>
-          </div>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Monthly mystery boxes with exclusive digital content
-          </p>
-          <div className="mt-4 inline-flex items-center gap-2 bg-primary/10 px-4 py-2 rounded-full">
-            <Sparkles className="h-4 w-4 text-primary" />
-            <span className="text-sm font-medium">Gacha-style system for rare items</span>
-          </div>
-        </div>
+      <main className="container mx-auto px-4 py-8 mt-20">
+        <MysteryBoxHero />
 
-        {/* Detailed Description */}
-        <Card className="p-6 mb-8 max-w-4xl mx-auto bg-card text-card-foreground">
-          <h2 className="text-2xl font-black mb-4 text-foreground">What is Mystery Box?</h2>
-          <p className="text-muted-foreground mb-4">
-            Mystery Box is an exciting gacha-style feature where you can purchase mystery boxes containing 
-            random digital collectibles, rewards, and exclusive items. Each box has different rarity tiers 
-            and drop rates, offering everything from common items to ultra-rare legendary rewards.
-          </p>
-          
-          <h3 className="text-xl font-semibold mb-3 text-foreground">How to Use</h3>
-          <ul className="list-disc list-inside space-y-2 text-muted-foreground mb-4">
-            <li><strong>Choose a Box:</strong> Select from 9 different mystery box tiers (50 - 2500 credits) based on your budget and desired rarity chances</li>
-            <li><strong>Purchase:</strong> Use your credits to buy the mystery box - higher priced boxes have better drop rates for rare items</li>
-            <li><strong>Open:</strong> Click "Open Box" on your purchased boxes to reveal your random reward</li>
-            <li><strong>Collect:</strong> View your active items and rewards in your collection</li>
-          </ul>
-          
-          <h3 className="text-xl font-semibold mb-3 text-foreground">Rarity Tiers</h3>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-sm">
-            <div className="flex items-center gap-2"><Badge className="bg-gray-500">Common</Badge></div>
-            <div className="flex items-center gap-2"><Badge className="bg-blue-500">Rare</Badge></div>
-            <div className="flex items-center gap-2"><Badge className="bg-purple-500">Epic</Badge></div>
-            <div className="flex items-center gap-2"><Badge className="bg-yellow-500">Legendary</Badge></div>
-          </div>
-          
-          <p className="text-xs text-muted-foreground mt-4">
-            💡 Tip: Higher-tier boxes (Cosmic, Supreme, Celestial, Universe) guarantee epic or legendary items!
-          </p>
-        </Card>
-
-        {/* Revealed Reward Modal */}
-        {revealedReward && (
-          <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
-            <Card className="max-w-md w-full animate-in zoom-in duration-500">
-              <CardHeader className="text-center">
-                <div className="mb-4 flex justify-center">
-                  <div className={`p-6 rounded-full ${getRarityColor(revealedReward.rarity)} animate-pulse`}>
-                    {getRarityIcon(revealedReward.rarity)}
-                  </div>
+        {/* Engagement Row */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+            <Card className="p-5 bg-gradient-to-br from-yellow-500/10 to-amber-600/5 border-yellow-500/20 hover:shadow-[0_0_20px_rgba(255,215,0,0.1)] transition-shadow">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-yellow-500 to-amber-600 flex items-center justify-center shadow-lg shadow-yellow-500/20">
+                  <Gem className="h-6 w-6 text-white" />
                 </div>
-                <CardTitle className="text-2xl">🎉 You Won!</CardTitle>
-                <CardDescription>You received a new item</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="text-center">
-                  <h3 className="text-xl font-bold mb-2">{revealedReward.item_name}</h3>
-                  <Badge className={getRarityColor(revealedReward.rarity)}>
-                    {revealedReward.rarity.toUpperCase()}
-                  </Badge>
-                  <p className="text-sm text-muted-foreground mt-2">
-                    Type: {revealedReward.item_type}
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    Valid until: {new Date(revealedReward.expiresAt).toLocaleDateString('en-US')}
-                  </p>
+                <div className="flex-1">
+                  <p className="text-xs text-yellow-400/60 uppercase tracking-wider">Available Credits</p>
+                  <p className="text-3xl font-black">{credits.credits_remaining}</p>
                 </div>
-                <Button onClick={() => setRevealedReward(null)} className="w-full">
-                  Continue
-                </Button>
-              </CardContent>
+                <Button size="sm" onClick={() => navigate("/ai-credits")} className="bg-gradient-to-r from-yellow-500 to-amber-600 text-black font-bold shadow-lg shadow-yellow-500/20 hover:from-yellow-600 hover:to-amber-700">Buy More</Button>
+              </div>
             </Card>
-          </div>
-        )}
+          </motion.div>
 
-        {/* Available Boxes */}
-        <div className="mb-12">
-          <h2 className="text-2xl font-black mb-6">Available Mystery Boxes</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {boxes.map((box) => (
-              <Card key={box.id} className="hover:shadow-lg transition-shadow">
-                <CardHeader className="text-center">
-                  <div className="text-6xl mb-4">{box.icon}</div>
-                  <CardTitle>{box.name}</CardTitle>
-                  <CardDescription>{box.description}</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <span className="text-2xl font-bold">{box.price}</span>
-                    <span className="text-muted-foreground">credits</span>
-                  </div>
-                  <Button
-                    onClick={() => handlePurchase(box)}
-                    disabled={purchasing === box.id}
-                    className="w-full"
-                  >
-                    {purchasing === box.id ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Purchasing...
-                      </>
-                    ) : (
-                      'Buy Mystery Box'
-                    )}
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
+            <Card className="p-5 bg-card/80 backdrop-blur-xl border-yellow-500/10 hover:shadow-[0_0_20px_rgba(255,215,0,0.08)] transition-shadow">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-violet-600 flex items-center justify-center shadow-lg shadow-purple-500/20">
+                  <Sparkles className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground uppercase tracking-wider">Vault Features</p>
+                  <p className="text-2xl font-black">5 Tools</p>
+                  <p className="text-xs text-muted-foreground">Full gacha experience</p>
+                </div>
+              </div>
+            </Card>
+          </motion.div>
+
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
+            <Card className="p-5 bg-card/80 backdrop-blur-xl border-yellow-500/10 hover:shadow-[0_0_20px_rgba(255,215,0,0.08)] transition-shadow">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-yellow-500 to-red-500 flex items-center justify-center shadow-lg shadow-yellow-500/20">
+                  <Crown className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground uppercase tracking-wider">Rarity Tiers</p>
+                  <p className="text-2xl font-black">4 Levels</p>
+                  <p className="text-xs text-muted-foreground">Common → Legendary</p>
+                </div>
+              </div>
+            </Card>
+          </motion.div>
         </div>
 
-        {/* User's Boxes */}
-        {userBoxes.length > 0 && (
-          <div className="mb-12">
-            <h2 className="text-2xl font-black mb-6">Your Mystery Boxes</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {userBoxes.filter(ub => !ub.is_opened).map((userBox) => (
-                <Card key={userBox.id} className="hover:shadow-lg transition-shadow">
-                  <CardHeader className="text-center">
-                    <div className="text-6xl mb-4 animate-bounce">{userBox.mystery_boxes.icon}</div>
-                    <CardTitle>{userBox.mystery_boxes.name}</CardTitle>
-                    <CardDescription>
-                      Purchased: {new Date(userBox.purchased_at).toLocaleDateString('en-US')}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <Button
-                      onClick={() => handleOpenBox(userBox)}
-                      disabled={opening === userBox.id}
-                      className="w-full"
-                      variant="default"
-                    >
-                      {opening === userBox.id ? (
-                        <>
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          Opening...
-                        </>
-                      ) : (
-                        'Open Box'
-                      )}
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-        )}
+        {/* Tools Grid */}
+        <motion.h2
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="text-2xl font-black mb-4"
+          style={{
+            background: "linear-gradient(135deg, #FFD700, #FFF8DC, #FFD700)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+          }}
+        >
+          The Vault Tools
+        </motion.h2>
 
-        {/* Active Rewards */}
-        {rewards.length > 0 && (
-          <div>
-            <h2 className="text-2xl font-black mb-6">Your Active Items</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {rewards.map((reward) => (
-                <Card key={reward.id}>
-                  <CardHeader>
-                    <div className="flex items-center justify-between mb-2">
-                      <CardTitle className="text-lg">{reward.mystery_box_items.item_name}</CardTitle>
-                      <Badge className={getRarityColor(reward.mystery_box_items.rarity)}>
-                        {reward.mystery_box_items.rarity}
-                      </Badge>
-                    </div>
-                    <CardDescription>
-                      <div className="flex items-center gap-2">
-                        {getRarityIcon(reward.mystery_box_items.rarity)}
-                        <span>{reward.mystery_box_items.item_type}</span>
-                      </div>
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-muted-foreground">
-                      Valid until: {new Date(reward.expires_at).toLocaleDateString('en-US')}
-                    </p>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {TOOLS.map((tool, i) => (
+            <motion.div
+              key={tool.id}
+              initial={{ opacity: 0, y: 30, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ delay: 0.1 + i * 0.07, type: "spring", stiffness: 200 }}
+              whileHover={{ scale: 1.03, y: -4 }}
+              whileTap={{ scale: 0.97 }}
+              onClick={() => setActiveView(tool.id)}
+              className="cursor-pointer"
+            >
+              <Card className="p-5 bg-card/80 backdrop-blur-xl border-yellow-500/10 hover:border-yellow-500/30 hover:shadow-[0_0_25px_rgba(255,215,0,0.1)] transition-all group">
+                <div className="flex items-start gap-4">
+                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${tool.gradient} flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow flex-shrink-0`}>
+                    <tool.icon className="h-6 w-6 text-white" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-black text-base group-hover:text-yellow-400 transition-colors">{tool.label}</h3>
+                    <p className="text-xs text-muted-foreground mt-0.5">{tool.desc}</p>
+                    <span className="inline-block mt-2 text-[10px] font-bold text-yellow-400 bg-yellow-500/10 px-2 py-0.5 rounded-full border border-yellow-500/20">
+                      {tool.cost}
+                    </span>
+                  </div>
+                </div>
+              </Card>
+            </motion.div>
+          ))}
+        </div>
 
+        {/* Description */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }}>
+          <Card className="p-6 mt-8 bg-card/60 backdrop-blur-xl border-yellow-500/10">
+            <h2 className="text-xl font-black mb-3 bg-gradient-to-r from-yellow-400 to-amber-500 bg-clip-text text-transparent">What is The Vault?</h2>
+            <p className="text-sm text-muted-foreground leading-relaxed mb-4">
+              The Vault is a premium gacha-style mystery box experience where luck meets strategy. 
+              Purchase mystery boxes across 9 tiers — from Basic (50 credits) to Universe (2,500 credits) — 
+              each offering escalating chances at rare, epic, and legendary digital collectibles.
+            </p>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
+              <div className="flex items-center gap-2 p-2 rounded-lg bg-gray-500/10">
+                <div className="w-3 h-3 rounded-full bg-gray-500" />
+                <span>Common</span>
+              </div>
+              <div className="flex items-center gap-2 p-2 rounded-lg bg-blue-500/10">
+                <div className="w-3 h-3 rounded-full bg-blue-500" />
+                <span>Rare</span>
+              </div>
+              <div className="flex items-center gap-2 p-2 rounded-lg bg-purple-500/10">
+                <div className="w-3 h-3 rounded-full bg-purple-500" />
+                <span>Epic</span>
+              </div>
+              <div className="flex items-center gap-2 p-2 rounded-lg bg-yellow-500/10">
+                <div className="w-3 h-3 rounded-full bg-yellow-500" />
+                <span>Legendary</span>
+              </div>
+            </div>
+            <p className="text-xs text-muted-foreground mt-4">
+              💡 Pro tip: Use the AI Rarity Predictor to analyze your luck patterns and find the optimal box tier for your budget!
+            </p>
+          </Card>
+        </motion.div>
+      </main>
     </div>
   );
 };
 
-export default MysteryBox;
+export default MysteryBoxPage;
