@@ -1418,6 +1418,7 @@ const Cooking = () => {
             </CardContent>
           </Card>
         </div>
+      </main>
 
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogContent className="max-w-3xl max-h-[90vh]">
