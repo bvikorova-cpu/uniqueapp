@@ -47,7 +47,7 @@ export function CloneBattles() {
 
       const { data, error } = await supabase.functions.invoke("clone-chat", {
         body: {
-          message: `Simulate a wit battle between "${yourClone.clone_name}" (personality: ${yourClone.personality_data?.personality || "friendly"}) and "${opponentName}". Write 2 rounds of clever exchanges (2-3 lines each), then declare a winner with a fun reason. Keep it lighthearted.`,
+          message: `Simulate a wit battle between "${yourClone.clone_name}" (personality: ${personalityText}) and "${opponentName}". Write 2 rounds of clever exchanges (2-3 lines each), then declare a winner with a fun reason. Keep it lighthearted.`,
           cloneId: "battle",
           clonePersonality: "You are an entertaining AI battle commentator. Keep it fun and family-friendly."
         }
