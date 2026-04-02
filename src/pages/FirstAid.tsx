@@ -154,7 +154,7 @@ const FirstAid = () => {
 
         {/* AI Tools Grid */}
         <h2 className="text-2xl font-bold mb-4">🤖 AI-Powered Tools</h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-10">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 mb-10">
           {AI_TOOLS.map((tool) => {
             const Icon = tool.icon;
             return (
