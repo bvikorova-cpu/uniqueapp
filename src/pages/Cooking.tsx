@@ -1138,6 +1138,12 @@ const Cooking = () => {
           {activeView === "cuisine-converter" && <AICuisineConverter onBack={back} />}
           {activeView === "plating" && <AIPlatingCoach onBack={back} />}
           {activeView === "leftover" && <AILeftoverTransformer onBack={back} />}
+          {activeView === "timer" && <AICookingTimer onBack={back} />}
+          {activeView === "video-gen" && <AIRecipeVideoGenerator onBack={back} />}
+          {activeView === "social-feed" && <SocialRecipeFeed onBack={back} />}
+          {activeView === "dietary" && <AIDietaryAdvisor onBack={back} />}
+          {activeView === "challenge" && <WeeklyCookingChallenge onBack={back} />}
+          {activeView === "inventory" && <AIKitchenInventory onBack={back} />}
         </main>
       </div>
     );
