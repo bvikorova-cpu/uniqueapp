@@ -468,14 +468,21 @@ const FitSlim = () => {
             </div>
             <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
               {(Object.entries(FITSLIM_PLANS) as [string, typeof FITSLIM_PLANS.weekly][]).map(([key, plan]) => (
-                <Card key={key} className={`cursor-pointer transition-all duration-300 relative overflow-hidden ${selectedPlanType === key ? "border-green-500 shadow-lg shadow-green-500/20 bg-green-500/5" : "border-border/50 hover:border-green-500/50 bg-card/50"}`} onClick={() => setSelectedPlanType(key as "weekly" | "monthly")}>
-                  {(plan as any).popular && <div className="absolute top-0 right-0 bg-gradient-to-l from-yellow-500 to-orange-500 text-white text-xs font-bold px-3 py-1 rounded-bl-lg">MOST POPULAR</div>}
-                  <CardContent className="p-6 text-center space-y-3">
-                    <Calendar className="h-10 w-10 mx-auto text-green-400" />
-                    <h3 className="text-xl font-bold">{plan.label}</h3>
-                    <p className="text-muted-foreground text-sm">{plan.description}</p>
-                    <div className="text-4xl font-bold text-green-400">{plan.price}</div>
-                    <p className="text-xs text-muted-foreground">One-time payment</p>
+                <motion.div key={key} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
+                  <Card className={`cursor-pointer transition-all duration-300 relative overflow-hidden rounded-2xl ${selectedPlanType === key ? "border-2 border-emerald-500 shadow-2xl shadow-emerald-500/20 bg-gradient-to-br from-emerald-500/10 to-green-500/5" : "border-border/50 hover:border-emerald-500/50 bg-card/80 backdrop-blur-xl"}`} onClick={() => setSelectedPlanType(key as "weekly" | "monthly")}>
+                    {(plan as any).popular && (
+                      <div className="absolute top-0 right-0 bg-gradient-to-l from-yellow-500 to-orange-500 text-white text-xs font-bold px-4 py-1.5 rounded-bl-xl shadow-lg">
+                        ⭐ MOST POPULAR
+                      </div>
+                    )}
+                    <CardContent className="p-8 text-center space-y-4">
+                      <div className={`w-16 h-16 mx-auto rounded-2xl flex items-center justify-center ${selectedPlanType === key ? "bg-gradient-to-br from-emerald-500 to-green-600 shadow-lg shadow-emerald-500/30" : "bg-gradient-to-br from-emerald-500/20 to-green-500/20"}`}>
+                        <Calendar className={`h-8 w-8 ${selectedPlanType === key ? "text-white" : "text-emerald-400"}`} />
+                      </div>
+                      <h3 className="text-xl font-black">{plan.label}</h3>
+                      <p className="text-muted-foreground text-sm">{plan.description}</p>
+                      <div className="text-5xl font-black bg-gradient-to-r from-emerald-400 to-green-500 bg-clip-text text-transparent">{plan.price}</div>
+                      <p className="text-xs text-muted-foreground">One-time payment</p>
                     <ul className="text-sm space-y-1 text-left">
                       {[`${plan.days}-day workout plan`, `${plan.days}-day meal plan`, "Personalized to your body", "Macro & calorie targets", "Pro tips & guidance"].map((t, i) => (
                         <li key={i} className="flex items-center gap-2"><Check className="h-4 w-4 text-green-400" /> {t}</li>
