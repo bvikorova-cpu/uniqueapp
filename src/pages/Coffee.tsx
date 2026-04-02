@@ -10,23 +10,37 @@ import { AICafeRecommender } from "@/components/coffee/AICafeRecommender";
 import { AILatteArtCoach } from "@/components/coffee/AILatteArtCoach";
 import { AICoffeePairing } from "@/components/coffee/AICoffeePairing";
 import { AICoffeeHealthAnalyzer } from "@/components/coffee/AICoffeeHealthAnalyzer";
+import { AICoffeeJournal } from "@/components/coffee/AICoffeeJournal";
+import { AICoffeeBeanScanner } from "@/components/coffee/AICoffeeBeanScanner";
+import { AISubscriptionBoxCurator } from "@/components/coffee/AISubscriptionBoxCurator";
+import { AIBaristaCertification } from "@/components/coffee/AIBaristaCertification";
+import { AICoffeeTastingNotes } from "@/components/coffee/AICoffeeTastingNotes";
+import { AICoffeeRecipeCreator } from "@/components/coffee/AICoffeeRecipeCreator";
 import {
   Coffee as CoffeeIcon, MapPin, Users, Trophy, Star, Flame,
-  Leaf, Palette, UtensilsCrossed, Heart, Award, Sparkles
+  Leaf, Palette, UtensilsCrossed, Heart, Award, Sparkles,
+  BookOpen, ScanLine, Package, GraduationCap, Wine, ChefHat
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { motion } from "framer-motion";
 
-type ActiveView = "hub" | "brewing" | "bean" | "cafe-rec" | "latte-art" | "pairing" | "health";
+type ActiveView = "hub" | "brewing" | "bean" | "cafe-rec" | "latte-art" | "pairing" | "health"
+  | "journal" | "scanner" | "sub-box" | "certification" | "tasting" | "recipe";
 
 const AI_TOOLS = [
-  { id: "brewing" as const, icon: CoffeeIcon, label: "AI Brewing Advisor", desc: "Perfect your brew technique", color: "from-amber-600 to-amber-800", isNew: true },
-  { id: "bean" as const, icon: Leaf, label: "AI Bean Expert", desc: "Origin & flavor profiles", color: "from-green-600 to-emerald-800", isNew: true },
-  { id: "cafe-rec" as const, icon: MapPin, label: "AI Cafe Recommender", desc: "Find your perfect spot", color: "from-rose-600 to-pink-800", isNew: true },
-  { id: "latte-art" as const, icon: Palette, label: "AI Latte Art Coach", desc: "Master milk patterns", color: "from-purple-600 to-violet-800", isNew: true },
-  { id: "pairing" as const, icon: UtensilsCrossed, label: "AI Food Pairing", desc: "Coffee & food combos", color: "from-orange-600 to-amber-800", isNew: true },
-  { id: "health" as const, icon: Heart, label: "AI Health Analyzer", desc: "Caffeine impact analysis", color: "from-red-600 to-rose-800", isNew: true },
+  { id: "brewing" as const, icon: CoffeeIcon, label: "AI Brewing Advisor", desc: "Perfect your brew technique", color: "from-amber-600 to-amber-800", cost: "3 Credits" },
+  { id: "bean" as const, icon: Leaf, label: "AI Bean Expert", desc: "Origin & flavor profiles", color: "from-green-600 to-emerald-800", cost: "3 Credits" },
+  { id: "cafe-rec" as const, icon: MapPin, label: "AI Cafe Recommender", desc: "Find your perfect spot", color: "from-rose-600 to-pink-800", cost: "3 Credits" },
+  { id: "latte-art" as const, icon: Palette, label: "AI Latte Art Coach", desc: "Master milk patterns", color: "from-purple-600 to-violet-800", cost: "3 Credits" },
+  { id: "pairing" as const, icon: UtensilsCrossed, label: "AI Food Pairing", desc: "Coffee & food combos", color: "from-orange-600 to-amber-800", cost: "3 Credits" },
+  { id: "health" as const, icon: Heart, label: "AI Health Analyzer", desc: "Caffeine impact analysis", color: "from-red-600 to-rose-800", cost: "3 Credits" },
+  { id: "journal" as const, icon: BookOpen, label: "AI Coffee Journal", desc: "Daily diary & mood insights", color: "from-amber-500 to-yellow-700", cost: "3 Credits", isNew: true },
+  { id: "scanner" as const, icon: ScanLine, label: "AI Bean Scanner", desc: "Label analysis & profiles", color: "from-cyan-600 to-teal-800", cost: "3 Credits", isNew: true },
+  { id: "sub-box" as const, icon: Package, label: "AI Box Curator", desc: "Personalized bean boxes", color: "from-pink-600 to-rose-800", cost: "3 Credits", isNew: true },
+  { id: "certification" as const, icon: GraduationCap, label: "Barista Certification", desc: "AI-powered exam & badge", color: "from-yellow-600 to-amber-800", cost: "5 Credits", isNew: true },
+  { id: "tasting" as const, icon: Wine, label: "AI Tasting Notes", desc: "Structured flavor analysis", color: "from-violet-600 to-purple-800", cost: "3 Credits", isNew: true },
+  { id: "recipe" as const, icon: ChefHat, label: "AI Recipe Creator", desc: "Custom drink recipes", color: "from-orange-500 to-red-800", cost: "3 Credits", isNew: true },
 ];
 
 const NAV_ITEMS = [
@@ -34,6 +48,21 @@ const NAV_ITEMS = [
   { icon: Users, label: "Coffee Buddy", path: "/coffee/buddy" },
   { icon: Trophy, label: "Leaderboard", path: "/coffee/leaderboard" },
 ];
+
+const VIEWS: Record<string, React.FC<{ onBack: () => void }>> = {
+  brewing: AIBrewingAdvisor,
+  bean: AIBeanExpert,
+  "cafe-rec": AICafeRecommender,
+  "latte-art": AILatteArtCoach,
+  pairing: AICoffeePairing,
+  health: AICoffeeHealthAnalyzer,
+  journal: AICoffeeJournal,
+  scanner: AICoffeeBeanScanner,
+  "sub-box": AISubscriptionBoxCurator,
+  certification: AIBaristaCertification,
+  tasting: AICoffeeTastingNotes,
+  recipe: AICoffeeRecipeCreator,
+};
 
 const Coffee = () => {
   const navigate = useNavigate();
@@ -51,17 +80,21 @@ const Coffee = () => {
 
   const back = () => setActiveView("hub");
 
-  if (activeView === "brewing") return <div className="container mx-auto px-4 py-8 max-w-7xl"><AIBrewingAdvisor onBack={back} /></div>;
-  if (activeView === "bean") return <div className="container mx-auto px-4 py-8 max-w-7xl"><AIBeanExpert onBack={back} /></div>;
-  if (activeView === "cafe-rec") return <div className="container mx-auto px-4 py-8 max-w-7xl"><AICafeRecommender onBack={back} /></div>;
-  if (activeView === "latte-art") return <div className="container mx-auto px-4 py-8 max-w-7xl"><AILatteArtCoach onBack={back} /></div>;
-  if (activeView === "pairing") return <div className="container mx-auto px-4 py-8 max-w-7xl"><AICoffeePairing onBack={back} /></div>;
-  if (activeView === "health") return <div className="container mx-auto px-4 py-8 max-w-7xl"><AICoffeeHealthAnalyzer onBack={back} /></div>;
+  // Render active tool view
+  if (activeView !== "hub") {
+    const ViewComponent = VIEWS[activeView];
+    if (ViewComponent) {
+      return (
+        <div className="container mx-auto px-4 py-8 max-w-7xl">
+          <ViewComponent onBack={back} />
+        </div>
+      );
+    }
+  }
 
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-6 max-w-7xl">
-        {/* Cinematic Hero */}
         <CoffeeHero />
 
         {/* Engagement Row */}
@@ -83,7 +116,6 @@ const Coffee = () => {
           </Card>
         </div>
 
-        {/* Credits */}
         <div className="mb-8">
           <CoffeeCreditsDisplay />
         </div>
@@ -111,7 +143,7 @@ const Coffee = () => {
           <div className="flex items-center gap-2 mb-4">
             <Sparkles className="h-5 w-5 text-amber-400" />
             <h2 className="text-xl sm:text-2xl font-black">AI Coffee Tools</h2>
-            <span className="text-xs bg-amber-500/20 text-amber-400 px-2 py-0.5 rounded-full">3 Credits Each</span>
+            <span className="text-xs bg-amber-500/20 text-amber-400 px-2 py-0.5 rounded-full">12 Tools</span>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {AI_TOOLS.map((tool) => {
@@ -130,6 +162,7 @@ const Coffee = () => {
                     </div>
                     <p className="text-xs sm:text-sm font-semibold leading-tight">{tool.label}</p>
                     <p className="text-[10px] text-muted-foreground mt-1 hidden sm:block">{tool.desc}</p>
+                    <p className="text-[9px] text-amber-400/70 mt-1">{tool.cost}</p>
                   </Card>
                 </motion.div>
               );
