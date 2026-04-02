@@ -169,7 +169,7 @@ const FirstAid = () => {
                   </div>
                   <p className="font-semibold text-sm">{tool.label}</p>
                   <p className="text-xs text-muted-foreground mt-1">{tool.desc}</p>
-                  <Badge className="mt-2 bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300 text-[10px]">3 Credits</Badge>
+                  <Badge className="mt-2 bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300 text-[10px]">{tool.id === "stories" ? "Free" : "3 Credits"}</Badge>
                 </CardContent>
               </Card>
             );
