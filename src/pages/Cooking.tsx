@@ -1275,7 +1275,7 @@ const Cooking = () => {
               </div>
               <div>
                 <h2 className="text-2xl font-bold text-foreground">AI Cooking Tools</h2>
-                <p className="text-muted-foreground text-sm">6 powerful AI-powered features at your fingertips</p>
+                <p className="text-muted-foreground text-sm">{aiFeatures.length + NEW_AI_TOOLS.length} powerful AI-powered features at your fingertips</p>
               </div>
             </div>
             <Button
