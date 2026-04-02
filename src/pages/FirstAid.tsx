@@ -1,154 +1,126 @@
+import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Heart, Phone, AlertTriangle, Droplet, Flame, Bone, Wind, Zap, Activity } from "lucide-react";
+import {
+  Heart, Phone, AlertTriangle, Droplet, Flame, Bone, Wind, Zap, Activity,
+  Stethoscope, Siren, GraduationCap, Package, HeartPulse, Scan,
+  Trophy, TrendingUp, Star
+} from "lucide-react";
+import { useLiveStats } from "@/hooks/useLiveStats";
+import { FirstAidHero } from "@/components/firstaid/FirstAidHero";
+import { AISymptomChecker } from "@/components/firstaid/AISymptomChecker";
+import { AIEmergencyGuide } from "@/components/firstaid/AIEmergencyGuide";
+import { AIFirstAidQuiz } from "@/components/firstaid/AIFirstAidQuiz";
+import { AIFirstAidKit } from "@/components/firstaid/AIFirstAidKit";
+import { AICPRCoach } from "@/components/firstaid/AICPRCoach";
+import { AIInjuryAssessor } from "@/components/firstaid/AIInjuryAssessor";
+
+type ViewType = "hub" | "symptoms" | "emergency" | "quiz" | "kit" | "cpr" | "injury";
+
+const AI_TOOLS = [
+  { id: "symptoms" as ViewType, icon: Stethoscope, label: "AI Symptom Checker", desc: "Analyze symptoms & get first aid steps", color: "from-red-500 to-rose-600" },
+  { id: "emergency" as ViewType, icon: Siren, label: "AI Emergency Guide", desc: "Step-by-step emergency response", color: "from-orange-500 to-amber-600" },
+  { id: "quiz" as ViewType, icon: GraduationCap, label: "AI First Aid Quiz", desc: "Test your knowledge", color: "from-blue-500 to-indigo-600" },
+  { id: "kit" as ViewType, icon: Package, label: "AI Kit Builder", desc: "Personalized kit checklists", color: "from-emerald-500 to-green-600" },
+  { id: "cpr" as ViewType, icon: HeartPulse, label: "AI CPR Coach", desc: "Interactive CPR training", color: "from-pink-500 to-fuchsia-600" },
+  { id: "injury" as ViewType, icon: Scan, label: "AI Injury Assessor", desc: "Assess & treat injuries", color: "from-purple-500 to-violet-600" },
+];
+
+const EMERGENCY_CONTACTS = [
+  { name: "Emergency Medical Services", number: "112", icon: Heart },
+  { name: "Fire Department", number: "112", icon: Flame },
+  { name: "Police", number: "112", icon: AlertTriangle },
+  { name: "Emergency Line", number: "112", icon: Phone },
+];
+
+const FIRST_AID_CATEGORIES = [
+  {
+    id: "cpr-info", title: "CPR", icon: Heart, color: "text-red-500",
+    steps: ["Check the scene – ensure it is safe", "Check consciousness – shake and call loudly", "Call emergency services (112)", "Open airway – tilt head back, lift chin", "Check breathing – maximum 10 seconds", "30 chest compressions – depth 5-6 cm, rate 100-120/min", "2 rescue breaths – each lasting 1 second", "Continue 30:2 cycle until help arrives"],
+    warning: "If an AED is available, use it as soon as possible following device instructions."
+  },
+  {
+    id: "choking", title: "Choking", icon: Wind, color: "text-blue-500",
+    steps: ["Ask: 'Are you choking?' If they cannot speak, it's serious", "Encourage coughing if possible", "5 back blows – between shoulder blades", "5 abdominal thrusts (Heimlich) – fist above navel", "Alternate 5 back blows and 5 thrusts", "If unconscious, begin CPR", "Call emergency services"],
+    warning: "For pregnant women and small children, use modified technique."
+  },
+  {
+    id: "bleeding", title: "Bleeding", icon: Droplet, color: "text-red-600",
+    steps: ["Wear gloves if available", "Direct pressure with clean bandage", "Maintain pressure for 10+ minutes", "Add bandage if blood soaks through", "Elevate injured part above heart", "For severe bleeding – arterial pressure", "Never remove embedded objects"],
+    warning: "Use tourniquet only as absolute last resort."
+  },
+  {
+    id: "burns", title: "Burns", icon: Flame, color: "text-orange-500",
+    steps: ["Stop the burning – remove heat source", "Remove jewelry and loose clothing", "Cool with lukewarm water 10-20 min", "Cover with clean non-stick cloth", "Don't apply ice, ointment, or butter", "Monitor for shock symptoms"],
+    warning: "3rd degree burns (charred skin) always require emergency care."
+  },
+  {
+    id: "fractures", title: "Fractures", icon: Bone, color: "text-purple-500",
+    steps: ["Don't move the person unless necessary", "Stabilize in position found", "Use improvised splints", "Immobilize joints above and below", "Apply cold compress 20 minutes", "Monitor circulation"],
+    warning: "Never attempt to straighten a broken bone!"
+  },
+  {
+    id: "shock", title: "Shock", icon: Zap, color: "text-yellow-500",
+    steps: ["Lay person on their back", "Elevate legs 30 cm", "Keep warm with blanket", "Loosen tight clothing", "Don't give food or drinks", "Monitor breathing and pulse", "Call emergency services"],
+    warning: "Signs: pale skin, cold sweat, rapid pulse, shallow breathing, confusion."
+  },
+  {
+    id: "stroke", title: "Stroke", icon: Activity, color: "text-pink-500",
+    steps: ["FAST Test:", "F (Face) – Ask to smile, asymmetry?", "A (Arms) – Raise both, one drops?", "S (Speech) – Say a sentence, slurred?", "T (Time) – Call 112 IMMEDIATELY!", "Lay on back, head slightly elevated", "Don't give food or medication", "Note time symptoms began"],
+    warning: "Every minute is critical! Sooner treatment = better prognosis."
+  },
+];
 
 const FirstAid = () => {
-  const emergencyContacts = [
-    { name: "Emergency Medical Services", number: "112", icon: Heart },
-    { name: "Fire Department", number: "112", icon: Flame },
-    { name: "Police", number: "112", icon: AlertTriangle },
-    { name: "Emergency Line", number: "112", icon: Phone },
-  ];
+  const [activeView, setActiveView] = useState<ViewType>("hub");
+  const [activeCategory, setActiveCategory] = useState("cpr-info");
+  const { stats, loading: statsLoading } = useLiveStats([
+    { key: "guides", table: "activity_logs" },
+    { key: "quizzes", table: "activity_logs", filter: { column: "activity_type", value: "quiz" } },
+    { key: "certs", table: "achievements" },
+    { key: "learners", table: "profiles" },
+  ]);
 
-  const firstAidCategories = [
-    {
-      id: "cpr",
-      title: "Cardiopulmonary Resuscitation (CPR)",
-      icon: Heart,
-      color: "text-red-500",
-      steps: [
-        "Check the scene – ensure it is safe",
-        "Check consciousness – shake and call loudly",
-        "Call emergency services (112 or local emergency number)",
-        "Open airway – tilt head back, lift chin",
-        "Check breathing – maximum 10 seconds",
-        "30 chest compressions – center of chest, depth 5-6 cm, rate 100-120/min",
-        "2 rescue breaths – each lasting 1 second",
-        "Continue 30:2 cycle until emergency services arrive",
-      ],
-      warning: "If an AED (Automated External Defibrillator) is available, use it as soon as possible following the device instructions.",
-    },
-    {
-      id: "choking",
-      title: "Choking (Blocked Airway)",
-      icon: Wind,
-      color: "text-blue-500",
-      steps: [
-        "Ask: 'Are you choking?' If they cannot speak, it's serious",
-        "Encourage coughing if they can cough",
-        "If they cannot cough or breathe:",
-        "• 5 back blows – between shoulder blades, downward motion",
-        "• 5 abdominal thrusts (Heimlich maneuver) – fist above navel, sharp upward thrusts",
-        "Alternate 5 back blows and 5 abdominal thrusts",
-        "If they lose consciousness, begin CPR",
-        "Call emergency services",
-      ],
-      warning: "For pregnant women and small children, use modified technique.",
-    },
-    {
-      id: "bleeding",
-      title: "Bleeding",
-      icon: Droplet,
-      color: "text-red-600",
-      steps: [
-        "Wear gloves (if available)",
-        "Direct pressure – press wound with clean bandage or cloth",
-        "Maintain pressure for at least 10 minutes",
-        "If blood soaks through, add another bandage (don't remove the first)",
-        "Elevate injured part above heart level (if no fracture)",
-        "For severe bleeding – pressure on artery between wound and heart",
-        "Call emergency services for massive bleeding",
-        "Never remove embedded objects – stabilize them",
-      ],
-      warning: "If blood is spurting or there's an amputation, use a tourniquet only as a last resort.",
-    },
-    {
-      id: "burns",
-      title: "Burns",
-      icon: Flame,
-      color: "text-orange-500",
-      steps: [
-        "Stop the burning – remove heat source",
-        "Remove jewelry and loose clothing (not stuck fabric)",
-        "Cool burn with lukewarm (not cold) water – 10-20 minutes",
-        "Cover with clean, non-stick cloth",
-        "Don't apply ice, ointment, butter or toothpaste",
-        "Call emergency services for large burns",
-        "Monitor for shock symptoms",
-      ],
-      warning: "Burn degrees: 1st degree – redness; 2nd degree – blisters; 3rd degree – charred skin (always seek medical care).",
-    },
-    {
-      id: "fractures",
-      title: "Fractures and Dislocations",
-      icon: Bone,
-      color: "text-purple-500",
-      steps: [
-        "Don't move the injured person – unless absolutely necessary",
-        "Stabilize injured area in the position found",
-        "Use splints – can be sticks, newspapers, pillows",
-        "Immobilize joints above and below fracture",
-        "Apply cold compress (ice in cloth) for 20 minutes",
-        "Monitor circulation – color, sensitivity, pulse",
-        "Call emergency services or transport to doctor",
-      ],
-      warning: "Never attempt to straighten a broken bone or relocate a dislocated joint!",
-    },
-    {
-      id: "shock",
-      title: "Shock",
-      icon: Zap,
-      color: "text-yellow-500",
-      steps: [
-        "Lay person on their back",
-        "Elevate legs 30 cm (unless head, neck or spine injury)",
-        "Keep warm – cover with blanket",
-        "Loosen tight clothing",
-        "Don't give food or drinks",
-        "Monitor breathing and pulse",
-        "Call emergency services immediately",
-        "Reassure the person",
-      ],
-      warning: "Shock symptoms: pale skin, cold sweat, rapid pulse, shallow breathing, confusion.",
-    },
-    {
-      id: "stroke",
-      title: "Stroke",
-      icon: Activity,
-      color: "text-pink-500",
-      steps: [
-        "FAST Test:",
-        "• F (Face) – Ask to smile, asymmetry?",
-        "• A (Arms) – Raise both arms, one drops?",
-        "• S (Speech) – Say a sentence, slurred speech?",
-        "• T (Time) – Call emergency services IMMEDIATELY!",
-        "Lay on back with head slightly elevated",
-        "Don't give food, drinks or medication",
-        "Monitor vital signs",
-        "Note the time symptoms began",
-      ],
-      warning: "Every minute is critical! The sooner treatment begins, the better the prognosis.",
-    },
-  ];
+  if (activeView === "symptoms") return <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-4 max-w-4xl"><AISymptomChecker onBack={() => setActiveView("hub")} /></div></div>;
+  if (activeView === "emergency") return <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-4 max-w-4xl"><AIEmergencyGuide onBack={() => setActiveView("hub")} /></div></div>;
+  if (activeView === "quiz") return <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-4 max-w-4xl"><AIFirstAidQuiz onBack={() => setActiveView("hub")} /></div></div>;
+  if (activeView === "kit") return <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-4 max-w-4xl"><AIFirstAidKit onBack={() => setActiveView("hub")} /></div></div>;
+  if (activeView === "cpr") return <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-4 max-w-4xl"><AICPRCoach onBack={() => setActiveView("hub")} /></div></div>;
+  if (activeView === "injury") return <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-4 max-w-4xl"><AIInjuryAssessor onBack={() => setActiveView("hub")} /></div></div>;
+
+  const activeData = FIRST_AID_CATEGORIES.find(c => c.id === activeCategory)!;
 
   return (
     <div className="min-h-screen bg-background pt-20 pb-12">
       <div className="container mx-auto px-4 max-w-6xl">
-        {/* Header */}
-        <div className="text-center space-y-4 mb-12">
-          <Badge className="bg-red-500 text-white">
-            <Heart className="h-4 w-4 mr-1" />
-            First Aid
-          </Badge>
-          <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
-            First Aid
-          </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Complete guide to providing first aid in emergency situations
-          </p>
+        {/* Cinematic Hero */}
+        <FirstAidHero stats={stats} loading={statsLoading} />
+
+        {/* Engagement Row */}
+        <div className="grid grid-cols-3 gap-3 mb-8">
+          <Card className="text-center border-red-200 dark:border-red-800">
+            <CardContent className="py-4">
+              <Trophy className="w-6 h-6 text-red-500 mx-auto mb-1" />
+              <p className="text-xl font-bold">7-Day</p>
+              <p className="text-xs text-muted-foreground">Learning Streak</p>
+            </CardContent>
+          </Card>
+          <Card className="text-center border-red-200 dark:border-red-800">
+            <CardContent className="py-4">
+              <TrendingUp className="w-6 h-6 text-emerald-500 mx-auto mb-1" />
+              <p className="text-xl font-bold">85%</p>
+              <p className="text-xs text-muted-foreground">Quiz Average</p>
+            </CardContent>
+          </Card>
+          <Card className="text-center border-red-200 dark:border-red-800">
+            <CardContent className="py-4">
+              <Star className="w-6 h-6 text-amber-500 mx-auto mb-1" />
+              <p className="text-xl font-bold">12</p>
+              <p className="text-xs text-muted-foreground">Badges Earned</p>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Emergency Alert */}
@@ -162,12 +134,37 @@ const FirstAid = () => {
           </AlertDescription>
         </Alert>
 
+        {/* AI Tools Grid */}
+        <h2 className="text-2xl font-bold mb-4">🤖 AI-Powered Tools</h2>
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-10">
+          {AI_TOOLS.map((tool) => {
+            const Icon = tool.icon;
+            return (
+              <Card
+                key={tool.id}
+                className="cursor-pointer hover:scale-[1.03] transition-all duration-200 border-2 hover:border-red-300 dark:hover:border-red-700"
+                onClick={() => setActiveView(tool.id)}
+              >
+                <CardContent className="py-5 text-center">
+                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${tool.color} flex items-center justify-center mx-auto mb-3`}>
+                    <Icon className="w-6 h-6 text-white" />
+                  </div>
+                  <p className="font-semibold text-sm">{tool.label}</p>
+                  <p className="text-xs text-muted-foreground mt-1">{tool.desc}</p>
+                  <Badge className="mt-2 bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300 text-[10px]">3 Credits</Badge>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
+
         {/* Emergency Contacts */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
-          {emergencyContacts.map((contact) => {
+        <h2 className="text-2xl font-bold mb-4">📞 Emergency Contacts</h2>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+          {EMERGENCY_CONTACTS.map((contact) => {
             const Icon = contact.icon;
             return (
-              <Card key={contact.number} className="text-center hover:shadow-lg transition-shadow">
+              <Card key={contact.name} className="text-center hover:shadow-lg transition-shadow">
                 <CardHeader className="pb-3">
                   <div className="mx-auto w-12 h-12 rounded-full bg-red-100 dark:bg-red-900 flex items-center justify-center mb-2">
                     <Icon className="h-6 w-6 text-red-500" />
@@ -175,135 +172,93 @@ const FirstAid = () => {
                   <CardTitle className="text-sm">{contact.name}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <a href={`tel:${contact.number}`} className="text-3xl font-bold text-red-500 hover:text-red-600">
-                    {contact.number}
-                  </a>
+                  <a href={`tel:${contact.number}`} className="text-3xl font-bold text-red-500 hover:text-red-600">{contact.number}</a>
                 </CardContent>
               </Card>
             );
           })}
         </div>
 
-        {/* First Aid Categories */}
-        <Tabs defaultValue="cpr" className="w-full">
-          <TabsList className="grid w-full grid-cols-4 sm:grid-cols-7 gap-1 h-auto mb-8">
-            {firstAidCategories.map((category) => {
-              const Icon = category.icon;
-              return (
-                <TabsTrigger key={category.id} value={category.id} className="flex-col h-auto py-2 px-1">
-                  <Icon className={`h-4 w-4 sm:h-5 sm:w-5 mb-1 ${category.color}`} />
-                  <span className="text-[10px] sm:text-xs leading-tight">{category.title.split(" ")[0]}</span>
-                </TabsTrigger>
-              );
-            })}
-          </TabsList>
-
-          {firstAidCategories.map((category) => {
-            const Icon = category.icon;
+        {/* First Aid Guide Cards */}
+        <h2 className="text-2xl font-bold mb-4">📋 First Aid Guides</h2>
+        <div className="grid grid-cols-4 sm:grid-cols-7 gap-2 mb-6">
+          {FIRST_AID_CATEGORIES.map((cat) => {
+            const Icon = cat.icon;
             return (
-              <TabsContent key={category.id} value={category.id}>
-                <Card>
-                  <CardHeader>
-                    <div className="flex items-center gap-3">
-                      <div className={`w-12 h-12 rounded-lg bg-gradient-to-br from-red-100 to-pink-100 dark:from-red-900 dark:to-pink-900 flex items-center justify-center`}>
-                        <Icon className={`h-6 w-6 ${category.color}`} />
-                      </div>
-                      <div>
-                        <CardTitle className="text-2xl">{category.title}</CardTitle>
-                        <CardDescription>Follow the steps below</CardDescription>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="space-y-6">
-                    {/* Steps */}
-                    <div className="space-y-3">
-                      <h3 className="font-semibold text-lg">Procedure:</h3>
-                      <ol className="space-y-2">
-                        {category.steps.map((step, index) => (
-                          <li key={index} className={`flex gap-3 ${step.startsWith("•") ? "ml-4" : ""}`}>
-                            {!step.startsWith("•") && (
-                              <span className="flex-shrink-0 w-7 h-7 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-bold">
-                                {index + 1}
-                              </span>
-                            )}
-                            <span className="flex-1 pt-1">{step}</span>
-                          </li>
-                        ))}
-                      </ol>
-                    </div>
-
-                    {/* Warning */}
-                    <Alert className="border-yellow-500 bg-yellow-50 dark:bg-yellow-950">
-                      <AlertTriangle className="h-5 w-5 text-yellow-500" />
-                      <AlertTitle className="text-yellow-700 dark:text-yellow-400">Important!</AlertTitle>
-                      <AlertDescription className="text-yellow-600 dark:text-yellow-300">
-                        {category.warning}
-                      </AlertDescription>
-                    </Alert>
-                  </CardContent>
-                </Card>
-              </TabsContent>
+              <button
+                key={cat.id}
+                onClick={() => setActiveCategory(cat.id)}
+                className={`flex flex-col items-center py-3 px-2 rounded-xl transition-all ${activeCategory === cat.id ? "bg-red-100 dark:bg-red-900 border-2 border-red-500" : "bg-muted hover:bg-red-50 dark:hover:bg-red-950 border-2 border-transparent"}`}
+              >
+                <Icon className={`h-5 w-5 mb-1 ${cat.color}`} />
+                <span className="text-[10px] sm:text-xs font-medium">{cat.title}</span>
+              </button>
             );
           })}
-        </Tabs>
+        </div>
 
-        {/* Additional Information */}
-        <Card className="mt-12">
+        <Card className="mb-10">
           <CardHeader>
-            <CardTitle>Frequently Asked Questions</CardTitle>
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-red-100 to-pink-100 dark:from-red-900 dark:to-pink-900 flex items-center justify-center">
+                {(() => { const Icon = activeData.icon; return <Icon className={`h-6 w-6 ${activeData.color}`} />; })()}
+              </div>
+              <div>
+                <CardTitle className="text-2xl">{activeData.title}</CardTitle>
+                <CardDescription>Follow the steps below</CardDescription>
+              </div>
+            </div>
           </CardHeader>
+          <CardContent className="space-y-6">
+            <ol className="space-y-2">
+              {activeData.steps.map((step, i) => (
+                <li key={i} className="flex gap-3">
+                  <span className="flex-shrink-0 w-7 h-7 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-bold">{i + 1}</span>
+                  <span className="flex-1 pt-1">{step}</span>
+                </li>
+              ))}
+            </ol>
+            <Alert className="border-yellow-500 bg-yellow-50 dark:bg-yellow-950">
+              <AlertTriangle className="h-5 w-5 text-yellow-500" />
+              <AlertTitle className="text-yellow-700 dark:text-yellow-400">Important!</AlertTitle>
+              <AlertDescription className="text-yellow-600 dark:text-yellow-300">{activeData.warning}</AlertDescription>
+            </Alert>
+          </CardContent>
+        </Card>
+
+        {/* FAQ */}
+        <Card className="mb-8">
+          <CardHeader><CardTitle>Frequently Asked Questions</CardTitle></CardHeader>
           <CardContent>
-            <Accordion type="single" collapsible className="w-full">
-              <AccordionItem value="item-1">
+            <Accordion type="single" collapsible>
+              <AccordionItem value="1">
                 <AccordionTrigger>What should I do if I'm not sure of the diagnosis?</AccordionTrigger>
-                <AccordionContent>
-                  Always call 112 or your local emergency number. Operators will guide you through the situation and provide precise instructions.
-                  It's better to call unnecessarily than too late.
-                </AccordionContent>
+                <AccordionContent>Always call 112. Operators will guide you through the situation. It's better to call unnecessarily than too late.</AccordionContent>
               </AccordionItem>
-
-              <AccordionItem value="item-2">
+              <AccordionItem value="2">
                 <AccordionTrigger>How do I know if someone is in shock?</AccordionTrigger>
-                <AccordionContent>
-                  Shock symptoms include: pale and cold skin, cold sweat, weak and rapid pulse, 
-                  rapid and shallow breathing, weakness, confusion, anxiety and nausea.
-                </AccordionContent>
+                <AccordionContent>Shock symptoms include: pale and cold skin, cold sweat, weak rapid pulse, rapid shallow breathing, weakness, confusion, anxiety and nausea.</AccordionContent>
               </AccordionItem>
-
-              <AccordionItem value="item-3">
+              <AccordionItem value="3">
                 <AccordionTrigger>Can I be sued for providing first aid?</AccordionTrigger>
-                <AccordionContent>
-                  In most countries, Good Samaritan laws protect people who act in good faith to help in emergency situations. 
-                  Check your local laws, but generally you're protected when helping in emergencies.
-                </AccordionContent>
+                <AccordionContent>In most countries, Good Samaritan laws protect people who act in good faith to help in emergencies. Check your local laws.</AccordionContent>
               </AccordionItem>
-
-              <AccordionItem value="item-4">
+              <AccordionItem value="4">
                 <AccordionTrigger>What should I have in a first aid kit?</AccordionTrigger>
-                <AccordionContent>
-                  A basic first aid kit should contain: sterile gauze, bandages of various sizes, adhesive plasters, 
-                  elastic bandages, scissors, gloves, disinfectant, triangular bandage, tweezers, 
-                  thermometer and a list of emergency phone numbers.
-                </AccordionContent>
+                <AccordionContent>Sterile gauze, bandages, adhesive plasters, elastic bandages, scissors, gloves, disinfectant, triangular bandage, tweezers, thermometer and emergency numbers.</AccordionContent>
               </AccordionItem>
-
-              <AccordionItem value="item-5">
+              <AccordionItem value="5">
                 <AccordionTrigger>How often should I take a first aid course?</AccordionTrigger>
-                <AccordionContent>
-                  It's recommended to refresh your first aid training every 2-3 years, as procedures may change 
-                  and regular repetition helps maintain skills in memory.
-                </AccordionContent>
+                <AccordionContent>Refresh training every 2-3 years as procedures may change and regular repetition maintains skills.</AccordionContent>
               </AccordionItem>
             </Accordion>
           </CardContent>
         </Card>
 
         {/* Disclaimer */}
-        <Alert className="mt-8">
+        <Alert>
           <AlertDescription className="text-center">
-            <strong>Warning:</strong> This information is for educational purposes only and 
-            does not replace formal first aid training or professional medical care. 
-            In case of any emergency, always contact emergency services.
+            <strong>Warning:</strong> This information is for educational purposes only and does not replace formal first aid training or professional medical care.
           </AlertDescription>
         </Alert>
       </div>
