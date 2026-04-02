@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Gift, Inbox, Sparkles, Trophy, CreditCard, ArrowLeft, Award, Box, Star, MessageCircle } from "lucide-react";
+import { Gift, Inbox, Sparkles, Trophy, CreditCard, ArrowLeft, Award, Box, Star, MessageCircle, Play, Pause, Volume2, VolumeX } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { SecretSantaSendGift } from "@/components/secret-santa/SecretSantaSendGift";
@@ -15,6 +15,7 @@ import { LimitedEditionGifts } from "@/components/secret-santa/LimitedEditionGif
 import { GiftChat } from "@/components/secret-santa/GiftChat";
 import { useSecretSanta } from "@/hooks/useSecretSanta";
 import { ParticleEffect } from "@/components/secret-santa/GiftConfetti";
+import heroVideo from "@/assets/secret-santa-hero.mp4.asset.json";
 
 const SecretSanta = () => {
   const navigate = useNavigate();
