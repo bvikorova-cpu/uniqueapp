@@ -483,16 +483,16 @@ const FitSlim = () => {
                       <p className="text-muted-foreground text-sm">{plan.description}</p>
                       <div className="text-5xl font-black bg-gradient-to-r from-emerald-400 to-green-500 bg-clip-text text-transparent">{plan.price}</div>
                       <p className="text-xs text-muted-foreground">One-time payment</p>
-                    <ul className="text-sm space-y-1 text-left">
-                      {[`${plan.days}-day workout plan`, `${plan.days}-day meal plan`, "Personalized to your body", "Macro & calorie targets", "Pro tips & guidance"].map((t, i) => (
-                        <li key={i} className="flex items-center gap-2"><Check className="h-4 w-4 text-green-400" /> {t}</li>
-                      ))}
-                    </ul>
-                    {selectedPlanType === key && <Badge className="bg-green-500 text-white">Selected</Badge>}
-                  </CardContent>
-                </Card>
+                     <ul className="text-sm space-y-2 text-left">
+                       {[`${plan.days}-day workout plan`, `${plan.days}-day meal plan`, "Personalized to your body", "Macro & calorie targets", "Pro tips & guidance"].map((t, i) => (
+                         <li key={i} className="flex items-center gap-2"><Check className="h-4 w-4 text-emerald-400" /> {t}</li>
+                       ))}
+                     </ul>
+                     {selectedPlanType === key && <Badge className="bg-emerald-500 text-white shadow-lg">✅ Selected</Badge>}
+                    </CardContent>
+                  </Card>
+                </motion.div>
               ))}
-            </div>
             {!showPlanForm ? (
               <div className="text-center">
                 <Button size="lg" className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-8 py-6 text-lg shadow-lg shadow-green-500/30" onClick={() => setShowPlanForm(true)}>
