@@ -176,8 +176,8 @@ export default function TeacherDashboard() {
     toast.info(`Downloading ${name}...`);
     try {
       const { data: pages, error } = await supabase
-        .from('coloring_pages')
-        .select('title, svg_content, image_url')
+        .from('teacher_coloring_pages')
+        .select('title, image_url')
         .eq('collection_id', id);
       if (error) throw error;
       if (!pages || pages.length === 0) {
