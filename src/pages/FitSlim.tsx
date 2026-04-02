@@ -13,7 +13,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import {
   Play, Clock, ChefHat, Heart, Dumbbell, Target, Loader2, Crown, Check, Utensils,
   Calendar, ArrowRight, Scale, Ruler, User, Activity, ArrowLeft, Flame, Sparkles,
-  ScanLine, TrendingUp, HeartPulse, ShoppingBag, Trophy, Zap
+  ScanLine, TrendingUp, HeartPulse, ShoppingBag, Trophy, Zap, ScanEye, Moon,
+  Swords, Pill, ImagePlus
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
@@ -25,6 +26,12 @@ import AIBodyScanner from "@/components/fit-slim/AIBodyScanner";
 import AIMotivationCoach from "@/components/fit-slim/AIMotivationCoach";
 import AIProgressTracker from "@/components/fit-slim/AIProgressTracker";
 import AIRecoveryAdvisor from "@/components/fit-slim/AIRecoveryAdvisor";
+import AIPostureAnalyzer from "@/components/fit-slim/AIPostureAnalyzer";
+import AIWorkoutStreaks from "@/components/fit-slim/AIWorkoutStreaks";
+import AISleepOptimizer from "@/components/fit-slim/AISleepOptimizer";
+import AISocialChallenges from "@/components/fit-slim/AISocialChallenges";
+import AISupplementStack from "@/components/fit-slim/AISupplementStack";
+import BeforeAfterGallery from "@/components/fit-slim/BeforeAfterGallery";
 
 // Video thumbnails - weight loss
 import hiitWorkout from "@/assets/videos/hiit-workout.jpg";
@@ -79,7 +86,7 @@ interface ProfileData {
   dietary_restrictions: string[]; health_conditions: string[];
 }
 
-type ActiveView = "hub" | "workout-coach" | "meal-analyzer" | "body-scanner" | "motivation" | "progress" | "recovery";
+type ActiveView = "hub" | "workout-coach" | "meal-analyzer" | "body-scanner" | "motivation" | "progress" | "recovery" | "posture" | "streaks" | "sleep" | "challenges" | "supplements" | "gallery";
 
 const FITSLIM_PLANS = {
   weekly: { price: "€10", days: 7, label: "7-Day Plan", description: "Perfect for a quick start" },
@@ -93,6 +100,12 @@ const AI_TOOLS = [
   { id: "motivation" as ActiveView, icon: Flame, label: "AI Motivation Coach", desc: "Personalized motivation & mindset", color: "from-red-500 to-orange-600", cost: "3 Credits" },
   { id: "progress" as ActiveView, icon: TrendingUp, label: "AI Progress Tracker", desc: "Analyze trends & predict timeline", color: "from-cyan-500 to-blue-600", cost: "3 Credits" },
   { id: "recovery" as ActiveView, icon: HeartPulse, label: "AI Recovery Advisor", desc: "Post-workout recovery protocols", color: "from-pink-500 to-rose-600", cost: "3 Credits" },
+  { id: "posture" as ActiveView, icon: ScanEye, label: "AI Posture Analyzer", desc: "Analyze form & corrective exercises", color: "from-indigo-500 to-purple-600", cost: "3 Credits", isNew: true },
+  { id: "streaks" as ActiveView, icon: Trophy, label: "Workout Streaks & XP", desc: "Gamified daily challenges & leveling", color: "from-yellow-500 to-orange-600", cost: "Free", isNew: true },
+  { id: "sleep" as ActiveView, icon: Moon, label: "AI Sleep Optimizer", desc: "Optimize sleep for peak recovery", color: "from-indigo-500 to-blue-600", cost: "3 Credits", isNew: true },
+  { id: "challenges" as ActiveView, icon: Swords, label: "Social Challenges", desc: "Competitive fitness challenges & XP", color: "from-pink-500 to-rose-600", cost: "Free", isNew: true },
+  { id: "supplements" as ActiveView, icon: Pill, label: "AI Supplement Stack", desc: "Personalized supplement recommendations", color: "from-green-500 to-teal-600", cost: "3 Credits", isNew: true },
+  { id: "gallery" as ActiveView, icon: ImagePlus, label: "Before & After Gallery", desc: "Community transformations & stories", color: "from-amber-500 to-orange-600", cost: "Free", isNew: true },
 ];
 
 const FitSlim = () => {
@@ -234,6 +247,12 @@ const FitSlim = () => {
           {activeView === "motivation" && <AIMotivationCoach onBack={back} />}
           {activeView === "progress" && <AIProgressTracker onBack={back} />}
           {activeView === "recovery" && <AIRecoveryAdvisor onBack={back} />}
+          {activeView === "posture" && <AIPostureAnalyzer onBack={back} />}
+          {activeView === "streaks" && <AIWorkoutStreaks onBack={back} />}
+          {activeView === "sleep" && <AISleepOptimizer onBack={back} />}
+          {activeView === "challenges" && <AISocialChallenges onBack={back} />}
+          {activeView === "supplements" && <AISupplementStack onBack={back} />}
+          {activeView === "gallery" && <BeforeAfterGallery onBack={back} />}
         </main>
       </div>
     );
@@ -387,14 +406,25 @@ const FitSlim = () => {
 
         {/* AI Tools Grid */}
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.25 }}>
-          <h2 className="text-2xl font-black mb-6 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
-            🤖 AI Fitness Tools ({AI_TOOLS.length})
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-10">
+          <div className="flex items-center justify-center mb-6">
+            <div className="relative px-6 py-3 rounded-2xl border-2 border-primary/40 bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10 backdrop-blur-xl shadow-lg shadow-primary/10">
+              <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-primary/5 to-accent/5 animate-pulse" />
+              <h2 className="relative text-2xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent flex items-center gap-2">
+                🤖 AI Fitness Tools <span className="text-base font-bold text-primary/80">({AI_TOOLS.length})</span>
+              </h2>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-10">
             {AI_TOOLS.map((tool, i) => (
-              <motion.div key={tool.id} initial={{ opacity: 0, scale: 0.9, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} transition={{ delay: 0.3 + i * 0.05, type: "spring", stiffness: 200 }}>
+              <motion.div key={tool.id} initial={{ opacity: 0, scale: 0.9, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} transition={{ delay: 0.3 + i * 0.04, type: "spring", stiffness: 200 }}>
                 <Card className="p-4 bg-card/80 backdrop-blur-xl border-border/60 cursor-pointer hover:scale-[1.04] hover:shadow-xl hover:shadow-primary/10 transition-all duration-300 active:scale-[0.97] group relative overflow-hidden" onClick={() => setActiveView(tool.id)}>
                   <div className={`absolute inset-0 bg-gradient-to-br ${tool.color} opacity-0 group-hover:opacity-20 transition-opacity duration-300`} />
+                  {(tool as any).isNew && (
+                    <motion.span initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.5 + i * 0.04, type: "spring" }}
+                      className="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-accent text-accent-foreground text-[10px] font-bold z-10 animate-pulse">
+                      NEW
+                    </motion.span>
+                  )}
                   <div className="flex items-start gap-3 relative z-10">
                     <div className={`p-2.5 rounded-xl bg-gradient-to-br ${tool.color} group-hover:scale-110 transition-transform`}>
                       <tool.icon className="h-6 w-6 text-white" />
@@ -413,38 +443,55 @@ const FitSlim = () => {
 
         {/* Content Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2 md:grid-cols-5 mb-8 bg-card/50 backdrop-blur-sm border border-border/50 p-1">
-            <TabsTrigger value="personalized-plans" className="data-[state=active]:bg-yellow-500/20 data-[state=active]:text-yellow-400"><Crown className="h-4 w-4 mr-1" /> My Plan</TabsTrigger>
-            <TabsTrigger value="weight-loss-videos" className="data-[state=active]:bg-green-500/20 data-[state=active]:text-green-400"><Play className="h-4 w-4 mr-1" /> Weight Loss</TabsTrigger>
-            <TabsTrigger value="health-videos" className="data-[state=active]:bg-green-500/20 data-[state=active]:text-green-400"><Heart className="h-4 w-4 mr-1" /> Health</TabsTrigger>
-            <TabsTrigger value="weight-loss-recipes" className="data-[state=active]:bg-green-500/20 data-[state=active]:text-green-400"><ChefHat className="h-4 w-4 mr-1" /> Slim Recipes</TabsTrigger>
-            <TabsTrigger value="healthy-recipes" className="data-[state=active]:bg-green-500/20 data-[state=active]:text-green-400"><ChefHat className="h-4 w-4 mr-1" /> Healthy</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-2 md:grid-cols-5 mb-8 bg-card/80 backdrop-blur-xl border-2 border-primary/20 p-1.5 rounded-2xl shadow-lg shadow-primary/5">
+            <TabsTrigger value="personalized-plans" className="rounded-xl font-bold text-xs data-[state=active]:bg-gradient-to-r data-[state=active]:from-yellow-500/20 data-[state=active]:to-amber-500/20 data-[state=active]:text-yellow-400 data-[state=active]:shadow-md data-[state=active]:border data-[state=active]:border-yellow-500/30 transition-all"><Crown className="h-4 w-4 mr-1" /> My Plan</TabsTrigger>
+            <TabsTrigger value="weight-loss-videos" className="rounded-xl font-bold text-xs data-[state=active]:bg-gradient-to-r data-[state=active]:from-red-500/20 data-[state=active]:to-orange-500/20 data-[state=active]:text-red-400 data-[state=active]:shadow-md data-[state=active]:border data-[state=active]:border-red-500/30 transition-all"><Play className="h-4 w-4 mr-1" /> Weight Loss</TabsTrigger>
+            <TabsTrigger value="health-videos" className="rounded-xl font-bold text-xs data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-500/20 data-[state=active]:to-green-500/20 data-[state=active]:text-emerald-400 data-[state=active]:shadow-md data-[state=active]:border data-[state=active]:border-emerald-500/30 transition-all"><Heart className="h-4 w-4 mr-1" /> Health</TabsTrigger>
+            <TabsTrigger value="weight-loss-recipes" className="rounded-xl font-bold text-xs data-[state=active]:bg-gradient-to-r data-[state=active]:from-orange-500/20 data-[state=active]:to-amber-500/20 data-[state=active]:text-orange-400 data-[state=active]:shadow-md data-[state=active]:border data-[state=active]:border-orange-500/30 transition-all"><ChefHat className="h-4 w-4 mr-1" /> Slim Recipes</TabsTrigger>
+            <TabsTrigger value="healthy-recipes" className="rounded-xl font-bold text-xs data-[state=active]:bg-gradient-to-r data-[state=active]:from-teal-500/20 data-[state=active]:to-cyan-500/20 data-[state=active]:text-teal-400 data-[state=active]:shadow-md data-[state=active]:border data-[state=active]:border-teal-500/30 transition-all"><ChefHat className="h-4 w-4 mr-1" /> Healthy</TabsTrigger>
           </TabsList>
 
           {/* PERSONALIZED PLANS TAB */}
           <TabsContent value="personalized-plans" className="space-y-8">
             <div className="text-center space-y-4">
-              <h2 className="text-3xl font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">AI-Powered Personalized Plans</h2>
-              <p className="text-muted-foreground max-w-2xl mx-auto">Get a custom workout routine and meal plan tailored to your body, goals, and lifestyle.</p>
+              <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="inline-block">
+                <div className="relative px-8 py-4 rounded-2xl border-2 border-emerald-500/40 bg-gradient-to-r from-emerald-500/10 via-green-500/5 to-emerald-500/10 backdrop-blur-xl shadow-xl shadow-emerald-500/10">
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-gradient-to-r from-emerald-500 to-green-600 rounded-full text-white text-xs font-bold shadow-lg">
+                    ✨ AI-POWERED
+                  </div>
+                  <h2 className="text-3xl md:text-4xl font-black bg-gradient-to-r from-emerald-400 via-green-400 to-teal-400 bg-clip-text text-transparent mt-2">
+                    Personalized Plans
+                  </h2>
+                </div>
+              </motion.div>
+              <p className="text-muted-foreground max-w-2xl mx-auto text-sm md:text-base">Get a custom workout routine and meal plan tailored to your body, goals, and lifestyle.</p>
             </div>
             <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
               {(Object.entries(FITSLIM_PLANS) as [string, typeof FITSLIM_PLANS.weekly][]).map(([key, plan]) => (
-                <Card key={key} className={`cursor-pointer transition-all duration-300 relative overflow-hidden ${selectedPlanType === key ? "border-green-500 shadow-lg shadow-green-500/20 bg-green-500/5" : "border-border/50 hover:border-green-500/50 bg-card/50"}`} onClick={() => setSelectedPlanType(key as "weekly" | "monthly")}>
-                  {(plan as any).popular && <div className="absolute top-0 right-0 bg-gradient-to-l from-yellow-500 to-orange-500 text-white text-xs font-bold px-3 py-1 rounded-bl-lg">MOST POPULAR</div>}
-                  <CardContent className="p-6 text-center space-y-3">
-                    <Calendar className="h-10 w-10 mx-auto text-green-400" />
-                    <h3 className="text-xl font-bold">{plan.label}</h3>
-                    <p className="text-muted-foreground text-sm">{plan.description}</p>
-                    <div className="text-4xl font-bold text-green-400">{plan.price}</div>
-                    <p className="text-xs text-muted-foreground">One-time payment</p>
-                    <ul className="text-sm space-y-1 text-left">
-                      {[`${plan.days}-day workout plan`, `${plan.days}-day meal plan`, "Personalized to your body", "Macro & calorie targets", "Pro tips & guidance"].map((t, i) => (
-                        <li key={i} className="flex items-center gap-2"><Check className="h-4 w-4 text-green-400" /> {t}</li>
-                      ))}
-                    </ul>
-                    {selectedPlanType === key && <Badge className="bg-green-500 text-white">Selected</Badge>}
-                  </CardContent>
-                </Card>
+                <motion.div key={key} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
+                  <Card className={`cursor-pointer transition-all duration-300 relative overflow-hidden rounded-2xl ${selectedPlanType === key ? "border-2 border-emerald-500 shadow-2xl shadow-emerald-500/20 bg-gradient-to-br from-emerald-500/10 to-green-500/5" : "border-border/50 hover:border-emerald-500/50 bg-card/80 backdrop-blur-xl"}`} onClick={() => setSelectedPlanType(key as "weekly" | "monthly")}>
+                    {(plan as any).popular && (
+                      <div className="absolute top-0 right-0 bg-gradient-to-l from-yellow-500 to-orange-500 text-white text-xs font-bold px-4 py-1.5 rounded-bl-xl shadow-lg">
+                        ⭐ MOST POPULAR
+                      </div>
+                    )}
+                    <CardContent className="p-8 text-center space-y-4">
+                      <div className={`w-16 h-16 mx-auto rounded-2xl flex items-center justify-center ${selectedPlanType === key ? "bg-gradient-to-br from-emerald-500 to-green-600 shadow-lg shadow-emerald-500/30" : "bg-gradient-to-br from-emerald-500/20 to-green-500/20"}`}>
+                        <Calendar className={`h-8 w-8 ${selectedPlanType === key ? "text-white" : "text-emerald-400"}`} />
+                      </div>
+                      <h3 className="text-xl font-black">{plan.label}</h3>
+                      <p className="text-muted-foreground text-sm">{plan.description}</p>
+                      <div className="text-5xl font-black bg-gradient-to-r from-emerald-400 to-green-500 bg-clip-text text-transparent">{plan.price}</div>
+                      <p className="text-xs text-muted-foreground">One-time payment</p>
+                     <ul className="text-sm space-y-2 text-left">
+                       {[`${plan.days}-day workout plan`, `${plan.days}-day meal plan`, "Personalized to your body", "Macro & calorie targets", "Pro tips & guidance"].map((t, i) => (
+                         <li key={i} className="flex items-center gap-2"><Check className="h-4 w-4 text-emerald-400" /> {t}</li>
+                       ))}
+                     </ul>
+                     {selectedPlanType === key && <Badge className="bg-emerald-500 text-white shadow-lg">✅ Selected</Badge>}
+                    </CardContent>
+                  </Card>
+                </motion.div>
               ))}
             </div>
             {!showPlanForm ? (
@@ -668,6 +715,12 @@ const FitSlim = () => {
                 { icon: "💪", tip: "Combine AI plans with video workouts for best results" },
                 { icon: "🧘", tip: "Don't skip recovery — use AI Recovery Advisor after tough sessions" },
                 { icon: "🔥", tip: "Stay motivated with daily AI Motivation Coach sessions" },
+                { icon: "🧍", tip: "Fix your posture with AI Posture Analyzer for injury prevention" },
+                { icon: "😴", tip: "Optimize sleep with AI Sleep Optimizer for faster recovery" },
+                { icon: "💊", tip: "Get personalized supplement recommendations with AI Stack Builder" },
+                { icon: "🏆", tip: "Complete daily challenges in Streaks & XP to level up" },
+                { icon: "⚔️", tip: "Challenge friends in Social Challenges for accountability" },
+                { icon: "📸", tip: "Share your transformation in Before & After Gallery" },
               ].map((item, i) => (
                 <div key={i} className="flex items-start gap-2 p-2 rounded-lg bg-card/50">
                   <span className="text-lg">{item.icon}</span>
