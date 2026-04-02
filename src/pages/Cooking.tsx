@@ -4,7 +4,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Clock, Users, ChefHat, Search, Sparkles, Calendar, Camera, Store, MessageCircle, Wine, Play, User, Flame, ShoppingBag, Trophy, Zap, Repeat, Calculator, Globe, Palette, Recycle, ArrowLeft } from "lucide-react";
+import { Clock, Users, ChefHat, Search, Sparkles, Calendar, Camera, Store, MessageCircle, Wine, Play, User, Flame, ShoppingBag, Trophy, Zap, Repeat, Calculator, Globe, Palette, Recycle, ArrowLeft, Timer, Video, Heart, ShieldCheck, Package } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
