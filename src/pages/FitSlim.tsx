@@ -26,6 +26,12 @@ import AIBodyScanner from "@/components/fit-slim/AIBodyScanner";
 import AIMotivationCoach from "@/components/fit-slim/AIMotivationCoach";
 import AIProgressTracker from "@/components/fit-slim/AIProgressTracker";
 import AIRecoveryAdvisor from "@/components/fit-slim/AIRecoveryAdvisor";
+import AIPostureAnalyzer from "@/components/fit-slim/AIPostureAnalyzer";
+import AIWorkoutStreaks from "@/components/fit-slim/AIWorkoutStreaks";
+import AISleepOptimizer from "@/components/fit-slim/AISleepOptimizer";
+import AISocialChallenges from "@/components/fit-slim/AISocialChallenges";
+import AISupplementStack from "@/components/fit-slim/AISupplementStack";
+import BeforeAfterGallery from "@/components/fit-slim/BeforeAfterGallery";
 
 // Video thumbnails - weight loss
 import hiitWorkout from "@/assets/videos/hiit-workout.jpg";
