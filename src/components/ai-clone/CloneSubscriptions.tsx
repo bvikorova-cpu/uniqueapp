@@ -1,16 +1,19 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Check, Star, Crown, Zap } from "lucide-react";
+import { Check, Star, Crown, Zap, Loader2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const subscriptionTiers = [
   {
     name: "Basic Clone",
     price: "9.99",
+    tier: "basic",
     icon: Zap,
-    color: "text-blue-500",
+    color: "text-blue-400",
     features: [
       "1 AI personality clone",
       "100 conversations per month",
@@ -23,8 +26,9 @@ const subscriptionTiers = [
   {
     name: "Advanced Clone",
     price: "29.99",
+    tier: "advanced",
     icon: Star,
-    color: "text-purple-500",
+    color: "text-purple-400",
     features: [
       "3 AI personality clones",
       "Unlimited conversations",
@@ -38,9 +42,10 @@ const subscriptionTiers = [
   },
   {
     name: "Celebrity Clone",
-    price: "99-499",
+    price: "99.00",
+    tier: "celebrity",
     icon: Crown,
-    color: "text-yellow-500",
+    color: "text-yellow-400",
     features: [
       "Unlimited AI clones",
       "Public celebrity profile",
@@ -57,41 +62,39 @@ const subscriptionTiers = [
 
 export function CloneSubscriptions() {
   const { toast } = useToast();
+  const navigate = useNavigate();
+  const [subscribingTier, setSubscribingTier] = useState<string | null>(null);
 
-  const handleSubscribe = async (tierName: string, price: string) => {
+  const handleSubscribe = async (tier: string) => {
     try {
+      setSubscribingTier(tier);
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        toast({
-          title: "Authentication Required",
-          description: "Please sign in to subscribe",
-          variant: "destructive"
-        });
+        toast({ title: "Authentication Required", description: "Please sign in to subscribe", variant: "destructive" });
+        navigate("/auth");
         return;
       }
 
-      toast({
-        title: "Subscription Starting...",
-        description: `Subscribing to ${tierName} (€${price}/month)`,
+      const { data, error } = await supabase.functions.invoke("create-clone-checkout", {
+        body: { productKey: tier },
       });
-    } catch (error) {
-      console.error('Error subscribing:', error);
-      toast({
-        title: "Error",
-        description: "Failed to process subscription",
-        variant: "destructive"
-      });
+
+      if (error) throw error;
+      if (data?.url) {
+        window.open(data.url, "_blank");
+      }
+    } catch (error: any) {
+      toast({ title: "Error", description: error.message || "Failed to start checkout", variant: "destructive" });
+    } finally {
+      setSubscribingTier(null);
     }
   };
 
   return (
     <div className="space-y-6">
-      <Card>
+      <Card className="bg-card/80 backdrop-blur-xl border-primary/20">
         <CardHeader>
           <CardTitle>Choose Your Clone Subscription</CardTitle>
-          <CardDescription>
-            Select the perfect plan for your AI personality clone needs
-          </CardDescription>
         </CardHeader>
       </Card>
 
@@ -101,12 +104,10 @@ export function CloneSubscriptions() {
           return (
             <Card 
               key={tier.name}
-              className={`relative ${tier.popular ? 'border-primary shadow-lg scale-105' : ''}`}
+              className={`relative bg-card/80 backdrop-blur-xl ${tier.popular ? 'border-primary shadow-lg shadow-primary/10 scale-105' : 'border-primary/20'}`}
             >
               {tier.popular && (
-                <Badge className="absolute -top-3 left-1/2 -translate-x-1/2">
-                  Most Popular
-                </Badge>
+                <Badge className="absolute -top-3 left-1/2 -translate-x-1/2">Most Popular</Badge>
               )}
               <CardHeader>
                 <div className="flex items-center gap-2 mb-2">
@@ -130,9 +131,12 @@ export function CloneSubscriptions() {
                 <Button 
                   className="w-full" 
                   variant={tier.popular ? "default" : "outline"}
-                  onClick={() => handleSubscribe(tier.name, tier.price)}
+                  disabled={subscribingTier === tier.tier}
+                  onClick={() => handleSubscribe(tier.tier)}
                 >
-                  Subscribe Now
+                  {subscribingTier === tier.tier ? (
+                    <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Processing...</>
+                  ) : "Subscribe Now"}
                 </Button>
               </CardContent>
             </Card>
@@ -140,13 +144,13 @@ export function CloneSubscriptions() {
         })}
       </div>
 
-      <Card>
+      <Card className="bg-card/80 backdrop-blur-xl border-primary/20">
         <CardHeader>
           <CardTitle>Additional Features</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="flex items-start gap-3 p-4 border rounded-lg">
+            <div className="flex items-start gap-3 p-4 border border-border/50 rounded-lg bg-background/50">
               <div className="bg-primary/10 p-2 rounded-lg">
                 <Star className="h-5 w-5 text-primary" />
               </div>
@@ -155,8 +159,7 @@ export function CloneSubscriptions() {
                 <p className="text-sm text-muted-foreground">€4.99 per session</p>
               </div>
             </div>
-            
-            <div className="flex items-start gap-3 p-4 border rounded-lg">
+            <div className="flex items-start gap-3 p-4 border border-border/50 rounded-lg bg-background/50">
               <div className="bg-primary/10 p-2 rounded-lg">
                 <Check className="h-5 w-5 text-primary" />
               </div>

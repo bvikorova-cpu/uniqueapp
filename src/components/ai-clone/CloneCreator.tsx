@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Bot, Loader2 } from "lucide-react";
+import { Bot, Loader2, Sparkles } from "lucide-react";
 
 export function CloneCreator() {
   const { toast } = useToast();
@@ -22,24 +22,15 @@ export function CloneCreator() {
 
   const handleCreate = async () => {
     if (!formData.cloneName || !formData.personality) {
-      toast({
-        title: "Missing Information",
-        description: "Please fill in at least name and personality description",
-        variant: "destructive"
-      });
+      toast({ title: "Missing Information", description: "Please fill in at least name and personality description", variant: "destructive" });
       return;
     }
 
     setIsLoading(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      
       if (!user) {
-        toast({
-          title: "Authentication Required",
-          description: "Please sign in to create your AI clone",
-          variant: "destructive"
-        });
+        toast({ title: "Authentication Required", description: "Please sign in to create your AI clone", variant: "destructive" });
         return;
       }
 
@@ -62,89 +53,50 @@ export function CloneCreator() {
 
       if (error) throw error;
 
-      toast({
-        title: "Clone Created!",
-        description: "Your AI personality clone is being trained and will be ready soon"
-      });
-
-      setFormData({
-        cloneName: "",
-        personality: "",
-        interests: "",
-        communicationStyle: "",
-        tone: "friendly"
-      });
+      toast({ title: "Clone Created! 🤖", description: "Your AI personality clone is being trained and will be ready soon" });
+      setFormData({ cloneName: "", personality: "", interests: "", communicationStyle: "", tone: "friendly" });
     } catch (error) {
       console.error('Error creating clone:', error);
-      toast({
-        title: "Error",
-        description: "Failed to create clone. Please try again.",
-        variant: "destructive"
-      });
+      toast({ title: "Error", description: "Failed to create clone. Please try again.", variant: "destructive" });
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <Card>
+    <Card className="bg-card/80 backdrop-blur-xl border-primary/20">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Bot className="h-6 w-6 text-primary" />
+          <Sparkles className="h-5 w-5 text-primary" />
           Create Your AI Personality Clone
         </CardTitle>
-        <CardDescription>
-          Define your clone's personality and communication style
-        </CardDescription>
+        <CardDescription>Define your clone's personality and communication style</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-2">
           <Label htmlFor="cloneName">Clone Name</Label>
-          <Input
-            id="cloneName"
-            placeholder="e.g., Alex AI, Sarah Clone..."
-            value={formData.cloneName}
-            onChange={(e) => setFormData({ ...formData, cloneName: e.target.value })}
-          />
+          <Input id="cloneName" placeholder="e.g., Alex AI, Sarah Clone..." value={formData.cloneName} onChange={(e) => setFormData({ ...formData, cloneName: e.target.value })} className="bg-background/50" />
         </div>
 
         <div className="space-y-2">
           <Label htmlFor="personality">Personality Description</Label>
-          <Textarea
-            id="personality"
-            placeholder="Describe your personality: Are you funny, serious, creative, analytical? What makes you unique?"
-            rows={4}
-            value={formData.personality}
-            onChange={(e) => setFormData({ ...formData, personality: e.target.value })}
-          />
+          <Textarea id="personality" placeholder="Describe your personality: funny, serious, creative, analytical? What makes you unique?" rows={4} value={formData.personality} onChange={(e) => setFormData({ ...formData, personality: e.target.value })} className="bg-background/50" />
         </div>
 
         <div className="space-y-2">
           <Label htmlFor="interests">Interests & Expertise</Label>
-          <Textarea
-            id="interests"
-            placeholder="What topics do you know about? What are your hobbies? What do you love talking about?"
-            rows={3}
-            value={formData.interests}
-            onChange={(e) => setFormData({ ...formData, interests: e.target.value })}
-          />
+          <Textarea id="interests" placeholder="What topics do you know about? What are your hobbies?" rows={3} value={formData.interests} onChange={(e) => setFormData({ ...formData, interests: e.target.value })} className="bg-background/50" />
         </div>
 
         <div className="space-y-2">
           <Label htmlFor="communicationStyle">Communication Style</Label>
-          <Textarea
-            id="communicationStyle"
-            placeholder="How do you communicate? Formal or casual? Brief or detailed? Using emojis or not?"
-            rows={3}
-            value={formData.communicationStyle}
-            onChange={(e) => setFormData({ ...formData, communicationStyle: e.target.value })}
-          />
+          <Textarea id="communicationStyle" placeholder="How do you communicate? Formal or casual? Brief or detailed?" rows={3} value={formData.communicationStyle} onChange={(e) => setFormData({ ...formData, communicationStyle: e.target.value })} className="bg-background/50" />
         </div>
 
         <div className="space-y-2">
           <Label htmlFor="tone">Overall Tone</Label>
           <Select value={formData.tone} onValueChange={(value) => setFormData({ ...formData, tone: value })}>
-            <SelectTrigger>
+            <SelectTrigger className="bg-background/50">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -157,21 +109,11 @@ export function CloneCreator() {
           </Select>
         </div>
 
-        <Button 
-          onClick={handleCreate} 
-          className="w-full"
-          disabled={isLoading}
-        >
+        <Button onClick={handleCreate} className="w-full" disabled={isLoading}>
           {isLoading ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Creating Clone...
-            </>
+            <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Creating Clone...</>
           ) : (
-            <>
-              <Bot className="mr-2 h-4 w-4" />
-              Create AI Clone
-            </>
+            <><Bot className="mr-2 h-4 w-4" /> Create AI Clone</>
           )}
         </Button>
 
