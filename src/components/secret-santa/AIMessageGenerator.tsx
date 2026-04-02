@@ -86,7 +86,7 @@ export const AIMessageGenerator = ({ onSelectMessage, giftType, recipientName }:
       >
         <span className="flex items-center gap-2">
           <Wand2 className="h-4 w-4" />
-          AI Message Generator
+          AI Message Generator — 💎 3 credits
         </span>
         <Sparkles className="h-4 w-4" />
       </Button>
