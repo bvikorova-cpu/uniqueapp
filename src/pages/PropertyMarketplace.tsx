@@ -392,7 +392,11 @@ export default function PropertyMarketplace() {
                         </li>
                       ))}
                     </ul>
-                    <Button className={`w-full ${pkg.popular ? "bg-gradient-to-r from-primary to-accent text-primary-foreground" : ""}`} variant={pkg.popular ? "default" : "outline"}>
+                    <Button 
+                      className={`w-full ${pkg.popular ? "bg-gradient-to-r from-primary to-accent text-primary-foreground" : ""}`} 
+                      variant={pkg.popular ? "default" : "outline"}
+                      onClick={() => handlePurchaseService(pkg.id, pkg.price)}
+                    >
                       Choose Plan
                     </Button>
                   </CardContent>
