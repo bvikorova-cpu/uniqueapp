@@ -45,11 +45,11 @@ export const MysteryBoxHero = () => {
           loop
           muted
           playsInline
-          className="absolute inset-0 w-full h-full object-cover brightness-[0.4] saturate-[1.3]"
+          className="absolute inset-0 w-full h-full object-cover brightness-[0.75] saturate-[1.2]"
           src={heroVideo.url}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-black/10" />
-        <div className="absolute inset-0 bg-gradient-to-r from-yellow-900/30 via-transparent to-red-900/20" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-yellow-900/15 via-transparent to-red-900/10" />
         
         {/* Animated gold particle overlay */}
         <div className="absolute inset-0 opacity-20" style={{
