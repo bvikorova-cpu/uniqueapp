@@ -1,73 +1,50 @@
-import { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { CoffeeCreditsDisplay } from '@/components/coffee/CoffeeCreditsDisplay';
 import { BuddyMatches } from '@/components/coffee/BuddyMatches';
 import { CoffeeEvents } from '@/components/coffee/CoffeeEvents';
 import { CoffeePreferences } from '@/components/coffee/CoffeePreferences';
+import { Users, Calendar, Settings, Coffee } from 'lucide-react';
 
 const CoffeeBuddy = () => {
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
       <div className="mb-6 mt-12 sm:mt-0">
-        <h1 className="text-2xl sm:text-4xl font-black mb-2">Coffee Buddy Matching</h1>
+        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border-2 border-amber-500/60 bg-card/80 backdrop-blur-md mb-3 animate-pulse">
+          <Users className="h-5 w-5 text-amber-400" />
+          <h1
+            className="text-2xl sm:text-4xl font-black tracking-tight"
+            style={{
+              background: "linear-gradient(135deg, hsl(var(--foreground)), hsl(30 80% 50%), hsl(var(--accent)))",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+            }}
+          >
+            Coffee Buddy Matching
+          </h1>
+        </div>
         <p className="text-sm sm:text-base text-muted-foreground">Connect with coffee lovers who share your taste</p>
       </div>
 
       {/* Feature Description */}
-      <div className="mb-8 p-6 bg-black/80 rounded-xl border border-amber-600/50">
-        <h3 className="text-xl font-bold text-amber-400 mb-3">What is Coffee Buddy?</h3>
-        <p className="text-white mb-4">
-          Coffee Buddy is a social matching platform designed for coffee enthusiasts who want to connect with like-minded people. 
-          Whether you're looking for a coffee tasting partner, someone to explore new cafés with, or just a friend who shares your 
-          passion for the perfect brew, Coffee Buddy helps you find your ideal match.
+      <div className="mb-8 p-5 sm:p-6 rounded-xl bg-card/80 backdrop-blur-xl border border-amber-500/20">
+        <h3 className="text-lg font-bold text-amber-400 mb-3 flex items-center gap-2">
+          <Coffee className="h-5 w-5" /> What is Coffee Buddy?
+        </h3>
+        <p className="text-sm text-muted-foreground mb-4">
+          Coffee Buddy matches you with like-minded coffee enthusiasts for café visits, tastings, and brewing sessions.
         </p>
-        
-        <h4 className="text-lg font-semibold text-amber-400 mb-2">How to Use</h4>
-        <ul className="text-white space-y-2 mb-4">
-          <li className="flex items-start gap-2">
-            <span className="text-amber-400 font-bold">1.</span>
-            <span><strong>Set Your Preferences:</strong> Go to the Preferences tab to specify your favorite coffee types, brewing methods, and what you're looking for in a coffee buddy.</span>
-          </li>
-          <li className="flex items-start gap-2">
-            <span className="text-amber-400 font-bold">2.</span>
-            <span><strong>Discover Matches:</strong> Browse through your personalized matches in the Matches tab, filtered by shared coffee interests and compatibility.</span>
-          </li>
-          <li className="flex items-start gap-2">
-            <span className="text-amber-400 font-bold">3.</span>
-            <span><strong>Join Events:</strong> Participate in coffee-themed events like tastings, café tours, and brewing workshops through the Events tab.</span>
-          </li>
-          <li className="flex items-start gap-2">
-            <span className="text-amber-400 font-bold">4.</span>
-            <span><strong>Earn Credits:</strong> Check in at cafés, write reviews, and participate in events to earn coffee credits for premium features.</span>
-          </li>
-        </ul>
-
-        <h4 className="text-lg font-semibold text-amber-400 mb-2">Key Features</h4>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-white">
-          <div className="flex items-center gap-2">
-            <span className="text-amber-400">☕</span>
-            <span>AI-powered matching based on coffee preferences</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-amber-400">📍</span>
-            <span>Discover local cafés and coffee spots</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-amber-400">🎉</span>
-            <span>Coffee events and community meetups</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-amber-400">⭐</span>
-            <span>Review and rate cafés you visit</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-amber-400">🏆</span>
-            <span>Leaderboard and achievement system</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-amber-400">💬</span>
-            <span>Connect and chat with coffee buddies</span>
-          </div>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          {[
+            { emoji: "☕", text: "AI-powered matching" },
+            { emoji: "📍", text: "Local café discovery" },
+            { emoji: "🎉", text: "Community meetups" },
+            { emoji: "🏆", text: "Achievement system" },
+          ].map((item, i) => (
+            <div key={i} className="flex items-center gap-2 p-2 rounded-lg bg-amber-500/5 border border-amber-500/10">
+              <span>{item.emoji}</span>
+              <span className="text-xs">{item.text}</span>
+            </div>
+          ))}
         </div>
       </div>
 
@@ -76,10 +53,16 @@ const CoffeeBuddy = () => {
       </div>
 
       <Tabs defaultValue="matches" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="matches">Matches</TabsTrigger>
-          <TabsTrigger value="events">Events</TabsTrigger>
-          <TabsTrigger value="preferences">Preferences</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-3 bg-card/80 backdrop-blur-xl border border-amber-500/20">
+          <TabsTrigger value="matches" className="data-[state=active]:bg-amber-500/20 data-[state=active]:text-amber-400 gap-1 text-xs sm:text-sm">
+            <Users className="h-3 w-3 sm:h-4 sm:w-4" />Matches
+          </TabsTrigger>
+          <TabsTrigger value="events" className="data-[state=active]:bg-amber-500/20 data-[state=active]:text-amber-400 gap-1 text-xs sm:text-sm">
+            <Calendar className="h-3 w-3 sm:h-4 sm:w-4" />Events
+          </TabsTrigger>
+          <TabsTrigger value="preferences" className="data-[state=active]:bg-amber-500/20 data-[state=active]:text-amber-400 gap-1 text-xs sm:text-sm">
+            <Settings className="h-3 w-3 sm:h-4 sm:w-4" />Preferences
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="matches" className="mt-6">
