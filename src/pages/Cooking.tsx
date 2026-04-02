@@ -20,6 +20,12 @@ import AINutritionCalculator from "@/components/cooking/AINutritionCalculator";
 import AICuisineConverter from "@/components/cooking/AICuisineConverter";
 import AIPlatingCoach from "@/components/cooking/AIPlatingCoach";
 import AILeftoverTransformer from "@/components/cooking/AILeftoverTransformer";
+import AICookingTimer from "@/components/cooking/AICookingTimer";
+import AIRecipeVideoGenerator from "@/components/cooking/AIRecipeVideoGenerator";
+import SocialRecipeFeed from "@/components/cooking/SocialRecipeFeed";
+import AIDietaryAdvisor from "@/components/cooking/AIDietaryAdvisor";
+import WeeklyCookingChallenge from "@/components/cooking/WeeklyCookingChallenge";
+import AIKitchenInventory from "@/components/cooking/AIKitchenInventory";
 
 import grilledChickenSalad from "@/assets/recipes/grilled-chicken-salad.jpg";
 import lentilSoup from "@/assets/recipes/lentil-soup.jpg";
