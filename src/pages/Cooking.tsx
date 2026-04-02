@@ -995,9 +995,21 @@ const COOKING_RECIPES: Recipe[] = [
   },
 ];
 
+type ActiveView = "hub" | "substitution" | "nutrition-calc" | "cuisine-converter" | "plating" | "leftover";
+
+const NEW_AI_TOOLS = [
+  { id: "substitution" as ActiveView, icon: Repeat, label: "AI Ingredient Substitution", desc: "Find perfect swaps for any ingredient", color: "from-teal-500 to-cyan-600", cost: "3 Credits", isNew: true },
+  { id: "nutrition-calc" as ActiveView, icon: Calculator, label: "AI Nutrition Calculator", desc: "Full nutritional breakdown of any recipe", color: "from-green-500 to-emerald-600", cost: "3 Credits", isNew: true },
+  { id: "cuisine-converter" as ActiveView, icon: Globe, label: "AI Cuisine Converter", desc: "Transform recipes into any cuisine style", color: "from-violet-500 to-purple-600", cost: "3 Credits", isNew: true },
+  { id: "plating" as ActiveView, icon: Palette, label: "AI Plating Coach", desc: "Michelin-level food presentation tips", color: "from-pink-500 to-rose-600", cost: "3 Credits", isNew: true },
+  { id: "leftover" as ActiveView, icon: Recycle, label: "AI Leftover Transformer", desc: "Turn leftovers into exciting new meals", color: "from-amber-500 to-yellow-600", cost: "3 Credits", isNew: true },
+];
+
 const Cooking = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { credits, loading: creditsLoading } = useAICredits();
+  const [activeView, setActiveView] = useState<ActiveView>("hub");
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
