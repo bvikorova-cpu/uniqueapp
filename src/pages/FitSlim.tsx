@@ -493,6 +493,7 @@ const FitSlim = () => {
                   </Card>
                 </motion.div>
               ))}
+            </div>
             {!showPlanForm ? (
               <div className="text-center">
                 <Button size="lg" className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-8 py-6 text-lg shadow-lg shadow-green-500/30" onClick={() => setShowPlanForm(true)}>
