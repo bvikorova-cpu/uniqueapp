@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { CoffeeCreditsDisplay } from '@/components/coffee/CoffeeCreditsDisplay';
+
 import { CafeList } from '@/components/coffee/CafeList';
 import { CheckinForm } from '@/components/coffee/CheckinForm';
 import { ReviewsList } from '@/components/coffee/ReviewsList';
@@ -29,9 +29,6 @@ const CoffeeCheckins = () => {
         <p className="text-sm sm:text-base text-muted-foreground">Discover cafes, share your experiences, and earn rewards</p>
       </div>
 
-      <div className="mb-6">
-        <CoffeeCreditsDisplay />
-      </div>
 
       <Tabs defaultValue="cafes" className="w-full">
         <TabsList className="grid w-full grid-cols-4 bg-card/80 backdrop-blur-xl border border-amber-500/20">

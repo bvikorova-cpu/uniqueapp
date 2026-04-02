@@ -1,5 +1,5 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { CoffeeCreditsDisplay } from '@/components/coffee/CoffeeCreditsDisplay';
+
 import { BuddyMatches } from '@/components/coffee/BuddyMatches';
 import { CoffeeEvents } from '@/components/coffee/CoffeeEvents';
 import { CoffeePreferences } from '@/components/coffee/CoffeePreferences';
@@ -48,9 +48,6 @@ const CoffeeBuddy = () => {
         </div>
       </div>
 
-      <div className="mb-6">
-        <CoffeeCreditsDisplay />
-      </div>
 
       <Tabs defaultValue="matches" className="w-full">
         <TabsList className="grid w-full grid-cols-3 bg-card/80 backdrop-blur-xl border border-amber-500/20">
