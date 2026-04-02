@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { CoffeeCreditsDisplay } from '@/components/coffee/CoffeeCreditsDisplay';
+
 import { CafeList } from '@/components/coffee/CafeList';
 import { CheckinForm } from '@/components/coffee/CheckinForm';
 import { ReviewsList } from '@/components/coffee/ReviewsList';
