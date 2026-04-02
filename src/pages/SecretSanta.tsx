@@ -33,63 +33,80 @@ const SecretSanta = () => {
 
   return (
     <div className="min-h-screen relative overflow-hidden">
-      {/* Light luxurious background */}
-      <div className="fixed inset-0 -z-10">
-        <div className="absolute inset-0 bg-gradient-to-br from-rose-50 via-amber-50 to-orange-50" />
+      {/* Cinematic Video Hero */}
+      <div className="relative w-full h-[50vh] min-h-[300px] overflow-hidden">
+        <video
+          ref={videoRef}
+          className="absolute inset-0 w-full h-full object-cover brightness-[0.85] saturate-[1.3]"
+          autoPlay
+          muted
+          loop
+          playsInline
+          src={heroVideo.url}
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-rose-50 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-rose-50" />
         
-        {/* Soft decorative elements */}
-        <div className="absolute inset-0 opacity-60">
-          <div className="absolute top-20 left-1/4 w-96 h-96 bg-gradient-to-r from-rose-200/50 to-pink-200/50 rounded-full blur-3xl" />
-          <div className="absolute top-1/3 right-1/4 w-80 h-80 bg-gradient-to-r from-amber-200/40 to-yellow-200/40 rounded-full blur-3xl" />
-          <div className="absolute bottom-1/4 left-1/3 w-72 h-72 bg-gradient-to-r from-orange-200/30 to-red-200/30 rounded-full blur-3xl" />
-        </div>
-
-        {/* Floating sparkles */}
-        <div className="absolute inset-0 overflow-hidden">
-          {[...Array(20)].map((_, i) => (
-            <div
-              key={i}
-              className="absolute w-1.5 h-1.5 bg-amber-400/40 rounded-full animate-float"
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 5}s`,
-                animationDuration: `${5 + Math.random() * 10}s`,
-              }}
-            />
-          ))}
-        </div>
-
-        {/* Subtle pattern overlay */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(251,191,36,0.05)_0%,transparent_50%)]" />
-      </div>
-
-      <div className="container mx-auto px-4 pt-16 sm:pt-12 pb-8 max-w-4xl relative z-10">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-4">
+        {/* Hero Content */}
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 z-10">
           <Button
             variant="ghost"
             size="icon"
             onClick={() => navigate(-1)}
-            className="text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+            className="absolute top-4 left-4 text-white hover:bg-white/20"
           >
             <ArrowLeft className="h-5 w-5" />
           </Button>
           
-          <div className="text-center flex-1 pt-4">
-            <h1 className="text-2xl sm:text-4xl font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent drop-shadow-sm">
-              Secret Santa 365
-            </h1>
-            <p className="text-gray-600 text-sm mt-2">Year-Round Digital Gift Giving Platform</p>
-          </div>
-
+          <h1 className="text-3xl sm:text-5xl font-bold text-white drop-shadow-lg mb-2" style={{ textShadow: '0 2px 20px rgba(0,0,0,0.5)' }}>
+            Secret Santa 365
+          </h1>
+          <p className="text-white/90 text-sm sm:text-base drop-shadow-md">Year-Round Digital Gift Giving Platform</p>
+          
           {/* Credits display */}
-          <div className="flex items-center gap-2 bg-gradient-to-r from-amber-100 to-yellow-100 border border-amber-300 rounded-full px-3 py-1.5 shadow-sm">
-            <span className="text-amber-500 text-lg">💎</span>
-            <span className="text-amber-700 font-bold">{credits}</span>
+          <div className="mt-4 flex items-center gap-2 bg-white/20 backdrop-blur-sm border border-white/30 rounded-full px-4 py-2">
+            <span className="text-lg">💎</span>
+            <span className="text-white font-bold text-lg">{credits}</span>
           </div>
         </div>
 
+        {/* Video Controls */}
+        <div className="absolute bottom-4 right-4 flex gap-2 z-20">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="bg-black/30 backdrop-blur-sm hover:bg-black/50 text-white h-8 w-8"
+            onClick={() => {
+              if (videoRef.current) {
+                isPlaying ? videoRef.current.pause() : videoRef.current.play();
+                setIsPlaying(!isPlaying);
+              }
+            }}
+          >
+            {isPlaying ? <Pause className="h-3.5 w-3.5" /> : <Play className="h-3.5 w-3.5" />}
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="bg-black/30 backdrop-blur-sm hover:bg-black/50 text-white h-8 w-8"
+            onClick={() => {
+              if (videoRef.current) {
+                videoRef.current.muted = !isMuted;
+                setIsMuted(!isMuted);
+              }
+            }}
+          >
+            {isMuted ? <VolumeX className="h-3.5 w-3.5" /> : <Volume2 className="h-3.5 w-3.5" />}
+          </Button>
+        </div>
+      </div>
+
+      {/* Light luxurious background for content */}
+      <div className="fixed inset-0 -z-10">
+        <div className="absolute inset-0 bg-gradient-to-br from-rose-50 via-amber-50 to-orange-50" />
+      </div>
+
+      <div className="container mx-auto px-4 pb-8 max-w-4xl relative z-10 -mt-6">
         {/* Description Card */}
         <div className="bg-white/80 backdrop-blur-xl border border-amber-200 rounded-2xl p-4 sm:p-6 mb-6 shadow-lg">
           <h2 className="text-lg sm:text-xl font-bold text-gray-800 mb-3 flex items-center gap-2">
