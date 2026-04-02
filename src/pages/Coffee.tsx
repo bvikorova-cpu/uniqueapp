@@ -1,5 +1,5 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { CoffeeHero } from "@/components/coffee/CoffeeHero";
@@ -76,9 +76,9 @@ const Coffee = () => {
           <h2 className="text-xl sm:text-2xl font-black mb-4 text-center">Subscription Plans</h2>
           <div className="grid sm:grid-cols-3 gap-4">
             {[
-              { name: "Free", price: "€0", features: ["3 buddy matches/month", "Basic check-ins", "Standard reviews", "Community access"] },
-              { name: "Coffee Lover", price: "€4.99/mo", features: ["Unlimited buddy matches", "Priority matching", "Featured reviews", "Analytics dashboard", "Ad-free experience"], highlight: true },
-              { name: "Coffee Expert", price: "€9.99/mo", features: ["Everything in Lover", "Event organization", "Premium analytics", "Priority support", "Exclusive badges"] },
+              { name: "Free", price: "€0", features: ["3 buddy matches/month", "Basic check-ins", "Standard reviews", "Community access"], action: "free" },
+              { name: "Coffee Lover", price: "€4.99/mo", features: ["Unlimited buddy matches", "Priority matching", "Featured reviews", "Analytics dashboard", "Ad-free experience"], highlight: true, action: "subscribe" },
+              { name: "Coffee Expert", price: "€9.99/mo", features: ["Everything in Lover", "Event organization", "Premium analytics", "Priority support", "Exclusive badges"], action: "subscribe" },
             ].map((plan, i) => (
               <Card key={i} className={`p-5 ${plan.highlight ? "border-amber-500 shadow-lg shadow-amber-500/10" : "border-amber-500/20"} bg-card/80 backdrop-blur-xl`}>
                 <h3 className="text-lg font-bold">{plan.name}</h3>
@@ -91,7 +91,17 @@ const Coffee = () => {
                     </li>
                   ))}
                 </ul>
-                <Button className={`w-full ${plan.highlight ? "bg-gradient-to-r from-amber-600 to-amber-800" : ""}`} variant={plan.highlight ? "default" : "outline"}>
+                <Button 
+                  className={`w-full ${plan.highlight ? "bg-gradient-to-r from-amber-600 to-amber-800" : ""}`} 
+                  variant={plan.highlight ? "default" : "outline"}
+                  onClick={() => {
+                    if (plan.action === "free") {
+                      navigate("/coffee/checkins");
+                    } else {
+                      toast.info("Subscription coming soon! Stay tuned for premium features.");
+                    }
+                  }}
+                >
                   {i === 0 ? "Get Started" : "Subscribe"}
                 </Button>
               </Card>
