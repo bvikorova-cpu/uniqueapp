@@ -43,6 +43,7 @@ export function CloneBattles() {
 
       const opponentName = opponents?.[0]?.clone_name || "Mystery Bot";
       const yourClone = userClones[0];
+      const personalityText = typeof yourClone.personality_data === 'object' && yourClone.personality_data !== null ? (yourClone.personality_data as any).personality || "friendly" : "friendly";
 
       const { data, error } = await supabase.functions.invoke("clone-chat", {
         body: {
