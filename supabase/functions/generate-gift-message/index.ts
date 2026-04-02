@@ -98,7 +98,7 @@ ${customPrompt ? `Additional context: ${customPrompt}` : ""}`;
           { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt },
         ],
-        max_tokens: 300,
+        max_tokens: type === "travel_planner" ? 1500 : 300,
         temperature: 0.8,
       }),
     });
