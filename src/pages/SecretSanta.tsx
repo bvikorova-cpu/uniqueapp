@@ -251,18 +251,6 @@ const SecretSanta = () => {
         </Tabs>
       </div>
 
-      {/* Custom styles for animations */}
-      <style>{`
-        @keyframes float {
-          0%, 100% { transform: translateY(0) translateX(0); opacity: 0.2; }
-          25% { transform: translateY(-20px) translateX(10px); opacity: 0.5; }
-          50% { transform: translateY(-40px) translateX(-5px); opacity: 0.3; }
-          75% { transform: translateY(-20px) translateX(-10px); opacity: 0.4; }
-        }
-        .animate-float {
-          animation: float linear infinite;
-        }
-      `}</style>
     </div>
   );
 };
