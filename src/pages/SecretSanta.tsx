@@ -21,6 +21,15 @@ const SecretSanta = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("send");
   const { credits } = useSecretSanta();
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [isPlaying, setIsPlaying] = useState(true);
+  const [isMuted, setIsMuted] = useState(true);
+
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.play().catch(() => setIsPlaying(false));
+    }
+  }, []);
 
   return (
     <div className="min-h-screen relative overflow-hidden">
