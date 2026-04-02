@@ -4,7 +4,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Clock, Users, ChefHat, Search, Sparkles, Calendar, Camera, Store, MessageCircle, Wine, Play, User, Flame, ShoppingBag, Trophy, Zap, Repeat, Calculator, Globe, Palette, Recycle, ArrowLeft } from "lucide-react";
+import { Clock, Users, ChefHat, Search, Sparkles, Calendar, Camera, Store, MessageCircle, Wine, Play, User, Flame, ShoppingBag, Trophy, Zap, Repeat, Calculator, Globe, Palette, Recycle, ArrowLeft, Timer, Video, Heart, ShieldCheck, Package } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -20,6 +20,12 @@ import AINutritionCalculator from "@/components/cooking/AINutritionCalculator";
 import AICuisineConverter from "@/components/cooking/AICuisineConverter";
 import AIPlatingCoach from "@/components/cooking/AIPlatingCoach";
 import AILeftoverTransformer from "@/components/cooking/AILeftoverTransformer";
+import AICookingTimer from "@/components/cooking/AICookingTimer";
+import AIRecipeVideoGenerator from "@/components/cooking/AIRecipeVideoGenerator";
+import SocialRecipeFeed from "@/components/cooking/SocialRecipeFeed";
+import AIDietaryAdvisor from "@/components/cooking/AIDietaryAdvisor";
+import WeeklyCookingChallenge from "@/components/cooking/WeeklyCookingChallenge";
+import AIKitchenInventory from "@/components/cooking/AIKitchenInventory";
 
 import grilledChickenSalad from "@/assets/recipes/grilled-chicken-salad.jpg";
 import lentilSoup from "@/assets/recipes/lentil-soup.jpg";
@@ -995,14 +1001,20 @@ const COOKING_RECIPES: Recipe[] = [
   },
 ];
 
-type ActiveView = "hub" | "substitution" | "nutrition-calc" | "cuisine-converter" | "plating" | "leftover";
+type ActiveView = "hub" | "substitution" | "nutrition-calc" | "cuisine-converter" | "plating" | "leftover" | "timer" | "video-gen" | "social-feed" | "dietary" | "challenge" | "inventory";
 
 const NEW_AI_TOOLS = [
-  { id: "substitution" as ActiveView, icon: Repeat, label: "AI Ingredient Substitution", desc: "Find perfect swaps for any ingredient", color: "from-teal-500 to-cyan-600", cost: "3 Credits", isNew: true },
-  { id: "nutrition-calc" as ActiveView, icon: Calculator, label: "AI Nutrition Calculator", desc: "Full nutritional breakdown of any recipe", color: "from-green-500 to-emerald-600", cost: "3 Credits", isNew: true },
-  { id: "cuisine-converter" as ActiveView, icon: Globe, label: "AI Cuisine Converter", desc: "Transform recipes into any cuisine style", color: "from-violet-500 to-purple-600", cost: "3 Credits", isNew: true },
-  { id: "plating" as ActiveView, icon: Palette, label: "AI Plating Coach", desc: "Michelin-level food presentation tips", color: "from-pink-500 to-rose-600", cost: "3 Credits", isNew: true },
-  { id: "leftover" as ActiveView, icon: Recycle, label: "AI Leftover Transformer", desc: "Turn leftovers into exciting new meals", color: "from-amber-500 to-yellow-600", cost: "3 Credits", isNew: true },
+  { id: "substitution" as ActiveView, icon: Repeat, label: "AI Ingredient Substitution", desc: "Find perfect swaps for any ingredient", color: "from-teal-500 to-cyan-600", cost: "3 Credits", isNew: false },
+  { id: "nutrition-calc" as ActiveView, icon: Calculator, label: "AI Nutrition Calculator", desc: "Full nutritional breakdown of any recipe", color: "from-green-500 to-emerald-600", cost: "3 Credits", isNew: false },
+  { id: "cuisine-converter" as ActiveView, icon: Globe, label: "AI Cuisine Converter", desc: "Transform recipes into any cuisine style", color: "from-violet-500 to-purple-600", cost: "3 Credits", isNew: false },
+  { id: "plating" as ActiveView, icon: Palette, label: "AI Plating Coach", desc: "Michelin-level food presentation tips", color: "from-pink-500 to-rose-600", cost: "3 Credits", isNew: false },
+  { id: "leftover" as ActiveView, icon: Recycle, label: "AI Leftover Transformer", desc: "Turn leftovers into exciting new meals", color: "from-amber-500 to-yellow-600", cost: "3 Credits", isNew: false },
+  { id: "timer" as ActiveView, icon: Timer, label: "AI Cooking Timer", desc: "Smart multi-step timers with alerts", color: "from-blue-500 to-indigo-600", cost: "3 Credits", isNew: true },
+  { id: "video-gen" as ActiveView, icon: Video, label: "AI Recipe Video Script", desc: "Professional video production plans", color: "from-red-500 to-pink-600", cost: "5 Credits", isNew: true },
+  { id: "social-feed" as ActiveView, icon: Heart, label: "Social Recipe Feed", desc: "Share & discover community recipes", color: "from-pink-500 to-orange-600", cost: "Free", isNew: true },
+  { id: "dietary" as ActiveView, icon: ShieldCheck, label: "AI Dietary Advisor", desc: "Allergen & nutrient analysis", color: "from-emerald-500 to-lime-600", cost: "3 Credits", isNew: true },
+  { id: "challenge" as ActiveView, icon: Trophy, label: "Weekly Cooking Challenge", desc: "Compete & earn XP on the leaderboard", color: "from-yellow-500 to-orange-600", cost: "Free", isNew: true },
+  { id: "inventory" as ActiveView, icon: Package, label: "AI Kitchen Inventory", desc: "Smart shopping lists & meal plans", color: "from-cyan-500 to-blue-600", cost: "3 Credits", isNew: true },
 ];
 
 const Cooking = () => {
@@ -1126,6 +1138,12 @@ const Cooking = () => {
           {activeView === "cuisine-converter" && <AICuisineConverter onBack={back} />}
           {activeView === "plating" && <AIPlatingCoach onBack={back} />}
           {activeView === "leftover" && <AILeftoverTransformer onBack={back} />}
+          {activeView === "timer" && <AICookingTimer onBack={back} />}
+          {activeView === "video-gen" && <AIRecipeVideoGenerator onBack={back} />}
+          {activeView === "social-feed" && <SocialRecipeFeed onBack={back} />}
+          {activeView === "dietary" && <AIDietaryAdvisor onBack={back} />}
+          {activeView === "challenge" && <WeeklyCookingChallenge onBack={back} />}
+          {activeView === "inventory" && <AIKitchenInventory onBack={back} />}
         </main>
       </div>
     );
@@ -1209,7 +1227,7 @@ const Cooking = () => {
           </div>
 
           {/* New AI Tools */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {NEW_AI_TOOLS.map((tool, i) => (
               <motion.div key={tool.id} initial={{ opacity: 0, scale: 0.9, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} transition={{ delay: 0.5 + i * 0.04, type: "spring", stiffness: 200 }}>
                 <Card className="p-4 bg-card/80 backdrop-blur-xl border-border/60 cursor-pointer hover:scale-[1.04] hover:shadow-xl hover:shadow-primary/10 transition-all duration-300 active:scale-[0.97] group relative overflow-hidden" onClick={() => setActiveView(tool.id)}>
@@ -1257,7 +1275,7 @@ const Cooking = () => {
               </div>
               <div>
                 <h2 className="text-2xl font-bold text-foreground">AI Cooking Tools</h2>
-                <p className="text-muted-foreground text-sm">6 powerful AI-powered features at your fingertips</p>
+                <p className="text-muted-foreground text-sm">{aiFeatures.length + NEW_AI_TOOLS.length} powerful AI-powered features at your fingertips</p>
               </div>
             </div>
             <Button
