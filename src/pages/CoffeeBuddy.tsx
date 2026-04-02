@@ -1,5 +1,5 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { CoffeeCreditsDisplay } from '@/components/coffee/CoffeeCreditsDisplay';
+
 import { BuddyMatches } from '@/components/coffee/BuddyMatches';
 import { CoffeeEvents } from '@/components/coffee/CoffeeEvents';
 import { CoffeePreferences } from '@/components/coffee/CoffeePreferences';
