@@ -25785,6 +25785,86 @@ export type Database = {
         }
         Relationships: []
       }
+      secret_santa_challenge_progress: {
+        Row: {
+          challenge_id: string
+          completed_at: string | null
+          created_at: string | null
+          current_count: number
+          id: string
+          is_completed: boolean | null
+          reward_claimed: boolean | null
+          user_id: string
+        }
+        Insert: {
+          challenge_id: string
+          completed_at?: string | null
+          created_at?: string | null
+          current_count?: number
+          id?: string
+          is_completed?: boolean | null
+          reward_claimed?: boolean | null
+          user_id: string
+        }
+        Update: {
+          challenge_id?: string
+          completed_at?: string | null
+          created_at?: string | null
+          current_count?: number
+          id?: string
+          is_completed?: boolean | null
+          reward_claimed?: boolean | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "secret_santa_challenge_progress_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "secret_santa_challenges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      secret_santa_challenges: {
+        Row: {
+          challenge_type: string
+          created_at: string | null
+          description: string
+          expires_at: string | null
+          gift_category: string | null
+          id: string
+          is_active: boolean | null
+          reward_credits: number
+          target_count: number
+          title: string
+        }
+        Insert: {
+          challenge_type?: string
+          created_at?: string | null
+          description: string
+          expires_at?: string | null
+          gift_category?: string | null
+          id?: string
+          is_active?: boolean | null
+          reward_credits?: number
+          target_count?: number
+          title: string
+        }
+        Update: {
+          challenge_type?: string
+          created_at?: string | null
+          description?: string
+          expires_at?: string | null
+          gift_category?: string | null
+          id?: string
+          is_active?: boolean | null
+          reward_credits?: number
+          target_count?: number
+          title?: string
+        }
+        Relationships: []
+      }
       secret_santa_credits: {
         Row: {
           created_at: string
@@ -25885,6 +25965,66 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      secret_santa_streak_rewards: {
+        Row: {
+          claimed_at: string | null
+          id: string
+          reward_credits: number
+          streak_milestone: number
+          user_id: string
+        }
+        Insert: {
+          claimed_at?: string | null
+          id?: string
+          reward_credits: number
+          streak_milestone: number
+          user_id: string
+        }
+        Update: {
+          claimed_at?: string | null
+          id?: string
+          reward_credits?: number
+          streak_milestone?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
+      secret_santa_wishlists: {
+        Row: {
+          created_at: string | null
+          gift_emoji: string
+          gift_label: string
+          gift_type: string
+          id: string
+          is_fulfilled: boolean | null
+          note: string | null
+          priority: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          gift_emoji: string
+          gift_label: string
+          gift_type: string
+          id?: string
+          is_fulfilled?: boolean | null
+          note?: string | null
+          priority?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          gift_emoji?: string
+          gift_label?: string
+          gift_type?: string
+          id?: string
+          is_fulfilled?: boolean | null
+          note?: string | null
+          priority?: string | null
+          user_id?: string
+        }
+        Relationships: []
       }
       sent_platform_gifts: {
         Row: {

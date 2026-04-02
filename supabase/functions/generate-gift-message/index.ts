@@ -53,6 +53,17 @@ serve(async (req) => {
     if (type === "gift_designer") {
       systemPrompt = `You are a creative gift designer AI. Create a unique personalized digital gift concept. Return ONLY valid JSON: {"name": "...", "description": "...", "emoji": "...", "value": number, "theme": "..."}. The value should be between 10-500. Be creative and unique.`;
       userPrompt = customPrompt || "Create a unique surprise gift";
+    } else if (type === "thank_you") {
+      systemPrompt = "You are a heartfelt thank-you message writer. Write ONLY the thank you message, no quotes, no explanation. Make it genuine and touching.";
+      const styleMap: Record<string, string> = {
+        heartfelt: "Write a sincere, emotionally touching thank you.",
+        funny: "Write a humorous, playful thank you that makes them smile.",
+        formal: "Write a polite, professional thank you.",
+        poetic: "Write a beautiful, artistic thank you with poetic language.",
+        excited: "Write an enthusiastic, energetic thank you full of excitement.",
+        grateful: "Write a deeply grateful, appreciative thank you.",
+      };
+      userPrompt = `${styleMap[style] || styleMap.heartfelt} Keep it 2-3 sentences. ${customPrompt || ""}`;
     } else {
       const stylePrompts: Record<string, string> = {
         romantic: "Write a sweet, loving, and romantic message.",
