@@ -1114,37 +1114,125 @@ const Cooking = () => {
     setIsDialogOpen(true);
   };
 
-  return (
-    <div className="min-h-screen bg-background px-3 sm:px-6 pb-10 pt-24 sm:pt-28">
-      <div className="max-w-7xl mx-auto">
-        <div className="mb-10">
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-sm text-primary mb-4">
-              <ChefHat className="w-4 h-4" />
-              <span className="font-medium">AI-Powered Kitchen</span>
-            </div>
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent mb-3">
-              AI Culinary Academy
-            </h1>
-            <p className="text-muted-foreground text-sm sm:text-lg max-w-xl mx-auto">Your personal AI-powered kitchen assistant</p>
-          </div>
+  // Sub-views
+  if (activeView !== "hub") {
+    const back = () => setActiveView("hub");
+    return (
+      <div className="min-h-screen flex flex-col bg-background">
+        <Navbar />
+        <main className="flex-1 container mx-auto px-4 py-20">
+          {activeView === "substitution" && <AIIngredientSubstitution onBack={back} />}
+          {activeView === "nutrition-calc" && <AINutritionCalculator onBack={back} />}
+          {activeView === "cuisine-converter" && <AICuisineConverter onBack={back} />}
+          {activeView === "plating" && <AIPlatingCoach onBack={back} />}
+          {activeView === "leftover" && <AILeftoverTransformer onBack={back} />}
+        </main>
+      </div>
+    );
+  }
 
-          <div className="grid grid-cols-3 gap-3 sm:gap-4 max-w-lg mx-auto mb-8">
-            <div className="text-center p-3 rounded-xl bg-muted/50 border border-border/50">
-              <div className="text-2xl font-bold text-primary">{totalRecipes}+</div>
-              <div className="text-xs text-muted-foreground">Recipes</div>
-            </div>
-            <div className="text-center p-3 rounded-xl bg-muted/50 border border-border/50">
-              <div className="text-2xl font-bold text-primary">6</div>
-              <div className="text-xs text-muted-foreground">AI Tools</div>
-            </div>
-            <div className="text-center p-3 rounded-xl bg-muted/50 border border-border/50">
-              <div className="text-2xl font-bold text-primary">14</div>
-              <div className="text-xs text-muted-foreground">Categories</div>
-            </div>
-          </div>
+  return (
+    <div className="min-h-screen flex flex-col bg-background">
+      <Navbar />
+      <main className="flex-1 container mx-auto px-4 py-20">
+        <CookingHero />
+
+        {/* Engagement Row */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+            <Card className="p-4 bg-card/80 backdrop-blur-xl border-border/60 hover:scale-[1.02] transition-transform">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 rounded-xl bg-gradient-to-br from-orange-500/20 to-red-500/20"><Flame className="h-6 w-6 text-orange-500" /></div>
+                <div>
+                  <p className="text-xs text-muted-foreground font-medium">Cooking Streak</p>
+                  <p className="text-2xl font-black bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">0 Days</p>
+                </div>
+              </div>
+            </Card>
+          </motion.div>
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}>
+            <Card className="p-4 bg-card/80 backdrop-blur-xl border-border/60 hover:scale-[1.02] transition-transform">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 rounded-xl bg-gradient-to-br from-primary/20 to-accent/20"><Sparkles className="h-6 w-6 text-primary" /></div>
+                <div>
+                  <p className="text-xs text-muted-foreground font-medium">AI Credits</p>
+                  <p className="text-2xl font-black bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                    {creditsLoading ? "..." : credits?.credits_remaining || 0}
+                  </p>
+                </div>
+                {(!credits || credits.credits_remaining < 50) && (
+                  <Button size="sm" variant="outline" onClick={() => navigate('/ai-credits-store')} className="ml-auto gap-1"><ShoppingBag className="h-3 w-3" /> Buy</Button>
+                )}
+              </div>
+            </Card>
+          </motion.div>
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
+            <Card className="p-4 bg-card/80 backdrop-blur-xl border-border/60 hover:scale-[1.02] transition-transform">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 rounded-xl bg-gradient-to-br from-green-500/20 to-emerald-500/20"><Trophy className="h-6 w-6 text-green-500" /></div>
+                <div>
+                  <p className="text-xs text-muted-foreground font-medium">Recipes Cooked</p>
+                  <p className="text-2xl font-black bg-gradient-to-r from-green-500 to-emerald-500 bg-clip-text text-transparent">0</p>
+                </div>
+              </div>
+            </Card>
+          </motion.div>
         </div>
 
+        {/* NEW AI Tools */}
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.25 }} className="mb-10">
+          <div className="flex items-center justify-center mb-6">
+            <div className="relative px-6 py-3 rounded-2xl border-2 border-orange-500/40 bg-gradient-to-r from-orange-500/10 via-red-500/5 to-orange-500/10 backdrop-blur-xl shadow-lg shadow-orange-500/10">
+              <h2 className="relative text-2xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent flex items-center gap-2">
+                🍳 AI Cooking Tools <span className="text-base font-bold text-primary/80">({aiFeatures.length + NEW_AI_TOOLS.length})</span>
+              </h2>
+            </div>
+          </div>
+
+          {/* Original AI Tools */}
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-4">
+            {aiFeatures.map((feature, idx) => (
+              <motion.div key={idx} initial={{ opacity: 0, scale: 0.9, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} transition={{ delay: 0.3 + idx * 0.04, type: "spring", stiffness: 200 }}>
+                <Card className="bg-card/80 backdrop-blur-xl border-border/60 hover:border-orange-500/50 cursor-pointer transition-all duration-300 hover:scale-[1.04] hover:shadow-xl hover:shadow-orange-500/10 group active:scale-[0.97] relative overflow-hidden" onClick={() => navigate(feature.path)}>
+                  <div className={`absolute inset-0 bg-gradient-to-br ${feature.color} opacity-0 group-hover:opacity-20 transition-opacity`} />
+                  <CardContent className="p-4 text-center relative z-10">
+                    <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${feature.color} flex items-center justify-center mx-auto mb-3 shadow-lg group-hover:scale-110 transition-transform`}>
+                      <feature.icon className="h-6 w-6 text-white" />
+                    </div>
+                    <h3 className="font-bold text-xs mb-1">{feature.title}</h3>
+                    <p className="text-[10px] text-muted-foreground line-clamp-2">{feature.description}</p>
+                    <span className="inline-block mt-2 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-primary/10 text-primary">3 Credits</span>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* New AI Tools */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+            {NEW_AI_TOOLS.map((tool, i) => (
+              <motion.div key={tool.id} initial={{ opacity: 0, scale: 0.9, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} transition={{ delay: 0.5 + i * 0.04, type: "spring", stiffness: 200 }}>
+                <Card className="p-4 bg-card/80 backdrop-blur-xl border-border/60 cursor-pointer hover:scale-[1.04] hover:shadow-xl hover:shadow-primary/10 transition-all duration-300 active:scale-[0.97] group relative overflow-hidden" onClick={() => setActiveView(tool.id)}>
+                  <div className={`absolute inset-0 bg-gradient-to-br ${tool.color} opacity-0 group-hover:opacity-20 transition-opacity`} />
+                  <motion.span initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.7 + i * 0.04, type: "spring" }}
+                    className="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-accent text-accent-foreground text-[10px] font-bold z-10 animate-pulse">NEW</motion.span>
+                  <div className="flex items-start gap-3 relative z-10">
+                    <div className={`p-2.5 rounded-xl bg-gradient-to-br ${tool.color} group-hover:scale-110 transition-transform`}>
+                      <tool.icon className="h-6 w-6 text-white" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-bold text-sm truncate">{tool.label}</h3>
+                      <p className="text-xs text-muted-foreground mt-0.5">{tool.desc}</p>
+                      <span className="inline-block mt-2 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-primary/10 text-primary">{tool.cost}</span>
+                    </div>
+                  </div>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* Search & Add */}
         <div className="max-w-2xl mx-auto mb-8">
           <div className="flex gap-3">
             <div className="relative flex-1">
