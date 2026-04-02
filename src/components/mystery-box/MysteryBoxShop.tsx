@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ArrowLeft, Gift, Loader2, Sparkles, Crown, Star, Package } from "lucide-react";
+import { ArrowLeft, Gift, Loader2, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useAICredits } from "@/hooks/useAICredits";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import confetti from "canvas-confetti";
 
 interface Props {
   onBack: () => void;
@@ -33,18 +34,11 @@ const defaultBoxes: MysteryBox[] = [
   { id: 'universe', name: 'Universe Box', description: 'The rarest box. Universe-exclusive mega rewards.', price: 2500, icon: '🌌' },
 ];
 
-const getRarityGradient = (price: number) => {
-  if (price <= 100) return "from-gray-500/20 to-gray-600/10";
-  if (price <= 350) return "from-blue-500/20 to-blue-600/10";
-  if (price <= 750) return "from-purple-500/20 to-purple-600/10";
-  return "from-yellow-500/20 to-yellow-600/10";
-};
-
-const getRarityBorder = (price: number) => {
-  if (price <= 100) return "border-gray-500/30 hover:border-gray-400/50";
-  if (price <= 350) return "border-blue-500/30 hover:border-blue-400/50";
-  if (price <= 750) return "border-purple-500/30 hover:border-purple-400/50";
-  return "border-yellow-500/30 hover:border-yellow-400/50";
+const getTierStyle = (price: number) => {
+  if (price <= 100) return { gradient: "from-slate-500/20 to-slate-600/10", border: "border-slate-500/30 hover:border-slate-400/60", glow: "hover:shadow-slate-500/20", ring: "ring-slate-500/20" };
+  if (price <= 350) return { gradient: "from-blue-500/20 to-cyan-600/10", border: "border-blue-500/30 hover:border-blue-400/60", glow: "hover:shadow-blue-500/20", ring: "ring-blue-500/20" };
+  if (price <= 750) return { gradient: "from-purple-500/20 to-violet-600/10", border: "border-purple-500/30 hover:border-purple-400/60", glow: "hover:shadow-purple-500/20", ring: "ring-purple-500/20" };
+  return { gradient: "from-yellow-500/20 to-amber-600/10", border: "border-yellow-500/30 hover:border-yellow-400/60", glow: "hover:shadow-yellow-500/20", ring: "ring-yellow-500/20" };
 };
 
 export const MysteryBoxShop = ({ onBack, onOpenBox }: Props) => {
@@ -55,10 +49,9 @@ export const MysteryBoxShop = ({ onBack, onOpenBox }: Props) => {
   const [userBoxes, setUserBoxes] = useState<any[]>([]);
   const [opening, setOpening] = useState<string | null>(null);
   const [revealedReward, setRevealedReward] = useState<any>(null);
+  const [openingPhase, setOpeningPhase] = useState<"idle" | "shaking" | "burst" | "reveal">("idle");
 
-  useEffect(() => {
-    loadData();
-  }, []);
+  useEffect(() => { loadData(); }, []);
 
   const loadData = async () => {
     const [boxesRes, userBoxesRes] = await Promise.all([
@@ -72,13 +65,11 @@ export const MysteryBoxShop = ({ onBack, onOpenBox }: Props) => {
   const handlePurchase = async (box: MysteryBox) => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { navigate("/auth"); return; }
-
     if (credits.credits_remaining < box.price) {
       toast.error(`You need ${box.price} credits. Redirecting...`);
       setTimeout(() => navigate("/ai-credits"), 1500);
       return;
     }
-
     setPurchasing(box.id);
     try {
       await supabase.from('ai_credits').update({ credits_remaining: credits.credits_remaining - box.price }).eq('user_id', user.id);
@@ -95,12 +86,24 @@ export const MysteryBoxShop = ({ onBack, onOpenBox }: Props) => {
 
   const handleOpen = async (userBox: any) => {
     setOpening(userBox.id);
+    setOpeningPhase("shaking");
+
+    // Shaking phase
+    await new Promise(r => setTimeout(r, 1500));
+    setOpeningPhase("burst");
+
+    // Burst phase
+    await new Promise(r => setTimeout(r, 800));
+
     try {
       const { data, error } = await supabase.functions.invoke('open-mystery-box', {
         body: { boxId: userBox.box_id },
       });
       if (error) throw error;
+
+      setOpeningPhase("reveal");
       setRevealedReward(data);
+      confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 }, colors: ['#FFD700', '#FFA500', '#FF4500', '#9B59B6', '#3498DB'] });
       if (onOpenBox) onOpenBox(data);
       await loadData();
       toast.success("🎉 Box opened! Check your reward!");
@@ -108,6 +111,7 @@ export const MysteryBoxShop = ({ onBack, onOpenBox }: Props) => {
       toast.error(e.message || "Failed to open box");
     } finally {
       setOpening(null);
+      setOpeningPhase("idle");
     }
   };
 
@@ -119,64 +123,96 @@ export const MysteryBoxShop = ({ onBack, onOpenBox }: Props) => {
         <ArrowLeft className="h-4 w-4" /> Back to Vault
       </Button>
 
-      <Card className="p-6 max-w-5xl mx-auto bg-card/80 backdrop-blur-xl border-yellow-500/20 shadow-[0_0_30px_rgba(255,215,0,0.08)]">
+      <Card className="p-6 max-w-5xl mx-auto bg-card/90 backdrop-blur-xl border-yellow-500/20 shadow-[0_0_40px_rgba(255,215,0,0.08)]">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="flex items-center gap-3 mb-6">
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-yellow-500 to-amber-600 flex items-center justify-center shadow-lg shadow-yellow-500/20">
-            <Gift className="h-6 w-6 text-white" />
+          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-yellow-500 to-amber-600 flex items-center justify-center shadow-lg shadow-yellow-500/30">
+            <Gift className="h-6 w-6 text-black" />
           </div>
           <div>
-            <h2 className="text-2xl font-black bg-gradient-to-r from-yellow-400 to-amber-500 bg-clip-text text-transparent">Mystery Box Shop</h2>
-            <p className="text-muted-foreground text-sm">Choose your tier — higher price, better odds</p>
+            <h2 className="text-2xl font-black bg-gradient-to-r from-yellow-400 via-amber-400 to-yellow-500 bg-clip-text text-transparent">Mystery Box Shop</h2>
+            <p className="text-muted-foreground text-xs">9 Tiers • Choose your risk, claim your reward</p>
           </div>
         </motion.div>
 
-        {/* Available Boxes */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-          {boxes.map((box, i) => (
-            <motion.div
-              key={box.id}
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.05, type: "spring", stiffness: 200 }}
-            >
-              <Card className={`p-4 bg-gradient-to-br ${getRarityGradient(box.price)} ${getRarityBorder(box.price)} hover:shadow-lg transition-all hover:scale-[1.02] active:scale-[0.98]`}>
-                <div className="text-center mb-3">
-                  <span className="text-5xl">{box.icon}</span>
-                </div>
-                <h3 className="font-black text-lg text-center mb-1">{box.name}</h3>
-                <p className="text-xs text-muted-foreground text-center mb-3">{box.description}</p>
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-2xl font-black text-yellow-400">{box.price}</span>
-                  <span className="text-xs text-muted-foreground">credits</span>
-                </div>
-                <Button
-                  onClick={() => handlePurchase(box)}
-                  disabled={purchasing === box.id}
-                  className="w-full bg-gradient-to-r from-yellow-500 to-amber-600 hover:from-yellow-600 hover:to-amber-700 text-black font-bold shadow-lg shadow-yellow-500/20"
-                  size="sm"
-                >
-                  {purchasing === box.id ? <><Loader2 className="h-4 w-4 animate-spin mr-1" /> Buying...</> : "Buy Box"}
-                </Button>
-              </Card>
-            </motion.div>
-          ))}
+        {/* Box Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+          {boxes.map((box, i) => {
+            const style = getTierStyle(box.price);
+            return (
+              <motion.div
+                key={box.id}
+                initial={{ opacity: 0, y: 30, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ delay: i * 0.04, type: "spring", stiffness: 250 }}
+                whileHover={{ scale: 1.04, y: -6 }}
+                whileTap={{ scale: 0.97 }}
+              >
+                <Card className={`p-4 bg-gradient-to-br ${style.gradient} ${style.border} ${style.glow} hover:shadow-lg transition-all relative overflow-hidden group`}>
+                  {box.price >= 1000 && (
+                    <div className="absolute top-0 right-0 bg-gradient-to-l from-yellow-500 to-amber-600 text-black text-[9px] font-black px-2 py-0.5 rounded-bl-lg">
+                      PREMIUM
+                    </div>
+                  )}
+                  <div className="text-center mb-3">
+                    <motion.span 
+                      className="text-5xl block"
+                      animate={{ rotateY: [0, 10, -10, 0] }}
+                      transition={{ repeat: Infinity, duration: 3, delay: i * 0.3 }}
+                    >
+                      {box.icon}
+                    </motion.span>
+                  </div>
+                  <h3 className="font-black text-base text-center mb-0.5">{box.name}</h3>
+                  <p className="text-[11px] text-muted-foreground text-center mb-3 leading-relaxed">{box.description}</p>
+                  <div className="flex items-center justify-center gap-1.5 mb-3">
+                    <Sparkles className="h-3.5 w-3.5 text-yellow-400" />
+                    <span className="text-xl font-black bg-gradient-to-r from-yellow-400 to-amber-500 bg-clip-text text-transparent">{box.price}</span>
+                    <span className="text-[10px] text-muted-foreground">credits</span>
+                  </div>
+                  <Button
+                    onClick={() => handlePurchase(box)}
+                    disabled={purchasing === box.id}
+                    className="w-full bg-gradient-to-r from-yellow-500 to-amber-600 hover:from-yellow-600 hover:to-amber-700 text-black font-bold shadow-lg shadow-yellow-500/20 active:scale-[0.97] transition-transform"
+                    size="sm"
+                  >
+                    {purchasing === box.id ? <><Loader2 className="h-4 w-4 animate-spin mr-1" /> Buying...</> : "Buy Box"}
+                  </Button>
+                </Card>
+              </motion.div>
+            );
+          })}
         </div>
 
         {/* Unopened Boxes */}
         {unopenedBoxes.length > 0 && (
           <>
-            <h3 className="text-xl font-black mb-4 bg-gradient-to-r from-yellow-400 to-amber-500 bg-clip-text text-transparent">Your Unopened Boxes ({unopenedBoxes.length})</h3>
+            <h3 className="text-xl font-black mb-4 bg-gradient-to-r from-yellow-400 to-amber-500 bg-clip-text text-transparent">
+              Your Unopened Boxes ({unopenedBoxes.length})
+            </h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               {unopenedBoxes.map((ub) => (
-                <motion.div key={ub.id} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                  <Card className="p-4 text-center border-yellow-500/20 bg-yellow-500/5 hover:bg-yellow-500/10 transition-colors">
-                    <span className="text-4xl block mb-2 animate-bounce">{ub.mystery_boxes?.icon || '📦'}</span>
+                <motion.div
+                  key={ub.id}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  animate={opening === ub.id && openingPhase === "shaking" ? {
+                    x: [0, -4, 4, -4, 4, -2, 2, 0],
+                    rotate: [0, -3, 3, -3, 3, -1, 1, 0],
+                  } : {}}
+                  transition={opening === ub.id && openingPhase === "shaking" ? {
+                    duration: 0.5, repeat: 3
+                  } : {}}
+                >
+                  <Card className={`p-4 text-center border-yellow-500/20 bg-yellow-500/5 hover:bg-yellow-500/10 transition-all ${
+                    opening === ub.id && openingPhase === "burst" ? "ring-2 ring-yellow-400 shadow-[0_0_30px_rgba(255,215,0,0.4)]" : ""
+                  }`}>
+                    <span className="text-4xl block mb-2">{ub.mystery_boxes?.icon || '📦'}</span>
                     <p className="text-xs font-bold mb-2">{ub.mystery_boxes?.name || 'Mystery Box'}</p>
                     <Button
                       size="sm"
                       onClick={() => handleOpen(ub)}
                       disabled={opening === ub.id}
-                      className="w-full bg-gradient-to-r from-yellow-500 to-amber-600 text-black font-bold"
+                      className="w-full bg-gradient-to-r from-yellow-500 to-amber-600 text-black font-bold active:scale-[0.95]"
                     >
                       {opening === ub.id ? <Loader2 className="h-4 w-4 animate-spin" /> : "Open"}
                     </Button>
@@ -194,35 +230,44 @@ export const MysteryBoxShop = ({ onBack, onOpenBox }: Props) => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+              className="fixed inset-0 bg-black/85 backdrop-blur-md flex items-center justify-center z-50 p-4"
               onClick={() => setRevealedReward(null)}
             >
               <motion.div
-                initial={{ scale: 0.5, opacity: 0, rotateY: 180 }}
+                initial={{ scale: 0.3, opacity: 0, rotateY: 180 }}
                 animate={{ scale: 1, opacity: 1, rotateY: 0 }}
+                exit={{ scale: 0.5, opacity: 0 }}
                 transition={{ type: "spring", damping: 12, stiffness: 200 }}
                 className="max-w-sm w-full"
                 onClick={(e) => e.stopPropagation()}
               >
-                <Card className="p-8 text-center bg-gradient-to-br from-yellow-500/10 to-amber-600/10 border-yellow-500/30 shadow-[0_0_60px_rgba(255,215,0,0.2)]">
+                <Card className="p-8 text-center bg-gradient-to-br from-yellow-500/15 to-amber-600/10 border-yellow-500/40 shadow-[0_0_80px_rgba(255,215,0,0.25)] relative overflow-hidden">
+                  {/* Animated glow rings */}
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <motion.div
+                      animate={{ scale: [1, 1.5, 1], opacity: [0.3, 0, 0.3] }}
+                      transition={{ repeat: Infinity, duration: 2 }}
+                      className="w-40 h-40 rounded-full border border-yellow-500/30"
+                    />
+                  </div>
                   <motion.div
-                    animate={{ scale: [1, 1.2, 1] }}
-                    transition={{ repeat: 2, duration: 0.5 }}
-                    className="text-6xl mb-4"
+                    animate={{ scale: [1, 1.3, 1], rotate: [0, 10, -10, 0] }}
+                    transition={{ repeat: 3, duration: 0.6 }}
+                    className="text-7xl mb-4 relative z-10"
                   >
                     🎉
                   </motion.div>
-                  <h3 className="text-2xl font-black mb-2 bg-gradient-to-r from-yellow-400 to-amber-500 bg-clip-text text-transparent">
+                  <h3 className="text-2xl font-black mb-2 bg-gradient-to-r from-yellow-400 via-amber-400 to-yellow-500 bg-clip-text text-transparent relative z-10">
                     Congratulations!
                   </h3>
-                  <p className="text-muted-foreground mb-4">
+                  <p className="text-muted-foreground mb-4 relative z-10">
                     {revealedReward.rarity?.name && (
-                      <span className="font-bold text-yellow-400">{revealedReward.rarity.name} </span>
+                      <span className="font-black text-yellow-400 uppercase tracking-wider">{revealedReward.rarity.name} </span>
                     )}
                     item unlocked!
                   </p>
-                  <Button onClick={() => setRevealedReward(null)} className="w-full bg-gradient-to-r from-yellow-500 to-amber-600 text-black font-bold">
-                    Collect
+                  <Button onClick={() => setRevealedReward(null)} className="w-full bg-gradient-to-r from-yellow-500 to-amber-600 text-black font-bold shadow-lg shadow-yellow-500/30 relative z-10">
+                    Collect Reward
                   </Button>
                 </Card>
               </motion.div>
