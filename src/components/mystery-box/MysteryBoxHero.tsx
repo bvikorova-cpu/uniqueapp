@@ -45,7 +45,7 @@ export const MysteryBoxHero = () => {
           loop
           muted
           playsInline
-          className="absolute inset-0 w-full h-full object-cover brightness-[0.4] saturate-[1.3]"
+          className="absolute inset-0 w-full h-full object-cover brightness-[0.75] saturate-[1.2]"
           src={heroVideo.url}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-black/10" />
