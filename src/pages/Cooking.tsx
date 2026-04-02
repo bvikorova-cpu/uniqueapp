@@ -1227,7 +1227,7 @@ const Cooking = () => {
           </div>
 
           {/* New AI Tools */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {NEW_AI_TOOLS.map((tool, i) => (
               <motion.div key={tool.id} initial={{ opacity: 0, scale: 0.9, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} transition={{ delay: 0.5 + i * 0.04, type: "spring", stiffness: 200 }}>
                 <Card className="p-4 bg-card/80 backdrop-blur-xl border-border/60 cursor-pointer hover:scale-[1.04] hover:shadow-xl hover:shadow-primary/10 transition-all duration-300 active:scale-[0.97] group relative overflow-hidden" onClick={() => setActiveView(tool.id)}>
