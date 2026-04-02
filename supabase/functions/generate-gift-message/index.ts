@@ -50,7 +50,10 @@ serve(async (req) => {
     let systemPrompt = "";
     let userPrompt = "";
 
-    if (type === "gift_designer") {
+    if (type === "travel_planner") {
+      systemPrompt = "You are an expert travel advisor and trip planner. Provide detailed, practical, and well-organized travel advice. Use clear headings, bullet points, and specific recommendations. Be thorough but concise.";
+      userPrompt = customPrompt || "Suggest a great travel destination";
+    } else if (type === "gift_designer") {
       systemPrompt = `You are a creative gift designer AI. Create a unique personalized digital gift concept. Return ONLY valid JSON: {"name": "...", "description": "...", "emoji": "...", "value": number, "theme": "..."}. The value should be between 10-500. Be creative and unique.`;
       userPrompt = customPrompt || "Create a unique surprise gift";
     } else if (type === "thank_you") {
@@ -95,7 +98,7 @@ ${customPrompt ? `Additional context: ${customPrompt}` : ""}`;
           { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt },
         ],
-        max_tokens: 300,
+        max_tokens: type === "travel_planner" ? 1500 : 300,
         temperature: 0.8,
       }),
     });
