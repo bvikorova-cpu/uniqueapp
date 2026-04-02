@@ -100,6 +100,12 @@ const FirstAid = () => {
   if (activeView === "quiz") return <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-4 max-w-4xl"><AIFirstAidQuiz onBack={() => setActiveView("hub")} /></div></div>;
   if (activeView === "kit") return <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-4 max-w-4xl"><AIFirstAidKit onBack={() => setActiveView("hub")} /></div></div>;
   if (activeView === "cpr") return <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-4 max-w-4xl"><AICPRCoach onBack={() => setActiveView("hub")} /></div></div>;
+  if (activeView === "simulator") return <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-4 max-w-4xl"><AIScenarioSimulator onBack={() => setActiveView("hub")} /></div></div>;
+  if (activeView === "certification") return <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-4 max-w-4xl"><AICertificationSystem onBack={() => setActiveView("hub")} /></div></div>;
+  if (activeView === "wound") return <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-4 max-w-4xl"><AIWoundGuide onBack={() => setActiveView("hub")} /></div></div>;
+  if (activeView === "stories") return <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-4 max-w-4xl"><CommunityStories onBack={() => setActiveView("hub")} /></div></div>;
+  if (activeView === "expert") return <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-4 max-w-4xl"><LiveExpertChat onBack={() => setActiveView("hub")} /></div></div>;
+  if (activeView === "map") return <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-4 max-w-4xl"><FirstAidMap onBack={() => setActiveView("hub")} /></div></div>;
   if (activeView === "injury") return <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-4 max-w-4xl"><AIInjuryAssessor onBack={() => setActiveView("hub")} /></div></div>;
 
   const activeData = FIRST_AID_CATEGORIES.find(c => c.id === activeCategory)!;
