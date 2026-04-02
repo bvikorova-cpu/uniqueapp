@@ -2,7 +2,8 @@ import { useState, useRef, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   Gift, Inbox, Sparkles, Trophy, CreditCard, ArrowLeft, Award, Box, Star, 
-  MessageCircle, Play, Pause, Volume2, VolumeX, Shuffle, Wand2, BarChart3 
+  MessageCircle, Play, Pause, Volume2, VolumeX, Shuffle, Wand2, BarChart3,
+  Target, Heart, Flame
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -19,6 +20,10 @@ import { GiftChat } from "@/components/secret-santa/GiftChat";
 import { GiftRoulette } from "@/components/secret-santa/GiftRoulette";
 import { AIGiftDesigner } from "@/components/secret-santa/AIGiftDesigner";
 import { GiftAnalytics } from "@/components/secret-santa/GiftAnalytics";
+import { GiftChallenges } from "@/components/secret-santa/GiftChallenges";
+import { GiftWishlist } from "@/components/secret-santa/GiftWishlist";
+import { AIThankYou } from "@/components/secret-santa/AIThankYou";
+import { GiftStreakRewards } from "@/components/secret-santa/GiftStreakRewards";
 import { useSecretSanta } from "@/hooks/useSecretSanta";
 import heroVideo from "@/assets/secret-santa-hero.mp4.asset.json";
 
@@ -40,10 +45,14 @@ const SecretSanta = () => {
     { id: "send", icon: Gift, label: "Send", color: "from-amber-400 to-orange-400" },
     { id: "inbox", icon: Inbox, label: "Inbox", color: "from-amber-400 to-orange-400" },
     { id: "chat", icon: MessageCircle, label: "Chat", color: "from-blue-500 to-cyan-500" },
+    { id: "challenges", icon: Target, label: "Quests", color: "from-orange-500 to-red-500" },
     { id: "roulette", icon: Shuffle, label: "Roulette", color: "from-green-500 to-emerald-500" },
     { id: "mystery", icon: Box, label: "Mystery", color: "from-purple-500 to-pink-500" },
     { id: "limited", icon: Star, label: "Seasonal", color: "from-red-500 to-rose-500" },
+    { id: "wishlist", icon: Heart, label: "Wishlist", color: "from-pink-500 to-rose-500" },
     { id: "designer", icon: Wand2, label: "AI Design", color: "from-violet-500 to-purple-500" },
+    { id: "thankyou", icon: Heart, label: "AI Thanks", color: "from-rose-500 to-pink-500" },
+    { id: "streaks", icon: Flame, label: "Streaks", color: "from-orange-500 to-red-500" },
     { id: "analytics", icon: BarChart3, label: "Stats", color: "from-emerald-500 to-teal-500" },
     { id: "badges", icon: Award, label: "Badges", color: "from-amber-400 to-orange-400" },
     { id: "stories", icon: Sparkles, label: "Stories", color: "from-amber-400 to-orange-400" },
@@ -110,15 +119,16 @@ const SecretSanta = () => {
           <p className="text-gray-700 text-sm sm:text-base mb-4">
             Secret Santa 365 is a <span className="font-semibold text-amber-600">year-round digital gift-giving platform</span> that brings 
             the joy of Secret Santa to every day of the year! Send animated digital gifts, use AI to craft messages, 
-            spin the Gift Roulette for anonymous giving, and design custom gifts with AI.
+            spin the Gift Roulette for anonymous giving, complete daily challenges, maintain gifting streaks, 
+            create wishlists, and design custom gifts with AI.
           </p>
           
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">
             {[
               { emoji: "🎁", label: "200+ Gifts", desc: "Across 13 categories" },
-              { emoji: "🤖", label: "AI Powered", desc: "Messages & gift design" },
-              { emoji: "🎲", label: "Gift Roulette", desc: "Anonymous matching" },
-              { emoji: "📊", label: "Analytics", desc: "Track your journey" },
+              { emoji: "🤖", label: "AI Powered", desc: "Messages, design & thanks" },
+              { emoji: "🎯", label: "Daily Quests", desc: "Earn bonus credits" },
+              { emoji: "🔥", label: "Streak Rewards", desc: "Up to 5,000 credits" },
             ].map(f => (
               <div key={f.label} className="bg-amber-50 border border-amber-200 rounded-xl p-2.5 text-center">
                 <span className="text-xl block">{f.emoji}</span>
@@ -129,7 +139,7 @@ const SecretSanta = () => {
           </div>
           
           <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 text-sm text-amber-800">
-            <span className="font-semibold">💡 Tip:</span> AI features (Message Generator & Gift Designer) cost 3 credits each. Purchase credits to unlock premium gifts and AI features!
+            <span className="font-semibold">💡 Tip:</span> AI features (Message Generator, Gift Designer & Thank You) cost 3 credits each. Complete daily challenges and maintain streaks to earn free credits!
           </div>
         </div>
 
@@ -140,7 +150,7 @@ const SecretSanta = () => {
 
         {/* Main content */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="w-full grid grid-cols-6 sm:grid-cols-12 gap-1 bg-white/80 backdrop-blur-xl border border-amber-200 rounded-2xl p-2 mb-6 shadow-lg h-auto">
+          <TabsList className="w-full grid grid-cols-8 sm:grid-cols-16 gap-1 bg-white/80 backdrop-blur-xl border border-amber-200 rounded-2xl p-2 mb-6 shadow-lg h-auto">
             {TABS.map(tab => (
               <TabsTrigger
                 key={tab.id}
@@ -156,10 +166,14 @@ const SecretSanta = () => {
           <TabsContent value="send" className="mt-0"><SecretSantaSendGift /></TabsContent>
           <TabsContent value="inbox" className="mt-0"><SecretSantaInbox /></TabsContent>
           <TabsContent value="chat" className="mt-0"><GiftChat /></TabsContent>
+          <TabsContent value="challenges" className="mt-0"><GiftChallenges /></TabsContent>
           <TabsContent value="roulette" className="mt-0"><GiftRoulette /></TabsContent>
           <TabsContent value="mystery" className="mt-0"><MysteryBox /></TabsContent>
           <TabsContent value="limited" className="mt-0"><LimitedEditionGifts /></TabsContent>
+          <TabsContent value="wishlist" className="mt-0"><GiftWishlist /></TabsContent>
           <TabsContent value="designer" className="mt-0"><AIGiftDesigner /></TabsContent>
+          <TabsContent value="thankyou" className="mt-0"><AIThankYou /></TabsContent>
+          <TabsContent value="streaks" className="mt-0"><GiftStreakRewards /></TabsContent>
           <TabsContent value="analytics" className="mt-0"><GiftAnalytics /></TabsContent>
           <TabsContent value="badges" className="mt-0"><BadgesDisplay /></TabsContent>
           <TabsContent value="stories" className="mt-0"><SecretSantaStories /></TabsContent>

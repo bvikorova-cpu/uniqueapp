@@ -127,7 +127,7 @@ export const GiftStreakRewards = () => {
 
   return (
     <div className="space-y-6">
-      <GiftConfetti trigger={showConfetti} type="reward" />
+      <GiftConfetti trigger={showConfetti} type="badge" />
 
       {/* Header with current streak */}
       <Card className="p-6 bg-gradient-to-br from-orange-500 via-red-500 to-pink-500 text-white text-center shadow-lg border-transparent">

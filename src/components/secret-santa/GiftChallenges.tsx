@@ -188,7 +188,7 @@ export const GiftChallenges = () => {
 
   return (
     <div className="space-y-6">
-      <GiftConfetti trigger={showConfetti} type="reward" />
+      <GiftConfetti trigger={showConfetti} type="badge" />
 
       {/* Header */}
       <Card className="p-6 bg-white/80 backdrop-blur-xl border-amber-200 text-center shadow-lg">
