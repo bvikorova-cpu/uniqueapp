@@ -173,7 +173,37 @@ export default function TeacherDashboard() {
   };
 
   const handleDownloadCollection = async (id: string, name: string) => {
-    toast.info(`Download ${name} - generating PDF...`);
+    toast.info(`Downloading ${name}...`);
+    try {
+      const { data: pages, error } = await supabase
+        .from('coloring_pages')
+        .select('title, svg_content, image_url')
+        .eq('collection_id', id);
+      if (error) throw error;
+      if (!pages || pages.length === 0) {
+        toast.error("No pages found in this collection");
+        return;
+      }
+      const { default: jsPDF } = await import('jspdf');
+      const doc = new jsPDF();
+      doc.setFontSize(20);
+      doc.text(name, 20, 20);
+      doc.setFontSize(12);
+      doc.text(`${pages.length} coloring pages`, 20, 30);
+      pages.forEach((page, i) => {
+        if (i > 0 || true) doc.addPage();
+        doc.setFontSize(16);
+        doc.text(page.title || `Page ${i + 1}`, 20, 20);
+        if (page.image_url) {
+          doc.setFontSize(10);
+          doc.text(`Image: ${page.image_url}`, 20, 30);
+        }
+      });
+      doc.save(`${name}.pdf`);
+      toast.success(`${name} downloaded successfully!`);
+    } catch (err: any) {
+      toast.error(err.message || "Failed to download collection");
+    }
   };
 
   const handleShareCollection = async (id: string) => {

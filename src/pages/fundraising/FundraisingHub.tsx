@@ -47,7 +47,7 @@ export default function FundraisingHub() {
             <Button size="lg" variant="secondary" onClick={() => navigate("/fundraising/medical/create")}>
               <Sparkles className="mr-2 h-4 w-4" /> Create Campaign
             </Button>
-            <Button size="lg" variant="outline" className="bg-transparent border-white text-white hover:bg-white/10">
+            <Button size="lg" variant="outline" className="bg-transparent border-white text-white hover:bg-white/10" onClick={() => document.getElementById("categories")?.scrollIntoView({ behavior: "smooth" })}>
               <Heart className="mr-2 h-4 w-4" /> Browse All Campaigns
             </Button>
           </div>
