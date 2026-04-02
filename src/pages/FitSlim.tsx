@@ -13,7 +13,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import {
   Play, Clock, ChefHat, Heart, Dumbbell, Target, Loader2, Crown, Check, Utensils,
   Calendar, ArrowRight, Scale, Ruler, User, Activity, ArrowLeft, Flame, Sparkles,
-  ScanLine, TrendingUp, HeartPulse, ShoppingBag, Trophy, Zap
+  ScanLine, TrendingUp, HeartPulse, ShoppingBag, Trophy, Zap, ScanEye, Moon,
+  Swords, Pill, ImagePlus
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
