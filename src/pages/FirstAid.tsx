@@ -6,7 +6,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import {
   Heart, Phone, AlertTriangle, Droplet, Flame, Bone, Wind, Zap, Activity,
   Stethoscope, Siren, GraduationCap, Package, HeartPulse, Scan,
-  Trophy, TrendingUp, Star
+  Trophy, TrendingUp, Star, Gamepad2, Award, Eye, BookOpen, MessageSquare, MapPin
 } from "lucide-react";
 import { useLiveStats } from "@/hooks/useLiveStats";
 import { FirstAidHero } from "@/components/firstaid/FirstAidHero";
@@ -16,8 +16,14 @@ import { AIFirstAidQuiz } from "@/components/firstaid/AIFirstAidQuiz";
 import { AIFirstAidKit } from "@/components/firstaid/AIFirstAidKit";
 import { AICPRCoach } from "@/components/firstaid/AICPRCoach";
 import { AIInjuryAssessor } from "@/components/firstaid/AIInjuryAssessor";
+import { AIScenarioSimulator } from "@/components/firstaid/AIScenarioSimulator";
+import { AICertificationSystem } from "@/components/firstaid/AICertificationSystem";
+import { AIWoundGuide } from "@/components/firstaid/AIWoundGuide";
+import { CommunityStories } from "@/components/firstaid/CommunityStories";
+import { LiveExpertChat } from "@/components/firstaid/LiveExpertChat";
+import { FirstAidMap } from "@/components/firstaid/FirstAidMap";
 
-type ViewType = "hub" | "symptoms" | "emergency" | "quiz" | "kit" | "cpr" | "injury";
+type ViewType = "hub" | "symptoms" | "emergency" | "quiz" | "kit" | "cpr" | "injury" | "simulator" | "certification" | "wound" | "stories" | "expert" | "map";
 
 const AI_TOOLS = [
   { id: "symptoms" as ViewType, icon: Stethoscope, label: "AI Symptom Checker", desc: "Analyze symptoms & get first aid steps", color: "from-red-500 to-rose-600" },
