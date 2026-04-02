@@ -32,6 +32,12 @@ const AI_TOOLS = [
   { id: "kit" as ViewType, icon: Package, label: "AI Kit Builder", desc: "Personalized kit checklists", color: "from-emerald-500 to-green-600" },
   { id: "cpr" as ViewType, icon: HeartPulse, label: "AI CPR Coach", desc: "Interactive CPR training", color: "from-pink-500 to-fuchsia-600" },
   { id: "injury" as ViewType, icon: Scan, label: "AI Injury Assessor", desc: "Assess & treat injuries", color: "from-purple-500 to-violet-600" },
+  { id: "simulator" as ViewType, icon: Gamepad2, label: "AI Scenario Simulator", desc: "Interactive emergency scenarios", color: "from-amber-500 to-orange-600" },
+  { id: "certification" as ViewType, icon: Award, label: "Certification System", desc: "Earn digital certificates", color: "from-yellow-500 to-amber-600" },
+  { id: "wound" as ViewType, icon: Eye, label: "AI Wound Guide", desc: "Visual wound identification", color: "from-cyan-500 to-blue-600" },
+  { id: "stories" as ViewType, icon: BookOpen, label: "Community Stories", desc: "Real first aid success stories", color: "from-rose-500 to-pink-600" },
+  { id: "expert" as ViewType, icon: MessageSquare, label: "AI Expert Chat", desc: "Chat with AI specialist", color: "from-teal-500 to-emerald-600" },
+  { id: "map" as ViewType, icon: MapPin, label: "First Aid Map", desc: "Find AEDs & pharmacies nearby", color: "from-indigo-500 to-blue-600" },
 ];
 
 const EMERGENCY_CONTACTS = [
