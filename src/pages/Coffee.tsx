@@ -1,193 +1,170 @@
-import { Coffee as CoffeeIcon, MapPin, Users, Trophy, Star } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { useNavigate } from 'react-router-dom';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { CoffeeHero } from "@/components/coffee/CoffeeHero";
+import { CoffeeCreditsDisplay } from "@/components/coffee/CoffeeCreditsDisplay";
+import { AIBrewingAdvisor } from "@/components/coffee/AIBrewingAdvisor";
+import { AIBeanExpert } from "@/components/coffee/AIBeanExpert";
+import { AICafeRecommender } from "@/components/coffee/AICafeRecommender";
+import { AILatteArtCoach } from "@/components/coffee/AILatteArtCoach";
+import { AICoffeePairing } from "@/components/coffee/AICoffeePairing";
+import { AICoffeeHealthAnalyzer } from "@/components/coffee/AICoffeeHealthAnalyzer";
+import {
+  Coffee as CoffeeIcon, MapPin, Users, Trophy, Star, Flame,
+  Leaf, Palette, UtensilsCrossed, Heart, Award, Sparkles
+} from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { motion } from "framer-motion";
+
+type ActiveView = "hub" | "brewing" | "bean" | "cafe-rec" | "latte-art" | "pairing" | "health";
+
+const AI_TOOLS = [
+  { id: "brewing" as const, icon: CoffeeIcon, label: "AI Brewing Advisor", desc: "Perfect your brew technique", color: "from-amber-600 to-amber-800", isNew: true },
+  { id: "bean" as const, icon: Leaf, label: "AI Bean Expert", desc: "Origin & flavor profiles", color: "from-green-600 to-emerald-800", isNew: true },
+  { id: "cafe-rec" as const, icon: MapPin, label: "AI Cafe Recommender", desc: "Find your perfect spot", color: "from-rose-600 to-pink-800", isNew: true },
+  { id: "latte-art" as const, icon: Palette, label: "AI Latte Art Coach", desc: "Master milk patterns", color: "from-purple-600 to-violet-800", isNew: true },
+  { id: "pairing" as const, icon: UtensilsCrossed, label: "AI Food Pairing", desc: "Coffee & food combos", color: "from-orange-600 to-amber-800", isNew: true },
+  { id: "health" as const, icon: Heart, label: "AI Health Analyzer", desc: "Caffeine impact analysis", color: "from-red-600 to-rose-800", isNew: true },
+];
+
+const NAV_ITEMS = [
+  { icon: MapPin, label: "Check-ins & Reviews", path: "/coffee/checkins" },
+  { icon: Users, label: "Coffee Buddy", path: "/coffee/buddy" },
+  { icon: Trophy, label: "Leaderboard", path: "/coffee/leaderboard" },
+];
 
 const Coffee = () => {
   const navigate = useNavigate();
+  const [activeView, setActiveView] = useState<ActiveView>("hub");
 
-  const features = [
-    {
-      icon: MapPin,
-      title: 'Coffee Check-ins & Reviews',
-      description: 'Check in at cafes, rate coffee, share photos, and earn points',
-      path: '/coffee/checkins'
+  const { data: profile } = useQuery({
+    queryKey: ["coffee-profile-stats"],
+    queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return null;
+      const { data } = await supabase.from("coffee_profiles").select("*").eq("user_id", user.id).maybeSingle();
+      return data;
     },
-    {
-      icon: Users,
-      title: 'Coffee Buddy Matching',
-      description: 'Find people with similar coffee preferences for cafe visits',
-      path: '/coffee/buddy'
-    },
-    {
-      icon: Trophy,
-      title: 'Leaderboard & Badges',
-      description: 'Compete with other coffee lovers and earn achievements',
-      path: '/coffee/leaderboard'
-    }
-  ];
+  });
 
-  const pricingPlans = [
-    {
-      name: 'Free',
-      price: '€0',
-      features: [
-        '3 buddy matches/month',
-        'Basic check-ins',
-        'Standard reviews',
-        'Community access'
-      ]
-    },
-    {
-      name: 'Coffee Lover',
-      price: '€4.99/mo',
-      features: [
-        'Unlimited buddy matches',
-        'Priority matching',
-        'Featured reviews',
-        'Analytics dashboard',
-        'Ad-free experience'
-      ]
-    },
-    {
-      name: 'Coffee Expert',
-      price: '€9.99/mo',
-      features: [
-        'Everything in Coffee Lover',
-        'Event organization',
-        'Premium analytics',
-        'Priority support',
-        'Exclusive badges'
-      ]
-    }
-  ];
+  const back = () => setActiveView("hub");
+
+  if (activeView === "brewing") return <div className="container mx-auto px-4 py-8 max-w-7xl"><AIBrewingAdvisor onBack={back} /></div>;
+  if (activeView === "bean") return <div className="container mx-auto px-4 py-8 max-w-7xl"><AIBeanExpert onBack={back} /></div>;
+  if (activeView === "cafe-rec") return <div className="container mx-auto px-4 py-8 max-w-7xl"><AICafeRecommender onBack={back} /></div>;
+  if (activeView === "latte-art") return <div className="container mx-auto px-4 py-8 max-w-7xl"><AILatteArtCoach onBack={back} /></div>;
+  if (activeView === "pairing") return <div className="container mx-auto px-4 py-8 max-w-7xl"><AICoffeePairing onBack={back} /></div>;
+  if (activeView === "health") return <div className="container mx-auto px-4 py-8 max-w-7xl"><AICoffeeHealthAnalyzer onBack={back} /></div>;
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Hero Section */}
-      <section className="container mx-auto px-4 py-16">
-        <div className="text-center max-w-3xl mx-auto">
-          <CoffeeIcon className="h-16 w-16 mx-auto mb-6 text-primary" />
-          <h1 className="text-5xl font-black mb-4 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
-            Coffee Community
-          </h1>
-          <p className="text-xl text-muted-foreground mb-8">
-            Discover cafes, connect with coffee lovers, and share your passion for the perfect brew
-          </p>
-          <div className="flex gap-4 justify-center">
-            <Button size="lg" onClick={() => navigate('/coffee/checkins')}>
-              Start Exploring
-            </Button>
-            <Button size="lg" variant="outline" onClick={() => navigate('/coffee/buddy')}>
-              Find Coffee Buddies
-            </Button>
+      <div className="container mx-auto px-4 py-6 max-w-7xl">
+        {/* Cinematic Hero */}
+        <CoffeeHero />
+
+        {/* Engagement Row */}
+        <div className="grid grid-cols-3 gap-3 mb-8">
+          <Card className="p-3 sm:p-4 bg-card/80 backdrop-blur-xl border-amber-500/20 text-center">
+            <Flame className="h-5 w-5 text-amber-400 mx-auto mb-1" />
+            <p className="text-lg sm:text-2xl font-black">{profile?.total_checkins || 0}</p>
+            <p className="text-[10px] sm:text-xs text-muted-foreground">Check-ins</p>
+          </Card>
+          <Card className="p-3 sm:p-4 bg-card/80 backdrop-blur-xl border-amber-500/20 text-center">
+            <Star className="h-5 w-5 text-yellow-400 mx-auto mb-1" />
+            <p className="text-lg sm:text-2xl font-black">{profile?.total_points || 0}</p>
+            <p className="text-[10px] sm:text-xs text-muted-foreground">Points</p>
+          </Card>
+          <Card className="p-3 sm:p-4 bg-card/80 backdrop-blur-xl border-amber-500/20 text-center">
+            <Award className="h-5 w-5 text-purple-400 mx-auto mb-1" />
+            <p className="text-lg sm:text-2xl font-black capitalize">{profile?.subscription_tier || "Free"}</p>
+            <p className="text-[10px] sm:text-xs text-muted-foreground">Tier</p>
+          </Card>
+        </div>
+
+        {/* Credits */}
+        <div className="mb-8">
+          <CoffeeCreditsDisplay />
+        </div>
+
+        {/* Quick Navigation */}
+        <div className="grid grid-cols-3 gap-3 mb-8">
+          {NAV_ITEMS.map((item) => {
+            const Icon = item.icon;
+            return (
+              <motion.div key={item.path} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+                <Card
+                  className="p-4 cursor-pointer hover:border-amber-500/40 transition-all bg-card/80 backdrop-blur-xl border-amber-500/20 text-center"
+                  onClick={() => navigate(item.path)}
+                >
+                  <Icon className="h-6 w-6 text-amber-400 mx-auto mb-2" />
+                  <p className="text-xs sm:text-sm font-semibold">{item.label}</p>
+                </Card>
+              </motion.div>
+            );
+          })}
+        </div>
+
+        {/* AI Tools Grid */}
+        <div className="mb-8">
+          <div className="flex items-center gap-2 mb-4">
+            <Sparkles className="h-5 w-5 text-amber-400" />
+            <h2 className="text-xl sm:text-2xl font-black">AI Coffee Tools</h2>
+            <span className="text-xs bg-amber-500/20 text-amber-400 px-2 py-0.5 rounded-full">3 Credits Each</span>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            {AI_TOOLS.map((tool) => {
+              const Icon = tool.icon;
+              return (
+                <motion.div key={tool.id} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+                  <Card
+                    className="relative p-4 cursor-pointer hover:border-amber-500/40 transition-all bg-card/80 backdrop-blur-xl border-amber-500/20 group overflow-hidden"
+                    onClick={() => setActiveView(tool.id)}
+                  >
+                    {tool.isNew && (
+                      <span className="absolute top-2 right-2 text-[9px] font-bold bg-amber-500 text-black px-1.5 py-0.5 rounded-full animate-pulse">NEW</span>
+                    )}
+                    <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${tool.color} flex items-center justify-center mb-2 group-hover:scale-110 transition-transform`}>
+                      <Icon className="h-5 w-5 text-white" />
+                    </div>
+                    <p className="text-xs sm:text-sm font-semibold leading-tight">{tool.label}</p>
+                    <p className="text-[10px] text-muted-foreground mt-1 hidden sm:block">{tool.desc}</p>
+                  </Card>
+                </motion.div>
+              );
+            })}
           </div>
         </div>
-      </section>
 
-      {/* Features Section */}
-      <section className="container mx-auto px-4 py-16">
-        <h2 className="text-3xl font-bold text-center mb-4">Features</h2>
-        <p className="text-center text-muted-foreground max-w-2xl mx-auto mb-12">
-          Join our vibrant coffee community and discover new ways to enjoy your favorite beverage
-        </p>
-        <div className="grid md:grid-cols-3 gap-6">
-          {features.map((feature, index) => (
-            <Card key={index} className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate(feature.path)}>
-              <CardHeader>
-                <feature.icon className="h-12 w-12 text-primary mb-4" />
-                <CardTitle>{feature.title}</CardTitle>
-                <CardDescription className="mb-4">{feature.description}</CardDescription>
-                <div className="text-xs text-muted-foreground space-y-1 pt-2 border-t">
-                  {index === 0 && (
-                    <>
-                      <p>• Visit cafes and log your visits</p>
-                      <p>• Rate coffee quality (1-5 stars)</p>
-                      <p>• Upload photos of your drinks</p>
-                      <p>• Write detailed reviews</p>
-                      <p>• Earn points for every check-in</p>
-                    </>
-                  )}
-                  {index === 1 && (
-                    <>
-                      <p>• Answer coffee preference quiz</p>
-                      <p>• AI matches you with similar users</p>
-                      <p>• View match compatibility scores</p>
-                      <p>• Send coffee meetup invitations</p>
-                      <p>• Chat and plan cafe visits together</p>
-                    </>
-                  )}
-                  {index === 2 && (
-                    <>
-                      <p>• Compete on global leaderboard</p>
-                      <p>• Unlock achievement badges</p>
-                      <p>• Track your coffee statistics</p>
-                      <p>• Compare with other members</p>
-                      <p>• Earn rewards for activity</p>
-                    </>
-                  )}
-                </div>
-              </CardHeader>
-              <CardContent>
-                <Button variant="ghost" className="w-full">
-                  Explore →
-                </Button>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </section>
-
-      {/* Pricing Section */}
-      <section className="container mx-auto px-4 py-16">
-        <h2 className="text-3xl font-bold text-center mb-4">Pricing Plans</h2>
-        <p className="text-center text-muted-foreground mb-12">Choose the plan that fits your coffee lifestyle</p>
-        <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-          {pricingPlans.map((plan, index) => (
-            <Card key={index} className={index === 1 ? 'border-primary shadow-lg' : ''}>
-              <CardHeader>
-                <CardTitle className="text-2xl">{plan.name}</CardTitle>
-                <div className="text-3xl font-bold text-primary">{plan.price}</div>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-3 mb-6">
-                  {plan.features.map((feature, i) => (
-                    <li key={i} className="flex items-center gap-2">
-                      <Star className="h-4 w-4 text-primary" />
-                      <span className="text-sm">{feature}</span>
+        {/* Pricing */}
+        <div className="mb-8">
+          <h2 className="text-xl sm:text-2xl font-black mb-4 text-center">Subscription Plans</h2>
+          <div className="grid sm:grid-cols-3 gap-4">
+            {[
+              { name: "Free", price: "€0", features: ["3 buddy matches/month", "Basic check-ins", "Standard reviews", "Community access"] },
+              { name: "Coffee Lover", price: "€4.99/mo", features: ["Unlimited buddy matches", "Priority matching", "Featured reviews", "Analytics dashboard", "Ad-free experience"], highlight: true },
+              { name: "Coffee Expert", price: "€9.99/mo", features: ["Everything in Lover", "Event organization", "Premium analytics", "Priority support", "Exclusive badges"] },
+            ].map((plan, i) => (
+              <Card key={i} className={`p-5 ${plan.highlight ? "border-amber-500 shadow-lg shadow-amber-500/10" : "border-amber-500/20"} bg-card/80 backdrop-blur-xl`}>
+                <h3 className="text-lg font-bold">{plan.name}</h3>
+                <p className="text-2xl font-black text-amber-400 mb-3">{plan.price}</p>
+                <ul className="space-y-2 mb-4">
+                  {plan.features.map((f, j) => (
+                    <li key={j} className="flex items-center gap-2 text-sm">
+                      <Star className="h-3 w-3 text-amber-400 flex-shrink-0" />
+                      {f}
                     </li>
                   ))}
                 </ul>
-                <Button className="w-full" variant={index === 1 ? 'default' : 'outline'}>
-                  {index === 0 ? 'Get Started' : 'Subscribe'}
+                <Button className={`w-full ${plan.highlight ? "bg-gradient-to-r from-amber-600 to-amber-800" : ""}`} variant={plan.highlight ? "default" : "outline"}>
+                  {i === 0 ? "Get Started" : "Subscribe"}
                 </Button>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </section>
-
-      {/* Stats Section */}
-      <section className="container mx-auto px-4 py-16">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-          <div>
-            <div className="text-4xl font-bold text-primary">500+</div>
-            <div className="text-muted-foreground">Cafes Listed</div>
-          </div>
-          <div>
-            <div className="text-4xl font-bold text-primary">10K+</div>
-            <div className="text-muted-foreground">Check-ins</div>
-          </div>
-          <div>
-            <div className="text-4xl font-bold text-primary">5K+</div>
-            <div className="text-muted-foreground">Reviews</div>
-          </div>
-          <div>
-            <div className="text-4xl font-bold text-primary">2K+</div>
-            <div className="text-muted-foreground">Coffee Buddies</div>
+              </Card>
+            ))}
           </div>
         </div>
-      </section>
+      </div>
     </div>
   );
 };
