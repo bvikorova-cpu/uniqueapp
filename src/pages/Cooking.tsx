@@ -1526,7 +1526,6 @@ const Cooking = () => {
             )}
           </DialogContent>
         </Dialog>
-      </div>
     </div>
   );
 };
