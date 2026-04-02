@@ -406,14 +406,25 @@ const FitSlim = () => {
 
         {/* AI Tools Grid */}
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.25 }}>
-          <h2 className="text-2xl font-black mb-6 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
-            🤖 AI Fitness Tools ({AI_TOOLS.length})
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-10">
+          <div className="flex items-center justify-center mb-6">
+            <div className="relative px-6 py-3 rounded-2xl border-2 border-primary/40 bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10 backdrop-blur-xl shadow-lg shadow-primary/10">
+              <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-primary/5 to-accent/5 animate-pulse" />
+              <h2 className="relative text-2xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent flex items-center gap-2">
+                🤖 AI Fitness Tools <span className="text-base font-bold text-primary/80">({AI_TOOLS.length})</span>
+              </h2>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-10">
             {AI_TOOLS.map((tool, i) => (
-              <motion.div key={tool.id} initial={{ opacity: 0, scale: 0.9, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} transition={{ delay: 0.3 + i * 0.05, type: "spring", stiffness: 200 }}>
+              <motion.div key={tool.id} initial={{ opacity: 0, scale: 0.9, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} transition={{ delay: 0.3 + i * 0.04, type: "spring", stiffness: 200 }}>
                 <Card className="p-4 bg-card/80 backdrop-blur-xl border-border/60 cursor-pointer hover:scale-[1.04] hover:shadow-xl hover:shadow-primary/10 transition-all duration-300 active:scale-[0.97] group relative overflow-hidden" onClick={() => setActiveView(tool.id)}>
                   <div className={`absolute inset-0 bg-gradient-to-br ${tool.color} opacity-0 group-hover:opacity-20 transition-opacity duration-300`} />
+                  {(tool as any).isNew && (
+                    <motion.span initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.5 + i * 0.04, type: "spring" }}
+                      className="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-accent text-accent-foreground text-[10px] font-bold z-10 animate-pulse">
+                      NEW
+                    </motion.span>
+                  )}
                   <div className="flex items-start gap-3 relative z-10">
                     <div className={`p-2.5 rounded-xl bg-gradient-to-br ${tool.color} group-hover:scale-110 transition-transform`}>
                       <tool.icon className="h-6 w-6 text-white" />
@@ -432,19 +443,28 @@ const FitSlim = () => {
 
         {/* Content Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2 md:grid-cols-5 mb-8 bg-card/50 backdrop-blur-sm border border-border/50 p-1">
-            <TabsTrigger value="personalized-plans" className="data-[state=active]:bg-yellow-500/20 data-[state=active]:text-yellow-400"><Crown className="h-4 w-4 mr-1" /> My Plan</TabsTrigger>
-            <TabsTrigger value="weight-loss-videos" className="data-[state=active]:bg-green-500/20 data-[state=active]:text-green-400"><Play className="h-4 w-4 mr-1" /> Weight Loss</TabsTrigger>
-            <TabsTrigger value="health-videos" className="data-[state=active]:bg-green-500/20 data-[state=active]:text-green-400"><Heart className="h-4 w-4 mr-1" /> Health</TabsTrigger>
-            <TabsTrigger value="weight-loss-recipes" className="data-[state=active]:bg-green-500/20 data-[state=active]:text-green-400"><ChefHat className="h-4 w-4 mr-1" /> Slim Recipes</TabsTrigger>
-            <TabsTrigger value="healthy-recipes" className="data-[state=active]:bg-green-500/20 data-[state=active]:text-green-400"><ChefHat className="h-4 w-4 mr-1" /> Healthy</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-2 md:grid-cols-5 mb-8 bg-card/80 backdrop-blur-xl border-2 border-primary/20 p-1.5 rounded-2xl shadow-lg shadow-primary/5">
+            <TabsTrigger value="personalized-plans" className="rounded-xl font-bold text-xs data-[state=active]:bg-gradient-to-r data-[state=active]:from-yellow-500/20 data-[state=active]:to-amber-500/20 data-[state=active]:text-yellow-400 data-[state=active]:shadow-md data-[state=active]:border data-[state=active]:border-yellow-500/30 transition-all"><Crown className="h-4 w-4 mr-1" /> My Plan</TabsTrigger>
+            <TabsTrigger value="weight-loss-videos" className="rounded-xl font-bold text-xs data-[state=active]:bg-gradient-to-r data-[state=active]:from-red-500/20 data-[state=active]:to-orange-500/20 data-[state=active]:text-red-400 data-[state=active]:shadow-md data-[state=active]:border data-[state=active]:border-red-500/30 transition-all"><Play className="h-4 w-4 mr-1" /> Weight Loss</TabsTrigger>
+            <TabsTrigger value="health-videos" className="rounded-xl font-bold text-xs data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-500/20 data-[state=active]:to-green-500/20 data-[state=active]:text-emerald-400 data-[state=active]:shadow-md data-[state=active]:border data-[state=active]:border-emerald-500/30 transition-all"><Heart className="h-4 w-4 mr-1" /> Health</TabsTrigger>
+            <TabsTrigger value="weight-loss-recipes" className="rounded-xl font-bold text-xs data-[state=active]:bg-gradient-to-r data-[state=active]:from-orange-500/20 data-[state=active]:to-amber-500/20 data-[state=active]:text-orange-400 data-[state=active]:shadow-md data-[state=active]:border data-[state=active]:border-orange-500/30 transition-all"><ChefHat className="h-4 w-4 mr-1" /> Slim Recipes</TabsTrigger>
+            <TabsTrigger value="healthy-recipes" className="rounded-xl font-bold text-xs data-[state=active]:bg-gradient-to-r data-[state=active]:from-teal-500/20 data-[state=active]:to-cyan-500/20 data-[state=active]:text-teal-400 data-[state=active]:shadow-md data-[state=active]:border data-[state=active]:border-teal-500/30 transition-all"><ChefHat className="h-4 w-4 mr-1" /> Healthy</TabsTrigger>
           </TabsList>
 
           {/* PERSONALIZED PLANS TAB */}
           <TabsContent value="personalized-plans" className="space-y-8">
             <div className="text-center space-y-4">
-              <h2 className="text-3xl font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">AI-Powered Personalized Plans</h2>
-              <p className="text-muted-foreground max-w-2xl mx-auto">Get a custom workout routine and meal plan tailored to your body, goals, and lifestyle.</p>
+              <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="inline-block">
+                <div className="relative px-8 py-4 rounded-2xl border-2 border-emerald-500/40 bg-gradient-to-r from-emerald-500/10 via-green-500/5 to-emerald-500/10 backdrop-blur-xl shadow-xl shadow-emerald-500/10">
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-gradient-to-r from-emerald-500 to-green-600 rounded-full text-white text-xs font-bold shadow-lg">
+                    ✨ AI-POWERED
+                  </div>
+                  <h2 className="text-3xl md:text-4xl font-black bg-gradient-to-r from-emerald-400 via-green-400 to-teal-400 bg-clip-text text-transparent mt-2">
+                    Personalized Plans
+                  </h2>
+                </div>
+              </motion.div>
+              <p className="text-muted-foreground max-w-2xl mx-auto text-sm md:text-base">Get a custom workout routine and meal plan tailored to your body, goals, and lifestyle.</p>
             </div>
             <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
               {(Object.entries(FITSLIM_PLANS) as [string, typeof FITSLIM_PLANS.weekly][]).map(([key, plan]) => (
