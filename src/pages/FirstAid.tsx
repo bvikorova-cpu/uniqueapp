@@ -6,7 +6,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import {
   Heart, Phone, AlertTriangle, Droplet, Flame, Bone, Wind, Zap, Activity,
   Stethoscope, Siren, GraduationCap, Package, HeartPulse, Scan,
-  Trophy, TrendingUp, Star
+  Trophy, TrendingUp, Star, Gamepad2, Award, Eye, BookOpen, MessageSquare, MapPin
 } from "lucide-react";
 import { useLiveStats } from "@/hooks/useLiveStats";
 import { FirstAidHero } from "@/components/firstaid/FirstAidHero";
@@ -16,8 +16,14 @@ import { AIFirstAidQuiz } from "@/components/firstaid/AIFirstAidQuiz";
 import { AIFirstAidKit } from "@/components/firstaid/AIFirstAidKit";
 import { AICPRCoach } from "@/components/firstaid/AICPRCoach";
 import { AIInjuryAssessor } from "@/components/firstaid/AIInjuryAssessor";
+import { AIScenarioSimulator } from "@/components/firstaid/AIScenarioSimulator";
+import { AICertificationSystem } from "@/components/firstaid/AICertificationSystem";
+import { AIWoundGuide } from "@/components/firstaid/AIWoundGuide";
+import { CommunityStories } from "@/components/firstaid/CommunityStories";
+import { LiveExpertChat } from "@/components/firstaid/LiveExpertChat";
+import { FirstAidMap } from "@/components/firstaid/FirstAidMap";
 
-type ViewType = "hub" | "symptoms" | "emergency" | "quiz" | "kit" | "cpr" | "injury";
+type ViewType = "hub" | "symptoms" | "emergency" | "quiz" | "kit" | "cpr" | "injury" | "simulator" | "certification" | "wound" | "stories" | "expert" | "map";
 
 const AI_TOOLS = [
   { id: "symptoms" as ViewType, icon: Stethoscope, label: "AI Symptom Checker", desc: "Analyze symptoms & get first aid steps", color: "from-red-500 to-rose-600" },
@@ -26,6 +32,12 @@ const AI_TOOLS = [
   { id: "kit" as ViewType, icon: Package, label: "AI Kit Builder", desc: "Personalized kit checklists", color: "from-emerald-500 to-green-600" },
   { id: "cpr" as ViewType, icon: HeartPulse, label: "AI CPR Coach", desc: "Interactive CPR training", color: "from-pink-500 to-fuchsia-600" },
   { id: "injury" as ViewType, icon: Scan, label: "AI Injury Assessor", desc: "Assess & treat injuries", color: "from-purple-500 to-violet-600" },
+  { id: "simulator" as ViewType, icon: Gamepad2, label: "AI Scenario Simulator", desc: "Interactive emergency scenarios", color: "from-amber-500 to-orange-600" },
+  { id: "certification" as ViewType, icon: Award, label: "Certification System", desc: "Earn digital certificates", color: "from-yellow-500 to-amber-600" },
+  { id: "wound" as ViewType, icon: Eye, label: "AI Wound Guide", desc: "Visual wound identification", color: "from-cyan-500 to-blue-600" },
+  { id: "stories" as ViewType, icon: BookOpen, label: "Community Stories", desc: "Real first aid success stories", color: "from-rose-500 to-pink-600" },
+  { id: "expert" as ViewType, icon: MessageSquare, label: "AI Expert Chat", desc: "Chat with AI specialist", color: "from-teal-500 to-emerald-600" },
+  { id: "map" as ViewType, icon: MapPin, label: "First Aid Map", desc: "Find AEDs & pharmacies nearby", color: "from-indigo-500 to-blue-600" },
 ];
 
 const EMERGENCY_CONTACTS = [
@@ -88,6 +100,12 @@ const FirstAid = () => {
   if (activeView === "quiz") return <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-4 max-w-4xl"><AIFirstAidQuiz onBack={() => setActiveView("hub")} /></div></div>;
   if (activeView === "kit") return <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-4 max-w-4xl"><AIFirstAidKit onBack={() => setActiveView("hub")} /></div></div>;
   if (activeView === "cpr") return <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-4 max-w-4xl"><AICPRCoach onBack={() => setActiveView("hub")} /></div></div>;
+  if (activeView === "simulator") return <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-4 max-w-4xl"><AIScenarioSimulator onBack={() => setActiveView("hub")} /></div></div>;
+  if (activeView === "certification") return <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-4 max-w-4xl"><AICertificationSystem onBack={() => setActiveView("hub")} /></div></div>;
+  if (activeView === "wound") return <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-4 max-w-4xl"><AIWoundGuide onBack={() => setActiveView("hub")} /></div></div>;
+  if (activeView === "stories") return <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-4 max-w-4xl"><CommunityStories onBack={() => setActiveView("hub")} /></div></div>;
+  if (activeView === "expert") return <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-4 max-w-4xl"><LiveExpertChat onBack={() => setActiveView("hub")} /></div></div>;
+  if (activeView === "map") return <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-4 max-w-4xl"><FirstAidMap onBack={() => setActiveView("hub")} /></div></div>;
   if (activeView === "injury") return <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-4 max-w-4xl"><AIInjuryAssessor onBack={() => setActiveView("hub")} /></div></div>;
 
   const activeData = FIRST_AID_CATEGORIES.find(c => c.id === activeCategory)!;
@@ -136,7 +154,7 @@ const FirstAid = () => {
 
         {/* AI Tools Grid */}
         <h2 className="text-2xl font-bold mb-4">🤖 AI-Powered Tools</h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-10">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 mb-10">
           {AI_TOOLS.map((tool) => {
             const Icon = tool.icon;
             return (
@@ -151,7 +169,7 @@ const FirstAid = () => {
                   </div>
                   <p className="font-semibold text-sm">{tool.label}</p>
                   <p className="text-xs text-muted-foreground mt-1">{tool.desc}</p>
-                  <Badge className="mt-2 bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300 text-[10px]">3 Credits</Badge>
+                  <Badge className="mt-2 bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300 text-[10px]">{tool.id === "stories" ? "Free" : "3 Credits"}</Badge>
                 </CardContent>
               </Card>
             );
