@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Heart, Smile, Zap, ThumbsUp, Frown, AlertTriangle, Sparkles, Cloud, Coins } from "lucide-react";
+import { Heart, Smile, Zap, ThumbsUp, Frown, AlertTriangle, Sparkles, Cloud, Coins, ArrowLeft } from "lucide-react";
 
 const emotionIcons: Record<string, any> = {
   joy: Smile,
@@ -38,7 +38,7 @@ interface Credits {
   total_credits_used: number;
 }
 
-export function EmotionWallet() {
+export function EmotionWallet({ onBack }: { onBack?: () => void }) {
   const { toast } = useToast();
   const [wallet, setWallet] = useState<Wallet | null>(null);
   const [credits, setCredits] = useState<Credits | null>(null);
@@ -147,6 +147,11 @@ export function EmotionWallet() {
 
   return (
     <div className="space-y-6">
+      {onBack && (
+        <Button variant="ghost" onClick={onBack} className="gap-2">
+          <ArrowLeft className="h-4 w-4" /> Back to Hub
+        </Button>
+      )}
       {/* AI Credits Card */}
       <Card className="border-primary/30 bg-gradient-to-r from-primary/5 to-primary/10">
         <CardHeader>

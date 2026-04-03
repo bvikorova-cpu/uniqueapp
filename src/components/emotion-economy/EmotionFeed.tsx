@@ -5,7 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Heart, MessageCircle, Eye, Sparkles, RefreshCw, Coins, AlertCircle } from "lucide-react";
+import { Heart, MessageCircle, Eye, Sparkles, RefreshCw, Coins, AlertCircle, ArrowLeft } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
 
 interface EmotionCredits {
@@ -14,7 +14,7 @@ interface EmotionCredits {
   total_credits_used: number;
 }
 
-export function EmotionFeed() {
+export function EmotionFeed({ onBack }: { onBack?: () => void }) {
   const { toast } = useToast();
   const [searchParams] = useSearchParams();
   const [content, setContent] = useState("");
@@ -241,6 +241,11 @@ export function EmotionFeed() {
 
   return (
     <div className="space-y-6">
+      {onBack && (
+        <Button variant="ghost" onClick={onBack} className="gap-2">
+          <ArrowLeft className="h-4 w-4" /> Back to Hub
+        </Button>
+      )}
       {/* AI Credits Status */}
       <Card className="border-primary/30 bg-gradient-to-r from-primary/5 to-primary/10">
         <CardHeader className="pb-3">

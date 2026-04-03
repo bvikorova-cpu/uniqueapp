@@ -5,9 +5,9 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Zap, TrendingUp, Award } from "lucide-react";
+import { Zap, TrendingUp, Award, ArrowLeft } from "lucide-react";
 
-export function EmotionMining() {
+export function EmotionMining({ onBack }: { onBack?: () => void }) {
   const { toast } = useToast();
   const [isMining, setIsMining] = useState(false);
   const [miningProgress, setMiningProgress] = useState(0);
@@ -62,6 +62,11 @@ export function EmotionMining() {
 
   return (
     <div className="space-y-6">
+      {onBack && (
+        <Button variant="ghost" onClick={onBack} className="gap-2">
+          <ArrowLeft className="h-4 w-4" /> Back to Hub
+        </Button>
+      )}
       <Card className="border-green-500/20">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">

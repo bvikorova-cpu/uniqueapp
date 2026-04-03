@@ -2,7 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { Shield, Check, AlertTriangle } from "lucide-react";
+import { Shield, Check, AlertTriangle, ArrowLeft } from "lucide-react";
 
 const insurancePlans = [
   {
@@ -48,7 +48,7 @@ const insurancePlans = [
   }
 ];
 
-export function EmotionInsurance() {
+export function EmotionInsurance({ onBack }: { onBack?: () => void }) {
   const { toast } = useToast();
 
   const handleGetProtected = (planName: string, price: string) => {
@@ -60,6 +60,11 @@ export function EmotionInsurance() {
 
   return (
     <div className="space-y-6">
+      {onBack && (
+        <Button variant="ghost" onClick={onBack} className="gap-2">
+          <ArrowLeft className="h-4 w-4" /> Back to Hub
+        </Button>
+      )}
       <Card className="border-purple-500/20">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">

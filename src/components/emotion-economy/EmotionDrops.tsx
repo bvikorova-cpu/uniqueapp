@@ -5,9 +5,9 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Heart, Zap, Users, Clock, TrendingUp } from "lucide-react";
+import { Heart, Zap, Users, Clock, TrendingUp, ArrowLeft } from "lucide-react";
 
-export function EmotionDrops() {
+export function EmotionDrops({ onBack }: { onBack?: () => void }) {
   const { toast } = useToast();
 
   const handleJoinDrop = async (dropId: string, price: number) => {
@@ -38,6 +38,11 @@ export function EmotionDrops() {
 
   return (
     <div className="space-y-6">
+      {onBack && (
+        <Button variant="ghost" onClick={onBack} className="gap-2">
+          <ArrowLeft className="h-4 w-4" /> Back to Hub
+        </Button>
+      )}
       <Card className="border-pink-500/20 bg-gradient-to-br from-pink-50 to-purple-50 dark:from-pink-950/20 dark:to-purple-950/20">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">

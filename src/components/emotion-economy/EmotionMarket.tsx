@@ -7,9 +7,9 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { TrendingUp, TrendingDown, ShoppingCart, RefreshCw } from "lucide-react";
+import { TrendingUp, TrendingDown, ShoppingCart, RefreshCw, ArrowLeft } from "lucide-react";
 
-export function EmotionMarket() {
+export function EmotionMarket({ onBack }: { onBack?: () => void }) {
   const { toast } = useToast();
   const [listings, setListings] = useState<any[]>([]);
   const [showCreateListing, setShowCreateListing] = useState(false);
@@ -85,6 +85,11 @@ export function EmotionMarket() {
 
   return (
     <div className="space-y-6">
+      {onBack && (
+        <Button variant="ghost" onClick={onBack} className="gap-2">
+          <ArrowLeft className="h-4 w-4" /> Back to Hub
+        </Button>
+      )}
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
