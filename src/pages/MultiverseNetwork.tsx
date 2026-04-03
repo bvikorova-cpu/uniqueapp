@@ -143,6 +143,12 @@ const MultiverseNetwork = () => {
       case "leaderboard": return <MultiverseLeaderboard onBack={goBack} />;
       case "clash-arena": return <RealityClashArena onBack={goBack} />;
       case "destiny-forecast": return <QuantumDestinyForecast onBack={goBack} />;
+      case "my-lives": return <MyLives />;
+      case "create-life": return <CreateLife />;
+      case "explore-lives": return <ExploreLives />;
+      case "cross-reveal": return <CrossRealityReveal />;
+      case "reality-merge": return <RealityMerge />;
+      case "parallel-subs": return <ParallelSubscriptions />;
       default: return null;
     }
   };
