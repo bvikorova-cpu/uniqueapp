@@ -241,7 +241,7 @@ import {
   Coffee,
   CoffeeCheckins,
   CoffeeBuddy,
-  ParallelLives,
+  
   EmotionEconomy,
   QuantumSocial,
   HolographicAvatars,
