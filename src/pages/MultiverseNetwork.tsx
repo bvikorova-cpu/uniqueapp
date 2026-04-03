@@ -57,7 +57,7 @@ const tools = [
   { id: "analytics" as ViewType, icon: TrendingUp, title: "Analytics", description: "Analyze performance across dimensions", color: "violet" },
   { id: "community" as ViewType, icon: Users, title: "Community", description: "Connect with other explorers", color: "cyan" },
   { id: "journal" as ViewType, icon: BookOpen, title: "Quantum Journal", description: "Record multiverse reflections", color: "indigo" },
-  { id: "parallel-subs" as ViewType, icon: CreditCard, title: "Lives Subscriptions", description: "Premium plans for parallel lives", color: "yellow" },
+  { id: "pricing" as ViewType, icon: CreditCard, title: "Access Plans", description: "Subscriptions & one-time purchases", color: "emerald" },
   { id: "pricing" as ViewType, icon: CreditCard, title: "Access Plans", description: "Subscriptions & one-time purchases", color: "emerald" },
 ];
 
