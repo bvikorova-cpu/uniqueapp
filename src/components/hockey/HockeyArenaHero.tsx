@@ -1,8 +1,9 @@
+import { Suspense } from "react";
 import { motion } from "framer-motion";
 import { Users, Swords, Trophy, Wifi } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useAuth } from "@/contexts/AuthContext";
-import heroVideo from "@/assets/hockey-arena-hero.mp4.asset.json";
+import { Stadium3D } from "@/components/arena/Stadium3D";
 
 interface HockeyArenaHeroProps {
   stats: { totalPlayers: number; totalMatches: number; activeLeagues: number; onlineManagers: number };
@@ -23,9 +24,11 @@ export function HockeyArenaHero({ stats, onNavigate }: HockeyArenaHeroProps) {
   return (
     <div className="relative rounded-2xl overflow-hidden">
       <div className="relative h-[280px] md:h-[380px]">
-        <video autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover" style={{ filter: "brightness(1.3) saturate(1.3)" }}>
-          <source src={heroVideo.url} type="video/mp4" />
-        </video>
+        <div className="absolute inset-0">
+          <Suspense fallback={<div className="w-full h-full bg-gradient-to-br from-cyan-950 to-slate-950" />}>
+            <Stadium3D sport="hockey" />
+          </Suspense>
+        </div>
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
         <div className="relative z-10 h-full flex flex-col justify-end p-4 md:p-8">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
