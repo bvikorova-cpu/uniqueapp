@@ -1,0 +1,55 @@
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { ArrowLeft, Sparkles, Loader2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+
+const gardenTypes = ["Fairy Garden", "Rose Garden", "Butterfly Garden", "Herb Garden", "Zen Garden", "Tropical Paradise", "Wildflower Meadow", "Crystal Garden"];
+
+export function GardenDesigner({ onBack }: { onBack: () => void }) {
+  const { toast } = useToast();
+  const [type, setType] = useState("");
+  const [details, setDetails] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState("");
+
+  const generate = async () => {
+    if (!type) return toast({ title: "Select garden type", variant: "destructive" });
+    setLoading(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Please sign in");
+      const { data, error } = await supabase.functions.invoke("glamour-ai-generate", {
+        body: { type: "garden", prompt: `Design a ${type}. ${details}. Include: plant list, layout plan, decorations, care schedule, and seasonal tips.` },
+      });
+      if (error) throw error;
+      setResult(data.result);
+      await supabase.from("glamour_creations").insert({
+        user_id: user.id, creation_type: "garden", title: type,
+        prompt: details, result_text: data.result, credits_used: 3,
+      });
+    } catch (e: any) {
+      toast({ title: "Error", description: e.message, variant: "destructive" });
+    } finally { setLoading(false); }
+  };
+
+  return (
+    <div className="space-y-6">
+      <Button variant="ghost" onClick={onBack}><ArrowLeft className="h-4 w-4 mr-2" /> Back</Button>
+      <h2 className="text-2xl font-black">🌸 Garden Designer</h2>
+      <p className="text-muted-foreground">Create magical gardens!</p>
+      <Select value={type} onValueChange={setType}>
+        <SelectTrigger><SelectValue placeholder="Garden Type" /></SelectTrigger>
+        <SelectContent>{gardenTypes.map(g => <SelectItem key={g} value={g}>{g}</SelectItem>)}</SelectContent>
+      </Select>
+      <Textarea placeholder="Details... (e.g., balcony garden, loves pink flowers)" value={details} onChange={e => setDetails(e.target.value)} />
+      <Button onClick={generate} disabled={loading} className="bg-gradient-to-r from-pink-500 to-green-400">
+        {loading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Sparkles className="h-4 w-4 mr-2" />}
+        Design Garden (3 coins)
+      </Button>
+      {result && <div className="bg-gradient-to-br from-pink-500/10 to-green-500/10 border border-pink-400/20 rounded-xl p-6 whitespace-pre-wrap">{result}</div>}
+    </div>
+  );
+}
