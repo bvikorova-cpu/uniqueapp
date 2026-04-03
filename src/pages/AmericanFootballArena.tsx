@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { UserPlus, ShoppingCart, Shield, Dumbbell, ShoppingBag, Swords, Trophy, Map, Search, Building, ArrowUpDown, Medal, GraduationCap, BarChart3, Coins } from "lucide-react";
+import { ArenaAuthGuard } from "@/components/arena/ArenaAuthGuard";
 import { AFArenaHero } from "@/components/american-football/AFArenaHero";
 import { AFEngagement } from "@/components/american-football/AFEngagement";
 import { AFToolCard } from "@/components/american-football/AFToolCard";
