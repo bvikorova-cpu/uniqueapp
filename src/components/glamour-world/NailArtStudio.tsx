@@ -1,0 +1,55 @@
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { ArrowLeft, Sparkles, Loader2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+
+const styles = ["French Tips", "Glitter Ombre", "Floral Art", "Abstract", "Galaxy", "Cute Animals", "Gemstone", "Pastel Rainbow", "Marble", "Butterfly Wings"];
+
+export function NailArtStudio({ onBack }: { onBack: () => void }) {
+  const { toast } = useToast();
+  const [style, setStyle] = useState("");
+  const [details, setDetails] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState("");
+
+  const generate = async () => {
+    if (!style) return toast({ title: "Select a nail style", variant: "destructive" });
+    setLoading(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Please sign in");
+      const { data, error } = await supabase.functions.invoke("glamour-ai-generate", {
+        body: { type: "nail_art", prompt: `Design a ${style} nail art look. ${details}. Include: color palette, step-by-step guide, tools needed, and tips for each finger.` },
+      });
+      if (error) throw error;
+      setResult(data.result);
+      await supabase.from("glamour_creations").insert({
+        user_id: user.id, creation_type: "nail_art", title: style,
+        prompt: details, result_text: data.result, credits_used: 3,
+      });
+    } catch (e: any) {
+      toast({ title: "Error", description: e.message, variant: "destructive" });
+    } finally { setLoading(false); }
+  };
+
+  return (
+    <div className="space-y-6">
+      <Button variant="ghost" onClick={onBack}><ArrowLeft className="h-4 w-4 mr-2" /> Back</Button>
+      <h2 className="text-2xl font-black">💅 Nail Art Studio</h2>
+      <p className="text-muted-foreground">Get stunning nail art designs!</p>
+      <Select value={style} onValueChange={setStyle}>
+        <SelectTrigger><SelectValue placeholder="Nail Art Style" /></SelectTrigger>
+        <SelectContent>{styles.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent>
+      </Select>
+      <Textarea placeholder="Preferences... (e.g., pink and gold, short nails)" value={details} onChange={e => setDetails(e.target.value)} />
+      <Button onClick={generate} disabled={loading} className="bg-gradient-to-r from-rose-500 to-pink-500">
+        {loading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Sparkles className="h-4 w-4 mr-2" />}
+        Design Nails (3 coins)
+      </Button>
+      {result && <div className="bg-gradient-to-br from-rose-500/10 to-pink-500/10 border border-rose-400/20 rounded-xl p-6 whitespace-pre-wrap">{result}</div>}
+    </div>
+  );
+}

@@ -335,6 +335,9 @@ export const CampaignApprovals = lazy(() => import("@/pages/admin/CampaignApprov
 export const WithdrawalRequests = lazy(() => import("@/pages/admin/WithdrawalRequests"));
 export const CampaignSuccess = lazy(() => import("@/pages/fundraising/CampaignSuccess"));
 
+// Glamour World
+export const GlamourWorld = lazy(() => import("@/pages/GlamourWorld"));
+
 // Misc
 export const Contact = lazy(() => import("@/pages/Contact"));
 export const Terms = lazy(() => import("@/pages/Terms"));

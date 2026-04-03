@@ -163,6 +163,7 @@ import {
   HockeyArena,
   TennisArena,
   AmericanFootballArena,
+  GlamourWorld,
   F1Racing,
   F1Subscription,
   F1FantasyTeam,
@@ -714,6 +715,7 @@ const App = () => {
                         <Route path="/my-properties" element={<ProtectedRoute><MyProperties /></ProtectedRoute>} />
                         <Route path="/home-decor" element={<HomeDecorMarketplace />} />
                         
+                        <Route path="/glamour-world" element={<GlamourWorld />} />
                         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                         <Route path="*" element={<NotFound />} />
                       </Routes>

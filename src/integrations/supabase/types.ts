@@ -15556,6 +15556,159 @@ export type Database = {
         }
         Relationships: []
       }
+      glamour_coins: {
+        Row: {
+          balance: number
+          created_at: string
+          id: string
+          total_purchased: number
+          total_spent: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          balance?: number
+          created_at?: string
+          id?: string
+          total_purchased?: number
+          total_spent?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          balance?: number
+          created_at?: string
+          id?: string
+          total_purchased?: number
+          total_spent?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      glamour_creations: {
+        Row: {
+          created_at: string
+          creation_type: string
+          credits_used: number
+          id: string
+          is_favorite: boolean
+          metadata: Json | null
+          prompt: string
+          result_text: string | null
+          result_url: string | null
+          title: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          creation_type: string
+          credits_used?: number
+          id?: string
+          is_favorite?: boolean
+          metadata?: Json | null
+          prompt: string
+          result_text?: string | null
+          result_url?: string | null
+          title?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          creation_type?: string
+          credits_used?: number
+          id?: string
+          is_favorite?: boolean
+          metadata?: Json | null
+          prompt?: string
+          result_text?: string | null
+          result_url?: string | null
+          title?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      glamour_pets: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          current_outfit: string | null
+          grooming_count: number
+          happiness: number
+          id: string
+          name: string
+          species: string
+          style_level: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          current_outfit?: string | null
+          grooming_count?: number
+          happiness?: number
+          id?: string
+          name: string
+          species?: string
+          style_level?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          current_outfit?: string | null
+          grooming_count?: number
+          happiness?: number
+          id?: string
+          name?: string
+          species?: string
+          style_level?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      glamour_stories: {
+        Row: {
+          characters: Json | null
+          cover_url: string | null
+          created_at: string
+          credits_used: number
+          genre: string
+          id: string
+          is_favorite: boolean
+          story_text: string | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          characters?: Json | null
+          cover_url?: string | null
+          created_at?: string
+          credits_used?: number
+          genre?: string
+          id?: string
+          is_favorite?: boolean
+          story_text?: string | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          characters?: Json | null
+          cover_url?: string | null
+          created_at?: string
+          credits_used?: number
+          genre?: string
+          id?: string
+          is_favorite?: boolean
+          story_text?: string | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       global_announcements: {
         Row: {
           created_at: string | null
