@@ -822,6 +822,62 @@ serve(async (req) => {
       // ============================================
       // MULTIVERSE SERVICE
       // ============================================
+      // SPORTS ARENA COINS (Football, Basketball, Hockey, Tennis, AF)
+      // ============================================
+
+      const SPORTS_COIN_TABLES: Record<string, string> = {
+        football_coins: "football_coins",
+        basketball_coins: "basketball_coins",
+        hockey_coins: "hockey_coins",
+        tennis_coins: "tennis_coins",
+        af_coins: "american_football_coins",
+      };
+
+      if (SPORTS_COIN_TABLES[paymentType]) {
+        const table = SPORTS_COIN_TABLES[paymentType];
+        const coins = parseInt(meta.coins || meta.credits || "0");
+        if (coins > 0) {
+          const { data: existing } = await supabase.from(table).select("id, balance").eq("user_id", meta.user_id).maybeSingle();
+          if (existing) {
+            await supabase.from(table).update({
+              balance: (existing.balance || 0) + coins,
+              total_purchased: (existing.total_purchased || 0) + coins,
+              updated_at: new Date().toISOString(),
+            }).eq("id", existing.id);
+          } else {
+            await supabase.from(table).insert({
+              user_id: meta.user_id,
+              balance: coins,
+              total_purchased: coins,
+            });
+          }
+          log(`${paymentType} added`, { coins, table });
+        }
+        await recordTransaction(paymentType, meta.user_id);
+      }
+
+      // ============================================
+      // GLAMOUR COINS
+      // ============================================
+
+      if (paymentType === "glamour_coins") {
+        const coins = parseInt(meta.coins || "0");
+        if (coins > 0) {
+          const { data: existing } = await supabase.from("glamour_coins").select("id, balance").eq("user_id", meta.user_id).maybeSingle();
+          if (existing) {
+            await supabase.from("glamour_coins").update({
+              balance: (existing.balance || 0) + coins,
+              updated_at: new Date().toISOString(),
+            }).eq("id", existing.id);
+          } else {
+            await supabase.from("glamour_coins").insert({ user_id: meta.user_id, balance: coins });
+          }
+          log("Glamour coins added", { coins });
+        }
+        await recordTransaction("glamour_coins", meta.user_id);
+      }
+
+      // ============================================
 
       if (paymentType === "multiverse_service") {
         log("Processing multiverse service");
