@@ -162,6 +162,7 @@ import {
   BasketballArena,
   HockeyArena,
   TennisArena,
+  AmericanFootballArena,
   F1Racing,
   F1Subscription,
   F1FantasyTeam,
@@ -582,6 +583,7 @@ const App = () => {
                         <Route path="/basketball-arena" element={<BasketballArena />} />
                         <Route path="/hockey-arena" element={<HockeyArena />} />
                         <Route path="/tennis-arena" element={<TennisArena />} />
+                        <Route path="/american-football-arena" element={<AmericanFootballArena />} />
                         <Route path="/comedy-club" element={<ComedyClub />} />
                         <Route path="/comedian-dashboard" element={<ProtectedRoute><ComedianDashboard /></ProtectedRoute>} />
                         <Route path="/comedy-live/:showId" element={<ComedyLiveShow />} />
