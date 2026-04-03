@@ -577,6 +577,7 @@ const App = () => {
                         <Route path="/virtual-escape-room" element={<VirtualEscapeRoom />} />
                         <Route path="/horse-racing" element={<HorseRacing />} />
                         <Route path="/football-arena" element={<FootballArena />} />
+                        <Route path="/basketball-arena" element={<BasketballArena />} />
                         <Route path="/comedy-club" element={<ComedyClub />} />
                         <Route path="/comedian-dashboard" element={<ProtectedRoute><ComedianDashboard /></ProtectedRoute>} />
                         <Route path="/comedy-live/:showId" element={<ComedyLiveShow />} />
