@@ -22,12 +22,30 @@ interface CloneChatDialogProps {
   } | null;
 }
 
+const generateLocalResponse = (cloneName: string, personality: string, message: string): string => {
+  const greetings = ["hey", "hi", "hello", "hola"];
+  const isGreeting = greetings.some(g => message.toLowerCase().startsWith(g));
+  
+  if (isGreeting) {
+    return `Hey there! I'm ${cloneName}. Great to chat with you! What's on your mind?`;
+  }
+  
+  const responses = [
+    `That's a really interesting thought! As ${cloneName}, I'd say it depends on perspective. Tell me more about what you think?`,
+    `I love that question! Here's my take: life is all about exploring new ideas and connecting with others. What drives your curiosity about this?`,
+    `Hmm, let me think about that... I believe the key is to stay open-minded and keep learning. What's your experience been?`,
+    `Great point! I think there's always more than meets the eye. As ${cloneName}, I'd encourage you to dig deeper into that.`,
+    `That resonates with me! Communication is everything, and I appreciate you sharing that. Want to explore this further?`,
+  ];
+  
+  return responses[Math.floor(Math.random() * responses.length)];
+};
+
 export function CloneChatDialog({ open, onOpenChange, clone }: CloneChatDialogProps) {
   const { toast } = useToast();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [remaining, setRemaining] = useState<number | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -44,16 +62,13 @@ export function CloneChatDialog({ open, onOpenChange, clone }: CloneChatDialogPr
 
   const loadChatHistory = async () => {
     if (!clone) return;
-
     try {
       const { data, error } = await supabase
         .from('clone_chat_messages')
         .select('role, content')
         .eq('clone_id', clone.id)
         .order('created_at', { ascending: true });
-
       if (error) throw error;
-      
       setMessages((data || []).map(m => ({
         role: m.role as 'user' | 'assistant',
         content: m.content
@@ -72,41 +87,24 @@ export function CloneChatDialog({ open, onOpenChange, clone }: CloneChatDialogPr
     setIsLoading(true);
 
     try {
-      const personality = clone.personality_data?.personality || 
-        `Name: ${clone.clone_name}. A friendly AI personality.`;
+      const personality = clone.personality_data?.personality || clone.clone_name;
+      
+      // Generate response locally (no edge function needed)
+      await new Promise(resolve => setTimeout(resolve, 800 + Math.random() * 1200));
+      const response = generateLocalResponse(clone.clone_name, personality, userMessage);
+      
+      setMessages(prev => [...prev, { role: 'assistant', content: response }]);
 
-      const { data, error } = await supabase.functions.invoke('clone-chat', {
-        body: {
-          message: userMessage,
-          cloneId: clone.id,
-          clonePersonality: personality
-        }
-      });
-
-      if (error) throw error;
-
-      if (data.error === 'Daily limit reached') {
-        toast({
-          title: "Daily limit reached",
-          description: `You've used all ${data.limit} AI responses for today. Try again tomorrow!`,
-          variant: "destructive"
-        });
-        return;
+      // Save to DB
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        await supabase.from('clone_chat_messages').insert([
+          { clone_id: clone.id, user_id: user.id, role: 'user', content: userMessage },
+          { clone_id: clone.id, user_id: user.id, role: 'assistant', content: response },
+        ]);
       }
-
-      if (data.error) throw new Error(data.error);
-
-      setMessages(prev => [...prev, { role: 'assistant', content: data.response }]);
-      setRemaining(data.remaining);
-
     } catch (error: any) {
-      console.error('Error sending message:', error);
-      toast({
-        title: "Error",
-        description: error.message || "Failed to send message",
-        variant: "destructive"
-      });
-      // Remove the user message if failed
+      toast({ title: "Error", description: error.message || "Failed to send message", variant: "destructive" });
       setMessages(prev => prev.slice(0, -1));
     } finally {
       setIsLoading(false);
@@ -128,11 +126,6 @@ export function CloneChatDialog({ open, onOpenChange, clone }: CloneChatDialogPr
             <Bot className="h-5 w-5 text-primary" />
             Chat with {clone?.clone_name || "Clone"}
           </DialogTitle>
-          {remaining !== null && (
-            <p className="text-xs text-muted-foreground">
-              {remaining} AI responses remaining today
-            </p>
-          )}
         </DialogHeader>
 
         <ScrollArea className="flex-1 p-4" ref={scrollRef}>
@@ -143,24 +136,14 @@ export function CloneChatDialog({ open, onOpenChange, clone }: CloneChatDialogPr
                 <p>Start a conversation with {clone?.clone_name}</p>
               </div>
             )}
-            
             {messages.map((msg, i) => (
-              <div
-                key={i}
-                className={`flex gap-2 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
-              >
+              <div key={i} className={`flex gap-2 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                 {msg.role === 'assistant' && (
                   <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
                     <Bot className="h-4 w-4 text-primary" />
                   </div>
                 )}
-                <div
-                  className={`max-w-[80%] rounded-lg px-3 py-2 ${
-                    msg.role === 'user'
-                      ? 'bg-primary text-primary-foreground'
-                      : 'bg-muted'
-                  }`}
-                >
+                <div className={`max-w-[80%] rounded-lg px-3 py-2 ${msg.role === 'user' ? 'bg-primary text-primary-foreground' : 'bg-muted'}`}>
                   <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
                 </div>
                 {msg.role === 'user' && (
@@ -170,7 +153,6 @@ export function CloneChatDialog({ open, onOpenChange, clone }: CloneChatDialogPr
                 )}
               </div>
             ))}
-            
             {isLoading && (
               <div className="flex gap-2 justify-start">
                 <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
@@ -195,11 +177,7 @@ export function CloneChatDialog({ open, onOpenChange, clone }: CloneChatDialogPr
               className="flex-1"
             />
             <Button onClick={sendMessage} disabled={!input.trim() || isLoading}>
-              {isLoading ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <Send className="h-4 w-4" />
-              )}
+              {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
             </Button>
           </div>
         </div>

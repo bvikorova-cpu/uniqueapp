@@ -23,7 +23,6 @@ export function MyClones() {
   const [clones, setClones] = useState<Clone[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [exportingId, setExportingId] = useState<string | null>(null);
 
   useEffect(() => { fetchClones(); }, []);
 
@@ -59,17 +58,30 @@ export function MyClones() {
   };
 
   const exportConversations = async (cloneId: string) => {
-    setExportingId(cloneId);
     try {
-      const { data, error } = await supabase.functions.invoke("create-clone-checkout", {
-        body: { productKey: "export" },
-      });
+      const { data, error } = await supabase
+        .from('clone_chat_messages')
+        .select('role, content, created_at')
+        .eq('clone_id', cloneId)
+        .order('created_at', { ascending: true });
+
       if (error) throw error;
-      if (data?.url) window.open(data.url, "_blank");
+      if (!data?.length) {
+        toast({ title: "No conversations", description: "This clone has no chat history to export", variant: "destructive" });
+        return;
+      }
+
+      const text = data.map(m => `[${new Date(m.created_at).toLocaleString()}] ${m.role}: ${m.content}`).join('\n\n');
+      const blob = new Blob([text], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `clone-conversations-${cloneId.slice(0, 8)}.txt`;
+      a.click();
+      URL.revokeObjectURL(url);
+      toast({ title: "Exported!", description: "Conversations downloaded successfully" });
     } catch {
-      toast({ title: "Error", description: "Failed to start export checkout", variant: "destructive" });
-    } finally {
-      setExportingId(null);
+      toast({ title: "Error", description: "Failed to export conversations", variant: "destructive" });
     }
   };
 
@@ -123,9 +135,9 @@ export function MyClones() {
                   <Button variant="outline" size="sm" onClick={() => toggleCloneStatus(clone.id, clone.is_active)}>
                     {clone.is_active ? <><Pause className="h-4 w-4 mr-2" /> Pause</> : <><Play className="h-4 w-4 mr-2" /> Activate</>}
                   </Button>
-                  <Button variant="outline" size="sm" onClick={() => exportConversations(clone.id)} disabled={exportingId === clone.id}>
-                    {exportingId === clone.id ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Download className="h-4 w-4 mr-2" />}
-                    Export (€2.00)
+                  <Button variant="outline" size="sm" onClick={() => exportConversations(clone.id)}>
+                    <Download className="h-4 w-4 mr-2" />
+                    Export
                   </Button>
                 </div>
               </CardContent>
