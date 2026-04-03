@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Brain, Sparkles, Loader2, ArrowRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -14,6 +13,28 @@ const QUESTIONS = [
   { q: "What topics excite you most?", options: ["Technology & Science", "Arts & Culture", "Business & Finance", "Relationships & Psychology"] },
   { q: "Pick your ideal conversation setting:", options: ["Quick chat over coffee", "Deep late-night discussion", "Group brainstorm session", "One-on-one heart-to-heart"] },
 ];
+
+const PERSONALITY_PROFILES: Record<string, string> = {
+  "0,0,0,0,0": "The Efficient Innovator — You value speed, directness, and technical prowess. Your clone will be a no-nonsense conversationalist who cuts to the chase and loves exploring cutting-edge ideas.",
+  "1,3,3,3,3": "The Thoughtful Connector — You're a deep thinker who values emotional intelligence and meaningful relationships. Your clone will be empathetic, reflective, and excel at heart-to-heart conversations.",
+  "2,2,2,1,1": "The Creative Maverick — Humor and creativity define your style. Your clone will bring wit, cultural insights, and a fresh perspective to every conversation.",
+  "3,1,1,2,2": "The Strategic Leader — Professional yet approachable, you blend business acumen with calm confidence. Your clone will be a composed, strategic thinker perfect for brainstorming sessions.",
+};
+
+const generateProfile = (answers: number[]): string => {
+  const key = answers.join(",");
+  if (PERSONALITY_PROFILES[key]) return PERSONALITY_PROFILES[key];
+  
+  const traits = [
+    ["direct", "thoughtful", "humorous", "professional"][answers[0]],
+    ["enthusiastic", "calm", "sarcastic", "empathetic"][answers[1]],
+    ["passionate", "diplomatic", "witty", "reflective"][answers[2]],
+    ["tech-savvy", "culturally aware", "business-minded", "emotionally intelligent"][answers[3]],
+    ["efficient", "deep", "collaborative", "intimate"][answers[4]],
+  ];
+  
+  return `Your Unique Profile — You're a ${traits[0]}, ${traits[1]} communicator who handles conflict with a ${traits[2]} approach. Your passion for ${["technology", "arts & culture", "business", "psychology"][answers[3]]} shines through in ${traits[4]} conversations. Your clone will mirror this distinctive personality blend.`;
+};
 
 export function ClonePersonalityQuiz() {
   const { toast } = useToast();
@@ -36,28 +57,10 @@ export function ClonePersonalityQuiz() {
 
   const analyzeResults = async (finalAnswers: number[]) => {
     setIsAnalyzing(true);
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        toast({ title: "Sign in required", variant: "destructive" });
-        return;
-      }
-
-      const { data, error } = await supabase.functions.invoke("clone-chat", {
-        body: {
-          message: `Based on these personality quiz answers, generate a brief personality profile (3-4 sentences) for an AI clone. Answers: ${finalAnswers.map((a, i) => `Q${i+1}: "${QUESTIONS[i].options[a]}"`).join(", ")}`,
-          cloneId: "quiz-analysis",
-          clonePersonality: "You are a personality analyst. Generate concise, insightful personality profiles."
-        }
-      });
-
-      if (error) throw error;
-      setResult(data.response || "Your personality profile: Analytical and creative with a warm communication style. You blend intellectual curiosity with genuine empathy.");
-    } catch {
-      setResult("Your personality profile: You have a unique blend of traits that makes your communication style distinctive. Your clone will adapt to mirror your natural conversation patterns.");
-    } finally {
-      setIsAnalyzing(false);
-    }
+    // Simulate brief analysis delay
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    setResult(generateProfile(finalAnswers));
+    setIsAnalyzing(false);
   };
 
   const restart = () => {
@@ -81,7 +84,7 @@ export function ClonePersonalityQuiz() {
             <Brain className="h-16 w-16 mx-auto mb-4 text-primary/60" />
             <h3 className="text-lg font-bold mb-2">Discover Your Clone Personality</h3>
             <p className="text-sm text-muted-foreground mb-6 max-w-md mx-auto">
-              Answer 5 quick questions and our AI will generate the perfect personality profile for your clone
+              Answer 5 quick questions to generate the perfect personality profile for your clone
             </p>
             <Button onClick={() => setStarted(true)}>
               <Sparkles className="h-4 w-4 mr-2" /> Start Quiz
@@ -90,7 +93,7 @@ export function ClonePersonalityQuiz() {
         ) : isAnalyzing ? (
           <div className="text-center py-12">
             <Loader2 className="h-12 w-12 mx-auto mb-4 text-primary animate-spin" />
-            <p className="text-muted-foreground">AI is analyzing your personality...</p>
+            <p className="text-muted-foreground">Analyzing your personality...</p>
           </div>
         ) : result ? (
           <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="text-center py-6">

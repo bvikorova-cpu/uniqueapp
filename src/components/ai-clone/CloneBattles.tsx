@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -6,6 +6,13 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Swords, Bot, Loader2, Trophy, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
+
+const BATTLE_SCRIPTS = [
+  { winner: "yours", analysis: "Round 1: Your clone opened with a devastating pun about quantum physics. The opponent tried to counter with a joke about Schrödinger's cat, but your clone's timing was impeccable!\n\nRound 2: The opponent rallied with a clever wordplay, but your clone delivered the knockout blow with a perfectly crafted metaphor about AI consciousness. Victory!" },
+  { winner: "opponent", analysis: "Round 1: Both clones came out swinging with witty observations about modern technology. The opponent's dry humor caught everyone off guard!\n\nRound 2: Your clone made a valiant effort with a creative analogy, but the opponent sealed the deal with a brilliantly timed comeback. Close match!" },
+  { winner: "yours", analysis: "Round 1: Your clone immediately established dominance with an eloquent monologue about the nature of personality. The opponent was visibly impressed!\n\nRound 2: A fierce exchange of ideas followed, but your clone's natural charm and wit won the crowd over. Flawless victory!" },
+  { winner: "opponent", analysis: "Round 1: The opponent opened with unexpected warmth, disarming your clone's strategic approach. A clever move!\n\nRound 2: Your clone adapted quickly and delivered some excellent points, but the opponent's consistency throughout earned them the edge. A worthy adversary!" },
+];
 
 export function CloneBattles() {
   const { toast } = useToast();
@@ -36,28 +43,21 @@ export function CloneBattles() {
 
       const { data: opponents } = await supabase
         .from("personality_clones")
-        .select("clone_name, personality_data")
+        .select("clone_name")
         .neq("user_id", user.id)
         .eq("is_active", true)
         .limit(1);
 
       const opponentName = opponents?.[0]?.clone_name || "Mystery Bot";
       const yourClone = userClones[0];
-      const personalityText = typeof yourClone.personality_data === 'object' && yourClone.personality_data !== null ? (yourClone.personality_data as any).personality || "friendly" : "friendly";
 
-      const { data, error } = await supabase.functions.invoke("clone-chat", {
-        body: {
-          message: `Simulate a wit battle between "${yourClone.clone_name}" (personality: ${personalityText}) and "${opponentName}". Write 2 rounds of clever exchanges (2-3 lines each), then declare a winner with a fun reason. Keep it lighthearted.`,
-          cloneId: "battle",
-          clonePersonality: "You are an entertaining AI battle commentator. Keep it fun and family-friendly."
-        }
-      });
-
-      if (error) throw error;
-
+      // Simulate battle locally
+      await new Promise(resolve => setTimeout(resolve, 2000 + Math.random() * 1500));
+      
+      const script = BATTLE_SCRIPTS[Math.floor(Math.random() * BATTLE_SCRIPTS.length)];
       setBattleResult({
-        winner: Math.random() > 0.5 ? yourClone.clone_name : opponentName,
-        analysis: data.response || "An epic battle of wits! Both clones showed impressive personality."
+        winner: script.winner === "yours" ? yourClone.clone_name : opponentName,
+        analysis: script.analysis
       });
     } catch (err: any) {
       toast({ title: "Error", description: err.message || "Battle failed", variant: "destructive" });
@@ -97,7 +97,7 @@ export function CloneBattles() {
           </p>
 
           <Button onClick={startBattle} disabled={isMatching} size="lg" className="mb-4">
-            {isMatching ? <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Finding opponent...</> : <><Swords className="h-4 w-4 mr-2" /> Start Battle (€1.99)</>}
+            {isMatching ? <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Finding opponent...</> : <><Swords className="h-4 w-4 mr-2" /> Start Battle</>}
           </Button>
 
           {battleResult && (
