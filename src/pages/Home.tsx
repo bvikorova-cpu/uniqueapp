@@ -98,7 +98,7 @@ const Home = () => {
     { name: "Antique Appraisal", path: "/antique-appraisal", keywords: ["antique", "appraisal", "identification", "value"] },
     { name: "Coffee Community", path: "/coffee", keywords: ["coffee", "cafe", "checkin", "buddy", "coffee lovers"] },
     { name: "AI Personality Clone", path: "/ai-clone", keywords: ["ai", "clone", "personality", "chatbot", "digital", "24/7"] },
-    { name: "Parallel Lives Network", path: "/multiverse-network", keywords: ["parallel", "lives", "identity", "multiple", "realities", "alternative"] },
+    
     { name: "Emotion Economy Network", path: "/emotion-economy", keywords: ["emotion", "economy", "feelings", "trade", "currency"] },
     { name: "Memory Theft Social", path: "/memory-theft", keywords: ["memory", "theft", "steal", "experiences", "memories", "simulation"] },
     { name: "Quantum Social Network", path: "/quantum-social", keywords: ["quantum", "superposition", "versions", "reality", "multiverse"] },
