@@ -134,7 +134,6 @@ const MultiverseNetwork = () => {
       case "clash-arena": return <RealityClashArena onBack={goBack} />;
       case "destiny-forecast": return <QuantumDestinyForecast onBack={goBack} />;
       default: return null;
-      default: return null;
     }
   };
 
