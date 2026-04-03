@@ -31,18 +31,11 @@ import ParallelLifeSimulator from "@/components/multiverse/ParallelLifeSimulator
 import MultiverseLeaderboard from "@/components/multiverse/MultiverseLeaderboard";
 import RealityClashArena from "@/components/multiverse/RealityClashArena";
 import QuantumDestinyForecast from "@/components/multiverse/QuantumDestinyForecast";
-import { MyLives } from "@/components/parallel-lives/MyLives";
-import { CreateLife } from "@/components/parallel-lives/CreateLife";
-import { ExploreLives } from "@/components/parallel-lives/ExploreLives";
-import { CrossRealityReveal } from "@/components/parallel-lives/CrossRealityReveal";
-import { RealityMerge } from "@/components/parallel-lives/RealityMerge";
-import { ParallelSubscriptions } from "@/components/parallel-lives/ParallelSubscriptions";
 
 type ViewType = "hub" | "create" | "my-universes" | "timeline-merger" | "best-self" | 
   "comparison" | "timeline-view" | "quantum-chat" | "reality-lottery" | "pricing" |
   "navigator" | "decision-tree" | "analytics" | "community" | "journal" |
-  "life-simulator" | "leaderboard" | "clash-arena" | "destiny-forecast" |
-  "my-lives" | "create-life" | "explore-lives" | "cross-reveal" | "reality-merge" | "parallel-subs";
+  "life-simulator" | "leaderboard" | "clash-arena" | "destiny-forecast";
 
 const tools = [
   { id: "create" as ViewType, icon: Globe, title: "Create Universe", description: "Generate AI-powered alternate realities", color: "violet", badge: "AI" },
