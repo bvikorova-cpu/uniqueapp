@@ -1,11 +1,11 @@
-import { useState, useRef } from "react";
+import { Suspense } from "react";
 import { motion } from "framer-motion";
-import { Volume2, VolumeX, Play, Pause, Trophy, Users, Swords, Target } from "lucide-react";
+import { Users, Swords, Trophy, Target } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useAuth } from "@/contexts/AuthContext";
-import heroVideo from "@/assets/football-arena-hero.mp4.asset.json";
+import { Stadium3D } from "@/components/arena/Stadium3D";
 
 interface FootballArenaHeroProps {
   stats: { totalPlayers: number; totalMatches: number; activeLeagues: number; onlineManagers: number };
@@ -20,36 +20,24 @@ const statItems = [
 ];
 
 export const FootballArenaHero = ({ stats, onNavigate }: FootballArenaHeroProps) => {
-  const [isMuted, setIsMuted] = useState(true);
-  const [isPlaying, setIsPlaying] = useState(true);
-  const videoRef = useRef<HTMLVideoElement>(null);
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   const { user } = useAuth();
 
-  const toggleMute = () => { if (videoRef.current) { videoRef.current.muted = !isMuted; setIsMuted(!isMuted); } };
-  const togglePlay = () => { if (videoRef.current) { if (isPlaying) videoRef.current.pause(); else videoRef.current.play(); setIsPlaying(!isPlaying); } };
-
   return (
     <section className="relative h-[70svh] min-h-[480px] overflow-hidden rounded-2xl mx-2 md:mx-0 bg-slate-950">
-      <video ref={videoRef} autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover" style={{ filter: 'brightness(1.5) saturate(1.2)' }} src={heroVideo.url} />
-      <div className="absolute inset-0 pointer-events-none" style={{ background: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(16,185,129,0.02) 2px, rgba(16,185,129,0.02) 4px)' }} />
-      <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent" />
-      <div className="absolute inset-0 bg-gradient-to-r from-slate-950/30 to-transparent" />
+      <div className="absolute inset-0">
+        <Suspense fallback={<div className="w-full h-full bg-gradient-to-br from-emerald-950 to-slate-950" />}>
+          <Stadium3D sport="football" />
+        </Suspense>
+      </div>
+      <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/30 to-transparent pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-r from-slate-950/40 to-transparent pointer-events-none" />
 
       <div className="absolute top-4 left-4 w-12 h-12 border-l-2 border-t-2 border-emerald-400/40 rounded-tl-lg" />
-      <div className="absolute top-4 right-16 w-12 h-12 border-r-2 border-t-2 border-emerald-400/40 rounded-tr-lg" />
+      <div className="absolute top-4 right-4 w-12 h-12 border-r-2 border-t-2 border-emerald-400/40 rounded-tr-lg" />
       <div className="absolute bottom-4 left-4 w-12 h-12 border-l-2 border-b-2 border-emerald-400/40 rounded-bl-lg" />
       <div className="absolute bottom-4 right-4 w-12 h-12 border-r-2 border-b-2 border-emerald-400/40 rounded-br-lg" />
-
-      <div className="absolute top-4 right-4 z-20 flex gap-2">
-        <Button size="icon" variant="ghost" onClick={togglePlay} className="h-9 w-9 rounded-full bg-slate-950/60 backdrop-blur-sm text-emerald-400 hover:bg-slate-950/80 border border-emerald-500/20">
-          {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
-        </Button>
-        <Button size="icon" variant="ghost" onClick={toggleMute} className="h-9 w-9 rounded-full bg-slate-950/60 backdrop-blur-sm text-emerald-400 hover:bg-slate-950/80 border border-emerald-500/20">
-          {isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
-        </Button>
-      </div>
 
       <div className="absolute inset-0 z-10 flex flex-col justify-end p-4 md:p-10 pb-6 md:pb-10">
         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
