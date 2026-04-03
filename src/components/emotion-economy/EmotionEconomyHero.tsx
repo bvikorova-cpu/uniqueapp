@@ -44,12 +44,12 @@ export function EmotionEconomyHero() {
         muted
         playsInline
         className="absolute inset-0 w-full h-full object-cover"
-        style={{ filter: "brightness(0.35) saturate(1.4)" }}
+        style={{ filter: "brightness(0.85) saturate(1.3)" }}
       />
 
-      {/* Aurora overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-pink-500/20 via-violet-500/10 to-cyan-500/20" />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/30" />
+      {/* Soft warm aurora overlay */}
+      <div className="absolute inset-0 bg-gradient-to-br from-pink-400/15 via-violet-300/10 to-cyan-300/15" />
+      <div className="absolute inset-0 bg-gradient-to-t from-white/30 via-transparent to-white/10" />
 
       {/* Floating particles */}
       {particles.map((p) => (
