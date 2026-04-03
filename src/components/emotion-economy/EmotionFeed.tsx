@@ -14,7 +14,7 @@ interface EmotionCredits {
   total_credits_used: number;
 }
 
-export function EmotionFeed() {
+export function EmotionFeed({ onBack }: { onBack?: () => void }) {
   const { toast } = useToast();
   const [searchParams] = useSearchParams();
   const [content, setContent] = useState("");
