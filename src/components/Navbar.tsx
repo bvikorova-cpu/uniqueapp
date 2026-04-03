@@ -248,6 +248,7 @@ const Navbar = () => {
     { path: "/character-arena", label: "Character Arena", icon: Trophy },
     { path: "/horse-racing", label: "Horse Racing Arena", icon: Trophy },
     { path: "/football-arena", label: "Football Arena", icon: Trophy },
+    { path: "/basketball-arena", label: "Basketball Arena", icon: Trophy },
     { path: "/comedy-club", label: "Comedy Club - Stand Up", icon: Mic2 },
     { path: "/ai-tattoo", label: "AI Tattoo Designer", icon: ImageIcon },
     { path: "/mystery-box", label: "Mystery Box", icon: Gift },

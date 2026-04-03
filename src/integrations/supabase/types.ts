@@ -1600,6 +1600,477 @@ export type Database = {
         }
         Relationships: []
       }
+      basketball_coins: {
+        Row: {
+          balance: number
+          created_at: string
+          id: string
+          total_purchased: number
+          total_spent: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          balance?: number
+          created_at?: string
+          id?: string
+          total_purchased?: number
+          total_spent?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          balance?: number
+          created_at?: string
+          id?: string
+          total_purchased?: number
+          total_spent?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      basketball_equipment: {
+        Row: {
+          created_at: string
+          defense_boost: number
+          id: string
+          is_equipped: boolean
+          name: string
+          player_id: string | null
+          price: number
+          rarity: string
+          shooting_boost: number
+          speed_boost: number
+          stamina_boost: number
+          type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          defense_boost?: number
+          id?: string
+          is_equipped?: boolean
+          name: string
+          player_id?: string | null
+          price?: number
+          rarity?: string
+          shooting_boost?: number
+          speed_boost?: number
+          stamina_boost?: number
+          type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          defense_boost?: number
+          id?: string
+          is_equipped?: boolean
+          name?: string
+          player_id?: string | null
+          price?: number
+          rarity?: string
+          shooting_boost?: number
+          speed_boost?: number
+          stamina_boost?: number
+          type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "basketball_equipment_player_id_fkey"
+            columns: ["player_id"]
+            isOneToOne: false
+            referencedRelation: "basketball_players"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      basketball_league_standings: {
+        Row: {
+          created_at: string
+          id: string
+          league_id: string | null
+          losses: number
+          points_against: number
+          points_for: number
+          team_id: string | null
+          wins: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          league_id?: string | null
+          losses?: number
+          points_against?: number
+          points_for?: number
+          team_id?: string | null
+          wins?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          league_id?: string | null
+          losses?: number
+          points_against?: number
+          points_for?: number
+          team_id?: string | null
+          wins?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "basketball_league_standings_league_id_fkey"
+            columns: ["league_id"]
+            isOneToOne: false
+            referencedRelation: "basketball_leagues"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "basketball_league_standings_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "basketball_teams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      basketball_leagues: {
+        Row: {
+          created_at: string
+          ends_at: string | null
+          entry_fee: number
+          id: string
+          max_teams: number
+          name: string
+          prize_pool: number
+          season: number
+          starts_at: string | null
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          ends_at?: string | null
+          entry_fee?: number
+          id?: string
+          max_teams?: number
+          name: string
+          prize_pool?: number
+          season?: number
+          starts_at?: string | null
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          ends_at?: string | null
+          entry_fee?: number
+          id?: string
+          max_teams?: number
+          name?: string
+          prize_pool?: number
+          season?: number
+          starts_at?: string | null
+          status?: string
+        }
+        Relationships: []
+      }
+      basketball_matches: {
+        Row: {
+          away_score: number
+          away_team_id: string | null
+          coins_reward: number
+          created_at: string
+          home_score: number
+          home_team_id: string | null
+          id: string
+          played_at: string
+          quarter_scores: Json | null
+          status: string
+        }
+        Insert: {
+          away_score?: number
+          away_team_id?: string | null
+          coins_reward?: number
+          created_at?: string
+          home_score?: number
+          home_team_id?: string | null
+          id?: string
+          played_at?: string
+          quarter_scores?: Json | null
+          status?: string
+        }
+        Update: {
+          away_score?: number
+          away_team_id?: string | null
+          coins_reward?: number
+          created_at?: string
+          home_score?: number
+          home_team_id?: string | null
+          id?: string
+          played_at?: string
+          quarter_scores?: Json | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "basketball_matches_away_team_id_fkey"
+            columns: ["away_team_id"]
+            isOneToOne: false
+            referencedRelation: "basketball_teams"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "basketball_matches_home_team_id_fkey"
+            columns: ["home_team_id"]
+            isOneToOne: false
+            referencedRelation: "basketball_teams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      basketball_players: {
+        Row: {
+          assists: number
+          created_at: string
+          defense: number
+          dunking: number
+          games_played: number
+          id: string
+          is_for_sale: boolean
+          is_starter: boolean
+          market_value: number
+          name: string
+          overall_rating: number
+          passing: number
+          points_scored: number
+          position: string
+          rebounding: number
+          rebounds: number
+          sale_price: number | null
+          shooting: number
+          speed: number
+          stamina: number
+          three_point: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          assists?: number
+          created_at?: string
+          defense?: number
+          dunking?: number
+          games_played?: number
+          id?: string
+          is_for_sale?: boolean
+          is_starter?: boolean
+          market_value?: number
+          name: string
+          overall_rating?: number
+          passing?: number
+          points_scored?: number
+          position?: string
+          rebounding?: number
+          rebounds?: number
+          sale_price?: number | null
+          shooting?: number
+          speed?: number
+          stamina?: number
+          three_point?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          assists?: number
+          created_at?: string
+          defense?: number
+          dunking?: number
+          games_played?: number
+          id?: string
+          is_for_sale?: boolean
+          is_starter?: boolean
+          market_value?: number
+          name?: string
+          overall_rating?: number
+          passing?: number
+          points_scored?: number
+          position?: string
+          rebounding?: number
+          rebounds?: number
+          sale_price?: number | null
+          shooting?: number
+          speed?: number
+          stamina?: number
+          three_point?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      basketball_stadiums: {
+        Row: {
+          capacity: number
+          court_type: string
+          created_at: string
+          facilities_level: number
+          id: string
+          name: string
+          revenue_per_match: number
+          total_upgrades: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          capacity?: number
+          court_type?: string
+          created_at?: string
+          facilities_level?: number
+          id?: string
+          name?: string
+          revenue_per_match?: number
+          total_upgrades?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          capacity?: number
+          court_type?: string
+          created_at?: string
+          facilities_level?: number
+          id?: string
+          name?: string
+          revenue_per_match?: number
+          total_upgrades?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      basketball_teams: {
+        Row: {
+          created_at: string
+          draws: number
+          id: string
+          league_points: number
+          logo_url: string | null
+          losses: number
+          name: string
+          playstyle: string
+          stadium_level: number
+          updated_at: string
+          user_id: string
+          wins: number
+        }
+        Insert: {
+          created_at?: string
+          draws?: number
+          id?: string
+          league_points?: number
+          logo_url?: string | null
+          losses?: number
+          name: string
+          playstyle?: string
+          stadium_level?: number
+          updated_at?: string
+          user_id: string
+          wins?: number
+        }
+        Update: {
+          created_at?: string
+          draws?: number
+          id?: string
+          league_points?: number
+          logo_url?: string | null
+          losses?: number
+          name?: string
+          playstyle?: string
+          stadium_level?: number
+          updated_at?: string
+          user_id?: string
+          wins?: number
+        }
+        Relationships: []
+      }
+      basketball_training_sessions: {
+        Row: {
+          coins_spent: number
+          created_at: string
+          id: string
+          improvement_amount: number
+          player_id: string | null
+          stat_improved: string
+          training_type: string
+          user_id: string
+        }
+        Insert: {
+          coins_spent?: number
+          created_at?: string
+          id?: string
+          improvement_amount?: number
+          player_id?: string | null
+          stat_improved: string
+          training_type: string
+          user_id: string
+        }
+        Update: {
+          coins_spent?: number
+          created_at?: string
+          id?: string
+          improvement_amount?: number
+          player_id?: string | null
+          stat_improved?: string
+          training_type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "basketball_training_sessions_player_id_fkey"
+            columns: ["player_id"]
+            isOneToOne: false
+            referencedRelation: "basketball_players"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      basketball_transfers: {
+        Row: {
+          buyer_id: string | null
+          completed_at: string | null
+          created_at: string
+          id: string
+          player_id: string | null
+          price: number
+          seller_id: string
+          status: string
+        }
+        Insert: {
+          buyer_id?: string | null
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          player_id?: string | null
+          price: number
+          seller_id: string
+          status?: string
+        }
+        Update: {
+          buyer_id?: string | null
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          player_id?: string | null
+          price?: number
+          seller_id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "basketball_transfers_player_id_fkey"
+            columns: ["player_id"]
+            isOneToOne: false
+            referencedRelation: "basketball_players"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       battle_participants: {
         Row: {
           battle_id: string
