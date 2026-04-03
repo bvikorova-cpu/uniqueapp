@@ -9,7 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { TrendingUp, TrendingDown, ShoppingCart, RefreshCw } from "lucide-react";
 
-export function EmotionMarket() {
+export function EmotionMarket({ onBack }: { onBack?: () => void }) {
   const { toast } = useToast();
   const [listings, setListings] = useState<any[]>([]);
   const [showCreateListing, setShowCreateListing] = useState(false);
