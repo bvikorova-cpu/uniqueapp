@@ -144,7 +144,7 @@ export function WallSidebar({ onPostCreated }: WallSidebarProps) {
     { name: "Cooking", path: "/cooking", icon: ChefHat, color: "text-orange-500" },
     { name: "Coffee", path: "/coffee", icon: Star, color: "text-amber-600" },
     { name: "AI Clone", path: "/ai-clone", icon: Bot, color: "text-purple-500" },
-    { name: "Parallel Lives", path: "/parallel-lives", icon: Globe, color: "text-blue-500" },
+    { name: "Parallel Lives", path: "/multiverse-network", icon: Globe, color: "text-blue-500" },
     { name: "Emotion Economy", path: "/emotion-economy", icon: Heart, color: "text-pink-500" },
     { name: "Quantum Social", path: "/quantum-social", icon: Atom, color: "text-cyan-500" },
   ];

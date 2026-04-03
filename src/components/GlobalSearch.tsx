@@ -178,7 +178,7 @@ const SEARCHABLE_PAGES: SearchResult[] = [
   { id: "123", title: "Past Life", category: "Mystical", path: "/past-life" },
   
   { id: "125", title: "Future Face", category: "Mystical", path: "/future-face" },
-  { id: "126", title: "Parallel Lives", category: "Mystical", path: "/parallel-lives" },
+  { id: "126", title: "Parallel Lives", category: "Mystical", path: "/multiverse-network" },
   { id: "127", title: "Reincarnation Social", category: "Mystical", path: "/reincarnation-social" },
   { id: "128", title: "DNA Memory Network", category: "Mystical", path: "/dna-memory-network" },
   { id: "129", title: "Crystal Energy Network", category: "Mystical", path: "/crystal-energy-network" },

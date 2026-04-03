@@ -258,7 +258,7 @@ const Navbar = () => {
     { path: "/cooking", label: t('navbar.cooking'), icon: ChefHat },
     { path: "/coffee", label: "Coffee Community", icon: Coffee },
     { path: "/ai-clone", label: "AI Personality Clone", icon: Bot },
-    { path: "/parallel-lives", label: "Parallel Lives Network", icon: Globe },
+    { path: "/multiverse-network", label: "Parallel Lives Network", icon: Globe },
     { path: "/emotion-economy", label: "Emotion Economy", icon: Heart },
     { path: "/quantum-social", label: "Quantum Social Network", icon: Zap },
     { path: "/virtual-influencer-agency", label: "Virtual Influencer Agency", icon: Users },
