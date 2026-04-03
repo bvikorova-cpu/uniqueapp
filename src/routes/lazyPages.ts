@@ -270,7 +270,7 @@ export const TimeCapsuleSubscription = lazy(() => import("@/pages/TimeCapsuleSub
 export const TimeCapsule = lazy(() => import("@/pages/TimeCapsule"));
 
 // Experimental & Future
-export const ParallelLives = lazy(() => import("@/pages/ParallelLives"));
+
 export const EmotionEconomy = lazy(() => import("@/pages/EmotionEconomy"));
 export const QuantumSocial = lazy(() => import("@/pages/QuantumSocial"));
 export const HolographicAvatars = lazy(() => import("@/pages/HolographicAvatars"));

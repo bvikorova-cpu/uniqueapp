@@ -241,7 +241,7 @@ import {
   Coffee,
   CoffeeCheckins,
   CoffeeBuddy,
-  ParallelLives,
+  
   EmotionEconomy,
   QuantumSocial,
   HolographicAvatars,
@@ -542,7 +542,7 @@ const App = () => {
                         <Route path="/coffee/checkins" element={<CoffeeCheckins />} />
                         <Route path="/coffee/buddy" element={<CoffeeBuddy />} />
                         <Route path="/ai-clone" element={<AIClone />} />
-                        <Route path="/parallel-lives" element={<Navigate to="/multiverse-network" replace />} />
+                        
                         <Route path="/lottery-history" element={<LotteryHistory />} />
                         <Route path="/emotion-economy" element={<EmotionEconomy />} />
                         <Route path="/quantum-social" element={<QuantumSocial />} />
