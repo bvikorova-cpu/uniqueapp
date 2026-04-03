@@ -7,7 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Heart, Zap, Users, Clock, TrendingUp } from "lucide-react";
 
-export function EmotionDrops() {
+export function EmotionDrops({ onBack }: { onBack?: () => void }) {
   const { toast } = useToast();
 
   const handleJoinDrop = async (dropId: string, price: number) => {
