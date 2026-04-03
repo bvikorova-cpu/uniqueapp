@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { TrendingUp, TrendingDown, ShoppingCart, RefreshCw } from "lucide-react";
+import { TrendingUp, TrendingDown, ShoppingCart, RefreshCw, ArrowLeft } from "lucide-react";
 
 export function EmotionMarket({ onBack }: { onBack?: () => void }) {
   const { toast } = useToast();
