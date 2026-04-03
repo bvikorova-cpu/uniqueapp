@@ -44,10 +44,10 @@ export const MultiverseHero = () => {
 
   const heroStats = [
     { icon: Globe, label: "Universes Created", value: stats.universes || 0, suffix: "+" },
-    { icon: Infinity, label: "Reality Jumps", value: stats.jumps || 0, suffix: "+" },
+    { icon: InfinityIcon, label: "Reality Jumps", value: stats.jumps || 0, suffix: "+" },
     { icon: Layers, label: "Timeline Merges", value: stats.merges || 0, suffix: "+" },
     { icon: Crown, label: "Starting From", value: 0, suffix: "", staticLabel: "€49" },
-  ];
+  ] as const;
 
   useEffect(() => {
     if (videoRef.current) { videoRef.current.play().catch(() => setIsPlaying(false)); }
