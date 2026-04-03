@@ -159,6 +159,7 @@ import {
   VirtualEscapeRoom,
   HorseRacing,
   FootballArena,
+  BasketballArena,
   F1Racing,
   F1Subscription,
   F1FantasyTeam,
