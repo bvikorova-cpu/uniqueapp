@@ -60,6 +60,11 @@ export function EmotionInsurance({ onBack }: { onBack?: () => void }) {
 
   return (
     <div className="space-y-6">
+      {onBack && (
+        <Button variant="ghost" onClick={onBack} className="gap-2">
+          <ArrowLeft className="h-4 w-4" /> Back to Hub
+        </Button>
+      )}
       <Card className="border-purple-500/20">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">

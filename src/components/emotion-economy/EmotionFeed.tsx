@@ -5,7 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Heart, MessageCircle, Eye, Sparkles, RefreshCw, Coins, AlertCircle } from "lucide-react";
+import { Heart, MessageCircle, Eye, Sparkles, RefreshCw, Coins, AlertCircle, ArrowLeft } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
 
 interface EmotionCredits {
