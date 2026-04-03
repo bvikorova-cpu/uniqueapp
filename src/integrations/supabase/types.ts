@@ -11300,6 +11300,45 @@ export type Database = {
         }
         Relationships: []
       }
+      emotion_futures_bets: {
+        Row: {
+          amount: number
+          created_at: string
+          direction: string
+          emotion_type: string
+          id: string
+          outcome: string | null
+          payout: number | null
+          resolution_date: string
+          resolved: boolean
+          user_id: string
+        }
+        Insert: {
+          amount?: number
+          created_at?: string
+          direction: string
+          emotion_type: string
+          id?: string
+          outcome?: string | null
+          payout?: number | null
+          resolution_date: string
+          resolved?: boolean
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          direction?: string
+          emotion_type?: string
+          id?: string
+          outcome?: string | null
+          payout?: number | null
+          resolution_date?: string
+          resolved?: boolean
+          user_id?: string
+        }
+        Relationships: []
+      }
       emotion_insurance: {
         Row: {
           claims_used: number
@@ -11453,6 +11492,39 @@ export type Database = {
           media_url?: string | null
           user_id?: string
           views_count?: number
+        }
+        Relationships: []
+      }
+      emotion_roulette_spins: {
+        Row: {
+          bet_amount: number
+          bet_emotion: string
+          created_at: string
+          id: string
+          payout: number
+          result_emotion: string
+          user_id: string
+          won: boolean
+        }
+        Insert: {
+          bet_amount?: number
+          bet_emotion: string
+          created_at?: string
+          id?: string
+          payout?: number
+          result_emotion: string
+          user_id: string
+          won?: boolean
+        }
+        Update: {
+          bet_amount?: number
+          bet_emotion?: string
+          created_at?: string
+          id?: string
+          payout?: number
+          result_emotion?: string
+          user_id?: string
+          won?: boolean
         }
         Relationships: []
       }
