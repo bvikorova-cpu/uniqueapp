@@ -158,6 +158,7 @@ import {
   BrainDuel,
   VirtualEscapeRoom,
   HorseRacing,
+  FootballArena,
   F1Racing,
   F1Subscription,
   F1FantasyTeam,
@@ -574,6 +575,7 @@ const App = () => {
                         <Route path="/shadow-arena/story/:storyId" element={<ShadowArenaStoryDetail />} />
                         <Route path="/virtual-escape-room" element={<VirtualEscapeRoom />} />
                         <Route path="/horse-racing" element={<HorseRacing />} />
+                        <Route path="/football-arena" element={<FootballArena />} />
                         <Route path="/comedy-club" element={<ComedyClub />} />
                         <Route path="/comedian-dashboard" element={<ProtectedRoute><ComedianDashboard /></ProtectedRoute>} />
                         <Route path="/comedy-live/:showId" element={<ComedyLiveShow />} />
