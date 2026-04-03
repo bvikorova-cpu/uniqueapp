@@ -1,187 +1,104 @@
 import { useState, useEffect } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Eye, Sparkles } from "lucide-react";
+import { Eye, Sparkles, ArrowLeft, Atom } from "lucide-react";
+import { motion } from "framer-motion";
 
-const QuantumObserver = () => {
+const QuantumObserver = ({ onBack }: { onBack: () => void }) => {
   const [hasObserverMode, setHasObserverMode] = useState(false);
   const [observations, setObservations] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
-  useEffect(() => {
-    checkObserverMode();
-    fetchObservations();
-  }, []);
+  useEffect(() => { checkObserverMode(); fetchObservations(); }, []);
 
   const checkObserverMode = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
-
-    const { data } = await supabase
-      .from("quantum_profiles")
-      .select("observer_mode_active")
-      .eq("user_id", user.id)
-      .single();
-
-    if (data) {
-      setHasObserverMode(data.observer_mode_active);
-    }
+    const { data } = await supabase.from("quantum_profiles").select("observer_mode_active").eq("user_id", user.id).single();
+    if (data) setHasObserverMode(data.observer_mode_active);
   };
 
   const fetchObservations = async () => {
     setLoading(true);
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
-
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from("quantum_observations")
-      .select(`
-        *,
-        quantum_posts (
-          base_content,
-          versions_count
-        ),
-        quantum_post_versions (
-          content,
-          personality_tone
-        )
-      `)
+      .select(`*, quantum_posts (base_content, versions_count), quantum_post_versions (content, personality_tone)`)
       .eq("observer_id", user.id)
       .order("observed_at", { ascending: false })
       .limit(20);
-
-    if (error) {
-      console.error("Failed to fetch observations", error);
-    } else {
-      setObservations(data || []);
-    }
+    setObservations(data || []);
     setLoading(false);
   };
 
   const activateObserverMode = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
-
-    // Create subscription
-    const { error: subError } = await supabase.from("quantum_subscriptions").insert([
-      {
-        user_id: user.id,
-        subscription_type: "observer_mode",
-        price: 19.99,
-      },
-    ]);
-
-    if (subError) {
-      toast({
-        title: "Error",
-        description: "Failed to activate observer mode",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    // Update profile
-    const { error } = await supabase
-      .from("quantum_profiles")
-      .update({ observer_mode_active: true })
-      .eq("user_id", user.id);
-
-    if (error) {
-      toast({
-        title: "Error",
-        description: "Failed to update profile",
-        variant: "destructive",
-      });
-    } else {
-      toast({
-        title: "Observer Mode Activated",
-        description: "You can now see all versions (19.99€/month)",
-      });
-      setHasObserverMode(true);
-    }
+    await supabase.from("quantum_subscriptions").insert([{ user_id: user.id, subscription_type: "observer_mode", price: 19.99 }]);
+    const { error } = await supabase.from("quantum_profiles").update({ observer_mode_active: true }).eq("user_id", user.id);
+    if (!error) { toast({ title: "Observer Mode Activated", description: "You can now see all versions (€19.99/month)" }); setHasObserverMode(true); }
   };
-
-  if (!hasObserverMode) {
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Eye className="h-6 w-6" />
-            Observer Mode
-          </CardTitle>
-          <CardDescription>See all quantum versions of posts</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="rounded-lg bg-muted p-6 text-center space-y-4">
-            <Sparkles className="h-12 w-12 mx-auto text-primary" />
-            <h3 className="text-xl font-bold">Unlock Observer Mode</h3>
-            <p className="text-muted-foreground">
-              See all reality versions of every post - discover how others experience different quantum states
-            </p>
-            <div className="space-y-2">
-              <p className="text-2xl font-bold">19.99€/month</p>
-              <Button onClick={activateObserverMode} size="lg">
-                <Eye className="h-5 w-5 mr-2" />
-                Activate Observer Mode
-              </Button>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    );
-  }
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold flex items-center gap-2">
-          <Eye className="h-6 w-6 text-primary" />
-          Observer Mode Active
-        </h2>
-        <Badge variant="default">19.99€/month</Badge>
+      <div className="flex items-center gap-3">
+        <Button variant="ghost" size="icon" onClick={onBack}><ArrowLeft className="h-5 w-5" /></Button>
+        <div>
+          <h2 className="text-xl font-bold flex items-center gap-2">
+            <Eye className="h-5 w-5 text-blue-400" />
+            Observer Mode
+          </h2>
+          <p className="text-xs text-muted-foreground">See all quantum versions of every post</p>
+        </div>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Your Observations</CardTitle>
-          <CardDescription>Posts you've viewed with all their quantum versions</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
+      {!hasObserverMode ? (
+        <div className="rounded-xl border border-blue-500/20 bg-gradient-to-br from-blue-500/5 to-violet-500/5 p-8 text-center space-y-4">
+          <Sparkles className="h-12 w-12 mx-auto text-blue-400" />
+          <h3 className="text-xl font-bold">Unlock Observer Mode</h3>
+          <p className="text-muted-foreground text-sm">See all reality versions — discover how others experience different quantum states</p>
+          <p className="text-2xl font-bold text-blue-400">€19.99/month</p>
+          <Button onClick={activateObserverMode} className="bg-blue-600 hover:bg-blue-700">
+            <Eye className="h-5 w-5 mr-2" />
+            Activate Observer Mode
+          </Button>
+        </div>
+      ) : (
+        <>
+          <div className="flex items-center gap-2">
+            <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30">Observer Active</Badge>
+            <Badge variant="outline" className="text-[10px]">€19.99/month</Badge>
+          </div>
+
+          <div className="space-y-3">
             {loading ? (
               <p className="text-muted-foreground">Loading observations...</p>
             ) : observations.length === 0 ? (
               <p className="text-muted-foreground">No observations yet</p>
             ) : (
-              observations.map((obs: any) => (
-                <Card key={obs.id}>
-                  <CardHeader>
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <CardTitle className="text-base">
-                          {obs.quantum_post_versions?.content || "Post content"}
-                        </CardTitle>
-                        <div className="flex items-center gap-2 mt-2">
-                          <Badge variant="outline" className="capitalize">
-                            {obs.quantum_post_versions?.personality_tone}
-                          </Badge>
-                          <Badge variant="secondary">
-                            {obs.quantum_posts?.versions_count || 1} versions total
-                          </Badge>
-                        </div>
-                      </div>
-                    </div>
-                  </CardHeader>
-                </Card>
+              observations.map((obs: any, i: number) => (
+                <motion.div
+                  key={obs.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.03 }}
+                  className="rounded-xl border border-blue-500/20 bg-blue-500/5 p-4"
+                >
+                  <p className="text-sm font-semibold">{obs.quantum_post_versions?.content || "Post content"}</p>
+                  <div className="flex items-center gap-2 mt-2">
+                    <Badge variant="outline" className="capitalize text-[10px] border-cyan-500/30 text-cyan-400">{obs.quantum_post_versions?.personality_tone}</Badge>
+                    <Badge variant="outline" className="text-[10px]">{obs.quantum_posts?.versions_count || 1} versions total</Badge>
+                  </div>
+                </motion.div>
               ))
             )}
           </div>
-        </CardContent>
-      </Card>
+        </>
+      )}
     </div>
   );
 };

@@ -1,102 +1,94 @@
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Atom, FileText, Eye, Users, Zap, Settings } from "lucide-react";
+import { useState } from "react";
+import { motion } from "framer-motion";
+import {
+  Atom, FileText, Eye, Users, Zap, Settings,
+  MessageSquare, Vote, Trophy, Sparkles
+} from "lucide-react";
+import { QuantumSocialHero } from "@/components/quantum-social/QuantumSocialHero";
+import { QuantumSocialEngagement } from "@/components/quantum-social/QuantumSocialEngagement";
+import { QuantumSocialToolCard } from "@/components/quantum-social/QuantumSocialToolCard";
 import QuantumFeed from "@/components/quantum-social/QuantumFeed";
 import QuantumProfile from "@/components/quantum-social/QuantumProfile";
 import QuantumObserver from "@/components/quantum-social/QuantumObserver";
 import QuantumEntanglements from "@/components/quantum-social/QuantumEntanglements";
 import QuantumSubscriptions from "@/components/quantum-social/QuantumSubscriptions";
+import { QuantumChatRooms } from "@/components/quantum-social/QuantumChatRooms";
+import { RealityVoting } from "@/components/quantum-social/RealityVoting";
+import { QuantumAchievements } from "@/components/quantum-social/QuantumAchievements";
+import { AIQuantumOracle } from "@/components/quantum-social/AIQuantumOracle";
+
+type ViewType = "hub" | "feed" | "profile" | "observer" | "entanglements" | "subscriptions" | "chat" | "voting" | "achievements" | "oracle";
+
+const tools = [
+  { id: "feed" as ViewType, icon: FileText, title: "Quantum Feed", description: "Posts in superposition — each viewer sees a different reality", gradient: "from-cyan-500/10 to-cyan-500/5", iconColor: "text-cyan-400" },
+  { id: "chat" as ViewType, icon: MessageSquare, title: "Quantum Chat Rooms", description: "Messages exist in superposition until observed", badge: "New", gradient: "from-violet-500/10 to-violet-500/5", iconColor: "text-violet-400" },
+  { id: "voting" as ViewType, icon: Vote, title: "Reality Voting", description: "Community votes to collapse quantum states", badge: "New", gradient: "from-pink-500/10 to-pink-500/5", iconColor: "text-pink-400" },
+  { id: "oracle" as ViewType, icon: Sparkles, title: "AI Quantum Oracle", description: "AI predictions across quantum dimensions", badge: "AI", credits: 3, gradient: "from-violet-500/10 to-cyan-500/5", iconColor: "text-violet-400" },
+  { id: "observer" as ViewType, icon: Eye, title: "Observer Mode", description: "See all quantum versions of every post", gradient: "from-blue-500/10 to-blue-500/5", iconColor: "text-blue-400" },
+  { id: "entanglements" as ViewType, icon: Users, title: "Entanglements", description: "Quantum connections with other users", gradient: "from-emerald-500/10 to-emerald-500/5", iconColor: "text-emerald-400" },
+  { id: "achievements" as ViewType, icon: Trophy, title: "Achievements", description: "Earn badges exploring quantum realities", badge: "New", gradient: "from-amber-500/10 to-amber-500/5", iconColor: "text-amber-400" },
+  { id: "profile" as ViewType, icon: Settings, title: "Quantum Profile", description: "Manage your quantum reality versions", gradient: "from-cyan-500/10 to-violet-500/5", iconColor: "text-cyan-400" },
+  { id: "subscriptions" as ViewType, icon: Zap, title: "Subscriptions", description: "Manage quantum premium plans", gradient: "from-pink-500/10 to-violet-500/5", iconColor: "text-pink-400" },
+];
 
 const QuantumSocial = () => {
+  const [activeView, setActiveView] = useState<ViewType>("hub");
+
+  const renderView = () => {
+    switch (activeView) {
+      case "feed": return <QuantumFeed onBack={() => setActiveView("hub")} />;
+      case "profile": return <QuantumProfile onBack={() => setActiveView("hub")} />;
+      case "observer": return <QuantumObserver onBack={() => setActiveView("hub")} />;
+      case "entanglements": return <QuantumEntanglements onBack={() => setActiveView("hub")} />;
+      case "subscriptions": return <QuantumSubscriptions onBack={() => setActiveView("hub")} />;
+      case "chat": return <QuantumChatRooms onBack={() => setActiveView("hub")} />;
+      case "voting": return <RealityVoting onBack={() => setActiveView("hub")} />;
+      case "achievements": return <QuantumAchievements onBack={() => setActiveView("hub")} />;
+      case "oracle": return <AIQuantumOracle onBack={() => setActiveView("hub")} />;
+      default: return null;
+    }
+  };
+
+  if (activeView !== "hub") {
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="container mx-auto px-4 pt-20 pb-8">
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            {renderView()}
+          </motion.div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-background px-6 pb-10 pt-32">
-      <div className="max-w-6xl mx-auto space-y-6">
-        {/* Futuristic Header */}
-        <div className="flex items-center gap-4 mb-8">
-          <div className="p-3 rounded-2xl bg-gradient-to-br from-cyan-500 to-purple-600 shadow-lg shadow-cyan-500/25 relative">
-            <Atom className="h-8 w-8 text-white animate-spin" style={{ animationDuration: '8s' }} />
-            <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-cyan-400/20 to-purple-500/20 animate-pulse" />
-          </div>
-          <div>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
-              Quantum Social Network
-            </h1>
-            <p className="text-muted-foreground">Your profile exists in quantum superposition</p>
-          </div>
-        </div>
-
-        {/* Neon Info Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
-          <div className="p-4 rounded-xl bg-gradient-to-br from-cyan-500/10 to-cyan-500/5 border border-cyan-500/30 hover:border-cyan-400/50 transition-all group">
-            <div className="text-2xl mb-2">⚛️</div>
-            <h3 className="font-semibold text-sm text-cyan-400">Quantum Posts</h3>
-            <p className="text-xs text-muted-foreground mt-1">3 versions per post</p>
-          </div>
-          <div className="p-4 rounded-xl bg-gradient-to-br from-purple-500/10 to-purple-500/5 border border-purple-500/30 hover:border-purple-400/50 transition-all">
-            <div className="text-2xl mb-2">🔮</div>
-            <h3 className="font-semibold text-sm text-purple-400">Reality Collapse</h3>
-            <p className="text-xs text-muted-foreground mt-1">€2.99 per collapse</p>
-          </div>
-          <div className="p-4 rounded-xl bg-gradient-to-br from-blue-500/10 to-blue-500/5 border border-blue-500/30 hover:border-blue-400/50 transition-all">
-            <div className="text-2xl mb-2">👁️</div>
-            <h3 className="font-semibold text-sm text-blue-400">Observer Mode</h3>
-            <p className="text-xs text-muted-foreground mt-1">€19.99/month</p>
-          </div>
-          <div className="p-4 rounded-xl bg-gradient-to-br from-pink-500/10 to-pink-500/5 border border-pink-500/30 hover:border-pink-400/50 transition-all">
-            <div className="text-2xl mb-2">🔗</div>
-            <h3 className="font-semibold text-sm text-pink-400">Entanglement</h3>
-            <p className="text-xs text-muted-foreground mt-1">€9.99/month</p>
-          </div>
-          <div className="p-4 rounded-xl bg-gradient-to-br from-amber-500/10 to-amber-500/5 border border-amber-500/30 hover:border-amber-400/50 transition-all">
-            <div className="text-2xl mb-2">✨</div>
-            <h3 className="font-semibold text-sm text-amber-400">Quantum Profiles</h3>
-            <p className="text-xs text-muted-foreground mt-1">€12.99/month</p>
+    <div className="min-h-screen bg-background">
+      <div className="container mx-auto px-4 pt-20 pb-8 space-y-8">
+        <QuantumSocialHero />
+        <QuantumSocialEngagement />
+        <div>
+          <h2 className="text-xl font-bold mb-4">Explore Quantum Tools</h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+            {tools.map((tool, i) => (
+              <QuantumSocialToolCard
+                key={tool.id}
+                icon={tool.icon}
+                title={tool.title}
+                description={tool.description}
+                badge={tool.badge}
+                credits={tool.credits}
+                gradient={tool.gradient}
+                iconColor={tool.iconColor}
+                onClick={() => setActiveView(tool.id)}
+                delay={0.05 * i}
+              />
+            ))}
           </div>
         </div>
-
-        <Tabs defaultValue="feed" className="w-full">
-          <TabsList className="grid grid-cols-5 w-full bg-card/50 backdrop-blur-sm border border-border/50 p-1">
-            <TabsTrigger value="feed" className="data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-400">
-              <FileText className="h-4 w-4 mr-2" />
-              Feed
-            </TabsTrigger>
-            <TabsTrigger value="profile" className="data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-400">
-              <Settings className="h-4 w-4 mr-2" />
-              Profile
-            </TabsTrigger>
-            <TabsTrigger value="observer" className="data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-400">
-              <Eye className="h-4 w-4 mr-2" />
-              Observer
-            </TabsTrigger>
-            <TabsTrigger value="entanglements" className="data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-400">
-              <Users className="h-4 w-4 mr-2" />
-              Entangle
-            </TabsTrigger>
-            <TabsTrigger value="subscriptions" className="data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-400">
-              <Zap className="h-4 w-4 mr-2" />
-              Subscribe
-            </TabsTrigger>
-          </TabsList>
-
-        <TabsContent value="feed">
-          <QuantumFeed />
-        </TabsContent>
-
-        <TabsContent value="profile">
-          <QuantumProfile />
-        </TabsContent>
-
-        <TabsContent value="observer">
-          <QuantumObserver />
-        </TabsContent>
-
-        <TabsContent value="entanglements">
-          <QuantumEntanglements />
-        </TabsContent>
-
-        <TabsContent value="subscriptions">
-          <QuantumSubscriptions />
-        </TabsContent>
-        </Tabs>
       </div>
     </div>
   );

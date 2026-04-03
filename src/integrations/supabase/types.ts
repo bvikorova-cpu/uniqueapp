@@ -24276,6 +24276,113 @@ export type Database = {
         }
         Relationships: []
       }
+      quantum_achievements: {
+        Row: {
+          category: string | null
+          code: string
+          created_at: string | null
+          description: string
+          icon: string
+          id: string
+          name: string
+          points: number | null
+        }
+        Insert: {
+          category?: string | null
+          code: string
+          created_at?: string | null
+          description: string
+          icon: string
+          id?: string
+          name: string
+          points?: number | null
+        }
+        Update: {
+          category?: string | null
+          code?: string
+          created_at?: string | null
+          description?: string
+          icon?: string
+          id?: string
+          name?: string
+          points?: number | null
+        }
+        Relationships: []
+      }
+      quantum_chat_messages: {
+        Row: {
+          content: string
+          created_at: string | null
+          id: string
+          is_observed: boolean | null
+          observed_by_count: number | null
+          room_id: string
+          sender_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          id?: string
+          is_observed?: boolean | null
+          observed_by_count?: number | null
+          room_id: string
+          sender_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          id?: string
+          is_observed?: boolean | null
+          observed_by_count?: number | null
+          room_id?: string
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quantum_chat_messages_room_id_fkey"
+            columns: ["room_id"]
+            isOneToOne: false
+            referencedRelation: "quantum_chat_rooms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      quantum_chat_rooms: {
+        Row: {
+          created_at: string | null
+          creator_id: string
+          description: string | null
+          id: string
+          is_active: boolean | null
+          max_participants: number | null
+          name: string
+          room_type: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          creator_id: string
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          max_participants?: number | null
+          name: string
+          room_type?: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          creator_id?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          max_participants?: number | null
+          name?: string
+          room_type?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       quantum_collapses: {
         Row: {
           collapsed_version_id: string
@@ -24429,6 +24536,36 @@ export type Database = {
           },
         ]
       }
+      quantum_oracle_sessions: {
+        Row: {
+          created_at: string | null
+          credits_used: number | null
+          id: string
+          prediction: string | null
+          question: string
+          session_type: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          credits_used?: number | null
+          id?: string
+          prediction?: string | null
+          question: string
+          session_type?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          credits_used?: number | null
+          id?: string
+          prediction?: string | null
+          question?: string
+          session_type?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       quantum_post_versions: {
         Row: {
           content: string
@@ -24536,6 +24673,33 @@ export type Database = {
         }
         Relationships: []
       }
+      quantum_reality_votes: {
+        Row: {
+          chosen_version_id: string
+          created_at: string | null
+          id: string
+          post_id: string
+          vote_weight: number | null
+          voter_id: string
+        }
+        Insert: {
+          chosen_version_id: string
+          created_at?: string | null
+          id?: string
+          post_id: string
+          vote_weight?: number | null
+          voter_id: string
+        }
+        Update: {
+          chosen_version_id?: string
+          created_at?: string | null
+          id?: string
+          post_id?: string
+          vote_weight?: number | null
+          voter_id?: string
+        }
+        Relationships: []
+      }
       quantum_subscriptions: {
         Row: {
           created_at: string
@@ -24568,6 +24732,35 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      quantum_user_achievements: {
+        Row: {
+          achievement_id: string
+          earned_at: string | null
+          id: string
+          user_id: string
+        }
+        Insert: {
+          achievement_id: string
+          earned_at?: string | null
+          id?: string
+          user_id: string
+        }
+        Update: {
+          achievement_id?: string
+          earned_at?: string | null
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quantum_user_achievements_achievement_id_fkey"
+            columns: ["achievement_id"]
+            isOneToOne: false
+            referencedRelation: "quantum_achievements"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       quest_challenges: {
         Row: {
