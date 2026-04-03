@@ -38,6 +38,11 @@ export function EmotionDrops({ onBack }: { onBack?: () => void }) {
 
   return (
     <div className="space-y-6">
+      {onBack && (
+        <Button variant="ghost" onClick={onBack} className="gap-2">
+          <ArrowLeft className="h-4 w-4" /> Back to Hub
+        </Button>
+      )}
       <Card className="border-pink-500/20 bg-gradient-to-br from-pink-50 to-purple-50 dark:from-pink-950/20 dark:to-purple-950/20">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
