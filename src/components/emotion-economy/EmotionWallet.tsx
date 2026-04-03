@@ -38,7 +38,7 @@ interface Credits {
   total_credits_used: number;
 }
 
-export function EmotionWallet() {
+export function EmotionWallet({ onBack }: { onBack?: () => void }) {
   const { toast } = useToast();
   const [wallet, setWallet] = useState<Wallet | null>(null);
   const [credits, setCredits] = useState<Credits | null>(null);
