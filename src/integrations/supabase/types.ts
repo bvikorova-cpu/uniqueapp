@@ -13449,6 +13449,457 @@ export type Database = {
         }
         Relationships: []
       }
+      football_coins: {
+        Row: {
+          balance: number
+          created_at: string
+          id: string
+          total_earned: number
+          total_spent: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          balance?: number
+          created_at?: string
+          id?: string
+          total_earned?: number
+          total_spent?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          balance?: number
+          created_at?: string
+          id?: string
+          total_earned?: number
+          total_spent?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      football_equipment: {
+        Row: {
+          boost_stat: string | null
+          boost_value: number | null
+          created_at: string
+          id: string
+          image_url: string | null
+          is_equipped: boolean
+          name: string
+          player_id: string | null
+          price: number
+          rarity: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          boost_stat?: string | null
+          boost_value?: number | null
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          is_equipped?: boolean
+          name: string
+          player_id?: string | null
+          price?: number
+          rarity?: string
+          type?: string
+          user_id: string
+        }
+        Update: {
+          boost_stat?: string | null
+          boost_value?: number | null
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          is_equipped?: boolean
+          name?: string
+          player_id?: string | null
+          price?: number
+          rarity?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      football_league_standings: {
+        Row: {
+          created_at: string
+          goals_against: number
+          goals_for: number
+          id: string
+          league_id: string | null
+          matches_played: number
+          points: number
+          team_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          goals_against?: number
+          goals_for?: number
+          id?: string
+          league_id?: string | null
+          matches_played?: number
+          points?: number
+          team_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          goals_against?: number
+          goals_for?: number
+          id?: string
+          league_id?: string | null
+          matches_played?: number
+          points?: number
+          team_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "football_league_standings_league_id_fkey"
+            columns: ["league_id"]
+            isOneToOne: false
+            referencedRelation: "football_leagues"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "football_league_standings_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "football_teams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      football_leagues: {
+        Row: {
+          created_at: string
+          ends_at: string | null
+          entry_fee: number
+          id: string
+          max_teams: number
+          name: string
+          prize_pool: number
+          season: string
+          starts_at: string | null
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          ends_at?: string | null
+          entry_fee?: number
+          id?: string
+          max_teams?: number
+          name: string
+          prize_pool?: number
+          season?: string
+          starts_at?: string | null
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          ends_at?: string | null
+          entry_fee?: number
+          id?: string
+          max_teams?: number
+          name?: string
+          prize_pool?: number
+          season?: string
+          starts_at?: string | null
+          status?: string
+        }
+        Relationships: []
+      }
+      football_matches: {
+        Row: {
+          away_score: number | null
+          away_team_id: string | null
+          created_at: string
+          home_score: number | null
+          home_team_id: string | null
+          id: string
+          match_log: Json | null
+          match_type: string
+          played_at: string | null
+          status: string
+        }
+        Insert: {
+          away_score?: number | null
+          away_team_id?: string | null
+          created_at?: string
+          home_score?: number | null
+          home_team_id?: string | null
+          id?: string
+          match_log?: Json | null
+          match_type?: string
+          played_at?: string | null
+          status?: string
+        }
+        Update: {
+          away_score?: number | null
+          away_team_id?: string | null
+          created_at?: string
+          home_score?: number | null
+          home_team_id?: string | null
+          id?: string
+          match_log?: Json | null
+          match_type?: string
+          played_at?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "football_matches_away_team_id_fkey"
+            columns: ["away_team_id"]
+            isOneToOne: false
+            referencedRelation: "football_teams"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "football_matches_home_team_id_fkey"
+            columns: ["home_team_id"]
+            isOneToOne: false
+            referencedRelation: "football_teams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      football_players: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          defending: number
+          id: string
+          is_for_sale: boolean
+          market_value: number
+          morale: number
+          name: string
+          overall_rating: number
+          pace: number
+          passing: number
+          physical: number
+          position: string
+          sale_price: number | null
+          shooting: number
+          stamina: number
+          team_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          defending?: number
+          id?: string
+          is_for_sale?: boolean
+          market_value?: number
+          morale?: number
+          name: string
+          overall_rating?: number
+          pace?: number
+          passing?: number
+          physical?: number
+          position?: string
+          sale_price?: number | null
+          shooting?: number
+          stamina?: number
+          team_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          defending?: number
+          id?: string
+          is_for_sale?: boolean
+          market_value?: number
+          morale?: number
+          name?: string
+          overall_rating?: number
+          pace?: number
+          passing?: number
+          physical?: number
+          position?: string
+          sale_price?: number | null
+          shooting?: number
+          stamina?: number
+          team_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      football_stadiums: {
+        Row: {
+          capacity: number
+          created_at: string
+          id: string
+          income_per_match: number
+          name: string
+          theme: string | null
+          updated_at: string
+          upgrade_cost: number
+          upgrade_level: number
+          user_id: string
+        }
+        Insert: {
+          capacity?: number
+          created_at?: string
+          id?: string
+          income_per_match?: number
+          name?: string
+          theme?: string | null
+          updated_at?: string
+          upgrade_cost?: number
+          upgrade_level?: number
+          user_id: string
+        }
+        Update: {
+          capacity?: number
+          created_at?: string
+          id?: string
+          income_per_match?: number
+          name?: string
+          theme?: string | null
+          updated_at?: string
+          upgrade_cost?: number
+          upgrade_level?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
+      football_teams: {
+        Row: {
+          coins_earned: number
+          created_at: string
+          draws: number
+          formation: string
+          id: string
+          league_rank: number | null
+          logo_url: string | null
+          losses: number
+          name: string
+          stadium_name: string | null
+          updated_at: string
+          user_id: string
+          wins: number
+        }
+        Insert: {
+          coins_earned?: number
+          created_at?: string
+          draws?: number
+          formation?: string
+          id?: string
+          league_rank?: number | null
+          logo_url?: string | null
+          losses?: number
+          name: string
+          stadium_name?: string | null
+          updated_at?: string
+          user_id: string
+          wins?: number
+        }
+        Update: {
+          coins_earned?: number
+          created_at?: string
+          draws?: number
+          formation?: string
+          id?: string
+          league_rank?: number | null
+          logo_url?: string | null
+          losses?: number
+          name?: string
+          stadium_name?: string | null
+          updated_at?: string
+          user_id?: string
+          wins?: number
+        }
+        Relationships: []
+      }
+      football_training_sessions: {
+        Row: {
+          created_at: string
+          credits_used: number
+          id: string
+          improvement_value: number
+          player_id: string | null
+          stat_improved: string
+          training_type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_used?: number
+          id?: string
+          improvement_value?: number
+          player_id?: string | null
+          stat_improved: string
+          training_type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_used?: number
+          id?: string
+          improvement_value?: number
+          player_id?: string | null
+          stat_improved?: string
+          training_type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "football_training_sessions_player_id_fkey"
+            columns: ["player_id"]
+            isOneToOne: false
+            referencedRelation: "football_players"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      football_transfers: {
+        Row: {
+          buyer_id: string | null
+          completed_at: string | null
+          created_at: string
+          id: string
+          player_id: string | null
+          price: number
+          seller_id: string
+          status: string
+        }
+        Insert: {
+          buyer_id?: string | null
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          player_id?: string | null
+          price: number
+          seller_id: string
+          status?: string
+        }
+        Update: {
+          buyer_id?: string | null
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          player_id?: string | null
+          price?: number
+          seller_id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "football_transfers_player_id_fkey"
+            columns: ["player_id"]
+            isOneToOne: false
+            referencedRelation: "football_players"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       forum_challenge_progress: {
         Row: {
           challenge_id: string
