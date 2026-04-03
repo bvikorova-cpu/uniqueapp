@@ -24497,6 +24497,92 @@ export type Database = {
           },
         ]
       }
+      quantum_nft_transactions: {
+        Row: {
+          buyer_id: string
+          created_at: string | null
+          id: string
+          nft_id: string | null
+          price: number
+          seller_id: string | null
+          transaction_type: string
+        }
+        Insert: {
+          buyer_id: string
+          created_at?: string | null
+          id?: string
+          nft_id?: string | null
+          price: number
+          seller_id?: string | null
+          transaction_type?: string
+        }
+        Update: {
+          buyer_id?: string
+          created_at?: string | null
+          id?: string
+          nft_id?: string | null
+          price?: number
+          seller_id?: string | null
+          transaction_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quantum_nft_transactions_nft_id_fkey"
+            columns: ["nft_id"]
+            isOneToOne: false
+            referencedRelation: "quantum_nfts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      quantum_nfts: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          image_url: string | null
+          is_listed: boolean | null
+          listed_price: number | null
+          metadata: Json | null
+          minted_price: number | null
+          name: string
+          quantum_signature: string | null
+          rarity: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_listed?: boolean | null
+          listed_price?: number | null
+          metadata?: Json | null
+          minted_price?: number | null
+          name: string
+          quantum_signature?: string | null
+          rarity?: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_listed?: boolean | null
+          listed_price?: number | null
+          metadata?: Json | null
+          minted_price?: number | null
+          name?: string
+          quantum_signature?: string | null
+          rarity?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       quantum_observations: {
         Row: {
           id: string
@@ -24535,6 +24621,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      quantum_observer_leaderboard: {
+        Row: {
+          accuracy_score: number | null
+          created_at: string | null
+          display_name: string | null
+          id: string
+          observations_count: number | null
+          streak_days: number | null
+          total_points: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          accuracy_score?: number | null
+          created_at?: string | null
+          display_name?: string | null
+          id?: string
+          observations_count?: number | null
+          streak_days?: number | null
+          total_points?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          accuracy_score?: number | null
+          created_at?: string | null
+          display_name?: string | null
+          id?: string
+          observations_count?: number | null
+          streak_days?: number | null
+          total_points?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
       }
       quantum_oracle_sessions: {
         Row: {
@@ -24673,6 +24795,39 @@ export type Database = {
         }
         Relationships: []
       }
+      quantum_reality_merges: {
+        Row: {
+          created_at: string | null
+          id: string
+          merge_type: string | null
+          merged_content: string
+          metadata: Json | null
+          source_post_ids: string[]
+          user_id: string
+          votes_count: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          merge_type?: string | null
+          merged_content: string
+          metadata?: Json | null
+          source_post_ids: string[]
+          user_id: string
+          votes_count?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          merge_type?: string | null
+          merged_content?: string
+          metadata?: Json | null
+          source_post_ids?: string[]
+          user_id?: string
+          votes_count?: number | null
+        }
+        Relationships: []
+      }
       quantum_reality_votes: {
         Row: {
           chosen_version_id: string
@@ -24730,6 +24885,116 @@ export type Database = {
           status?: string
           subscription_type?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      quantum_time_travel_logs: {
+        Row: {
+          credits_used: number | null
+          id: string
+          target_post_id: string | null
+          timeline_branch: string | null
+          traveled_at: string | null
+          user_id: string
+          viewed_version: number | null
+        }
+        Insert: {
+          credits_used?: number | null
+          id?: string
+          target_post_id?: string | null
+          timeline_branch?: string | null
+          traveled_at?: string | null
+          user_id: string
+          viewed_version?: number | null
+        }
+        Update: {
+          credits_used?: number | null
+          id?: string
+          target_post_id?: string | null
+          timeline_branch?: string | null
+          traveled_at?: string | null
+          user_id?: string
+          viewed_version?: number | null
+        }
+        Relationships: []
+      }
+      quantum_tournament_participants: {
+        Row: {
+          id: string
+          joined_at: string | null
+          rank: number | null
+          rounds_completed: number | null
+          score: number | null
+          tournament_id: string | null
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          joined_at?: string | null
+          rank?: number | null
+          rounds_completed?: number | null
+          score?: number | null
+          tournament_id?: string | null
+          user_id: string
+        }
+        Update: {
+          id?: string
+          joined_at?: string | null
+          rank?: number | null
+          rounds_completed?: number | null
+          score?: number | null
+          tournament_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quantum_tournament_participants_tournament_id_fkey"
+            columns: ["tournament_id"]
+            isOneToOne: false
+            referencedRelation: "quantum_tournaments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      quantum_tournaments: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          ends_at: string | null
+          entry_fee: number | null
+          id: string
+          max_participants: number | null
+          name: string
+          prize_pool: number | null
+          starts_at: string | null
+          status: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          ends_at?: string | null
+          entry_fee?: number | null
+          id?: string
+          max_participants?: number | null
+          name: string
+          prize_pool?: number | null
+          starts_at?: string | null
+          status?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          ends_at?: string | null
+          entry_fee?: number | null
+          id?: string
+          max_participants?: number | null
+          name?: string
+          prize_pool?: number | null
+          starts_at?: string | null
+          status?: string | null
+          updated_at?: string | null
         }
         Relationships: []
       }
