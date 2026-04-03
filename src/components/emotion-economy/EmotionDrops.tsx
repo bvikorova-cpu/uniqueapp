@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Heart, Zap, Users, Clock, TrendingUp } from "lucide-react";
+import { Heart, Zap, Users, Clock, TrendingUp, ArrowLeft } from "lucide-react";
 
 export function EmotionDrops({ onBack }: { onBack?: () => void }) {
   const { toast } = useToast();
