@@ -163,6 +163,7 @@ import {
   HockeyArena,
   TennisArena,
   AmericanFootballArena,
+  GlamourWorld,
   F1Racing,
   F1Subscription,
   F1FantasyTeam,
