@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { UserPlus, ShoppingCart, Shield, Dumbbell, ShoppingBag, Swords, Trophy, Map, Search, Building, ArrowUpDown, Medal, GraduationCap, BarChart3, Coins } from "lucide-react";
+import { ArenaAuthGuard } from "@/components/arena/ArenaAuthGuard";
 import { AFArenaHero } from "@/components/american-football/AFArenaHero";
 import { AFEngagement } from "@/components/american-football/AFEngagement";
 import { AFToolCard } from "@/components/american-football/AFToolCard";
@@ -89,7 +90,9 @@ const AmericanFootballArena = () => {
     return (
       <div className="min-h-screen bg-background">
         <div className="container mx-auto px-4 pt-20 pb-8">
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>{renderView()}</motion.div>
+          <ArenaAuthGuard onBack={() => setActiveView("hub")} sportName="American Football Arena">
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>{renderView()}</motion.div>
+          </ArenaAuthGuard>
         </div>
       </div>
     );
