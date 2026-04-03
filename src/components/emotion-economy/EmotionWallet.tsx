@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Heart, Smile, Zap, ThumbsUp, Frown, AlertTriangle, Sparkles, Cloud, Coins } from "lucide-react";
+import { Heart, Smile, Zap, ThumbsUp, Frown, AlertTriangle, Sparkles, Cloud, Coins, ArrowLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const emotionIcons: Record<string, any> = {
   joy: Smile,
