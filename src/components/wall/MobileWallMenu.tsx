@@ -82,6 +82,7 @@ const entertainmentModules = [
   { name: "Horse Racing", path: "/horse-racing", icon: Trophy, color: "text-amber-500" },
   { name: "Football Arena", path: "/football-arena", icon: Trophy, color: "text-emerald-500" },
   { name: "Basketball Arena", path: "/basketball-arena", icon: Trophy, color: "text-orange-500" },
+  { name: "Hockey Arena", path: "/hockey-arena", icon: Trophy, color: "text-cyan-500" },
   { name: "Comedy Club", path: "/comedy-club", icon: Mic2, color: "text-fuchsia-500" },
   { name: "AI Tattoo", path: "/ai-tattoo", icon: ImageIcon, color: "text-slate-400" },
   { name: "Mystery Box", path: "/mystery-box", icon: Gift, color: "text-violet-500" },

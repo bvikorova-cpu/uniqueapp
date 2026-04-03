@@ -35,6 +35,7 @@ export const VirtualEscapeRoom = lazy(() => import("@/pages/VirtualEscapeRoom"))
 export const HorseRacing = lazy(() => import("@/pages/HorseRacing"));
 export const FootballArena = lazy(() => import("@/pages/FootballArena"));
 export const BasketballArena = lazy(() => import("@/pages/BasketballArena"));
+export const HockeyArena = lazy(() => import("@/pages/HockeyArena"));
 export const ComedyClub = lazy(() => import("@/pages/ComedyClub"));
 export const ComedianDashboard = lazy(() => import("@/pages/ComedianDashboard"));
 export const ComedyLiveShow = lazy(() => import("@/pages/ComedyLiveShow"));
