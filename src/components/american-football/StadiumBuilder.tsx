@@ -1,0 +1,74 @@
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ArrowLeft, Building } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
+import { toast } from "sonner";
+
+const UPGRADES = [
+  { name: "Expand Seating", field: "capacity", add: 5000, cost: 1000, desc: "+5,000 seats" },
+  { name: "Upgrade Facilities", field: "facilities_level", add: 1, cost: 1500, desc: "+1 facility level" },
+  { name: "Premium Field Surface", field: "field_type", add: 0, cost: 2000, desc: "Upgrade field quality" },
+  { name: "Revenue Boost", field: "revenue_per_match", add: 75, cost: 800, desc: "+75 coins/game" },
+];
+const FIELD_TYPES = ["grass", "turf", "fieldturf", "premium"];
+
+export function StadiumBuilder({ onBack }: { onBack: () => void }) {
+  const { user } = useAuth();
+  const [stadium, setStadium] = useState<any>(null);
+
+  useEffect(() => {
+    if (!user) return;
+    supabase.from("american_football_stadiums").select("*").eq("user_id", user.id).single().then(async ({ data }) => {
+      if (data) { setStadium(data); } else {
+        const { data: created } = await supabase.from("american_football_stadiums").insert({ user_id: user.id }).select().single();
+        setStadium(created);
+      }
+    });
+  }, [user]);
+
+  const upgrade = async (upg: typeof UPGRADES[0]) => {
+    if (!user || !stadium) return;
+    const { data: coins } = await supabase.from("american_football_coins").select("*").eq("user_id", user.id).single();
+    if (!coins || coins.balance < upg.cost) { toast.error("Not enough coins!"); return; }
+    await supabase.from("american_football_coins").update({ balance: coins.balance - upg.cost, total_spent: coins.total_spent + upg.cost }).eq("user_id", user.id);
+
+    let updates: any = { total_upgrades: stadium.total_upgrades + 1 };
+    if (upg.field === "field_type") {
+      const idx = FIELD_TYPES.indexOf(stadium.field_type);
+      updates.field_type = FIELD_TYPES[Math.min(idx + 1, FIELD_TYPES.length - 1)];
+    } else {
+      updates[upg.field] = (stadium[upg.field] || 0) + upg.add;
+    }
+    await supabase.from("american_football_stadiums").update(updates).eq("id", stadium.id);
+    setStadium({ ...stadium, ...updates });
+    toast.success(`Stadium upgraded! (-${upg.cost} coins)`);
+  };
+
+  return (
+    <div className="space-y-4">
+      <Button variant="ghost" onClick={onBack}><ArrowLeft className="h-4 w-4 mr-2" />Back</Button>
+      <Card>
+        <CardHeader><CardTitle className="flex items-center gap-2"><Building className="h-5 w-5 text-primary" />Stadium Builder</CardTitle></CardHeader>
+        <CardContent className="space-y-4">
+          {stadium && (
+            <div className="p-4 rounded-lg bg-muted/50 border border-border/50 grid grid-cols-2 gap-3 text-sm">
+              <div>🏟️ {stadium.name}</div><div>👥 Capacity: {stadium.capacity?.toLocaleString()}</div>
+              <div>🏈 Field: {stadium.field_type}</div><div>⭐ Facilities: Lv.{stadium.facilities_level}</div>
+              <div>💰 Revenue: {stadium.revenue_per_match}/game</div><div>🔧 Upgrades: {stadium.total_upgrades}</div>
+            </div>
+          )}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+            {UPGRADES.map(upg => (
+              <Button key={upg.name} variant="outline" className="justify-between h-auto py-3" onClick={() => upgrade(upg)}>
+                <div className="text-left"><div className="text-sm font-semibold">{upg.name}</div><div className="text-xs text-muted-foreground">{upg.desc}</div></div>
+                <span className="text-xs text-primary ml-2">{upg.cost}</span>
+              </Button>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
