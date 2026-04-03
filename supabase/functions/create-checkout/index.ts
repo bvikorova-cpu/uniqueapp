@@ -20,6 +20,12 @@ const ANTIQUE_PRICE_IDS: Record<number, string> = {
 };
 
 const SPORTS_PACKS: Record<string, Record<string, { amount: number; coins: number }>> = {
+  football_coins: {
+    price_football_1000: { amount: 299, coins: 1000 },
+    price_football_5000: { amount: 999, coins: 5000 },
+    price_football_15000: { amount: 2499, coins: 15000 },
+    price_football_50000: { amount: 4999, coins: 50000 },
+  },
   basketball_coins: {
     price_basketball_1000: { amount: 499, coins: 1000 },
     price_basketball_3000: { amount: 999, coins: 3000 },
