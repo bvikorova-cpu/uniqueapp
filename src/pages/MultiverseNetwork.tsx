@@ -40,9 +40,7 @@ type ViewType = "hub" | "create" | "my-universes" | "timeline-merger" | "best-se
 const tools = [
   { id: "create" as ViewType, icon: Globe, title: "Create Universe", description: "Generate AI-powered alternate realities", color: "violet", badge: "AI" },
   { id: "my-universes" as ViewType, icon: InfinityIcon, title: "My Universes", description: "Browse & manage parallel dimensions", color: "blue" },
-  { id: "create-life" as ViewType, icon: Sparkles, title: "Create Life", description: "Design an alternate version of yourself", color: "emerald" },
-  { id: "my-lives" as ViewType, icon: Users, title: "My Lives", description: "Manage your parallel identities", color: "sky" },
-  { id: "explore-lives" as ViewType, icon: UserPlus, title: "Explore Lives", description: "Discover other users' parallel realities", color: "teal" },
+  { id: "life-simulator" as ViewType, icon: Gamepad2, title: "Life Simulator", description: "Live a full day in your alternate reality", color: "fuchsia", badge: "AI" },
   { id: "life-simulator" as ViewType, icon: Gamepad2, title: "Life Simulator", description: "Live a full day in your alternate reality", color: "fuchsia", badge: "AI" },
   { id: "clash-arena" as ViewType, icon: Swords, title: "Reality Clash", description: "Pit two versions of yourself in battle", color: "rose", badge: "AI" },
   { id: "destiny-forecast" as ViewType, icon: Eye, title: "Destiny Forecast", description: "AI predicts your multiverse future", color: "indigo", badge: "AI" },
