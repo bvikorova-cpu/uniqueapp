@@ -33,8 +33,13 @@ export function CoinShop({ onBack }: { onBack: () => void }) {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) throw new Error("Please sign in");
-      const { data, error } = await supabase.functions.invoke("create-glamour-coin-payment", {
-        body: { coins: pkg.coins, price: pkg.price },
+      const { data, error } = await supabase.functions.invoke("create-checkout", {
+        headers: { Authorization: `Bearer ${session.access_token}` },
+        body: {
+          productName: `Glamour World - ${pkg.label}`,
+          amount: Math.round(pkg.price * 100),
+          metadata: { type: "glamour_coins", coins: pkg.coins },
+        },
       });
       if (error) throw error;
       if (data?.url) window.open(data.url, "_blank");
