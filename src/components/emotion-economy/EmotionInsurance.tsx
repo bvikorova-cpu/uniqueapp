@@ -48,7 +48,7 @@ const insurancePlans = [
   }
 ];
 
-export function EmotionInsurance() {
+export function EmotionInsurance({ onBack }: { onBack?: () => void }) {
   const { toast } = useToast();
 
   const handleGetProtected = (planName: string, price: string) => {
