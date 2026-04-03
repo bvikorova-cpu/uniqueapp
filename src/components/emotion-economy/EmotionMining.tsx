@@ -5,7 +5,7 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Zap, TrendingUp, Award } from "lucide-react";
+import { Zap, TrendingUp, Award, ArrowLeft } from "lucide-react";
 
 export function EmotionMining({ onBack }: { onBack?: () => void }) {
   const { toast } = useToast();
