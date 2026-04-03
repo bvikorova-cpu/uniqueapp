@@ -50,20 +50,21 @@ export const CloneHero = () => {
       <video ref={videoRef} className="absolute inset-0 h-full w-full object-cover brightness-110 saturate-110" autoPlay muted loop playsInline>
         <source src={heroVideo.url} type="video/mp4" />
       </video>
-      <div className="absolute inset-0 bg-gradient-to-b from-background/15 via-background/30 to-background/70" />
+      <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-background/50 to-background/80" />
       <div className="relative z-10 h-full flex flex-col justify-center px-6 sm:px-10">
         <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="flex justify-center mb-4">
           <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-card/45 backdrop-blur-md text-foreground text-sm font-semibold border border-border/60">
             <Brain className="w-4 h-4 text-primary" /> AI Personality Clone Network <Sparkles className="w-4 h-4 text-accent" />
           </span>
         </motion.div>
-        <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
-          className="text-3xl md:text-5xl lg:text-6xl font-black text-center mb-3 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent drop-shadow-lg"
-          style={{ textShadow: "0 2px 20px rgba(0,0,0,0.5)" }}>
-          AI Personality Clone
-        </motion.h1>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
+          className="mx-auto mb-4 px-6 py-3 rounded-2xl border-2 border-primary/60 bg-card/40 backdrop-blur-lg shadow-[0_0_30px_rgba(var(--primary),0.15)]">
+          <h1 className="text-3xl md:text-5xl lg:text-6xl font-black text-center bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
+            AI Personality Clone
+          </h1>
+        </motion.div>
         <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}
-          className="text-sm sm:text-base md:text-lg text-foreground/85 text-center mb-7 max-w-3xl mx-auto">
+          className="text-sm sm:text-base md:text-lg font-semibold text-center mb-7 max-w-3xl mx-auto px-4 py-2 rounded-xl bg-card/50 backdrop-blur-md text-foreground border border-border/40">
           Create a digital copy of your personality that communicates 24/7 while you sleep or work
         </motion.p>
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
