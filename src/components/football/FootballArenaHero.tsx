@@ -32,10 +32,10 @@ export const FootballArenaHero = ({ stats, onNavigate }: FootballArenaHeroProps)
 
   return (
     <section className="relative h-[70svh] min-h-[480px] overflow-hidden rounded-2xl mx-2 md:mx-0 bg-slate-950">
-      <video ref={videoRef} autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover brightness-[1.1]" src={heroVideo.url} />
+      <video ref={videoRef} autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover" style={{ filter: 'brightness(1.5) saturate(1.2)' }} src={heroVideo.url} />
       <div className="absolute inset-0 pointer-events-none" style={{ background: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(16,185,129,0.02) 2px, rgba(16,185,129,0.02) 4px)' }} />
-      <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent" />
-      <div className="absolute inset-0 bg-gradient-to-r from-slate-950/50 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-r from-slate-950/30 to-transparent" />
 
       <div className="absolute top-4 left-4 w-12 h-12 border-l-2 border-t-2 border-emerald-400/40 rounded-tl-lg" />
       <div className="absolute top-4 right-16 w-12 h-12 border-r-2 border-t-2 border-emerald-400/40 rounded-tr-lg" />
