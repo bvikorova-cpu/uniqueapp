@@ -5,7 +5,7 @@ import { useSearchParams } from "react-router-dom";
 import { 
   Globe, Layers, Shuffle, Crown, Sparkles, Users, Loader2,
   BarChart3, GitBranch, MessageCircle, Dices, Compass, Network, TrendingUp,
-  BookOpen, CreditCard, Gamepad2, Medal, Swords, Eye, UserPlus, Merge
+  BookOpen, CreditCard, Gamepad2, Medal, Swords, Eye
 } from "lucide-react";
 import { Infinity as InfinityIcon } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
