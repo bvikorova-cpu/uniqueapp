@@ -5,7 +5,7 @@ import { useSearchParams } from "react-router-dom";
 import { 
   Globe, Layers, Shuffle, Crown, Sparkles, Users, Loader2,
   BarChart3, GitBranch, MessageCircle, Dices, Compass, Network, TrendingUp,
-  BookOpen, CreditCard, Gamepad2, Medal, Swords, Eye
+  BookOpen, CreditCard, Gamepad2, Medal, Swords, Eye, UserPlus, Merge
 } from "lucide-react";
 import { Infinity as InfinityIcon } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -31,15 +31,25 @@ import ParallelLifeSimulator from "@/components/multiverse/ParallelLifeSimulator
 import MultiverseLeaderboard from "@/components/multiverse/MultiverseLeaderboard";
 import RealityClashArena from "@/components/multiverse/RealityClashArena";
 import QuantumDestinyForecast from "@/components/multiverse/QuantumDestinyForecast";
+import { MyLives } from "@/components/parallel-lives/MyLives";
+import { CreateLife } from "@/components/parallel-lives/CreateLife";
+import { ExploreLives } from "@/components/parallel-lives/ExploreLives";
+import { CrossRealityReveal } from "@/components/parallel-lives/CrossRealityReveal";
+import { RealityMerge } from "@/components/parallel-lives/RealityMerge";
+import { ParallelSubscriptions } from "@/components/parallel-lives/ParallelSubscriptions";
 
 type ViewType = "hub" | "create" | "my-universes" | "timeline-merger" | "best-self" | 
   "comparison" | "timeline-view" | "quantum-chat" | "reality-lottery" | "pricing" |
   "navigator" | "decision-tree" | "analytics" | "community" | "journal" |
-  "life-simulator" | "leaderboard" | "clash-arena" | "destiny-forecast";
+  "life-simulator" | "leaderboard" | "clash-arena" | "destiny-forecast" |
+  "my-lives" | "create-life" | "explore-lives" | "cross-reveal" | "reality-merge" | "parallel-subs";
 
 const tools = [
   { id: "create" as ViewType, icon: Globe, title: "Create Universe", description: "Generate AI-powered alternate realities", color: "violet", badge: "AI" },
   { id: "my-universes" as ViewType, icon: InfinityIcon, title: "My Universes", description: "Browse & manage parallel dimensions", color: "blue" },
+  { id: "create-life" as ViewType, icon: Sparkles, title: "Create Life", description: "Design an alternate version of yourself", color: "emerald" },
+  { id: "my-lives" as ViewType, icon: Users, title: "My Lives", description: "Manage your parallel identities", color: "sky" },
+  { id: "explore-lives" as ViewType, icon: UserPlus, title: "Explore Lives", description: "Discover other users' parallel realities", color: "teal" },
   { id: "life-simulator" as ViewType, icon: Gamepad2, title: "Life Simulator", description: "Live a full day in your alternate reality", color: "fuchsia", badge: "AI" },
   { id: "clash-arena" as ViewType, icon: Swords, title: "Reality Clash", description: "Pit two versions of yourself in battle", color: "rose", badge: "AI" },
   { id: "destiny-forecast" as ViewType, icon: Eye, title: "Destiny Forecast", description: "AI predicts your multiverse future", color: "indigo", badge: "AI" },
@@ -48,6 +58,8 @@ const tools = [
   { id: "best-self" as ViewType, icon: Crown, title: "Best Self Finder", description: "AI identifies your most successful version", color: "amber", badge: "AI" },
   { id: "comparison" as ViewType, icon: BarChart3, title: "Reality Comparison", description: "Compare parallel versions side by side", color: "blue" },
   { id: "timeline-view" as ViewType, icon: GitBranch, title: "Multiverse Timeline", description: "Visual timeline of reality divergences", color: "indigo" },
+  { id: "cross-reveal" as ViewType, icon: GitBranch, title: "Cross-Reality Reveal", description: "Reveal your identity across realities", color: "purple" },
+  { id: "reality-merge" as ViewType, icon: Merge, title: "Reality Merge", description: "Combine two lives into one unified identity", color: "blue" },
   { id: "quantum-chat" as ViewType, icon: MessageCircle, title: "Quantum Chat", description: "Chat with your alternate selves via AI", color: "pink", badge: "AI" },
   { id: "reality-lottery" as ViewType, icon: Dices, title: "Reality Lottery", description: "Random parallel life generator", color: "amber" },
   { id: "decision-tree" as ViewType, icon: Network, title: "Decision Tree", description: "Map decision consequences across realities", color: "emerald", badge: "AI" },
@@ -55,6 +67,7 @@ const tools = [
   { id: "analytics" as ViewType, icon: TrendingUp, title: "Analytics", description: "Analyze performance across dimensions", color: "violet" },
   { id: "community" as ViewType, icon: Users, title: "Community", description: "Connect with other explorers", color: "cyan" },
   { id: "journal" as ViewType, icon: BookOpen, title: "Quantum Journal", description: "Record multiverse reflections", color: "indigo" },
+  { id: "parallel-subs" as ViewType, icon: CreditCard, title: "Lives Subscriptions", description: "Premium plans for parallel lives", color: "yellow" },
   { id: "pricing" as ViewType, icon: CreditCard, title: "Access Plans", description: "Subscriptions & one-time purchases", color: "emerald" },
 ];
 
