@@ -23,13 +23,14 @@ import { MusicBox } from "@/components/glamour-world/MusicBox";
 import { TreasureHunt } from "@/components/glamour-world/TreasureHunt";
 import { HairStylist } from "@/components/glamour-world/HairStylist";
 import { CoinShop } from "@/components/glamour-world/CoinShop";
+import { BarbieCreator3D } from "@/components/glamour-world/BarbieCreator3D";
 import {
   Home, Shirt, Gem, PawPrint, Sparkles, BookOpen, Scissors,
   Palette, Crown, Music, Camera, Flower, PartyPopper, GraduationCap,
-  Coins, Map, NotebookPen, CakeSlice, Mic2, Star
+  Coins, Map, NotebookPen, CakeSlice, Mic2, Star, User
 } from "lucide-react";
 
-type ViewType = "hub" | "dream-house" | "fashion" | "accessories" | "pet-salon" | "makeup" | "stories" | "nails" | "room" | "bracelets" | "party" | "academy" | "dance" | "garden" | "photo" | "diary" | "recipes" | "talent" | "music" | "treasure" | "hair" | "coins";
+type ViewType = "hub" | "dream-house" | "fashion" | "accessories" | "pet-salon" | "makeup" | "stories" | "nails" | "room" | "bracelets" | "party" | "academy" | "dance" | "garden" | "photo" | "diary" | "recipes" | "talent" | "music" | "treasure" | "hair" | "coins" | "barbie-creator";
 
 const tools: { id: ViewType; icon: any; title: string; description: string; badge?: string; credits?: number; gradient: string }[] = [
   { id: "dream-house", icon: Home, title: "Dream House Builder", description: "Design your perfect dream house room by room", badge: "AI", credits: 5, gradient: "from-pink-500/10 to-purple-500/5" },
