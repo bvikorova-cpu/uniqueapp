@@ -2,7 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { Shield, Check, AlertTriangle } from "lucide-react";
+import { Shield, Check, AlertTriangle, ArrowLeft } from "lucide-react";
 
 const insurancePlans = [
   {
