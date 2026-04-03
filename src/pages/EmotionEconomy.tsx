@@ -1,186 +1,102 @@
 import { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Heart, TrendingUp, Shield, Zap, Wallet, Users, Sparkles } from "lucide-react";
+import { motion } from "framer-motion";
+import {
+  Heart, TrendingUp, Shield, Zap, Wallet, Users,
+  RotateCw, Trophy, MessageSquare, BarChart3
+} from "lucide-react";
+import { EmotionEconomyHero } from "@/components/emotion-economy/EmotionEconomyHero";
+import { EmotionEconomyEngagement } from "@/components/emotion-economy/EmotionEconomyEngagement";
+import { EmotionEconomyToolCard } from "@/components/emotion-economy/EmotionEconomyToolCard";
 import { EmotionWallet } from "@/components/emotion-economy/EmotionWallet";
 import { EmotionFeed } from "@/components/emotion-economy/EmotionFeed";
 import { EmotionMarket } from "@/components/emotion-economy/EmotionMarket";
 import { EmotionMining } from "@/components/emotion-economy/EmotionMining";
 import { EmotionInsurance } from "@/components/emotion-economy/EmotionInsurance";
 import { EmotionDrops } from "@/components/emotion-economy/EmotionDrops";
+import { EmotionRoulette } from "@/components/emotion-economy/EmotionRoulette";
+import { EmotionLeaderboard } from "@/components/emotion-economy/EmotionLeaderboard";
+import { AIMoodTherapist } from "@/components/emotion-economy/AIMoodTherapist";
+import { EmotionFutures } from "@/components/emotion-economy/EmotionFutures";
+
+type ViewType = "hub" | "feed" | "wallet" | "market" | "mining" | "insurance" | "drops" | "roulette" | "leaderboard" | "therapist" | "futures";
+
+const tools = [
+  { id: "feed" as ViewType, icon: Users, title: "Emotion Feed", description: "Share feelings, AI detects emotions", badge: "AI", credits: 1, gradient: "from-pink-500/10 to-pink-500/5", iconColor: "text-pink-400" },
+  { id: "wallet" as ViewType, icon: Wallet, title: "Emotion Wallet", description: "Track your emotional portfolio", gradient: "from-violet-500/10 to-violet-500/5", iconColor: "text-violet-400" },
+  { id: "market" as ViewType, icon: TrendingUp, title: "Emotion Market", description: "Buy and sell emotions", gradient: "from-cyan-500/10 to-cyan-500/5", iconColor: "text-cyan-400" },
+  { id: "mining" as ViewType, icon: Zap, title: "Emotion Mining", description: "Create content, earn 50% commission", gradient: "from-emerald-500/10 to-emerald-500/5", iconColor: "text-emerald-400" },
+  { id: "therapist" as ViewType, icon: MessageSquare, title: "AI Mood Therapist", description: "AI-powered portfolio advice", badge: "AI", credits: 3, gradient: "from-cyan-500/10 to-violet-500/5", iconColor: "text-cyan-400" },
+  { id: "roulette" as ViewType, icon: RotateCw, title: "Emotion Roulette", description: "Spin the wheel, win 2x!", badge: "Game", credits: 1, gradient: "from-pink-500/10 to-yellow-500/5", iconColor: "text-pink-400" },
+  { id: "futures" as ViewType, icon: BarChart3, title: "Emotion Futures", description: "Predict next week's trends", badge: "Market", credits: 2, gradient: "from-emerald-500/10 to-cyan-500/5", iconColor: "text-emerald-400" },
+  { id: "leaderboard" as ViewType, icon: Trophy, title: "Leaderboard", description: "Global rankings & top traders", badge: "Free", gradient: "from-yellow-500/10 to-orange-500/5", iconColor: "text-yellow-400" },
+  { id: "insurance" as ViewType, icon: Shield, title: "Emotion Insurance", description: "Protect from negativity", gradient: "from-violet-500/10 to-pink-500/5", iconColor: "text-violet-400" },
+  { id: "drops" as ViewType, icon: Heart, title: "Emotion Drops", description: "Join massive emotion events", gradient: "from-pink-500/10 to-red-500/5", iconColor: "text-pink-400" },
+];
 
 export default function EmotionEconomy() {
-  const [activeTab, setActiveTab] = useState("feed");
+  const [activeView, setActiveView] = useState<ViewType>("hub");
+
+  const renderView = () => {
+    switch (activeView) {
+      case "feed": return <EmotionFeed onBack={() => setActiveView("hub")} />;
+      case "wallet": return <EmotionWallet onBack={() => setActiveView("hub")} />;
+      case "market": return <EmotionMarket onBack={() => setActiveView("hub")} />;
+      case "mining": return <EmotionMining onBack={() => setActiveView("hub")} />;
+      case "insurance": return <EmotionInsurance onBack={() => setActiveView("hub")} />;
+      case "drops": return <EmotionDrops onBack={() => setActiveView("hub")} />;
+      case "roulette": return <EmotionRoulette onBack={() => setActiveView("hub")} />;
+      case "leaderboard": return <EmotionLeaderboard onBack={() => setActiveView("hub")} />;
+      case "therapist": return <AIMoodTherapist onBack={() => setActiveView("hub")} />;
+      case "futures": return <EmotionFutures onBack={() => setActiveView("hub")} />;
+      default: return null;
+    }
+  };
+
+  if (activeView !== "hub") {
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="container mx-auto px-4 pt-20 pb-8">
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            {renderView()}
+          </motion.div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 pt-20 pb-8">
-        {/* Hero Section */}
-        <div className="text-center mb-12 space-y-4">
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <Heart className="h-12 w-12 text-red-500 animate-pulse" />
-            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
-              Emotion Economy Network
-            </h1>
-          </div>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
-            A social network where emotions are currency - buy joy, sell sadness, trade motivation
-          </p>
-          
-          {/* Feature Highlights */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-8 max-w-5xl mx-auto">
-            <Card className="border-red-500/20 hover:border-red-500/40 transition-all">
-              <CardContent className="pt-4 pb-4 text-center">
-                <Heart className="h-6 w-6 mx-auto mb-2 text-red-500" />
-                <h3 className="font-semibold text-sm mb-1">AI Emotion Detection</h3>
-                <p className="text-xs text-muted-foreground">Content analyzed automatically</p>
-              </CardContent>
-            </Card>
-            
-            <Card className="border-blue-500/20 hover:border-blue-500/40 transition-all">
-              <CardContent className="pt-4 pb-4 text-center">
-                <TrendingUp className="h-6 w-6 mx-auto mb-2 text-blue-500" />
-                <h3 className="font-semibold text-sm mb-1">Emotion Trading</h3>
-                <p className="text-xs text-muted-foreground">Buy, sell, exchange</p>
-              </CardContent>
-            </Card>
-            
-            <Card className="border-green-500/20 hover:border-green-500/40 transition-all">
-              <CardContent className="pt-4 pb-4 text-center">
-                <Zap className="h-6 w-6 mx-auto mb-2 text-green-500" />
-                <h3 className="font-semibold text-sm mb-1">Emotion Mining</h3>
-                <p className="text-xs text-muted-foreground">Earn 50% commission</p>
-              </CardContent>
-            </Card>
-            
-            <Card className="border-purple-500/20 hover:border-purple-500/40 transition-all">
-              <CardContent className="pt-4 pb-4 text-center">
-                <Shield className="h-6 w-6 mx-auto mb-2 text-purple-500" />
-                <h3 className="font-semibold text-sm mb-1">Emotion Insurance</h3>
-                <p className="text-xs text-muted-foreground">Protection plans</p>
-              </CardContent>
-            </Card>
+      <div className="container mx-auto px-4 pt-20 pb-8 space-y-8">
+        {/* Cinematic Hero */}
+        <EmotionEconomyHero />
+
+        {/* Engagement Row */}
+        <EmotionEconomyEngagement />
+
+        {/* Tool Grid */}
+        <div>
+          <h2 className="text-xl font-bold mb-4">Explore Tools</h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+            {tools.map((tool, i) => (
+              <EmotionEconomyToolCard
+                key={tool.id}
+                icon={tool.icon}
+                title={tool.title}
+                description={tool.description}
+                badge={tool.badge}
+                credits={tool.credits}
+                gradient={tool.gradient}
+                iconColor={tool.iconColor}
+                onClick={() => setActiveView(tool.id)}
+                delay={0.05 * i}
+              />
+            ))}
           </div>
         </div>
-
-        {/* How It Works Section */}
-        <Card className="max-w-5xl mx-auto border-primary/20 bg-background mb-8">
-          <CardHeader>
-            <CardTitle className="text-xl md:text-2xl flex items-center gap-2">
-              <Sparkles className="h-6 w-6 text-primary" />
-              How Emotion Economy Works
-            </CardTitle>
-            <CardDescription className="text-base">
-              Your complete guide to the emotional marketplace
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4 text-muted-foreground">
-            <div className="grid gap-4 md:grid-cols-2">
-              <div className="space-y-2">
-                <h4 className="font-semibold text-foreground flex items-center gap-2">
-                  <Users className="h-4 w-4 text-primary" /> Feed
-                </h4>
-                <p className="text-sm">
-                  Share your thoughts and feelings. AI automatically detects the emotional content of your posts (joy, motivation, love, etc.) and rewards you with corresponding emotion tokens.
-                </p>
-              </div>
-              <div className="space-y-2">
-                <h4 className="font-semibold text-foreground flex items-center gap-2">
-                  <Wallet className="h-4 w-4 text-primary" /> Wallet
-                </h4>
-                <p className="text-sm">
-                  Your emotional balance storage. Track all your emotion tokens (joy, motivation, love, sadness, etc.). Add funds, withdraw earnings, and monitor your emotional portfolio value.
-                </p>
-              </div>
-              <div className="space-y-2">
-                <h4 className="font-semibold text-foreground flex items-center gap-2">
-                  <TrendingUp className="h-4 w-4 text-primary" /> Market
-                </h4>
-                <p className="text-sm">
-                  Trade emotions like stocks. Buy low, sell high. Each emotion has real-time pricing based on supply and demand. Convert sadness to joy or invest in rare emotions.
-                </p>
-              </div>
-              <div className="space-y-2">
-                <h4 className="font-semibold text-foreground flex items-center gap-2">
-                  <Zap className="h-4 w-4 text-primary" /> Mining
-                </h4>
-                <p className="text-sm">
-                  Create positive content that generates emotions for others. Earn 50% commission every time someone consumes emotions from your content. Top miners earn €500+/month.
-                </p>
-              </div>
-              <div className="space-y-2">
-                <h4 className="font-semibold text-foreground flex items-center gap-2">
-                  <Shield className="h-4 w-4 text-primary" /> Insurance
-                </h4>
-                <p className="text-sm">
-                  Protect yourself from negativity. Subscription plans (€9.99-24.99/month) automatically block toxic emotions, backup your balance, and provide recovery guarantees.
-                </p>
-              </div>
-              <div className="space-y-2">
-                <h4 className="font-semibold text-foreground flex items-center gap-2">
-                  <Heart className="h-4 w-4 text-primary" /> Drops
-                </h4>
-                <p className="text-sm">
-                  Join massive emotion events. Pay €2.99-9.99 to participate in emotion waves where thousands of positive emotions are distributed to all participants simultaneously.
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Main Tabs */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
-          <TabsList className="grid grid-cols-3 md:grid-cols-6 w-full max-w-5xl mx-auto gap-1 h-auto p-1">
-            <TabsTrigger value="feed" className="px-2 py-2 text-xs sm:text-sm">
-              <Users className="h-4 w-4 mr-1" />
-              Feed
-            </TabsTrigger>
-            <TabsTrigger value="wallet" className="px-2 py-2 text-xs sm:text-sm">
-              <Wallet className="h-4 w-4 mr-1" />
-              Wallet
-            </TabsTrigger>
-            <TabsTrigger value="market" className="px-2 py-2 text-xs sm:text-sm">
-              <TrendingUp className="h-4 w-4 mr-1" />
-              Market
-            </TabsTrigger>
-            <TabsTrigger value="mining" className="px-2 py-2 text-xs sm:text-sm">
-              <Zap className="h-4 w-4 mr-1" />
-              Mining
-            </TabsTrigger>
-            <TabsTrigger value="insurance" className="px-2 py-2 text-xs sm:text-sm">
-              <Shield className="h-4 w-4 mr-1" />
-              Insurance
-            </TabsTrigger>
-            <TabsTrigger value="drops" className="px-2 py-2 text-xs sm:text-sm">
-              <Heart className="h-4 w-4 mr-1" />
-              Drops
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="feed" className="space-y-6">
-            <EmotionFeed />
-          </TabsContent>
-
-          <TabsContent value="wallet" className="space-y-6">
-            <EmotionWallet />
-          </TabsContent>
-
-          <TabsContent value="market" className="space-y-6">
-            <EmotionMarket />
-          </TabsContent>
-
-          <TabsContent value="mining" className="space-y-6">
-            <EmotionMining />
-          </TabsContent>
-
-          <TabsContent value="insurance" className="space-y-6">
-            <EmotionInsurance />
-          </TabsContent>
-
-          <TabsContent value="drops" className="space-y-6">
-            <EmotionDrops />
-          </TabsContent>
-        </Tabs>
       </div>
     </div>
   );
