@@ -82,6 +82,7 @@ const GlamourWorld = () => {
     "treasure": <TreasureHunt onBack={() => setActiveView("hub")} />,
     "hair": <HairStylist onBack={() => setActiveView("hub")} />,
     "coins": <CoinShop onBack={() => setActiveView("hub")} />,
+    "barbie-creator": <BarbieCreator3D onBack={() => setActiveView("hub")} />,
   };
 
   if (activeView !== "hub" && viewMap[activeView]) {
