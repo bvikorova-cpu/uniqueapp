@@ -23,7 +23,7 @@ export function BasketballArenaHero({ stats, onNavigate }: BasketballArenaHeroPr
   return (
     <div className="relative rounded-2xl overflow-hidden">
       <div className="relative h-[280px] md:h-[380px]">
-        <video autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover" style={{ filter: "brightness(0.5) saturate(1.3)" }}>
+        <video autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover" style={{ filter: "brightness(1.3) saturate(1.3)" }}>
           <source src={heroVideo.url} type="video/mp4" />
         </video>
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
