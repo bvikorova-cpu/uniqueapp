@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { UserPlus, ShoppingCart, Shield, Dumbbell, ShoppingBag, Swords, Trophy, Map, Search, Building, ArrowUpDown, Medal, GraduationCap, BarChart3, Coins } from "lucide-react";
+import { ArenaAuthGuard } from "@/components/arena/ArenaAuthGuard";
 import { HockeyArenaHero } from "@/components/hockey/HockeyArenaHero";
 import { HockeyEngagement } from "@/components/hockey/HockeyEngagement";
 import { HockeyToolCard } from "@/components/hockey/HockeyToolCard";
