@@ -96,8 +96,8 @@ export function EmotionEconomyHero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="text-3xl md:text-5xl lg:text-6xl font-bold text-white mb-3"
-          style={{ textShadow: "0 2px 20px rgba(0,0,0,0.5)" }}
+          className="text-3xl md:text-5xl lg:text-6xl font-bold mb-3 inline-block px-6 py-2 rounded-2xl border-2 border-white/40 bg-white/10 backdrop-blur-sm"
+          style={{ textShadow: "0 2px 20px rgba(0,0,0,0.5)", color: "white" }}
         >
           Trade Emotions.{" "}
           <span className="bg-gradient-to-r from-pink-400 via-violet-400 to-cyan-400 bg-clip-text text-transparent">
@@ -109,7 +109,8 @@ export function EmotionEconomyHero() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4 }}
-          className="text-sm md:text-base text-white/70 max-w-2xl mb-8"
+          className="text-base md:text-lg font-semibold text-white/90 max-w-2xl mb-8"
+          style={{ textShadow: "0 1px 8px rgba(0,0,0,0.4)" }}
         >
           Buy joy, sell sadness, mine motivation — the world's first emotional marketplace powered by AI
         </motion.p>
