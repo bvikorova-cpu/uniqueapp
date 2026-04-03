@@ -160,6 +160,7 @@ import {
   HorseRacing,
   FootballArena,
   BasketballArena,
+  HockeyArena,
   F1Racing,
   F1Subscription,
   F1FantasyTeam,
