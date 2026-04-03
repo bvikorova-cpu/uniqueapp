@@ -158,6 +158,7 @@ import {
   BrainDuel,
   VirtualEscapeRoom,
   HorseRacing,
+  FootballArena,
   F1Racing,
   F1Subscription,
   F1FantasyTeam,
