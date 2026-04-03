@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, Coins, Loader2 } from "lucide-react";
@@ -18,10 +18,10 @@ export function CoinShop({ onBack }: { onBack: () => void }) {
   const [loading, setLoading] = useState<string | null>(null);
   const [balance, setBalance] = useState<number | null>(null);
 
-  useState(() => {
+  useEffect(() => {
     if (!user) return;
     supabase.from("tennis_coins").select("balance").eq("user_id", user.id).single().then(({ data }) => setBalance(data?.balance ?? 0));
-  });
+  }, [user]);
 
   const purchase = async (pack: typeof COIN_PACKS[0]) => {
     if (!user) { toast.error("Please sign in"); return; }

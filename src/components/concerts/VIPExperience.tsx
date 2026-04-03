@@ -15,8 +15,14 @@ export const VIPExperience = ({ onBack }: Props) => {
       setLoading(true);
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) { toast.error("Please sign in"); return; }
-      const { data, error } = await supabase.functions.invoke("create-concert-vip-checkout", {
-        body: { type: "vip_pass" },
+      const { data, error } = await supabase.functions.invoke("create-checkout", {
+        headers: { Authorization: `Bearer ${session.access_token}` },
+        body: {
+          productName: "VIP All-Access Pass",
+          amount: 2999,
+          mode: "subscription",
+          metadata: { type: "concert_vip", feature: "vip_pass" },
+        },
       });
       if (error) throw error;
       if (data?.url) window.open(data.url, "_blank");
