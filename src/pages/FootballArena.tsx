@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { UserPlus, ShoppingCart, Shield, Dumbbell, ShoppingBag, Swords, Trophy, Map, Search, Building, ArrowUpDown, Medal, GraduationCap, BarChart3, Coins } from "lucide-react";
+import { UserPlus, ShoppingCart, Shield, Dumbbell, ShoppingBag, Swords, Trophy, Map, Search, Building, ArrowUpDown, Medal, GraduationCap, BarChart3, Coins, Crosshair } from "lucide-react";
 import { ArenaAuthGuard } from "@/components/arena/ArenaAuthGuard";
 import { FootballArenaHero } from "@/components/football/FootballArenaHero";
 import { FootballEngagement } from "@/components/football/FootballEngagement";
@@ -20,9 +20,10 @@ import { TrophyRoom } from "@/components/football/TrophyRoom";
 import { YouthAcademy } from "@/components/football/YouthAcademy";
 import { MatchAnalysis } from "@/components/football/MatchAnalysis";
 import { CoinShop } from "@/components/football/CoinShop";
+import { PenaltyShootout3D } from "@/components/football/PenaltyShootout3D";
 import { supabase } from "@/integrations/supabase/client";
 
-type ViewType = "hub" | "player-creator" | "player-market" | "team-builder" | "training" | "equipment" | "match" | "league" | "tactics" | "scout" | "stadium" | "transfers" | "trophies" | "youth" | "analysis" | "coins";
+type ViewType = "hub" | "player-creator" | "player-market" | "team-builder" | "training" | "equipment" | "match" | "league" | "tactics" | "scout" | "stadium" | "transfers" | "trophies" | "youth" | "analysis" | "coins" | "penalty-game";
 
 const tools = [
   { id: "player-creator" as ViewType, icon: UserPlus, title: "Player Creator", description: "Create custom players with AI-generated stats", badge: "AI", credits: 3, gradient: "from-emerald-500/10 to-emerald-500/5", iconColor: "text-emerald-400" },
@@ -40,6 +41,7 @@ const tools = [
   { id: "analysis" as ViewType, icon: BarChart3, title: "Match Analysis", description: "AI-powered post-match performance reports", badge: "AI", credits: 3, gradient: "from-fuchsia-500/10 to-fuchsia-500/5", iconColor: "text-fuchsia-400" },
   { id: "trophies" as ViewType, icon: Medal, title: "Trophy Room", description: "View your achievements and trophies", badge: "Free", gradient: "from-yellow-500/10 to-yellow-500/5", iconColor: "text-yellow-400" },
   { id: "coins" as ViewType, icon: Coins, title: "Coin Shop", description: "Purchase coins for players and upgrades", gradient: "from-amber-500/10 to-amber-500/5", iconColor: "text-amber-400" },
+  { id: "penalty-game" as ViewType, icon: Crosshair, title: "⚽ Penalty Shootout", description: "Play 3D penalty kicks against the AI goalkeeper!", badge: "3D", gradient: "from-green-500/10 to-emerald-500/5", iconColor: "text-green-400" },
 ];
 
 const useLiveStats = () => {
@@ -82,6 +84,7 @@ const FootballArena = () => {
       case "youth": return <YouthAcademy onBack={back} />;
       case "analysis": return <MatchAnalysis onBack={back} />;
       case "coins": return <CoinShop onBack={back} />;
+      case "penalty-game": return <PenaltyShootout3D onBack={back} />;
       default: return null;
     }
   };
