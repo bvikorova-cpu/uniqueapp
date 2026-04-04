@@ -24,7 +24,7 @@ import { PenaltyShot3D } from "@/components/hockey/PenaltyShot3D";
 import { EmbeddedGame } from "@/components/arena/EmbeddedGame";
 import { supabase } from "@/integrations/supabase/client";
 
-type ViewType = "hub" | "player-creator" | "player-market" | "team-builder" | "training" | "equipment" | "match" | "league" | "tactics" | "scout" | "stadium" | "transfers" | "trophies" | "youth" | "analysis" | "coins" | "penalty-shot";
+type ViewType = "hub" | "player-creator" | "player-market" | "team-builder" | "training" | "equipment" | "match" | "league" | "tactics" | "scout" | "stadium" | "transfers" | "trophies" | "youth" | "analysis" | "coins" | "penalty-shot" | "play-game";
 
 const tools = [
   { id: "player-creator" as ViewType, icon: UserPlus, title: "Player Creator", description: "Create custom hockey players with AI-generated stats", badge: "AI", credits: 500, gradient: "from-cyan-500/10 to-cyan-500/5", iconColor: "text-cyan-400" },
