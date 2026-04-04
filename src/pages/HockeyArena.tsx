@@ -41,6 +41,7 @@ const tools = [
   { id: "analysis" as ViewType, icon: BarChart3, title: "Match Analysis", description: "AI-powered post-match performance reports", badge: "AI", credits: 400, gradient: "from-fuchsia-500/10 to-fuchsia-500/5", iconColor: "text-fuchsia-400" },
   { id: "trophies" as ViewType, icon: Medal, title: "Trophy Room", description: "View your achievements and trophies", badge: "Free", gradient: "from-yellow-500/10 to-yellow-500/5", iconColor: "text-yellow-400" },
   { id: "coins" as ViewType, icon: Coins, title: "Coin Shop", description: "Purchase coins for players and upgrades", gradient: "from-amber-500/10 to-amber-500/5", iconColor: "text-amber-400" },
+  { id: "penalty-shot" as ViewType, icon: Crosshair, title: "🏒 Penalty Shot", description: "Play 3D penalty shot on ice!", badge: "3D", gradient: "from-cyan-500/10 to-cyan-500/5", iconColor: "text-cyan-400" },
 ];
 
 const useLiveStats = () => {
