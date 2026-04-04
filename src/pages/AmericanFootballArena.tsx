@@ -43,6 +43,7 @@ const tools = [
   { id: "trophies" as ViewType, icon: Medal, title: "Trophy Room", description: "View your achievements and championships", badge: "Free", gradient: "from-yellow-500/10 to-yellow-500/5", iconColor: "text-yellow-400" },
   { id: "coins" as ViewType, icon: Coins, title: "Coin Shop", description: "Purchase coins for players and upgrades", gradient: "from-amber-500/10 to-amber-500/5", iconColor: "text-amber-400" },
   { id: "field-goal" as ViewType, icon: Crosshair, title: "🏈 Field Goal", description: "Play 3D field goal kicking challenge!", badge: "3D", gradient: "from-amber-500/10 to-amber-500/5", iconColor: "text-amber-500" },
+  { id: "play-game" as ViewType, icon: Gamepad2, title: "🏈 American Football.io", description: "Play a full HTML5 American football game in your browser!", badge: "PLAY", gradient: "from-purple-500/10 to-pink-500/5", iconColor: "text-purple-400" },
 ];
 
 const useLiveStats = () => {
