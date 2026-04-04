@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { UserPlus, ShoppingCart, Shield, Dumbbell, ShoppingBag, Swords, Trophy, Map, Search, Building, ArrowUpDown, Medal, GraduationCap, BarChart3, Coins, Crosshair } from "lucide-react";
+import { UserPlus, ShoppingCart, Shield, Dumbbell, ShoppingBag, Swords, Trophy, Map, Search, Building, ArrowUpDown, Medal, GraduationCap, BarChart3, Coins, Crosshair, Gamepad2 } from "lucide-react";
 import { ArenaAuthGuard } from "@/components/arena/ArenaAuthGuard";
 import { TennisArenaHero } from "@/components/tennis/TennisArenaHero";
 import { TennisEngagement } from "@/components/tennis/TennisEngagement";
@@ -21,9 +21,10 @@ import { YouthAcademy } from "@/components/tennis/YouthAcademy";
 import { MatchAnalysis } from "@/components/tennis/MatchAnalysis";
 import { CoinShop } from "@/components/tennis/CoinShop";
 import { ServeChallenge3D } from "@/components/tennis/ServeChallenge3D";
+import { EmbeddedGame } from "@/components/arena/EmbeddedGame";
 import { supabase } from "@/integrations/supabase/client";
 
-type ViewType = "hub" | "player-creator" | "player-market" | "team-builder" | "training" | "equipment" | "match" | "league" | "tactics" | "scout" | "stadium" | "transfers" | "trophies" | "youth" | "analysis" | "coins" | "serve-game";
+type ViewType = "hub" | "player-creator" | "player-market" | "team-builder" | "training" | "equipment" | "match" | "league" | "tactics" | "scout" | "stadium" | "transfers" | "trophies" | "youth" | "analysis" | "coins" | "serve-game" | "play-game";
 
 const tools = [
   { id: "player-creator" as ViewType, icon: UserPlus, title: "Player Creator", description: "Create custom tennis players with AI-generated stats", badge: "AI", credits: 500, gradient: "from-lime-500/10 to-lime-500/5", iconColor: "text-lime-400" },
@@ -42,6 +43,7 @@ const tools = [
   { id: "trophies" as ViewType, icon: Medal, title: "Trophy Room", description: "View your achievements and Grand Slams", badge: "Free", gradient: "from-yellow-500/10 to-yellow-500/5", iconColor: "text-yellow-400" },
   { id: "coins" as ViewType, icon: Coins, title: "Coin Shop", description: "Purchase coins for players and upgrades", gradient: "from-amber-500/10 to-amber-500/5", iconColor: "text-amber-400" },
   { id: "serve-game" as ViewType, icon: Crosshair, title: "🎾 Serve Challenge", description: "Play 3D serve challenge on court!", badge: "3D", gradient: "from-green-500/10 to-green-500/5", iconColor: "text-green-400" },
+  { id: "play-game" as ViewType, icon: Gamepad2, title: "🎾 Tennis Masters", description: "Play a full HTML5 tennis match in your browser!", badge: "PLAY", gradient: "from-purple-500/10 to-pink-500/5", iconColor: "text-purple-400" },
 ];
 
 const useLiveStats = () => {
@@ -85,6 +87,7 @@ const TennisArena = () => {
       case "analysis": return <MatchAnalysis onBack={back} />;
       case "coins": return <CoinShop onBack={back} />;
       case "serve-game": return <ServeChallenge3D onBack={back} />;
+      case "play-game": return <EmbeddedGame onBack={back} title="Tennis Masters" gameUrl="https://html5.gamedistribution.com/cfd23874aad14e9daa2228891622d579/" sport="tennis" />;
       default: return null;
     }
   };

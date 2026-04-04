@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { UserPlus, ShoppingCart, Shield, Dumbbell, ShoppingBag, Swords, Trophy, Map, Search, Building, ArrowUpDown, Medal, GraduationCap, BarChart3, Coins, Crosshair } from "lucide-react";
+import { UserPlus, ShoppingCart, Shield, Dumbbell, ShoppingBag, Swords, Trophy, Map, Search, Building, ArrowUpDown, Medal, GraduationCap, BarChart3, Coins, Crosshair, Gamepad2 } from "lucide-react";
 import { ArenaAuthGuard } from "@/components/arena/ArenaAuthGuard";
 import { AFArenaHero } from "@/components/american-football/AFArenaHero";
 import { AFEngagement } from "@/components/american-football/AFEngagement";
@@ -21,9 +21,10 @@ import { YouthAcademy } from "@/components/american-football/YouthAcademy";
 import { MatchAnalysis } from "@/components/american-football/MatchAnalysis";
 import { CoinShop } from "@/components/american-football/CoinShop";
 import { FieldGoal3D } from "@/components/american-football/FieldGoal3D";
+import { EmbeddedGame } from "@/components/arena/EmbeddedGame";
 import { supabase } from "@/integrations/supabase/client";
 
-type ViewType = "hub" | "player-creator" | "player-market" | "team-builder" | "training" | "equipment" | "match" | "league" | "tactics" | "scout" | "stadium" | "transfers" | "trophies" | "youth" | "analysis" | "coins" | "field-goal";
+type ViewType = "hub" | "player-creator" | "player-market" | "team-builder" | "training" | "equipment" | "match" | "league" | "tactics" | "scout" | "stadium" | "transfers" | "trophies" | "youth" | "analysis" | "coins" | "field-goal" | "play-game";
 
 const tools = [
   { id: "player-creator" as ViewType, icon: UserPlus, title: "Player Creator", description: "Create custom football players with AI-generated stats", badge: "AI", credits: 500, gradient: "from-green-500/10 to-green-500/5", iconColor: "text-green-400" },
@@ -42,6 +43,7 @@ const tools = [
   { id: "trophies" as ViewType, icon: Medal, title: "Trophy Room", description: "View your achievements and championships", badge: "Free", gradient: "from-yellow-500/10 to-yellow-500/5", iconColor: "text-yellow-400" },
   { id: "coins" as ViewType, icon: Coins, title: "Coin Shop", description: "Purchase coins for players and upgrades", gradient: "from-amber-500/10 to-amber-500/5", iconColor: "text-amber-400" },
   { id: "field-goal" as ViewType, icon: Crosshair, title: "🏈 Field Goal", description: "Play 3D field goal kicking challenge!", badge: "3D", gradient: "from-amber-500/10 to-amber-500/5", iconColor: "text-amber-500" },
+  { id: "play-game" as ViewType, icon: Gamepad2, title: "🏈 American Football.io", description: "Play a full HTML5 American football game in your browser!", badge: "PLAY", gradient: "from-purple-500/10 to-pink-500/5", iconColor: "text-purple-400" },
 ];
 
 const useLiveStats = () => {
@@ -85,6 +87,7 @@ const AmericanFootballArena = () => {
       case "analysis": return <MatchAnalysis onBack={back} />;
       case "coins": return <CoinShop onBack={back} />;
       case "field-goal": return <FieldGoal3D onBack={back} />;
+      case "play-game": return <EmbeddedGame onBack={back} title="American Football.io" gameUrl="https://html5.gamedistribution.com/22216b9e61ca443aae43a20605702087/" sport="american-football" />;
       default: return null;
     }
   };

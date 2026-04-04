@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { UserPlus, ShoppingCart, Shield, Dumbbell, ShoppingBag, Swords, Trophy, Map, Search, Building, ArrowUpDown, Medal, GraduationCap, BarChart3, Coins, Crosshair } from "lucide-react";
+import { UserPlus, ShoppingCart, Shield, Dumbbell, ShoppingBag, Swords, Trophy, Map, Search, Building, ArrowUpDown, Medal, GraduationCap, BarChart3, Coins, Crosshair, Gamepad2 } from "lucide-react";
 import { ArenaAuthGuard } from "@/components/arena/ArenaAuthGuard";
 import { BasketballArenaHero } from "@/components/basketball/BasketballArenaHero";
 import { BasketballEngagement } from "@/components/basketball/BasketballEngagement";
@@ -21,9 +21,10 @@ import { YouthAcademy } from "@/components/basketball/YouthAcademy";
 import { MatchAnalysis } from "@/components/basketball/MatchAnalysis";
 import { CoinShop } from "@/components/basketball/CoinShop";
 import { FreeThrow3D } from "@/components/basketball/FreeThrow3D";
+import { EmbeddedGame } from "@/components/arena/EmbeddedGame";
 import { supabase } from "@/integrations/supabase/client";
 
-type ViewType = "hub" | "player-creator" | "player-market" | "team-builder" | "training" | "equipment" | "match" | "league" | "tactics" | "scout" | "stadium" | "transfers" | "trophies" | "youth" | "analysis" | "coins" | "free-throw";
+type ViewType = "hub" | "player-creator" | "player-market" | "team-builder" | "training" | "equipment" | "match" | "league" | "tactics" | "scout" | "stadium" | "transfers" | "trophies" | "youth" | "analysis" | "coins" | "free-throw" | "play-game";
 
 const tools = [
   { id: "player-creator" as ViewType, icon: UserPlus, title: "Player Creator", description: "Create custom players with AI-generated stats", badge: "AI", credits: 500, gradient: "from-emerald-500/10 to-emerald-500/5", iconColor: "text-emerald-400" },
@@ -42,6 +43,7 @@ const tools = [
   { id: "trophies" as ViewType, icon: Medal, title: "Trophy Room", description: "View your achievements and trophies", badge: "Free", gradient: "from-yellow-500/10 to-yellow-500/5", iconColor: "text-yellow-400" },
   { id: "coins" as ViewType, icon: Coins, title: "Coin Shop", description: "Purchase coins for players and upgrades", gradient: "from-amber-500/10 to-amber-500/5", iconColor: "text-amber-400" },
   { id: "free-throw" as ViewType, icon: Crosshair, title: "🏀 Free Throw", description: "Play 3D free throw challenge!", badge: "3D", gradient: "from-orange-500/10 to-orange-500/5", iconColor: "text-orange-400" },
+  { id: "play-game" as ViewType, icon: Gamepad2, title: "🏀 Basketball Stars", description: "Play a full HTML5 basketball match in your browser!", badge: "PLAY", gradient: "from-purple-500/10 to-pink-500/5", iconColor: "text-purple-400" },
 ];
 
 const useLiveStats = () => {
@@ -85,6 +87,7 @@ const BasketballArena = () => {
       case "analysis": return <MatchAnalysis onBack={back} />;
       case "coins": return <CoinShop onBack={back} />;
       case "free-throw": return <FreeThrow3D onBack={back} />;
+      case "play-game": return <EmbeddedGame onBack={back} title="Basketball Stars" gameUrl="https://html5.gamedistribution.com/69d78d071f704fa183d75b4114ae40ec/" sport="basketball" />;
       default: return null;
     }
   };
