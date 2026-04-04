@@ -21,6 +21,7 @@ import { YouthAcademy } from "@/components/basketball/YouthAcademy";
 import { MatchAnalysis } from "@/components/basketball/MatchAnalysis";
 import { CoinShop } from "@/components/basketball/CoinShop";
 import { FreeThrow3D } from "@/components/basketball/FreeThrow3D";
+import { EmbeddedGame } from "@/components/arena/EmbeddedGame";
 import { supabase } from "@/integrations/supabase/client";
 
 type ViewType = "hub" | "player-creator" | "player-market" | "team-builder" | "training" | "equipment" | "match" | "league" | "tactics" | "scout" | "stadium" | "transfers" | "trophies" | "youth" | "analysis" | "coins" | "free-throw";
