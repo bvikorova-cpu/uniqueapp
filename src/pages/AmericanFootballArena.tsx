@@ -21,6 +21,7 @@ import { YouthAcademy } from "@/components/american-football/YouthAcademy";
 import { MatchAnalysis } from "@/components/american-football/MatchAnalysis";
 import { CoinShop } from "@/components/american-football/CoinShop";
 import { FieldGoal3D } from "@/components/american-football/FieldGoal3D";
+import { EmbeddedGame } from "@/components/arena/EmbeddedGame";
 import { supabase } from "@/integrations/supabase/client";
 
 type ViewType = "hub" | "player-creator" | "player-market" | "team-builder" | "training" | "equipment" | "match" | "league" | "tactics" | "scout" | "stadium" | "transfers" | "trophies" | "youth" | "analysis" | "coins" | "field-goal";
