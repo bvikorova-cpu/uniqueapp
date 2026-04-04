@@ -20,9 +20,10 @@ import { TrophyRoom } from "@/components/basketball/TrophyRoom";
 import { YouthAcademy } from "@/components/basketball/YouthAcademy";
 import { MatchAnalysis } from "@/components/basketball/MatchAnalysis";
 import { CoinShop } from "@/components/basketball/CoinShop";
+import { FreeThrow3D } from "@/components/basketball/FreeThrow3D";
 import { supabase } from "@/integrations/supabase/client";
 
-type ViewType = "hub" | "player-creator" | "player-market" | "team-builder" | "training" | "equipment" | "match" | "league" | "tactics" | "scout" | "stadium" | "transfers" | "trophies" | "youth" | "analysis" | "coins";
+type ViewType = "hub" | "player-creator" | "player-market" | "team-builder" | "training" | "equipment" | "match" | "league" | "tactics" | "scout" | "stadium" | "transfers" | "trophies" | "youth" | "analysis" | "coins" | "free-throw";
 
 const tools = [
   { id: "player-creator" as ViewType, icon: UserPlus, title: "Player Creator", description: "Create custom players with AI-generated stats", badge: "AI", credits: 500, gradient: "from-emerald-500/10 to-emerald-500/5", iconColor: "text-emerald-400" },

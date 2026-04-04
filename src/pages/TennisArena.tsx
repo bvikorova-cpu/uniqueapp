@@ -20,9 +20,10 @@ import { TrophyRoom } from "@/components/tennis/TrophyRoom";
 import { YouthAcademy } from "@/components/tennis/YouthAcademy";
 import { MatchAnalysis } from "@/components/tennis/MatchAnalysis";
 import { CoinShop } from "@/components/tennis/CoinShop";
+import { ServeChallenge3D } from "@/components/tennis/ServeChallenge3D";
 import { supabase } from "@/integrations/supabase/client";
 
-type ViewType = "hub" | "player-creator" | "player-market" | "team-builder" | "training" | "equipment" | "match" | "league" | "tactics" | "scout" | "stadium" | "transfers" | "trophies" | "youth" | "analysis" | "coins";
+type ViewType = "hub" | "player-creator" | "player-market" | "team-builder" | "training" | "equipment" | "match" | "league" | "tactics" | "scout" | "stadium" | "transfers" | "trophies" | "youth" | "analysis" | "coins" | "serve-game";
 
 const tools = [
   { id: "player-creator" as ViewType, icon: UserPlus, title: "Player Creator", description: "Create custom tennis players with AI-generated stats", badge: "AI", credits: 500, gradient: "from-lime-500/10 to-lime-500/5", iconColor: "text-lime-400" },

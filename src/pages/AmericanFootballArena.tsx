@@ -20,9 +20,10 @@ import { TrophyRoom } from "@/components/american-football/TrophyRoom";
 import { YouthAcademy } from "@/components/american-football/YouthAcademy";
 import { MatchAnalysis } from "@/components/american-football/MatchAnalysis";
 import { CoinShop } from "@/components/american-football/CoinShop";
+import { FieldGoal3D } from "@/components/american-football/FieldGoal3D";
 import { supabase } from "@/integrations/supabase/client";
 
-type ViewType = "hub" | "player-creator" | "player-market" | "team-builder" | "training" | "equipment" | "match" | "league" | "tactics" | "scout" | "stadium" | "transfers" | "trophies" | "youth" | "analysis" | "coins";
+type ViewType = "hub" | "player-creator" | "player-market" | "team-builder" | "training" | "equipment" | "match" | "league" | "tactics" | "scout" | "stadium" | "transfers" | "trophies" | "youth" | "analysis" | "coins" | "field-goal";
 
 const tools = [
   { id: "player-creator" as ViewType, icon: UserPlus, title: "Player Creator", description: "Create custom football players with AI-generated stats", badge: "AI", credits: 500, gradient: "from-green-500/10 to-green-500/5", iconColor: "text-green-400" },
