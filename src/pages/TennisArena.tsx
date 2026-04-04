@@ -84,6 +84,7 @@ const TennisArena = () => {
       case "youth": return <YouthAcademy onBack={back} />;
       case "analysis": return <MatchAnalysis onBack={back} />;
       case "coins": return <CoinShop onBack={back} />;
+      case "serve-game": return <ServeChallenge3D onBack={back} />;
       default: return null;
     }
   };

@@ -84,6 +84,7 @@ const HockeyArena = () => {
       case "youth": return <YouthAcademy onBack={back} />;
       case "analysis": return <MatchAnalysis onBack={back} />;
       case "coins": return <CoinShop onBack={back} />;
+      case "penalty-shot": return <PenaltyShot3D onBack={back} />;
       default: return null;
     }
   };
