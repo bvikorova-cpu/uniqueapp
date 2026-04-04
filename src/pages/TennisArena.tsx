@@ -21,6 +21,7 @@ import { YouthAcademy } from "@/components/tennis/YouthAcademy";
 import { MatchAnalysis } from "@/components/tennis/MatchAnalysis";
 import { CoinShop } from "@/components/tennis/CoinShop";
 import { ServeChallenge3D } from "@/components/tennis/ServeChallenge3D";
+import { EmbeddedGame } from "@/components/arena/EmbeddedGame";
 import { supabase } from "@/integrations/supabase/client";
 
 type ViewType = "hub" | "player-creator" | "player-market" | "team-builder" | "training" | "equipment" | "match" | "league" | "tactics" | "scout" | "stadium" | "transfers" | "trophies" | "youth" | "analysis" | "coins" | "serve-game";
