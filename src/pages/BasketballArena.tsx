@@ -43,6 +43,7 @@ const tools = [
   { id: "trophies" as ViewType, icon: Medal, title: "Trophy Room", description: "View your achievements and trophies", badge: "Free", gradient: "from-yellow-500/10 to-yellow-500/5", iconColor: "text-yellow-400" },
   { id: "coins" as ViewType, icon: Coins, title: "Coin Shop", description: "Purchase coins for players and upgrades", gradient: "from-amber-500/10 to-amber-500/5", iconColor: "text-amber-400" },
   { id: "free-throw" as ViewType, icon: Crosshair, title: "🏀 Free Throw", description: "Play 3D free throw challenge!", badge: "3D", gradient: "from-orange-500/10 to-orange-500/5", iconColor: "text-orange-400" },
+  { id: "play-game" as ViewType, icon: Gamepad2, title: "🏀 Basketball Stars", description: "Play a full HTML5 basketball match in your browser!", badge: "PLAY", gradient: "from-purple-500/10 to-pink-500/5", iconColor: "text-purple-400" },
 ];
 
 const useLiveStats = () => {
