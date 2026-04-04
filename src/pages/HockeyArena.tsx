@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { UserPlus, ShoppingCart, Shield, Dumbbell, ShoppingBag, Swords, Trophy, Map, Search, Building, ArrowUpDown, Medal, GraduationCap, BarChart3, Coins } from "lucide-react";
+import { UserPlus, ShoppingCart, Shield, Dumbbell, ShoppingBag, Swords, Trophy, Map, Search, Building, ArrowUpDown, Medal, GraduationCap, BarChart3, Coins, Crosshair } from "lucide-react";
 import { ArenaAuthGuard } from "@/components/arena/ArenaAuthGuard";
 import { HockeyArenaHero } from "@/components/hockey/HockeyArenaHero";
 import { HockeyEngagement } from "@/components/hockey/HockeyEngagement";
@@ -20,9 +20,10 @@ import { TrophyRoom } from "@/components/hockey/TrophyRoom";
 import { YouthAcademy } from "@/components/hockey/YouthAcademy";
 import { MatchAnalysis } from "@/components/hockey/MatchAnalysis";
 import { CoinShop } from "@/components/hockey/CoinShop";
+import { PenaltyShot3D } from "@/components/hockey/PenaltyShot3D";
 import { supabase } from "@/integrations/supabase/client";
 
-type ViewType = "hub" | "player-creator" | "player-market" | "team-builder" | "training" | "equipment" | "match" | "league" | "tactics" | "scout" | "stadium" | "transfers" | "trophies" | "youth" | "analysis" | "coins";
+type ViewType = "hub" | "player-creator" | "player-market" | "team-builder" | "training" | "equipment" | "match" | "league" | "tactics" | "scout" | "stadium" | "transfers" | "trophies" | "youth" | "analysis" | "coins" | "penalty-shot";
 
 const tools = [
   { id: "player-creator" as ViewType, icon: UserPlus, title: "Player Creator", description: "Create custom hockey players with AI-generated stats", badge: "AI", credits: 500, gradient: "from-cyan-500/10 to-cyan-500/5", iconColor: "text-cyan-400" },
@@ -40,6 +41,7 @@ const tools = [
   { id: "analysis" as ViewType, icon: BarChart3, title: "Match Analysis", description: "AI-powered post-match performance reports", badge: "AI", credits: 400, gradient: "from-fuchsia-500/10 to-fuchsia-500/5", iconColor: "text-fuchsia-400" },
   { id: "trophies" as ViewType, icon: Medal, title: "Trophy Room", description: "View your achievements and trophies", badge: "Free", gradient: "from-yellow-500/10 to-yellow-500/5", iconColor: "text-yellow-400" },
   { id: "coins" as ViewType, icon: Coins, title: "Coin Shop", description: "Purchase coins for players and upgrades", gradient: "from-amber-500/10 to-amber-500/5", iconColor: "text-amber-400" },
+  { id: "penalty-shot" as ViewType, icon: Crosshair, title: "🏒 Penalty Shot", description: "Play 3D penalty shot on ice!", badge: "3D", gradient: "from-cyan-500/10 to-cyan-500/5", iconColor: "text-cyan-400" },
 ];
 
 const useLiveStats = () => {
@@ -82,6 +84,7 @@ const HockeyArena = () => {
       case "youth": return <YouthAcademy onBack={back} />;
       case "analysis": return <MatchAnalysis onBack={back} />;
       case "coins": return <CoinShop onBack={back} />;
+      case "penalty-shot": return <PenaltyShot3D onBack={back} />;
       default: return null;
     }
   };
