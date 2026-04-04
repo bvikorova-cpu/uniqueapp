@@ -21,6 +21,7 @@ import { YouthAcademy } from "@/components/football/YouthAcademy";
 import { MatchAnalysis } from "@/components/football/MatchAnalysis";
 import { CoinShop } from "@/components/football/CoinShop";
 import { PenaltyShootout3D } from "@/components/football/PenaltyShootout3D";
+import { EmbeddedGame } from "@/components/arena/EmbeddedGame";
 import { supabase } from "@/integrations/supabase/client";
 
 type ViewType = "hub" | "player-creator" | "player-market" | "team-builder" | "training" | "equipment" | "match" | "league" | "tactics" | "scout" | "stadium" | "transfers" | "trophies" | "youth" | "analysis" | "coins" | "penalty-game";
