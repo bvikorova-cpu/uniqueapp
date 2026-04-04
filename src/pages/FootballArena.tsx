@@ -87,6 +87,7 @@ const FootballArena = () => {
       case "analysis": return <MatchAnalysis onBack={back} />;
       case "coins": return <CoinShop onBack={back} />;
       case "penalty-game": return <PenaltyShootout3D onBack={back} />;
+      case "play-game": return <EmbeddedGame onBack={back} title="Football 3D" gameUrl="https://html5.gamedistribution.com/540d36010bb94e288a660456efaebff9/" sport="football" />;
       default: return null;
     }
   };
