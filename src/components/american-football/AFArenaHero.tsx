@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { motion } from "framer-motion";
-import { Users, Swords, Trophy, Wifi } from "lucide-react";
+import { Users, Swords, Trophy, Wifi, Flame } from "lucide-react";
 import { Stadium3D } from "@/components/arena/Stadium3D";
 
 interface AFArenaHeroProps {
@@ -10,42 +10,68 @@ interface AFArenaHeroProps {
 
 export function AFArenaHero({ stats, onNavigate }: AFArenaHeroProps) {
   const statItems = [
-    { icon: Users, label: "Players", value: stats.totalPlayers, color: "text-green-400" },
-    { icon: Swords, label: "Games", value: stats.totalMatches, color: "text-red-400" },
-    { icon: Trophy, label: "Leagues", value: stats.activeLeagues, color: "text-amber-400" },
-    { icon: Wifi, label: "Online", value: stats.onlineManagers, color: "text-emerald-400" },
+    { icon: Users, label: "Players", value: stats.totalPlayers, color: "from-green-400 to-emerald-500", glow: "shadow-green-500/30" },
+    { icon: Swords, label: "Games", value: stats.totalMatches, color: "from-red-400 to-rose-500", glow: "shadow-red-500/30" },
+    { icon: Trophy, label: "Leagues", value: stats.activeLeagues, color: "from-amber-400 to-yellow-500", glow: "shadow-amber-500/30" },
+    { icon: Wifi, label: "Online", value: stats.onlineManagers, color: "from-emerald-400 to-green-500", glow: "shadow-emerald-500/30" },
   ];
 
   return (
-    <div className="relative rounded-2xl overflow-hidden">
-      <div className="relative h-[280px] md:h-[380px]">
+    <div className="relative rounded-2xl overflow-hidden border border-green-500/20 shadow-2xl shadow-green-900/20">
+      <div className="relative h-[320px] md:h-[420px]">
         <div className="absolute inset-0">
-          <Suspense fallback={<div className="w-full h-full bg-gradient-to-br from-green-950 to-slate-950" />}>
+          <Suspense fallback={<div className="w-full h-full bg-gradient-to-br from-green-950 via-emerald-950 to-slate-950" />}>
             <Stadium3D sport="american-football" />
           </Suspense>
         </div>
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-        <div className="relative z-10 h-full flex flex-col justify-end p-4 md:p-8">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-            <div className="inline-block border-2 border-green-500/60 rounded-xl px-4 py-2 mb-3 backdrop-blur-sm bg-black/30">
-              <h1 className="text-2xl md:text-5xl font-black text-white" style={{ textShadow: "0 2px 20px rgba(34,197,94,0.5)" }}>
-                🏈 American Football Arena
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-green-900/30 via-transparent to-emerald-900/20" />
+
+        <motion.div className="absolute top-8 right-8 w-3 h-3 rounded-full bg-green-400/60 blur-[1px]"
+          animate={{ y: [0, -20, 0], opacity: [0.4, 1, 0.4] }} transition={{ duration: 3, repeat: Infinity }} />
+        <motion.div className="absolute top-20 right-20 w-2 h-2 rounded-full bg-emerald-400/50 blur-[1px]"
+          animate={{ y: [0, -15, 0], opacity: [0.3, 0.8, 0.3] }} transition={{ duration: 4, repeat: Infinity, delay: 1 }} />
+
+        <motion.div className="absolute top-4 right-4 z-20" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.5 }}>
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-red-600/90 backdrop-blur-md border border-red-400/30">
+            <motion.div className="w-2 h-2 rounded-full bg-white" animate={{ opacity: [1, 0.3, 1] }} transition={{ duration: 1.5, repeat: Infinity }} />
+            <span className="text-[10px] font-bold text-white tracking-widest uppercase">Live</span>
+          </div>
+        </motion.div>
+
+        <div className="relative z-10 h-full flex flex-col justify-end p-5 md:p-8">
+          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
+            <motion.div className="inline-flex items-center gap-2 mb-3" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }}>
+              <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-500/20 backdrop-blur-md border border-green-400/30">
+                <Flame className="w-3 h-3 text-green-400" />
+                <span className="text-[10px] font-bold text-green-300 tracking-widest uppercase">Season Active</span>
+              </div>
+            </motion.div>
+            <div className="relative mb-2">
+              <h1 className="text-3xl md:text-6xl font-black tracking-tight">
+                <span className="bg-gradient-to-r from-green-300 via-emerald-200 to-green-400 bg-clip-text text-transparent drop-shadow-lg">American</span>
+                <br />
+                <span className="text-white/95" style={{ textShadow: "0 2px 30px rgba(34,197,94,0.4)" }}>Football Arena</span>
               </h1>
+              <motion.div className="absolute -left-1 top-0 w-1 h-full bg-gradient-to-b from-green-500 via-emerald-400 to-transparent rounded-full"
+                initial={{ scaleY: 0 }} animate={{ scaleY: 1 }} transition={{ delay: 0.5, duration: 0.6 }} />
             </div>
-            <p className="text-sm md:text-base text-white/80 max-w-lg font-medium" style={{ textShadow: "0 1px 8px rgba(0,0,0,0.8)" }}>
+            <p className="text-sm md:text-base text-white/70 max-w-md font-medium leading-relaxed">
               Build your roster, dominate the gridiron, and win the championship
             </p>
           </motion.div>
         </div>
       </div>
 
-      <div className="grid grid-cols-4 gap-2 md:gap-4 p-3 md:p-4 bg-card/50 backdrop-blur-xl border-t border-border/50">
+      <div className="grid grid-cols-4 gap-2 md:gap-3 p-3 md:p-4 bg-gradient-to-b from-slate-900/95 to-slate-950/95 backdrop-blur-xl border-t border-green-500/10">
         {statItems.map((stat, i) => (
-          <motion.div key={i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 * i }}
-            className="text-center p-2 rounded-lg bg-background/50 border border-border/30">
-            <stat.icon className={`h-4 w-4 mx-auto mb-1 ${stat.color}`} />
-            <div className="text-lg md:text-2xl font-bold text-foreground">{stat.value}</div>
-            <div className="text-[10px] md:text-xs text-muted-foreground">{stat.label}</div>
+          <motion.div key={i} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 * i + 0.4 }}
+            className={`text-center p-2.5 rounded-xl bg-white/[0.03] border border-white/[0.06] hover:border-white/10 hover:bg-white/[0.06] transition-all duration-300 shadow-lg ${stat.glow}`}>
+            <div className={`w-8 h-8 mx-auto mb-1.5 rounded-lg bg-gradient-to-br ${stat.color} flex items-center justify-center shadow-lg`}>
+              <stat.icon className="h-4 w-4 text-white" />
+            </div>
+            <div className="text-lg md:text-2xl font-black text-foreground tracking-tight">{stat.value}</div>
+            <div className="text-[10px] md:text-xs text-muted-foreground font-medium">{stat.label}</div>
           </motion.div>
         ))}
       </div>
