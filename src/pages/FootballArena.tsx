@@ -43,6 +43,7 @@ const tools = [
   { id: "trophies" as ViewType, icon: Medal, title: "Trophy Room", description: "View your achievements and trophies", badge: "Free", gradient: "from-yellow-500/10 to-yellow-500/5", iconColor: "text-yellow-400" },
   { id: "coins" as ViewType, icon: Coins, title: "Coin Shop", description: "Purchase coins for players and upgrades", gradient: "from-amber-500/10 to-amber-500/5", iconColor: "text-amber-400" },
   { id: "penalty-game" as ViewType, icon: Crosshair, title: "⚽ Penalty Shootout", description: "Play 3D penalty kicks against the AI goalkeeper!", badge: "3D", gradient: "from-green-500/10 to-emerald-500/5", iconColor: "text-green-400" },
+  { id: "play-game" as ViewType, icon: Gamepad2, title: "⚽ Football 3D Game", description: "Play a full HTML5 football match in your browser!", badge: "PLAY", gradient: "from-purple-500/10 to-pink-500/5", iconColor: "text-purple-400" },
 ];
 
 const useLiveStats = () => {
