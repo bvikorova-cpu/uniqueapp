@@ -87,6 +87,7 @@ const HockeyArena = () => {
       case "analysis": return <MatchAnalysis onBack={back} />;
       case "coins": return <CoinShop onBack={back} />;
       case "penalty-shot": return <PenaltyShot3D onBack={back} />;
+      case "play-game": return <EmbeddedGame onBack={back} title="Ice Hockey Shootout" gameUrl="https://html5.gamedistribution.com/09886da081dd4b4997ed4af98490b5f7/" sport="hockey" />;
       default: return null;
     }
   };

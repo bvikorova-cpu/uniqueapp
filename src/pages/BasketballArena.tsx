@@ -87,6 +87,7 @@ const BasketballArena = () => {
       case "analysis": return <MatchAnalysis onBack={back} />;
       case "coins": return <CoinShop onBack={back} />;
       case "free-throw": return <FreeThrow3D onBack={back} />;
+      case "play-game": return <EmbeddedGame onBack={back} title="Basketball Stars" gameUrl="https://html5.gamedistribution.com/69d78d071f704fa183d75b4114ae40ec/" sport="basketball" />;
       default: return null;
     }
   };

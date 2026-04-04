@@ -87,6 +87,7 @@ const AmericanFootballArena = () => {
       case "analysis": return <MatchAnalysis onBack={back} />;
       case "coins": return <CoinShop onBack={back} />;
       case "field-goal": return <FieldGoal3D onBack={back} />;
+      case "play-game": return <EmbeddedGame onBack={back} title="American Football.io" gameUrl="https://html5.gamedistribution.com/22216b9e61ca443aae43a20605702087/" sport="american-football" />;
       default: return null;
     }
   };

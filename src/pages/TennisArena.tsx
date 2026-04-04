@@ -87,6 +87,7 @@ const TennisArena = () => {
       case "analysis": return <MatchAnalysis onBack={back} />;
       case "coins": return <CoinShop onBack={back} />;
       case "serve-game": return <ServeChallenge3D onBack={back} />;
+      case "play-game": return <EmbeddedGame onBack={back} title="Tennis Masters" gameUrl="https://html5.gamedistribution.com/cfd23874aad14e9daa2228891622d579/" sport="tennis" />;
       default: return null;
     }
   };
