@@ -101,7 +101,7 @@ const Games = () => {
                           )}
                         </div>
                         <Button className="w-full" size="sm" variant="premium">
-                          <Gamepad2 className="h-3.5 w-3.5 mr-1.5" /> Play Now
+                          <Gamepad2 className="h-3.5 w-3.5 mr-1.5" /> Play on Poki ↗
                         </Button>
                       </CardContent>
                     </Card>
