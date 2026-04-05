@@ -47,7 +47,9 @@ Deno.serve(async (req) => {
         break;
       case "box-simulate":
         result = await callAI(apiKey, [
-          { role: "system", content: "You simulate mystery box openings for a digital collectibles platform. Generate 5 simulated results with varying rarities. Return JSON: { simulations: [{ itemName, category, rarity }]);
+          { role: "system", content: "You simulate mystery box openings for a digital collectibles platform. Generate 5 simulated results with varying rarities. Return JSON: { simulations: [{ itemName, category, rarity }] }" },
+          { role: "user", content: prompt || "Simulate a mystery box opening" }
+        ]);
         break;
       case "customize":
         result = await callAI(apiKey, [{ role: "user", content: prompt }]);
