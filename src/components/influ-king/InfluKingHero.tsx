@@ -40,7 +40,7 @@ export function InfluKingHero() {
       <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-3 pb-28 md:pb-24">
         <div className="border-2 border-cyan-400/70 bg-black/60 backdrop-blur-xl rounded-2xl px-5 md:px-10 py-4 md:py-6 mb-3 shadow-[0_0_60px_rgba(0,255,255,0.35),inset_0_0_30px_rgba(0,255,255,0.1)]">
           <h1 className="text-3xl md:text-6xl font-black text-white tracking-wider whitespace-nowrap drop-shadow-[0_0_20px_rgba(0,255,255,0.6)]" style={{ textShadow: '0 0 30px rgba(0,255,255,0.5), 0 0 60px rgba(0,255,255,0.3), 0 2px 4px rgba(0,0,0,0.8)' }}>
-            ⚡ INFLU-KING ⚡
+            ⚡ VIRTUAL INFLU-KING ⚡
           </h1>
         </div>
         <p className="text-sm md:text-xl font-bold text-white max-w-2xl bg-black/40 backdrop-blur-sm rounded-xl px-4 md:px-6 py-2" style={{ textShadow: '0 2px 10px rgba(0,0,0,0.8)' }}>
