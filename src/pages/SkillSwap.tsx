@@ -151,6 +151,42 @@ const SWAP_TOOLS = [
     gradient: "bg-gradient-to-r from-indigo-500 to-blue-500",
     features: ["Calendar view", "Video call links", "Reminders", "Session history"],
   },
+  {
+    id: "valuation",
+    title: "AI Skill Valuation",
+    description: "AI-powered market value analysis for your skills",
+    icon: TrendingUp,
+    badge: "4 CR",
+    gradient: "bg-gradient-to-r from-amber-500 to-orange-500",
+    features: ["Market value score", "Demand analysis", "Exchange rate", "Trend insights"],
+  },
+  {
+    id: "demo",
+    title: "Live Skill Demo",
+    description: "Generate professional demo scripts to showcase skills",
+    icon: Radio,
+    badge: "3 CR",
+    gradient: "bg-gradient-to-r from-rose-500 to-pink-500",
+    features: ["Presentation scripts", "Audience engagement", "Tech setup guide", "Demo plans"],
+  },
+  {
+    id: "certification",
+    title: "Skill Certification",
+    description: "AI assessment and digital certification for your skills",
+    icon: ShieldCheck,
+    badge: "5 CR",
+    gradient: "bg-gradient-to-r from-emerald-500 to-teal-500",
+    features: ["Proficiency scoring", "Digital badges", "Detailed feedback", "Learning path"],
+  },
+  {
+    id: "workshops",
+    title: "Group Workshops",
+    description: "AI-designed group workshop plans for teaching multiple learners",
+    icon: UsersRound,
+    badge: "4 CR",
+    gradient: "bg-gradient-to-r from-violet-500 to-purple-500",
+    features: ["Curriculum design", "Group activities", "Pricing guide", "Marketing tips"],
+  },
 ];
 
 const CATEGORIES = [
