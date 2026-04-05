@@ -64,14 +64,14 @@ export function BulkUploadView({ onBack }: BulkUploadViewProps) {
 
         const { data: urlData } = supabase.storage.from("stock-content").getPublicUrl(filePath);
 
-        await supabase.from("stock_content").insert({
+        await supabase.from("stock_content" as any).insert({
           user_id: user.id,
           title: updated[i].file.name.replace(/\.[^.]+$/, ""),
           file_url: urlData.publicUrl,
           file_type: "image",
           price: 0,
           status: "draft",
-        });
+        } as any);
 
         updated[i].status = "success";
         updated[i].progress = 100;

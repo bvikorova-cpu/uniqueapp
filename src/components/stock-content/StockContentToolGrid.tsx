@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import {
   ImageIcon, Upload, Download, TrendingUp, Sparkles, Tags,
   FolderOpen, Search, BarChart3, Palette, Wand2, ShoppingBag,
-  Star, Layers, Eye
+  Star, Layers, Eye, ShieldCheck, Crown, Trophy, Eraser, FolderUp, PieChart
 } from "lucide-react";
 
 interface StockContentToolGridProps {
@@ -26,6 +26,12 @@ const tools = [
   { id: "featured", label: "Featured Picks", desc: "Editor's choice selections", icon: Star, color: "from-yellow-500 to-yellow-700", credits: null },
   { id: "preview", label: "Content Preview", desc: "Preview before purchase", icon: Eye, color: "from-slate-500 to-slate-700", credits: null },
   { id: "download-history", label: "Download History", desc: "All your past downloads", icon: Download, color: "from-orange-500 to-orange-700", credits: null },
+  { id: "plagiarism-scanner", label: "AI Plagiarism Scanner", desc: "Check content originality with AI", icon: ShieldCheck, color: "from-emerald-500 to-teal-700", credits: 4 },
+  { id: "subscriptions", label: "Subscription Plans", desc: "Unlimited downloads with plans", icon: Crown, color: "from-amber-500 to-yellow-700", credits: null },
+  { id: "leaderboard", label: "Creator Leaderboard", desc: "Top creators & rankings", icon: Trophy, color: "from-yellow-500 to-amber-700", credits: null },
+  { id: "bg-remover", label: "AI Background Remover", desc: "Remove backgrounds instantly", icon: Eraser, color: "from-rose-500 to-pink-700", credits: 3 },
+  { id: "bulk-upload", label: "Bulk Upload Manager", desc: "Upload multiple files at once", icon: FolderUp, color: "from-indigo-500 to-blue-700", credits: null },
+  { id: "content-analytics", label: "Content Analytics", desc: "Detailed asset performance stats", icon: PieChart, color: "from-sky-500 to-cyan-700", credits: null },
 ];
 
 export function StockContentToolGrid({ onToolSelect }: StockContentToolGridProps) {
