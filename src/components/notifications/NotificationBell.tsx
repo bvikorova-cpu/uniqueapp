@@ -42,15 +42,17 @@ const NotificationBell = () => {
   const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
+    let cleanup: (() => void) | undefined;
     const init = async () => {
       const { data: { user: currentUser } } = await supabase.auth.getUser();
       if (currentUser) {
         setUser(currentUser);
         fetchNotifications(currentUser.id);
-        subscribeToNotifications(currentUser.id);
+        cleanup = subscribeToNotifications(currentUser.id);
       }
     };
     init();
+    return () => { cleanup?.(); };
   }, []);
 
   const fetchNotifications = async (userId: string) => {
