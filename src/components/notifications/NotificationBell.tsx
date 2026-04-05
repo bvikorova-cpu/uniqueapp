@@ -132,52 +132,6 @@ const NotificationBell = () => {
     }
   };
 
-  const subscribeToNotifications = (userId: string) => {
-    const channel = supabase
-      .channel("notifications-changes")
-      .on(
-        "postgres_changes",
-        {
-          event: "INSERT",
-          schema: "public",
-          table: "notifications",
-          filter: `user_id=eq.${userId}`,
-        },
-        async (payload) => {
-          // Fetch actor profile for the new notification
-          if (payload.new.actor_id) {
-            const { data: profile } = await supabase
-              .from("profiles")
-              .select("id, full_name, avatar_url")
-              .eq("id", payload.new.actor_id)
-              .single();
-
-            const newNotification = {
-              ...payload.new,
-              actor: profile || {
-                id: payload.new.actor_id,
-                full_name: null,
-                avatar_url: null,
-              },
-            };
-
-            setNotifications(prev => [newNotification as Notification, ...prev].slice(0, 20));
-            setUnreadCount(prev => prev + 1);
-
-            // Show toast for new notification
-            toast({
-              title: "New notification",
-              description: getNotificationText(newNotification as Notification),
-            });
-          }
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  };
 
   const getNotificationText = (notification: Notification): string => {
     const actorName = notification.actor?.full_name || "Someone";
