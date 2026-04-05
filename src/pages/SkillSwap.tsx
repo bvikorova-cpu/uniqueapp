@@ -920,6 +920,14 @@ export default function SkillSwap() {
             <SwapLeaderboard onBack={() => setActiveView("hub")} />
           ) : activeView === "scheduler" ? (
             <SessionScheduler onBack={() => setActiveView("hub")} />
+          ) : activeView === "valuation" ? (
+            <AISkillValuationView onBack={() => setActiveView("hub")} />
+          ) : activeView === "demo" ? (
+            <LiveSkillDemoView onBack={() => setActiveView("hub")} />
+          ) : activeView === "certification" ? (
+            <SkillCertificationView onBack={() => setActiveView("hub")} />
+          ) : activeView === "workshops" ? (
+            <GroupWorkshopsView onBack={() => setActiveView("hub")} />
           ) : null}
         </AnimatePresence>
 
