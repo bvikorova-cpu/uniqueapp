@@ -215,40 +215,103 @@ const CouponMarketplace = () => {
   if (!hasAccess) {
     return (
       <div className="min-h-screen bg-background pt-16 sm:pt-20 pb-12">
-        <div className="container mx-auto px-3 sm:px-4 max-w-3xl">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center">
-            <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full mb-6"><Ticket className="w-4 h-4" /><span className="text-sm font-medium">Exclusive Marketplace</span></div>
-            <h1 className="text-3xl sm:text-5xl font-black mb-4">Coupon <span className="bg-gradient-to-r from-purple-500 via-primary to-amber-500 bg-clip-text text-transparent">Marketplace</span></h1>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-4">Join our exclusive marketplace where members buy and sell unused coupons, gift cards, and promotional vouchers at discounted prices.</p>
-            <p className="text-base text-muted-foreground max-w-2xl mx-auto mb-8">Have a coupon you won't use? Sell it and earn money! Looking for deals? Buy coupons from others at 10-50% off face value. Our secure escrow system protects both buyers and sellers on every transaction.</p>
-          </motion.div>
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
-            <Card className="border-2 border-primary/20 bg-gradient-to-br from-card to-primary/5 overflow-hidden">
-              <CardContent className="p-8 text-center">
-                <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6"><Crown className="w-10 h-10 text-primary" /></div>
-                <h2 className="text-2xl font-black mb-2">Monthly Subscription</h2>
-                <div className="flex items-center justify-center gap-2 mb-6"><span className="text-5xl font-bold text-primary">€1</span><span className="text-muted-foreground">per month</span></div>
-                <ul className="text-left space-y-3 mb-8 max-w-sm mx-auto">
-                  <li className="flex items-center gap-3"><Shield className="w-5 h-5 text-primary flex-shrink-0" /><span>Buy coupons at discounted prices</span></li>
-                  <li className="flex items-center gap-3"><Store className="w-5 h-5 text-primary flex-shrink-0" /><span>Sell your unused coupons & gift cards</span></li>
-                  <li className="flex items-center gap-3"><Zap className="w-5 h-5 text-primary flex-shrink-0" /><span>Save up to 50% on purchases</span></li>
-                  <li className="flex items-center gap-3"><Star className="w-5 h-5 text-primary flex-shrink-0" /><span>Escrow protection on all transactions</span></li>
-                  <li className="flex items-center gap-3"><Calendar className="w-5 h-5 text-primary flex-shrink-0" /><span>Cancel anytime - no commitment</span></li>
-                </ul>
-                {!currentUserId ? (
-                  <div className="space-y-3"><p className="text-sm text-muted-foreground">You need to be logged in to purchase access</p><Button asChild size="lg" className="w-full max-w-xs"><a href="/auth">Log In to Continue</a></Button></div>
-                ) : (
-                  <Button size="lg" className="w-full max-w-xs gap-2" onClick={handlePurchaseAccess} disabled={isPurchasingAccess}>
-                    {isPurchasingAccess ? <><div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>Processing...</> : <><Ticket className="w-5 h-5" />Subscribe for €1/month</>}
-                  </Button>
-                )}
+        <div className="container mx-auto px-3 sm:px-4 max-w-6xl">
+          <CouponHero couponCount={156} />
+
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="grid lg:grid-cols-[1.15fr_0.85fr] gap-6 mb-8">
+            <Card className="overflow-hidden border-primary/20 bg-gradient-to-br from-card via-card to-primary/5 shadow-2xl">
+              <CardContent className="p-5 sm:p-8">
+                <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-2 text-primary mb-5">
+                  <Ticket className="w-4 h-4" />
+                  <span className="text-sm font-semibold">Exclusive Marketplace Access</span>
+                </div>
+                <h1 className="text-3xl sm:text-5xl font-black leading-tight mb-4">
+                  Coupon <span className="bg-gradient-to-r from-primary via-primary to-foreground bg-clip-text text-transparent">Marketplace</span>
+                </h1>
+                <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mb-4">
+                  Unlock a premium coupon exchange where members buy and sell unused gift cards, discount codes, and promotional vouchers with secure checkout and buyer protection.
+                </p>
+                <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mb-6">
+                  Flip unused offers into cash, discover underpriced deals before they expire, and use AI tools to price, verify, match, and optimize every listing.
+                </p>
+
+                <div className="grid sm:grid-cols-2 gap-3 mb-6">
+                  <div className="rounded-2xl border border-border/60 bg-background/70 p-4">
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary"><Shield className="w-5 h-5" /></div>
+                      <p className="font-bold">Protected buying</p>
+                    </div>
+                    <p className="text-sm text-muted-foreground">Escrow-backed purchases, instant delivery flows, and safer transactions on every order.</p>
+                  </div>
+                  <div className="rounded-2xl border border-border/60 bg-background/70 p-4">
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary"><Sparkles className="w-5 h-5" /></div>
+                      <p className="font-bold">AI selling edge</p>
+                    </div>
+                    <p className="text-sm text-muted-foreground">Estimate value, scan for fraud, generate higher-converting copy, and find best-fit buyers faster.</p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                  {aiTools.map((tool) => (
+                    <div key={tool.id} className="rounded-2xl border border-border/60 bg-background/70 p-3 text-left">
+                      <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                        <tool.icon className="w-5 h-5" />
+                      </div>
+                      <p className="text-sm font-bold leading-snug">{tool.title.replace("AI ", "")}</p>
+                      <p className="text-xs text-primary mt-1">{tool.badge}</p>
+                    </div>
+                  ))}
+                </div>
               </CardContent>
             </Card>
+
+            <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+              <Card className="sticky top-24 overflow-hidden border-2 border-primary/20 bg-gradient-to-b from-card to-primary/5 shadow-2xl">
+                <CardContent className="p-6 sm:p-8 text-center">
+                  <div className="mx-auto mb-5 flex h-20 w-20 items-center justify-center rounded-full bg-primary/10 text-primary shadow-lg">
+                    <Crown className="w-10 h-10" />
+                  </div>
+                  <p className="text-sm font-semibold uppercase tracking-[0.24em] text-primary mb-2">Premium Access</p>
+                  <h2 className="text-2xl sm:text-3xl font-black mb-2">Monthly Subscription</h2>
+                  <div className="mb-6 flex items-end justify-center gap-2">
+                    <span className="text-5xl font-black text-primary">€1</span>
+                    <span className="text-muted-foreground mb-1">/ month</span>
+                  </div>
+                  <div className="space-y-3 text-left mb-6">
+                    {[
+                      "Full marketplace access for buyers and sellers",
+                      "4 premium AI coupon tools with credit-based usage",
+                      "Discount discovery, secure chat, and safer deal flow",
+                      "Cancel anytime with no long-term lock-in",
+                    ].map((item) => (
+                      <div key={item} className="flex items-start gap-3 rounded-xl border border-border/50 bg-background/60 px-3 py-3">
+                        <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                        <span className="text-sm text-foreground/90">{item}</span>
+                      </div>
+                    ))}
+                  </div>
+                  {!currentUserId ? (
+                    <div className="space-y-3">
+                      <p className="text-sm text-muted-foreground">You need to be logged in to purchase access.</p>
+                      <Button asChild size="lg" className="w-full gap-2">
+                        <a href="/auth"><Ticket className="w-4 h-4" />Log In to Continue</a>
+                      </Button>
+                    </div>
+                  ) : (
+                    <Button size="lg" className="w-full gap-2" onClick={handlePurchaseAccess} disabled={isPurchasingAccess}>
+                      {isPurchasingAccess ? <><div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>Processing...</> : <><Crown className="w-4 h-4" />Subscribe for €1/month</>}
+                    </Button>
+                  )}
+                </CardContent>
+              </Card>
+            </motion.div>
           </motion.div>
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="mt-8 grid sm:grid-cols-3 gap-4">
-            <Card className="bg-card/80 backdrop-blur-xl border-border/50 text-center p-4"><Percent className="w-8 h-8 text-primary mx-auto mb-2" /><h3 className="font-semibold">Save Money</h3><p className="text-sm text-muted-foreground">Get coupons below face value</p></Card>
-            <Card className="bg-card/80 backdrop-blur-xl border-border/50 text-center p-4"><Tag className="w-8 h-8 text-primary mx-auto mb-2" /><h3 className="font-semibold">Earn Cash</h3><p className="text-sm text-muted-foreground">Sell your unused coupons</p></Card>
-            <Card className="bg-card/80 backdrop-blur-xl border-border/50 text-center p-4"><Shield className="w-8 h-8 text-primary mx-auto mb-2" /><h3 className="font-semibold">100% Secure</h3><p className="text-sm text-muted-foreground">Protected transactions</p></Card>
+
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="grid sm:grid-cols-3 gap-4">
+            <Card className="bg-card/80 backdrop-blur-xl border-border/50 text-center p-4"><Percent className="w-8 h-8 text-primary mx-auto mb-2" /><h3 className="font-semibold">Save More</h3><p className="text-sm text-muted-foreground">Buy verified coupons below face value.</p></Card>
+            <Card className="bg-card/80 backdrop-blur-xl border-border/50 text-center p-4"><Tag className="w-8 h-8 text-primary mx-auto mb-2" /><h3 className="font-semibold">Sell Faster</h3><p className="text-sm text-muted-foreground">Turn unused codes and gift cards into cash.</p></Card>
+            <Card className="bg-card/80 backdrop-blur-xl border-border/50 text-center p-4"><Shield className="w-8 h-8 text-primary mx-auto mb-2" /><h3 className="font-semibold">Trade Safer</h3><p className="text-sm text-muted-foreground">Escrow, chat, and AI fraud screening in one flow.</p></Card>
           </motion.div>
         </div>
       </div>
