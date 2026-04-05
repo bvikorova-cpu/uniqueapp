@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { Briefcase, MapPin, Clock, Euro, Upload, X, Send, Trash2, ShoppingBag, Store, Wand2, DollarSign, FileText, Target, Eye, BarChart3, Compass, Flag, Video, ShieldCheck } from "lucide-react";
+import { Briefcase, MapPin, Clock, Euro, Upload, X, Send, Trash2, ShoppingBag, Store, Wand2, DollarSign, FileText, Target, Eye, BarChart3, Compass, Flag, Video, ShieldCheck, ScrollText, Gavel } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
@@ -25,6 +25,8 @@ import { GigRecommendationView } from "@/components/marketplace/views/GigRecomme
 import { MilestonePlannerView } from "@/components/marketplace/views/MilestonePlannerView";
 import { VideoPortfolioView } from "@/components/marketplace/views/VideoPortfolioView";
 import { ProviderBadgeView } from "@/components/marketplace/views/ProviderBadgeView";
+import { ContractTemplateView } from "@/components/marketplace/views/ContractTemplateView";
+import { RealtimeBiddingView } from "@/components/marketplace/views/RealtimeBiddingView";
 import { motion } from "framer-motion";
 import { Flame, TrendingUp, Award, Check } from "lucide-react";
 
@@ -147,6 +149,24 @@ const AI_TOOLS = [
     badge: "5 CR",
     gradient: "bg-gradient-to-r from-yellow-500 to-amber-500",
     features: ["Quality score", "Badge levels", "Trust signals"],
+  },
+  {
+    id: "contract-template",
+    title: "AI Smart Contracts",
+    description: "AI-generated service agreements & legal templates",
+    icon: ScrollText,
+    badge: "4 CR",
+    gradient: "bg-gradient-to-r from-slate-600 to-zinc-700",
+    features: ["Full contract", "IP rights", "Payment terms"],
+  },
+  {
+    id: "realtime-bidding",
+    title: "AI Bidding Strategy",
+    description: "Smart bidding analysis & competitive pricing strategy",
+    icon: Gavel,
+    badge: "5 CR",
+    gradient: "bg-gradient-to-r from-red-500 to-rose-500",
+    features: ["Optimal bid price", "Competitor analysis", "Negotiation tactics"],
   },
 ];
 
@@ -301,6 +321,8 @@ const Marketplace = () => {
       "milestone-planner": <MilestonePlannerView onBack={() => setActiveView(null)} />,
       "video-portfolio": <VideoPortfolioView onBack={() => setActiveView(null)} />,
       "provider-badge": <ProviderBadgeView onBack={() => setActiveView(null)} />,
+      "contract-template": <ContractTemplateView onBack={() => setActiveView(null)} />,
+      "realtime-bidding": <RealtimeBiddingView onBack={() => setActiveView(null)} />,
     };
     return (
       <div className="min-h-screen bg-background pt-20 sm:pt-24 pb-12">
