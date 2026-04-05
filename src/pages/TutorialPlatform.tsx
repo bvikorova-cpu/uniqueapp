@@ -29,6 +29,10 @@ import { CourseReviewSystemView } from "@/components/tutorial-platform/views/Cou
 import { GamificationBadgesView } from "@/components/tutorial-platform/views/GamificationBadgesView";
 import { AffiliateProgramView } from "@/components/tutorial-platform/views/AffiliateProgramView";
 import { AIVideoSummarizerView } from "@/components/tutorial-platform/views/AIVideoSummarizerView";
+import { AIHomeworkGraderView } from "@/components/tutorial-platform/views/AIHomeworkGraderView";
+import { AIStudyPlanView } from "@/components/tutorial-platform/views/AIStudyPlanView";
+import { AIFlashcardMakerView } from "@/components/tutorial-platform/views/AIFlashcardMakerView";
+import { AIPresentationBuilderView } from "@/components/tutorial-platform/views/AIPresentationBuilderView";
 
 const TutorialPlatform = () => {
   const [searchParams] = useSearchParams();
@@ -65,6 +69,10 @@ const TutorialPlatform = () => {
       case "ai-certificate": return <AICertificateDesignerView onBack={() => setActiveView("dashboard")} />;
       case "ai-translator": return <AICourseTranslatorView onBack={() => setActiveView("dashboard")} />;
       case "ai-summarizer": return <AIVideoSummarizerView onBack={() => setActiveView("dashboard")} />;
+      case "ai-grader": return <AIHomeworkGraderView onBack={() => setActiveView("dashboard")} />;
+      case "ai-study-plan": return <AIStudyPlanView onBack={() => setActiveView("dashboard")} />;
+      case "ai-flashcards": return <AIFlashcardMakerView onBack={() => setActiveView("dashboard")} />;
+      case "ai-presentation": return <AIPresentationBuilderView onBack={() => setActiveView("dashboard")} />;
       case "reviews": return <CourseReviewSystemView onBack={() => setActiveView("dashboard")} />;
       case "trending": return <TrendingCoursesView onBack={() => setActiveView("dashboard")} />;
       case "leaderboard": return <InstructorLeaderboardView onBack={() => setActiveView("dashboard")} />;

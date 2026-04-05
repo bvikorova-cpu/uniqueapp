@@ -104,6 +104,27 @@ serve(async (req) => {
         userPrompt = `Create ${params.summaryType} summary notes for the video "${params.videoTitle || 'Untitled'}":\n\n${params.transcript}`;
         break;
 
+      // === TUTORIAL PLATFORM NEW AI TOOLS ===
+      case "grade-homework":
+        systemPrompt = "You are an expert academic grader. Grade the student's submission thoroughly. Provide: a score out of 100%, strengths, weaknesses, specific corrections, improvement suggestions, and detailed feedback. Be fair and constructive.";
+        userPrompt = `Subject: ${params.subject || "General"}\nGrading style: ${params.gradingStyle || "detailed"}\n\nAssignment/Question:\n${params.assignment}\n\nStudent's Answer:\n${params.studentAnswer}\n\nGrade this submission with a score/100 and detailed feedback.`;
+        break;
+
+      case "generate-study-plan":
+        systemPrompt = "You are an expert learning coach. Create detailed, actionable study plans with weekly schedules, milestones, recommended resources, practice exercises, and progress checkpoints. Be specific and practical.";
+        userPrompt = `Create a ${params.durationWeeks}-week study plan for:\nSubject: ${params.subject}\nGoal: ${params.goal}\nLevel: ${params.level}\nAvailable time: ${params.hoursPerWeek} hours/week\n\nInclude weekly breakdown, daily tasks, resource recommendations, milestones, and practice exercises.`;
+        break;
+
+      case "generate-flashcards":
+        systemPrompt = "You are an expert flashcard creator. Generate study flashcards with clear, concise questions on the front and comprehensive answers on the back. Format each card as:\n\nCard #N\nFront: [question]\nBack: [answer]\n\nMake cards progressively harder and cover key concepts.";
+        userPrompt = `Create ${params.cardCount || 10} study flashcards about: ${params.topic}${params.content ? `\n\nSource material:\n${params.content}` : ""}`;
+        break;
+
+      case "generate-presentation":
+        systemPrompt = "You are an expert presentation designer. Create complete slide-by-slide content for presentations. For each slide include: slide number, title, bullet points, speaker notes, and suggested visual elements. Make it engaging and well-structured.";
+        userPrompt = `Create a ${params.slideCount}-slide ${params.style} presentation titled "${params.title}" for ${params.audience} audience.${params.outline ? `\n\nOutline/Key points:\n${params.outline}` : ""}\n\nInclude: title slide, agenda, content slides, summary, and Q&A slide.`;
+        break;
+
       // === ESCAPE ROOM ACTIONS ===
       case "escape-puzzle-gen":
         systemPrompt = "You are an expert escape room puzzle designer. Create immersive, themed puzzles with clear descriptions, solutions, and difficulty ratings. Each puzzle should include: title, description, type, solution, and hints.";
