@@ -15,6 +15,12 @@ import { MyPurchasesView } from "@/components/stock-content/views/MyPurchasesVie
 import { AIContentGeneratorView } from "@/components/stock-content/views/AIContentGeneratorView";
 import { CollectionsView } from "@/components/stock-content/views/CollectionsView";
 import { GenericToolView } from "@/components/stock-content/views/GenericToolView";
+import { PlagiarismScannerView } from "@/components/stock-content/views/PlagiarismScannerView";
+import { ContentSubscriptionsView } from "@/components/stock-content/views/ContentSubscriptionsView";
+import { CreatorLeaderboardView } from "@/components/stock-content/views/CreatorLeaderboardView";
+import { BackgroundRemoverView } from "@/components/stock-content/views/BackgroundRemoverView";
+import { BulkUploadView } from "@/components/stock-content/views/BulkUploadView";
+import { ContentAnalyticsView } from "@/components/stock-content/views/ContentAnalyticsView";
 import { Tags, Palette, Wand2, Star, Eye, Download } from "lucide-react";
 
 const StockContentLibrary = () => {
@@ -68,6 +74,18 @@ const StockContentLibrary = () => {
         return <GenericToolView onBack={() => setActiveView("dashboard")} title="Content Preview" description="Preview content in different contexts before purchasing. See how it looks in various mockups and use cases." icon={Eye} iconColor="text-slate-500" features={["Website mockup preview", "Social media preview", "Print preview", "Device mockups", "Color variation", "Watermark-free preview"]} />;
       case "download-history":
         return <GenericToolView onBack={() => setActiveView("dashboard")} title="Download History" description="View all your past downloads, re-download content, and manage your licensed assets." icon={Download} iconColor="text-orange-500" features={["Full download log", "Re-download anytime", "License management", "Usage tracking", "Export reports", "Bulk re-download"]} />;
+      case "plagiarism-scanner":
+        return <PlagiarismScannerView onBack={() => setActiveView("dashboard")} />;
+      case "subscriptions":
+        return <ContentSubscriptionsView onBack={() => setActiveView("dashboard")} />;
+      case "leaderboard":
+        return <CreatorLeaderboardView onBack={() => setActiveView("dashboard")} />;
+      case "bg-remover":
+        return <BackgroundRemoverView onBack={() => setActiveView("dashboard")} />;
+      case "bulk-upload":
+        return <BulkUploadView onBack={() => setActiveView("dashboard")} />;
+      case "content-analytics":
+        return <ContentAnalyticsView onBack={() => setActiveView("dashboard")} />;
       default:
         return (
           <>
