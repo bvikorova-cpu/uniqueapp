@@ -24,13 +24,14 @@ import { TreasureHunt } from "@/components/glamour-world/TreasureHunt";
 import { HairStylist } from "@/components/glamour-world/HairStylist";
 import { CoinShop } from "@/components/glamour-world/CoinShop";
 import { BarbieCreator3D } from "@/components/glamour-world/BarbieCreator3D";
+import { GlamourPokiGame } from "@/components/glamour-world/GlamourPokiGame";
 import {
   Home, Shirt, Gem, PawPrint, Sparkles, BookOpen, Scissors,
   Palette, Crown, Music, Camera, Flower, PartyPopper, GraduationCap,
-  Coins, Map, NotebookPen, CakeSlice, Mic2, Star, User
+  Coins, Map, NotebookPen, CakeSlice, Mic2, Star, User, Gamepad2
 } from "lucide-react";
 
-type ViewType = "hub" | "dream-house" | "fashion" | "accessories" | "pet-salon" | "makeup" | "stories" | "nails" | "room" | "bracelets" | "party" | "academy" | "dance" | "garden" | "photo" | "diary" | "recipes" | "talent" | "music" | "treasure" | "hair" | "coins" | "barbie-creator";
+type ViewType = "hub" | "dream-house" | "fashion" | "accessories" | "pet-salon" | "makeup" | "stories" | "nails" | "room" | "bracelets" | "party" | "academy" | "dance" | "garden" | "photo" | "diary" | "recipes" | "talent" | "music" | "treasure" | "hair" | "coins" | "barbie-creator" | "poki-fashion" | "poki-makeup" | "poki-cooking" | "poki-princess";
 
 const tools: { id: ViewType; icon: any; title: string; description: string; badge?: string; credits?: number; gradient: string }[] = [
   { id: "barbie-creator", icon: User, title: "3D Doll Creator", description: "Create your perfect doll in stunning 3D", badge: "3D", gradient: "from-pink-500/10 to-fuchsia-500/5" },
@@ -55,34 +56,43 @@ const tools: { id: ViewType; icon: any; title: string; description: string; badg
   { id: "music", icon: Music, title: "Music Box", description: "Write your own magical songs", badge: "AI", credits: 4, gradient: "from-pink-500/10 to-violet-500/5" },
   { id: "treasure", icon: Map, title: "Treasure Hunt", description: "Create treasure hunts with riddles", badge: "AI", credits: 4, gradient: "from-amber-500/10 to-pink-500/5" },
   { id: "coins", icon: Coins, title: "Coin Shop", description: "Buy coins to unlock all features", gradient: "from-yellow-500/10 to-pink-500/5" },
+  { id: "poki-fashion", icon: Gamepad2, title: "👗 Fashion Battle ↗", description: "Play Fashion Battle on Poki.com", badge: "POKI", gradient: "from-purple-500/10 to-pink-500/5" },
+  { id: "poki-makeup", icon: Gamepad2, title: "💄 Makeup Salon ↗", description: "Play Makeup Salon on Poki.com", badge: "POKI", gradient: "from-pink-500/10 to-rose-500/5" },
+  { id: "poki-cooking", icon: Gamepad2, title: "🧁 Cooking Games ↗", description: "Play cooking games on Poki.com", badge: "POKI", gradient: "from-orange-500/10 to-pink-500/5" },
+  { id: "poki-princess", icon: Gamepad2, title: "👑 Princess Maker ↗", description: "Play princess games on Poki.com", badge: "POKI", gradient: "from-fuchsia-500/10 to-purple-500/5" },
 ];
 
 const GlamourWorld = () => {
   const [activeView, setActiveView] = useState<ViewType>("hub");
+  const back = () => setActiveView("hub");
 
   const viewMap: Record<string, JSX.Element> = {
-    "dream-house": <DreamHouseBuilder onBack={() => setActiveView("hub")} />,
-    "fashion": <FashionCloset onBack={() => setActiveView("hub")} />,
-    "accessories": <AccessoryDesigner onBack={() => setActiveView("hub")} />,
-    "pet-salon": <PetSalon onBack={() => setActiveView("hub")} />,
-    "makeup": <MakeupStudio onBack={() => setActiveView("hub")} />,
-    "stories": <StoryCreator onBack={() => setActiveView("hub")} />,
-    "nails": <NailArtStudio onBack={() => setActiveView("hub")} />,
-    "room": <RoomDecorator onBack={() => setActiveView("hub")} />,
-    "bracelets": <BraceletMaker onBack={() => setActiveView("hub")} />,
-    "party": <TeaPartyPlanner onBack={() => setActiveView("hub")} />,
-    "academy": <PrincessAcademy onBack={() => setActiveView("hub")} />,
-    "dance": <DanceStudio onBack={() => setActiveView("hub")} />,
-    "garden": <GardenDesigner onBack={() => setActiveView("hub")} />,
-    "photo": <PhotoBooth onBack={() => setActiveView("hub")} />,
-    "diary": <DiaryJournal onBack={() => setActiveView("hub")} />,
-    "recipes": <RecipeBaker onBack={() => setActiveView("hub")} />,
-    "talent": <TalentShow onBack={() => setActiveView("hub")} />,
-    "music": <MusicBox onBack={() => setActiveView("hub")} />,
-    "treasure": <TreasureHunt onBack={() => setActiveView("hub")} />,
-    "hair": <HairStylist onBack={() => setActiveView("hub")} />,
-    "coins": <CoinShop onBack={() => setActiveView("hub")} />,
-    "barbie-creator": <BarbieCreator3D onBack={() => setActiveView("hub")} />,
+    "dream-house": <DreamHouseBuilder onBack={back} />,
+    "fashion": <FashionCloset onBack={back} />,
+    "accessories": <AccessoryDesigner onBack={back} />,
+    "pet-salon": <PetSalon onBack={back} />,
+    "makeup": <MakeupStudio onBack={back} />,
+    "stories": <StoryCreator onBack={back} />,
+    "nails": <NailArtStudio onBack={back} />,
+    "room": <RoomDecorator onBack={back} />,
+    "bracelets": <BraceletMaker onBack={back} />,
+    "party": <TeaPartyPlanner onBack={back} />,
+    "academy": <PrincessAcademy onBack={back} />,
+    "dance": <DanceStudio onBack={back} />,
+    "garden": <GardenDesigner onBack={back} />,
+    "photo": <PhotoBooth onBack={back} />,
+    "diary": <DiaryJournal onBack={back} />,
+    "recipes": <RecipeBaker onBack={back} />,
+    "talent": <TalentShow onBack={back} />,
+    "music": <MusicBox onBack={back} />,
+    "treasure": <TreasureHunt onBack={back} />,
+    "hair": <HairStylist onBack={back} />,
+    "coins": <CoinShop onBack={back} />,
+    "barbie-creator": <BarbieCreator3D onBack={back} />,
+    "poki-fashion": <GlamourPokiGame onBack={back} slug="fashion-battle-dress-up" />,
+    "poki-makeup": <GlamourPokiGame onBack={back} slug="makeup-salon" />,
+    "poki-cooking": <GlamourPokiGame onBack={back} slug="cooking-fever" />,
+    "poki-princess": <GlamourPokiGame onBack={back} slug="princess-maker" />,
   };
 
   if (activeView !== "hub" && viewMap[activeView]) {
