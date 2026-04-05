@@ -31,7 +31,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowLeftRight, Globe, Video, Users, CheckCircle, MessageSquare, Star,
   Sparkles, Filter, X, Search, Upload, Edit, Trash2, LayoutDashboard,
-  ArrowLeft, Lock, Check, UserPlus, BookOpen, Shield, Zap, Award, CalendarDays
+  ArrowLeft, Lock, Check, UserPlus, BookOpen, Shield, Zap, Award, CalendarDays,
+  TrendingUp, Radio, ShieldCheck, UsersRound
 } from "lucide-react";
 import {
   Pagination, PaginationContent, PaginationItem, PaginationLink,
