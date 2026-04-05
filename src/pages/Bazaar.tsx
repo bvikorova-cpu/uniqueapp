@@ -6,15 +6,23 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
-import { Plus, Search, MapPin, Clock, User, MessageCircle, Upload, X, Trash2, Crown, AlertCircle, ShoppingCart, Package } from "lucide-react";
+import { Plus, Search, MapPin, Clock, User, MessageCircle, Upload, X, Trash2, Crown, AlertCircle, ShoppingCart, Package, DollarSign, Wand2, Target, Shield, Check, Flame, BarChart3, Award } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useSubscription } from "@/hooks/useSubscription";
 import { Link } from "react-router-dom";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { motion } from "framer-motion";
 import MyBazaarOrders from "@/components/bazaar/MyBazaarOrders";
 import BazaarPurchaseDialog from "@/components/bazaar/BazaarPurchaseDialog";
+import { BazaarHero } from "@/components/bazaar/BazaarHero";
+import { MarketplaceToolCard } from "@/components/marketplace/MarketplaceToolCard";
+import { PriceEstimatorView } from "@/components/bazaar/views/PriceEstimatorView";
+import { ListingOptimizerView } from "@/components/bazaar/views/ListingOptimizerView";
+import { BuyerMatchView } from "@/components/bazaar/views/BuyerMatchView";
+import { FraudDetectorView } from "@/components/bazaar/views/FraudDetectorView";
+
 interface BazaarItem {
   id: string;
   title: string;
@@ -28,12 +36,50 @@ interface BazaarItem {
   created_at: string;
   user_id: string;
   is_sold: boolean;
-  profiles?: {
-    full_name: string | null;
-  } | null;
+  profiles?: { full_name: string | null } | null;
 }
 
+const aiTools = [
+  {
+    id: "price-estimator",
+    title: "AI Price Estimator",
+    description: "Get fair market value for any item with detailed price analysis",
+    icon: DollarSign,
+    badge: "3 CR",
+    gradient: "bg-gradient-to-r from-amber-500 to-orange-600",
+    features: ["Fair market value range", "Price comparison analysis", "Quick sale vs premium pricing"],
+  },
+  {
+    id: "listing-optimizer",
+    title: "AI Listing Optimizer",
+    description: "Rewrite your listing for maximum engagement and conversions",
+    icon: Wand2,
+    badge: "3 CR",
+    gradient: "bg-gradient-to-r from-orange-500 to-red-500",
+    features: ["SEO-optimized titles", "Compelling descriptions", "Photo & urgency tips"],
+  },
+  {
+    id: "buyer-match",
+    title: "AI Buyer Match",
+    description: "Find ideal buyers based on item category and market data",
+    icon: Target,
+    badge: "4 CR",
+    gradient: "bg-gradient-to-r from-yellow-500 to-amber-600",
+    features: ["Buyer persona profiles", "Target demographics", "Marketing angles"],
+  },
+  {
+    id: "fraud-detector",
+    title: "AI Fraud Detector",
+    description: "Verify listing authenticity and spot potential scams",
+    icon: Shield,
+    badge: "4 CR",
+    gradient: "bg-gradient-to-r from-emerald-500 to-teal-600",
+    features: ["Trust score 0-100", "Red flag detection", "Verification checklist"],
+  },
+];
+
 const Bazaar = () => {
+  const [activeView, setActiveView] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -50,13 +96,8 @@ const Bazaar = () => {
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [items, setItems] = useState<BazaarItem[]>([]);
   const [formData, setFormData] = useState({
-    title: "",
-    price: "",
-    location: "",
-    description: "",
-    category: "electronics",
-    condition: "Like New",
-    listing_type: "sell",
+    title: "", price: "", location: "", description: "",
+    category: "electronics", condition: "Like New", listing_type: "sell",
   });
   const { toast } = useToast();
   const { limits, canCreateListing, calculateCommission } = useSubscription();
@@ -74,71 +115,38 @@ const Bazaar = () => {
     const orderId = urlParams.get('order_id');
     const transactionId = urlParams.get('transaction_id');
 
-    // Handle new order system
     if (paymentStatus === 'success' && sessionId && orderId) {
       try {
         const { data: { session } } = await supabase.auth.getSession();
-        
-        const { data, error } = await supabase.functions.invoke('verify-bazaar-order-payment', {
+        const { error } = await supabase.functions.invoke('verify-bazaar-order-payment', {
           body: { sessionId, orderId },
-          headers: session?.access_token ? {
-            Authorization: `Bearer ${session.access_token}`
-          } : undefined
+          headers: session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : undefined,
         });
-
         if (error) throw error;
-
-        toast({
-          title: "Order confirmed! 🎉",
-          description: "Your order has been placed. The seller will ship it soon.",
-        });
-
+        toast({ title: "Order confirmed! 🎉", description: "Your order has been placed. The seller will ship it soon." });
         window.history.replaceState({}, '', window.location.pathname);
         loadItems();
       } catch (error) {
         console.error('Error verifying order payment:', error);
-        toast({
-          title: "Error",
-          description: "Failed to verify payment. Please contact support.",
-          variant: "destructive",
-        });
+        toast({ title: "Error", description: "Failed to verify payment. Please contact support.", variant: "destructive" });
       }
-    }
-    // Handle legacy transaction system
-    else if (paymentStatus === 'success' && sessionId && transactionId) {
+    } else if (paymentStatus === 'success' && sessionId && transactionId) {
       try {
         const { data: { session } } = await supabase.auth.getSession();
-        
-        const { data, error } = await supabase.functions.invoke('verify-bazaar-payment', {
+        const { error } = await supabase.functions.invoke('verify-bazaar-payment', {
           body: { sessionId, transactionId },
-          headers: session?.access_token ? {
-            Authorization: `Bearer ${session.access_token}`
-          } : undefined
+          headers: session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : undefined,
         });
-
         if (error) throw error;
-
-        toast({
-          title: "Payment successful! 🎉",
-          description: "Your purchase was processed successfully.",
-        });
-
+        toast({ title: "Payment successful! 🎉", description: "Your purchase was processed successfully." });
         window.history.replaceState({}, '', window.location.pathname);
         loadItems();
       } catch (error) {
         console.error('Error verifying payment:', error);
-        toast({
-          title: "Error",
-          description: "Failed to verify payment. Please contact support.",
-          variant: "destructive",
-        });
+        toast({ title: "Error", description: "Failed to verify payment. Please contact support.", variant: "destructive" });
       }
     } else if (paymentStatus === 'cancelled') {
-      toast({
-        title: "Payment cancelled",
-        description: "The payment was cancelled.",
-        variant: "destructive",
-      });
+      toast({ title: "Payment cancelled", description: "The payment was cancelled.", variant: "destructive" });
       window.history.replaceState({}, '', window.location.pathname);
     }
   };
@@ -154,12 +162,7 @@ const Bazaar = () => {
       .select('*, profiles(full_name)')
       .eq('is_active', true)
       .order('created_at', { ascending: false });
-
-    if (error) {
-      console.error('Error loading items:', error);
-      return;
-    }
-
+    if (error) { console.error('Error loading items:', error); return; }
     setItems(data || []);
   };
 
@@ -167,43 +170,26 @@ const Bazaar = () => {
     const file = e.target.files?.[0];
     if (file) {
       if (file.size > 5 * 1024 * 1024) {
-        toast({
-          title: "File too large",
-          description: "Maximum image size is 5MB",
-          variant: "destructive",
-        });
+        toast({ title: "File too large", description: "Maximum image size is 5MB", variant: "destructive" });
         return;
       }
       setImageFile(file);
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string);
-      };
+      reader.onloadend = () => setImagePreview(reader.result as string);
       reader.readAsDataURL(file);
     }
   };
 
-  const removeImage = () => {
-    setImageFile(null);
-    setImagePreview("");
-  };
+  const removeImage = () => { setImageFile(null); setImagePreview(""); };
 
   const categories = [
-    { id: "all", name: "All" },
-    { id: "electronics", name: "Electronics" },
-    { id: "clothing", name: "Clothing" },
-    { id: "home", name: "Home & Garden" },
-    { id: "sports", name: "Sports" },
-    { id: "books", name: "Books" },
-    { id: "other", name: "Other" },
+    { id: "all", name: "All" }, { id: "electronics", name: "Electronics" },
+    { id: "clothing", name: "Clothing" }, { id: "home", name: "Home & Garden" },
+    { id: "sports", name: "Sports" }, { id: "books", name: "Books" }, { id: "other", name: "Other" },
   ];
 
   const conditions = ["Like New", "Very Good", "Good", "Used"];
-
-  const listingTypes = [
-    { id: "sell", name: "Sell" },
-    { id: "buy", name: "Buy" },
-  ];
+  const listingTypes = [{ id: "sell", name: "Sell" }, { id: "buy", name: "Buy" }];
 
   const filteredItems = items.filter(item => {
     const matchesSearch = item.title.toLowerCase().includes(searchTerm.toLowerCase());
@@ -212,505 +198,287 @@ const Bazaar = () => {
   });
 
   const getTimeAgo = (dateString: string) => {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffInMs = now.getTime() - date.getTime();
+    const diffInMs = new Date().getTime() - new Date(dateString).getTime();
     const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60));
-    
     if (diffInHours < 1) return "just now";
-    if (diffInHours < 24) return `${diffInHours} hours ago`;
+    if (diffInHours < 24) return `${diffInHours}h ago`;
     const diffInDays = Math.floor(diffInHours / 24);
-    if (diffInDays === 1) return "1 day ago";
-    if (diffInDays < 7) return `${diffInDays} days ago`;
-    const diffInWeeks = Math.floor(diffInDays / 7);
-    if (diffInWeeks === 1) return "1 week ago";
-    return `${diffInWeeks} weeks ago`;
+    if (diffInDays < 7) return `${diffInDays}d ago`;
+    return `${Math.floor(diffInDays / 7)}w ago`;
   };
 
   const handleSubmit = async () => {
     if (!formData.title || !formData.price || !formData.location) {
-      toast({
-        title: "Error",
-        description: "Fill in all required fields",
-        variant: "destructive",
-      });
+      toast({ title: "Error", description: "Fill in all required fields", variant: "destructive" });
       return;
     }
-
-    // Check subscription limits
     const canCreate = await canCreateListing('bazaar');
     if (!canCreate) {
-      toast({
-        title: "Limit reached",
-        description: `You have reached the limit of ${limits.bazaarListingsPerMonth} listings/month. Upgrade your subscription for more.`,
-        variant: "destructive",
-      });
+      toast({ title: "Limit reached", description: `You have reached the limit of ${limits.bazaarListingsPerMonth} listings/month. Upgrade for more.`, variant: "destructive" });
       return;
     }
-
     setUploading(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        toast({
-          title: "Error",
-          description: "You must be logged in",
-          variant: "destructive",
-        });
-        setUploading(false);
-        return;
-      }
+      if (!user) { toast({ title: "Error", description: "You must be logged in", variant: "destructive" }); setUploading(false); return; }
 
       let imageUrl = null;
       if (imageFile) {
         const fileExt = imageFile.name.split('.').pop();
         const fileName = `${user.id}-${Date.now()}.${fileExt}`;
-        const { error: uploadError } = await supabase.storage
-          .from('bazaar_images')
-          .upload(fileName, imageFile);
-
+        const { error: uploadError } = await supabase.storage.from('bazaar_images').upload(fileName, imageFile);
         if (uploadError) throw uploadError;
-        
-        const { data: { publicUrl } } = supabase.storage
-          .from('bazaar_images')
-          .getPublicUrl(fileName);
+        const { data: { publicUrl } } = supabase.storage.from('bazaar_images').getPublicUrl(fileName);
         imageUrl = publicUrl;
       }
 
       const price = parseFloat(formData.price);
       const commission = calculateCommission(price);
-
-      const { error: insertError } = await supabase
-        .from('bazaar_items')
-        .insert({
-          user_id: user.id,
-          title: formData.title,
-          price: price,
-          location: formData.location,
-          description: formData.description,
-          category: formData.category,
-          condition: formData.condition,
-          listing_type: formData.listing_type,
-          image_url: imageUrl,
-        });
-
+      const { error: insertError } = await supabase.from('bazaar_items').insert({
+        user_id: user.id, title: formData.title, price, location: formData.location,
+        description: formData.description, category: formData.category,
+        condition: formData.condition, listing_type: formData.listing_type, image_url: imageUrl,
+      });
       if (insertError) throw insertError;
 
       toast({
         title: "Success",
-        description: commission > 0 
-          ? `Listing added. On sale, a ${limits.commissionRate}% commission (€${commission.toFixed(2)}) will be charged`
-          : "Listing added without commission",
+        description: commission > 0 ? `Listing added. On sale, a ${limits.commissionRate}% commission (€${commission.toFixed(2)}) will be charged` : "Listing added without commission",
       });
-
       setFormData({ title: "", price: "", location: "", description: "", category: "electronics", condition: "Like New", listing_type: "sell" });
-      setImageFile(null);
-      setImagePreview("");
-      setIsDialogOpen(false);
-      loadItems();
+      setImageFile(null); setImagePreview(""); setIsDialogOpen(false); loadItems();
     } catch (error) {
       console.error('Error:', error);
-      toast({
-        title: "Error",
-        description: "Failed to add listing",
-        variant: "destructive",
-      });
-    } finally {
-      setUploading(false);
-    }
+      toast({ title: "Error", description: "Failed to add listing", variant: "destructive" });
+    } finally { setUploading(false); }
   };
 
   const handleContact = (item: BazaarItem) => {
-    if (!currentUserId) {
-      toast({
-        title: "Error",
-        description: "You must be logged in",
-        variant: "destructive",
-      });
-      return;
-    }
-    
-    if (currentUserId === item.user_id) {
-      toast({
-        title: "Warning",
-        description: "You cannot contact yourself",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setSelectedItem(item);
-    setIsContactDialogOpen(true);
+    if (!currentUserId) { toast({ title: "Error", description: "You must be logged in", variant: "destructive" }); return; }
+    if (currentUserId === item.user_id) { toast({ title: "Warning", description: "You cannot contact yourself", variant: "destructive" }); return; }
+    setSelectedItem(item); setIsContactDialogOpen(true);
   };
 
-  const openDetail = (item: BazaarItem) => {
-    setSelectedItem(item);
-    setIsDetailOpen(true);
-  };
-
-  const handleDeleteClick = () => {
-    setIsDeleteDialogOpen(true);
-  };
+  const openDetail = (item: BazaarItem) => { setSelectedItem(item); setIsDetailOpen(true); };
+  const handleDeleteClick = () => setIsDeleteDialogOpen(true);
 
   const handleSendMessage = async () => {
     if (!selectedItem || !currentUserId || !contactMessage.trim()) {
-      toast({
-        title: "Error",
-        description: "Fill in message",
-        variant: "destructive",
-      });
-      return;
+      toast({ title: "Error", description: "Fill in message", variant: "destructive" }); return;
     }
-
     try {
-      const { error } = await supabase
-        .from('bazaar_messages')
-        .insert({
-          item_id: selectedItem.id,
-          sender_id: currentUserId,
-          receiver_id: selectedItem.user_id,
-          message: contactMessage,
-        });
-
-      if (error) throw error;
-
-      toast({
-        title: "Success",
-        description: "Message sent to seller",
+      const { error } = await supabase.from('bazaar_messages').insert({
+        item_id: selectedItem.id, sender_id: currentUserId, receiver_id: selectedItem.user_id, message: contactMessage,
       });
-
-      setContactMessage("");
-      setIsContactDialogOpen(false);
+      if (error) throw error;
+      toast({ title: "Success", description: "Message sent to seller" });
+      setContactMessage(""); setIsContactDialogOpen(false);
     } catch (error) {
       console.error('Error sending message:', error);
-      toast({
-        title: "Error",
-        description: "Failed to send message",
-        variant: "destructive",
-      });
+      toast({ title: "Error", description: "Failed to send message", variant: "destructive" });
     }
   };
 
   const handleDeleteConfirm = async () => {
     if (!selectedItem) return;
-
     try {
-      const { error } = await supabase
-        .from('bazaar_items')
-        .delete()
-        .eq('id', selectedItem.id);
-
+      const { error } = await supabase.from('bazaar_items').delete().eq('id', selectedItem.id);
       if (error) throw error;
-
-      toast({
-        title: "Success",
-        description: "Listing deleted",
-      });
-
-      setIsDeleteDialogOpen(false);
-      setIsDetailOpen(false);
-      loadItems();
+      toast({ title: "Success", description: "Listing deleted" });
+      setIsDeleteDialogOpen(false); setIsDetailOpen(false); loadItems();
     } catch (error) {
       console.error('Error deleting item:', error);
-      toast({
-        title: "Error",
-        description: "Failed to delete listing",
-        variant: "destructive",
-      });
+      toast({ title: "Error", description: "Failed to delete listing", variant: "destructive" });
     }
   };
 
   const handleBuyItem = () => {
-    if (!selectedItem || !currentUserId) {
-      toast({
-        title: "Error",
-        description: "You must be logged in to purchase items.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (selectedItem.is_sold) {
-      toast({
-        title: "Already sold",
-        description: "This item has already been sold.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (selectedItem.user_id === currentUserId) {
-      toast({
-        title: "Error",
-        description: "You cannot buy your own item.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setIsDetailOpen(false);
-    setIsPurchaseDialogOpen(true);
+    if (!selectedItem || !currentUserId) { toast({ title: "Error", description: "You must be logged in to purchase items.", variant: "destructive" }); return; }
+    if (selectedItem.is_sold) { toast({ title: "Already sold", description: "This item has already been sold.", variant: "destructive" }); return; }
+    if (selectedItem.user_id === currentUserId) { toast({ title: "Error", description: "You cannot buy your own item.", variant: "destructive" }); return; }
+    setIsDetailOpen(false); setIsPurchaseDialogOpen(true);
   };
+
+  // AI Tool View Routing
+  if (activeView === "price-estimator") return <div className="min-h-screen bg-background pt-16 sm:pt-20 pb-12"><div className="container mx-auto px-3 sm:px-4 max-w-7xl"><PriceEstimatorView onBack={() => setActiveView(null)} /></div></div>;
+  if (activeView === "listing-optimizer") return <div className="min-h-screen bg-background pt-16 sm:pt-20 pb-12"><div className="container mx-auto px-3 sm:px-4 max-w-7xl"><ListingOptimizerView onBack={() => setActiveView(null)} /></div></div>;
+  if (activeView === "buyer-match") return <div className="min-h-screen bg-background pt-16 sm:pt-20 pb-12"><div className="container mx-auto px-3 sm:px-4 max-w-7xl"><BuyerMatchView onBack={() => setActiveView(null)} /></div></div>;
+  if (activeView === "fraud-detector") return <div className="min-h-screen bg-background pt-16 sm:pt-20 pb-12"><div className="container mx-auto px-3 sm:px-4 max-w-7xl"><FraudDetectorView onBack={() => setActiveView(null)} /></div></div>;
 
   return (
     <div className="min-h-screen bg-background pt-16 sm:pt-20 pb-12">
       <div className="container mx-auto px-3 sm:px-4 max-w-7xl">
-        {/* Header */}
-        <div className="flex flex-col gap-3 sm:gap-4 mb-6 sm:mb-8">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-            <div className="max-w-3xl">
-              <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold">
-                Online{" "}
-                <span className="bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
-                  Bazaar
-                </span>
-              </h1>
-              <p className="text-base sm:text-xl text-muted-foreground mt-2 mb-3 sm:mb-4">
-                Buy and sell with confidence in our community
-              </p>
-              <div className="bg-card/50 backdrop-blur-sm border rounded-lg p-4 sm:p-6 space-y-3 sm:space-y-4">
-                <h2 className="text-base sm:text-lg font-semibold">How It Works</h2>
-                
-                {/* For Sellers */}
+        {/* Cinematic Hero */}
+        <BazaarHero itemCount={items.length} />
+
+        {/* 3-Column Engagement Row */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+            <Card className="bg-card/80 backdrop-blur-xl border-border/50">
+              <CardContent className="p-4 flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center">
+                  <Flame className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground">Selling Streak</p>
+                  <p className="font-black text-lg">🔥 Active</p>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
+            <Card className="bg-card/80 backdrop-blur-xl border-border/50">
+              <CardContent className="p-4 flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center">
+                  <BarChart3 className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground">Top Categories</p>
+                  <p className="font-black text-lg">Electronics · Clothing</p>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
+            <Card className="bg-card/80 backdrop-blur-xl border-border/50">
+              <CardContent className="p-4 flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center">
+                  <Award className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground">Platform Benefits</p>
+                  <p className="font-black text-lg">Secure Escrow · 10% Fee</p>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+        </div>
+
+        {/* AI Tools Section */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="mb-8">
+          <h2 className="text-xl font-black mb-4">🤖 AI-Powered Bazaar Tools</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {aiTools.map((tool, i) => (
+              <MarketplaceToolCard key={tool.id} tool={tool} onSelect={() => setActiveView(tool.id)} index={i} />
+            ))}
+          </div>
+        </motion.div>
+
+        {/* How It Works */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}>
+          <Card className="mb-8 bg-card/50 backdrop-blur-sm border-border/50">
+            <CardContent className="p-4 sm:p-6">
+              <h2 className="text-lg font-bold mb-4">How It Works</h2>
+              <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <h3 className="text-sm font-medium text-primary">For Sellers</h3>
+                  <h3 className="text-sm font-semibold text-primary">For Sellers</h3>
                   <ul className="space-y-2 text-xs sm:text-sm text-muted-foreground">
-                    <li className="flex items-start gap-2">
-                      <span className="text-primary mt-0.5">1.</span>
-                      <span><strong>Create a Listing:</strong> Upload photos, write a description, and set your price in EUR (€). The price must include shipping costs - you are responsible for packaging and sending the item.</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-primary mt-0.5">2.</span>
-                      <span><strong>Receive Orders:</strong> When someone purchases your item, you'll receive a notification with their shipping address and any notes.</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-primary mt-0.5">3.</span>
-                      <span><strong>Ship the Item:</strong> Package and ship the item to the buyer. Click "Mark as Shipped" to update the order status.</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-primary mt-0.5">4.</span>
-                      <span><strong>Get Paid:</strong> Once the buyer confirms delivery, you receive your payout (price minus 10% platform commission).</span>
-                    </li>
+                    <li className="flex items-start gap-2"><span className="text-primary font-bold">1.</span><span><strong>Create a Listing:</strong> Upload photos, write a description, set your price in EUR (€). Price must include shipping.</span></li>
+                    <li className="flex items-start gap-2"><span className="text-primary font-bold">2.</span><span><strong>Receive Orders:</strong> Get notified with shipping address and buyer notes.</span></li>
+                    <li className="flex items-start gap-2"><span className="text-primary font-bold">3.</span><span><strong>Ship the Item:</strong> Package and ship. Click "Mark as Shipped" to update status.</span></li>
+                    <li className="flex items-start gap-2"><span className="text-primary font-bold">4.</span><span><strong>Get Paid:</strong> Payout after buyer confirms delivery (minus 10% commission).</span></li>
                   </ul>
                 </div>
-
-                {/* For Buyers */}
                 <div className="space-y-2">
-                  <h3 className="text-sm font-medium text-primary">For Buyers</h3>
+                  <h3 className="text-sm font-semibold text-primary">For Buyers</h3>
                   <ul className="space-y-2 text-xs sm:text-sm text-muted-foreground">
-                    <li className="flex items-start gap-2">
-                      <span className="text-primary mt-0.5">1.</span>
-                      <span><strong>Browse & Search:</strong> Filter items by category, search by keywords, and find exactly what you need.</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-primary mt-0.5">2.</span>
-                      <span><strong>Contact or Buy:</strong> Message the seller with questions, or click "Buy Now" to purchase immediately. The displayed price includes shipping.</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-primary mt-0.5">3.</span>
-                      <span><strong>Secure Payment:</strong> Pay securely via Stripe. Your payment is held safely until delivery is confirmed.</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-primary mt-0.5">4.</span>
-                      <span><strong>Confirm Delivery:</strong> Once you receive the item, click "Confirm Received" to complete the transaction. The listing is then automatically removed.</span>
-                    </li>
+                    <li className="flex items-start gap-2"><span className="text-primary font-bold">1.</span><span><strong>Browse & Search:</strong> Filter by category, search by keywords.</span></li>
+                    <li className="flex items-start gap-2"><span className="text-primary font-bold">2.</span><span><strong>Contact or Buy:</strong> Message seller or click "Buy Now". Price includes shipping.</span></li>
+                    <li className="flex items-start gap-2"><span className="text-primary font-bold">3.</span><span><strong>Secure Payment:</strong> Pay via Stripe. Payment held until delivery confirmed.</span></li>
+                    <li className="flex items-start gap-2"><span className="text-primary font-bold">4.</span><span><strong>Confirm Delivery:</strong> Click "Confirm Received" to complete the transaction.</span></li>
                   </ul>
-                </div>
-
-                {/* Important Notes */}
-                <div className="mt-3 pt-3 border-t border-border/50">
-                  <p className="text-xs text-muted-foreground">
-                    <strong>Note:</strong> All prices include shipping. A 10% commission is deducted from the seller's payout. Communicate with the seller via the built-in chat for any questions or special requests.
-                  </p>
                 </div>
               </div>
-            </div>
-          </div>
+              <p className="text-xs text-muted-foreground mt-4 pt-3 border-t border-border/50">
+                <strong>Note:</strong> All prices include shipping. 10% commission deducted from seller payout. Use built-in chat for questions.
+              </p>
+            </CardContent>
+          </Card>
+        </motion.div>
 
-            <div className="flex flex-col gap-2">
-              {limits.bazaarListingsPerMonth !== -1 && (
-                <Alert>
-                  <AlertCircle className="h-4 w-4" />
-                  <AlertDescription>
-                    Limit: {limits.bazaarListingsPerMonth} listings/month • Commission: {limits.commissionRate}%
-                    {limits.tier === 'basic' && (
-                      <Link to="/subscription" className="ml-2 text-primary hover:underline">
-                        Upgrade
-                      </Link>
-                    )}
-                  </AlertDescription>
-                </Alert>
-              )}
-              
-              <div className="flex gap-2">
-                {currentUserId && (
-                  <Button variant="outline" size="lg" onClick={() => setIsOrdersDialogOpen(true)}>
-                    <Package className="h-5 w-5 mr-2" />
-                    My Orders
-                  </Button>
-                )}
-                
-                <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                <DialogTrigger asChild>
-                  <Button variant="hero" size="lg">
-                    <Plus className="h-5 w-5 mr-2" />
-                    Add Listing
-                  </Button>
-                </DialogTrigger>
+        {/* Action Buttons */}
+        <div className="flex flex-wrap gap-2 mb-6">
+          {limits.bazaarListingsPerMonth !== -1 && (
+            <Alert className="w-full">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>
+                Limit: {limits.bazaarListingsPerMonth} listings/month • Commission: {limits.commissionRate}%
+                {limits.tier === 'basic' && <Link to="/subscription" className="ml-2 text-primary hover:underline">Upgrade</Link>}
+              </AlertDescription>
+            </Alert>
+          )}
+          <div className="flex gap-2 w-full sm:w-auto">
+            {currentUserId && (
+              <Button variant="outline" size="lg" onClick={() => setIsOrdersDialogOpen(true)}>
+                <Package className="h-5 w-5 mr-2" />My Orders
+              </Button>
+            )}
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+              <DialogTrigger asChild>
+                <Button variant="hero" size="lg"><Plus className="h-5 w-5 mr-2" />Add Listing</Button>
+              </DialogTrigger>
               <DialogContent className="max-w-md">
-                <DialogHeader>
-                  <DialogTitle>New Listing</DialogTitle>
-                </DialogHeader>
+                <DialogHeader><DialogTitle>New Listing</DialogTitle></DialogHeader>
                 <div className="space-y-4">
                   <div>
                     <label className="text-sm font-medium mb-2 block">Listing Type</label>
-                    <Select 
-                      value={formData.listing_type} 
-                      onValueChange={(value) => setFormData({...formData, listing_type: value})}
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {listingTypes.map((type) => (
-                          <SelectItem key={type.id} value={type.id}>
-                            {type.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
+                    <Select value={formData.listing_type} onValueChange={(v) => setFormData({ ...formData, listing_type: v })}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>{listingTypes.map(t => <SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>)}</SelectContent>
                     </Select>
                   </div>
-
-                <Input
-                  placeholder="Product Name" 
-                  value={formData.title}
-                  onChange={(e) => setFormData({...formData, title: e.target.value})}
-                />
-                <Input 
-                  placeholder="Price (€)" 
-                  type="number"
-                  value={formData.price}
-                  onChange={(e) => setFormData({...formData, price: e.target.value})}
-                />
-                <Input 
-                  placeholder="Location"
-                  value={formData.location}
-                  onChange={(e) => setFormData({...formData, location: e.target.value})}
-                />
-                <Textarea 
-                  placeholder="Product description..." 
-                  className="min-h-20"
-                  value={formData.description}
-                  onChange={(e) => setFormData({...formData, description: e.target.value})}
-                />
-                
-                <div>
-                  <label className="text-sm font-medium mb-2 block">Category</label>
-                  <Select 
-                    value={formData.category} 
-                    onValueChange={(value) => setFormData({...formData, category: value})}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {categories.filter(c => c.id !== "all").map((cat) => (
-                        <SelectItem key={cat.id} value={cat.id}>
-                          {cat.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div>
-                  <label className="text-sm font-medium mb-2 block">Condition</label>
-                  <Select 
-                    value={formData.condition} 
-                    onValueChange={(value) => setFormData({...formData, condition: value})}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {conditions.map((cond) => (
-                        <SelectItem key={cond} value={cond}>
-                          {cond}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                {/* Image Upload */}
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Product Image</label>
-                  {imagePreview ? (
-                    <div className="relative">
-                      <img 
-                        src={imagePreview} 
-                        alt="Preview" 
-                        className="w-full h-48 object-cover rounded-lg"
-                      />
-                      <Button
-                        type="button"
-                        variant="destructive"
-                        size="icon"
-                        className="absolute top-2 right-2"
-                        onClick={removeImage}
-                      >
-                        <X className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  ) : (
-                    <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-input rounded-lg cursor-pointer hover:bg-accent/50 transition-colors">
-                      <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                        <Upload className="h-8 w-8 text-muted-foreground mb-2" />
-                        <p className="text-sm text-muted-foreground">
-                          Click to upload image
-                        </p>
-                        <p className="text-xs text-muted-foreground mt-1">
-                          Max. 5MB (JPG, PNG, WEBP)
-                        </p>
+                  <Input placeholder="Product Name" value={formData.title} onChange={e => setFormData({ ...formData, title: e.target.value })} />
+                  <Input placeholder="Price (€)" type="number" value={formData.price} onChange={e => setFormData({ ...formData, price: e.target.value })} />
+                  <Input placeholder="Location" value={formData.location} onChange={e => setFormData({ ...formData, location: e.target.value })} />
+                  <Textarea placeholder="Product description..." className="min-h-20" value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })} />
+                  <div>
+                    <label className="text-sm font-medium mb-2 block">Category</label>
+                    <Select value={formData.category} onValueChange={(v) => setFormData({ ...formData, category: v })}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>{categories.filter(c => c.id !== "all").map(c => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}</SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium mb-2 block">Condition</label>
+                    <Select value={formData.condition} onValueChange={(v) => setFormData({ ...formData, condition: v })}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>{conditions.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Product Image</label>
+                    {imagePreview ? (
+                      <div className="relative">
+                        <img src={imagePreview} alt="Preview" className="w-full h-48 object-cover rounded-lg" />
+                        <Button type="button" variant="destructive" size="icon" className="absolute top-2 right-2" onClick={removeImage}><X className="h-4 w-4" /></Button>
                       </div>
-                      <input
-                        type="file"
-                        className="hidden"
-                        accept="image/*"
-                        onChange={handleImageSelect}
-                      />
-                    </label>
-                  )}
+                    ) : (
+                      <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-input rounded-lg cursor-pointer hover:bg-accent/50 transition-colors">
+                        <Upload className="h-8 w-8 text-muted-foreground mb-2" />
+                        <p className="text-sm text-muted-foreground">Click to upload image</p>
+                        <p className="text-xs text-muted-foreground mt-1">Max. 5MB (JPG, PNG, WEBP)</p>
+                        <input type="file" className="hidden" accept="image/*" onChange={handleImageSelect} />
+                      </label>
+                    )}
+                  </div>
+                  <Button variant="hero" className="w-full" disabled={uploading} onClick={handleSubmit}>
+                    {uploading ? "Uploading..." : "Publish Listing"}
+                  </Button>
                 </div>
-
-                <Button variant="hero" className="w-full" disabled={uploading} onClick={handleSubmit}>
-                  {uploading ? "Uploading..." : "Publish Listing"}
-                </Button>
-              </div>
-            </DialogContent>
-          </Dialog>
+              </DialogContent>
+            </Dialog>
           </div>
         </div>
-      </div>
-      {/* Search and Filter */}
-      <div className="flex flex-col md:flex-row gap-4 mb-8">
+
+        {/* Search and Filter */}
+        <div className="flex flex-col md:flex-row gap-4 mb-8">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Search in bazaar..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
-            />
+            <Input placeholder="Search in bazaar..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} className="pl-10" />
           </div>
           <div className="flex gap-2 overflow-x-auto pb-2">
-            {categories.map((category) => (
-              <Button
-                key={category.id}
-                variant={selectedCategory === category.id ? "default" : "outline"}
-                onClick={() => setSelectedCategory(category.id)}
-                className="whitespace-nowrap"
-              >
+            {categories.map(category => (
+              <Button key={category.id} variant={selectedCategory === category.id ? "default" : "outline"} onClick={() => setSelectedCategory(category.id)} className="whitespace-nowrap">
                 {category.name}
               </Button>
             ))}
@@ -719,177 +487,116 @@ const Bazaar = () => {
 
         {/* Trust Banner */}
         <Card className="mb-8 bg-gradient-secondary border-primary/20">
-          <CardContent className="p-6">
+          <CardContent className="p-4 sm:p-6">
             <div className="flex flex-col md:flex-row items-center justify-between">
-              <div className="space-y-2 mb-4 md:mb-0">
-                <h3 className="text-xl font-bold">🛡️ Secure Shopping Guaranteed</h3>
-                <p className="text-muted-foreground">All sellers are verified members of our community</p>
+              <div className="space-y-1 mb-3 md:mb-0">
+                <h3 className="text-lg font-bold">🛡️ Secure Shopping Guaranteed</h3>
+                <p className="text-sm text-muted-foreground">All sellers are verified members · Escrow payment protection</p>
               </div>
-              <Badge className="bg-success text-success-foreground">
-                ✓ Verified Profiles
-              </Badge>
+              <Badge className="bg-success text-success-foreground">✓ Verified Profiles</Badge>
             </div>
           </CardContent>
         </Card>
 
         {/* Items Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filteredItems.map((item) => (
-            <Card key={item.id} className="group hover:shadow-glow transition-all duration-300 hover:scale-105">
-              <CardHeader className="p-0">
-                <div className="relative">
-                  <img
-                    src={item.image_url || "https://images.unsplash.com/photo-1581235720704-06d3acfcb36f?w=300&h=300&fit=crop"}
-                    alt={item.title}
-                    className="w-full h-48 object-cover rounded-t-lg"
-                  />
-                  <Badge className="absolute top-2 left-2 bg-background/90 text-foreground">
-                    {item.condition}
-                  </Badge>
-                  <Badge className="absolute top-2 right-2 bg-primary/90 text-primary-foreground">
-                    {listingTypes.find(t => t.id === item.listing_type)?.name}
-                  </Badge>
-                </div>
-              </CardHeader>
-              <CardContent className="p-4">
-                <h3 
-                  className="font-semibold text-lg mb-2 group-hover:text-primary transition-colors line-clamp-2 cursor-pointer"
-                  onClick={() => openDetail(item)}
-                >
-                  {item.title}
-                </h3>
-                
-                <div className="text-2xl font-bold text-success mb-3">
-                  €{item.price}
-                </div>
-
-                <div className="space-y-2 mb-4 text-sm text-muted-foreground">
-                  <div className="flex items-center gap-1">
-                    <MapPin className="h-4 w-4" />
-                    {item.location}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+          {filteredItems.map((item, i) => (
+            <motion.div key={item.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05, duration: 0.3 }}>
+              <Card className="group hover:shadow-xl transition-all duration-300 hover:scale-[1.02] bg-card/80 backdrop-blur-xl border-border/50">
+                <CardHeader className="p-0">
+                  <div className="relative">
+                    <img
+                      src={item.image_url || "https://images.unsplash.com/photo-1581235720704-06d3acfcb36f?w=300&h=300&fit=crop"}
+                      alt={item.title}
+                      className="w-full h-48 object-cover rounded-t-lg"
+                    />
+                    <Badge className="absolute top-2 left-2 bg-background/90 text-foreground text-[10px]">{item.condition}</Badge>
+                    <Badge className="absolute top-2 right-2 bg-primary/90 text-primary-foreground text-[10px]">
+                      {listingTypes.find(t => t.id === item.listing_type)?.name}
+                    </Badge>
                   </div>
-                  <div className="flex items-center gap-1">
-                    <Clock className="h-4 w-4" />
-                    {getTimeAgo(item.created_at)}
+                </CardHeader>
+                <CardContent className="p-4">
+                  <h3 className="font-semibold text-sm mb-1 group-hover:text-primary transition-colors line-clamp-2 cursor-pointer" onClick={() => openDetail(item)}>
+                    {item.title}
+                  </h3>
+                  <div className="text-xl font-black text-success mb-2">€{item.price}</div>
+                  <div className="space-y-1 mb-3 text-xs text-muted-foreground">
+                    <div className="flex items-center gap-1"><MapPin className="h-3 w-3" />{item.location}</div>
+                    <div className="flex items-center gap-1"><Clock className="h-3 w-3" />{getTimeAgo(item.created_at)}</div>
+                    <div className="flex items-center gap-1"><User className="h-3 w-3" />{item.profiles?.full_name || "Anonymous"}</div>
                   </div>
-                  <div className="flex items-center gap-1">
-                    <User className="h-4 w-4" />
-                    {item.profiles?.full_name || "Anonymous user"}
-                  </div>
-                </div>
-
-                <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
-                  {item.description}
-                </p>
-              </CardContent>
-            </Card>
+                  <p className="text-xs text-muted-foreground mb-3 line-clamp-2">{item.description}</p>
+                </CardContent>
+              </Card>
+            </motion.div>
           ))}
+        </div>
+
+        {filteredItems.length === 0 && (
+          <div className="text-center py-12">
+            <p className="text-xl text-muted-foreground">No listings found</p>
+            <Button variant="outline" onClick={() => { setSearchTerm(""); setSelectedCategory("all"); }} className="mt-4">Clear filters</Button>
+          </div>
+        )}
+
+        {/* Footer Info */}
+        <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-4">
+          <Card className="text-center bg-card/80 backdrop-blur-xl border-border/50">
+            <CardContent className="p-5">
+              <h3 className="font-bold mb-1">🔒 Security</h3>
+              <p className="text-xs text-muted-foreground">All transactions protected by escrow system</p>
+            </CardContent>
+          </Card>
+          <Card className="text-center bg-card/80 backdrop-blur-xl border-border/50">
+            <CardContent className="p-5">
+              <h3 className="font-bold mb-1">⚡ Fast Delivery</h3>
+              <p className="text-xs text-muted-foreground">Local sellers for quick pickup & shipping</p>
+            </CardContent>
+          </Card>
+          <Card className="text-center bg-card/80 backdrop-blur-xl border-border/50">
+            <CardContent className="p-5">
+              <h3 className="font-bold mb-1">💬 Support</h3>
+              <p className="text-xs text-muted-foreground">24/7 support for all community members</p>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Detail Dialog */}
         <Dialog open={isDetailOpen} onOpenChange={setIsDetailOpen}>
           <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>{selectedItem?.title}</DialogTitle>
-            </DialogHeader>
+            <DialogHeader><DialogTitle>{selectedItem?.title}</DialogTitle></DialogHeader>
             {selectedItem && (
               <div className="space-y-6">
-                {selectedItem.image_url && (
-                  <img
-                    src={selectedItem.image_url}
-                    alt={selectedItem.title}
-                    className="w-full h-64 object-cover rounded-lg"
-                  />
-                )}
-                
+                {selectedItem.image_url && <img src={selectedItem.image_url} alt={selectedItem.title} className="w-full h-64 object-cover rounded-lg" />}
                 <div className="space-y-4">
                   <div>
                     <div className="flex items-center gap-2 mb-2">
-                      <Badge variant={selectedItem.listing_type === 'sell' ? 'default' : 'secondary'}>
-                        {listingTypes.find(t => t.id === selectedItem.listing_type)?.name}
-                      </Badge>
+                      <Badge variant={selectedItem.listing_type === 'sell' ? 'default' : 'secondary'}>{listingTypes.find(t => t.id === selectedItem.listing_type)?.name}</Badge>
                       <Badge>{selectedItem.condition}</Badge>
                     </div>
-                    <div className="text-3xl font-bold text-success">
-                      €{selectedItem.price}
-                    </div>
+                    <div className="text-3xl font-bold text-success">€{selectedItem.price}</div>
                   </div>
-
                   <div className="space-y-2 text-sm">
-                    <div className="flex items-center gap-2">
-                      <MapPin className="h-4 w-4 text-muted-foreground" />
-                      <span>{selectedItem.location}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Clock className="h-4 w-4 text-muted-foreground" />
-                      <span>{getTimeAgo(selectedItem.created_at)}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <User className="h-4 w-4 text-muted-foreground" />
-                      <span>{selectedItem.profiles?.full_name || "Anonymous user"}</span>
-                    </div>
+                    <div className="flex items-center gap-2"><MapPin className="h-4 w-4 text-muted-foreground" /><span>{selectedItem.location}</span></div>
+                    <div className="flex items-center gap-2"><Clock className="h-4 w-4 text-muted-foreground" /><span>{getTimeAgo(selectedItem.created_at)}</span></div>
+                    <div className="flex items-center gap-2"><User className="h-4 w-4 text-muted-foreground" /><span>{selectedItem.profiles?.full_name || "Anonymous user"}</span></div>
                   </div>
-
-                  <div>
-                    <h4 className="font-semibold mb-2">Category</h4>
-                    <p className="text-muted-foreground">
-                      {categories.find(c => c.id === selectedItem.category)?.name}
-                    </p>
-                  </div>
-
-                  {selectedItem.description && (
-                    <div>
-                      <h4 className="font-semibold mb-2">Description</h4>
-                      <p className="text-muted-foreground whitespace-pre-wrap">
-                        {selectedItem.description}
-                      </p>
-                    </div>
-                  )}
-
-                  {/* Commission Info */}
+                  <div><h4 className="font-semibold mb-2">Category</h4><p className="text-muted-foreground">{categories.find(c => c.id === selectedItem.category)?.name}</p></div>
+                  {selectedItem.description && <div><h4 className="font-semibold mb-2">Description</h4><p className="text-muted-foreground whitespace-pre-wrap">{selectedItem.description}</p></div>}
                   {selectedItem.listing_type === 'sell' && limits.commissionRate > 0 && currentUserId !== selectedItem.user_id && (
-                    <Alert>
-                      <AlertCircle className="h-4 w-4" />
-                      <AlertDescription>
-                        Platform commission: {limits.commissionRate}% (€{calculateCommission(selectedItem.price).toFixed(2)})
-                        <br />
-                        <Link to="/subscription" className="text-primary hover:underline text-sm">
-                          Upgrade to Premium = 0% commission
-                        </Link>
-                      </AlertDescription>
-                    </Alert>
+                    <Alert><AlertCircle className="h-4 w-4" /><AlertDescription>
+                      Platform commission: {limits.commissionRate}% (€{calculateCommission(selectedItem.price).toFixed(2)})
+                      <br /><Link to="/subscription" className="text-primary hover:underline text-sm">Upgrade to Premium = 0% commission</Link>
+                    </AlertDescription></Alert>
                   )}
-
                   <div className="flex gap-2">
                     {currentUserId !== selectedItem.user_id && selectedItem.listing_type === 'sell' && (
-                      <Button 
-                        className="flex-1" 
-                        size="lg"
-                        onClick={handleBuyItem}
-                      >
-                        <ShoppingCart className="h-5 w-5 mr-2" />
-                        Buy Now
-                      </Button>
+                      <Button className="flex-1" size="lg" onClick={handleBuyItem}><ShoppingCart className="h-5 w-5 mr-2" />Buy Now</Button>
                     )}
-                    
-                    <Button 
-                      className="flex-1" 
-                      size="lg"
-                      variant="outline"
-                      onClick={() => handleContact(selectedItem)}
-                    >
-                      <MessageCircle className="h-5 w-5 mr-2" />
-                      Contact
-                    </Button>
-                    
+                    <Button className="flex-1" size="lg" variant="outline" onClick={() => handleContact(selectedItem)}><MessageCircle className="h-5 w-5 mr-2" />Contact</Button>
                     {currentUserId === selectedItem.user_id && (
-                      <Button 
-                        variant="destructive"
-                        size="lg"
-                        onClick={handleDeleteClick}
-                      >
-                        <Trash2 className="h-5 w-5" />
-                      </Button>
+                      <Button variant="destructive" size="lg" onClick={handleDeleteClick}><Trash2 className="h-5 w-5" /></Button>
                     )}
                   </div>
                 </div>
@@ -898,116 +605,46 @@ const Bazaar = () => {
           </DialogContent>
         </Dialog>
 
-        {/* Delete Confirmation Dialog */}
+        {/* Delete Confirmation */}
         <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
           <AlertDialogContent>
             <AlertDialogHeader>
               <AlertDialogTitle>Delete listing?</AlertDialogTitle>
-              <AlertDialogDescription>
-                This action is irreversible. The listing will be permanently deleted.
-              </AlertDialogDescription>
+              <AlertDialogDescription>This action is irreversible. The listing will be permanently deleted.</AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction onClick={handleDeleteConfirm} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-                Delete
-              </AlertDialogAction>
+              <AlertDialogAction onClick={handleDeleteConfirm} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">Delete</AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
 
-        {/* Contact Seller Dialog */}
+        {/* Contact Seller */}
         <Dialog open={isContactDialogOpen} onOpenChange={setIsContactDialogOpen}>
           <DialogContent className="max-w-md">
-            <DialogHeader>
-              <DialogTitle>Contact Seller</DialogTitle>
-            </DialogHeader>
+            <DialogHeader><DialogTitle>Contact Seller</DialogTitle></DialogHeader>
             <div className="space-y-4">
               <div>
-                <p className="text-sm text-muted-foreground mb-2">
-                  Send a message to the seller regarding: <strong>{selectedItem?.title}</strong>
-                </p>
-                <Textarea
-                  placeholder="Write your message..."
-                  value={contactMessage}
-                  onChange={(e) => setContactMessage(e.target.value)}
-                  className="min-h-32"
-                />
+                <p className="text-sm text-muted-foreground mb-2">Send a message regarding: <strong>{selectedItem?.title}</strong></p>
+                <Textarea placeholder="Write your message..." value={contactMessage} onChange={e => setContactMessage(e.target.value)} className="min-h-32" />
               </div>
-              <Button 
-                onClick={handleSendMessage} 
-                className="w-full"
-                disabled={!contactMessage.trim()}
-              >
-                <MessageCircle className="h-4 w-4 mr-2" />
-                Send Message
+              <Button onClick={handleSendMessage} className="w-full" disabled={!contactMessage.trim()}>
+                <MessageCircle className="h-4 w-4 mr-2" />Send Message
               </Button>
             </div>
           </DialogContent>
         </Dialog>
 
-        {filteredItems.length === 0 && (
-          <div className="text-center py-12">
-            <p className="text-xl text-muted-foreground">No listings found</p>
-            <Button 
-              variant="outline" 
-              onClick={() => {
-                setSearchTerm("");
-                setSelectedCategory("all");
-              }}
-              className="mt-4"
-            >
-              Clear filters
-            </Button>
-          </div>
-        )}
-
-        {/* Footer Info */}
-        <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card className="text-center">
-            <CardContent className="p-6">
-              <h3 className="font-semibold mb-2">🔒 Security</h3>
-              <p className="text-sm text-muted-foreground">
-                All transactions are protected by our system
-              </p>
-            </CardContent>
-          </Card>
-          
-          <Card className="text-center">
-            <CardContent className="p-6">
-              <h3 className="font-semibold mb-2">⚡ Fast Delivery</h3>
-              <p className="text-sm text-muted-foreground">
-                Local sellers for quick pickup
-              </p>
-            </CardContent>
-          </Card>
-          
-          <Card className="text-center">
-            <CardContent className="p-6">
-              <h3 className="font-semibold mb-2">💬 Support</h3>
-              <p className="text-sm text-muted-foreground">
-                24/7 support for all community members
-              </p>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* My Orders Dialog */}
+        {/* My Orders */}
         <Dialog open={isOrdersDialogOpen} onOpenChange={setIsOrdersDialogOpen}>
           <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>My Orders</DialogTitle>
-            </DialogHeader>
+            <DialogHeader><DialogTitle>My Orders</DialogTitle></DialogHeader>
             {currentUserId && <MyBazaarOrders userId={currentUserId} />}
           </DialogContent>
         </Dialog>
 
-        {/* Purchase Dialog */}
-        <BazaarPurchaseDialog
-          item={selectedItem}
-          open={isPurchaseDialogOpen}
-          onOpenChange={setIsPurchaseDialogOpen}
-        />
+        {/* Purchase */}
+        <BazaarPurchaseDialog item={selectedItem} open={isPurchaseDialogOpen} onOpenChange={setIsPurchaseDialogOpen} />
       </div>
     </div>
   );
