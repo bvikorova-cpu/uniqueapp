@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -40,10 +40,16 @@ const NotificationBell = () => {
   const [unreadCount, setUnreadCount] = useState(0);
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState<any>(null);
+  const channelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
 
   useEffect(() => {
     let cancelled = false;
-    let channel: ReturnType<typeof supabase.channel> | null = null;
+
+    // Clean up any previous channel first
+    if (channelRef.current) {
+      supabase.removeChannel(channelRef.current);
+      channelRef.current = null;
+    }
 
     const init = async () => {
       const { data: { user: currentUser } } = await supabase.auth.getUser();
@@ -51,8 +57,9 @@ const NotificationBell = () => {
       setUser(currentUser);
       fetchNotifications(currentUser.id);
 
-      channel = supabase
-        .channel(`notifications-${currentUser.id}`)
+      const channelName = `notifications-${currentUser.id}-${Date.now()}`;
+      const ch = supabase
+        .channel(channelName)
         .on(
           "postgres_changes",
           {
@@ -85,11 +92,20 @@ const NotificationBell = () => {
           }
         )
         .subscribe();
+
+      if (!cancelled) {
+        channelRef.current = ch;
+      } else {
+        supabase.removeChannel(ch);
+      }
     };
     init();
     return () => {
       cancelled = true;
-      if (channel) supabase.removeChannel(channel);
+      if (channelRef.current) {
+        supabase.removeChannel(channelRef.current);
+        channelRef.current = null;
+      }
     };
   }, []);
 
