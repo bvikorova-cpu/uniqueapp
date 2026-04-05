@@ -35,6 +35,8 @@ serve(async (req) => {
       "milestone-planner": 4,
       "video-portfolio": 4,
       "provider-badge": 5,
+      "contract-template": 4,
+      "realtime-bidding": 5,
     };
 
     const cost = creditCosts[action];
@@ -106,6 +108,16 @@ serve(async (req) => {
       case "provider-badge":
         systemPrompt = "You are an AI quality assurance system for a professional services marketplace. Evaluate service providers and generate comprehensive verification reports with quality scores.";
         userPrompt = `Evaluate this service provider for verification:\n\nSkills: ${params.skills}\nPortfolio: ${params.portfolio || "Not provided"}\nExperience: ${params.experience || "Not specified"}\nCertifications: ${params.certifications || "None listed"}\n\nProvide:\n1. Overall Quality Score (0-100) with breakdown\n2. Skill Verification Assessment (depth analysis)\n3. Portfolio Strength Rating (with improvement tips)\n4. Experience Credibility Score\n5. Recommended Badge Level (Bronze/Silver/Gold/Platinum)\n6. Specific improvements to reach the next badge level\n7. Trust signals to add to their profile`;
+        break;
+
+      case "contract-template":
+        systemPrompt = "You are a legal contract specialist for freelance and service marketplaces. Generate professional, comprehensive service agreements.";
+        userPrompt = `Generate a professional service contract template:\n\nService Type: ${params.serviceType}\nProject Scope: ${params.scope || "Not specified"}\nBudget: ${params.budget ? "€" + params.budget : "Not specified"}\nTimeline: ${params.timeline || "Not specified"}\n\nProvide a complete contract including:\n1. Parties & Definitions\n2. Scope of Work (detailed)\n3. Payment Terms & Schedule\n4. Intellectual Property Rights\n5. Confidentiality Clause\n6. Revision Policy & Limits\n7. Termination Conditions\n8. Dispute Resolution\n9. Liability Limitations\n10. Signatures & Date Fields\n\nMake it professional, fair to both parties, and legally sound.`;
+        break;
+
+      case "realtime-bidding":
+        systemPrompt = "You are a competitive bidding strategist for freelance marketplaces. Analyze projects and provide winning bid strategies with optimal pricing.";
+        userPrompt = `Create a competitive bidding strategy for this project:\n\nProject: ${params.projectDesc}\nRequired Skills: ${params.skills || "Not specified"}\nBudget Range: ${params.budgetRange ? "€" + params.budgetRange : "Not specified"}\nUrgency: ${params.urgency || "Normal"}\n\nProvide:\n1. Recommended bid amount with justification\n2. Competitive analysis (how others would bid)\n3. Winning proposal outline\n4. Key differentiators to highlight\n5. Pricing breakdown (hourly vs fixed)\n6. Risk assessment for underbidding vs overbidding\n7. Negotiation tactics if client counters\n8. Upselling opportunities after winning`;
         break;
     }
 
