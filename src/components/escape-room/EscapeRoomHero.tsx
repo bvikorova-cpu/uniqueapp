@@ -19,7 +19,7 @@ export function EscapeRoomHero() {
     let step = 0;
     const timer = setInterval(() => {
       step++;
-      setCounts(stats.map(s => Math.floor((s.end * Math.min(step / steps, 1))));
+      setCounts(stats.map(s => Math.floor(s.end * Math.min(step / steps, 1))));
       if (step >= steps) clearInterval(timer);
     }, interval);
     return () => clearInterval(timer);
