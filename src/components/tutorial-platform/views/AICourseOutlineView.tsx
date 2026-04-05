@@ -25,7 +25,7 @@ export function AICourseOutlineView({ onBack }: Props) {
     }
     setLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke('tutorial-ai-tools', {
+      const { data, error } = await supabase.functions.invoke('stock-content-ai', {
         body: { action: 'generate-outline', title, audience, modules: parseInt(modules) }
       });
       if (error) throw error;

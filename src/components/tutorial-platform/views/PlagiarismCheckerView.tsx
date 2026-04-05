@@ -22,7 +22,7 @@ export function PlagiarismCheckerView({ onBack }: Props) {
     }
     setLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke('tutorial-ai-tools', {
+      const { data, error } = await supabase.functions.invoke('stock-content-ai', {
         body: { action: 'plagiarism-check', text }
       });
       if (error) throw error;

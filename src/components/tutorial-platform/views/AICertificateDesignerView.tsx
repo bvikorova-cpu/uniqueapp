@@ -24,7 +24,7 @@ export function AICertificateDesignerView({ onBack }: Props) {
     }
     setLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke('tutorial-ai-tools', {
+      const { data, error } = await supabase.functions.invoke('stock-content-ai', {
         body: { action: 'design-certificate', studentName, courseName, style }
       });
       if (error) throw error;

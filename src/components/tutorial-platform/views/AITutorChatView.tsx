@@ -31,7 +31,7 @@ export function AITutorChatView({ onBack }: Props) {
     setLoading(true);
 
     try {
-      const { data, error } = await supabase.functions.invoke('tutorial-ai-tools', {
+      const { data, error } = await supabase.functions.invoke('stock-content-ai', {
         body: { action: 'tutor-chat', messages: [...messages, userMsg] }
       });
       if (error) throw error;

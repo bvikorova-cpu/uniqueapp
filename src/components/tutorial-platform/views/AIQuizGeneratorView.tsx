@@ -26,7 +26,7 @@ export function AIQuizGeneratorView({ onBack }: Props) {
     }
     setLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke('tutorial-ai-tools', {
+      const { data, error } = await supabase.functions.invoke('stock-content-ai', {
         body: { action: 'generate-quiz', topic, numQuestions: parseInt(numQuestions), difficulty }
       });
       if (error) throw error;
