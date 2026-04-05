@@ -42,17 +42,55 @@ const NotificationBell = () => {
   const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
-    let cleanup: (() => void) | undefined;
+    let cancelled = false;
+    let channel: ReturnType<typeof supabase.channel> | null = null;
+
     const init = async () => {
       const { data: { user: currentUser } } = await supabase.auth.getUser();
-      if (currentUser) {
-        setUser(currentUser);
-        fetchNotifications(currentUser.id);
-        cleanup = subscribeToNotifications(currentUser.id);
-      }
+      if (cancelled || !currentUser) return;
+      setUser(currentUser);
+      fetchNotifications(currentUser.id);
+
+      channel = supabase
+        .channel(`notifications-${currentUser.id}`)
+        .on(
+          "postgres_changes",
+          {
+            event: "INSERT",
+            schema: "public",
+            table: "notifications",
+            filter: `user_id=eq.${currentUser.id}`,
+          },
+          async (payload) => {
+            if (cancelled) return;
+            if (payload.new.actor_id) {
+              const { data: profile } = await supabase
+                .from("profiles")
+                .select("id, full_name, avatar_url")
+                .eq("id", payload.new.actor_id)
+                .single();
+
+              const newNotification = {
+                ...payload.new,
+                actor: profile || {
+                  id: payload.new.actor_id,
+                  full_name: null,
+                  avatar_url: null,
+                },
+              };
+
+              setNotifications(prev => [newNotification as Notification, ...prev].slice(0, 20));
+              setUnreadCount(prev => prev + 1);
+            }
+          }
+        )
+        .subscribe();
     };
     init();
-    return () => { cleanup?.(); };
+    return () => {
+      cancelled = true;
+      if (channel) supabase.removeChannel(channel);
+    };
   }, []);
 
   const fetchNotifications = async (userId: string) => {
