@@ -56,7 +56,7 @@ export const WeeklyWellnessReport = ({ onBack }: Props) => {
   const generateReport = async () => {
     setGenerating(true);
     try {
-      const { data, error } = await supabase.functions.invoke("psychology-weekly-report");
+      const { data, error } = await supabase.functions.invoke("psychology-ai");
       if (error) throw error;
       toast.success("Weekly report generated! 10 credits used.");
       setSelectedReport(data);
