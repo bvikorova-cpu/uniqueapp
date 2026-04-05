@@ -22,6 +22,12 @@ import { TeamManagerView } from "@/components/escape-room/views/TeamManagerView"
 import { DailyChallengesView } from "@/components/escape-room/views/DailyChallengesView";
 import { RoomReviewsView } from "@/components/escape-room/views/RoomReviewsView";
 import { CreatorEarningsView } from "@/components/escape-room/views/CreatorEarningsView";
+import { MultiplayerLobbyView } from "@/components/escape-room/views/MultiplayerLobbyView";
+import { AIRoomNarratorView } from "@/components/escape-room/views/AIRoomNarratorView";
+import { SeasonPassView } from "@/components/escape-room/views/SeasonPassView";
+import { RoomReplayView } from "@/components/escape-room/views/RoomReplayView";
+import { CustomSoundDesignerView } from "@/components/escape-room/views/CustomSoundDesignerView";
+import { SpeedrunTournamentsView } from "@/components/escape-room/views/SpeedrunTournamentsView";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Briefcase, Check, Crown, Sparkles } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -107,6 +113,12 @@ const VirtualEscapeRoom = () => {
       case "challenges": return <DailyChallengesView onBack={back} />;
       case "reviews": return <RoomReviewsView onBack={back} />;
       case "earnings": return <CreatorEarningsView onBack={back} />;
+      case "multiplayer": return <MultiplayerLobbyView onBack={back} />;
+      case "ai-narrator": return <AIRoomNarratorView onBack={back} />;
+      case "season-pass": return <SeasonPassView onBack={back} />;
+      case "replay": return <RoomReplayView onBack={back} />;
+      case "ai-sound": return <CustomSoundDesignerView onBack={back} />;
+      case "speedrun": return <SpeedrunTournamentsView onBack={back} />;
       default:
         return (
           <>

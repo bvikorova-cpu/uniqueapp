@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import {
   Lock, Plus, Trophy, Crown, Briefcase, Sparkles, BookOpen, Lightbulb,
   Palette, BarChart3, History, Award, Users, Zap, Star, DollarSign,
-  Brain, Wand2
+  Brain, Wand2, Volume2, Calendar, Play, Music, Timer
 } from "lucide-react";
 
 const tools = [
@@ -25,6 +25,12 @@ const tools = [
   { id: "earnings", label: "Creator Earnings", desc: "Track revenue from your rooms", icon: DollarSign, gradient: "from-emerald-500 to-green-600" },
   { id: "ai-difficulty", label: "AI Difficulty Tuner", desc: "Auto-balance puzzle difficulty", icon: Brain, gradient: "from-red-500 to-rose-600", credits: 3 },
   { id: "ai-clue", label: "AI Clue Generator", desc: "Generate cryptic clue chains", icon: Wand2, gradient: "from-fuchsia-500 to-purple-600", credits: 4 },
+  { id: "multiplayer", label: "Multiplayer Lobby", desc: "Real-time team waiting rooms", icon: Users, gradient: "from-green-500 to-emerald-600" },
+  { id: "ai-narrator", label: "AI Room Narrator", desc: "AI voice narration scripts", icon: Volume2, gradient: "from-violet-500 to-purple-600", credits: 4 },
+  { id: "season-pass", label: "Season Pass", desc: "Seasonal challenges & rewards", icon: Calendar, gradient: "from-amber-500 to-orange-600" },
+  { id: "replay", label: "Room Replay", desc: "Replay rooms with analytics", icon: Play, gradient: "from-blue-500 to-indigo-600" },
+  { id: "ai-sound", label: "Custom Sound Designer", desc: "AI atmospheric sound design", icon: Music, gradient: "from-pink-500 to-rose-600", credits: 5 },
+  { id: "speedrun", label: "Speedrun Tournaments", desc: "Race for the fastest time", icon: Timer, gradient: "from-red-500 to-orange-600" },
 ];
 
 interface Props { onToolSelect: (id: string) => void; }
