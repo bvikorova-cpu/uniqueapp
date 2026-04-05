@@ -40,8 +40,8 @@ export default function AIColorSeasonAnalysis() {
       const success = await useCredit("custom_generation", "Color Season Analysis");
       if (!success) throw new Error("Failed to use credits");
 
-      const { data, error } = await supabase.functions.invoke("fashion-color-season", {
-        body: { skin_tone: skinTone, hair_color: hairColor, eye_color: eyeColor, undertone },
+      const { data, error } = await supabase.functions.invoke("fashion-ai", {
+        body: { action: "color-season", skin_tone: skinTone, hair_color: hairColor, eye_color: eyeColor, undertone },
       });
       if (error) throw error;
       return data as SeasonResult;

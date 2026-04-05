@@ -19,8 +19,8 @@ export default function AITrendForecaster() {
     if ((credits?.credits_remaining || 0) < 10) { toast.error("You need 10 credits"); return; }
     setLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke("fashion-trend-forecaster", {
-        body: { season, category }
+      const { data, error } = await supabase.functions.invoke("fashion-ai", {
+        body: { action: "trend-forecaster", season, category }
       });
       if (error) throw error;
       setResult(data);

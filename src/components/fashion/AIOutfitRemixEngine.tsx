@@ -43,8 +43,8 @@ export default function AIOutfitRemixEngine() {
       const success = await useCredit("custom_generation", "Outfit Remix Engine");
       if (!success) throw new Error("Failed to use credits");
 
-      const { data, error } = await supabase.functions.invoke("fashion-outfit-remix", {
-        body: { outfit_description: outfit },
+      const { data, error } = await supabase.functions.invoke("fashion-ai", {
+        body: { action: "outfit-remix", outfit_description: outfit },
       });
       if (error) throw error;
       return data as RemixResult;

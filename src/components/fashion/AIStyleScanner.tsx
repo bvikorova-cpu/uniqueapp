@@ -71,8 +71,8 @@ export default function AIStyleScanner() {
         if (!ok && i === 0) throw new Error("Insufficient credits");
       }
 
-      const { data, error } = await supabase.functions.invoke("fashion-style-scanner", {
-        body: { imageUrl },
+      const { data, error } = await supabase.functions.invoke("fashion-ai", {
+        body: { action: "style-scanner", imageUrl },
       });
       if (error) throw error;
       return data;

@@ -46,8 +46,8 @@ export default function AIPersonalShopper() {
       const newMessages = [...messages, { role: "user" as const, content: userMessage }];
       setMessages(newMessages);
 
-      const { data, error } = await supabase.functions.invoke("fashion-personal-shopper", {
-        body: { messages: newMessages },
+      const { data, error } = await supabase.functions.invoke("fashion-ai", {
+        body: { action: "personal-shopper", messages: newMessages },
       });
       if (error) throw error;
       return data.reply;

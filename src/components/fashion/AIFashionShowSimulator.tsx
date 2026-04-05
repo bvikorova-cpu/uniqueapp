@@ -38,8 +38,8 @@ export default function AIFashionShowSimulator() {
         if (!ok && i === 0) throw new Error("Insufficient credits");
       }
 
-      const { data, error } = await supabase.functions.invoke("fashion-show-simulator", {
-        body: { outfitDescriptions: outfits.filter(o => o.trim()), theme, mood },
+      const { data, error } = await supabase.functions.invoke("fashion-ai", {
+        body: { action: "show-simulator", outfitDescriptions: outfits.filter(o => o.trim()), theme, mood },
       });
       if (error) throw error;
       return data;

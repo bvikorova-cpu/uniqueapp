@@ -21,8 +21,8 @@ export default function AIMoodBoard() {
     if ((credits?.credits_remaining || 0) < 12) { toast.error("You need 12 credits"); return; }
     setLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke("fashion-mood-board", {
-        body: { theme, aesthetic }
+      const { data, error } = await supabase.functions.invoke("fashion-ai", {
+        body: { action: "mood-board", theme, aesthetic }
       });
       if (error) throw error;
       setResult(data);

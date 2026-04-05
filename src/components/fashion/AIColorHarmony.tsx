@@ -22,8 +22,8 @@ export default function AIColorHarmony() {
     if ((credits?.credits_remaining || 0) < 5) { toast.error("You need 5 credits"); return; }
     setLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke("fashion-color-harmony", {
-        body: { baseColor, occasion, skinTone }
+      const { data, error } = await supabase.functions.invoke("fashion-ai", {
+        body: { action: "color-harmony", baseColor, occasion, skinTone }
       });
       if (error) throw error;
       setResult(data);

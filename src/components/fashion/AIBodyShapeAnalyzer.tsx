@@ -21,8 +21,8 @@ export default function AIBodyShapeAnalyzer() {
     if ((credits?.credits_remaining || 0) < 8) { toast.error("You need 8 credits"); return; }
     setLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke("fashion-body-shape", {
-        body: { height, bodyShape, styleGoal }
+      const { data, error } = await supabase.functions.invoke("fashion-ai", {
+        body: { action: "body-shape", height, bodyShape, styleGoal }
       });
       if (error) throw error;
       setResult(data);
