@@ -51,8 +51,8 @@ export const GroupConversations = () => {
     setLoading(true);
 
     try {
-      const { data, error } = await supabase.functions.invoke("companion-group-chat", {
-        body: {
+      const { data, error } = await supabase.functions.invoke("companion-ai", {
+        body: { action: "group-chat",
           characterIds: selectedCompanions,
           message: userMsg,
           conversationHistory: messages.filter(m => m.role !== "system"),

@@ -1,0 +1,100 @@
+import "jsr:@supabase/functions-js/edge-runtime.d.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
+};
+
+async function callAI(apiKey: string, messages: any[]) {
+  const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    method: "POST",
+    headers: { "Authorization": `Bearer ${apiKey}`, "Content-Type": "application/json" },
+    body: JSON.stringify({ model: "gpt-4o-mini", messages }),
+  });
+  if (!response.ok) throw new Error(`AI error: ${response.status}`);
+  const data = await response.json();
+  const content = data.choices?.[0]?.message?.content || "";
+  try { return JSON.parse(content); } catch { return { result: content }; }
+}
+
+Deno.serve(async (req) => {
+  if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
+  try {
+    const { action, ...params } = await req.json();
+    const apiKey = Deno.env.get("OPENAI_API_KEY");
+    if (!apiKey) throw new Error("API key not configured");
+    
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader) throw new Error("Unauthorized");
+    
+    const supabase = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_ANON_KEY") ?? "",
+      { global: { headers: { Authorization: authHeader } } }
+    );
+    
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error("Unauthorized");
+    
+    let result: any;
+    switch (action) {
+      case "ab-test":
+        result = await callAI(apiKey, [
+          { role: "system", content: "You are an expert A/B testing copywriter. Generate multiple high-converting variants and recommend the best one with reasoning." },
+          { role: "user", content: `Generate ${count} A/B test variants for:\nTopic: ${params.topic}\nContent Type: ${contentType || "email_subject"}\n${context ? `Context: ${params.context}` : ""}\n\nEach variant should be unique in approach (emotional, logical, urgency, curiosity, social proof, etc). Recommend the best variant.` },
+        ]);
+        break;
+      case "brand-voice":
+        result = await callAI(apiKey, [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: prompt },
+        ]);
+        break;
+      case "bulk-generate":
+        result = await callAI(apiKey, [
+          { role: "system", content: "You are a social media content expert. Generate unique, engaging posts that each take a different angle on the topic." },
+          { role: "user", content: `Generate ${postCount} unique ${platform || "social media"} posts about: ${params.topic}\n\nPlatform guidelines: ${platformGuide[platform] || "General social media"}\n${guidelines ? `Brand guidelines: ${params.guidelines}` : ""}\n\nEach post must be unique with a different angle, hook, or perspective.` },
+        ]);
+        break;
+      case "plagiarism":
+        result = await callAI(apiKey, [
+          {
+            role: "system",
+            content: `You are a plagiarism and originality checker. Analyze the provided text for:
+1. Overall originality score (0-100%)
+2. Common phrases, clichés, or generic content that might appear unoriginal
+3. Sections that seem templated or widely used
+4. Suggestions for making the content more unique
+
+Return your analysis as a JSON object with this exact structure:
+{
+  "originalityScore": number (0-100),
+  "analysis": "detailed analysis string",
+  "suggestions": ["suggestion1", "suggestion2", ...]);
+        break;
+      case "repurpose":
+        result = await callAI(apiKey, [
+          { role: "system", content: "You are a content repurposing expert. Transform the given content into the requested formats. Return valid JSON only." },
+          { role: "user", content: `Transform this content into the following formats. Return a JSON object with format IDs as keys and the repurposed content as string values.\n\nFormats:\n${formatList}\n\nSource content:\n${params.sourceContent}` },
+        ]);
+        break;
+      case "seo-analyze":
+        result = await callAI(apiKey, [
+          { role: "system", content: "You are an expert SEO analyst. Analyze content for keyword optimization, readability, and provide actionable improvements." },
+          { role: "user", content: `Analyze this content for SEO optimization with target keyword "${params.targetKeyword}".\n\nContent (${content.split(/\s+/).length} words):\n${content.substring(0, 5000)}\n\nProvide: overall score (0-100), title analysis with score, keyword density analysis for the target keyword and related keywords, readability score, 5+ specific improvement suggestions, and a suggested meta description.` },
+        ]);
+        break;
+      case "templates":
+        result = await callAI(apiKey, [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: `Topic: ${params.topic}\n\nAdditional details: ${details || "None provided"}` },
+        ]);
+        break;
+      default: throw new Error(`Unknown action: ${action}`);
+    }
+    return new Response(JSON.stringify(result), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+  } catch (e: any) {
+    return new Response(JSON.stringify({ error: e.message }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+  }
+});

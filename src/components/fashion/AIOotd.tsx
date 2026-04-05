@@ -43,8 +43,8 @@ export default function AIOotd() {
         if (!ok && i === 0) throw new Error("Insufficient credits");
       }
 
-      const { data, error } = await supabase.functions.invoke("fashion-ootd-score", {
-        body: { outfitDescription: description, occasion, season },
+      const { data, error } = await supabase.functions.invoke("fashion-ai", {
+        body: { action: "ootd-score", outfitDescription: description, occasion, season },
       });
       if (error) throw error;
 

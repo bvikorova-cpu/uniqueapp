@@ -58,8 +58,8 @@ export const AIDreamJournal = ({ onBack }: Props) => {
   const analyzeDream = async (entryId: string, dreamText: string) => {
     setAnalyzing(entryId);
     try {
-      const { data, error } = await supabase.functions.invoke("psychology-dream-analysis", {
-        body: { dreamId: entryId, dreamText },
+      const { data, error } = await supabase.functions.invoke("psychology-ai", {
+        body: { action: "dream-analysis", dreamId: entryId, dreamText },
       });
       if (error) throw error;
       setSelectedAnalysis(data?.analysis || "No analysis available.");

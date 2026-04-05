@@ -46,8 +46,8 @@ export default function AIFabricAnalyzer() {
       const success = await useCredit("custom_generation", "Fabric Analyzer");
       if (!success) throw new Error("Failed to use credits");
 
-      const { data, error } = await supabase.functions.invoke("fashion-fabric-analyzer", {
-        body: { image: preview },
+      const { data, error } = await supabase.functions.invoke("fashion-ai", {
+        body: { action: "fabric-analyzer", image: preview },
       });
       if (error) throw error;
       return data as FabricResult;

@@ -20,8 +20,8 @@ export default function AICollectionAdvisor({ userId }: Props) {
     }
     setLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke("collectible-advisor", {
-        body: { userId }
+      const { data, error } = await supabase.functions.invoke("collectible-ai", {
+        body: { action: "advisor", userId }
       });
       if (error) throw error;
       setResult(data);

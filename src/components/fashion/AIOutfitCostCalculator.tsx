@@ -19,8 +19,8 @@ export default function AIOutfitCostCalculator() {
     if (!description.trim()) { toast.error("Please describe your outfit"); return; }
     try {
       setIsAnalyzing(true);
-      const { data, error } = await supabase.functions.invoke("fashion-outfit-cost", {
-        body: { description }
+      const { data, error } = await supabase.functions.invoke("fashion-ai", {
+        body: { action: "outfit-cost", description }
       });
       if (error) throw error;
       setResult(data.analysis);

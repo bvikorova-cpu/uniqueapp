@@ -19,7 +19,7 @@ export default function AIDressCodeAdvisor() {
     if (!eventDesc.trim()) { toast.error("Describe your event"); return; }
     try {
       setIsAnalyzing(true);
-      const { data, error } = await supabase.functions.invoke("fashion-dress-code", { body: { eventDescription: eventDesc } });
+      const { data, error } = await supabase.functions.invoke("fashion-ai", { body: { action: "dress-code", eventDescription: eventDesc } });
       if (error) throw error;
       setResult(data.analysis);
       toast.success("Dress code advice ready!");

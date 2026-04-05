@@ -35,8 +35,8 @@ export default function AIVirtualStylistSession() {
         const { data: { publicUrl } } = supabase.storage.from("fashion-uploads").getPublicUrl(fileName);
         imageUrl = publicUrl;
       }
-      const { data, error: fnError } = await supabase.functions.invoke("fashion-virtual-stylist", {
-        body: { imageUrl, preferences: preferences || "Complete styling session with seasonal and occasion-based recommendations" }
+      const { data, error: fnError } = await supabase.functions.invoke("fashion-ai", {
+        body: { action: "virtual-stylist", imageUrl, preferences: preferences || "Complete styling session with seasonal and occasion-based recommendations" }
       });
       if (fnError) throw fnError;
       setResult(data.analysis);

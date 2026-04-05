@@ -83,8 +83,8 @@ export default function StyleBattleArena() {
       }
 
       const battle = battles?.find(b => b.id === selectedBattle);
-      const { data: scoreData, error: scoreError } = await supabase.functions.invoke("fashion-battle-score", {
-        body: { outfitDescription: entryText, battleTheme: battle?.theme || "" },
+      const { data: scoreData, error: scoreError } = await supabase.functions.invoke("fashion-ai", {
+        body: { action: "battle-score", outfitDescription: entryText, battleTheme: battle?.theme || "" },
       });
       if (scoreError) throw scoreError;
 

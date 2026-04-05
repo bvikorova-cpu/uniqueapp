@@ -26,8 +26,8 @@ export default function AIRarityPredictor({ userId }: Props) {
     }
     setLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke("collectible-rarity-predict", {
-        body: { itemName, itemDescription, userId }
+      const { data, error } = await supabase.functions.invoke("collectible-ai", {
+        body: { action: "rarity-predict", itemName, itemDescription, userId }
       });
       if (error) throw error;
       setResult(data);

@@ -47,8 +47,8 @@ const SocialMediaKit = ({ credits, onBack, onCreditsUsed }: SocialMediaKitProps)
 
     try {
       setLoading(true);
-      const res = await supabase.functions.invoke("brand-social-media-kit", {
-        body: { brandName, industry, tone, targetAudience },
+      const res = await supabase.functions.invoke("brand-ai", {
+        body: { action: "social-media-kit", brandName, industry, tone, targetAudience },
       });
 
       if (res.error) throw res.error;

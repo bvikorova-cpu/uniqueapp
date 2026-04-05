@@ -62,8 +62,8 @@ export default function AIFashionMoodRing() {
       const success = await useCredit("custom_generation", "Fashion Mood Ring");
       if (!success) throw new Error("Failed to use credits");
 
-      const { data, error } = await supabase.functions.invoke("fashion-mood-ring", {
-        body: { mood: selectedMood, energy_level: energy[0], context },
+      const { data, error } = await supabase.functions.invoke("fashion-ai", {
+        body: { action: "mood-ring", mood: selectedMood, energy_level: energy[0], context },
       });
       if (error) throw error;
       return data as MoodResult;

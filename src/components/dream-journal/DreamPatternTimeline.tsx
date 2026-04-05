@@ -61,8 +61,8 @@ const DreamPatternTimeline = ({ onBack }: DreamPatternTimelineProps) => {
         content: d.content?.substring(0, 200),
       }));
 
-      const { data, error } = await supabase.functions.invoke("dream-pattern-analysis", {
-        body: { dreams: dreamSummaries },
+      const { data, error } = await supabase.functions.invoke("dream-ai", {
+        body: { action: "pattern-analysis", dreams: dreamSummaries },
         headers: { Authorization: `Bearer ${session?.access_token}` },
       });
       if (error) throw error;

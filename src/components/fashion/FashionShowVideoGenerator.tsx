@@ -50,8 +50,8 @@ export default function FashionShowVideoGenerator() {
         if (!ok && i === 0) throw new Error("Insufficient credits");
       }
 
-      const { data, error } = await supabase.functions.invoke("fashion-video-generator", {
-        body: { concept, style, duration: parseInt(duration), mood },
+      const { data, error } = await supabase.functions.invoke("fashion-ai", {
+        body: { action: "video-generator", concept, style, duration: parseInt(duration), mood },
       });
       if (error) throw error;
       return data;

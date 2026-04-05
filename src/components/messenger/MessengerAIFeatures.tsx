@@ -120,8 +120,8 @@ export const MessengerAIFeatures = ({
 
     setIsLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke("messenger-ai-translate", {
-        body: { text: selectedText, targetLanguage },
+      const { data, error } = await supabase.functions.invoke("messenger-ai", {
+        body: { action: "translate", text: selectedText, targetLanguage },
       });
 
       if (error) throw error;
@@ -157,8 +157,8 @@ export const MessengerAIFeatures = ({
         content: m.content,
       }));
 
-      const { data, error } = await supabase.functions.invoke("messenger-ai-summarize", {
-        body: { messages: formattedMessages },
+      const { data, error } = await supabase.functions.invoke("messenger-ai", {
+        body: { action: "summarize", messages: formattedMessages },
       });
 
       if (error) throw error;
@@ -195,8 +195,8 @@ export const MessengerAIFeatures = ({
         content: m.content,
       }));
 
-      const { data, error } = await supabase.functions.invoke("messenger-ai-smart-reply", {
-        body: { lastMessages },
+      const { data, error } = await supabase.functions.invoke("messenger-ai", {
+        body: { action: "smart-reply", lastMessages },
       });
 
       if (error) throw error;
@@ -228,8 +228,8 @@ export const MessengerAIFeatures = ({
 
     setIsLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke("messenger-ai-time-capsule", {
-        body: { 
+      const { data, error } = await supabase.functions.invoke("messenger-ai", {
+        body: { action: "time-capsule", 
           message: timeCapsuleMessage, 
           deliveryDate, 
           recipientId,
@@ -272,8 +272,8 @@ export const MessengerAIFeatures = ({
         content: m.content,
       }));
 
-      const { data, error } = await supabase.functions.invoke("messenger-ai-emotional-weather", {
-        body: { messages: formattedMessages },
+      const { data, error } = await supabase.functions.invoke("messenger-ai", {
+        body: { action: "emotional-weather", messages: formattedMessages },
       });
 
       if (error) throw error;
@@ -305,8 +305,8 @@ export const MessengerAIFeatures = ({
 
     setIsLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke("messenger-ai-quantum-message", {
-        body: { originalMessage: quantumOriginal, variationType: quantumType },
+      const { data, error } = await supabase.functions.invoke("messenger-ai", {
+        body: { action: "quantum-message", originalMessage: quantumOriginal, variationType: quantumType },
       });
 
       if (error) throw error;
@@ -332,8 +332,8 @@ export const MessengerAIFeatures = ({
   const handleAnonymousCompliment = async () => {
     setIsLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke("messenger-ai-anonymous-compliment", {
-        body: { 
+      const { data, error } = await supabase.functions.invoke("messenger-ai", {
+        body: { action: "anonymous-compliment", 
           recipientName: recipientName || "someone special", 
           context: complimentContext,
           style: complimentStyle 
@@ -368,8 +368,8 @@ export const MessengerAIFeatures = ({
 
     setIsLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke("messenger-ai-what-if", {
-        body: { scenario: whatIfScenario },
+      const { data, error } = await supabase.functions.invoke("messenger-ai", {
+        body: { action: "what-if", scenario: whatIfScenario },
       });
 
       if (error) throw error;

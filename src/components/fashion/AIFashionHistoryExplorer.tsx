@@ -30,7 +30,7 @@ export default function AIFashionHistoryExplorer() {
       const { error } = await supabase.storage.from("fashion-uploads").upload(fileName, selectedFile);
       if (error) throw error;
       const { data: { publicUrl } } = supabase.storage.from("fashion-uploads").getPublicUrl(fileName);
-      const { data, error: fnError } = await supabase.functions.invoke("fashion-history-explorer", { body: { imageUrl: publicUrl } });
+      const { data, error: fnError } = await supabase.functions.invoke("fashion-ai", { body: { action: "history-explorer", imageUrl: publicUrl } });
       if (fnError) throw fnError;
       setResult(data.analysis);
       toast.success("Historical analysis complete!");

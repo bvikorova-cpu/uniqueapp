@@ -79,8 +79,8 @@ export default function GlobalStreetStyleFeed() {
         if (!ok && i === 0) throw new Error("Insufficient credits");
       }
 
-      const { data, error } = await supabase.functions.invoke("fashion-ootd-score", {
-        body: { imageUrl, outfitDescription: `${caption} - ${city}` },
+      const { data, error } = await supabase.functions.invoke("fashion-ai", {
+        body: { action: "ootd-score", imageUrl, outfitDescription: `${caption} - ${city}` },
       });
       if (error) throw error;
 

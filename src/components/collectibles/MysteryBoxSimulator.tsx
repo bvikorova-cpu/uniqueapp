@@ -26,8 +26,8 @@ export default function MysteryBoxSimulator({ userId }: Props) {
     }
     setLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke("collectible-box-simulate", {
-        body: { boxId: selectedBoxId, userId }
+      const { data, error } = await supabase.functions.invoke("collectible-ai", {
+        body: { action: "box-simulate", boxId: selectedBoxId, userId }
       });
       if (error) throw error;
       setSimulations(data?.simulations || []);

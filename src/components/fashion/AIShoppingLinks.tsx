@@ -48,8 +48,8 @@ export default function AIShoppingLinks() {
         if (!ok && i === 0) throw new Error("Insufficient credits");
       }
 
-      const { data, error } = await supabase.functions.invoke("fashion-shopping-links", {
-        body: { description, budget: parseInt(budget), style },
+      const { data, error } = await supabase.functions.invoke("fashion-ai", {
+        body: { action: "shopping-links", description, budget: parseInt(budget), style },
       });
       if (error) throw error;
       return data;

@@ -38,8 +38,8 @@ const DreamDictionary = ({ onBack }: DreamDictionaryProps) => {
       if (!used) throw new Error("Failed to use credit");
 
       const { data: { session } } = await supabase.auth.getSession();
-      const { data, error } = await supabase.functions.invoke("dream-dictionary", {
-        body: { symbol, context },
+      const { data, error } = await supabase.functions.invoke("dream-ai", {
+        body: { action: "dictionary", symbol, context },
         headers: { Authorization: `Bearer ${session?.access_token}` },
       });
       if (error) throw error;

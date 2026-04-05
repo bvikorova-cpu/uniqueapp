@@ -26,8 +26,8 @@ export default function CollectiblePriceAlerts({ userId }: Props) {
     }
     setLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke("collectible-price-alert", {
-        body: { userId, itemName }
+      const { data, error } = await supabase.functions.invoke("collectible-ai", {
+        body: { action: "price-alert", userId, itemName }
       });
       if (error) throw error;
       setResult(data);

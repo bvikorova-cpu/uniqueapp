@@ -33,8 +33,8 @@ export default function MasterChefAICoach() {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) { navigate("/auth"); return; }
 
-      const { data, error } = await supabase.functions.invoke("masterchef-ai-coach", {
-        body: { message: userMsg, history: messages },
+      const { data, error } = await supabase.functions.invoke("masterchef-ai", {
+        body: { action: "ai-coach", message: userMsg, history: messages },
       });
       if (error) throw error;
       setMessages(prev => [...prev, { role: "assistant", content: data?.reply || "I couldn't process that. Try again!" }]);

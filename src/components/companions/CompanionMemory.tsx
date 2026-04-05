@@ -60,8 +60,8 @@ export const CompanionMemory = () => {
   const analyzeMemory = async (conversationId: string) => {
     setAnalyzing(conversationId);
     try {
-      const { data, error } = await supabase.functions.invoke("companion-memory-analyze", {
-        body: { conversationId },
+      const { data, error } = await supabase.functions.invoke("companion-ai", {
+        body: { action: "memory-analyze", conversationId },
       });
       if (error) throw error;
       toast({ title: "Memory Updated", description: "Companion memory has been analyzed and updated" });

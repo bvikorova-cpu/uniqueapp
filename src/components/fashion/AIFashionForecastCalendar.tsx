@@ -46,8 +46,8 @@ export default function AIFashionForecastCalendar() {
       const success = await useCredit("custom_generation", "Fashion Forecast Calendar");
       if (!success) throw new Error("Failed to use credits");
 
-      const { data, error } = await supabase.functions.invoke("fashion-forecast-calendar", {
-        body: { location, preferred_style: style },
+      const { data, error } = await supabase.functions.invoke("fashion-ai", {
+        body: { action: "forecast-calendar", location, preferred_style: style },
       });
       if (error) throw error;
       return data as ForecastResult;

@@ -98,8 +98,8 @@ const BrandVoiceTraining = ({ onBack }: Props) => {
     setGenerating(true);
     setTestResult(null);
     try {
-      const { data, error } = await supabase.functions.invoke("content-studio-brand-voice", {
-        body: { voiceId: selectedVoice, prompt: testPrompt },
+      const { data, error } = await supabase.functions.invoke("content-studio-ai", {
+        body: { action: "brand-voice", voiceId: selectedVoice, prompt: testPrompt },
       });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);

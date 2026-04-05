@@ -48,8 +48,8 @@ export default function AICelebrityStyleClone() {
       const success = await useCredit("custom_generation", "Celebrity Style Clone");
       if (!success) throw new Error("Failed to use credits");
 
-      const { data, error } = await supabase.functions.invoke("fashion-celebrity-clone", {
-        body: { celebrity, budget_level: budget },
+      const { data, error } = await supabase.functions.invoke("fashion-ai", {
+        body: { action: "celebrity-clone", celebrity, budget_level: budget },
       });
       if (error) throw error;
       return data as CloneResult;

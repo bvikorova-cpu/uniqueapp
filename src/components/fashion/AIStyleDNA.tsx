@@ -23,8 +23,8 @@ export default function AIStyleDNA() {
 
     setLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke("fashion-style-dna", {
-        body: { preferences, bodyType, lifestyle }
+      const { data, error } = await supabase.functions.invoke("fashion-ai", {
+        body: { action: "style-dna", preferences, bodyType, lifestyle }
       });
       if (error) throw error;
       setResult(data);

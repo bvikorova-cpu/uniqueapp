@@ -54,8 +54,8 @@ export default function WardrobeAnalytics() {
         if (!ok && i === 0) throw new Error("Insufficient credits");
       }
 
-      const { data, error } = await supabase.functions.invoke("fashion-wardrobe-analytics", {
-        body: { items: wardrobeItems },
+      const { data, error } = await supabase.functions.invoke("fashion-ai", {
+        body: { action: "wardrobe-analytics", items: wardrobeItems },
       });
       if (error) throw error;
       return data;
