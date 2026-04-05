@@ -9,67 +9,140 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { action, imageUrl, prompt, style, category, bgColor } = await req.json();
+    const body = await req.json();
+    const { action, ...params } = body;
+    
+    // Try Lovable AI first, fall back to OpenAI
+    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     const openaiKey = Deno.env.get("OPENAI_API_KEY");
-    if (!openaiKey) throw new Error("OPENAI_API_KEY not configured");
+    
+    const useLovable = !!LOVABLE_API_KEY;
+    if (!LOVABLE_API_KEY && !openaiKey) throw new Error("No AI API key configured");
 
     let systemPrompt = "";
     let userPrompt = "";
+    let useJsonFormat = false;
 
     switch (action) {
+      // === STOCK CONTENT ACTIONS ===
       case "plagiarism_scan":
-        systemPrompt = "You are an AI image originality analyzer. Analyze the described image and return a JSON object with: originalityScore (0-100), matches (array of {source, similarity, url}), verdict (string), details (string). Be realistic with scoring.";
-        userPrompt = `Analyze this image for originality: ${imageUrl}. Return a realistic plagiarism scan result as JSON.`;
+        systemPrompt = "You are an AI image originality analyzer. Analyze the described image and return a JSON object with: originalityScore (0-100), matches (array of {source, similarity, url}), verdict (string), details (string).";
+        userPrompt = `Analyze this image for originality: ${params.imageUrl}. Return a realistic plagiarism scan result as JSON.`;
+        useJsonFormat = true;
         break;
 
       case "remove_background":
         systemPrompt = "You are an AI image processing assistant. Simulate background removal results.";
-        userPrompt = `Process background removal for image: ${imageUrl} with replacement: ${bgColor}. Return JSON with resultUrl (use the original URL as placeholder).`;
+        userPrompt = `Process background removal for image: ${params.imageUrl} with replacement: ${params.bgColor}. Return JSON with resultUrl.`;
+        useJsonFormat = true;
         break;
 
       case "generate_tags":
         systemPrompt = "You are an AI content tag generator. Analyze content and suggest relevant tags.";
-        userPrompt = `Generate tags for: ${prompt}. Return JSON with tags (array of strings), categories (array), keywords (array).`;
+        userPrompt = `Generate tags for: ${params.prompt}. Return JSON with tags (array), categories (array), keywords (array).`;
+        useJsonFormat = true;
+        break;
+
+      // === TUTORIAL PLATFORM ACTIONS ===
+      case "generate-quiz":
+        systemPrompt = "You are an expert quiz creator for online courses. Generate quizzes with multiple choice questions. For each question include: the question, 4 options (A-D), the correct answer, and a brief explanation.";
+        userPrompt = `Create ${params.numQuestions} ${params.difficulty} difficulty quiz questions about: ${params.topic}`;
+        break;
+
+      case "generate-outline":
+        systemPrompt = "You are an expert curriculum designer. Create detailed course outlines with modules, lessons, learning objectives, and estimated durations.";
+        userPrompt = `Create a ${params.modules}-module course outline for "${params.title}" targeting ${params.audience}. Include lesson titles, learning objectives, and estimated duration per lesson.`;
+        break;
+
+      case "tutor-chat": {
+        systemPrompt = "You are an expert AI tutor. Help students understand concepts clearly. Use examples, analogies, and step-by-step explanations. Be encouraging and patient. Keep responses concise.";
+        const messages = params.messages || [];
+        
+        const apiUrl = useLovable ? "https://ai.gateway.lovable.dev/v1/chat/completions" : "https://api.openai.com/v1/chat/completions";
+        const apiKey = useLovable ? LOVABLE_API_KEY : openaiKey;
+        const model = useLovable ? "google/gemini-2.5-flash-lite" : "gpt-4o-mini";
+        
+        const response = await fetch(apiUrl, {
+          method: "POST",
+          headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
+          body: JSON.stringify({ model, messages: [{ role: "system", content: systemPrompt }, ...messages] }),
+        });
+        if (!response.ok) {
+          const status = response.status;
+          if (status === 429) return new Response(JSON.stringify({ error: "Rate limit exceeded." }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+          if (status === 402) return new Response(JSON.stringify({ error: "Payment required." }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+          throw new Error(`AI error: ${status}`);
+        }
+        const chatData = await response.json();
+        return new Response(JSON.stringify({ result: chatData.choices?.[0]?.message?.content || "No response" }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      case "design-certificate":
+        systemPrompt = "You are a certificate designer. Create detailed text for a beautiful certificate including layout description, wording, and accolades.";
+        userPrompt = `Design a ${params.style} style certificate for "${params.studentName}" completing "${params.courseName}".`;
+        break;
+
+      case "plagiarism-check":
+        systemPrompt = "You are a plagiarism detection expert. Analyze text for originality. Provide an originality score (0-100%), flag suspicious sections, and give recommendations.";
+        userPrompt = `Analyze this text for originality:\n\n${params.text}`;
         break;
 
       default:
-        throw new Error(`Unknown action: ${action}`);
+        return new Response(JSON.stringify({ error: `Unknown action: ${action}` }), {
+          status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
     }
 
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    const apiUrl = useLovable ? "https://ai.gateway.lovable.dev/v1/chat/completions" : "https://api.openai.com/v1/chat/completions";
+    const apiKey = useLovable ? LOVABLE_API_KEY : openaiKey;
+    const model = useLovable ? "google/gemini-2.5-flash-lite" : "gpt-4o-mini";
+
+    const fetchBody: any = {
+      model,
+      messages: [{ role: "system", content: systemPrompt }, { role: "user", content: userPrompt }],
+      max_tokens: 2000,
+    };
+    if (useJsonFormat && !useLovable) {
+      fetchBody.response_format = { type: "json_object" };
+    }
+
+    const response = await fetch(apiUrl, {
       method: "POST",
-      headers: {
-        Authorization: `Bearer ${openaiKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "gpt-4o-mini",
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: userPrompt },
-        ],
-        response_format: { type: "json_object" },
-        max_tokens: 1000,
-      }),
+      headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
+      body: JSON.stringify(fetchBody),
     });
 
     if (!response.ok) {
+      const status = response.status;
+      if (status === 429) return new Response(JSON.stringify({ error: "Rate limit exceeded." }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      if (status === 402) return new Response(JSON.stringify({ error: "Payment required." }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       const err = await response.text();
-      console.error("OpenAI error:", err);
+      console.error("AI error:", err);
       throw new Error("AI processing failed");
     }
 
     const aiData = await response.json();
-    const result = JSON.parse(aiData.choices[0].message.content);
+    const content = aiData.choices?.[0]?.message?.content || "";
 
-    return new Response(JSON.stringify(result), {
+    if (useJsonFormat) {
+      try {
+        const result = JSON.parse(content);
+        return new Response(JSON.stringify(result), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      } catch {
+        return new Response(JSON.stringify({ result: content }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      }
+    }
+
+    return new Response(JSON.stringify({ result: content }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
+
   } catch (error) {
-    console.error("stock-content-ai error:", error);
+    console.error("content-ai-tools error:", error);
     return new Response(JSON.stringify({ error: error.message }), {
-      status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }
 });
