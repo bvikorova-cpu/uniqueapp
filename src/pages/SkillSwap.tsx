@@ -22,6 +22,10 @@ import { LearningProgressTracker } from "@/components/skill-swap/LearningProgres
 import { RecordedLessons } from "@/components/skill-swap/RecordedLessons";
 import { SwapLeaderboard } from "@/components/skill-swap/SwapLeaderboard";
 import { SessionScheduler } from "@/components/skill-swap/SessionScheduler";
+import { AISkillValuationView } from "@/components/skill-swap/views/AISkillValuationView";
+import { LiveSkillDemoView } from "@/components/skill-swap/views/LiveSkillDemoView";
+import { SkillCertificationView } from "@/components/skill-swap/views/SkillCertificationView";
+import { GroupWorkshopsView } from "@/components/skill-swap/views/GroupWorkshopsView";
 import { FloatingParticles } from "@/components/wellness/FloatingParticles";
 import { motion, AnimatePresence } from "framer-motion";
 import {
