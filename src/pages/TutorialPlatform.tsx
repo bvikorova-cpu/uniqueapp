@@ -23,6 +23,12 @@ import { PlagiarismCheckerView } from "@/components/tutorial-platform/views/Plag
 import { VisualCourseBuilderView } from "@/components/tutorial-platform/views/VisualCourseBuilderView";
 import { CourseSchedulerView } from "@/components/tutorial-platform/views/CourseSchedulerView";
 import { CertificateGalleryView } from "@/components/tutorial-platform/views/CertificateGalleryView";
+import { AICourseTranslatorView } from "@/components/tutorial-platform/views/AICourseTranslatorView";
+import { StudentProgressHeatmapView } from "@/components/tutorial-platform/views/StudentProgressHeatmapView";
+import { CourseReviewSystemView } from "@/components/tutorial-platform/views/CourseReviewSystemView";
+import { GamificationBadgesView } from "@/components/tutorial-platform/views/GamificationBadgesView";
+import { AffiliateProgramView } from "@/components/tutorial-platform/views/AffiliateProgramView";
+import { AIVideoSummarizerView } from "@/components/tutorial-platform/views/AIVideoSummarizerView";
 
 const TutorialPlatform = () => {
   const [searchParams] = useSearchParams();
@@ -57,9 +63,15 @@ const TutorialPlatform = () => {
       case "ai-outline": return <AICourseOutlineView onBack={() => setActiveView("dashboard")} />;
       case "ai-tutor": return <AITutorChatView onBack={() => setActiveView("dashboard")} />;
       case "ai-certificate": return <AICertificateDesignerView onBack={() => setActiveView("dashboard")} />;
+      case "ai-translator": return <AICourseTranslatorView onBack={() => setActiveView("dashboard")} />;
+      case "ai-summarizer": return <AIVideoSummarizerView onBack={() => setActiveView("dashboard")} />;
+      case "reviews": return <CourseReviewSystemView onBack={() => setActiveView("dashboard")} />;
       case "trending": return <TrendingCoursesView onBack={() => setActiveView("dashboard")} />;
       case "leaderboard": return <InstructorLeaderboardView onBack={() => setActiveView("dashboard")} />;
       case "analytics": return <CourseAnalyticsView onBack={() => setActiveView("dashboard")} />;
+      case "heatmap": return <StudentProgressHeatmapView onBack={() => setActiveView("dashboard")} />;
+      case "badges": return <GamificationBadgesView onBack={() => setActiveView("dashboard")} />;
+      case "affiliates": return <AffiliateProgramView onBack={() => setActiveView("dashboard")} />;
       case "community": return <StudentCommunityView onBack={() => setActiveView("dashboard")} />;
       case "live-sessions": return <LiveSessionsView onBack={() => setActiveView("dashboard")} />;
       case "resources": return <ResourceLibraryView onBack={() => setActiveView("dashboard")} />;
