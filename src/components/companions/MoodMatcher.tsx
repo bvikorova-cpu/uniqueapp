@@ -37,8 +37,8 @@ export const MoodMatcher = () => {
 
     setLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke("companion-mood-matcher", {
-        body: { mood: moodText },
+      const { data, error } = await supabase.functions.invoke("companion-ai", {
+        body: { action: "mood-matcher", mood: moodText },
       });
       if (error) throw error;
       setResult(data);

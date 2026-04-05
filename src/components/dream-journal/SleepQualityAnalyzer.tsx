@@ -35,8 +35,8 @@ const SleepQualityAnalyzer = ({ onBack }: SleepQualityAnalyzerProps) => {
       if (!used) throw new Error("Failed to use credit");
 
       const { data: { session } } = await supabase.auth.getSession();
-      const { data, error } = await supabase.functions.invoke("dream-sleep-analyzer", {
-        body: { sleepHours: sleepHours[0], quality, wakeUps: wakeUps[0], notes },
+      const { data, error } = await supabase.functions.invoke("dream-ai", {
+        body: { action: "sleep-analyzer", sleepHours: sleepHours[0], quality, wakeUps: wakeUps[0], notes },
         headers: { Authorization: `Bearer ${session?.access_token}` },
       });
       if (error) throw error;

@@ -45,8 +45,8 @@ export const VirtualPostcards = () => {
         setTimeout(() => navigate("/ai-credits-store"), 2000);
         return;
       }
-      const { data, error } = await supabase.functions.invoke("experience-virtual-postcard", {
-        body: { destination, recipientName, message, style },
+      const { data, error } = await supabase.functions.invoke("experience-ai", {
+        body: { action: "virtual-postcard", destination, recipientName, message, style },
       });
       if (error) throw error;
       toast({ title: "💌 Postcard Created!", description: `Your postcard from ${destination} is ready` });

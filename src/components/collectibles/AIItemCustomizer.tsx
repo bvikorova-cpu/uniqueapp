@@ -40,8 +40,8 @@ export default function AIItemCustomizer({ userId }: Props) {
     setLoading(true);
     try {
       const item = myCollectibles?.find((c: any) => c.id === selectedItemId);
-      const { data, error } = await supabase.functions.invoke("collectible-customize", {
-        body: { userId, itemId: selectedItemId, itemName: item?.collectible_type || "Collectible", style, customPrompt }
+      const { data, error } = await supabase.functions.invoke("collectible-ai", {
+        body: { action: "customize", userId, itemId: selectedItemId, itemName: item?.collectible_type || "Collectible", style, customPrompt }
       });
       if (error) throw error;
       setResult(data);

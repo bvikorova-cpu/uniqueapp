@@ -37,8 +37,8 @@ export const AIEmotionAnalysis = ({ onBack }: Props) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { toast.error("Please sign in"); return; }
 
-      const { data, error } = await supabase.functions.invoke("psychology-emotion-analysis", {
-        body: { text: text.trim() },
+      const { data, error } = await supabase.functions.invoke("psychology-ai", {
+        body: { action: "emotion-analysis", text: text.trim() },
       });
       if (error) throw error;
       setResult(data);

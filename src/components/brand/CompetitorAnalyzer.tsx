@@ -37,8 +37,8 @@ const CompetitorAnalyzer = ({ credits, onBack, onCreditsUsed }: CompetitorAnalyz
 
     try {
       setLoading(true);
-      const res = await supabase.functions.invoke("brand-competitor-analyzer", {
-        body: { businessName, industry, description },
+      const res = await supabase.functions.invoke("brand-ai", {
+        body: { action: "competitor-analyzer", businessName, industry, description },
       });
 
       if (res.error) throw res.error;

@@ -45,8 +45,8 @@ const DreamMoodCorrelation = ({ onBack }: DreamMoodCorrelationProps) => {
         return;
       }
 
-      const { data, error } = await supabase.functions.invoke("dream-mood-correlation", {
-        body: { dreams, moods },
+      const { data, error } = await supabase.functions.invoke("dream-ai", {
+        body: { action: "mood-correlation", dreams, moods },
         headers: { Authorization: `Bearer ${session?.access_token}` },
       });
       if (error) throw error;

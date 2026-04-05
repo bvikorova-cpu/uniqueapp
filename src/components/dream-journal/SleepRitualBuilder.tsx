@@ -42,8 +42,8 @@ const SleepRitualBuilder = ({ onBack }: SleepRitualBuilderProps) => {
       if (!used) throw new Error("Failed to use credit");
 
       const { data: { session } } = await supabase.auth.getSession();
-      const { data, error } = await supabase.functions.invoke("dream-sleep-ritual", {
-        body: { sleepGoal, challenges, duration: parseInt(duration) },
+      const { data, error } = await supabase.functions.invoke("dream-ai", {
+        body: { action: "sleep-ritual", sleepGoal, challenges, duration: parseInt(duration) },
         headers: { Authorization: `Bearer ${session?.access_token}` },
       });
       if (error) throw error;

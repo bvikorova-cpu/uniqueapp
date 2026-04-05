@@ -42,8 +42,8 @@ export const TravelPlanner = () => {
         setTimeout(() => navigate("/ai-credits-store"), 2000);
         return;
       }
-      const { data, error } = await supabase.functions.invoke("experience-travel-planner", {
-        body: { destination, days, budget, interests },
+      const { data, error } = await supabase.functions.invoke("experience-ai", {
+        body: { action: "travel-planner", destination, days, budget, interests },
       });
       if (error) throw error;
       setPlan(data.plan);

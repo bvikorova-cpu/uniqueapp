@@ -44,8 +44,8 @@ const AIDreamVisualizer = ({ onBack }: AIDreamVisualizerProps) => {
       if (!used) throw new Error("Failed to use credits");
 
       const { data: { session } } = await supabase.auth.getSession();
-      const { data, error } = await supabase.functions.invoke("dream-visualizer", {
-        body: { dreamDescription, artStyle },
+      const { data, error } = await supabase.functions.invoke("dream-ai", {
+        body: { action: "visualizer", dreamDescription, artStyle },
         headers: { Authorization: `Bearer ${session?.access_token}` },
       });
       if (error) throw error;

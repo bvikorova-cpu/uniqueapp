@@ -43,8 +43,8 @@ const AIContentTemplates = ({ onBack }: Props) => {
     setLoading(true);
     setResult(null);
     try {
-      const { data, error } = await supabase.functions.invoke("content-studio-templates", {
-        body: { templateType: selectedTemplate, topic, details },
+      const { data, error } = await supabase.functions.invoke("content-studio-ai", {
+        body: { action: "templates", templateType: selectedTemplate, topic, details },
       });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);

@@ -41,8 +41,8 @@ const BulkContentGenerator = ({ onBack }: Props) => {
     setResults([]);
     setCopiedIds(new Set());
     try {
-      const { data, error } = await supabase.functions.invoke("content-studio-bulk-generate", {
-        body: { topic, guidelines, platform, count },
+      const { data, error } = await supabase.functions.invoke("content-studio-ai", {
+        body: { action: "bulk-generate", topic, guidelines, platform, count },
       });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);

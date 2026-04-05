@@ -38,8 +38,8 @@ const BrandNameGenerator = ({ credits, onBack, onCreditsUsed }: BrandNameGenerat
     try {
       setLoading(true);
       const { data: { session } } = await supabase.auth.getSession();
-      const res = await supabase.functions.invoke("brand-name-generator", {
-        body: { industry, style, keywords },
+      const res = await supabase.functions.invoke("brand-ai", {
+        body: { action: "name-generator", industry, style, keywords },
       });
 
       if (res.error) throw res.error;

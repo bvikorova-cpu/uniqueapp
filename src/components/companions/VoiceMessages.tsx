@@ -50,8 +50,8 @@ export const VoiceMessages = () => {
 
     setLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke("companion-voice-message", {
-        body: { characterId: selectedCompanion, message: message.trim() },
+      const { data, error } = await supabase.functions.invoke("companion-ai", {
+        body: { action: "voice-message", characterId: selectedCompanion, message: message.trim() },
       });
       if (error) throw error;
 

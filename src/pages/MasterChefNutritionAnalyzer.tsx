@@ -24,8 +24,8 @@ export default function MasterChefNutritionAnalyzer() {
       setLoading(true);
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) { navigate("/auth"); return; }
-      const { data, error } = await supabase.functions.invoke("masterchef-nutrition-analyze", {
-        body: { recipeName, ingredients },
+      const { data, error } = await supabase.functions.invoke("masterchef-ai", {
+        body: { action: "nutrition-analyze", recipeName, ingredients },
       });
       if (error) throw error;
       setAnalysis(data?.analysis || "Analysis unavailable.");

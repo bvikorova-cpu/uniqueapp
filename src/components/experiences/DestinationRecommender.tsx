@@ -36,8 +36,8 @@ export const DestinationRecommender = () => {
         setTimeout(() => navigate("/ai-credits-store"), 2000);
         return;
       }
-      const { data, error } = await supabase.functions.invoke("experience-destination-recommender", {
-        body: { travelStyle, climate, budgetLevel, interests },
+      const { data, error } = await supabase.functions.invoke("experience-ai", {
+        body: { action: "destination-recommender", travelStyle, climate, budgetLevel, interests },
       });
       if (error) throw error;
       setRecommendations(data.recommendations || []);

@@ -38,8 +38,8 @@ export default function MasterChefAIRecipes() {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) { navigate("/auth"); return; }
 
-      const { data, error } = await supabase.functions.invoke("masterchef-ai-recipe", {
-        body: { ingredients, cuisine },
+      const { data, error } = await supabase.functions.invoke("masterchef-ai", {
+        body: { action: "ai-recipe", ingredients, cuisine },
       });
       if (error) throw error;
       setRecipe(data?.recipe || "No recipe generated.");
