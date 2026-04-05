@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, BarChart3, Eye, Users, TrendingUp, DollarSign, ArrowUpRight, ArrowDownRight } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 
