@@ -22,12 +22,17 @@ import { LearningProgressTracker } from "@/components/skill-swap/LearningProgres
 import { RecordedLessons } from "@/components/skill-swap/RecordedLessons";
 import { SwapLeaderboard } from "@/components/skill-swap/SwapLeaderboard";
 import { SessionScheduler } from "@/components/skill-swap/SessionScheduler";
+import { AISkillValuationView } from "@/components/skill-swap/views/AISkillValuationView";
+import { LiveSkillDemoView } from "@/components/skill-swap/views/LiveSkillDemoView";
+import { SkillCertificationView } from "@/components/skill-swap/views/SkillCertificationView";
+import { GroupWorkshopsView } from "@/components/skill-swap/views/GroupWorkshopsView";
 import { FloatingParticles } from "@/components/wellness/FloatingParticles";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowLeftRight, Globe, Video, Users, CheckCircle, MessageSquare, Star,
   Sparkles, Filter, X, Search, Upload, Edit, Trash2, LayoutDashboard,
-  ArrowLeft, Lock, Check, UserPlus, BookOpen, Shield, Zap, Award, CalendarDays
+  ArrowLeft, Lock, Check, UserPlus, BookOpen, Shield, Zap, Award, CalendarDays,
+  TrendingUp, Radio, ShieldCheck, UsersRound
 } from "lucide-react";
 import {
   Pagination, PaginationContent, PaginationItem, PaginationLink,
@@ -54,7 +59,7 @@ interface SkillOffering {
   };
 }
 
-type ViewType = "hub" | "browse" | "matches" | "messages" | "add" | "skillmap" | "advisor" | "progress" | "lessons" | "leaderboard" | "scheduler";
+type ViewType = "hub" | "browse" | "matches" | "messages" | "add" | "skillmap" | "advisor" | "progress" | "lessons" | "leaderboard" | "scheduler" | "valuation" | "demo" | "certification" | "workshops";
 
 const SWAP_TOOLS = [
   {
@@ -146,6 +151,42 @@ const SWAP_TOOLS = [
     badge: "Plan",
     gradient: "bg-gradient-to-r from-indigo-500 to-blue-500",
     features: ["Calendar view", "Video call links", "Reminders", "Session history"],
+  },
+  {
+    id: "valuation",
+    title: "AI Skill Valuation",
+    description: "AI-powered market value analysis for your skills",
+    icon: TrendingUp,
+    badge: "4 CR",
+    gradient: "bg-gradient-to-r from-amber-500 to-orange-500",
+    features: ["Market value score", "Demand analysis", "Exchange rate", "Trend insights"],
+  },
+  {
+    id: "demo",
+    title: "Live Skill Demo",
+    description: "Generate professional demo scripts to showcase skills",
+    icon: Radio,
+    badge: "3 CR",
+    gradient: "bg-gradient-to-r from-rose-500 to-pink-500",
+    features: ["Presentation scripts", "Audience engagement", "Tech setup guide", "Demo plans"],
+  },
+  {
+    id: "certification",
+    title: "Skill Certification",
+    description: "AI assessment and digital certification for your skills",
+    icon: ShieldCheck,
+    badge: "5 CR",
+    gradient: "bg-gradient-to-r from-emerald-500 to-teal-500",
+    features: ["Proficiency scoring", "Digital badges", "Detailed feedback", "Learning path"],
+  },
+  {
+    id: "workshops",
+    title: "Group Workshops",
+    description: "AI-designed group workshop plans for teaching multiple learners",
+    icon: UsersRound,
+    badge: "4 CR",
+    gradient: "bg-gradient-to-r from-violet-500 to-purple-500",
+    features: ["Curriculum design", "Group activities", "Pricing guide", "Marketing tips"],
   },
 ];
 
@@ -879,6 +920,14 @@ export default function SkillSwap() {
             <SwapLeaderboard onBack={() => setActiveView("hub")} />
           ) : activeView === "scheduler" ? (
             <SessionScheduler onBack={() => setActiveView("hub")} />
+          ) : activeView === "valuation" ? (
+            <AISkillValuationView onBack={() => setActiveView("hub")} />
+          ) : activeView === "demo" ? (
+            <LiveSkillDemoView onBack={() => setActiveView("hub")} />
+          ) : activeView === "certification" ? (
+            <SkillCertificationView onBack={() => setActiveView("hub")} />
+          ) : activeView === "workshops" ? (
+            <GroupWorkshopsView onBack={() => setActiveView("hub")} />
           ) : null}
         </AnimatePresence>
 

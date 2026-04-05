@@ -3,9 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowLeft, TrendingUp, Star, Award, MessageSquare } from "lucide-react";
+import { ArrowLeft, TrendingUp, Star, Award, MessageSquare, Users, ArrowLeftRight, Zap, BookOpen } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
+import { motion } from "framer-motion";
+import { FloatingParticles } from "@/components/wellness/FloatingParticles";
+import heroVideo from "@/assets/skill-swap-hero.mp4.asset.json";
 
 interface DashboardStats {
   totalExchanges: number;
@@ -26,94 +29,52 @@ interface PopularSkill {
 export default function SkillSwapDashboard() {
   const navigate = useNavigate();
   const [stats, setStats] = useState<DashboardStats>({
-    totalExchanges: 0,
-    averageRating: 0,
-    totalReviews: 0,
-    activeOfferings: 0,
-    pendingExchanges: 0,
-    completedThisMonth: 0,
+    totalExchanges: 0, averageRating: 0, totalReviews: 0,
+    activeOfferings: 0, pendingExchanges: 0, completedThisMonth: 0,
   });
   const [popularSkills, setPopularSkills] = useState<PopularSkill[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchDashboardData();
-  }, []);
+  useEffect(() => { fetchDashboardData(); }, []);
 
   const fetchDashboardData = async () => {
     try {
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        navigate('/auth');
-        return;
-      }
+      if (!session) { navigate('/auth'); return; }
 
-      // Fetch user profile with stats
-      const { data: profile, error: profileError } = await supabase
-        .from('profiles')
+      const { data: profile } = await supabase.from('profiles')
         .select('completed_exchanges, rating_average, total_reviews')
-        .eq('id', session.user.id)
-        .single();
+        .eq('id', session.user.id).single();
 
-      if (profileError) throw profileError;
-
-      // Fetch active offerings count
-      const { count: offeringsCount, error: offeringsError } = await supabase
-        .from('skill_offerings')
+      const { count: offeringsCount } = await supabase.from('skill_offerings')
         .select('*', { count: 'exact', head: true })
-        .eq('user_id', session.user.id)
-        .eq('is_active', true);
+        .eq('user_id', session.user.id).eq('is_active', true);
 
-      if (offeringsError) throw offeringsError;
-
-      // Fetch pending exchanges
-      const { count: pendingCount, error: pendingError } = await supabase
-        .from('skill_swap_conversations')
+      const { count: pendingCount } = await supabase.from('skill_swap_conversations')
         .select('*', { count: 'exact', head: true })
         .or(`user1_id.eq.${session.user.id},user2_id.eq.${session.user.id}`)
         .eq('status', 'active');
 
-      if (pendingError) throw pendingError;
-
-      // Fetch completed exchanges this month
       const firstDayOfMonth = new Date();
       firstDayOfMonth.setDate(1);
       firstDayOfMonth.setHours(0, 0, 0, 0);
-
-      const { count: monthlyCount, error: monthlyError } = await supabase
-        .from('skill_swap_conversations')
+      const { count: monthlyCount } = await supabase.from('skill_swap_conversations')
         .select('*', { count: 'exact', head: true })
         .or(`user1_id.eq.${session.user.id},user2_id.eq.${session.user.id}`)
         .eq('status', 'completed')
         .gte('completed_at', firstDayOfMonth.toISOString());
 
-      if (monthlyError) throw monthlyError;
-
-      // Fetch popular skills (most requested)
-      const { data: offerings, error: skillsError } = await supabase
-        .from('skill_offerings')
+      const { data: offerings } = await supabase.from('skill_offerings')
         .select('id, title, category')
-        .eq('user_id', session.user.id)
-        .eq('is_active', true);
+        .eq('user_id', session.user.id).eq('is_active', true);
 
-      if (skillsError) throw skillsError;
-
-      // Count requests for each offering
       const skillsWithCounts = await Promise.all(
         (offerings || []).map(async (offering) => {
-          const { count } = await supabase
-            .from('skill_swap_conversations')
-            .select('*', { count: 'exact', head: true })
-            .eq('offering_id', offering.id);
-
-          return {
-            ...offering,
-            request_count: count || 0,
-          };
+          const { count } = await supabase.from('skill_swap_conversations')
+            .select('*', { count: 'exact', head: true }).eq('offering_id', offering.id);
+          return { ...offering, request_count: count || 0 };
         })
       );
-
-      const sortedSkills = skillsWithCounts.sort((a, b) => b.request_count - a.request_count).slice(0, 5);
 
       setStats({
         totalExchanges: profile?.completed_exchanges || 0,
@@ -123,143 +84,143 @@ export default function SkillSwapDashboard() {
         pendingExchanges: pendingCount || 0,
         completedThisMonth: monthlyCount || 0,
       });
-
-      setPopularSkills(sortedSkills);
+      setPopularSkills(skillsWithCounts.sort((a, b) => b.request_count - a.request_count).slice(0, 5));
     } catch (error: any) {
-      console.error('Error fetching dashboard data:', error);
-      toast.error("Failed to load dashboard data");
-    } finally {
-      setLoading(false);
-    }
+      console.error('Error:', error);
+      toast.error("Failed to load dashboard");
+    } finally { setLoading(false); }
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-      </div>
-    );
+    return <div className="min-h-screen bg-background flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary" /></div>;
   }
 
+  const statCards = [
+    { icon: Award, label: "Total Exchanges", value: stats.totalExchanges, sub: `${stats.completedThisMonth} this month`, color: "text-amber-400" },
+    { icon: Star, label: "Average Rating", value: stats.averageRating.toFixed(1), sub: `From ${stats.totalReviews} reviews`, color: "text-yellow-400" },
+    { icon: ArrowLeftRight, label: "Active Offerings", value: stats.activeOfferings, sub: `${stats.pendingExchanges} pending`, color: "text-emerald-400" },
+  ];
+
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8 max-w-7xl">
-        {/* Header */}
-        <div className="mb-8">
-          <Button
-            variant="ghost"
-            onClick={() => navigate('/skill-swap')}
-            className="mb-4"
-          >
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Skill Swap
-          </Button>
-          <h1 className="text-4xl font-black mb-2">Your Dashboard</h1>
-          <p className="text-muted-foreground">
-            Track your skill exchange journey and performance
-          </p>
-        </div>
+    <div className="min-h-screen bg-background relative overflow-hidden">
+      <FloatingParticles />
+      <div className="container mx-auto px-4 py-6 sm:py-10 max-w-7xl relative z-10">
+        {/* Mini Hero */}
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="relative rounded-2xl overflow-hidden mb-8">
+          <div className="absolute inset-0">
+            <video autoPlay loop muted playsInline className="w-full h-full object-cover" style={{ filter: "brightness(0.8) saturate(1.2)" }}>
+              <source src={heroVideo.url} type="video/mp4" />
+            </video>
+            <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/40 to-black/60" />
+          </div>
+          <div className="relative z-10 p-6 sm:p-10">
+            <Button variant="ghost" size="sm" onClick={() => navigate('/skill-swap')} className="mb-4 text-white/80 hover:text-white hover:bg-white/10">
+              <ArrowLeft className="mr-2 h-4 w-4" /> Back to Skill Swap
+            </Button>
+            <h1 className="text-3xl sm:text-4xl font-black text-white mb-2" style={{ textShadow: "0 2px 15px rgba(251,146,60,0.3)" }}>
+              📊 Your Dashboard
+            </h1>
+            <p className="text-white/70 font-medium">Track your skill exchange journey and performance</p>
+          </div>
+        </motion.div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-          <Card className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground mb-1">Total Exchanges</p>
-                <p className="text-3xl font-bold">{stats.totalExchanges}</p>
-                <p className="text-xs text-muted-foreground mt-1">
-                  {stats.completedThisMonth} this month
-                </p>
-              </div>
-              <Award className="h-12 w-12 text-primary opacity-50" />
-            </div>
-          </Card>
-
-          <Card className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground mb-1">Average Rating</p>
-                <div className="flex items-center gap-2">
-                  <p className="text-3xl font-bold">{stats.averageRating.toFixed(1)}</p>
-                  <Star className="h-6 w-6 text-yellow-500 fill-yellow-500" />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+          {statCards.map((stat, i) => (
+            <motion.div key={stat.label} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}>
+              <Card className="p-5 bg-card/80 backdrop-blur-xl border-border/50 hover:border-primary/30 transition-all">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-xs text-muted-foreground mb-1 font-medium">{stat.label}</p>
+                    <p className="text-3xl font-black">{stat.value}</p>
+                    <p className="text-[11px] text-muted-foreground mt-1">{stat.sub}</p>
+                  </div>
+                  <div className="p-3 rounded-xl bg-primary/10">
+                    <stat.icon className={`h-8 w-8 ${stat.color}`} />
+                  </div>
                 </div>
-                <p className="text-xs text-muted-foreground mt-1">
-                  From {stats.totalReviews} reviews
-                </p>
-              </div>
-              <Star className="h-12 w-12 text-yellow-500 opacity-50" />
-            </div>
-          </Card>
-
-          <Card className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground mb-1">Active Offerings</p>
-                <p className="text-3xl font-bold">{stats.activeOfferings}</p>
-                <p className="text-xs text-muted-foreground mt-1">
-                  {stats.pendingExchanges} pending exchanges
-                </p>
-              </div>
-              <TrendingUp className="h-12 w-12 text-primary opacity-50" />
-            </div>
-          </Card>
+              </Card>
+            </motion.div>
+          ))}
         </div>
 
-        {/* Popular Skills */}
-        <Card className="p-6">
-          <div className="flex items-center gap-2 mb-4">
-            <MessageSquare className="h-5 w-5 text-primary" />
-            <h2 className="text-2xl font-bold">Most Requested Skills</h2>
-          </div>
-          {popularSkills.length === 0 ? (
-            <p className="text-muted-foreground text-center py-8">
-              No skills offered yet. Add your first skill to get started!
-            </p>
-          ) : (
-            <div className="space-y-4">
-              {popularSkills.map((skill, index) => (
-                <div
-                  key={skill.id}
-                  className="flex items-center justify-between p-4 rounded-lg border bg-card hover:bg-accent transition-colors"
-                >
-                  <div className="flex items-center gap-4">
-                    <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 text-primary font-bold">
-                      {index + 1}
-                    </div>
-                    <div>
-                      <p className="font-semibold">{skill.title}</p>
-                      <Badge variant="secondary" className="mt-1">
-                        {skill.category}
-                      </Badge>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-2xl font-bold">{skill.request_count}</p>
-                    <p className="text-xs text-muted-foreground">requests</p>
-                  </div>
+        <div className="grid lg:grid-cols-3 gap-6">
+          {/* Popular Skills */}
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="lg:col-span-2">
+            <Card className="p-5 sm:p-6 bg-card/80 backdrop-blur-xl border-border/50">
+              <div className="flex items-center gap-2 mb-4">
+                <div className="p-2 rounded-lg bg-primary/10"><TrendingUp className="h-5 w-5 text-primary" /></div>
+                <h2 className="text-lg font-black">Most Requested Skills</h2>
+              </div>
+              {popularSkills.length === 0 ? (
+                <p className="text-muted-foreground text-center py-8 text-sm">No skills offered yet. Add your first skill to get started!</p>
+              ) : (
+                <div className="space-y-3">
+                  {popularSkills.map((skill, index) => (
+                    <motion.div key={skill.id} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.4 + index * 0.05 }}
+                      className="flex items-center justify-between p-4 rounded-xl bg-muted/20 border border-border/30 hover:border-primary/20 transition-all">
+                      <div className="flex items-center gap-3">
+                        <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-br from-amber-500 to-orange-500 text-white text-sm font-black">
+                          {index + 1}
+                        </div>
+                        <div>
+                          <p className="font-bold text-sm">{skill.title}</p>
+                          <Badge variant="secondary" className="mt-0.5 text-[10px]">{skill.category}</Badge>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-2xl font-black text-primary">{skill.request_count}</p>
+                        <p className="text-[10px] text-muted-foreground">requests</p>
+                      </div>
+                    </motion.div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          )}
-        </Card>
+              )}
+            </Card>
+          </motion.div>
 
-        {/* Quick Actions */}
-        <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Button
-            size="lg"
-            onClick={() => navigate('/skill-swap')}
-            className="w-full"
-          >
-            Browse Available Skills
-          </Button>
-          <Button
-            size="lg"
-            variant="outline"
-            onClick={() => navigate('/skill-swap?tab=messages')}
-            className="w-full"
-          >
-            View Messages
-          </Button>
+          {/* Quick Actions Sidebar */}
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
+            <Card className="p-5 bg-card/80 backdrop-blur-xl border-border/50">
+              <div className="flex items-center gap-2 mb-4">
+                <div className="p-2 rounded-lg bg-primary/10"><Zap className="h-5 w-5 text-primary" /></div>
+                <h2 className="text-lg font-black">Quick Actions</h2>
+              </div>
+              <div className="space-y-2">
+                {[
+                  { icon: Users, label: "Browse Skills", path: "/skill-swap", color: "from-primary to-accent" },
+                  { icon: MessageSquare, label: "View Messages", path: "/skill-swap?tab=messages", color: "from-emerald-500 to-teal-500" },
+                  { icon: BookOpen, label: "Edit Profile", path: "/skill-swap/profile/edit", color: "from-amber-500 to-orange-500" },
+                ].map((action, i) => (
+                  <motion.div key={action.label} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 + i * 0.05 }}>
+                    <Button onClick={() => navigate(action.path)} variant="outline" size="sm"
+                      className="w-full justify-start gap-2 text-xs h-10 hover:border-primary/30">
+                      <action.icon className="h-4 w-4 text-primary" /> {action.label}
+                    </Button>
+                  </motion.div>
+                ))}
+              </div>
+            </Card>
+
+            {/* Activity Summary */}
+            <Card className="p-5 bg-card/80 backdrop-blur-xl border-border/50 mt-4">
+              <h3 className="font-black text-sm mb-3">This Month</h3>
+              <div className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-xs text-muted-foreground">Exchanges Completed</span>
+                  <span className="font-black text-primary">{stats.completedThisMonth}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-xs text-muted-foreground">Pending Requests</span>
+                  <span className="font-black text-amber-500">{stats.pendingExchanges}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-xs text-muted-foreground">Active Offerings</span>
+                  <span className="font-black text-emerald-500">{stats.activeOfferings}</span>
+                </div>
+              </div>
+            </Card>
+          </motion.div>
         </div>
       </div>
     </div>
