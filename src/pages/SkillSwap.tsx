@@ -58,7 +58,7 @@ interface SkillOffering {
   };
 }
 
-type ViewType = "hub" | "browse" | "matches" | "messages" | "add" | "skillmap" | "advisor" | "progress" | "lessons" | "leaderboard" | "scheduler";
+type ViewType = "hub" | "browse" | "matches" | "messages" | "add" | "skillmap" | "advisor" | "progress" | "lessons" | "leaderboard" | "scheduler" | "valuation" | "demo" | "certification" | "workshops";
 
 const SWAP_TOOLS = [
   {
