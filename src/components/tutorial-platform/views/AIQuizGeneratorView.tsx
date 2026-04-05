@@ -2,9 +2,8 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Brain, Loader2, Copy, Check } from "lucide-react";
+import { ArrowLeft, Brain, Loader2, Copy, Check, Sparkles, HelpCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
@@ -50,24 +49,38 @@ export function AIQuizGeneratorView({ onBack }: Props) {
       <Button variant="ghost" onClick={onBack} className="mb-4"><ArrowLeft className="w-4 h-4 mr-2" />Back</Button>
       <div className="max-w-3xl mx-auto">
         <div className="flex items-center gap-3 mb-6">
-          <Brain className="w-8 h-8 text-pink-500" />
+          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-pink-500 to-rose-600 flex items-center justify-center shadow-lg">
+            <Brain className="w-6 h-6 text-white" />
+          </div>
           <div>
             <h2 className="text-2xl font-black">AI Quiz Generator</h2>
             <p className="text-muted-foreground">Auto-generate quizzes from any course topic</p>
           </div>
-          <Badge className="ml-auto bg-pink-500/10 text-pink-500">5 Credits</Badge>
+          <Badge className="ml-auto bg-gradient-to-r from-pink-500 to-rose-500 text-white border-0 shadow-md">
+            <Sparkles className="w-3 h-3 mr-1" />5 Credits
+          </Badge>
         </div>
 
-        <Card className="mb-6">
+        {/* Tips */}
+        <Card className="mb-4 border-amber-500/20 bg-amber-500/5">
+          <CardContent className="py-3 px-4">
+            <div className="flex gap-2 items-start">
+              <HelpCircle className="w-4 h-4 text-amber-500 mt-0.5 shrink-0" />
+              <p className="text-xs text-muted-foreground"><strong>Tips:</strong> Be specific with topics (e.g., "JavaScript Closures and Scope" vs "JavaScript"). Higher difficulty generates more nuanced questions.</p>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="mb-6 border-pink-500/10">
           <CardContent className="pt-6 space-y-4">
             <div>
-              <label className="text-sm font-medium mb-1 block">Course Topic</label>
-              <Input value={topic} onChange={e => setTopic(e.target.value)} placeholder="e.g., JavaScript Promises and Async/Await" />
+              <label className="text-sm font-semibold mb-1.5 block">Course Topic</label>
+              <Input value={topic} onChange={e => setTopic(e.target.value)} placeholder="e.g., JavaScript Promises and Async/Await" className="h-11" />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="text-sm font-medium mb-1 block">Number of Questions</label>
-                <select value={numQuestions} onChange={e => setNumQuestions(e.target.value)} className="w-full rounded-md border px-3 py-2 text-sm">
+                <label className="text-sm font-semibold mb-1.5 block">Number of Questions</label>
+                <select value={numQuestions} onChange={e => setNumQuestions(e.target.value)} className="w-full rounded-md border bg-background px-3 py-2.5 text-sm">
                   <option value="3">3 Questions</option>
                   <option value="5">5 Questions</option>
                   <option value="10">10 Questions</option>
@@ -75,8 +88,8 @@ export function AIQuizGeneratorView({ onBack }: Props) {
                 </select>
               </div>
               <div>
-                <label className="text-sm font-medium mb-1 block">Difficulty</label>
-                <select value={difficulty} onChange={e => setDifficulty(e.target.value)} className="w-full rounded-md border px-3 py-2 text-sm">
+                <label className="text-sm font-semibold mb-1.5 block">Difficulty</label>
+                <select value={difficulty} onChange={e => setDifficulty(e.target.value)} className="w-full rounded-md border bg-background px-3 py-2.5 text-sm">
                   <option value="easy">Easy</option>
                   <option value="medium">Medium</option>
                   <option value="hard">Hard</option>
@@ -84,23 +97,25 @@ export function AIQuizGeneratorView({ onBack }: Props) {
                 </select>
               </div>
             </div>
-            <Button onClick={generateQuiz} disabled={loading} className="w-full">
-              {loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Generating...</> : <><Brain className="w-4 h-4 mr-2" />Generate Quiz (5 Credits)</>}
+            <Button onClick={generateQuiz} disabled={loading} className="w-full h-11 bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 shadow-lg">
+              {loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Generating Quiz...</> : <><Brain className="w-4 h-4 mr-2" />Generate Quiz (5 Credits)</>}
             </Button>
           </CardContent>
         </Card>
 
         {quiz && (
-          <Card>
+          <Card className="border-emerald-500/20">
             <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle>Generated Quiz</CardTitle>
+              <CardTitle className="flex items-center gap-2">
+                <Check className="w-5 h-5 text-emerald-500" />Generated Quiz
+              </CardTitle>
               <Button variant="outline" size="sm" onClick={copyToClipboard}>
-                {copied ? <Check className="w-4 h-4 mr-1" /> : <Copy className="w-4 h-4 mr-1" />}
-                {copied ? "Copied" : "Copy"}
+                {copied ? <Check className="w-4 h-4 mr-1 text-emerald-500" /> : <Copy className="w-4 h-4 mr-1" />}
+                {copied ? "Copied!" : "Copy"}
               </Button>
             </CardHeader>
             <CardContent>
-              <div className="prose prose-sm max-w-none whitespace-pre-wrap text-sm bg-muted/50 rounded-lg p-4">
+              <div className="prose prose-sm max-w-none whitespace-pre-wrap text-sm bg-muted/50 rounded-xl p-5 border">
                 {typeof quiz === 'string' ? quiz : JSON.stringify(quiz, null, 2)}
               </div>
             </CardContent>
