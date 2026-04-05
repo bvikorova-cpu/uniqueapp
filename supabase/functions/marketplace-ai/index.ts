@@ -31,6 +31,10 @@ serve(async (req) => {
       "client-matcher": 5,
       "portfolio-review": 4,
       "market-analysis": 5,
+      "gig-recommendation": 5,
+      "milestone-planner": 4,
+      "video-portfolio": 4,
+      "provider-badge": 5,
     };
 
     const cost = creditCosts[action];
@@ -82,6 +86,26 @@ serve(async (req) => {
       case "market-analysis":
         systemPrompt = "You are a market research analyst specializing in freelance and gig economy trends. Provide comprehensive market insights.";
         userPrompt = `Analyze the market for this service category:\n\nCategory: ${params.category}\nSpecific Skill: ${params.skill}\nRegion: ${params.region || "Global"}\n\nProvide:\n1. Demand analysis (trending up/down/stable)\n2. Competition level assessment\n3. Average pricing in this market\n4. Emerging sub-niches with less competition\n5. Skills to add for premium positioning\n6. Forecast for the next 6-12 months`;
+        break;
+
+      case "gig-recommendation":
+        systemPrompt = "You are an AI career advisor and gig economy strategist. Recommend personalized gig opportunities based on skills, interests, and earning goals.";
+        userPrompt = `Recommend gig opportunities for this freelancer:\n\nSkills: ${params.skills}\nInterests: ${params.interests || "Not specified"}\nExperience: ${params.experience || "Not specified"}\nTarget Monthly Earnings: ${params.earnings ? "€" + params.earnings : "Not specified"}\n\nProvide:\n1. Top 10 recommended gig types ranked by fit\n2. Expected earnings per gig type\n3. Platforms/channels to find each gig type\n4. Skills gaps to fill for higher-paying gigs\n5. A 30-day action plan to start earning\n6. Passive income opportunities matching their skills`;
+        break;
+
+      case "milestone-planner":
+        systemPrompt = "You are a project management expert specializing in freelance escrow-based payment structures. Create detailed milestone plans with payment schedules.";
+        userPrompt = `Create an escrow-ready milestone plan for this project:\n\nProject: ${params.projectDesc}\nTotal Budget: ${params.budget ? "€" + params.budget : "Not specified"}\nTimeline: ${params.timeline || "Flexible"}\nClient Type: ${params.clientType || "Not specified"}\n\nProvide:\n1. 4-6 clear milestones with deliverables\n2. Payment schedule (% of total per milestone)\n3. Acceptance criteria for each milestone\n4. Risk mitigation strategies\n5. Communication checkpoints\n6. Contract clause recommendations for escrow protection`;
+        break;
+
+      case "video-portfolio":
+        systemPrompt = "You are a professional video scriptwriter and personal branding expert. Write compelling portfolio video intro scripts that convert viewers into clients.";
+        userPrompt = `Write a professional video portfolio intro script:\n\nName: ${params.name || "the freelancer"}\nSkills: ${params.skills}\nKey Projects: ${params.projects || "Not specified"}\nDesired Tone: ${params.tone || "Professional and confident"}\n\nProvide:\n1. A 60-second intro script (with timing markers)\n2. A 30-second elevator pitch version\n3. Opening hook options (3 alternatives)\n4. B-roll suggestions and visual cues\n5. Call-to-action closing lines\n6. Tips for recording (lighting, framing, delivery)`;
+        break;
+
+      case "provider-badge":
+        systemPrompt = "You are an AI quality assurance system for a professional services marketplace. Evaluate service providers and generate comprehensive verification reports with quality scores.";
+        userPrompt = `Evaluate this service provider for verification:\n\nSkills: ${params.skills}\nPortfolio: ${params.portfolio || "Not provided"}\nExperience: ${params.experience || "Not specified"}\nCertifications: ${params.certifications || "None listed"}\n\nProvide:\n1. Overall Quality Score (0-100) with breakdown\n2. Skill Verification Assessment (depth analysis)\n3. Portfolio Strength Rating (with improvement tips)\n4. Experience Credibility Score\n5. Recommended Badge Level (Bronze/Silver/Gold/Platinum)\n6. Specific improvements to reach the next badge level\n7. Trust signals to add to their profile`;
         break;
     }
 

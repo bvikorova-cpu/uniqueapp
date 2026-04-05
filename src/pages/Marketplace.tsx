@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { Briefcase, MapPin, Clock, Euro, Upload, X, Send, Trash2, ShoppingBag, Store, Wand2, DollarSign, FileText, Target, Eye, BarChart3 } from "lucide-react";
+import { Briefcase, MapPin, Clock, Euro, Upload, X, Send, Trash2, ShoppingBag, Store, Wand2, DollarSign, FileText, Target, Eye, BarChart3, Compass, Flag, Video, ShieldCheck } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
@@ -21,6 +21,10 @@ import { ProposalWriterView } from "@/components/marketplace/views/ProposalWrite
 import { ClientMatcherView } from "@/components/marketplace/views/ClientMatcherView";
 import { PortfolioReviewView } from "@/components/marketplace/views/PortfolioReviewView";
 import { MarketAnalysisView } from "@/components/marketplace/views/MarketAnalysisView";
+import { GigRecommendationView } from "@/components/marketplace/views/GigRecommendationView";
+import { MilestonePlannerView } from "@/components/marketplace/views/MilestonePlannerView";
+import { VideoPortfolioView } from "@/components/marketplace/views/VideoPortfolioView";
+import { ProviderBadgeView } from "@/components/marketplace/views/ProviderBadgeView";
 import { motion } from "framer-motion";
 import { Flame, TrendingUp, Award, Check } from "lucide-react";
 
@@ -107,6 +111,42 @@ const AI_TOOLS = [
     badge: "5 CR",
     gradient: "bg-gradient-to-r from-cyan-500 to-blue-500",
     features: ["Demand trends", "Competition level", "Pricing benchmarks"],
+  },
+  {
+    id: "gig-recommendation",
+    title: "AI Gig Recommendation",
+    description: "Personalized gig opportunities matched to your profile",
+    icon: Compass,
+    badge: "5 CR",
+    gradient: "bg-gradient-to-r from-amber-500 to-orange-500",
+    features: ["Gig matching", "Earning estimates", "30-day action plan"],
+  },
+  {
+    id: "milestone-planner",
+    title: "AI Milestone Planner",
+    description: "Escrow-ready project milestones & payment schedules",
+    icon: Flag,
+    badge: "4 CR",
+    gradient: "bg-gradient-to-r from-teal-500 to-emerald-500",
+    features: ["Payment schedules", "Acceptance criteria", "Risk mitigation"],
+  },
+  {
+    id: "video-portfolio",
+    title: "AI Video Portfolio Script",
+    description: "Professional video intro script for your portfolio",
+    icon: Video,
+    badge: "4 CR",
+    gradient: "bg-gradient-to-r from-purple-500 to-fuchsia-500",
+    features: ["60s intro script", "Elevator pitch", "Recording tips"],
+  },
+  {
+    id: "provider-badge",
+    title: "AI Provider Verification",
+    description: "Get AI-verified badge & quality score for your profile",
+    icon: ShieldCheck,
+    badge: "5 CR",
+    gradient: "bg-gradient-to-r from-yellow-500 to-amber-500",
+    features: ["Quality score", "Badge levels", "Trust signals"],
   },
 ];
 
@@ -257,6 +297,10 @@ const Marketplace = () => {
       "client-matcher": <ClientMatcherView onBack={() => setActiveView(null)} />,
       "portfolio-review": <PortfolioReviewView onBack={() => setActiveView(null)} />,
       "market-analysis": <MarketAnalysisView onBack={() => setActiveView(null)} />,
+      "gig-recommendation": <GigRecommendationView onBack={() => setActiveView(null)} />,
+      "milestone-planner": <MilestonePlannerView onBack={() => setActiveView(null)} />,
+      "video-portfolio": <VideoPortfolioView onBack={() => setActiveView(null)} />,
+      "provider-badge": <ProviderBadgeView onBack={() => setActiveView(null)} />,
     };
     return (
       <div className="min-h-screen bg-background pt-20 sm:pt-24 pb-12">
