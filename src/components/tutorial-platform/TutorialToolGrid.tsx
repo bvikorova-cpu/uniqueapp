@@ -3,7 +3,8 @@ import { Badge } from "@/components/ui/badge";
 import {
   BookOpen, Plus, ShoppingBag, Euro, TrendingUp, Users, Award,
   Brain, FileText, MessageCircle, Palette, Video, BarChart3,
-  Search, Star, Zap, BookMarked, Shield, Lightbulb, Calendar
+  Search, Star, Zap, BookMarked, Shield, Lightbulb, Calendar,
+  Languages, Activity, MessageSquare, Medal, Share2, FileVideo
 } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -17,9 +18,15 @@ const tools = [
   { id: "ai-outline", label: "AI Course Outline", icon: FileText, color: "from-violet-500 to-purple-600", desc: "AI course structure", ai: true, credits: 4 },
   { id: "ai-tutor", label: "AI Tutor Chat", icon: MessageCircle, color: "from-cyan-500 to-blue-600", desc: "Personal AI tutor", ai: true, credits: 3 },
   { id: "ai-certificate", label: "AI Certificate", icon: Award, color: "from-amber-500 to-orange-600", desc: "Custom certificates", ai: true, credits: 5 },
+  { id: "ai-translator", label: "AI Translator", icon: Languages, color: "from-blue-500 to-indigo-600", desc: "Translate courses", ai: true, credits: 4 },
+  { id: "ai-summarizer", label: "AI Video Notes", icon: FileVideo, color: "from-rose-500 to-red-600", desc: "Summarize video lessons", ai: true, credits: 5 },
+  { id: "reviews", label: "Course Reviews", icon: MessageSquare, color: "from-amber-500 to-yellow-600", desc: "AI sentiment analysis", ai: true, credits: 4 },
   { id: "trending", label: "Trending Courses", icon: TrendingUp, color: "from-red-500 to-rose-600", desc: "Most popular now", ai: false },
   { id: "leaderboard", label: "Leaderboard", icon: Star, color: "from-orange-500 to-amber-600", desc: "Top educators", ai: false },
   { id: "analytics", label: "Course Analytics", icon: BarChart3, color: "from-teal-500 to-emerald-600", desc: "Performance insights", ai: false },
+  { id: "heatmap", label: "Progress Heatmap", icon: Activity, color: "from-emerald-500 to-green-600", desc: "Learning activity map", ai: false },
+  { id: "badges", label: "Badges & XP", icon: Medal, color: "from-amber-500 to-orange-600", desc: "Gamification rewards", ai: false },
+  { id: "affiliates", label: "Affiliate Program", icon: Share2, color: "from-green-500 to-emerald-600", desc: "Earn from referrals", ai: false },
   { id: "community", label: "Community", icon: Users, color: "from-sky-500 to-blue-600", desc: "Discussion forums", ai: false },
   { id: "live-sessions", label: "Live Sessions", icon: Video, color: "from-rose-500 to-pink-600", desc: "Schedule live classes", ai: false },
   { id: "resources", label: "Resources", icon: BookMarked, color: "from-lime-500 to-green-600", desc: "Templates & materials", ai: false },
@@ -52,7 +59,7 @@ export function TutorialToolGrid({ onToolSelect }: Props) {
             >
               {tool.ai && (
                 <Badge className="absolute top-1.5 right-1.5 text-[8px] md:text-[9px] px-1.5 py-0 bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0">
-                  {tool.credits} CR
+                  {(tool as any).credits} CR
                 </Badge>
               )}
               <div className={`w-9 h-9 md:w-11 md:h-11 rounded-xl bg-gradient-to-br ${tool.color} flex items-center justify-center mb-2 shadow-lg group-hover:shadow-xl transition-shadow`}>

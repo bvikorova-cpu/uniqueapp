@@ -89,6 +89,21 @@ serve(async (req) => {
         userPrompt = `Analyze this text for originality:\n\n${params.text}`;
         break;
 
+      case "translate-course":
+        systemPrompt = "You are a professional course translator. Translate educational content accurately while preserving formatting, technical terms, and educational context. Maintain the same structure and tone.";
+        userPrompt = `Translate this ${params.contentType} content to ${params.targetLang}:\n\n${params.content}`;
+        break;
+
+      case "analyze-reviews":
+        systemPrompt = "You are an educational analytics expert. Analyze course reviews and provide: overall sentiment breakdown (positive/neutral/negative %), key themes, common praise points, common complaints, actionable improvement suggestions, and a brief executive summary.";
+        userPrompt = `Analyze these course reviews and provide a detailed sentiment analysis report:\n\n${params.reviews}`;
+        break;
+
+      case "summarize-video":
+        systemPrompt = "You are an expert note-taker and educational content summarizer. Create clear, well-structured study notes from video transcripts. Include key concepts, important details, and actionable takeaways.";
+        userPrompt = `Create ${params.summaryType} summary notes for the video "${params.videoTitle || 'Untitled'}":\n\n${params.transcript}`;
+        break;
+
       default:
         return new Response(JSON.stringify({ error: `Unknown action: ${action}` }), {
           status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
