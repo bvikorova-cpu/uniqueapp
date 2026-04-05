@@ -39,7 +39,7 @@ export function StockContentHero() {
 
       <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-3 pb-28 md:pb-24">
         <div className="border-2 border-blue-400/70 bg-black/60 backdrop-blur-xl rounded-2xl px-5 md:px-10 py-4 md:py-6 mb-3 shadow-[0_0_60px_rgba(59,130,246,0.35),inset_0_0_30px_rgba(59,130,246,0.1)]">
-          <h1 className="text-2xl md:text-5xl font-black text-white tracking-wider whitespace-nowrap drop-shadow-[0_0_20px_rgba(59,130,246,0.6)]" style={{ textShadow: '0 0 30px rgba(59,130,246,0.5), 0 0 60px rgba(59,130,246,0.3), 0 2px 4px rgba(0,0,0,0.8)' }}>
+          <h1 className="text-lg md:text-5xl font-black text-white tracking-wider whitespace-nowrap drop-shadow-[0_0_20px_rgba(59,130,246,0.6)]" style={{ textShadow: '0 0 30px rgba(59,130,246,0.5), 0 0 60px rgba(59,130,246,0.3), 0 2px 4px rgba(0,0,0,0.8)' }}>
             🎨 STOCK CONTENT LIBRARY
           </h1>
         </div>
