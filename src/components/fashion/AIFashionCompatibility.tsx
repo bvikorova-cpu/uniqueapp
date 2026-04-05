@@ -20,7 +20,7 @@ export default function AIFashionCompatibility() {
     if (!outfit1.trim() || !outfit2.trim()) { toast.error("Describe both outfits"); return; }
     try {
       setIsAnalyzing(true);
-      const { data, error } = await supabase.functions.invoke("fashion-compatibility", { body: { outfit1, outfit2 } });
+      const { data, error } = await supabase.functions.invoke("fashion-ai", { body: { action: "compatibility", outfit1, outfit2 } });
       if (error) throw error;
       setResult(data.analysis);
       toast.success("Compatibility analysis complete!");

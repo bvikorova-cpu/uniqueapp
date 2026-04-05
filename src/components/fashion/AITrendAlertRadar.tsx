@@ -18,7 +18,7 @@ export default function AITrendAlertRadar() {
   const handleAnalyze = async () => {
     try {
       setIsAnalyzing(true);
-      const { data, error } = await supabase.functions.invoke("fashion-trend-radar", { body: { category: category || "general fashion" } });
+      const { data, error } = await supabase.functions.invoke("fashion-ai", { body: { action: "trend-radar", category: category || "general fashion" } });
       if (error) throw error;
       setResult(data.analysis);
       toast.success("Trend radar scan complete!");
