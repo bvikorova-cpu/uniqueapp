@@ -4,7 +4,8 @@ import {
   BookOpen, Plus, ShoppingBag, Euro, TrendingUp, Users, Award,
   Brain, FileText, MessageCircle, Palette, Video, BarChart3,
   Search, Star, Zap, BookMarked, Shield, Lightbulb, Calendar,
-  Languages, Activity, MessageSquare, Medal, Share2, FileVideo
+  Languages, Activity, MessageSquare, Medal, Share2, FileVideo,
+  FileCheck, CalendarDays, Layers, Presentation
 } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -20,6 +21,10 @@ const tools = [
   { id: "ai-certificate", label: "AI Certificate", icon: Award, color: "from-amber-500 to-orange-600", desc: "Custom certificates", ai: true, credits: 5 },
   { id: "ai-translator", label: "AI Translator", icon: Languages, color: "from-blue-500 to-indigo-600", desc: "Translate courses", ai: true, credits: 4 },
   { id: "ai-summarizer", label: "AI Video Notes", icon: FileVideo, color: "from-rose-500 to-red-600", desc: "Summarize video lessons", ai: true, credits: 5 },
+  { id: "ai-grader", label: "AI Homework Grader", icon: FileCheck, color: "from-emerald-600 to-green-700", desc: "Auto-grade submissions", ai: true, credits: 5 },
+  { id: "ai-study-plan", label: "AI Study Plan", icon: CalendarDays, color: "from-blue-600 to-indigo-700", desc: "Personalized learning paths", ai: true, credits: 4 },
+  { id: "ai-flashcards", label: "AI Flashcard Maker", icon: Layers, color: "from-violet-600 to-purple-700", desc: "Generate study flashcards", ai: true, credits: 4 },
+  { id: "ai-presentation", label: "AI Presentation", icon: Presentation, color: "from-rose-600 to-pink-700", desc: "Build slide decks", ai: true, credits: 5 },
   { id: "reviews", label: "Course Reviews", icon: MessageSquare, color: "from-amber-500 to-yellow-600", desc: "AI sentiment analysis", ai: true, credits: 4 },
   { id: "trending", label: "Trending Courses", icon: TrendingUp, color: "from-red-500 to-rose-600", desc: "Most popular now", ai: false },
   { id: "leaderboard", label: "Leaderboard", icon: Star, color: "from-orange-500 to-amber-600", desc: "Top educators", ai: false },
