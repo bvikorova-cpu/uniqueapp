@@ -18,10 +18,18 @@ async function callAI(apiKey: string, messages: any[]) {
   try { return JSON.parse(content); } catch { return { result: content }; }
 }
 
+const platformGuide: Record<string, string> = {
+  instagram: "Visual-first, 2200 char limit, hashtag-driven",
+  twitter: "280 char limit, conversational, thread-friendly",
+  linkedin: "Professional tone, 3000 char limit, B2B focused",
+  tiktok: "Casual, trendy, hook-driven, 150 char description",
+  facebook: "Conversational, sharable, 63k char limit",
+};
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
   try {
-    const { action, ...params } = await req.json();
+    const { action, topic, content, context, details, prompt, sourceContent, targetKeyword, count, contentType, platform, postCount, guidelines, systemPrompt, ...params } = await req.json();
     const apiKey = Deno.env.get("OPENAI_API_KEY");
     if (!apiKey) throw new Error("API key not configured");
     
@@ -42,53 +50,46 @@ Deno.serve(async (req) => {
       case "ab-test":
         result = await callAI(apiKey, [
           { role: "system", content: "You are an expert A/B testing copywriter. Generate multiple high-converting variants and recommend the best one with reasoning." },
-          { role: "user", content: `Generate ${count} A/B test variants for:\nTopic: ${params.topic}\nContent Type: ${contentType || "email_subject"}\n${context ? `Context: ${params.context}` : ""}\n\nEach variant should be unique in approach (emotional, logical, urgency, curiosity, social proof, etc). Recommend the best variant.` },
+          { role: "user", content: `Generate ${count || 3} A/B test variants for:\nTopic: ${topic}\nContent Type: ${contentType || "email_subject"}\n${context ? `Context: ${context}` : ""}\n\nEach variant should be unique in approach. Recommend the best variant.` },
         ]);
         break;
       case "brand-voice":
         result = await callAI(apiKey, [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: prompt },
+          { role: "system", content: systemPrompt || "You are a brand voice expert." },
+          { role: "user", content: prompt || topic || "" },
         ]);
         break;
       case "bulk-generate":
         result = await callAI(apiKey, [
           { role: "system", content: "You are a social media content expert. Generate unique, engaging posts that each take a different angle on the topic." },
-          { role: "user", content: `Generate ${postCount} unique ${platform || "social media"} posts about: ${params.topic}\n\nPlatform guidelines: ${platformGuide[platform] || "General social media"}\n${guidelines ? `Brand guidelines: ${params.guidelines}` : ""}\n\nEach post must be unique with a different angle, hook, or perspective.` },
+          { role: "user", content: `Generate ${postCount || 5} unique ${platform || "social media"} posts about: ${topic}\n\nPlatform guidelines: ${platformGuide[platform] || "General social media"}\n${guidelines ? `Brand guidelines: ${guidelines}` : ""}\n\nEach post must be unique with a different angle, hook, or perspective.` },
         ]);
         break;
       case "plagiarism":
         result = await callAI(apiKey, [
           {
             role: "system",
-            content: `You are a plagiarism and originality checker. Analyze the provided text for:
-1. Overall originality score (0-100%)
-2. Common phrases, clichés, or generic content that might appear unoriginal
-3. Sections that seem templated or widely used
-4. Suggestions for making the content more unique
-
-Return your analysis as a JSON object with this exact structure:
-{
-  "originalityScore": number (0-100),
-  "analysis": "detailed analysis string",
-  "suggestions": ["suggestion1", "suggestion2", ...]);
+            content: `You are a plagiarism and originality checker. Analyze the provided text. Return JSON: { "originalityScore": number (0-100), "analysis": "string", "suggestions": ["string"] }`
+          },
+          { role: "user", content: content || "" },
+        ]);
         break;
       case "repurpose":
         result = await callAI(apiKey, [
           { role: "system", content: "You are a content repurposing expert. Transform the given content into the requested formats. Return valid JSON only." },
-          { role: "user", content: `Transform this content into the following formats. Return a JSON object with format IDs as keys and the repurposed content as string values.\n\nFormats:\n${formatList}\n\nSource content:\n${params.sourceContent}` },
+          { role: "user", content: `Transform this content into multiple formats. Return a JSON object with format names as keys and repurposed content as string values.\n\nSource content:\n${sourceContent || content || ""}` },
         ]);
         break;
       case "seo-analyze":
         result = await callAI(apiKey, [
           { role: "system", content: "You are an expert SEO analyst. Analyze content for keyword optimization, readability, and provide actionable improvements." },
-          { role: "user", content: `Analyze this content for SEO optimization with target keyword "${params.targetKeyword}".\n\nContent (${content.split(/\s+/).length} words):\n${content.substring(0, 5000)}\n\nProvide: overall score (0-100), title analysis with score, keyword density analysis for the target keyword and related keywords, readability score, 5+ specific improvement suggestions, and a suggested meta description.` },
+          { role: "user", content: `Analyze this content for SEO optimization with target keyword "${targetKeyword || ""}".\n\nContent:\n${(content || "").substring(0, 5000)}\n\nProvide: overall score (0-100), keyword density analysis, readability score, 5+ improvement suggestions, and a suggested meta description.` },
         ]);
         break;
       case "templates":
         result = await callAI(apiKey, [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: `Topic: ${params.topic}\n\nAdditional details: ${details || "None provided"}` },
+          { role: "system", content: systemPrompt || "You are a content creation expert." },
+          { role: "user", content: `Topic: ${topic}\n\nAdditional details: ${details || "None provided"}` },
         ]);
         break;
       default: throw new Error(`Unknown action: ${action}`);

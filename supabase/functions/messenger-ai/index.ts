@@ -19,10 +19,24 @@ async function callOpenAI(apiKey: string, messages: any[]) {
   return data.choices?.[0]?.message?.content || "";
 }
 
+const styles: Record<string, string> = {
+  heartfelt: "Write with genuine warmth and emotional depth.",
+  poetic: "Use poetic language and metaphors.",
+  funny: "Be witty, clever, and humorous.",
+  professional: "Keep it respectful and professionally warm.",
+};
+
+const variationPrompts: Record<string, string> = {
+  mood: "Create variations of the message in different emotional tones.",
+  formality: "Create variations ranging from casual to formal.",
+  length: "Create short, medium, and long versions.",
+  style: "Create variations in different writing styles.",
+};
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
   try {
-    const { action, ...params } = await req.json();
+    const { action, style, recipientName, context, conversationText, text, variationType, messages: msgHistory, ...params } = await req.json();
     const apiKey = Deno.env.get("OPENAI_API_KEY");
     if (!apiKey) throw new Error("API key not configured");
     
@@ -38,7 +52,6 @@ Deno.serve(async (req) => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error("Unauthorized");
     
-    // Check and deduct credits
     const { data: credits } = await supabase
       .from("messenger_ai_credits")
       .select("credits_remaining")
@@ -59,102 +72,65 @@ Deno.serve(async (req) => {
             role: 'system',
             content: `You are a master of writing beautiful, anonymous compliments that make people feel special.
             ${styles[style] || styles.heartfelt}
-            
-            Create a unique, memorable compliment that:
-            - Is anonymous (no hints about the sender)
-            - Is genuine and specific if context is provided
-            - Makes the recipient feel truly valued
-            - Is appropriate and respectful
-            
-            Return a JSON object with:
-            {
-              "compliment": "the beautiful compliment text",
-              "emoji": "fitting emoji",
-              "category": "friendship|kindness|talent|personality|beauty|wisdom"
-            }`
+            Create a unique, memorable compliment. Return a JSON object with: "compliment", "emoji", "category".`
           },
-          {
-            role: 'user',
-            content: `Create an anonymous compliment for ${recipientName || 'someone special'}. ${context ? `Context: ${params.context}` : ''}`
-          }
+          { role: 'user', content: `Create an anonymous compliment for ${recipientName || 'someone special'}. ${context ? `Context: ${context}` : ''}` }
         ]);
         break;
       case "emotional-weather":
         result = await callOpenAI(apiKey, [
           {
             role: 'system',
-            content: `You are an emotional intelligence AI that analyzes conversations and provides an "emotional weather report". 
-            Analyze the emotional tone, dynamics, and overall mood of the conversation.
-            
-            Return a JSON object with:
-            {
-              "weather": "sunny|cloudy|rainy|stormy|rainbow|foggy",
-              "temperature": "warm|cool|cold|hot",
-              "emoji": "appropriate weather emoji",
-              "dominantEmotions": ["emotion1", "emotion2", "emotion3"]);
+            content: `You are an emotional intelligence AI that analyzes conversations and provides an "emotional weather report". Return a JSON object with: "weather" (sunny|cloudy|rainy|stormy|rainbow|foggy), "temperature" (warm|cool|cold|hot), "emoji", "dominantEmotions" (array of 3), "forecast" (brief prediction), "advice" (suggestion).`
+          },
+          { role: 'user', content: `Analyze the emotional weather of this conversation:\n\n${conversationText || context || ""}` }
+        ]);
         break;
       case "quantum-message":
         result = await callOpenAI(apiKey, [
           {
             role: 'system',
-            content: `You are a creative message writer. ${variationPrompts[variationType] || variationPrompts.mood}
-            
-            Return a JSON object with:
-            {
-              "variations": [
-                { "type": "type name", "message": "variation text", "emoji": "fitting emoji" }
-              ]);
+            content: `You are a creative message writer. ${variationPrompts[variationType] || variationPrompts.mood} Return a JSON object with: "variations" (array of objects with "type", "message", "emoji").`
+          },
+          { role: 'user', content: text || "" }
+        ]);
         break;
       case "smart-reply":
         result = await callOpenAI(apiKey, [
-          {
-            role: 'system',
-            content: `You are a smart reply assistant. Based on the conversation context, suggest 3 short, natural reply options. Return only the 3 suggestions, one per line, no numbering or bullets.`
-          },
-          { role: 'user', content: `Suggest replies for this conversation:\n\n${context}` }
+          { role: 'system', content: 'You are a smart reply assistant. Based on the conversation context, suggest 3 short, natural reply options. Return only the 3 suggestions, one per line, no numbering or bullets.' },
+          { role: 'user', content: `Suggest replies for this conversation:\n\n${context || ""}` }
         ]);
         break;
       case "summarize":
         result = await callOpenAI(apiKey, [
-          {
-            role: 'system',
-            content: `You are a conversation summarizer. Provide a concise summary of the conversation highlighting key points, decisions, and action items. Keep it brief (2-4 sentences).`
-          },
-          { role: 'user', content: `Summarize this conversation:\n\n${conversationText}` }
+          { role: 'system', content: 'You are a conversation summarizer. Provide a concise summary of the conversation highlighting key points, decisions, and action items. Keep it brief (2-4 sentences).' },
+          { role: 'user', content: `Summarize this conversation:\n\n${conversationText || ""}` }
         ]);
         break;
       case "translate":
         result = await callOpenAI(apiKey, [
-          {
-            role: 'system',
-            content: `You are a translator. Translate the given text to ${params.targetLanguage}. Only respond with the translation, nothing else.`
-          },
-          { role: 'user', content: text }
+          { role: 'system', content: `You are a translator. Translate the given text to ${params.targetLanguage || "English"}. Only respond with the translation, nothing else.` },
+          { role: 'user', content: text || "" }
+        ]);
+        break;
+      case "time-capsule":
+        result = await callOpenAI(apiKey, [
+          { role: 'system', content: 'You are a time capsule message creator. Write a heartfelt message to be opened in the future. Return JSON with "message", "reflection_prompts" (array of 3).' },
+          { role: 'user', content: text || context || "" }
         ]);
         break;
       case "what-if":
         result = await callOpenAI(apiKey, [
           {
             role: 'system',
-            content: `You are a creative "What If" life story generator. Create an engaging, detailed alternative life story based on a different life decision.
-            
-            The story should:
-            - Be 300-400 words
-            - Include specific details and scenes
-            - Show both positive outcomes and challenges
-            - Feel personal and relatable
-            - End with a thoughtful reflection
-            
-            Return a JSON object with:
-            {
-              "title": "catchy title for this alternative life",
-              "story": "the full story text",
-              "keyMoments": ["moment1", "moment2", "moment3"]);
+            content: `You are a creative "What If" life story generator. Create an engaging alternative life story (300-400 words). Return a JSON object with: "title", "story", "keyMoments" (array of 3).`
+          },
+          { role: 'user', content: text || context || "" }
+        ]);
         break;
       default: throw new Error(`Unknown action: ${action}`);
     }
     
-    // Deduct credit
     await supabase
       .from("messenger_ai_credits")
       .update({ credits_remaining: credits.credits_remaining - CREDIT_COST })

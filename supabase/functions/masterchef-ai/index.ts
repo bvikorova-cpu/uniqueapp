@@ -20,21 +20,25 @@ async function callAI(apiKey: string, messages: any[]) {
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
   try {
-    const { action, ...params } = await req.json();
+    const { action, prompt, image, ...params } = await req.json();
     const apiKey = Deno.env.get("OPENAI_API_KEY");
     if (!apiKey) throw new Error("API key not configured");
     let result: any;
     switch (action) {
+      case "ai-coach":
+        result = await callAI(apiKey, [{ role: 'system', content: 'You are a professional cooking coach.' }, { role: 'user', content: prompt || "" }]);
+        break;
       case "ai-recipe":
-        result = await callAI(apiKey, [{ role: 'system', content: 'You are a professional chef.' }, { role: 'user', content: prompt }]);
+        result = await callAI(apiKey, [{ role: 'system', content: 'You are a professional chef.' }, { role: 'user', content: prompt || "" }]);
         break;
       case "nutrition-analyze":
-        result = await callAI(apiKey, [{ role: 'system', content: 'You are a nutritionist and food scientist.' }, { role: 'user', content: prompt }]);
+        result = await callAI(apiKey, [{ role: 'system', content: 'You are a nutritionist and food scientist.' }, { role: 'user', content: prompt || "" }]);
         break;
       case "scan-ingredients":
         result = await callAI(apiKey, [
           { role: 'system', content: 'You are a professional chef and food expert. Identify all ingredients in the image and suggest 3 dishes that could be made with them. For each dish, provide a brief recipe outline.' },
-          { role: 'user', content: [{ type: 'image_url', image_url: { url: image } }, { type: 'text', text: 'Identify all ingredients in this image and suggest 3 dishes I can make with them. Include brief recipes.' }]);
+          { role: 'user', content: image ? [{ type: 'image_url', image_url: { url: image } }, { type: 'text', text: 'Identify all ingredients in this image and suggest 3 dishes I can make with them. Include brief recipes.' }] : (prompt || "List common ingredients") }
+        ]);
         break;
       default: throw new Error(`Unknown action: ${action}`);
     }
