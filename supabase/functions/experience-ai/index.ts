@@ -11,7 +11,7 @@ async function callAI(apiKey: string, messages: any[]) {
     headers: { "Authorization": `Bearer ${apiKey}`, "Content-Type": "application/json" },
     body: JSON.stringify({ model: "gpt-4o-mini", messages }),
   });
-  if (!response.ok) throw new Error(`AI error: ${response.status}`);
+  if (!response.ok) throw new Error("AI error: " + response.status);
   const data = await response.json();
   const content = data.choices?.[0]?.message?.content || "";
   try { return JSON.parse(content); } catch { return { result: content }; }
@@ -20,52 +20,31 @@ async function callAI(apiKey: string, messages: any[]) {
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
   try {
-    const { action, ...params } = await req.json();
+    const body = await req.json();
+    const { action, ...p } = body;
     const apiKey = Deno.env.get("OPENAI_API_KEY");
     if (!apiKey) throw new Error("API key not configured");
     let result: any;
     switch (action) {
       case "destination-recommender":
         result = await callAI(apiKey, [
-          {
-            role: "system",
-            content: "You are an expert travel advisor. Recommend destinations based on user preferences. Always respond in valid JSON format."
-          },
-          {
-            role: "user",
-            content: `Recommend 5 travel destinations based on these preferences:
-            - Travel style: ${params.travelStyle}
-            - Climate: ${params.climate}
-            - Budget: ${params.budgetLevel}
-            - Interests: ${interests?.join(", ") || "general"}
-            
-            Return JSON: { "recommendations": [{ "destination": "string", "description": "string (2-3 sentences)", "match_score": number (70-99), "best_season": "string", "highlights": ["string", "string", "string"]);
+          { role: "system", content: "You are an expert travel advisor. Recommend destinations based on user preferences. Always respond in valid JSON format with a recommendations array." },
+          { role: "user", content: "Recommend 5 travel destinations based on these preferences: Travel style: " + p.travelStyle + ", Climate: " + p.climate + ", Budget: " + p.budgetLevel + ", Interests: " + ((p.interests || []).join(", ") || "general") + ". Return JSON: { recommendations: [{ destination, description, match_score, best_season, highlights }] }" }
+        ]);
         break;
       case "travel-planner":
         result = await callAI(apiKey, [
-          {
-            role: "system",
-            content: "You are an expert travel planner. Create detailed, personalized travel itineraries. Always respond in valid JSON format."
-          },
-          {
-            role: "user",
-            content: `Create a ${params.days}-day travel itinerary for ${params.destination}. Budget level: ${params.budget}. Interests: ${interests?.join(", ") || "general"}. 
-            
-            Return JSON: { "title": "string", "overview": "string", "days": [{ "theme": "string", "morning": "string", "afternoon": "string", "evening": "string", "food_tip": "string", "culture_tip": "string" }]);
+          { role: "system", content: "You are an expert travel planner. Create detailed, personalized travel itineraries. Always respond in valid JSON format." },
+          { role: "user", content: "Create a " + p.days + "-day travel itinerary for " + p.destination + ". Budget level: " + p.budget + ". Interests: " + ((p.interests || []).join(", ") || "general") + ". Return JSON: { title, overview, days: [{ theme, morning, afternoon, evening, food_tip, culture_tip }] }" }
+        ]);
         break;
       case "virtual-postcard":
         result = await callAI(apiKey, [
-          {
-            role: "system",
-            content: `You are a creative postcard writer. Write beautiful, evocative postcard text in a ${params.style} style. Include vivid descriptions of the destination. Keep it concise (100-200 words).`
-          },
-          {
-            role: "user",
-            content: `Write a ${params.style} postcard from ${params.destination} to ${params.recipientName}. The sender's personal message: "${params.message}". Create a beautiful postcard text that combines the destination's atmosphere with the personal message.`
-          }
+          { role: "system", content: "You are a creative postcard writer. Write beautiful, evocative postcard text in a " + (p.style || "poetic") + " style. Include vivid descriptions. Keep it 100-200 words." },
+          { role: "user", content: "Write a " + (p.style || "poetic") + " postcard from " + p.destination + " to " + p.recipientName + ". The sender's personal message: " + p.message }
         ]);
         break;
-      default: throw new Error(`Unknown action: ${action}`);
+      default: throw new Error("Unknown action: " + action);
     }
     return new Response(JSON.stringify(result), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e: any) {

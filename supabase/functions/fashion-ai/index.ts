@@ -1,5 +1,4 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -9,33 +8,36 @@ const corsHeaders = {
 async function callAI(apiKey: string, apiUrl: string, model: string, messages: any[], tools?: any[], toolChoice?: any) {
   const body: any = { model, messages };
   if (tools) { body.tools = tools; body.tool_choice = toolChoice; }
-  
   const response = await fetch(apiUrl, {
     method: "POST",
     headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
     body: JSON.stringify(body),
   });
-
   if (!response.ok) {
     if (response.status === 429) throw { status: 429, message: "Rate limited" };
-    if (response.status === 402) throw { status: 402, message: "Payment required" };
     throw new Error("AI gateway error");
   }
-
   const aiData = await response.json();
   const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
   if (toolCall) {
     try { return JSON.parse(toolCall.function.arguments); } catch { return { result: toolCall.function.arguments }; }
   }
-  return { result: aiData.choices?.[0]?.message?.content };
+  const content = aiData.choices?.[0]?.message?.content || "";
+  try { return JSON.parse(content); } catch { return { result: content }; }
+}
+
+function makeTool(name: string, props: Record<string, { type: string }>) {
+  return [{
+    type: "function",
+    function: { name, description: `Return ${name}`, parameters: { type: "object", properties: props, required: Object.keys(props) } }
+  }, { type: "function", function: { name } }];
 }
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
-
   try {
     const body = await req.json();
-    const { action, ...params } = body;
+    const { action, ...p } = body;
     if (!action) throw new Error("Action required");
 
     const LOVABLE_KEY = Deno.env.get("LOVABLE_API_KEY");
@@ -44,358 +46,217 @@ Deno.serve(async (req) => {
     const openaiUrl = "https://api.openai.com/v1/chat/completions";
 
     let result: any;
+    const [tool, tc] = (toolName: string, props: Record<string, { type: string }>) => makeTool(toolName, props);
 
     switch (action) {
       case "battle-score":
-        result = await callAI(OPENAI_KEY!, openaiUrl, "gpt-4o-mini",
-          [
-          { role: 'system', content: 'You are a professional fashion competition judge. Score outfits based on theme adherence, creativity, style, and overall impact. Return JSON.' },
-          { role: 'user', content: `Score this outfit for a style battle:\n\nBattle Theme: ${params.battleTheme}\nOutfit: ${params.outfitDescription}\n\nReturn JSON with: theme_score (1-100), creativity_score (1-100), style_score (1-100), impact_score (1-100), overall_score (1-100), judge_commentary (detailed feedback string), standout_elements (array of strings), areas_to_improve (array of strings)` }
-        ]
-        );
+        result = await callAI(OPENAI_KEY!, openaiUrl, "gpt-4o-mini", [
+          { role: "system", content: "You are a professional fashion competition judge. Score outfits. Return JSON with: theme_score, creativity_score, style_score, impact_score, overall_score (all 1-100), judge_commentary, standout_elements (array), areas_to_improve (array)." },
+          { role: "user", content: `Score this outfit for a style battle:\nBattle Theme: ${p.battleTheme}\nOutfit: ${p.outfitDescription}` }
+        ]);
         break;
-      case "body-shape":
-        result = await callAI(LOVABLE_KEY!, lovableUrl, "google/gemini-2.5-flash",
-          [
-          { role: "system", content: "You are a body-positive fashion stylist who helps people dress for their body shape with confidence. Focus on enhancing natural features and celebrating body diversity." },
-          { role: "user", content: `Analyze body shape and provide styling advice:\n\nHeight: ${params.height}cm\nBody Shape: ${params.bodyShape}\nStyle Goal: ${params.styleGoal}\n\nProvide:\n1. shapeAnalysis: Analysis of body proportions and strengths\n2. bestStyles: Silhouettes, cuts, and styles that work best\n3. avoidStyles: Common style mistakes and what to avoid\n4. shoppingGuide: Specific brands and pieces to look for` }
-        ]
-          , [{
-          type: "function",
-          function: {
-            name: "body_shape_result",
-            description: "Return body shape analysis",
-            parameters: {
-              type: "object",
-              properties: {
-                shapeAnalysis: { type: "string" },
-                bestStyles: { type: "string" },
-                avoidStyles: { type: "string" },
-                shoppingGuide: { type: "string" }
-              },
-              required: ["shapeAnalysis", "bestStyles", "avoidStyles", "shoppingGuide"]
-            }
-          }
-        }]
-          , { type: "function", function: { name: "body_shape_result" } }
-        );
+
+      case "body-shape": {
+        const [tools, toolChoice] = makeTool("body_shape_result", { shapeAnalysis: { type: "string" }, bestStyles: { type: "string" }, avoidStyles: { type: "string" }, shoppingGuide: { type: "string" } });
+        result = await callAI(LOVABLE_KEY!, lovableUrl, "google/gemini-2.5-flash", [
+          { role: "system", content: "You are a body-positive fashion stylist who helps people dress for their body shape with confidence." },
+          { role: "user", content: `Analyze body shape and provide styling advice:\nHeight: ${p.height}cm\nBody Shape: ${p.bodyShape}\nStyle Goal: ${p.styleGoal}` }
+        ], tools, toolChoice);
         break;
+      }
+
       case "celebrity-clone":
-        result = await callAI(OPENAI_KEY!, openaiUrl, "gpt-4o-mini",
-          [{
-          role: "system",
-          content: "You are a celebrity fashion analyst. Break down celebrity looks and find budget alternatives. Return JSON only."
-        }, {
-          role: "user",
-          content: `Break down ${params.celebrity}'s most iconic recent look and find ${params.budget_level} budget alternatives. Return JSON: { "celebrity": "", "look_description": "", "style_era": "", "difficulty_to_recreate": "Easy/Medium/Hard", "items": [{"original_item":"","brand":"","estimated_price":"€500","budget_alternative":"","budget_brand":"","budget_price":"€45","match_accuracy":85}]
-        );
+        result = await callAI(OPENAI_KEY!, openaiUrl, "gpt-4o-mini", [
+          { role: "system", content: "You are a celebrity fashion analyst. Break down celebrity looks and find budget alternatives. Return JSON with: celebrity, look_description, style_era, difficulty_to_recreate, items (array with original_item, brand, estimated_price, budget_alternative, budget_brand, budget_price, match_accuracy)." },
+          { role: "user", content: `Break down ${p.celebrity}'s most iconic recent look and find ${p.budget_level} budget alternatives.` }
+        ]);
         break;
-      case "color-harmony":
-        result = await callAI(LOVABLE_KEY!, lovableUrl, "google/gemini-2.5-flash",
-          [
-          { role: "system", content: "You are an expert color consultant specializing in fashion and personal styling. You understand color theory, seasonal color analysis, and how colors interact with different skin tones." },
-          { role: "user", content: `Create a color harmony analysis:\n\nBase Color: ${params.baseColor}\nOccasion: ${params.occasion}\nSkin Tone: ${params.skinTone}\n\nProvide:\n1. harmonicPalette: 5-7 harmonious colors that work with the base color\n2. outfitCombinations: 3-4 complete outfit color combinations\n3. avoidColors: Colors that clash or don't work\n4. seasonalAdaptation: How to adapt this palette across seasons` }
-        ]
-          , [{
-          type: "function",
-          function: {
-            name: "color_harmony",
-            description: "Return color harmony analysis",
-            parameters: {
-              type: "object",
-              properties: {
-                harmonicPalette: { type: "string" },
-                outfitCombinations: { type: "string" },
-                avoidColors: { type: "string" },
-                seasonalAdaptation: { type: "string" }
-              },
-              required: ["harmonicPalette", "outfitCombinations", "avoidColors", "seasonalAdaptation"]
-            }
-          }
-        }]
-          , { type: "function", function: { name: "color_harmony" } }
-        );
+
+      case "color-harmony": {
+        const [tools, toolChoice] = makeTool("color_harmony", { harmonicPalette: { type: "string" }, outfitCombinations: { type: "string" }, avoidColors: { type: "string" }, seasonalAdaptation: { type: "string" } });
+        result = await callAI(LOVABLE_KEY!, lovableUrl, "google/gemini-2.5-flash", [
+          { role: "system", content: "You are an expert color consultant specializing in fashion and personal styling." },
+          { role: "user", content: `Create a color harmony analysis:\nBase Color: ${p.baseColor}\nOccasion: ${p.occasion}\nSkin Tone: ${p.skinTone}` }
+        ], tools, toolChoice);
         break;
+      }
+
       case "color-season":
-        result = await callAI(OPENAI_KEY!, openaiUrl, "gpt-4o-mini",
-          [{
-          role: "system",
-          content: "You are an expert color analyst specializing in seasonal color analysis for fashion. Return JSON only."
-        }, {
-          role: "user",
-          content: `Perform seasonal color analysis for: skin tone=${params.skin_tone}, hair=${params.hair_color}, eyes=${params.eye_color}, undertone=${params.undertone}. Return JSON: { "season": "Spring/Summer/Autumn/Winter", "sub_season": "e.g. Deep Winter", "description": "", "best_colors": [{"name":"","hex":"#hex","usage":""}]
-        );
+        result = await callAI(OPENAI_KEY!, openaiUrl, "gpt-4o-mini", [
+          { role: "system", content: "You are an expert color analyst specializing in seasonal color analysis for fashion. Return JSON with: season, sub_season, description, best_colors (array with name, hex, usage)." },
+          { role: "user", content: `Perform seasonal color analysis for: skin tone=${p.skin_tone}, hair=${p.hair_color}, eyes=${p.eye_color}, undertone=${p.undertone}.` }
+        ]);
         break;
+
       case "compatibility":
-        result = await callAI(OPENAI_KEY!, openaiUrl, "gpt-4o-mini",
-          [
-          { role: "system", content: "You are a fashion compatibility analyst. Compare two styles/outfits and provide: 1) Compatibility score (0-100%), 2) Style harmony analysis, 3) Color compatibility, 4) Occasion overlap, 5) How to blend both styles, 6) Hybrid outfit suggestions combining elements. Use markdown." },
-          { role: "user", content: `Analyze compatibility between:\n\nStyle 1: ${params.outfit1}\n\nStyle 2: ${params.outfit2}` }
-        ]
-        );
+        result = await callAI(OPENAI_KEY!, openaiUrl, "gpt-4o-mini", [
+          { role: "system", content: "You are a fashion compatibility analyst. Compare two styles and provide compatibility score, harmony analysis, color compatibility, occasion overlap, blending suggestions, and hybrid outfit ideas. Use markdown." },
+          { role: "user", content: `Analyze compatibility between:\nStyle 1: ${p.outfit1}\nStyle 2: ${p.outfit2}` }
+        ]);
         break;
+
       case "dress-code":
-        result = await callAI(OPENAI_KEY!, openaiUrl, "gpt-4o-mini",
-          [
-          { role: "system", content: "You are a dress code expert. Provide: 1) Exact dress code classification, 2) Do's and Don'ts, 3) 3 complete outfit suggestions (men & women), 4) Accessories guide, 5) Common mistakes to avoid, 6) Cultural considerations. Use markdown with clear sections." },
-          { role: "user", content: `What should I wear to: ${params.eventDescription}` }
-        ]
-        );
+        result = await callAI(OPENAI_KEY!, openaiUrl, "gpt-4o-mini", [
+          { role: "system", content: "You are a dress code expert. Provide dress code classification, Do's and Don'ts, 3 complete outfit suggestions, accessories guide, common mistakes, and cultural considerations. Use markdown." },
+          { role: "user", content: `What should I wear to: ${p.eventDescription}` }
+        ]);
         break;
+
       case "fabric-analyzer":
-        result = await callAI(OPENAI_KEY!, openaiUrl, "gpt-4o-mini",
-          [{
-          role: "system",
-          content: "You are an expert textile and fabric analyst. Analyze the fabric in the image. Return JSON only."
-        }, {
-          role: "user",
-          content: [
-            { type: "text", text: `Analyze this fabric image. Return JSON: { "fabric_name": "", "composition": [{"material":"","percentage":50}]
-        );
+        result = await callAI(OPENAI_KEY!, openaiUrl, "gpt-4o-mini", [
+          { role: "system", content: "You are an expert textile and fabric analyst. Return JSON with: fabric_name, composition (array with material, percentage), care_instructions, quality_rating, sustainability_score, best_uses." },
+          { role: "user", content: p.imageUrl ? [{ type: "text", text: "Analyze this fabric image." }, { type: "image_url", image_url: { url: p.imageUrl } }] : `Analyze this fabric: ${p.description || ""}` }
+        ]);
         break;
+
       case "forecast-calendar":
-        result = await callAI(OPENAI_KEY!, openaiUrl, "gpt-4o-mini",
-          [{
-          role: "system",
-          content: "You are a fashion forecast expert. Generate a 7-day fashion forecast calendar. Return JSON only."
-        }, {
-          role: "user",
-          content: `Create a 7-day fashion forecast for someone in ${params.location} who prefers ${params.preferred_style} style. Return JSON: { "week_theme": "", "trend_spotlight": "", "days": [{ "day": "Monday", "date": "Apr 1", "weather_vibe": "Sunny", "recommended_outfit": "", "color_palette": ["#hex1","#hex2","#hex3"]
-        );
+        result = await callAI(OPENAI_KEY!, openaiUrl, "gpt-4o-mini", [
+          { role: "system", content: "You are a fashion forecast expert. Generate a 7-day fashion forecast calendar. Return JSON with: week_theme, trend_spotlight, days (array with day, date, weather_vibe, recommended_outfit, color_palette array)." },
+          { role: "user", content: `Create a 7-day fashion forecast for someone in ${p.location} who prefers ${p.preferred_style} style.` }
+        ]);
         break;
+
       case "history-explorer":
-        result = await callAI(OPENAI_KEY!, openaiUrl, "gpt-4o-mini",
-          [
-          { role: "system", content: "You are a fashion historian. Analyze the image and provide: 1) Historical era identification, 2) Cultural origins & influences, 3) Evolution timeline of this style, 4) Famous designers associated, 5) Modern interpretations, 6) How to wear this historically-inspired look today. Use markdown." },
-          { role: "user", content: [{ type: "text", text: "Analyze the fashion history of this item/outfit:" }, { type: "image_url", image_url: { url: imageUrl } }]
-        );
+        result = await callAI(OPENAI_KEY!, openaiUrl, "gpt-4o-mini", [
+          { role: "system", content: "You are a fashion historian. Analyze the item and provide historical era identification, cultural origins, evolution timeline, famous designers, modern interpretations, and how to wear today. Use markdown." },
+          { role: "user", content: p.imageUrl ? [{ type: "text", text: "Analyze the fashion history of this item:" }, { type: "image_url", image_url: { url: p.imageUrl } }] : `Analyze the fashion history of: ${p.description || ""}` }
+        ]);
         break;
-      case "mood-board":
-        result = await callAI(LOVABLE_KEY!, lovableUrl, "google/gemini-2.5-flash",
-          [
-          { role: "system", content: "You are a creative fashion mood board designer. Generate detailed, evocative mood board descriptions that inspire fashion collections." },
-          { role: "user", content: `Create a fashion mood board:\n\nTheme: ${params.theme}\nAesthetic: ${params.aesthetic}\n\nProvide:\n1. moodDescription: Overall mood, atmosphere, and visual direction\n2. keyPieces: 8-10 key fashion pieces that define this mood\n3. textures: Fabrics, textures, and materials palette\n4. styling: Hair, makeup, and accessories direction` }
-        ]
-          , [{
-          type: "function",
-          function: {
-            name: "mood_board",
-            description: "Return mood board",
-            parameters: {
-              type: "object",
-              properties: {
-                moodDescription: { type: "string" },
-                keyPieces: { type: "string" },
-                textures: { type: "string" },
-                styling: { type: "string" }
-              },
-              required: ["moodDescription", "keyPieces", "textures", "styling"]
-            }
-          }
-        }]
-          , { type: "function", function: { name: "mood_board" } }
-        );
+
+      case "mood-board": {
+        const [tools, toolChoice] = makeTool("mood_board", { moodDescription: { type: "string" }, keyPieces: { type: "string" }, textures: { type: "string" }, styling: { type: "string" } });
+        result = await callAI(LOVABLE_KEY!, lovableUrl, "google/gemini-2.5-flash", [
+          { role: "system", content: "You are a creative fashion mood board designer." },
+          { role: "user", content: `Create a fashion mood board:\nTheme: ${p.theme}\nAesthetic: ${p.aesthetic}` }
+        ], tools, toolChoice);
         break;
+      }
+
       case "mood-ring":
-        result = await callAI(OPENAI_KEY!, openaiUrl, "gpt-4o-mini",
-          [{
-          role: "system",
-          content: "You are a fashion psychologist who matches outfits to moods and emotions using color therapy. Return JSON only."
-        }, {
-          role: "user",
-          content: `Suggest outfits for mood="${params.mood}", energy=${params.energy_level}%, context="${context || 'general day'}". Return JSON: { "detected_mood": "", "mood_emoji": "😊", "mood_color": "#hex", "fashion_prescription": "", "outfits": [{"outfit_name":"","description":"","key_pieces":[]
-        );
+        result = await callAI(OPENAI_KEY!, openaiUrl, "gpt-4o-mini", [
+          { role: "system", content: "You are a fashion psychologist who matches outfits to moods. Return JSON with: detected_mood, mood_emoji, mood_color (hex), fashion_prescription, outfits (array with outfit_name, description, key_pieces array)." },
+          { role: "user", content: `Suggest outfits for mood="${p.mood}", energy=${p.energy_level}%, context="${p.context || 'general day'}".` }
+        ]);
         break;
+
       case "ootd-score":
-        result = await callAI(OPENAI_KEY!, openaiUrl, "gpt-4o-mini",
-          [
-          { role: 'system', content: 'You are an elite fashion critic and stylist. Score outfits honestly and provide detailed, constructive feedback. Return JSON.' },
-          { role: 'user', content: `Score this outfit of the day:\n\nOutfit: ${params.outfitDescription}\nOccasion: ${occasion || 'Casual'}\nSeason: ${season || 'All-season'}\nBody Type: ${bodyType || 'Not specified'}\n\nReturn JSON with: overall_score (1-100), style_score (1-100), color_harmony_score (1-100), occasion_appropriateness_score (1-100), trend_relevance_score (1-100), strengths (array of strings), improvements (array of strings), styling_tips (array of 3 specific tips), style_tags (array of style category tags like "minimalist", "streetwear"), celebrity_match (which celebrity has a similar style), confidence_boost (motivational message)` }
-        ]
-        );
+        result = await callAI(OPENAI_KEY!, openaiUrl, "gpt-4o-mini", [
+          { role: "system", content: "You are an elite fashion critic. Score outfits honestly. Return JSON with: overall_score, style_score, color_harmony_score, occasion_appropriateness_score, trend_relevance_score (all 1-100), strengths, improvements, styling_tips (arrays), style_tags, celebrity_match, confidence_boost." },
+          { role: "user", content: `Score this outfit:\nOutfit: ${p.outfitDescription}\nOccasion: ${p.occasion || 'Casual'}\nSeason: ${p.season || 'All-season'}\nBody Type: ${p.bodyType || 'Not specified'}` }
+        ]);
         break;
+
       case "outfit-cost":
-        result = await callAI(OPENAI_KEY!, openaiUrl, "gpt-4o-mini",
-          [
-          { role: "system", content: "You are an expert fashion cost analyst. Provide detailed cost breakdowns for outfits including: 1) Item-by-item cost estimates (budget/mid/luxury tiers), 2) Total outfit cost per tier, 3) Best value alternatives, 4) Where to buy recommendations, 5) Cost-per-wear analysis. Use markdown with tables." },
-          { role: "user", content: `Analyze the cost of this outfit: ${params.description}` }
-        ]
-        );
+        result = await callAI(OPENAI_KEY!, openaiUrl, "gpt-4o-mini", [
+          { role: "system", content: "You are an expert fashion cost analyst. Provide detailed cost breakdowns with budget/mid/luxury tiers, best value alternatives, where to buy, and cost-per-wear analysis. Use markdown with tables." },
+          { role: "user", content: `Analyze the cost of this outfit: ${p.description}` }
+        ]);
         break;
+
       case "outfit-remix":
-        result = await callAI(OPENAI_KEY!, openaiUrl, "gpt-4o-mini",
-          [{
-          role: "system",
-          content: "You are a creative fashion stylist who can remix any outfit into 10 completely different looks. Return JSON only."
-        }, {
-          role: "user",
-          content: `Remix this outfit into 10 different looks: "${params.outfit_description}". Return JSON: { "original_outfit": "", "remix_count": 10, "variations": [{"remix_name":"","occasion":"","changes_made":[]
-        );
+        result = await callAI(OPENAI_KEY!, openaiUrl, "gpt-4o-mini", [
+          { role: "system", content: "You are a creative fashion stylist. Remix an outfit into 10 different looks. Return JSON with: original_outfit, remix_count, variations (array with remix_name, occasion, changes_made array)." },
+          { role: "user", content: `Remix this outfit into 10 different looks: "${p.outfit_description}".` }
+        ]);
         break;
+
       case "personal-shopper":
-        result = await callAI(OPENAI_KEY!, openaiUrl, "gpt-4o-mini",
-          [
-          { role: 'system', content: systemPrompt },
-          ...messages
-        ]
-        );
+        result = await callAI(OPENAI_KEY!, openaiUrl, "gpt-4o-mini", [
+          { role: "system", content: p.systemPrompt || "You are a personal fashion shopper assistant." },
+          ...(p.messages || [{ role: "user", content: "Help me find an outfit" }])
+        ]);
         break;
+
       case "shopping-links":
-        result = await callAI(OPENAI_KEY!, openaiUrl, "gpt-4o-mini",
-          [
-          {
-            role: "system",
-            content: `You are a personal shopping assistant. Generate purchase recommendations with real store names. Return JSON with: outfit_concept, total_estimated_budget (EUR), styling_tip, items array where each has: item_name, brand, estimated_price (EUR), where_to_buy (array of real store names like Zara, H&M, ASOS, Net-a-Porter, Farfetch, etc.), style_match_score (0-100), description, alternatives array (name, price, brand).`
-          },
-          {
-            role: "user",
-            content: `Find shopping recommendations:\nLooking for: ${params.description}\nBudget: €${params.budget}\nStyle: ${params.style}\nProvide 4-6 items with alternatives.`
-          }
-        ]
-        );
+        result = await callAI(OPENAI_KEY!, openaiUrl, "gpt-4o-mini", [
+          { role: "system", content: "You are a personal shopping assistant. Generate purchase recommendations with real store names. Return JSON with: outfit_concept, total_estimated_budget (EUR), styling_tip, items (array with item_name, brand, estimated_price EUR, where_to_buy array, style_match_score 0-100, description, alternatives array)." },
+          { role: "user", content: `Find shopping recommendations:\nLooking for: ${p.description}\nBudget: €${p.budget}\nStyle: ${p.style}\nProvide 4-6 items with alternatives.` }
+        ]);
         break;
+
       case "show-simulator":
-        result = await callAI(OPENAI_KEY!, openaiUrl, "gpt-4o-mini",
-          [
-          { role: 'system', content: 'You are a world-class fashion show director and creative consultant. Generate detailed fashion show concepts with runway choreography, lighting design, music cues, and commentary scripts. Return JSON.' },
-          { role: 'user', content: `Create a virtual fashion show concept for these outfits:\n${outfitDescriptions.map((d: string, i: number) => `Look ${i+1}: ${d}`).join('\n')}\n\nTheme: ${theme || 'Modern Elegance'}\nMood: ${mood || 'Sophisticated'}\n\nReturn JSON with: show_title, opening_statement, looks (array with: look_number, outfit_name, runway_description, music_cue, lighting_direction, commentary_script, styling_notes), finale_description, show_duration_minutes, audience_impact_score (1-100)` }
-        ]
-        );
+        result = await callAI(OPENAI_KEY!, openaiUrl, "gpt-4o-mini", [
+          { role: "system", content: "You are a world-class fashion show director. Generate detailed fashion show concepts. Return JSON with: show_title, opening_statement, looks (array with look_number, outfit_name, runway_description, music_cue, lighting_direction, commentary_script), finale_description, show_duration_minutes, audience_impact_score." },
+          { role: "user", content: `Create a virtual fashion show for these outfits:\n${(p.outfitDescriptions || []).map((d: string, i: number) => `Look ${i+1}: ${d}`).join('\n')}\nTheme: ${p.theme || 'Modern Elegance'}\nMood: ${p.mood || 'Sophisticated'}` }
+        ]);
         break;
-      case "style-dna":
-        result = await callAI(LOVABLE_KEY!, lovableUrl, "google/gemini-2.5-flash",
-          [
-          { role: "system", content: "You are an expert fashion stylist and personal brand consultant. Analyze the user's style preferences and create a comprehensive Style DNA profile." },
-          { role: "user", content: `Analyze my style DNA:\n\nPreferences: ${params.preferences}\nBody Type: ${params.bodyType}\nLifestyle: ${params.lifestyle}\n\nProvide a detailed analysis with these sections:\n1. styleProfile: My unique fashion personality type and description\n2. colorPalette: Colors that work best for me and why\n3. wardrobeEssentials: Must-have pieces for my style\n4. styleIcons: Celebrities/fashion icons with similar style\n\nReturn as JSON with keys: styleProfile, colorPalette, wardrobeEssentials, styleIcons` }
-        ]
-          , [{
-          type: "function",
-          function: {
-            name: "style_dna_result",
-            description: "Return style DNA analysis",
-            parameters: {
-              type: "object",
-              properties: {
-                styleProfile: { type: "string" },
-                colorPalette: { type: "string" },
-                wardrobeEssentials: { type: "string" },
-                styleIcons: { type: "string" }
-              },
-              required: ["styleProfile", "colorPalette", "wardrobeEssentials", "styleIcons"]
-            }
-          }
-        }]
-          , { type: "function", function: { name: "style_dna_result" } }
-        );
+
+      case "style-dna": {
+        const [tools, toolChoice] = makeTool("style_dna_result", { styleProfile: { type: "string" }, colorPalette: { type: "string" }, wardrobeEssentials: { type: "string" }, styleIcons: { type: "string" } });
+        result = await callAI(LOVABLE_KEY!, lovableUrl, "google/gemini-2.5-flash", [
+          { role: "system", content: "You are an expert fashion stylist and personal brand consultant." },
+          { role: "user", content: `Analyze my style DNA:\nPreferences: ${p.preferences}\nBody Type: ${p.bodyType}\nLifestyle: ${p.lifestyle}` }
+        ], tools, toolChoice);
         break;
+      }
+
       case "style-scanner":
-        result = await callAI(OPENAI_KEY!, openaiUrl, "gpt-4o-mini",
-          [
-          {
-            role: "system",
-            content: `You are an expert fashion analyst. Analyze outfit photos and return JSON with: outfit_name, overall_score (0-100), style_category, color_analysis (primary_colors array, harmony_score 0-100, palette_name), identified_items array (item_name, brand_guess, estimated_price in EUR, style_rating 1-10), fit_analysis, occasion_match array, trend_alignment (0-100), improvement_tips array (3-5), celebrity_match, season_suitability.`
-          },
-          {
-            role: "user",
-            content: [
-              { type: "text", text: "Analyze this outfit photo in detail. Identify every item, estimate brands and prices, score the overall look." },
-              { type: "image_url", image_url: { url: imageUrl } }
-            ]
-        );
+        result = await callAI(OPENAI_KEY!, openaiUrl, "gpt-4o-mini", [
+          { role: "system", content: "You are an expert fashion analyst. Analyze outfit photos and return JSON with: outfit_name, overall_score 0-100, style_category, color_analysis, identified_items array, fit_analysis, occasion_match, trend_alignment, improvement_tips, celebrity_match, season_suitability." },
+          { role: "user", content: p.imageUrl ? [{ type: "text", text: "Analyze this outfit photo in detail." }, { type: "image_url", image_url: { url: p.imageUrl } }] : `Analyze this outfit: ${p.description || ""}` }
+        ]);
         break;
-      case "sustainable":
-        result = await callAI(LOVABLE_KEY!, lovableUrl, "google/gemini-2.5-flash",
-          [
-          { role: "system", content: "You are a sustainable fashion expert helping people transition to eco-friendly wardrobes. You know about ethical brands, sustainable materials, circular fashion, and environmental impact." },
-          { role: "user", content: `Provide sustainable fashion recommendations:\n\nCurrent Wardrobe: ${params.wardrobe}\nBudget: ${params.budget}\n\nProvide:\n1. sustainabilityScore: Rate current wardrobe sustainability and explain\n2. swapSuggestions: Fast fashion items to replace with sustainable alternatives\n3. ecoAlternatives: Specific sustainable brands and materials recommendations\n4. actionPlan: A 30-day plan to make the wardrobe more sustainable` }
-        ]
-          , [{
-          type: "function",
-          function: {
-            name: "sustainable_result",
-            description: "Return sustainable fashion analysis",
-            parameters: {
-              type: "object",
-              properties: {
-                sustainabilityScore: { type: "string" },
-                swapSuggestions: { type: "string" },
-                ecoAlternatives: { type: "string" },
-                actionPlan: { type: "string" }
-              },
-              required: ["sustainabilityScore", "swapSuggestions", "ecoAlternatives", "actionPlan"]
-            }
-          }
-        }]
-          , { type: "function", function: { name: "sustainable_result" } }
-        );
+
+      case "sustainable": {
+        const [tools, toolChoice] = makeTool("sustainable_result", { sustainabilityScore: { type: "string" }, swapSuggestions: { type: "string" }, ecoAlternatives: { type: "string" }, actionPlan: { type: "string" } });
+        result = await callAI(LOVABLE_KEY!, lovableUrl, "google/gemini-2.5-flash", [
+          { role: "system", content: "You are a sustainable fashion expert helping people transition to eco-friendly wardrobes." },
+          { role: "user", content: `Provide sustainable fashion recommendations:\nCurrent Wardrobe: ${p.wardrobe}\nBudget: ${p.budget}` }
+        ], tools, toolChoice);
         break;
-      case "trend-forecaster":
-        result = await callAI(LOVABLE_KEY!, lovableUrl, "google/gemini-2.5-flash",
-          [
-          { role: "system", content: "You are an expert fashion trend forecaster with deep knowledge of runway shows, street style, and global fashion movements." },
-          { role: "user", content: `Forecast fashion trends for ${params.season} in the ${params.category} category.\n\nProvide:\n1. topTrends: Top 5-7 emerging trends with descriptions\n2. colorTrends: Trending colors and how to wear them\n3. fabricTrends: Materials and textures gaining popularity\n4. investmentPieces: Key pieces worth investing in this season` }
-        ]
-          , [{
-          type: "function",
-          function: {
-            name: "trend_forecast",
-            description: "Return trend forecast",
-            parameters: {
-              type: "object",
-              properties: {
-                topTrends: { type: "string" },
-                colorTrends: { type: "string" },
-                fabricTrends: { type: "string" },
-                investmentPieces: { type: "string" }
-              },
-              required: ["topTrends", "colorTrends", "fabricTrends", "investmentPieces"]
-            }
-          }
-        }]
-          , { type: "function", function: { name: "trend_forecast" } }
-        );
+      }
+
+      case "trend-forecaster": {
+        const [tools, toolChoice] = makeTool("trend_forecast", { topTrends: { type: "string" }, colorTrends: { type: "string" }, fabricTrends: { type: "string" }, investmentPieces: { type: "string" } });
+        result = await callAI(LOVABLE_KEY!, lovableUrl, "google/gemini-2.5-flash", [
+          { role: "system", content: "You are an expert fashion trend forecaster." },
+          { role: "user", content: `Forecast fashion trends for ${p.season} in the ${p.category} category.` }
+        ], tools, toolChoice);
         break;
+      }
+
       case "trend-radar":
-        result = await callAI(OPENAI_KEY!, openaiUrl, "gpt-4o-mini",
-          [
-          { role: "system", content: "You are a fashion trend radar analyst. Provide a comprehensive trend report: 1) 🔴 HOT NOW - Top 5 trending items/styles with virality score, 2) 🟡 EMERGING - 5 upcoming trends to watch, 3) 🟢 INVESTMENT PIECES - 3 items worth buying now, 4) 📉 DECLINING - styles losing momentum, 5) 🔮 PREDICTION - next big trend forecast, 6) Regional trend variations. Use emojis and markdown tables." },
-          { role: "user", content: `Generate trend radar report for: ${params.category}` }
-        ]
-        );
+        result = await callAI(OPENAI_KEY!, openaiUrl, "gpt-4o-mini", [
+          { role: "system", content: "You are a fashion trend radar analyst. Provide: HOT NOW (top 5 with virality score), EMERGING (5 upcoming), INVESTMENT PIECES (3 items), DECLINING styles, PREDICTION of next big trend. Use emojis and markdown." },
+          { role: "user", content: `Generate trend radar report for: ${p.category}` }
+        ]);
         break;
+
       case "video-generator":
-        result = await callAI(OPENAI_KEY!, openaiUrl, "gpt-4o-mini",
-          [
-          {
-            role: "system",
-            content: `You are a cinematic fashion video director. Create detailed scene-by-scene storyboards for fashion show videos. Return JSON with: overall_concept, recommended_soundtrack, color_grading, total_duration, production_notes, and storyboard array where each scene has: scene_number, scene_title, visual_description, camera_movement, lighting, music_mood, duration_seconds, transition.`
-          },
-          {
-            role: "user",
-            content: `Create a ${params.duration}-second ${params.style} fashion show video storyboard.\nConcept: ${params.concept}\nMood: ${mood || "Sophisticated"}\nGenerate 6-10 detailed scenes.`
-          }
-        ]
-        );
+        result = await callAI(OPENAI_KEY!, openaiUrl, "gpt-4o-mini", [
+          { role: "system", content: "You are a cinematic fashion video director. Return JSON with: overall_concept, recommended_soundtrack, color_grading, total_duration, production_notes, storyboard (array with scene_number, scene_title, visual_description, camera_movement, lighting, music_mood, duration_seconds, transition)." },
+          { role: "user", content: `Create a ${p.duration}-second ${p.style} fashion show video storyboard.\nConcept: ${p.concept}\nMood: ${p.mood || "Sophisticated"}` }
+        ]);
         break;
+
       case "virtual-stylist":
-        result = await callAI(OPENAI_KEY!, openaiUrl, "gpt-4o-mini",
-          []
-        );
+        result = await callAI(OPENAI_KEY!, openaiUrl, "gpt-4o-mini", [
+          { role: "system", content: p.systemPrompt || "You are a virtual fashion stylist. Provide personalized outfit recommendations." },
+          ...(p.messages || [{ role: "user", content: "Help me with my style" }])
+        ]);
         break;
+
       case "wardrobe-analytics":
-        result = await callAI(OPENAI_KEY!, openaiUrl, "gpt-4o-mini",
-          [
-          {
-            role: "system",
-            content: `You are a wardrobe analytics expert. Analyze wardrobe data and return JSON with: wardrobe_score (0-100), sustainability_rating, wardrobe_summary (total_items, total_estimated_value EUR, avg_cost_per_wear EUR, most_worn_category, least_worn_category), category_breakdown array (category, count, percentage, value EUR), color_distribution array (color, count, percentage), usage_insights (most_versatile_item, underused_items array, cost_per_wear_champions array with item, cost_per_wear, times_worn), recommendations array (5 actionable tips).`
-          },
-          {
-            role: "user",
-            content: `Analyze this wardrobe of ${items?.length || 0} items: ${itemsSummary || "No items provided - generate sample analysis"}`
-          }
-        ]
-        );
+        result = await callAI(OPENAI_KEY!, openaiUrl, "gpt-4o-mini", [
+          { role: "system", content: "You are a wardrobe analytics expert. Return JSON with: wardrobe_score 0-100, sustainability_rating, wardrobe_summary, category_breakdown, color_distribution, usage_insights, recommendations (array of 5 tips)." },
+          { role: "user", content: `Analyze this wardrobe of ${(p.items || []).length} items: ${p.itemsSummary || "No items provided - generate sample analysis"}` }
+        ]);
         break;
+
+      case "capsule-wardrobe":
+        result = await callAI(OPENAI_KEY!, openaiUrl, "gpt-4o-mini", [
+          { role: "system", content: "You are a capsule wardrobe expert. Design a minimal versatile wardrobe. Use markdown." },
+          { role: "user", content: p.prompt || "Design a capsule wardrobe for me" }
+        ]);
+        break;
+
+      case "street-style":
+        result = await callAI(OPENAI_KEY!, openaiUrl, "gpt-4o-mini", [
+          { role: "system", content: "You are a global street style analyst. Analyze current street fashion trends from major cities. Use markdown." },
+          { role: "user", content: p.prompt || "Analyze current global street style trends" }
+        ]);
+        break;
+
       default:
         throw new Error(`Unknown action: ${action}`);
     }
