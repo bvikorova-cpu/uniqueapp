@@ -1,31 +1,44 @@
 import { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Lock, Trophy, Users, GraduationCap, Briefcase } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { EscapeRoomHero } from "@/components/escape-room/EscapeRoomHero";
+import { EscapeRoomEngagement } from "@/components/escape-room/EscapeRoomEngagement";
+import { EscapeRoomToolGrid } from "@/components/escape-room/EscapeRoomToolGrid";
 import RoomGallery from "@/components/escape-room/RoomGallery";
 import RoomBuilder from "@/components/escape-room/RoomBuilder";
 import GamePlay from "@/components/escape-room/GamePlay";
 import Leaderboard from "@/components/escape-room/Leaderboard";
 import SubscriptionPlans from "@/components/escape-room/SubscriptionPlans";
-import { useToast } from "@/hooks/use-toast";
+import { AIPuzzleGeneratorView } from "@/components/escape-room/views/AIPuzzleGeneratorView";
+import { AIStoryWriterView } from "@/components/escape-room/views/AIStoryWriterView";
+import { AIHintSystemView } from "@/components/escape-room/views/AIHintSystemView";
+import { AIThemeDesignerView } from "@/components/escape-room/views/AIThemeDesignerView";
+import { AIDifficultyTunerView } from "@/components/escape-room/views/AIDifficultyTunerView";
+import { AIClueGeneratorView } from "@/components/escape-room/views/AIClueGeneratorView";
+import { RoomAnalyticsView } from "@/components/escape-room/views/RoomAnalyticsView";
+import { EscapeHistoryView } from "@/components/escape-room/views/EscapeHistoryView";
+import { EscapeBadgesView } from "@/components/escape-room/views/EscapeBadgesView";
+import { TeamManagerView } from "@/components/escape-room/views/TeamManagerView";
+import { DailyChallengesView } from "@/components/escape-room/views/DailyChallengesView";
+import { RoomReviewsView } from "@/components/escape-room/views/RoomReviewsView";
+import { CreatorEarningsView } from "@/components/escape-room/views/CreatorEarningsView";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft, Briefcase, Check, Crown, Sparkles } from "lucide-react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 const VirtualEscapeRoom = () => {
   const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState("browse");
+  const [activeView, setActiveView] = useState("dashboard");
   const { toast } = useToast();
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const success = params.get('success');
-    const roomId = params.get('roomId');
-    
-    if (success === 'true' && roomId) {
-      toast({
-        title: "Payment Successful!",
-        description: "Starting your escape room adventure..."
-      });
+    const success = params.get("success");
+    const roomId = params.get("roomId");
+    if (success === "true" && roomId) {
+      toast({ title: "Payment Successful!", description: "Starting your escape room adventure..." });
       setSelectedRoomId(roomId);
-      window.history.replaceState({}, '', '/virtual-escape-room');
+      window.history.replaceState({}, "", "/virtual-escape-room");
     }
   }, [toast]);
 
@@ -33,94 +46,85 @@ const VirtualEscapeRoom = () => {
     return <GamePlay roomId={selectedRoomId} onExit={() => setSelectedRoomId(null)} />;
   }
 
+  const back = () => setActiveView("dashboard");
+
+  const renderView = () => {
+    switch (activeView) {
+      case "browse": return <div><Button variant="ghost" onClick={back} className="mb-4"><ArrowLeft className="w-4 h-4 mr-2" />Back</Button><RoomGallery onSelectRoom={setSelectedRoomId} /></div>;
+      case "create": return <div><Button variant="ghost" onClick={back} className="mb-4"><ArrowLeft className="w-4 h-4 mr-2" />Back</Button><RoomBuilder /></div>;
+      case "leaderboard": return <div><Button variant="ghost" onClick={back} className="mb-4"><ArrowLeft className="w-4 h-4 mr-2" />Back</Button><Leaderboard /></div>;
+      case "premium": return <div><Button variant="ghost" onClick={back} className="mb-4"><ArrowLeft className="w-4 h-4 mr-2" />Back</Button><SubscriptionPlans /></div>;
+      case "corporate": return (
+        <div>
+          <Button variant="ghost" onClick={back} className="mb-4"><ArrowLeft className="w-4 h-4 mr-2" />Back</Button>
+          <div className="max-w-4xl mx-auto">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg">
+                <Briefcase className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h2 className="text-2xl font-black">Corporate Team Building</h2>
+                <p className="text-muted-foreground">Custom branded escape rooms for your team</p>
+              </div>
+            </div>
+            <div className="grid md:grid-cols-3 gap-4">
+              {[
+                { name: "Starter", price: "€50", desc: "Up to 10 players", features: ["1 custom room", "Basic analytics", "Email support"] },
+                { name: "Business", price: "€100", desc: "Up to 30 players + Analytics", features: ["3 custom rooms", "Full analytics", "Priority support", "Custom branding"], popular: true },
+                { name: "Enterprise", price: "€200", desc: "Unlimited + Custom Branding", features: ["Unlimited rooms", "Dedicated manager", "API access", "Custom integrations"] },
+              ].map((plan, i) => (
+                <Card key={i} className={plan.popular ? "border-primary shadow-lg" : ""}>
+                  {plan.popular && <div className="absolute -top-3 left-1/2 -translate-x-1/2"><span className="bg-primary text-primary-foreground text-xs px-3 py-1 rounded-full">Popular</span></div>}
+                  <CardHeader>
+                    <CardTitle>{plan.name}</CardTitle>
+                    <div className="text-3xl font-black">{plan.price}</div>
+                    <CardDescription>{plan.desc}</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <ul className="space-y-2 mb-4">
+                      {plan.features.map((f, j) => (
+                        <li key={j} className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-emerald-500" />{f}</li>
+                      ))}
+                    </ul>
+                    <Button className="w-full" variant={plan.popular ? "default" : "outline"}>Get Started</Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </div>
+      );
+      case "ai-puzzle": return <AIPuzzleGeneratorView onBack={back} />;
+      case "ai-story": return <AIStoryWriterView onBack={back} />;
+      case "ai-hint": return <AIHintSystemView onBack={back} />;
+      case "ai-theme": return <AIThemeDesignerView onBack={back} />;
+      case "ai-difficulty": return <AIDifficultyTunerView onBack={back} />;
+      case "ai-clue": return <AIClueGeneratorView onBack={back} />;
+      case "analytics": return <RoomAnalyticsView onBack={back} />;
+      case "history": return <EscapeHistoryView onBack={back} />;
+      case "badges": return <EscapeBadgesView onBack={back} />;
+      case "teams": return <TeamManagerView onBack={back} />;
+      case "challenges": return <DailyChallengesView onBack={back} />;
+      case "reviews": return <RoomReviewsView onBack={back} />;
+      case "earnings": return <CreatorEarningsView onBack={back} />;
+      default:
+        return (
+          <>
+            <EscapeRoomHero />
+            <EscapeRoomEngagement />
+            <h2 className="text-xl font-bold mb-4">Tools & Features</h2>
+            <EscapeRoomToolGrid onToolSelect={setActiveView} />
+          </>
+        );
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      
-      <main className="container mx-auto px-4 py-8">
-        <div className="text-center mb-8">
-          <div className="h-24" />
-          <Lock className="w-16 h-16 mx-auto mb-4 text-primary" />
-          <h1 className="text-4xl font-black mb-6 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
-            Virtual Escape Rooms
-          </h1>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-4">
-            Immersive online escape room experiences for individuals and teams. Test your problem-solving skills, collaborate with friends, or build team spirit.
-          </p>
-          <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-            <strong>How it works:</strong> Browse available escape rooms by theme and difficulty. Pay €10 to unlock any room. Solve puzzles, find clues, and race against the clock. Play solo or invite your team. Premium subscription (€10/month) unlocks all rooms, advanced puzzle creator with AI-generated content, and creator tools to build and publish your own rooms. Educational plan (€20/month per class) includes student tracking and curriculum-aligned content. Creators earn 70% revenue from plays of their published rooms.
-          </p>
-        </div>
-
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="flex flex-wrap justify-center gap-2 h-auto p-2 bg-muted/50 max-w-4xl mx-auto">
-            <TabsTrigger value="browse" className="gap-2 px-4 py-2">
-              <Lock className="h-4 w-4" />
-              Browse Rooms
-            </TabsTrigger>
-            <TabsTrigger value="create" className="gap-2 px-4 py-2">
-              <Users className="h-4 w-4" />
-              Create Room
-            </TabsTrigger>
-            <TabsTrigger value="leaderboard" className="gap-2 px-4 py-2">
-              <Trophy className="h-4 w-4" />
-              Leaderboard
-            </TabsTrigger>
-            <TabsTrigger value="subscription" className="gap-2 px-4 py-2">
-              <GraduationCap className="h-4 w-4" />
-              Premium
-            </TabsTrigger>
-            <TabsTrigger value="corporate" className="gap-2 px-4 py-2">
-              <Briefcase className="h-4 w-4" />
-              Corporate
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="browse">
-            <RoomGallery onSelectRoom={setSelectedRoomId} />
-          </TabsContent>
-
-          <TabsContent value="create">
-            <RoomBuilder />
-          </TabsContent>
-
-          <TabsContent value="leaderboard">
-            <Leaderboard />
-          </TabsContent>
-
-          <TabsContent value="subscription">
-            <SubscriptionPlans />
-          </TabsContent>
-
-          <TabsContent value="corporate">
-            <div className="bg-card rounded-lg p-8 text-center">
-              <Briefcase className="h-16 w-16 mx-auto mb-4 text-primary" />
-              <h2 className="text-2xl font-black mb-4">Corporate Team Building</h2>
-              <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-                Custom branded escape rooms for your team. Boost collaboration, problem-solving skills, and team morale with our corporate packages.
-              </p>
-              <div className="grid md:grid-cols-3 gap-4 max-w-3xl mx-auto">
-                <div className="p-4 bg-secondary/30 rounded-lg">
-                  <h3 className="font-semibold mb-2">Starter Package</h3>
-                  <p className="text-2xl font-black mb-2">€50</p>
-                  <p className="text-sm text-muted-foreground">Up to 10 players</p>
-                </div>
-                <div className="p-4 bg-primary/10 rounded-lg border-2 border-primary">
-                  <h3 className="font-semibold mb-2">Business Package</h3>
-                  <p className="text-2xl font-black mb-2">€100</p>
-                  <p className="text-sm text-muted-foreground">Up to 30 players + Analytics</p>
-                </div>
-                <div className="p-4 bg-secondary/30 rounded-lg">
-                  <h3 className="font-semibold mb-2">Enterprise</h3>
-                  <p className="text-2xl font-black mb-2">€200</p>
-                  <p className="text-sm text-muted-foreground">Unlimited + Custom Branding</p>
-                </div>
-              </div>
-            </div>
-          </TabsContent>
-        </Tabs>
+      <main className="container mx-auto px-4 py-8 pt-24">
+        {renderView()}
       </main>
-
     </div>
   );
 };

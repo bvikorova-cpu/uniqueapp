@@ -104,6 +104,37 @@ serve(async (req) => {
         userPrompt = `Create ${params.summaryType} summary notes for the video "${params.videoTitle || 'Untitled'}":\n\n${params.transcript}`;
         break;
 
+      // === ESCAPE ROOM ACTIONS ===
+      case "escape-puzzle-gen":
+        systemPrompt = "You are an expert escape room puzzle designer. Create immersive, themed puzzles with clear descriptions, solutions, and difficulty ratings. Each puzzle should include: title, description, type, solution, and hints.";
+        userPrompt = `Create ${params.count || 3} ${params.difficulty} difficulty ${params.puzzleType} puzzles for an escape room themed "${params.theme}". Make them creative, interconnected, and immersive.`;
+        break;
+
+      case "escape-story-gen":
+        systemPrompt = "You are a master escape room narrative designer. Create compelling storylines with rich lore, character backstories, room-by-room progression, and dramatic reveals. Include atmospheric descriptions and clue integration points.";
+        userPrompt = `Create a complete ${params.genre} escape room storyline for ${params.roomCount} rooms set in "${params.theme}". ${params.additionalNotes ? `Additional notes: ${params.additionalNotes}` : ""} Include intro narrative, room descriptions, character motivations, and finale.`;
+        break;
+
+      case "escape-hint-gen":
+        systemPrompt = "You are an escape room hint system designer. Create progressive hints that guide players without spoiling the solution. Each hint should be more revealing than the last, maintaining the challenge while preventing frustration.";
+        userPrompt = `Generate ${params.hintLevel} hints for this puzzle:\n\n${params.puzzleDesc}\n\nCreate 3 levels of hints: subtle nudge, moderate direction, and near-solution guidance.`;
+        break;
+
+      case "escape-theme-gen":
+        systemPrompt = "You are a professional escape room theme and atmosphere designer. Create detailed room descriptions including: visual elements, sound design, lighting, props, color palette, texture details, interactive elements, and immersion techniques.";
+        userPrompt = `Design a complete ${params.mood} themed escape room in a ${params.era} era setting based on: "${params.concept}". Include detailed atmosphere description, suggested props, lighting plan, sound design, and 5 key visual elements.`;
+        break;
+
+      case "escape-difficulty-tune":
+        systemPrompt = "You are an escape room difficulty balancing expert. Analyze puzzles for complexity, time requirements, skill types needed, and frustration potential. Suggest specific modifications to reach the target difficulty.";
+        userPrompt = `Analyze these puzzle(s) and adjust to ${params.targetDifficulty} difficulty:\n\n${params.puzzleDesc}\n\nProvide: current difficulty assessment, specific changes needed, estimated solve time, and rewritten puzzle at target difficulty.`;
+        break;
+
+      case "escape-clue-gen":
+        systemPrompt = "You are a cryptic clue designer for escape rooms. Create interconnected clue chains where each clue leads logically to the next. Include red herrings, environmental clues, and satisfying 'aha!' moments.";
+        userPrompt = `Generate ${params.clueCount || 5} ${params.style} clues for an escape room themed "${params.theme}". Each clue should connect to the next, forming a complete puzzle chain with a final revelation.`;
+        break;
+
       default:
         return new Response(JSON.stringify({ error: `Unknown action: ${action}` }), {
           status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
