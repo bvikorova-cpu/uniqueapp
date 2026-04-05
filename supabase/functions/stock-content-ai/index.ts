@@ -156,6 +156,16 @@ serve(async (req) => {
         userPrompt = `Generate ${params.clueCount || 5} ${params.style} clues for an escape room themed "${params.theme}". Each clue should connect to the next, forming a complete puzzle chain with a final revelation.`;
         break;
 
+      case "escape-narrator-gen":
+        systemPrompt = "You are a professional escape room narrator and voice-over scriptwriter. Create immersive, dramatic narration scripts that guide players through the experience. Include stage directions, voice tone notes, pacing indicators, sound effect cues, and emotional beats. The script should heighten tension and immersion.";
+        userPrompt = `Create a ${params.voiceStyle || "dramatic"} narration script for an escape room themed "${params.roomTheme}". ${params.scene ? `Current scene: ${params.scene}` : ""}\n\nInclude: opening monologue, transition narrations between key moments, hint delivery lines, success celebration, and failure consolation. Add [TONE], [PACE], and [SFX] markers.`;
+        break;
+
+      case "escape-sound-design":
+        systemPrompt = "You are a professional sound designer for escape rooms and immersive experiences. Create detailed sound design blueprints including: ambient layers, triggered sound effects, musical cues, environmental audio, transition sounds, and implementation notes. Specify exact sounds, timing, volume levels, and spatial positioning.";
+        userPrompt = `Design a complete sound blueprint for a ${params.mood || "tense"} escape room themed "${params.roomTheme}". ${params.sceneDesc ? `Scene: ${params.sceneDesc}` : ""}\n\nInclude: 3-layer ambient base, 10+ triggered SFX, musical score suggestions, puzzle-completion sounds, timer warning audio, and implementation guide with exact descriptions of each sound.`;
+        break;
+
       default:
         return new Response(JSON.stringify({ error: `Unknown action: ${action}` }), {
           status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
