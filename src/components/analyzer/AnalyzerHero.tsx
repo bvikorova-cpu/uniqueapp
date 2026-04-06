@@ -63,7 +63,7 @@ export const AnalyzerHero = ({ credits, tier }: AnalyzerHeroProps) => {
             <span className="inline-flex items-center rounded-full border border-border/60 bg-background/35 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-foreground backdrop-blur-sm">
               Real-world AI scanning
             </span>
-            <div className="inline-block rounded-2xl border border-border/50 bg-background/22 px-3 py-3 backdrop-blur-sm sm:px-4">
+            <div className="inline-block rounded-2xl border-2 border-primary/40 bg-background/30 px-4 py-4 backdrop-blur-sm sm:px-5 shadow-lg">
               <h1 className="text-3xl font-black leading-none text-foreground sm:text-5xl [text-shadow:0_8px_24px_hsl(var(--background)/0.35)]">
                 Universal Vision <span className="text-primary">Analyzer</span>
               </h1>
