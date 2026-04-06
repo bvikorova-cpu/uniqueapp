@@ -12,6 +12,9 @@ const TOOL_COSTS: Record<string, number> = {
   style_transfer: 3,
   upscale: 2,
   prompt_gallery: 0,
+  variations: 2,
+  inpainting: 4,
+  image_to_prompt: 3,
 };
 
 serve(async (req) => {
@@ -30,10 +33,9 @@ serve(async (req) => {
     const { data: { user } } = await supabase.auth.getUser(token);
     if (!user) throw new Error('Not authenticated');
 
-    const { action, prompt, imageUrl, style, targetSize } = await req.json();
+    const { action, prompt, imageUrl, style, targetSize, editPrompt, region, variationIndex } = await req.json();
     const cost = TOOL_COSTS[action] || 0;
 
-    // Check credits for paid tools
     if (cost > 0) {
       const { data: credits } = await supabase
         .from('ai_credits')
@@ -48,13 +50,9 @@ serve(async (req) => {
         );
       }
 
-      // Deduct credits
       await supabase
         .from('ai_credits')
-        .update({
-          credits_remaining: credits.credits_remaining - cost,
-          last_used_at: new Date().toISOString()
-        })
+        .update({ credits_remaining: credits.credits_remaining - cost, last_used_at: new Date().toISOString() })
         .eq('user_id', user.id);
 
       await supabase.from('ai_usage_history').insert({
@@ -63,6 +61,27 @@ serve(async (req) => {
         credits_used: cost,
         description: `AI Image ${action}: ${(prompt || '').substring(0, 100)}`
       });
+    }
+
+    // Save prompt to history for generation actions
+    if (['generate', 'variations', 'inpainting', 'style_transfer'].includes(action) && prompt) {
+      const { data: existing } = await supabase
+        .from('ai_prompt_history')
+        .select('id, use_count')
+        .eq('user_id', user.id)
+        .eq('prompt', prompt)
+        .maybeSingle();
+
+      if (existing) {
+        await supabase.from('ai_prompt_history').update({ use_count: (existing.use_count || 1) + 1, last_used_at: new Date().toISOString() }).eq('id', existing.id);
+      } else {
+        await supabase.from('ai_prompt_history').insert({
+          user_id: user.id,
+          prompt,
+          title: prompt.substring(0, 50),
+          category: action,
+        });
+      }
     }
 
     const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
@@ -75,21 +94,9 @@ serve(async (req) => {
         const response = await fetch("https://api.openai.com/v1/images/generations", {
           method: "POST",
           headers: { "Authorization": `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
-          body: JSON.stringify({
-            model: "gpt-image-1",
-            prompt,
-            n: 1,
-            size: "1024x1024",
-            quality: "high",
-            output_format: "webp",
-            output_compression: 90,
-          }),
+          body: JSON.stringify({ model: "gpt-image-1", prompt, n: 1, size: "1024x1024", quality: "high", output_format: "webp", output_compression: 90 }),
         });
-        if (!response.ok) {
-          const err = await response.text();
-          console.error("OpenAI error:", err);
-          throw new Error("Image generation failed");
-        }
+        if (!response.ok) { console.error("OpenAI error:", await response.text()); throw new Error("Image generation failed"); }
         const data = await response.json();
         const b64 = data.data?.[0]?.b64_json;
         if (!b64) throw new Error("No image generated");
@@ -98,19 +105,11 @@ serve(async (req) => {
       }
 
       case 'edit': {
-        // Use GPT-4o to describe the edit, then generate a new image
-        const editPrompt = `${prompt}. Based on the original image concept, create an edited version.`;
+        const editP = `${prompt}. Based on the original image concept, create an edited version.`;
         const response = await fetch("https://api.openai.com/v1/images/generations", {
           method: "POST",
           headers: { "Authorization": `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
-          body: JSON.stringify({
-            model: "gpt-image-1",
-            prompt: editPrompt,
-            n: 1,
-            size: "1024x1024",
-            quality: "high",
-            output_format: "webp",
-          }),
+          body: JSON.stringify({ model: "gpt-image-1", prompt: editP, n: 1, size: "1024x1024", quality: "high", output_format: "webp" }),
         });
         if (!response.ok) throw new Error("Image editing failed");
         const data = await response.json();
@@ -121,18 +120,11 @@ serve(async (req) => {
       }
 
       case 'style_transfer': {
-        const stylePrompt = `Recreate this concept in the style of ${style}: ${prompt}. Make it a masterful artistic interpretation.`;
+        const styleP = `Recreate this concept in the style of ${style}: ${prompt}. Make it a masterful artistic interpretation.`;
         const response = await fetch("https://api.openai.com/v1/images/generations", {
           method: "POST",
           headers: { "Authorization": `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
-          body: JSON.stringify({
-            model: "gpt-image-1",
-            prompt: stylePrompt,
-            n: 1,
-            size: "1024x1024",
-            quality: "high",
-            output_format: "webp",
-          }),
+          body: JSON.stringify({ model: "gpt-image-1", prompt: styleP, n: 1, size: "1024x1024", quality: "high", output_format: "webp" }),
         });
         if (!response.ok) throw new Error("Style transfer failed");
         const data = await response.json();
@@ -143,20 +135,12 @@ serve(async (req) => {
       }
 
       case 'upscale': {
-        // Use AI to create an enhanced/upscaled version
-        const upscalePrompt = `Create a highly detailed, ultra high resolution, sharp, crystal clear version of: ${prompt}. Maximum detail, 4K quality, enhanced textures and lighting.`;
+        const upP = `Create a highly detailed, ultra high resolution, sharp, crystal clear version of: ${prompt}. Maximum detail, 4K quality, enhanced textures and lighting.`;
         const size = targetSize === '1792x1024' ? '1792x1024' : targetSize === '1024x1792' ? '1024x1792' : '1024x1024';
         const response = await fetch("https://api.openai.com/v1/images/generations", {
           method: "POST",
           headers: { "Authorization": `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
-          body: JSON.stringify({
-            model: "gpt-image-1",
-            prompt: upscalePrompt,
-            n: 1,
-            size,
-            quality: "high",
-            output_format: "webp",
-          }),
+          body: JSON.stringify({ model: "gpt-image-1", prompt: upP, n: 1, size, quality: "high", output_format: "webp" }),
         });
         if (!response.ok) throw new Error("Upscale failed");
         const data = await response.json();
@@ -166,18 +150,74 @@ serve(async (req) => {
         break;
       }
 
-      case 'prompt_gallery': {
-        // Use GPT to generate creative prompt suggestions
+      case 'variations': {
+        const variationStyles = [
+          "photorealistic with dramatic lighting",
+          "in a painterly impressionist style with bold brushstrokes",
+          "as a stylized digital illustration with vibrant colors",
+          "in a moody cinematic style with film grain and shallow depth of field"
+        ];
+        const idx = variationIndex ?? 0;
+        const varP = `${prompt}, rendered ${variationStyles[idx % variationStyles.length]}`;
+        const response = await fetch("https://api.openai.com/v1/images/generations", {
+          method: "POST",
+          headers: { "Authorization": `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({ model: "gpt-image-1", prompt: varP, n: 1, size: "1024x1024", quality: "high", output_format: "webp" }),
+        });
+        if (!response.ok) throw new Error("Variation generation failed");
+        const data = await response.json();
+        const b64 = data.data?.[0]?.b64_json;
+        if (!b64) throw new Error("No image generated");
+        result = { imageUrl: `data:image/webp;base64,${b64}` };
+        break;
+      }
+
+      case 'inpainting': {
+        const inpP = `Create an image of: ${prompt}. However, specifically for the ${region} area: ${editPrompt}. The rest of the image should remain consistent with the original concept.`;
+        const response = await fetch("https://api.openai.com/v1/images/generations", {
+          method: "POST",
+          headers: { "Authorization": `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({ model: "gpt-image-1", prompt: inpP, n: 1, size: "1024x1024", quality: "high", output_format: "webp" }),
+        });
+        if (!response.ok) throw new Error("Inpainting failed");
+        const data = await response.json();
+        const b64 = data.data?.[0]?.b64_json;
+        if (!b64) throw new Error("No image generated");
+        result = { imageUrl: `data:image/webp;base64,${b64}` };
+        break;
+      }
+
+      case 'image_to_prompt': {
         const chatResponse = await fetch("https://api.openai.com/v1/chat/completions", {
           method: "POST",
           headers: { "Authorization": `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
           body: JSON.stringify({
             model: "gpt-4o-mini",
             messages: [
-              {
-                role: "system",
-                content: "You are a creative AI image prompt expert. Generate 8 unique, highly detailed image prompts. Return JSON array of objects with 'title' (short 3-5 word title), 'prompt' (detailed 20-40 word prompt), 'category' (one of: Nature, Fantasy, Sci-Fi, Portrait, Abstract, Architecture, Food, Animals), and 'difficulty' (Easy, Medium, Hard)."
-              },
+              { role: "system", content: "You analyze images and generate detailed prompts that could recreate them. Return JSON with 'prompt' (detailed 30-60 word prompt), 'style' (the art style detected), and 'tags' (array of 5-8 relevant tags)." },
+              { role: "user", content: [
+                { type: "text", text: "Analyze this image and generate a detailed prompt that could recreate it." },
+                { type: "image_url", image_url: { url: imageUrl } }
+              ]}
+            ],
+            response_format: { type: "json_object" }
+          }),
+        });
+        if (!chatResponse.ok) throw new Error("Image analysis failed");
+        const chatData = await chatResponse.json();
+        const content = chatData.choices?.[0]?.message?.content;
+        result = JSON.parse(content);
+        break;
+      }
+
+      case 'prompt_gallery': {
+        const chatResponse = await fetch("https://api.openai.com/v1/chat/completions", {
+          method: "POST",
+          headers: { "Authorization": `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "gpt-4o-mini",
+            messages: [
+              { role: "system", content: "You are a creative AI image prompt expert. Generate 8 unique, highly detailed image prompts. Return JSON array of objects with 'title' (short 3-5 word title), 'prompt' (detailed 20-40 word prompt), 'category' (one of: Nature, Fantasy, Sci-Fi, Portrait, Abstract, Architecture, Food, Animals), and 'difficulty' (Easy, Medium, Hard)." },
               { role: "user", content: prompt || "Generate diverse trending AI art prompts for various styles" }
             ],
             response_format: { type: "json_object" }
