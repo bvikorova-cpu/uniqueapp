@@ -4,7 +4,7 @@ import { VideoAdHero } from "@/components/video-ads/VideoAdHero";
 import { VideoAdCreditsDisplay } from "@/components/video-ads/VideoAdCreditsDisplay";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Video, Layout, PenTool, Users, BarChart3, Globe, Search, Mic, Music, Target, Calculator, Flame, Trophy, Star, Lightbulb } from "lucide-react";
+import { Video, Layout, PenTool, Users, BarChart3, Globe, Search, Mic, Music, Target, Calculator, Flame, Trophy, Star, Lightbulb, ImageIcon, CalendarDays, Mic2, BarChart2, Globe2, FlaskConical } from "lucide-react";
 import { motion } from "framer-motion";
 import { StoryboardView } from "@/components/video-ads/views/StoryboardView";
 import { AdCopyView } from "@/components/video-ads/views/AdCopyView";
@@ -16,6 +16,12 @@ import { VoiceoverScriptView } from "@/components/video-ads/views/VoiceoverScrip
 import { MusicComposerView } from "@/components/video-ads/views/MusicComposerView";
 import { CampaignPlannerView } from "@/components/video-ads/views/CampaignPlannerView";
 import { RoiCalculatorView } from "@/components/video-ads/views/RoiCalculatorView";
+import { ThumbnailGeneratorView } from "@/components/video-ads/views/ThumbnailGeneratorView";
+import { SocialCalendarView } from "@/components/video-ads/views/SocialCalendarView";
+import { BrandVoiceView } from "@/components/video-ads/views/BrandVoiceView";
+import { AdAnalyticsDashboardView } from "@/components/video-ads/views/AdAnalyticsDashboardView";
+import { MultiLanguageView } from "@/components/video-ads/views/MultiLanguageView";
+import { ABTesterView } from "@/components/video-ads/views/ABTesterView";
 import { useVideoAdCredits } from "@/hooks/useVideoAdCredits";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
@@ -141,6 +147,12 @@ const tools = [
   { id: "music", icon: Music, title: "Music Director", desc: "Music & sound design", cost: "3 CR", gradient: "from-yellow-500 to-orange-600" },
   { id: "campaign", icon: Target, title: "Campaign Planner", desc: "Complete campaign strategy", cost: "4 CR", gradient: "from-indigo-500 to-blue-600" },
   { id: "roi", icon: Calculator, title: "ROI Calculator", desc: "Predict return on investment", cost: "2 CR", gradient: "from-green-500 to-emerald-600" },
+  { id: "thumbnail", icon: ImageIcon, title: "Thumbnail Generator", desc: "Click-worthy thumbnails", cost: "2 CR", gradient: "from-pink-500 to-rose-600" },
+  { id: "social-calendar", icon: CalendarDays, title: "Social Media Calendar", desc: "30-day posting schedule", cost: "3 CR", gradient: "from-blue-500 to-indigo-600" },
+  { id: "brand-voice", icon: Mic2, title: "Brand Voice Matcher", desc: "Define your brand identity", cost: "2 CR", gradient: "from-teal-500 to-cyan-600" },
+  { id: "ad-analytics", icon: BarChart2, title: "Ad Analytics Dashboard", desc: "Campaign insights & stats", cost: "3 CR", gradient: "from-emerald-500 to-green-600" },
+  { id: "multi-language", icon: Globe2, title: "Multi-Language Translator", desc: "Localize for global markets", cost: "3 CR", gradient: "from-cyan-500 to-blue-600" },
+  { id: "ab-tester", icon: FlaskConical, title: "Ad A/B Tester", desc: "Compare ad variants", cost: "4 CR", gradient: "from-purple-500 to-violet-600" },
 ];
 
 const VideoAdGenerator = () => {
@@ -159,6 +171,12 @@ const VideoAdGenerator = () => {
       case "music": return <MusicComposerView onBack={() => setActiveView("dashboard")} />;
       case "campaign": return <CampaignPlannerView onBack={() => setActiveView("dashboard")} />;
       case "roi": return <RoiCalculatorView onBack={() => setActiveView("dashboard")} />;
+      case "thumbnail": return <ThumbnailGeneratorView onBack={() => setActiveView("dashboard")} />;
+      case "social-calendar": return <SocialCalendarView onBack={() => setActiveView("dashboard")} />;
+      case "brand-voice": return <BrandVoiceView onBack={() => setActiveView("dashboard")} />;
+      case "ad-analytics": return <AdAnalyticsDashboardView onBack={() => setActiveView("dashboard")} />;
+      case "multi-language": return <MultiLanguageView onBack={() => setActiveView("dashboard")} />;
+      case "ab-tester": return <ABTesterView onBack={() => setActiveView("dashboard")} />;
       default:
         return (
           <>

@@ -47,6 +47,9 @@ serve(async (req) => {
       campaign_planner: 4,
       social_calendar: 3,
       roi_calculator: 2,
+      ad_analytics: 3,
+      multi_language_translator: 3,
+      ab_tester: 4,
     };
 
     const cost = costs[action] || 1;
@@ -140,6 +143,21 @@ serve(async (req) => {
       case 'roi_calculator':
         systemPrompt = 'You are an advertising ROI analyst. Calculate and predict ad ROI. Return JSON with: projectedROI, breakEvenPoint, costPerAcquisition, lifetimeValue, revenueProjection (monthly array for 6 months), optimizationTips (array), budgetAllocation (by platform), riskAssessment, bestCaseScenario, worstCaseScenario, recommendations (array).';
         userPrompt = `Calculate ROI for video ad campaign. Product: "${params.product}". Price: ${params.price}. Ad budget: ${params.budget}. Platform: ${params.platform}. Industry avg conversion: ${params.conversionRate || '2-5%'}.`;
+        break;
+
+      case 'ad_analytics':
+        systemPrompt = 'You are an AI ad analytics expert. Analyze campaign performance and provide actionable insights. Return JSON with: overallPerformance (object with key metrics like impressions, clicks, ctr, conversions, costPerClick, roas), strengths (array of strings), weaknesses (array of strings), recommendations (array of strings), platformBreakdown (array of {platform, score, performance, notes}), nextSteps (string), trendAnalysis (string).';
+        userPrompt = `Analyze ad campaign performance for "${params.product}". Campaign data: ${params.campaignData || 'not provided - generate realistic estimates'}. Budget spent: ${params.budget || 'moderate'}. Platforms: ${params.platforms || 'multiple'}.`;
+        break;
+
+      case 'multi_language_translator':
+        systemPrompt = 'You are an expert ad script translator and localization specialist. Translate and culturally adapt ad scripts for global markets. Return JSON with: translations (array of {language, flag (emoji), translatedScript, culturalNotes, localizedCTA, toneAdaptation}), generalTips (string with localization advice).';
+        userPrompt = `Translate and localize this ad script for the following languages: ${params.languages || 'Spanish, French, German, Japanese'}. Product: "${params.product || 'the advertised product'}". Original script: "${params.script}". Adapt culturally, not just translate literally.`;
+        break;
+
+      case 'ab_tester':
+        systemPrompt = 'You are an AI A/B testing expert for video advertising. Compare ad variants and predict performance. Return JSON with: winner (string "Variant A" or "Variant B"), winnerReason (string), variants (array of 2 objects each with {name, isWinner (boolean), predictedScore (0-100), predictedCTR, predictedEngagement, predictedConversion, strengths (array), weaknesses (array)}), recommendations (array of improvement suggestions), statisticalConfidence (string).';
+        userPrompt = `A/B test analysis for "${params.product}". Variant A: "${params.scriptA}". ${params.scriptB ? `Variant B: "${params.scriptB}"` : 'Generate an optimized Variant B.'}. Target audience: ${params.audience || 'general'}. Platform: ${params.platform || 'all platforms'}.`;
         break;
 
       default:
