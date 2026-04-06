@@ -256,7 +256,7 @@ const Auction = () => {
           <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
             <Lightbulb className="w-5 h-5 text-amber-400" /> AI Auction Tools
           </h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
             {aiTools.map((tool, i) => (
               <motion.div key={tool.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}>
                 <Card
