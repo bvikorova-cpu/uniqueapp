@@ -232,6 +232,45 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_community_gallery: {
+        Row: {
+          created_at: string
+          id: string
+          image_url: string
+          is_public: boolean | null
+          likes_count: number | null
+          prompt: string
+          style: string | null
+          title: string | null
+          tool_used: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          image_url: string
+          is_public?: boolean | null
+          likes_count?: number | null
+          prompt: string
+          style?: string | null
+          title?: string | null
+          tool_used?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          image_url?: string
+          is_public?: boolean | null
+          likes_count?: number | null
+          prompt?: string
+          style?: string | null
+          title?: string | null
+          tool_used?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       ai_credits: {
         Row: {
           created_at: string
@@ -300,6 +339,35 @@ export type Database = {
           video_url?: string | null
         }
         Relationships: []
+      }
+      ai_gallery_likes: {
+        Row: {
+          created_at: string
+          gallery_item_id: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          gallery_item_id: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          gallery_item_id?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_gallery_likes_gallery_item_id_fkey"
+            columns: ["gallery_item_id"]
+            isOneToOne: false
+            referencedRelation: "ai_community_gallery"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       ai_generated_content: {
         Row: {
@@ -402,6 +470,42 @@ export type Database = {
           tempo?: number | null
           title?: string
           updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      ai_prompt_history: {
+        Row: {
+          category: string | null
+          created_at: string
+          id: string
+          is_favorite: boolean | null
+          last_used_at: string | null
+          prompt: string
+          title: string | null
+          use_count: number | null
+          user_id: string
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          id?: string
+          is_favorite?: boolean | null
+          last_used_at?: string | null
+          prompt: string
+          title?: string | null
+          use_count?: number | null
+          user_id: string
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          id?: string
+          is_favorite?: boolean | null
+          last_used_at?: string | null
+          prompt?: string
+          title?: string | null
+          use_count?: number | null
           user_id?: string
         }
         Relationships: []
