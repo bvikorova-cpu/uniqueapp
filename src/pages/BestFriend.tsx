@@ -145,6 +145,12 @@ const BestFriend = () => {
       case "conversation_starters": return <ConversationStartersView />;
       case "encouragement_cards": return <EncouragementCardsView />;
       case "life_coach": return <LifeCoachView />;
+      case "friendship_analytics": return <FriendshipAnalyticsView />;
+      case "mood_playlist": return <MoodPlaylistView />;
+      case "daily_affirmations": return <DailyAffirmationsView />;
+      case "friendship_games": return <FriendshipGamesView />;
+      case "dream_companion": return <DreamCompanionView />;
+      case "memory_scrapbook": return <MemoryScrapbookView />;
       case "chat": return renderChat();
       default: return null;
     }
@@ -280,7 +286,7 @@ const BestFriend = () => {
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
                 <Card className="bg-card/80 backdrop-blur-xl border-purple-500/20 text-center p-4">
                   <Sparkles className="h-6 w-6 text-blue-400 mx-auto mb-2" />
-                  <div className="text-2xl font-black">5</div>
+                  <div className="text-2xl font-black">11</div>
                   <p className="text-xs text-muted-foreground">AI Tools Available</p>
                 </Card>
               </motion.div>
