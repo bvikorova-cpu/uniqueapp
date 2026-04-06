@@ -373,7 +373,7 @@ const CouponMarketplace = () => {
         {/* AI Tools */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="mb-8">
           <h2 className="text-xl font-black mb-4">🤖 AI-Powered Coupon Tools</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
             {aiTools.map((tool, i) => <MarketplaceToolCard key={tool.id} tool={tool} onSelect={() => setActiveView(tool.id)} index={i} />)}
           </div>
         </motion.div>
