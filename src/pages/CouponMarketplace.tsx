@@ -18,6 +18,12 @@ import { CouponValuatorView } from "@/components/coupon/views/CouponValuatorView
 import { FraudScannerView } from "@/components/coupon/views/FraudScannerView";
 import { DealMatcherView } from "@/components/coupon/views/DealMatcherView";
 import { ListingWriterView } from "@/components/coupon/views/ListingWriterView";
+import { ExpiryAlertView } from "@/components/coupon/views/ExpiryAlertView";
+import { BundleBuilderView } from "@/components/coupon/views/BundleBuilderView";
+import { StoreReputationView } from "@/components/coupon/views/StoreReputationView";
+import { PriceHistoryView } from "@/components/coupon/views/PriceHistoryView";
+import { NegotiationBotView } from "@/components/coupon/views/NegotiationBotView";
+import { WishlistAlertsView } from "@/components/coupon/views/WishlistAlertsView";
 
 interface CouponListing {
   id: string; title: string; description: string | null; store_name: string;
