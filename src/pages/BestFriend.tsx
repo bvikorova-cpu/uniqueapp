@@ -2,25 +2,41 @@ import { useState, useRef, useEffect, type KeyboardEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Send, Heart, Sparkles, CreditCard, Crown } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import {
+  Send, Heart, Sparkles, CreditCard, Crown, ArrowLeft,
+  BookHeart, MessageSquarePlus, HeartHandshake, Target, MessageCircle,
+} from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useBestFriendSubscription } from "@/hooks/useBestFriendSubscription";
+import { motion } from "framer-motion";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
+  Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle,
 } from "@/components/ui/dialog";
+import { BestFriendHero } from "@/components/best-friend/BestFriendHero";
+import { MoodJournalView } from "@/components/best-friend/MoodJournalView";
+import { ConversationStartersView } from "@/components/best-friend/ConversationStartersView";
+import { EncouragementCardsView } from "@/components/best-friend/EncouragementCardsView";
+import { LifeCoachView } from "@/components/best-friend/LifeCoachView";
+import ReactMarkdown from "react-markdown";
 
 const CHAT_URL = `https://jufrdzeonywluwutvyxz.supabase.co/functions/v1/best-friend-chat`;
 
 type Message = { role: "user" | "assistant"; content: string };
 
+const tools = [
+  { id: "chat", icon: MessageCircle, title: "Best Friend Chat", description: "Talk to your AI best friend", badge: "Subscription", credits: 0, gradient: "from-purple-500/10 to-blue-500/5" },
+  { id: "mood_journal", icon: BookHeart, title: "AI Mood Journal", description: "Track emotions & get insights", badge: "AI", credits: 3, gradient: "from-purple-500/10 to-indigo-500/5" },
+  { id: "conversation_starters", icon: MessageSquarePlus, title: "Conversation Starters", description: "AI-generated icebreakers", badge: "AI", credits: 2, gradient: "from-indigo-500/10 to-purple-500/5" },
+  { id: "encouragement_cards", icon: HeartHandshake, title: "Encouragement Cards", description: "Personalized motivational cards", badge: "AI", credits: 3, gradient: "from-pink-500/10 to-rose-500/5" },
+  { id: "life_coach", icon: Target, title: "Life Coach Mode", description: "Goal-setting & accountability", badge: "AI", credits: 4, gradient: "from-emerald-500/10 to-teal-500/5" },
+];
+
 const BestFriend = () => {
+  const [activeView, setActiveView] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -29,474 +45,323 @@ const BestFriend = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const { subscription, refresh: refreshSubscription, createCheckout, manageSubscription, purchaseMessages } = useBestFriendSubscription();
 
-  // Load chat history
-  useEffect(() => {
-    loadHistory();
-  }, []);
+  useEffect(() => { loadHistory(); }, []);
 
   const loadHistory = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        setMessages([{
-          role: "assistant",
-          content: "Hi! I'm here for you. How are you? You can tell me anything that's bothering you or makes you happy. 😊"
-        }]);
+        setMessages([{ role: "assistant", content: "Hi! I'm here for you. How are you? 😊" }]);
         setLoadingHistory(false);
         return;
       }
-
-      const { data, error } = await supabase
-        .from('best_friend_conversations')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: true });
-
-      if (error) throw error;
-
+      const { data } = await supabase.from('best_friend_conversations').select('*')
+        .eq('user_id', user.id).order('created_at', { ascending: true });
       if (data && data.length > 0) {
-        setMessages(data.map(msg => ({
-          role: msg.role as "user" | "assistant",
-          content: msg.content
-        })));
+        setMessages(data.map(msg => ({ role: msg.role as "user" | "assistant", content: msg.content })));
       } else {
-        setMessages([{
-          role: "assistant",
-          content: "Hi! I'm here for you. How are you? You can tell me anything that's bothering you or makes you happy. 😊"
-        }]);
+        setMessages([{ role: "assistant", content: "Hi! I'm here for you. How are you? 😊" }]);
       }
-    } catch (error) {
-      console.error("Error loading history:", error);
-      toast.error("Failed to load chat history");
-    } finally {
-      setLoadingHistory(false);
-    }
+    } catch { toast.error("Failed to load history"); }
+    finally { setLoadingHistory(false); }
   };
 
   useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-    }
+    if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
   }, [messages]);
 
   const streamChat = async (userMessage: string) => {
     setIsLoading(true);
-    
     try {
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        toast.error("Please sign in to continue");
-        setIsLoading(false);
-        return;
-      }
-
+      if (!session) { toast.error("Please sign in"); setIsLoading(false); return; }
       const response = await fetch(CHAT_URL, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${session.access_token}`,
-        },
-        body: JSON.stringify({ 
-          messages: [...messages, { role: "user", content: userMessage }]
-        }),
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.access_token}` },
+        body: JSON.stringify({ messages: [...messages, { role: "user", content: userMessage }] }),
       });
-
       if (!response.ok) {
         if (response.status === 402) {
           const data = await response.json();
-          if (data.requiresSubscription) {
-            setShowSubscriptionDialog(true);
-            setMessages(prev => prev.slice(0, -1));
-            setIsLoading(false);
-            return;
-          }
+          if (data.requiresSubscription) { setShowSubscriptionDialog(true); setMessages(p => p.slice(0, -1)); setIsLoading(false); return; }
         }
-        throw new Error("Failed to start stream");
+        throw new Error("Failed");
       }
-
-      if (!response.body) {
-        throw new Error("No response body");
-      }
-
+      if (!response.body) throw new Error("No body");
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
-      let textBuffer = "";
-      let assistantMessage = "";
-
-      setMessages(prev => [...prev, { role: "assistant", content: "" }]);
-
+      let buf = "", assistantMsg = "";
+      setMessages(p => [...p, { role: "assistant", content: "" }]);
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
-        
-        textBuffer += decoder.decode(value, { stream: true });
-
-        let newlineIndex: number;
-        while ((newlineIndex = textBuffer.indexOf("\n")) !== -1) {
-          let line = textBuffer.slice(0, newlineIndex);
-          textBuffer = textBuffer.slice(newlineIndex + 1);
-
+        buf += decoder.decode(value, { stream: true });
+        let nl: number;
+        while ((nl = buf.indexOf("\n")) !== -1) {
+          let line = buf.slice(0, nl); buf = buf.slice(nl + 1);
           if (line.endsWith("\r")) line = line.slice(0, -1);
-          if (line.startsWith(":") || line.trim() === "") continue;
-          if (!line.startsWith("data: ")) continue;
-
-          const jsonStr = line.slice(6).trim();
-          if (jsonStr === "[DONE]") break;
-
+          if (line.startsWith(":") || !line.trim() || !line.startsWith("data: ")) continue;
+          const json = line.slice(6).trim();
+          if (json === "[DONE]") break;
           try {
-            const parsed = JSON.parse(jsonStr);
-            const content = parsed.choices?.[0]?.delta?.content as string | undefined;
-            if (content) {
-              assistantMessage += content;
-              setMessages(prev => {
-                const newMessages = [...prev];
-                newMessages[newMessages.length - 1] = {
-                  role: "assistant",
-                  content: assistantMessage
-                };
-                return newMessages;
-              });
-            }
-          } catch {
-            textBuffer = line + "\n" + textBuffer;
-            break;
-          }
+            const c = JSON.parse(json).choices?.[0]?.delta?.content;
+            if (c) { assistantMsg += c; setMessages(p => { const n = [...p]; n[n.length - 1] = { role: "assistant", content: assistantMsg }; return n; }); }
+          } catch { buf = line + "\n" + buf; break; }
         }
       }
-    } catch (error: any) {
-      console.error("Error:", error);
-      toast.error("Error communicating with friend");
-      setMessages(prev => prev.slice(0, -1));
-    } finally {
-      setIsLoading(false);
-      refreshSubscription();
-    }
-  };
-
-  const handleSubscribe = async () => {
-    try {
-      await createCheckout();
-      toast.success("Opening checkout...");
-    } catch (error) {
-      toast.error("Failed to create checkout");
-    }
+    } catch (e: any) { toast.error("Error communicating"); setMessages(p => p.slice(0, -1)); }
+    finally { setIsLoading(false); refreshSubscription(); }
   };
 
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
-
-    const userMessage = input.trim();
-    setInput("");
-    setMessages(prev => [...prev, { role: "user", content: userMessage }]);
-    
-    await streamChat(userMessage);
+    const msg = input.trim(); setInput("");
+    setMessages(p => [...p, { role: "user", content: msg }]);
+    await streamChat(msg);
   };
 
   const handleKeyPress = (e: KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleSend();
+    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); }
+  };
+
+  const messagesLeft = !subscription.subscribed ? Math.max(0, subscription.freeMessagesLimit - subscription.freeMessagesUsed) : null;
+
+  const renderToolView = () => {
+    switch (activeView) {
+      case "mood_journal": return <MoodJournalView />;
+      case "conversation_starters": return <ConversationStartersView />;
+      case "encouragement_cards": return <EncouragementCardsView />;
+      case "life_coach": return <LifeCoachView />;
+      case "chat": return renderChat();
+      default: return null;
     }
   };
+
+  const renderChat = () => (
+    <div className="max-w-4xl mx-auto">
+      {/* Subscription status */}
+      <div className="mb-4 text-center">
+        {subscription.subscribed ? (
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-500/10 border border-emerald-500/30 rounded-lg">
+            <Crown className="w-4 h-4 text-emerald-400" />
+            <span className="text-sm text-emerald-400">
+              Premium Active • {subscription.monthlyMessagesUsed}/{subscription.monthlyMessagesLimit} msgs
+              {subscription.bonusMessages > 0 && ` (+${subscription.bonusMessages} bonus)`}
+            </span>
+            <Button variant="ghost" size="sm" onClick={manageSubscription} className="ml-2 text-xs">Manage</Button>
+          </div>
+        ) : (
+          <div className="flex flex-col items-center gap-3">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
+              <Sparkles className="w-4 h-4 text-yellow-400" />
+              <span className="text-sm text-yellow-400">{messagesLeft} free messages remaining</span>
+            </div>
+            <div className="flex gap-2">
+              <Button onClick={() => createCheckout()} size="sm" className="bg-gradient-to-r from-purple-600 to-blue-600">
+                <Crown className="w-4 h-4 mr-1" /> Subscribe €15/mo
+              </Button>
+              <Button variant="outline" size="sm" onClick={() => purchaseMessages()}>
+                <CreditCard className="w-4 h-4 mr-1" /> +100 msgs €2
+              </Button>
+            </div>
+          </div>
+        )}
+      </div>
+
+      <Card className="bg-card/80 backdrop-blur-xl border-purple-500/20 shadow-lg">
+        <CardHeader className="border-b border-border/50">
+          <div className="flex items-center gap-3">
+            <Avatar className="h-12 w-12 border-2 border-purple-500/50">
+              <AvatarFallback className="bg-gradient-to-br from-purple-500 to-blue-500 text-white">
+                <Heart className="w-6 h-6" />
+              </AvatarFallback>
+            </Avatar>
+            <div>
+              <CardTitle className="flex items-center gap-2">Best Friend <Sparkles className="w-4 h-4 text-purple-400" /></CardTitle>
+              <p className="text-sm text-muted-foreground">Online • Always here for you</p>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="p-0">
+          <ScrollArea ref={scrollRef} className="h-[500px] p-4">
+            <div className="space-y-4">
+              {messages.map((m, i) => (
+                <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
+                  <div className={`max-w-[80%] rounded-2xl p-3 ${
+                    m.role === "user"
+                      ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white"
+                      : "bg-card/80 backdrop-blur-xl border border-border/50"
+                  }`}>
+                    <div className="prose prose-sm dark:prose-invert max-w-none">
+                      <ReactMarkdown>{m.content}</ReactMarkdown>
+                    </div>
+                  </div>
+                </div>
+              ))}
+              {isLoading && (
+                <div className="flex justify-start">
+                  <div className="bg-card/80 backdrop-blur-xl border border-border/50 rounded-2xl p-3">
+                    <div className="flex gap-1">
+                      <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                      <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                      <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </ScrollArea>
+          <div className="border-t border-border/50 p-4">
+            <div className="flex gap-2">
+              <Textarea value={input} onChange={(e) => setInput(e.target.value)} onKeyPress={handleKeyPress}
+                placeholder="Write something..." className="min-h-[60px] resize-none bg-card/50" disabled={isLoading} />
+              <Button onClick={handleSend} disabled={!input.trim() || isLoading} size="icon"
+                className="h-[60px] w-[60px] bg-gradient-to-r from-purple-600 to-blue-600">
+                <Send className="w-5 h-5" />
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
 
   if (loadingHistory || subscription.loading) {
     return (
       <div className="min-h-screen bg-background pt-20 pb-8 flex items-center justify-center">
-        <div className="text-center">
-          <Heart className="w-12 h-12 text-destructive animate-pulse mx-auto mb-4" />
-          <p className="text-muted-foreground">Loading...</p>
-        </div>
+        <Heart className="w-12 h-12 text-purple-400 animate-pulse mx-auto" />
       </div>
     );
   }
 
-  const messagesLeft = !subscription.subscribed ? Math.max(0, subscription.freeMessagesLimit - subscription.freeMessagesUsed) : null;
-
   return (
     <div className="min-h-screen bg-background pt-20 pb-8">
-      <div className="container mx-auto px-4 max-w-4xl">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-2 mb-4">
-            <Heart className="w-8 h-8 text-destructive animate-pulse" />
-            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
-              Best Friend
-            </h1>
+      <div className="container mx-auto px-4">
+        {activeView ? (
+          <div>
+            <Button variant="ghost" onClick={() => setActiveView(null)} className="mb-4 gap-2">
+              <ArrowLeft className="h-4 w-4" /> Back to Best Friend Hub
+            </Button>
+            {renderToolView()}
           </div>
-          <p className="text-lg text-muted-foreground">
-            Your best friend who is always here for you
-          </p>
-          
-          {/* Detailed Description */}
-          <div className="bg-card/50 rounded-lg p-6 mt-6 space-y-3 border border-border/50 text-left max-w-3xl mx-auto">
-            <h2 className="text-xl font-semibold text-center mb-3">What is Best Friend AI?</h2>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              Best Friend AI is your personal AI companion powered by advanced AI technology. 
-              This intelligent chatbot is designed to be your trusted friend who's always available 
-              to listen, support, and engage in meaningful conversations.
-            </p>
-            
-            <div className="grid md:grid-cols-2 gap-4 mt-4">
-              <div className="space-y-2">
-                <h3 className="font-semibold text-sm">✨ Key Features:</h3>
-                <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
-                  <li>Empathetic and supportive conversations</li>
-                  <li>Remembers your chat history</li>
-                  <li>Available 24/7 whenever you need to talk</li>
-                  <li>Provides thoughtful advice without judgment</li>
-                  <li>Celebrates your successes and helps with challenges</li>
-                </ul>
-              </div>
-              
-              <div className="space-y-2">
-                <h3 className="font-semibold text-sm">💰 Pricing:</h3>
-                <ul className="text-sm text-muted-foreground space-y-1">
-                  <li>• <strong>Free Trial:</strong> 5 messages to try it out</li>
-                  <li>• <strong>Premium:</strong> €15/month for 1000 messages</li>
-                  <li>• <strong>Extra:</strong> +100 messages for €2</li>
-                  <li>• Cancel anytime through customer portal</li>
-                </ul>
-              </div>
-            </div>
-            
-            <p className="text-xs text-muted-foreground text-center mt-4 pt-4 border-t border-border/50">
-              💡 <strong>How it works:</strong> Simply start chatting! After your 5 free messages, 
-              you'll be prompted to subscribe. Once subscribed, enjoy unlimited conversations with your AI best friend 
-              who remembers everything you've talked about.
-            </p>
-          </div>
-          {subscription.subscribed && (
-            <div className="mt-4 space-y-3">
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-success/10 border border-success rounded-lg">
-                <Crown className="w-4 h-4 text-success" />
-                <span className="text-sm text-success">
-                  Premium Active • {subscription.monthlyMessagesUsed}/{subscription.monthlyMessagesLimit} messages
-                  {subscription.bonusMessages > 0 && ` (+${subscription.bonusMessages} bonus)`}
-                </span>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={manageSubscription}
-                  className="ml-2"
-                >
-                  Manage
-                </Button>
-              </div>
-              <div className="flex gap-2 justify-center">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => purchaseMessages()}
-                  className="gap-2"
-                >
-                  <CreditCard className="w-4 h-4" />
-                  +100 messages for €2
-                </Button>
-              </div>
-            </div>
-          )}
-          {!subscription.subscribed && (
-            <div className="mt-4 flex flex-col items-center gap-3">
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-warning/10 border border-warning rounded-lg">
-                <Sparkles className="w-4 h-4 text-warning" />
-                <span className="text-sm text-warning">
-                  {messagesLeft} free {messagesLeft === 1 ? 'message' : 'messages'} remaining
-                </span>
-              </div>
-              <div className="flex flex-col sm:flex-row gap-2">
-                <Button onClick={handleSubscribe} className="gap-2">
-                  <Crown className="w-4 h-4" />
-                  Subscribe for €15/month
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => purchaseMessages()}
-                  className="gap-2"
-                >
-                  <CreditCard className="w-4 h-4" />
-                  +100 messages for €2
-                </Button>
-              </div>
-            </div>
-          )}
-        </div>
+        ) : (
+          <>
+            <BestFriendHero />
 
-        {/* Chat Card */}
-        <Card className="shadow-lg">
-          <CardHeader className="border-b">
-            <div className="flex items-center gap-3">
-              <Avatar className="h-12 w-12 border-2 border-primary">
-                <AvatarImage src="/placeholder.svg" />
-                <AvatarFallback className="bg-gradient-primary text-white">
-                  <Heart className="w-6 h-6" />
-                </AvatarFallback>
-              </Avatar>
-              <div>
-                <CardTitle className="flex items-center gap-2">
-                  Best Friend
-                  <Sparkles className="w-4 h-4 text-primary" />
-                </CardTitle>
-                <p className="text-sm text-muted-foreground">Online • Always here for you</p>
-              </div>
+            {/* Engagement Row */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+                <Card className="bg-card/80 backdrop-blur-xl border-purple-500/20 text-center p-4">
+                  <Heart className="h-6 w-6 text-pink-400 mx-auto mb-2" />
+                  <div className="text-2xl font-black">{subscription.subscribed ? "Active" : "Free"}</div>
+                  <p className="text-xs text-muted-foreground">Subscription Status</p>
+                </Card>
+              </motion.div>
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
+                <Card className="bg-card/80 backdrop-blur-xl border-purple-500/20 text-center p-4">
+                  <MessageCircle className="h-6 w-6 text-purple-400 mx-auto mb-2" />
+                  <div className="text-2xl font-black">{messages.length}</div>
+                  <p className="text-xs text-muted-foreground">Messages Exchanged</p>
+                </Card>
+              </motion.div>
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
+                <Card className="bg-card/80 backdrop-blur-xl border-purple-500/20 text-center p-4">
+                  <Sparkles className="h-6 w-6 text-blue-400 mx-auto mb-2" />
+                  <div className="text-2xl font-black">5</div>
+                  <p className="text-xs text-muted-foreground">AI Tools Available</p>
+                </Card>
+              </motion.div>
             </div>
-          </CardHeader>
 
-          <CardContent className="p-0">
-            {/* Messages */}
-            <ScrollArea ref={scrollRef} className="h-[500px] p-4">
-              <div className="space-y-4">
-                {messages.map((message, index) => (
-                  <div
-                    key={index}
-                    className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
+            {/* Tool Grid */}
+            <h2 className="text-2xl font-black mb-4 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
+              Your AI Companion Tools
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 mb-8">
+              {tools.map((tool, i) => (
+                <motion.div key={tool.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 + i * 0.05 }}>
+                  <Card
+                    className={`bg-gradient-to-br ${tool.gradient} bg-card/80 backdrop-blur-xl cursor-pointer hover:border-purple-500/40 transition-all hover:scale-[1.02] active:scale-[0.97] h-full`}
+                    onClick={() => setActiveView(tool.id)}
                   >
-                    <div
-                      className={`max-w-[80%] rounded-lg p-3 ${
-                        message.role === "user"
-                          ? "bg-primary text-primary-foreground"
-                          : "bg-secondary text-secondary-foreground"
-                      }`}
-                    >
-                      <p className="whitespace-pre-wrap">{message.content}</p>
-                    </div>
-                  </div>
-                ))}
-                {isLoading && (
-                  <div className="flex justify-start">
-                    <div className="bg-secondary rounded-lg p-3">
-                      <div className="flex gap-1">
-                        <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
-                        <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-                        <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                    <CardContent className="p-4 text-center">
+                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500/20 to-blue-500/20 flex items-center justify-center mx-auto mb-3">
+                        <tool.icon className="h-6 w-6 text-purple-400" />
                       </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </ScrollArea>
-
-            {/* Input */}
-            <div className="border-t p-4">
-              <div className="flex gap-2">
-                <Textarea
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  onKeyPress={handleKeyPress}
-                  placeholder="Write something..."
-                  className="min-h-[60px] resize-none"
-                  disabled={isLoading}
-                />
-                <Button
-                  onClick={handleSend}
-                  disabled={!input.trim() || isLoading}
-                  size="icon"
-                  className="h-[60px] w-[60px]"
-                >
-                  <Send className="w-5 h-5" />
-                </Button>
-              </div>
+                      <h3 className="font-bold text-sm mb-1">{tool.title}</h3>
+                      <p className="text-xs text-muted-foreground mb-2">{tool.description}</p>
+                      <div className="flex items-center justify-center gap-1">
+                        <Badge variant="outline" className="text-[10px]">{tool.badge}</Badge>
+                        {tool.credits > 0 && <Badge variant="secondary" className="text-[10px]">{tool.credits} CR</Badge>}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
             </div>
-          </CardContent>
-        </Card>
+
+            {/* Description */}
+            <Card className="bg-card/80 backdrop-blur-xl border-purple-500/20 mb-8">
+              <CardContent className="p-6">
+                <h2 className="text-xl font-bold mb-3 text-center">What is Best Friend AI?</h2>
+                <p className="text-sm text-muted-foreground leading-relaxed mb-4">
+                  Best Friend AI is your personal AI companion powered by advanced AI technology. This intelligent chatbot is designed to be your trusted friend who's always available to listen, support, and engage in meaningful conversations. Beyond chat, access specialized AI tools for mood tracking, life coaching, and personalized encouragement.
+                </p>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <h3 className="font-semibold text-sm mb-2">✨ Key Features:</h3>
+                    <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
+                      <li>Empathetic and supportive conversations</li>
+                      <li>AI Mood Journal with emotional pattern analysis</li>
+                      <li>Personalized encouragement cards</li>
+                      <li>Life coaching & goal-setting sessions</li>
+                      <li>AI-generated conversation starters</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-sm mb-2">💰 Pricing:</h3>
+                    <ul className="text-sm text-muted-foreground space-y-1">
+                      <li>• <strong>Chat:</strong> €15/month for 1000 messages</li>
+                      <li>• <strong>AI Tools:</strong> 2-4 credits per use</li>
+                      <li>• <strong>Extra:</strong> +100 messages for €2</li>
+                      <li>• Cancel anytime</li>
+                    </ul>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </>
+        )}
 
         {/* Subscription Dialog */}
         <Dialog open={showSubscriptionDialog} onOpenChange={setShowSubscriptionDialog}>
-          <DialogContent>
+          <DialogContent className="bg-card/95 backdrop-blur-xl">
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2">
-                <Crown className="w-5 h-5 text-primary" />
-                Subscribe to Continue
+                <Crown className="w-5 h-5 text-purple-400" /> Subscribe to Continue
               </DialogTitle>
               <DialogDescription>
-                You've used all your free messages. Subscribe for just €15/month to enjoy 1000 conversations with your best friend.
+                You've used all free messages. Subscribe for €15/month to enjoy 1000 conversations.
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-4 py-4">
               <div className="flex items-start gap-3">
-                <Heart className="w-5 h-5 text-destructive mt-0.5" />
-                <div>
-                  <p className="font-medium">1000 Messages/Month</p>
-                  <p className="text-sm text-muted-foreground">Reset every billing period</p>
-                </div>
+                <Heart className="w-5 h-5 text-pink-400 mt-0.5" />
+                <div><p className="font-medium">1000 Messages/Month</p><p className="text-sm text-muted-foreground">Reset every billing period</p></div>
               </div>
               <div className="flex items-start gap-3">
-                <Sparkles className="w-5 h-5 text-primary mt-0.5" />
-                <div>
-                  <p className="font-medium">Full Chat History</p>
-                  <p className="text-sm text-muted-foreground">Your conversations are always saved</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <CreditCard className="w-5 h-5 text-success mt-0.5" />
-                <div>
-                  <p className="font-medium">€15/month + €2/100 extra</p>
-                  <p className="text-sm text-muted-foreground">Cancel anytime</p>
-                </div>
+                <Sparkles className="w-5 h-5 text-purple-400 mt-0.5" />
+                <div><p className="font-medium">Full Chat History</p><p className="text-sm text-muted-foreground">Conversations always saved</p></div>
               </div>
             </div>
             <div className="flex gap-2">
-              <Button
-                variant="outline"
-                onClick={() => setShowSubscriptionDialog(false)}
-                className="flex-1"
-              >
-                Maybe Later
-              </Button>
-              <Button
-                onClick={handleSubscribe}
-                className="flex-1"
-              >
-                <Crown className="w-4 h-4 mr-2" />
-                Subscribe Now
+              <Button variant="outline" onClick={() => setShowSubscriptionDialog(false)} className="flex-1">Maybe Later</Button>
+              <Button onClick={() => createCheckout()} className="flex-1 bg-gradient-to-r from-purple-600 to-blue-600">
+                <Crown className="w-4 h-4 mr-2" /> Subscribe Now
               </Button>
             </div>
           </DialogContent>
         </Dialog>
-
-        {/* Info Cards */}
-        <div className="grid md:grid-cols-3 gap-4 mt-8">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base flex items-center gap-2">
-                <Heart className="w-4 h-4 text-destructive" />
-                Always here for you
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">
-                24/7 friend who always listens
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-primary" />
-                Empathetic
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">
-                Understands your feelings and always supports you
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base flex items-center gap-2">
-                <Send className="w-4 h-4 text-success" />
-                Confidential
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">
-                Your conversations are safe and private
-              </p>
-            </CardContent>
-          </Card>
-        </div>
       </div>
     </div>
   );
