@@ -46,28 +46,28 @@ export const AnalyzerHero = ({ credits, tier }: AnalyzerHeroProps) => {
           muted
           loop
           playsInline
-          className="absolute inset-0 h-full w-full object-cover object-[72%_center] sm:object-center"
-          style={{ filter: "brightness(1.2) saturate(1.05) contrast(1.05)" }}
+          className="absolute inset-0 h-full w-full object-cover object-[76%_center] sm:object-center"
+          style={{ filter: "brightness(1.18) saturate(1.04) contrast(1.04)" }}
           src={analyzerHeroAsset.url}
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-background/80 via-background/35 to-background/5" />
-        <div className="absolute inset-0 bg-gradient-to-t from-background/55 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-background/35 via-background/10 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background/25 via-transparent to-transparent" />
 
         <div className="relative z-10 flex h-full flex-col justify-between p-4 sm:p-8">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="max-w-[72%] sm:max-w-xl space-y-3"
+            className="max-w-[58%] sm:max-w-lg space-y-3"
           >
-            <span className="inline-flex items-center rounded-full border border-border/70 bg-background/55 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-foreground/80 backdrop-blur-md">
+            <span className="inline-flex items-center rounded-full border border-border/60 bg-background/35 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-foreground backdrop-blur-sm">
               Real-world AI scanning
             </span>
-            <div>
-              <h1 className="text-3xl font-black leading-none text-background sm:text-5xl [text-shadow:0_10px_30px_hsl(var(--background)/0.55)]">
+            <div className="inline-block rounded-2xl border border-border/50 bg-background/22 px-3 py-3 backdrop-blur-sm sm:px-4">
+              <h1 className="text-3xl font-black leading-none text-foreground sm:text-5xl [text-shadow:0_8px_24px_hsl(var(--background)/0.35)]">
                 Universal Vision <span className="text-primary">Analyzer</span>
               </h1>
-              <p className="mt-3 max-w-md text-sm font-semibold text-background/90 drop-shadow sm:text-lg">
+              <p className="mt-3 max-w-sm text-sm font-semibold text-foreground/85 sm:text-lg">
                 AI-powered image analysis for everything around you
               </p>
             </div>
@@ -78,12 +78,12 @@ export const AnalyzerHero = ({ credits, tier }: AnalyzerHeroProps) => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.15, duration: 0.8 }}
           >
-            <div className="inline-flex flex-wrap items-center gap-3 rounded-2xl border border-border/60 bg-background/45 px-4 py-3 backdrop-blur-md shadow-xl">
+            <div className="inline-flex flex-wrap items-center gap-3 rounded-2xl border border-border/50 bg-background/32 px-4 py-3 backdrop-blur-sm shadow-xl">
               <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-bold text-primary">
                 <Zap className="w-3 h-3" />
                 {credits} Credits
               </span>
-              <span className="inline-flex items-center rounded-full border border-border/70 bg-background/55 px-3 py-1 text-xs font-bold capitalize text-foreground/80">
+              <span className="inline-flex items-center rounded-full border border-border/60 bg-background/45 px-3 py-1 text-xs font-bold capitalize text-foreground/80">
                 {tier} Tier
               </span>
             </div>
