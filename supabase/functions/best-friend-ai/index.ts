@@ -31,12 +31,17 @@ serve(async (req) => {
       conversation_starters: 2,
       encouragement_cards: 3,
       life_coach: 4,
+      friendship_analytics: 4,
+      mood_playlist: 3,
+      daily_affirmations: 2,
+      friendship_games: 3,
+      dream_companion: 4,
+      memory_scrapbook: 3,
     };
 
     const cost = creditCosts[action];
     if (!cost) throw new Error(`Unknown action: ${action}`);
 
-    // Check credits
     const { data: credits } = await supabase
       .from("ai_credits")
       .select("credits_remaining")
@@ -70,9 +75,9 @@ serve(async (req) => {
 - starters (array of 6 objects, each with: text, category (Fun/Deep/Creative/Nostalgia/Goals/Random), emoji)
 - theme (the overall conversational theme you chose)
 - tip (a brief tip on how to have better conversations)`;
-        userPrompt = params.context 
+        userPrompt = params.context
           ? `Generate conversation starters based on these interests: ${params.context}`
-          : `Generate diverse and engaging conversation starters for a best friend chat. Mix fun, deep, and creative topics.`;
+          : `Generate diverse and engaging conversation starters for a best friend chat.`;
         break;
       }
       case "encouragement_cards": {
@@ -80,13 +85,13 @@ serve(async (req) => {
 - cards (array of 4 objects, each with: title, message (2-3 inspiring sentences), emoji, color_theme (lavender/coral/mint/gold))
 - daily_mantra (a short powerful daily mantra)
 - gratitude_prompt (a gratitude reflection question)`;
-        userPrompt = params.situation 
+        userPrompt = params.situation
           ? `Create encouragement cards for someone going through: ${params.situation}`
           : `Create uplifting encouragement cards for general positivity and self-empowerment.`;
         break;
       }
       case "life_coach": {
-        systemPrompt = `You are an expert AI life coach specializing in goal-setting, productivity, and personal growth. Provide structured coaching advice. Return a JSON object with:
+        systemPrompt = `You are an expert AI life coach specializing in goal-setting, productivity, and personal growth. Return a JSON object with:
 - assessment (2-3 sentences analyzing their current situation)
 - goals (array of 3 SMART goals, each with: goal, timeline, first_step, motivation)
 - action_plan (array of 5 specific daily actions)
@@ -94,6 +99,83 @@ serve(async (req) => {
 - accountability_check (a question to ask themselves weekly)
 - resources (array of 3 recommended activities or practices)`;
         userPrompt = `Provide life coaching for: "${params.topic}"`;
+        break;
+      }
+      case "friendship_analytics": {
+        systemPrompt = `You are an AI friendship analytics expert. Analyze the user's conversation history and friendship patterns. Return a JSON object with:
+- communication_style (object with: primary_style (string), strengths (array of 3 strings), areas_to_improve (array of 2 strings))
+- emotional_trends (array of 5 objects with: week (string like "Week 1"), sentiment_score (1-10), dominant_emotion (string))
+- conversation_insights (object with: avg_message_length (string), most_active_time (string), favorite_topics (array of 3 strings), engagement_score (1-100))
+- friendship_health_score (1-100 integer)
+- growth_areas (array of 3 objects with: area (string), tip (string), emoji (string))
+- fun_stats (object with: total_laughs (number), deep_conversations (number), supportive_moments (number), random_fun_facts (array of 2 strings))`;
+        userPrompt = params.conversationSummary
+          ? `Analyze these friendship patterns: ${params.conversationSummary}. Messages exchanged: ${params.messageCount || 0}`
+          : `Generate sample friendship analytics for someone with ${params.messageCount || 50} messages exchanged. Make it insightful and encouraging.`;
+        break;
+      }
+      case "mood_playlist": {
+        systemPrompt = `You are an AI music therapist who creates personalized playlists based on emotional state. Return a JSON object with:
+- playlist_name (creative playlist title)
+- playlist_description (1-2 sentence description of the vibe)
+- songs (array of 8 objects, each with: title (string), artist (string), genre (string), mood_match (string explaining why this fits), energy_level (1-10))
+- listening_order_tip (advice on how to listen for maximum emotional benefit)
+- mood_transition (object with: current_mood (string), target_mood (string), journey (string describing the emotional arc))
+- bonus_activity (an activity to pair with the playlist)`;
+        userPrompt = params.mood
+          ? `Create a therapeutic playlist for someone feeling: ${params.mood}. ${params.preferences ? `They enjoy: ${params.preferences}` : ""}`
+          : `Create an uplifting mood-boosting playlist for general emotional wellness.`;
+        break;
+      }
+      case "daily_affirmations": {
+        systemPrompt = `You are an AI affirmation specialist creating powerful, personalized daily affirmations. Return a JSON object with:
+- morning_affirmations (array of 5 objects, each with: affirmation (string), category (Confidence/Gratitude/Growth/Love/Strength), emoji (string))
+- evening_reflections (array of 3 objects, each with: reflection (string), prompt (string for journaling))
+- power_mantra (object with: mantra (string), explanation (string), when_to_use (string))
+- weekly_intention (object with: intention (string), action_steps (array of 3 strings))
+- personalized_note (a warm, personal note of encouragement)`;
+        userPrompt = params.focus
+          ? `Create daily affirmations focused on: ${params.focus}. ${params.challenges ? `Current challenges: ${params.challenges}` : ""}`
+          : `Create powerful daily affirmations for overall well-being and personal empowerment.`;
+        break;
+      }
+      case "friendship_games": {
+        systemPrompt = `You are a fun AI game master creating interactive friendship games and quizzes. Return a JSON object with:
+- game (object with: name (string), description (string), type (Quiz/Challenge/Story/Trivia))
+- questions (array of 6 objects, each with: question (string), options (array of 4 strings), correct_answer (index 0-3), fun_fact (string), points (number 10-50))
+- bonus_challenge (object with: challenge (string), reward (string), difficulty (Easy/Medium/Hard))
+- friendship_trivia (array of 3 objects with: fact (string), category (string))
+- scoring (object with: excellent (string threshold + message), good (string), needs_practice (string))`;
+        userPrompt = params.gameType
+          ? `Create a ${params.gameType} themed friendship game. ${params.topic ? `Topic: ${params.topic}` : ""}`
+          : `Create a fun and engaging friendship quiz game with diverse topics.`;
+        break;
+      }
+      case "dream_companion": {
+        systemPrompt = `You are an AI dream interpretation companion who combines psychology and creativity. Return a JSON object with:
+- interpretation (object with: summary (string 2-3 sentences), emotional_meaning (string), subconscious_message (string))
+- symbols (array of 4 objects, each with: symbol (string), meaning (string), personal_relevance (string), emoji (string))
+- dream_themes (array of 3 strings identifying major themes)
+- psychological_insight (object with: theory (string naming a psychological perspective), explanation (string), reflection_question (string))
+- creative_rewrite (string - a short creative retelling of the dream as a mini-story)
+- action_suggestion (object with: suggestion (string), reason (string))
+- dream_type (string: Anxiety/Aspirational/Processing/Prophetic/Lucid/Recurring)`;
+        userPrompt = `Interpret this dream: "${params.dream}"`;
+        break;
+      }
+      case "memory_scrapbook": {
+        systemPrompt = `You are an AI memory curator who helps create beautiful digital scrapbook entries. Return a JSON object with:
+- scrapbook_entry (object with: title (string creative title), tagline (string short memorable quote), date_label (string formatted nicely))
+- story (string 3-4 sentence beautifully written version of the memory)
+- emotions_captured (array of 4 objects with: emotion (string), intensity (1-10), color (string hex color), emoji (string))
+- memory_tags (array of 5 strings like hashtags)
+- reflection (object with: what_it_meant (string), lesson_learned (string), gratitude (string))
+- companion_note (string a warm AI best friend comment about the memory)
+- suggested_activities (array of 3 strings to relive similar moments)
+- memory_rating (object with: nostalgia_level (1-10), happiness_level (1-10), significance (1-10))`;
+        userPrompt = params.memory
+          ? `Create a beautiful scrapbook entry for this memory: "${params.memory}"`
+          : `Create a sample scrapbook entry about a wonderful day spent with a close friend.`;
         break;
       }
     }
