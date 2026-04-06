@@ -3350,6 +3350,42 @@ export type Database = {
         }
         Relationships: []
       }
+      best_friend_mood_journal: {
+        Row: {
+          ai_insight: string | null
+          created_at: string
+          id: string
+          journal_entry: string | null
+          mood_label: string
+          mood_score: number
+          tags: string[] | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          ai_insight?: string | null
+          created_at?: string
+          id?: string
+          journal_entry?: string | null
+          mood_label: string
+          mood_score: number
+          tags?: string[] | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          ai_insight?: string | null
+          created_at?: string
+          id?: string
+          journal_entry?: string | null
+          mood_label?: string
+          mood_score?: number
+          tags?: string[] | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       best_friend_subscriptions: {
         Row: {
           bonus_messages: number | null
