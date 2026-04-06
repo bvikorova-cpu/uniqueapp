@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
-import { Plus, Search, Tag, Clock, User, MessageCircle, Upload, X, Trash2, Ticket, Store, Percent, Calendar, Gift, Sparkles, Shield, Zap, Star, Crown, Package, DollarSign, ShieldAlert, Target, Wand2, Flame, BarChart3, Award, Check } from "lucide-react";
+import { Plus, Search, Tag, Clock, User, MessageCircle, Upload, X, Trash2, Ticket, Store, Percent, Calendar, Gift, Sparkles, Shield, Zap, Star, Crown, Package, DollarSign, ShieldAlert, Target, Wand2, Flame, BarChart3, Award, Check, Bell, Building2, TrendingUp, MessageSquare, Heart } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
