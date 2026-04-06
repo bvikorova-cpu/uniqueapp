@@ -40,6 +40,12 @@ const tools = [
   { id: "conversation_starters", icon: MessageSquarePlus, title: "Conversation Starters", description: "AI-generated icebreakers", badge: "AI", credits: 2, gradient: "from-indigo-500/10 to-purple-500/5" },
   { id: "encouragement_cards", icon: HeartHandshake, title: "Encouragement Cards", description: "Personalized motivational cards", badge: "AI", credits: 3, gradient: "from-pink-500/10 to-rose-500/5" },
   { id: "life_coach", icon: Target, title: "Life Coach Mode", description: "Goal-setting & accountability", badge: "AI", credits: 4, gradient: "from-emerald-500/10 to-teal-500/5" },
+  { id: "friendship_analytics", icon: TrendingUp, title: "Friendship Analytics", description: "Stats on your conversations & trends", badge: "AI", credits: 4, gradient: "from-blue-500/10 to-cyan-500/5" },
+  { id: "mood_playlist", icon: Music, title: "AI Mood Playlist", description: "Music recommendations by mood", badge: "AI", credits: 3, gradient: "from-pink-500/10 to-fuchsia-500/5" },
+  { id: "daily_affirmations", icon: Sunrise, title: "Daily Affirmations", description: "Morning affirmations & reflections", badge: "AI", credits: 2, gradient: "from-yellow-500/10 to-orange-500/5" },
+  { id: "friendship_games", icon: Gamepad2, title: "Friendship Mini-Games", description: "Quizzes & fun challenges", badge: "AI", credits: 3, gradient: "from-green-500/10 to-emerald-500/5" },
+  { id: "dream_companion", icon: Moon, title: "Dream Companion", description: "Dream sharing & interpretation", badge: "AI", credits: 4, gradient: "from-indigo-500/10 to-violet-500/5" },
+  { id: "memory_scrapbook", icon: Camera, title: "Memory Scrapbook", description: "Digital scrapbook of memories", badge: "AI", credits: 3, gradient: "from-rose-500/10 to-red-500/5" },
 ];
 
 const BestFriend = () => {
