@@ -335,6 +335,12 @@ const CouponMarketplace = () => {
   if (activeView === "fraud-scanner") return <div className="min-h-screen bg-background pt-16 sm:pt-20 pb-12"><div className="container mx-auto px-3 sm:px-4 max-w-7xl"><FraudScannerView onBack={() => setActiveView(null)} /></div></div>;
   if (activeView === "deal-matcher") return <div className="min-h-screen bg-background pt-16 sm:pt-20 pb-12"><div className="container mx-auto px-3 sm:px-4 max-w-7xl"><DealMatcherView onBack={() => setActiveView(null)} /></div></div>;
   if (activeView === "listing-writer") return <div className="min-h-screen bg-background pt-16 sm:pt-20 pb-12"><div className="container mx-auto px-3 sm:px-4 max-w-7xl"><ListingWriterView onBack={() => setActiveView(null)} /></div></div>;
+  if (activeView === "expiry-alert") return <div className="min-h-screen bg-background pt-16 sm:pt-20 pb-12"><div className="container mx-auto px-3 sm:px-4 max-w-7xl"><ExpiryAlertView onBack={() => setActiveView(null)} /></div></div>;
+  if (activeView === "bundle-builder") return <div className="min-h-screen bg-background pt-16 sm:pt-20 pb-12"><div className="container mx-auto px-3 sm:px-4 max-w-7xl"><BundleBuilderView onBack={() => setActiveView(null)} /></div></div>;
+  if (activeView === "store-reputation") return <div className="min-h-screen bg-background pt-16 sm:pt-20 pb-12"><div className="container mx-auto px-3 sm:px-4 max-w-7xl"><StoreReputationView onBack={() => setActiveView(null)} /></div></div>;
+  if (activeView === "price-history") return <div className="min-h-screen bg-background pt-16 sm:pt-20 pb-12"><div className="container mx-auto px-3 sm:px-4 max-w-7xl"><PriceHistoryView onBack={() => setActiveView(null)} /></div></div>;
+  if (activeView === "negotiation-bot") return <div className="min-h-screen bg-background pt-16 sm:pt-20 pb-12"><div className="container mx-auto px-3 sm:px-4 max-w-7xl"><NegotiationBotView onBack={() => setActiveView(null)} /></div></div>;
+  if (activeView === "wishlist-alerts") return <div className="min-h-screen bg-background pt-16 sm:pt-20 pb-12"><div className="container mx-auto px-3 sm:px-4 max-w-7xl"><WishlistAlertsView onBack={() => setActiveView(null)} /></div></div>;
 
   return (
     <div className="min-h-screen bg-background pt-16 sm:pt-20 pb-12">
