@@ -264,14 +264,14 @@ const CouponMarketplace = () => {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                <div className="grid grid-cols-2 gap-2 sm:grid-cols-5">
                   {aiTools.map((tool) => (
-                    <div key={tool.id} className="rounded-2xl border border-border/60 bg-background/70 p-3 text-left">
-                      <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                        <tool.icon className="w-5 h-5" />
+                    <div key={tool.id} className="rounded-2xl border border-border/60 bg-background/70 p-2.5 text-left">
+                      <div className="mb-1.5 flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                        <tool.icon className="w-4 h-4" />
                       </div>
-                      <p className="text-sm font-bold leading-snug">{tool.title.replace("AI ", "")}</p>
-                      <p className="text-xs text-primary mt-1">{tool.badge}</p>
+                      <p className="text-xs font-bold leading-snug">{tool.title.replace("AI ", "")}</p>
+                      <p className="text-[10px] text-primary mt-0.5">{tool.badge}</p>
                     </div>
                   ))}
                 </div>
