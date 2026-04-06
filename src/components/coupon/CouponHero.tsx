@@ -42,11 +42,11 @@ export const CouponHero = ({ couponCount }: CouponHeroProps) => {
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-purple-900/20" />
         <div className="relative z-10 h-full flex flex-col justify-end p-4 sm:p-8">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
-            <div className="inline-block border-2 border-purple-400/40 bg-card/30 backdrop-blur-lg rounded-2xl px-6 py-4">
-              <h1 className="text-3xl sm:text-5xl font-black text-white drop-shadow-lg">
+            <div className="inline-block max-w-[82%] sm:max-w-xl border border-white/20 bg-card/20 backdrop-blur-md rounded-2xl px-5 py-4 sm:px-6 sm:py-5 shadow-2xl">
+              <h1 className="text-3xl leading-none sm:text-5xl font-black text-white drop-shadow-lg">
                 Coupon <span className="bg-gradient-to-r from-purple-400 to-amber-400 bg-clip-text text-transparent">Marketplace</span>
               </h1>
-              <p className="text-white/90 text-sm sm:text-lg font-semibold mt-1 drop-shadow">
+              <p className="text-white/90 text-sm sm:text-lg font-semibold mt-2 max-w-md drop-shadow">
                 Buy & sell coupons, gift cards & vouchers at exclusive prices
               </p>
             </div>
