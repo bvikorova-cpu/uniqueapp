@@ -29,6 +29,12 @@ serve(async (req) => {
       listing_optimizer: 4,
       bid_strategy: 3,
       category_recommender: 2,
+      auction_analytics: 4,
+      smart_alerts: 3,
+      value_tracker: 3,
+      photo_enhancer: 3,
+      negotiation_coach: 4,
+      market_trends: 4,
     };
 
     const cost = creditCosts[action];
@@ -64,6 +70,30 @@ serve(async (req) => {
       case "category_recommender":
         systemPrompt = "You are an expert product categorization specialist. Analyze the item and provide: 1) Primary recommended category, 2) Alternative categories, 3) Suggested condition rating with justification, 4) Target audience analysis, 5) Suggested tags and keywords, 6) Cross-listing opportunities. Be specific and actionable.";
         userPrompt = params.item_description;
+        break;
+      case "auction_analytics":
+        systemPrompt = "You are an expert auction performance analyst. Analyze the provided auction data and generate: 1) Performance Score (0-100) with breakdown, 2) Bid velocity analysis (how fast bids come in), 3) Price trajectory prediction, 4) Conversion rate insights, 5) Top performing categories, 6) Revenue optimization tips, 7) Competitor benchmarking insights, 8) Weekly/monthly trend analysis. Use € currency. Present data in a clear, analytical format with actionable recommendations.";
+        userPrompt = params.auction_data;
+        break;
+      case "smart_alerts":
+        systemPrompt = "You are an intelligent auction alert advisor. Based on the user's preferences and budget, provide: 1) 5 specific deal alerts they should set up, 2) Price drop detection strategies, 3) Category-specific bargain indicators, 4) Optimal alert timing windows, 5) Snipe opportunity criteria, 6) Value score thresholds for each category, 7) Recommended search filters, 8) Alert frequency recommendations. Be specific with price ranges in € and actionable criteria.";
+        userPrompt = params.preferences;
+        break;
+      case "value_tracker":
+        systemPrompt = "You are an expert market value analyst for auction items. Analyze the item and provide: 1) Current estimated market value in €, 2) Historical price trend (6-month simulation), 3) Value appreciation/depreciation forecast, 4) Comparable sales analysis, 5) Condition impact on value, 6) Rarity score (1-10), 7) Investment potential rating, 8) Best time to sell prediction, 9) Regional price variations. Present with specific numbers and percentages.";
+        userPrompt = params.item_info;
+        break;
+      case "photo_enhancer":
+        systemPrompt = "You are an expert auction photography advisor. Analyze the item description and provide: 1) Optimal lighting setup (natural vs studio), 2) Best camera angles (list 5 must-have shots), 3) Background recommendations, 4) Props and staging suggestions, 5) Photo editing tips (brightness, contrast, saturation values), 6) Composition rules for this item type, 7) Common photography mistakes to avoid, 8) Mobile vs DSLR tips, 9) Image resolution and format recommendations, 10) Before/after improvement checklist. Be specific and technical.";
+        userPrompt = params.item_description;
+        break;
+      case "negotiation_coach":
+        systemPrompt = "You are an expert auction negotiation coach. Based on the scenario, provide: 1) Opening offer strategy, 2) Counter-offer playbook (3 levels), 3) Psychological tactics to use, 4) Body language tips (for live auctions), 5) Written communication templates, 6) Walk-away price calculation, 7) BATNA (Best Alternative) analysis, 8) Time pressure techniques, 9) Bundle deal strategies, 10) Post-auction negotiation tips. Use € currency with specific numbers.";
+        userPrompt = params.scenario;
+        break;
+      case "market_trends":
+        systemPrompt = "You are an expert auction market analyst. Analyze the category/market and provide: 1) Current market temperature (Hot/Warm/Cool/Cold), 2) Top 5 trending categories with growth %, 3) Declining categories to avoid, 4) Seasonal demand forecast (next 3 months), 5) Price prediction by category, 6) Buyer demographics insights, 7) Emerging niches and opportunities, 8) Supply vs demand analysis, 9) Platform comparison insights, 10) Investment-grade items to watch. Use € currency, specific percentages, and data-driven insights.";
+        userPrompt = params.market_query;
         break;
     }
 
