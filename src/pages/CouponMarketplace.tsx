@@ -293,7 +293,7 @@ const CouponMarketplace = () => {
                   <div className="space-y-3 text-left mb-6">
                     {[
                       "Full marketplace access for buyers and sellers",
-                      "4 premium AI coupon tools with credit-based usage",
+                      "10 premium AI coupon tools with credit-based usage",
                       "Discount discovery, secure chat, and safer deal flow",
                       "Cancel anytime with no long-term lock-in",
                     ].map((item) => (
