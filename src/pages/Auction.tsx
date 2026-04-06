@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Gavel, Clock, TrendingUp, Plus, Upload, X, AlertCircle, DollarSign, FileText, Target, Tags, Flame, Trophy, Star, Lightbulb } from "lucide-react";
+import { Gavel, Clock, TrendingUp, Plus, Upload, X, AlertCircle, DollarSign, FileText, Target, Tags, Flame, Trophy, Star, Lightbulb, BarChart3, Bell, Tag, Camera, Handshake } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useNavigate, Link } from "react-router-dom";
@@ -20,6 +20,12 @@ import { PriceEstimatorView } from "@/components/auction/views/PriceEstimatorVie
 import { ListingOptimizerView } from "@/components/auction/views/ListingOptimizerView";
 import { BidStrategyView } from "@/components/auction/views/BidStrategyView";
 import { CategoryRecommenderView } from "@/components/auction/views/CategoryRecommenderView";
+import { AuctionAnalyticsView } from "@/components/auction/views/AuctionAnalyticsView";
+import { SmartAlertsView } from "@/components/auction/views/SmartAlertsView";
+import { ValueTrackerView } from "@/components/auction/views/ValueTrackerView";
+import { PhotoEnhancerView } from "@/components/auction/views/PhotoEnhancerView";
+import { NegotiationCoachView } from "@/components/auction/views/NegotiationCoachView";
+import { MarketTrendsView } from "@/components/auction/views/MarketTrendsView";
 
 interface AuctionItem {
   id: string;
@@ -35,13 +41,19 @@ interface AuctionItem {
   user_id: string;
 }
 
-type ActiveView = "dashboard" | "price_estimator" | "listing_optimizer" | "bid_strategy" | "category_recommender";
+type ActiveView = "dashboard" | "price_estimator" | "listing_optimizer" | "bid_strategy" | "category_recommender" | "auction_analytics" | "smart_alerts" | "value_tracker" | "photo_enhancer" | "negotiation_coach" | "market_trends";
 
 const aiTools = [
   { id: "price_estimator" as const, icon: DollarSign, label: "AI Price Estimator", desc: "Smart pricing recommendations", credits: 3, gradient: "from-amber-600 to-yellow-600" },
   { id: "listing_optimizer" as const, icon: FileText, label: "AI Listing Optimizer", desc: "SEO-optimized descriptions", credits: 4, gradient: "from-orange-600 to-amber-600" },
   { id: "bid_strategy" as const, icon: Target, label: "AI Bid Strategy", desc: "Win auctions smartly", credits: 3, gradient: "from-yellow-600 to-amber-500" },
   { id: "category_recommender" as const, icon: Tags, label: "AI Category Match", desc: "Auto-categorize items", credits: 2, gradient: "from-amber-500 to-orange-500" },
+  { id: "auction_analytics" as const, icon: BarChart3, label: "AI Auction Analytics", desc: "Performance insights", credits: 4, gradient: "from-amber-600 to-yellow-600" },
+  { id: "smart_alerts" as const, icon: Bell, label: "AI Smart Alerts", desc: "Deal notifications", credits: 3, gradient: "from-yellow-600 to-orange-600" },
+  { id: "value_tracker" as const, icon: Tag, label: "AI Value Tracker", desc: "Track market values", credits: 3, gradient: "from-emerald-600 to-amber-600" },
+  { id: "photo_enhancer" as const, icon: Camera, label: "AI Photo Enhancer", desc: "Pro photo tips", credits: 3, gradient: "from-purple-600 to-amber-600" },
+  { id: "negotiation_coach" as const, icon: Handshake, label: "AI Negotiation Coach", desc: "Master deal-making", credits: 4, gradient: "from-rose-600 to-amber-600" },
+  { id: "market_trends" as const, icon: TrendingUp, label: "AI Market Trends", desc: "Category predictions", credits: 4, gradient: "from-blue-600 to-amber-600" },
 ];
 
 const Auction = () => {
@@ -202,6 +214,12 @@ const Auction = () => {
   if (activeView === "listing_optimizer") return <ListingOptimizerView onBack={() => setActiveView("dashboard")} />;
   if (activeView === "bid_strategy") return <BidStrategyView onBack={() => setActiveView("dashboard")} />;
   if (activeView === "category_recommender") return <CategoryRecommenderView onBack={() => setActiveView("dashboard")} />;
+  if (activeView === "auction_analytics") return <AuctionAnalyticsView onBack={() => setActiveView("dashboard")} />;
+  if (activeView === "smart_alerts") return <SmartAlertsView onBack={() => setActiveView("dashboard")} />;
+  if (activeView === "value_tracker") return <ValueTrackerView onBack={() => setActiveView("dashboard")} />;
+  if (activeView === "photo_enhancer") return <PhotoEnhancerView onBack={() => setActiveView("dashboard")} />;
+  if (activeView === "negotiation_coach") return <NegotiationCoachView onBack={() => setActiveView("dashboard")} />;
+  if (activeView === "market_trends") return <MarketTrendsView onBack={() => setActiveView("dashboard")} />;
 
   return (
     <div className="min-h-screen bg-background pt-16">
@@ -238,7 +256,7 @@ const Auction = () => {
           <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
             <Lightbulb className="w-5 h-5 text-amber-400" /> AI Auction Tools
           </h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
             {aiTools.map((tool, i) => (
               <motion.div key={tool.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}>
                 <Card
