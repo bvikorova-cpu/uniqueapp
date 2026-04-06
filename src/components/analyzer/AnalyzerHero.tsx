@@ -44,17 +44,17 @@ export const AnalyzerHero = ({ credits, tier }: AnalyzerHeroProps) => {
         <video
           autoPlay muted loop playsInline
           className="absolute inset-0 w-full h-full object-cover"
-          style={{ filter: "brightness(1.3) saturate(1.2)" }}
+          style={{ filter: "brightness(1.15) saturate(1.1)" }}
           src={analyzerHeroAsset.url}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-cyan-900/20 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
         
         <div className="relative z-10 h-full flex flex-col justify-end p-4 sm:p-8">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
-            <div className="inline-block max-w-[85%] sm:max-w-xl border border-cyan-400/30 bg-black/40 backdrop-blur-lg rounded-2xl px-5 py-4 sm:px-6 sm:py-5 shadow-[0_0_40px_rgba(0,255,255,0.15)]">
+            <div className="inline-block max-w-[85%] sm:max-w-xl border border-white/20 bg-black/40 backdrop-blur-lg rounded-2xl px-5 py-4 sm:px-6 sm:py-5 shadow-xl">
               <h1 className="text-3xl leading-none sm:text-5xl font-black text-white drop-shadow-lg">
                 Universal Vision{" "}
-                <span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text text-transparent">
                   Analyzer
                 </span>
               </h1>
@@ -62,11 +62,11 @@ export const AnalyzerHero = ({ credits, tier }: AnalyzerHeroProps) => {
                 AI-powered image analysis for everything around you
               </p>
               <div className="flex items-center gap-3 mt-3">
-                <span className="inline-flex items-center gap-1.5 text-xs font-bold text-cyan-300 bg-cyan-500/20 px-3 py-1 rounded-full border border-cyan-500/30">
+                <span className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-200 bg-amber-500/20 px-3 py-1 rounded-full border border-amber-400/30">
                   <Zap className="w-3 h-3" />
                   {credits} Credits
                 </span>
-                <span className="inline-flex items-center text-xs font-bold text-blue-300 bg-blue-500/20 px-3 py-1 rounded-full border border-blue-500/30 capitalize">
+                <span className="inline-flex items-center text-xs font-bold text-white/80 bg-white/10 px-3 py-1 rounded-full border border-white/20 capitalize">
                   {tier} Tier
                 </span>
               </div>
@@ -82,9 +82,9 @@ export const AnalyzerHero = ({ credits, tier }: AnalyzerHeroProps) => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 + i * 0.1 }}
-            className="bg-card/80 backdrop-blur-xl border border-cyan-500/20 rounded-xl p-3 sm:p-4 text-center hover:border-cyan-400/40 transition-all"
+            className="bg-card/80 backdrop-blur-xl border border-border rounded-xl p-3 sm:p-4 text-center hover:border-primary/40 transition-all"
           >
-            <stat.icon className="h-5 w-5 text-cyan-400 mx-auto mb-1" />
+            <stat.icon className="h-5 w-5 text-primary mx-auto mb-1" />
             <div className="text-xl sm:text-2xl font-black">
               {(stat as any).staticLabel
                 ? (stat as any).staticLabel
