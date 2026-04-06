@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import {
   Send, Heart, Sparkles, CreditCard, Crown, ArrowLeft,
   BookHeart, MessageSquarePlus, HeartHandshake, Target, MessageCircle,
+  TrendingUp, Music, Sunrise, Gamepad2, Moon, Camera,
 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -21,6 +22,12 @@ import { MoodJournalView } from "@/components/best-friend/MoodJournalView";
 import { ConversationStartersView } from "@/components/best-friend/ConversationStartersView";
 import { EncouragementCardsView } from "@/components/best-friend/EncouragementCardsView";
 import { LifeCoachView } from "@/components/best-friend/LifeCoachView";
+import { FriendshipAnalyticsView } from "@/components/best-friend/FriendshipAnalyticsView";
+import { MoodPlaylistView } from "@/components/best-friend/MoodPlaylistView";
+import { DailyAffirmationsView } from "@/components/best-friend/DailyAffirmationsView";
+import { FriendshipGamesView } from "@/components/best-friend/FriendshipGamesView";
+import { DreamCompanionView } from "@/components/best-friend/DreamCompanionView";
+import { MemoryScrapbookView } from "@/components/best-friend/MemoryScrapbookView";
 import ReactMarkdown from "react-markdown";
 
 const CHAT_URL = `https://jufrdzeonywluwutvyxz.supabase.co/functions/v1/best-friend-chat`;
@@ -33,6 +40,12 @@ const tools = [
   { id: "conversation_starters", icon: MessageSquarePlus, title: "Conversation Starters", description: "AI-generated icebreakers", badge: "AI", credits: 2, gradient: "from-indigo-500/10 to-purple-500/5" },
   { id: "encouragement_cards", icon: HeartHandshake, title: "Encouragement Cards", description: "Personalized motivational cards", badge: "AI", credits: 3, gradient: "from-pink-500/10 to-rose-500/5" },
   { id: "life_coach", icon: Target, title: "Life Coach Mode", description: "Goal-setting & accountability", badge: "AI", credits: 4, gradient: "from-emerald-500/10 to-teal-500/5" },
+  { id: "friendship_analytics", icon: TrendingUp, title: "Friendship Analytics", description: "Stats on your conversations & trends", badge: "AI", credits: 4, gradient: "from-blue-500/10 to-cyan-500/5" },
+  { id: "mood_playlist", icon: Music, title: "AI Mood Playlist", description: "Music recommendations by mood", badge: "AI", credits: 3, gradient: "from-pink-500/10 to-fuchsia-500/5" },
+  { id: "daily_affirmations", icon: Sunrise, title: "Daily Affirmations", description: "Morning affirmations & reflections", badge: "AI", credits: 2, gradient: "from-yellow-500/10 to-orange-500/5" },
+  { id: "friendship_games", icon: Gamepad2, title: "Friendship Mini-Games", description: "Quizzes & fun challenges", badge: "AI", credits: 3, gradient: "from-green-500/10 to-emerald-500/5" },
+  { id: "dream_companion", icon: Moon, title: "Dream Companion", description: "Dream sharing & interpretation", badge: "AI", credits: 4, gradient: "from-indigo-500/10 to-violet-500/5" },
+  { id: "memory_scrapbook", icon: Camera, title: "Memory Scrapbook", description: "Digital scrapbook of memories", badge: "AI", credits: 3, gradient: "from-rose-500/10 to-red-500/5" },
 ];
 
 const BestFriend = () => {
@@ -132,6 +145,12 @@ const BestFriend = () => {
       case "conversation_starters": return <ConversationStartersView />;
       case "encouragement_cards": return <EncouragementCardsView />;
       case "life_coach": return <LifeCoachView />;
+      case "friendship_analytics": return <FriendshipAnalyticsView />;
+      case "mood_playlist": return <MoodPlaylistView />;
+      case "daily_affirmations": return <DailyAffirmationsView />;
+      case "friendship_games": return <FriendshipGamesView />;
+      case "dream_companion": return <DreamCompanionView />;
+      case "memory_scrapbook": return <MemoryScrapbookView />;
       case "chat": return renderChat();
       default: return null;
     }
@@ -267,7 +286,7 @@ const BestFriend = () => {
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
                 <Card className="bg-card/80 backdrop-blur-xl border-purple-500/20 text-center p-4">
                   <Sparkles className="h-6 w-6 text-blue-400 mx-auto mb-2" />
-                  <div className="text-2xl font-black">5</div>
+                  <div className="text-2xl font-black">11</div>
                   <p className="text-xs text-muted-foreground">AI Tools Available</p>
                 </Card>
               </motion.div>
