@@ -8,13 +8,18 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Gavel, Clock, TrendingUp, Plus, Upload, X, AlertCircle } from "lucide-react";
+import { Gavel, Clock, TrendingUp, Plus, Upload, X, AlertCircle, DollarSign, FileText, Target, Tags, Flame, Trophy, Star, Lightbulb } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useNavigate, Link } from "react-router-dom";
 import { useSubscription } from "@/hooks/useSubscription";
-import { createSaleTransaction } from "@/utils/createSaleTransaction";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { motion } from "framer-motion";
+import { AuctionHero } from "@/components/auction/AuctionHero";
+import { PriceEstimatorView } from "@/components/auction/views/PriceEstimatorView";
+import { ListingOptimizerView } from "@/components/auction/views/ListingOptimizerView";
+import { BidStrategyView } from "@/components/auction/views/BidStrategyView";
+import { CategoryRecommenderView } from "@/components/auction/views/CategoryRecommenderView";
 
 interface AuctionItem {
   id: string;
@@ -30,8 +35,18 @@ interface AuctionItem {
   user_id: string;
 }
 
+type ActiveView = "dashboard" | "price_estimator" | "listing_optimizer" | "bid_strategy" | "category_recommender";
+
+const aiTools = [
+  { id: "price_estimator" as const, icon: DollarSign, label: "AI Price Estimator", desc: "Smart pricing recommendations", credits: 3, gradient: "from-amber-600 to-yellow-600" },
+  { id: "listing_optimizer" as const, icon: FileText, label: "AI Listing Optimizer", desc: "SEO-optimized descriptions", credits: 4, gradient: "from-orange-600 to-amber-600" },
+  { id: "bid_strategy" as const, icon: Target, label: "AI Bid Strategy", desc: "Win auctions smartly", credits: 3, gradient: "from-yellow-600 to-amber-500" },
+  { id: "category_recommender" as const, icon: Tags, label: "AI Category Match", desc: "Auto-categorize items", credits: 2, gradient: "from-amber-500 to-orange-500" },
+];
+
 const Auction = () => {
   const navigate = useNavigate();
+  const [activeView, setActiveView] = useState<ActiveView>("dashboard");
   const [auctions, setAuctions] = useState<AuctionItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<any>(null);
@@ -39,8 +54,6 @@ const Auction = () => {
   const [bidDialogOpen, setBidDialogOpen] = useState(false);
   const [selectedAuction, setSelectedAuction] = useState<AuctionItem | null>(null);
   const [bidAmount, setBidAmount] = useState("");
-
-  // Form states
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [startingPrice, setStartingPrice] = useState("");
@@ -56,7 +69,7 @@ const Auction = () => {
   const [auctionPhotos, setAuctionPhotos] = useState<string[]>([]);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxImage, setLightboxImage] = useState("");
-  const { limits, calculateCommission } = useSubscription();
+  const { limits } = useSubscription();
 
   useEffect(() => {
     checkUser();
@@ -68,708 +81,265 @@ const Auction = () => {
     const urlParams = new URLSearchParams(window.location.search);
     const paymentStatus = urlParams.get('payment');
     const sessionId = urlParams.get('session_id');
-
     if (paymentStatus === 'success' && sessionId) {
       try {
         const { data: { session } } = await supabase.auth.getSession();
-        
-        const { data, error } = await supabase.functions.invoke('verify-payment', {
+        await supabase.functions.invoke('verify-payment', {
           body: { session_id: sessionId },
-          headers: session?.access_token ? {
-            Authorization: `Bearer ${session.access_token}`
-          } : undefined
+          headers: session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : undefined
         });
-
-        if (error) throw error;
-
-        toast.success("Payment successful! Your purchase has been processed.");
-
-        // Remove URL parameters
+        toast.success("Payment successful!");
         window.history.replaceState({}, '', window.location.pathname);
-        
-        // Reload auctions
         fetchAuctions();
-      } catch (error) {
-        console.error('Error verifying payment:', error);
-        toast.error("Failed to verify payment. Please contact support.");
-      }
+      } catch { toast.error("Failed to verify payment."); }
     } else if (paymentStatus === 'canceled') {
       toast.error("Payment was cancelled.");
       window.history.replaceState({}, '', window.location.pathname);
     }
   };
 
-  const checkUser = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    setUser(user);
-  };
+  const checkUser = async () => { const { data: { user } } = await supabase.auth.getUser(); setUser(user); };
 
   const fetchAuctions = async () => {
     try {
-      const { data, error } = await supabase
-        .from("auction_items")
-        .select("*")
-        .eq("is_active", true)
-        .order("created_at", { ascending: false });
-
+      const { data, error } = await supabase.from("auction_items").select("*").eq("is_active", true).order("created_at", { ascending: false });
       if (error) throw error;
       setAuctions(data || []);
-    } catch (error) {
-      console.error("Error fetching auctions:", error);
-      toast.error("Failed to load auctions");
-    } finally {
-      setLoading(false);
-    }
+    } catch { toast.error("Failed to load auctions"); }
+    finally { setLoading(false); }
   };
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
-    
-    if (imageFiles.length + files.length > 3) {
-      toast.error("You can upload maximum 3 photos");
-      return;
-    }
-
-    const validFiles = files.filter(file => {
-      if (file.size > 5 * 1024 * 1024) {
-        toast.error(`${file.name} is too large. Maximum size is 5MB`);
-        return false;
-      }
-      return true;
-    });
-
+    if (imageFiles.length + files.length > 3) { toast.error("Maximum 3 photos"); return; }
+    const validFiles = files.filter(f => { if (f.size > 5 * 1024 * 1024) { toast.error(`${f.name} too large`); return false; } return true; });
     setImageFiles(prev => [...prev, ...validFiles]);
-
-    validFiles.forEach(file => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreviews(prev => [...prev, reader.result as string]);
-      };
-      reader.readAsDataURL(file);
-    });
+    validFiles.forEach(file => { const r = new FileReader(); r.onloadend = () => setImagePreviews(prev => [...prev, r.result as string]); r.readAsDataURL(file); });
   };
 
-  const removeImage = (index: number) => {
-    setImageFiles(prev => prev.filter((_, i) => i !== index));
-    setImagePreviews(prev => prev.filter((_, i) => i !== index));
-  };
+  const removeImage = (index: number) => { setImageFiles(prev => prev.filter((_, i) => i !== index)); setImagePreviews(prev => prev.filter((_, i) => i !== index)); };
 
   const handleCreateAuction = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!user) {
-      toast.error("You must be logged in");
-      navigate("/auth");
-      return;
-    }
-
+    if (!user) { toast.error("You must be logged in"); navigate("/auth"); return; }
     setUploading(true);
     try {
-      const endsAt = new Date();
-      endsAt.setHours(endsAt.getHours() + parseInt(duration));
-
-      // Upload images first if selected
-      let firstImageUrl = null;
-      const uploadedPhotos: string[] = [];
-      
-      if (imageFiles.length > 0) {
-        for (const file of imageFiles) {
-          const fileExt = file.name.split('.').pop();
-          const fileName = `${user.id}-${Date.now()}-${Math.random()}.${fileExt}`;
-          
-          const { error: uploadError } = await supabase.storage
-            .from('bazaar_images')
-            .upload(fileName, file);
-
-          if (uploadError) {
-            console.error('Upload error:', uploadError);
-            throw uploadError;
-          }
-          
-          const { data: { publicUrl } } = supabase.storage
-            .from('bazaar_images')
-            .getPublicUrl(fileName);
-
-          uploadedPhotos.push(publicUrl);
-          
-          // Save first image as main image
-          if (!firstImageUrl) {
-            firstImageUrl = publicUrl;
-          }
-        }
+      const endsAt = new Date(); endsAt.setHours(endsAt.getHours() + parseInt(duration));
+      let firstImageUrl = null; const uploadedPhotos: string[] = [];
+      for (const file of imageFiles) {
+        const fileName = `${user.id}-${Date.now()}-${Math.random()}.${file.name.split('.').pop()}`;
+        const { error: uploadError } = await supabase.storage.from('bazaar_images').upload(fileName, file);
+        if (uploadError) throw uploadError;
+        const { data: { publicUrl } } = supabase.storage.from('bazaar_images').getPublicUrl(fileName);
+        uploadedPhotos.push(publicUrl);
+        if (!firstImageUrl) firstImageUrl = publicUrl;
       }
-
-      // Create auction with image_url already set
-      const { data: auctionData, error: auctionError } = await supabase
-        .from("auction_items")
-        .insert({
-          user_id: user.id,
-          title,
-          description,
-          starting_price: parseFloat(startingPrice),
-          current_price: parseFloat(startingPrice),
-          buyout_price: buyoutPrice ? parseFloat(buyoutPrice) : null,
-          category,
-          condition,
-          ends_at: endsAt.toISOString(),
-          image_url: firstImageUrl,
-        })
-        .select()
-        .single();
-
-      if (auctionError) {
-        console.error('Auction create error:', auctionError);
-        throw auctionError;
-      }
-
-      // Save all photos to auction_photos table
+      const { data: auctionData, error: auctionError } = await supabase.from("auction_items").insert({
+        user_id: user.id, title, description, starting_price: parseFloat(startingPrice), current_price: parseFloat(startingPrice),
+        buyout_price: buyoutPrice ? parseFloat(buyoutPrice) : null, category, condition, ends_at: endsAt.toISOString(), image_url: firstImageUrl,
+      }).select().single();
+      if (auctionError) throw auctionError;
       if (uploadedPhotos.length > 0) {
-        const photoInserts = uploadedPhotos.map(photoUrl => ({
-          auction_id: auctionData.id,
-          photo_url: photoUrl,
-        }));
-        
-        const { error: photosError } = await supabase
-          .from("auction_photos")
-          .insert(photoInserts);
-          
-        if (photosError) {
-          console.error('Photos insert error:', photosError);
-        }
+        await supabase.from("auction_photos").insert(uploadedPhotos.map(url => ({ auction_id: auctionData.id, photo_url: url })));
       }
-
       toast.success("Auction created!");
       setCreateDialogOpen(false);
-      resetForm();
+      setTitle(""); setDescription(""); setStartingPrice(""); setBuyoutPrice(""); setCategory(""); setCondition(""); setDuration("24"); setImageFiles([]); setImagePreviews([]);
       fetchAuctions();
-    } catch (error) {
-      console.error("Error creating auction:", error);
-      toast.error("Failed to create auction");
-    } finally {
-      setUploading(false);
-    }
+    } catch { toast.error("Failed to create auction"); }
+    finally { setUploading(false); }
   };
 
-  const resetForm = () => {
-    setTitle("");
-    setDescription("");
-    setStartingPrice("");
-    setBuyoutPrice("");
-    setCategory("");
-    setCondition("");
-    setDuration("24");
-    setImageFiles([]);
-    setImagePreviews([]);
-  };
-
-  const handleBid = async (auction: AuctionItem) => {
-    if (!user) {
-      toast.error("You must be logged in");
-      navigate("/auth");
-      return;
-    }
-
-    setSelectedAuction(auction);
-    setBidAmount("");
-    setBidDialogOpen(true);
-  };
+  const handleBid = (auction: AuctionItem) => { if (!user) { toast.error("You must be logged in"); navigate("/auth"); return; } setSelectedAuction(auction); setBidAmount(""); setBidDialogOpen(true); };
 
   const handleBuyout = async (auction: AuctionItem) => {
-    if (!user) {
-      toast.error("You must be logged in");
-      navigate("/auth");
-      return;
-    }
-
+    if (!user) { toast.error("You must be logged in"); navigate("/auth"); return; }
     if (!auction.buyout_price) return;
-
     try {
-      const { error } = await supabase.from("auction_bids").insert({
-        auction_id: auction.id,
-        user_id: user.id,
-        bid_amount: auction.buyout_price,
-      });
-
-      if (error) throw error;
-
-      // Mark auction as sold/inactive
-      await supabase
-        .from("auction_items")
-        .update({ 
-          is_active: false,
-          winner_id: user.id 
-        })
-        .eq("id", auction.id);
-
-      // Create notification for seller
-      const { data: profileData } = await supabase
-        .from("profiles")
-        .select("full_name")
-        .eq("id", user.id)
-        .single();
-
-      await supabase.from("notifications").insert({
-        user_id: auction.user_id,
-        title: "Product purchased",
-        message: `${profileData?.full_name || "User"} bought your product "${auction.title}" for €${auction.buyout_price}`,
-        type: "auction_buyout",
-        related_id: auction.id,
-      });
-
-      toast.success("Product successfully purchased!");
-      fetchAuctions();
-    } catch (error) {
-      console.error("Error buying out:", error);
-      toast.error("Failed to purchase product");
-    }
+      await supabase.from("auction_bids").insert({ auction_id: auction.id, user_id: user.id, bid_amount: auction.buyout_price });
+      await supabase.from("auction_items").update({ is_active: false, winner_id: user.id }).eq("id", auction.id);
+      const { data: profileData } = await supabase.from("profiles").select("full_name").eq("id", user.id).single();
+      await supabase.from("notifications").insert({ user_id: auction.user_id, title: "Product purchased", message: `${profileData?.full_name || "User"} bought "${auction.title}" for €${auction.buyout_price}`, type: "auction_buyout", related_id: auction.id });
+      toast.success("Product purchased!"); fetchAuctions();
+    } catch { toast.error("Failed to purchase"); }
   };
 
   const submitBid = async () => {
     if (!selectedAuction || !bidAmount) return;
-
     const amount = parseFloat(bidAmount);
-    if (amount <= selectedAuction.current_price) {
-      toast.error("Bid must be higher than current price");
-      return;
-    }
-
+    if (amount <= selectedAuction.current_price) { toast.error("Bid must be higher than current price"); return; }
     try {
-      const { error } = await supabase.from("auction_bids").insert({
-        auction_id: selectedAuction.id,
-        user_id: user.id,
-        bid_amount: amount,
-      });
-
-      if (error) throw error;
-
-      // Create notification for seller
-      const { data: profileData } = await supabase
-        .from("profiles")
-        .select("full_name")
-        .eq("id", user.id)
-        .single();
-
-      await supabase.from("notifications").insert({
-        user_id: selectedAuction.user_id,
-        title: "New bid in auction",
-        message: `${profileData?.full_name || "User"} bid €${amount} on your product "${selectedAuction.title}"`,
-        type: "auction_bid",
-        related_id: selectedAuction.id,
-      });
-
-      toast.success("Bid successfully placed!");
-      setBidDialogOpen(false);
-      setBidAmount("");
-      setSelectedAuction(null);
-      fetchAuctions();
-    } catch (error) {
-      console.error("Error placing bid:", error);
-      toast.error("Failed to place bid");
-    }
+      await supabase.from("auction_bids").insert({ auction_id: selectedAuction.id, user_id: user.id, bid_amount: amount });
+      const { data: profileData } = await supabase.from("profiles").select("full_name").eq("id", user.id).single();
+      await supabase.from("notifications").insert({ user_id: selectedAuction.user_id, title: "New bid", message: `${profileData?.full_name || "User"} bid €${amount} on "${selectedAuction.title}"`, type: "auction_bid", related_id: selectedAuction.id });
+      toast.success("Bid placed!"); setBidDialogOpen(false); setBidAmount(""); setSelectedAuction(null); fetchAuctions();
+    } catch { toast.error("Failed to place bid"); }
   };
 
   const handleDeleteAuction = async (auctionId: string) => {
     if (!user) return;
-
-    try {
-      const { error } = await supabase
-        .from("auction_items")
-        .delete()
-        .eq("id", auctionId)
-        .eq("user_id", user.id);
-
-      if (error) throw error;
-
-      toast.success("Auction deleted");
-      fetchAuctions();
-    } catch (error) {
-      console.error("Error deleting auction:", error);
-      toast.error("Failed to delete auction");
-    }
+    try { await supabase.from("auction_items").delete().eq("id", auctionId).eq("user_id", user.id); toast.success("Auction deleted"); fetchAuctions(); }
+    catch { toast.error("Failed to delete"); }
   };
 
   const handleShowDetail = async (auction: AuctionItem) => {
     setDetailAuction(auction);
-    
-    // Fetch photos for this auction
-    const { data: photos } = await supabase
-      .from("auction_photos")
-      .select("photo_url")
-      .eq("auction_id", auction.id)
-      .order("created_at", { ascending: true });
-
+    const { data: photos } = await supabase.from("auction_photos").select("photo_url").eq("auction_id", auction.id).order("created_at", { ascending: true });
     setAuctionPhotos(photos?.map(p => p.photo_url) || []);
     setDetailDialogOpen(true);
   };
 
   const getTimeRemaining = (endsAt: string) => {
-    const now = new Date();
-    const end = new Date(endsAt);
-    const diff = end.getTime() - now.getTime();
-
+    const diff = new Date(endsAt).getTime() - Date.now();
     if (diff <= 0) return "Ended";
-
     const hours = Math.floor(diff / (1000 * 60 * 60));
     const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-
-    if (hours > 24) {
-      const days = Math.floor(hours / 24);
-      return `${days}d ${hours % 24}h`;
-    }
-    return `${hours}h ${minutes}m`;
+    return hours > 24 ? `${Math.floor(hours / 24)}d ${hours % 24}h` : `${hours}h ${minutes}m`;
   };
+
+  // Render AI tool views
+  if (activeView === "price_estimator") return <PriceEstimatorView onBack={() => setActiveView("dashboard")} />;
+  if (activeView === "listing_optimizer") return <ListingOptimizerView onBack={() => setActiveView("dashboard")} />;
+  if (activeView === "bid_strategy") return <BidStrategyView onBack={() => setActiveView("dashboard")} />;
+  if (activeView === "category_recommender") return <CategoryRecommenderView onBack={() => setActiveView("dashboard")} />;
 
   return (
     <div className="min-h-screen bg-background pt-16">
       <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-8">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-6 sm:mb-8">
-          <div className="flex-1">
-            <h1 className="text-2xl sm:text-4xl font-black mb-2">
-              <span className="bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
-                Online Auction
-              </span>
-            </h1>
-            <p className="text-sm sm:text-base text-muted-foreground mb-3 sm:mb-4">
-              Buy and sell products at auction
-            </p>
-            
-            {/* Detailed Description - How It Works */}
-            <div className="bg-card/50 rounded-lg p-4 sm:p-6 mb-4 sm:mb-6 border border-border/50">
-              <h2 className="text-lg sm:text-xl font-semibold mb-4 flex items-center gap-2">
-                <span className="text-2xl">📋</span> How It Works?
-              </h2>
-              
-              {/* Step by Step Guide */}
-              <div className="space-y-4 mb-6">
-                <h3 className="font-semibold text-sm text-primary">Step-by-Step Guide:</h3>
-                <div className="grid gap-3">
-                  <div className="flex items-start gap-3 p-3 bg-background/50 rounded-lg">
-                    <span className="bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold flex-shrink-0">1</span>
-                    <div>
-                      <p className="font-medium text-sm">Create Your Auction</p>
-                      <p className="text-xs text-muted-foreground">Click "Create Auction" button and fill in the item details including title, description, and photos.</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3 p-3 bg-background/50 rounded-lg">
-                    <span className="bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold flex-shrink-0">2</span>
-                    <div>
-                      <p className="font-medium text-sm">Set Pricing & Duration</p>
-                      <p className="text-xs text-muted-foreground">Choose a starting bid price, optional "Buy Now" price, and select how long the auction should run (hours/days).</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3 p-3 bg-background/50 rounded-lg">
-                    <span className="bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold flex-shrink-0">3</span>
-                    <div>
-                      <p className="font-medium text-sm">Buyers Place Bids</p>
-                      <p className="text-xs text-muted-foreground">Interested buyers can place competitive bids. Each new bid must be higher than the current price.</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3 p-3 bg-background/50 rounded-lg">
-                    <span className="bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold flex-shrink-0">4</span>
-                    <div>
-                      <p className="font-medium text-sm">Auction Ends</p>
-                      <p className="text-xs text-muted-foreground">When time runs out, the highest bidder wins. Alternatively, buyers can use "Buy Now" to purchase immediately.</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3 p-3 bg-background/50 rounded-lg">
-                    <span className="bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold flex-shrink-0">5</span>
-                    <div>
-                      <p className="font-medium text-sm">Secure Payment</p>
-                      <p className="text-xs text-muted-foreground">Winner pays securely through Stripe. The seller receives payment after commission deduction.</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
+        {/* Cinematic Hero */}
+        <AuctionHero />
 
-              {/* Features Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-                <div className="space-y-3">
-                  <h3 className="font-semibold text-sm text-primary flex items-center gap-2">
-                    <span>🎯</span> For Sellers:
-                  </h3>
-                  <ul className="text-xs text-muted-foreground space-y-2 list-none">
-                    <li className="flex items-center gap-2"><span className="text-green-500">✓</span> Upload up to 3 high-quality photos per auction</li>
-                    <li className="flex items-center gap-2"><span className="text-green-500">✓</span> Set starting bid price to attract buyers</li>
-                    <li className="flex items-center gap-2"><span className="text-green-500">✓</span> Add optional "Buy Now" price for instant sales</li>
-                    <li className="flex items-center gap-2"><span className="text-green-500">✓</span> Choose auction duration (1h to 7 days)</li>
-                    <li className="flex items-center gap-2"><span className="text-green-500">✓</span> Track bids in real-time</li>
-                    <li className="flex items-center gap-2"><span className="text-green-500">✓</span> Automatic commission calculation</li>
-                  </ul>
-                </div>
-                
-                <div className="space-y-3">
-                  <h3 className="font-semibold text-sm text-primary flex items-center gap-2">
-                    <span>🛍️</span> For Buyers:
-                  </h3>
-                  <ul className="text-xs text-muted-foreground space-y-2 list-none">
-                    <li className="flex items-center gap-2"><span className="text-green-500">✓</span> Browse all active auctions</li>
-                    <li className="flex items-center gap-2"><span className="text-green-500">✓</span> Place competitive bids</li>
-                    <li className="flex items-center gap-2"><span className="text-green-500">✓</span> Use "Buy Now" to skip bidding</li>
-                    <li className="flex items-center gap-2"><span className="text-green-500">✓</span> View detailed item photos & descriptions</li>
-                    <li className="flex items-center gap-2"><span className="text-green-500">✓</span> Track remaining auction time</li>
-                    <li className="flex items-center gap-2"><span className="text-green-500">✓</span> Secure Stripe payment processing</li>
-                  </ul>
-                </div>
-              </div>
-
-              {/* Commission & Pricing */}
-              <div className="bg-background/50 rounded-lg p-4 mb-4">
-                <h3 className="font-semibold text-sm mb-3 flex items-center gap-2">
-                  <span>💰</span> Commission & Pricing
-                </h3>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-                  <div className="text-center p-3 bg-card rounded-lg border">
-                    <p className="font-bold text-lg text-primary">3%</p>
-                    <p className="text-muted-foreground">Basic Commission</p>
-                  </div>
-                  <div className="text-center p-3 bg-card rounded-lg border">
-                    <p className="font-bold text-lg text-green-500">0%</p>
-                    <p className="text-muted-foreground">Premium Commission</p>
-                  </div>
-                  <div className="text-center p-3 bg-card rounded-lg border">
-                    <p className="font-bold text-lg">Unlimited</p>
-                    <p className="text-muted-foreground">Premium Listings</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Tips */}
-              <div className="bg-amber-500/10 border border-amber-500/20 rounded-lg p-4">
-                <h3 className="font-semibold text-sm mb-2 flex items-center gap-2">
-                  <span>💡</span> Tips for Success
-                </h3>
-                <ul className="text-xs text-muted-foreground space-y-1">
-                  <li>• Use clear, well-lit photos showing item from multiple angles</li>
-                  <li>• Write detailed descriptions including condition, size, and any defects</li>
-                  <li>• Set competitive starting prices to attract more bidders</li>
-                  <li>• Consider adding a "Buy Now" option for impatient buyers</li>
-                  <li>• Choose peak hours for auction end times (evenings work best)</li>
-                </ul>
-              </div>
+        {/* Engagement Row */}
+        <div className="grid grid-cols-3 gap-3 mb-8">
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
+            className="bg-card/80 backdrop-blur-sm border border-amber-500/20 rounded-xl p-4 text-center">
+            <Flame className="w-5 h-5 text-amber-400 mx-auto mb-1" />
+            <div className="text-lg font-bold">{auctions.filter(a => { const h = (new Date(a.ends_at).getTime() - Date.now()) / 3600000; return h <= 24 && h > 0; }).length}</div>
+            <div className="text-xs text-muted-foreground">Ending Today</div>
+          </motion.div>
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
+            className="bg-card/80 backdrop-blur-sm border border-amber-500/20 rounded-xl p-4 text-center">
+            <Trophy className="w-5 h-5 text-amber-400 mx-auto mb-1" />
+            <div className="text-lg font-bold">{auctions.length}</div>
+            <div className="text-xs text-muted-foreground">Active Auctions</div>
+          </motion.div>
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
+            className="bg-card/80 backdrop-blur-sm border border-amber-500/20 rounded-xl p-4 text-center">
+            <Star className="w-5 h-5 text-amber-400 mx-auto mb-1" />
+            <div className="text-lg font-bold">
+              {auctions.length > 0 ? `€${(auctions.reduce((s, a) => s + Number(a.current_price), 0) / auctions.length).toFixed(0)}` : "—"}
             </div>
-            
+            <div className="text-xs text-muted-foreground">Avg Price</div>
+          </motion.div>
+        </div>
+
+        {/* AI Tools Grid */}
+        <div className="mb-8">
+          <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
+            <Lightbulb className="w-5 h-5 text-amber-400" /> AI Auction Tools
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {aiTools.map((tool, i) => (
+              <motion.div key={tool.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}>
+                <Card
+                  className="cursor-pointer hover:shadow-lg hover:shadow-amber-500/10 transition-all duration-300 border-amber-500/20 hover:border-amber-400/40 bg-card/80 backdrop-blur-sm group"
+                  onClick={() => setActiveView(tool.id)}
+                >
+                  <CardContent className="p-4 text-center">
+                    <div className={`w-10 h-10 mx-auto mb-2 rounded-xl bg-gradient-to-br ${tool.gradient} flex items-center justify-center group-hover:scale-110 transition-transform`}>
+                      <tool.icon className="w-5 h-5 text-white" />
+                    </div>
+                    <h3 className="font-semibold text-xs sm:text-sm">{tool.label}</h3>
+                    <p className="text-[10px] text-muted-foreground mt-1">{tool.desc}</p>
+                    <Badge variant="outline" className="mt-2 text-[10px] border-amber-500/30 text-amber-500">{tool.credits} CR</Badge>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+
+        {/* Create Auction Button */}
+        <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-6">
+          <div>
             {limits.auctionListingsPerMonth !== -1 && (
               <Alert className="max-w-xl">
                 <AlertCircle className="h-4 w-4" />
                 <AlertDescription>
                   Limit: {limits.auctionListingsPerMonth} auctions/month • Commission: {limits.commissionRate}%
-                  {limits.tier === 'basic' && (
-                    <Link to="/subscription" className="ml-2 text-primary hover:underline">
-                      Upgrade
-                    </Link>
-                  )}
+                  {limits.tier === 'basic' && <Link to="/subscription" className="ml-2 text-primary hover:underline">Upgrade</Link>}
                 </AlertDescription>
               </Alert>
             )}
           </div>
-
           <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
             <DialogTrigger asChild>
-              <Button size="lg">
-                <Plus className="mr-2 h-5 w-5" />
-                Create Auction
+              <Button size="lg" className="bg-gradient-to-r from-amber-600 to-yellow-600 hover:from-amber-500 hover:to-yellow-500">
+                <Plus className="mr-2 h-5 w-5" /> Create Auction
               </Button>
             </DialogTrigger>
             <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-              <DialogHeader>
-                <DialogTitle>Create New Auction</DialogTitle>
-              </DialogHeader>
+              <DialogHeader><DialogTitle>Create New Auction</DialogTitle></DialogHeader>
               <form onSubmit={handleCreateAuction} className="space-y-4">
-                <div>
-                  <Label htmlFor="title">Title</Label>
-                  <Input
-                    id="title"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    required
-                  />
-                </div>
-
-                <div>
-                  <Label htmlFor="description">Description</Label>
-                  <Textarea
-                    id="description"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    rows={4}
-                    required
-                  />
-                </div>
-
+                <div><Label htmlFor="title">Title</Label><Input id="title" value={title} onChange={(e) => setTitle(e.target.value)} required /></div>
+                <div><Label htmlFor="description">Description</Label><Textarea id="description" value={description} onChange={(e) => setDescription(e.target.value)} rows={4} required /></div>
                 <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="startingPrice">Starting Price (€)</Label>
-                    <Input
-                      id="startingPrice"
-                      type="number"
-                      step="0.01"
-                      value={startingPrice}
-                      onChange={(e) => setStartingPrice(e.target.value)}
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="buyoutPrice">Buy Now (€)</Label>
-                    <Input
-                      id="buyoutPrice"
-                      type="number"
-                      step="0.01"
-                      value={buyoutPrice}
-                      onChange={(e) => setBuyoutPrice(e.target.value)}
-                    />
-                  </div>
+                  <div><Label>Starting Price (€)</Label><Input type="number" step="0.01" value={startingPrice} onChange={(e) => setStartingPrice(e.target.value)} required /></div>
+                  <div><Label>Buy Now (€)</Label><Input type="number" step="0.01" value={buyoutPrice} onChange={(e) => setBuyoutPrice(e.target.value)} /></div>
                 </div>
-
                 <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="category">Category</Label>
-                    <Select value={category} onValueChange={setCategory} required>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select category" />
-                      </SelectTrigger>
+                  <div><Label>Category</Label>
+                    <Select value={category} onValueChange={setCategory}><SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="elektronika">Electronics</SelectItem>
-                        <SelectItem value="oblecenie">Clothing</SelectItem>
-                        <SelectItem value="nabytok">Furniture</SelectItem>
-                        <SelectItem value="sport">Sports</SelectItem>
-                        <SelectItem value="knihy">Books</SelectItem>
-                        <SelectItem value="hracky">Toys</SelectItem>
-                        <SelectItem value="auto">Automotive</SelectItem>
-                        <SelectItem value="ine">Other</SelectItem>
+                        <SelectItem value="electronics">Electronics</SelectItem><SelectItem value="clothing">Clothing</SelectItem>
+                        <SelectItem value="furniture">Furniture</SelectItem><SelectItem value="sports">Sports</SelectItem>
+                        <SelectItem value="books">Books</SelectItem><SelectItem value="toys">Toys</SelectItem>
+                        <SelectItem value="automotive">Automotive</SelectItem><SelectItem value="other">Other</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
-
-                  <div>
-                    <Label htmlFor="condition">Condition</Label>
-                    <Select value={condition} onValueChange={setCondition} required>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select condition" />
-                      </SelectTrigger>
+                  <div><Label>Condition</Label>
+                    <Select value={condition} onValueChange={setCondition}><SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="nove">New</SelectItem>
-                        <SelectItem value="pouzite">Used</SelectItem>
-                        <SelectItem value="poskodene">Damaged</SelectItem>
+                        <SelectItem value="new">New</SelectItem><SelectItem value="used">Used</SelectItem><SelectItem value="damaged">Damaged</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
                 </div>
-
-                <div>
-                  <Label htmlFor="duration">Duration (hours)</Label>
-                  <Select value={duration} onValueChange={setDuration}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
+                <div><Label>Duration</Label>
+                  <Select value={duration} onValueChange={setDuration}><SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="24">24 hours</SelectItem>
-                      <SelectItem value="48">48 hours</SelectItem>
-                      <SelectItem value="72">3 days</SelectItem>
-                      <SelectItem value="168">7 days</SelectItem>
+                      <SelectItem value="24">24 hours</SelectItem><SelectItem value="48">48 hours</SelectItem>
+                      <SelectItem value="72">3 days</SelectItem><SelectItem value="168">7 days</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
-
-                {/* Image Upload */}
                 <div className="space-y-2">
-                  <Label>Product Images (max 3)</Label>
-                  
+                  <Label>Images (max 3)</Label>
                   {imagePreviews.length > 0 && (
                     <div className="grid grid-cols-3 gap-2">
                       {imagePreviews.map((preview, index) => (
                         <div key={index} className="relative">
-                          <img 
-                            src={preview} 
-                            alt={`Preview ${index + 1}`} 
-                            className="w-full h-32 object-cover rounded-lg"
-                          />
-                          <Button
-                            type="button"
-                            variant="destructive"
-                            size="icon"
-                            className="absolute top-1 right-1 h-6 w-6"
-                            onClick={() => removeImage(index)}
-                          >
-                            <X className="h-3 w-3" />
-                          </Button>
+                          <img src={preview} alt={`Preview ${index + 1}`} className="w-full h-32 object-cover rounded-lg" />
+                          <Button type="button" variant="destructive" size="icon" className="absolute top-1 right-1 h-6 w-6" onClick={() => removeImage(index)}><X className="h-3 w-3" /></Button>
                         </div>
                       ))}
                     </div>
                   )}
-
                   {imagePreviews.length < 3 && (
                     <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-input rounded-lg cursor-pointer hover:bg-accent/50 transition-colors">
-                      <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                        <Upload className="h-8 w-8 text-muted-foreground mb-2" />
-                        <p className="text-sm text-muted-foreground">
-                          Click to upload images ({imagePreviews.length}/3)
-                        </p>
-                        <p className="text-xs text-muted-foreground mt-1">
-                          Max. 5MB (JPG, PNG, WEBP)
-                        </p>
-                      </div>
-                      <input
-                        type="file"
-                        className="hidden"
-                        accept="image/*"
-                        multiple
-                        onChange={handleImageSelect}
-                      />
+                      <Upload className="h-8 w-8 text-muted-foreground mb-2" />
+                      <p className="text-sm text-muted-foreground">Upload ({imagePreviews.length}/3)</p>
+                      <input type="file" className="hidden" accept="image/*" multiple onChange={handleImageSelect} />
                     </label>
                   )}
                 </div>
-
-                <Button type="submit" className="w-full" disabled={uploading}>
+                <Button type="submit" className="w-full bg-gradient-to-r from-amber-600 to-yellow-600" disabled={uploading}>
                   {uploading ? "Creating..." : "Create Auction"}
                 </Button>
               </form>
             </DialogContent>
           </Dialog>
-        </div>
-
-        {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Active Auctions</CardTitle>
-              <Gavel className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{auctions.length}</div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Ending Today</CardTitle>
-              <Clock className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                {auctions.filter(a => {
-                  const hours = (new Date(a.ends_at).getTime() - new Date().getTime()) / (1000 * 60 * 60);
-                  return hours <= 24 && hours > 0;
-                }).length}
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Average Price</CardTitle>
-              <TrendingUp className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                {auctions.length > 0 
-                  ? (auctions.reduce((sum, a) => sum + parseFloat(a.current_price.toString()), 0) / auctions.length).toFixed(2)
-                  : "0"
-                }€
-              </div>
-            </CardContent>
-          </Card>
         </div>
 
         {/* Auctions Grid */}
@@ -780,231 +350,118 @@ const Auction = () => {
             <TabsTrigger value="new">New</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="all" className="mt-6">
-            {loading ? (
-              <div className="text-center py-12">Loading auctions...</div>
-            ) : auctions.length === 0 ? (
-              <div className="text-center py-12 text-muted-foreground">
-                No active auctions
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {auctions.map((auction) => (
-                  <Card 
-                    key={auction.id} 
-                    className="hover:shadow-lg transition-shadow cursor-pointer"
-                    onClick={() => handleShowDetail(auction)}
-                  >
-                    <CardHeader>
-                      <div className="aspect-video bg-muted rounded-md flex items-center justify-center mb-4">
-                        {auction.image_url ? (
-                          <img src={auction.image_url} alt={auction.title} className="w-full h-full object-cover rounded-md" />
-                        ) : (
-                          <Upload className="h-12 w-12 text-muted-foreground" />
-                        )}
-                      </div>
-                      <div className="flex justify-between items-start">
-                        <CardTitle className="text-xl">
-                          {auction.title}
-                        </CardTitle>
-                        <Badge variant="outline">{auction.category}</Badge>
-                      </div>
-                      <CardDescription className="line-clamp-2">
-                        {auction.description}
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-2">
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-muted-foreground">Current Price:</span>
-                        <span className="text-2xl font-bold text-primary">
-                          €{parseFloat(auction.current_price.toString()).toFixed(2)}
-                        </span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-muted-foreground">Condition:</span>
-                        <Badge variant="secondary">{auction.condition}</Badge>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-muted-foreground">Remaining:</span>
-                        <span className="text-sm font-semibold">
-                          {getTimeRemaining(auction.ends_at)}
-                        </span>
-                      </div>
-                    </CardContent>
-                    <CardFooter className="flex gap-2" onClick={(e) => e.stopPropagation()}>
-                      {user?.id === auction.user_id ? (
-                        <Button 
-                          variant="destructive"
-                          className="flex-1"
-                          onClick={() => handleDeleteAuction(auction.id)}
-                        >
-                          Delete
-                        </Button>
-                      ) : (
-                        <>
-                          <Button 
-                            className="flex-1"
-                            onClick={() => handleBid(auction)}
-                          >
-                            <Gavel className="mr-2 h-4 w-4" />
-                            Place Bid
-                          </Button>
-                          {auction.buyout_price && (
-                            <Button 
-                              variant="outline" 
-                              className="flex-1"
-                              onClick={() => handleBuyout(auction)}
-                            >
-                              Buy for €{parseFloat(auction.buyout_price.toString()).toFixed(2)}
-                            </Button>
+          {["all", "ending", "new"].map(tab => (
+            <TabsContent key={tab} value={tab} className="mt-6">
+              {loading ? (
+                <div className="text-center py-12">Loading auctions...</div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {(tab === "all" ? auctions : tab === "ending" ? auctions.filter(a => { const h = (new Date(a.ends_at).getTime() - Date.now()) / 3600000; return h <= 24 && h > 0; }) : auctions.slice(0, 6))
+                    .map((auction) => (
+                    <motion.div key={auction.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+                      <Card className="hover:shadow-lg hover:shadow-amber-500/10 transition-all cursor-pointer border-amber-500/10 bg-card/80 backdrop-blur-sm"
+                        onClick={() => handleShowDetail(auction)}>
+                        <CardHeader>
+                          <div className="aspect-video bg-muted rounded-md flex items-center justify-center mb-4 overflow-hidden">
+                            {auction.image_url ? <img src={auction.image_url} alt={auction.title} className="w-full h-full object-cover" /> : <Upload className="h-12 w-12 text-muted-foreground" />}
+                          </div>
+                          <div className="flex justify-between items-start">
+                            <CardTitle className="text-lg">{auction.title}</CardTitle>
+                            <Badge variant="outline" className="border-amber-500/30 text-amber-500">{auction.category}</Badge>
+                          </div>
+                          <CardDescription className="line-clamp-2">{auction.description}</CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-2">
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm text-muted-foreground">Current Price:</span>
+                            <span className="text-2xl font-bold bg-gradient-to-r from-amber-400 to-yellow-400 bg-clip-text text-transparent">€{Number(auction.current_price).toFixed(2)}</span>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm text-muted-foreground">Remaining:</span>
+                            <span className="text-sm font-semibold">{getTimeRemaining(auction.ends_at)}</span>
+                          </div>
+                        </CardContent>
+                        <CardFooter className="flex gap-2" onClick={(e) => e.stopPropagation()}>
+                          {user?.id === auction.user_id ? (
+                            <Button variant="destructive" className="flex-1" onClick={() => handleDeleteAuction(auction.id)}>Delete</Button>
+                          ) : (
+                            <>
+                              <Button className="flex-1 bg-gradient-to-r from-amber-600 to-yellow-600" onClick={() => handleBid(auction)}>
+                                <Gavel className="mr-2 h-4 w-4" /> Bid
+                              </Button>
+                              {auction.buyout_price && (
+                                <Button variant="outline" className="flex-1 border-amber-500/30" onClick={() => handleBuyout(auction)}>
+                                  Buy €{Number(auction.buyout_price).toFixed(2)}
+                                </Button>
+                              )}
+                            </>
                           )}
-                        </>
-                      )}
-                    </CardFooter>
-                  </Card>
-                ))}
-              </div>
-            )}
-          </TabsContent>
-
-          <TabsContent value="ending" className="mt-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {auctions
-                .filter(a => {
-                  const hours = (new Date(a.ends_at).getTime() - new Date().getTime()) / (1000 * 60 * 60);
-                  return hours <= 24 && hours > 0;
-                })
-                .map((auction) => (
-                  <Card 
-                    key={auction.id} 
-                    className="hover:shadow-lg transition-shadow cursor-pointer"
-                    onClick={() => handleShowDetail(auction)}
-                  >
-                    <CardHeader>
-                      <div className="aspect-video bg-muted rounded-md flex items-center justify-center mb-4">
-                        {auction.image_url ? (
-                          <img src={auction.image_url} alt={auction.title} className="w-full h-full object-cover rounded-md" />
-                        ) : (
-                          <Upload className="h-12 w-12 text-muted-foreground" />
-                        )}
-                      </div>
-                      <div className="flex justify-between items-start">
-                        <CardTitle className="text-xl">{auction.title}</CardTitle>
-                        <Badge variant="outline">{auction.category}</Badge>
-                      </div>
-                      <CardDescription className="line-clamp-2">
-                        {auction.description}
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-2">
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-muted-foreground">Current Price:</span>
-                        <span className="text-2xl font-bold text-primary">
-                          €{parseFloat(auction.current_price.toString()).toFixed(2)}
-                        </span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-muted-foreground">Remaining:</span>
-                        <span className="text-sm font-semibold">
-                          {getTimeRemaining(auction.ends_at)}
-                        </span>
-                      </div>
-                    </CardContent>
-                    <CardFooter className="flex gap-2" onClick={(e) => e.stopPropagation()}>
-                      <Button 
-                        className="flex-1"
-                        onClick={() => handleBid(auction)}
-                      >
-                        <Gavel className="mr-2 h-4 w-4" />
-                        Place Bid
-                      </Button>
-                    </CardFooter>
-                  </Card>
-                ))}
-            </div>
-          </TabsContent>
-
-          <TabsContent value="new" className="mt-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {auctions.slice(0, 6).map((auction) => (
-                <Card 
-                  key={auction.id} 
-                  className="hover:shadow-lg transition-shadow cursor-pointer"
-                  onClick={() => handleShowDetail(auction)}
-                >
-                  <CardHeader>
-                    <div className="aspect-video bg-muted rounded-md flex items-center justify-center mb-4">
-                      {auction.image_url ? (
-                        <img src={auction.image_url} alt={auction.title} className="w-full h-full object-cover rounded-md" />
-                      ) : (
-                        <Upload className="h-12 w-12 text-muted-foreground" />
-                      )}
-                    </div>
-                    <div className="flex justify-between items-start">
-                      <CardTitle className="text-xl">{auction.title}</CardTitle>
-                      <Badge variant="outline">{auction.category}</Badge>
-                    </div>
-                    <CardDescription className="line-clamp-2">
-                      {auction.description}
-                    </CardDescription>
-                  </CardHeader>
-                   <CardContent className="space-y-2">
-                     <div className="flex justify-between items-center">
-                       <span className="text-sm text-muted-foreground">Current Price:</span>
-                       <span className="text-2xl font-bold text-primary">
-                         €{parseFloat(auction.current_price.toString()).toFixed(2)}
-                       </span>
-                     </div>
-                   </CardContent>
-                   <CardFooter className="flex gap-2" onClick={(e) => e.stopPropagation()}>
-                     <Button 
-                       className="flex-1"
-                       onClick={() => handleBid(auction)}
-                     >
-                       <Gavel className="mr-2 h-4 w-4" />
-                       Place Bid
-                     </Button>
-                   </CardFooter>
-                </Card>
-              ))}
-            </div>
-          </TabsContent>
+                        </CardFooter>
+                      </Card>
+                    </motion.div>
+                  ))}
+                  {((tab === "all" && auctions.length === 0) || (tab === "ending" && auctions.filter(a => { const h = (new Date(a.ends_at).getTime() - Date.now()) / 3600000; return h <= 24 && h > 0; }).length === 0)) && (
+                    <div className="col-span-full text-center py-12 text-muted-foreground">No auctions found</div>
+                  )}
+                </div>
+              )}
+            </TabsContent>
+          ))}
         </Tabs>
+
+        {/* Tips Section */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }} className="mt-12 mb-8">
+          <Card className="border-amber-500/20 bg-card/80 backdrop-blur-sm">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <Lightbulb className="w-5 h-5 text-amber-400" /> Tips for Auction Success
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <h4 className="font-semibold text-sm text-amber-400">For Sellers</h4>
+                  <ul className="text-xs text-muted-foreground space-y-1">
+                    <li>• Use clear, well-lit photos from multiple angles</li>
+                    <li>• Write detailed descriptions with honest condition info</li>
+                    <li>• Set competitive starting prices to attract bidders</li>
+                    <li>• End auctions during peak hours (evenings work best)</li>
+                    <li>• Use AI Listing Optimizer for professional descriptions</li>
+                  </ul>
+                </div>
+                <div className="space-y-2">
+                  <h4 className="font-semibold text-sm text-amber-400">For Buyers</h4>
+                  <ul className="text-xs text-muted-foreground space-y-1">
+                    <li>• Set a maximum budget before bidding</li>
+                    <li>• Use AI Bid Strategy for optimal timing</li>
+                    <li>• Check item photos and description carefully</li>
+                    <li>• Consider Buy Now for items you really want</li>
+                    <li>• Watch "Ending Soon" tab for last-minute deals</li>
+                  </ul>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
 
         {/* Bid Dialog */}
         <Dialog open={bidDialogOpen} onOpenChange={setBidDialogOpen}>
           <DialogContent className="max-w-md">
-            <DialogHeader>
-              <DialogTitle>Place Bid</DialogTitle>
-            </DialogHeader>
+            <DialogHeader><DialogTitle>Place Bid</DialogTitle></DialogHeader>
             {selectedAuction && (
               <div className="space-y-4">
                 <div>
-                  <p className="text-sm text-muted-foreground mb-2">
-                    Auction: <strong>{selectedAuction.title}</strong>
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    Current Price: <strong className="text-primary">€{parseFloat(selectedAuction.current_price.toString()).toFixed(2)}</strong>
-                  </p>
+                  <p className="text-sm text-muted-foreground mb-2">Auction: <strong>{selectedAuction.title}</strong></p>
+                  <p className="text-sm text-muted-foreground">Current: <strong className="text-amber-400">€{Number(selectedAuction.current_price).toFixed(2)}</strong></p>
                 </div>
                 <div>
-                  <Label htmlFor="bidAmount">How much do you want to bid? (€)</Label>
-                  <Input
-                    id="bidAmount"
-                    type="number"
-                    step="0.01"
-                    value={bidAmount}
-                    onChange={(e) => setBidAmount(e.target.value)}
-                    placeholder={`Minimum €${(parseFloat(selectedAuction.current_price.toString()) + 0.01).toFixed(2)}`}
-                  />
+                  <Label>Your Bid (€)</Label>
+                  <Input type="number" step="0.01" value={bidAmount} onChange={(e) => setBidAmount(e.target.value)}
+                    placeholder={`Min €${(Number(selectedAuction.current_price) + 0.01).toFixed(2)}`} />
                 </div>
-                <Button 
-                  onClick={submitBid} 
-                  className="w-full"
-                  disabled={!bidAmount || parseFloat(bidAmount) <= parseFloat(selectedAuction.current_price.toString())}
-                >
-                  <Gavel className="h-4 w-4 mr-2" />
-                  Place Bid {bidAmount && `€${parseFloat(bidAmount).toFixed(2)}`}
+                <Button onClick={submitBid} className="w-full bg-gradient-to-r from-amber-600 to-yellow-600"
+                  disabled={!bidAmount || parseFloat(bidAmount) <= Number(selectedAuction.current_price)}>
+                  <Gavel className="h-4 w-4 mr-2" /> Place Bid {bidAmount && `€${parseFloat(bidAmount).toFixed(2)}`}
                 </Button>
               </div>
             )}
@@ -1016,108 +473,37 @@ const Auction = () => {
           <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
             {detailAuction && (
               <>
-                <DialogHeader>
-                  <DialogTitle>{detailAuction.title}</DialogTitle>
-                </DialogHeader>
+                <DialogHeader><DialogTitle>{detailAuction.title}</DialogTitle></DialogHeader>
                 <div className="space-y-4">
-                  {/* Photos Carousel */}
                   {auctionPhotos.length > 0 && (
                     <div className="space-y-2">
-                      {auctionPhotos.length === 1 ? (
-                        <img 
-                          src={auctionPhotos[0]} 
-                          alt={detailAuction.title} 
-                          className="w-full h-96 object-cover rounded-lg cursor-pointer hover:opacity-90 transition-opacity"
-                          onClick={() => {
-                            setLightboxImage(auctionPhotos[0]);
-                            setLightboxOpen(true);
-                          }}
-                        />
-                      ) : (
-                        <div className="grid grid-cols-1 gap-2">
-                          {auctionPhotos.map((photo, index) => (
-                            <img 
-                              key={index}
-                              src={photo} 
-                              alt={`${detailAuction.title} ${index + 1}`} 
-                              className="w-full h-64 object-cover rounded-lg cursor-pointer hover:opacity-90 transition-opacity"
-                              onClick={() => {
-                                setLightboxImage(photo);
-                                setLightboxOpen(true);
-                              }}
-                            />
-                          ))}
-                        </div>
-                      )}
+                      {auctionPhotos.map((photo, i) => (
+                        <img key={i} src={photo} alt={`${detailAuction.title} ${i + 1}`}
+                          className="w-full h-64 object-cover rounded-lg cursor-pointer hover:opacity-90 transition-opacity"
+                          onClick={() => { setLightboxImage(photo); setLightboxOpen(true); }} />
+                      ))}
                     </div>
                   )}
-
-                  {/* Details */}
                   <div className="space-y-3">
-                    <div>
-                      <h3 className="font-semibold mb-1">Description</h3>
-                      <p className="text-muted-foreground">{detailAuction.description}</p>
-                    </div>
-
+                    <div><h3 className="font-semibold mb-1">Description</h3><p className="text-muted-foreground">{detailAuction.description}</p></div>
                     <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <h4 className="font-semibold text-sm">Current Price</h4>
-                        <p className="text-2xl font-bold text-primary">
-                          €{parseFloat(detailAuction.current_price.toString()).toFixed(2)}
-                        </p>
-                      </div>
-                      {detailAuction.buyout_price && (
-                        <div>
-                          <h4 className="font-semibold text-sm">Buy Now</h4>
-                          <p className="text-2xl font-bold">
-                            €{parseFloat(detailAuction.buyout_price.toString()).toFixed(2)}
-                          </p>
-                        </div>
-                      )}
+                      <div><h4 className="font-semibold text-sm">Current Price</h4><p className="text-2xl font-bold bg-gradient-to-r from-amber-400 to-yellow-400 bg-clip-text text-transparent">€{Number(detailAuction.current_price).toFixed(2)}</p></div>
+                      {detailAuction.buyout_price && <div><h4 className="font-semibold text-sm">Buy Now</h4><p className="text-2xl font-bold">€{Number(detailAuction.buyout_price).toFixed(2)}</p></div>}
                     </div>
-
                     <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <h4 className="font-semibold text-sm">Category</h4>
-                        <Badge variant="outline">{detailAuction.category}</Badge>
-                      </div>
-                      <div>
-                        <h4 className="font-semibold text-sm">Condition</h4>
-                        <Badge variant="secondary">{detailAuction.condition}</Badge>
-                      </div>
+                      <div><h4 className="font-semibold text-sm">Category</h4><Badge variant="outline" className="border-amber-500/30">{detailAuction.category}</Badge></div>
+                      <div><h4 className="font-semibold text-sm">Condition</h4><Badge variant="secondary">{detailAuction.condition}</Badge></div>
                     </div>
-
-                    <div>
-                      <h4 className="font-semibold text-sm">Time Remaining</h4>
-                      <p className="text-lg font-semibold text-primary">
-                        {getTimeRemaining(detailAuction.ends_at)}
-                      </p>
-                    </div>
+                    <div><h4 className="font-semibold text-sm">Time Remaining</h4><p className="text-lg font-semibold text-amber-400">{getTimeRemaining(detailAuction.ends_at)}</p></div>
                   </div>
-
-                  {/* Actions */}
                   {user?.id !== detailAuction.user_id && (
                     <div className="flex gap-2 pt-4 border-t">
-                      <Button 
-                        className="flex-1"
-                        onClick={() => {
-                          setDetailDialogOpen(false);
-                          handleBid(detailAuction);
-                        }}
-                      >
-                        <Gavel className="mr-2 h-4 w-4" />
-                        Place Bid
+                      <Button className="flex-1 bg-gradient-to-r from-amber-600 to-yellow-600" onClick={() => { setDetailDialogOpen(false); handleBid(detailAuction); }}>
+                        <Gavel className="mr-2 h-4 w-4" /> Place Bid
                       </Button>
                       {detailAuction.buyout_price && (
-                        <Button 
-                          variant="outline" 
-                          className="flex-1"
-                          onClick={() => {
-                            setDetailDialogOpen(false);
-                            handleBuyout(detailAuction);
-                          }}
-                        >
-                          Buy for €{parseFloat(detailAuction.buyout_price.toString()).toFixed(2)}
+                        <Button variant="outline" className="flex-1 border-amber-500/30" onClick={() => { setDetailDialogOpen(false); handleBuyout(detailAuction); }}>
+                          Buy €{Number(detailAuction.buyout_price).toFixed(2)}
                         </Button>
                       )}
                     </div>
@@ -1128,15 +514,10 @@ const Auction = () => {
           </DialogContent>
         </Dialog>
 
-        {/* Lightbox Dialog */}
         <Dialog open={lightboxOpen} onOpenChange={setLightboxOpen}>
           <DialogContent className="max-w-5xl w-full p-0 bg-black/95 border-0">
             <div className="relative w-full h-[90vh] flex items-center justify-center">
-              <img 
-                src={lightboxImage} 
-                alt="Enlarged view" 
-                className="max-w-full max-h-full object-contain"
-              />
+              <img src={lightboxImage} alt="Enlarged view" className="max-w-full max-h-full object-contain" />
             </div>
           </DialogContent>
         </Dialog>
