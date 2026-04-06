@@ -40,36 +40,52 @@ export const AnalyzerHero = ({ credits, tier }: AnalyzerHeroProps) => {
 
   return (
     <div className="mb-8 space-y-3">
-      <div className="relative w-full h-[280px] sm:h-[380px] rounded-2xl overflow-hidden">
+      <div className="relative w-full h-[300px] sm:h-[400px] rounded-2xl overflow-hidden">
         <video
-          autoPlay muted loop playsInline
-          className="absolute inset-0 w-full h-full object-cover"
-          style={{ filter: "brightness(1.15) saturate(1.1)" }}
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="absolute inset-0 h-full w-full object-cover object-[72%_center] sm:object-center"
+          style={{ filter: "brightness(1.2) saturate(1.05) contrast(1.05)" }}
           src={analyzerHeroAsset.url}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-        
-        <div className="relative z-10 h-full flex flex-col justify-end p-4 sm:p-8">
-          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
-            <div className="inline-block max-w-[85%] sm:max-w-xl border border-white/20 bg-black/40 backdrop-blur-lg rounded-2xl px-5 py-4 sm:px-6 sm:py-5 shadow-xl">
-              <h1 className="text-3xl leading-none sm:text-5xl font-black text-white drop-shadow-lg">
-                Universal Vision{" "}
-                <span className="bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text text-transparent">
-                  Analyzer
-                </span>
+        <div className="absolute inset-0 bg-gradient-to-r from-background/80 via-background/35 to-background/5" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background/55 via-transparent to-transparent" />
+
+        <div className="relative z-10 flex h-full flex-col justify-between p-4 sm:p-8">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="max-w-[72%] sm:max-w-xl space-y-3"
+          >
+            <span className="inline-flex items-center rounded-full border border-border/70 bg-background/55 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-foreground/80 backdrop-blur-md">
+              Real-world AI scanning
+            </span>
+            <div>
+              <h1 className="text-3xl font-black leading-none text-background sm:text-5xl [text-shadow:0_10px_30px_hsl(var(--background)/0.55)]">
+                Universal Vision <span className="text-primary">Analyzer</span>
               </h1>
-              <p className="text-white/90 text-sm sm:text-lg font-semibold mt-2 max-w-md drop-shadow">
+              <p className="mt-3 max-w-md text-sm font-semibold text-background/90 drop-shadow sm:text-lg">
                 AI-powered image analysis for everything around you
               </p>
-              <div className="flex items-center gap-3 mt-3">
-                <span className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-200 bg-amber-500/20 px-3 py-1 rounded-full border border-amber-400/30">
-                  <Zap className="w-3 h-3" />
-                  {credits} Credits
-                </span>
-                <span className="inline-flex items-center text-xs font-bold text-white/80 bg-white/10 px-3 py-1 rounded-full border border-white/20 capitalize">
-                  {tier} Tier
-                </span>
-              </div>
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.15, duration: 0.8 }}
+          >
+            <div className="inline-flex flex-wrap items-center gap-3 rounded-2xl border border-border/60 bg-background/45 px-4 py-3 backdrop-blur-md shadow-xl">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-bold text-primary">
+                <Zap className="w-3 h-3" />
+                {credits} Credits
+              </span>
+              <span className="inline-flex items-center rounded-full border border-border/70 bg-background/55 px-3 py-1 text-xs font-bold capitalize text-foreground/80">
+                {tier} Tier
+              </span>
             </div>
           </motion.div>
         </div>
