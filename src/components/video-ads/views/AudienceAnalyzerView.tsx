@@ -1,0 +1,95 @@
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { ArrowLeft, Users, Sparkles, Loader2, Copy, Check } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
+import { motion } from "framer-motion";
+
+interface Props { onBack: () => void; }
+
+export function AudienceAnalyzerView({ onBack }: Props) {
+  const [product, setProduct] = useState("");
+  const [audience, setAudience] = useState("");
+  const [industry, setIndustry] = useState("");
+  const [result, setResult] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const generate = async () => {
+    if (!product.trim()) { toast.error("Enter product name"); return; }
+    setLoading(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) { toast.error("Please sign in"); return; }
+      const { data, error } = await supabase.functions.invoke("video-ad-tools", {
+        body: { action: "audience_analyzer", product, audience, industry },
+        headers: { Authorization: `Bearer ${session.access_token}` },
+      });
+      if (error) throw error;
+      setResult(data.result);
+      toast.success(`Analysis complete! (${data.credits_used} credits)`);
+    } catch (e: any) { toast.error(e.message || "Failed"); }
+    finally { setLoading(false); }
+  };
+
+  return (
+    <div>
+      <Button variant="ghost" onClick={onBack} className="mb-4"><ArrowLeft className="w-4 h-4 mr-2" />Back</Button>
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
+        <div className="flex items-center gap-3">
+          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center shadow-lg"><Users className="w-6 h-6 text-white" /></div>
+          <div><h2 className="text-2xl font-black">AI Audience Analyzer</h2><p className="text-muted-foreground text-sm">Deep audience insights & targeting recommendations</p></div>
+          <Badge className="ml-auto bg-gradient-to-r from-blue-500 to-cyan-500 text-white border-0"><Sparkles className="w-3 h-3 mr-1" />2 Credits</Badge>
+        </div>
+      </motion.div>
+      <div className="grid md:grid-cols-2 gap-6">
+        <Card>
+          <CardHeader><CardTitle>Audience Research</CardTitle></CardHeader>
+          <CardContent className="space-y-4">
+            <div><label className="text-sm font-semibold mb-1.5 block">Product/Service *</label><Input placeholder="e.g. Fitness app" value={product} onChange={e => setProduct(e.target.value)} /></div>
+            <div><label className="text-sm font-semibold mb-1.5 block">Initial Audience Description</label><Input placeholder="e.g. Health-conscious millennials" value={audience} onChange={e => setAudience(e.target.value)} /></div>
+            <div><label className="text-sm font-semibold mb-1.5 block">Industry</label><Input placeholder="e.g. Health & Wellness" value={industry} onChange={e => setIndustry(e.target.value)} /></div>
+            <Button onClick={generate} disabled={loading} className="w-full h-11 bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700">
+              {loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Analyzing...</> : <><Users className="w-4 h-4 mr-2" />Analyze Audience (2 CR)</>}
+            </Button>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <CardTitle>{result ? "Audience Insights" : "Results"}</CardTitle>
+            {result && <Button variant="outline" size="sm" onClick={() => { navigator.clipboard.writeText(JSON.stringify(result, null, 2)); setCopied(true); setTimeout(() => setCopied(false), 2000); }}>{copied ? <Check className="w-4 h-4 mr-1 text-emerald-500" /> : <Copy className="w-4 h-4 mr-1" />}{copied ? "Copied!" : "Copy"}</Button>}
+          </CardHeader>
+          <CardContent>
+            {result ? (
+              <div className="space-y-4 max-h-[600px] overflow-y-auto text-sm">
+                {result.primaryAudience && (
+                  <div className="p-3 bg-muted/30 rounded-lg">
+                    <h4 className="font-semibold mb-2">🎯 Primary Audience</h4>
+                    <p><strong>Demographics:</strong> {result.primaryAudience.demographics}</p>
+                    <p><strong>Psychographics:</strong> {result.primaryAudience.psychographics}</p>
+                    <p><strong>Pain Points:</strong> {result.primaryAudience.painPoints}</p>
+                    <p><strong>Motivations:</strong> {result.primaryAudience.motivations}</p>
+                  </div>
+                )}
+                {result.bestPlatforms?.map((p: any, i: number) => (
+                  <div key={i} className="p-3 bg-muted/20 rounded-lg">
+                    <div className="font-semibold">{p.platform}</div>
+                    <p className="text-muted-foreground">{p.reasoning}</p>
+                    <Badge variant="outline" className="mt-1">Best: {p.bestTimeToPost}</Badge>
+                  </div>
+                ))}
+                <div><h4 className="font-semibold mb-1">💬 Key Messages</h4><ul>{result.keyMessages?.map((m: string, i: number) => (<li key={i} className="text-muted-foreground">• {m}</li>))}</ul></div>
+                <div><h4 className="font-semibold mb-1">🚫 Avoid</h4><ul>{result.avoidTopics?.map((t: string, i: number) => (<li key={i} className="text-muted-foreground">• {t}</li>))}</ul></div>
+              </div>
+            ) : (
+              <p className="text-muted-foreground text-sm text-center py-12">Enter your product details to analyze your audience</p>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+}
