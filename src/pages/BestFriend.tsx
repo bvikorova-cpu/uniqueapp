@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import {
   Send, Heart, Sparkles, CreditCard, Crown, ArrowLeft,
   BookHeart, MessageSquarePlus, HeartHandshake, Target, MessageCircle,
+  TrendingUp, Music, Sunrise, Gamepad2, Moon, Camera,
 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -21,6 +22,12 @@ import { MoodJournalView } from "@/components/best-friend/MoodJournalView";
 import { ConversationStartersView } from "@/components/best-friend/ConversationStartersView";
 import { EncouragementCardsView } from "@/components/best-friend/EncouragementCardsView";
 import { LifeCoachView } from "@/components/best-friend/LifeCoachView";
+import { FriendshipAnalyticsView } from "@/components/best-friend/FriendshipAnalyticsView";
+import { MoodPlaylistView } from "@/components/best-friend/MoodPlaylistView";
+import { DailyAffirmationsView } from "@/components/best-friend/DailyAffirmationsView";
+import { FriendshipGamesView } from "@/components/best-friend/FriendshipGamesView";
+import { DreamCompanionView } from "@/components/best-friend/DreamCompanionView";
+import { MemoryScrapbookView } from "@/components/best-friend/MemoryScrapbookView";
 import ReactMarkdown from "react-markdown";
 
 const CHAT_URL = `https://jufrdzeonywluwutvyxz.supabase.co/functions/v1/best-friend-chat`;
