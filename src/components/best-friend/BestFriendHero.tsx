@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Heart, Users, MessageCircle, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import heroVideo from "@/assets/best-friend-hero.mp4";
+import heroVideo from "@/assets/best-friend-hero.mp4.asset.json";
 
 const useLiveStats = () => {
   const [stats, setStats] = useState({ conversations: 0, messages: 0, moods: 0, users: 0 });
@@ -37,7 +37,7 @@ export const BestFriendHero = () => {
   return (
     <div className="relative w-full h-[420px] md:h-[480px] overflow-hidden rounded-3xl mb-8">
       <video autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover" style={{ filter: "brightness(1.3) saturate(1.2)" }}>
-        <source src={heroVideo} type="video/mp4" />
+        <source src={heroVideo.url} type="video/mp4" />
       </video>
       <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/20 to-black/50" />
 
