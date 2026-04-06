@@ -1,330 +1,139 @@
 import { useState } from "react";
+import { motion } from "framer-motion";
+import { Sparkles, Wand2, Pencil, Brush, ArrowUpRight, BookOpen, CreditCard, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Sparkles, Wand2, Download, Loader2, CreditCard, Lightbulb, ImageIcon, Zap, Shield, CheckCircle2 } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
 import { useAICredits } from "@/hooks/useAICredits";
 import { useNavigate } from "react-router-dom";
+import { AIGenHero } from "@/components/ai-generation/AIGenHero";
+import { GenerateView } from "@/components/ai-generation/views/GenerateView";
+import { ImageEditorView } from "@/components/ai-generation/views/ImageEditorView";
+import { StyleTransferView } from "@/components/ai-generation/views/StyleTransferView";
+import { UpscalerView } from "@/components/ai-generation/views/UpscalerView";
+import { PromptGalleryView } from "@/components/ai-generation/views/PromptGalleryView";
+
+type ActiveView = 'hub' | 'generate' | 'editor' | 'style' | 'upscaler' | 'gallery';
+
+const tools = [
+  { id: 'generate' as ActiveView, icon: Wand2, title: "Generate Image", desc: "Create from text", cost: "5 CR", color: "from-primary to-accent" },
+  { id: 'editor' as ActiveView, icon: Pencil, title: "Image Editor", desc: "Edit & transform", cost: "3 CR", color: "from-blue-500 to-cyan-500" },
+  { id: 'style' as ActiveView, icon: Brush, title: "Style Transfer", desc: "Apply art styles", cost: "3 CR", color: "from-purple-500 to-pink-500" },
+  { id: 'upscaler' as ActiveView, icon: ArrowUpRight, title: "AI Upscaler", desc: "Enhance to HD", cost: "2 CR", color: "from-green-500 to-emerald-500" },
+  { id: 'gallery' as ActiveView, icon: BookOpen, title: "Prompt Gallery", desc: "Browse & inspire", cost: "Free", color: "from-amber-500 to-orange-500" },
+];
 
 const AIGeneration = () => {
-  const [customPrompt, setCustomPrompt] = useState("");
-  const [isGeneratingCustom, setIsGeneratingCustom] = useState(false);
-  const [customGeneratedImage, setCustomGeneratedImage] = useState<string | null>(null);
-  
-  const { credits, useCredit, refresh } = useAICredits();
+  const [activeView, setActiveView] = useState<ActiveView>('hub');
+  const { credits, refresh } = useAICredits();
   const navigate = useNavigate();
 
-  const handleGenerateCustomImage = async () => {
-    if (!customPrompt.trim()) {
-      toast.error("Please enter an image description!");
-      return;
-    }
-
-    if (credits.credits_remaining <= 0) {
-      toast.error("You don't have enough AI credits!", {
-        action: {
-          label: "Buy credits",
-          onClick: () => navigate('/ai-credits-store')
-        }
-      });
-      return;
-    }
-
-    setIsGeneratingCustom(true);
-    setCustomGeneratedImage(null);
-
-    try {
-      const creditUsed = await useCredit('custom_generation', `Generated custom image: ${customPrompt.substring(0, 50)}`);
-      
-      if (!creditUsed) {
-        toast.error("Failed to use AI credit");
-        return;
-      }
-
-      const { data, error } = await supabase.functions.invoke('generate-custom-image', {
-        body: { prompt: customPrompt }
-      });
-
-      if (error) throw error;
-
-      if (data.error) {
-        toast.error(data.error);
-        return;
-      }
-
-      setCustomGeneratedImage(data.imageUrl);
-      toast.success("Image successfully generated!");
-      await refresh();
-
-    } catch (error) {
-      console.error('Error generating custom image:', error);
-      toast.error("Failed to generate image. Please try again.");
-    } finally {
-      setIsGeneratingCustom(false);
+  const renderView = () => {
+    switch (activeView) {
+      case 'generate': return <GenerateView onCreditsUsed={refresh} />;
+      case 'editor': return <ImageEditorView onCreditsUsed={refresh} />;
+      case 'style': return <StyleTransferView onCreditsUsed={refresh} />;
+      case 'upscaler': return <UpscalerView onCreditsUsed={refresh} />;
+      case 'gallery': return <PromptGalleryView onSelectPrompt={(p) => { setActiveView('generate'); }} />;
+      default: return null;
     }
   };
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-3 sm:px-4 py-8">
-        {/* Hero Section */}
-        <div className="text-center mb-8 pt-8">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-sm text-primary mb-4">
-            <Sparkles className="w-4 h-4" />
-            <span className="font-medium">AI-Powered</span>
-          </div>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent mb-3">
-            AI Image Generator
-          </h1>
-          <p className="text-sm sm:text-lg text-muted-foreground max-w-2xl mx-auto">
-            Create stunning images from text descriptions using advanced AI
-          </p>
-          <div className="mt-4 flex items-center justify-center gap-4">
-            <div className="flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-lg">
-              <CreditCard className="w-4 h-4 text-primary" />
-              <span className="font-semibold">{credits.credits_remaining} credits available</span>
-            </div>
-            <Button 
-              variant="outline" 
-              size="sm"
-              onClick={() => navigate('/ai-credits-store')}
-            >
-              Buy more credits
+      <div className="container mx-auto px-3 sm:px-4 py-6 pt-16">
+        {activeView !== 'hub' ? (
+          <div className="mb-6">
+            <Button variant="ghost" size="sm" onClick={() => setActiveView('hub')} className="gap-2">
+              <ArrowLeft className="w-4 h-4" /> Back to Studio
             </Button>
+            {renderView()}
           </div>
-        </div>
+        ) : (
+          <>
+            <AIGenHero credits={credits.credits_remaining} />
 
-        {/* Custom Image Generation Section */}
-        <div className="max-w-4xl mx-auto">
-          <Card className="bg-gradient-to-br from-primary/5 to-secondary/5 border-2 border-primary/20">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-primary" />
-                Custom AI Generation
-              </CardTitle>
-              <CardDescription>
-                Create a completely new image using AI based on your description
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <label htmlFor="custom-prompt" className="text-sm font-medium">
-                  Describe the image you want to create
-                </label>
-                <textarea
-                  id="custom-prompt"
-                  value={customPrompt}
-                  onChange={(e) => setCustomPrompt(e.target.value)}
-                  placeholder="For example: Beautiful sunset over mountains, realistic style, high quality..."
-                  className="w-full min-h-[120px] p-3 rounded-lg border bg-background resize-none focus:outline-none focus:ring-2 focus:ring-primary"
-                  disabled={isGeneratingCustom}
-                />
-              </div>
-              
-              <Button
-                onClick={handleGenerateCustomImage}
-                disabled={isGeneratingCustom || !customPrompt.trim()}
-                className="w-full"
-                size="lg"
+            {/* Engagement Row */}
+            <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-8">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}
+                className="bg-card/80 border border-border rounded-xl p-3 sm:p-4 text-center cursor-pointer hover:border-primary/40 transition-all"
+                onClick={() => navigate('/ai-credits-store')}
               >
-                {isGeneratingCustom ? (
-                  <>
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    Generating image...
-                  </>
-                ) : (
-                  <>
-                    <Wand2 className="w-4 h-4 mr-2" />
-                    Generate Image (1 credit)
-                  </>
-                )}
-              </Button>
+                <CreditCard className="h-5 w-5 text-primary mx-auto mb-1" />
+                <p className="text-lg sm:text-xl font-black">{credits.credits_remaining}</p>
+                <p className="text-[10px] sm:text-xs text-muted-foreground">Credits</p>
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55 }}
+                className="bg-card/80 border border-border rounded-xl p-3 sm:p-4 text-center"
+              >
+                <Sparkles className="h-5 w-5 text-primary mx-auto mb-1" />
+                <p className="text-lg sm:text-xl font-black">5</p>
+                <p className="text-[10px] sm:text-xs text-muted-foreground">AI Tools</p>
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }}
+                className="bg-card/80 border border-border rounded-xl p-3 sm:p-4 text-center"
+              >
+                <Brush className="h-5 w-5 text-primary mx-auto mb-1" />
+                <p className="text-lg sm:text-xl font-black">12+</p>
+                <p className="text-[10px] sm:text-xs text-muted-foreground">Art Styles</p>
+              </motion.div>
+            </div>
 
-              {customGeneratedImage && (
-                <div className="mt-6 border rounded-lg p-4 bg-background">
-                  <div className="relative group">
-                    <img
-                      src={customGeneratedImage}
-                      alt="Generated image"
-                      className="w-full rounded-lg"
-                    />
-                    <Button
-                      onClick={() => {
-                        const link = document.createElement('a');
-                        link.href = customGeneratedImage;
-                        link.download = `ai-generated-${Date.now()}.png`;
-                        document.body.appendChild(link);
-                        link.click();
-                        document.body.removeChild(link);
-                        toast.success("Image is downloading!");
-                      }}
-                      className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity"
-                      size="sm"
-                    >
-                      <Download className="w-4 h-4 mr-2" />
-                      Download
-                    </Button>
-                  </div>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* How It Works Section */}
-        <div className="mt-12 max-w-4xl mx-auto">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Lightbulb className="w-5 h-5 text-primary" />
-                How does it work?
-              </CardTitle>
-              <CardDescription>
-                A complete guide to generating AI images with our platform
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-8">
-              {/* Step by Step Guide */}
-              <div className="grid md:grid-cols-3 gap-6">
-                <div className="text-center p-4 rounded-lg bg-primary/5">
-                  <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
-                    <span className="text-xl font-bold text-primary">1</span>
-                  </div>
-                  <h3 className="font-semibold mb-2">Write Your Prompt</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Describe the image you want to create in the text area above. Be as detailed as possible for best results.
-                  </p>
-                </div>
-                <div className="text-center p-4 rounded-lg bg-primary/5">
-                  <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
-                    <span className="text-xl font-bold text-primary">2</span>
-                  </div>
-                  <h3 className="font-semibold mb-2">Generate Image</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Click the "Generate Image" button and wait a few seconds while our AI creates your unique artwork.
-                  </p>
-                </div>
-                <div className="text-center p-4 rounded-lg bg-primary/5">
-                  <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
-                    <span className="text-xl font-bold text-primary">3</span>
-                  </div>
-                  <h3 className="font-semibold mb-2">Download & Use</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Once generated, hover over the image and click download to save it to your device.
-                  </p>
-                </div>
+            {/* Tool Grid */}
+            <div className="mb-8">
+              <h2 className="text-xl sm:text-2xl font-black mb-4 flex items-center gap-2">
+                <Sparkles className="w-5 h-5 text-primary" />
+                Creative AI Tools
+              </h2>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                {tools.map((tool, i) => (
+                  <motion.div
+                    key={tool.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3 + i * 0.08 }}
+                    onClick={() => setActiveView(tool.id)}
+                    className="group cursor-pointer rounded-xl border border-border bg-card/80 p-4 hover:border-primary/40 hover:shadow-lg transition-all"
+                  >
+                    <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${tool.color} flex items-center justify-center mb-3 group-hover:scale-110 transition-transform`}>
+                      <tool.icon className="w-5 h-5 text-white" />
+                    </div>
+                    <h3 className="font-bold text-sm mb-0.5">{tool.title}</h3>
+                    <p className="text-[11px] text-muted-foreground mb-2">{tool.desc}</p>
+                    <span className="inline-block text-[10px] font-bold px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20">
+                      {tool.cost}
+                    </span>
+                  </motion.div>
+                ))}
               </div>
+            </div>
 
-              {/* Detailed Description */}
-              <div className="space-y-6 pt-6 border-t">
-                <div>
-                  <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
-                    <ImageIcon className="w-5 h-5 text-primary" />
-                    What is AI Image Generation?
-                  </h3>
-                  <p className="text-muted-foreground leading-relaxed">
-                    AI Image Generation is a cutting-edge technology that uses artificial intelligence to create unique, 
-                    high-quality images based on text descriptions (prompts). Our platform leverages state-of-the-art 
-                    OpenAI's GPT-Image model to transform your ideas into stunning visual artwork. Whether you need 
-                    illustrations, concept art, realistic photos, or creative designs, our AI can generate them in seconds.
-                  </p>
-                </div>
-
-                <div>
-                  <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
-                    <Zap className="w-5 h-5 text-primary" />
-                    Tips for Better Results
-                  </h3>
-                  <ul className="space-y-3">
-                    <li className="flex items-start gap-3">
-                      <CheckCircle2 className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
-                      <span className="text-muted-foreground">
-                        <strong className="text-foreground">Be specific:</strong> Instead of "a cat", try "a fluffy orange tabby cat sitting on a windowsill at sunset, photorealistic style"
-                      </span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <CheckCircle2 className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
-                      <span className="text-muted-foreground">
-                        <strong className="text-foreground">Include art style:</strong> Mention styles like "watercolor", "oil painting", "digital art", "photorealistic", "anime", or "3D render"
-                      </span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <CheckCircle2 className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
-                      <span className="text-muted-foreground">
-                        <strong className="text-foreground">Add lighting details:</strong> Describe lighting like "golden hour", "studio lighting", "neon lights", or "dramatic shadows"
-                      </span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <CheckCircle2 className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
-                      <span className="text-muted-foreground">
-                        <strong className="text-foreground">Specify quality:</strong> Add terms like "high quality", "detailed", "4K", "ultra realistic" for better output
-                      </span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <CheckCircle2 className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
-                      <span className="text-muted-foreground">
-                        <strong className="text-foreground">Describe composition:</strong> Include camera angles like "close-up", "wide shot", "bird's eye view", or "portrait orientation"
-                      </span>
-                    </li>
-                  </ul>
-                </div>
-
-                <div>
-                  <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
-                    <Shield className="w-5 h-5 text-primary" />
-                    Credit System & Pricing
-                  </h3>
-                  <div className="bg-secondary/30 rounded-lg p-4">
-                    <ul className="space-y-2 text-muted-foreground">
-                      <li className="flex items-center gap-2">
-                        <CreditCard className="w-4 h-4 text-primary" />
-                        Each image generation costs <strong className="text-foreground">1 credit</strong>
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <CreditCard className="w-4 h-4 text-primary" />
-                        Credits never expire and can be used across all AI features
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <CreditCard className="w-4 h-4 text-primary" />
-                        Purchase additional credits from the <button onClick={() => navigate('/ai-credits-store')} className="text-primary hover:underline font-medium">AI Credits Store</button>
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <CreditCard className="w-4 h-4 text-primary" />
-                        Generated images are 1024x1024 pixels in WebP format
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-
-                <div>
-                  <h3 className="text-lg font-semibold mb-3">Example Prompts</h3>
-                  <div className="grid md:grid-cols-2 gap-3">
-                    {[
-                      "A majestic lion with a galaxy mane, cosmic background, digital art, vibrant colors",
-                      "Cozy coffee shop interior, rainy day outside, warm lighting, watercolor painting style",
-                      "Futuristic city skyline at night, neon lights, cyberpunk aesthetic, 4K detailed",
-                      "Enchanted forest with glowing mushrooms, fairy tale atmosphere, magical lighting",
-                      "Vintage sports car driving through mountain road, sunset, photorealistic",
-                      "Abstract geometric patterns with gold and marble textures, luxury design"
-                    ].map((prompt, index) => (
-                      <button
-                        key={index}
-                        onClick={() => setCustomPrompt(prompt)}
-                        className="text-left p-3 rounded-lg border bg-background hover:bg-primary/5 hover:border-primary/30 transition-colors text-sm text-muted-foreground"
-                      >
-                        "{prompt}"
-                      </button>
-                    ))}
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-3 text-center">
-                    Click any example to use it as your prompt
-                  </p>
-                </div>
+            {/* Tips Section */}
+            <div className="mb-8">
+              <h2 className="text-xl sm:text-2xl font-black mb-4">💡 Tips for Better Results</h2>
+              <div className="grid sm:grid-cols-2 gap-3">
+                {[
+                  { title: "Be Specific", tip: "Instead of 'a cat', try 'a fluffy orange tabby cat sitting on a windowsill at sunset, photorealistic'" },
+                  { title: "Include Art Style", tip: "Mention styles like watercolor, oil painting, digital art, anime, or 3D render" },
+                  { title: "Add Lighting", tip: "Describe lighting: golden hour, studio lighting, neon lights, or dramatic shadows" },
+                  { title: "Specify Quality", tip: "Add terms like 'high quality', '4K', 'ultra detailed' for better results" },
+                ].map((item, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, y: 15 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.6 + i * 0.1 }}
+                    className="p-4 rounded-xl border bg-card/60"
+                  >
+                    <p className="font-bold text-sm mb-1">{item.title}</p>
+                    <p className="text-xs text-muted-foreground">{item.tip}</p>
+                  </motion.div>
+                ))}
               </div>
-            </CardContent>
-          </Card>
-        </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
