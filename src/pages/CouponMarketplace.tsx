@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
-import { Plus, Search, Tag, Clock, User, MessageCircle, Upload, X, Trash2, Ticket, Store, Percent, Calendar, Gift, Sparkles, Shield, Zap, Star, Crown, Package, DollarSign, ShieldAlert, Target, Wand2, Flame, BarChart3, Award, Check } from "lucide-react";
+import { Plus, Search, Tag, Clock, User, MessageCircle, Upload, X, Trash2, Ticket, Store, Percent, Calendar, Gift, Sparkles, Shield, Zap, Star, Crown, Package, DollarSign, ShieldAlert, Target, Wand2, Flame, BarChart3, Award, Check, Bell, Building2, TrendingUp, MessageSquare, Heart } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -18,6 +18,12 @@ import { CouponValuatorView } from "@/components/coupon/views/CouponValuatorView
 import { FraudScannerView } from "@/components/coupon/views/FraudScannerView";
 import { DealMatcherView } from "@/components/coupon/views/DealMatcherView";
 import { ListingWriterView } from "@/components/coupon/views/ListingWriterView";
+import { ExpiryAlertView } from "@/components/coupon/views/ExpiryAlertView";
+import { BundleBuilderView } from "@/components/coupon/views/BundleBuilderView";
+import { StoreReputationView } from "@/components/coupon/views/StoreReputationView";
+import { PriceHistoryView } from "@/components/coupon/views/PriceHistoryView";
+import { NegotiationBotView } from "@/components/coupon/views/NegotiationBotView";
+import { WishlistAlertsView } from "@/components/coupon/views/WishlistAlertsView";
 
 interface CouponListing {
   id: string; title: string; description: string | null; store_name: string;
@@ -51,6 +57,12 @@ const aiTools = [
   { id: "fraud-scanner", title: "AI Fraud Scanner", description: "Detect fake coupons, expired codes & scam patterns", icon: ShieldAlert, badge: "4 CR", gradient: "bg-gradient-to-r from-red-500 to-orange-600", features: ["Trust score 0-100", "Red flag detection", "Safety recommendation"] },
   { id: "deal-matcher", title: "AI Deal Matcher", description: "Find best deals matching your shopping preferences", icon: Target, badge: "3 CR", gradient: "bg-gradient-to-r from-emerald-500 to-teal-600", features: ["Personalized recommendations", "Savings estimates", "Store rankings"] },
   { id: "listing-writer", title: "AI Listing Writer", description: "Write compelling coupon listing descriptions that sell", icon: Wand2, badge: "3 CR", gradient: "bg-gradient-to-r from-violet-500 to-pink-600", features: ["SEO-optimized titles", "Trust-building copy", "Urgency triggers"] },
+  { id: "expiry-alert", title: "AI Expiry Alert System", description: "Smart expiry tracking & usage recommendations before coupons expire", icon: Bell, badge: "3 CR", gradient: "bg-gradient-to-r from-red-500 to-yellow-500", features: ["Expiry priority ranking", "Usage schedules", "Value-at-risk analysis"] },
+  { id: "bundle-builder", title: "Coupon Bundle Builder", description: "AI-optimized bundle deals for maximum savings & resale value", icon: Package, badge: "4 CR", gradient: "bg-gradient-to-r from-blue-500 to-cyan-500", features: ["Bundle pricing optimizer", "Cross-sell matching", "Marketing copy"] },
+  { id: "store-reputation", title: "Store Reputation Score", description: "AI trust & reliability analysis for any retail store", icon: Building2, badge: "3 CR", gradient: "bg-gradient-to-r from-amber-500 to-orange-600", features: ["Trust score 0-100", "Fraud risk level", "Redemption ease rating"] },
+  { id: "price-history", title: "Price History Charts", description: "Market price trends & optimal buy/sell timing analysis", icon: TrendingUp, badge: "3 CR", gradient: "bg-gradient-to-r from-green-500 to-emerald-600", features: ["Seasonal patterns", "Price predictions", "Investment grading"] },
+  { id: "negotiation-bot", title: "AI Negotiation Bot", description: "Smart price negotiation strategies & ready-to-use scripts", icon: MessageSquare, badge: "4 CR", gradient: "bg-gradient-to-r from-indigo-500 to-purple-600", features: ["Opening scripts", "Counter-offer strategy", "Psychology tactics"] },
+  { id: "wishlist-alerts", title: "Wishlist & Price Drops", description: "Smart tracking & deal alert strategies for your favorite stores", icon: Heart, badge: "3 CR", gradient: "bg-gradient-to-r from-pink-500 to-rose-600", features: ["Price drop patterns", "Smart budget allocation", "Savings projections"] },
 ];
 
 const CouponMarketplace = () => {
@@ -252,14 +264,14 @@ const CouponMarketplace = () => {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                <div className="grid grid-cols-2 gap-2 sm:grid-cols-5">
                   {aiTools.map((tool) => (
-                    <div key={tool.id} className="rounded-2xl border border-border/60 bg-background/70 p-3 text-left">
-                      <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                        <tool.icon className="w-5 h-5" />
+                    <div key={tool.id} className="rounded-2xl border border-border/60 bg-background/70 p-2.5 text-left">
+                      <div className="mb-1.5 flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                        <tool.icon className="w-4 h-4" />
                       </div>
-                      <p className="text-sm font-bold leading-snug">{tool.title.replace("AI ", "")}</p>
-                      <p className="text-xs text-primary mt-1">{tool.badge}</p>
+                      <p className="text-xs font-bold leading-snug">{tool.title.replace("AI ", "")}</p>
+                      <p className="text-[10px] text-primary mt-0.5">{tool.badge}</p>
                     </div>
                   ))}
                 </div>
@@ -281,7 +293,7 @@ const CouponMarketplace = () => {
                   <div className="space-y-3 text-left mb-6">
                     {[
                       "Full marketplace access for buyers and sellers",
-                      "4 premium AI coupon tools with credit-based usage",
+                      "10 premium AI coupon tools with credit-based usage",
                       "Discount discovery, secure chat, and safer deal flow",
                       "Cancel anytime with no long-term lock-in",
                     ].map((item) => (
@@ -323,6 +335,12 @@ const CouponMarketplace = () => {
   if (activeView === "fraud-scanner") return <div className="min-h-screen bg-background pt-16 sm:pt-20 pb-12"><div className="container mx-auto px-3 sm:px-4 max-w-7xl"><FraudScannerView onBack={() => setActiveView(null)} /></div></div>;
   if (activeView === "deal-matcher") return <div className="min-h-screen bg-background pt-16 sm:pt-20 pb-12"><div className="container mx-auto px-3 sm:px-4 max-w-7xl"><DealMatcherView onBack={() => setActiveView(null)} /></div></div>;
   if (activeView === "listing-writer") return <div className="min-h-screen bg-background pt-16 sm:pt-20 pb-12"><div className="container mx-auto px-3 sm:px-4 max-w-7xl"><ListingWriterView onBack={() => setActiveView(null)} /></div></div>;
+  if (activeView === "expiry-alert") return <div className="min-h-screen bg-background pt-16 sm:pt-20 pb-12"><div className="container mx-auto px-3 sm:px-4 max-w-7xl"><ExpiryAlertView onBack={() => setActiveView(null)} /></div></div>;
+  if (activeView === "bundle-builder") return <div className="min-h-screen bg-background pt-16 sm:pt-20 pb-12"><div className="container mx-auto px-3 sm:px-4 max-w-7xl"><BundleBuilderView onBack={() => setActiveView(null)} /></div></div>;
+  if (activeView === "store-reputation") return <div className="min-h-screen bg-background pt-16 sm:pt-20 pb-12"><div className="container mx-auto px-3 sm:px-4 max-w-7xl"><StoreReputationView onBack={() => setActiveView(null)} /></div></div>;
+  if (activeView === "price-history") return <div className="min-h-screen bg-background pt-16 sm:pt-20 pb-12"><div className="container mx-auto px-3 sm:px-4 max-w-7xl"><PriceHistoryView onBack={() => setActiveView(null)} /></div></div>;
+  if (activeView === "negotiation-bot") return <div className="min-h-screen bg-background pt-16 sm:pt-20 pb-12"><div className="container mx-auto px-3 sm:px-4 max-w-7xl"><NegotiationBotView onBack={() => setActiveView(null)} /></div></div>;
+  if (activeView === "wishlist-alerts") return <div className="min-h-screen bg-background pt-16 sm:pt-20 pb-12"><div className="container mx-auto px-3 sm:px-4 max-w-7xl"><WishlistAlertsView onBack={() => setActiveView(null)} /></div></div>;
 
   return (
     <div className="min-h-screen bg-background pt-16 sm:pt-20 pb-12">
@@ -355,7 +373,7 @@ const CouponMarketplace = () => {
         {/* AI Tools */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="mb-8">
           <h2 className="text-xl font-black mb-4">🤖 AI-Powered Coupon Tools</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
             {aiTools.map((tool, i) => <MarketplaceToolCard key={tool.id} tool={tool} onSelect={() => setActiveView(tool.id)} index={i} />)}
           </div>
         </motion.div>

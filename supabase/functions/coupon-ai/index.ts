@@ -27,6 +27,12 @@ serve(async (req) => {
       "fraud-scanner": 4,
       "deal-matcher": 3,
       "listing-writer": 3,
+      "expiry-alert": 3,
+      "bundle-builder": 4,
+      "store-reputation": 3,
+      "price-history": 3,
+      "negotiation-bot": 4,
+      "wishlist-alerts": 3,
     };
 
     const cost = creditCosts[action];
@@ -130,6 +136,146 @@ Provide:
 5. **Urgency Triggers**: Time-sensitive language
 6. **SEO Tags**: 5-8 search keywords
 7. **Price Justification**: Why this price is a great deal`;
+        break;
+      }
+
+      case "expiry-alert": {
+        systemPrompt = "You are a coupon expiry management expert. Analyze coupon portfolios, prioritize usage by expiry urgency, and recommend optimal redemption strategies.";
+        userPrompt = `Analyze these coupons for expiry risk and usage strategy:
+
+Coupons Portfolio:
+${params.coupons || "N/A"}
+
+Alert Window: ${params.notifyDays || "7"} days before expiry
+Shopping Habits: ${params.shoppingHabits || "Not specified"}
+
+Provide:
+1. **Expiry Priority List**: Rank all coupons by urgency (most urgent first)
+2. **Critical Alerts**: Coupons expiring within the alert window - IMMEDIATE ACTION NEEDED
+3. **Usage Schedule**: Day-by-day plan for using expiring coupons optimally
+4. **Value at Risk**: Total € value that could be lost if coupons expire unused
+5. **Quick-Use Suggestions**: What to buy with each expiring coupon
+6. **Sell vs Use Decision**: For each coupon - is it better to sell now or use?
+7. **Stacking Opportunities**: Can any coupons be combined before they expire?
+8. **Long-term Strategy**: How to avoid future expiry losses`;
+        break;
+      }
+
+      case "bundle-builder": {
+        systemPrompt = "You are a coupon bundling strategist. Create optimized coupon bundles that maximize savings and appeal to buyers.";
+        userPrompt = `Create an optimized coupon bundle strategy:
+
+Available Coupons:
+${params.availableCoupons || "N/A"}
+
+Budget: €${params.budget || "Flexible"}
+Target Category: ${params.targetCategory || "Any"}
+Occasion: ${params.occasion || "General shopping"}
+
+Provide:
+1. **Bundle Recommendations**: 3 different bundle packages with names and themes
+2. **Bundle Pricing**: Optimal price for each bundle (individual vs bundle savings)
+3. **Bundle Savings**: How much buyers save compared to buying individually
+4. **Cross-Sell Opportunities**: Which coupons complement each other
+5. **Bundle Descriptions**: Marketing copy for each bundle
+6. **Target Audience**: Who would buy each bundle
+7. **Seasonal Timing**: Best time to list each bundle
+8. **Upsell Strategy**: How to encourage buyers to upgrade bundles`;
+        break;
+      }
+
+      case "store-reputation": {
+        systemPrompt = "You are a retail store reputation analyst. Evaluate stores based on their coupon policies, reliability, customer satisfaction, and overall trustworthiness for coupon trading.";
+        userPrompt = `Analyze the reputation and trustworthiness of this store for coupon trading:
+
+Store Name: ${params.storeName || "N/A"}
+Store Website: ${params.storeUrl || "N/A"}
+Coupon Types: ${params.couponTypes || "N/A"}
+Additional Info: ${params.additionalInfo || "N/A"}
+
+Provide:
+1. **Reputation Score**: 0-100 with detailed breakdown
+2. **Coupon Policy Analysis**: How this store handles coupons, gift cards, returns
+3. **Reliability Rating**: How often their coupons work as expected
+4. **Fraud Risk Level**: How commonly faked are this store's coupons?
+5. **Value Retention**: Do this store's coupons hold value well over time?
+6. **Redemption Ease**: How easy is it to use coupons at this store?
+7. **Customer Feedback Summary**: What buyers typically report
+8. **Trading Recommendation**: Is it safe to buy/sell this store's coupons?
+9. **Red Flags to Watch**: Specific warnings for this store
+10. **Competitor Comparison**: How this store compares to similar retailers`;
+        break;
+      }
+
+      case "price-history": {
+        systemPrompt = "You are a coupon market analyst specializing in price trends, seasonal patterns, and optimal buy/sell timing for coupons and gift cards.";
+        userPrompt = `Analyze price trends and market history for:
+
+Store: ${params.storeName || "N/A"}
+Coupon Type: ${params.couponType || "N/A"}
+Face Value: €${params.originalValue || "N/A"}
+Analysis Timeframe: ${params.timeframe || "3 months"}
+
+Provide:
+1. **Price Trend Summary**: Overall direction (rising, falling, stable)
+2. **Average Resale Value**: What these coupons typically sell for (% of face value)
+3. **Seasonal Patterns**: When prices are highest and lowest throughout the year
+4. **Best Time to Buy**: Optimal months/events to purchase at lowest prices
+5. **Best Time to Sell**: When demand peaks and prices are highest
+6. **Price Range**: Min, max, and average selling prices over the timeframe
+7. **Supply & Demand Analysis**: Market saturation and availability trends
+8. **Price Prediction**: Expected price movement in the next 30-90 days
+9. **Investment Grade**: Is this coupon worth buying to resell later?
+10. **Actionable Advice**: Specific buy/sell/hold recommendation with timing`;
+        break;
+      }
+
+      case "negotiation-bot": {
+        systemPrompt = "You are an expert negotiation strategist for coupon and gift card marketplace transactions. Provide practical, psychology-backed negotiation scripts and strategies.";
+        userPrompt = `Create a negotiation strategy for this coupon deal:
+
+Coupon/Deal: ${params.couponTitle || "N/A"}
+My Role: ${params.role || "buyer"}
+Current Asking Price: €${params.askingPrice || "N/A"}
+My Target Price: €${params.targetPrice || "N/A"}
+Context: ${params.context || "Standard marketplace negotiation"}
+
+Provide:
+1. **Opening Message Script**: Exact message to send (professional, friendly)
+2. **Counter-Offer Strategy**: Step-by-step responses for different scenarios
+3. **Psychology Tactics**: Anchoring, reciprocity, scarcity, social proof
+4. **Walk-Away Price**: Absolute maximum/minimum you should accept
+5. **Concession Ladder**: What to concede and when, in what order
+6. **Objection Handling**: Responses to common pushbacks
+7. **Closing Techniques**: How to seal the deal once price is agreed
+8. **Timing Strategy**: When to message, how long to wait between responses
+9. **Red Lines**: What to never agree to in a coupon deal
+10. **Alternative Scripts**: 3 different approach styles (friendly, direct, value-focused)`;
+        break;
+      }
+
+      case "wishlist-alerts": {
+        systemPrompt = "You are a smart shopping assistant specializing in coupon deal tracking, wishlist management, and price drop alert strategies.";
+        userPrompt = `Create a wishlist and price drop alert strategy:
+
+Stores to Watch:
+${params.wishlistStores || "N/A"}
+
+Max Budget per Coupon: €${params.maxBudget || "Flexible"}
+Minimum Discount Required: ${params.minDiscount || "20"}%
+Shopping Preferences: ${params.preferences || "General"}
+
+Provide:
+1. **Wishlist Priority Matrix**: Rank stores by deal frequency and value
+2. **Optimal Alert Thresholds**: Best price points to set alerts for each store
+3. **Deal Frequency Analysis**: How often good deals appear for each store
+4. **Price Drop Patterns**: When each store's coupons typically drop in price
+5. **Hidden Gem Opportunities**: Less obvious deals most shoppers miss
+6. **Bundle Alert Strategy**: When multiple wishlist items become available together
+7. **Competition Analysis**: How many other buyers are watching the same deals
+8. **Smart Budget Allocation**: How to split budget across wishlist stores
+9. **Quick-Buy Decision Framework**: When to buy instantly vs wait for better deal
+10. **Savings Projection**: Estimated savings over 3-6 months following this strategy`;
         break;
       }
     }
