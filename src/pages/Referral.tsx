@@ -2,13 +2,15 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Copy, Share2, Users, Euro, Gift, TrendingUp, Loader2 } from "lucide-react";
+import { Copy, Share2, Users, Euro, Gift, TrendingUp, Loader2, Crown, ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useReferralProgram } from "@/hooks/useReferralProgram";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { formatDistanceToNow } from "date-fns";
 import { enUS } from "date-fns/locale";
+import { motion } from "framer-motion";
+import heroVideo from "@/assets/megatalent-hero.mp4.asset.json";
 
 const Referral = () => {
   const { stats, loading, refreshStats } = useReferralProgram();
@@ -19,10 +21,7 @@ const Referral = () => {
   useEffect(() => {
     const checkUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        navigate("/auth");
-        return;
-      }
+      if (!user) { navigate("/auth"); return; }
       setUser(user);
     };
     checkUser();
@@ -31,260 +30,121 @@ const Referral = () => {
   const copyReferralCode = () => {
     if (!stats?.code) return;
     navigator.clipboard.writeText(stats.code);
-    toast({
-      title: "Copied!",
-      description: "Referral code was copied to clipboard",
-    });
+    toast({ title: "Copied!", description: "Referral code copied to clipboard" });
   };
 
   const shareReferral = async () => {
     if (!stats?.code) return;
     const shareUrl = `${window.location.origin}/auth?ref=${stats.code}`;
-    const shareText = `Join Megatalent and compete for €100,000! Use my code: ${stats.code}`;
-    
-    // Try native share first (works on mobile)
+    const shareText = `Join MegaTalent and compete for €10,000! Use my code: ${stats.code}`;
     if (navigator.share && /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-      try {
-        await navigator.share({
-          title: 'Megatalent - Compete for €100,000',
-          text: shareText,
-          url: shareUrl,
-        });
-        return;
-      } catch (error) {
-        if ((error as Error).name !== 'AbortError') {
-          console.error('Error sharing:', error);
-        }
-      }
+      try { await navigator.share({ title: 'MegaTalent - Win €10,000', text: shareText, url: shareUrl }); return; } catch {}
     }
-    
-    // Desktop fallback - open social media sharing
-    const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(shareText)}`;
-    window.open(facebookUrl, '_blank', 'width=600,height=400');
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(shareText)}`, '_blank', 'width=600,height=400');
   };
 
   const inviteByEmail = () => {
     if (!stats?.code) return;
-    const subject = encodeURIComponent('Invitation to Megatalent - Compete for €100,000');
-    const body = encodeURIComponent(
-      `Hi!\n\nI'd like to invite you to Megatalent, where you can compete for €100,000!\n\nUse my referral code when registering: ${stats.code}\n\nSign up here: ${window.location.origin}/auth?ref=${stats.code}\n\nLooking forward to seeing you!`
-    );
+    const subject = encodeURIComponent('Join MegaTalent - Win €10,000!');
+    const body = encodeURIComponent(`Hi!\n\nI'd like to invite you to MegaTalent, where you can compete for €10,000!\n\nUse my referral code: ${stats.code}\n\nSign up: ${window.location.origin}/auth?ref=${stats.code}`);
     window.location.href = `mailto:?subject=${subject}&body=${body}`;
   };
 
   if (loading || !user) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
+    return <div className="min-h-screen bg-background flex items-center justify-center"><Loader2 className="h-8 w-8 animate-spin text-yellow-500" /></div>;
   }
 
   return (
-    <div className="min-h-screen bg-background pt-20 pb-12 px-2 sm:px-4">
-      <div className="container mx-auto max-w-6xl">
-        {/* Header */}
-        <div className="text-center space-y-3 sm:space-y-4 mb-8 sm:mb-12">
-          <Badge className="bg-gold text-gold-foreground animate-glow text-sm sm:text-lg px-3 sm:px-4 py-1.5 sm:py-2">
-            💰 €5 for each friend
-          </Badge>
-          <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold px-2">
-            Referral{" "}
-            <span className="bg-gradient-gold bg-clip-text text-transparent">
-              Program
-            </span>
-          </h1>
-          <p className="text-base sm:text-xl text-muted-foreground max-w-3xl mx-auto px-4">
-            Invite your friends to Megatalent and earn €5 for each one 
-            who activates a Premium subscription
-          </p>
-          
-          {/* Detailed Description */}
-          <div className="bg-card rounded-lg p-6 max-w-4xl mx-auto mt-8 text-left space-y-4 border border-border/50">
-            <h2 className="text-xl font-semibold text-center mb-3">How Our Referral Program Works</h2>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              Our referral program is designed to reward you for spreading the word about Megatalent. 
-              Every time someone uses your unique referral code to sign up and activates a Premium subscription, 
-              you automatically earn €5. It's our way of saying thank you for helping grow our community!
-            </p>
-            
-            <div className="grid md:grid-cols-2 gap-4 mt-4">
-              <div className="space-y-2">
-                <h3 className="font-semibold text-sm">💸 Earnings:</h3>
-                <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
-                  <li>€5 per successful Premium referral</li>
-                  <li>Unlimited earning potential</li>
-                  <li>Automatic commission tracking</li>
-                  <li>Real-time earnings dashboard</li>
-                  <li>Easy withdrawal system</li>
-                  <li>View pending and paid earnings</li>
-                </ul>
-              </div>
-              
-              <div className="space-y-2">
-                <h3 className="font-semibold text-sm">🎁 Features:</h3>
-                <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
-                  <li>Unique personal referral code</li>
-                  <li>Share via social media or email</li>
-                  <li>Track all your referrals</li>
-                  <li>See recent successful invitations</li>
-                  <li>Leaderboard with top referrers</li>
-                  <li>Detailed statistics and analytics</li>
-                </ul>
-              </div>
-            </div>
-            
-            <div className="bg-primary/5 rounded-lg p-4 mt-4">
-              <p className="text-sm font-semibold mb-2">📊 What You Get:</p>
-              <ul className="text-sm text-muted-foreground space-y-1">
-                <li>✓ <strong>Your unique referral code</strong> - Easy to share and remember</li>
-                <li>✓ <strong>Real-time tracking</strong> - See every successful referral instantly</li>
-                <li>✓ <strong>Automatic payments</strong> - Earnings credited when friend subscribes</li>
-                <li>✓ <strong>No limits</strong> - Refer as many friends as you want</li>
-              </ul>
-            </div>
-            
-            <p className="text-xs text-muted-foreground text-center mt-4 pt-4 border-t border-border/50">
-              💡 <strong>Start earning today!</strong> Share your code with friends, track your earnings in real-time, 
-              and withdraw your money when ready. The more friends you invite, the more you earn!
-            </p>
-          </div>
+    <div className="min-h-screen bg-background pt-20 pb-12">
+      {/* Cinematic Hero */}
+      <div className="relative overflow-hidden mb-8">
+        <div className="absolute inset-0 z-0">
+          <video src={heroVideo.url} autoPlay loop muted playsInline className="w-full h-full object-cover" style={{ filter: "brightness(1.2) saturate(1.1)", maxHeight: "280px" }} />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-black/40" />
         </div>
+        <div className="relative z-10 container mx-auto px-4 max-w-6xl py-12">
+          <Button variant="ghost" onClick={() => navigate("/megatalent")} className="mb-4 gap-2 text-white/80 hover:text-white">
+            <ArrowLeft className="h-4 w-4" /> Back to MegaTalent
+          </Button>
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center">
+            <Badge className="bg-yellow-500/90 text-black font-bold mb-4">💰 €5 for each friend</Badge>
+            <h1 className="text-3xl sm:text-5xl font-black text-white mb-2">
+              Referral <span className="text-yellow-400">Program</span>
+            </h1>
+            <p className="text-white/70 text-lg max-w-2xl mx-auto">
+              Invite your friends to MegaTalent and earn €5 for each one who activates a Premium subscription
+            </p>
+          </motion.div>
+        </div>
+      </div>
 
+      <div className="container mx-auto px-4 max-w-6xl">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Referral Card */}
           <div className="lg:col-span-2 space-y-6">
-            <Card className="bg-gradient-primary text-primary-foreground">
+            <Card className="bg-gradient-to-br from-yellow-500 to-amber-600 text-black border-0">
               <CardHeader>
-                <CardTitle className="text-2xl flex items-center gap-2">
-                  <Gift className="h-8 w-8" />
-                  Your referral code
-                </CardTitle>
+                <CardTitle className="text-2xl flex items-center gap-2"><Gift className="h-8 w-8" /> Your Referral Code</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4 sm:space-y-6">
-                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
-                  <div className="flex-1 bg-background/10 rounded-lg p-3 sm:p-4">
-                    <div className="text-xl sm:text-2xl font-mono font-bold tracking-wider break-all">
-                      {stats?.code || "Loading..."}
-                    </div>
+              <CardContent className="space-y-4">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                  <div className="flex-1 bg-black/10 rounded-lg p-4">
+                    <div className="text-2xl font-mono font-bold tracking-wider break-all">{stats?.code || "Loading..."}</div>
                   </div>
-                  <Button 
-                    variant="secondary" 
-                    onClick={copyReferralCode}
-                    className="px-4 sm:px-6 w-full sm:w-auto"
-                  >
-                    <Copy className="h-4 w-4 mr-2" />
-                    Copy
-                  </Button>
+                  <Button variant="secondary" onClick={copyReferralCode} className="px-6"><Copy className="h-4 w-4 mr-2" /> Copy</Button>
                 </div>
-                
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                  <Button 
-                    variant="secondary" 
-                    onClick={shareReferral}
-                    className="w-full"
-                  >
-                    <Share2 className="h-4 w-4 mr-2" />
-                    Share link
-                  </Button>
-                  <Button 
-                    variant="secondary" 
-                    className="w-full"
-                    onClick={inviteByEmail}
-                  >
-                    <Users className="h-4 w-4 mr-2" />
-                    Invite by email
-                  </Button>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <Button variant="secondary" onClick={shareReferral} className="w-full"><Share2 className="h-4 w-4 mr-2" /> Share Link</Button>
+                  <Button variant="secondary" onClick={inviteByEmail} className="w-full"><Users className="h-4 w-4 mr-2" /> Invite by Email</Button>
                 </div>
               </CardContent>
             </Card>
 
             {/* How it works */}
-            <Card>
-              <CardHeader>
-                <CardTitle>How does it work?</CardTitle>
-              </CardHeader>
+            <Card className="border-yellow-500/10 bg-card/80 backdrop-blur-xl">
+              <CardHeader><CardTitle>How Does It Work?</CardTitle></CardHeader>
               <CardContent>
-                <div className="space-y-4 sm:space-y-6">
-                  <div className="flex items-start space-x-3 sm:space-x-4">
-                    <div className="w-7 h-7 sm:w-8 sm:h-8 bg-primary rounded-full flex items-center justify-center text-primary-foreground font-bold text-sm sm:text-base flex-shrink-0">
-                      1
+                <div className="space-y-6">
+                  {[
+                    { step: 1, title: "Share your code", desc: "Send your referral code to friends via social media, email or directly", color: "bg-yellow-500" },
+                    { step: 2, title: "Friend signs up", desc: "Your friend uses your code when registering and activates Premium subscription", color: "bg-amber-500" },
+                    { step: 3, title: "You get €5", desc: "You automatically receive €5 to your account after subscription activation", color: "bg-yellow-400" },
+                  ].map(item => (
+                    <div key={item.step} className="flex items-start gap-4">
+                      <div className={`w-8 h-8 ${item.color} rounded-full flex items-center justify-center text-black font-bold text-sm shrink-0`}>{item.step}</div>
+                      <div><h3 className="font-semibold">{item.title}</h3><p className="text-sm text-muted-foreground">{item.desc}</p></div>
                     </div>
-                    <div>
-                      <h3 className="font-semibold text-sm sm:text-base">Share your code</h3>
-                      <p className="text-xs sm:text-sm text-muted-foreground">
-                        Send your referral code to friends via social media, email or directly
-                      </p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-start space-x-3 sm:space-x-4">
-                    <div className="w-7 h-7 sm:w-8 sm:h-8 bg-primary rounded-full flex items-center justify-center text-primary-foreground font-bold text-sm sm:text-base flex-shrink-0">
-                      2
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-sm sm:text-base">Friend signs up</h3>
-                      <p className="text-xs sm:text-sm text-muted-foreground">
-                        Your friend uses your code when registering for the contest and activates Premium subscription in the Megatalent contest
-                      </p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-start space-x-3 sm:space-x-4">
-                    <div className="w-7 h-7 sm:w-8 sm:h-8 bg-gold rounded-full flex items-center justify-center text-gold-foreground font-bold text-sm sm:text-base flex-shrink-0">
-                      3
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-sm sm:text-base">You get €5</h3>
-                      <p className="text-xs sm:text-sm text-muted-foreground">
-                        You automatically receive €5 to your account after subscription activation
-                      </p>
-                    </div>
-                  </div>
+                  ))}
                 </div>
               </CardContent>
             </Card>
 
             {/* Recent Referrals */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Recent invitations</CardTitle>
-              </CardHeader>
+            <Card className="border-yellow-500/10 bg-card/80 backdrop-blur-xl">
+              <CardHeader><CardTitle>Recent Invitations</CardTitle></CardHeader>
               <CardContent>
                 {stats?.recentReferrals && stats.recentReferrals.length > 0 ? (
-                  <div className="space-y-3 sm:space-y-4">
+                  <div className="space-y-3">
                     {stats.recentReferrals.map((referral) => (
-                      <div key={referral.id} className="flex items-center justify-between p-2 sm:p-3 border rounded-lg gap-2">
-                        <div className="flex items-center space-x-2 sm:space-x-3 min-w-0">
-                          <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-primary rounded-full flex items-center justify-center text-primary-foreground font-bold text-sm sm:text-base flex-shrink-0">
+                      <div key={referral.id} className="flex items-center justify-between p-3 border border-yellow-500/10 rounded-lg">
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className="w-10 h-10 bg-gradient-to-br from-yellow-500 to-amber-600 rounded-full flex items-center justify-center text-black font-bold shrink-0">
                             {referral.profiles?.full_name?.charAt(0) || "?"}
                           </div>
                           <div className="min-w-0">
-                            <p className="font-semibold text-sm sm:text-base truncate">{referral.profiles?.full_name || "New user"}</p>
-                            <p className="text-xs sm:text-sm text-muted-foreground">
-                              {formatDistanceToNow(new Date(referral.created_at), { 
-                                addSuffix: true,
-                                locale: enUS 
-                              })}
-                            </p>
+                            <p className="font-semibold text-sm truncate">{referral.profiles?.full_name || "New user"}</p>
+                            <p className="text-xs text-muted-foreground">{formatDistanceToNow(new Date(referral.created_at), { addSuffix: true, locale: enUS })}</p>
                           </div>
                         </div>
-                        <div className="text-right flex-shrink-0">
-                          <div className="text-base sm:text-lg font-bold text-success">+{referral.amount}€</div>
-                          <Badge 
-                            variant={referral.paid ? 'default' : 'secondary'}
-                            className={`text-xs ${referral.paid ? 'bg-success' : ''}`}
-                          >
-                            {referral.paid ? 'Paid' : 'Pending'}
-                          </Badge>
+                        <div className="text-right shrink-0">
+                          <div className="text-lg font-bold text-yellow-500">+{referral.amount}€</div>
+                          <Badge className={referral.paid ? 'bg-yellow-500 text-black' : 'bg-muted'}>{referral.paid ? 'Paid' : 'Pending'}</Badge>
                         </div>
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <p className="text-center text-muted-foreground py-8">
-                    You don't have any successful invitations yet
-                  </p>
+                  <p className="text-center text-muted-foreground py-8">You don't have any successful invitations yet</p>
                 )}
               </CardContent>
             </Card>
@@ -292,72 +152,45 @@ const Referral = () => {
 
           {/* Sidebar */}
           <div className="space-y-6">
-            {/* Earnings Stats */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <TrendingUp className="h-5 w-5" />
-                  Your statistics
-                </CardTitle>
-              </CardHeader>
+            <Card className="border-yellow-500/20 bg-card/80 backdrop-blur-xl">
+              <CardHeader><CardTitle className="flex items-center gap-2"><TrendingUp className="h-5 w-5 text-yellow-500" /> Your Statistics</CardTitle></CardHeader>
               <CardContent className="space-y-4">
                 <div className="text-center space-y-2">
-                  <div className="text-2xl sm:text-3xl font-bold text-success">€{stats?.totalEarnings.toFixed(2) || 0}</div>
-                  <p className="text-sm sm:text-base text-muted-foreground">Total earnings</p>
+                  <div className="text-3xl font-bold text-yellow-500">€{stats?.totalEarnings.toFixed(2) || 0}</div>
+                  <p className="text-sm text-muted-foreground">Total Earnings</p>
                 </div>
-                
                 <div className="text-center space-y-2">
-                  <div className="text-2xl sm:text-3xl font-bold text-primary">{stats?.totalReferrals || 0}</div>
-                  <p className="text-sm sm:text-base text-muted-foreground">Successful invitations</p>
+                  <div className="text-3xl font-bold text-yellow-400">{stats?.totalReferrals || 0}</div>
+                  <p className="text-sm text-muted-foreground">Successful Invitations</p>
                 </div>
-                
                 <div className="space-y-2">
                   <div className="text-center">
-                    <div className="text-lg sm:text-xl font-semibold text-gold">€{stats?.pendingEarnings.toFixed(2) || 0}</div>
-                    <p className="text-xs text-muted-foreground">Pending payout</p>
+                    <div className="text-xl font-semibold text-amber-500">€{stats?.pendingEarnings.toFixed(2) || 0}</div>
+                    <p className="text-xs text-muted-foreground">Pending Payout</p>
                   </div>
-                  <Button variant="hero" className="w-full text-sm sm:text-base" disabled={!stats?.pendingEarnings}>
-                    <Euro className="h-4 w-4 mr-2" />
-                    Withdraw money
+                  <Button className="w-full bg-gradient-to-r from-yellow-500 to-amber-600 text-black font-bold" disabled={!stats?.pendingEarnings}>
+                    <Euro className="h-4 w-4 mr-2" /> Withdraw Money
                   </Button>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Leaderboard */}
-            <Card>
-              <CardHeader>
-                <CardTitle>🏆 Top referrers</CardTitle>
-              </CardHeader>
+            <Card className="border-yellow-500/10 bg-card/80 backdrop-blur-xl">
+              <CardHeader><CardTitle>🏆 Top Referrers</CardTitle></CardHeader>
               <CardContent>
-                <div className="space-y-3">
-                  <p className="text-sm text-muted-foreground mb-4">
-                    Best referrers this month
-                  </p>
-                  {[
-                    { name: "You", referrals: stats?.totalReferrals || 0, earnings: stats?.totalEarnings || 0, isYou: true },
-                  ].map((person, index) => (
-                    <div key={index} className={`flex items-center justify-between p-2 rounded ${
-                      person.isYou ? "bg-gold/10 border border-gold/20" : ""
-                    }`}>
-                      <div className="flex items-center space-x-3">
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold bg-gold text-gold-foreground`}>
-                          {index + 1}
-                        </div>
-                        <span className="font-bold">
-                          {person.name}
-                        </span>
-                      </div>
-                      <div className="text-right">
-                        <div className="font-semibold">{person.referrals}</div>
-                        <div className="text-xs text-muted-foreground">€{person.earnings.toFixed(2)}</div>
-                      </div>
-                    </div>
-                  ))}
+                <p className="text-sm text-muted-foreground mb-4">Best referrers this month</p>
+                <div className="flex items-center justify-between p-2 rounded bg-yellow-500/10 border border-yellow-500/20">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold bg-yellow-500 text-black">1</div>
+                    <span className="font-bold">You</span>
+                  </div>
+                  <div className="text-right">
+                    <div className="font-semibold">{stats?.totalReferrals || 0}</div>
+                    <div className="text-xs text-muted-foreground">€{stats?.totalEarnings?.toFixed(2) || 0}</div>
+                  </div>
                 </div>
               </CardContent>
             </Card>
-
           </div>
         </div>
       </div>
