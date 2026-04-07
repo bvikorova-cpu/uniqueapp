@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Heart, MessageCircle, Share2, Upload, Video, Camera, TrendingUp, Send, Copy, Facebook, Trash2, ArrowRight, ArrowLeft, GraduationCap, ImagePlus, Award, Flame, Trophy, Star, Users, Zap } from "lucide-react";
+import { Heart, MessageCircle, Share2, Upload, Video, Camera, TrendingUp, Send, Copy, Facebook, Trash2, ArrowRight, ArrowLeft, GraduationCap, ImagePlus, Award, Flame, Trophy, Star, Users, Zap, PenTool, Music, Handshake, BarChart3 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -20,6 +20,12 @@ import { TalentCoachView } from "@/components/megatalent/TalentCoachView";
 import { ThumbnailGeneratorView } from "@/components/megatalent/ThumbnailGeneratorView";
 import { TrendAnalyzerView } from "@/components/megatalent/TrendAnalyzerView";
 import { PerformanceScoreView } from "@/components/megatalent/PerformanceScoreView";
+import { ViralPredictorView } from "@/components/megatalent/ViralPredictorView";
+import { MusicAdvisorView } from "@/components/megatalent/MusicAdvisorView";
+import { CaptionWriterView } from "@/components/megatalent/CaptionWriterView";
+import { LiveLeaderboardView } from "@/components/megatalent/LiveLeaderboardView";
+import { CollaborationMatcherView } from "@/components/megatalent/CollaborationMatcherView";
+import { AchievementSystemView } from "@/components/megatalent/AchievementSystemView";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { triggerTopPremiumConfetti } from "@/utils/confetti";
@@ -73,6 +79,12 @@ const aiTools = [
   { id: "thumbnail_generator", name: "AI Thumbnail Creator", icon: ImagePlus, credits: 3, description: "Eye-catching thumbnail concepts", gradient: "from-amber-500 to-orange-600" },
   { id: "trend_analyzer", name: "AI Trend Analyzer", icon: TrendingUp, credits: 3, description: "Discover trending categories & strategies", gradient: "from-yellow-600 to-yellow-800" },
   { id: "performance_score", name: "AI Performance Score", icon: Award, credits: 4, description: "Professional talent evaluation", gradient: "from-yellow-400 to-yellow-700" },
+  { id: "viral_predictor", name: "AI Viral Predictor", icon: Flame, credits: 4, description: "Predict viral potential of your submission", gradient: "from-red-500 to-orange-600" },
+  { id: "music_advisor", name: "AI Music Advisor", icon: Music, credits: 3, description: "Perfect music & sound for your videos", gradient: "from-violet-500 to-purple-600" },
+  { id: "caption_writer", name: "AI Caption Writer", icon: PenTool, credits: 3, description: "Engaging captions & hashtags", gradient: "from-emerald-500 to-teal-600" },
+  { id: "collaboration_matcher", name: "AI Collab Matcher", icon: Handshake, credits: 4, description: "Find perfect collaboration partners", gradient: "from-blue-500 to-indigo-600" },
+  { id: "leaderboard", name: "Live Leaderboard", icon: BarChart3, credits: 0, description: "Real-time rankings & animations", gradient: "from-yellow-500 to-amber-500" },
+  { id: "achievements", name: "Achievements", icon: Trophy, credits: 0, description: "Track milestones & unlock badges", gradient: "from-amber-500 to-yellow-600" },
 ];
 
 type ActiveView = string | null;
@@ -319,6 +331,12 @@ const Megatalent = () => {
       case "thumbnail_generator": return <ThumbnailGeneratorView />;
       case "trend_analyzer": return <TrendAnalyzerView />;
       case "performance_score": return <PerformanceScoreView />;
+      case "viral_predictor": return <ViralPredictorView />;
+      case "music_advisor": return <MusicAdvisorView />;
+      case "caption_writer": return <CaptionWriterView />;
+      case "leaderboard": return <LiveLeaderboardView />;
+      case "collaboration_matcher": return <CollaborationMatcherView />;
+      case "achievements": return <AchievementSystemView />;
       default: return null;
     }
   };
@@ -434,17 +452,17 @@ const Megatalent = () => {
         {/* AI Tools Grid */}
         <div className="mb-8">
           <h2 className="text-xl sm:text-2xl font-black mb-4 bg-gradient-to-r from-yellow-500 to-amber-500 bg-clip-text text-transparent">AI Power Tools</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
             {aiTools.map((tool, i) => (
               <motion.div key={tool.id} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
                 <Card className="cursor-pointer group hover:shadow-lg hover:shadow-yellow-500/10 hover:border-yellow-500/30 transition-all active:scale-[0.97] bg-card/80 backdrop-blur-xl border-border/30" onClick={() => setActiveView(tool.id)}>
-                  <CardContent className="p-4 text-center">
-                    <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${tool.gradient} flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform`}>
-                      <tool.icon className="h-6 w-6 text-white" />
+                  <CardContent className="p-3 text-center">
+                    <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${tool.gradient} flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform`}>
+                      <tool.icon className="h-5 w-5 text-white" />
                     </div>
-                    <h3 className="font-bold text-sm mb-1">{tool.name}</h3>
-                    <p className="text-[10px] text-muted-foreground mb-2">{tool.description}</p>
-                    <Badge variant="outline" className="text-[10px] border-yellow-500/30 text-yellow-500">{tool.credits} Credits</Badge>
+                    <h3 className="font-bold text-xs mb-1">{tool.name}</h3>
+                    <p className="text-[9px] text-muted-foreground mb-1.5 line-clamp-2">{tool.description}</p>
+                    <Badge variant="outline" className="text-[9px] border-yellow-500/30 text-yellow-500">{tool.credits > 0 ? `${tool.credits} CR` : "Free"}</Badge>
                   </CardContent>
                 </Card>
               </motion.div>
