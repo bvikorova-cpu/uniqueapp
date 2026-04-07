@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Heart, MessageCircle, Share2, Upload, Video, Camera, TrendingUp, Send, Copy, Facebook, Trash2, ArrowRight, ArrowLeft, GraduationCap, ImagePlus, Award, Flame, Trophy, Star, Users, Zap } from "lucide-react";
+import { Heart, MessageCircle, Share2, Upload, Video, Camera, TrendingUp, Send, Copy, Facebook, Trash2, ArrowRight, ArrowLeft, GraduationCap, ImagePlus, Award, Flame, Trophy, Star, Users, Zap, PenTool, Music, Handshake, BarChart3 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
