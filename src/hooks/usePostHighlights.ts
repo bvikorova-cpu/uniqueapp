@@ -36,7 +36,7 @@ export const usePostHighlights = (userId?: string) => {
         user_id: user.id,
         post_id: postId,
         category,
-      });
+      } as any);
 
       if (error) throw error;
     },

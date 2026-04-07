@@ -176,7 +176,7 @@ export default function EventDetail() {
           content: commentContent + (postFeeling ? ` ${postFeeling}` : "") + (postLocation ? ` 📍 ${postLocation}` : ""),
           event_id: eventId,
           image_url: postImage || null,
-        });
+        } as any);
       if (error) throw error;
     },
     onSuccess: () => {

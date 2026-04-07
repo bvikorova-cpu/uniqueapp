@@ -190,7 +190,7 @@ export default function GroupDetail() {
           content: postContent,
           group_id: groupId,
           image_url: postImage || null,
-        });
+        } as any);
       if (error) throw error;
     },
     onSuccess: () => {
