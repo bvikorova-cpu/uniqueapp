@@ -46,7 +46,7 @@ export function ComedianGoLiveButton({ comedianId }: ComedianGoLiveButtonProps) 
           scheduled_at: scheduledAt.toISOString(),
           ends_at: endsAt.toISOString(),
           status: "live",
-        })
+        } as any)
         .select()
         .single();
 

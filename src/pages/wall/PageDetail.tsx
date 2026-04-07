@@ -196,7 +196,7 @@ export default function PageDetail() {
           content: postContent + (postFeeling ? ` ${postFeeling}` : "") + (postLocation ? ` 📍 ${postLocation}` : ""),
           page_id: pageId,
           image_url: postImage || null,
-        });
+        } as any);
       if (error) throw error;
     },
     onSuccess: () => {

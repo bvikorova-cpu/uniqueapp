@@ -224,7 +224,7 @@ export default function AdminSportsMatches() {
           confidence: parseInt(predictionData.confidence),
           odds: predictionData.odds ? parseFloat(predictionData.odds) : null,
           analysis: predictionData.analysis || null,
-        });
+        } as any);
 
       if (error) throw error;
 

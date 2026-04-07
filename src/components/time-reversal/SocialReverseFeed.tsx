@@ -55,7 +55,7 @@ export function SocialReverseFeed({ onBack }: Props) {
         post_type: "social",
         likes_count: 0,
         comments_count: 0,
-      });
+      } as any);
 
       setNewPost("");
       setSelectedImage(null);

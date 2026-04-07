@@ -38,8 +38,8 @@ export function BattleVoting({ battle, onVoteSuccess }: BattleVotingProps) {
           battle_id: battle.id,
           participant_id: participantId,
           user_id: user.id,
-          coins_spent: 10,
-        });
+          vote_cost_coins: 10,
+        } as any);
 
       if (voteError) throw voteError;
 

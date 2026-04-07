@@ -219,7 +219,7 @@ export const useCollectDisneyItem = () => {
           castle_id: castleId,
           room_id: roomId,
           acquired_method: 'found',
-        })
+        } as any)
         .select()
         .single();
 

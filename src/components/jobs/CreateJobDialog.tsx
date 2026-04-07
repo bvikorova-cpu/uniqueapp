@@ -95,8 +95,8 @@ export function CreateJobDialog({ userId, subscribed, onRenewSubscription }: Cre
         company_name: newJob.company_name,
         location: newJob.location,
         country: newJob.country,
-        category: newJob.category as any,
-        job_type: newJob.job_type as any,
+        category: newJob.category,
+        job_type: newJob.job_type,
         description: newJob.description,
         requirements: newJob.requirements || null,
         benefits: newJob.benefits || null,
@@ -106,7 +106,7 @@ export function CreateJobDialog({ userId, subscribed, onRenewSubscription }: Cre
         salary_currency: newJob.salary_currency,
         is_active: false,
         status: 'pending_payment'
-      }]).select().single();
+      } as any]).select().single();
 
       if (error) throw error;
       
