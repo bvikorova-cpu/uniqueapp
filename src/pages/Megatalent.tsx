@@ -331,6 +331,12 @@ const Megatalent = () => {
       case "thumbnail_generator": return <ThumbnailGeneratorView />;
       case "trend_analyzer": return <TrendAnalyzerView />;
       case "performance_score": return <PerformanceScoreView />;
+      case "viral_predictor": return <ViralPredictorView />;
+      case "music_advisor": return <MusicAdvisorView />;
+      case "caption_writer": return <CaptionWriterView />;
+      case "leaderboard": return <LiveLeaderboardView />;
+      case "collaboration_matcher": return <CollaborationMatcherView />;
+      case "achievements": return <AchievementSystemView />;
       default: return null;
     }
   };
