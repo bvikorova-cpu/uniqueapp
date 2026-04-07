@@ -11,6 +11,10 @@ const CREDIT_COSTS: Record<string, number> = {
   thumbnail_generator: 3,
   trend_analyzer: 3,
   performance_score: 4,
+  viral_predictor: 4,
+  music_advisor: 3,
+  caption_writer: 3,
+  collaboration_matcher: 4,
 };
 
 serve(async (req) => {
@@ -35,7 +39,6 @@ serve(async (req) => {
     const creditCost = CREDIT_COSTS[action];
     if (!creditCost) throw new Error(`Unknown action: ${action}`);
 
-    // Check & deduct credits
     const { data: credits } = await supabase
       .from("ai_credits")
       .select("credits_remaining")
@@ -72,6 +75,26 @@ serve(async (req) => {
         systemPrompt = `You are a professional talent evaluator and judge. Score the submission across multiple dimensions. Return JSON: { "total_score": number 1-100, "dimensions": [{"name": "str", "score": number 1-100, "feedback": "str"}], "rank_estimate": "str", "star_rating": number 1-5, "judge_commentary": "string", "winning_potential": number 1-100, "improvement_roadmap": [{"step": number, "action": "str", "expected_impact": "str"}], "comparable_winners": "string" }`;
         userPrompt = `Evaluate this talent submission:\nCategory: ${params.category}\nTitle: ${params.title}\nDescription: ${params.description}\nMedia type: ${params.mediaType || "image"}`;
         break;
+
+      case "viral_predictor":
+        systemPrompt = `You are a viral content analyst specializing in talent competitions and social media virality. Predict the viral potential of a submission. Return JSON: { "viral_score": number 1-100, "verdict": "string (one sentence summary)", "factors": [{"name": "str (e.g. Uniqueness, Emotional Hook, Shareability, Trend Alignment, Production Quality)", "score": number 1-100, "insight": "str"}], "boost_suggestions": ["str (5 actionable tips to increase virality)"], "best_posting_strategy": "string", "estimated_reach": "string", "comparable_viral_content": "string" }`;
+        userPrompt = `Predict the viral potential of this talent submission:\nCategory: ${params.category}\nTitle: ${params.title}\nDescription: ${params.description}`;
+        break;
+
+      case "music_advisor":
+        systemPrompt = `You are a music supervisor and sound designer for viral social media content. Recommend perfect music and sound for talent videos. Return JSON: { "recommendations": [{"song_title": "str", "artist": "str", "genre": "str", "bpm": number, "mood": "str", "reason": "str", "license": "str (e.g. Royalty-free, Creative Commons, Popular - check rights)"}], "sound_effects": ["str (3-4 sound design tips)"], "editing_tips": "string", "audio_mixing_advice": "string", "trending_sounds": ["str"] }. Provide 4-5 song recommendations.`;
+        userPrompt = `Recommend music/sound for this talent video:\nCategory: ${params.category}\nContent type: ${params.contentType}\nMood: ${params.mood || "not specified"}\nDescription: ${params.description || "not specified"}`;
+        break;
+
+      case "caption_writer":
+        systemPrompt = `You are a professional social media copywriter specializing in talent showcases and viral content. Write engaging captions with hashtags. Return JSON: { "captions": [{"style": "str (e.g. Inspirational, Casual, Bold, Story-driven)", "caption": "str (max 200 chars)", "hashtags": ["str (5-8 relevant hashtags with #)"]}], "call_to_action": "string", "engagement_tips": ["str (3-4 tips)"], "best_emoji_strategy": "string" }. Provide 3 different caption styles.`;
+        userPrompt = `Write captions for this talent submission:\nCategory: ${params.category}\nTitle: ${params.title}\nDescription: ${params.description || "not specified"}\nTone: ${params.tone || "not specified"}`;
+        break;
+
+      case "collaboration_matcher":
+        systemPrompt = `You are a talent collaboration strategist who connects creators for powerful partnerships. Generate collaboration ideas and partner profiles. Return JSON: { "collaboration_ideas": [{"title": "str", "description": "str", "skills_needed": ["str"], "viral_potential": number 1-10, "difficulty": "str (Easy/Medium/Hard)", "expected_outcome": "str"}], "tips": ["str (4-5 collaboration tips)"], "platform_strategy": "string", "success_stories": "string" }. Provide 4-5 collaboration ideas.`;
+        userPrompt = `Find collaboration ideas for:\nMy talent: ${params.myTalent}\nLooking for: ${params.lookingFor}\nDescription: ${params.description || "not specified"}`;
+        break;
     }
 
     const aiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -102,7 +125,6 @@ serve(async (req) => {
     const content = aiData.choices[0]?.message?.content;
     const parsed = JSON.parse(content);
 
-    // Deduct credits
     await supabase
       .from("ai_credits")
       .update({ credits_remaining: remaining - creditCost })
