@@ -162,6 +162,11 @@ const BestFriend = () => {
       case "friendship_games": return <FriendshipGamesView />;
       case "dream_companion": return <DreamCompanionView />;
       case "memory_scrapbook": return <MemoryScrapbookView />;
+      case "gratitude_garden": return <GratitudeGardenView />;
+      case "friendship_horoscope": return <FriendshipHoroscopeView />;
+      case "conflict_resolver": return <ConflictResolverView />;
+      case "bucket_list": return <BucketListView />;
+      case "self_care_planner": return <SelfCarePlannerView />;
       case "chat": return renderChat();
       default: return null;
     }
