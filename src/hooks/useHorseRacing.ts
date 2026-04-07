@@ -304,7 +304,7 @@ export const useTrainHorse = () => {
           [statField]: newStatValue,
           experience: newXP,
           level: newLevel,
-        })
+        } as any)
         .eq("id", horseId);
 
       // Deduct coins
@@ -529,7 +529,7 @@ export const usePurchaseShopItem = () => {
         if (Object.keys(updates).length > 0) {
           await supabase
             .from("horses")
-            .update(updates)
+            .update(updates as any)
             .eq("id", horseId);
         }
       }
@@ -541,7 +541,7 @@ export const usePurchaseShopItem = () => {
 
       await supabase
         .from("horse_currency")
-        .update(currencyUpdate)
+        .update(currencyUpdate as any)
         .eq("user_id", user.id);
 
       // Record purchase

@@ -270,7 +270,7 @@ export const useUpgradeCar = () => {
           [statField]: newStatValue,
           experience: newXP,
           level: newLevel,
-        })
+        } as any)
         .eq("id", carId);
 
       // Deduct coins

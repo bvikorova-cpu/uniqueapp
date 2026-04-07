@@ -45,7 +45,7 @@ export const TrainingCenter = ({ onBack }: { onBack: () => void }) => {
       }
       const player = players.find(p => p.id === selectedPlayer)!;
       const newVal = Math.min(99, (player[t.stat] || 50) + improvement);
-      await supabase.from("football_players").update({ [t.stat]: newVal, overall_rating: Math.round(([player.pace, player.shooting, player.passing, player.defending, player.physical].reduce((a, b) => a + b, 0) - player[t.stat] + newVal) / 5) }).eq("id", selectedPlayer);
+      await supabase.from("football_players").update({ [t.stat]: newVal, overall_rating: Math.round(([player.pace, player.shooting, player.passing, player.defending, player.physical].reduce((a, b) => a + b, 0) - player[t.stat] + newVal) / 5) } as any).eq("id", selectedPlayer);
       await supabase.from("football_training_sessions").insert({ user_id: user.id, player_id: selectedPlayer, training_type: training, stat_improved: t.stat, improvement_value: improvement, credits_used: useAI ? 2 : 0 });
       setPlayers(prev => prev.map(p => p.id === selectedPlayer ? { ...p, [t.stat]: newVal } : p));
       toast.success(`${t.icon} ${player.name}'s ${t.stat} improved by +${improvement}!`);

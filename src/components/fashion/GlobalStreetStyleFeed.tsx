@@ -90,7 +90,7 @@ export default function GlobalStreetStyleFeed() {
         outfit_description: `${caption} | 📍 ${city}`,
         score: data.ootdResult?.overall_score || 75,
         feedback: data.ootdResult,
-      });
+      } as any);
 
       return data;
     },

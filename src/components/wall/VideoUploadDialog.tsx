@@ -74,7 +74,7 @@ export default function VideoUploadDialog({ onUploadSuccess }: { onUploadSuccess
           description: description || null,
           video_url: publicUrl,
           category: category || 'general',
-        });
+        } as any);
 
       if (insertError) throw insertError;
 

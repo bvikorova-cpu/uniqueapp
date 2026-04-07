@@ -51,7 +51,7 @@ export function AgeBattleArena({ onBack }: Props) {
         post_type: "battle",
         likes_count: 0,
         comments_count: 0,
-      });
+      } as any);
 
       toast({ title: "Entry Submitted!", description: "Your battle entry is now live. Good luck!" });
       setSelectedFile(null);

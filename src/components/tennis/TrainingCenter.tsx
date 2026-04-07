@@ -40,7 +40,7 @@ export function TrainingCenter({ onBack }: { onBack: () => void }) {
       const newOvr = Math.min(99, player.overall_rating + (improvement > 2 ? 1 : 0));
 
       await supabase.from("tennis_coins").update({ balance: coins.balance - drill.cost, total_spent: coins.total_spent + drill.cost }).eq("user_id", user.id);
-      await supabase.from("tennis_players").update({ [drill.stat]: newVal, overall_rating: newOvr }).eq("id", selectedPlayer);
+      await supabase.from("tennis_players").update({ [drill.stat]: newVal, overall_rating: newOvr } as any).eq("id", selectedPlayer);
       await supabase.from("tennis_training_sessions").insert({ user_id: user.id, player_id: selectedPlayer, training_type: drill.type, stat_improved: drill.stat, improvement_amount: improvement, coins_spent: drill.cost });
 
       setPlayers(prev => prev.map(p => p.id === selectedPlayer ? { ...p, [drill.stat]: newVal, overall_rating: newOvr } : p));
