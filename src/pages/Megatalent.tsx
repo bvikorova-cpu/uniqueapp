@@ -79,6 +79,12 @@ const aiTools = [
   { id: "thumbnail_generator", name: "AI Thumbnail Creator", icon: ImagePlus, credits: 3, description: "Eye-catching thumbnail concepts", gradient: "from-amber-500 to-orange-600" },
   { id: "trend_analyzer", name: "AI Trend Analyzer", icon: TrendingUp, credits: 3, description: "Discover trending categories & strategies", gradient: "from-yellow-600 to-yellow-800" },
   { id: "performance_score", name: "AI Performance Score", icon: Award, credits: 4, description: "Professional talent evaluation", gradient: "from-yellow-400 to-yellow-700" },
+  { id: "viral_predictor", name: "AI Viral Predictor", icon: Flame, credits: 4, description: "Predict viral potential of your submission", gradient: "from-red-500 to-orange-600" },
+  { id: "music_advisor", name: "AI Music Advisor", icon: Music, credits: 3, description: "Perfect music & sound for your videos", gradient: "from-violet-500 to-purple-600" },
+  { id: "caption_writer", name: "AI Caption Writer", icon: PenTool, credits: 3, description: "Engaging captions & hashtags", gradient: "from-emerald-500 to-teal-600" },
+  { id: "collaboration_matcher", name: "AI Collab Matcher", icon: Handshake, credits: 4, description: "Find perfect collaboration partners", gradient: "from-blue-500 to-indigo-600" },
+  { id: "leaderboard", name: "Live Leaderboard", icon: BarChart3, credits: 0, description: "Real-time rankings & animations", gradient: "from-yellow-500 to-amber-500" },
+  { id: "achievements", name: "Achievements", icon: Trophy, credits: 0, description: "Track milestones & unlock badges", gradient: "from-amber-500 to-yellow-600" },
 ];
 
 type ActiveView = string | null;
