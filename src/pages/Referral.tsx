@@ -63,7 +63,7 @@ const Referral = () => {
           <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70" />
         </div>
         <div className="relative z-10 container mx-auto px-4 max-w-6xl py-12 sm:py-14">
-          <Button variant="ghost" onClick={() => navigate("/megatalent")} className="mb-4 gap-2 text-foreground/90 hover:text-foreground bg-background/35 backdrop-blur-sm border border-border/40">
+          <Button variant="ghost" onClick={() => navigate("/megatalent")} className="mb-4 gap-2 text-white/90 hover:text-white bg-black/30 backdrop-blur-sm border border-white/20">
             <ArrowLeft className="h-4 w-4" /> Back to MegaTalent
           </Button>
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mx-auto max-w-3xl rounded-2xl border-2 border-yellow-500/30 bg-black/40 px-4 py-5 text-center shadow-2xl backdrop-blur-lg sm:px-8 sm:py-8">
