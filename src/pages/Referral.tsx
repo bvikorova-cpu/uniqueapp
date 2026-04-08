@@ -59,19 +59,20 @@ const Referral = () => {
       {/* Cinematic Hero */}
       <div className="relative overflow-hidden mb-8">
         <div className="absolute inset-0 z-0">
-          <video src={heroVideo.url} autoPlay loop muted playsInline className="w-full h-full object-cover" style={{ filter: "brightness(1.2) saturate(1.1)", maxHeight: "280px" }} />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-black/40" />
+          <video src={heroVideo.url} autoPlay loop muted playsInline className="w-full h-full object-cover" style={{ filter: "brightness(0.45) saturate(0.95)", maxHeight: "320px" }} />
+          <div className="absolute inset-0 bg-gradient-to-b from-background/95 via-background/70 to-background/90" />
+          <div className="absolute inset-0 bg-background/35 backdrop-blur-[2px]" />
         </div>
-        <div className="relative z-10 container mx-auto px-4 max-w-6xl py-12">
-          <Button variant="ghost" onClick={() => navigate("/megatalent")} className="mb-4 gap-2 text-white/80 hover:text-white">
+        <div className="relative z-10 container mx-auto px-4 max-w-6xl py-12 sm:py-14">
+          <Button variant="ghost" onClick={() => navigate("/megatalent")} className="mb-4 gap-2 text-foreground/90 hover:text-foreground bg-background/35 backdrop-blur-sm border border-border/40">
             <ArrowLeft className="h-4 w-4" /> Back to MegaTalent
           </Button>
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mx-auto max-w-3xl rounded-2xl border border-border/50 bg-background/72 px-4 py-5 text-center shadow-2xl backdrop-blur-md sm:px-8 sm:py-8">
             <Badge className="bg-yellow-500/90 text-black font-bold mb-4">💰 €5 for each friend</Badge>
-            <h1 className="text-3xl sm:text-5xl font-black text-white mb-2">
+            <h1 className="text-3xl sm:text-5xl font-black text-foreground mb-3 tracking-tight [text-shadow:0_2px_18px_hsl(var(--background)/0.45)]">
               Referral <span className="text-yellow-400">Program</span>
             </h1>
-            <p className="text-white/70 text-lg max-w-2xl mx-auto">
+            <p className="text-foreground/85 text-base sm:text-lg font-semibold max-w-2xl mx-auto leading-relaxed [text-shadow:0_1px_12px_hsl(var(--background)/0.35)]">
               Invite your friends to MegaTalent and earn €5 for each one who activates a Premium subscription
             </p>
           </motion.div>
