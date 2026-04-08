@@ -59,9 +59,8 @@ const Referral = () => {
       {/* Cinematic Hero */}
       <div className="relative overflow-hidden mb-8">
         <div className="absolute inset-0 z-0">
-          <video src={heroVideo.url} autoPlay loop muted playsInline className="w-full h-full object-cover" style={{ filter: "brightness(0.45) saturate(0.95)", maxHeight: "320px" }} />
-          <div className="absolute inset-0 bg-gradient-to-b from-background/95 via-background/70 to-background/90" />
-          <div className="absolute inset-0 bg-background/35 backdrop-blur-[2px]" />
+          <video src={heroVideo.url} autoPlay loop muted playsInline className="w-full h-full object-cover" style={{ filter: "brightness(0.55) saturate(1.1)" }} />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70" />
         </div>
         <div className="relative z-10 container mx-auto px-4 max-w-6xl py-12 sm:py-14">
           <Button variant="ghost" onClick={() => navigate("/megatalent")} className="mb-4 gap-2 text-foreground/90 hover:text-foreground bg-background/35 backdrop-blur-sm border border-border/40">
