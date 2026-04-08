@@ -44,10 +44,10 @@ export default function MegaTalentHero({ totalVotes, isSubscribed, subscriptionT
           muted
           playsInline
           className="w-full h-full object-cover"
-          style={{ filter: "brightness(1.3) saturate(1.2)" }}
+          style={{ filter: "brightness(0.7) saturate(1.1)" }}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-black/50" />
-        <div className="absolute inset-0 bg-gradient-to-r from-yellow-900/20 via-transparent to-amber-900/20" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-black/50" />
+        <div className="absolute inset-0 bg-gradient-to-r from-yellow-900/30 via-transparent to-amber-900/30" />
       </div>
 
       {/* Content */}
