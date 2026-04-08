@@ -57,7 +57,7 @@ const Referral = () => {
   return (
     <div className="min-h-screen bg-background pt-20 pb-12">
       {/* Cinematic Hero */}
-      <div className="relative overflow-hidden mb-8">
+      <div className="relative overflow-hidden mb-8 min-h-[300px]">
         <div className="absolute inset-0 z-0">
           <video src={heroVideo.url} autoPlay loop muted playsInline className="w-full h-full object-cover" style={{ filter: "brightness(0.55) saturate(1.1)" }} />
           <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70" />
