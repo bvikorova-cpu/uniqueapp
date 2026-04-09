@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Brain, Trophy, LineChart, Zap, Users, Target } from "lucide-react";
+import { Brain, Trophy, LineChart, Zap, Users, Target, BarChart3, Medal, Gift } from "lucide-react";
 import { IQCreditsDisplay } from "@/components/iq/IQCreditsDisplay";
 import IQPlatformHero from "@/components/iq/IQPlatformHero";
 import IQToolsGrid from "@/components/iq/IQToolsGrid";
@@ -9,6 +9,11 @@ import IQLeaguesSection from "@/components/iq/IQLeaguesSection";
 import IQBrainStreaks from "@/components/iq/IQBrainStreaks";
 import IQTournaments from "@/components/iq/IQTournaments";
 import IQDuels from "@/components/iq/IQDuels";
+import IQProgressCharts from "@/components/iq/IQProgressCharts";
+import IQAchievements from "@/components/iq/IQAchievements";
+import IQGlobalLeaderboard from "@/components/iq/IQGlobalLeaderboard";
+import IQDailyChallenge from "@/components/iq/IQDailyChallenge";
+import IQCertificate from "@/components/iq/IQCertificate";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
@@ -49,17 +54,19 @@ const IQPlatform = () => {
       <IQCreditsDisplay />
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-3 sm:grid-cols-6 gap-1 h-auto p-1.5 bg-muted/50 rounded-xl">
+        <TabsList className="grid w-full grid-cols-4 sm:grid-cols-8 gap-1 h-auto p-1.5 bg-muted/50 rounded-xl">
           {[
             { value: "overview", label: "Overview", icon: Brain },
             { value: "tests", label: "IQ Tests", icon: Target },
             { value: "tools", label: "AI Tools", icon: Zap },
             { value: "duels", label: "Duels", icon: Users },
             { value: "tournaments", label: "Tournaments", icon: Trophy },
-            { value: "results", label: "My Results", icon: LineChart },
+            { value: "leaderboard", label: "Leaderboard", icon: Medal },
+            { value: "progress", label: "Progress", icon: BarChart3 },
+            { value: "results", label: "Results", icon: LineChart },
           ].map(tab => (
-            <TabsTrigger key={tab.value} value={tab.value} className="text-[10px] sm:text-xs py-2 rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all">
-              <tab.icon className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
+            <TabsTrigger key={tab.value} value={tab.value} className="text-[9px] sm:text-xs py-2 rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all">
+              <tab.icon className="h-3 w-3 sm:h-4 sm:w-4 mr-0.5 sm:mr-1" />
               <span className="hidden sm:inline">{tab.label}</span>
               <span className="sm:hidden">{tab.label.split(" ")[0]}</span>
             </TabsTrigger>
@@ -67,10 +74,13 @@ const IQPlatform = () => {
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6">
+          <IQDailyChallenge />
           <IQLeaguesSection userIQ={null} />
           <IQBrainStreaks currentStreak={0} />
+          <IQAchievements />
+          <IQCertificate />
           <IQToolsGrid />
-          
+
           <Card className="bg-gradient-to-r from-blue-500/10 to-indigo-500/10 border-blue-500/20">
             <CardHeader className="p-4 sm:p-6">
               <CardTitle className="text-lg">How It Works</CardTitle>
@@ -80,7 +90,7 @@ const IQPlatform = () => {
               <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
                 {[
                   { icon: Brain, title: "1. Take Tests", desc: "Choose from 4 difficulty levels" },
-                  { icon: Zap, title: "2. Use AI Tools", desc: "8 AI-powered cognitive tools" },
+                  { icon: Zap, title: "2. Use AI Tools", desc: "8+ AI-powered cognitive tools" },
                   { icon: Users, title: "3. Compete", desc: "Duels, tournaments & leagues" },
                   { icon: Trophy, title: "4. Climb Ranks", desc: "Rise through 8 league tiers" },
                 ].map((step, i) => (
@@ -129,8 +139,15 @@ const IQPlatform = () => {
         <TabsContent value="tools"><IQToolsGrid /></TabsContent>
         <TabsContent value="duels"><IQDuels /></TabsContent>
         <TabsContent value="tournaments"><IQTournaments /></TabsContent>
+        <TabsContent value="leaderboard"><IQGlobalLeaderboard /></TabsContent>
+        <TabsContent value="progress">
+          <IQProgressCharts />
+          <IQAchievements />
+          <IQCertificate />
+        </TabsContent>
 
         <TabsContent value="results" className="space-y-4">
+          <IQProgressCharts />
           <Card>
             <CardHeader><CardTitle>Your IQ Journey</CardTitle><CardDescription>Track your progress</CardDescription></CardHeader>
             <CardContent className="text-center py-12">
@@ -149,11 +166,16 @@ const IQPlatform = () => {
             <h4 className="font-semibold text-foreground">Features:</h4>
             <ul className="list-disc list-inside space-y-2 pl-2">
               <li><strong>IQ Tests:</strong> 4 difficulty levels (30-60 questions, 30-75 min). Detailed score breakdowns & percentile rankings.</li>
-              <li><strong>8 AI Tools:</strong> Brain Training, IQ Predictor, Cognitive Report, Study Coach, Cognitive Analysis, Learning Style, Strengths Report & Improvement Roadmap.</li>
+              <li><strong>8+ AI Tools:</strong> Brain Training, IQ Predictor, Cognitive Report, Study Coach, Certificate Generator & more.</li>
               <li><strong>Live Duels:</strong> Challenge other players in real-time IQ battles across 4 modes.</li>
               <li><strong>Weekly Tournaments:</strong> Compete for prize pools and credit rewards.</li>
               <li><strong>IQ Leagues:</strong> 8-tier ranking system from Bronze to Legend based on your IQ score.</li>
               <li><strong>Brain Streaks:</strong> Daily training streaks with bonus credit rewards.</li>
+              <li><strong>Progress Charts:</strong> Visual tracking with line charts, bar charts & radar profiles.</li>
+              <li><strong>Achievements:</strong> 12 unlockable badges for cognitive milestones.</li>
+              <li><strong>Global Leaderboard:</strong> Worldwide rankings for top performers.</li>
+              <li><strong>Daily Challenge:</strong> One free brain question every day.</li>
+              <li><strong>IQ Certificate:</strong> AI-generated professional certificate with cognitive breakdown.</li>
             </ul>
           </div>
         </CardContent>
