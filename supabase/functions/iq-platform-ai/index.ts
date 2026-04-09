@@ -15,6 +15,7 @@ const CREDIT_COSTS: Record<string, number> = {
   learning_style: 4,
   strengths_report: 5,
   improvement_plan: 6,
+  generate_certificate: 5,
 };
 
 serve(async (req) => {
@@ -95,6 +96,11 @@ serve(async (req) => {
       case "improvement_plan":
         systemPrompt = `You are a cognitive improvement strategist. Create a comprehensive, personalized IQ improvement roadmap. Return JSON: { "plan_name": "string", "target_improvement": "string", "phases": [{"phase": number, "name": "string", "duration": "string", "focus_areas": ["string"], "daily_exercises": [{"exercise": "string", "duration": "string", "frequency": "string"}], "milestones": ["string"], "expected_iq_gain": "string"}], "lifestyle_changes": [{"area": "string", "recommendation": "string", "impact": "string"}], "supplements_and_nutrition": [{"item": "string", "benefit": "string", "evidence": "string"}], "progress_tracking": "string", "total_expected_improvement": "string" }`;
         userPrompt = `Create a personalized IQ improvement roadmap.\nCurrent estimated IQ: ${params.currentIQ || "Not tested"}\nTarget: ${params.target || "Maximum improvement"}\nTimeline: ${params.timeline || "6 months"}\nConstraints: ${params.constraints || "None specified"}`;
+        break;
+
+      case "generate_certificate":
+        systemPrompt = `You are a psychometric certification authority. Generate an official-looking IQ certificate with detailed cognitive analysis. Return JSON: { "full_name": "string", "iq_score": number (realistic 95-145), "percentile": number, "classification": "string (e.g. Superior, Above Average, High Average, Average)", "cognitive_breakdown": [{"domain": "string (Verbal Comprehension|Perceptual Reasoning|Working Memory|Processing Speed|Fluid Reasoning)", "score": number, "description": "string"}], "strengths": ["string"], "recommendations": ["string"], "insights": "string (2-3 paragraph personalized analysis)", "date_issued": "string", "certificate_id": "string (format: IQ-CERT-XXXXX)" }`;
+        userPrompt = `Generate a professional IQ certificate for: ${params.fullName}. Make the assessment realistic and detailed.`;
         break;
     }
 
