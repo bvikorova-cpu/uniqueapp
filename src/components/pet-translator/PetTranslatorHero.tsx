@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
-import { PawPrint, Heart, Users, Zap, Sparkles, Crown, Mic } from "lucide-react";
+import { PawPrint, Heart, Users, Sparkles, Crown, Mic } from "lucide-react";
 import heroVideo from "@/assets/pet-translator-hero.mp4.asset.json";
 
 function getDailyTimeLeft() {
@@ -38,13 +38,15 @@ export default function PetTranslatorHero({ totalTranslations, totalUsers, strea
 
   return (
     <div className="space-y-4 mb-8">
+      {/* Video Container - badges on top, title at bottom, video fully visible */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="relative overflow-hidden rounded-2xl min-h-[260px] sm:min-h-[340px]"
+        className="relative overflow-hidden rounded-2xl"
       >
-        <div className="absolute inset-0 z-0">
+        {/* Video - no min-height forcing, natural aspect ratio */}
+        <div className="relative w-full aspect-video">
           <video
             src={heroVideo.url}
             autoPlay
@@ -52,44 +54,46 @@ export default function PetTranslatorHero({ totalTranslations, totalUsers, strea
             muted
             playsInline
             className="w-full h-full object-cover"
-            style={{ filter: "brightness(0.75) saturate(1.2)" }}
+            style={{ filter: "brightness(0.85) saturate(1.2)" }}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#1a0a2e]/95 via-[#1a0a2e]/60 to-[#1a0a2e]/40" />
-          <div className="absolute inset-0 bg-gradient-to-r from-purple-900/30 via-transparent to-fuchsia-900/30" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#1a0a2e]/90 via-transparent to-[#1a0a2e]/30" />
         </div>
 
-        <div className="relative z-10 p-4 sm:p-6 lg:p-8 flex flex-col justify-end min-h-[260px] sm:min-h-[340px]">
-          <div className="flex flex-wrap items-center gap-2 mb-4">
-            <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.2, type: "spring" }}>
-              <Badge className="bg-purple-500/90 text-white font-bold border-purple-400/50 shadow-lg shadow-purple-500/20">
-                <PawPrint className="h-3 w-3 mr-1" /> Magical Purple
+        {/* Badges - top left */}
+        <div className="absolute top-3 left-3 z-10 flex flex-wrap items-center gap-2">
+          <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.2, type: "spring" }}>
+            <Badge className="bg-purple-500/90 text-white font-bold border-purple-400/50 shadow-lg shadow-purple-500/20">
+              <PawPrint className="h-3 w-3 mr-1" /> Magical Purple
+            </Badge>
+          </motion.div>
+          {isSubscribed && (
+            <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.3, type: "spring" }}>
+              <Badge className="bg-white/10 backdrop-blur-md text-white border-white/20">
+                <Crown className="h-3 w-3 mr-1" /> Premium Active
               </Badge>
             </motion.div>
-            {isSubscribed && (
-              <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.3, type: "spring" }}>
-                <Badge className="bg-white/10 backdrop-blur-md text-white border-white/20">
-                  <Crown className="h-3 w-3 mr-1" /> Premium Active
-                </Badge>
-              </motion.div>
-            )}
-          </div>
+          )}
+        </div>
 
+        {/* Title - bottom overlay, compact */}
+        <div className="absolute bottom-0 left-0 right-0 z-10 p-4 sm:p-5">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.15 }}
-            className="border-2 border-purple-400/30 bg-[#1a0a2e]/50 backdrop-blur-lg rounded-xl px-5 py-4 w-fit max-w-full"
+            className="border-2 border-purple-400/30 bg-[#1a0a2e]/50 backdrop-blur-lg rounded-xl px-4 py-3 w-fit max-w-full"
           >
-            <h1 className="text-2xl sm:text-3xl lg:text-5xl font-black text-white drop-shadow-lg">
+            <h1 className="text-xl sm:text-2xl lg:text-4xl font-black text-white drop-shadow-lg">
               🐾 AI PET <span className="text-purple-400">TRANSLATOR</span>
             </h1>
-            <p className="text-sm sm:text-base text-white/80 font-semibold mt-1 drop-shadow">
+            <p className="text-xs sm:text-sm text-white/80 font-semibold mt-0.5 drop-shadow">
               Decode your pet's emotions, train smarter & keep them healthy with AI
             </p>
           </motion.div>
         </div>
       </motion.div>
 
+      {/* Stat Cards below video */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {statCards.map((item, i) => (
           <motion.div
