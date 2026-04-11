@@ -26,10 +26,10 @@ serve(async (req) => {
 
     const costMap: Record<string, number> = {
       translate: 4, emotion: 4, health: 5, training: 4, diet: 4, behavior: 5,
+      photo_emotion: 5, audio_translate: 5, health_certificate: 6, smart_reminders: 4,
     };
     const cost = costMap[action] || 4;
 
-    // Check credits
     const { data: credits } = await supabase
       .from("ai_credits")
       .select("credits_remaining")
@@ -44,100 +44,114 @@ serve(async (req) => {
     }
 
     const prompts: Record<string, string> = {
-      translate: `You are an expert animal behaviorist and pet communication specialist. Analyze the following pet sound/behavior description and provide a detailed translation.
-
+      translate: `You are an expert animal behaviorist. Analyze this pet sound/behavior:
 Pet type: ${params.pet_type || "unknown"}
-Sound/behavior description: ${params.description || ""}
+Description: ${params.description || ""}
 
-Provide:
-1. **Detected Emotion**: Primary emotion (e.g., Happy, Anxious, Hungry, Playful, Distressed)
-2. **Translation**: What the pet is likely trying to communicate
-3. **Confidence Level**: How confident the analysis is (percentage)
-4. **Body Language Context**: What body language to look for to confirm
-5. **Recommended Response**: How the owner should respond
-6. **Fun Fact**: An interesting fact about this type of pet communication`,
+Provide: 1. **Detected Emotion** 2. **Translation** 3. **Confidence Level** 4. **Body Language Context** 5. **Recommended Response** 6. **Fun Fact**`,
 
-      emotion: `You are a veterinary behaviorist specializing in animal emotions. Analyze the pet's current emotional state based on the described behavior.
-
+      emotion: `You are a veterinary behaviorist. Analyze the pet's emotional state:
 Pet type: ${params.pet_type || "unknown"}
-Behavior described: ${params.behavior || ""}
+Behavior: ${params.behavior || ""}
 
-Provide a detailed report:
-1. **Primary Emotion**: (e.g., Calm, Anxious, Excited, Fearful, Content)
-2. **Stress Level**: (1-10 scale with explanation)
-3. **Mood Assessment**: Overall mood description
-4. **Emotional Triggers**: What might be causing this state
-5. **Comfort Recommendations**: How to help if the pet is stressed
-6. **Long-term Emotional Health Tips**: Advice for maintaining good emotional health`,
+Provide: 1. **Primary Emotion** 2. **Stress Level** (1-10) 3. **Mood Assessment** 4. **Emotional Triggers** 5. **Comfort Recommendations** 6. **Long-term Tips**`,
 
-      health: `You are a veterinary health consultant (not a replacement for a real vet). Analyze the symptoms described and provide guidance.
-
-Pet breed: ${params.breed || "unknown"}
-Pet age: ${params.age || "unknown"}
+      health: `You are a veterinary health consultant (NOT a replacement for a real vet).
+Pet breed: ${params.breed || "unknown"}, Age: ${params.age || "unknown"}
 Symptoms: ${params.symptoms || ""}
 
-⚠️ IMPORTANT DISCLAIMER: This is AI-based guidance only and NOT a veterinary diagnosis. Always consult a real veterinarian.
+⚠️ DISCLAIMER: AI guidance only. Always consult a real vet.
 
-Provide:
-1. **Symptom Analysis**: What these symptoms might indicate
-2. **Possible Conditions**: (listed with likelihood)
-3. **Urgency Level**: 🟢 Low / 🟡 Medium / 🔴 High - Should they see a vet immediately?
-4. **Home Care Tips**: What they can do right now
-5. **When to See a Vet**: Clear guidance on vet visit timing
-6. **Prevention Tips**: How to prevent similar issues`,
+Provide: 1. **Symptom Analysis** 2. **Possible Conditions** 3. **Urgency Level** 🟢🟡🔴 4. **Home Care Tips** 5. **When to See a Vet** 6. **Prevention Tips**`,
 
-      training: `You are a certified professional dog/pet trainer. Create a personalized training plan.
-
-Pet breed: ${params.breed || "unknown"}
-Pet age: ${params.age || "unknown"}
-Training goal: ${params.training_goal || "general obedience"}
+      training: `You are a certified pet trainer. Create a training plan:
+Breed: ${params.breed || "unknown"}, Age: ${params.age || "unknown"}
+Goal: ${params.training_goal || "general obedience"}
 Owner experience: ${params.experience || "beginner"}
 
-Create a detailed training plan:
-1. **Training Overview**: Summary of the approach
-2. **Week 1-2 Plan**: Day-by-day exercises
-3. **Week 3-4 Plan**: Progressive exercises
-4. **Key Commands**: Step-by-step for each command
-5. **Common Mistakes to Avoid**: Top 5 mistakes
-6. **Positive Reinforcement Tips**: Reward strategies
-7. **Troubleshooting**: What to do if the pet doesn't respond`,
+Provide: 1. **Overview** 2. **Week 1-2 Plan** 3. **Week 3-4 Plan** 4. **Key Commands** 5. **Common Mistakes** 6. **Reinforcement Tips** 7. **Troubleshooting**`,
 
-      diet: `You are a pet nutritionist. Create a custom nutrition plan.
+      diet: `You are a pet nutritionist. Create a nutrition plan:
+Breed: ${params.breed || "unknown"}, Weight: ${params.weight || "unknown"}kg, Age: ${params.age || "unknown"}
+Activity: ${params.activity_level || "moderate"}, Restrictions: ${params.restrictions || "none"}
 
-Pet breed: ${params.breed || "unknown"}
-Weight: ${params.weight || "unknown"} kg
-Age: ${params.age || "unknown"}
-Activity level: ${params.activity_level || "moderate"}
-Restrictions: ${params.restrictions || "none"}
+Provide: 1. **Daily Caloric Needs** 2. **Diet Type** 3. **Meal Schedule** 4. **Portion Sizes** 5. **Essential Nutrients** 6. **Foods to Avoid** 7. **Treat Recommendations** 8. **Hydration Guide**`,
 
-Provide:
-1. **Daily Caloric Needs**: Calculated estimate
-2. **Recommended Diet Type**: (raw, kibble, wet, mixed)
-3. **Meal Schedule**: How many meals and when
-4. **Portion Sizes**: Specific amounts
-5. **Essential Nutrients**: Key vitamins and minerals needed
-6. **Foods to Avoid**: Dangerous foods for this pet
-7. **Treat Recommendations**: Healthy treat options
-8. **Hydration Guide**: Water intake recommendations`,
+      behavior: `You are an animal behavior specialist. Analyze:
+Behavior: ${params.behavior_pattern || ""}
+Pet: ${params.breed_age || "unknown"}, Environment: ${params.environment || "unknown"}
 
-      behavior: `You are an animal behavior specialist. Provide a deep behavioral analysis.
+Provide: 1. **Classification** 2. **Root Cause** 3. **Environmental Factors** 4. **Modification Plan** 5. **Timeline** 6. **Owner's Role** 7. **When to Seek Professional Help**`,
 
-Behavior pattern: ${params.behavior_pattern || ""}
-Pet breed & age: ${params.breed_age || "unknown"}
-Living environment: ${params.environment || "unknown"}
+      photo_emotion: `You are an expert pet emotion analyst. Based on a photo analysis of a ${params.pet_type || "pet"}:
 
-Provide:
-1. **Behavior Classification**: Type of behavior (anxiety, territorial, playful, etc.)
-2. **Root Cause Analysis**: Why the pet exhibits this behavior
-3. **Environmental Factors**: How the environment affects behavior
-4. **Modification Plan**: Step-by-step behavior modification
-5. **Timeline**: Expected timeline for improvement
-6. **Owner's Role**: What the owner needs to change
-7. **Professional Help**: When to seek a professional behaviorist`,
+Provide a comprehensive emotional analysis:
+1. **Detected Emotions**: Primary and secondary emotions visible
+2. **Stress Indicators**: Signs of stress or relaxation
+3. **Body Language Reading**: Ears, tail, posture, eyes analysis
+4. **Comfort Level**: How comfortable the pet appears (1-10)
+5. **Energy Level**: Current energy state
+6. **Social Mood**: How the pet likely feels about interaction right now
+7. **Recommendations**: What the owner should do based on the detected mood
+8. **Fun Interpretation**: A playful "quote" from the pet's perspective`,
+
+      audio_translate: `You are an expert pet sound translator. A user recorded their ${params.pet_type || "pet"} for ${params.recording_duration || "unknown"} seconds.
+Context: ${params.description || ""}
+
+Provide a detailed sound translation:
+1. **Sound Classification**: Type of vocalization detected
+2. **Primary Message**: What the pet is communicating
+3. **Emotional Tone**: The emotion behind the sound
+4. **Urgency Level**: How urgent the communication is (1-10)
+5. **Context Interpretation**: Why the pet might be making this sound now
+6. **Recommended Response**: How to respond appropriately
+7. **Similar Sounds Guide**: Other sounds this pet makes and their meanings
+8. **Pet Quote**: A fun translation in the pet's "voice"`,
+
+      health_certificate: `You are a veterinary health documentation specialist. Generate a professional health certificate:
+
+Pet Name: ${params.pet_name || "Unknown"}
+Breed: ${params.breed || "Unknown"}
+Age: ${params.age || "Unknown"}
+Weight: ${params.weight || "Unknown"} kg
+Vaccinations: ${params.vaccinations || "Not specified"}
+Known Conditions: ${params.conditions || "None reported"}
+
+Generate a comprehensive health certificate including:
+1. **CERTIFICATE HEADER**: Professional title with date
+2. **Pet Identification**: Complete pet profile
+3. **Health Status Summary**: Overall health assessment
+4. **Vaccination Record**: Status of each vaccine mentioned
+5. **Body Condition Score**: Based on weight and breed
+6. **Nutritional Assessment**: Based on breed and weight
+7. **Recommended Upcoming Care**: Next vaccinations, checkups due
+8. **Wellness Recommendations**: Breed-specific health tips
+9. **⚠️ DISCLAIMER**: This is an AI-generated report, not a veterinary document
+
+Format professionally with clear sections and dates.`,
+
+      smart_reminders: `You are a veterinary care scheduling specialist. Generate a comprehensive care schedule:
+
+Pet Name: ${params.pet_name || "Unknown"}
+Breed: ${params.breed || "Unknown"}
+Age: ${params.age || "Unknown"}
+Weight: ${params.weight || "Unknown"} kg
+
+Create a detailed smart care schedule:
+1. **Daily Schedule**: Feeding times, walks, play sessions, grooming
+2. **Weekly Tasks**: Bathing, nail trimming, dental care, training sessions
+3. **Monthly Tasks**: Flea/tick prevention, weight check, toy rotation
+4. **Quarterly Tasks**: Vet checkups, blood work reminders
+5. **Annual Tasks**: Vaccinations, comprehensive health exam
+6. **Breed-Specific Care**: Special needs for this breed
+7. **Seasonal Reminders**: Weather-related care adjustments
+8. **Emergency Preparedness**: Signs to watch for that need immediate attention
+
+Format with clear time slots and priority levels.`,
     };
 
     const prompt = prompts[action];
-    if (!prompt) throw new Error("Invalid action");
+    if (!prompt) throw new Error("Invalid action: " + action);
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("AI not configured");
@@ -167,7 +181,6 @@ Provide:
     const aiData = await aiResponse.json();
     const result = aiData.choices?.[0]?.message?.content || "No result generated.";
 
-    // Deduct credits
     await supabase.from("ai_credits").update({
       credits_remaining: remaining - cost,
     }).eq("user_id", user.id);
