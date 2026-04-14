@@ -53,10 +53,10 @@ export default function JobsCinematicHero({ totalJobs, totalCompanies, totalAppl
             muted
             playsInline
             className="w-full h-full object-cover"
-            style={{ filter: "brightness(0.55) saturate(1.2)" }}
+            style={{ filter: "brightness(0.85) saturate(1.15)" }}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0a0d1a]/95 via-[#0a0d1a]/60 to-[#0a0d1a]/30" />
-          <div className="absolute inset-0 bg-gradient-to-r from-amber-900/20 via-transparent to-blue-900/20" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0a0d1a]/80 via-[#0a0d1a]/30 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-amber-900/10 via-transparent to-blue-900/10" />
         </div>
 
         <div className="relative z-10 p-4 sm:p-6 lg:p-8 flex flex-col justify-end min-h-[260px] sm:min-h-[340px]">
