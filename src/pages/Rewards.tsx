@@ -6,7 +6,6 @@ import DailyRewardButton from "@/components/gamification/DailyRewardButton";
 import { DailyXPVideoReward } from "@/components/gamification/DailyXPVideoReward";
 import BadgesDisplay from "@/components/gamification/BadgesDisplay";
 import BadgeLeaderboard from "@/components/gamification/BadgeLeaderboard";
-import Leaderboard from "@/components/gamification/Leaderboard";
 import MyBadgesDisplay from "@/components/gamification/MyBadgesDisplay";
 import WeeklyChallenges from "@/components/rewards/WeeklyChallenges";
 import RewardHistoryTimeline from "@/components/rewards/RewardHistoryTimeline";
@@ -20,7 +19,13 @@ import RewardsXPLeaderboard from "@/components/rewards/RewardsXPLeaderboard";
 import RewardsRewardTiers from "@/components/rewards/RewardsRewardTiers";
 import RewardsLuckyWheel from "@/components/rewards/RewardsLuckyWheel";
 import RewardsSeasonalMissions from "@/components/rewards/RewardsSeasonalMissions";
-import { Crown, Home, Wand2, Trophy, Layers, Disc3, Target, Flame, Award, Medal } from "lucide-react";
+import RewardsStreakCoach from "@/components/rewards/RewardsStreakCoach";
+import RewardsGiftXP from "@/components/rewards/RewardsGiftXP";
+import RewardsShowcase from "@/components/rewards/RewardsShowcase";
+import RewardsXPBetting from "@/components/rewards/RewardsXPBetting";
+import RewardsMysteryBadges from "@/components/rewards/RewardsMysteryBadges";
+import RewardsMarketplace from "@/components/rewards/RewardsMarketplace";
+import { Crown, Home, Wand2, Trophy, Layers, Disc3, Target, Award, Medal, Flame, Gift, Eye, Sword, HelpCircle, ShoppingBag } from "lucide-react";
 
 const TABS = [
   { id: "overview", icon: Home, label: "Overview" },
@@ -31,6 +36,12 @@ const TABS = [
   { id: "missions", icon: Target, label: "Missions" },
   { id: "badges", icon: Award, label: "Badges" },
   { id: "hunters", icon: Medal, label: "Hunters" },
+  { id: "streak-coach", icon: Flame, label: "Streak Coach" },
+  { id: "gift-xp", icon: Gift, label: "Gift XP" },
+  { id: "showcase", icon: Eye, label: "Showcase" },
+  { id: "betting", icon: Sword, label: "XP Betting" },
+  { id: "mystery", icon: HelpCircle, label: "Mystery" },
+  { id: "marketplace", icon: ShoppingBag, label: "Marketplace" },
 ];
 
 export default function Rewards() {
@@ -57,11 +68,8 @@ export default function Rewards() {
     <div className="min-h-screen bg-background pt-24 pb-8">
       <div className="container mx-auto px-4 max-w-6xl">
         <XPMultiplierBanner />
-
-        {/* Cinematic Hero */}
         <RewardsCinematicHero level={2} totalXP={153} streak={0} badges={2} />
 
-        {/* Hub Tabs */}
         <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide mb-6">
           {TABS.map(tab => (
             <button
@@ -79,7 +87,6 @@ export default function Rewards() {
           ))}
         </div>
 
-        {/* Overview */}
         {activeView === "overview" && (
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
@@ -109,7 +116,6 @@ export default function Rewards() {
             </div>
 
             <RewardsGuide />
-
             <div className="mt-6">
               <MyBadgesDisplay userId={user.id} />
             </div>
@@ -123,6 +129,12 @@ export default function Rewards() {
         {activeView === "missions" && <RewardsSeasonalMissions />}
         {activeView === "badges" && <BadgesDisplay userId={user.id} />}
         {activeView === "hunters" && <BadgeLeaderboard />}
+        {activeView === "streak-coach" && <RewardsStreakCoach />}
+        {activeView === "gift-xp" && <RewardsGiftXP />}
+        {activeView === "showcase" && <RewardsShowcase />}
+        {activeView === "betting" && <RewardsXPBetting />}
+        {activeView === "mystery" && <RewardsMysteryBadges />}
+        {activeView === "marketplace" && <RewardsMarketplace />}
       </div>
     </div>
   );

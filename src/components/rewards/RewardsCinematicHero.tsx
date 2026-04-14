@@ -41,41 +41,43 @@ export default function RewardsCinematicHero({ level, totalXP, streak, badges }:
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="relative overflow-hidden rounded-2xl min-h-[240px] sm:min-h-[320px]"
+        className="relative overflow-hidden rounded-2xl min-h-[280px] sm:min-h-[360px]"
       >
         <div className="absolute inset-0 z-0">
-          <video src={heroVideo.url} autoPlay loop muted playsInline className="w-full h-full object-cover" style={{ filter: "brightness(0.7) saturate(1.2)" }} />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#1a1000]/95 via-[#1a1000]/50 to-[#1a1000]/20" />
-          <div className="absolute inset-0 bg-gradient-to-r from-amber-900/25 via-transparent to-yellow-900/15" />
+          <video src={heroVideo.url} autoPlay loop muted playsInline className="w-full h-full object-cover" style={{ filter: "brightness(0.85) saturate(1.2)" }} />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#1a1000]/70 via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-amber-900/15 via-transparent to-yellow-900/10" />
         </div>
 
-        <div className="relative z-10 p-4 sm:p-6 lg:p-8 flex flex-col justify-end min-h-[240px] sm:min-h-[320px]">
-          <div className="flex flex-wrap items-center gap-2 mb-4">
+        <div className="relative z-10 p-4 sm:p-6 lg:p-8 flex flex-col min-h-[280px] sm:min-h-[360px]">
+          {/* Top badges - compact */}
+          <div className="flex flex-wrap items-center gap-2 mb-auto">
             <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.2, type: "spring" }}>
-              <Badge className="bg-gradient-to-r from-amber-500 to-yellow-500 text-white font-bold border-amber-400/50 shadow-lg shadow-amber-500/30">
+              <Badge className="bg-gradient-to-r from-amber-500 to-yellow-500 text-white font-bold border-amber-400/50 shadow-lg shadow-amber-500/30 text-[10px] px-2 py-0.5">
                 <TrendingUp className="h-3 w-3 mr-1" /> Golden Treasury
               </Badge>
             </motion.div>
             {streak > 0 && (
               <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.3, type: "spring" }}>
-                <Badge className="bg-gradient-to-r from-orange-500 to-red-500 text-white border-orange-400/50">
+                <Badge className="bg-gradient-to-r from-orange-500 to-red-500 text-white border-orange-400/50 text-[10px] px-2 py-0.5">
                   <Flame className="h-3 w-3 mr-1" /> {streak} Day Streak
                 </Badge>
               </motion.div>
             )}
           </div>
 
+          {/* Title at bottom - compact glassmorphic frame */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.15 }}
-            className="border-2 border-amber-400/40 bg-[#1a1000]/50 backdrop-blur-lg rounded-xl px-5 py-4 w-fit max-w-full"
+            className="border border-amber-400/30 bg-black/30 backdrop-blur-md rounded-xl px-4 py-3 w-fit max-w-full mt-auto"
           >
-            <h1 className="text-2xl sm:text-3xl lg:text-5xl font-black text-white drop-shadow-lg">
+            <h1 className="text-xl sm:text-2xl lg:text-4xl font-black text-white drop-shadow-lg">
               🏆 REWARDS <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-300">CENTER</span>
             </h1>
-            <p className="text-sm sm:text-base text-white/80 font-semibold mt-1 drop-shadow">
-              Earn XP, unlock badges & climb the leaderboard with AI-powered insights
+            <p className="text-xs sm:text-sm text-white/80 font-semibold mt-0.5 drop-shadow">
+              Earn XP, unlock badges & climb the leaderboard
             </p>
           </motion.div>
         </div>
