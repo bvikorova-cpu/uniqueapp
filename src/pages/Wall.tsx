@@ -12,7 +12,7 @@ import UserSearch from "@/components/feed/UserSearch";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, TrendingUp, Home, Users, ArrowUp, Search, X, Bookmark } from "lucide-react";
+import { Loader2, TrendingUp, Home, Users, ArrowUp, Search, X, Bookmark, Wand2, Flame, Trophy, Award, Target } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { WallSidebar } from "@/components/wall/WallSidebar";
@@ -37,6 +37,12 @@ import WallEvents from "./wall/WallEvents";
 import WallSaved from "./wall/WallSaved";
 import WallTrending from "./wall/WallTrending";
 import WallInfo from "./wall/WallInfo";
+import WallCinematicHero from "@/components/wall/WallCinematicHero";
+import WallAIToolsGrid from "@/components/wall/WallAIToolsGrid";
+import WallPostingStreaks from "@/components/wall/WallPostingStreaks";
+import WallEngagementLeaderboard from "@/components/wall/WallEngagementLeaderboard";
+import WallCreatorBadges from "@/components/wall/WallCreatorBadges";
+import WallSocialChallenges from "@/components/wall/WallSocialChallenges";
 
 interface Post {
   id: string;
