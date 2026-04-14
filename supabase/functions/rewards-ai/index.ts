@@ -11,6 +11,12 @@ const CREDIT_COSTS: Record<string, number> = {
   badge_predictor: 4,
   challenge_generator: 5,
   reward_analyst: 5,
+  streak_coach: 4,
+  gift_xp: 3,
+  achievement_showcase: 4,
+  xp_betting: 5,
+  mystery_badges: 5,
+  reward_marketplace: 4,
 };
 
 serve(async (req) => {
@@ -51,102 +57,53 @@ serve(async (req) => {
 
     switch (action) {
       case "xp_optimizer":
-        systemPrompt = "You are a gamification strategist and XP optimization expert. You analyze user activity patterns and create detailed, actionable plans to maximize XP earnings and level progression. You understand reward psychology and engagement mechanics deeply.";
-        userPrompt = `Create a personalized XP optimization strategy:
-
-Current Level: ${params.current_level || "1"}
-Current XP: ${params.current_xp || "0"}
-Target Level: ${params.target_level || "10"}
-Daily Activity Hours: ${params.daily_hours || "1-2 hours"}
-Preferred Activities: ${params.activities || "Posting, commenting, liking"}
-Current Streak: ${params.streak || "0 days"}
-Badges Earned: ${params.badges || "0"}
-
-Provide:
-1. **XP Gap Analysis** — How much XP needed and estimated time to reach target
-2. **Daily XP Blueprint** — Hour-by-hour activity plan for maximum XP per session
-3. **High-Value Activities** — Top 10 activities ranked by XP/minute efficiency
-4. **Streak Strategy** — How to maintain and leverage streaks for XP multipliers
-5. **Badge Hunting Plan** — Which badges to target first for bonus XP
-6. **Weekly Milestones** — Checkpoints to track your progress
-7. **Hidden XP Boosters** — Lesser-known activities that give extra XP
-8. **Optimal Timing** — Best times to be active for challenge bonuses
-9. **Level-Up Forecast** — Week-by-week projection to target level`;
+        systemPrompt = "You are a gamification strategist and XP optimization expert.";
+        userPrompt = `Create a personalized XP optimization strategy:\n\nCurrent Level: ${params.current_level || "1"}\nCurrent XP: ${params.current_xp || "0"}\nTarget Level: ${params.target_level || "10"}\nDaily Activity Hours: ${params.daily_hours || "1-2 hours"}\nPreferred Activities: ${params.activities || "Posting, commenting, liking"}\n\nProvide:\n1. **XP Gap Analysis**\n2. **Daily XP Blueprint**\n3. **High-Value Activities** ranked by XP/minute\n4. **Streak Strategy**\n5. **Badge Hunting Plan**\n6. **Weekly Milestones**\n7. **Hidden XP Boosters**\n8. **Level-Up Forecast**`;
         break;
 
       case "badge_predictor":
-        systemPrompt = "You are a badge analytics expert and achievement prediction specialist. You analyze user behavior patterns and predict which badges and achievements users are closest to unlocking, providing specific actions to complete them faster.";
-        userPrompt = `Predict my next badge unlocks and create an achievement plan:
-
-Current Badges: ${params.current_badges || "None listed"}
-Activity Summary: ${params.activity_summary || "Regular posting and commenting"}
-Total Posts: ${params.total_posts || "Not specified"}
-Total Comments: ${params.total_comments || "Not specified"}
-Login Streak: ${params.login_streak || "0"}
-Level: ${params.level || "1"}
-Special Activities: ${params.special_activities || "None"}
-
-Provide:
-1. **Next 5 Badges Prediction** — Badges you're closest to with % completion estimate
-2. **Quick Wins** — 3 badges you can unlock TODAY with specific actions
-3. **Weekly Targets** — 5 badges achievable this week with step-by-step plans
-4. **Rare Badge Strategy** — How to unlock rare/epic/legendary badges
-5. **Badge Combo Efficiency** — Activities that progress multiple badges simultaneously
-6. **Hidden Badges** — Secret badges and hints on how to discover them
-7. **Badge Collection Score** — Rate your collection completeness (1-100)
-8. **Priority Ranking** — Which badges to focus on for maximum XP reward
-9. **Seasonal Badges Alert** — Time-limited badges about to expire`;
+        systemPrompt = "You are a badge analytics expert and achievement prediction specialist.";
+        userPrompt = `Predict my next badge unlocks:\n\nCurrent Badges: ${params.current_badges || "None"}\nActivity: ${params.activity_summary || "Regular posting"}\nPosts: ${params.total_posts || "?"}\nComments: ${params.total_comments || "?"}\nStreak: ${params.login_streak || "0"}\n\nProvide:\n1. **Next 5 Badges** with % completion\n2. **Quick Wins** — 3 badges unlockable TODAY\n3. **Weekly Targets**\n4. **Rare Badge Strategy**\n5. **Badge Combo Efficiency**\n6. **Hidden Badges**\n7. **Priority Ranking**`;
         break;
 
       case "challenge_generator":
-        systemPrompt = "You are a gamification designer and challenge creation expert. You create personalized, engaging challenges tailored to user skill levels and interests that drive meaningful engagement while being achievable and rewarding. Your challenges are creative, fun, and progressive.";
-        userPrompt = `Generate personalized challenges for me:
-
-Skill Level: ${params.skill_level || "Intermediate"}
-Preferred Activities: ${params.preferred_activities || "Social engagement"}
-Available Time: ${params.available_time || "30 minutes daily"}
-Motivation Style: ${params.motivation_style || "Achievement-driven"}
-Current Streak: ${params.streak || "0"}
-Level: ${params.level || "1"}
-Challenge History: ${params.challenge_history || "None completed yet"}
-
-Generate:
-1. **3 Daily Micro-Challenges** — Quick 5-10 minute tasks with immediate rewards (25-50 XP each)
-2. **3 Weekly Power Challenges** — Medium difficulty requiring sustained effort (100-300 XP each)
-3. **1 Epic Monthly Challenge** — Ambitious goal with legendary reward (500-1000 XP)
-4. **1 Social Challenge** — Requires collaboration or community interaction
-5. **1 Creative Challenge** — Pushes creative boundaries with unique content
-6. **Challenge Difficulty Scaling** — How challenges increase as you level up
-7. **Bonus Modifiers** — Special conditions that multiply XP (speed bonus, streak bonus, perfect score)
-8. **Challenge Chain** — 5 linked challenges where completing one unlocks the next
-9. **Reward Preview** — Detailed description of what you earn from each challenge`;
+        systemPrompt = "You are a gamification designer creating personalized, engaging challenges.";
+        userPrompt = `Generate challenges:\n\nSkill: ${params.skill_level || "Intermediate"}\nActivities: ${params.preferred_activities || "Social"}\nTime: ${params.available_time || "30 min"}\nMotivation: ${params.motivation_style || "Achievement-driven"}\n\nGenerate:\n1. **3 Daily Micro-Challenges** (25-50 XP)\n2. **3 Weekly Power Challenges** (100-300 XP)\n3. **1 Epic Monthly Challenge** (500-1000 XP)\n4. **1 Social Challenge**\n5. **1 Creative Challenge**\n6. **Challenge Chain** — 5 linked challenges\n7. **Reward Preview**`;
         break;
 
       case "reward_analyst":
-        systemPrompt = "You are a rewards analytics expert and engagement optimization consultant. You analyze reward history, spending patterns, and activity data to provide comprehensive insights and recommendations for maximizing value from the rewards system.";
-        userPrompt = `Analyze my rewards profile and provide insights:
+        systemPrompt = "You are a rewards analytics expert and engagement optimization consultant.";
+        userPrompt = `Analyze rewards profile:\n\nLevel: ${params.level || "1"}\nTotal XP: ${params.total_xp || "0"}\nMonthly XP: ${params.monthly_xp || "0"}\nBadges: ${params.badges || "0"}\nBest Streak: ${params.best_streak || "0"}\nActive Days: ${params.active_days || "?"}\n\nProvide:\n1. **Reward Health Score** (1-100)\n2. **XP Earning Trends**\n3. **Activity Efficiency Report**\n4. **Badge Collection Analysis**\n5. **Optimization Recommendations** (Top 10)\n6. **30-Day Projection**`;
+        break;
 
-Level: ${params.level || "1"}
-Total XP Earned: ${params.total_xp || "0"}
-XP This Month: ${params.monthly_xp || "0"}
-Badges Collected: ${params.badges || "0"}
-Total Badges Available: ${params.total_badges || "50"}
-Login Streak Record: ${params.best_streak || "0"}
-Rewards Claimed: ${params.rewards_claimed || "0"}
-Premium Store Purchases: ${params.store_purchases || "None"}
-Active Days: ${params.active_days || "Not specified"}
+      case "streak_coach":
+        systemPrompt = "You are a streak psychology expert and daily motivation coach. Create personalized streak maintenance plans with motivational messages, recovery strategies, and habit formation techniques.";
+        userPrompt = `Create a streak coaching plan:\n\nCurrent Streak: ${params.current_streak || "0"} days\nBest Streak: ${params.best_streak || "0"} days\nPeak Activity Time: ${params.timezone || "Not specified"}\nBiggest Challenge: ${params.challenge_areas || "Not specified"}\n\nProvide:\n1. **Streak Health Assessment** — Current streak status and risk analysis\n2. **Daily Motivation Message** — Personalized motivational quote and pep talk\n3. **Streak Protection Plan** — 5 strategies to never break your streak\n4. **Recovery Protocol** — What to do if you miss a day (streak save mechanics)\n5. **Habit Stacking Blueprint** — Link streak activities to existing daily habits\n6. **Milestone Rewards Map** — What you unlock at 7, 14, 30, 60, 100 day streaks\n7. **Accountability System** — Social features and reminders to keep you on track\n8. **Streak Multiplier Strategy** — How longer streaks multiply your XP earnings\n9. **Emergency Backup Plan** — Quick 2-minute actions that count for streak maintenance\n10. **30-Day Streak Forecast** — Projected XP and rewards if you maintain your streak`;
+        break;
 
-Provide comprehensive analysis:
-1. **Reward Health Score** — Overall rating (1-100) with breakdown
-2. **XP Earning Trends** — Monthly/weekly patterns and growth trajectory
-3. **Activity Efficiency Report** — ROI analysis of time spent vs XP earned
-4. **Badge Collection Analysis** — Completion percentage by rarity tier
-5. **Streak Performance** — Consistency score and improvement suggestions
-6. **Missed Opportunities** — XP and rewards you could have earned
-7. **Comparison Benchmark** — How you compare to top 10%, median, and average users
-8. **Optimization Recommendations** — Top 10 actionable tips ranked by impact
-9. **30-Day Projection** — Expected XP, level, and badges if you follow recommendations
-10. **Premium Value Assessment** — Whether premium store items are worth your XP`;
+      case "gift_xp":
+        systemPrompt = "You are a creative gift card designer and social rewards specialist. Create beautiful, personalized XP gift messages with creative presentation and emotional impact.";
+        userPrompt = `Create a beautiful XP gift card:\n\nRecipient: ${params.recipient_name || "Friend"}\nXP Amount: ${params.xp_amount || "50"}\nOccasion: ${params.occasion || "Just because"}\nPersonal Message: ${params.personal_message || "None provided"}\n\nCreate:\n1. **Gift Card Design** — Beautiful formatted gift card with emoji decorations\n2. **Personalized Message** — Expand the sender's message into something heartfelt\n3. **XP Impact Preview** — Show what this XP means (how much closer to next level)\n4. **Gift Bonus** — Suggest a matching challenge for the recipient to earn extra\n5. **Social Share Text** — Ready-to-share message for community feed\n6. **Gift Receipt** — Summary for the sender's records\n7. **Thank You Template** — Suggested thank you message for the recipient`;
+        break;
+
+      case "achievement_showcase":
+        systemPrompt = "You are a profile design expert and achievement presentation specialist. Create stunning, shareable achievement showcases that highlight users' gaming accomplishments.";
+        userPrompt = `Generate an achievement showcase:\n\nTotal Badges: ${params.badge_count || "0"}\nTop Badges: ${params.top_badges || "None specified"}\nLevel: ${params.level || "1"}\nStyle: ${params.showcase_style || "golden-luxury"}\n\nCreate:\n1. **Profile Card Layout** — Text-based showcase card design with borders and formatting\n2. **Achievement Highlights** — Top 5 most impressive achievements with descriptions\n3. **Stats Summary** — Key metrics displayed beautifully\n4. **Rarity Analysis** — How rare your badge collection is vs community\n5. **Title & Rank** — Custom title based on your achievements\n6. **Hall of Fame Entry** — Your entry for the community hall of fame\n7. **Social Share Card** — Formatted text ready to share on social media\n8. **Improvement Goals** — 3 achievements that would make your showcase even better`;
+        break;
+
+      case "xp_betting":
+        systemPrompt = "You are a competitive gaming analyst and XP betting strategist. Analyze bet proposals, calculate win probabilities, and provide detailed risk/reward analysis for XP wager challenges.";
+        userPrompt = `Analyze this XP bet:\n\nBet Amount: ${params.bet_amount || "50"} XP\nChallenge Type: ${params.challenge_type || "engagement-race"}\nRisk Level: ${params.risk_level || "Medium"}\nCurrent XP: ${params.current_xp || "Not specified"}\n\nProvide:\n1. **Bet Analysis** — Detailed breakdown of this wager\n2. **Win Probability** — Estimated chance of winning based on challenge type\n3. **Risk/Reward Matrix** — What you gain vs what you lose\n4. **Challenge Rules** — Specific rules and conditions for this bet\n5. **Strategy Guide** — How to maximize your winning chances\n6. **Historical Odds** — Typical success rates for this challenge type\n7. **Bankroll Management** — Is this bet size appropriate for your XP balance?\n8. **Alternative Bets** — 3 better bets if this one seems too risky\n9. **Payout Structure** — Exact XP earned for different completion levels\n10. **Bet Verdict** — TAKE IT or PASS with reasoning`;
+        break;
+
+      case "mystery_badges":
+        systemPrompt = "You are a mystery game master and secret badge designer. Create cryptic riddles, hidden badge challenges, and mystery events that reward exploration and creativity.";
+        userPrompt = `Decode mystery badges and create events:\n\nCurrent Badges: ${params.current_badges || "None listed"}\nActivity History: ${params.activity_history || "Not specified"}\nDifficulty: ${params.difficulty_preference || "medium"}\n\nProvide:\n1. **Active Mystery Events** — 3 current time-limited secret badge events with cryptic clues\n2. **Riddle Challenges** — 5 riddles that hint at hidden badge unlock conditions\n3. **Pattern Analysis** — Activities you're doing that might trigger secret badges\n4. **Hidden Badge Map** — Guide to 10 secret badges with difficulty ratings\n5. **Easter Egg Hints** — 5 platform easter eggs that award mystery badges\n6. **Time-Limited Alert** — Badges about to expire with urgency and hints\n7. **Community Secrets** — Collaborative challenges requiring group effort\n8. **Riddle Difficulty Rating** — How hard each mystery badge is to solve (1-10)\n9. **First Solver Bonus** — Extra rewards for being first to crack each mystery`;
+        break;
+
+      case "reward_marketplace":
+        systemPrompt = "You are a rewards economy expert and shopping advisor. Analyze XP spending options, calculate value propositions, and recommend optimal purchasing strategies.";
+        userPrompt = `Analyze marketplace spending:\n\nCurrent XP: ${params.current_xp || "Not specified"}\nSpending Priority: ${params.spending_goal || "balanced"}\nInterested Item: ${params.selected_item || "None selected"}\n\nProvide:\n1. **Value Analysis** — Rate each shop item by value-per-XP (best deals)\n2. **Personalized Recommendations** — Top 3 items for your priority\n3. **Budget Plan** — How to allocate XP across categories\n4. **ROI Calculator** — Which items generate the most long-term value\n5. **Timing Strategy** — When to buy vs when to save (seasonal sales)\n6. **Bundle Suggestions** — Combining items for maximum impact\n7. **XP Earning Plan** — How to earn enough XP for your wishlist\n8. **Market Forecast** — Expected new items and price changes\n9. **Spending Tracker** — Recommended weekly spending limits\n10. **VIP Path** — Fastest route to unlock VIP through smart spending`;
         break;
 
       default:
