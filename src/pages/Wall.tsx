@@ -533,25 +533,27 @@ const Feed = () => {
         return <WallInfo />;
       default:
         // Default Feed content
+        const WALL_TABS = [
+          { id: "feed", icon: Home, label: "Feed" },
+          { id: "ai-tools", icon: Wand2, label: "AI Tools" },
+          { id: "streaks", icon: Flame, label: "Streaks" },
+          { id: "ranks", icon: Trophy, label: "Ranks" },
+          { id: "badges", icon: Award, label: "Badges" },
+          { id: "challenges", icon: Target, label: "Challenges" },
+        ];
+
         return (
           <>
-            {/* Pull-to-refresh indicator - adjusted for mobile */}
+            {/* Pull-to-refresh indicator */}
             {pullToRefresh.pulling && (
               <div 
                 className="fixed top-0 left-0 lg:left-80 right-0 lg:right-80 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm transition-all duration-200"
-                style={{ 
-                  height: `${pullToRefresh.pullDistance}px`,
-                  opacity: pullToRefresh.pullDistance / PULL_THRESHOLD 
-                }}
+                style={{ height: `${pullToRefresh.pullDistance}px`, opacity: pullToRefresh.pullDistance / PULL_THRESHOLD }}
               >
                 <div className="flex flex-col items-center gap-2">
                   <Loader2 
-                    className={`h-5 w-5 sm:h-6 sm:w-6 text-primary transition-transform duration-200 ${
-                      pullToRefresh.canRefresh ? 'animate-spin' : ''
-                    }`}
-                    style={{
-                      transform: `rotate(${pullToRefresh.pullDistance * 3}deg)`
-                    }}
+                    className={`h-5 w-5 sm:h-6 sm:w-6 text-primary transition-transform duration-200 ${pullToRefresh.canRefresh ? 'animate-spin' : ''}`}
+                    style={{ transform: `rotate(${pullToRefresh.pullDistance * 3}deg)` }}
                   />
                   <span className="text-xs sm:text-sm text-muted-foreground">
                     {pullToRefresh.canRefresh ? 'Release to refresh' : 'Pull to refresh'}
@@ -560,76 +562,94 @@ const Feed = () => {
               </div>
             )}
 
-            <div className="max-w-2xl mx-auto px-2 sm:px-4 py-3 sm:py-4 space-y-3 sm:space-y-4">
-              {/* Stories Bar */}
-              <div className="glass-card rounded-2xl p-3 backdrop-blur-xl border border-white/10">
-                <StoriesBar />
+            <div className="max-w-3xl mx-auto px-2 sm:px-4 py-3 sm:py-4 space-y-3 sm:space-y-4">
+              {/* Cinematic Hero */}
+              <WallCinematicHero totalPosts={posts.length} totalUsers={42} totalLikes={feedItems.reduce((acc, item) => acc + (item.type === 'post' ? (item.data as Post).likes_count : 0), 0)} streak={7} />
+
+              {/* Hub Tabs */}
+              <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+                {WALL_TABS.map(tab => (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveView(tab.id)}
+                    className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${
+                      activeView === tab.id
+                        ? "bg-gradient-to-r from-orange-500 to-coral-500 text-white shadow-lg shadow-orange-500/20"
+                        : "bg-card/60 text-muted-foreground hover:bg-card/80 border border-border/30"
+                    }`}
+                  >
+                    <tab.icon className="h-3.5 w-3.5" />
+                    {tab.label}
+                  </button>
+                ))}
               </div>
 
-              {/* Smart Feed Tabs */}
-              <SmartFeedTabs activeTab={feedTab} onTabChange={setFeedTab} />
+              {activeView === "feed" && (
+                <>
+                  {/* Stories Bar */}
+                  <div className="glass-card rounded-2xl p-3 backdrop-blur-xl border border-white/10">
+                    <StoriesBar />
+                  </div>
 
-              {/* Achievements Badge */}
-              <div className="flex justify-end">
-                <AchievementsBadge />
-              </div>
+                  <SmartFeedTabs activeTab={feedTab} onTabChange={setFeedTab} />
 
-              {/* Search Bar */}
-              <SearchBar />
+                  <div className="flex justify-end">
+                    <AchievementsBadge />
+                  </div>
 
-              {/* Feed */}
-              <div className="space-y-3 sm:space-y-4">
-                {loading ? (
-                  <Card className="p-6 sm:p-8 flex items-center justify-center">
-                    <Loader2 className="h-6 w-6 sm:h-8 sm:w-8 animate-spin text-primary" />
-                  </Card>
-                ) : filteredFeedItems.length === 0 ? (
-                  <Card className="p-6 sm:p-8 text-center text-sm sm:text-base text-muted-foreground">
-                    No posts found. Try adjusting your filters.
-                  </Card>
-                ) : (
-                  <>
-                    {filteredFeedItems.map((item, index) => (
-                      <div 
-                        key={`${item.type}-${item.data.id}`}
-                        className="animate-fade-in relative"
-                        style={{ animationDelay: `${index * 0.05}s` }}
-                      >
-                        {item.type === 'post' ? (
-                          <PostCard
-                            post={item.data}
-                            onDelete={fetchPosts}
-                          />
-                        ) : (
-                          <RepostCard
-                            repost={item.data}
-                            onDelete={fetchPosts}
-                          />
+                  <SearchBar />
+
+                  <div className="space-y-3 sm:space-y-4">
+                    {loading ? (
+                      <Card className="p-6 sm:p-8 flex items-center justify-center">
+                        <Loader2 className="h-6 w-6 sm:h-8 sm:w-8 animate-spin text-primary" />
+                      </Card>
+                    ) : filteredFeedItems.length === 0 ? (
+                      <Card className="p-6 sm:p-8 text-center text-sm sm:text-base text-muted-foreground">
+                        No posts found. Try adjusting your filters.
+                      </Card>
+                    ) : (
+                      <>
+                        {filteredFeedItems.map((item, index) => (
+                          <div 
+                            key={`${item.type}-${item.data.id}`}
+                            className="animate-fade-in relative"
+                            style={{ animationDelay: `${index * 0.05}s` }}
+                          >
+                            {item.type === 'post' ? (
+                              <PostCard post={item.data} onDelete={fetchPosts} />
+                            ) : (
+                              <RepostCard repost={item.data} onDelete={fetchPosts} />
+                            )}
+                            <div className="absolute bottom-2 right-2 z-10">
+                              <FloatingReactions postId={item.data.id} />
+                            </div>
+                          </div>
+                        ))}
+                        
+                        {loadingMore && (
+                          <Card className="p-3 sm:p-4 flex items-center justify-center">
+                            <Loader2 className="h-5 w-5 sm:h-6 sm:w-6 animate-spin text-primary mr-2" />
+                            <span className="text-xs sm:text-sm text-muted-foreground">Loading more posts...</span>
+                          </Card>
                         )}
-                        {/* Floating reactions on each post */}
-                        <div className="absolute bottom-2 right-2 z-10">
-                          <FloatingReactions postId={item.data.id} />
-                        </div>
-                      </div>
-                    ))}
-                    
-                    {/* Loading more indicator */}
-                    {loadingMore && (
-                      <Card className="p-3 sm:p-4 flex items-center justify-center">
-                        <Loader2 className="h-5 w-5 sm:h-6 sm:w-6 animate-spin text-primary mr-2" />
-                        <span className="text-xs sm:text-sm text-muted-foreground">Loading more posts...</span>
-                      </Card>
+                        
+                        {!loading && !loadingMore && !hasMore && filteredFeedItems.length > 0 && (
+                          <Card className="p-3 sm:p-4 text-center text-muted-foreground text-xs sm:text-sm">
+                            You've reached the end! 🎉
+                          </Card>
+                        )}
+                      </>
                     )}
-                    
-                    {/* End of feed message */}
-                    {!loading && !loadingMore && !hasMore && filteredFeedItems.length > 0 && (
-                      <Card className="p-3 sm:p-4 text-center text-muted-foreground text-xs sm:text-sm">
-                        You've reached the end! 🎉
-                      </Card>
-                    )}
-                  </>
-                )}
-              </div>
+                  </div>
+                </>
+              )}
+
+              {activeView === "ai-tools" && <WallAIToolsGrid />}
+              {activeView === "streaks" && <WallPostingStreaks />}
+              {activeView === "ranks" && <WallEngagementLeaderboard />}
+              {activeView === "badges" && <WallCreatorBadges />}
+              {activeView === "challenges" && <WallSocialChallenges />}
             </div>
           </>
         );
