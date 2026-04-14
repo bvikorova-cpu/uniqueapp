@@ -96,6 +96,7 @@ const Feed = () => {
   const [page, setPage] = useState(0);
   const [showBackToTop, setShowBackToTop] = useState(false);
   const [feedTab, setFeedTab] = useState<FeedTab>("for-you");
+  const [activeView, setActiveView] = useState("feed");
   const [pullToRefresh, setPullToRefresh] = useState({
     pulling: false,
     pullDistance: 0,
