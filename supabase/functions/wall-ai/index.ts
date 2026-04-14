@@ -11,6 +11,12 @@ const CREDIT_COSTS: Record<string, number> = {
   content_calendar: 5,
   audience_insights: 5,
   viral_predictor: 4,
+  hashtag_generator: 3,
+  collab_matchmaker: 5,
+  content_repurposer: 4,
+  bot_detector: 5,
+  mood_feed: 4,
+  voice_post: 4,
 };
 
 serve(async (req) => {
@@ -136,6 +142,142 @@ Provide viral analysis:
 8. **Optimal Enhancements** — Suggested media, format, or timing changes
 9. **Comparison** — How this compares to viral posts in similar niches
 10. **Final Verdict** — Go/Revise/Rethink with specific reasoning`;
+        break;
+
+      case "hashtag_generator":
+        systemPrompt = "You are a social media hashtag strategist and trending topics analyst. You generate highly optimized hashtag sets that maximize reach, discoverability, and engagement. You understand platform algorithms and hashtag ranking systems.";
+        userPrompt = `Generate an optimized hashtag strategy for this content:
+
+Content/Topic: "${params.content || "Not provided"}"
+Niche: ${params.niche || "General"}
+Platform: ${params.platform || "Social media"}
+Goal: ${params.goal || "Maximum reach"}
+
+Provide:
+1. **Power Hashtags (5)** — High-volume, trending hashtags with 1M+ posts
+2. **Niche Hashtags (10)** — Medium-volume, targeted hashtags (100K-1M posts)
+3. **Micro Hashtags (10)** — Low-competition, high-engagement hashtags (<100K posts)
+4. **Branded Hashtag Suggestions (3)** — Unique hashtags for personal branding
+5. **Trending Now** — 5 currently trending hashtags related to this content
+6. **Banned/Shadowban Risk** — Hashtags to avoid and why
+7. **Optimal Placement Strategy** — Where and how to place hashtags
+8. **Hashtag Rotation Schedule** — Weekly rotation plan to avoid algorithm penalties
+9. **Performance Prediction** — Estimated reach boost percentage`;
+        break;
+
+      case "collab_matchmaker":
+        systemPrompt = "You are a social media collaboration strategist and influencer partnership expert. You analyze profiles and suggest ideal collaboration partners, content ideas, and partnership strategies for mutual growth.";
+        userPrompt = `Find ideal collaboration partners and strategies:
+
+Your Profile: ${params.profile_description || "Not specified"}
+Your Niche: ${params.niche || "General"}
+Follower Count: ${params.followers || "Not specified"}
+Content Style: ${params.content_style || "Mixed"}
+Goals: ${params.goals || "Grow audience through collaborations"}
+Preferred Collab Type: ${params.collab_type || "Any"}
+
+Provide:
+1. **Ideal Partner Profile** — Detailed description of your perfect collab partner
+2. **5 Collab Content Ideas** — Specific content concepts with format and execution plan
+3. **Outreach Templates** — 3 professional DM/email templates for reaching out
+4. **Collab Formats** — Best collaboration formats for your niche (duets, takeovers, challenges, joint lives)
+5. **Partnership Value Proposition** — What you bring to the table and how to present it
+6. **Revenue Sharing Models** — Fair compensation structures for different collab types
+7. **Red Flags to Avoid** — Warning signs of bad collaboration partners
+8. **Cross-Promotion Strategy** — How to maximize mutual benefit
+9. **Success Metrics** — How to measure collaboration effectiveness`;
+        break;
+
+      case "content_repurposer":
+        systemPrompt = "You are a content repurposing expert and multi-platform strategist. You transform single pieces of content into multiple formats optimized for different platforms and audience segments. You understand each platform's unique requirements and best practices.";
+        userPrompt = `Repurpose this content into multiple formats:
+
+Original Content: "${params.original_content || "Not provided"}"
+Original Format: ${params.original_format || "Text post"}
+Target Platforms: ${params.target_platforms || "All major platforms"}
+Brand Voice: ${params.brand_voice || "Professional yet approachable"}
+
+Transform into:
+1. **Twitter/X Thread** — 5-7 tweet thread with hooks and engagement prompts
+2. **Instagram Carousel** — 8-10 slide content with text for each slide
+3. **Story Sequence** — 5-6 story frames with interactive elements (polls, questions)
+4. **Short-Form Video Script** — 30-60 second Reel/TikTok script with visual directions
+5. **LinkedIn Article** — Professional long-form adaptation with key takeaways
+6. **Newsletter Snippet** — Email-friendly version with subject line options
+7. **Podcast Talking Points** — 5-minute segment outline based on the content
+8. **Infographic Blueprint** — Data points and visual layout suggestions
+9. **Quote Graphics** — 3-5 shareable quote card texts extracted from content`;
+        break;
+
+      case "bot_detector":
+        systemPrompt = "You are a social media fraud detection analyst and engagement quality specialist. You analyze follower patterns, engagement metrics, and account behaviors to identify fake followers, bot activity, and inauthentic engagement. You provide actionable cleanup strategies.";
+        userPrompt = `Analyze this profile for fake followers and bot activity:
+
+Profile Description: ${params.profile_description || "Not specified"}
+Follower Count: ${params.followers || "Not specified"}
+Average Likes per Post: ${params.avg_likes || "Not specified"}
+Average Comments per Post: ${params.avg_comments || "Not specified"}
+Follower Growth Pattern: ${params.growth_pattern || "Not specified"}
+Engagement Rate: ${params.engagement_rate || "Not specified"}
+Suspicious Activity: ${params.suspicious_signs || "None noted"}
+
+Provide comprehensive analysis:
+1. **Authenticity Score** — Rate 1-100 with detailed breakdown
+2. **Bot Detection Indicators** — Red flags found in the metrics
+3. **Engagement Quality Assessment** — Real vs. fake engagement ratio estimate
+4. **Follower Quality Breakdown** — Estimated % of real/inactive/bot followers
+5. **Suspicious Patterns** — Timeline anomalies, engagement spikes, follower bursts
+6. **Cleanup Recommendations** — Step-by-step guide to remove fake followers
+7. **Prevention Strategy** — How to avoid attracting bots in the future
+8. **Benchmark Comparison** — How these metrics compare to healthy profiles
+9. **Action Plan** — Priority-ordered steps to improve account health
+10. **Recovery Timeline** — Expected metrics after cleanup`;
+        break;
+
+      case "mood_feed":
+        systemPrompt = "You are a mood-based content curator and emotional intelligence specialist. You recommend content themes, topics, and engagement strategies based on the user's current mood and emotional state. You understand the psychology of content consumption and how different moods affect engagement.";
+        userPrompt = `Create a personalized content feed strategy based on mood:
+
+Current Mood: ${params.mood || "Neutral"}
+Energy Level: ${params.energy_level || "Medium"}
+What You Want to Feel: ${params.desired_mood || "Inspired and motivated"}
+Content Preferences: ${params.preferences || "Mixed content"}
+Time Available: ${params.time_available || "30 minutes"}
+Recent Activity: ${params.recent_activity || "Scrolling feed"}
+
+Provide mood-optimized recommendations:
+1. **Mood Analysis** — Understanding your current emotional state
+2. **Content Prescription** — 10 specific content types/topics optimized for your mood
+3. **Engagement Strategy** — How to interact with content to shift your mood positively
+4. **Content Creation Mood** — What to post when feeling this way (and what to avoid)
+5. **Mood Boosting Posts** — 5 specific post ideas that match your desired emotional state
+6. **Timing Advice** — Best times to consume and create content based on mood cycles
+7. **Emotional Triggers** — Content topics that will resonate most with your current state
+8. **Wellness Check** — Healthy social media habits for your mood
+9. **Creative Prompts** — 5 creative post prompts aligned with your emotional energy`;
+        break;
+
+      case "voice_post":
+        systemPrompt = "You are a voice content strategist and audio branding expert. You help users create compelling voice-based social media content including scripts for voice posts, audio stories, podcast snippets, and voice-over narratives. You understand vocal pacing, emotional delivery, and audio engagement.";
+        userPrompt = `Create a voice post script and strategy:
+
+Topic/Message: "${params.topic || "Not provided"}"
+Tone: ${params.tone || "Conversational and authentic"}
+Target Duration: ${params.duration || "60 seconds"}
+Audience: ${params.audience || "General followers"}
+Purpose: ${params.purpose || "Engagement and connection"}
+
+Provide:
+1. **Voice Post Script** — Complete word-for-word script with [pause], [emphasis], and [tone] markers
+2. **Opening Hook** — 3 attention-grabbing opening lines (first 3 seconds are crucial)
+3. **Pacing Guide** — Speed, pauses, and rhythm recommendations
+4. **Emotional Delivery Notes** — Where to add warmth, excitement, or urgency
+5. **Background Music Suggestions** — Mood-appropriate music styles and BPM ranges
+6. **Caption/Transcript** — Accessibility text optimized for engagement
+7. **Call-to-Action Script** — Compelling spoken CTA for the end
+8. **Alternative Versions** — 2 shorter variations (30s and 15s)
+9. **Voice Tips** — Practical vocal delivery tips for non-professional speakers
+10. **Best Posting Format** — Audio post, voice story, or video with voice-over`;
         break;
 
       default:
