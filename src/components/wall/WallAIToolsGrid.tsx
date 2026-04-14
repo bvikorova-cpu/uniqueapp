@@ -133,6 +133,119 @@ export default function WallAIToolsGrid() {
             <Input placeholder="Hashtags (comma-separated)" value={formData.hashtags || ""} onChange={e => setFormData(p => ({ ...p, hashtags: e.target.value }))} />
           </div>
         );
+      case "hashtag_generator":
+        return (
+          <div className="space-y-3">
+            <Textarea placeholder="Describe your content or paste your post..." value={formData.content || ""} onChange={e => setFormData(p => ({ ...p, content: e.target.value }))} rows={3} />
+            <Input placeholder="Niche (e.g., fitness, tech, travel)" value={formData.niche || ""} onChange={e => setFormData(p => ({ ...p, niche: e.target.value }))} />
+            <Select value={formData.goal || ""} onValueChange={v => setFormData(p => ({ ...p, goal: v }))}>
+              <SelectTrigger><SelectValue placeholder="Goal" /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Maximum reach">Maximum Reach</SelectItem>
+                <SelectItem value="Niche targeting">Niche Targeting</SelectItem>
+                <SelectItem value="Trending topics">Trending Topics</SelectItem>
+                <SelectItem value="Brand building">Brand Building</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        );
+      case "collab_matchmaker":
+        return (
+          <div className="space-y-3">
+            <Textarea placeholder="Describe your profile and content style..." value={formData.profile_description || ""} onChange={e => setFormData(p => ({ ...p, profile_description: e.target.value }))} rows={3} />
+            <Input placeholder="Your niche" value={formData.niche || ""} onChange={e => setFormData(p => ({ ...p, niche: e.target.value }))} />
+            <Input placeholder="Follower count" value={formData.followers || ""} onChange={e => setFormData(p => ({ ...p, followers: e.target.value }))} />
+            <Input placeholder="Goals (e.g., grow audience, brand deals)" value={formData.goals || ""} onChange={e => setFormData(p => ({ ...p, goals: e.target.value }))} />
+            <Select value={formData.collab_type || ""} onValueChange={v => setFormData(p => ({ ...p, collab_type: v }))}>
+              <SelectTrigger><SelectValue placeholder="Collab type" /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Content duets">Content Duets</SelectItem>
+                <SelectItem value="Account takeovers">Account Takeovers</SelectItem>
+                <SelectItem value="Joint challenges">Joint Challenges</SelectItem>
+                <SelectItem value="Any format">Any Format</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        );
+      case "content_repurposer":
+        return (
+          <div className="space-y-3">
+            <Textarea placeholder="Paste your original content here..." value={formData.original_content || ""} onChange={e => setFormData(p => ({ ...p, original_content: e.target.value }))} rows={4} />
+            <Select value={formData.original_format || ""} onValueChange={v => setFormData(p => ({ ...p, original_format: v }))}>
+              <SelectTrigger><SelectValue placeholder="Original format" /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Text post">Text Post</SelectItem>
+                <SelectItem value="Blog article">Blog Article</SelectItem>
+                <SelectItem value="Video script">Video Script</SelectItem>
+                <SelectItem value="Podcast notes">Podcast Notes</SelectItem>
+              </SelectContent>
+            </Select>
+            <Input placeholder="Brand voice (e.g., professional, casual, witty)" value={formData.brand_voice || ""} onChange={e => setFormData(p => ({ ...p, brand_voice: e.target.value }))} />
+          </div>
+        );
+      case "bot_detector":
+        return (
+          <div className="space-y-3">
+            <Textarea placeholder="Describe the profile to analyze..." value={formData.profile_description || ""} onChange={e => setFormData(p => ({ ...p, profile_description: e.target.value }))} rows={3} />
+            <Input placeholder="Follower count" value={formData.followers || ""} onChange={e => setFormData(p => ({ ...p, followers: e.target.value }))} />
+            <Input placeholder="Average likes per post" value={formData.avg_likes || ""} onChange={e => setFormData(p => ({ ...p, avg_likes: e.target.value }))} />
+            <Input placeholder="Average comments per post" value={formData.avg_comments || ""} onChange={e => setFormData(p => ({ ...p, avg_comments: e.target.value }))} />
+            <Input placeholder="Engagement rate (e.g., 2.5%)" value={formData.engagement_rate || ""} onChange={e => setFormData(p => ({ ...p, engagement_rate: e.target.value }))} />
+            <Input placeholder="Suspicious signs (optional)" value={formData.suspicious_signs || ""} onChange={e => setFormData(p => ({ ...p, suspicious_signs: e.target.value }))} />
+          </div>
+        );
+      case "mood_feed":
+        return (
+          <div className="space-y-3">
+            <Select value={formData.mood || ""} onValueChange={v => setFormData(p => ({ ...p, mood: v }))}>
+              <SelectTrigger><SelectValue placeholder="Current mood" /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Happy & Energetic">Happy & Energetic</SelectItem>
+                <SelectItem value="Calm & Reflective">Calm & Reflective</SelectItem>
+                <SelectItem value="Stressed & Overwhelmed">Stressed & Overwhelmed</SelectItem>
+                <SelectItem value="Creative & Inspired">Creative & Inspired</SelectItem>
+                <SelectItem value="Bored & Unmotivated">Bored & Unmotivated</SelectItem>
+                <SelectItem value="Anxious & Uncertain">Anxious & Uncertain</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={formData.energy_level || ""} onValueChange={v => setFormData(p => ({ ...p, energy_level: v }))}>
+              <SelectTrigger><SelectValue placeholder="Energy level" /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="High">High Energy</SelectItem>
+                <SelectItem value="Medium">Medium Energy</SelectItem>
+                <SelectItem value="Low">Low Energy</SelectItem>
+              </SelectContent>
+            </Select>
+            <Input placeholder="What do you want to feel? (e.g., inspired)" value={formData.desired_mood || ""} onChange={e => setFormData(p => ({ ...p, desired_mood: e.target.value }))} />
+            <Input placeholder="Time available (e.g., 30 minutes)" value={formData.time_available || ""} onChange={e => setFormData(p => ({ ...p, time_available: e.target.value }))} />
+          </div>
+        );
+      case "voice_post":
+        return (
+          <div className="space-y-3">
+            <Textarea placeholder="Topic or message for voice post..." value={formData.topic || ""} onChange={e => setFormData(p => ({ ...p, topic: e.target.value }))} rows={3} />
+            <Select value={formData.tone || ""} onValueChange={v => setFormData(p => ({ ...p, tone: v }))}>
+              <SelectTrigger><SelectValue placeholder="Tone" /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Conversational">Conversational</SelectItem>
+                <SelectItem value="Motivational">Motivational</SelectItem>
+                <SelectItem value="Educational">Educational</SelectItem>
+                <SelectItem value="Storytelling">Storytelling</SelectItem>
+                <SelectItem value="Humorous">Humorous</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={formData.duration || ""} onValueChange={v => setFormData(p => ({ ...p, duration: v }))}>
+              <SelectTrigger><SelectValue placeholder="Duration" /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="15 seconds">15 Seconds</SelectItem>
+                <SelectItem value="30 seconds">30 Seconds</SelectItem>
+                <SelectItem value="60 seconds">60 Seconds</SelectItem>
+                <SelectItem value="2 minutes">2 Minutes</SelectItem>
+              </SelectContent>
+            </Select>
+            <Input placeholder="Target audience" value={formData.audience || ""} onChange={e => setFormData(p => ({ ...p, audience: e.target.value }))} />
+          </div>
+        );
       default:
         return null;
     }
