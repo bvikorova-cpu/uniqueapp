@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Wand2, Calendar, BarChart3, Rocket, Loader2, CreditCard } from "lucide-react";
+import { Wand2, Calendar, BarChart3, Rocket, Loader2, CreditCard, Hash, Users, Repeat, ShieldAlert, Smile, Mic } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -15,6 +15,12 @@ const tools = [
   { id: "content_calendar", icon: Calendar, title: "AI Content Calendar", desc: "Weekly posting schedule with optimal times", cost: 5, color: "from-teal-500 to-cyan-500" },
   { id: "audience_insights", icon: BarChart3, title: "AI Audience Insights", desc: "Analyze followers & get growth tips", cost: 5, color: "from-rose-500 to-pink-500" },
   { id: "viral_predictor", icon: Rocket, title: "AI Viral Predictor", desc: "Score your post before publishing", cost: 4, color: "from-amber-500 to-yellow-500" },
+  { id: "hashtag_generator", icon: Hash, title: "AI Hashtag Generator", desc: "Generate trending hashtag sets", cost: 3, color: "from-violet-500 to-purple-500" },
+  { id: "collab_matchmaker", icon: Users, title: "Collab Matchmaker", desc: "Find ideal collaboration partners", cost: 5, color: "from-blue-500 to-indigo-500" },
+  { id: "content_repurposer", icon: Repeat, title: "Content Repurposer", desc: "Transform posts into multiple formats", cost: 4, color: "from-emerald-500 to-green-500" },
+  { id: "bot_detector", icon: ShieldAlert, title: "Bot Detector", desc: "Detect fake followers & bot activity", cost: 5, color: "from-red-500 to-rose-500" },
+  { id: "mood_feed", icon: Smile, title: "Mood-Based Feed", desc: "AI content curation by mood", cost: 4, color: "from-pink-500 to-fuchsia-500" },
+  { id: "voice_post", icon: Mic, title: "Voice Post Creator", desc: "AI scripts for voice-based content", cost: 4, color: "from-cyan-500 to-sky-500" },
 ];
 
 export default function WallAIToolsGrid() {
