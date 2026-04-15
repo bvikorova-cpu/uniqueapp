@@ -1,7 +1,9 @@
 import { motion } from "framer-motion";
-import { GraduationCap, Trophy, Flame, Zap, BookOpen } from "lucide-react";
+import { GraduationCap, Trophy, Flame, Zap, BookOpen, Sparkles } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useLiveStats } from "@/hooks/useLiveStats";
+import { Badge } from "@/components/ui/badge";
+import heroVideo from "@/assets/education-hero.mp4.asset.json";
 
 const AnimatedCounter = ({ target, suffix = "" }: { target: number; suffix?: string }) => {
   const [count, setCount] = useState(0);
@@ -18,6 +20,13 @@ const AnimatedCounter = ({ target, suffix = "" }: { target: number; suffix?: str
   return <span>{target === 0 ? "—" : `${count.toLocaleString()}${suffix}`}</span>;
 };
 
+const statColors = [
+  "from-violet-500 to-purple-600",
+  "from-amber-500 to-orange-600",
+  "from-emerald-500 to-teal-600",
+  "from-rose-500 to-pink-600",
+];
+
 export const EducationHero = () => {
   const { stats, loading } = useLiveStats([
     { key: "courses", table: "courses" },
@@ -33,34 +42,76 @@ export const EducationHero = () => {
   ];
 
   return (
-    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-8 sm:mb-12">
-      <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.1 }}
-        className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-sm text-primary mb-4">
-        <GraduationCap className="w-4 h-4" />
-        <span className="font-medium">AI-Powered Learning Platform</span>
+    <div className="space-y-4 mb-8">
+      {/* Badge */}
+      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex justify-center">
+        <Badge className="bg-gradient-to-r from-violet-500/20 to-purple-500/20 text-violet-600 dark:text-violet-400 border-violet-500/30 px-4 py-1.5 text-sm font-semibold">
+          <Sparkles className="w-3.5 h-3.5 mr-1.5" />
+          AI-Powered Learning Platform
+        </Badge>
       </motion.div>
-      <motion.h1 initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
-        className="text-3xl sm:text-5xl lg:text-6xl font-black mb-3 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
-        Education Hub
-      </motion.h1>
-      <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}
-        className="text-muted-foreground text-sm sm:text-lg max-w-2xl mx-auto mb-8">
-        AI tutoring, quiz categories, daily challenges & learning streaks
-      </motion.p>
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
-        className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-3xl mx-auto">
-        {heroStats.map((stat, i) => (
-          <motion.div key={stat.label} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.35 + i * 0.05 }}
-            className="relative group p-4 rounded-2xl bg-card/60 backdrop-blur-sm border border-border/50 hover:border-primary/30 transition-all">
-            <stat.icon className="w-5 h-5 text-primary mx-auto mb-2" />
-            <div className="text-2xl sm:text-3xl font-black text-foreground">
-              {(stat as any).staticLabel ? (stat as any).staticLabel : loading ? "..." : <AnimatedCounter target={stat.value} suffix={stat.suffix} />}
-            </div>
-            <p className="text-[11px] text-muted-foreground mt-1">{stat.label}</p>
-          </motion.div>
-        ))}
+
+      {/* Title */}
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="text-center">
+        <h1 className="text-3xl md:text-5xl font-black bg-gradient-to-r from-violet-600 via-purple-500 to-rose-500 bg-clip-text text-transparent mb-2">
+          Education Hub
+        </h1>
+        <p className="text-sm md:text-base text-muted-foreground max-w-lg mx-auto">
+          AI tutoring, quiz categories, daily challenges & learning streaks
+        </p>
       </motion.div>
-    </motion.div>
+
+      {/* Video Container */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.98 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 0.2, duration: 0.6 }}
+        className="relative w-full aspect-video max-h-[340px] rounded-2xl overflow-hidden shadow-2xl shadow-violet-500/10"
+      >
+        <video
+          autoPlay loop muted playsInline
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{ filter: "brightness(1.1) saturate(1.2)" }}
+        >
+          <source src={heroVideo.url} type="video/mp4" />
+        </video>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+        
+        <div className="absolute top-4 right-4 animate-pulse">
+          <Sparkles className="w-5 h-5 text-amber-400/70" />
+        </div>
+        <div className="absolute bottom-4 left-4">
+          <div className="flex items-center gap-2 bg-black/40 backdrop-blur-sm rounded-full px-3 py-1.5">
+            <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="text-xs text-white/90 font-medium">Live Platform</span>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Stats Grid */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3">
+        {heroStats.map((stat, i) => {
+          const Icon = stat.icon;
+          return (
+            <motion.div
+              key={stat.label}
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.3 + i * 0.08 }}
+            >
+              <div className="bg-card border rounded-xl p-3 md:p-4 text-center hover:shadow-lg hover:border-violet-500/20 transition-all group">
+                <div className={`w-9 h-9 mx-auto mb-2 rounded-lg bg-gradient-to-br ${statColors[i]} flex items-center justify-center shadow-md group-hover:scale-110 transition-transform`}>
+                  <Icon className="h-4 w-4 text-white" />
+                </div>
+                <p className="text-lg md:text-2xl font-black">
+                  {(stat as any).staticLabel ? (stat as any).staticLabel : loading ? "..." : <AnimatedCounter target={stat.value} suffix={stat.suffix} />}
+                </p>
+                <p className="text-[10px] md:text-xs text-muted-foreground font-medium">{stat.label}</p>
+              </div>
+            </motion.div>
+          );
+        })}
+      </div>
+    </div>
   );
 };
