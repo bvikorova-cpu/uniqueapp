@@ -1,92 +1,92 @@
 import { useEffect, useState } from "react";
-import { GraduationCap, Users, BookOpen, Award, Sparkles } from "lucide-react";
-import heroVideo from "@/assets/tutorial-academy-hero.mp4.asset.json";
+import { GraduationCap, Users, BookOpen, Award, Sparkles, Play, Star } from "lucide-react";
+import heroVideo from "@/assets/education-hero.mp4.asset.json";
 import { motion } from "framer-motion";
+import { Badge } from "@/components/ui/badge";
 
 const stats = [
-  { label: "Courses", icon: BookOpen, key: "courses", color: "text-emerald-400" },
-  { label: "Students", icon: Users, key: "students", color: "text-amber-400" },
-  { label: "Instructors", icon: GraduationCap, key: "instructors", color: "text-sky-400" },
-  { label: "Certificates", icon: Award, key: "certificates", color: "text-rose-400" },
+  { label: "Courses", icon: BookOpen, value: "1.8K+", color: "from-violet-500 to-purple-600" },
+  { label: "Quiz Attempts", icon: Star, value: "—", color: "from-amber-500 to-orange-600" },
+  { label: "Enrollments", icon: Award, value: "—", color: "from-emerald-500 to-teal-600" },
+  { label: "AI Tutor", icon: GraduationCap, value: "24/7", color: "from-rose-500 to-pink-600" },
 ];
 
 export function TutorialHero() {
-  const [liveStats, setLiveStats] = useState({ courses: 0, students: 0, instructors: 0, certificates: 0 });
-
-  useEffect(() => {
-    setLiveStats({ courses: 1856, students: 42300, instructors: 890, certificates: 18400 });
-    const interval = setInterval(() => {
-      setLiveStats({
-        courses: Math.floor(Math.random() * 200) + 1800,
-        students: Math.floor(Math.random() * 2000) + 41000,
-        instructors: Math.floor(Math.random() * 50) + 870,
-        certificates: Math.floor(Math.random() * 1000) + 18000,
-      });
-    }, 3000);
-    return () => clearInterval(interval);
-  }, []);
-
   return (
-    <div className="relative w-full h-[500px] md:h-[440px] rounded-2xl overflow-hidden mb-8 shadow-2xl">
-      <video
-        autoPlay loop muted playsInline
-        className="absolute inset-0 w-full h-full object-cover"
-        style={{ filter: "brightness(1.2) saturate(1.3) contrast(1.05)" }}
+    <div className="space-y-4 mb-8">
+      {/* Badge */}
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="flex justify-center"
       >
-        <source src={heroVideo.url} type="video/mp4" />
-      </video>
+        <Badge className="bg-gradient-to-r from-violet-500/20 to-purple-500/20 text-violet-600 dark:text-violet-400 border-violet-500/30 px-4 py-1.5 text-sm font-semibold">
+          <Sparkles className="w-3.5 h-3.5 mr-1.5" />
+          AI-Powered Learning Platform
+        </Badge>
+      </motion.div>
 
-      {/* Multi-layer overlay for depth */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-emerald-950/30 to-black/50" />
-      <div className="absolute inset-0 bg-gradient-to-r from-emerald-900/20 via-transparent to-amber-900/20" />
+      {/* Title */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1 }}
+        className="text-center"
+      >
+        <h1 className="text-3xl md:text-5xl font-black bg-gradient-to-r from-violet-600 via-purple-500 to-rose-500 bg-clip-text text-transparent mb-2">
+          Education Hub
+        </h1>
+        <p className="text-sm md:text-base text-muted-foreground max-w-lg mx-auto">
+          AI tutoring, quiz categories, daily challenges & learning streaks
+        </p>
+      </motion.div>
 
-      {/* Floating particles effect */}
-      <div className="absolute top-6 right-6 animate-pulse">
-        <Sparkles className="w-6 h-6 text-amber-400/60" />
-      </div>
-      <div className="absolute top-16 left-8 animate-pulse delay-1000">
-        <Sparkles className="w-4 h-4 text-emerald-400/40" />
-      </div>
-
-      <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-3 pb-32 md:pb-28">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="border-2 border-amber-400/50 bg-black/50 backdrop-blur-xl rounded-2xl px-5 md:px-12 py-4 md:py-6 mb-3 shadow-[0_0_80px_rgba(245,158,11,0.25),0_0_40px_rgba(16,185,129,0.2),inset_0_0_30px_rgba(245,158,11,0.08)]"
+      {/* Video Container */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.98 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 0.2, duration: 0.6 }}
+        className="relative w-full aspect-video max-h-[340px] rounded-2xl overflow-hidden shadow-2xl shadow-violet-500/10"
+      >
+        <video
+          autoPlay loop muted playsInline
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{ filter: "brightness(1.1) saturate(1.2)" }}
         >
-          <h1 className="text-base md:text-5xl font-black text-white tracking-wider whitespace-nowrap" style={{ textShadow: '0 0 30px rgba(245,158,11,0.5), 0 0 60px rgba(16,185,129,0.3), 0 2px 4px rgba(0,0,0,0.8)' }}>
-            🎓 TUTORIAL & COURSE ACADEMY
-          </h1>
-        </motion.div>
-        <motion.p
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.3 }}
-          className="text-sm md:text-xl font-bold text-white/95 max-w-2xl bg-emerald-950/50 backdrop-blur-sm rounded-xl px-4 md:px-8 py-2.5 border border-emerald-500/20"
-          style={{ textShadow: '0 2px 10px rgba(0,0,0,0.8)' }}
-        >
-          Premium Learning Platform — Teach, Learn & Earn with AI
-        </motion.p>
-      </div>
+          <source src={heroVideo.url} type="video/mp4" />
+        </video>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+        
+        {/* Floating sparkle accents */}
+        <div className="absolute top-4 right-4 animate-pulse">
+          <Sparkles className="w-5 h-5 text-amber-400/70" />
+        </div>
+        <div className="absolute bottom-4 left-4">
+          <div className="flex items-center gap-2 bg-black/40 backdrop-blur-sm rounded-full px-3 py-1.5">
+            <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="text-xs text-white/90 font-medium">Live Platform</span>
+          </div>
+        </div>
+      </motion.div>
 
-      <div className="absolute bottom-3 left-3 right-3 grid grid-cols-4 gap-1.5 md:gap-3">
+      {/* Stats Grid */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3">
         {stats.map((stat, i) => {
           const Icon = stat.icon;
-          const val = liveStats[stat.key as keyof typeof liveStats];
           return (
             <motion.div
-              key={stat.key}
-              initial={{ opacity: 0, y: 20 }}
+              key={stat.label}
+              initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.5 + i * 0.1 }}
-              className="bg-black/60 backdrop-blur-xl border border-amber-400/25 rounded-xl p-2 md:p-3.5 text-center shadow-[0_4px_20px_rgba(0,0,0,0.3)]"
+              transition={{ duration: 0.4, delay: 0.3 + i * 0.08 }}
             >
-              <Icon className={`h-3.5 w-3.5 md:h-5 md:w-5 ${stat.color} mx-auto mb-0.5`} />
-              <p className="text-sm md:text-xl font-black text-white leading-tight">
-                {val >= 1000 ? `${(val / 1000).toFixed(1)}K` : val.toLocaleString()}
-              </p>
-              <p className="text-[9px] md:text-xs text-white/70 font-semibold truncate">{stat.label}</p>
+              <div className="bg-card border rounded-xl p-3 md:p-4 text-center hover:shadow-lg hover:border-violet-500/20 transition-all group">
+                <div className={`w-9 h-9 mx-auto mb-2 rounded-lg bg-gradient-to-br ${stat.color} flex items-center justify-center shadow-md group-hover:scale-110 transition-transform`}>
+                  <Icon className="h-4 w-4 text-white" />
+                </div>
+                <p className="text-lg md:text-2xl font-black">{stat.value}</p>
+                <p className="text-[10px] md:text-xs text-muted-foreground font-medium">{stat.label}</p>
+              </div>
             </motion.div>
           );
         })}
