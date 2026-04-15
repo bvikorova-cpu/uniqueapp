@@ -7,11 +7,15 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, FileVideo, Loader2, Copy, Check, Sparkles, ListOrdered, Clock, BookOpen } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useTutorialAICredits } from "@/hooks/useTutorialAICredits";
+
+const CREDITS_COST = 5;
 
 interface Props { onBack: () => void; }
 
 export function AIVideoSummarizerView({ onBack }: Props) {
   const { toast } = useToast();
+  const { credits, isDeducting, checkAndDeduct } = useTutorialAICredits();
   const [transcript, setTranscript] = useState("");
   const [videoTitle, setVideoTitle] = useState("");
   const [summaryType, setSummaryType] = useState("detailed");
@@ -24,6 +28,9 @@ export function AIVideoSummarizerView({ onBack }: Props) {
       toast({ title: "Too Short", description: "Enter at least 30 characters of transcript", variant: "destructive" });
       return;
     }
+    const creditOk = await checkAndDeduct(CREDITS_COST);
+    if (!creditOk) return;
+
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke('stock-content-ai', {

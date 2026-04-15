@@ -7,12 +7,16 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Presentation, Loader2, Copy, Check, Sparkles, Monitor } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useTutorialAICredits } from "@/hooks/useTutorialAICredits";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
+const CREDITS_COST = 5;
 
 interface Props { onBack: () => void; }
 
 export function AIPresentationBuilderView({ onBack }: Props) {
   const { toast } = useToast();
+  const { credits, isDeducting, checkAndDeduct } = useTutorialAICredits();
   const [title, setTitle] = useState("");
   const [outline, setOutline] = useState("");
   const [slideCount, setSlideCount] = useState("10");

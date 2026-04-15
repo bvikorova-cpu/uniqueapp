@@ -6,13 +6,17 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, CalendarDays, Loader2, Copy, Check, Sparkles, Target, Clock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useTutorialAICredits } from "@/hooks/useTutorialAICredits";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
+
+const CREDITS_COST = 4;
 
 interface Props { onBack: () => void; }
 
 export function AIStudyPlanView({ onBack }: Props) {
   const { toast } = useToast();
+  const { credits, isDeducting, checkAndDeduct } = useTutorialAICredits();
   const [goal, setGoal] = useState("");
   const [subject, setSubject] = useState("");
   const [level, setLevel] = useState("intermediate");

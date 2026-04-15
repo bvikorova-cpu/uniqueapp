@@ -7,13 +7,17 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, FileCheck, Loader2, Copy, Check, Sparkles, AlertTriangle, CheckCircle2, XCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useTutorialAICredits } from "@/hooks/useTutorialAICredits";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Progress } from "@/components/ui/progress";
+
+const CREDITS_COST = 5;
 
 interface Props { onBack: () => void; }
 
 export function AIHomeworkGraderView({ onBack }: Props) {
   const { toast } = useToast();
+  const { credits, isDeducting, checkAndDeduct } = useTutorialAICredits();
   const [subject, setSubject] = useState("");
   const [assignment, setAssignment] = useState("");
   const [studentAnswer, setStudentAnswer] = useState("");

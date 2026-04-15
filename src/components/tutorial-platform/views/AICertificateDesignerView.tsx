@@ -6,11 +6,15 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Award, Loader2, Download, Sparkles, Star } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useTutorialAICredits } from "@/hooks/useTutorialAICredits";
+
+const CREDITS_COST = 5;
 
 interface Props { onBack: () => void; }
 
 export function AICertificateDesignerView({ onBack }: Props) {
   const { toast } = useToast();
+  const { credits, isDeducting, checkAndDeduct } = useTutorialAICredits();
   const [studentName, setStudentName] = useState("");
   const [courseName, setCourseName] = useState("");
   const [style, setStyle] = useState("classic");
@@ -22,6 +26,9 @@ export function AICertificateDesignerView({ onBack }: Props) {
       toast({ title: "Missing Info", description: "Fill in all fields", variant: "destructive" });
       return;
     }
+    const creditOk = await checkAndDeduct(CREDITS_COST);
+    if (!creditOk) return;
+
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke('stock-content-ai', {

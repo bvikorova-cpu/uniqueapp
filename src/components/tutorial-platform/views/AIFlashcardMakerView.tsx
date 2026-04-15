@@ -7,8 +7,11 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Layers, Loader2, Copy, Check, Sparkles, RotateCcw, ChevronLeft, ChevronRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useTutorialAICredits } from "@/hooks/useTutorialAICredits";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { motion, AnimatePresence } from "framer-motion";
+
+const CREDITS_COST = 4;
 
 interface Props { onBack: () => void; }
 
@@ -16,6 +19,7 @@ interface Flashcard { front: string; back: string; }
 
 export function AIFlashcardMakerView({ onBack }: Props) {
   const { toast } = useToast();
+  const { credits, isDeducting, checkAndDeduct } = useTutorialAICredits();
   const [topic, setTopic] = useState("");
   const [content, setContent] = useState("");
   const [cardCount, setCardCount] = useState("10");
