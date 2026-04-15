@@ -45,7 +45,7 @@ export const EducationHero = () => {
     <div className="space-y-4 mb-8">
       {/* Badge */}
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex justify-center">
-        <Badge className="bg-gradient-to-r from-violet-500/20 to-purple-500/20 text-violet-600 dark:text-violet-400 border-violet-500/30 px-4 py-1.5 text-sm font-semibold">
+        <Badge className="bg-gradient-to-r from-violet-600 to-purple-600 text-white border-violet-700 px-4 py-1.5 text-sm font-semibold shadow-lg">
           <Sparkles className="w-3.5 h-3.5 mr-1.5" />
           AI-Powered Learning Platform
         </Badge>
