@@ -7041,6 +7041,116 @@ export type Database = {
         }
         Relationships: []
       }
+      coloring_challenge_submissions: {
+        Row: {
+          challenge_id: string
+          completion_time_seconds: number | null
+          created_at: string
+          id: string
+          image_url: string
+          user_id: string
+          xp_earned: number | null
+        }
+        Insert: {
+          challenge_id: string
+          completion_time_seconds?: number | null
+          created_at?: string
+          id?: string
+          image_url: string
+          user_id: string
+          xp_earned?: number | null
+        }
+        Update: {
+          challenge_id?: string
+          completion_time_seconds?: number | null
+          created_at?: string
+          id?: string
+          image_url?: string
+          user_id?: string
+          xp_earned?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coloring_challenge_submissions_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "coloring_daily_challenges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      coloring_color_suggestions: {
+        Row: {
+          ai_description: string | null
+          created_at: string
+          credits_used: number | null
+          id: string
+          page_image_url: string
+          palette: Json
+          style: string | null
+          user_id: string
+        }
+        Insert: {
+          ai_description?: string | null
+          created_at?: string
+          credits_used?: number | null
+          id?: string
+          page_image_url: string
+          palette?: Json
+          style?: string | null
+          user_id: string
+        }
+        Update: {
+          ai_description?: string | null
+          created_at?: string
+          credits_used?: number | null
+          id?: string
+          page_image_url?: string
+          palette?: Json
+          style?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      coloring_community_gallery: {
+        Row: {
+          created_at: string
+          id: string
+          image_url: string
+          is_public: boolean | null
+          likes_count: number | null
+          prompt: string | null
+          style: string | null
+          title: string | null
+          tool_used: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          image_url: string
+          is_public?: boolean | null
+          likes_count?: number | null
+          prompt?: string | null
+          style?: string | null
+          title?: string | null
+          tool_used?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          image_url?: string
+          is_public?: boolean | null
+          likes_count?: number | null
+          prompt?: string | null
+          style?: string | null
+          title?: string | null
+          tool_used?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       coloring_credits: {
         Row: {
           created_at: string
@@ -7070,6 +7180,74 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      coloring_daily_challenges: {
+        Row: {
+          challenge_date: string
+          created_at: string
+          description: string | null
+          difficulty: string
+          id: string
+          participants_count: number | null
+          prompt: string
+          sample_image_url: string | null
+          theme: string
+          xp_reward: number | null
+        }
+        Insert: {
+          challenge_date?: string
+          created_at?: string
+          description?: string | null
+          difficulty?: string
+          id?: string
+          participants_count?: number | null
+          prompt: string
+          sample_image_url?: string | null
+          theme: string
+          xp_reward?: number | null
+        }
+        Update: {
+          challenge_date?: string
+          created_at?: string
+          description?: string | null
+          difficulty?: string
+          id?: string
+          participants_count?: number | null
+          prompt?: string
+          sample_image_url?: string | null
+          theme?: string
+          xp_reward?: number | null
+        }
+        Relationships: []
+      }
+      coloring_gallery_likes: {
+        Row: {
+          created_at: string
+          gallery_item_id: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          gallery_item_id: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          gallery_item_id?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coloring_gallery_likes_gallery_item_id_fkey"
+            columns: ["gallery_item_id"]
+            isOneToOne: false
+            referencedRelation: "coloring_community_gallery"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       coloring_pages: {
         Row: {
