@@ -11,6 +11,10 @@ import { ComparisonTable } from "@/components/mentor/ComparisonTable";
 import { SessionStreak } from "@/components/mentor/SessionStreak";
 import { ProgressPreview } from "@/components/mentor/ProgressPreview";
 import { AchievementBadges } from "@/components/mentor/AchievementBadges";
+import { MoodTracker } from "@/components/mentor/MoodTracker";
+import { AIActionPlans } from "@/components/mentor/AIActionPlans";
+import { GamificationXP } from "@/components/mentor/GamificationXP";
+import { VoiceCoaching } from "@/components/mentor/VoiceCoaching";
 
 const MENTOR_AREAS = [
   {
@@ -147,23 +151,33 @@ const AIMentor = () => {
 
         {/* Main content: Mentor cards + sidebar */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-          <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
-            {MENTOR_AREAS.map((area, i) => {
-              const hasSubscription = isAdmin || subscriptions.some(s => s.mentor_area === area.id);
-              return (
-                <MentorCard
-                  key={area.id}
-                  area={area}
-                  hasSubscription={hasSubscription}
-                  isOnline={true}
-                  onSelect={() => handleSelectMentor(area.id)}
-                  index={i}
-                />
-              );
-            })}
+          <div className="lg:col-span-2 space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {MENTOR_AREAS.map((area, i) => {
+                const hasSubscription = isAdmin || subscriptions.some(s => s.mentor_area === area.id);
+                return (
+                  <MentorCard
+                    key={area.id}
+                    area={area}
+                    hasSubscription={hasSubscription}
+                    isOnline={true}
+                    onSelect={() => handleSelectMentor(area.id)}
+                    index={i}
+                  />
+                );
+              })}
+            </div>
+
+            {/* Voice Coaching */}
+            <VoiceCoaching />
+
+            {/* AI Action Plans */}
+            <AIActionPlans />
           </div>
 
           <div className="space-y-4">
+            <GamificationXP />
+            <MoodTracker />
             <TestimonialsCarousel />
             <ComparisonTable />
           </div>
