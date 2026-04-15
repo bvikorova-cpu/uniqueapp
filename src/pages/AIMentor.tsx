@@ -11,6 +11,10 @@ import { ComparisonTable } from "@/components/mentor/ComparisonTable";
 import { SessionStreak } from "@/components/mentor/SessionStreak";
 import { ProgressPreview } from "@/components/mentor/ProgressPreview";
 import { AchievementBadges } from "@/components/mentor/AchievementBadges";
+import { MoodTracker } from "@/components/mentor/MoodTracker";
+import { AIActionPlans } from "@/components/mentor/AIActionPlans";
+import { GamificationXP } from "@/components/mentor/GamificationXP";
+import { VoiceCoaching } from "@/components/mentor/VoiceCoaching";
 
 const MENTOR_AREAS = [
   {
