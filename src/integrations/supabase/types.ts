@@ -21552,6 +21552,42 @@ export type Database = {
           },
         ]
       }
+      mentor_action_plans: {
+        Row: {
+          created_at: string
+          credits_used: number
+          id: string
+          mentor_area: string
+          plan_content: string
+          status: string
+          title: string
+          user_id: string
+          week_start: string
+        }
+        Insert: {
+          created_at?: string
+          credits_used?: number
+          id?: string
+          mentor_area?: string
+          plan_content: string
+          status?: string
+          title: string
+          user_id: string
+          week_start?: string
+        }
+        Update: {
+          created_at?: string
+          credits_used?: number
+          id?: string
+          mentor_area?: string
+          plan_content?: string
+          status?: string
+          title?: string
+          user_id?: string
+          week_start?: string
+        }
+        Relationships: []
+      }
       mentor_checkins: {
         Row: {
           achievements: string[] | null
@@ -21623,6 +21659,39 @@ export type Database = {
           target_date?: string | null
           title?: string
           updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      mentor_moods: {
+        Row: {
+          created_at: string
+          energy_score: number
+          id: string
+          mentor_area: string
+          mood_score: number
+          notes: string | null
+          stress_score: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          energy_score: number
+          id?: string
+          mentor_area?: string
+          mood_score: number
+          notes?: string | null
+          stress_score: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          energy_score?: number
+          id?: string
+          mentor_area?: string
+          mood_score?: number
+          notes?: string | null
+          stress_score?: number
           user_id?: string
         }
         Relationships: []
@@ -21717,6 +21786,42 @@ export type Database = {
           status?: string
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      mentor_xp: {
+        Row: {
+          badges: string[] | null
+          created_at: string
+          id: string
+          level: number
+          longest_streak: number
+          streak_days: number
+          updated_at: string
+          user_id: string
+          xp_total: number
+        }
+        Insert: {
+          badges?: string[] | null
+          created_at?: string
+          id?: string
+          level?: number
+          longest_streak?: number
+          streak_days?: number
+          updated_at?: string
+          user_id: string
+          xp_total?: number
+        }
+        Update: {
+          badges?: string[] | null
+          created_at?: string
+          id?: string
+          level?: number
+          longest_streak?: number
+          streak_days?: number
+          updated_at?: string
+          user_id?: string
+          xp_total?: number
         }
         Relationships: []
       }
