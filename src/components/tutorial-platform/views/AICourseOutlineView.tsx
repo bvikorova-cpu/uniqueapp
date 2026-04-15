@@ -3,14 +3,18 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, FileText, Loader2, Copy, Check, Sparkles, Lightbulb } from "lucide-react";
+import { ArrowLeft, FileText, Loader2, Copy, Check, Sparkles, Lightbulb, CreditCard } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useTutorialAICredits } from "@/hooks/useTutorialAICredits";
+
+const CREDITS_COST = 4;
 
 interface Props { onBack: () => void; }
 
 export function AICourseOutlineView({ onBack }: Props) {
   const { toast } = useToast();
+  const { credits, isLoading: creditsLoading, isDeducting, checkAndDeduct } = useTutorialAICredits();
   const [title, setTitle] = useState("");
   const [audience, setAudience] = useState("beginners");
   const [modules, setModules] = useState("6");
@@ -23,6 +27,10 @@ export function AICourseOutlineView({ onBack }: Props) {
       toast({ title: "Missing Title", description: "Enter a course title", variant: "destructive" });
       return;
     }
+
+    const ok = await checkAndDeduct(CREDITS_COST);
+    if (!ok) return;
+
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke('stock-content-ai', {
@@ -30,7 +38,7 @@ export function AICourseOutlineView({ onBack }: Props) {
       });
       if (error) throw error;
       setOutline(data.result);
-      toast({ title: "Outline Generated!", description: "4 credits used" });
+      toast({ title: "Outline Generated!", description: `${CREDITS_COST} credits used` });
     } catch (err: any) {
       toast({ title: "Error", description: err.message || "Failed", variant: "destructive" });
     } finally {

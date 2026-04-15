@@ -7,6 +7,9 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Languages, Loader2, Copy, Check, Sparkles, Globe } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useTutorialAICredits } from "@/hooks/useTutorialAICredits";
+
+const CREDITS_COST = 4;
 
 interface Props { onBack: () => void; }
 
@@ -27,6 +30,7 @@ const languages = [
 
 export function AICourseTranslatorView({ onBack }: Props) {
   const { toast } = useToast();
+  const { credits, isDeducting, checkAndDeduct } = useTutorialAICredits();
   const [content, setContent] = useState("");
   const [targetLang, setTargetLang] = useState("es");
   const [contentType, setContentType] = useState("lesson");
@@ -39,6 +43,9 @@ export function AICourseTranslatorView({ onBack }: Props) {
       toast({ title: "Too Short", description: "Enter at least 10 characters", variant: "destructive" });
       return;
     }
+    const creditOk = await checkAndDeduct(CREDITS_COST);
+    if (!creditOk) return;
+
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke('stock-content-ai', {

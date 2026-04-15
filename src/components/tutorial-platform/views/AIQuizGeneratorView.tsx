@@ -3,14 +3,18 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Brain, Loader2, Copy, Check, Sparkles, HelpCircle } from "lucide-react";
+import { ArrowLeft, Brain, Loader2, Copy, Check, Sparkles, HelpCircle, CreditCard } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useTutorialAICredits } from "@/hooks/useTutorialAICredits";
+
+const CREDITS_COST = 5;
 
 interface Props { onBack: () => void; }
 
 export function AIQuizGeneratorView({ onBack }: Props) {
   const { toast } = useToast();
+  const { credits, isLoading: creditsLoading, isDeducting, checkAndDeduct } = useTutorialAICredits();
   const [topic, setTopic] = useState("");
   const [numQuestions, setNumQuestions] = useState("5");
   const [difficulty, setDifficulty] = useState("medium");
@@ -23,6 +27,10 @@ export function AIQuizGeneratorView({ onBack }: Props) {
       toast({ title: "Missing Topic", description: "Please enter a course topic", variant: "destructive" });
       return;
     }
+    
+    const ok = await checkAndDeduct(CREDITS_COST);
+    if (!ok) return;
+
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke('stock-content-ai', {
@@ -30,7 +38,7 @@ export function AIQuizGeneratorView({ onBack }: Props) {
       });
       if (error) throw error;
       setQuiz(data.result);
-      toast({ title: "Quiz Generated!", description: `${numQuestions} questions created (5 credits used)` });
+      toast({ title: "Quiz Generated!", description: `${numQuestions} questions created (${CREDITS_COST} credits used)` });
     } catch (err: any) {
       toast({ title: "Error", description: err.message || "Failed to generate quiz", variant: "destructive" });
     } finally {

@@ -7,6 +7,9 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, MessageSquare, Star, ThumbsUp, ThumbsDown, Loader2, Sparkles, TrendingUp, AlertCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useTutorialAICredits } from "@/hooks/useTutorialAICredits";
+
+const CREDITS_COST = 4;
 
 interface Props { onBack: () => void; }
 
@@ -20,6 +23,7 @@ const mockReviews = [
 
 export function CourseReviewSystemView({ onBack }: Props) {
   const { toast } = useToast();
+  const { credits, isDeducting, checkAndDeduct } = useTutorialAICredits();
   const [analyzing, setAnalyzing] = useState(false);
   const [sentimentReport, setSentimentReport] = useState<string | null>(null);
   const [newReview, setNewReview] = useState(false);
