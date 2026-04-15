@@ -3,13 +3,16 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, MessageCircle, Send, Loader2, Bot, User, Sparkles, Lightbulb, BookOpen, Brain, Code, Palette } from "lucide-react";
+import { ArrowLeft, MessageCircle, Send, Loader2, Bot, User, Sparkles, Lightbulb, BookOpen, Brain, Code, Palette, CreditCard } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
+import { useTutoringCredits } from "@/hooks/useTutoringCredits";
 
 interface Message { role: "user" | "assistant"; content: string; }
 interface Props { onBack: () => void; }
+
+const CREDITS_PER_MESSAGE = 3;
 
 const suggestionCategories = [
   { icon: Code, label: "Programming", suggestions: ["Explain React hooks", "What is TypeScript?", "How does async/await work?"] },
@@ -20,6 +23,7 @@ const suggestionCategories = [
 
 export function AITutorChatView({ onBack }: Props) {
   const { toast } = useToast();
+  const { credits, isLoading: creditsLoading, useCredit, isUsingCredit } = useTutoringCredits();
   const [messages, setMessages] = useState<Message[]>([
     { role: "assistant", content: "Hello! 👋 I'm your AI Tutor. I can help you with programming, data science, design, marketing, and more. Pick a topic below or ask me anything!" }
   ]);
@@ -35,6 +39,13 @@ export function AITutorChatView({ onBack }: Props) {
   const sendMessage = async (text?: string) => {
     const msg = text || input;
     if (!msg.trim() || loading) return;
+
+    // Check credits
+    if (credits < CREDITS_PER_MESSAGE) {
+      toast({ title: "Insufficient Credits", description: `You need ${CREDITS_PER_MESSAGE} credits per message. Purchase more to continue.`, variant: "destructive" });
+      return;
+    }
+
     const userMsg: Message = { role: "user", content: msg };
     setMessages(prev => [...prev, userMsg]);
     setInput("");
@@ -42,13 +53,22 @@ export function AITutorChatView({ onBack }: Props) {
     setLoading(true);
 
     try {
+      // Deduct credits first
+      for (let i = 0; i < CREDITS_PER_MESSAGE; i++) {
+        await useCredit();
+      }
+
       const { data, error } = await supabase.functions.invoke('stock-content-ai', {
         body: { action: 'tutor-chat', messages: [...messages, userMsg] }
       });
       if (error) throw error;
       setMessages(prev => [...prev, { role: "assistant", content: data.result }]);
     } catch (err: any) {
-      toast({ title: "Error", description: err.message || "Failed to get response", variant: "destructive" });
+      if (err.message === "Insufficient credits") {
+        toast({ title: "Insufficient Credits", description: "Purchase more credits to continue.", variant: "destructive" });
+      } else {
+        toast({ title: "Error", description: err.message || "Failed to get response", variant: "destructive" });
+      }
     } finally {
       setLoading(false);
     }
@@ -66,10 +86,29 @@ export function AITutorChatView({ onBack }: Props) {
             <h2 className="text-2xl font-black">AI Tutor Chat</h2>
             <p className="text-sm text-muted-foreground">Personal AI tutor for any subject</p>
           </div>
-          <Badge className="ml-auto bg-gradient-to-r from-cyan-500 to-blue-500 text-white border-0 shadow-md">
-            <Sparkles className="w-3 h-3 mr-1" />3 CR / Session
-          </Badge>
+          <div className="ml-auto flex flex-col items-end gap-1">
+            <Badge className="bg-gradient-to-r from-cyan-500 to-blue-500 text-white border-0 shadow-md">
+              <Sparkles className="w-3 h-3 mr-1" />{CREDITS_PER_MESSAGE} CR / msg
+            </Badge>
+            <div className="flex items-center gap-1 text-xs">
+              <CreditCard className="w-3 h-3 text-muted-foreground" />
+              <span className={`font-bold ${credits < CREDITS_PER_MESSAGE ? 'text-destructive' : 'text-emerald-500'}`}>
+                {creditsLoading ? '...' : `${credits} credits`}
+              </span>
+            </div>
+          </div>
         </motion.div>
+
+        {/* Low credits warning */}
+        {!creditsLoading && credits < CREDITS_PER_MESSAGE && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+            <Card className="p-3 mb-3 bg-destructive/10 border-destructive/30">
+              <p className="text-xs text-destructive font-medium">
+                ⚠️ Insufficient credits! You need at least {CREDITS_PER_MESSAGE} credits to send a message. Purchase more from the Education hub.
+              </p>
+            </Card>
+          </motion.div>
+        )}
 
         {/* Tips */}
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }}>
@@ -128,7 +167,7 @@ export function AITutorChatView({ onBack }: Props) {
             <div ref={scrollRef} />
           </div>
 
-          {/* Smart suggestions with categories */}
+          {/* Smart suggestions */}
           {messages.length <= 1 && (
             <div className="px-4 pb-2 space-y-2">
               <div className="flex gap-1.5 overflow-x-auto pb-1">
@@ -162,9 +201,20 @@ export function AITutorChatView({ onBack }: Props) {
           )}
 
           <div className="p-3 border-t flex gap-2">
-            <Input value={input} onChange={e => setInput(e.target.value)} placeholder="Ask your tutor anything..." onKeyDown={e => e.key === "Enter" && sendMessage()} className="h-10" />
-            <Button onClick={() => sendMessage()} disabled={loading} className="h-10 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 shadow-md">
-              <Send className="w-4 h-4" />
+            <Input 
+              value={input} 
+              onChange={e => setInput(e.target.value)} 
+              placeholder={credits < CREDITS_PER_MESSAGE ? "Purchase credits to chat..." : "Ask your tutor anything..."} 
+              onKeyDown={e => e.key === "Enter" && sendMessage()} 
+              className="h-10"
+              disabled={credits < CREDITS_PER_MESSAGE}
+            />
+            <Button 
+              onClick={() => sendMessage()} 
+              disabled={loading || isUsingCredit || credits < CREDITS_PER_MESSAGE} 
+              className="h-10 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 shadow-md"
+            >
+              {isUsingCredit ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
             </Button>
           </div>
         </Card>
