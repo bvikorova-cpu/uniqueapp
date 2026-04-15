@@ -21,7 +21,7 @@ export function PrintExport() {
       if (!user) return [];
       const { data } = await supabase
         .from("coloring_pages")
-        .select("id, title, processed_image_url, created_at")
+        .select("id, processed_image_url, created_at, difficulty")
         .eq("user_id", user.id)
         .order("created_at", { ascending: false });
       return data || [];
@@ -34,6 +34,7 @@ export function PrintExport() {
     try {
       const page = myPages?.find((p) => p.id === selectedPage);
       if (!page?.processed_image_url) throw new Error("Page not found");
+      const pageTitle = `Coloring Page - ${page.difficulty}`;
 
       // Create a print-ready canvas
       const sizes: Record<string, { w: number; h: number }> = {
@@ -76,7 +77,7 @@ export function PrintExport() {
       ctx.fillStyle = "#333333";
       ctx.font = "bold 48px serif";
       ctx.textAlign = "center";
-      ctx.fillText(page.title || "Coloring Page", size.w / 2, margin + 50);
+      ctx.fillText(pageTitle, size.w / 2, margin + 50);
 
       // Add border around image
       ctx.strokeStyle = "#EEEEEE";
@@ -85,7 +86,7 @@ export function PrintExport() {
 
       // Download as PNG (high quality for print)
       const link = document.createElement("a");
-      link.download = `${page.title || "coloring-page"}-${paperSize}-print.png`;
+      link.download = `coloring-page-${paperSize}-print.png`;
       link.href = canvas.toDataURL("image/png");
       link.click();
 
@@ -119,7 +120,7 @@ export function PrintExport() {
               <SelectContent>
                 {myPages?.map((page) => (
                   <SelectItem key={page.id} value={page.id}>
-                    {page.title || `Page from ${new Date(page.created_at).toLocaleDateString()}`}
+                    {`${page.difficulty} — ${new Date(page.created_at).toLocaleDateString()}`}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -183,9 +184,7 @@ export function PrintExport() {
                   alt="Preview"
                   className="w-full rounded-lg"
                 />
-                <p className="text-center text-xs text-gray-500 mt-2">
-                  {myPages.find((p) => p.id === selectedPage)?.title || "Coloring Page"}
-                </p>
+                <p className="text-center text-xs text-gray-500 mt-2">Coloring Page</p>
               </div>
             </div>
           )}
