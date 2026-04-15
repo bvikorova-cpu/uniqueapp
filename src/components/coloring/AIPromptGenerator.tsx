@@ -4,16 +4,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Sparkles, Wand2, Loader2, Lightbulb } from "lucide-react";
+import { Sparkles, Wand2, Loader2, Lightbulb, Palette, Pentagon, Flower2, Layers, Grid3X3, LayoutPanelTop } from "lucide-react";
 import { motion } from "framer-motion";
 
 const STYLE_PRESETS = [
-  { value: "cartoon", label: "🎨 Cartoon", desc: "Fun, rounded outlines" },
-  { value: "realistic", label: "📷 Realistic", desc: "Detailed line art" },
-  { value: "mandala", label: "🔮 Mandala", desc: "Symmetrical patterns" },
-  { value: "kawaii", label: "🌸 Kawaii", desc: "Cute Japanese style" },
-  { value: "geometric", label: "📐 Geometric", desc: "Sharp, angular shapes" },
-  { value: "stained-glass", label: "🪟 Stained Glass", desc: "Bold outlines, sections" },
+  { value: "cartoon", label: "Cartoon", icon: Palette, desc: "Fun, rounded outlines" },
+  { value: "realistic", label: "Realistic", icon: Layers, desc: "Detailed line art" },
+  { value: "mandala", label: "Mandala", icon: Flower2, desc: "Symmetrical patterns" },
+  { value: "kawaii", label: "Kawaii", icon: Sparkles, desc: "Cute Japanese style" },
+  { value: "geometric", label: "Geometric", icon: Pentagon, desc: "Sharp, angular shapes" },
+  { value: "stained-glass", label: "Stained Glass", icon: Grid3X3, desc: "Bold outlines, sections" },
 ];
 
 const QUICK_IDEAS = [
@@ -97,7 +97,11 @@ export function AIPromptGenerator({ onGenerate, isGenerating }: AIPromptGenerato
                 <SelectTrigger className="rounded-xl"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   {STYLE_PRESETS.map((s) => (
-                    <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>
+                    <SelectItem key={s.value} value={s.value}>
+                      <span className="flex items-center gap-1.5">
+                        <s.icon className="w-3.5 h-3.5" /> {s.label}
+                      </span>
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -107,9 +111,9 @@ export function AIPromptGenerator({ onGenerate, isGenerating }: AIPromptGenerato
               <Select value={difficulty} onValueChange={setDifficulty}>
                 <SelectTrigger className="rounded-xl"><SelectValue /></SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="easy">🟢 Easy</SelectItem>
-                  <SelectItem value="medium">🟡 Medium</SelectItem>
-                  <SelectItem value="hard">🔴 Hard</SelectItem>
+                  <SelectItem value="easy">Easy</SelectItem>
+                  <SelectItem value="medium">Medium</SelectItem>
+                  <SelectItem value="hard">Hard</SelectItem>
                 </SelectContent>
               </Select>
             </div>

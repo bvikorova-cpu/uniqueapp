@@ -1,16 +1,13 @@
 import { motion } from "framer-motion";
-import { Sparkles, Palette, Brush, Wand2 } from "lucide-react";
+import { Sparkles, Palette, Image, Gem, Scan } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import heroVideo from "@/assets/coloring-hero.mp4.asset.json";
 
-const floatingItems = [
-  { emoji: "🎨", left: "5%", top: "15%", delay: 0 },
-  { emoji: "✏️", left: "92%", top: "10%", delay: 0.5 },
-  { emoji: "🖌️", left: "8%", top: "75%", delay: 1 },
-  { emoji: "🌈", left: "88%", top: "70%", delay: 1.5 },
-  { emoji: "⭐", left: "15%", top: "45%", delay: 2 },
-  { emoji: "🦋", left: "90%", top: "40%", delay: 0.8 },
-  { emoji: "🎭", left: "50%", top: "8%", delay: 1.2 },
-  { emoji: "🖍️", left: "75%", top: "80%", delay: 0.3 },
+const stats = [
+  { label: "Pages Created", icon: Image, value: "—", color: "from-pink-500 to-rose-600" },
+  { label: "Credits", icon: Gem, value: "—", color: "from-violet-500 to-purple-600" },
+  { label: "Templates", icon: Palette, value: "16", color: "from-amber-500 to-orange-600" },
+  { label: "Resolution", icon: Scan, value: "Ultra HD", color: "from-emerald-500 to-teal-600" },
 ];
 
 interface ColoringHeroProps {
@@ -19,67 +16,91 @@ interface ColoringHeroProps {
 }
 
 export function ColoringHero({ totalPages, credits }: ColoringHeroProps) {
+  const displayStats = [
+    { ...stats[0], value: totalPages > 0 ? `${totalPages}` : "—" },
+    { ...stats[1], value: typeof credits === "string" ? credits : credits > 0 ? `${credits}` : "—" },
+    stats[2],
+    stats[3],
+  ];
+
   return (
-    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-pink-500 via-purple-500 to-indigo-600 p-8 md:p-12 text-white mb-8">
-      {floatingItems.map((item, i) => (
-        <motion.span
-          key={i}
-          className="absolute text-2xl md:text-3xl pointer-events-none select-none"
-          style={{ left: item.left, top: item.top }}
-          animate={{ y: [0, -12, 0], rotate: [0, 10, -10, 0] }}
-          transition={{ duration: 3, repeat: Infinity, delay: item.delay }}
-        >
-          {item.emoji}
-        </motion.span>
-      ))}
-
-      <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl" />
-      <div className="absolute bottom-0 left-0 w-48 h-48 bg-pink-400/20 rounded-full blur-3xl" />
-
+    <div className="space-y-4 mb-8">
+      {/* Badge */}
       <motion.div
-        className="relative z-10 text-center"
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
+        className="flex justify-center"
       >
-        <motion.div
-          className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm rounded-full px-4 py-2 mb-4"
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ delay: 0.2 }}
-        >
-          <Palette className="w-4 h-4" />
-          <span className="text-sm font-medium">AI-Powered Creativity</span>
-          <Sparkles className="w-4 h-4" />
-        </motion.div>
-
-        <h1 className="text-3xl md:text-5xl font-black mb-3">
-          AI Coloring Page <span className="text-yellow-300">Studio</span>
-        </h1>
-        <p className="text-white/80 text-lg max-w-xl mx-auto mb-6">
-          Transform any image or idea into beautiful coloring pages. Paint online, collect favorites, and earn creative badges!
-        </p>
-
-        <motion.div
-          className="flex flex-wrap justify-center gap-4"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
-        >
-          {[
-            { label: `${totalPages} Pages Created`, icon: "🖼️" },
-            { label: typeof credits === "string" ? credits : `${credits} Credits`, icon: "✨" },
-            { label: "HD & Ultra HD", icon: "🎯" },
-          ].map((tag, i) => (
-            <span
-              key={i}
-              className="bg-white/10 backdrop-blur-sm rounded-full px-4 py-1.5 text-sm flex items-center gap-2"
-            >
-              {tag.icon} {tag.label}
-            </span>
-          ))}
-        </motion.div>
+        <Badge className="bg-gradient-to-r from-pink-500/20 to-purple-500/20 text-pink-600 dark:text-pink-400 border-pink-500/30 px-4 py-1.5 text-sm font-semibold">
+          <Sparkles className="w-3.5 h-3.5 mr-1.5" />
+          AI-Powered Creativity Studio
+        </Badge>
       </motion.div>
+
+      {/* Title */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1 }}
+        className="text-center"
+      >
+        <h1 className="text-3xl md:text-5xl font-black bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 bg-clip-text text-transparent mb-2">
+          AI Coloring Page Studio
+        </h1>
+        <p className="text-sm md:text-base text-muted-foreground max-w-lg mx-auto">
+          Transform images into coloring pages, paint online, collect favorites & earn badges
+        </p>
+      </motion.div>
+
+      {/* Video Container */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.98 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 0.2, duration: 0.6 }}
+        className="relative w-full aspect-video max-h-[340px] rounded-2xl overflow-hidden shadow-2xl shadow-pink-500/10"
+      >
+        <video
+          autoPlay loop muted playsInline
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{ filter: "brightness(1.1) saturate(1.2)" }}
+        >
+          <source src={heroVideo.url} type="video/mp4" />
+        </video>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+        
+        <div className="absolute top-4 right-4 animate-pulse">
+          <Sparkles className="w-5 h-5 text-amber-400/70" />
+        </div>
+        <div className="absolute bottom-4 left-4">
+          <div className="flex items-center gap-2 bg-black/40 backdrop-blur-sm rounded-full px-3 py-1.5">
+            <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="text-xs text-white/90 font-medium">AI Studio Active</span>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Stats Grid */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3">
+        {displayStats.map((stat, i) => {
+          const Icon = stat.icon;
+          return (
+            <motion.div
+              key={stat.label}
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.3 + i * 0.08 }}
+            >
+              <div className="bg-card border rounded-xl p-3 md:p-4 text-center hover:shadow-lg hover:border-pink-500/20 transition-all group">
+                <div className={`w-9 h-9 mx-auto mb-2 rounded-lg bg-gradient-to-br ${stat.color} flex items-center justify-center shadow-md group-hover:scale-110 transition-transform`}>
+                  <Icon className="h-4 w-4 text-white" />
+                </div>
+                <p className="text-lg md:text-2xl font-black">{stat.value}</p>
+                <p className="text-[10px] md:text-xs text-muted-foreground font-medium">{stat.label}</p>
+              </div>
+            </motion.div>
+          );
+        })}
+      </div>
     </div>
   );
 }

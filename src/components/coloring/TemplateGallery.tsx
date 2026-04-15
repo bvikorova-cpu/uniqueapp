@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Sparkles, Star } from "lucide-react";
+import { Sparkles, Star, PawPrint, Flower2, Flame, Trees, Car, Snowflake, BookOpen } from "lucide-react";
 
 import templateCutePuppy from "@/assets/coloring/template-cute-puppy.jpg";
 import templateMajesticLion from "@/assets/coloring/template-majestic-lion.jpg";
@@ -23,14 +23,14 @@ import templateButterflyCollection from "@/assets/coloring/template-butterfly-co
 import templateZenGarden from "@/assets/coloring/template-zen-garden.jpg";
 
 const CATEGORIES = [
-  { id: "all", label: "All", emoji: "✨" },
-  { id: "animals", label: "Animals", emoji: "🐾" },
-  { id: "mandala", label: "Mandalas", emoji: "🔮" },
-  { id: "fantasy", label: "Fantasy", emoji: "🐉" },
-  { id: "nature", label: "Nature", emoji: "🌸" },
-  { id: "vehicles", label: "Vehicles", emoji: "🚀" },
-  { id: "holiday", label: "Holiday", emoji: "🎄" },
-  { id: "education", label: "Education", emoji: "📚" },
+  { id: "all", label: "All", icon: Sparkles },
+  { id: "animals", label: "Animals", icon: PawPrint },
+  { id: "mandala", label: "Mandalas", icon: Flower2 },
+  { id: "fantasy", label: "Fantasy", icon: Flame },
+  { id: "nature", label: "Nature", icon: Trees },
+  { id: "vehicles", label: "Vehicles", icon: Car },
+  { id: "holiday", label: "Holiday", icon: Snowflake },
+  { id: "education", label: "Education", icon: BookOpen },
 ];
 
 const TEMPLATES = [
@@ -75,21 +75,24 @@ export function TemplateGallery({ onSelectTemplate }: TemplateGalleryProps) {
 
       {/* Category filters */}
       <div className="flex flex-wrap justify-center gap-2">
-        {CATEGORIES.map((cat) => (
-          <motion.button
-            key={cat.id}
-            onClick={() => setActiveCategory(cat.id)}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-              activeCategory === cat.id
-                ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
-                : "bg-muted/50 hover:bg-muted/80 text-muted-foreground border border-border/30"
-            }`}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            {cat.emoji} {cat.label}
-          </motion.button>
-        ))}
+        {CATEGORIES.map((cat) => {
+          const Icon = cat.icon;
+          return (
+            <motion.button
+              key={cat.id}
+              onClick={() => setActiveCategory(cat.id)}
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-all flex items-center gap-1.5 ${
+                activeCategory === cat.id
+                  ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
+                  : "bg-muted/50 hover:bg-muted/80 text-muted-foreground border border-border/30"
+              }`}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <Icon className="w-3.5 h-3.5" /> {cat.label}
+            </motion.button>
+          );
+        })}
       </div>
 
       {/* Template grid */}
