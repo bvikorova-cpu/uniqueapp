@@ -477,8 +477,7 @@ export default function ColoringPages() {
           </TabsContent>
 
           <TabsContent value="schools"><SchoolsTab /></TabsContent>
-      </main>
-    </div>
+        </Tabs>
       </main>
     </div>
   );
