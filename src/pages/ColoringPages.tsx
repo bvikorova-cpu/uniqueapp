@@ -10,7 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useColoringCredits } from "@/hooks/useColoringCredits";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Loader2, Image as ImageIcon, Download, Crown, Sparkles, Upload } from "lucide-react";
+import { Loader2, Image as ImageIcon, Download, Crown, Sparkles, Upload, Palette, Wand2, LayoutGrid, Trophy, Gem, GraduationCap, Heart, Brush, CheckCircle2 } from "lucide-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { SchoolsTab } from "@/components/coloring/SchoolsTab";
 import { HealthcareTab } from "@/components/coloring/HealthcareTab";
@@ -180,14 +180,30 @@ export default function ColoringPages() {
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <div className="overflow-x-auto scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0">
             <TabsList className="inline-flex gap-2 sm:grid sm:grid-cols-8 w-max sm:w-full h-auto p-2">
-              <TabsTrigger value="generate" className="px-3 py-2 text-xs whitespace-nowrap">🎨 Create</TabsTrigger>
-              <TabsTrigger value="ai-prompt" className="px-3 py-2 text-xs whitespace-nowrap">✨ AI Prompt</TabsTrigger>
-              <TabsTrigger value="templates" className="px-3 py-2 text-xs whitespace-nowrap">📚 Templates</TabsTrigger>
-              <TabsTrigger value="my-pages" className="px-3 py-2 text-xs whitespace-nowrap">🖼️ My Pages</TabsTrigger>
-              <TabsTrigger value="stats" className="px-3 py-2 text-xs whitespace-nowrap">🏆 Stats</TabsTrigger>
-              <TabsTrigger value="pricing" className="px-3 py-2 text-xs whitespace-nowrap">💎 Pricing</TabsTrigger>
-              <TabsTrigger value="schools" className="px-3 py-2 text-xs whitespace-nowrap">🏫 Schools</TabsTrigger>
-              <TabsTrigger value="healthcare" className="px-3 py-2 text-xs whitespace-nowrap">🏥 Healthcare</TabsTrigger>
+              <TabsTrigger value="generate" className="px-3 py-2 text-xs whitespace-nowrap gap-1.5">
+                <Palette className="w-3.5 h-3.5" /> Create
+              </TabsTrigger>
+              <TabsTrigger value="ai-prompt" className="px-3 py-2 text-xs whitespace-nowrap gap-1.5">
+                <Wand2 className="w-3.5 h-3.5" /> AI Prompt
+              </TabsTrigger>
+              <TabsTrigger value="templates" className="px-3 py-2 text-xs whitespace-nowrap gap-1.5">
+                <LayoutGrid className="w-3.5 h-3.5" /> Templates
+              </TabsTrigger>
+              <TabsTrigger value="my-pages" className="px-3 py-2 text-xs whitespace-nowrap gap-1.5">
+                <ImageIcon className="w-3.5 h-3.5" /> My Pages
+              </TabsTrigger>
+              <TabsTrigger value="stats" className="px-3 py-2 text-xs whitespace-nowrap gap-1.5">
+                <Trophy className="w-3.5 h-3.5" /> Stats
+              </TabsTrigger>
+              <TabsTrigger value="pricing" className="px-3 py-2 text-xs whitespace-nowrap gap-1.5">
+                <Gem className="w-3.5 h-3.5" /> Pricing
+              </TabsTrigger>
+              <TabsTrigger value="schools" className="px-3 py-2 text-xs whitespace-nowrap gap-1.5">
+                <GraduationCap className="w-3.5 h-3.5" /> Schools
+              </TabsTrigger>
+              <TabsTrigger value="healthcare" className="px-3 py-2 text-xs whitespace-nowrap gap-1.5">
+                <Heart className="w-3.5 h-3.5" /> Healthcare
+              </TabsTrigger>
             </TabsList>
           </div>
 
@@ -196,7 +212,12 @@ export default function ColoringPages() {
             <div className="grid md:grid-cols-2 gap-6">
               <Card>
                 <CardHeader>
-                  <CardTitle>Create from Image</CardTitle>
+                  <CardTitle className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-pink-500/20 to-purple-500/20 flex items-center justify-center">
+                      <Upload className="h-4 w-4 text-pink-500" />
+                    </div>
+                    Create from Image
+                  </CardTitle>
                   <CardDescription>Upload an image or provide a URL to transform into a coloring page</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -227,9 +248,9 @@ export default function ColoringPages() {
                     <Select value={difficulty} onValueChange={setDifficulty}>
                       <SelectTrigger id="difficulty"><SelectValue /></SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="easy">🟢 Easy — Simple lines</SelectItem>
-                        <SelectItem value="medium">🟡 Medium — Moderate detail</SelectItem>
-                        <SelectItem value="hard">🔴 Hard — Intricate details</SelectItem>
+                        <SelectItem value="easy">Easy — Simple lines</SelectItem>
+                        <SelectItem value="medium">Medium — Moderate detail</SelectItem>
+                        <SelectItem value="hard">Hard — Intricate details</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -261,7 +282,7 @@ export default function ColoringPages() {
                           <Download className="mr-2 h-4 w-4" /> Download
                         </Button>
                         <Button variant="outline" className="flex-1" onClick={() => { setColoringCanvasImage(generatedImage); setActiveTab("color-online"); }}>
-                          🎨 Color Online
+                          <Brush className="mr-2 h-4 w-4" /> Color Online
                         </Button>
                       </div>
                     </CardContent>
@@ -296,7 +317,7 @@ export default function ColoringPages() {
                       <Download className="mr-2 h-4 w-4" /> Download
                     </Button>
                     <Button variant="outline" className="flex-1" onClick={() => { setColoringCanvasImage(generatedImage); setActiveTab("color-online"); }}>
-                      🎨 Color Online
+                      <Brush className="mr-2 h-4 w-4" /> Color Online
                     </Button>
                   </div>
                 </CardContent>
@@ -346,41 +367,66 @@ export default function ColoringPages() {
           {/* Pricing Tab */}
           <TabsContent value="pricing">
             <div className="grid md:grid-cols-3 gap-6">
-              <Card>
+              <Card className="backdrop-blur-xl bg-card/80 border-border/30 hover:border-pink-500/20 transition-all">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2"><ImageIcon className="h-5 w-5" /> Pay Per Use</CardTitle>
+                  <CardTitle className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500/20 to-cyan-500/20 flex items-center justify-center">
+                      <ImageIcon className="h-4 w-4 text-blue-500" />
+                    </div>
+                    Pay Per Use
+                  </CardTitle>
                   <CardDescription>Perfect for occasional use</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div><p className="text-3xl font-bold">€2</p><p className="text-sm text-muted-foreground">per coloring page</p></div>
+                  <div><p className="text-3xl font-black">€2</p><p className="text-sm text-muted-foreground">per coloring page</p></div>
                   <ul className="space-y-2 text-sm">
-                    <li>✓ HD Quality (1024x1024)</li><li>✓ No watermark</li><li>✓ PNG + PDF formats</li>
+                    <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> HD Quality (1024x1024)</li>
+                    <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> No watermark</li>
+                    <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> PNG + PDF formats</li>
                   </ul>
                   <Button onClick={() => payPerUseMutation.mutate()} disabled={payPerUseMutation.isPending} className="w-full">Buy 1 Credit</Button>
                 </CardContent>
               </Card>
-              <Card>
+              <Card className="backdrop-blur-xl bg-card/80 border-border/30 hover:border-purple-500/20 transition-all">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2"><Sparkles className="h-5 w-5" /> Basic</CardTitle>
+                  <CardTitle className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center">
+                      <Sparkles className="h-4 w-4 text-purple-500" />
+                    </div>
+                    Basic
+                  </CardTitle>
                   <CardDescription>Great for regular users</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div><p className="text-3xl font-bold">€5</p><p className="text-sm text-muted-foreground">per month</p></div>
+                  <div><p className="text-3xl font-black">€5</p><p className="text-sm text-muted-foreground">per month</p></div>
                   <ul className="space-y-2 text-sm">
-                    <li>✓ 20 HD coloring pages/month</li><li>✓ No watermark</li><li>✓ PNG + PDF formats</li><li>✓ Custom templates</li>
+                    <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> 20 HD coloring pages/month</li>
+                    <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> No watermark</li>
+                    <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> PNG + PDF formats</li>
+                    <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> Custom templates</li>
                   </ul>
                   <Button onClick={() => subscribeMutation.mutate('basic')} disabled={subscribeMutation.isPending} className="w-full">Subscribe</Button>
                 </CardContent>
               </Card>
-              <Card className="border-primary">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2"><Crown className="h-5 w-5 text-primary" /> Premium</CardTitle>
+              <Card className="backdrop-blur-xl bg-card/80 border-primary/30 hover:border-primary/50 transition-all relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-3xl" />
+                <CardHeader className="relative z-10">
+                  <CardTitle className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-500/20 to-orange-500/20 flex items-center justify-center">
+                      <Crown className="h-4 w-4 text-amber-500" />
+                    </div>
+                    Premium
+                  </CardTitle>
                   <CardDescription>For power users</CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  <div><p className="text-3xl font-bold">€12</p><p className="text-sm text-muted-foreground">per month</p></div>
+                <CardContent className="space-y-4 relative z-10">
+                  <div><p className="text-3xl font-black">€12</p><p className="text-sm text-muted-foreground">per month</p></div>
                   <ul className="space-y-2 text-sm">
-                    <li>✓ UNLIMITED Ultra HD (2048x2048)</li><li>✓ All formats (PNG, PDF, SVG)</li><li>✓ Bulk download</li><li>✓ Priority processing</li><li>✓ Custom branding</li>
+                    <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> UNLIMITED Ultra HD (2048x2048)</li>
+                    <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> All formats (PNG, PDF, SVG)</li>
+                    <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> Bulk download</li>
+                    <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> Priority processing</li>
+                    <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> Custom branding</li>
                   </ul>
                   <Button onClick={() => subscribeMutation.mutate('premium')} disabled={subscribeMutation.isPending} className="w-full">Subscribe</Button>
                 </CardContent>

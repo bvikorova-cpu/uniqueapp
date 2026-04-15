@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Heart, FolderPlus, Download, Share2, Printer, Eye } from "lucide-react";
+import { Heart, FolderPlus, Download, Share2, Printer, Eye, Brush } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 
@@ -81,7 +81,9 @@ export function ColoringFavorites({ pages, onToggleFavorite, onDelete, onColorOn
               </div>
               <div className="flex flex-wrap gap-2">
                 {collections.map((c) => (
-                  <Badge key={c} variant="secondary" className="text-sm py-1.5 px-3">📁 {c}</Badge>
+                  <Badge key={c} variant="secondary" className="text-sm py-1.5 px-3">
+                    <FolderPlus className="w-3 h-3 mr-1" /> {c}
+                  </Badge>
                 ))}
               </div>
             </div>
@@ -93,7 +95,7 @@ export function ColoringFavorites({ pages, onToggleFavorite, onDelete, onColorOn
       {displayedPages.length === 0 ? (
         <Card className="backdrop-blur-xl bg-card/80 border-primary/20">
           <CardContent className="py-12 text-center text-muted-foreground">
-            {viewMode === "favorites" ? <p>No favorites yet. Click the ❤️ on any page to save it!</p> : <p>No coloring pages yet. Generate your first one!</p>}
+            {viewMode === "favorites" ? <p>No favorites yet. Click the heart on any page to save it!</p> : <p>No coloring pages yet. Generate your first one!</p>}
           </CardContent>
         </Card>
       ) : (
@@ -106,7 +108,7 @@ export function ColoringFavorites({ pages, onToggleFavorite, onDelete, onColorOn
                     <img src={page.processed_image_url} alt="Coloring page" className="w-full aspect-square object-cover cursor-pointer" onClick={() => setLightboxImage(page.processed_image_url)} />
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100">
                       <Button size="icon" variant="secondary" className="h-8 w-8" onClick={() => setLightboxImage(page.processed_image_url)}><Eye className="h-4 w-4" /></Button>
-                      <Button size="icon" variant="secondary" className="h-8 w-8" onClick={() => onColorOnline?.(page.processed_image_url)}>🎨</Button>
+                      <Button size="icon" variant="secondary" className="h-8 w-8" onClick={() => onColorOnline?.(page.processed_image_url)}><Brush className="h-4 w-4" /></Button>
                       <Button size="icon" variant="secondary" className="h-8 w-8" onClick={() => handleShare(page.processed_image_url)}><Share2 className="h-4 w-4" /></Button>
                       <Button size="icon" variant="secondary" className="h-8 w-8" onClick={() => handlePrint(page.processed_image_url)}><Printer className="h-4 w-4" /></Button>
                     </div>

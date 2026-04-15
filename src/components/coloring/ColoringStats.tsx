@@ -22,11 +22,13 @@ interface ColoringStatsProps {
 }
 
 export function ColoringStats({ totalPages, easyCount, mediumCount, hardCount, favoriteCount }: ColoringStatsProps) {
+  const displayValue = (v: number) => v > 0 ? v : "—";
+
   const stats = [
-    { label: "Total Pages", value: totalPages, icon: Image, gradient: "from-primary/20 to-accent/20", border: "border-primary/20" },
-    { label: "Favorites", value: favoriteCount, icon: Star, gradient: "from-amber-500/20 to-yellow-500/20", border: "border-amber-500/20" },
-    { label: "Easy", value: easyCount, icon: Target, gradient: "from-green-500/20 to-emerald-500/20", border: "border-green-500/20" },
-    { label: "Hard", value: hardCount, icon: Flame, gradient: "from-red-500/20 to-orange-500/20", border: "border-red-500/20" },
+    { label: "Total Pages", value: displayValue(totalPages), icon: Image, gradient: "from-primary/20 to-accent/20", border: "border-primary/20" },
+    { label: "Favorites", value: displayValue(favoriteCount), icon: Star, gradient: "from-amber-500/20 to-yellow-500/20", border: "border-amber-500/20" },
+    { label: "Easy", value: displayValue(easyCount), icon: Target, gradient: "from-green-500/20 to-emerald-500/20", border: "border-green-500/20" },
+    { label: "Hard", value: displayValue(hardCount), icon: Flame, gradient: "from-red-500/20 to-orange-500/20", border: "border-red-500/20" },
   ];
 
   return (
@@ -64,7 +66,7 @@ export function ColoringStats({ totalPages, easyCount, mediumCount, hardCount, f
               <div key={d.label} className="space-y-1">
                 <div className="flex justify-between text-sm">
                   <span>{d.label}</span>
-                  <span className="text-muted-foreground">{d.count} ({Math.round(d.pct)}%)</span>
+                  <span className="text-muted-foreground">{d.count > 0 ? d.count : "—"} ({Math.round(d.pct)}%)</span>
                 </div>
                 <div className="h-2 bg-muted/50 rounded-full overflow-hidden">
                   <motion.div className={`h-full ${d.color} rounded-full`} initial={{ width: 0 }} animate={{ width: `${d.pct}%` }} transition={{ duration: 1, delay: 0.3 }} />
@@ -97,7 +99,7 @@ export function ColoringStats({ totalPages, easyCount, mediumCount, hardCount, f
                     <div className="flex items-center gap-2 mb-2">
                       <a.icon className={`h-5 w-5 ${unlocked ? a.color : "text-muted-foreground"}`} />
                       <span className="font-medium text-xs">{a.name}</span>
-                      {unlocked && <Badge className="ml-auto bg-primary text-primary-foreground text-[10px] px-1.5">✓</Badge>}
+                      {unlocked && <Badge className="ml-auto bg-primary text-primary-foreground text-[10px] px-1.5">Done</Badge>}
                     </div>
                     <p className="text-[10px] text-muted-foreground mb-1.5">{a.desc}</p>
                     <Progress value={progress} className="h-1.5" />
