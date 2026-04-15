@@ -93,7 +93,6 @@ const TutorialPlatform = () => {
           <>
             <TutorialHero />
             <TutorialEngagement />
-            <h2 className="text-xl font-bold mb-4">Tools & Features</h2>
             <TutorialToolGrid onToolSelect={handleToolSelect} />
           </>
         );
