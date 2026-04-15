@@ -10,7 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useColoringCredits } from "@/hooks/useColoringCredits";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Loader2, Image as ImageIcon, Download, Crown, Sparkles, Upload, Palette, Wand2, LayoutGrid, Trophy, Gem, GraduationCap, Heart, Brush, CheckCircle2 } from "lucide-react";
+import { Loader2, Image as ImageIcon, Download, Crown, Sparkles, Upload, Palette, Wand2, LayoutGrid, Trophy, Gem, GraduationCap, Heart, Brush, CheckCircle2, Paintbrush, Users, Printer, Zap } from "lucide-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { SchoolsTab } from "@/components/coloring/SchoolsTab";
 import { HealthcareTab } from "@/components/coloring/HealthcareTab";
@@ -22,6 +22,11 @@ import { AIPromptGenerator } from "@/components/coloring/AIPromptGenerator";
 import { BeforeAfterSlider } from "@/components/coloring/BeforeAfterSlider";
 import { ColoringStats } from "@/components/coloring/ColoringStats";
 import { ColoringFavorites } from "@/components/coloring/ColoringFavorites";
+import { AIStyleTransfer } from "@/components/coloring/AIStyleTransfer";
+import { CommunityGallery } from "@/components/coloring/CommunityGallery";
+import { DailyChallenge } from "@/components/coloring/DailyChallenge";
+import { AIColorSuggestions } from "@/components/coloring/AIColorSuggestions";
+import { PrintExport } from "@/components/coloring/PrintExport";
 
 export default function ColoringPages() {
   const navigate = useNavigate();
@@ -179,18 +184,33 @@ export default function ColoringPages() {
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <div className="overflow-x-auto scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0">
-            <TabsList className="inline-flex gap-2 sm:grid sm:grid-cols-8 w-max sm:w-full h-auto p-2">
+             <TabsList className="inline-flex gap-2 sm:grid sm:grid-cols-6 lg:grid-cols-12 w-max sm:w-full h-auto p-2">
               <TabsTrigger value="generate" className="px-3 py-2 text-xs whitespace-nowrap gap-1.5">
                 <Palette className="w-3.5 h-3.5" /> Create
               </TabsTrigger>
               <TabsTrigger value="ai-prompt" className="px-3 py-2 text-xs whitespace-nowrap gap-1.5">
                 <Wand2 className="w-3.5 h-3.5" /> AI Prompt
               </TabsTrigger>
+              <TabsTrigger value="style-transfer" className="px-3 py-2 text-xs whitespace-nowrap gap-1.5">
+                <Paintbrush className="w-3.5 h-3.5" /> Style Transfer
+              </TabsTrigger>
               <TabsTrigger value="templates" className="px-3 py-2 text-xs whitespace-nowrap gap-1.5">
                 <LayoutGrid className="w-3.5 h-3.5" /> Templates
               </TabsTrigger>
               <TabsTrigger value="my-pages" className="px-3 py-2 text-xs whitespace-nowrap gap-1.5">
                 <ImageIcon className="w-3.5 h-3.5" /> My Pages
+              </TabsTrigger>
+              <TabsTrigger value="community" className="px-3 py-2 text-xs whitespace-nowrap gap-1.5">
+                <Users className="w-3.5 h-3.5" /> Community
+              </TabsTrigger>
+              <TabsTrigger value="daily" className="px-3 py-2 text-xs whitespace-nowrap gap-1.5">
+                <Trophy className="w-3.5 h-3.5" /> Challenge
+              </TabsTrigger>
+              <TabsTrigger value="colors" className="px-3 py-2 text-xs whitespace-nowrap gap-1.5">
+                <Zap className="w-3.5 h-3.5" /> AI Colors
+              </TabsTrigger>
+              <TabsTrigger value="print" className="px-3 py-2 text-xs whitespace-nowrap gap-1.5">
+                <Printer className="w-3.5 h-3.5" /> Print
               </TabsTrigger>
               <TabsTrigger value="stats" className="px-3 py-2 text-xs whitespace-nowrap gap-1.5">
                 <Trophy className="w-3.5 h-3.5" /> Stats
@@ -200,9 +220,6 @@ export default function ColoringPages() {
               </TabsTrigger>
               <TabsTrigger value="schools" className="px-3 py-2 text-xs whitespace-nowrap gap-1.5">
                 <GraduationCap className="w-3.5 h-3.5" /> Schools
-              </TabsTrigger>
-              <TabsTrigger value="healthcare" className="px-3 py-2 text-xs whitespace-nowrap gap-1.5">
-                <Heart className="w-3.5 h-3.5" /> Healthcare
               </TabsTrigger>
             </TabsList>
           </div>
@@ -434,8 +451,32 @@ export default function ColoringPages() {
             </div>
           </TabsContent>
 
+          {/* Style Transfer Tab */}
+          <TabsContent value="style-transfer">
+            <AIStyleTransfer onColorOnline={(url) => { setColoringCanvasImage(url); setActiveTab("color-online"); }} />
+          </TabsContent>
+
+          {/* Community Gallery Tab */}
+          <TabsContent value="community">
+            <CommunityGallery />
+          </TabsContent>
+
+          {/* Daily Challenge Tab */}
+          <TabsContent value="daily">
+            <DailyChallenge />
+          </TabsContent>
+
+          {/* AI Color Suggestions Tab */}
+          <TabsContent value="colors">
+            <AIColorSuggestions />
+          </TabsContent>
+
+          {/* Print Export Tab */}
+          <TabsContent value="print">
+            <PrintExport />
+          </TabsContent>
+
           <TabsContent value="schools"><SchoolsTab /></TabsContent>
-          <TabsContent value="healthcare"><HealthcareTab /></TabsContent>
         </Tabs>
       </main>
     </div>
