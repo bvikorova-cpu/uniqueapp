@@ -6,11 +6,15 @@ import { Textarea } from "@/components/ui/textarea";
 import { ArrowLeft, Shield, Loader2, CheckCircle, AlertTriangle, Sparkles, Info } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useTutorialAICredits } from "@/hooks/useTutorialAICredits";
+
+const CREDITS_COST = 3;
 
 interface Props { onBack: () => void; }
 
 export function PlagiarismCheckerView({ onBack }: Props) {
   const { toast } = useToast();
+  const { credits, isDeducting, checkAndDeduct } = useTutorialAICredits();
   const [text, setText] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
@@ -20,6 +24,9 @@ export function PlagiarismCheckerView({ onBack }: Props) {
       toast({ title: "Too Short", description: "Enter at least 50 characters", variant: "destructive" });
       return;
     }
+    const creditOk = await checkAndDeduct(CREDITS_COST);
+    if (!creditOk) return;
+
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke('stock-content-ai', {
