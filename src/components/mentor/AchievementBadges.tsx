@@ -1,24 +1,56 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Award, Lock } from "lucide-react";
+import { Award, Lock, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
-const badges = [
-  { name: "First Session", icon: "🎉", description: "Complete your first mentor session", unlocked: false },
-  { name: "3-Day Streak", icon: "🔥", description: "Maintain a 3-day session streak", unlocked: false },
-  { name: "Goal Setter", icon: "🎯", description: "Set your first personal goal", unlocked: false },
-  { name: "Week Warrior", icon: "⚔️", description: "Complete 7 days of mentoring", unlocked: false },
-  { name: "Deep Diver", icon: "🤿", description: "Have a 30+ message session", unlocked: false },
-  { name: "Multi-Coach", icon: "🌟", description: "Try all 4 mentor areas", unlocked: false },
+const badgeDefinitions = [
+  { name: "First Session", icon: "🎉", description: "Complete your first mentor session", check: (d: any) => d.sessions >= 1 },
+  { name: "3-Day Streak", icon: "🔥", description: "Maintain a 3-day session streak", check: (d: any) => d.sessions >= 3 },
+  { name: "Goal Setter", icon: "🎯", description: "Set your first personal goal", check: (d: any) => d.goals >= 1 },
+  { name: "Week Warrior", icon: "⚔️", description: "Complete 7 sessions", check: (d: any) => d.sessions >= 7 },
+  { name: "Deep Diver", icon: "🤿", description: "Have 10+ sessions", check: (d: any) => d.sessions >= 10 },
+  { name: "Multi-Coach", icon: "🌟", description: "Use all 4 mentor areas", check: (d: any) => d.areas >= 4 },
 ];
 
 export const AchievementBadges = () => {
+  const [badges, setBadges] = useState(badgeDefinitions.map(b => ({ ...b, unlocked: false })));
+
+  useEffect(() => {
+    fetchBadges();
+  }, []);
+
+  const fetchBadges = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    const [sessions, goals, areas] = await Promise.all([
+      supabase.from('mentor_sessions').select('*', { count: 'exact', head: true }).eq('user_id', user.id),
+      supabase.from('mentor_goals').select('*', { count: 'exact', head: true }).eq('user_id', user.id),
+      supabase.from('mentor_sessions').select('mentor_area').eq('user_id', user.id),
+    ]);
+
+    const uniqueAreas = new Set((areas.data || []).map((s: any) => s.mentor_area)).size;
+    const data = { sessions: sessions.count || 0, goals: goals.count || 0, areas: uniqueAreas };
+
+    setBadges(badgeDefinitions.map(b => ({ ...b, unlocked: b.check(data) })));
+  };
+
+  const unlockedCount = badges.filter(b => b.unlocked).length;
+
   return (
     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
-      <Card className="backdrop-blur-xl bg-card/80 border-primary/20">
+      <Card className="backdrop-blur-xl bg-card/80 border-amber-500/20 bg-gradient-to-br from-amber-500/5 to-yellow-500/5 overflow-hidden relative">
+        <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl from-amber-500/10 to-transparent rounded-bl-full" />
         <CardHeader className="pb-3">
-          <CardTitle className="flex items-center gap-2 text-base">
-            <Award className="w-4 h-4 text-yellow-500" />
-            Achievements
+          <CardTitle className="flex items-center justify-between text-base">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-amber-500 to-yellow-500 flex items-center justify-center shadow-lg shadow-amber-500/20">
+                <Award className="w-4 h-4 text-white" />
+              </div>
+              Achievements
+            </div>
+            <span className="text-xs font-medium text-muted-foreground">{unlockedCount}/{badges.length}</span>
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -31,11 +63,16 @@ export const AchievementBadges = () => {
                 transition={{ delay: 0.45 + i * 0.05 }}
                 className={`relative flex flex-col items-center p-3 rounded-xl border text-center transition-all hover:scale-105
                   ${badge.unlocked
-                    ? "bg-gradient-to-br from-yellow-500/15 to-amber-500/10 border-yellow-500/30"
-                    : "bg-muted/20 border-border/30 opacity-60"
+                    ? "bg-gradient-to-br from-amber-500/15 to-yellow-500/10 border-amber-500/30 shadow-sm shadow-amber-500/10"
+                    : "bg-muted/20 border-border/30 opacity-50"
                   }
                 `}
               >
+                {badge.unlocked && (
+                  <div className="absolute -top-1 -right-1">
+                    <Sparkles className="w-3 h-3 text-amber-500" />
+                  </div>
+                )}
                 <div className="text-2xl mb-1">
                   {badge.unlocked ? badge.icon : (
                     <div className="w-8 h-8 rounded-full bg-muted/50 flex items-center justify-center">
