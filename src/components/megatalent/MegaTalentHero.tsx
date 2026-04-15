@@ -51,10 +51,10 @@ export default function MegaTalentHero({ totalVotes, isSubscribed, subscriptionT
             muted
             playsInline
             className="w-full h-full object-cover"
-            style={{ filter: "brightness(0.75) saturate(1.1)" }}
+            style={{ filter: "brightness(1.1) saturate(1.15)" }}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/30" />
-          <div className="absolute inset-0 bg-gradient-to-r from-yellow-900/20 via-transparent to-amber-900/20" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-yellow-900/10 via-transparent to-amber-900/10" />
         </div>
 
         <div className="relative z-10 p-4 sm:p-6 lg:p-8 flex flex-col min-h-[260px] sm:min-h-[340px]">
