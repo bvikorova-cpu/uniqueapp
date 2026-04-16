@@ -3576,6 +3576,39 @@ export type Database = {
           },
         ]
       }
+      brain_duel_ai_recaps: {
+        Row: {
+          created_at: string | null
+          credits_used: number | null
+          id: string
+          recap_text: string
+          stats_snapshot: Json | null
+          user_id: string
+          week_end: string
+          week_start: string
+        }
+        Insert: {
+          created_at?: string | null
+          credits_used?: number | null
+          id?: string
+          recap_text: string
+          stats_snapshot?: Json | null
+          user_id: string
+          week_end: string
+          week_start: string
+        }
+        Update: {
+          created_at?: string | null
+          credits_used?: number | null
+          id?: string
+          recap_text?: string
+          stats_snapshot?: Json | null
+          user_id?: string
+          week_end?: string
+          week_start?: string
+        }
+        Relationships: []
+      }
       brain_duel_answers: {
         Row: {
           answer: string
@@ -3942,6 +3975,39 @@ export type Database = {
         }
         Relationships: []
       }
+      brain_duel_notifications: {
+        Row: {
+          created_at: string | null
+          id: string
+          is_read: boolean | null
+          message: string
+          metadata: Json | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          message: string
+          metadata?: Json | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          message?: string
+          metadata?: Json | null
+          title?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       brain_duel_powerups: {
         Row: {
           created_at: string
@@ -4041,6 +4107,66 @@ export type Database = {
           option_c?: string
           option_d?: string
           question?: string
+        }
+        Relationships: []
+      }
+      brain_duel_referral_codes: {
+        Row: {
+          code: string
+          created_at: string | null
+          id: string
+          total_bonus_credits: number | null
+          total_referrals: number | null
+          user_id: string
+        }
+        Insert: {
+          code: string
+          created_at?: string | null
+          id?: string
+          total_bonus_credits?: number | null
+          total_referrals?: number | null
+          user_id: string
+        }
+        Update: {
+          code?: string
+          created_at?: string | null
+          id?: string
+          total_bonus_credits?: number | null
+          total_referrals?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      brain_duel_referrals: {
+        Row: {
+          bonus_credits_awarded: number | null
+          completed_at: string | null
+          created_at: string | null
+          id: string
+          referral_code: string
+          referred_id: string
+          referrer_id: string
+          status: string | null
+        }
+        Insert: {
+          bonus_credits_awarded?: number | null
+          completed_at?: string | null
+          created_at?: string | null
+          id?: string
+          referral_code: string
+          referred_id: string
+          referrer_id: string
+          status?: string | null
+        }
+        Update: {
+          bonus_credits_awarded?: number | null
+          completed_at?: string | null
+          created_at?: string | null
+          id?: string
+          referral_code?: string
+          referred_id?: string
+          referrer_id?: string
+          status?: string | null
         }
         Relationships: []
       }
