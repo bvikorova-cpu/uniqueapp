@@ -1231,3 +1231,9 @@ verify_jwt = true
 
 [functions.verify-fitslim-payment]
 verify_jwt = true
+
+[functions.brain-duel-ai-recap]
+verify_jwt = true
+
+[functions.brain-duel-use-referral]
+verify_jwt = true
