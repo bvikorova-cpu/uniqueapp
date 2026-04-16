@@ -17,11 +17,20 @@ import { BrandVotesDisplay } from "@/components/brand-battle/BrandVotesDisplay";
 import { VotingStreakCard } from "@/components/brand-battle/VotingStreakCard";
 import { RewardsSection } from "@/components/brand-battle/RewardsSection";
 import { FeaturedBrandCard } from "@/components/brand-battle/FeaturedBrandCard";
-import { BattleHero } from "@/components/brand-battle/BattleHero";
 import { HeadToHead } from "@/components/brand-battle/HeadToHead";
 import { DailyChallenges } from "@/components/brand-battle/DailyChallenges";
 import { BrandComments } from "@/components/brand-battle/BrandComments";
 import { TournamentBracket } from "@/components/brand-battle/TournamentBracket";
+import { LuxuryArenaHero } from "@/components/brand-battle/LuxuryArenaHero";
+import { BrandStockTicker } from "@/components/brand-battle/BrandStockTicker";
+import { BrandStockMarket } from "@/components/brand-battle/BrandStockMarket";
+import { BrandAIAnalyzer } from "@/components/brand-battle/BrandAIAnalyzer";
+import { AIBattlePredictor } from "@/components/brand-battle/AIBattlePredictor";
+import { BrandTribes } from "@/components/brand-battle/BrandTribes";
+import { BrandTradingCards } from "@/components/brand-battle/BrandTradingCards";
+import { LiveBrandChat } from "@/components/brand-battle/LiveBrandChat";
+import { BoosterPacks } from "@/components/brand-battle/BoosterPacks";
+import { PremiumPasses } from "@/components/brand-battle/PremiumPasses";
 import { useBrandVotes } from "@/hooks/useBrandVotes";
 import { useVotingStreak } from "@/hooks/useVotingStreak";
 
@@ -207,11 +216,17 @@ export default function BrandBattle() {
     <div className="min-h-screen flex flex-col">
       <Navbar />
       <main className="flex-1 container mx-auto px-4 py-8">
-        {/* Animated Hero */}
-        <BattleHero
+        {/* Luxury Arena Hero */}
+        <LuxuryArenaHero
           totalVotes={campaignStats?.totalVotes}
           totalSponsors={campaignStats?.totalSponsors}
+          liveNow={Math.max(1, Math.floor((campaignStats?.totalSponsors ?? 0) / 2))}
         />
+
+        {/* Live brand stock ticker */}
+        <div className="mb-6">
+          <BrandStockTicker />
+        </div>
 
         {/* User controls */}
         {user && (
