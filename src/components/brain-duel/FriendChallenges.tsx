@@ -53,7 +53,7 @@ export const FriendChallenges = () => {
     if (!userId) return;
 
     const channel = supabase
-      .channel(`friend-challenges-notifications-${userId}`)
+      .channel(`friend-challenges-panel-${userId}`)
       .on(
         'postgres_changes',
         {
@@ -109,7 +109,7 @@ export const FriendChallenges = () => {
       .subscribe();
 
     return () => {
-      supabase.removeChannel(channel);
+      void supabase.removeChannel(channel);
     };
   }, [userId, toast, queryClient]);
 
