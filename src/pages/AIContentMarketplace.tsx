@@ -193,7 +193,7 @@ const AIContentMarketplace = () => {
             <Card className="p-6 text-left">
               <h4 className="font-semibold mb-2">Quick Production</h4>
               <p className="text-sm text-muted-foreground">
-                Generate content in minutes using Lovable AI, list it instantly, and start earning
+                Generate content in minutes using OpenAI, list it instantly, and start earning
                 passive income.
               </p>
             </Card>

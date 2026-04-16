@@ -30,7 +30,7 @@ const TrendsAnalysis = () => {
         if (errorMessage.includes("402") || errorMessage.includes("Insufficient") || errorMessage.includes("credits")) {
           toast({ 
             title: "Insufficient Credits", 
-            description: "You need to add Lovable AI credits to your workspace. Go to Settings → Workspace → Usage.",
+            description: "You need to add OpenAI credits to your workspace. Go to Settings → Workspace → Usage.",
             variant: "destructive" 
           });
         } else if (errorMessage.includes("429") || errorMessage.includes("Rate limit")) {

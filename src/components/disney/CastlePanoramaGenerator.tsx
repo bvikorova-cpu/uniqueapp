@@ -106,7 +106,7 @@ export const CastlePanoramaGenerator = ({ castle, rooms, onRoomUpdated }: Castle
           AI 360° Panorama Generator
         </CardTitle>
         <CardDescription>
-          Generate realistic panoramic images for rooms using Lovable AI
+          Generate realistic panoramic images for rooms using OpenAI
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -192,7 +192,7 @@ export const CastlePanoramaGenerator = ({ castle, rooms, onRoomUpdated }: Castle
         <div className="text-xs text-muted-foreground space-y-1 p-3 bg-muted/50 rounded-lg">
           <p className="font-medium">💡 Notes:</p>
           <ul className="list-disc list-inside space-y-1">
-            <li>Uses Lovable AI (Google Gemini Flash Image)</li>
+            <li>Uses OpenAI for image generation</li>
             <li>Images are automatically uploaded to Supabase Storage</li>
             <li>May take 10-30 seconds per image</li>
             <li>Watch for rate limits - 2s pause between requests</li>
