@@ -9,6 +9,7 @@ import { useBrainDuelCredits } from '@/hooks/useBrainDuelCredits';
 import { useBrainDuelPowerups } from '@/hooks/useBrainDuelPowerups';
 import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
+import { LiveDuelChat } from './LiveDuelChat';
 
 interface Question {
   id: string;
@@ -411,6 +412,7 @@ export const BrainDuelGame = () => {
             })}
           </div>
         </Card>
+        <LiveDuelChat matchId={matchId || undefined} />
       </div>
     );
   }
@@ -550,5 +552,5 @@ export const BrainDuelGame = () => {
     );
   }
 
-  return null;
+  return <LiveDuelChat matchId={matchId || undefined} />;
 };
