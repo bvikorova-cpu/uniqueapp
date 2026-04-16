@@ -551,9 +551,5 @@ export const BrainDuelGame = () => {
     );
   }
 
-  return (
-    <>
-      {gamePhase !== 'category' && <LiveDuelChat matchId={matchId || undefined} />}
-    </>
-  );
+  return <LiveDuelChat matchId={matchId || undefined} />;
 };
