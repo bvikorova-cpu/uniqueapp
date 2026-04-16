@@ -40,6 +40,7 @@ import { PowerUpCombos } from "@/components/brain-duel/PowerUpCombos";
 import { SeasonalThemes } from "@/components/brain-duel/SeasonalThemes";
 import { AchievementAnimation } from "@/components/brain-duel/AchievementAnimation";
 import { DailyChallenges } from "@/components/brain-duel/DailyChallenges";
+import { useBrainDuelPowerups } from "@/hooks/useBrainDuelPowerups";
 import { useBrainDuelOnlinePlayers } from "@/hooks/useBrainDuelOnlinePlayers";
 import { useBrainDuelRealTimeNotifications } from "@/hooks/useBrainDuelRealTimeNotifications";
 import { supabase } from "@/integrations/supabase/client";
