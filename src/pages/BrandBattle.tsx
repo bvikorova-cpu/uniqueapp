@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Trophy, TrendingUp, Star, Award, Crown, Vote, Building2, Zap,
-  Loader2, Swords, MessageSquare, Target, Calendar
+  Loader2, Swords, MessageSquare, Target, Calendar, Sparkles
 } from "lucide-react";
 import { toast } from "sonner";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -278,8 +278,29 @@ export default function BrandBattle() {
               <TabsTrigger value="leaderboard" className="px-3 py-2 text-xs sm:text-sm whitespace-nowrap">
                 <Trophy className="h-3.5 w-3.5 mr-1.5" /> Leaderboard
               </TabsTrigger>
+              <TabsTrigger value="ai" className="px-3 py-2 text-xs sm:text-sm whitespace-nowrap">
+                <Sparkles className="h-3.5 w-3.5 mr-1.5" /> AI Lab
+              </TabsTrigger>
+              <TabsTrigger value="market" className="px-3 py-2 text-xs sm:text-sm whitespace-nowrap">
+                <TrendingUp className="h-3.5 w-3.5 mr-1.5" /> Stock Market
+              </TabsTrigger>
               <TabsTrigger value="matchup" className="px-3 py-2 text-xs sm:text-sm whitespace-nowrap">
                 <Swords className="h-3.5 w-3.5 mr-1.5" /> Head-to-Head
+              </TabsTrigger>
+              <TabsTrigger value="tribes" className="px-3 py-2 text-xs sm:text-sm whitespace-nowrap">
+                <Crown className="h-3.5 w-3.5 mr-1.5" /> Tribes
+              </TabsTrigger>
+              <TabsTrigger value="cards" className="px-3 py-2 text-xs sm:text-sm whitespace-nowrap">
+                <Star className="h-3.5 w-3.5 mr-1.5" /> Trading Cards
+              </TabsTrigger>
+              <TabsTrigger value="chat" className="px-3 py-2 text-xs sm:text-sm whitespace-nowrap">
+                <MessageSquare className="h-3.5 w-3.5 mr-1.5" /> Live Chat
+              </TabsTrigger>
+              <TabsTrigger value="boosters" className="px-3 py-2 text-xs sm:text-sm whitespace-nowrap">
+                <Zap className="h-3.5 w-3.5 mr-1.5" /> Boosters
+              </TabsTrigger>
+              <TabsTrigger value="passes" className="px-3 py-2 text-xs sm:text-sm whitespace-nowrap">
+                <Crown className="h-3.5 w-3.5 mr-1.5" /> Premium Pass
               </TabsTrigger>
               <TabsTrigger value="challenges" className="px-3 py-2 text-xs sm:text-sm whitespace-nowrap">
                 <Target className="h-3.5 w-3.5 mr-1.5" /> Challenges
