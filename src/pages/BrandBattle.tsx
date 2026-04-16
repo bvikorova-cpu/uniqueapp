@@ -22,6 +22,7 @@ import { DailyChallenges } from "@/components/brand-battle/DailyChallenges";
 import { BrandComments } from "@/components/brand-battle/BrandComments";
 import { TournamentBracket } from "@/components/brand-battle/TournamentBracket";
 import { LuxuryArenaHero } from "@/components/brand-battle/LuxuryArenaHero";
+import { LuxuryTabsNav, LuxuryTabItem } from "@/components/brand-battle/LuxuryTabsNav";
 import { BrandStockTicker } from "@/components/brand-battle/BrandStockTicker";
 import { BrandStockMarket } from "@/components/brand-battle/BrandStockMarket";
 import { BrandAIAnalyzer } from "@/components/brand-battle/BrandAIAnalyzer";
