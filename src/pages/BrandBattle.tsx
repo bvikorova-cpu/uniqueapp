@@ -22,6 +22,7 @@ import { DailyChallenges } from "@/components/brand-battle/DailyChallenges";
 import { BrandComments } from "@/components/brand-battle/BrandComments";
 import { TournamentBracket } from "@/components/brand-battle/TournamentBracket";
 import { LuxuryArenaHero } from "@/components/brand-battle/LuxuryArenaHero";
+import { LuxuryTabsNav, LuxuryTabItem } from "@/components/brand-battle/LuxuryTabsNav";
 import { BrandStockTicker } from "@/components/brand-battle/BrandStockTicker";
 import { BrandStockMarket } from "@/components/brand-battle/BrandStockMarket";
 import { BrandAIAnalyzer } from "@/components/brand-battle/BrandAIAnalyzer";
@@ -83,6 +84,7 @@ export default function BrandBattle() {
   const queryClient = useQueryClient();
   const [user, setUser] = useState<any>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
+  const [activeTab, setActiveTab] = useState<string>("leaderboard");
   const [searchParams, setSearchParams] = useSearchParams();
   const { data: votes, refetch: refetchVotes } = useBrandVotes();
   const { data: streak } = useVotingStreak();
@@ -212,10 +214,33 @@ export default function BrandBattle() {
     );
   }
 
+  const LUXURY_TABS: LuxuryTabItem[] = [
+    { value: "leaderboard", label: "Leaderboard", icon: Trophy },
+    { value: "ai", label: "AI Lab", icon: Sparkles },
+    { value: "market", label: "Stock Market", icon: TrendingUp },
+    { value: "matchup", label: "Head-to-Head", icon: Swords },
+    { value: "tribes", label: "Tribes", icon: Crown },
+    { value: "cards", label: "Trading Cards", icon: Star },
+    { value: "chat", label: "Live Chat", icon: MessageSquare },
+    { value: "boosters", label: "Boosters", icon: Zap },
+    { value: "passes", label: "Premium Pass", icon: Crown },
+    { value: "challenges", label: "Challenges", icon: Target },
+    { value: "tournament", label: "Tournament", icon: Calendar },
+    { value: "reviews", label: "Reviews", icon: MessageSquare },
+    { value: "sponsors", label: "Become Sponsor", icon: Building2 },
+    { value: "rewards", label: "Rewards", icon: Award },
+  ];
+
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-black text-amber-50">
+      {/* Ambient luxury backdrop */}
+      <div className="fixed inset-0 pointer-events-none -z-10">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,hsl(45_60%_25%/.15),transparent_60%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,hsl(40_70%_30%/.1),transparent_55%)]" />
+      </div>
+
       <Navbar />
-      <main className="flex-1 container mx-auto px-4 py-8">
+      <main className="flex-1 container mx-auto px-4 py-8 relative">
         {/* Luxury Arena Hero */}
         <LuxuryArenaHero
           totalVotes={campaignStats?.totalVotes}
@@ -224,7 +249,7 @@ export default function BrandBattle() {
         />
 
         {/* Live brand stock ticker */}
-        <div className="mb-6">
+        <div className="mb-8 rounded-2xl border border-amber-500/20 bg-gradient-to-r from-zinc-950 via-black to-zinc-950 overflow-hidden">
           <BrandStockTicker />
         </div>
 
@@ -237,7 +262,7 @@ export default function BrandBattle() {
                 variant="outline"
                 size="sm"
                 onClick={() => navigate("/sponsor-dashboard")}
-                className="border-primary/30 hover:bg-primary/10"
+                className="border-amber-500/30 text-amber-200 hover:bg-amber-500/10 hover:text-amber-100 bg-transparent"
               >
                 <Building2 className="h-4 w-4 mr-2" />
                 Sponsor Dashboard
@@ -247,132 +272,123 @@ export default function BrandBattle() {
           </div>
         )}
 
-        {/* How it works */}
-        <div className="bg-muted/50 rounded-xl p-4 sm:p-6 max-w-3xl mx-auto mb-8 text-left">
-          <h3 className="font-semibold text-lg mb-3 flex items-center gap-2">
-            <span className="text-primary">📋</span> How Brand Battle Works
-          </h3>
-          <ul className="space-y-2 text-sm sm:text-base text-muted-foreground">
-            <li className="flex items-start gap-2">
-              <span className="text-primary font-bold">1.</span>
-              <span><strong>Vote Daily:</strong> You get 1 free vote per day. Use it to support your favorite brands.</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-primary font-bold">2.</span>
-              <span><strong>Head-to-Head:</strong> Pick winners in 1v1 matchups for bonus excitement.</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-primary font-bold">3.</span>
-              <span><strong>Complete Challenges:</strong> Daily & weekly challenges earn you credit multipliers.</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-primary font-bold">4.</span>
-              <span><strong>Win Prizes:</strong> Top voters and brands earn rewards each quarter.</span>
-            </li>
-          </ul>
+        {/* How it works — luxury card */}
+        <div className="relative rounded-2xl p-px bg-gradient-to-br from-amber-400/40 via-amber-600/10 to-transparent max-w-3xl mx-auto mb-10">
+          <div className="rounded-2xl bg-zinc-950/90 backdrop-blur p-6 sm:p-8">
+            <div className="flex items-center gap-3 mb-5">
+              <div className="h-px flex-1 bg-gradient-to-r from-amber-400/60 to-transparent" />
+              <h3 className="font-serif text-lg sm:text-xl text-amber-200 italic tracking-wide" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
+                The House Rules
+              </h3>
+              <div className="h-px flex-1 bg-gradient-to-l from-amber-400/60 to-transparent" />
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {[
+                { num: "01", title: "Vote Daily", text: "One complimentary vote per day. Wield it wisely." },
+                { num: "02", title: "Head-to-Head", text: "Crown winners in elite 1v1 brand duels." },
+                { num: "03", title: "Conquer Challenges", text: "Daily quests unlock multipliers & rewards." },
+                { num: "04", title: "Claim Glory", text: "Top voters & brands earn quarterly prizes." },
+              ].map((item) => (
+                <div key={item.num} className="flex gap-3">
+                  <span className="font-serif text-2xl text-amber-500/70 leading-none" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
+                    {item.num}
+                  </span>
+                  <div>
+                    <div className="text-amber-100 font-medium text-sm tracking-wide uppercase">{item.title}</div>
+                    <div className="text-amber-100/50 text-sm mt-0.5 font-light">{item.text}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
 
-        <Tabs defaultValue="leaderboard" className="space-y-6">
-          <div className="overflow-x-auto scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0">
-            <TabsList className="inline-flex gap-1 w-max h-auto p-1.5">
-              <TabsTrigger value="leaderboard" className="px-3 py-2 text-xs sm:text-sm whitespace-nowrap">
-                <Trophy className="h-3.5 w-3.5 mr-1.5" /> Leaderboard
-              </TabsTrigger>
-              <TabsTrigger value="ai" className="px-3 py-2 text-xs sm:text-sm whitespace-nowrap">
-                <Sparkles className="h-3.5 w-3.5 mr-1.5" /> AI Lab
-              </TabsTrigger>
-              <TabsTrigger value="market" className="px-3 py-2 text-xs sm:text-sm whitespace-nowrap">
-                <TrendingUp className="h-3.5 w-3.5 mr-1.5" /> Stock Market
-              </TabsTrigger>
-              <TabsTrigger value="matchup" className="px-3 py-2 text-xs sm:text-sm whitespace-nowrap">
-                <Swords className="h-3.5 w-3.5 mr-1.5" /> Head-to-Head
-              </TabsTrigger>
-              <TabsTrigger value="tribes" className="px-3 py-2 text-xs sm:text-sm whitespace-nowrap">
-                <Crown className="h-3.5 w-3.5 mr-1.5" /> Tribes
-              </TabsTrigger>
-              <TabsTrigger value="cards" className="px-3 py-2 text-xs sm:text-sm whitespace-nowrap">
-                <Star className="h-3.5 w-3.5 mr-1.5" /> Trading Cards
-              </TabsTrigger>
-              <TabsTrigger value="chat" className="px-3 py-2 text-xs sm:text-sm whitespace-nowrap">
-                <MessageSquare className="h-3.5 w-3.5 mr-1.5" /> Live Chat
-              </TabsTrigger>
-              <TabsTrigger value="boosters" className="px-3 py-2 text-xs sm:text-sm whitespace-nowrap">
-                <Zap className="h-3.5 w-3.5 mr-1.5" /> Boosters
-              </TabsTrigger>
-              <TabsTrigger value="passes" className="px-3 py-2 text-xs sm:text-sm whitespace-nowrap">
-                <Crown className="h-3.5 w-3.5 mr-1.5" /> Premium Pass
-              </TabsTrigger>
-              <TabsTrigger value="challenges" className="px-3 py-2 text-xs sm:text-sm whitespace-nowrap">
-                <Target className="h-3.5 w-3.5 mr-1.5" /> Challenges
-              </TabsTrigger>
-              <TabsTrigger value="tournament" className="px-3 py-2 text-xs sm:text-sm whitespace-nowrap">
-                <Calendar className="h-3.5 w-3.5 mr-1.5" /> Tournament
-              </TabsTrigger>
-              <TabsTrigger value="reviews" className="px-3 py-2 text-xs sm:text-sm whitespace-nowrap">
-                <MessageSquare className="h-3.5 w-3.5 mr-1.5" /> Reviews
-              </TabsTrigger>
-              <TabsTrigger value="sponsors" className="px-3 py-2 text-xs sm:text-sm whitespace-nowrap">
-                <Building2 className="h-3.5 w-3.5 mr-1.5" /> Become Sponsor
-              </TabsTrigger>
-              <TabsTrigger value="rewards" className="px-3 py-2 text-xs sm:text-sm whitespace-nowrap">
-                <Award className="h-3.5 w-3.5 mr-1.5" /> Rewards
-              </TabsTrigger>
-            </TabsList>
-          </div>
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+          <LuxuryTabsNav tabs={LUXURY_TABS} active={activeTab} onChange={setActiveTab} />
 
           {/* Leaderboard */}
           <TabsContent value="leaderboard" className="space-y-6">
+            {/* Luxury category filter */}
             <div className="flex flex-wrap gap-2 justify-center pb-2">
-              <Button variant={selectedCategory === "All" ? "default" : "outline"} onClick={() => setSelectedCategory("All")} size="sm" className="text-xs px-3">All</Button>
-              {CATEGORIES.map(cat => (
-                <Button key={cat} variant={selectedCategory === cat ? "default" : "outline"} onClick={() => setSelectedCategory(cat)} size="sm" className="text-xs px-3">{cat}</Button>
-              ))}
+              {["All", ...CATEGORIES].map(cat => {
+                const isActive = selectedCategory === cat;
+                return (
+                  <button
+                    key={cat}
+                    onClick={() => setSelectedCategory(cat)}
+                    className={`px-4 py-1.5 rounded-full text-xs font-medium tracking-wider uppercase transition-all duration-300 ${
+                      isActive
+                        ? "bg-gradient-to-b from-amber-300 to-amber-600 text-zinc-950 shadow-[0_0_20px_-5px_hsl(45_85%_55%/.6)] border border-amber-200/50"
+                        : "border border-amber-500/20 text-amber-100/60 hover:border-amber-400/50 hover:text-amber-200 bg-zinc-950/50"
+                    }`}
+                  >
+                    {cat}
+                  </button>
+                );
+              })}
             </div>
 
+            {/* Top 3 podium */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
               {sortedSponsors.slice(0, 3).map((sponsor, i) => (
                 <FeaturedBrandCard key={sponsor.id} sponsor={sponsor} rank={i + 1} onVote={handleVote} isVoting={voteMutation.isPending} canVote={(votes?.remaining || 0) > 0} isAuthenticated={!!user} />
               ))}
             </div>
 
+            {/* Full luxury leaderboard */}
             {sortedSponsors.length > 3 && (
               <div className="space-y-3">
-                <h3 className="text-xl font-semibold">Full Leaderboard</h3>
+                <div className="flex items-center gap-3">
+                  <div className="h-px flex-1 bg-gradient-to-r from-transparent via-amber-500/30 to-transparent" />
+                  <h3 className="font-serif text-xl text-amber-200 italic tracking-wide" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
+                    The Full Roster
+                  </h3>
+                  <div className="h-px flex-1 bg-gradient-to-r from-transparent via-amber-500/30 to-transparent" />
+                </div>
                 {sortedSponsors.slice(3).map((sponsor, index) => {
-                  const tierInfo = SPONSOR_TIERS[sponsor.tier];
                   const position = index + 4;
                   return (
-                    <Card key={sponsor.id}>
-                      <CardContent className="p-4">
+                    <div
+                      key={sponsor.id}
+                      className="group relative rounded-xl p-px bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-transparent hover:from-amber-400/40 hover:via-amber-500/20 transition-all duration-500"
+                    >
+                      <div className="rounded-xl bg-zinc-950/90 backdrop-blur p-4">
                         <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
                           <div className="flex items-center gap-3 sm:gap-4">
-                            <div className="text-xl sm:text-2xl font-bold text-muted-foreground w-8 sm:w-12 text-center flex-shrink-0">#{position}</div>
-                            <div className="flex-shrink-0">
+                            <div className="font-serif text-2xl sm:text-3xl text-amber-500/70 group-hover:text-amber-400 w-10 sm:w-14 text-center flex-shrink-0 transition-colors" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
+                              {position}
+                            </div>
+                            <div className="flex-shrink-0 rounded-lg overflow-hidden ring-1 ring-amber-500/20">
                               {sponsor.logo.startsWith('http') ? (
-                                <img src={sponsor.logo} alt={sponsor.name} className="w-12 h-12 sm:w-16 sm:h-16 object-cover rounded-lg" />
+                                <img src={sponsor.logo} alt={sponsor.name} className="w-12 h-12 sm:w-16 sm:h-16 object-cover" />
                               ) : (
-                                <div className="text-3xl sm:text-4xl">{sponsor.logo}</div>
+                                <div className="text-3xl sm:text-4xl w-12 h-12 sm:w-16 sm:h-16 flex items-center justify-center bg-zinc-900">{sponsor.logo}</div>
                               )}
                             </div>
                             <div className="flex-1 min-w-0">
-                              <div className="font-semibold text-sm sm:text-base truncate">{sponsor.name}</div>
-                              <div className="text-xs sm:text-sm text-muted-foreground line-clamp-2">{sponsor.description}</div>
-                              <Badge variant="secondary" className="mt-1 text-xs">{sponsor.category}</Badge>
+                              <div className="font-medium text-sm sm:text-base text-amber-100 truncate">{sponsor.name}</div>
+                              <div className="text-xs sm:text-sm text-amber-100/40 line-clamp-2 font-light">{sponsor.description}</div>
+                              <Badge className="mt-1.5 text-[10px] uppercase tracking-wider bg-amber-500/10 text-amber-300 border border-amber-500/30 hover:bg-amber-500/15">{sponsor.category}</Badge>
                             </div>
                           </div>
                           <div className="flex items-center justify-between sm:justify-end gap-3 sm:gap-4 mt-2 sm:mt-0">
                             <div className="text-center">
-                              <div className="text-xl sm:text-2xl font-bold text-primary">{sponsor.total_votes}</div>
-                              <div className="text-xs text-muted-foreground">votes</div>
+                              <div className="font-serif text-2xl sm:text-3xl bg-gradient-to-b from-amber-200 to-amber-500 bg-clip-text text-transparent" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>{sponsor.total_votes}</div>
+                              <div className="text-[9px] uppercase tracking-[0.2em] text-amber-100/40">votes</div>
                             </div>
-                            <Button onClick={() => handleVote(sponsor.id, sponsor.name)} disabled={!user || voteMutation.isPending || (votes?.remaining || 0) <= 0} className="min-h-[40px] sm:min-h-[44px] text-xs sm:text-sm px-3 sm:px-4" size="sm">
+                            <Button
+                              onClick={() => handleVote(sponsor.id, sponsor.name)}
+                              disabled={!user || voteMutation.isPending || (votes?.remaining || 0) <= 0}
+                              className="min-h-[40px] sm:min-h-[44px] text-xs sm:text-sm px-4 sm:px-5 bg-gradient-to-b from-amber-300 to-amber-600 text-zinc-950 hover:from-amber-200 hover:to-amber-500 border-0 font-semibold tracking-wider uppercase shadow-[0_0_20px_-5px_hsl(45_85%_55%/.5)]"
+                              size="sm"
+                            >
                               {voteMutation.isPending ? <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" /> : <Vote className="h-3.5 w-3.5 mr-1.5" />}
                               Vote
                             </Button>
                           </div>
                         </div>
-                      </CardContent>
-                    </Card>
+                      </div>
+                    </div>
                   );
                 })}
               </div>
