@@ -308,57 +308,87 @@ export default function BrandBattle() {
 
           {/* Leaderboard */}
           <TabsContent value="leaderboard" className="space-y-6">
+            {/* Luxury category filter */}
             <div className="flex flex-wrap gap-2 justify-center pb-2">
-              <Button variant={selectedCategory === "All" ? "default" : "outline"} onClick={() => setSelectedCategory("All")} size="sm" className="text-xs px-3">All</Button>
-              {CATEGORIES.map(cat => (
-                <Button key={cat} variant={selectedCategory === cat ? "default" : "outline"} onClick={() => setSelectedCategory(cat)} size="sm" className="text-xs px-3">{cat}</Button>
-              ))}
+              {["All", ...CATEGORIES].map(cat => {
+                const isActive = selectedCategory === cat;
+                return (
+                  <button
+                    key={cat}
+                    onClick={() => setSelectedCategory(cat)}
+                    className={`px-4 py-1.5 rounded-full text-xs font-medium tracking-wider uppercase transition-all duration-300 ${
+                      isActive
+                        ? "bg-gradient-to-b from-amber-300 to-amber-600 text-zinc-950 shadow-[0_0_20px_-5px_hsl(45_85%_55%/.6)] border border-amber-200/50"
+                        : "border border-amber-500/20 text-amber-100/60 hover:border-amber-400/50 hover:text-amber-200 bg-zinc-950/50"
+                    }`}
+                  >
+                    {cat}
+                  </button>
+                );
+              })}
             </div>
 
+            {/* Top 3 podium */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
               {sortedSponsors.slice(0, 3).map((sponsor, i) => (
                 <FeaturedBrandCard key={sponsor.id} sponsor={sponsor} rank={i + 1} onVote={handleVote} isVoting={voteMutation.isPending} canVote={(votes?.remaining || 0) > 0} isAuthenticated={!!user} />
               ))}
             </div>
 
+            {/* Full luxury leaderboard */}
             {sortedSponsors.length > 3 && (
               <div className="space-y-3">
-                <h3 className="text-xl font-semibold">Full Leaderboard</h3>
+                <div className="flex items-center gap-3">
+                  <div className="h-px flex-1 bg-gradient-to-r from-transparent via-amber-500/30 to-transparent" />
+                  <h3 className="font-serif text-xl text-amber-200 italic tracking-wide" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
+                    The Full Roster
+                  </h3>
+                  <div className="h-px flex-1 bg-gradient-to-r from-transparent via-amber-500/30 to-transparent" />
+                </div>
                 {sortedSponsors.slice(3).map((sponsor, index) => {
-                  const tierInfo = SPONSOR_TIERS[sponsor.tier];
                   const position = index + 4;
                   return (
-                    <Card key={sponsor.id}>
-                      <CardContent className="p-4">
+                    <div
+                      key={sponsor.id}
+                      className="group relative rounded-xl p-px bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-transparent hover:from-amber-400/40 hover:via-amber-500/20 transition-all duration-500"
+                    >
+                      <div className="rounded-xl bg-zinc-950/90 backdrop-blur p-4">
                         <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
                           <div className="flex items-center gap-3 sm:gap-4">
-                            <div className="text-xl sm:text-2xl font-bold text-muted-foreground w-8 sm:w-12 text-center flex-shrink-0">#{position}</div>
-                            <div className="flex-shrink-0">
+                            <div className="font-serif text-2xl sm:text-3xl text-amber-500/70 group-hover:text-amber-400 w-10 sm:w-14 text-center flex-shrink-0 transition-colors" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
+                              {position}
+                            </div>
+                            <div className="flex-shrink-0 rounded-lg overflow-hidden ring-1 ring-amber-500/20">
                               {sponsor.logo.startsWith('http') ? (
-                                <img src={sponsor.logo} alt={sponsor.name} className="w-12 h-12 sm:w-16 sm:h-16 object-cover rounded-lg" />
+                                <img src={sponsor.logo} alt={sponsor.name} className="w-12 h-12 sm:w-16 sm:h-16 object-cover" />
                               ) : (
-                                <div className="text-3xl sm:text-4xl">{sponsor.logo}</div>
+                                <div className="text-3xl sm:text-4xl w-12 h-12 sm:w-16 sm:h-16 flex items-center justify-center bg-zinc-900">{sponsor.logo}</div>
                               )}
                             </div>
                             <div className="flex-1 min-w-0">
-                              <div className="font-semibold text-sm sm:text-base truncate">{sponsor.name}</div>
-                              <div className="text-xs sm:text-sm text-muted-foreground line-clamp-2">{sponsor.description}</div>
-                              <Badge variant="secondary" className="mt-1 text-xs">{sponsor.category}</Badge>
+                              <div className="font-medium text-sm sm:text-base text-amber-100 truncate">{sponsor.name}</div>
+                              <div className="text-xs sm:text-sm text-amber-100/40 line-clamp-2 font-light">{sponsor.description}</div>
+                              <Badge className="mt-1.5 text-[10px] uppercase tracking-wider bg-amber-500/10 text-amber-300 border border-amber-500/30 hover:bg-amber-500/15">{sponsor.category}</Badge>
                             </div>
                           </div>
                           <div className="flex items-center justify-between sm:justify-end gap-3 sm:gap-4 mt-2 sm:mt-0">
                             <div className="text-center">
-                              <div className="text-xl sm:text-2xl font-bold text-primary">{sponsor.total_votes}</div>
-                              <div className="text-xs text-muted-foreground">votes</div>
+                              <div className="font-serif text-2xl sm:text-3xl bg-gradient-to-b from-amber-200 to-amber-500 bg-clip-text text-transparent" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>{sponsor.total_votes}</div>
+                              <div className="text-[9px] uppercase tracking-[0.2em] text-amber-100/40">votes</div>
                             </div>
-                            <Button onClick={() => handleVote(sponsor.id, sponsor.name)} disabled={!user || voteMutation.isPending || (votes?.remaining || 0) <= 0} className="min-h-[40px] sm:min-h-[44px] text-xs sm:text-sm px-3 sm:px-4" size="sm">
+                            <Button
+                              onClick={() => handleVote(sponsor.id, sponsor.name)}
+                              disabled={!user || voteMutation.isPending || (votes?.remaining || 0) <= 0}
+                              className="min-h-[40px] sm:min-h-[44px] text-xs sm:text-sm px-4 sm:px-5 bg-gradient-to-b from-amber-300 to-amber-600 text-zinc-950 hover:from-amber-200 hover:to-amber-500 border-0 font-semibold tracking-wider uppercase shadow-[0_0_20px_-5px_hsl(45_85%_55%/.5)]"
+                              size="sm"
+                            >
                               {voteMutation.isPending ? <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" /> : <Vote className="h-3.5 w-3.5 mr-1.5" />}
                               Vote
                             </Button>
                           </div>
                         </div>
-                      </CardContent>
-                    </Card>
+                      </div>
+                    </div>
                   );
                 })}
               </div>
