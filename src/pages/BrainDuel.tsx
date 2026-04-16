@@ -35,6 +35,11 @@ import { DuelHistoryStats } from "@/components/brain-duel/DuelHistoryStats";
 import { ReferralSystem } from "@/components/brain-duel/ReferralSystem";
 import { AnimatedLeaderboard } from "@/components/brain-duel/AnimatedLeaderboard";
 import { AIWeeklyRecap } from "@/components/brain-duel/AIWeeklyRecap";
+import { RankAvatarSystem } from "@/components/brain-duel/RankAvatarSystem";
+import { PowerUpCombos } from "@/components/brain-duel/PowerUpCombos";
+import { SeasonalThemes } from "@/components/brain-duel/SeasonalThemes";
+import { AchievementAnimation } from "@/components/brain-duel/AchievementAnimation";
+import { DailyChallenges } from "@/components/brain-duel/DailyChallenges";
 import { useBrainDuelPowerups } from "@/hooks/useBrainDuelPowerups";
 import { useBrainDuelOnlinePlayers } from "@/hooks/useBrainDuelOnlinePlayers";
 import { useBrainDuelRealTimeNotifications } from "@/hooks/useBrainDuelRealTimeNotifications";
@@ -120,6 +125,9 @@ const BrainDuel = () => {
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
+      {/* Achievement Animation Overlay */}
+      <AchievementAnimation />
+
       {/* Animated background elements */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary/5 rounded-full blur-3xl animate-pulse" />
@@ -131,6 +139,11 @@ const BrainDuel = () => {
         
         {/* ===== NEON HERO ===== */}
         <BrainDuelHero onlineCount={onlineCount} userId={userId} />
+
+        {/* ===== SEASONAL THEME BANNER ===== */}
+        <div className="max-w-4xl mx-auto mb-6">
+          <SeasonalThemes />
+        </div>
 
         {/* How it works */}
         <motion.div
@@ -186,12 +199,17 @@ const BrainDuel = () => {
           className="max-w-4xl mx-auto mb-8 space-y-4"
         >
           <PlayerStatsDisplay />
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <DailyStreak />
+            <RankAvatarSystem />
             <div className="space-y-4">
               <BrainDuelCreditsDisplay />
               <BonusRoundCard />
             </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <PowerUpCombos />
+            <DailyChallenges />
           </div>
           <DailySpinWheel />
         </motion.div>

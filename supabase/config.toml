@@ -1237,3 +1237,9 @@ verify_jwt = true
 
 [functions.brain-duel-use-referral]
 verify_jwt = true
+
+[functions.brain-duel-ai-commentary]
+verify_jwt = true
+
+[functions.brain-duel-daily-challenge]
+verify_jwt = true

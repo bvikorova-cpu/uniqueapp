@@ -14,7 +14,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useBrainDuelCredits } from '@/hooks/useBrainDuelCredits';
 import { motion } from 'framer-motion';
-
+import { SpectatorBetting } from './SpectatorBetting';
 interface VirtualGift {
   id: string;
   name: string;
@@ -410,6 +410,15 @@ export const LiveSpectatorMode = () => {
                   </div>
                 </CardContent>
               </Card>
+
+              {/* Spectator Betting */}
+              <SpectatorBetting
+                matchId={selectedMatch}
+                player1Name={selectedMatchData.player1_profile?.full_name || "Player 1"}
+                player2Name={selectedMatchData.player2_profile?.full_name || "Player 2"}
+                player1Id={selectedMatchData.player1_id}
+                player2Id={selectedMatchData.player2_id}
+              />
             </>
           ) : (
             <Card className="backdrop-blur-xl bg-card/80 border-primary/10">
