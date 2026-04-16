@@ -84,6 +84,7 @@ export default function BrandBattle() {
   const queryClient = useQueryClient();
   const [user, setUser] = useState<any>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
+  const [activeTab, setActiveTab] = useState<string>("leaderboard");
   const [searchParams, setSearchParams] = useSearchParams();
   const { data: votes, refetch: refetchVotes } = useBrandVotes();
   const { data: streak } = useVotingStreak();
