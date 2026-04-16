@@ -165,7 +165,7 @@ export const BattleHero = ({ totalVotes = 0, totalSponsors = 0 }: BattleHeroProp
             >
               <stat.icon className="h-5 w-5 text-primary mx-auto mb-1.5" />
               <div className="text-3xl md:text-4xl font-black text-primary">
-                {stat.prefix}{stat.value === 10 ? "€10" : <AnimatedCounter value={stat.value} />}{stat.suffix}
+                {stat.prefix}{stat.value === 10 ? "10" : <AnimatedCounter value={stat.value} />}{stat.suffix}
               </div>
               <div className="text-xs text-muted-foreground mt-0.5">{stat.label}</div>
             </motion.div>
