@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Vote, Loader2, ExternalLink, Crown } from "lucide-react";
+import { Vote, Loader2, ExternalLink, Crown, TrendingUp, Flame } from "lucide-react";
 import { motion } from "framer-motion";
 
 interface BrandSponsor {
@@ -35,9 +35,10 @@ const RANK_STYLES = {
   1: {
     medal: "🥇",
     cardClass: "md:scale-105 shadow-2xl ring-2 ring-yellow-500/50",
-    bgGradient: "from-yellow-500/10 to-amber-500/5",
+    bgGradient: "from-yellow-500/15 to-amber-500/5",
     textColor: "text-yellow-500",
     label: "🏆 Current Leader",
+    glowColor: "shadow-yellow-500/20",
   },
   2: {
     medal: "🥈",
@@ -45,6 +46,7 @@ const RANK_STYLES = {
     bgGradient: "from-gray-400/10 to-gray-500/5",
     textColor: "text-gray-400",
     label: "Runner Up",
+    glowColor: "shadow-gray-400/10",
   },
   3: {
     medal: "🥉",
@@ -52,6 +54,7 @@ const RANK_STYLES = {
     bgGradient: "from-amber-600/10 to-orange-500/5",
     textColor: "text-amber-600",
     label: "Bronze Medal",
+    glowColor: "shadow-amber-600/10",
   },
 };
 
@@ -68,21 +71,31 @@ export const FeaturedBrandCard = ({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: (rank - 1) * 0.1 }}
+      transition={{ delay: (rank - 1) * 0.15, type: "spring" }}
+      whileHover={{ y: -8 }}
     >
       <Card
-        className={`relative overflow-hidden backdrop-blur-xl bg-card/80 bg-gradient-to-br ${rankStyle.bgGradient} ${rankStyle.cardClass} transition-all hover:scale-[1.02]`}
+        className={`relative overflow-hidden backdrop-blur-xl bg-card/80 bg-gradient-to-br ${rankStyle.bgGradient} ${rankStyle.cardClass} ${rankStyle.glowColor} transition-all`}
       >
         {/* Tier indicator bar */}
         <div className={`absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r ${tierColor}`} />
 
+        {/* Animated background particles for #1 */}
+        {rank === 1 && (
+          <motion.div
+            className="absolute inset-0 bg-gradient-to-br from-yellow-500/5 to-transparent"
+            animate={{ opacity: [0.3, 0.6, 0.3] }}
+            transition={{ duration: 3, repeat: Infinity }}
+          />
+        )}
+
         {/* Rank badge */}
         <div className="absolute -top-2 -right-2 z-10">
           <motion.div
-            className={`text-5xl drop-shadow-lg ${rank === 1 ? "" : ""}`}
-            animate={rank === 1 ? { scale: [1, 1.1, 1] } : {}}
+            className="text-5xl drop-shadow-lg"
+            animate={rank === 1 ? { scale: [1, 1.15, 1], rotate: [0, 5, -5, 0] } : {}}
             transition={{ duration: 2, repeat: Infinity }}
           >
             {rankStyle.medal}
@@ -90,47 +103,65 @@ export const FeaturedBrandCard = ({
         </div>
 
         <CardHeader className="text-center pb-3 pt-6">
-          <div className="flex justify-center mb-3">
+          <motion.div
+            className="flex justify-center mb-3"
+            whileHover={{ scale: 1.05 }}
+          >
             {sponsor.logo.startsWith("http") ? (
               <img
                 src={sponsor.logo}
                 alt={sponsor.name}
-                className="w-28 h-28 object-cover rounded-xl shadow-lg"
+                className="w-28 h-28 object-cover rounded-2xl shadow-lg border-2 border-primary/10"
               />
             ) : (
               <div className="text-7xl">{sponsor.logo}</div>
             )}
-          </div>
+          </motion.div>
 
           <div className={`text-sm font-bold uppercase tracking-wider ${rankStyle.textColor} mb-1`}>
             {rankStyle.label}
           </div>
 
           <CardTitle className="text-2xl">{sponsor.name}</CardTitle>
-
           <p className="text-sm text-muted-foreground line-clamp-2 mt-1">{sponsor.description}</p>
 
-          <div className="flex items-center justify-center gap-2 mt-2">
+          <div className="flex items-center justify-center gap-2 mt-2 flex-wrap">
             <Badge variant="secondary">{sponsor.category}</Badge>
-            <Badge className={`bg-gradient-to-r ${tierColor} text-white border-0`}>
+            <Badge className={`bg-gradient-to-r ${tierColor} text-white border-0 shadow-sm`}>
               {sponsor.tier.charAt(0).toUpperCase() + sponsor.tier.slice(1)}
             </Badge>
           </div>
         </CardHeader>
 
         <CardContent className="space-y-4">
-          {/* Vote count */}
-          <div className="text-center p-4 rounded-xl backdrop-blur-sm bg-background/40 border border-primary/5">
-            <div className={`text-4xl font-bold ${rankStyle.textColor}`}>
-              {sponsor.total_votes.toLocaleString()}
+          {/* Vote count with trend indicator */}
+          <div className="text-center p-4 rounded-xl backdrop-blur-sm bg-background/40 border border-primary/10">
+            <div className="flex items-center justify-center gap-2">
+              <div className={`text-4xl font-black ${rankStyle.textColor}`}>
+                {sponsor.total_votes.toLocaleString()}
+              </div>
+              {rank === 1 && (
+                <motion.div
+                  animate={{ y: [0, -3, 0] }}
+                  transition={{ duration: 1.5, repeat: Infinity }}
+                >
+                  <TrendingUp className="h-5 w-5 text-green-500" />
+                </motion.div>
+              )}
             </div>
             <div className="text-sm text-muted-foreground">total votes</div>
+            {rank === 1 && (
+              <div className="flex items-center justify-center gap-1 mt-1">
+                <Flame className="h-3 w-3 text-orange-500" />
+                <span className="text-xs text-orange-500 font-medium">Trending #1</span>
+              </div>
+            )}
           </div>
 
           {/* Vote button */}
           <Button
             onClick={() => onVote(sponsor.id, sponsor.name)}
-            className="w-full min-h-[48px] text-base"
+            className="w-full min-h-[48px] text-base shadow-lg shadow-primary/10"
             size="lg"
             disabled={!isAuthenticated || isVoting || !canVote}
           >
@@ -153,9 +184,9 @@ export const FeaturedBrandCard = ({
               href={sponsor.website}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-center gap-1 text-sm text-muted-foreground hover:text-primary transition-colors"
+              className="flex items-center justify-center gap-1.5 text-sm text-muted-foreground hover:text-primary transition-colors py-1"
             >
-              <ExternalLink className="h-3 w-3" />
+              <ExternalLink className="h-3.5 w-3.5" />
               Visit website
             </a>
           )}
