@@ -53,7 +53,7 @@ export const FriendChallenges = () => {
     if (!userId) return;
 
     const channel = supabase
-      .channel('friend-challenges-notifications')
+      .channel(`friend-challenges-notifications-${userId}`)
       .on(
         'postgres_changes',
         {
