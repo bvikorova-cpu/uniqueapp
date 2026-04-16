@@ -194,12 +194,17 @@ const BrainDuel = () => {
           className="max-w-4xl mx-auto mb-8 space-y-4"
         >
           <PlayerStatsDisplay />
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <DailyStreak />
+            <RankAvatarSystem />
             <div className="space-y-4">
               <BrainDuelCreditsDisplay />
               <BonusRoundCard />
             </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <PowerUpCombos />
+            <DailyChallenges />
           </div>
           <DailySpinWheel />
         </motion.div>
