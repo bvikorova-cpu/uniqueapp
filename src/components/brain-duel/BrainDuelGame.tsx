@@ -412,6 +412,7 @@ export const BrainDuelGame = () => {
             })}
           </div>
         </Card>
+        <LiveDuelChat matchId={matchId || undefined} />
       </div>
     );
   }
