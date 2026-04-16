@@ -3,7 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { MessageSquare, ThumbsUp, Star, Send, User, Filter, TrendingUp } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import { MessageSquare, ThumbsUp, Star, Send, User, Filter, TrendingUp, Award, Sparkles, BarChart3 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface Comment {
@@ -40,44 +41,76 @@ export const BrandComments = ({ isAuthenticated }: BrandCommentsProps) => {
     });
   };
 
+  const avgRating = comments.length > 0
+    ? (comments.reduce((sum, c) => sum + c.rating, 0) / comments.length).toFixed(1)
+    : "0.0";
+
   return (
     <div className="space-y-6">
+      {/* Review stats banner */}
+      <Card className="backdrop-blur-xl bg-gradient-to-r from-primary/5 via-card/80 to-accent/5 border-primary/10 overflow-hidden">
+        <CardContent className="p-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {[
+              { icon: MessageSquare, value: comments.length, label: "Total Reviews" },
+              { icon: Star, value: avgRating, label: "Avg Rating" },
+              { icon: ThumbsUp, value: comments.reduce((s, c) => s + c.likes, 0), label: "Total Likes" },
+              { icon: Award, value: new Set(comments.map(c => c.brandName)).size, label: "Brands Reviewed" },
+            ].map((stat, i) => (
+              <motion.div
+                key={stat.label}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.08 }}
+                className="text-center p-3 rounded-xl backdrop-blur-sm bg-background/40 border border-primary/5"
+              >
+                <stat.icon className="h-5 w-5 text-primary mx-auto mb-1" />
+                <div className="text-2xl font-bold">{stat.value}</div>
+                <div className="text-xs text-muted-foreground">{stat.label}</div>
+              </motion.div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Write review */}
       {isAuthenticated && (
         <Card className="border border-primary/20 backdrop-blur-xl bg-card/80 overflow-hidden">
           <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-accent to-primary" />
           <CardHeader className="pb-3">
             <CardTitle className="text-lg flex items-center gap-2">
-              <MessageSquare className="h-5 w-5 text-primary" />
+              <Sparkles className="h-5 w-5 text-primary" />
               Write a Brand Review
+              <Badge variant="secondary" className="text-xs ml-2">+15 credits</Badge>
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-3">
+          <CardContent className="space-y-4">
             <div className="flex items-center gap-1 mb-1">
               <span className="text-sm text-muted-foreground mr-2">Rating:</span>
               {[1, 2, 3, 4, 5].map(r => (
                 <motion.button
                   key={r}
                   onClick={() => setSelectedRating(r)}
-                  whileHover={{ scale: 1.2 }}
-                  whileTap={{ scale: 0.9 }}
+                  whileHover={{ scale: 1.3 }}
+                  whileTap={{ scale: 0.8 }}
                 >
                   <Star
-                    className={`h-6 w-6 transition-colors ${r <= selectedRating ? "fill-yellow-500 text-yellow-500" : "text-muted-foreground/30"}`}
+                    className={`h-7 w-7 transition-colors ${r <= selectedRating ? "fill-yellow-500 text-yellow-500" : "text-muted-foreground/20"}`}
                   />
                 </motion.button>
               ))}
-              <span className="text-sm font-medium ml-2 text-muted-foreground">{selectedRating}/5</span>
+              <span className="text-sm font-bold ml-2 text-primary">{selectedRating}/5</span>
             </div>
-            <div className="flex gap-2">
-              <Input
-                value={newComment}
-                onChange={e => setNewComment(e.target.value)}
-                placeholder="Share your experience with a brand..."
-                className="flex-1 bg-background/50"
-              />
-              <Button disabled={!newComment.trim()} className="gap-1.5">
-                <Send className="h-4 w-4" /> Post
+            <Textarea
+              value={newComment}
+              onChange={e => setNewComment(e.target.value)}
+              placeholder="Share your detailed experience with a brand... What makes them great? Any improvements?"
+              className="min-h-[80px] bg-background/50 resize-none"
+            />
+            <div className="flex justify-between items-center">
+              <span className="text-xs text-muted-foreground">Min 20 characters for credit reward</span>
+              <Button disabled={!newComment.trim() || newComment.length < 10} className="gap-1.5 shadow-lg shadow-primary/10">
+                <Send className="h-4 w-4" /> Post Review
               </Button>
             </div>
           </CardContent>
@@ -97,7 +130,7 @@ export const BrandComments = ({ isAuthenticated }: BrandCommentsProps) => {
             onClick={() => setSortBy("popular")}
             className="gap-1"
           >
-            <Filter className="h-3 w-3" /> Popular
+            <BarChart3 className="h-3 w-3" /> Popular
           </Button>
           <Button
             variant={sortBy === "recent" ? "default" : "outline"}
@@ -111,12 +144,19 @@ export const BrandComments = ({ isAuthenticated }: BrandCommentsProps) => {
 
       {/* Empty state */}
       {sorted.length === 0 && (
-        <Card className="p-8 text-center backdrop-blur-xl bg-card/80">
-          <MessageSquare className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
-          <h3 className="font-bold text-lg mb-1">No Reviews Yet</h3>
-          <p className="text-sm text-muted-foreground">
-            Be the first to review a brand! Share your experience to help the community.
-          </p>
+        <Card className="p-12 text-center backdrop-blur-xl bg-card/80">
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+          >
+            <div className="h-20 w-20 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
+              <MessageSquare className="h-10 w-10 text-primary" />
+            </div>
+            <h3 className="font-bold text-xl mb-2">No Reviews Yet</h3>
+            <p className="text-muted-foreground max-w-md mx-auto">
+              Be the first to review a brand! Share your experience to help the community and earn 15 credits.
+            </p>
+          </motion.div>
         </Card>
       )}
 
@@ -131,29 +171,31 @@ export const BrandComments = ({ isAuthenticated }: BrandCommentsProps) => {
               exit={{ opacity: 0 }}
               transition={{ delay: i * 0.05 }}
             >
-              <Card className="hover:shadow-md transition-all backdrop-blur-xl bg-card/80 border-primary/5 hover:border-primary/20">
-                <CardContent className="p-4">
+              <Card className="hover:shadow-lg transition-all backdrop-blur-xl bg-card/80 border-primary/5 hover:border-primary/20">
+                <CardContent className="p-5">
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <div className="h-8 w-8 rounded-full bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className="h-9 w-9 rounded-full bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
                           <User className="h-4 w-4 text-primary" />
                         </div>
-                        <span className="text-sm font-medium">{comment.author}</span>
-                        <span className="text-xs text-muted-foreground">• {comment.date}</span>
+                        <div>
+                          <span className="text-sm font-medium">{comment.author}</span>
+                          <span className="text-xs text-muted-foreground ml-2">• {comment.date}</span>
+                        </div>
                       </div>
-                      <div className="flex items-center gap-1 mb-2">
+                      <div className="flex items-center gap-2 mb-2">
                         <Badge variant="outline" className="text-xs">{comment.brandName}</Badge>
-                        <div className="flex ml-1">
+                        <div className="flex">
                           {Array.from({ length: 5 }).map((_, i) => (
                             <Star
                               key={i}
-                              className={`h-3 w-3 ${i < comment.rating ? "fill-yellow-500 text-yellow-500" : "text-muted-foreground/20"}`}
+                              className={`h-3.5 w-3.5 ${i < comment.rating ? "fill-yellow-500 text-yellow-500" : "text-muted-foreground/20"}`}
                             />
                           ))}
                         </div>
                       </div>
-                      <p className="text-sm">{comment.text}</p>
+                      <p className="text-sm leading-relaxed">{comment.text}</p>
                     </div>
                     <Button
                       variant="ghost"
