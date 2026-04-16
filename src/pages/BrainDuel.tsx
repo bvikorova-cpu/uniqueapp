@@ -214,18 +214,39 @@ const BrainDuel = () => {
           <BrainDuelGame />
         </motion.div>
 
-        {/* ===== LEADERBOARD & FRIENDS ===== */}
+        {/* ===== ANIMATED LEADERBOARD & FRIENDS ===== */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.6 }}
           className="max-w-6xl mx-auto mb-10 grid md:grid-cols-1 lg:grid-cols-2 gap-6"
         >
-          <BrainDuelLeaderboard />
+          <AnimatedLeaderboard />
           <div className="space-y-6">
             <FriendChallenges />
             <FriendChallengesLeaderboard />
           </div>
+        </motion.div>
+
+        {/* ===== DUEL HISTORY & REFERRAL ===== */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.65 }}
+          className="max-w-6xl mx-auto mb-10 grid md:grid-cols-1 lg:grid-cols-2 gap-6"
+        >
+          <DuelHistoryStats />
+          <ReferralSystem />
+        </motion.div>
+
+        {/* ===== AI WEEKLY RECAP ===== */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.68 }}
+          className="max-w-4xl mx-auto mb-10"
+        >
+          <AIWeeklyRecap />
         </motion.div>
 
         {/* ===== TABS ===== */}
