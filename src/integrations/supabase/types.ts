@@ -3576,6 +3576,66 @@ export type Database = {
           },
         ]
       }
+      brain_duel_achievement_unlocks: {
+        Row: {
+          achievement_code: string
+          achievement_icon: string
+          achievement_name: string
+          animation_shown: boolean
+          id: string
+          unlocked_at: string
+          user_id: string
+        }
+        Insert: {
+          achievement_code: string
+          achievement_icon?: string
+          achievement_name: string
+          animation_shown?: boolean
+          id?: string
+          unlocked_at?: string
+          user_id: string
+        }
+        Update: {
+          achievement_code?: string
+          achievement_icon?: string
+          achievement_name?: string
+          animation_shown?: boolean
+          id?: string
+          unlocked_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      brain_duel_ai_commentaries: {
+        Row: {
+          commentary: string
+          created_at: string
+          credits_used: number
+          id: string
+          match_id: string
+          style: string
+          user_id: string
+        }
+        Insert: {
+          commentary: string
+          created_at?: string
+          credits_used?: number
+          id?: string
+          match_id: string
+          style?: string
+          user_id: string
+        }
+        Update: {
+          commentary?: string
+          created_at?: string
+          credits_used?: number
+          id?: string
+          match_id?: string
+          style?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       brain_duel_ai_recaps: {
         Row: {
           created_at: string | null
@@ -3675,6 +3735,77 @@ export type Database = {
           id?: string
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      brain_duel_daily_challenge_entries: {
+        Row: {
+          challenge_id: string
+          completed_at: string
+          id: string
+          score: number
+          time_taken: number
+          user_id: string
+        }
+        Insert: {
+          challenge_id: string
+          completed_at?: string
+          id?: string
+          score?: number
+          time_taken?: number
+          user_id: string
+        }
+        Update: {
+          challenge_id?: string
+          completed_at?: string
+          id?: string
+          score?: number
+          time_taken?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "brain_duel_daily_challenge_entries_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "brain_duel_daily_challenges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      brain_duel_daily_challenges: {
+        Row: {
+          category: string
+          challenge_date: string
+          created_at: string
+          description: string | null
+          id: string
+          question_count: number
+          reward_credits: number
+          time_limit: number
+          title: string
+        }
+        Insert: {
+          category: string
+          challenge_date?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          question_count?: number
+          reward_credits?: number
+          time_limit?: number
+          title: string
+        }
+        Update: {
+          category?: string
+          challenge_date?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          question_count?: number
+          reward_credits?: number
+          time_limit?: number
+          title?: string
         }
         Relationships: []
       }
@@ -4008,6 +4139,42 @@ export type Database = {
         }
         Relationships: []
       }
+      brain_duel_powerup_combos: {
+        Row: {
+          combo_type: string
+          created_at: string
+          credits_cost: number
+          effect_description: string | null
+          id: string
+          match_id: string | null
+          powerup_1: string
+          powerup_2: string
+          user_id: string
+        }
+        Insert: {
+          combo_type: string
+          created_at?: string
+          credits_cost?: number
+          effect_description?: string | null
+          id?: string
+          match_id?: string | null
+          powerup_1: string
+          powerup_2: string
+          user_id: string
+        }
+        Update: {
+          combo_type?: string
+          created_at?: string
+          credits_cost?: number
+          effect_description?: string | null
+          id?: string
+          match_id?: string | null
+          powerup_1?: string
+          powerup_2?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       brain_duel_powerups: {
         Row: {
           created_at: string
@@ -4110,6 +4277,36 @@ export type Database = {
         }
         Relationships: []
       }
+      brain_duel_rank_avatars: {
+        Row: {
+          animation_style: string | null
+          avatar_frame: string | null
+          id: string
+          rank_points: number
+          rank_tier: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          animation_style?: string | null
+          avatar_frame?: string | null
+          id?: string
+          rank_points?: number
+          rank_tier?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          animation_style?: string | null
+          avatar_frame?: string | null
+          id?: string
+          rank_points?: number
+          rank_tier?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       brain_duel_referral_codes: {
         Row: {
           code: string
@@ -4167,6 +4364,84 @@ export type Database = {
           referred_id?: string
           referrer_id?: string
           status?: string | null
+        }
+        Relationships: []
+      }
+      brain_duel_seasonal_themes: {
+        Row: {
+          created_at: string
+          description: string | null
+          emoji: string | null
+          ends_at: string | null
+          gradient_from: string
+          gradient_to: string
+          id: string
+          is_active: boolean
+          name: string
+          starts_at: string | null
+          theme_key: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          emoji?: string | null
+          ends_at?: string | null
+          gradient_from?: string
+          gradient_to?: string
+          id?: string
+          is_active?: boolean
+          name: string
+          starts_at?: string | null
+          theme_key: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          emoji?: string | null
+          ends_at?: string | null
+          gradient_from?: string
+          gradient_to?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+          starts_at?: string | null
+          theme_key?: string
+        }
+        Relationships: []
+      }
+      brain_duel_spectator_bets: {
+        Row: {
+          bet_amount: number
+          bet_on_player_id: string
+          created_at: string
+          id: string
+          match_id: string
+          payout_amount: number | null
+          resolved_at: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          bet_amount?: number
+          bet_on_player_id: string
+          created_at?: string
+          id?: string
+          match_id: string
+          payout_amount?: number | null
+          resolved_at?: string | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          bet_amount?: number
+          bet_on_player_id?: string
+          created_at?: string
+          id?: string
+          match_id?: string
+          payout_amount?: number | null
+          resolved_at?: string | null
+          status?: string
+          user_id?: string
         }
         Relationships: []
       }
