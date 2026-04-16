@@ -42,7 +42,7 @@ export const AnimatedLeaderboard = () => {
           .eq("status", "finished"),
         supabase
           .from("brain_duel_leagues")
-          .select("user_id, elo_rating, current_win_streak"),
+          .select("user_id, league_points, win_streak"),
       ]);
 
       if (matchesResult.error) throw matchesResult.error;
@@ -67,8 +67,8 @@ export const AnimatedLeaderboard = () => {
             wins: stats.wins,
             total_games: stats.total,
             win_rate: stats.total > 0 ? (stats.wins / stats.total) * 100 : 0,
-            streak: league?.current_win_streak || 0,
-            elo: league?.elo_rating || 1000,
+            streak: league?.win_streak || 0,
+            elo: league?.league_points || 1000,
           };
         })
         .filter((e) => e.total_games >= 3)
