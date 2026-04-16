@@ -4,10 +4,10 @@ import { loadFont } from "@remotion/google-fonts/Inter";
 const { fontFamily } = loadFont("normal", { weights: ["400", "700", "900"], subsets: ["latin"] });
 
 const SCENES = [
-  { emoji: "🏠", title: "Find Your Dream Home", sub: "Browse thousands of listings" },
-  { emoji: "💰", title: "Best Market Prices", sub: "AI-powered property valuation" },
-  { emoji: "🔑", title: "Buy & Sell With Ease", sub: "Secure transactions guaranteed" },
-  { emoji: "🏡", title: "Start Your Journey", sub: "Property Marketplace" },
+  { emoji: "⚔️", title: "Brand Battle Arena", sub: "Vote for your favorite brands" },
+  { emoji: "🏆", title: "Head-to-Head Matchups", sub: "Real-time competitive voting" },
+  { emoji: "🔥", title: "Win Streak Rewards", sub: "Earn credits & climb the leaderboard" },
+  { emoji: "👑", title: "Join the Battle!", sub: "Daily prizes • Live rankings" },
 ];
 
 const Scene = ({ emoji, title, sub, index }: { emoji: string; title: string; sub: string; index: number }) => {
@@ -24,20 +24,18 @@ const Scene = ({ emoji, title, sub, index }: { emoji: string; title: string; sub
   const subOp = interpolate(subSpring, [0, 1], [0, 1]);
   const subY = interpolate(subSpring, [0, 1], [30, 0]);
 
-  // Exit
   const exitOp = interpolate(frame, [55, 70], [1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
 
   const colors = [
-    "linear-gradient(135deg, #0369a1, #0ea5e9, #6366f1)",
     "linear-gradient(135deg, #7c3aed, #a855f7, #ec4899)",
-    "linear-gradient(135deg, #059669, #10b981, #0ea5e9)",
+    "linear-gradient(135deg, #dc2626, #f97316, #eab308)",
+    "linear-gradient(135deg, #0369a1, #0ea5e9, #6366f1)",
     "linear-gradient(135deg, #6366f1, #8b5cf6, #d946ef)",
   ];
 
   return (
     <AbsoluteFill style={{ fontFamily, opacity: exitOp }}>
       <AbsoluteFill style={{ background: colors[index], transform: `translateX(${bgX}px) scale(1.05)` }} />
-      {/* Floating shapes */}
       {[0, 1, 2, 3, 4].map(i => {
         const floatY = interpolate(frame, [0, 75], [0, -20 - i * 5]);
         const floatX = interpolate(frame, [0, 75], [0, (i % 2 === 0 ? 15 : -15)]);
