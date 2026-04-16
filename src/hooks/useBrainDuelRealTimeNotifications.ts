@@ -12,7 +12,7 @@ export const useBrainDuelRealTimeNotifications = () => {
 
     // Listen for new friend achievements
     const achievementsChannel = supabase
-      .channel('friend-achievements-notifications')
+      .channel(`friend-achievements-notifications-${user.id}`)
       .on(
         'postgres_changes',
         {
@@ -47,7 +47,7 @@ export const useBrainDuelRealTimeNotifications = () => {
 
     // Listen for new friend challenges
     const challengesChannel = supabase
-      .channel('friend-challenges-notifications')
+      .channel(`friend-challenges-notifications-${user.id}`)
       .on(
         'postgres_changes',
         {
