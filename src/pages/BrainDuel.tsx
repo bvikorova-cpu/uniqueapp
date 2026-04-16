@@ -35,7 +35,11 @@ import { DuelHistoryStats } from "@/components/brain-duel/DuelHistoryStats";
 import { ReferralSystem } from "@/components/brain-duel/ReferralSystem";
 import { AnimatedLeaderboard } from "@/components/brain-duel/AnimatedLeaderboard";
 import { AIWeeklyRecap } from "@/components/brain-duel/AIWeeklyRecap";
-import { useBrainDuelPowerups } from "@/hooks/useBrainDuelPowerups";
+import { RankAvatarSystem } from "@/components/brain-duel/RankAvatarSystem";
+import { PowerUpCombos } from "@/components/brain-duel/PowerUpCombos";
+import { SeasonalThemes } from "@/components/brain-duel/SeasonalThemes";
+import { AchievementAnimation } from "@/components/brain-duel/AchievementAnimation";
+import { DailyChallenges } from "@/components/brain-duel/DailyChallenges";
 import { useBrainDuelOnlinePlayers } from "@/hooks/useBrainDuelOnlinePlayers";
 import { useBrainDuelRealTimeNotifications } from "@/hooks/useBrainDuelRealTimeNotifications";
 import { supabase } from "@/integrations/supabase/client";
@@ -120,6 +124,9 @@ const BrainDuel = () => {
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
+      {/* Achievement Animation Overlay */}
+      <AchievementAnimation />
+
       {/* Animated background elements */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary/5 rounded-full blur-3xl animate-pulse" />
