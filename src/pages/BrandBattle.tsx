@@ -379,6 +379,19 @@ export default function BrandBattle() {
             )}
           </TabsContent>
 
+          {/* AI Lab */}
+          <TabsContent value="ai" className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <BrandAIAnalyzer brands={sponsors as any} />
+              <AIBattlePredictor brands={sponsors as any} />
+            </div>
+          </TabsContent>
+
+          {/* Stock Market */}
+          <TabsContent value="market" className="space-y-6">
+            <BrandStockMarket />
+          </TabsContent>
+
           {/* Head-to-Head */}
           <TabsContent value="matchup" className="space-y-6">
             <HeadToHead
@@ -388,6 +401,31 @@ export default function BrandBattle() {
               canVote={(votes?.remaining || 0) > 0}
               isAuthenticated={!!user}
             />
+          </TabsContent>
+
+          {/* Tribes */}
+          <TabsContent value="tribes" className="space-y-6">
+            <BrandTribes />
+          </TabsContent>
+
+          {/* Trading Cards */}
+          <TabsContent value="cards" className="space-y-6">
+            <BrandTradingCards />
+          </TabsContent>
+
+          {/* Live Chat */}
+          <TabsContent value="chat" className="space-y-6">
+            <LiveBrandChat />
+          </TabsContent>
+
+          {/* Boosters */}
+          <TabsContent value="boosters" className="space-y-6">
+            <BoosterPacks />
+          </TabsContent>
+
+          {/* Premium Passes */}
+          <TabsContent value="passes" className="space-y-6">
+            <PremiumPasses />
           </TabsContent>
 
           {/* Challenges */}
