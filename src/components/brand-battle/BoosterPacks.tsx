@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Zap, Rocket, Star, Loader2, ShoppingBag } from "lucide-react";
 import { useBrandVotes } from "@/hooks/useBrandVotes";
-import { supabase } from "@/integrations/supabase/client";
+import { spendBrandCredits } from "@/lib/brandCredits";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 
@@ -20,18 +20,19 @@ export const BoosterPacks = () => {
   const [buying, setBuying] = useState<string | null>(null);
 
   const buy = async (pack: typeof PACKS[0]) => {
-    if ((votes?.purchased_votes ?? 0) < pack.cost) { toast.error(`Need ${pack.cost} credits`); return; }
+    if ((votes?.remaining ?? 0) < pack.cost) { toast.error(`Need ${pack.cost} credits`); return; }
     setBuying(pack.id);
     try {
+      const { supabase } = await import("@/integrations/supabase/client");
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { toast.error("Sign in"); return; }
+      await spendBrandCredits(pack.cost);
       const expires = pack.id.includes("24h") ? new Date(Date.now() + 86400_000).toISOString() :
                        pack.id === "vip_frame" ? new Date(Date.now() + 30 * 86400_000).toISOString() : null;
       const { error } = await supabase.from("user_brand_boosters").insert({
         user_id: user.id, booster_type: pack.id, quantity: 1, expires_at: expires, is_equipped: true,
       });
       if (error) throw error;
-      await supabase.from("brand_votes").update({ purchased_votes: (votes?.purchased_votes ?? 0) - pack.cost }).eq("user_id", user.id);
       refetch();
       toast.success(`${pack.name} activated!`);
     } catch (e: any) {

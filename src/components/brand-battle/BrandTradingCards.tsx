@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { useBrandVotes } from "@/hooks/useBrandVotes";
+import { spendBrandCredits } from "@/lib/brandCredits";
 
 interface Card { id: string; brand_id: string; rarity: string; power: number; base_price: number; minted_count: number; edition_size: number; brand?: { name: string; logo: string }; }
 
@@ -35,7 +36,7 @@ export const BrandTradingCards = () => {
   useEffect(() => { load(); }, []);
 
   const mint = async (card: Card) => {
-    if ((votes?.purchased_votes ?? 0) < card.base_price) { toast.error(`Need ${card.base_price} credits`); return; }
+    if ((votes?.remaining ?? 0) < card.base_price) { toast.error(`Need ${card.base_price} credits`); return; }
     if (card.minted_count >= card.edition_size) { toast.error("Sold out!"); return; }
 
     setMinting(card.id);
@@ -43,13 +44,14 @@ export const BrandTradingCards = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { toast.error("Sign in first"); return; }
 
+      await spendBrandCredits(card.base_price);
+
       const serial = card.minted_count + 1;
       const { error } = await supabase.from("user_brand_cards").insert({
         user_id: user.id, card_id: card.id, serial_number: serial,
       });
       if (error) throw error;
       await supabase.from("brand_cards").update({ minted_count: serial }).eq("id", card.id);
-      await supabase.from("brand_votes").update({ purchased_votes: (votes?.purchased_votes ?? 0) - card.base_price }).eq("user_id", user.id);
 
       refetch();
       toast.success(`Minted ${card.brand?.name} #${serial}!`);

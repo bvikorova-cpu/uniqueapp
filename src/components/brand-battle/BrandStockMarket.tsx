@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { useBrandVotes } from "@/hooks/useBrandVotes";
+import { spendBrandCredits } from "@/lib/brandCredits";
 import { useQueryClient } from "@tanstack/react-query";
 
 interface StockRow {
@@ -49,12 +50,14 @@ export const BrandStockMarket = () => {
   const invest = async (s: StockRow) => {
     const credits = amount[s.brand_id] ?? 5;
     if (credits < 1) { toast.error("Min 1 credit"); return; }
-    if ((votes?.purchased_votes ?? 0) < credits) { toast.error("Not enough credits"); return; }
+    if ((votes?.remaining ?? 0) < credits) { toast.error("Not enough credits"); return; }
 
     setInvesting(s.brand_id);
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { toast.error("Sign in first"); return; }
+
+      await spendBrandCredits(credits);
 
       const shares = credits / s.current_price;
       const { error } = await supabase.from("brand_investments").insert({
@@ -65,11 +68,6 @@ export const BrandStockMarket = () => {
         current_value: credits,
       });
       if (error) throw error;
-
-      // Deduct credits
-      await supabase.from("brand_votes")
-        .update({ purchased_votes: (votes?.purchased_votes ?? 0) - credits })
-        .eq("user_id", user.id);
 
       refetch();
       queryClient.invalidateQueries({ queryKey: ["brand-investments"] });
