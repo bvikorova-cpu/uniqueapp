@@ -140,6 +140,11 @@ const BrainDuel = () => {
         {/* ===== NEON HERO ===== */}
         <BrainDuelHero onlineCount={onlineCount} userId={userId} />
 
+        {/* ===== SEASONAL THEME BANNER ===== */}
+        <div className="max-w-4xl mx-auto mb-6">
+          <SeasonalThemes />
+        </div>
+
         {/* How it works */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
