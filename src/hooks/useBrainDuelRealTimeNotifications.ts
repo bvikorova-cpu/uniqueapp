@@ -12,7 +12,7 @@ export const useBrainDuelRealTimeNotifications = () => {
 
     // Listen for new friend achievements
     const achievementsChannel = supabase
-      .channel(`friend-achievements-notifications-${user.id}`)
+      .channel(`brain-duel-achievements-toast-${user.id}`)
       .on(
         'postgres_changes',
         {
@@ -47,7 +47,7 @@ export const useBrainDuelRealTimeNotifications = () => {
 
     // Listen for new friend challenges
     const challengesChannel = supabase
-      .channel(`friend-challenges-notifications-${user.id}`)
+      .channel(`brain-duel-challenges-toast-${user.id}`)
       .on(
         'postgres_changes',
         {
@@ -80,8 +80,8 @@ export const useBrainDuelRealTimeNotifications = () => {
 
     // Cleanup on unmount
     return () => {
-      supabase.removeChannel(achievementsChannel);
-      supabase.removeChannel(challengesChannel);
+      void supabase.removeChannel(achievementsChannel);
+      void supabase.removeChannel(challengesChannel);
     };
   }, [user]);
 };
