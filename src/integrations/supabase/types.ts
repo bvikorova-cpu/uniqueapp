@@ -4506,6 +4506,91 @@ export type Database = {
           },
         ]
       }
+      brand_ai_insights: {
+        Row: {
+          brand_id: string | null
+          created_at: string
+          credits_charged: number
+          full_report: Json | null
+          id: string
+          insight_type: string
+          summary: string | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          brand_id?: string | null
+          created_at?: string
+          credits_charged?: number
+          full_report?: Json | null
+          id?: string
+          insight_type: string
+          summary?: string | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          brand_id?: string | null
+          created_at?: string
+          credits_charged?: number
+          full_report?: Json | null
+          id?: string
+          insight_type?: string
+          summary?: string | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "brand_ai_insights_brand_id_fkey"
+            columns: ["brand_id"]
+            isOneToOne: false
+            referencedRelation: "brand_sponsors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      brand_ambassadors: {
+        Row: {
+          appointed_at: string
+          brand_id: string
+          id: string
+          revenue_share_pct: number
+          status: string
+          total_earned: number
+          total_referred: number
+          user_id: string
+        }
+        Insert: {
+          appointed_at?: string
+          brand_id: string
+          id?: string
+          revenue_share_pct?: number
+          status?: string
+          total_earned?: number
+          total_referred?: number
+          user_id: string
+        }
+        Update: {
+          appointed_at?: string
+          brand_id?: string
+          id?: string
+          revenue_share_pct?: number
+          status?: string
+          total_earned?: number
+          total_referred?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "brand_ambassadors_brand_id_fkey"
+            columns: ["brand_id"]
+            isOneToOne: false
+            referencedRelation: "brand_sponsors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       brand_battle_credits: {
         Row: {
           created_at: string
@@ -4535,6 +4620,83 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      brand_battle_predictions: {
+        Row: {
+          ai_confidence: number | null
+          ai_predicted_winner_id: string | null
+          ai_reasoning: string | null
+          brand_a_id: string
+          brand_b_id: string
+          created_at: string
+          id: string
+          payout: number | null
+          predicted_winner_id: string
+          resolved_at: string | null
+          result: string | null
+          stake: number
+          user_id: string
+        }
+        Insert: {
+          ai_confidence?: number | null
+          ai_predicted_winner_id?: string | null
+          ai_reasoning?: string | null
+          brand_a_id: string
+          brand_b_id: string
+          created_at?: string
+          id?: string
+          payout?: number | null
+          predicted_winner_id: string
+          resolved_at?: string | null
+          result?: string | null
+          stake?: number
+          user_id: string
+        }
+        Update: {
+          ai_confidence?: number | null
+          ai_predicted_winner_id?: string | null
+          ai_reasoning?: string | null
+          brand_a_id?: string
+          brand_b_id?: string
+          created_at?: string
+          id?: string
+          payout?: number | null
+          predicted_winner_id?: string
+          resolved_at?: string | null
+          result?: string | null
+          stake?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "brand_battle_predictions_ai_predicted_winner_id_fkey"
+            columns: ["ai_predicted_winner_id"]
+            isOneToOne: false
+            referencedRelation: "brand_sponsors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "brand_battle_predictions_brand_a_id_fkey"
+            columns: ["brand_a_id"]
+            isOneToOne: false
+            referencedRelation: "brand_sponsors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "brand_battle_predictions_brand_b_id_fkey"
+            columns: ["brand_b_id"]
+            isOneToOne: false
+            referencedRelation: "brand_sponsors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "brand_battle_predictions_predicted_winner_id_fkey"
+            columns: ["predicted_winner_id"]
+            isOneToOne: false
+            referencedRelation: "brand_sponsors"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       brand_campaigns: {
         Row: {
@@ -4584,6 +4746,142 @@ export type Database = {
         }
         Relationships: []
       }
+      brand_card_trades: {
+        Row: {
+          created_at: string
+          credit_offer: number
+          from_user: string
+          id: string
+          offered_card_id: string
+          requested_card_id: string | null
+          resolved_at: string | null
+          status: string
+          to_user: string | null
+        }
+        Insert: {
+          created_at?: string
+          credit_offer?: number
+          from_user: string
+          id?: string
+          offered_card_id: string
+          requested_card_id?: string | null
+          resolved_at?: string | null
+          status?: string
+          to_user?: string | null
+        }
+        Update: {
+          created_at?: string
+          credit_offer?: number
+          from_user?: string
+          id?: string
+          offered_card_id?: string
+          requested_card_id?: string | null
+          resolved_at?: string | null
+          status?: string
+          to_user?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "brand_card_trades_offered_card_id_fkey"
+            columns: ["offered_card_id"]
+            isOneToOne: false
+            referencedRelation: "user_brand_cards"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "brand_card_trades_requested_card_id_fkey"
+            columns: ["requested_card_id"]
+            isOneToOne: false
+            referencedRelation: "user_brand_cards"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      brand_cards: {
+        Row: {
+          artwork_url: string | null
+          base_price: number
+          brand_id: string
+          created_at: string
+          edition_size: number
+          id: string
+          minted_count: number
+          power: number
+          rarity: string
+        }
+        Insert: {
+          artwork_url?: string | null
+          base_price?: number
+          brand_id: string
+          created_at?: string
+          edition_size?: number
+          id?: string
+          minted_count?: number
+          power?: number
+          rarity?: string
+        }
+        Update: {
+          artwork_url?: string | null
+          base_price?: number
+          brand_id?: string
+          created_at?: string
+          edition_size?: number
+          id?: string
+          minted_count?: number
+          power?: number
+          rarity?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "brand_cards_brand_id_fkey"
+            columns: ["brand_id"]
+            isOneToOne: false
+            referencedRelation: "brand_sponsors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      brand_chat_messages: {
+        Row: {
+          brand_id: string | null
+          created_at: string
+          id: string
+          matchup_id: string | null
+          message: string
+          reaction: string | null
+          user_id: string
+          username: string
+        }
+        Insert: {
+          brand_id?: string | null
+          created_at?: string
+          id?: string
+          matchup_id?: string | null
+          message: string
+          reaction?: string | null
+          user_id: string
+          username: string
+        }
+        Update: {
+          brand_id?: string | null
+          created_at?: string
+          id?: string
+          matchup_id?: string | null
+          message?: string
+          reaction?: string | null
+          user_id?: string
+          username?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "brand_chat_messages_brand_id_fkey"
+            columns: ["brand_id"]
+            isOneToOne: false
+            referencedRelation: "brand_sponsors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       brand_competitor_analyses: {
         Row: {
           business_name: string
@@ -4616,6 +4914,56 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      brand_investments: {
+        Row: {
+          brand_id: string
+          buy_price: number
+          created_at: string
+          current_value: number
+          id: string
+          profit_loss: number | null
+          shares: number
+          sold_at: string | null
+          sold_price: number | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          brand_id: string
+          buy_price: number
+          created_at?: string
+          current_value: number
+          id?: string
+          profit_loss?: number | null
+          shares: number
+          sold_at?: string | null
+          sold_price?: number | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          brand_id?: string
+          buy_price?: number
+          created_at?: string
+          current_value?: number
+          id?: string
+          profit_loss?: number | null
+          shares?: number
+          sold_at?: string | null
+          sold_price?: number | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "brand_investments_brand_id_fkey"
+            columns: ["brand_id"]
+            isOneToOne: false
+            referencedRelation: "brand_sponsors"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       brand_kits: {
         Row: {
@@ -4794,6 +5142,239 @@ export type Database = {
         }
         Relationships: []
       }
+      brand_stock_history: {
+        Row: {
+          brand_id: string
+          id: string
+          price: number
+          recorded_at: string
+        }
+        Insert: {
+          brand_id: string
+          id?: string
+          price: number
+          recorded_at?: string
+        }
+        Update: {
+          brand_id?: string
+          id?: string
+          price?: number
+          recorded_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "brand_stock_history_brand_id_fkey"
+            columns: ["brand_id"]
+            isOneToOne: false
+            referencedRelation: "brand_sponsors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      brand_stock_prices: {
+        Row: {
+          brand_id: string
+          change_24h: number
+          current_price: number
+          high_24h: number
+          id: string
+          low_24h: number
+          market_cap: number
+          open_price: number
+          updated_at: string
+          volume_24h: number
+        }
+        Insert: {
+          brand_id: string
+          change_24h?: number
+          current_price?: number
+          high_24h?: number
+          id?: string
+          low_24h?: number
+          market_cap?: number
+          open_price?: number
+          updated_at?: string
+          volume_24h?: number
+        }
+        Update: {
+          brand_id?: string
+          change_24h?: number
+          current_price?: number
+          high_24h?: number
+          id?: string
+          low_24h?: number
+          market_cap?: number
+          open_price?: number
+          updated_at?: string
+          volume_24h?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "brand_stock_prices_brand_id_fkey"
+            columns: ["brand_id"]
+            isOneToOne: true
+            referencedRelation: "brand_sponsors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      brand_tournament_entries: {
+        Row: {
+          brand_id: string
+          id: string
+          joined_at: string
+          rank: number | null
+          score: number
+          tournament_id: string
+          user_id: string
+        }
+        Insert: {
+          brand_id: string
+          id?: string
+          joined_at?: string
+          rank?: number | null
+          score?: number
+          tournament_id: string
+          user_id: string
+        }
+        Update: {
+          brand_id?: string
+          id?: string
+          joined_at?: string
+          rank?: number | null
+          score?: number
+          tournament_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "brand_tournament_entries_brand_id_fkey"
+            columns: ["brand_id"]
+            isOneToOne: false
+            referencedRelation: "brand_sponsors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "brand_tournament_entries_tournament_id_fkey"
+            columns: ["tournament_id"]
+            isOneToOne: false
+            referencedRelation: "brand_tournaments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      brand_tournaments: {
+        Row: {
+          bracket: Json | null
+          created_at: string
+          ends_at: string
+          id: string
+          name: string
+          prize_pool: number
+          season: number
+          starts_at: string
+          status: string
+        }
+        Insert: {
+          bracket?: Json | null
+          created_at?: string
+          ends_at: string
+          id?: string
+          name: string
+          prize_pool?: number
+          season?: number
+          starts_at: string
+          status?: string
+        }
+        Update: {
+          bracket?: Json | null
+          created_at?: string
+          ends_at?: string
+          id?: string
+          name?: string
+          prize_pool?: number
+          season?: number
+          starts_at?: string
+          status?: string
+        }
+        Relationships: []
+      }
+      brand_tribe_members: {
+        Row: {
+          contribution: number
+          id: string
+          joined_at: string
+          rank: string
+          tribe_id: string
+          user_id: string
+        }
+        Insert: {
+          contribution?: number
+          id?: string
+          joined_at?: string
+          rank?: string
+          tribe_id: string
+          user_id: string
+        }
+        Update: {
+          contribution?: number
+          id?: string
+          joined_at?: string
+          rank?: string
+          tribe_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "brand_tribe_members_tribe_id_fkey"
+            columns: ["tribe_id"]
+            isOneToOne: false
+            referencedRelation: "brand_tribes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      brand_tribes: {
+        Row: {
+          brand_id: string
+          created_at: string
+          id: string
+          member_count: number
+          motto: string | null
+          name: string
+          total_power: number
+          weekly_score: number
+        }
+        Insert: {
+          brand_id: string
+          created_at?: string
+          id?: string
+          member_count?: number
+          motto?: string | null
+          name: string
+          total_power?: number
+          weekly_score?: number
+        }
+        Update: {
+          brand_id?: string
+          created_at?: string
+          id?: string
+          member_count?: number
+          motto?: string | null
+          name?: string
+          total_power?: number
+          weekly_score?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "brand_tribes_brand_id_fkey"
+            columns: ["brand_id"]
+            isOneToOne: true
+            referencedRelation: "brand_sponsors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       brand_voices: {
         Row: {
           brand_name: string
@@ -4822,6 +5403,42 @@ export type Database = {
           sample_content?: string | null
           style_notes?: string | null
           tone?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      brand_voter_pass: {
+        Row: {
+          created_at: string
+          current_period_end: string | null
+          id: string
+          status: string
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
+          tier: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          current_period_end?: string | null
+          id?: string
+          status?: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          tier?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          current_period_end?: string | null
+          id?: string
+          status?: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          tier?: string
           updated_at?: string
           user_id?: string
         }
@@ -33460,6 +34077,71 @@ export type Database = {
             columns: ["badge_id"]
             isOneToOne: false
             referencedRelation: "badges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_brand_boosters: {
+        Row: {
+          booster_type: string
+          created_at: string
+          expires_at: string | null
+          id: string
+          is_equipped: boolean
+          quantity: number
+          user_id: string
+        }
+        Insert: {
+          booster_type: string
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          is_equipped?: boolean
+          quantity?: number
+          user_id: string
+        }
+        Update: {
+          booster_type?: string
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          is_equipped?: boolean
+          quantity?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_brand_cards: {
+        Row: {
+          acquired_at: string
+          card_id: string
+          id: string
+          is_for_trade: boolean
+          serial_number: number
+          user_id: string
+        }
+        Insert: {
+          acquired_at?: string
+          card_id: string
+          id?: string
+          is_for_trade?: boolean
+          serial_number: number
+          user_id: string
+        }
+        Update: {
+          acquired_at?: string
+          card_id?: string
+          id?: string
+          is_for_trade?: boolean
+          serial_number?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_brand_cards_card_id_fkey"
+            columns: ["card_id"]
+            isOneToOne: false
+            referencedRelation: "brand_cards"
             referencedColumns: ["id"]
           },
         ]
