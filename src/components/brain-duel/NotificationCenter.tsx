@@ -3,140 +3,160 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Bell, BellOff, Trophy, Swords, TrendingUp, Gift, Users, Flame, CheckCheck, Trash2 } from 'lucide-react';
+import { Bell, BellOff, Trophy, Swords, TrendingUp, Gift, Users, Flame, CheckCheck, Trash2, UserPlus, Brain } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '@/integrations/supabase/client';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
 
-interface Notification {
-  id: string;
-  type: 'challenge' | 'league' | 'achievement' | 'reward' | 'social' | 'streak';
-  title: string;
-  message: string;
-  timestamp: Date;
-  read: boolean;
-  icon: typeof Bell;
-  color: string;
-}
+const ICON_MAP: Record<string, typeof Bell> = {
+  challenge: Swords,
+  league: TrendingUp,
+  achievement: Trophy,
+  reward: Gift,
+  social: Users,
+  streak: Flame,
+  referral: UserPlus,
+  ai_recap: Brain,
+};
 
-const NOTIFICATION_CONFIG: Record<string, { icon: typeof Bell; color: string }> = {
-  challenge: { icon: Swords, color: 'text-red-400' },
-  league: { icon: TrendingUp, color: 'text-blue-400' },
-  achievement: { icon: Trophy, color: 'text-yellow-400' },
-  reward: { icon: Gift, color: 'text-green-400' },
-  social: { icon: Users, color: 'text-purple-400' },
-  streak: { icon: Flame, color: 'text-orange-400' },
+const COLOR_MAP: Record<string, string> = {
+  challenge: 'text-red-400',
+  league: 'text-blue-400',
+  achievement: 'text-yellow-400',
+  reward: 'text-green-400',
+  social: 'text-purple-400',
+  streak: 'text-orange-400',
+  referral: 'text-emerald-400',
+  ai_recap: 'text-violet-400',
 };
 
 export const NotificationCenter = () => {
-  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const queryClient = useQueryClient();
   const [filter, setFilter] = useState<string>('all');
 
+  const { data: dbNotifications = [] } = useQuery({
+    queryKey: ['brain-duel-db-notifications'],
+    queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return [];
+
+      const { data } = await supabase
+        .from('brain_duel_notifications')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(30);
+
+      return data || [];
+    },
+  });
+
+  // Real-time listener for new notifications
   useEffect(() => {
-    generateNotifications();
-  }, []);
+    const setupRealtime = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
 
-  const generateNotifications = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
+      const channel = supabase
+        .channel(`brain-duel-notif-${user.id}`)
+        .on(
+          'postgres_changes',
+          { event: 'INSERT', schema: 'public', table: 'brain_duel_notifications', filter: `user_id=eq.${user.id}` },
+          (payload) => {
+            const n = payload.new as any;
+            toast.info(n.title, { description: n.message, duration: 5000 });
+            queryClient.invalidateQueries({ queryKey: ['brain-duel-db-notifications'] });
+          }
+        )
+        .subscribe();
 
-    // Check for real data to generate contextual notifications
-    const { count: matchCount } = await supabase
-      .from('brain_duel_matches')
-      .select('*', { count: 'exact', head: true })
-      .or(`player1_id.eq.${user.id},player2_id.eq.${user.id}`)
-      .eq('status', 'finished');
+      return () => { supabase.removeChannel(channel); };
+    };
 
-    const { count: challengeCount } = await supabase
-      .from('brain_duel_friend_challenges')
-      .select('*', { count: 'exact', head: true })
-      .eq('challenged_id', user.id)
-      .eq('status', 'pending');
+    const cleanup = setupRealtime();
+    return () => { cleanup.then(fn => fn?.()); };
+  }, [queryClient]);
 
-    const now = new Date();
-    const generatedNotifications: Notification[] = [];
+  // Merge DB notifications with contextual ones
+  const [contextualNotifs, setContextualNotifs] = useState<any[]>([]);
 
-    if ((challengeCount || 0) > 0) {
-      generatedNotifications.push({
-        id: 'pending-challenge',
-        type: 'challenge',
-        title: 'Pending Challenge!',
-        message: `You have ${challengeCount} friend challenge${(challengeCount || 0) > 1 ? 's' : ''} waiting for you.`,
-        timestamp: new Date(now.getTime() - 5 * 60000),
-        read: false,
-        ...NOTIFICATION_CONFIG.challenge,
-      });
-    }
+  useEffect(() => {
+    const generateContextual = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
 
-    // Contextual notifications based on activity
-    generatedNotifications.push(
-      {
+      const { count: challengeCount } = await supabase
+        .from('brain_duel_friend_challenges')
+        .select('*', { count: 'exact', head: true })
+        .eq('challenged_id', user.id)
+        .eq('status', 'pending');
+
+      const notifs: any[] = [];
+      const now = new Date();
+
+      if ((challengeCount || 0) > 0) {
+        notifs.push({
+          id: 'pending-challenge',
+          type: 'challenge',
+          title: 'Pending Challenge!',
+          message: `You have ${challengeCount} friend challenge${(challengeCount || 0) > 1 ? 's' : ''} waiting.`,
+          created_at: new Date(now.getTime() - 5 * 60000).toISOString(),
+          is_read: false,
+          _contextual: true,
+        });
+      }
+
+      notifs.push({
         id: 'daily-spin',
         type: 'reward',
         title: 'Daily Spin Available!',
-        message: 'Your free daily spin wheel is ready. Don\'t miss your chance at 100 credits!',
-        timestamp: new Date(now.getTime() - 15 * 60000),
-        read: false,
-        ...NOTIFICATION_CONFIG.reward,
-      },
-      {
-        id: 'streak-reminder',
-        type: 'streak',
-        title: 'Keep Your Streak!',
-        message: 'Play a match today to maintain your daily streak and earn bonus XP.',
-        timestamp: new Date(now.getTime() - 30 * 60000),
-        read: false,
-        ...NOTIFICATION_CONFIG.streak,
-      },
-      {
-        id: 'season-update',
-        type: 'achievement',
-        title: 'Season Pass Progress',
-        message: `You've completed ${matchCount || 0} matches this season. Keep going for more rewards!`,
-        timestamp: new Date(now.getTime() - 2 * 3600000),
-        read: true,
-        ...NOTIFICATION_CONFIG.achievement,
-      },
-      {
-        id: 'league-promo',
-        type: 'league',
-        title: 'League Promotion Available',
-        message: 'You\'re close to reaching the next league tier. Win 2 more matches!',
-        timestamp: new Date(now.getTime() - 4 * 3600000),
-        read: true,
-        ...NOTIFICATION_CONFIG.league,
-      },
-      {
-        id: 'new-pack',
-        type: 'social',
-        title: 'New Question Pack',
-        message: 'A new "Pop Culture 2026" question pack is now available in the store!',
-        timestamp: new Date(now.getTime() - 8 * 3600000),
-        read: true,
-        ...NOTIFICATION_CONFIG.social,
-      },
-    );
+        message: "Spin the wheel for a chance at 100 credits!",
+        created_at: new Date(now.getTime() - 15 * 60000).toISOString(),
+        is_read: false,
+        _contextual: true,
+      });
 
-    setNotifications(generatedNotifications);
+      setContextualNotifs(notifs);
+    };
+    generateContextual();
+  }, []);
+
+  const allNotifications = [...contextualNotifs, ...dbNotifications].sort(
+    (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+  );
+
+  const markAllRead = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+    await supabase
+      .from('brain_duel_notifications')
+      .update({ is_read: true })
+      .eq('user_id', user.id)
+      .eq('is_read', false);
+    setContextualNotifs(prev => prev.map(n => ({ ...n, is_read: true })));
+    queryClient.invalidateQueries({ queryKey: ['brain-duel-db-notifications'] });
   };
 
-  const markAllRead = () => {
-    setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+  const removeNotification = async (id: string, isContextual: boolean) => {
+    if (isContextual) {
+      setContextualNotifs(prev => prev.filter(n => n.id !== id));
+    } else {
+      await supabase.from('brain_duel_notifications').delete().eq('id', id);
+      queryClient.invalidateQueries({ queryKey: ['brain-duel-db-notifications'] });
+    }
   };
 
-  const removeNotification = (id: string) => {
-    setNotifications(prev => prev.filter(n => n.id !== id));
-  };
-
-  const unreadCount = notifications.filter(n => !n.read).length;
+  const unreadCount = allNotifications.filter(n => !n.is_read).length;
 
   const filteredNotifications = filter === 'all'
-    ? notifications
+    ? allNotifications
     : filter === 'unread'
-    ? notifications.filter(n => !n.read)
-    : notifications.filter(n => n.type === filter);
+    ? allNotifications.filter(n => !n.is_read)
+    : allNotifications.filter(n => n.type === filter);
 
-  const formatTime = (date: Date) => {
-    const diff = Date.now() - date.getTime();
+  const formatTime = (dateStr: string) => {
+    const diff = Date.now() - new Date(dateStr).getTime();
     const mins = Math.floor(diff / 60000);
     if (mins < 60) return `${mins}m ago`;
     const hours = Math.floor(mins / 60);
@@ -148,6 +168,7 @@ export const NotificationCenter = () => {
     { key: 'all', label: 'All' },
     { key: 'unread', label: 'Unread' },
     { key: 'challenge', label: 'Challenges' },
+    { key: 'referral', label: 'Referrals' },
     { key: 'achievement', label: 'Achievements' },
     { key: 'reward', label: 'Rewards' },
   ];
@@ -176,7 +197,6 @@ export const NotificationCenter = () => {
           )}
         </div>
 
-        {/* Filters */}
         <div className="flex gap-1.5 flex-wrap mt-2">
           {filters.map(f => (
             <Badge
@@ -202,7 +222,8 @@ export const NotificationCenter = () => {
             ) : (
               <div className="space-y-2">
                 {filteredNotifications.map((notification, i) => {
-                  const Icon = notification.icon;
+                  const Icon = ICON_MAP[notification.type] || Bell;
+                  const color = COLOR_MAP[notification.type] || 'text-primary';
                   return (
                     <motion.div
                       key={notification.id}
@@ -211,36 +232,33 @@ export const NotificationCenter = () => {
                       exit={{ opacity: 0, x: 10, height: 0 }}
                       transition={{ delay: i * 0.03 }}
                       className={`group rounded-xl border p-3 transition-all ${
-                        notification.read
+                        notification.is_read
                           ? 'border-border/30 bg-card/30'
                           : 'border-primary/20 bg-primary/5'
                       }`}
                     >
                       <div className="flex items-start gap-3">
-                        <div className={`p-1.5 rounded-lg flex-shrink-0 ${notification.read ? 'bg-muted/30' : 'bg-primary/10'}`}>
-                          <Icon className={`h-4 w-4 ${notification.color}`} />
+                        <div className={`p-1.5 rounded-lg flex-shrink-0 ${notification.is_read ? 'bg-muted/30' : 'bg-primary/10'}`}>
+                          <Icon className={`h-4 w-4 ${color}`} />
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center justify-between gap-2">
-                            <p className={`text-sm font-semibold truncate ${notification.read ? 'text-muted-foreground' : ''}`}>
+                            <p className={`text-sm font-semibold truncate ${notification.is_read ? 'text-muted-foreground' : ''}`}>
                               {notification.title}
                             </p>
                             <div className="flex items-center gap-1 flex-shrink-0">
-                              <span className="text-[10px] text-muted-foreground">{formatTime(notification.timestamp)}</span>
+                              <span className="text-[10px] text-muted-foreground">{formatTime(notification.created_at)}</span>
                               <Button
                                 variant="ghost"
                                 size="sm"
                                 className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
-                                onClick={() => removeNotification(notification.id)}
+                                onClick={() => removeNotification(notification.id, !!notification._contextual)}
                               >
                                 <Trash2 className="h-3 w-3 text-muted-foreground" />
                               </Button>
                             </div>
                           </div>
                           <p className="text-xs text-muted-foreground mt-0.5">{notification.message}</p>
-                          {!notification.read && (
-                            <div className="w-1.5 h-1.5 bg-primary rounded-full absolute top-3 left-1" />
-                          )}
                         </div>
                       </div>
                     </motion.div>
