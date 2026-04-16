@@ -286,10 +286,10 @@ export default function BrandBattle() {
 
           {/* Leaderboard */}
           <TabsContent value="leaderboard" className="space-y-6">
-            <div className="flex overflow-x-auto gap-2 justify-center pb-2 scrollbar-hide">
-              <Button variant={selectedCategory === "All" ? "default" : "outline"} onClick={() => setSelectedCategory("All")} size="sm" className="flex-shrink-0">All Categories</Button>
+            <div className="flex flex-wrap gap-2 justify-center pb-2">
+              <Button variant={selectedCategory === "All" ? "default" : "outline"} onClick={() => setSelectedCategory("All")} size="sm" className="text-xs px-3">All</Button>
               {CATEGORIES.map(cat => (
-                <Button key={cat} variant={selectedCategory === cat ? "default" : "outline"} onClick={() => setSelectedCategory(cat)} size="sm" className="flex-shrink-0">{cat}</Button>
+                <Button key={cat} variant={selectedCategory === cat ? "default" : "outline"} onClick={() => setSelectedCategory(cat)} size="sm" className="text-xs px-3">{cat}</Button>
               ))}
             </div>
 
