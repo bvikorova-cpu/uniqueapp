@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Trophy, TrendingUp, Star, Award, Crown, Vote, Building2, Zap,
-  Loader2, Swords, MessageSquare, Target, Calendar
+  Loader2, Swords, MessageSquare, Target, Calendar, Sparkles
 } from "lucide-react";
 import { toast } from "sonner";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -17,11 +17,20 @@ import { BrandVotesDisplay } from "@/components/brand-battle/BrandVotesDisplay";
 import { VotingStreakCard } from "@/components/brand-battle/VotingStreakCard";
 import { RewardsSection } from "@/components/brand-battle/RewardsSection";
 import { FeaturedBrandCard } from "@/components/brand-battle/FeaturedBrandCard";
-import { BattleHero } from "@/components/brand-battle/BattleHero";
 import { HeadToHead } from "@/components/brand-battle/HeadToHead";
 import { DailyChallenges } from "@/components/brand-battle/DailyChallenges";
 import { BrandComments } from "@/components/brand-battle/BrandComments";
 import { TournamentBracket } from "@/components/brand-battle/TournamentBracket";
+import { LuxuryArenaHero } from "@/components/brand-battle/LuxuryArenaHero";
+import { BrandStockTicker } from "@/components/brand-battle/BrandStockTicker";
+import { BrandStockMarket } from "@/components/brand-battle/BrandStockMarket";
+import { BrandAIAnalyzer } from "@/components/brand-battle/BrandAIAnalyzer";
+import { AIBattlePredictor } from "@/components/brand-battle/AIBattlePredictor";
+import { BrandTribes } from "@/components/brand-battle/BrandTribes";
+import { BrandTradingCards } from "@/components/brand-battle/BrandTradingCards";
+import { LiveBrandChat } from "@/components/brand-battle/LiveBrandChat";
+import { BoosterPacks } from "@/components/brand-battle/BoosterPacks";
+import { PremiumPasses } from "@/components/brand-battle/PremiumPasses";
 import { useBrandVotes } from "@/hooks/useBrandVotes";
 import { useVotingStreak } from "@/hooks/useVotingStreak";
 
@@ -207,11 +216,17 @@ export default function BrandBattle() {
     <div className="min-h-screen flex flex-col">
       <Navbar />
       <main className="flex-1 container mx-auto px-4 py-8">
-        {/* Animated Hero */}
-        <BattleHero
+        {/* Luxury Arena Hero */}
+        <LuxuryArenaHero
           totalVotes={campaignStats?.totalVotes}
           totalSponsors={campaignStats?.totalSponsors}
+          liveNow={Math.max(1, Math.floor((campaignStats?.totalSponsors ?? 0) / 2))}
         />
+
+        {/* Live brand stock ticker */}
+        <div className="mb-6">
+          <BrandStockTicker />
+        </div>
 
         {/* User controls */}
         {user && (
@@ -263,8 +278,29 @@ export default function BrandBattle() {
               <TabsTrigger value="leaderboard" className="px-3 py-2 text-xs sm:text-sm whitespace-nowrap">
                 <Trophy className="h-3.5 w-3.5 mr-1.5" /> Leaderboard
               </TabsTrigger>
+              <TabsTrigger value="ai" className="px-3 py-2 text-xs sm:text-sm whitespace-nowrap">
+                <Sparkles className="h-3.5 w-3.5 mr-1.5" /> AI Lab
+              </TabsTrigger>
+              <TabsTrigger value="market" className="px-3 py-2 text-xs sm:text-sm whitespace-nowrap">
+                <TrendingUp className="h-3.5 w-3.5 mr-1.5" /> Stock Market
+              </TabsTrigger>
               <TabsTrigger value="matchup" className="px-3 py-2 text-xs sm:text-sm whitespace-nowrap">
                 <Swords className="h-3.5 w-3.5 mr-1.5" /> Head-to-Head
+              </TabsTrigger>
+              <TabsTrigger value="tribes" className="px-3 py-2 text-xs sm:text-sm whitespace-nowrap">
+                <Crown className="h-3.5 w-3.5 mr-1.5" /> Tribes
+              </TabsTrigger>
+              <TabsTrigger value="cards" className="px-3 py-2 text-xs sm:text-sm whitespace-nowrap">
+                <Star className="h-3.5 w-3.5 mr-1.5" /> Trading Cards
+              </TabsTrigger>
+              <TabsTrigger value="chat" className="px-3 py-2 text-xs sm:text-sm whitespace-nowrap">
+                <MessageSquare className="h-3.5 w-3.5 mr-1.5" /> Live Chat
+              </TabsTrigger>
+              <TabsTrigger value="boosters" className="px-3 py-2 text-xs sm:text-sm whitespace-nowrap">
+                <Zap className="h-3.5 w-3.5 mr-1.5" /> Boosters
+              </TabsTrigger>
+              <TabsTrigger value="passes" className="px-3 py-2 text-xs sm:text-sm whitespace-nowrap">
+                <Crown className="h-3.5 w-3.5 mr-1.5" /> Premium Pass
               </TabsTrigger>
               <TabsTrigger value="challenges" className="px-3 py-2 text-xs sm:text-sm whitespace-nowrap">
                 <Target className="h-3.5 w-3.5 mr-1.5" /> Challenges
@@ -343,6 +379,19 @@ export default function BrandBattle() {
             )}
           </TabsContent>
 
+          {/* AI Lab */}
+          <TabsContent value="ai" className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <BrandAIAnalyzer brands={sponsors as any} />
+              <AIBattlePredictor brands={sponsors as any} />
+            </div>
+          </TabsContent>
+
+          {/* Stock Market */}
+          <TabsContent value="market" className="space-y-6">
+            <BrandStockMarket />
+          </TabsContent>
+
           {/* Head-to-Head */}
           <TabsContent value="matchup" className="space-y-6">
             <HeadToHead
@@ -352,6 +401,31 @@ export default function BrandBattle() {
               canVote={(votes?.remaining || 0) > 0}
               isAuthenticated={!!user}
             />
+          </TabsContent>
+
+          {/* Tribes */}
+          <TabsContent value="tribes" className="space-y-6">
+            <BrandTribes />
+          </TabsContent>
+
+          {/* Trading Cards */}
+          <TabsContent value="cards" className="space-y-6">
+            <BrandTradingCards />
+          </TabsContent>
+
+          {/* Live Chat */}
+          <TabsContent value="chat" className="space-y-6">
+            <LiveBrandChat />
+          </TabsContent>
+
+          {/* Boosters */}
+          <TabsContent value="boosters" className="space-y-6">
+            <BoosterPacks />
+          </TabsContent>
+
+          {/* Premium Passes */}
+          <TabsContent value="passes" className="space-y-6">
+            <PremiumPasses />
           </TabsContent>
 
           {/* Challenges */}
