@@ -4,7 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { BarChart3, Clock, CheckCircle2, XCircle, TrendingUp, Trophy, ChevronDown, ChevronUp, Brain, Zap } from 'lucide-react';
+import { BarChart3, Clock, CheckCircle2, XCircle, TrendingUp, Trophy, ChevronDown, ChevronUp, Brain, Zap, Mic } from 'lucide-react';
+import { AICommentary } from './AICommentary';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -273,6 +274,9 @@ export const MatchReplay = () => {
                                     : 'Keep practicing! Consider using power-ups and studying question packs for this category.'}
                                 </p>
                               </div>
+
+                              {/* AI Commentary */}
+                              <AICommentary matchId={match.id} />
                             </div>
                           </motion.div>
                         )}
