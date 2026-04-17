@@ -10,6 +10,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ArrowLeft, Shield, ImagePlus, X } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
+import { AIStoryGenerator } from '@/components/fundraising/AIStoryGenerator';
 
 const heroTypes = [
   { value: 'firefighter', label: '🚒 Firefighters' },
@@ -249,7 +250,13 @@ export default function CreateHeroCampaign() {
               </div>
 
               <div>
-                <Label htmlFor="story">Full Story * (Why this support is needed)</Label>
+                <div className="flex items-center justify-between gap-2 flex-wrap">
+                  <Label htmlFor="story">Full Story * (Why this support is needed)</Label>
+                  <AIStoryGenerator
+                    campaignType="hero"
+                    onGenerated={(d) => setFormData({ ...formData, title: formData.title || d.title, story: d.story, description: formData.description || d.appeal.slice(0, 200) })}
+                  />
+                </div>
                 <Textarea
                   id="story"
                   value={formData.story}

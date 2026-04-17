@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Checkbox } from '@/components/ui/checkbox';
 import { ArrowLeft, GraduationCap, Upload } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
+import { AIStoryGenerator } from '@/components/fundraising/AIStoryGenerator';
 
 const supportTypes = [
   { value: 'tuition', label: '💰 Tuition Fees' },
@@ -260,7 +261,13 @@ export default function CreateStudentCampaign() {
               </div>
 
               <div>
-                <Label htmlFor="story">Your Full Story * (Academic goals and why you need support)</Label>
+                <div className="flex items-center justify-between gap-2 flex-wrap">
+                  <Label htmlFor="story">Your Full Story * (Academic goals and why you need support)</Label>
+                  <AIStoryGenerator
+                    campaignType="student"
+                    onGenerated={(d) => setFormData({ ...formData, title: formData.title || d.title, story: d.story, description: formData.description || d.appeal.slice(0, 200) })}
+                  />
+                </div>
                 <Textarea
                   id="story"
                   value={formData.story}
