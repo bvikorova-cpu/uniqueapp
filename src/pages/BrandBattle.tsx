@@ -322,7 +322,13 @@ export default function BrandBattle() {
                   return (
                     <button
                       key={cat}
-                      onClick={() => setSelectedCategory(cat)}
+                      onClick={() => {
+                        setSelectedCategory(cat);
+                        setActiveTab("leaderboard");
+                        setTimeout(() => {
+                          document.getElementById("brand-roster")?.scrollIntoView({ behavior: "smooth", block: "start" });
+                        }, 100);
+                      }}
                       className={`relative rounded-xl p-px transition-all duration-300 ${
                         isActive
                           ? "bg-gradient-to-br from-amber-300 via-amber-500 to-amber-700 shadow-[0_0_25px_-5px_hsl(45_85%_55%/.7)]"
