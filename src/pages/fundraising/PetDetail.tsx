@@ -255,6 +255,12 @@ export default function PetDetail() {
           </div>
 
           <div className="space-y-6">
+            <CampaignDetailEnhancements
+              currentAmount={campaign.current_amount}
+              targetAmount={campaign.target_amount}
+              supportersCount={campaign.supporters_count ?? 0}
+              campaignType="pet"
+            />
             <Card>
               <CardHeader>
                 <CardTitle>Campaign Progress</CardTitle>
@@ -371,6 +377,7 @@ export default function PetDetail() {
           </div>
         </div>
       </div>
+      <CampaignDetailLiveFeed />
     </div>
   );
 }

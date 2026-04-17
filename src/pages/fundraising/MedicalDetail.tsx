@@ -14,6 +14,7 @@ import { Heart, CheckCircle, Clock, Users, ArrowLeft, Share2, Copy, Check, Faceb
 import { toast } from '@/hooks/use-toast';
 import { formatDistanceToNow } from 'date-fns';
 import { sk } from 'date-fns/locale';
+import { CampaignDetailEnhancements, CampaignDetailLiveFeed } from '@/components/fundraising/CampaignDetailEnhancements';
 
 interface MedicalCampaign {
   id: string;
@@ -370,6 +371,13 @@ export default function MedicalDetail() {
 
           {/* Sidebar */}
           <div className="space-y-6">
+            <CampaignDetailEnhancements
+              currentAmount={campaign.current_amount}
+              targetAmount={campaign.target_amount}
+              supportersCount={(campaign.monthly_donors_count ?? 0) + (campaign.one_time_donors_count ?? 0)}
+              campaignType="medical"
+              topDonations={donations.map(d => ({ id: d.id, amount: d.amount, donor_name: d.donor_name, is_anonymous: d.is_anonymous, created_at: d.created_at }))}
+            />
             {/* Donation Stats */}
             <Card>
               <CardContent className="pt-6 space-y-4">
@@ -589,6 +597,7 @@ export default function MedicalDetail() {
           </DialogContent>
         </Dialog>
       </div>
+      <CampaignDetailLiveFeed />
     </div>
   );
 }
