@@ -72,6 +72,10 @@ export default function CreativeForge() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedContent, setGeneratedContent] = useState<string | null>(null);
   const [previousContent, setPreviousContent] = useState<string | null>(null);
+  const [cowriterOpen, setCowriterOpen] = useState(false);
+  const [styleOpen, setStyleOpen] = useState(false);
+  const [voiceOpen, setVoiceOpen] = useState(false);
+  const [roomsOpen, setRoomsOpen] = useState(false);
 
   const [title, setTitle] = useState("");
   const [genre, setGenre] = useState("");
