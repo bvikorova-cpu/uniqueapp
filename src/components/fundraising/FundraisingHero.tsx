@@ -82,9 +82,9 @@ export function FundraisingHero({ onMyCampaigns, onExplore }: FundraisingHeroPro
         <source src={heroVideo.url} type="video/mp4" />
       </video>
 
-      {/* Premium gradient overlay - violet/rose/gold */}
-      <div className="absolute inset-0 bg-gradient-to-b from-purple-950/30 via-rose-950/20 to-black/70" />
-      <div className="absolute inset-0 bg-gradient-to-r from-amber-950/20 via-transparent to-purple-950/30" />
+      {/* Premium gradient overlay - lighter top so video is visible, darker bottom for text */}
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/30 to-black/85" />
+      <div className="absolute inset-0 bg-gradient-to-r from-amber-950/10 via-transparent to-purple-950/15" />
 
       {/* Content */}
       <div className="relative z-10 h-full flex flex-col justify-end pb-10 px-6 sm:px-10">
