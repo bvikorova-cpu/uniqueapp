@@ -65,9 +65,20 @@ export const BrandAIAnalyzer = ({ brands }: { brands: Brand[] }) => {
             onChange={(e) => setSelectedBrand(e.target.value)}
             className="w-full rounded-xl bg-zinc-900/80 border border-amber-500/30 text-amber-100 px-4 py-2.5 text-sm focus:outline-none focus:border-amber-400"
           >
-            <option value="">Select a brand to analyze...</option>
-            {brands.map(b => <option key={b.id} value={b.id}>{b.name}</option>)}
+            <option value="" style={{ background: "#18181b", color: "#fef3c7" }}>
+              Select a brand to analyze...
+            </option>
+            {brands.map(b => (
+              <option key={b.id} value={b.id} style={{ background: "#18181b", color: "#fef3c7" }}>
+                {b.name}
+              </option>
+            ))}
           </select>
+          {brands.length === 0 && (
+            <p className="text-xs text-amber-300/70 italic">
+              No brands available yet. Add sponsors to start analyzing.
+            </p>
+          )}
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {INSIGHTS.map(ins => {
