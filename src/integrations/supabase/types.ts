@@ -591,6 +591,45 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_story_generations: {
+        Row: {
+          campaign_id: string | null
+          campaign_type: string
+          created_at: string
+          credits_used: number
+          generated_story: string
+          generated_title: string | null
+          id: string
+          input_summary: string
+          tone: string | null
+          user_id: string
+        }
+        Insert: {
+          campaign_id?: string | null
+          campaign_type: string
+          created_at?: string
+          credits_used?: number
+          generated_story: string
+          generated_title?: string | null
+          id?: string
+          input_summary: string
+          tone?: string | null
+          user_id: string
+        }
+        Update: {
+          campaign_id?: string | null
+          campaign_type?: string
+          created_at?: string
+          credits_used?: number
+          generated_story?: string
+          generated_title?: string | null
+          id?: string
+          input_summary?: string
+          tone?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       ai_studio_credits: {
         Row: {
           created_at: string
@@ -5979,6 +6018,36 @@ export type Database = {
           platform_fee?: number
           status?: string | null
           stripe_payment_id?: string | null
+        }
+        Relationships: []
+      }
+      campaign_milestones: {
+        Row: {
+          campaign_id: string
+          campaign_type: string
+          celebrated: boolean
+          id: string
+          milestone_amount: number
+          milestone_pct: number
+          reached_at: string
+        }
+        Insert: {
+          campaign_id: string
+          campaign_type: string
+          celebrated?: boolean
+          id?: string
+          milestone_amount: number
+          milestone_pct: number
+          reached_at?: string
+        }
+        Update: {
+          campaign_id?: string
+          campaign_type?: string
+          celebrated?: boolean
+          id?: string
+          milestone_amount?: number
+          milestone_pct?: number
+          reached_at?: string
         }
         Relationships: []
       }
@@ -13102,6 +13171,99 @@ export type Database = {
           id?: string
           sample_id?: string
           status?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      donation_matches: {
+        Row: {
+          active: boolean
+          campaign_id: string
+          campaign_type: string
+          created_at: string
+          ends_at: string | null
+          id: string
+          match_cap: number
+          match_ratio: number
+          matched_so_far: number
+          sponsor_id: string
+          sponsor_logo_url: string | null
+          sponsor_name: string
+          starts_at: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          campaign_id: string
+          campaign_type: string
+          created_at?: string
+          ends_at?: string | null
+          id?: string
+          match_cap: number
+          match_ratio?: number
+          matched_so_far?: number
+          sponsor_id: string
+          sponsor_logo_url?: string | null
+          sponsor_name: string
+          starts_at?: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          campaign_id?: string
+          campaign_type?: string
+          created_at?: string
+          ends_at?: string | null
+          id?: string
+          match_cap?: number
+          match_ratio?: number
+          matched_so_far?: number
+          sponsor_id?: string
+          sponsor_logo_url?: string | null
+          sponsor_name?: string
+          starts_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      donor_stats: {
+        Row: {
+          badge_tier: string
+          campaigns_supported: number
+          created_at: string
+          current_streak_days: number
+          display_name: string | null
+          last_donation_at: string | null
+          longest_streak_days: number
+          total_donated: number
+          total_donations_count: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          badge_tier?: string
+          campaigns_supported?: number
+          created_at?: string
+          current_streak_days?: number
+          display_name?: string | null
+          last_donation_at?: string | null
+          longest_streak_days?: number
+          total_donated?: number
+          total_donations_count?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          badge_tier?: string
+          campaigns_supported?: number
+          created_at?: string
+          current_streak_days?: number
+          display_name?: string | null
+          last_donation_at?: string | null
+          longest_streak_days?: number
+          total_donated?: number
+          total_donations_count?: number
+          updated_at?: string
           user_id?: string
         }
         Relationships: []
@@ -36481,6 +36643,7 @@ export type Database = {
         Args: { p_job_id: string; p_result?: Json }
         Returns: undefined
       }
+      compute_donor_badge_tier: { Args: { _total: number }; Returns: string }
       create_notification: {
         Args: {
           p_actor_id: string

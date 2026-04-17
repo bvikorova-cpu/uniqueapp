@@ -1,102 +1,190 @@
 import { motion } from "framer-motion";
-import { Heart, Sparkles, TrendingUp, Users } from "lucide-react";
+import { Heart, Sparkles, TrendingUp, Users, Play, Pause, Volume2, VolumeX, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useEffect, useRef, useState } from "react";
+import heroVideo from "@/assets/fundraising-hub-hero.mp4.asset.json";
+import { supabase } from "@/integrations/supabase/client";
 
 interface FundraisingHeroProps {
   onMyCampaigns: () => void;
   onExplore: () => void;
 }
 
-const floatingIcons = [
-  { emoji: "❤️", left: 5, top: 15 },
-  { emoji: "🐾", left: 90, top: 10 },
-  { emoji: "🎓", left: 8, top: 70 },
-  { emoji: "🆘", left: 88, top: 65 },
-  { emoji: "🌍", left: 3, top: 42 },
-  { emoji: "💊", left: 94, top: 40 },
-];
-
-const stats = [
-  { icon: Heart, label: "Campaigns", value: "—" },
-  { icon: Users, label: "Donors", value: "—" },
-  { icon: TrendingUp, label: "Raised", value: "—" },
-];
+const AnimatedCounter = ({ target, prefix = "", suffix = "" }: { target: number; prefix?: string; suffix?: string }) => {
+  const [count, setCount] = useState(0);
+  useEffect(() => {
+    if (target === 0) { setCount(0); return; }
+    const duration = 1600; const steps = 50; const inc = target / steps; let cur = 0;
+    const t = setInterval(() => {
+      cur += inc;
+      if (cur >= target) { setCount(target); clearInterval(t); }
+      else setCount(Math.floor(cur));
+    }, duration / steps);
+    return () => clearInterval(t);
+  }, [target]);
+  return <span>{prefix}{count.toLocaleString()}{suffix}</span>;
+};
 
 export function FundraisingHero({ onMyCampaigns, onExplore }: FundraisingHeroProps) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [isPlaying, setIsPlaying] = useState(true);
+  const [isMuted, setIsMuted] = useState(true);
+  const [stats, setStats] = useState({ campaigns: 0, donors: 0, raised: 0 });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (videoRef.current) videoRef.current.play().catch(() => setIsPlaying(false));
+  }, []);
+
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const tables = ["medical_campaigns", "crisis_campaigns", "pet_rescue_campaigns", "student_campaigns", "dream_campaigns", "hero_campaigns", "talent_campaigns"];
+        let totalCampaigns = 0;
+        let totalRaised = 0;
+        for (const t of tables) {
+          const { count } = await supabase.from(t as any).select("*", { count: "exact", head: true }).eq("status", "active");
+          totalCampaigns += count || 0;
+          const { data } = await supabase.from(t as any).select("current_amount");
+          if (data) totalRaised += (data as any[]).reduce((s, r) => s + (Number(r.current_amount) || 0), 0);
+        }
+        const { count: donorsCount } = await supabase.from("campaign_donations" as any).select("*", { count: "exact", head: true }).eq("status", "completed");
+        if (!mounted) return;
+        setStats({ campaigns: totalCampaigns, donors: donorsCount || 0, raised: Math.round(totalRaised) });
+      } catch (e) {
+        console.error(e);
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    })();
+    return () => { mounted = false; };
+  }, []);
+
+  const togglePlay = () => { if (!videoRef.current) return; if (isPlaying) videoRef.current.pause(); else videoRef.current.play(); setIsPlaying(!isPlaying); };
+  const toggleMute = () => { if (!videoRef.current) return; videoRef.current.muted = !isMuted; setIsMuted(!isMuted); };
+
+  const heroStats = [
+    { icon: Heart, label: "Active Campaigns", value: stats.campaigns, prefix: "", suffix: "" },
+    { icon: Users, label: "Donors", value: stats.donors, prefix: "", suffix: "" },
+    { icon: TrendingUp, label: "Raised", value: stats.raised, prefix: "€", suffix: "" },
+  ];
+
   return (
-    <section className="relative py-16 px-4 text-center overflow-hidden">
-      {/* Floating emojis */}
-      {floatingIcons.map((item, i) => (
-        <motion.span
-          key={i}
-          className="absolute text-2xl pointer-events-none select-none opacity-40"
-          style={{ left: `${item.left}%`, top: `${item.top}%` }}
-          animate={{ y: [0, -14, 0], rotate: [0, i % 2 === 0 ? 10 : -10, 0] }}
-          transition={{ duration: 3.5 + i * 0.3, repeat: Infinity, ease: "easeInOut", delay: i * 0.25 }}
-        >
-          {item.emoji}
-        </motion.span>
-      ))}
+    <div className="relative h-[78vh] min-h-[560px] w-full overflow-hidden rounded-3xl border border-amber-500/20 mb-8 shadow-[0_0_80px_-20px_rgba(251,191,36,0.4)]">
+      {/* Black fallback + video */}
+      <div className="absolute inset-0 bg-black" />
+      <video
+        ref={videoRef}
+        className="absolute inset-0 h-full w-full object-cover brightness-[1.1] saturate-[1.15]"
+        autoPlay muted loop playsInline
+      >
+        <source src={heroVideo.url} type="video/mp4" />
+      </video>
 
-      <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-        {/* Mascot */}
-        <motion.div
-          animate={{ scale: [1, 1.06, 1] }}
-          transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-          className="mx-auto mb-5 w-20 h-20 rounded-full bg-gradient-to-br from-primary via-accent to-primary flex items-center justify-center shadow-2xl shadow-primary/30"
-        >
-          <span className="text-4xl">💝</span>
-        </motion.div>
+      {/* Premium gradient overlay - violet/rose/gold */}
+      <div className="absolute inset-0 bg-gradient-to-b from-purple-950/30 via-rose-950/20 to-black/70" />
+      <div className="absolute inset-0 bg-gradient-to-r from-amber-950/20 via-transparent to-purple-950/30" />
 
-        <h1 className="text-4xl md:text-5xl font-black mb-3">
-          <span className="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
-            Fundraising Hub
+      {/* Content */}
+      <div className="relative z-10 h-full flex flex-col justify-end pb-10 px-6 sm:px-10">
+        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="flex justify-center mb-4">
+          <span className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-black/50 backdrop-blur-xl text-white text-sm font-semibold border border-amber-400/40 drop-shadow-md shadow-[0_0_30px_rgba(251,191,36,0.3)]">
+            <Heart className="w-4 h-4 text-rose-400" fill="currentColor" />
+            <span style={{ color: "#fde68a" }}>Premium Fundraising Hub</span>
+            <Sparkles className="w-4 h-4 text-amber-300" />
           </span>
-        </h1>
-
-        <p className="text-lg text-muted-foreground max-w-xl mx-auto mb-6">
-          Support causes you care about or create your own campaign to get help from the community
-        </p>
-
-        {/* Glassmorphism badge */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.3 }}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-card/60 backdrop-blur-sm border border-border/50 text-sm text-muted-foreground mb-6"
-        >
-          <Sparkles className="w-4 h-4 text-primary" />
-          Every contribution makes a difference
         </motion.div>
 
-        <div className="flex gap-3 justify-center flex-wrap mb-8">
-          <Button size="lg" onClick={onMyCampaigns}>
+        <motion.h1
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="text-4xl md:text-6xl lg:text-7xl font-black text-center mb-4 drop-shadow-lg"
+          style={{
+            WebkitTextStroke: "1.5px rgba(0,0,0,0.4)",
+            textShadow: "0 0 60px rgba(251,191,36,0.45), 0 0 120px rgba(168,85,247,0.3), 0 4px 20px rgba(0,0,0,0.6)",
+          }}
+        >
+          <span className="bg-gradient-to-r from-amber-200 via-rose-200 to-purple-200 bg-clip-text text-transparent">
+            Change a Life.
+          </span>
+          <br />
+          <span className="bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-300 bg-clip-text text-transparent">
+            Today.
+          </span>
+        </motion.h1>
+
+        <motion.p
+          initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}
+          className="text-base sm:text-lg md:text-xl text-white/90 text-center mb-6 max-w-3xl mx-auto drop-shadow-md font-light"
+        >
+          Transparent, verified campaigns. AI-powered storytelling. Match donations & milestone celebrations — fundraising done beautifully.
+        </motion.p>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
+          className="flex justify-center gap-3 flex-wrap mb-7"
+        >
+          <Button
+            size="lg"
+            onClick={onExplore}
+            className="bg-gradient-to-r from-amber-500 via-rose-500 to-purple-600 hover:from-amber-600 hover:via-rose-600 hover:to-purple-700 text-white font-bold border-0 shadow-[0_0_30px_rgba(251,191,36,0.4)]"
+          >
+            <Heart className="mr-2 h-4 w-4" fill="currentColor" /> Explore Causes
+          </Button>
+          <Button
+            size="lg"
+            variant="outline"
+            onClick={onMyCampaigns}
+            className="bg-black/40 backdrop-blur-xl border-amber-400/40 text-white hover:bg-black/60 hover:border-amber-400/60"
+          >
             <Sparkles className="mr-2 h-4 w-4" /> My Campaigns
           </Button>
-          <Button size="lg" variant="outline" onClick={onExplore}>
-            <Heart className="mr-2 h-4 w-4" /> Explore Causes
-          </Button>
-        </div>
+        </motion.div>
 
         {/* Stats */}
-        <div className="flex justify-center gap-6 flex-wrap">
-          {stats.map((stat, i) => (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
+          className="grid grid-cols-3 gap-3 max-w-3xl mx-auto w-full"
+        >
+          {heroStats.map((stat, i) => (
             <motion.div
               key={stat.label}
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 + i * 0.1 }}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-card/50 border border-border/30"
+              initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.45 + i * 0.05 }}
+              className="bg-black/50 backdrop-blur-xl rounded-2xl p-3 sm:p-4 text-center border border-amber-400/20 hover:border-amber-400/40 transition-all hover:scale-105"
             >
-              <stat.icon className="w-4 h-4 text-primary" />
-              <div className="text-left">
-                <div className="text-sm font-bold text-foreground">{stat.value}</div>
-                <div className="text-xs text-muted-foreground">{stat.label}</div>
+              <div className="flex items-center justify-center gap-1.5 mb-1">
+                <stat.icon className="w-4 h-4 text-amber-300" />
+                <span className="text-lg sm:text-2xl font-black text-white">
+                  {loading ? "..." : <AnimatedCounter target={stat.value} prefix={stat.prefix} suffix={stat.suffix} />}
+                </span>
               </div>
+              <span className="text-[10px] sm:text-xs text-amber-100/70 font-medium uppercase tracking-wider">{stat.label}</span>
             </motion.div>
           ))}
-        </div>
-      </motion.div>
-    </section>
+        </motion.div>
+
+        {/* Trust badge */}
+        <motion.div
+          initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }}
+          className="flex items-center justify-center gap-2 mt-4 text-xs text-amber-100/70"
+        >
+          <ShieldCheck className="w-3.5 h-3.5" />
+          <span>Stripe-secured · GDPR compliant · 100% verified</span>
+        </motion.div>
+      </div>
+
+      {/* Video controls */}
+      <div className="absolute bottom-4 right-4 flex gap-2 z-20">
+        <Button variant="ghost" size="icon" className="bg-black/50 backdrop-blur-xl hover:bg-black/70 border border-amber-400/30 text-white" onClick={togglePlay}>
+          {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+        </Button>
+        <Button variant="ghost" size="icon" className="bg-black/50 backdrop-blur-xl hover:bg-black/70 border border-amber-400/30 text-white" onClick={toggleMute}>
+          {isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
+        </Button>
+      </div>
+    </div>
   );
 }
