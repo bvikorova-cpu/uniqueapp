@@ -479,6 +479,11 @@ export default function CreativeForge() {
           </div>
         )}
 
+        {/* Feature roadmap */}
+        <div className="mb-8">
+          <ForgeIdeasShowcase />
+        </div>
+
         {/* How it works */}
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-6"><h2 className="text-2xl font-bold">How It Works</h2></div>
