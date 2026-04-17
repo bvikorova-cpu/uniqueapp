@@ -232,24 +232,10 @@ export default function BrandBattle() {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col bg-[hsl(220_55%_5%)] text-slate-100">
-      {/* Stadium ambient backdrop */}
-      <div className="fixed inset-0 pointer-events-none -z-10">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,hsl(215_85%_25%/.4),transparent_55%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,hsl(0_50%_20%/.2),transparent_50%)]" />
-        <div
-          className="absolute inset-0 opacity-[0.04]"
-          style={{
-            backgroundImage:
-              "linear-gradient(white 1px, transparent 1px), linear-gradient(90deg, white 1px, transparent 1px)",
-            backgroundSize: "80px 80px",
-          }}
-        />
-      </div>
-
+    <div className="min-h-screen bg-background">
       <Navbar />
-      <main className="flex-1 container mx-auto px-4 py-8 relative">
-        {/* Fight Card Hero */}
+      <main className="container mx-auto px-3 sm:px-4 pt-20 pb-8 max-w-6xl">
+        {/* Cinematic Video Hero */}
         <LuxuryArenaHero
           totalVotes={campaignStats?.totalVotes}
           totalSponsors={campaignStats?.totalSponsors}
@@ -257,26 +243,22 @@ export default function BrandBattle() {
         />
 
         {/* Live brand stock ticker */}
-        <div className="mb-8 rounded-lg border border-slate-800 bg-slate-950 overflow-hidden">
-          <div className="flex items-center gap-2 px-4 py-2 border-b border-slate-800 bg-slate-900/50">
-            <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
-            <span className="text-[10px] uppercase tracking-[0.3em] text-slate-400 font-bold">Live Market Feed</span>
-          </div>
+        <div className="mb-8">
           <BrandStockTicker />
         </div>
 
         {/* User controls */}
         {user && (
           <div className="space-y-4 mb-8">
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 flex-wrap">
               <BrandVotesDisplay />
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => navigate("/sponsor-dashboard")}
-                className="border-blue-500/40 text-blue-200 hover:bg-blue-500/10 hover:text-white bg-transparent uppercase tracking-wider text-xs font-bold"
+                className="gap-2 bg-card/60 backdrop-blur-sm border-border/50 hover:border-amber-500/30"
               >
-                <Building2 className="h-4 w-4 mr-2" />
+                <Building2 className="h-4 w-4 text-amber-500" />
                 Sponsor Dashboard
               </Button>
             </div>
@@ -284,49 +266,38 @@ export default function BrandBattle() {
           </div>
         )}
 
-        {/* Pre-Fight Briefing */}
-        <div className="relative max-w-4xl mx-auto mb-10 border border-slate-800 bg-gradient-to-br from-slate-950 via-slate-900/80 to-slate-950 overflow-hidden">
-          <div className="flex items-center justify-between px-5 py-2 bg-slate-950 border-b border-slate-800">
-            <div className="flex items-center gap-2">
-              <div className="w-1 h-4 bg-red-500" />
-              <span className="text-[10px] uppercase tracking-[0.3em] text-slate-300 font-black">Pre-Fight Briefing</span>
-            </div>
-            <span className="text-[10px] font-mono text-slate-500 uppercase tracking-widest">Rules · 04 of 04</span>
-          </div>
-
-          <div className="p-5 sm:p-7">
-            <h3 className="text-2xl sm:text-3xl font-black uppercase tracking-tight text-white mb-1">
-              How The <span className="text-blue-400">Battle</span> Works
-            </h3>
-            <p className="text-slate-400 text-xs sm:text-sm uppercase tracking-widest mb-6">
-              Official rulebook · Sanctioned by Brand Battle Network
-            </p>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        {/* How it Works */}
+        <Card className="max-w-4xl mx-auto mb-10 bg-card/80 backdrop-blur-xl border-border/50">
+          <CardHeader>
+            <CardTitle className="text-2xl sm:text-3xl font-black">
+              How <span className="bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent">Brand Battle</span> Works
+            </CardTitle>
+            <CardDescription>Vote, win and climb the leaderboard</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {[
-                { num: "01", title: "Daily Vote", text: "1 free vote per day. Use it like your final punch.", color: "blue" },
-                { num: "02", title: "Head-to-Head", text: "Pick winners in 1v1 brand duels. No mercy.", color: "red" },
-                { num: "03", title: "Challenges", text: "Complete quests for vote multipliers and rewards.", color: "blue" },
-                { num: "04", title: "The Belt", text: "Top voters & champion brands earn quarterly glory.", color: "red" },
+                { num: "01", title: "Daily Vote", text: "Get 1 free vote every day to support your favorite brand." },
+                { num: "02", title: "Head-to-Head", text: "Pick winners in 1v1 brand duels and earn streak bonuses." },
+                { num: "03", title: "Challenges", text: "Complete daily quests to unlock vote multipliers." },
+                { num: "04", title: "Win Rewards", text: "Top voters and champion brands earn quarterly prizes." },
               ].map((item) => (
                 <div
                   key={item.num}
-                  className={`relative border-l-2 ${item.color === "blue" ? "border-blue-500" : "border-red-500"} bg-slate-950/60 pl-4 pr-3 py-3 hover:bg-slate-900/80 transition-colors`}
+                  className="flex items-start gap-3 p-3 rounded-lg bg-background/50 border border-border/40 hover:border-amber-500/30 transition-colors"
                 >
-                  <div className="flex items-baseline gap-3">
-                    <span className={`font-mono font-black text-2xl ${item.color === "blue" ? "text-blue-400/40" : "text-red-400/40"} tabular-nums`}>
-                      {item.num}
-                    </span>
-                    <div className="flex-1">
-                      <div className="text-white font-black uppercase tracking-wider text-xs sm:text-sm">{item.title}</div>
-                      <div className="text-slate-400 text-xs sm:text-sm mt-0.5">{item.text}</div>
-                    </div>
+                  <span className="font-mono font-black text-2xl text-amber-500/60 tabular-nums">
+                    {item.num}
+                  </span>
+                  <div className="flex-1">
+                    <div className="font-bold text-foreground text-sm">{item.title}</div>
+                    <div className="text-muted-foreground text-xs sm:text-sm mt-0.5">{item.text}</div>
                   </div>
                 </div>
               ))}
             </div>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <LuxuryTabsNav tabs={LUXURY_TABS} active={activeTab} onChange={setActiveTab} />
