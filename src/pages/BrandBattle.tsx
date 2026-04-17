@@ -434,6 +434,8 @@ export default function BrandBattle() {
                 })}
               </div>
             )}
+              </>
+            )}
           </TabsContent>
 
           {/* AI Lab */}
