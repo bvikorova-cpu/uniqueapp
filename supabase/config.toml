@@ -33,6 +33,18 @@ verify_jwt = true
 [functions.verify-creative-forge-payment]
 verify_jwt = true
 
+[functions.creative-cowriter]
+verify_jwt = true
+
+[functions.creative-style-transfer]
+verify_jwt = true
+
+[functions.creative-voice-to-script]
+verify_jwt = true
+
+[functions.creative-room-ai]
+verify_jwt = true
+
 [functions.create-secret-santa-payment]
 verify_jwt = true
 
