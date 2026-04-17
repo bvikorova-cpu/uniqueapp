@@ -387,6 +387,7 @@ export default function CrisisDetail() {
           </div>
         </div>
       </div>
+      <CampaignDetailLiveFeed />
     </div>
   );
 }
