@@ -299,7 +299,7 @@ export default function TalentDetail() {
             <CampaignDetailEnhancements
               currentAmount={campaign.current_amount}
               targetAmount={campaign.target_amount}
-              supportersCount={campaign.supporters_count ?? 0}
+              supportersCount={campaign.sponsors_count ?? 0}
               campaignType="talent"
             />
             <Card>
