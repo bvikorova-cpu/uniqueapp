@@ -305,23 +305,49 @@ export default function BrandBattle() {
           {/* Leaderboard */}
           <TabsContent value="leaderboard" className="space-y-6">
             {/* Luxury category filter */}
-            <div className="flex flex-wrap gap-2 justify-center pb-2">
-              {["All", ...CATEGORIES].map(cat => {
-                const isActive = selectedCategory === cat;
-                return (
-                  <button
-                    key={cat}
-                    onClick={() => setSelectedCategory(cat)}
-                    className={`relative px-4 py-2 rounded-full text-[11px] font-bold tracking-[0.15em] uppercase transition-all duration-300 ${
-                      isActive
-                        ? "bg-gradient-to-b from-amber-300 to-amber-600 text-zinc-950 shadow-[0_0_20px_-5px_hsl(45_85%_55%/.7)] border border-amber-200"
-                        : "border border-amber-500/40 text-amber-200/80 hover:border-amber-400 hover:text-amber-100 bg-card/60 backdrop-blur-sm hover:shadow-[0_0_15px_-5px_hsl(45_85%_55%/.4)]"
-                    }`}
-                  >
-                    {cat}
-                  </button>
-                );
-              })}
+            <div>
+              <div className="flex items-center gap-3 mb-4 px-1">
+                <span className="h-px flex-1 bg-gradient-to-r from-transparent via-amber-500/40 to-amber-500/40" />
+                <span
+                  className="text-[11px] uppercase tracking-[0.3em] font-bold bg-gradient-to-r from-amber-300 to-amber-500 bg-clip-text text-transparent"
+                  style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
+                >
+                  ✦ Categories ✦
+                </span>
+                <span className="h-px flex-1 bg-gradient-to-l from-transparent via-amber-500/40 to-amber-500/40" />
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-3">
+                {["All", ...CATEGORIES].map(cat => {
+                  const isActive = selectedCategory === cat;
+                  return (
+                    <button
+                      key={cat}
+                      onClick={() => setSelectedCategory(cat)}
+                      className={`relative rounded-xl p-px transition-all duration-300 ${
+                        isActive
+                          ? "bg-gradient-to-br from-amber-300 via-amber-500 to-amber-700 shadow-[0_0_25px_-5px_hsl(45_85%_55%/.7)]"
+                          : "bg-gradient-to-br from-amber-500/30 via-amber-600/15 to-transparent hover:from-amber-400/60 hover:via-amber-500/30"
+                      }`}
+                    >
+                      <div
+                        className={`rounded-[11px] px-3 py-3 text-center transition-all min-h-[48px] flex items-center justify-center ${
+                          isActive
+                            ? "bg-gradient-to-b from-zinc-900 to-zinc-950"
+                            : "bg-card/80 backdrop-blur-xl hover:bg-zinc-900/80"
+                        }`}
+                      >
+                        <span
+                          className={`text-[12px] sm:text-[13px] uppercase tracking-[0.15em] font-bold ${
+                            isActive ? "text-amber-200" : "text-foreground/90"
+                          }`}
+                        >
+                          {cat}
+                        </span>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
 
             {/* Top 3 podium */}
