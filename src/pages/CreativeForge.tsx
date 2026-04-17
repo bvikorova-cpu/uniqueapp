@@ -389,6 +389,7 @@ export default function CreativeForge() {
   // Hub view (AI Mentor style)
   return (
     <div className="relative min-h-screen">
+      {sharedModals}
       <div className="fixed inset-0 pointer-events-none z-0"><FloatingParticles /></div>
       <div className="relative z-10 container mx-auto px-2 sm:px-4 pt-20 pb-12 max-w-7xl">
         <ForgeHero
