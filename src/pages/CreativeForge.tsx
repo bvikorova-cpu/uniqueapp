@@ -173,18 +173,52 @@ export default function CreativeForge() {
     setTitle(""); setGenre(""); setMood(""); setDescription(""); setCharacters(""); setSetting(""); setTargetAudience(""); setStyleReference(""); setContentLength("medium");
   };
 
+  // Shared modals (used both in hub & create view)
+  const sharedModals = (
+    <>
+      <ForgeCowriterChat
+        open={cowriterOpen}
+        onClose={() => setCowriterOpen(false)}
+        category={selectedCategory}
+        currentText={generatedContent || description || ""}
+        onInsert={(text) => {
+          setGeneratedContent((prev) => (prev ? prev + "\n\n" + text : text));
+          setActiveView("create");
+        }}
+      />
+      <ForgeStyleTransfer
+        open={styleOpen}
+        onClose={() => setStyleOpen(false)}
+        initialText={generatedContent || ""}
+        onApply={(text) => { setPreviousContent(generatedContent); setGeneratedContent(text); setActiveView("create"); }}
+      />
+      <ForgeVoiceToScript
+        open={voiceOpen}
+        onClose={() => setVoiceOpen(false)}
+        defaultCategory={selectedCategory}
+        onApply={(text) => { setGeneratedContent(text); setActiveView("create"); }}
+      />
+      <ForgeRooms open={roomsOpen} onClose={() => setRoomsOpen(false)} />
+    </>
+  );
+
   // Sub-views (Create, History, Credits)
   if (activeView !== "hub") {
     return (
       <div className="relative min-h-screen">
         <div className="fixed inset-0 pointer-events-none z-0"><FloatingParticles /></div>
+        {sharedModals}
         <div className="relative z-10 container mx-auto px-2 sm:px-4 pt-20 pb-12 max-w-7xl">
           <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-4 flex items-center gap-3">
             <Button variant="ghost" onClick={() => setActiveView("hub")} className="gap-2">
               <ArrowLeft className="h-4 w-4" /> Back to CreativeForge
             </Button>
             {activeView === "create" && (
-              <div className="flex gap-2 ml-auto">
+              <div className="flex flex-wrap gap-2 ml-auto">
+                <Button variant="outline" size="sm" onClick={() => setCowriterOpen(true)} className="gap-1 border-amber-700/40 text-amber-200 hover:bg-amber-900/20 hover:text-amber-100"><Sparkles className="h-3.5 w-3.5" /> Co-Writer</Button>
+                <Button variant="outline" size="sm" onClick={() => setStyleOpen(true)} className="gap-1 border-amber-700/40 text-amber-200 hover:bg-amber-900/20 hover:text-amber-100"><Wand2 className="h-3.5 w-3.5" /> Style Transfer</Button>
+                <Button variant="outline" size="sm" onClick={() => setVoiceOpen(true)} className="gap-1 border-amber-700/40 text-amber-200 hover:bg-amber-900/20 hover:text-amber-100"><Mic className="h-3.5 w-3.5" /> Voice</Button>
+                <Button variant="outline" size="sm" onClick={() => setRoomsOpen(true)} className="gap-1 border-amber-700/40 text-amber-200 hover:bg-amber-900/20 hover:text-amber-100"><Users className="h-3.5 w-3.5" /> Rooms</Button>
                 <Button variant="outline" size="sm" onClick={() => setActiveView("history")} className="gap-1"><History className="h-3.5 w-3.5" /> History</Button>
                 <Button variant="outline" size="sm" onClick={() => setActiveView("credits")} className="gap-1"><CreditCard className="h-3.5 w-3.5" /> Credits</Button>
               </div>
