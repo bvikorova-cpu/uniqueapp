@@ -312,10 +312,10 @@ export default function BrandBattle() {
                   <button
                     key={cat}
                     onClick={() => setSelectedCategory(cat)}
-                    className={`px-4 py-1.5 rounded-full text-xs font-medium tracking-wider uppercase transition-all duration-300 ${
+                    className={`relative px-4 py-2 rounded-full text-[11px] font-bold tracking-[0.15em] uppercase transition-all duration-300 ${
                       isActive
-                        ? "bg-gradient-to-b from-amber-300 to-amber-600 text-zinc-950 shadow-[0_0_20px_-5px_hsl(45_85%_55%/.6)] border border-amber-200/50"
-                        : "border border-amber-500/20 text-amber-100/60 hover:border-amber-400/50 hover:text-amber-200 bg-zinc-950/50"
+                        ? "bg-gradient-to-b from-amber-300 to-amber-600 text-zinc-950 shadow-[0_0_20px_-5px_hsl(45_85%_55%/.7)] border border-amber-200"
+                        : "border border-amber-500/40 text-amber-200/80 hover:border-amber-400 hover:text-amber-100 bg-card/60 backdrop-blur-sm hover:shadow-[0_0_15px_-5px_hsl(45_85%_55%/.4)]"
                     }`}
                   >
                     {cat}
