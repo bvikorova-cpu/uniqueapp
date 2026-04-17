@@ -25,7 +25,13 @@ import { ForgeProgressPreview } from "@/components/creative-forge/ForgeProgressP
 import { ForgeAchievements } from "@/components/creative-forge/ForgeAchievements";
 import { ForgeToolCard } from "@/components/creative-forge/ForgeToolCard";
 import { ForgeTestimonials } from "@/components/creative-forge/ForgeTestimonials";
+import { ForgeCowriterChat } from "@/components/creative-forge/ForgeCowriterChat";
+import { ForgeStyleTransfer } from "@/components/creative-forge/ForgeStyleTransfer";
+import { ForgeVoiceToScript } from "@/components/creative-forge/ForgeVoiceToScript";
+import { ForgeRooms } from "@/components/creative-forge/ForgeRooms";
+import { ForgeIdeasShowcase } from "@/components/creative-forge/ForgeIdeasShowcase";
 import { FloatingParticles } from "@/components/wellness/FloatingParticles";
+import { Wand2, Mic, Users } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const STYLE_REFERENCES: Record<string, string[]> = {
@@ -66,6 +72,10 @@ export default function CreativeForge() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedContent, setGeneratedContent] = useState<string | null>(null);
   const [previousContent, setPreviousContent] = useState<string | null>(null);
+  const [cowriterOpen, setCowriterOpen] = useState(false);
+  const [styleOpen, setStyleOpen] = useState(false);
+  const [voiceOpen, setVoiceOpen] = useState(false);
+  const [roomsOpen, setRoomsOpen] = useState(false);
 
   const [title, setTitle] = useState("");
   const [genre, setGenre] = useState("");
@@ -347,7 +357,49 @@ export default function CreativeForge() {
     <div className="relative min-h-screen">
       <div className="fixed inset-0 pointer-events-none z-0"><FloatingParticles /></div>
       <div className="relative z-10 container mx-auto px-2 sm:px-4 pt-20 pb-12 max-w-7xl">
-        <ForgeHero credits={credits?.credits_remaining || 0} creditsLoading={creditsLoading} />
+        <ForgeHero
+          credits={credits?.credits_remaining || 0}
+          creditsLoading={creditsLoading}
+          onStartCreating={() => openTool("song_lyrics")}
+          onOpenCowriter={() => setCowriterOpen(true)}
+        />
+
+        {/* Premium AI Tools Row */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-8">
+          <button onClick={() => setStyleOpen(true)} className="group p-4 rounded-2xl border border-amber-700/30 bg-gradient-to-br from-[hsl(30,15%,9%)]/80 to-[hsl(0,20%,8%)]/80 backdrop-blur-xl hover:border-amber-500/50 hover:shadow-[0_0_30px_rgba(251,191,36,0.2)] transition-all text-left">
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 rounded-xl bg-gradient-to-br from-amber-700 to-rose-700 shadow-lg group-hover:scale-110 transition-transform">
+                <Wand2 className="h-5 w-5 text-white" />
+              </div>
+              <div>
+                <h4 className="font-bold text-amber-100" style={{ fontFamily: "Georgia, serif" }}>Style Transfer</h4>
+                <p className="text-xs text-amber-200/60">Rewrite as Shakespeare, Tarantino…</p>
+              </div>
+            </div>
+          </button>
+          <button onClick={() => setVoiceOpen(true)} className="group p-4 rounded-2xl border border-amber-700/30 bg-gradient-to-br from-[hsl(30,15%,9%)]/80 to-[hsl(0,20%,8%)]/80 backdrop-blur-xl hover:border-amber-500/50 hover:shadow-[0_0_30px_rgba(251,191,36,0.2)] transition-all text-left">
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 rounded-xl bg-gradient-to-br from-rose-700 to-amber-700 shadow-lg group-hover:scale-110 transition-transform">
+                <Mic className="h-5 w-5 text-white" />
+              </div>
+              <div>
+                <h4 className="font-bold text-amber-100" style={{ fontFamily: "Georgia, serif" }}>Voice-to-Script</h4>
+                <p className="text-xs text-amber-200/60">Speak your idea, get a polished draft</p>
+              </div>
+            </div>
+          </button>
+          <button onClick={() => setRoomsOpen(true)} className="group p-4 rounded-2xl border border-amber-700/30 bg-gradient-to-br from-[hsl(30,15%,9%)]/80 to-[hsl(0,20%,8%)]/80 backdrop-blur-xl hover:border-amber-500/50 hover:shadow-[0_0_30px_rgba(251,191,36,0.2)] transition-all text-left">
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 rounded-xl bg-gradient-to-br from-amber-600 to-amber-800 shadow-lg group-hover:scale-110 transition-transform">
+                <Users className="h-5 w-5 text-white" />
+              </div>
+              <div>
+                <h4 className="font-bold text-amber-100" style={{ fontFamily: "Georgia, serif" }}>Collaboration Rooms</h4>
+                <p className="text-xs text-amber-200/60">Co-write with friends + AI moderator</p>
+              </div>
+            </div>
+          </button>
+        </div>
 
         {/* Engagement widgets row */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
@@ -371,6 +423,7 @@ export default function CreativeForge() {
               <CardContent className="space-y-2">
                 <Button variant="outline" className="w-full justify-start gap-2" onClick={() => setActiveView("history")}><History className="h-4 w-4" /> View History</Button>
                 <Button variant="outline" className="w-full justify-start gap-2" onClick={() => setActiveView("credits")}><CreditCard className="h-4 w-4" /> Buy Credits</Button>
+                <Button variant="outline" className="w-full justify-start gap-2" onClick={() => setCowriterOpen(true)}><Sparkles className="h-4 w-4" /> AI Co-Writer Chat</Button>
               </CardContent>
             </Card>
           </div>

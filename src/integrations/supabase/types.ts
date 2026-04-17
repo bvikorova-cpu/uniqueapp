@@ -10627,6 +10627,39 @@ export type Database = {
         }
         Relationships: []
       }
+      creative_forge_cowriter_sessions: {
+        Row: {
+          category: string
+          context: string | null
+          created_at: string
+          credits_used: number
+          id: string
+          messages: Json
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          category: string
+          context?: string | null
+          created_at?: string
+          credits_used?: number
+          id?: string
+          messages?: Json
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          category?: string
+          context?: string | null
+          created_at?: string
+          credits_used?: number
+          id?: string
+          messages?: Json
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       creative_forge_credits: {
         Row: {
           created_at: string
@@ -10693,6 +10726,115 @@ export type Database = {
           title?: string
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      creative_forge_room_members: {
+        Row: {
+          id: string
+          joined_at: string
+          role: string
+          room_id: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          joined_at?: string
+          role?: string
+          room_id: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          joined_at?: string
+          role?: string
+          room_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "creative_forge_room_members_room_id_fkey"
+            columns: ["room_id"]
+            isOneToOne: false
+            referencedRelation: "creative_forge_rooms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      creative_forge_room_messages: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          message_type: string
+          metadata: Json | null
+          room_id: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          message_type?: string
+          metadata?: Json | null
+          room_id: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          message_type?: string
+          metadata?: Json | null
+          room_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "creative_forge_room_messages_room_id_fkey"
+            columns: ["room_id"]
+            isOneToOne: false
+            referencedRelation: "creative_forge_rooms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      creative_forge_rooms: {
+        Row: {
+          category: string
+          created_at: string
+          current_content: string | null
+          description: string | null
+          id: string
+          invite_code: string | null
+          is_public: boolean | null
+          name: string
+          owner_id: string
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          current_content?: string | null
+          description?: string | null
+          id?: string
+          invite_code?: string | null
+          is_public?: boolean | null
+          name: string
+          owner_id: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          current_content?: string | null
+          description?: string | null
+          id?: string
+          invite_code?: string | null
+          is_public?: boolean | null
+          name?: string
+          owner_id?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -36760,6 +36902,10 @@ export type Database = {
       is_age_verified: { Args: { p_user_id: string }; Returns: boolean }
       is_conversation_participant: {
         Args: { conversation_id: string; user_id: string }
+        Returns: boolean
+      }
+      is_creative_room_member: {
+        Args: { _room_id: string; _user_id: string }
         Returns: boolean
       }
       is_group_admin: {
