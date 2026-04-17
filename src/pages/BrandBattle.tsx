@@ -322,7 +322,13 @@ export default function BrandBattle() {
                   return (
                     <button
                       key={cat}
-                      onClick={() => setSelectedCategory(cat)}
+                      onClick={() => {
+                        setSelectedCategory(cat);
+                        setActiveTab("leaderboard");
+                        setTimeout(() => {
+                          document.getElementById("brand-roster")?.scrollIntoView({ behavior: "smooth", block: "start" });
+                        }, 100);
+                      }}
                       className={`relative rounded-xl p-px transition-all duration-300 ${
                         isActive
                           ? "bg-gradient-to-br from-amber-300 via-amber-500 to-amber-700 shadow-[0_0_25px_-5px_hsl(45_85%_55%/.7)]"
@@ -350,6 +356,19 @@ export default function BrandBattle() {
               </div>
             </div>
 
+            {/* Filter result indicator */}
+            <div id="brand-roster" className="text-center -mb-2">
+              <span className="text-xs uppercase tracking-[0.25em] text-amber-300/80 font-bold">
+                {selectedCategory === "All" ? "All Brands" : selectedCategory} · {sortedSponsors.length} {sortedSponsors.length === 1 ? "brand" : "brands"}
+              </span>
+            </div>
+
+            {sortedSponsors.length === 0 ? (
+              <div className="rounded-xl border border-amber-500/20 bg-card/60 backdrop-blur p-10 text-center">
+                <p className="text-muted-foreground">No brands in this category yet.</p>
+              </div>
+            ) : (
+              <>
             {/* Top 3 podium */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
               {sortedSponsors.slice(0, 3).map((sponsor, i) => (
@@ -414,6 +433,8 @@ export default function BrandBattle() {
                   );
                 })}
               </div>
+            )}
+              </>
             )}
           </TabsContent>
 
