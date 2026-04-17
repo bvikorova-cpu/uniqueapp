@@ -11,6 +11,7 @@ import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ArrowLeft, Star, Users, Trophy, Target, Heart, Link as LinkIcon } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
+import { CampaignDetailEnhancements, CampaignDetailLiveFeed } from '@/components/fundraising/CampaignDetailEnhancements';
 
 interface TalentCampaign {
   id: string;
@@ -295,6 +296,12 @@ export default function TalentDetail() {
           </div>
 
           <div className="space-y-6">
+            <CampaignDetailEnhancements
+              currentAmount={campaign.current_amount}
+              targetAmount={campaign.target_amount}
+              supportersCount={campaign.sponsors_count ?? 0}
+              campaignType="talent"
+            />
             <Card>
               <CardHeader>
                 <CardTitle>Sponsorship Progress</CardTitle>
@@ -411,6 +418,7 @@ export default function TalentDetail() {
           </div>
         </div>
       </div>
+      <CampaignDetailLiveFeed />
     </div>
   );
 }

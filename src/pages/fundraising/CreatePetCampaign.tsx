@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Checkbox } from '@/components/ui/checkbox';
 import { ArrowLeft, PawPrint, Upload } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
+import { AIStoryGenerator } from '@/components/fundraising/AIStoryGenerator';
 
 const petTypes = [
   { value: 'dog', label: '🐕 Dog' },
@@ -277,7 +278,13 @@ export default function CreatePetCampaign() {
               </div>
 
               <div>
-                <Label htmlFor="story">Full Story * (The pet's background and situation)</Label>
+                <div className="flex items-center justify-between gap-2 flex-wrap">
+                  <Label htmlFor="story">Full Story * (The pet's background and situation)</Label>
+                  <AIStoryGenerator
+                    campaignType="pet"
+                    onGenerated={(d) => setFormData({ ...formData, title: formData.title || d.title, story: d.story, description: formData.description || d.appeal.slice(0, 200) })}
+                  />
+                </div>
                 <Textarea
                   id="story"
                   value={formData.story}

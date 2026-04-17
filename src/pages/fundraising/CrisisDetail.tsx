@@ -12,6 +12,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { ArrowLeft, AlertTriangle, Users, MapPin, Clock, Heart, CheckCircle } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { formatDistanceToNow } from 'date-fns';
+import { CampaignDetailEnhancements, CampaignDetailLiveFeed } from '@/components/fundraising/CampaignDetailEnhancements';
 
 interface CrisisCampaign {
   id: string;
@@ -264,6 +265,12 @@ export default function CrisisDetail() {
           </div>
 
           <div className="space-y-6">
+            <CampaignDetailEnhancements
+              currentAmount={campaign.current_amount}
+              targetAmount={campaign.target_amount}
+              supportersCount={campaign.supporters_count}
+              campaignType="crisis"
+            />
             <Card>
               <CardHeader>
                 <CardTitle>Campaign Progress</CardTitle>
@@ -380,6 +387,7 @@ export default function CrisisDetail() {
           </div>
         </div>
       </div>
+      <CampaignDetailLiveFeed />
     </div>
   );
 }

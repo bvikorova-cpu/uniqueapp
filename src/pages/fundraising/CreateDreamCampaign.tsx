@@ -10,6 +10,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ArrowLeft, Upload, Sparkles, ImagePlus, X } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
+import { AIStoryGenerator } from '@/components/fundraising/AIStoryGenerator';
 
 const dreamTypes = [
   { value: 'education', label: '🎓 Education' },
@@ -239,7 +240,13 @@ export default function CreateDreamCampaign() {
               </div>
 
               <div>
-                <Label htmlFor="story" className="text-foreground font-medium">Your Full Story * (Why this dream matters to you)</Label>
+                <div className="flex items-center justify-between gap-2 flex-wrap">
+                  <Label htmlFor="story" className="text-foreground font-medium">Your Full Story * (Why this dream matters to you)</Label>
+                  <AIStoryGenerator
+                    campaignType="dream"
+                    onGenerated={(d) => setFormData({ ...formData, title: formData.title || d.title, story: d.story, description: formData.description || d.appeal.slice(0, 200) })}
+                  />
+                </div>
                 <Textarea
                   id="story"
                   value={formData.story}

@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Checkbox } from '@/components/ui/checkbox';
 import { ArrowLeft, AlertTriangle, Upload, FileText } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
+import { AIStoryGenerator } from '@/components/fundraising/AIStoryGenerator';
 
 const crisisTypes = [
   { value: 'natural_disaster', label: '🌪️ Natural Disaster' },
@@ -324,7 +325,13 @@ export default function CreateCrisisCampaign() {
               </div>
 
               <div>
-                <Label htmlFor="story">Full Story * (What happened and what help is needed)</Label>
+                <div className="flex items-center justify-between gap-2 flex-wrap">
+                  <Label htmlFor="story">Full Story * (What happened and what help is needed)</Label>
+                  <AIStoryGenerator
+                    campaignType="crisis"
+                    onGenerated={(d) => setFormData({ ...formData, title: formData.title || d.title, story: d.story, description: formData.description || d.appeal.slice(0, 200) })}
+                  />
+                </div>
                 <Textarea
                   id="story"
                   value={formData.story}

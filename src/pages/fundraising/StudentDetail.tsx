@@ -11,6 +11,7 @@ import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ArrowLeft, GraduationCap, Users, Heart, Sparkles } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
+import { CampaignDetailEnhancements, CampaignDetailLiveFeed } from '@/components/fundraising/CampaignDetailEnhancements';
 
 interface StudentCampaign {
   id: string;
@@ -235,6 +236,12 @@ export default function StudentDetail() {
           </div>
 
           <div className="space-y-6">
+            <CampaignDetailEnhancements
+              currentAmount={campaign.current_amount}
+              targetAmount={campaign.target_amount}
+              supportersCount={campaign.supporters_count ?? 0}
+              campaignType="student"
+            />
             <Card>
               <CardHeader>
                 <CardTitle>Campaign Progress</CardTitle>
@@ -351,6 +358,7 @@ export default function StudentDetail() {
           </div>
         </div>
       </div>
+      <CampaignDetailLiveFeed />
     </div>
   );
 }

@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Checkbox } from '@/components/ui/checkbox';
 import { ArrowLeft, Star, Upload, Plus, X } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
+import { AIStoryGenerator } from '@/components/fundraising/AIStoryGenerator';
 
 const talentTypes = [
   { value: 'music', label: '🎵 Music' },
@@ -285,7 +286,13 @@ export default function CreateTalentCampaign() {
               </div>
 
               <div>
-                <Label htmlFor="story">Your Full Story * (Your journey and aspirations)</Label>
+                <div className="flex items-center justify-between gap-2 flex-wrap">
+                  <Label htmlFor="story">Your Full Story * (Your journey and aspirations)</Label>
+                  <AIStoryGenerator
+                    campaignType="talent"
+                    onGenerated={(d) => setFormData({ ...formData, title: formData.title || d.title, story: d.story, description: formData.description || d.appeal.slice(0, 200) })}
+                  />
+                </div>
                 <Textarea
                   id="story"
                   value={formData.story}

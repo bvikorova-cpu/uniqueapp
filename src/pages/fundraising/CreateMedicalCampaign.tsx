@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ArrowLeft, Upload, Heart, FileText } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
+import { AIStoryGenerator } from '@/components/fundraising/AIStoryGenerator';
 
 export default function CreateMedicalCampaign() {
   const navigate = useNavigate();
@@ -281,7 +282,13 @@ export default function CreateMedicalCampaign() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="story">Detailed Story *</Label>
+                <div className="flex items-center justify-between gap-2 flex-wrap">
+                  <Label htmlFor="story">Detailed Story *</Label>
+                  <AIStoryGenerator
+                    campaignType="medical"
+                    onGenerated={(d) => setFormData({ ...formData, title: formData.title || d.title, story: d.story, description: formData.description || d.appeal.slice(0, 200) })}
+                  />
+                </div>
                 <Textarea
                   id="story"
                   placeholder="Describe the situation, patient's health condition, needs, and why you need help in detail..."
