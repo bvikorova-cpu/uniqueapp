@@ -25,7 +25,13 @@ import { ForgeProgressPreview } from "@/components/creative-forge/ForgeProgressP
 import { ForgeAchievements } from "@/components/creative-forge/ForgeAchievements";
 import { ForgeToolCard } from "@/components/creative-forge/ForgeToolCard";
 import { ForgeTestimonials } from "@/components/creative-forge/ForgeTestimonials";
+import { ForgeCowriterChat } from "@/components/creative-forge/ForgeCowriterChat";
+import { ForgeStyleTransfer } from "@/components/creative-forge/ForgeStyleTransfer";
+import { ForgeVoiceToScript } from "@/components/creative-forge/ForgeVoiceToScript";
+import { ForgeRooms } from "@/components/creative-forge/ForgeRooms";
+import { ForgeIdeasShowcase } from "@/components/creative-forge/ForgeIdeasShowcase";
 import { FloatingParticles } from "@/components/wellness/FloatingParticles";
+import { Wand2, Mic, Users } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const STYLE_REFERENCES: Record<string, string[]> = {
