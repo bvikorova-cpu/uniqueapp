@@ -12,7 +12,7 @@ const PACKAGES = [
 
 export function ShadowCreditsCard() {
   const { credits, buyCredits, isLoading } = useShadowArenaCredits();
-  const balance = credits?.credits_balance ?? 0;
+  const balance = credits?.credits_remaining ?? 0;
 
   return (
     <Card className="p-5 bg-gradient-to-br from-[hsl(0,30%,8%)] via-[hsl(280,25%,7%)] to-[hsl(0,0%,4%)] border-red-900/30 mb-6 overflow-hidden relative">
