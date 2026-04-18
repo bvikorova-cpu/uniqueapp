@@ -2,18 +2,18 @@ import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { 
-  Shield, MessageCircle, BookOpen, Heart, AlertTriangle, Send, Loader2, Phone, 
-  Users, GraduationCap, Scale, Gamepad2, Trophy, FileText, Info, HelpCircle,
-  CheckCircle, Lock, Globe
+import {
+  Shield, MessageCircle, BookOpen, Heart, AlertTriangle, Send, Loader2, Phone,
+  GraduationCap, Scale, Gamepad2, Trophy, FileText, Info, HelpCircle,
+  CheckCircle, Lock, Globe, Sparkles, Users
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { motion } from "framer-motion";
 import SafetyJournal from "@/components/safety/SafetyJournal";
 import SafetyStories from "@/components/safety/SafetyStories";
 import SafetyCourses from "@/components/safety/SafetyCourses";
@@ -22,6 +22,8 @@ import SafetySosContacts from "@/components/safety/SafetySosContacts";
 import SafetyRoleplay from "@/components/safety/SafetyRoleplay";
 import SafetySupportWall from "@/components/safety/SafetySupportWall";
 import SafetyBadges from "@/components/safety/SafetyBadges";
+import { SafetyHero } from "@/components/safety/SafetyHero";
+import { SafetyAIShield } from "@/components/safety/SafetyAIShield";
 
 interface Message {
   role: "user" | "assistant";
@@ -33,6 +35,7 @@ const SafetyPrevention = () => {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("overview");
+  const [mode, setMode] = useState<"safe" | "crisis">("safe");
 
   const sendMessage = async () => {
     if (!input.trim() || isLoading) return;
@@ -56,364 +59,238 @@ const SafetyPrevention = () => {
   };
 
   const features = [
-    {
-      icon: MessageCircle,
-      title: "AI Support Chat",
-      description: "Chat with our compassionate AI assistant for emotional support, coping strategies, and guidance. Available 24/7 for immediate help.",
-      tab: "chat"
-    },
-    {
-      icon: GraduationCap,
-      title: "Interactive Courses",
-      description: "Learn to recognize bullying, respond safely, and build resilience through structured lessons with quizzes. Track your progress and earn badges.",
-      tab: "courses"
-    },
-    {
-      icon: BookOpen,
-      title: "Story Library",
-      description: "Read anonymous stories from others who have overcome bullying. Share your own experience to help and inspire others.",
-      tab: "stories"
-    },
-    {
-      icon: Scale,
-      title: "Legal Information",
-      description: "Understand your rights as a victim of bullying. Learn about laws and protections in different countries.",
-      tab: "legal"
-    },
-    {
-      icon: FileText,
-      title: "Safety Journal",
-      description: "Document incidents, track your mood, and collect evidence. Your entries are private and can help when reporting.",
-      tab: "journal"
-    },
-    {
-      icon: Phone,
-      title: "SOS Contacts",
-      description: "Access emergency hotlines and support services worldwide. Find help in your country instantly.",
-      tab: "sos"
-    },
-    {
-      icon: Gamepad2,
-      title: "Role-Play Scenarios",
-      description: "Practice handling difficult situations in a safe environment. Learn what to do through interactive decision-making.",
-      tab: "roleplay"
-    },
-    {
-      icon: Heart,
-      title: "Support Wall",
-      description: "Post and read anonymous messages of encouragement. Support others and receive support from the community.",
-      tab: "wall"
-    },
-    {
-      icon: Trophy,
-      title: "Badges & Achievements",
-      description: "Track your progress and earn badges for completing courses, sharing stories, and supporting others.",
-      tab: "badges"
-    }
+    { icon: MessageCircle, title: "AI Support Chat", description: "Compassionate AI for emotional support, 24/7.", tab: "chat", color: "from-teal-500/20 to-cyan-500/10" },
+    { icon: GraduationCap, title: "Interactive Courses", description: "Recognize bullying, respond safely, build resilience.", tab: "courses", color: "from-emerald-500/20 to-teal-500/10" },
+    { icon: BookOpen, title: "Story Library", description: "Anonymous stories from people who overcame bullying.", tab: "stories", color: "from-sky-500/20 to-blue-500/10" },
+    { icon: Scale, title: "Legal Information", description: "Your rights, country-specific laws & protections.", tab: "legal", color: "from-amber-500/20 to-yellow-500/10" },
+    { icon: FileText, title: "Safety Journal", description: "Document incidents, mood & evidence privately.", tab: "journal", color: "from-violet-500/20 to-purple-500/10" },
+    { icon: Phone, title: "SOS Contacts", description: "Emergency hotlines & services worldwide.", tab: "sos", color: "from-red-500/20 to-rose-500/10" },
+    { icon: Gamepad2, title: "Role-Play Scenarios", description: "Practice safe responses interactively.", tab: "roleplay", color: "from-indigo-500/20 to-blue-500/10" },
+    { icon: Heart, title: "Support Wall", description: "Anonymous encouragement, give & receive.", tab: "wall", color: "from-pink-500/20 to-rose-500/10" },
+    { icon: Trophy, title: "Badges & Achievements", description: "Track progress, earn recognition.", tab: "badges", color: "from-yellow-500/20 to-amber-500/10" },
   ];
 
   return (
-    <div className="min-h-screen bg-background pt-20">
-      {/* Critical Disclaimer Banner */}
-      <div className="bg-destructive py-4 px-4">
-        <div className="container mx-auto">
-          <Alert variant="destructive" className="border-2 border-white/30 bg-destructive">
-            <AlertTriangle className="h-6 w-6 text-white" />
-            <AlertTitle className="text-xl font-bold text-white">⚠️ IMPORTANT DISCLAIMER ⚠️</AlertTitle>
-            <AlertDescription className="text-lg font-semibold mt-2 text-white">
-              This service is for informational and educational purposes only. It DOES NOT REPLACE professional psychological, 
-              psychiatric, or medical treatment. If you are in crisis, contact emergency services (911/112) or a crisis hotline immediately.
-            </AlertDescription>
-          </Alert>
-        </div>
-      </div>
-
-      <div className="container mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <Shield className="h-12 w-12 text-primary" />
-            <h1 className="text-4xl font-bold text-foreground">Safety & Bullying Prevention</h1>
+    <div
+      className={`min-h-screen pt-20 transition-colors duration-700 ${
+        mode === "crisis"
+          ? "bg-gradient-to-b from-red-950/20 via-background to-background"
+          : "bg-gradient-to-b from-teal-950/15 via-background to-background"
+      }`}
+    >
+      {/* Crisis Banner — only visible in crisis mode */}
+      {mode === "crisis" && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-red-600 py-3 px-4 text-center"
+        >
+          <div className="container mx-auto flex flex-wrap items-center justify-center gap-3 text-white">
+            <AlertTriangle className="h-5 w-5 animate-pulse" />
+            <p className="font-bold text-sm sm:text-base">
+              IN CRISIS? Call <a href="tel:112" className="underline">112</a> / <a href="tel:911" className="underline">911</a> or text HOME to 741741
+            </p>
+            <Button size="sm" variant="secondary" onClick={() => setActiveTab("sos")} className="bg-white text-red-700 hover:bg-white/90 font-bold">
+              SOS Contacts
+            </Button>
           </div>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            A comprehensive global resource for bullying prevention, self-defense education, and emotional support.
-            All features are fully functional and designed to help you stay safe.
-          </p>
-        </div>
+        </motion.div>
+      )}
 
-        {/* Professional Help Disclaimer Card */}
-        <Card className="mb-8 border-4 border-destructive bg-destructive/10">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-destructive text-2xl">
-              <AlertTriangle className="h-8 w-8" />
-              Professional Help Disclaimer
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-lg font-bold text-destructive">
-              🚨 THIS SERVICE DOES NOT REPLACE PROFESSIONAL PSYCHOLOGICAL OR PSYCHIATRIC TREATMENT 🚨
-            </p>
-            <p className="mt-2 text-muted-foreground">
-              While our tools can provide support and education, they are not a substitute for professional mental health services.
-              If you are experiencing severe distress, thoughts of self-harm, or are in immediate danger, please contact emergency services or a mental health professional immediately.
-            </p>
-            <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-2">
-              <Badge variant="destructive" className="text-center justify-center py-2 h-auto whitespace-normal">Not Medical Advice</Badge>
-              <Badge variant="destructive" className="text-center justify-center py-2 h-auto whitespace-normal">Educational Only</Badge>
-              <Badge variant="destructive" className="text-center justify-center py-2 h-auto whitespace-normal">Seek Professional Help for Serious Issues</Badge>
-            </div>
-          </CardContent>
-        </Card>
+      <div className="container mx-auto px-4 py-6">
+        <SafetyHero mode={mode} onModeChange={setMode} />
+
+        {/* AI Shield - new premium AI tools */}
+        <SafetyAIShield />
+
+        {/* Compact Disclaimer */}
+        <Alert className="mb-6 border-amber-500/40 bg-amber-500/5">
+          <AlertTriangle className="h-4 w-4 text-amber-500" />
+          <AlertTitle className="text-sm font-bold text-amber-600 dark:text-amber-400">
+            Educational use only — not a replacement for professional help
+          </AlertTitle>
+          <AlertDescription className="text-xs text-muted-foreground">
+            If you're in immediate danger, contact emergency services (911/112) or a crisis hotline.
+          </AlertDescription>
+        </Alert>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="flex flex-wrap h-auto gap-1 justify-start bg-muted/50 p-2">
-            <TabsTrigger value="overview" className="gap-1">
-              <Info className="h-4 w-4" />
-              Overview
+          <TabsList className="flex flex-wrap h-auto gap-1 justify-start bg-card/50 backdrop-blur-md border border-border/40 p-2">
+            <TabsTrigger value="overview" className="gap-1 data-[state=active]:bg-teal-500 data-[state=active]:text-white">
+              <Info className="h-4 w-4" /> Overview
             </TabsTrigger>
-            <TabsTrigger value="chat" className="gap-1">
-              <MessageCircle className="h-4 w-4" />
-              Chat
+            <TabsTrigger value="chat" className="gap-1 data-[state=active]:bg-teal-500 data-[state=active]:text-white">
+              <MessageCircle className="h-4 w-4" /> Chat
             </TabsTrigger>
-            <TabsTrigger value="courses" className="gap-1">
-              <GraduationCap className="h-4 w-4" />
-              Courses
+            <TabsTrigger value="courses" className="gap-1 data-[state=active]:bg-teal-500 data-[state=active]:text-white">
+              <GraduationCap className="h-4 w-4" /> Courses
             </TabsTrigger>
-            <TabsTrigger value="stories" className="gap-1">
-              <BookOpen className="h-4 w-4" />
-              Stories
+            <TabsTrigger value="stories" className="gap-1 data-[state=active]:bg-teal-500 data-[state=active]:text-white">
+              <BookOpen className="h-4 w-4" /> Stories
             </TabsTrigger>
-            <TabsTrigger value="legal" className="gap-1">
-              <Scale className="h-4 w-4" />
-              Legal
+            <TabsTrigger value="legal" className="gap-1 data-[state=active]:bg-teal-500 data-[state=active]:text-white">
+              <Scale className="h-4 w-4" /> Legal
             </TabsTrigger>
-            <TabsTrigger value="journal" className="gap-1">
-              <FileText className="h-4 w-4" />
-              Journal
+            <TabsTrigger value="journal" className="gap-1 data-[state=active]:bg-teal-500 data-[state=active]:text-white">
+              <FileText className="h-4 w-4" /> Journal
             </TabsTrigger>
-            <TabsTrigger value="sos" className="gap-1">
-              <Phone className="h-4 w-4" />
-              SOS
+            <TabsTrigger value="sos" className="gap-1 data-[state=active]:bg-red-500 data-[state=active]:text-white">
+              <Phone className="h-4 w-4" /> SOS
             </TabsTrigger>
-            <TabsTrigger value="roleplay" className="gap-1">
-              <Gamepad2 className="h-4 w-4" />
-              Role-Play
+            <TabsTrigger value="roleplay" className="gap-1 data-[state=active]:bg-teal-500 data-[state=active]:text-white">
+              <Gamepad2 className="h-4 w-4" /> Role-Play
             </TabsTrigger>
-            <TabsTrigger value="wall" className="gap-1">
-              <Heart className="h-4 w-4" />
-              Support Wall
+            <TabsTrigger value="wall" className="gap-1 data-[state=active]:bg-teal-500 data-[state=active]:text-white">
+              <Heart className="h-4 w-4" /> Wall
             </TabsTrigger>
-            <TabsTrigger value="badges" className="gap-1">
-              <Trophy className="h-4 w-4" />
-              Badges
+            <TabsTrigger value="badges" className="gap-1 data-[state=active]:bg-teal-500 data-[state=active]:text-white">
+              <Trophy className="h-4 w-4" /> Badges
             </TabsTrigger>
           </TabsList>
 
-          {/* Overview Tab */}
+          {/* Overview Tab — Cinematic Feature Grid */}
           <TabsContent value="overview" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <HelpCircle className="h-5 w-5 text-primary" />
-                  How to Use This Section
-                </CardTitle>
-                <CardDescription>
-                  A complete guide to all available features and tools
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="prose prose-sm dark:prose-invert max-w-none">
-                  <p className="text-lg">
-                    Welcome to our Safety & Bullying Prevention center. This section provides comprehensive tools 
-                    and resources to help anyone affected by bullying - whether you're a victim, witness, parent, 
-                    or educator. All features are <strong>fully functional</strong> and designed to provide real support.
-                  </p>
-                </div>
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {features.map((feature, i) => {
+                const Icon = feature.icon;
+                return (
+                  <motion.div
+                    key={feature.tab}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: i * 0.05 }}
+                  >
+                    <Card
+                      className={`cursor-pointer hover:shadow-2xl hover:shadow-teal-500/20 transition-all hover:scale-[1.02] hover:border-teal-400/50 border border-border/40 bg-gradient-to-br ${feature.color} backdrop-blur-md h-full`}
+                      onClick={() => setActiveTab(feature.tab)}
+                    >
+                      <CardHeader className="pb-2">
+                        <div className="flex items-center gap-3">
+                          <div className="w-11 h-11 rounded-xl bg-card/60 backdrop-blur-md flex items-center justify-center border border-border/40">
+                            <Icon className="h-5 w-5 text-teal-400" />
+                          </div>
+                          <CardTitle className="text-base font-bold text-foreground">{feature.title}</CardTitle>
+                        </div>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-xs text-muted-foreground mb-3">{feature.description}</p>
+                        <Button variant="ghost" size="sm" className="p-0 h-auto text-teal-400 hover:text-teal-300">
+                          Open →
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                );
+              })}
+            </div>
 
-                {/* Feature Grid */}
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                  {features.map((feature) => {
-                    const Icon = feature.icon;
-                    return (
-                      <Card 
-                        key={feature.tab} 
-                        className="cursor-pointer hover:shadow-lg transition-all hover:border-primary/50"
-                        onClick={() => setActiveTab(feature.tab)}
-                      >
-                        <CardHeader className="pb-2">
-                          <CardTitle className="text-lg flex items-center gap-2">
-                            <Icon className="h-5 w-5 text-primary" />
-                            {feature.title}
-                          </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                          <p className="text-sm text-muted-foreground">{feature.description}</p>
-                          <Button variant="link" className="p-0 h-auto mt-2">
-                            Open {feature.title} →
-                          </Button>
-                        </CardContent>
-                      </Card>
-                    );
-                  })}
-                </div>
-
-                {/* FAQ Section */}
-                <div className="mt-8">
-                  <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                    <HelpCircle className="h-5 w-5" />
-                    Frequently Asked Questions
-                  </h3>
+            {/* FAQ + Quick Start in tighter layout */}
+            <div className="grid gap-4 lg:grid-cols-2">
+              <Card className="border-border/40 bg-card/50 backdrop-blur-md">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-base">
+                    <HelpCircle className="h-4 w-4 text-teal-400" /> FAQ
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
                   <Accordion type="single" collapsible className="w-full">
                     <AccordionItem value="who">
-                      <AccordionTrigger>Who is this section for?</AccordionTrigger>
-                      <AccordionContent>
-                        This section is designed for anyone affected by bullying: victims seeking support and guidance, 
-                        parents wanting to help their children, educators looking for resources, and bystanders who want 
-                        to learn how to help. All ages are welcome, and content is appropriate for teens and adults.
+                      <AccordionTrigger className="text-sm">Who is this for?</AccordionTrigger>
+                      <AccordionContent className="text-xs text-muted-foreground">
+                        Victims, bystanders, parents, educators — anyone affected by bullying. All ages, teen-appropriate.
                       </AccordionContent>
                     </AccordionItem>
                     <AccordionItem value="privacy">
-                      <AccordionTrigger>Is my information private?</AccordionTrigger>
-                      <AccordionContent>
-                        <div className="flex items-start gap-2">
-                          <Lock className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
-                          <div>
-                            Yes! Your journal entries are completely private and only visible to you. Stories and support 
-                            wall messages can be posted anonymously. We never share your personal information. Chat conversations 
-                            are not stored permanently.
-                          </div>
-                        </div>
+                      <AccordionTrigger className="text-sm flex items-center gap-2"><Lock className="w-3 h-3" /> Is it private?</AccordionTrigger>
+                      <AccordionContent className="text-xs text-muted-foreground">
+                        Journal entries are private. Stories & wall posts are anonymous. Chat is not stored permanently.
                       </AccordionContent>
                     </AccordionItem>
                     <AccordionItem value="account">
-                      <AccordionTrigger>Do I need an account?</AccordionTrigger>
-                      <AccordionContent>
-                        You can browse information (Legal, SOS Contacts) without an account. To use interactive features 
-                        like the Journal, Stories, Support Wall, Courses, and Badges, you'll need to sign in. This ensures 
-                        your progress is saved and your privacy is protected.
+                      <AccordionTrigger className="text-sm">Do I need an account?</AccordionTrigger>
+                      <AccordionContent className="text-xs text-muted-foreground">
+                        Browse Legal & SOS without an account. Interactive features need sign-in to save progress.
                       </AccordionContent>
                     </AccordionItem>
-                    <AccordionItem value="crisis">
-                      <AccordionTrigger>What if I'm in immediate danger?</AccordionTrigger>
-                      <AccordionContent>
-                        <Alert variant="destructive" className="mt-2">
-                          <AlertTriangle className="h-4 w-4" />
-                          <AlertTitle>If you are in immediate danger:</AlertTitle>
-                          <AlertDescription>
-                            <ul className="list-disc list-inside mt-2">
-                              <li><strong>Call Emergency Services: 911 (US) or 112 (EU)</strong></li>
-                              <li>Crisis Text Line: Text HOME to 741741</li>
-                              <li>National Suicide Prevention Lifeline: 988</li>
-                              <li>Go to the SOS Contacts tab for more resources</li>
-                            </ul>
-                          </AlertDescription>
-                        </Alert>
-                      </AccordionContent>
-                    </AccordionItem>
-                    <AccordionItem value="help-others">
-                      <AccordionTrigger>How can I help others?</AccordionTrigger>
-                      <AccordionContent>
-                        There are many ways to contribute:
-                        <ul className="list-disc list-inside mt-2 space-y-1">
-                          <li><strong>Share Your Story:</strong> Your experience can help others feel less alone</li>
-                          <li><strong>Post Encouragement:</strong> Leave supportive messages on the Support Wall</li>
-                          <li><strong>Support Stories:</strong> Show appreciation for others who share their experiences</li>
-                          <li><strong>Complete Courses:</strong> Learn how to be an effective bystander</li>
-                        </ul>
+                    <AccordionItem value="ai-credits">
+                      <AccordionTrigger className="text-sm flex items-center gap-2"><Sparkles className="w-3 h-3 text-teal-400" /> AI tools cost?</AccordionTrigger>
+                      <AccordionContent className="text-xs text-muted-foreground">
+                        New users get 20 free credits. Each AI tool costs 8–15 credits. Top up anytime in Settings.
                       </AccordionContent>
                     </AccordionItem>
                   </Accordion>
-                </div>
+                </CardContent>
+              </Card>
 
-                {/* Quick Start Guide */}
-                <Card className="bg-primary/5 border-primary/20">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <CheckCircle className="h-5 w-5 text-primary" />
-                      Quick Start Guide
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <ol className="list-decimal list-inside space-y-3">
-                      <li>
-                        <strong>Need immediate support?</strong> → Start with the <Button variant="link" className="p-0 h-auto" onClick={() => setActiveTab("chat")}>AI Support Chat</Button>
-                      </li>
-                      <li>
-                        <strong>Want to learn about bullying?</strong> → Take our <Button variant="link" className="p-0 h-auto" onClick={() => setActiveTab("courses")}>Interactive Courses</Button>
-                      </li>
-                      <li>
-                        <strong>Need to document incidents?</strong> → Use the <Button variant="link" className="p-0 h-auto" onClick={() => setActiveTab("journal")}>Safety Journal</Button>
-                      </li>
-                      <li>
-                        <strong>Looking for help in your area?</strong> → Check <Button variant="link" className="p-0 h-auto" onClick={() => setActiveTab("sos")}>SOS Contacts</Button>
-                      </li>
-                      <li>
-                        <strong>Want to practice responses?</strong> → Try <Button variant="link" className="p-0 h-auto" onClick={() => setActiveTab("roleplay")}>Role-Play Scenarios</Button>
-                      </li>
-                    </ol>
-                  </CardContent>
-                </Card>
-              </CardContent>
-            </Card>
+              <Card className="border-teal-500/30 bg-teal-500/5 backdrop-blur-md">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-base">
+                    <CheckCircle className="h-4 w-4 text-teal-400" /> Quick Start
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ol className="list-decimal list-inside space-y-2 text-xs">
+                    <li><strong>Need support?</strong> → <Button variant="link" className="p-0 h-auto text-teal-400 text-xs" onClick={() => setActiveTab("chat")}>AI Chat</Button></li>
+                    <li><strong>Decode a bullying message?</strong> → Open <strong className="text-orange-400">Bully Decoder</strong> above</li>
+                    <li><strong>Build evidence for school?</strong> → Open <strong className="text-amber-400">Evidence Builder</strong></li>
+                    <li><strong>Practice responses?</strong> → Open <strong className="text-cyan-400">Response Coach</strong></li>
+                    <li><strong>In crisis?</strong> → Toggle <strong className="text-red-400">Crisis Mode</strong> in hero</li>
+                  </ol>
+                </CardContent>
+              </Card>
+            </div>
           </TabsContent>
 
           {/* Chat Tab */}
           <TabsContent value="chat">
-            <Card>
+            <Card className="border-border/40 bg-card/60 backdrop-blur-md">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Heart className="h-5 w-5 text-primary" />
-                  Confidential Support Chat
+                  <Heart className="h-5 w-5 text-teal-400" /> Confidential Support Chat
                 </CardTitle>
-                <CardDescription className="space-y-2">
-                  <p>
-                    Chat with our AI assistant for emotional support, coping strategies, and guidance.
-                    The assistant is trained to be compassionate, non-judgmental, and helpful.
-                  </p>
-                  <Alert variant="destructive" className="mt-2">
-                    <AlertTriangle className="h-4 w-4" />
-                    <AlertDescription className="font-semibold">
-                      ⚠️ This chat is NOT a replacement for professional mental health services.
-                      For serious concerns, please contact a professional or crisis hotline.
-                    </AlertDescription>
-                  </Alert>
+                <CardDescription className="text-xs">
+                  Compassionate AI assistant — listens without judgment. Not a replacement for professional help.
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <ScrollArea className="h-[400px] border rounded-lg p-4 mb-4 bg-muted/30">
+                <ScrollArea className="h-[400px] border border-border/40 rounded-lg p-4 mb-4 bg-background/50">
                   {messages.length === 0 ? (
-                    <div className="text-center text-muted-foreground py-8 px-2 overflow-hidden">
-                      <Heart className="h-12 w-12 mx-auto mb-4 text-primary/50" />
-                      <p className="text-lg font-medium break-words">You're not alone.</p>
-                      <p className="mt-2 break-words text-sm sm:text-base">Start a conversation whenever you're ready. I'm here to listen and help.</p>
-                      <div className="mt-4 grid grid-cols-2 gap-2 max-w-full">
-                        <Badge variant="outline" className="cursor-pointer hover:bg-primary/10 text-xs sm:text-sm whitespace-normal h-auto py-2 px-2 justify-center text-center" onClick={() => setInput("I'm being bullied at school and don't know what to do")}>
-                          I'm being bullied
-                        </Badge>
-                        <Badge variant="outline" className="cursor-pointer hover:bg-primary/10 text-xs sm:text-sm whitespace-normal h-auto py-2 px-2 justify-center text-center" onClick={() => setInput("My friend is being bullied, how can I help?")}>
-                          My friend is being bullied
-                        </Badge>
-                        <Badge variant="outline" className="cursor-pointer hover:bg-primary/10 text-xs sm:text-sm whitespace-normal h-auto py-2 px-2 justify-center text-center" onClick={() => setInput("I'm feeling overwhelmed and anxious")}>
-                          I'm feeling anxious
-                        </Badge>
-                        <Badge variant="outline" className="cursor-pointer hover:bg-primary/10 text-xs sm:text-sm whitespace-normal h-auto py-2 px-2 justify-center text-center" onClick={() => setInput("How do I report cyberbullying?")}>
-                          Cyberbullying help
-                        </Badge>
+                    <div className="text-center text-muted-foreground py-8">
+                      <Heart className="h-12 w-12 mx-auto mb-4 text-teal-400/60" />
+                      <p className="text-lg font-medium">You're not alone.</p>
+                      <p className="mt-2 text-sm">Start a conversation whenever you're ready.</p>
+                      <div className="mt-4 grid grid-cols-2 gap-2 max-w-md mx-auto">
+                        {[
+                          "I'm being bullied at school and don't know what to do",
+                          "My friend is being bullied, how can I help?",
+                          "I'm feeling overwhelmed and anxious",
+                          "How do I report cyberbullying?",
+                        ].map((q) => (
+                          <Button
+                            key={q}
+                            variant="outline"
+                            size="sm"
+                            className="text-xs h-auto py-2 whitespace-normal border-teal-500/30 hover:bg-teal-500/10"
+                            onClick={() => setInput(q)}
+                          >
+                            {q.length > 30 ? q.slice(0, 30) + "…" : q}
+                          </Button>
+                        ))}
                       </div>
                     </div>
                   ) : (
                     <div className="space-y-4">
                       {messages.map((message, index) => (
                         <div key={index} className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}>
-                          <div className={`max-w-[80%] rounded-lg px-4 py-2 ${message.role === "user" ? "bg-primary text-primary-foreground" : "bg-secondary"}`}>
-                            <div className="whitespace-pre-wrap">{message.content}</div>
+                          <div className={`max-w-[80%] rounded-2xl px-4 py-2 ${message.role === "user" ? "bg-teal-600 text-white" : "bg-card border border-border/40"}`}>
+                            <div className="whitespace-pre-wrap text-sm">{message.content}</div>
                           </div>
                         </div>
                       ))}
                       {isLoading && (
                         <div className="flex justify-start">
-                          <div className="bg-secondary rounded-lg px-4 py-2">
-                            <Loader2 className="h-4 w-4 animate-spin" />
+                          <div className="bg-card border border-border/40 rounded-2xl px-4 py-2">
+                            <Loader2 className="h-4 w-4 animate-spin text-teal-400" />
                           </div>
                         </div>
                       )}
@@ -421,19 +298,14 @@ const SafetyPrevention = () => {
                   )}
                 </ScrollArea>
                 <div className="flex gap-2">
-                  <Textarea 
-                    value={input} 
-                    onChange={(e) => setInput(e.target.value)} 
-                    placeholder="Share what's on your mind... (Press Enter to send)"
-                    className="flex-1" 
-                    onKeyDown={(e) => { 
-                      if (e.key === "Enter" && !e.shiftKey) { 
-                        e.preventDefault(); 
-                        sendMessage(); 
-                      }
-                    }} 
+                  <Textarea
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    placeholder="Share what's on your mind..."
+                    className="flex-1 bg-background/50 border-border/40"
+                    onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); } }}
                   />
-                  <Button onClick={sendMessage} disabled={isLoading || !input.trim()} size="lg">
+                  <Button onClick={sendMessage} disabled={isLoading || !input.trim()} size="lg" className="bg-teal-600 hover:bg-teal-500">
                     {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
                   </Button>
                 </div>
@@ -451,17 +323,15 @@ const SafetyPrevention = () => {
           <TabsContent value="badges"><SafetyBadges /></TabsContent>
         </Tabs>
 
-        {/* Footer Disclaimer */}
-        <Card className="mt-8 border-amber-500/50 bg-amber-500/5">
+        {/* Footer */}
+        <Card className="mt-8 border-border/40 bg-card/50 backdrop-blur-md">
           <CardContent className="pt-6">
             <div className="flex items-start gap-3">
-              <Globe className="h-5 w-5 text-amber-500 mt-0.5 flex-shrink-0" />
+              <Globe className="h-5 w-5 text-teal-400 mt-0.5 flex-shrink-0" />
               <div className="text-sm text-muted-foreground">
                 <p className="font-semibold text-foreground mb-1">Global Resource</p>
-                <p>
-                  This section is designed to help people worldwide. While we provide general information and support,
-                  laws and resources vary by country. Always check local regulations and seek local professional help
-                  when needed. If you're in crisis, contact your local emergency services immediately.
+                <p className="text-xs">
+                  Designed to help worldwide. Laws & resources vary by country — always check local regulations and seek professional help when needed.
                 </p>
               </div>
             </div>
