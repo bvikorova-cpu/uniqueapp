@@ -30791,6 +30791,30 @@ export type Database = {
         }
         Relationships: []
       }
+      shadow_battle_reactions: {
+        Row: {
+          battle_id: string
+          created_at: string
+          emoji: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          battle_id: string
+          created_at?: string
+          emoji: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          battle_id?: string
+          created_at?: string
+          emoji?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       shadow_battles: {
         Row: {
           challenge_keywords: string[] | null
@@ -30829,6 +30853,35 @@ export type Database = {
           winner_id?: string | null
         }
         Relationships: []
+      }
+      shadow_chain_segment_votes: {
+        Row: {
+          created_at: string
+          id: string
+          segment_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          segment_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          segment_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shadow_chain_segment_votes_segment_id_fkey"
+            columns: ["segment_id"]
+            isOneToOne: false
+            referencedRelation: "shadow_story_chain_segments"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       shadow_credit_purchases: {
         Row: {
@@ -30928,6 +30981,69 @@ export type Database = {
         }
         Relationships: []
       }
+      shadow_curse_wheel_spins: {
+        Row: {
+          created_at: string
+          id: string
+          prize_label: string
+          prize_type: string
+          prize_value: number
+          spun_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          prize_label: string
+          prize_type: string
+          prize_value?: number
+          spun_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          prize_label?: string
+          prize_type?: string
+          prize_value?: number
+          spun_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      shadow_cursed_achievements: {
+        Row: {
+          achievement_code: string
+          achievement_name: string
+          badge_image_url: string | null
+          id: string
+          metadata: Json | null
+          rarity: string
+          unlocked_at: string
+          user_id: string
+        }
+        Insert: {
+          achievement_code: string
+          achievement_name: string
+          badge_image_url?: string | null
+          id?: string
+          metadata?: Json | null
+          rarity?: string
+          unlocked_at?: string
+          user_id: string
+        }
+        Update: {
+          achievement_code?: string
+          achievement_name?: string
+          badge_image_url?: string | null
+          id?: string
+          metadata?: Json | null
+          rarity?: string
+          unlocked_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       shadow_gifts: {
         Row: {
           battle_id: string
@@ -30978,6 +31094,54 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      shadow_horror_reels: {
+        Row: {
+          created_at: string
+          credits_used: number
+          duration_seconds: number | null
+          id: string
+          is_public: boolean
+          prompt: string
+          status: string
+          story_id: string | null
+          thumbnail_url: string | null
+          title: string
+          user_id: string
+          video_url: string | null
+          views_count: number
+        }
+        Insert: {
+          created_at?: string
+          credits_used?: number
+          duration_seconds?: number | null
+          id?: string
+          is_public?: boolean
+          prompt: string
+          status?: string
+          story_id?: string | null
+          thumbnail_url?: string | null
+          title: string
+          user_id: string
+          video_url?: string | null
+          views_count?: number
+        }
+        Update: {
+          created_at?: string
+          credits_used?: number
+          duration_seconds?: number | null
+          id?: string
+          is_public?: boolean
+          prompt?: string
+          status?: string
+          story_id?: string | null
+          thumbnail_url?: string | null
+          title?: string
+          user_id?: string
+          video_url?: string | null
+          views_count?: number
+        }
+        Relationships: []
       }
       shadow_narrations: {
         Row: {
@@ -31048,6 +31212,114 @@ export type Database = {
         }
         Relationships: []
       }
+      shadow_patron_exclusive_stories: {
+        Row: {
+          author_user_id: string
+          content: string
+          cover_image_url: string | null
+          created_at: string
+          id: string
+          required_tier: string
+          title: string
+          updated_at: string
+          views_count: number
+        }
+        Insert: {
+          author_user_id: string
+          content: string
+          cover_image_url?: string | null
+          created_at?: string
+          id?: string
+          required_tier?: string
+          title: string
+          updated_at?: string
+          views_count?: number
+        }
+        Update: {
+          author_user_id?: string
+          content?: string
+          cover_image_url?: string | null
+          created_at?: string
+          id?: string
+          required_tier?: string
+          title?: string
+          updated_at?: string
+          views_count?: number
+        }
+        Relationships: []
+      }
+      shadow_patron_subscriptions: {
+        Row: {
+          author_user_id: string
+          created_at: string
+          current_period_end: string | null
+          id: string
+          monthly_amount: number
+          patron_user_id: string
+          started_at: string
+          status: string
+          stripe_subscription_id: string | null
+          tier: string
+          updated_at: string
+        }
+        Insert: {
+          author_user_id: string
+          created_at?: string
+          current_period_end?: string | null
+          id?: string
+          monthly_amount?: number
+          patron_user_id: string
+          started_at?: string
+          status?: string
+          stripe_subscription_id?: string | null
+          tier?: string
+          updated_at?: string
+        }
+        Update: {
+          author_user_id?: string
+          created_at?: string
+          current_period_end?: string | null
+          id?: string
+          monthly_amount?: number
+          patron_user_id?: string
+          started_at?: string
+          status?: string
+          stripe_subscription_id?: string | null
+          tier?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      shadow_push_subscriptions: {
+        Row: {
+          auth_key: string
+          created_at: string
+          enabled_categories: string[] | null
+          endpoint: string
+          id: string
+          p256dh_key: string
+          user_id: string
+        }
+        Insert: {
+          auth_key: string
+          created_at?: string
+          enabled_categories?: string[] | null
+          endpoint: string
+          id?: string
+          p256dh_key: string
+          user_id: string
+        }
+        Update: {
+          auth_key?: string
+          created_at?: string
+          enabled_categories?: string[] | null
+          endpoint?: string
+          id?: string
+          p256dh_key?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       shadow_stories: {
         Row: {
           ai_images: Json | null
@@ -31090,6 +31362,89 @@ export type Database = {
         }
         Relationships: []
       }
+      shadow_story_chain_segments: {
+        Row: {
+          chain_id: string
+          content: string
+          created_at: string
+          id: string
+          is_chosen: boolean
+          segment_order: number
+          user_id: string
+          votes: number
+        }
+        Insert: {
+          chain_id: string
+          content: string
+          created_at?: string
+          id?: string
+          is_chosen?: boolean
+          segment_order: number
+          user_id: string
+          votes?: number
+        }
+        Update: {
+          chain_id?: string
+          content?: string
+          created_at?: string
+          id?: string
+          is_chosen?: boolean
+          segment_order?: number
+          user_id?: string
+          votes?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shadow_story_chain_segments_chain_id_fkey"
+            columns: ["chain_id"]
+            isOneToOne: false
+            referencedRelation: "shadow_story_chains"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      shadow_story_chains: {
+        Row: {
+          created_at: string
+          current_segments: number
+          ends_at: string | null
+          id: string
+          max_segments: number
+          starter_user_id: string
+          status: string
+          theme: string
+          title: string
+          total_votes: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          current_segments?: number
+          ends_at?: string | null
+          id?: string
+          max_segments?: number
+          starter_user_id: string
+          status?: string
+          theme: string
+          title: string
+          total_votes?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          current_segments?: number
+          ends_at?: string | null
+          id?: string
+          max_segments?: number
+          starter_user_id?: string
+          status?: string
+          theme?: string
+          title?: string
+          total_votes?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       shadow_subscriptions: {
         Row: {
           created_at: string | null
@@ -31120,6 +31475,42 @@ export type Database = {
           stripe_subscription_id?: string | null
           updated_at?: string | null
           user_id?: string
+        }
+        Relationships: []
+      }
+      shadow_voice_clones: {
+        Row: {
+          created_at: string
+          credits_spent: number
+          id: string
+          sample_audio_url: string | null
+          status: string
+          updated_at: string
+          user_id: string
+          voice_id: string
+          voice_name: string
+        }
+        Insert: {
+          created_at?: string
+          credits_spent?: number
+          id?: string
+          sample_audio_url?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+          voice_id: string
+          voice_name: string
+        }
+        Update: {
+          created_at?: string
+          credits_spent?: number
+          id?: string
+          sample_audio_url?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+          voice_id?: string
+          voice_name?: string
         }
         Relationships: []
       }
