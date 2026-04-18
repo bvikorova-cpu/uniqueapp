@@ -21425,6 +21425,149 @@ export type Database = {
           },
         ]
       }
+      lie_challenge_attempts: {
+        Row: {
+          challenge_id: string
+          created_at: string
+          id: string
+          is_correct: boolean
+          points_earned: number | null
+          selected_index: number
+          time_taken_ms: number | null
+          user_id: string
+        }
+        Insert: {
+          challenge_id: string
+          created_at?: string
+          id?: string
+          is_correct: boolean
+          points_earned?: number | null
+          selected_index: number
+          time_taken_ms?: number | null
+          user_id: string
+        }
+        Update: {
+          challenge_id?: string
+          created_at?: string
+          id?: string
+          is_correct?: boolean
+          points_earned?: number | null
+          selected_index?: number
+          time_taken_ms?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lie_challenge_attempts_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "lie_daily_challenges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lie_coach_sessions: {
+        Row: {
+          analysis: Json
+          conversation_text: string
+          created_at: string
+          credits_used: number | null
+          id: string
+          manipulation_score: number | null
+          suggestions: Json | null
+          user_id: string
+        }
+        Insert: {
+          analysis?: Json
+          conversation_text: string
+          created_at?: string
+          credits_used?: number | null
+          id?: string
+          manipulation_score?: number | null
+          suggestions?: Json | null
+          user_id: string
+        }
+        Update: {
+          analysis?: Json
+          conversation_text?: string
+          created_at?: string
+          credits_used?: number | null
+          id?: string
+          manipulation_score?: number | null
+          suggestions?: Json | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      lie_daily_challenges: {
+        Row: {
+          challenge_date: string
+          correct_index: number
+          created_at: string
+          difficulty: string
+          explanation: string
+          id: string
+          options: Json
+          scenario: string
+        }
+        Insert: {
+          challenge_date: string
+          correct_index: number
+          created_at?: string
+          difficulty?: string
+          explanation: string
+          id?: string
+          options: Json
+          scenario: string
+        }
+        Update: {
+          challenge_date?: string
+          correct_index?: number
+          created_at?: string
+          difficulty?: string
+          explanation?: string
+          id?: string
+          options?: Json
+          scenario?: string
+        }
+        Relationships: []
+      }
+      lie_deepfake_checks: {
+        Row: {
+          analysis: string | null
+          audio_url: string | null
+          confidence: number | null
+          created_at: string
+          credits_used: number | null
+          id: string
+          indicators: Json | null
+          is_synthetic: boolean | null
+          user_id: string
+        }
+        Insert: {
+          analysis?: string | null
+          audio_url?: string | null
+          confidence?: number | null
+          created_at?: string
+          credits_used?: number | null
+          id?: string
+          indicators?: Json | null
+          is_synthetic?: boolean | null
+          user_id: string
+        }
+        Update: {
+          analysis?: string | null
+          audio_url?: string | null
+          confidence?: number | null
+          created_at?: string
+          credits_used?: number | null
+          id?: string
+          indicators?: Json | null
+          is_synthetic?: boolean | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       lie_detector_analyses: {
         Row: {
           analysis_type: string
@@ -21481,6 +21624,24 @@ export type Database = {
           id?: string
           total_credits_purchased?: number
           updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      lie_detector_preferences: {
+        Row: {
+          interrogation_mode: boolean
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          interrogation_mode?: boolean
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          interrogation_mode?: boolean
+          updated_at?: string
           user_id?: string
         }
         Relationships: []
@@ -21668,6 +21829,114 @@ export type Database = {
           transcript?: string | null
           truthfulness_score?: number | null
           user_id?: string
+        }
+        Relationships: []
+      }
+      lie_leaderboard: {
+        Row: {
+          best_streak: number
+          correct_count: number
+          current_streak: number
+          display_name: string | null
+          id: string
+          total_attempts: number
+          total_points: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          best_streak?: number
+          correct_count?: number
+          current_streak?: number
+          display_name?: string | null
+          id?: string
+          total_attempts?: number
+          total_points?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          best_streak?: number
+          correct_count?: number
+          current_streak?: number
+          display_name?: string | null
+          id?: string
+          total_attempts?: number
+          total_points?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      lie_relationship_maps: {
+        Row: {
+          analysis: Json
+          created_at: string
+          credits_used: number | null
+          id: string
+          people: Json
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          analysis?: Json
+          created_at?: string
+          credits_used?: number | null
+          id?: string
+          people?: Json
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          analysis?: Json
+          created_at?: string
+          credits_used?: number | null
+          id?: string
+          people?: Json
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      lie_report_verifications: {
+        Row: {
+          created_at: string
+          generated_at: string
+          id: string
+          report_id: string | null
+          summary: string | null
+          title: string | null
+          token: string
+          truthfulness_score: number | null
+          user_id: string
+          view_count: number
+        }
+        Insert: {
+          created_at?: string
+          generated_at?: string
+          id?: string
+          report_id?: string | null
+          summary?: string | null
+          title?: string | null
+          token: string
+          truthfulness_score?: number | null
+          user_id: string
+          view_count?: number
+        }
+        Update: {
+          created_at?: string
+          generated_at?: string
+          id?: string
+          report_id?: string | null
+          summary?: string | null
+          title?: string | null
+          token?: string
+          truthfulness_score?: number | null
+          user_id?: string
+          view_count?: number
         }
         Relationships: []
       }
