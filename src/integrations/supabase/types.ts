@@ -29650,6 +29650,36 @@ export type Database = {
         }
         Relationships: []
       }
+      safety_ai_credits: {
+        Row: {
+          created_at: string
+          credits_remaining: number
+          id: string
+          last_used_at: string | null
+          total_credits_purchased: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_remaining?: number
+          id?: string
+          last_used_at?: string | null
+          total_credits_purchased?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_remaining?: number
+          id?: string
+          last_used_at?: string | null
+          total_credits_purchased?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       safety_badges_earned: {
         Row: {
           badge_id: string
@@ -29667,6 +29697,54 @@ export type Database = {
           badge_id?: string
           earned_at?: string | null
           id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      safety_bully_decoder: {
+        Row: {
+          action_steps: Json | null
+          bully_type: string | null
+          created_at: string
+          credits_used: number
+          emotional_impact: string | null
+          id: string
+          input_image_url: string | null
+          input_text: string | null
+          red_flags: Json | null
+          severity: string | null
+          status: string
+          suggested_response: string | null
+          user_id: string
+        }
+        Insert: {
+          action_steps?: Json | null
+          bully_type?: string | null
+          created_at?: string
+          credits_used?: number
+          emotional_impact?: string | null
+          id?: string
+          input_image_url?: string | null
+          input_text?: string | null
+          red_flags?: Json | null
+          severity?: string | null
+          status?: string
+          suggested_response?: string | null
+          user_id: string
+        }
+        Update: {
+          action_steps?: Json | null
+          bully_type?: string | null
+          created_at?: string
+          credits_used?: number
+          emotional_impact?: string | null
+          id?: string
+          input_image_url?: string | null
+          input_text?: string | null
+          red_flags?: Json | null
+          severity?: string | null
+          status?: string
+          suggested_response?: string | null
           user_id?: string
         }
         Relationships: []
@@ -29700,6 +29778,87 @@ export type Database = {
           id?: string
           lesson_id?: string
           quiz_score?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      safety_cyberbullying_scans: {
+        Row: {
+          created_at: string
+          credits_used: number
+          flagged_phrases: Json | null
+          id: string
+          overall_score: number | null
+          risk_level: string | null
+          safety_recommendations: Json | null
+          scan_input: string
+          threat_patterns: Json | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_used?: number
+          flagged_phrases?: Json | null
+          id?: string
+          overall_score?: number | null
+          risk_level?: string | null
+          safety_recommendations?: Json | null
+          scan_input: string
+          threat_patterns?: Json | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_used?: number
+          flagged_phrases?: Json | null
+          id?: string
+          overall_score?: number | null
+          risk_level?: string | null
+          safety_recommendations?: Json | null
+          scan_input?: string
+          threat_patterns?: Json | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      safety_evidence_packs: {
+        Row: {
+          attached_journal_ids: Json | null
+          created_at: string
+          credits_used: number
+          formal_report: string | null
+          id: string
+          incident_summary: string | null
+          recommended_recipients: Json | null
+          status: string
+          timeline: Json | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          attached_journal_ids?: Json | null
+          created_at?: string
+          credits_used?: number
+          formal_report?: string | null
+          id?: string
+          incident_summary?: string | null
+          recommended_recipients?: Json | null
+          status?: string
+          timeline?: Json | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          attached_journal_ids?: Json | null
+          created_at?: string
+          credits_used?: number
+          formal_report?: string | null
+          id?: string
+          incident_summary?: string | null
+          recommended_recipients?: Json | null
+          status?: string
+          timeline?: Json | null
+          title?: string
           user_id?: string
         }
         Relationships: []
@@ -29746,6 +29905,51 @@ export type Database = {
           updated_at?: string | null
           user_id?: string
           witnesses?: string | null
+        }
+        Relationships: []
+      }
+      safety_response_coach_sessions: {
+        Row: {
+          assertiveness_score: number | null
+          created_at: string
+          credits_used: number
+          empathy_score: number | null
+          feedback: string | null
+          id: string
+          improved_response: string | null
+          next_steps: Json | null
+          safety_score: number | null
+          scenario: string
+          user_id: string
+          user_response: string
+        }
+        Insert: {
+          assertiveness_score?: number | null
+          created_at?: string
+          credits_used?: number
+          empathy_score?: number | null
+          feedback?: string | null
+          id?: string
+          improved_response?: string | null
+          next_steps?: Json | null
+          safety_score?: number | null
+          scenario: string
+          user_id: string
+          user_response: string
+        }
+        Update: {
+          assertiveness_score?: number | null
+          created_at?: string
+          credits_used?: number
+          empathy_score?: number | null
+          feedback?: string | null
+          id?: string
+          improved_response?: string | null
+          next_steps?: Json | null
+          safety_score?: number | null
+          scenario?: string
+          user_id?: string
+          user_response?: string
         }
         Relationships: []
       }
