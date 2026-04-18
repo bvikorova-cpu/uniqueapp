@@ -3,251 +3,146 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Gamepad2, ArrowRight, RotateCcw, CheckCircle, XCircle, Star } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Gamepad2, ArrowRight, RotateCcw, CheckCircle, XCircle, Star, Mic, Loader2, Sparkles, Brain, Zap, Crown } from "lucide-react";
+import { motion } from "framer-motion";
+import { useRoleplayScore } from "@/hooks/useSafetyExtras";
+import { RoleplayLeaderboard } from "./RoleplayLeaderboard";
 
-interface Choice {
-  text: string;
-  score: number;
-  feedback: string;
-  nextStep?: number;
-}
-
-interface Scenario {
-  id: string;
-  title: string;
-  description: string;
-  difficulty: "Easy" | "Medium" | "Hard";
-  category: string;
-  steps: {
-    situation: string;
-    choices: Choice[];
-  }[];
-}
+interface Choice { text: string; score: number; feedback: string; }
+interface Scenario { id: string; title: string; description: string; difficulty: "easy" | "medium" | "hard" | "expert"; category: string; steps: { situation: string; choices: Choice[] }[]; }
 
 const scenarios: Scenario[] = [
   {
-    id: "verbal-classroom",
-    title: "Verbal Bullying in Class",
-    description: "A classmate keeps making fun of you in front of others",
-    difficulty: "Easy",
-    category: "School",
-    steps: [
-      {
-        situation: "During class, a student loudly makes fun of your answer to a question. Other students laugh. The teacher doesn't seem to notice. What do you do?",
-        choices: [
-          { text: "Yell insults back at them", score: 0, feedback: "This could escalate the situation and get you in trouble too. It's better to stay calm." },
-          { text: "Stay calm and ignore them, then talk to the teacher after class", score: 100, feedback: "Excellent! Staying calm denies the bully the reaction they want, and reporting to a trusted adult is the right approach." },
-          { text: "Leave the classroom crying", score: 20, feedback: "It's okay to feel upset, but leaving might reinforce the bully's behavior. Try to stay calm and address it properly." },
-          { text: "Laugh along with them to fit in", score: 10, feedback: "This might seem easier, but it validates the bully's behavior and can damage your self-esteem." }
-        ]
-      },
-      {
-        situation: "You talk to the teacher after class, but the bullying continues the next day. The bully says 'You're a snitch!' What's your next step?",
-        choices: [
-          { text: "Stop reporting and just take it", score: 0, feedback: "Never stop speaking up. The bully is trying to silence you." },
-          { text: "Report again and ask for specific actions to be taken", score: 100, feedback: "Persistence is key. Keep documenting and escalate if needed." },
-          { text: "Confront the bully alone after school", score: 10, feedback: "Confronting alone could be dangerous. Always involve trusted adults." },
-          { text: "Post about it on social media to shame them", score: 20, feedback: "This could make things worse and even get you in trouble. Stick to proper channels." }
-        ]
-      }
-    ]
+    id: "verbal-classroom", title: "Verbal Bullying in Class", description: "A classmate keeps making fun of you in front of others",
+    difficulty: "easy", category: "School",
+    steps: [{
+      situation: "A student loudly mocks your answer. Others laugh. The teacher doesn't notice. What do you do?",
+      choices: [
+        { text: "Yell insults back", score: 0, feedback: "Escalates and gets you in trouble." },
+        { text: "Stay calm, then talk to teacher after class", score: 100, feedback: "Calm denies them the reaction. Reporting is right." },
+        { text: "Leave crying", score: 20, feedback: "Reinforces bully behavior. Stay grounded." },
+        { text: "Laugh along to fit in", score: 10, feedback: "Validates the behavior, hurts your self-esteem." },
+      ],
+    }],
   },
   {
-    id: "cyberbullying",
-    title: "Cyberbullying Attack",
-    description: "Someone is spreading rumors about you online",
-    difficulty: "Medium",
-    category: "Online",
-    steps: [
-      {
-        situation: "You discover someone has created a fake account pretending to be you and is posting embarrassing content. Friends are asking if it's really you. What do you do first?",
-        choices: [
-          { text: "Create fake accounts to attack them back", score: 0, feedback: "This makes you a bully too and could have legal consequences." },
-          { text: "Screenshot everything, then report the account to the platform", score: 100, feedback: "Perfect! Evidence is crucial, and platform reporting is the proper first step." },
-          { text: "Delete all your social media accounts immediately", score: 30, feedback: "While understandable, this won't stop the fake account and lets the bully win." },
-          { text: "Try to figure out who it is and confront them at school", score: 20, feedback: "Confrontation could backfire. Focus on official channels first." }
-        ]
-      },
-      {
-        situation: "The platform takes down the account, but a new one appears. The posts are getting more harmful and personal. What's your escalation plan?",
-        choices: [
-          { text: "Give up, they'll always find a way", score: 0, feedback: "Never give up. There are always more steps you can take." },
-          { text: "Tell your parents and consider involving police", score: 100, feedback: "Excellent! This level of persistent harassment may be criminal. Adult involvement is essential." },
-          { text: "Try to trace their IP address yourself", score: 20, feedback: "Leave technical investigation to authorities. Your safety is what matters." },
-          { text: "Post publicly asking people to report the account", score: 50, feedback: "Community support helps, but you should also involve adults and possibly authorities." }
-        ]
-      }
-    ]
+    id: "cyberbullying", title: "Cyberbullying Attack", description: "Someone created a fake account about you",
+    difficulty: "medium", category: "Online",
+    steps: [{
+      situation: "A fake account posts embarrassing content as you. Friends asking if it's real. First step?",
+      choices: [
+        { text: "Create fakes to attack back", score: 0, feedback: "Makes you a bully — possibly illegal." },
+        { text: "Screenshot everything, report account to platform", score: 100, feedback: "Evidence + proper reporting." },
+        { text: "Delete all your social media", score: 30, feedback: "Lets the bully win." },
+        { text: "Confront them at school", score: 20, feedback: "Could backfire badly." },
+      ],
+    }],
   },
   {
-    id: "physical-threat",
-    title: "Physical Threat",
-    description: "Someone threatens to hurt you after school",
-    difficulty: "Hard",
-    category: "Safety",
-    steps: [
-      {
-        situation: "A bigger student corners you in the hallway and says 'You're dead after school.' Other students saw it happen. What's your immediate response?",
-        choices: [
-          { text: "Say 'I'm not scared of you' and walk away tough", score: 30, feedback: "While confidence is good, antagonizing could escalate things. Safety first." },
-          { text: "Immediately go to the nearest teacher or office and report it", score: 100, feedback: "Correct! Physical threats must be reported immediately. This is not 'snitching' - it's protecting yourself." },
-          { text: "Find friends to back you up for the fight", score: 0, feedback: "Fighting puts you at risk of injury and punishment. Always seek adult help." },
-          { text: "Stay quiet and hope they forget about it", score: 10, feedback: "Never ignore physical threats. They rarely just 'go away.'" }
-        ]
-      },
-      {
-        situation: "You reported it, but school is ending soon. The threat was made for after school. How do you stay safe getting home?",
-        choices: [
-          { text: "Leave by a different exit with friends or a trusted adult", score: 100, feedback: "Perfect! Change your routine and use safety in numbers." },
-          { text: "Wait inside until very late when they've given up", score: 50, feedback: "Staying inside is safer, but make sure an adult knows where you are." },
-          { text: "Go out the regular way - you won't let them change your life", score: 10, feedback: "Bravery is admirable, but not at the cost of your safety. Being smart isn't being weak." },
-          { text: "Have a parent or guardian pick you up today", score: 90, feedback: "Excellent choice! Having a trusted adult present is one of the safest options." }
-        ]
-      }
-    ]
-  }
+    id: "physical-threat", title: "Physical Threat", description: "Someone threatens to hurt you after school",
+    difficulty: "hard", category: "Safety",
+    steps: [{
+      situation: "A bigger student says 'You're dead after school.' Witnesses present. Immediate response?",
+      choices: [
+        { text: "'I'm not scared of you' and walk off", score: 30, feedback: "Confidence good — but could escalate." },
+        { text: "Go to nearest teacher/office and report immediately", score: 100, feedback: "Physical threats MUST be reported. Not snitching." },
+        { text: "Find friends to back you up for the fight", score: 0, feedback: "Risk of injury + punishment." },
+        { text: "Stay quiet, hope they forget", score: 10, feedback: "Threats rarely just go away." },
+      ],
+    }],
+  },
+  {
+    id: "expert-coercion", title: "Coercion & Blackmail", description: "Someone threatens to release private content",
+    difficulty: "expert", category: "Critical",
+    steps: [{
+      situation: "Someone says they'll share your private photos unless you pay/comply. What's the right play?",
+      choices: [
+        { text: "Pay to make it stop", score: 0, feedback: "Blackmailers never stop. This funds more abuse." },
+        { text: "Stop responding, screenshot everything, tell a trusted adult + report to police/CyberTipline", score: 100, feedback: "Cutting contact + evidence + authorities is the only safe path." },
+        { text: "Try to reason with them", score: 10, feedback: "Engagement gives them leverage." },
+        { text: "Threaten them back", score: 0, feedback: "Escalates and could become criminal on your end." },
+      ],
+    }],
+  },
 ];
 
+const diffColor = { easy: "bg-emerald-500", medium: "bg-amber-500", hard: "bg-red-500", expert: "bg-purple-600" };
+const diffIcon = { easy: Zap, medium: Brain, hard: Crown, expert: Sparkles };
+
 const SafetyRoleplay = () => {
-  const [selectedScenario, setSelectedScenario] = useState<Scenario | null>(null);
-  const [currentStep, setCurrentStep] = useState(0);
-  const [selectedChoice, setSelectedChoice] = useState<Choice | null>(null);
-  const [totalScore, setTotalScore] = useState(0);
-  const [completedScenarios, setCompletedScenarios] = useState<string[]>([]);
+  const [tab, setTab] = useState<"play" | "voice" | "leaderboard">("play");
+  const [selected, setSelected] = useState<Scenario | null>(null);
+  const [step, setStep] = useState(0);
+  const [choice, setChoice] = useState<Choice | null>(null);
+  const [score, setScore] = useState(0);
+  const [completed, setCompleted] = useState<string[]>([]);
 
-  const handleChoiceSelect = (choice: Choice) => {
-    setSelectedChoice(choice);
-    setTotalScore(totalScore + choice.score);
-  };
+  // Voice mode state
+  const [voiceScenario, setVoiceScenario] = useState(scenarios[0]);
+  const [voiceDifficulty, setVoiceDifficulty] = useState<"easy" | "medium" | "hard" | "expert">("easy");
+  const [userResponse, setUserResponse] = useState("");
+  const scoreApi = useRoleplayScore();
+  const [aiResult, setAiResult] = useState<any>(null);
 
-  const handleNext = () => {
-    if (!selectedScenario) return;
-    
-    if (currentStep < selectedScenario.steps.length - 1) {
-      setCurrentStep(currentStep + 1);
-      setSelectedChoice(null);
-    } else {
-      // Scenario complete
-      setCompletedScenarios([...completedScenarios, selectedScenario.id]);
-    }
-  };
+  const reset = () => { setSelected(null); setStep(0); setChoice(null); setScore(0); };
 
-  const resetScenario = () => {
-    setSelectedScenario(null);
-    setCurrentStep(0);
-    setSelectedChoice(null);
-    setTotalScore(0);
-  };
-
-  const getDifficultyColor = (difficulty: string) => {
-    switch (difficulty) {
-      case "Easy": return "bg-green-500";
-      case "Medium": return "bg-amber-500";
-      case "Hard": return "bg-red-500";
-      default: return "bg-gray-500";
-    }
-  };
-
-  const getScoreMessage = () => {
-    if (!selectedScenario) return "";
-    const maxScore = selectedScenario.steps.length * 100;
-    const percentage = (totalScore / maxScore) * 100;
-    
-    if (percentage >= 80) return "Excellent! You handled this situation perfectly!";
-    if (percentage >= 60) return "Good job! You made mostly safe choices.";
-    if (percentage >= 40) return "You can improve. Review the feedback above.";
-    return "Consider safer choices next time. Your safety is important!";
-  };
-
-  if (selectedScenario) {
-    const step = selectedScenario.steps[currentStep];
-    const isComplete = currentStep >= selectedScenario.steps.length - 1 && selectedChoice !== null;
-    const maxScore = selectedScenario.steps.length * 100;
+  if (selected) {
+    const s = selected.steps[step];
+    const isComplete = step >= selected.steps.length - 1 && choice !== null;
+    const max = selected.steps.length * 100;
 
     return (
-      <div className="space-y-6">
-        <Button variant="ghost" onClick={resetScenario}>
-          ← Back to Scenarios
-        </Button>
-
-        <Card>
+      <div className="space-y-4">
+        <Button variant="ghost" onClick={reset} size="sm">← Back</Button>
+        <Card className="border-indigo-500/30 bg-gradient-to-br from-indigo-500/5 to-card/60 backdrop-blur-md">
           <CardHeader>
             <div className="flex items-center justify-between">
-              <div>
-                <CardTitle>{selectedScenario.title}</CardTitle>
-                <CardDescription>Step {currentStep + 1} of {selectedScenario.steps.length}</CardDescription>
-              </div>
-              <Badge className={getDifficultyColor(selectedScenario.difficulty)}>
-                {selectedScenario.difficulty}
-              </Badge>
+              <CardTitle className="text-base">{selected.title}</CardTitle>
+              <Badge className={diffColor[selected.difficulty]}>{selected.difficulty}</Badge>
             </div>
-            <Progress value={((currentStep + (selectedChoice ? 1 : 0)) / selectedScenario.steps.length) * 100} />
+            <Progress value={((step + (choice ? 1 : 0)) / selected.steps.length) * 100} className="h-2" />
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="p-4 bg-muted rounded-lg">
-              <p className="font-medium">{step.situation}</p>
+          <CardContent className="space-y-3">
+            <div className="p-4 bg-card/60 rounded-lg border border-border/40">
+              <p className="text-sm font-medium">{s.situation}</p>
             </div>
-
             <div className="space-y-2">
-              {step.choices.map((choice, index) => (
-                <button
-                  key={index}
-                  onClick={() => !selectedChoice && handleChoiceSelect(choice)}
-                  disabled={selectedChoice !== null}
-                  className={`w-full p-4 text-left rounded-lg border transition-all ${
-                    selectedChoice === choice
-                      ? choice.score >= 80
-                        ? "border-green-500 bg-green-500/10"
-                        : choice.score >= 40
-                        ? "border-amber-500 bg-amber-500/10"
-                        : "border-red-500 bg-red-500/10"
-                      : selectedChoice
-                      ? "opacity-50"
-                      : "hover:bg-accent cursor-pointer"
-                  }`}
-                >
-                  <div className="flex items-start gap-3">
-                    {selectedChoice === choice && (
-                      choice.score >= 80 
-                        ? <CheckCircle className="h-5 w-5 text-green-500 mt-0.5" />
-                        : choice.score >= 40
-                        ? <Star className="h-5 w-5 text-amber-500 mt-0.5" />
-                        : <XCircle className="h-5 w-5 text-red-500 mt-0.5" />
-                    )}
+              {s.choices.map((c, i) => (
+                <button key={i} disabled={!!choice} onClick={() => { setChoice(c); setScore(score + c.score); }}
+                  className={`w-full p-3 text-left rounded-lg border transition-all ${
+                    choice === c
+                      ? c.score >= 80 ? "border-emerald-500 bg-emerald-500/10" : c.score >= 40 ? "border-amber-500 bg-amber-500/10" : "border-red-500 bg-red-500/10"
+                      : choice ? "opacity-40" : "border-border/40 hover:bg-card/80 hover:border-indigo-400/60"
+                  }`}>
+                  <div className="flex items-start gap-2">
+                    {choice === c && (c.score >= 80 ? <CheckCircle className="h-4 w-4 text-emerald-400 mt-0.5" /> : c.score >= 40 ? <Star className="h-4 w-4 text-amber-400 mt-0.5" /> : <XCircle className="h-4 w-4 text-red-400 mt-0.5" />)}
                     <div>
-                      <p>{choice.text}</p>
-                      {selectedChoice === choice && (
-                        <p className="text-sm text-muted-foreground mt-2">{choice.feedback}</p>
-                      )}
+                      <p className="text-sm">{c.text}</p>
+                      {choice === c && <p className="text-xs text-muted-foreground mt-1">{c.feedback}</p>}
                     </div>
                   </div>
                 </button>
               ))}
             </div>
-
-            {selectedChoice && !isComplete && (
-              <Button onClick={handleNext} className="w-full">
-                Next Step <ArrowRight className="h-4 w-4 ml-2" />
+            {choice && !isComplete && (
+              <Button onClick={() => { setStep(step + 1); setChoice(null); }} className="w-full bg-indigo-600 hover:bg-indigo-500">
+                Next <ArrowRight className="h-4 w-4 ml-2" />
               </Button>
             )}
-
             {isComplete && (
-              <Card className="border-primary">
-                <CardContent className="pt-6 text-center space-y-4">
-                  <h3 className="text-xl font-bold">Scenario Complete!</h3>
+              <Card className="border-amber-500/40 bg-amber-500/5">
+                <CardContent className="pt-5 text-center space-y-3">
+                  <h3 className="text-lg font-black">Scenario Complete!</h3>
                   <div className="flex justify-center gap-1">
                     {[...Array(5)].map((_, i) => (
-                      <Star 
-                        key={i} 
-                        className={`h-6 w-6 ${i < Math.ceil((totalScore / maxScore) * 5) ? "text-amber-500 fill-amber-500" : "text-muted"}`} 
-                      />
+                      <Star key={i} className={`h-5 w-5 ${i < Math.ceil((score / max) * 5) ? "text-amber-400 fill-amber-400" : "text-muted"}`} />
                     ))}
                   </div>
-                  <p className="text-lg font-semibold">{totalScore} / {maxScore} points</p>
-                  <p className="text-muted-foreground">{getScoreMessage()}</p>
-                  <Button onClick={resetScenario}>
-                    <RotateCcw className="h-4 w-4 mr-2" />
-                    Try Another Scenario
+                  <p className="text-base font-bold">{score} / {max} pts</p>
+                  <Button onClick={() => { setCompleted([...completed, selected.id]); reset(); }}>
+                    <RotateCcw className="h-4 w-4 mr-2" /> Try Another
                   </Button>
                 </CardContent>
               </Card>
@@ -259,64 +154,103 @@ const SafetyRoleplay = () => {
   }
 
   return (
-    <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Gamepad2 className="h-5 w-5 text-primary" />
-            Role-Play Scenarios
-          </CardTitle>
-          <CardDescription>
-            Practice handling difficult situations in a safe environment. Learn what to do when...
-          </CardDescription>
-        </CardHeader>
-      </Card>
+    <div className="space-y-5">
+      <Tabs value={tab} onValueChange={(v) => setTab(v as any)}>
+        <TabsList className="bg-card/50 backdrop-blur-md">
+          <TabsTrigger value="play"><Gamepad2 className="h-3 w-3 mr-1" /> Quick Play</TabsTrigger>
+          <TabsTrigger value="voice"><Mic className="h-3 w-3 mr-1" /> AI Voice Coach</TabsTrigger>
+          <TabsTrigger value="leaderboard"><Crown className="h-3 w-3 mr-1" /> Leaderboard</TabsTrigger>
+        </TabsList>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {scenarios.map((scenario) => {
-          const isCompleted = completedScenarios.includes(scenario.id);
-          
-          return (
-            <Card key={scenario.id} className={isCompleted ? "border-green-500/50" : ""}>
-              <CardHeader>
-                <div className="flex items-start justify-between">
-                  <Badge variant="outline">{scenario.category}</Badge>
-                  <Badge className={getDifficultyColor(scenario.difficulty)}>
-                    {scenario.difficulty}
-                  </Badge>
-                </div>
-                <CardTitle className="text-lg mt-2">{scenario.title}</CardTitle>
-                <CardDescription>{scenario.description}</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">
-                    {scenario.steps.length} decisions
-                  </span>
-                  {isCompleted && (
-                    <Badge variant="outline" className="text-green-500 border-green-500">
-                      <CheckCircle className="h-3 w-3 mr-1" />
-                      Completed
-                    </Badge>
+        <TabsContent value="play">
+          <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
+            {scenarios.map((sc, i) => {
+              const Icon = diffIcon[sc.difficulty];
+              const done = completed.includes(sc.id);
+              return (
+                <motion.div key={sc.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
+                  <Card className={`border-border/40 bg-card/50 backdrop-blur-md hover:border-indigo-400/50 hover:shadow-xl hover:shadow-indigo-500/10 transition-all h-full ${done ? "border-emerald-500/40" : ""}`}>
+                    <CardHeader className="pb-2">
+                      <div className="flex items-center justify-between mb-1">
+                        <Badge variant="outline" className="text-[10px]">{sc.category}</Badge>
+                        <Badge className={`${diffColor[sc.difficulty]} text-[10px]`}><Icon className="h-2 w-2 mr-1" />{sc.difficulty}</Badge>
+                      </div>
+                      <CardTitle className="text-sm">{sc.title}</CardTitle>
+                      <CardDescription className="text-xs">{sc.description}</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <Button onClick={() => { setSelected(sc); setStep(0); setChoice(null); setScore(0); }}
+                        className="w-full bg-indigo-600 hover:bg-indigo-500" size="sm">
+                        {done ? "Play Again" : "Start"}
+                      </Button>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              );
+            })}
+          </div>
+        </TabsContent>
+
+        <TabsContent value="voice">
+          <Card className="border-indigo-500/30 bg-gradient-to-br from-indigo-500/10 to-card/60 backdrop-blur-md">
+            <CardHeader>
+              <CardTitle className="text-base flex items-center gap-2">
+                <Mic className="h-4 w-4 text-indigo-400" /> AI Voice Coach
+              </CardTitle>
+              <CardDescription className="text-xs">Type your response — AI scores assertiveness, empathy, safety. (6 cr)</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div className="grid grid-cols-2 gap-2">
+                <select className="px-3 py-2 rounded-md bg-card/60 border border-border/40 text-sm" value={voiceScenario.id} onChange={(e) => setVoiceScenario(scenarios.find(s => s.id === e.target.value)!)}>
+                  {scenarios.map((s) => <option key={s.id} value={s.id}>{s.title}</option>)}
+                </select>
+                <select className="px-3 py-2 rounded-md bg-card/60 border border-border/40 text-sm" value={voiceDifficulty} onChange={(e) => setVoiceDifficulty(e.target.value as any)}>
+                  <option value="easy">Easy</option><option value="medium">Medium</option><option value="hard">Hard</option><option value="expert">Expert</option>
+                </select>
+              </div>
+              <div className="p-3 rounded-lg bg-card/40 border border-border/40">
+                <p className="text-xs text-muted-foreground mb-1">Scenario:</p>
+                <p className="text-sm">{voiceScenario.steps[0].situation}</p>
+              </div>
+              <Textarea value={userResponse} onChange={(e) => setUserResponse(e.target.value)} rows={3} placeholder="Type how you'd respond..." className="bg-background/50" />
+              <Button
+                disabled={!userResponse.trim() || scoreApi.isPending}
+                onClick={async () => {
+                  const r = await scoreApi.mutateAsync({
+                    scenario_id: voiceScenario.id, scenario: voiceScenario.steps[0].situation,
+                    user_response: userResponse, difficulty: voiceDifficulty, mode: "text",
+                  });
+                  setAiResult(r);
+                }}
+                className="w-full bg-indigo-600 hover:bg-indigo-500"
+              >
+                {scoreApi.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <><Sparkles className="h-4 w-4 mr-2" /> Score Me (6 cr)</>}
+              </Button>
+              {aiResult && (
+                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="p-4 rounded-lg bg-gradient-to-br from-amber-500/10 to-card/60 border border-amber-500/40 space-y-2">
+                  <div className="flex justify-between text-xs">
+                    <span>Assertive: <strong className="text-teal-300">{aiResult.assertiveness}</strong></span>
+                    <span>Empathy: <strong className="text-pink-300">{aiResult.empathy}</strong></span>
+                    <span>Safety: <strong className="text-emerald-300">{aiResult.safety}</strong></span>
+                    <span>Total: <strong className="text-amber-300">{aiResult.total_score}</strong></span>
+                  </div>
+                  <p className="text-sm text-foreground/90">{aiResult.feedback}</p>
+                  {aiResult.next_line_from_bully && (
+                    <div className="p-2 rounded bg-red-500/10 border border-red-500/30">
+                      <p className="text-[11px] text-red-300 font-bold mb-1">Bully escalates:</p>
+                      <p className="text-xs italic">"{aiResult.next_line_from_bully}"</p>
+                    </div>
                   )}
-                </div>
-                <Button 
-                  onClick={() => {
-                    setSelectedScenario(scenario);
-                    setCurrentStep(0);
-                    setSelectedChoice(null);
-                    setTotalScore(0);
-                  }}
-                  className="w-full mt-4"
-                  variant={isCompleted ? "outline" : "default"}
-                >
-                  {isCompleted ? "Play Again" : "Start Scenario"}
-                </Button>
-              </CardContent>
-            </Card>
-          );
-        })}
-      </div>
+                </motion.div>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="leaderboard">
+          <RoleplayLeaderboard />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };

@@ -1,199 +1,173 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Heart, Plus, MessageSquare, Sparkles, User } from "lucide-react";
+import { Heart, Plus, MessageSquare, Sparkles, User, Loader2, ShieldCheck } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
+import { motion } from "framer-motion";
+import { WallReactions } from "./WallReactions";
+import { BuddyMatching } from "./BuddyMatching";
+import { useWallReactions, useWallFilter } from "@/hooks/useSafetyExtras";
 
 const encouragements = [
   "You are stronger than you know 💪",
   "This too shall pass. Hold on! 🌟",
-  "You matter. You are valued. You are loved. ❤️",
-  "Better days are coming, I promise! 🌈",
-  "You're not alone in this fight! 🤝",
+  "You matter. You are valued. ❤️",
+  "Better days are coming! 🌈",
+  "You're not alone! 🤝",
 ];
 
 const SafetySupportWall = () => {
-  const queryClient = useQueryClient();
+  const qc = useQueryClient();
   const [showForm, setShowForm] = useState(false);
   const [message, setMessage] = useState("");
+  const [filterResult, setFilterResult] = useState<{ safe: boolean; reason?: string; suggested_rewrite?: string } | null>(null);
+  const filter = useWallFilter();
 
-  const { data: messages, isLoading } = useQuery({
+  const { data: messages = [], isLoading } = useQuery({
     queryKey: ["safety-support-wall"],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("safety_support_wall")
-        .select("*")
-        .order("created_at", { ascending: false })
-        .limit(50);
-
+        .from("safety_support_wall").select("*")
+        .order("created_at", { ascending: false }).limit(50);
       if (error) throw error;
       return data;
-    }
+    },
   });
 
+  const ids = useMemo(() => messages.map((m: any) => m.id), [messages]);
+  const { data: reactions = {} } = useWallReactions(ids);
+
   const addMessage = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (text: string) => {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Please sign in to post");
-
-      const { error } = await supabase
-        .from("safety_support_wall")
-        .insert({
-          user_id: user.id,
-          message: message.trim()
-        });
-
+      if (!user) throw new Error("Sign in to post");
+      const { error } = await supabase.from("safety_support_wall").insert({ user_id: user.id, message: text.trim() });
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["safety-support-wall"] });
-      toast.success("Your message of support has been posted!");
+      qc.invalidateQueries({ queryKey: ["safety-support-wall"] });
+      toast.success("Posted!");
       setShowForm(false);
       setMessage("");
+      setFilterResult(null);
     },
-    onError: (error: Error) => {
-      toast.error(error.message);
-    }
+    onError: (e: Error) => toast.error(e.message),
   });
 
-  const quickEncourage = async (encouragement: string) => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      toast.error("Please sign in to post encouragement");
-      return;
+  const handleSubmit = async () => {
+    const result = await filter.mutateAsync(message);
+    setFilterResult(result);
+    if (result.safe) {
+      addMessage.mutate(message);
     }
-
-    const { error } = await supabase
-      .from("safety_support_wall")
-      .insert({
-        user_id: user.id,
-        message: encouragement
-      });
-
-    if (error) {
-      toast.error("Failed to post");
-      return;
-    }
-
-    queryClient.invalidateQueries({ queryKey: ["safety-support-wall"] });
-    toast.success("Encouragement posted!");
   };
+
+  const quickEncourage = (text: string) => addMessage.mutate(text);
 
   return (
     <div className="space-y-6">
-      <Card className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 border-purple-500/20">
+      {/* Buddy Matching at top */}
+      <BuddyMatching />
+
+      {/* Compose */}
+      <Card className="border-pink-500/30 bg-gradient-to-br from-pink-500/10 via-violet-500/5 to-card/60 backdrop-blur-md">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Heart className="h-5 w-5 text-pink-500" />
-            Anonymous Support Wall
+          <CardTitle className="flex items-center gap-2 text-base">
+            <Heart className="h-4 w-4 text-pink-400" /> Anonymous Support Wall
           </CardTitle>
-          <CardDescription>
-            A safe space to share encouragement and support. All posts are anonymous. You are not alone.
+          <CardDescription className="text-xs flex items-center gap-1">
+            <ShieldCheck className="h-3 w-3 text-emerald-400" /> AI-moderated for safety (2 cr per post)
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-3">
           {!showForm ? (
-            <div className="space-y-4">
-              <Button onClick={() => setShowForm(true)} className="w-full">
-                <Plus className="h-4 w-4 mr-2" />
-                Write a Message of Support
+            <>
+              <Button onClick={() => setShowForm(true)} className="w-full bg-pink-600 hover:bg-pink-500">
+                <Plus className="h-4 w-4 mr-2" /> Write a Message
               </Button>
-              
-              <div className="text-center text-sm text-muted-foreground">or send quick encouragement:</div>
-              
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 max-w-full overflow-hidden">
-                {encouragements.map((enc, index) => (
-                  <Badge 
-                    key={index} 
-                    variant="outline" 
-                    className="cursor-pointer hover:bg-primary hover:text-primary-foreground transition-colors py-2 px-2 text-xs text-center whitespace-normal h-auto justify-center"
+              <div className="text-center text-xs text-muted-foreground">or send a quick boost:</div>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                {encouragements.map((enc, i) => (
+                  <Badge
+                    key={i}
+                    variant="outline"
+                    className="cursor-pointer hover:bg-pink-500/10 hover:border-pink-400 py-2 px-2 text-[11px] text-center whitespace-normal h-auto justify-center transition-colors"
                     onClick={() => quickEncourage(enc)}
                   >
                     {enc}
                   </Badge>
                 ))}
               </div>
-            </div>
+            </>
           ) : (
-            <div className="space-y-4">
-              <Textarea
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                placeholder="Share words of encouragement, support, or hope... Your message could help someone who really needs it."
-                rows={4}
-                maxLength={500}
-              />
-              <div className="flex justify-between items-center text-sm text-muted-foreground">
-                <span>{message.length}/500 characters</span>
-                <span className="flex items-center gap-1">
-                  <User className="h-3 w-3" /> Posted anonymously
-                </span>
+            <>
+              <Textarea value={message} onChange={(e) => setMessage(e.target.value)} rows={4} maxLength={500} placeholder="Words of hope..." className="bg-background/50" />
+              <div className="flex justify-between text-xs text-muted-foreground">
+                <span>{message.length}/500</span>
+                <span className="flex items-center gap-1"><User className="h-3 w-3" /> Anonymous</span>
               </div>
+              {filterResult && !filterResult.safe && (
+                <div className="p-3 rounded-lg bg-amber-500/10 border border-amber-500/40 text-xs">
+                  <p className="font-bold text-amber-400 mb-1">⚠️ AI flagged this message</p>
+                  <p className="text-muted-foreground mb-2">{filterResult.reason}</p>
+                  {filterResult.suggested_rewrite && (
+                    <>
+                      <p className="text-foreground mb-1"><strong>Suggested rewrite:</strong></p>
+                      <p className="italic text-foreground/85 mb-2">"{filterResult.suggested_rewrite}"</p>
+                      <Button size="sm" onClick={() => { setMessage(filterResult.suggested_rewrite!); setFilterResult(null); }}>Use rewrite</Button>
+                    </>
+                  )}
+                </div>
+              )}
               <div className="flex gap-2">
-                <Button 
-                  onClick={() => addMessage.mutate()} 
-                  disabled={addMessage.isPending || message.trim().length < 10}
-                >
-                  <Sparkles className="h-4 w-4 mr-2" />
-                  Share Support
+                <Button onClick={handleSubmit} disabled={filter.isPending || addMessage.isPending || message.trim().length < 10} className="bg-pink-600 hover:bg-pink-500">
+                  {filter.isPending || addMessage.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <><Sparkles className="h-4 w-4 mr-2" /> Post (2 cr)</>}
                 </Button>
-                <Button variant="outline" onClick={() => setShowForm(false)}>
-                  Cancel
-                </Button>
+                <Button variant="outline" onClick={() => { setShowForm(false); setFilterResult(null); }}>Cancel</Button>
               </div>
-            </div>
+            </>
           )}
         </CardContent>
       </Card>
 
-      {/* Support Wall Feed */}
-      <div className="space-y-4">
-        <h3 className="text-lg font-semibold flex items-center gap-2">
-          <MessageSquare className="h-5 w-5" />
-          Messages of Hope
+      {/* Wall feed */}
+      <div>
+        <h3 className="text-sm font-bold text-foreground mb-2 flex items-center gap-2">
+          <MessageSquare className="h-4 w-4 text-pink-400" /> Messages of Hope
         </h3>
-        
         {isLoading ? (
-          <p className="text-muted-foreground text-center py-8">Loading messages...</p>
-        ) : messages?.length === 0 ? (
-          <Card>
+          <p className="text-muted-foreground text-sm text-center py-6">Loading...</p>
+        ) : messages.length === 0 ? (
+          <Card className="border-border/40 bg-card/50 backdrop-blur-md">
             <CardContent className="py-8 text-center">
-              <Heart className="h-12 w-12 mx-auto mb-4 text-pink-500/50" />
-              <p className="text-muted-foreground">Be the first to share a message of support!</p>
+              <Heart className="h-12 w-12 mx-auto mb-3 text-pink-400/50" />
+              <p className="text-muted-foreground text-sm">Be the first to share hope!</p>
             </CardContent>
           </Card>
         ) : (
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {messages?.map((msg: any) => (
-              <Card key={msg.id} className="hover:shadow-lg transition-shadow">
-                <CardContent className="pt-6">
-                  <p className="text-lg">{msg.message}</p>
-                  <div className="mt-4 flex items-center justify-between text-sm text-muted-foreground">
-                    <span className="flex items-center gap-1">
-                      <User className="h-3 w-3" /> Anonymous
-                    </span>
-                    <span>{formatDistanceToNow(new Date(msg.created_at), { addSuffix: true })}</span>
-                  </div>
-                </CardContent>
-              </Card>
+          <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+            {messages.map((msg: any, i: number) => (
+              <motion.div key={msg.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.03 }}>
+                <Card className="border-border/40 bg-card/50 backdrop-blur-md hover:border-pink-400/50 hover:shadow-xl hover:shadow-pink-500/10 transition-all h-full flex flex-col">
+                  <CardContent className="pt-5 flex-1 flex flex-col">
+                    <p className="text-base text-foreground/90 flex-1">{msg.message}</p>
+                    <WallReactions messageId={msg.id} counts={(reactions as any)[msg.id] || {}} />
+                    <div className="mt-2 flex items-center justify-between text-[11px] text-muted-foreground">
+                      <span className="flex items-center gap-1"><User className="h-3 w-3" /> Anon</span>
+                      <span>{formatDistanceToNow(new Date(msg.created_at), { addSuffix: true })}</span>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
             ))}
           </div>
         )}
       </div>
-
-      {/* Reminder */}
-      <Card className="border-amber-500/50 bg-amber-500/5">
-        <CardContent className="pt-6">
-          <p className="text-center text-sm text-muted-foreground">
-            💛 Remember: If you're struggling, you can also use our <strong>Support Chat</strong> or check <strong>SOS Contacts</strong> for professional help.
-          </p>
-        </CardContent>
-      </Card>
     </div>
   );
 };

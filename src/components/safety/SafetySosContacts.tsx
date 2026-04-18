@@ -1,222 +1,116 @@
+import { useState, useMemo } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Phone, Globe, MessageCircle, Search, ExternalLink, Heart } from "lucide-react";
-import { useState } from "react";
-
-const emergencyContacts = [
-  {
-    region: "International",
-    contacts: [
-      { name: "Emergency Services", number: "911 (US) / 112 (EU) / 999 (UK)", type: "emergency", description: "For immediate danger" },
-      { name: "Crisis Text Line", number: "Text HOME to 741741", type: "text", description: "24/7 text-based support (US, UK, Canada, Ireland)" },
-      { name: "International Association for Suicide Prevention", url: "https://www.iasp.info/resources/Crisis_Centres", type: "web", description: "Find crisis centers worldwide" },
-    ]
-  },
-  {
-    region: "United States",
-    flag: "🇺🇸",
-    contacts: [
-      { name: "National Suicide Prevention Lifeline", number: "988", type: "phone", description: "24/7 crisis support" },
-      { name: "Childhelp National Child Abuse Hotline", number: "1-800-422-4453", type: "phone", description: "24/7 abuse reporting and support" },
-      { name: "STOMP Out Bullying HelpChat", url: "https://www.stompoutbullying.org/get-help", type: "web", description: "Live chat for bullying victims" },
-      { name: "Trevor Project (LGBTQ+)", number: "1-866-488-7386", type: "phone", description: "24/7 LGBTQ+ youth crisis line" },
-    ]
-  },
-  {
-    region: "United Kingdom",
-    flag: "🇬🇧",
-    contacts: [
-      { name: "Childline", number: "0800 1111", type: "phone", description: "Free confidential support for under 19s" },
-      { name: "Samaritans", number: "116 123", type: "phone", description: "24/7 emotional support" },
-      { name: "Anti-Bullying Alliance", url: "https://anti-bullyingalliance.org.uk", type: "web", description: "Resources and support" },
-      { name: "NSPCC Helpline", number: "0808 800 5000", type: "phone", description: "For adults concerned about a child" },
-    ]
-  },
-  {
-    region: "Canada",
-    flag: "🇨🇦",
-    contacts: [
-      { name: "Kids Help Phone", number: "1-800-668-6868", type: "phone", description: "24/7 support for young people" },
-      { name: "Crisis Services Canada", number: "1-833-456-4566", type: "phone", description: "Suicide prevention" },
-      { name: "PREVNet", url: "https://www.prevnet.ca", type: "web", description: "Bullying prevention resources" },
-    ]
-  },
-  {
-    region: "Australia",
-    flag: "🇦🇺",
-    contacts: [
-      { name: "Kids Helpline", number: "1800 55 1800", type: "phone", description: "24/7 for young people 5-25" },
-      { name: "eSafety Commissioner", url: "https://www.esafety.gov.au", type: "web", description: "Report cyberbullying" },
-      { name: "Lifeline Australia", number: "13 11 14", type: "phone", description: "24/7 crisis support" },
-    ]
-  },
-  {
-    region: "Europe",
-    flag: "🇪🇺",
-    contacts: [
-      { name: "Child Helpline International", url: "https://www.childhelplineinternational.org", type: "web", description: "Find helplines in your country" },
-      { name: "EU Kids Online", url: "http://www.lse.ac.uk/media-and-communications/research/research-projects/eu-kids-online", type: "web", description: "Research and resources" },
-      { name: "116 111 (Harmonized number)", number: "116 111", type: "phone", description: "Child helpline in many EU countries" },
-    ]
-  },
-  {
-    region: "Asia Pacific",
-    flag: "🌏",
-    contacts: [
-      { name: "Befrienders Worldwide", url: "https://www.befrienders.org", type: "web", description: "Find support centers globally" },
-      { name: "Singapore - Samaritans of Singapore", number: "1800-221-4444", type: "phone", description: "24-hour hotline" },
-      { name: "Japan - TELL", number: "03-5774-0992", type: "phone", description: "English-language support" },
-      { name: "India - iCall", number: "9152987821", type: "phone", description: "Psychosocial helpline" },
-    ]
-  }
-];
+import { Phone, Globe, MessageCircle, Search, ExternalLink, Heart, MapPin, Loader2, AlertTriangle, Shield } from "lucide-react";
+import { useSosCountry } from "@/hooks/useSafetyExtras";
+import { motion } from "framer-motion";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const SafetySosContacts = () => {
-  const [searchTerm, setSearchTerm] = useState("");
+  const { code, data, allCountries, setCountry, isLoading } = useSosCountry();
+  const [search, setSearch] = useState("");
 
-  const filteredContacts = emergencyContacts.filter(region => 
-    region.region.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    region.contacts.some(c => c.name.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
-
-  const getTypeIcon = (type: string) => {
-    switch (type) {
-      case "phone": return <Phone className="h-4 w-4" />;
-      case "text": return <MessageCircle className="h-4 w-4" />;
-      case "web": return <Globe className="h-4 w-4" />;
-      case "emergency": return <Heart className="h-4 w-4 text-destructive" />;
-      default: return <Phone className="h-4 w-4" />;
-    }
-  };
-
-  const getTypeBadge = (type: string) => {
-    switch (type) {
-      case "phone": return <Badge variant="default">Call</Badge>;
-      case "text": return <Badge variant="secondary">Text</Badge>;
-      case "web": return <Badge variant="outline">Website</Badge>;
-      case "emergency": return <Badge variant="destructive">Emergency</Badge>;
-      default: return <Badge>Contact</Badge>;
-    }
-  };
+  const filteredNumbers = useMemo(() => {
+    if (!search) return data.numbers;
+    return data.numbers.filter((n) => n.name.toLowerCase().includes(search.toLowerCase()));
+  }, [data, search]);
 
   return (
-    <div className="space-y-6">
-      <Card className="border-destructive bg-destructive/10">
-        <CardContent className="pt-6">
-          <div className="text-center space-y-2">
-            <h2 className="text-2xl font-bold text-destructive">If you are in immediate danger, call emergency services NOW</h2>
-            <p className="text-lg font-semibold">911 (USA) | 112 (Europe) | 999 (UK) | 000 (Australia)</p>
+    <div className="space-y-5">
+      {/* CRITICAL EMERGENCY BANNER */}
+      <motion.div
+        initial={{ scale: 0.95, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        className="relative overflow-hidden rounded-2xl p-5 bg-gradient-to-br from-red-600 via-red-700 to-red-900 border-2 border-red-400/60 shadow-2xl shadow-red-600/40"
+      >
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.15),transparent)]" />
+        <div className="relative flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-3 text-white">
+            <AlertTriangle className="h-8 w-8 animate-pulse" />
+            <div>
+              <p className="text-2xl font-black">In immediate danger?</p>
+              <p className="text-sm opacity-90">One-tap call your local emergency line</p>
+            </div>
           </div>
-        </CardContent>
-      </Card>
+          <a href={`tel:${data.numbers[0]?.tel}`} className="w-full sm:w-auto">
+            <Button size="lg" className="w-full bg-white text-red-700 hover:bg-white/90 font-black text-lg gap-2 shadow-lg">
+              <Phone className="h-5 w-5" /> CALL {data.numbers[0]?.tel}
+            </Button>
+          </a>
+        </div>
+      </motion.div>
 
-      <Card>
+      {/* Auto-detected country card */}
+      <Card className="border-teal-500/30 bg-gradient-to-br from-teal-500/10 to-card/60 backdrop-blur-md">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Phone className="h-5 w-5 text-primary" />
-            SOS Contacts - Global Helplines
+          <CardTitle className="flex items-center gap-2 text-base">
+            <MapPin className="h-4 w-4 text-teal-400" />
+            {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <>Detected: <span className="text-2xl">{data.flag}</span> {data.country}</>}
           </CardTitle>
-          <CardDescription>
-            Find crisis support and helplines in your region. All services are confidential.
-          </CardDescription>
+          <CardDescription className="text-xs">Wrong country? Pick yours below — we'll cache it offline.</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Search by country or service name..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
-            />
-          </div>
+          <Select value={code} onValueChange={(v) => setCountry.mutate(v)}>
+            <SelectTrigger className="bg-card/60"><SelectValue /></SelectTrigger>
+            <SelectContent>
+              {Object.entries(allCountries).map(([k, v]) => (
+                <SelectItem key={k} value={k}>{v.flag} {v.country}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </CardContent>
       </Card>
 
-      <div className="space-y-4">
-        {filteredContacts.map((region) => (
-          <Card key={region.region}>
-            <CardHeader className="pb-2">
-              <CardTitle className="flex items-center gap-2 text-lg">
-                {region.flag && <span className="text-xl">{region.flag}</span>}
-                {region.region}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                {region.contacts.map((contact, index) => (
-                  <div key={index} className="p-3 rounded-lg border hover:bg-accent/50 transition-colors">
-                    <div className="flex items-start gap-3 mb-3">
-                      <div className="mt-1 shrink-0">{getTypeIcon(contact.type)}</div>
-                      <div className="min-w-0 flex-1">
-                        <p className="font-semibold break-words">{contact.name}</p>
-                        <p className="text-sm text-muted-foreground break-words">{contact.description}</p>
-                        {contact.number && (
-                          <p className="text-sm font-mono mt-1 break-words">{contact.number}</p>
-                        )}
-                      </div>
+      {/* Search */}
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <Input placeholder="Search hotlines..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-10 bg-card/60" />
+      </div>
+
+      {/* 1-tap call grid */}
+      <div className="grid sm:grid-cols-2 gap-3">
+        {filteredNumbers.map((n, i) => (
+          <motion.div
+            key={n.tel + i}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.05 }}
+          >
+            <Card className="border-border/40 bg-card/60 backdrop-blur-md hover:border-teal-400/50 hover:shadow-xl hover:shadow-teal-500/10 transition-all group">
+              <CardContent className="p-4">
+                <div className="flex items-start justify-between gap-3 mb-3">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <Shield className="h-4 w-4 text-teal-400" />
+                      <p className="font-bold text-foreground">{n.name}</p>
                     </div>
-                    <div className="flex items-center gap-2 flex-wrap">
-                      {getTypeBadge(contact.type)}
-                      {contact.url && (
-                        <a 
-                          href={contact.url} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="inline-flex"
-                        >
-                          <Button variant="outline" size="sm">
-                            <ExternalLink className="h-3 w-3 mr-1" />
-                            Visit
-                          </Button>
-                        </a>
-                      )}
-                      {contact.number && contact.type === "phone" && (
-                        <a href={`tel:${contact.number.replace(/[^0-9+]/g, '')}`} className="inline-flex">
-                          <Button variant="outline" size="sm">
-                            <Phone className="h-3 w-3 mr-1" />
-                            Call
-                          </Button>
-                        </a>
-                      )}
-                      {contact.number && contact.type === "emergency" && (
-                        <a href="tel:112" className="inline-flex">
-                          <Button variant="destructive" size="sm">
-                            <Phone className="h-3 w-3 mr-1" />
-                            Call
-                          </Button>
-                        </a>
-                      )}
-                      {contact.number && contact.type === "text" && (
-                        <a href="sms:741741?body=HOME" className="inline-flex">
-                          <Button variant="outline" size="sm">
-                            <MessageCircle className="h-3 w-3 mr-1" />
-                            Text
-                          </Button>
-                        </a>
-                      )}
-                    </div>
+                    <p className="text-xs text-muted-foreground">{n.note || "24/7 confidential"}</p>
+                    <p className="text-sm font-mono text-teal-300 mt-1">{n.tel}</p>
                   </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
+                </div>
+                <a href={n.note?.startsWith("Text") ? `sms:${n.tel}?body=HOME` : `tel:${n.tel}`}>
+                  <Button className="w-full bg-teal-600 hover:bg-teal-500 group-hover:scale-[1.02] transition-transform">
+                    {n.note?.startsWith("Text") ? <MessageCircle className="h-4 w-4 mr-2" /> : <Phone className="h-4 w-4 mr-2" />}
+                    {n.note?.startsWith("Text") ? "Text Now" : "Call Now"}
+                  </Button>
+                </a>
+              </CardContent>
+            </Card>
+          </motion.div>
         ))}
       </div>
 
-      {/* Missing your region */}
-      <Card>
-        <CardContent className="pt-6">
-          <div className="text-center space-y-2">
-            <Globe className="h-8 w-8 mx-auto text-muted-foreground" />
-            <p className="font-semibold">Can't find your region?</p>
-            <p className="text-sm text-muted-foreground">
-              Visit <a href="https://findahelpline.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">findahelpline.com</a> for 
-              a comprehensive global directory of mental health helplines.
-            </p>
-          </div>
+      {/* Global directory link */}
+      <Card className="border-border/40 bg-card/40 backdrop-blur-md">
+        <CardContent className="pt-6 text-center">
+          <Globe className="h-8 w-8 mx-auto text-muted-foreground mb-2" />
+          <p className="text-sm">
+            More countries:{" "}
+            <a href="https://findahelpline.com" target="_blank" rel="noopener noreferrer" className="text-teal-400 hover:underline inline-flex items-center gap-1">
+              findahelpline.com <ExternalLink className="h-3 w-3" />
+            </a>
+          </p>
         </CardContent>
       </Card>
     </div>

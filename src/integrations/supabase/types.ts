@@ -29701,6 +29701,72 @@ export type Database = {
         }
         Relationships: []
       }
+      safety_buddy_matches: {
+        Row: {
+          created_at: string
+          id: string
+          match_score: number | null
+          status: string
+          updated_at: string
+          user_a: string
+          user_b: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          match_score?: number | null
+          status?: string
+          updated_at?: string
+          user_a: string
+          user_b: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          match_score?: number | null
+          status?: string
+          updated_at?: string
+          user_a?: string
+          user_b?: string
+        }
+        Relationships: []
+      }
+      safety_buddy_profiles: {
+        Row: {
+          age_range: string | null
+          anonymous_handle: string
+          created_at: string
+          experience_tags: string[] | null
+          id: string
+          is_active: boolean
+          looking_for: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          age_range?: string | null
+          anonymous_handle: string
+          created_at?: string
+          experience_tags?: string[] | null
+          id?: string
+          is_active?: boolean
+          looking_for?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          age_range?: string | null
+          anonymous_handle?: string
+          created_at?: string
+          experience_tags?: string[] | null
+          id?: string
+          is_active?: boolean
+          looking_for?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       safety_bully_decoder: {
         Row: {
           action_steps: Json | null
@@ -29908,6 +29974,69 @@ export type Database = {
         }
         Relationships: []
       }
+      safety_journal_insights: {
+        Row: {
+          created_at: string
+          credits_used: number
+          id: string
+          insight_text: string
+          recommendations: Json | null
+          trend: string | null
+          user_id: string
+          week_start: string
+        }
+        Insert: {
+          created_at?: string
+          credits_used?: number
+          id?: string
+          insight_text: string
+          recommendations?: Json | null
+          trend?: string | null
+          user_id: string
+          week_start: string
+        }
+        Update: {
+          created_at?: string
+          credits_used?: number
+          id?: string
+          insight_text?: string
+          recommendations?: Json | null
+          trend?: string | null
+          user_id?: string
+          week_start?: string
+        }
+        Relationships: []
+      }
+      safety_mood_logs: {
+        Row: {
+          anxiety_score: number | null
+          energy_score: number | null
+          id: string
+          logged_at: string
+          mood_score: number
+          note: string | null
+          user_id: string
+        }
+        Insert: {
+          anxiety_score?: number | null
+          energy_score?: number | null
+          id?: string
+          logged_at?: string
+          mood_score: number
+          note?: string | null
+          user_id: string
+        }
+        Update: {
+          anxiety_score?: number | null
+          energy_score?: number | null
+          id?: string
+          logged_at?: string
+          mood_score?: number
+          note?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       safety_response_coach_sessions: {
         Row: {
           assertiveness_score: number | null
@@ -29950,6 +30079,66 @@ export type Database = {
           scenario?: string
           user_id?: string
           user_response?: string
+        }
+        Relationships: []
+      }
+      safety_roleplay_sessions: {
+        Row: {
+          ai_feedback: string | null
+          created_at: string
+          credits_used: number
+          difficulty: string
+          id: string
+          mode: string
+          scenario_id: string
+          steps_completed: number
+          total_score: number
+          transcript: Json | null
+          user_id: string
+        }
+        Insert: {
+          ai_feedback?: string | null
+          created_at?: string
+          credits_used?: number
+          difficulty?: string
+          id?: string
+          mode?: string
+          scenario_id: string
+          steps_completed?: number
+          total_score?: number
+          transcript?: Json | null
+          user_id: string
+        }
+        Update: {
+          ai_feedback?: string | null
+          created_at?: string
+          credits_used?: number
+          difficulty?: string
+          id?: string
+          mode?: string
+          scenario_id?: string
+          steps_completed?: number
+          total_score?: number
+          transcript?: Json | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      safety_sos_country_pref: {
+        Row: {
+          country_code: string
+          detected_at: string
+          user_id: string
+        }
+        Insert: {
+          country_code: string
+          detected_at?: string
+          user_id: string
+        }
+        Update: {
+          country_code?: string
+          detected_at?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -30041,6 +30230,30 @@ export type Database = {
           id?: string
           is_approved?: boolean | null
           message?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      safety_wall_reactions: {
+        Row: {
+          created_at: string
+          id: string
+          message_id: string
+          reaction_type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          message_id: string
+          reaction_type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          message_id?: string
+          reaction_type?: string
           user_id?: string
         }
         Relationships: []
@@ -37719,7 +37932,16 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      safety_roleplay_leaderboard: {
+        Row: {
+          handle: string | null
+          last_played: string | null
+          sessions_played: number | null
+          total_score: number | null
+          user_id: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       activate_user_theme: {
