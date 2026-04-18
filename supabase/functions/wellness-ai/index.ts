@@ -6,7 +6,15 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-const COSTS = { dream: 10, meditation: 15, mood: 8, sleep: 20 } as const;
+const COSTS = { dream: 10, meditation: 15, mood: 8, sleep: 20, decoder: 10, evidence: 15, coach: 8, riskscan: 12 } as const;
+const SAFETY_ACTIONS = new Set(["decoder", "evidence", "coach", "riskscan"]);
+
+function parseJSON(s: string): any {
+  try {
+    const m = s.match(/```json\s*([\s\S]*?)```/) || s.match(/```\s*([\s\S]*?)```/);
+    return JSON.parse(m ? m[1] : s);
+  } catch { return null; }
+}
 
 async function callAI(LOVABLE_API_KEY: string, body: any) {
   const r = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
