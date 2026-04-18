@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Shield, MessageSquare, Users, Brain, History, AlertTriangle, ArrowLeft, Coins, Sparkles, Crosshair } from "lucide-react";
+import { Shield, MessageSquare, Users, Brain, History, AlertTriangle, ArrowLeft, Coins, Sparkles, Crosshair, Zap, Trophy, Briefcase } from "lucide-react";
 import { LieDetectorCinematicHero } from "@/components/lie-detector/LieDetectorCinematicHero";
 import { VoiceLieDetectionCard } from "@/components/lie-detector/VoiceLieDetectionCard";
 import { ScreenshotForensicsCard } from "@/components/lie-detector/ScreenshotForensicsCard";
@@ -22,6 +22,17 @@ import { SingleMessageAnalysis } from "@/components/lie-detector/SingleMessageAn
 import { ThreadAnalysis } from "@/components/lie-detector/ThreadAnalysis";
 import { PsychologicalProfile } from "@/components/lie-detector/PsychologicalProfile";
 import { AnalysisHistory } from "@/components/lie-detector/AnalysisHistory";
+import { PolygraphCard } from "@/components/lie-detector/PolygraphCard";
+import { CrossExaminationCard } from "@/components/lie-detector/CrossExaminationCard";
+import { VoiceHeatmapCard } from "@/components/lie-detector/VoiceHeatmapCard";
+import { BodyLanguageScanCard } from "@/components/lie-detector/BodyLanguageScanCard";
+import { ComparisonModeCard } from "@/components/lie-detector/ComparisonModeCard";
+import { BulkUploadCard } from "@/components/lie-detector/BulkUploadCard";
+import { ApiKeysCard } from "@/components/lie-detector/ApiKeysCard";
+import { MonitoringJobsCard } from "@/components/lie-detector/MonitoringJobsCard";
+import { CaseFilesCard } from "@/components/lie-detector/CaseFilesCard";
+import { DetectiveRankCard } from "@/components/lie-detector/DetectiveRankCard";
+import { SocialCardGenerator } from "@/components/lie-detector/SocialCardGenerator";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
