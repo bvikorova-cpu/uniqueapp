@@ -2,8 +2,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
-async function invoke<T = any>(fn: string, body: any): Promise<T> {
-  const { data, error } = await supabase.functions.invoke(fn, { body });
+async function invokeAction<T = any>(action: string, body: Record<string, any>): Promise<T> {
+  const { data, error } = await supabase.functions.invoke("wellness-ai", { body: { action, ...body } });
   if (error) throw new Error(error.message);
   if (data?.error) throw new Error(data.error);
   return data as T;
