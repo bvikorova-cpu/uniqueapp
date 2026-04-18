@@ -1,6 +1,10 @@
 import { useState } from "react";
 import { Shield, MessageSquare, Users, Brain, History, AlertTriangle, ArrowLeft, Coins, Sparkles } from "lucide-react";
-import { LieDetectorHero } from "@/components/lie-detector/LieDetectorHero";
+import { LieDetectorCinematicHero } from "@/components/lie-detector/LieDetectorCinematicHero";
+import { VoiceLieDetectionCard } from "@/components/lie-detector/VoiceLieDetectionCard";
+import { ScreenshotForensicsCard } from "@/components/lie-detector/ScreenshotForensicsCard";
+import { ConversationTimelineCard } from "@/components/lie-detector/ConversationTimelineCard";
+import { TruthReportCard } from "@/components/lie-detector/TruthReportCard";
 import { LieDetectorCredits } from "@/components/lie-detector/LieDetectorCredits";
 import { LieDetectorStreak } from "@/components/lie-detector/LieDetectorStreak";
 import { LieDetectorProgressPreview } from "@/components/lie-detector/LieDetectorProgressPreview";
@@ -95,7 +99,22 @@ const LieDetector = () => {
               exit={{ opacity: 0 }}
               className="space-y-6 sm:space-y-8"
             >
-              <LieDetectorHero />
+              <LieDetectorCinematicHero />
+
+              {/* NEW: Forensic AI Suite */}
+              <div>
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="h-px flex-1 bg-gradient-to-r from-transparent via-red-500/40 to-transparent" />
+                  <span className="text-xs font-mono uppercase tracking-widest text-red-400">Forensic AI Suite</span>
+                  <div className="h-px flex-1 bg-gradient-to-r from-transparent via-red-500/40 to-transparent" />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <VoiceLieDetectionCard />
+                  <ScreenshotForensicsCard />
+                  <ConversationTimelineCard />
+                  <TruthReportCard />
+                </div>
+              </div>
 
               {/* Quick Stats Row */}
               <motion.div
