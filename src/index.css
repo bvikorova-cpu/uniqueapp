@@ -4,6 +4,28 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Dark Interrogation Mode — global red noir filter */
+html.interrogation-mode {
+  filter: hue-rotate(-15deg) saturate(1.15) contrast(1.05);
+}
+html.interrogation-mode body {
+  background:
+    radial-gradient(ellipse at top, rgba(180, 20, 20, 0.12), transparent 60%),
+    radial-gradient(ellipse at bottom, rgba(120, 10, 10, 0.18), transparent 60%),
+    hsl(var(--background));
+}
+html.interrogation-mode::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  background:
+    repeating-linear-gradient(0deg, rgba(255, 30, 30, 0.025) 0, rgba(255, 30, 30, 0.025) 1px, transparent 1px, transparent 3px),
+    radial-gradient(ellipse at center, transparent 50%, rgba(0, 0, 0, 0.45) 100%);
+  mix-blend-mode: overlay;
+}
+
 /* Accessibility: Reduce animations when requested */
 .reduce-animations *,
 .reduce-animations *::before,
