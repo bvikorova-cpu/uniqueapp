@@ -6,8 +6,12 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-const COSTS = { dream: 10, meditation: 15, mood: 8, sleep: 20, decoder: 10, evidence: 15, coach: 8, riskscan: 12 } as const;
-const SAFETY_ACTIONS = new Set(["decoder", "evidence", "coach", "riskscan"]);
+const COSTS = {
+  dream: 10, meditation: 15, mood: 8, sleep: 20,
+  decoder: 10, evidence: 15, coach: 8, riskscan: 12,
+  weekly_insight: 5, roleplay_score: 6, wall_filter: 2,
+} as const;
+const SAFETY_ACTIONS = new Set(["decoder", "evidence", "coach", "riskscan", "weekly_insight", "roleplay_score", "wall_filter"]);
 
 function parseJSON(s: string): any {
   try {
