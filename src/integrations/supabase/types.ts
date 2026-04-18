@@ -30512,6 +30512,48 @@ export type Database = {
           },
         ]
       }
+      shadow_ai_stories: {
+        Row: {
+          created_at: string
+          credits_used: number
+          generated_story: string
+          generated_title: string | null
+          id: string
+          illustration_url: string | null
+          is_public: boolean
+          length: string | null
+          prompt: string
+          tone: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_used?: number
+          generated_story: string
+          generated_title?: string | null
+          id?: string
+          illustration_url?: string | null
+          is_public?: boolean
+          length?: string | null
+          prompt: string
+          tone?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_used?: number
+          generated_story?: string
+          generated_title?: string | null
+          id?: string
+          illustration_url?: string | null
+          is_public?: boolean
+          length?: string | null
+          prompt?: string
+          tone?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       shadow_arena_achievements: {
         Row: {
           awarded_at: string | null
@@ -30552,6 +30594,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      shadow_arena_credits: {
+        Row: {
+          created_at: string
+          credits_remaining: number
+          id: string
+          last_used_at: string | null
+          total_credits_purchased: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_remaining?: number
+          id?: string
+          last_used_at?: string | null
+          total_credits_purchased?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_remaining?: number
+          id?: string
+          last_used_at?: string | null
+          total_credits_purchased?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       shadow_bans: {
         Row: {
@@ -30680,6 +30752,45 @@ export type Database = {
           },
         ]
       }
+      shadow_battle_predictions: {
+        Row: {
+          battle_id: string | null
+          confidence_score: number | null
+          created_at: string
+          credits_used: number
+          factors: Json | null
+          id: string
+          predicted_winner_id: string | null
+          predicted_winner_name: string | null
+          reasoning: string | null
+          user_id: string
+        }
+        Insert: {
+          battle_id?: string | null
+          confidence_score?: number | null
+          created_at?: string
+          credits_used?: number
+          factors?: Json | null
+          id?: string
+          predicted_winner_id?: string | null
+          predicted_winner_name?: string | null
+          reasoning?: string | null
+          user_id: string
+        }
+        Update: {
+          battle_id?: string | null
+          confidence_score?: number | null
+          created_at?: string
+          credits_used?: number
+          factors?: Json | null
+          id?: string
+          predicted_winner_id?: string | null
+          predicted_winner_name?: string | null
+          reasoning?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       shadow_battles: {
         Row: {
           challenge_keywords: string[] | null
@@ -30716,6 +30827,36 @@ export type Database = {
           status?: string
           total_prize_pool?: number | null
           winner_id?: string | null
+        }
+        Relationships: []
+      }
+      shadow_credit_purchases: {
+        Row: {
+          amount_eur: number
+          created_at: string
+          credits_purchased: number
+          id: string
+          status: string
+          stripe_session_id: string | null
+          user_id: string
+        }
+        Insert: {
+          amount_eur: number
+          created_at?: string
+          credits_purchased: number
+          id?: string
+          status?: string
+          stripe_session_id?: string | null
+          user_id: string
+        }
+        Update: {
+          amount_eur?: number
+          created_at?: string
+          credits_purchased?: number
+          id?: string
+          status?: string
+          stripe_session_id?: string | null
+          user_id?: string
         }
         Relationships: []
       }
@@ -30837,6 +30978,75 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      shadow_narrations: {
+        Row: {
+          audio_base64: string | null
+          created_at: string
+          credits_used: number
+          id: string
+          story_id: string | null
+          story_text: string
+          user_id: string
+          voice_id: string
+          voice_label: string | null
+        }
+        Insert: {
+          audio_base64?: string | null
+          created_at?: string
+          credits_used?: number
+          id?: string
+          story_id?: string | null
+          story_text: string
+          user_id: string
+          voice_id: string
+          voice_label?: string | null
+        }
+        Update: {
+          audio_base64?: string | null
+          created_at?: string
+          credits_used?: number
+          id?: string
+          story_id?: string | null
+          story_text?: string
+          user_id?: string
+          voice_id?: string
+          voice_label?: string | null
+        }
+        Relationships: []
+      }
+      shadow_nightmare_avatars: {
+        Row: {
+          created_at: string
+          credits_used: number
+          id: string
+          is_profile_avatar: boolean
+          nightmare_image_url: string | null
+          source_image_url: string
+          style: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_used?: number
+          id?: string
+          is_profile_avatar?: boolean
+          nightmare_image_url?: string | null
+          source_image_url: string
+          style: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_used?: number
+          id?: string
+          is_profile_avatar?: boolean
+          nightmare_image_url?: string | null
+          source_image_url?: string
+          style?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       shadow_stories: {
         Row: {
