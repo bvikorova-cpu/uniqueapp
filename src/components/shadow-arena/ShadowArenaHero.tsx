@@ -153,13 +153,13 @@ export function ShadowArenaHero({ totalPrizePool = 0, activeBattles = 0, topStor
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.55 + i * 0.06 }}
-              className="bg-black/50 backdrop-blur-md rounded-xl p-3 text-center border border-red-900/30"
+              className="bg-black/70 backdrop-blur-md rounded-xl p-3 text-center border border-red-700/40 shadow-lg"
             >
               <div className="flex items-center justify-center gap-1.5 mb-1">
-                <stat.icon className="w-4 h-4 text-red-400" />
-                <span className="text-lg sm:text-2xl font-black text-red-100">{stat.value}</span>
+                <stat.icon className="w-4 h-4 text-red-300" />
+                <span className="text-lg sm:text-2xl font-black text-white drop-shadow-md">{stat.value}</span>
               </div>
-              <span className="text-xs text-red-200/60 font-medium">{stat.label}</span>
+              <span className="text-xs text-red-100 font-semibold">{stat.label}</span>
             </motion.div>
           ))}
         </motion.div>
