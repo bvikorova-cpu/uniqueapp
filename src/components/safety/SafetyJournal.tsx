@@ -7,237 +7,170 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import { Badge } from "@/components/ui/badge";
-import { BookOpen, Plus, Calendar, MapPin, Users, AlertTriangle, Smile, Meh, Frown } from "lucide-react";
+import { BookOpen, Plus, Calendar, MapPin, Users, Smile, Meh, Frown, Lock, FileText } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { format } from "date-fns";
+import { motion } from "framer-motion";
+import { MoodTracker } from "./MoodTracker";
+import { JournalExportPDF } from "./JournalExportPDF";
 
 const incidentTypes = [
-  "Verbal bullying",
-  "Physical bullying",
-  "Cyberbullying",
-  "Social exclusion",
-  "Harassment",
-  "Threats",
-  "Other"
+  "Verbal bullying", "Physical bullying", "Cyberbullying",
+  "Social exclusion", "Harassment", "Threats", "Other",
 ];
 
 const SafetyJournal = () => {
   const queryClient = useQueryClient();
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({
-    incident_type: "",
-    description: "",
-    location: "",
-    witnesses: "",
-    mood_rating: 5
+    incident_type: "", description: "", location: "", witnesses: "", mood_rating: 5,
   });
 
-  const { data: entries, isLoading } = useQuery({
+  const { data: entries = [], isLoading } = useQuery({
     queryKey: ["safety-journal"],
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return [];
-
       const { data, error } = await supabase
-        .from("safety_journal_entries")
-        .select("*")
-        .eq("user_id", user.id)
-        .order("created_at", { ascending: false });
-
+        .from("safety_journal_entries").select("*")
+        .eq("user_id", user.id).order("created_at", { ascending: false });
       if (error) throw error;
       return data;
-    }
+    },
   });
 
   const addEntry = useMutation({
     mutationFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Please sign in to use the journal");
-
-      const { error } = await supabase
-        .from("safety_journal_entries")
-        .insert({
-          user_id: user.id,
-          ...formData
-        });
-
+      if (!user) throw new Error("Sign in to use the journal");
+      const { error } = await supabase.from("safety_journal_entries").insert({ user_id: user.id, ...formData });
       if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["safety-journal"] });
-      toast.success("Entry saved successfully");
+      toast.success("Entry saved");
       setShowForm(false);
       setFormData({ incident_type: "", description: "", location: "", witnesses: "", mood_rating: 5 });
     },
-    onError: (error: Error) => {
-      toast.error(error.message);
-    }
+    onError: (e: Error) => toast.error(e.message),
   });
 
-  const getMoodIcon = (rating: number) => {
-    if (rating <= 3) return <Frown className="h-5 w-5 text-destructive" />;
-    if (rating <= 6) return <Meh className="h-5 w-5 text-amber-500" />;
-    return <Smile className="h-5 w-5 text-green-500" />;
-  };
+  const moodIcon = (r: number) =>
+    r <= 3 ? <Frown className="h-4 w-4 text-red-400" /> : r <= 6 ? <Meh className="h-4 w-4 text-amber-400" /> : <Smile className="h-4 w-4 text-emerald-400" />;
 
   return (
-    <div className="space-y-6">
-      {/* Security Notice */}
-      <Card className="border-green-500/50 bg-green-500/10">
-        <CardContent className="pt-4">
-          <div className="flex items-start gap-3">
-            <div className="w-8 h-8 bg-green-500/20 rounded-full flex items-center justify-center flex-shrink-0">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-500" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
-              </svg>
-            </div>
+    <div className="space-y-5">
+      {/* Privacy banner */}
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="rounded-2xl p-4 bg-gradient-to-r from-emerald-500/10 via-teal-500/10 to-cyan-500/10 border border-emerald-500/30 backdrop-blur-md flex items-center gap-3"
+      >
+        <Lock className="h-5 w-5 text-emerald-400 flex-shrink-0" />
+        <div className="text-sm">
+          <span className="font-bold text-emerald-400">Encrypted & private.</span>{" "}
+          <span className="text-muted-foreground">Only you see your entries — protected by Row Level Security.</span>
+        </div>
+      </motion.div>
+
+      {/* Mood tracker + AI insight */}
+      <MoodTracker />
+
+      {/* New entry */}
+      <Card className="border-violet-500/30 bg-gradient-to-br from-violet-500/5 to-card/60 backdrop-blur-md">
+        <CardHeader>
+          <div className="flex flex-wrap items-center justify-between gap-2">
             <div>
-              <p className="font-semibold text-green-600 dark:text-green-400">🔒 Your Journal is Private & Secure</p>
-              <p className="text-sm text-muted-foreground mt-1">
-                All entries are encrypted and stored securely. Only YOU can see your journal entries. 
-                Your data is protected by Row Level Security (RLS) - no one else, including administrators, 
-                can access your private entries.
-              </p>
+              <CardTitle className="flex items-center gap-2 text-base">
+                <BookOpen className="h-4 w-4 text-violet-400" /> Incident Journal
+              </CardTitle>
+              <CardDescription className="text-xs">Document for your records, school, or legal use.</CardDescription>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <JournalExportPDF entries={entries} audience="school" />
+              <JournalExportPDF entries={entries} audience="lawyer" />
+              <JournalExportPDF entries={entries} audience="police" />
             </div>
           </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <BookOpen className="h-5 w-5 text-primary" />
-            Safety Journal
-          </CardTitle>
-          <CardDescription>
-            Track incidents, mood, and document evidence. Your entries are private and encrypted.
-          </CardDescription>
         </CardHeader>
         <CardContent>
           {!showForm ? (
-            <Button onClick={() => setShowForm(true)} className="w-full">
-              <Plus className="h-4 w-4 mr-2" />
-              New Entry
+            <Button onClick={() => setShowForm(true)} className="w-full bg-violet-600 hover:bg-violet-500">
+              <Plus className="h-4 w-4 mr-2" /> New Entry
             </Button>
           ) : (
-            <div className="space-y-4">
+            <div className="space-y-3">
               <div>
-                <Label>Incident Type</Label>
-                <Select 
-                  value={formData.incident_type} 
-                  onValueChange={(v) => setFormData({...formData, incident_type: v})}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select type..." />
-                  </SelectTrigger>
+                <Label className="text-xs">Incident Type</Label>
+                <Select value={formData.incident_type} onValueChange={(v) => setFormData({ ...formData, incident_type: v })}>
+                  <SelectTrigger><SelectValue placeholder="Select..." /></SelectTrigger>
                   <SelectContent>
-                    {incidentTypes.map(type => (
-                      <SelectItem key={type} value={type}>{type}</SelectItem>
-                    ))}
+                    {incidentTypes.map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}
                   </SelectContent>
                 </Select>
               </div>
-
               <div>
-                <Label>What happened?</Label>
-                <Textarea
-                  value={formData.description}
-                  onChange={(e) => setFormData({...formData, description: e.target.value})}
-                  placeholder="Describe the incident in detail..."
-                  rows={4}
-                />
+                <Label className="text-xs">What happened?</Label>
+                <Textarea value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} rows={4} placeholder="Describe in detail..." />
               </div>
-
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <Label>Location</Label>
-                  <Input
-                    value={formData.location}
-                    onChange={(e) => setFormData({...formData, location: e.target.value})}
-                    placeholder="Where did it happen?"
-                  />
+                  <Label className="text-xs">Location</Label>
+                  <Input value={formData.location} onChange={(e) => setFormData({ ...formData, location: e.target.value })} placeholder="Where?" />
                 </div>
                 <div>
-                  <Label>Witnesses</Label>
-                  <Input
-                    value={formData.witnesses}
-                    onChange={(e) => setFormData({...formData, witnesses: e.target.value})}
-                    placeholder="Who saw it?"
-                  />
+                  <Label className="text-xs">Witnesses</Label>
+                  <Input value={formData.witnesses} onChange={(e) => setFormData({ ...formData, witnesses: e.target.value })} placeholder="Who saw it?" />
                 </div>
               </div>
-
               <div>
-                <Label>How are you feeling? (1-10)</Label>
-                <div className="flex items-center gap-4 mt-2">
-                  <Slider
-                    value={[formData.mood_rating]}
-                    onValueChange={([v]) => setFormData({...formData, mood_rating: v})}
-                    min={1}
-                    max={10}
-                    step={1}
-                    className="flex-1"
-                  />
-                  <span className="font-bold">{formData.mood_rating}</span>
-                  {getMoodIcon(formData.mood_rating)}
+                <Label className="text-xs">Your mood: <span className="font-bold">{formData.mood_rating}/10</span></Label>
+                <div className="flex items-center gap-3 mt-1">
+                  <Slider value={[formData.mood_rating]} onValueChange={([v]) => setFormData({ ...formData, mood_rating: v })} min={1} max={10} step={1} className="flex-1" />
+                  {moodIcon(formData.mood_rating)}
                 </div>
               </div>
-
               <div className="flex gap-2">
-                <Button onClick={() => addEntry.mutate()} disabled={addEntry.isPending}>
-                  Save Entry
-                </Button>
-                <Button variant="outline" onClick={() => setShowForm(false)}>
-                  Cancel
-                </Button>
+                <Button onClick={() => addEntry.mutate()} disabled={addEntry.isPending} className="bg-violet-600 hover:bg-violet-500">Save</Button>
+                <Button variant="outline" onClick={() => setShowForm(false)}>Cancel</Button>
               </div>
             </div>
           )}
         </CardContent>
       </Card>
 
-      {/* Previous Entries */}
-      <div className="space-y-4">
-        <h3 className="text-lg font-semibold">Previous Entries</h3>
+      {/* Entries list */}
+      <div>
+        <h3 className="text-sm font-bold text-foreground mb-2 flex items-center gap-2">
+          <FileText className="h-4 w-4 text-violet-400" /> {entries.length} Entries
+        </h3>
         {isLoading ? (
-          <p className="text-muted-foreground">Loading...</p>
-        ) : entries?.length === 0 ? (
-          <p className="text-muted-foreground">No entries yet. Start documenting to build your safety record.</p>
+          <p className="text-muted-foreground text-sm">Loading...</p>
+        ) : entries.length === 0 ? (
+          <p className="text-muted-foreground text-sm">Start documenting to build your safety record.</p>
         ) : (
-          entries?.map((entry: any) => (
-            <Card key={entry.id}>
-              <CardContent className="pt-4">
-                <div className="flex items-start justify-between">
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2">
-                      <Badge variant="outline">{entry.incident_type || "General"}</Badge>
-                      <span className="text-sm text-muted-foreground flex items-center gap-1">
-                        <Calendar className="h-3 w-3" />
-                        {format(new Date(entry.created_at), "PPP")}
-                      </span>
+          <div className="grid gap-3 md:grid-cols-2">
+            {entries.map((e: any, i: number) => (
+              <motion.div key={e.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.03 }}>
+                <Card className="border-border/40 bg-card/50 backdrop-blur-md hover:border-violet-400/40 transition-colors">
+                  <CardContent className="p-4">
+                    <div className="flex items-start justify-between mb-2">
+                      <Badge variant="outline" className="text-[10px]">{e.incident_type || "General"}</Badge>
+                      <div className="flex items-center gap-1 text-xs">{moodIcon(e.mood_rating || 5)}<span className="font-bold">{e.mood_rating || 5}</span></div>
                     </div>
-                    <p className="text-sm">{entry.description}</p>
-                    {entry.location && (
-                      <p className="text-xs text-muted-foreground flex items-center gap-1">
-                        <MapPin className="h-3 w-3" /> {entry.location}
-                      </p>
-                    )}
-                    {entry.witnesses && (
-                      <p className="text-xs text-muted-foreground flex items-center gap-1">
-                        <Users className="h-3 w-3" /> Witnesses: {entry.witnesses}
-                      </p>
-                    )}
-                  </div>
-                  <div className="flex items-center gap-1">
-                    {getMoodIcon(entry.mood_rating || 5)}
-                    <span className="text-sm font-bold">{entry.mood_rating || 5}</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))
+                    <p className="text-xs text-muted-foreground flex items-center gap-1 mb-1">
+                      <Calendar className="h-3 w-3" /> {format(new Date(e.created_at), "PPp")}
+                    </p>
+                    <p className="text-sm text-foreground/90 mb-2">{e.description}</p>
+                    {e.location && <p className="text-[11px] text-muted-foreground flex items-center gap-1"><MapPin className="h-3 w-3" /> {e.location}</p>}
+                    {e.witnesses && <p className="text-[11px] text-muted-foreground flex items-center gap-1"><Users className="h-3 w-3" /> {e.witnesses}</p>}
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
         )}
       </div>
     </div>
