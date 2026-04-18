@@ -42,10 +42,10 @@ export function DetectiveRankCard() {
           </div>
         )}
         <div className="flex flex-wrap gap-1 pt-2 border-t border-amber-500/20">
-          {(rank?.badges || []).slice(0, 6).map((b: any, i: number) => (
+          {(Array.isArray(rank?.badges) ? rank.badges : []).slice(0, 6).map((b: any, i: number) => (
             <Badge key={i} variant="outline" className="text-[9px] border-amber-500/40 text-amber-300"><Star className="w-2 h-2 mr-1" />{typeof b === "string" ? b : b.name}</Badge>
           ))}
-          {(!rank?.badges || rank.badges.length === 0) && <div className="text-[10px] text-muted-foreground italic">Earn your first badge by completing 5 analyses.</div>}
+          {(!Array.isArray(rank?.badges) || rank.badges.length === 0) && <div className="text-[10px] text-muted-foreground italic">Earn your first badge by completing 5 analyses.</div>}
         </div>
       </CardContent>
     </Card>
