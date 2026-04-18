@@ -12,6 +12,12 @@ import { ArenaPrizePool } from '@/components/shadow-arena/ArenaPrizePool';
 import { ArenaLeaderboard } from '@/components/shadow-arena/ArenaLeaderboard';
 import { ArenaStoryCard } from '@/components/shadow-arena/ArenaStoryCard';
 import { ArenaAchievements } from '@/components/shadow-arena/ArenaAchievements';
+import { CurseWheelCard } from '@/components/shadow-arena/CurseWheelCard';
+import { StoryChainsCard } from '@/components/shadow-arena/StoryChainsCard';
+import { VoiceCloneCard } from '@/components/shadow-arena/VoiceCloneCard';
+import { CursedAchievementsCard } from '@/components/shadow-arena/CursedAchievementsCard';
+import { HorrorReelsCard } from '@/components/shadow-arena/HorrorReelsCard';
+import { PushNotificationsCard } from '@/components/shadow-arena/PushNotificationsCard';
 import { Plus, Swords, BookOpen, Trophy } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
@@ -94,6 +100,14 @@ export default function ShadowArenaDashboard() {
 
         <ArenaPrizePool totalPool={totalActivePrizePool} />
         <ArenaLeaderboard />
+
+        {/* New 8 advanced features */}
+        <PushNotificationsCard />
+        <CurseWheelCard />
+        <StoryChainsCard />
+        <HorrorReelsCard />
+        <VoiceCloneCard />
+        <CursedAchievementsCard />
         <ArenaAchievements />
 
         <ArenaSteps />

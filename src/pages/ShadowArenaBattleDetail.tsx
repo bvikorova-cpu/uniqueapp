@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { SubscriptionGate } from '@/components/shadow-arena/SubscriptionGate';
 import { LiveStream } from '@/components/shadow-arena/LiveStream';
 import { BattlePredictorPanel } from '@/components/shadow-arena/BattlePredictorPanel';
+import { LiveReactions } from '@/components/shadow-arena/LiveReactions';
 import { Swords, Trophy, Gift, User, ArrowLeft, Clock, Skull } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -206,6 +207,9 @@ export default function ShadowArenaBattleDetail() {
             </Button>
           )}
         </motion.div>
+
+        {/* Live Audience Reactions */}
+        <LiveReactions battleId={battleId!} />
 
         {/* AI Battle Predictor */}
         {participants.length >= 2 && (
