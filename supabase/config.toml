@@ -45,6 +45,24 @@ verify_jwt = true
 [functions.creative-room-ai]
 verify_jwt = true
 
+[functions.shadow-arena-credits-init]
+verify_jwt = true
+
+[functions.shadow-ai-story-generator]
+verify_jwt = true
+
+[functions.shadow-ai-narrator]
+verify_jwt = true
+
+[functions.shadow-battle-predictor]
+verify_jwt = true
+
+[functions.shadow-nightmare-avatar]
+verify_jwt = true
+
+[functions.shadow-credits-checkout]
+verify_jwt = true
+
 [functions.create-secret-santa-payment]
 verify_jwt = true
 
