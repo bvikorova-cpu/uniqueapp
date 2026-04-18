@@ -2,8 +2,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
-async function invoke<T = any>(fn: string, body: any): Promise<T> {
-  const { data, error } = await supabase.functions.invoke(fn, { body });
+async function invokeAction<T = any>(action: string, body: Record<string, any>): Promise<T> {
+  const { data, error } = await supabase.functions.invoke("wellness-ai", { body: { action, ...body } });
   if (error) throw new Error(error.message);
   if (data?.error) throw new Error(data.error);
   return data as T;
@@ -23,7 +23,7 @@ export function useDreamInterpreter() {
     },
   });
   const interpret = useMutation({
-    mutationFn: (dream_text: string) => invoke("wellness-dream-interpreter", { dream_text }),
+    mutationFn: (dream_text: string) => invokeAction("dream", { dream_text }),
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["wellness-dreams"] }); toast.success("Dream interpreted"); },
     onError: (e: Error) => toast.error(e.message),
   });
@@ -45,7 +45,7 @@ export function usePersonalizedMeditation() {
   });
   const generate = useMutation({
     mutationFn: (vars: { topic: string; duration_minutes?: number; voice_id?: string }) =>
-      invoke("wellness-personalized-meditation", vars),
+      invokeAction("meditation", vars),
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["wellness-pers-meditations"] }); toast.success("Meditation generated"); },
     onError: (e: Error) => toast.error(e.message),
   });
@@ -66,7 +66,7 @@ export function useMoodMirror() {
     },
   });
   const analyze = useMutation({
-    mutationFn: (selfie_data_url: string) => invoke("wellness-mood-mirror", { selfie_data_url }),
+    mutationFn: (selfie_data_url: string) => invokeAction("mood", { selfie_data_url }),
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["wellness-mood-mirror"] }); toast.success("Mood analyzed"); },
     onError: (e: Error) => toast.error(e.message),
   });
@@ -88,7 +88,7 @@ export function useAiSleepStory() {
   });
   const generate = useMutation({
     mutationFn: (vars: { theme: string; protagonist?: string; setting?: string; duration_minutes?: number; voice_id?: string }) =>
-      invoke("wellness-ai-sleep-story", vars),
+      invokeAction("sleep", vars),
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["wellness-ai-sleep"] }); toast.success("Sleep story ready"); },
     onError: (e: Error) => toast.error(e.message),
   });
