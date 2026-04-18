@@ -83,6 +83,8 @@ serve(async (req) => {
 
       const aiData = await callAI(LOVABLE_API_KEY, {
         model: "openai/gpt-5-mini",
+        messages: [
+          { role: "system", content: "You are a compassionate dream analyst combining Jungian psychology, modern neuroscience, and gentle spiritual insight." },
           { role: "user", content: `Interpret this dream: ${dream_text}` },
         ],
         tools: [{
