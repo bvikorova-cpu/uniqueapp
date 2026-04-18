@@ -23,6 +23,7 @@ import Home from "./pages/Home";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
+import VerifyReport from "./pages/VerifyReport";
 
 // All other pages - lazy loaded
 import {
@@ -461,6 +462,7 @@ const App = () => {
                         <Route path="/past-life" element={<PastLife />} />
                         <Route path="/anonymous-date" element={<AnonymousDate />} />
                         <Route path="/lie-detector" element={<LieDetector />} />
+                        <Route path="/verify-report" element={<VerifyReport />} />
                         <Route path="/secret-santa" element={<SecretSanta />} />
                         <Route path="/ai-experiences" element={<AIExperiences />} />
                         <Route path="/brand-builder" element={<BrandBuilder />} />

@@ -1,10 +1,16 @@
 import { useState } from "react";
-import { Shield, MessageSquare, Users, Brain, History, AlertTriangle, ArrowLeft, Coins, Sparkles } from "lucide-react";
+import { Shield, MessageSquare, Users, Brain, History, AlertTriangle, ArrowLeft, Coins, Sparkles, Crosshair } from "lucide-react";
 import { LieDetectorCinematicHero } from "@/components/lie-detector/LieDetectorCinematicHero";
 import { VoiceLieDetectionCard } from "@/components/lie-detector/VoiceLieDetectionCard";
 import { ScreenshotForensicsCard } from "@/components/lie-detector/ScreenshotForensicsCard";
 import { ConversationTimelineCard } from "@/components/lie-detector/ConversationTimelineCard";
 import { TruthReportCard } from "@/components/lie-detector/TruthReportCard";
+import { LiveLieCoachCard } from "@/components/lie-detector/LiveLieCoachCard";
+import { MultiPersonProfileCard } from "@/components/lie-detector/MultiPersonProfileCard";
+import { VoiceCloneDetectorCard } from "@/components/lie-detector/VoiceCloneDetectorCard";
+import { DailySpotTheLieCard } from "@/components/lie-detector/DailySpotTheLieCard";
+import { WatermarkedPdfReportCard } from "@/components/lie-detector/WatermarkedPdfReportCard";
+import { InterrogationModeToggle } from "@/components/lie-detector/InterrogationModeToggle";
 import { LieDetectorCredits } from "@/components/lie-detector/LieDetectorCredits";
 import { LieDetectorStreak } from "@/components/lie-detector/LieDetectorStreak";
 import { LieDetectorProgressPreview } from "@/components/lie-detector/LieDetectorProgressPreview";
@@ -101,7 +107,10 @@ const LieDetector = () => {
             >
               <LieDetectorCinematicHero />
 
-              {/* NEW: Forensic AI Suite */}
+              {/* Interrogation Mode Toggle */}
+              <InterrogationModeToggle />
+
+              {/* Forensic AI Suite (original 4) */}
               <div>
                 <div className="flex items-center gap-2 mb-3">
                   <div className="h-px flex-1 bg-gradient-to-r from-transparent via-red-500/40 to-transparent" />
@@ -115,6 +124,26 @@ const LieDetector = () => {
                   <TruthReportCard />
                 </div>
               </div>
+
+              {/* Advanced Forensics */}
+              <div>
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="h-px flex-1 bg-gradient-to-r from-transparent via-amber-500/40 to-transparent" />
+                  <span className="text-xs font-mono uppercase tracking-widest text-amber-400 flex items-center gap-1">
+                    <Crosshair className="w-3 h-3" /> Advanced Forensics
+                  </span>
+                  <div className="h-px flex-1 bg-gradient-to-r from-transparent via-amber-500/40 to-transparent" />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <LiveLieCoachCard />
+                  <MultiPersonProfileCard />
+                  <VoiceCloneDetectorCard />
+                  <WatermarkedPdfReportCard />
+                </div>
+              </div>
+
+              {/* Daily Challenge + Leaderboard */}
+              <DailySpotTheLieCard />
 
               {/* Quick Stats Row */}
               <motion.div
