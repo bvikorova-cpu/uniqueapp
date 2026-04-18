@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { SubscriptionGate } from '@/components/shadow-arena/SubscriptionGate';
 import { LiveStream } from '@/components/shadow-arena/LiveStream';
+import { BattlePredictorPanel } from '@/components/shadow-arena/BattlePredictorPanel';
 import { Swords, Trophy, Gift, User, ArrowLeft, Clock, Skull } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -205,6 +206,11 @@ export default function ShadowArenaBattleDetail() {
             </Button>
           )}
         </motion.div>
+
+        {/* AI Battle Predictor */}
+        {participants.length >= 2 && (
+          <BattlePredictorPanel battleId={battleId!} />
+        )}
 
         {/* Participants header */}
         <div className="flex items-center gap-2 mb-4">

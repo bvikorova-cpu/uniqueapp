@@ -3,7 +3,9 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { SubscriptionGate } from '@/components/shadow-arena/SubscriptionGate';
-import { ArenaHero } from '@/components/shadow-arena/ArenaHero';
+import { ShadowArenaHero } from '@/components/shadow-arena/ShadowArenaHero';
+import { ShadowCreditsCard } from '@/components/shadow-arena/ShadowCreditsCard';
+import { ShadowAIToolsHub } from '@/components/shadow-arena/ShadowAIToolsHub';
 import { ArenaSteps } from '@/components/shadow-arena/ArenaSteps';
 import { LiveBattleTicker } from '@/components/shadow-arena/LiveBattleTicker';
 import { ArenaPrizePool } from '@/components/shadow-arena/ArenaPrizePool';
@@ -74,32 +76,21 @@ export default function ShadowArenaDashboard() {
     .filter(b => b.status === 'active' || b.status === 'waiting_for_participants')
     .reduce((sum, b) => sum + b.total_prize_pool, 0);
 
+  const activeBattlesCount = battles.filter(b => b.status === 'active' || b.status === 'waiting_for_participants').length;
+
   return (
     <SubscriptionGate>
-      <div className="container mx-auto px-4 sm:px-6 pt-24 pb-8 max-w-5xl">
-        <ArenaHero />
+      <div className="container mx-auto px-4 sm:px-6 pt-6 pb-8 max-w-6xl">
+        <ShadowArenaHero
+          totalPrizePool={totalActivePrizePool}
+          activeBattles={activeBattlesCount}
+          topStories={stories.length}
+        />
         <LiveBattleTicker battles={battles} />
 
-        {/* Action Buttons */}
-        <div className="grid md:grid-cols-2 gap-4 mb-8">
-          <Button
-            onClick={() => navigate('/shadow-arena/submit-story')}
-            size="lg"
-            className="h-20 text-lg bg-gradient-to-r from-red-700 to-red-900 hover:from-red-800 hover:to-red-950 border border-red-700/40 shadow-lg"
-          >
-            <Plus className="mr-2 h-6 w-6" />
-            Submit Your Horror Story
-          </Button>
-          <Button
-            onClick={() => navigate('/shadow-arena/battles')}
-            size="lg"
-            variant="outline"
-            className="h-20 text-lg border-purple-700/40 hover:bg-purple-950/20"
-          >
-            <Swords className="mr-2 h-6 w-6" />
-            Browse All Battles
-          </Button>
-        </div>
+        {/* AI Studio + Credits */}
+        <ShadowCreditsCard />
+        <ShadowAIToolsHub />
 
         <ArenaPrizePool totalPool={totalActivePrizePool} />
         <ArenaLeaderboard />

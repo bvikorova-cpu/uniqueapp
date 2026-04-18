@@ -4,6 +4,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { SubscriptionGate } from '@/components/shadow-arena/SubscriptionGate';
+import { StoryNarratorPanel } from '@/components/shadow-arena/StoryNarratorPanel';
 import { ThumbsUp, Image as ImageIcon, Volume2, ArrowLeft, Clock, Eye } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -133,6 +134,13 @@ export default function ShadowArenaStoryDetail() {
             </motion.div>
           </div>
         </motion.div>
+
+        {/* AI Voice Narrator */}
+        <StoryNarratorPanel
+          text={story.content || ""}
+          storyId={story.id}
+          existingAudioUrl={story.ai_sound_url}
+        />
 
         {/* Story content */}
         <motion.div
