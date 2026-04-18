@@ -21,9 +21,11 @@ export function AiSleepStoryCard() {
               <BookOpen className="w-5 h-5 text-blue-200" />
             </div>
             <div className="flex-1">
-              <div className="flex items-center gap-2 mb-1">
+              <div className="flex flex-wrap items-center gap-2 mb-1">
                 <h3 className="font-bold text-foreground">AI Sleep Story</h3>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-200">20 cr</span>
+                <span className="text-[11px] font-black px-2.5 py-1 rounded-full bg-blue-600 text-white shadow-md ring-1 ring-blue-300/40 inline-flex items-center gap-1">
+                  <Sparkles className="w-3 h-3" /> 20 credits
+                </span>
               </div>
               <p className="text-xs text-muted-foreground">Custom bedtime story with calming voice</p>
             </div>
