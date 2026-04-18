@@ -50,11 +50,11 @@ Be concise, specific, and actionable. Reference their current draft when relevan
 Current draft excerpt:
 ${(currentText || "").slice(0, 2000) || "(empty)"}`;
 
-    const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const aiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
-      headers: { Authorization: `Bearer ${lovableKey}`, "Content-Type": "application/json" },
+      headers: { Authorization: `Bearer ${openaiKey}`, "Content-Type": "application/json" },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
+        model: "gpt-4o-mini",
         messages: [{ role: "system", content: systemPrompt }, ...messages],
         stream: true,
       }),
