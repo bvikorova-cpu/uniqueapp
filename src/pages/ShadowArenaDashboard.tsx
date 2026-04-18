@@ -100,6 +100,14 @@ export default function ShadowArenaDashboard() {
 
         <ArenaPrizePool totalPool={totalActivePrizePool} />
         <ArenaLeaderboard />
+
+        {/* New 8 advanced features */}
+        <PushNotificationsCard />
+        <CurseWheelCard />
+        <StoryChainsCard />
+        <HorrorReelsCard />
+        <VoiceCloneCard />
+        <CursedAchievementsCard />
         <ArenaAchievements />
 
         <ArenaSteps />
