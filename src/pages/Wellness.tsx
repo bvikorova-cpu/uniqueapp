@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Loader2, Sparkles, Heart, Brain, Wind, Palette, BookOpen, Check, Volume2, Crown, Zap, Shield, Moon, Target } from "lucide-react";
 import { FloatingParticles } from "@/components/wellness/FloatingParticles";
 import { WellnessHero } from "@/components/wellness/WellnessHero";
+import { WellnessAISanctuary } from "@/components/wellness/WellnessAISanctuary";
 import { WellnessStreak } from "@/components/wellness/WellnessStreak";
 import { WellnessProgressPreview } from "@/components/wellness/WellnessProgressPreview";
 import { WellnessAchievements } from "@/components/wellness/WellnessAchievements";
@@ -214,6 +215,9 @@ export default function Wellness() {
       <div className="relative z-10 container mx-auto px-2 sm:px-4 pt-20 pb-12">
         {/* Hero */}
         <WellnessHero />
+
+        {/* New AI Sanctuary — 4 premium AI features */}
+        <WellnessAISanctuary />
 
         {/* Engagement widgets row (like AI Mentor) */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">

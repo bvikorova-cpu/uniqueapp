@@ -37065,6 +37065,99 @@ export type Database = {
         }
         Relationships: []
       }
+      wellness_ai_sleep_stories: {
+        Row: {
+          audio_url: string | null
+          created_at: string
+          credits_used: number | null
+          duration_minutes: number | null
+          id: string
+          is_favorite: boolean | null
+          play_count: number | null
+          protagonist: string | null
+          setting: string | null
+          status: string
+          story_text: string | null
+          theme: string
+          title: string
+          user_id: string
+          voice_id: string | null
+        }
+        Insert: {
+          audio_url?: string | null
+          created_at?: string
+          credits_used?: number | null
+          duration_minutes?: number | null
+          id?: string
+          is_favorite?: boolean | null
+          play_count?: number | null
+          protagonist?: string | null
+          setting?: string | null
+          status?: string
+          story_text?: string | null
+          theme: string
+          title: string
+          user_id: string
+          voice_id?: string | null
+        }
+        Update: {
+          audio_url?: string | null
+          created_at?: string
+          credits_used?: number | null
+          duration_minutes?: number | null
+          id?: string
+          is_favorite?: boolean | null
+          play_count?: number | null
+          protagonist?: string | null
+          setting?: string | null
+          status?: string
+          story_text?: string | null
+          theme?: string
+          title?: string
+          user_id?: string
+          voice_id?: string | null
+        }
+        Relationships: []
+      }
+      wellness_dream_interpretations: {
+        Row: {
+          created_at: string
+          credits_used: number | null
+          dream_text: string
+          emotional_themes: Json | null
+          id: string
+          illustration_url: string | null
+          interpretation: string | null
+          status: string
+          symbols: Json | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_used?: number | null
+          dream_text: string
+          emotional_themes?: Json | null
+          id?: string
+          illustration_url?: string | null
+          interpretation?: string | null
+          status?: string
+          symbols?: Json | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_used?: number | null
+          dream_text?: string
+          emotional_themes?: Json | null
+          id?: string
+          illustration_url?: string | null
+          interpretation?: string | null
+          status?: string
+          symbols?: Json | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       wellness_journal_entries: {
         Row: {
           ai_insights: string | null
@@ -37125,6 +37218,93 @@ export type Database = {
           notes?: string | null
           session_type?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      wellness_mood_mirror: {
+        Row: {
+          ai_insight: string | null
+          created_at: string
+          credits_used: number | null
+          detected_mood: string | null
+          emotion_breakdown: Json | null
+          fatigue_level: number | null
+          id: string
+          recommendations: Json | null
+          selfie_url: string | null
+          stress_level: number | null
+          user_id: string
+        }
+        Insert: {
+          ai_insight?: string | null
+          created_at?: string
+          credits_used?: number | null
+          detected_mood?: string | null
+          emotion_breakdown?: Json | null
+          fatigue_level?: number | null
+          id?: string
+          recommendations?: Json | null
+          selfie_url?: string | null
+          stress_level?: number | null
+          user_id: string
+        }
+        Update: {
+          ai_insight?: string | null
+          created_at?: string
+          credits_used?: number | null
+          detected_mood?: string | null
+          emotion_breakdown?: Json | null
+          fatigue_level?: number | null
+          id?: string
+          recommendations?: Json | null
+          selfie_url?: string | null
+          stress_level?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      wellness_personalized_meditations: {
+        Row: {
+          audio_url: string | null
+          created_at: string
+          credits_used: number | null
+          duration_minutes: number
+          id: string
+          is_favorite: boolean | null
+          meditation_script: string | null
+          play_count: number | null
+          status: string
+          topic: string
+          user_id: string
+          voice_id: string | null
+        }
+        Insert: {
+          audio_url?: string | null
+          created_at?: string
+          credits_used?: number | null
+          duration_minutes?: number
+          id?: string
+          is_favorite?: boolean | null
+          meditation_script?: string | null
+          play_count?: number | null
+          status?: string
+          topic: string
+          user_id: string
+          voice_id?: string | null
+        }
+        Update: {
+          audio_url?: string | null
+          created_at?: string
+          credits_used?: number | null
+          duration_minutes?: number
+          id?: string
+          is_favorite?: boolean | null
+          meditation_script?: string | null
+          play_count?: number | null
+          status?: string
+          topic?: string
+          user_id?: string
+          voice_id?: string | null
         }
         Relationships: []
       }
