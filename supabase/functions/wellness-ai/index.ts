@@ -82,7 +82,7 @@ serve(async (req) => {
       if (insErr) throw insErr;
 
       const aiData = await callAI(LOVABLE_API_KEY, {
-        model: "google/gemini-2.5-flash",
+        model: "openai/gpt-5-mini",
         messages: [
           { role: "system", content: "You are a compassionate dream analyst combining Jungian psychology, modern neuroscience, and gentle spiritual insight." },
           { role: "user", content: `Interpret this dream: ${dream_text}` },
@@ -134,7 +134,7 @@ serve(async (req) => {
       if (insErr) throw insErr;
 
       const aiData = await callAI(LOVABLE_API_KEY, {
-        model: "google/gemini-2.5-flash",
+        model: "openai/gpt-5-mini",
         messages: [
           { role: "system", content: `You are a master meditation teacher. Write a ${duration_minutes}-minute guided meditation script. Use calm language. Include "..." for natural pauses. No SSML, no labels. Speak in second person.` },
           { role: "user", content: `Topic: ${topic}` },
@@ -171,7 +171,7 @@ serve(async (req) => {
       } catch (e) { console.error("Selfie upload failed:", e); }
 
       const aiData = await callAI(LOVABLE_API_KEY, {
-        model: "google/gemini-2.5-flash",
+        model: "openai/gpt-5-mini",
         messages: [{
           role: "user",
           content: [
@@ -235,7 +235,7 @@ serve(async (req) => {
       if (insErr) throw insErr;
 
       const aiData = await callAI(LOVABLE_API_KEY, {
-        model: "google/gemini-2.5-flash",
+        model: "openai/gpt-5-mini",
         messages: [
           { role: "system", content: `You are a soothing sleep story writer. Write a ~${duration_minutes}-minute calm bedtime story (~${duration_minutes * 130} words). Slow, dreamy, descriptive. No conflict. Use "..." for pauses. End with sleep.` },
           { role: "user", content: `Theme: ${theme}\nProtagonist: ${protagonist}\nSetting: ${setting || "AI's choice"}` },

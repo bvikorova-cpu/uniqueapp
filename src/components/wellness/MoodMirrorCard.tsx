@@ -28,9 +28,11 @@ export function MoodMirrorCard() {
               <Camera className="w-5 h-5 text-rose-200" />
             </div>
             <div className="flex-1">
-              <div className="flex items-center gap-2 mb-1">
+              <div className="flex flex-wrap items-center gap-2 mb-1">
                 <h3 className="font-bold text-foreground">Mood Mirror</h3>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-200">8 cr</span>
+                <span className="text-[11px] font-black px-2.5 py-1 rounded-full bg-rose-600 text-white shadow-md ring-1 ring-rose-300/40 inline-flex items-center gap-1">
+                  <Sparkles className="w-3 h-3" /> 8 credits
+                </span>
               </div>
               <p className="text-xs text-muted-foreground">Selfie analysis: stress, mood, recommendations</p>
             </div>

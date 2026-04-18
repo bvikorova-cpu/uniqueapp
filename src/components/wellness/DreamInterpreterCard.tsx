@@ -22,9 +22,11 @@ export function DreamInterpreterCard() {
               <Moon className="w-5 h-5 text-indigo-200" />
             </div>
             <div className="flex-1">
-              <div className="flex items-center gap-2 mb-1">
+              <div className="flex flex-wrap items-center gap-2 mb-1">
                 <h3 className="font-bold text-foreground">Dream Interpreter</h3>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-200">10 cr</span>
+                <span className="text-[11px] font-black px-2.5 py-1 rounded-full bg-indigo-600 text-white shadow-md ring-1 ring-indigo-300/40 inline-flex items-center gap-1">
+                  <Sparkles className="w-3 h-3" /> 10 credits
+                </span>
               </div>
               <p className="text-xs text-muted-foreground">AI decodes your dream + creates an illustration</p>
             </div>
