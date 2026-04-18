@@ -144,7 +144,7 @@ export default function ShadowArenaStoryDetail() {
         />
 
         {/* Patron Mode — support this author */}
-        {story.user_id && (
+        {story.user_id && story.user_id !== user?.id && (
           <PatronModeCard authorUserId={story.user_id} authorName="this author" />
         )}
 
