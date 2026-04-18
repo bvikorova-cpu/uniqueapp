@@ -168,8 +168,57 @@ serve(async (req) => {
         credits_used: COST,
       }).select().single();
       result = saved;
+    } else if (action === "weekly_insight") {
+      const { entries, mood_logs } = body;
+      if (!Array.isArray(entries)) throw new Error("entries[] required");
+      const aiData = await callAI(LOVABLE_API_KEY, {
+        model: "openai/gpt-5-mini",
+        messages: [
+          { role: "system", content: `You are a compassionate safety coach. Analyze 7 days of journal + mood logs. Output ONLY JSON: {"trend":"improving|stable|declining|critical","insight_text":"<3-4 supportive sentences>","recommendations":[{"title":"...","action":"...","priority":"high|medium|low"}]}` },
+          { role: "user", content: `Journal entries:\n${JSON.stringify(entries).slice(0, 4000)}\n\nMood logs:\n${JSON.stringify(mood_logs || []).slice(0, 2000)}` },
+        ],
+      });
+      const parsed = parseJSON(aiData.choices?.[0]?.message?.content || "") || {};
+      const weekStart = new Date();
+      weekStart.setDate(weekStart.getDate() - weekStart.getDay());
+      const wsStr = weekStart.toISOString().slice(0, 10);
+      const { data: saved } = await supabase.from("safety_journal_insights").upsert({
+        user_id: user.id, week_start: wsStr, insight_text: parsed.insight_text || "Stay strong.",
+        trend: parsed.trend, recommendations: parsed.recommendations || [], credits_used: COST,
+      }, { onConflict: "user_id,week_start" }).select().single();
+      result = saved;
+    } else if (action === "roleplay_score") {
+      const { scenario_id, scenario, user_response, difficulty = "easy", mode = "text" } = body;
+      if (!scenario || !user_response) throw new Error("Scenario + response required");
+      const aiData = await callAI(LOVABLE_API_KEY, {
+        model: "openai/gpt-5-mini",
+        messages: [
+          { role: "system", content: `Score a bullying-response roleplay. Difficulty: ${difficulty}. Output ONLY JSON: {"total_score":0-100,"assertiveness":0-100,"empathy":0-100,"safety":0-100,"feedback":"...","next_line_from_bully":"<what bully says next, in character>"}` },
+          { role: "user", content: `Scenario: ${scenario}\nUser response: ${user_response}` },
+        ],
+      });
+      const parsed = parseJSON(aiData.choices?.[0]?.message?.content || "") || {};
+      const { data: saved } = await supabase.from("safety_roleplay_sessions").insert({
+        user_id: user.id, scenario_id: scenario_id || "custom", difficulty, mode,
+        total_score: parsed.total_score || 0, steps_completed: 1,
+        ai_feedback: parsed.feedback,
+        transcript: [{ role: "user", text: user_response }, { role: "bully", text: parsed.next_line_from_bully }],
+        credits_used: COST,
+      }).select().single();
+      result = { ...saved, ...parsed };
+    } else if (action === "wall_filter") {
+      const { message } = body;
+      if (!message) throw new Error("Message required");
+      const aiData = await callAI(LOVABLE_API_KEY, {
+        model: "openai/gpt-5-mini",
+        messages: [
+          { role: "system", content: `Safety filter for a peer support wall. Output ONLY JSON: {"safe":true|false,"reason":"...","suggested_rewrite":"<if unsafe, supportive rewrite>"}` },
+          { role: "user", content: message.slice(0, 1000) },
+        ],
+      });
+      const parsed = parseJSON(aiData.choices?.[0]?.message?.content || "") || { safe: true };
+      result = parsed;
     } else
-
     if (action === "dream") {
       const { dream_text } = body;
       if (!dream_text || dream_text.length < 10) throw new Error("Please describe your dream in at least 10 characters.");
