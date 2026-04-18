@@ -21485,6 +21485,75 @@ export type Database = {
         }
         Relationships: []
       }
+      lie_detector_reports: {
+        Row: {
+          created_at: string
+          credits_used: number
+          id: string
+          pdf_url: string | null
+          source_id: string | null
+          source_type: string
+          title: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_used?: number
+          id?: string
+          pdf_url?: string | null
+          source_id?: string | null
+          source_type: string
+          title?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_used?: number
+          id?: string
+          pdf_url?: string | null
+          source_id?: string | null
+          source_type?: string
+          title?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      lie_detector_screenshot_analyses: {
+        Row: {
+          created_at: string
+          credits_used: number
+          extracted_text: string | null
+          id: string
+          image_url: string
+          results: Json | null
+          suggested_response: string | null
+          truthfulness_score: number | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_used?: number
+          extracted_text?: string | null
+          id?: string
+          image_url: string
+          results?: Json | null
+          suggested_response?: string | null
+          truthfulness_score?: number | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_used?: number
+          extracted_text?: string | null
+          id?: string
+          image_url?: string
+          results?: Json | null
+          suggested_response?: string | null
+          truthfulness_score?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       lie_detector_sessions: {
         Row: {
           created_at: string | null
@@ -21517,6 +21586,87 @@ export type Database = {
           session_data?: Json | null
           session_type?: string
           status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      lie_detector_timelines: {
+        Row: {
+          created_at: string
+          credits_used: number
+          id: string
+          message_count: number
+          overall_score: number | null
+          patterns: Json | null
+          results: Json | null
+          spikes: Json | null
+          title: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_used?: number
+          id?: string
+          message_count?: number
+          overall_score?: number | null
+          patterns?: Json | null
+          results?: Json | null
+          spikes?: Json | null
+          title?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_used?: number
+          id?: string
+          message_count?: number
+          overall_score?: number | null
+          patterns?: Json | null
+          results?: Json | null
+          spikes?: Json | null
+          title?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      lie_detector_voice_analyses: {
+        Row: {
+          audio_url: string | null
+          created_at: string
+          credits_used: number
+          duration_sec: number | null
+          hesitation_score: number | null
+          id: string
+          results: Json | null
+          stress_score: number | null
+          transcript: string | null
+          truthfulness_score: number | null
+          user_id: string
+        }
+        Insert: {
+          audio_url?: string | null
+          created_at?: string
+          credits_used?: number
+          duration_sec?: number | null
+          hesitation_score?: number | null
+          id?: string
+          results?: Json | null
+          stress_score?: number | null
+          transcript?: string | null
+          truthfulness_score?: number | null
+          user_id: string
+        }
+        Update: {
+          audio_url?: string | null
+          created_at?: string
+          credits_used?: number
+          duration_sec?: number | null
+          hesitation_score?: number | null
+          id?: string
+          results?: Json | null
+          stress_score?: number | null
+          transcript?: string | null
+          truthfulness_score?: number | null
           user_id?: string
         }
         Relationships: []
