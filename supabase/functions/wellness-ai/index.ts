@@ -75,11 +75,96 @@ serve(async (req) => {
     if (!action || !(action in COSTS)) throw new Error("Invalid action. Use: dream | meditation | mood | sleep");
 
     const COST = COSTS[action];
-    const { data: credits } = await supabase.from("ai_credits").select("credits_remaining").eq("user_id", user.id).single();
-    const remaining = credits?.credits_remaining || 0;
+    const isSafety = SAFETY_ACTIONS.has(action);
+    const creditTable = isSafety ? "safety_ai_credits" : "ai_credits";
+
+    let credRow: any = null;
+    {
+      const { data } = await supabase.from(creditTable).select("credits_remaining").eq("user_id", user.id).maybeSingle();
+      credRow = data;
+      if (!credRow && isSafety) {
+        const { data: created } = await supabase.from("safety_ai_credits")
+          .insert({ user_id: user.id, credits_remaining: 20, total_credits_purchased: 20 }).select().single();
+        credRow = created;
+      }
+    }
+    const remaining = credRow?.credits_remaining || 0;
     if (remaining < COST) throw new Error(`Insufficient credits. Need ${COST}, have ${remaining}.`);
 
     let result: any = {};
+
+    // ===== SAFETY ACTIONS =====
+    if (action === "decoder") {
+      const { input_text } = body;
+      if (!input_text || input_text.length < 5) throw new Error("Message too short");
+      const aiData = await callAI(LOVABLE_API_KEY, {
+        model: "openai/gpt-5-mini",
+        messages: [
+          { role: "system", content: `You analyze bullying messages. Output ONLY JSON: {"severity":"low|medium|high|critical","bully_type":"verbal|cyber|social|physical-threat|sexual|discriminatory","emotional_impact":"<2 sentences>","suggested_response":"<safe assertive reply>","action_steps":[{"step":"...","priority":"high|medium|low"}],"red_flags":["..."]}` },
+          { role: "user", content: `Analyze: """${input_text}"""` },
+        ],
+      });
+      const parsed = parseJSON(aiData.choices?.[0]?.message?.content || "") || {};
+      const { data: saved } = await supabase.from("safety_bully_decoder").insert({
+        user_id: user.id, input_text, severity: parsed.severity, bully_type: parsed.bully_type,
+        emotional_impact: parsed.emotional_impact, suggested_response: parsed.suggested_response,
+        action_steps: parsed.action_steps || [], red_flags: parsed.red_flags || [], credits_used: COST,
+      }).select().single();
+      result = saved;
+    } else if (action === "evidence") {
+      const { title, incidents } = body;
+      if (!title || !Array.isArray(incidents) || incidents.length === 0) throw new Error("Title + incidents required");
+      const aiData = await callAI(LOVABLE_API_KEY, {
+        model: "openai/gpt-5-mini",
+        messages: [
+          { role: "system", content: `Build a formal bullying evidence pack. Output ONLY JSON: {"incident_summary":"...","timeline":[{"date":"YYYY-MM-DD","event":"...","severity":"low|medium|high"}],"recommended_recipients":[{"name":"...","reason":"..."}],"formal_report":"<~400 word neutral report>"}` },
+          { role: "user", content: `Title: ${title}\nIncidents:\n${incidents.map((i: any, n: number) => `${n + 1}. ${i.date || "unknown"} — ${i.description}`).join("\n")}` },
+        ],
+      });
+      const parsed = parseJSON(aiData.choices?.[0]?.message?.content || "") || {};
+      const { data: saved } = await supabase.from("safety_evidence_packs").insert({
+        user_id: user.id, title, incident_summary: parsed.incident_summary,
+        timeline: parsed.timeline || [], recommended_recipients: parsed.recommended_recipients || [],
+        formal_report: parsed.formal_report, credits_used: COST,
+      }).select().single();
+      result = saved;
+    } else if (action === "coach") {
+      const { scenario, user_response } = body;
+      if (!scenario || !user_response) throw new Error("Scenario + response required");
+      const aiData = await callAI(LOVABLE_API_KEY, {
+        model: "openai/gpt-5-mini",
+        messages: [
+          { role: "system", content: `Score a roleplay bullying response. Output ONLY JSON: {"assertiveness_score":0-100,"empathy_score":0-100,"safety_score":0-100,"feedback":"...","improved_response":"...","next_steps":["..."]}` },
+          { role: "user", content: `Scenario: ${scenario}\nResponse: ${user_response}` },
+        ],
+      });
+      const parsed = parseJSON(aiData.choices?.[0]?.message?.content || "") || {};
+      const { data: saved } = await supabase.from("safety_response_coach_sessions").insert({
+        user_id: user.id, scenario, user_response,
+        assertiveness_score: parsed.assertiveness_score, empathy_score: parsed.empathy_score,
+        safety_score: parsed.safety_score, feedback: parsed.feedback,
+        improved_response: parsed.improved_response, next_steps: parsed.next_steps || [], credits_used: COST,
+      }).select().single();
+      result = saved;
+    } else if (action === "riskscan") {
+      const { scan_input } = body;
+      if (!scan_input || scan_input.length < 10) throw new Error("Input too short");
+      const aiData = await callAI(LOVABLE_API_KEY, {
+        model: "openai/gpt-5-mini",
+        messages: [
+          { role: "system", content: `Cyberbullying risk analyst. Output ONLY JSON: {"risk_level":"safe|caution|elevated|severe","overall_score":0-100,"threat_patterns":[{"pattern":"...","frequency":"low|medium|high","example":"..."}],"flagged_phrases":["..."],"safety_recommendations":[{"action":"...","why":"..."}]}` },
+          { role: "user", content: `Scan: """${scan_input.slice(0, 5000)}"""` },
+        ],
+      });
+      const parsed = parseJSON(aiData.choices?.[0]?.message?.content || "") || {};
+      const { data: saved } = await supabase.from("safety_cyberbullying_scans").insert({
+        user_id: user.id, scan_input: scan_input.slice(0, 5000), risk_level: parsed.risk_level,
+        overall_score: parsed.overall_score, threat_patterns: parsed.threat_patterns || [],
+        flagged_phrases: parsed.flagged_phrases || [], safety_recommendations: parsed.safety_recommendations || [],
+        credits_used: COST,
+      }).select().single();
+      result = saved;
+    } else
 
     if (action === "dream") {
       const { dream_text } = body;
