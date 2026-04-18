@@ -153,8 +153,45 @@ const LieDetector = () => {
                 </div>
               </div>
 
+              {/* PRO SUITE — Premium AI Tools */}
+              <div>
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="h-px flex-1 bg-gradient-to-r from-transparent via-purple-500/40 to-transparent" />
+                  <span className="text-xs font-mono uppercase tracking-widest text-purple-400 flex items-center gap-1">
+                    <Zap className="w-3 h-3" /> Pro Suite — Elite Forensics
+                  </span>
+                  <div className="h-px flex-1 bg-gradient-to-r from-transparent via-purple-500/40 to-transparent" />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <PolygraphCard />
+                  <CrossExaminationCard />
+                  <VoiceHeatmapCard />
+                  <BodyLanguageScanCard />
+                  <ComparisonModeCard />
+                  <BulkUploadCard />
+                </div>
+              </div>
+
               {/* Daily Challenge + Leaderboard */}
               <DailySpotTheLieCard />
+
+              {/* Detective Workspace */}
+              <div>
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="h-px flex-1 bg-gradient-to-r from-transparent via-yellow-500/40 to-transparent" />
+                  <span className="text-xs font-mono uppercase tracking-widest text-yellow-400 flex items-center gap-1">
+                    <Briefcase className="w-3 h-3" /> Detective Workspace
+                  </span>
+                  <div className="h-px flex-1 bg-gradient-to-r from-transparent via-yellow-500/40 to-transparent" />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <DetectiveRankCard />
+                  <CaseFilesCard />
+                  <MonitoringJobsCard />
+                  <SocialCardGenerator />
+                  <ApiKeysCard />
+                </div>
+              </div>
 
               {/* Quick Stats Row */}
               <motion.div
