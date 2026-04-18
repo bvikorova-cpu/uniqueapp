@@ -82,9 +82,7 @@ serve(async (req) => {
       if (insErr) throw insErr;
 
       const aiData = await callAI(LOVABLE_API_KEY, {
-        model: "google/gemini-2.5-flash",
-        messages: [
-          { role: "system", content: "You are a compassionate dream analyst combining Jungian psychology, modern neuroscience, and gentle spiritual insight." },
+        model: "openai/gpt-5-mini",
           { role: "user", content: `Interpret this dream: ${dream_text}` },
         ],
         tools: [{
