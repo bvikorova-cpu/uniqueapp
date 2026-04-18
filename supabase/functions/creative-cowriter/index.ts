@@ -62,8 +62,10 @@ ${(currentText || "").slice(0, 2000) || "(empty)"}`;
 
     if (!aiResponse.ok) {
       if (aiResponse.status === 429) return new Response(JSON.stringify({ error: "Rate limited" }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-      if (aiResponse.status === 402) return new Response(JSON.stringify({ error: "AI credits exhausted" }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-      throw new Error("AI gateway error");
+      if (aiResponse.status === 401) return new Response(JSON.stringify({ error: "Invalid OpenAI key" }), { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      const errText = await aiResponse.text();
+      console.error("OpenAI error:", aiResponse.status, errText);
+      throw new Error("OpenAI API error");
     }
 
     // Deduct credits
