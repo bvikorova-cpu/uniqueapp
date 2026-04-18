@@ -60,22 +60,22 @@ export function ShadowAIToolsHub() {
           <Wand2 className="w-5 h-5 text-purple-100" />
         </motion.div>
         <div>
-          <h2 className="text-xl font-black bg-gradient-to-r from-purple-300 to-red-400 bg-clip-text text-transparent">
+          <h2 className="text-xl font-black bg-gradient-to-r from-purple-200 to-red-300 bg-clip-text text-transparent drop-shadow-[0_0_15px_rgba(168,85,247,0.4)]">
             Shadow AI Studio
           </h2>
-          <p className="text-xs text-red-200/60">Forge horror with premium AI tools</p>
+          <p className="text-xs text-red-100/90 font-medium">Forge horror with premium AI tools</p>
         </div>
       </div>
 
       <Tabs defaultValue="story">
-        <TabsList className="grid grid-cols-3 w-full bg-black/40 border border-red-900/30">
-          <TabsTrigger value="story" className="data-[state=active]:bg-red-950/40">
+        <TabsList className="grid grid-cols-3 w-full bg-black/60 border border-red-800/50">
+          <TabsTrigger value="story" className="text-red-100 data-[state=active]:bg-red-800/60 data-[state=active]:text-white">
             <BookOpen className="w-3.5 h-3.5 mr-1" /> Story
           </TabsTrigger>
-          <TabsTrigger value="narrator" className="data-[state=active]:bg-red-950/40">
+          <TabsTrigger value="narrator" className="text-red-100 data-[state=active]:bg-red-800/60 data-[state=active]:text-white">
             <Volume2 className="w-3.5 h-3.5 mr-1" /> Voice
           </TabsTrigger>
-          <TabsTrigger value="avatar" className="data-[state=active]:bg-red-950/40">
+          <TabsTrigger value="avatar" className="text-red-100 data-[state=active]:bg-red-800/60 data-[state=active]:text-white">
             <UserIcon className="w-3.5 h-3.5 mr-1" /> Avatar
           </TabsTrigger>
         </TabsList>
@@ -87,25 +87,25 @@ export function ShadowAIToolsHub() {
             onChange={(e) => setStoryPrompt(e.target.value)}
             rows={3}
             placeholder="A few words... 'abandoned doll factory at midnight'"
-            className="bg-background/50 border-red-900/30 font-serif"
+            className="bg-black/60 border-red-800/50 text-red-50 placeholder:text-red-200/50 font-serif"
           />
           <div className="grid grid-cols-2 gap-2">
             <select
               value={storyTone}
               onChange={(e) => setStoryTone(e.target.value)}
-              className="bg-background/50 border border-red-900/30 rounded-md px-3 py-2 text-sm"
+              className="bg-black/60 border border-red-800/50 text-red-50 rounded-md px-3 py-2 text-sm"
             >
-              {TONES.map((t) => <option key={t} value={t}>{t}</option>)}
+              {TONES.map((t) => <option key={t} value={t} className="bg-black text-red-50">{t}</option>)}
             </select>
             <select
               value={storyLength}
               onChange={(e) => setStoryLength(e.target.value)}
-              className="bg-background/50 border border-red-900/30 rounded-md px-3 py-2 text-sm"
+              className="bg-black/60 border border-red-800/50 text-red-50 rounded-md px-3 py-2 text-sm"
             >
-              {LENGTHS.map((l) => <option key={l} value={l}>{l}</option>)}
+              {LENGTHS.map((l) => <option key={l} value={l} className="bg-black text-red-50">{l}</option>)}
             </select>
           </div>
-          <label className="flex items-center gap-2 text-xs text-muted-foreground">
+          <label className="flex items-center gap-2 text-xs text-red-100 font-medium">
             <input type="checkbox" checked={storyImage} onChange={(e) => setStoryImage(e.target.checked)} />
             Include AI horror illustration
           </label>
@@ -149,14 +149,14 @@ export function ShadowAIToolsHub() {
             onChange={(e) => setNarratorText(e.target.value)}
             rows={5}
             placeholder="Paste the horror text to be narrated by a chilling AI voice..."
-            className="bg-background/50 border-red-900/30 font-serif"
+            className="bg-black/60 border-red-800/50 text-red-50 placeholder:text-red-200/50 font-serif"
           />
           <select
             value={narratorVoice}
             onChange={(e) => setNarratorVoice(e.target.value)}
-            className="bg-background/50 border border-red-900/30 rounded-md px-3 py-2 text-sm w-full"
+            className="bg-black/60 border border-red-800/50 text-red-50 rounded-md px-3 py-2 text-sm w-full"
           >
-            {VOICES.map((v) => <option key={v.id} value={v.id}>{v.label}</option>)}
+            {VOICES.map((v) => <option key={v.id} value={v.id} className="bg-black text-red-50">{v.label}</option>)}
           </select>
           <Button
             onClick={() => {
@@ -186,14 +186,14 @@ export function ShadowAIToolsHub() {
             value={avatarUrl}
             onChange={(e) => setAvatarUrl(e.target.value)}
             placeholder="Public image URL (selfie or photo)"
-            className="bg-background/50 border-red-900/30"
+            className="bg-black/60 border-red-800/50 text-red-50 placeholder:text-red-200/50"
           />
           <select
             value={avatarStyle}
             onChange={(e) => setAvatarStyle(e.target.value)}
-            className="bg-background/50 border border-red-900/30 rounded-md px-3 py-2 text-sm w-full"
+            className="bg-black/60 border border-red-800/50 text-red-50 rounded-md px-3 py-2 text-sm w-full"
           >
-            {AVATAR_STYLES.map((s) => <option key={s} value={s}>{s}</option>)}
+            {AVATAR_STYLES.map((s) => <option key={s} value={s} className="bg-black text-red-50">{s}</option>)}
           </select>
           <Button
             onClick={() => {

@@ -25,22 +25,22 @@ export function ShadowCreditsCard() {
             transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
             className="w-12 h-12 rounded-xl bg-gradient-to-br from-red-700 to-purple-900 flex items-center justify-center shadow-[0_0_25px_rgba(127,29,29,0.5)]"
           >
-            <Zap className="w-6 h-6 text-yellow-200" />
+            <Zap className="w-6 h-6 text-yellow-100" />
           </motion.div>
           <div>
-            <p className="text-xs text-red-200/60">Shadow AI Credits</p>
-            <p className="text-3xl font-black text-red-100">
+            <p className="text-sm text-red-200 font-semibold">Shadow AI Credits</p>
+            <p className="text-3xl font-black text-white drop-shadow-[0_0_10px_rgba(248,113,113,0.5)]">
               {isLoading ? "—" : balance}
             </p>
           </div>
         </div>
         <div className="text-right">
-          <p className="text-xs text-red-200/60">Cost per use</p>
-          <div className="flex gap-1.5 text-[11px] text-red-100/80 mt-1">
-            <span className="px-2 py-0.5 rounded bg-red-950/40 border border-red-900/40">Story 4</span>
-            <span className="px-2 py-0.5 rounded bg-red-950/40 border border-red-900/40">Voice 6</span>
-            <span className="px-2 py-0.5 rounded bg-red-950/40 border border-red-900/40">Predict 5</span>
-            <span className="px-2 py-0.5 rounded bg-red-950/40 border border-red-900/40">Avatar 8</span>
+          <p className="text-xs text-red-200 font-semibold mb-1">Cost per use</p>
+          <div className="flex flex-wrap gap-1.5 text-[11px] text-red-50 justify-end">
+            <span className="px-2 py-0.5 rounded bg-red-950/70 border border-red-700/50 font-medium">Story 4</span>
+            <span className="px-2 py-0.5 rounded bg-red-950/70 border border-red-700/50 font-medium">Voice 6</span>
+            <span className="px-2 py-0.5 rounded bg-red-950/70 border border-red-700/50 font-medium">Predict 5</span>
+            <span className="px-2 py-0.5 rounded bg-red-950/70 border border-red-700/50 font-medium">Avatar 8</span>
           </div>
         </div>
       </div>
@@ -49,22 +49,23 @@ export function ShadowCreditsCard() {
         {PACKAGES.map((pkg) => (
           <Button
             key={pkg.id}
-            variant="outline"
             disabled={buyCredits.isPending}
             onClick={() => buyCredits.mutate(pkg.id)}
-            className={`relative h-auto flex-col py-3 border-red-900/30 hover:border-red-700/50 hover:bg-red-950/30 transition-all ${
-              pkg.popular ? "ring-1 ring-red-700/50 bg-red-950/20" : ""
+            className={`relative h-auto flex-col py-3 border transition-all ${
+              pkg.popular
+                ? "bg-gradient-to-br from-red-800 to-red-950 border-red-600 ring-2 ring-red-500/40 hover:from-red-700 hover:to-red-900 shadow-[0_0_20px_rgba(220,38,38,0.4)]"
+                : "bg-black/60 border-red-800/50 hover:bg-red-950/50 hover:border-red-600"
             }`}
           >
             {pkg.popular && (
-              <span className="absolute -top-2 right-2 text-[9px] px-1.5 py-0.5 rounded-full bg-red-700 text-white font-bold">
+              <span className="absolute -top-2 right-2 text-[9px] px-1.5 py-0.5 rounded-full bg-red-500 text-white font-bold shadow-md">
                 POPULAR
               </span>
             )}
-            <Coins className="w-4 h-4 text-yellow-400 mb-1" />
-            <span className="font-bold text-red-100 text-sm">{pkg.credits} cr</span>
-            <span className="text-[11px] text-red-200/60">{pkg.price}</span>
-            <span className="text-[10px] text-muted-foreground mt-0.5">{pkg.label}</span>
+            <Coins className="w-4 h-4 text-yellow-300 mb-1" />
+            <span className="font-black text-white text-base">{pkg.credits} cr</span>
+            <span className="text-[11px] text-red-100 font-semibold">{pkg.price}</span>
+            <span className="text-[10px] text-red-200/90 mt-0.5 font-medium">{pkg.label}</span>
           </Button>
         ))}
       </div>
