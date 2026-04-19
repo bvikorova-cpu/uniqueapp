@@ -324,6 +324,10 @@ const MasterChefNutritionAnalyzer = lazy(() => import("@/pages/MasterChefNutriti
 const MasterChefGlobalMap = lazy(() => import("@/pages/MasterChefGlobalMap"));
 const MasterChefAICoach = lazy(() => import("@/pages/MasterChefAICoach"));
 const MasterChefRecipeFeed = lazy(() => import("@/pages/MasterChefRecipeFeed"));
+const LegalPrivacy = lazy(() => import("@/pages/legal/Privacy"));
+const LegalRefund = lazy(() => import("@/pages/legal/Refund"));
+const LegalCreator = lazy(() => import("@/pages/legal/Creator"));
+const LegalCommunity = lazy(() => import("@/pages/legal/Community"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -417,6 +421,10 @@ const App = () => {
                         <Route path="/auth" element={<Auth />} />
                         <Route path="/reset-password" element={<ResetPassword />} />
                         <Route path="/terms" element={<Terms />} />
+                        <Route path="/legal/privacy" element={<LegalPrivacy />} />
+                        <Route path="/legal/refund" element={<LegalRefund />} />
+                        <Route path="/legal/creator" element={<LegalCreator />} />
+                        <Route path="/legal/community" element={<LegalCommunity />} />
                         <Route path="/education" element={<Education />} />
                         <Route path="/quiz/create" element={<QuizCreator />} />
                         <Route path="/quiz/:quizId" element={<QuizTaker />} />
