@@ -261,6 +261,178 @@ Deno.serve(async (req) => {
       return json({ progress: data ?? [] });
     }
 
+    // ---------- VOICE DIARY (8 cr — voice + handwriting fingerprint) ----------
+    if (action === "voice-diary") {
+      const { handwritingImageUrl, voiceTranscript, voiceDurationSec = 0 } = body;
+      if (!handwritingImageUrl || !voiceTranscript) {
+        return json({ error: "handwritingImageUrl and voiceTranscript required" }, 400);
+      }
+      if ((voiceTranscript as string).length < 20) {
+        return json({ error: "Voice transcript too short — record at least a few sentences." }, 400);
+      }
+      await chargeCredits(supabase, user.id, 8);
+
+      const content = await callAI({
+        model: "google/gemini-2.5-pro",
+        messages: [
+          {
+            role: "system",
+            content:
+              "You are a hybrid voice-and-handwriting emotional fingerprint analyst. Compare the spoken words (transcript) with the handwriting sample to detect congruence between expressed and unconscious emotional state. Return strict JSON: { mood_score: 0-100, energy_score: 0-100, congruence_score: 0-100 (how much voice matches handwriting), emotional_fingerprint: { dominant_emotion, secondary_emotions: string[], stress_indicators: string[], hidden_signals: string[] }, ai_summary: 2-3 paragraph diary insight }.",
+          },
+          {
+            role: "user",
+            content: [
+              { type: "text", text: `Voice transcript (${voiceDurationSec}s):\n"${(voiceTranscript as string).slice(0, 4000)}"\n\nHandwriting sample below:` },
+              { type: "image_url", image_url: { url: handwritingImageUrl } },
+            ],
+          },
+        ],
+        response_format: { type: "json_object" },
+      });
+      const parsed = JSON.parse(content);
+      const { data: row } = await supabase
+        .from("voice_diaries")
+        .insert({
+          user_id: user.id,
+          handwriting_image_url: handwritingImageUrl,
+          voice_transcript: voiceTranscript,
+          voice_duration_sec: voiceDurationSec,
+          mood_score: parsed.mood_score,
+          energy_score: parsed.energy_score,
+          congruence_score: parsed.congruence_score,
+          emotional_fingerprint: parsed.emotional_fingerprint,
+          ai_analysis: parsed,
+          ai_summary: parsed.ai_summary,
+          credits_used: 8,
+        })
+        .select()
+        .single();
+      return json({ diary: row });
+    }
+
+    // ---------- HR BULK CANDIDATE (4 cr per candidate, requires HR Pro sub) ----------
+    if (action === "hr-bulk-analyze") {
+      const { candidateId } = body;
+      if (!candidateId) return json({ error: "candidateId required" }, 400);
+
+      const { data: hr } = await supabase
+        .from("hr_pro_subscriptions")
+        .select("*")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      if (!hr || hr.status !== "active") {
+        return json({ error: "Active HR Pro subscription required" }, 403);
+      }
+      if ((hr.monthly_candidates_used ?? 0) >= (hr.monthly_candidate_quota ?? 500)) {
+        return json({ error: "Monthly candidate quota reached" }, 402);
+      }
+
+      const { data: candidate } = await supabase
+        .from("hr_bulk_candidates")
+        .select("*, hr_bulk_jobs!inner(*)")
+        .eq("id", candidateId)
+        .eq("user_id", user.id)
+        .maybeSingle();
+      if (!candidate) return json({ error: "Candidate not found" }, 404);
+      if (candidate.status === "completed") {
+        return json({ candidate, alreadyDone: true });
+      }
+
+      await chargeCredits(supabase, user.id, 4);
+
+      const job = (candidate as any).hr_bulk_jobs;
+      const requiredTraits = (job?.required_traits ?? []).join(", ") || "leadership, communication, attention to detail, integrity";
+
+      try {
+        const content = await callAI({
+          model: "google/gemini-2.5-flash",
+          messages: [
+            {
+              role: "system",
+              content:
+                "You are an HR-grade graphology expert producing anonymized candidate scoring for ATS export. NEVER mention the candidate's identity, ethnicity, age, or gender. Score professionally and impartially. Return strict JSON: { leadership_score: 0-100, communication_score: 0-100, attention_score: 0-100, integrity_score: 0-100, overall_fit: 0-100, ai_summary: 2-paragraph anonymized professional assessment, ats_export: { strengths: string[], development_areas: string[], recommended_role_fit: string, hiring_recommendation: 'STRONG_HIRE'|'HIRE'|'MAYBE'|'NO_HIRE' } }.",
+            },
+            {
+              role: "user",
+              content: [
+                { type: "text", text: `Job: ${job?.job_title ?? "Unspecified"}\nRequired traits: ${requiredTraits}\nCandidate alias: ${candidate.candidate_alias}` },
+                { type: "image_url", image_url: { url: candidate.image_url } },
+              ],
+            },
+          ],
+          response_format: { type: "json_object" },
+        });
+        const parsed = JSON.parse(content);
+
+        const { data: updated } = await supabase
+          .from("hr_bulk_candidates")
+          .update({
+            leadership_score: parsed.leadership_score,
+            communication_score: parsed.communication_score,
+            attention_score: parsed.attention_score,
+            integrity_score: parsed.integrity_score,
+            overall_fit: parsed.overall_fit,
+            ai_summary: parsed.ai_summary,
+            ats_export_data: parsed.ats_export,
+            credits_used: 4,
+            status: "completed",
+            processed_at: new Date().toISOString(),
+          })
+          .eq("id", candidateId)
+          .select()
+          .single();
+
+        await supabase
+          .from("hr_bulk_jobs")
+          .update({
+            completed_candidates: (job?.completed_candidates ?? 0) + 1,
+            status: ((job?.completed_candidates ?? 0) + 1) >= (job?.total_candidates ?? 0) ? "completed" : "processing",
+          })
+          .eq("id", job.id);
+        await supabase
+          .from("hr_pro_subscriptions")
+          .update({ monthly_candidates_used: (hr.monthly_candidates_used ?? 0) + 1 })
+          .eq("id", hr.id);
+
+        return json({ candidate: updated });
+      } catch (err) {
+        await supabase
+          .from("hr_bulk_candidates")
+          .update({ status: "failed", error_message: (err as Error).message })
+          .eq("id", candidateId);
+        throw err;
+      }
+    }
+
+    // ---------- COUPLES TIMELINE (auto-recorded by Compatibility action when sub exists; 0 cr extra) ----------
+    if (action === "couples-record-compatibility") {
+      const { compatibilityScore, moodTrend, fullAnalysis, couplesSubscriptionId } = body;
+      if (!couplesSubscriptionId || compatibilityScore === undefined) {
+        return json({ error: "couplesSubscriptionId and compatibilityScore required" }, 400);
+      }
+      const { data: sub } = await supabase
+        .from("couples_subscriptions")
+        .select("id, partner_a_user_id, partner_b_user_id, status")
+        .eq("id", couplesSubscriptionId)
+        .maybeSingle();
+      if (!sub || sub.status !== "active") return json({ error: "No active couples sub" }, 403);
+      if (sub.partner_a_user_id !== user.id && sub.partner_b_user_id !== user.id) {
+        return json({ error: "Not a member of this subscription" }, 403);
+      }
+      const { data: tl } = await supabase
+        .from("couples_compatibility_timeline")
+        .insert({
+          couples_subscription_id: couplesSubscriptionId,
+          compatibility_score: compatibilityScore,
+          mood_trend: moodTrend ?? {},
+          full_analysis: fullAnalysis ?? {},
+        })
+        .select()
+        .single();
+      return json({ timeline: tl });
+    }
+
     // ---------- PDF REPORT (5 cr) ----------
     if (action === "pdf-report") {
       const { analysisId, source = "main" } = body;
