@@ -20,6 +20,8 @@ import { AcademyCard } from "@/components/handwriting/AcademyCard";
 import { CouplesSubscriptionCard } from "@/components/handwriting/CouplesSubscriptionCard";
 import { HrProCard } from "@/components/handwriting/HrProCard";
 import { VoiceDiaryCard } from "@/components/handwriting/VoiceDiaryCard";
+import { LiveInkCard } from "@/components/handwriting/LiveInkCard";
+import { TimeCapsuleCard } from "@/components/handwriting/TimeCapsuleCard";
 import { useHandwritingCredits } from "@/hooks/useHandwritingCredits";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";

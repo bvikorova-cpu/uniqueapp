@@ -108,7 +108,6 @@ export function LiveInkCard() {
   const clearAll = () => {
     setStrokes([]);
     redraw([]);
-    live.reset();
   };
 
   const analyze = () => {
