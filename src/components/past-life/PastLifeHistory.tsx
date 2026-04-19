@@ -2,14 +2,17 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import { PastLifeResult } from "./PastLifeResult";
-import { useState } from "react";
-import { Loader2, Calendar, ArrowLeft, Clock, Sparkles, Heart } from "lucide-react";
+import { useState, useMemo } from "react";
+import { Loader2, Calendar, ArrowLeft, Clock, Sparkles, Heart, Search, Filter } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 
 export const PastLifeHistory = () => {
   const [selectedReading, setSelectedReading] = useState<any>(null);
+  const [search, setSearch] = useState("");
+  const [filterType, setFilterType] = useState<string>("all");
 
   const { data: readings, isLoading } = useQuery({
     queryKey: ["past-life-readings"],
@@ -75,14 +78,62 @@ export const PastLifeHistory = () => {
     );
   }
 
+  const filtered = (readings || []).filter((r) => {
+    if (filterType !== "all" && r.reading_type !== filterType) return false;
+    if (search) {
+      const lower = search.toLowerCase();
+      const lives = Array.isArray(r.past_lives) ? JSON.stringify(r.past_lives).toLowerCase() : "";
+      if (!lives.includes(lower) && !(r.karmic_lessons || "").toLowerCase().includes(lower)) return false;
+    }
+    return true;
+  });
+
   return (
     <div className="space-y-6">
-      <h2 className="text-xl sm:text-2xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
-        Your Past Life Readings
-      </h2>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <h2 className="text-xl sm:text-2xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
+          Your Past Life Readings
+        </h2>
+        <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20 self-start sm:self-auto">
+          {filtered.length} of {readings.length} readings
+        </Badge>
+      </div>
+
+      {/* Filter & Search */}
+      <Card className="p-3 bg-card/60 backdrop-blur border-border/40">
+        <div className="flex flex-col sm:flex-row gap-2">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Search by era, name, theme..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="pl-10 bg-muted/10 border-border/50 h-9 text-sm"
+            />
+          </div>
+          <div className="flex gap-1.5 flex-wrap">
+            {[
+              { id: "all", label: "All" },
+              { id: "basic", label: "Basic" },
+              { id: "full", label: "Full" },
+              { id: "soulmate", label: "Soul Mate" },
+            ].map((f) => (
+              <Button
+                key={f.id}
+                size="sm"
+                variant={filterType === f.id ? "default" : "outline"}
+                className="text-xs h-9"
+                onClick={() => setFilterType(f.id)}
+              >
+                {f.label}
+              </Button>
+            ))}
+          </div>
+        </div>
+      </Card>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {readings.map((reading, i) => {
+        {filtered.map((reading, i) => {
           const config = getTypeConfig(reading.reading_type);
           const TypeIcon = config.icon;
           return (
