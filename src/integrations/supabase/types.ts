@@ -1477,6 +1477,50 @@ export type Database = {
         }
         Relationships: []
       }
+      anonymous_dating_match_meta: {
+        Row: {
+          created_at: string
+          id: string
+          last_message_date: string | null
+          match_id: string
+          mood: string | null
+          streak_count: number
+          theme: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          last_message_date?: string | null
+          match_id: string
+          mood?: string | null
+          streak_count?: number
+          theme?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          last_message_date?: string | null
+          match_id?: string
+          mood?: string | null
+          streak_count?: number
+          theme?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "anonymous_dating_match_meta_match_id_fkey"
+            columns: ["match_id"]
+            isOneToOne: false
+            referencedRelation: "anonymous_dating_matches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       anonymous_dating_matches: {
         Row: {
           created_at: string | null
