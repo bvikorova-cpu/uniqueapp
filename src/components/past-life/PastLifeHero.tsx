@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Clock, Users, BookOpen, Sparkles, Infinity, Play, Pause, Volume2, VolumeX } from "lucide-react";
+import { Clock, Users, BookOpen, Sparkles, Infinity as InfinityIcon, Play, Pause, Volume2, VolumeX } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useLiveStats } from "@/hooks/useLiveStats";
