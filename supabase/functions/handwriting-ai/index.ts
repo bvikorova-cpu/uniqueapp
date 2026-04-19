@@ -709,6 +709,81 @@ Deno.serve(async (req) => {
       return json({ recording: row, reading: parsed });
     }
 
+    // ---------- GALLERY MODERATE SUBMISSION (auto, free) ----------
+    // Runs AI safety + auto-grades trait vector. Sets status to 'approved' or 'rejected'.
+    if (action === "gallery-moderate") {
+      const { itemId } = body;
+      if (!itemId) return json({ error: "itemId required" }, 400);
+      const { data: item } = await supabase
+        .from("handwriting_gallery_items")
+        .select("*")
+        .eq("id", itemId)
+        .eq("submitter_user_id", user.id)
+        .maybeSingle();
+      if (!item) return json({ error: "Item not found" }, 404);
+      if (item.status !== "pending") return json({ error: "Already moderated" }, 400);
+
+      const content = await callAI({
+        model: "google/gemini-2.5-flash",
+        messages: [
+          { role: "system", content: "You are a museum curator + content safety officer. Decide if a user-submitted handwriting image belongs in a public graphology gallery. Reject if image contains: faces of identifiable people, nudity, hate symbols, copyrighted artwork (not handwriting), or non-handwriting content. Otherwise extract trait vector. Return strict JSON: { decision: 'approved'|'rejected', rejection_reason: string|null, ai_traits: { creativity:0-100, focus:0-100, energy:0-100, originality:0-100, emotion:0-100 }, suggested_tags: string[] }." },
+          { role: "user", content: [
+            { type: "text", text: `Figure: ${item.figure_name}. Story: ${item.story ?? "—"}. Era: ${item.era ?? "—"}.` },
+            { type: "image_url", image_url: { url: item.image_url } },
+          ] },
+        ],
+        response_format: { type: "json_object" },
+      });
+      const parsed = JSON.parse(content);
+      const newStatus = parsed.decision === "approved" ? "approved" : "rejected";
+      await supabase
+        .from("handwriting_gallery_items")
+        .update({
+          status: newStatus,
+          rejection_reason: parsed.rejection_reason ?? null,
+          ai_traits: parsed.ai_traits ?? {},
+          tags: parsed.suggested_tags ?? item.tags,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", itemId);
+      return json({ status: newStatus, rejection_reason: parsed.rejection_reason ?? null, ai_traits: parsed.ai_traits });
+    }
+
+    // ---------- GALLERY TOUR GUIDE (3 cr per turn) ----------
+    if (action === "gallery-tour") {
+      const { itemId, message } = body;
+      if (!itemId || !message) return json({ error: "itemId and message required" }, 400);
+      if ((message as string).length > 500) return json({ error: "Message too long" }, 400);
+      await chargeCredits(supabase, user.id, 3);
+      const { data: item } = await supabase
+        .from("handwriting_gallery_items")
+        .select("figure_name, era, region, story, ai_traits, tags")
+        .eq("id", itemId)
+        .eq("status", "approved")
+        .maybeSingle();
+      if (!item) return json({ error: "Gallery item not found" }, 404);
+      const { data: history } = await supabase
+        .from("handwriting_gallery_tour_chats")
+        .select("role, content")
+        .eq("user_id", user.id)
+        .eq("item_id", itemId)
+        .order("created_at", { ascending: true })
+        .limit(20);
+
+      const systemPrompt = `You are a friendly museum tour guide who is also a graphologist. You're standing in front of the handwriting of ${item.figure_name} (${item.era ?? "unknown era"}, ${item.region ?? "unknown region"}). Background: ${item.story ?? ""}. AI trait vector: ${JSON.stringify(item.ai_traits)}. Speak warmly, briefly (max 120 words), and weave handwriting analysis into your answer.`;
+      const messages: any[] = [{ role: "system", content: systemPrompt }];
+      for (const m of history ?? []) messages.push({ role: m.role, content: m.content });
+      messages.push({ role: "user", content: message });
+
+      const reply = await callAI({ model: "google/gemini-2.5-flash", messages });
+
+      await supabase.from("handwriting_gallery_tour_chats").insert([
+        { user_id: user.id, item_id: itemId, role: "user", content: message },
+        { user_id: user.id, item_id: itemId, role: "assistant", content: reply },
+      ]);
+      return json({ reply });
+    }
+
     // ---------- PDF REPORT (5 cr) ----------
     if (action === "pdf-report") {
       const { analysisId, source = "main" } = body;
