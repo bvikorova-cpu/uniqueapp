@@ -34,12 +34,11 @@ export const LegalHero = ({ badge, title, subtitle, effectiveDate, stats = [] }:
 
   return (
     <div className="relative min-h-[420px] sm:min-h-[480px] md:h-[60vh] w-full overflow-hidden rounded-3xl border border-amber-400/20 mb-8">
-      <video ref={videoRef} className="absolute inset-0 h-full w-full object-cover brightness-75" autoPlay muted loop playsInline>
+      <video ref={videoRef} className="absolute inset-0 h-full w-full object-cover" autoPlay muted loop playsInline>
         <source src={legalHeroVideo.url} type="video/mp4" />
       </video>
-      {/* Stronger dark overlays for text contrast */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/55 to-black/85" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(0,0,0,0.3)_0%,rgba(0,0,0,0.75)_100%)]" />
+      {/* Light overlay – video visible, text readable via text-shadow */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/35 via-black/20 to-black/55" />
 
       <div className="relative z-10 flex flex-col items-center justify-center text-center px-6 sm:px-10 py-12 sm:py-14 min-h-[420px] sm:min-h-[480px] md:min-h-[60vh]">
         <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="flex justify-center mb-5">
