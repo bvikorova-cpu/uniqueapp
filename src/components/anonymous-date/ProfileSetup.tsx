@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { UserPlus, Sparkles, Loader2, Heart, Shield, Users, MessageCircle, Eye, Check, Star } from "lucide-react";
 import { motion } from "framer-motion";
+import heroVideo from "@/assets/anonymous-date-hero.mp4.asset.json";
 
 const INTERESTS = [
   "Travel", "Movies", "Music", "Sports", "Reading", "Cooking",
@@ -92,39 +93,78 @@ export function ProfileSetup({ onComplete }: { onComplete: () => void }) {
 
   return (
     <div className="space-y-8 max-w-5xl mx-auto">
-      {/* Hero Section */}
+      {/* Cinematic Hero with video */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
+        className="relative overflow-hidden rounded-3xl border border-primary/30 shadow-[0_0_60px_hsl(var(--primary)/0.25)]"
+      >
+        {/* Video background */}
+        <video
+          src={heroVideo.url}
+          autoPlay loop muted playsInline
+          className="absolute inset-0 w-full h-full object-cover brightness-110 saturate-125"
+        />
+        {/* Romantic overlays */}
+        <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-background/55 to-background/85" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_30%,hsl(var(--primary)/0.28),transparent_65%)]" />
+
+        {/* Floating hearts */}
+        {[...Array(8)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute text-pink-400/70 blur-[1px] pointer-events-none"
+            style={{
+              left: `${8 + i * 12}%`,
+              top: `${20 + (i % 3) * 22}%`,
+              fontSize: `${14 + (i % 3) * 6}px`,
+            }}
+            animate={{ y: [0, -40, 0], opacity: [0.3, 0.9, 0.3], scale: [1, 1.3, 1] }}
+            transition={{ duration: 4 + i * 0.4, repeat: Infinity, ease: "easeInOut", delay: i * 0.3 }}
+          >
+            ♥
+          </motion.div>
+        ))}
+
+        <div className="relative z-10 px-6 sm:px-10 py-10 sm:py-14 text-center">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.1 }}
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-card/45 backdrop-blur-md border border-primary/40 shadow-[0_0_20px_hsl(var(--primary)/0.3)] text-sm font-semibold text-foreground mb-4"
+          >
+            <Heart className="w-4 h-4 text-pink-400 fill-pink-400" />
+            <span>Anonymous Dating Platform</span>
+            <Sparkles className="w-4 h-4 text-accent" />
+          </motion.div>
+
+          <motion.h1
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.15 }}
+            className="text-3xl sm:text-5xl lg:text-6xl font-black mb-3 bg-gradient-to-r from-foreground via-primary to-pink-400 bg-clip-text text-transparent drop-shadow-[0_0_30px_hsl(var(--primary)/0.4)]"
+          >
+            Find Love Anonymously
+          </motion.h1>
+
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
+            className="text-foreground/85 text-sm sm:text-lg max-w-2xl mx-auto"
+          >
+            Connect based on personality, not appearance. Chat for 7 days before the big reveal.
+          </motion.p>
+        </div>
+      </motion.div>
+
+      {/* Inner section under video */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.25 }}
         className="text-center"
       >
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.1 }}
-          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-sm text-primary mb-4"
-        >
-          <Heart className="w-4 h-4" />
-          <span className="font-medium">Anonymous Dating Platform</span>
-        </motion.div>
-
-        <motion.h1
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.15 }}
-          className="text-3xl sm:text-5xl lg:text-6xl font-black mb-3 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent"
-        >
-          Find Love Anonymously
-        </motion.h1>
-
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.2 }}
-          className="text-muted-foreground text-sm sm:text-lg max-w-2xl mx-auto mb-6"
-        >
-          Connect based on personality, not appearance. Chat for 7 days before the big reveal.
-        </motion.p>
 
         {/* Heart Connection Ring */}
         <motion.div
