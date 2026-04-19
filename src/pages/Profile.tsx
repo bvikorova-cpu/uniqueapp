@@ -7,20 +7,22 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, Mail, ArrowLeft, MapPin, Phone, Globe, Briefcase, Building2, Calendar, Edit, UserPlus, UserCheck, Users, TrendingUp, Video, Bookmark, Trophy, GraduationCap, Brain, Package, Sparkles, ArrowRightLeft } from "lucide-react";
+import { Loader2, ArrowLeft, Briefcase, Video, Bookmark, Trophy, GraduationCap, Brain, Package, Sparkles, ArrowRightLeft, Users, UserPlus, UserCheck } from "lucide-react";
 import { BrainDuelStats } from "@/components/profile/BrainDuelStats";
 import { useToast } from "@/hooks/use-toast";
 import PostCard from "@/components/feed/PostCard";
 import { CourseHistory } from "@/components/profile/CourseHistory";
 import { UserContests } from "@/components/profile/UserContests";
-import { FollowButton } from "@/components/profile/FollowButton";
 import { FollowersModal } from "@/components/profile/FollowersModal";
 import { useFollowCounts } from "@/hooks/useFollow";
-import { VerifiedFounderBadge, isVerifiedFounder } from "@/components/wall/VerifiedFounderBadge";
 import { DailyXPVideoReward } from "@/components/gamification/DailyXPVideoReward";
 import { MyBazaarListings } from "@/components/profile/MyBazaarListings";
 import { MySkillsHub } from "@/components/profile/MySkillsHub";
 import { MyJobApplications } from "@/components/profile/MyJobApplications";
+import { ProfileHero } from "@/components/profile/ProfileHero";
+import { AchievementsWall } from "@/components/profile/AchievementsWall";
+import { ActivityHeatmap } from "@/components/profile/ActivityHeatmap";
+import { FounderStory } from "@/components/profile/FounderStory";
 
 interface Profile {
   id: string;
