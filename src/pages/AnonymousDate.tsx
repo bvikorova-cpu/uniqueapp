@@ -452,6 +452,9 @@ export default function AnonymousDate() {
                   </Card>
                 </div>
               </div>
+
+              {/* Tips & Future Features */}
+              <AnonymousDateIdeasShowcase />
             </motion.div>
           ) : (
             <motion.div
