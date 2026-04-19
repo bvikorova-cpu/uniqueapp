@@ -17,11 +17,15 @@ const ROUTED: Record<string, string> = {
 
 const invoke = async (fn: string, body: any) => {
   const action = ROUTED[fn];
-  const payload = action
-    ? (fn === "handwriting-academy"
-        ? { action, subAction: body?.action, ...body }
-        : { action, ...body })
-    : body;
+  let payload: any;
+  if (!action) {
+    payload = body;
+  } else if (fn === "handwriting-academy") {
+    const { action: subAction, ...rest } = body ?? {};
+    payload = { action, subAction, ...rest };
+  } else {
+    payload = { action, ...body };
+  }
   const { data, error } = await supabase.functions.invoke(
     action ? "handwriting-ai" : fn,
     { body: payload },
