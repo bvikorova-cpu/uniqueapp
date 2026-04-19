@@ -22,9 +22,26 @@ serve(async (req) => {
     const authHeader = req.headers.get("Authorization")!;
     const token = authHeader.replace("Bearer ", "");
     const { data: { user }, error: userError } = await supabaseClient.auth.getUser(token);
-    
+
     if (userError || !user) {
       throw new Error("User not authenticated");
+    }
+
+    // Optional filters from client
+    let filters: {
+      location?: string;
+      preferred_gender?: string;
+      relationship_goal?: string;
+      languages?: string[];
+      min_shared_interests?: number;
+    } = {};
+    if (req.method === "POST") {
+      try {
+        const body = await req.json();
+        filters = body?.filters ?? {};
+      } catch {
+        // no body
+      }
     }
 
     // Check credits
@@ -37,10 +54,7 @@ serve(async (req) => {
     if (!creditsData || creditsData.credits_remaining < MATCH_COST) {
       return new Response(
         JSON.stringify({ error: "Insufficient credits", required: MATCH_COST }),
-        {
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-          status: 400,
-        }
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400 }
       );
     }
 
@@ -54,24 +68,21 @@ serve(async (req) => {
     if (!userProfile) {
       return new Response(
         JSON.stringify({ error: "Profile not found. Please create a profile first." }),
-        {
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-          status: 400,
-        }
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400 }
       );
     }
 
-    // Find potential matches (users not already matched with)
+    // Already-matched users
     const { data: existingMatches } = await supabaseClient
       .from("anonymous_dating_matches")
       .select("user1_id, user2_id")
       .or(`user1_id.eq.${user.id},user2_id.eq.${user.id}`);
 
-    const matchedUserIds = existingMatches?.flatMap(m => 
+    const matchedUserIds = existingMatches?.flatMap(m =>
       [m.user1_id, m.user2_id].filter(id => id !== user.id)
     ) || [];
 
-    // Find compatible profile
+    // Build query with filters
     let query = supabaseClient
       .from("anonymous_dating_profiles")
       .select("*")
@@ -82,20 +93,56 @@ serve(async (req) => {
       query = query.not("user_id", "in", `(${matchedUserIds.join(",")})`);
     }
 
-    const { data: potentialMatches } = await query.limit(10);
+    const wantedLocation = filters.location || userProfile.location;
+    if (wantedLocation) query = query.ilike("location", `%${wantedLocation}%`);
+
+    const wantedGender = filters.preferred_gender || userProfile.preferred_gender;
+    if (wantedGender && wantedGender !== "Any") query = query.eq("gender", wantedGender);
+
+    const wantedGoal = filters.relationship_goal || userProfile.relationship_goal;
+    if (wantedGoal) query = query.eq("relationship_goal", wantedGoal);
+
+    const wantedLanguages = filters.languages || userProfile.languages;
+    if (wantedLanguages && wantedLanguages.length > 0) {
+      query = query.overlaps("languages", wantedLanguages);
+    }
+
+    let { data: potentialMatches } = await query.limit(20);
+
+    // Fallback: relax filters if nothing matches
+    if (!potentialMatches || potentialMatches.length === 0) {
+      let fb = supabaseClient
+        .from("anonymous_dating_profiles")
+        .select("*")
+        .eq("is_active", true)
+        .neq("user_id", user.id);
+      if (matchedUserIds.length > 0) {
+        fb = fb.not("user_id", "in", `(${matchedUserIds.join(",")})`);
+      }
+      const r = await fb.limit(20);
+      potentialMatches = r.data ?? [];
+    }
 
     if (!potentialMatches || potentialMatches.length === 0) {
       return new Response(
         JSON.stringify({ error: "No compatible matches found at the moment. Try again later!" }),
-        {
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-          status: 404,
-        }
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 404 }
       );
     }
 
-    // Randomly select a match
-    const matchedProfile = potentialMatches[Math.floor(Math.random() * potentialMatches.length)];
+    // Rank by shared interests
+    const ranked = potentialMatches
+      .map((p: any) => ({
+        profile: p,
+        score: (p.interests || []).filter((i: string) => userProfile.interests?.includes(i)).length,
+      }))
+      .sort((a, b) => b.score - a.score);
+
+    const minShared = filters.min_shared_interests ?? 0;
+    const acceptable = ranked.filter(r => r.score >= minShared);
+    const pool = acceptable.length > 0 ? acceptable : ranked;
+    const top = pool.slice(0, Math.min(3, pool.length));
+    const matchedProfile = top[Math.floor(Math.random() * top.length)].profile;
 
     // Create match
     const { data: newMatch, error: matchError } = await supabaseClient

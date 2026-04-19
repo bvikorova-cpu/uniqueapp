@@ -21,6 +21,16 @@ const PERSONALITY_TRAITS = [
   "Romantic", "Ambitious", "Easy-going", "Thoughtful", "Spontaneous", "Loyal"
 ];
 
+const GENDERS = ["Male", "Female", "Non-binary", "Other"];
+const PREFERRED_GENDERS = ["Male", "Female", "Any"];
+const RELATIONSHIP_GOALS = [
+  { value: "friendship", label: "Friendship" },
+  { value: "casual", label: "Casual" },
+  { value: "serious", label: "Serious" },
+  { value: "marriage", label: "Marriage" },
+];
+const LANGUAGES = ["English", "Slovak", "Czech", "German", "Spanish", "French", "Italian", "Polish", "Hungarian", "Russian", "Ukrainian", "Other"];
+
 const HOW_IT_WORKS = [
   { step: "1", title: "Create Profile", desc: "Set up your anonymous identity", icon: "🎭", color: "from-pink-500 to-rose-500" },
   { step: "2", title: "Find Match", desc: "AI pairs you by compatibility", icon: "🔍", color: "from-primary to-accent" },
@@ -39,6 +49,11 @@ export function ProfileSetup({ onComplete }: { onComplete: () => void }) {
   const [anonymousName, setAnonymousName] = useState("");
   const [ageRange, setAgeRange] = useState("");
   const [lookingFor, setLookingFor] = useState("");
+  const [location, setLocation] = useState("");
+  const [gender, setGender] = useState("");
+  const [preferredGender, setPreferredGender] = useState("");
+  const [relationshipGoal, setRelationshipGoal] = useState("");
+  const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
   const [selectedTraits, setSelectedTraits] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
@@ -53,6 +68,12 @@ export function ProfileSetup({ onComplete }: { onComplete: () => void }) {
   const toggleTrait = (trait: string) => {
     setSelectedTraits(prev =>
       prev.includes(trait) ? prev.filter(t => t !== trait) : [...prev, trait]
+    );
+  };
+
+  const toggleLanguage = (lang: string) => {
+    setSelectedLanguages(prev =>
+      prev.includes(lang) ? prev.filter(l => l !== lang) : [...prev, lang]
     );
   };
 
@@ -77,6 +98,11 @@ export function ProfileSetup({ onComplete }: { onComplete: () => void }) {
           interests: selectedInterests,
           personality_traits: selectedTraits,
           looking_for: lookingFor,
+          location: location || null,
+          gender: gender || null,
+          preferred_gender: preferredGender || null,
+          relationship_goal: relationshipGoal || null,
+          languages: selectedLanguages.length ? selectedLanguages : null,
           is_active: true,
         });
 
@@ -145,7 +171,7 @@ export function ProfileSetup({ onComplete }: { onComplete: () => void }) {
             className="text-3xl sm:text-5xl lg:text-6xl font-black mb-3 text-white"
             style={{ textShadow: "0 2px 14px rgba(0,0,0,0.95), 0 0 36px hsl(var(--primary) / 0.55)" }}
           >
-            Find Love <span className="bg-gradient-to-r from-pink-300 via-pink-400 to-rose-400 bg-clip-text text-transparent">Anonymously</span>
+            Find Love <span className="text-white" style={{ textShadow: "0 2px 14px rgba(0,0,0,0.95), 0 0 28px hsl(var(--primary) / 0.65)" }}>Anonymously</span>
           </motion.h1>
 
           <motion.p
@@ -318,23 +344,119 @@ export function ProfileSetup({ onComplete }: { onComplete: () => void }) {
                   <p className="text-[10px] text-muted-foreground mt-1">This is the name your matches will see</p>
                 </div>
 
-                <div>
-                  <Label className="text-sm font-semibold">Age Range *</Label>
-                  <Input
-                    value={ageRange}
-                    onChange={(e) => setAgeRange(e.target.value)}
-                    placeholder="25-30"
-                    required
-                    className="mt-1.5 bg-muted/10 border-border/50 focus:border-primary/50"
-                  />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-sm font-semibold">Age Range *</Label>
+                    <Input
+                      value={ageRange}
+                      onChange={(e) => setAgeRange(e.target.value)}
+                      placeholder="25-30"
+                      required
+                      className="mt-1.5 bg-muted/10 border-border/50 focus:border-primary/50"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-sm font-semibold">📍 Location (City)</Label>
+                    <Input
+                      value={location}
+                      onChange={(e) => setLocation(e.target.value)}
+                      placeholder="Bratislava, Prague, Vienna..."
+                      className="mt-1.5 bg-muted/10 border-border/50 focus:border-primary/50"
+                    />
+                    <p className="text-[10px] text-muted-foreground mt-1">Helps find matches near you</p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-sm font-semibold">Your Gender</Label>
+                    <div className="grid grid-cols-2 gap-1.5 mt-1.5">
+                      {GENDERS.map((g) => (
+                        <button
+                          key={g}
+                          type="button"
+                          onClick={() => setGender(g)}
+                          className={`text-xs px-2 py-2 rounded-lg border transition-all ${
+                            gender === g
+                              ? "bg-primary/15 border-primary/40 text-primary font-semibold"
+                              : "border-border/50 text-muted-foreground hover:border-primary/20"
+                          }`}
+                        >
+                          {g}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-semibold">Looking for</Label>
+                    <div className="grid grid-cols-3 gap-1.5 mt-1.5">
+                      {PREFERRED_GENDERS.map((g) => (
+                        <button
+                          key={g}
+                          type="button"
+                          onClick={() => setPreferredGender(g)}
+                          className={`text-xs px-2 py-2 rounded-lg border transition-all ${
+                            preferredGender === g
+                              ? "bg-pink-500/15 border-pink-500/40 text-pink-400 font-semibold"
+                              : "border-border/50 text-muted-foreground hover:border-pink-500/20"
+                          }`}
+                        >
+                          {g}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
                 </div>
 
                 <div>
-                  <Label className="text-sm font-semibold">Looking For</Label>
+                  <Label className="text-sm font-semibold">💞 Relationship Goal</Label>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-1.5">
+                    {RELATIONSHIP_GOALS.map((goal) => (
+                      <button
+                        key={goal.value}
+                        type="button"
+                        onClick={() => setRelationshipGoal(goal.value)}
+                        className={`text-xs px-3 py-2.5 rounded-xl border transition-all active:scale-[0.97] ${
+                          relationshipGoal === goal.value
+                            ? "bg-gradient-to-br from-primary/15 to-pink-500/15 border-primary/40 text-foreground font-semibold"
+                            : "border-border/50 text-muted-foreground hover:border-primary/25"
+                        }`}
+                      >
+                        {goal.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <Label className="text-sm font-semibold flex items-center gap-2">
+                    🗣️ Languages
+                    <Badge variant="secondary" className="text-[10px]">{selectedLanguages.length} selected</Badge>
+                  </Label>
+                  <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 mt-1.5">
+                    {LANGUAGES.map((lang) => (
+                      <button
+                        key={lang}
+                        type="button"
+                        onClick={() => toggleLanguage(lang)}
+                        className={`text-xs px-2.5 py-2 rounded-lg border transition-all ${
+                          selectedLanguages.includes(lang)
+                            ? "bg-emerald-500/10 border-emerald-500/40 text-emerald-400 font-medium"
+                            : "border-border/50 text-muted-foreground hover:border-emerald-500/20"
+                        }`}
+                      >
+                        {lang}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <Label className="text-sm font-semibold">What you're looking for (description)</Label>
                   <Textarea
                     value={lookingFor}
                     onChange={(e) => setLookingFor(e.target.value)}
-                    placeholder="What are you looking for in a connection?"
+                    placeholder="Describe the kind of connection you'd love to find..."
                     rows={3}
                     className="mt-1.5 bg-muted/10 border-border/50 focus:border-primary/50"
                   />

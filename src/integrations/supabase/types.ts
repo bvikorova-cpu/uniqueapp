@@ -1565,11 +1565,16 @@ export type Database = {
           age_range: string | null
           anonymous_name: string
           created_at: string | null
+          gender: string | null
           id: string
           interests: string[] | null
           is_active: boolean | null
+          languages: string[] | null
+          location: string | null
           looking_for: string | null
           personality_traits: string[] | null
+          preferred_gender: string | null
+          relationship_goal: string | null
           updated_at: string | null
           user_id: string
         }
@@ -1577,11 +1582,16 @@ export type Database = {
           age_range?: string | null
           anonymous_name: string
           created_at?: string | null
+          gender?: string | null
           id?: string
           interests?: string[] | null
           is_active?: boolean | null
+          languages?: string[] | null
+          location?: string | null
           looking_for?: string | null
           personality_traits?: string[] | null
+          preferred_gender?: string | null
+          relationship_goal?: string | null
           updated_at?: string | null
           user_id: string
         }
@@ -1589,11 +1599,16 @@ export type Database = {
           age_range?: string | null
           anonymous_name?: string
           created_at?: string | null
+          gender?: string | null
           id?: string
           interests?: string[] | null
           is_active?: boolean | null
+          languages?: string[] | null
+          location?: string | null
           looking_for?: string | null
           personality_traits?: string[] | null
+          preferred_gender?: string | null
+          relationship_goal?: string | null
           updated_at?: string | null
           user_id?: string
         }
