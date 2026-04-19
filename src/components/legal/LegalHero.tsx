@@ -33,53 +33,37 @@ export const LegalHero = ({ badge, title, subtitle, effectiveDate, stats = [] }:
   };
 
   return (
-    <div className="relative h-[68vh] min-h-[480px] w-full overflow-hidden rounded-3xl border border-amber-400/20 mb-8">
-      <video ref={videoRef} className="absolute inset-0 h-full w-full object-cover brightness-110" autoPlay muted loop playsInline>
+    <div className="relative min-h-[420px] sm:min-h-[480px] md:h-[60vh] w-full overflow-hidden rounded-3xl border border-amber-400/20 mb-8">
+      <video ref={videoRef} className="absolute inset-0 h-full w-full object-cover brightness-75" autoPlay muted loop playsInline>
         <source src={legalHeroVideo.url} type="video/mp4" />
       </video>
-      <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/65" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,transparent_25%,rgba(0,0,0,0.5)_100%)]" />
+      {/* Stronger dark overlays for text contrast */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/55 to-black/85" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(0,0,0,0.3)_0%,rgba(0,0,0,0.75)_100%)]" />
 
-      <div className="relative z-10 h-full flex flex-col justify-between px-6 sm:px-10 py-8 sm:py-12">
-        <div className="flex flex-col items-center text-center">
-          <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="flex justify-center mb-4">
-            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-black/45 backdrop-blur-md text-amber-50 text-xs sm:text-sm font-semibold border border-amber-400/50 shadow-[0_0_30px_rgba(251,191,36,0.25)]">
-              <Shield className="w-4 h-4 text-amber-300" /> {badge} <Sparkles className="w-4 h-4 text-amber-300" />
-            </span>
-          </motion.div>
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
-            className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black mb-3 bg-gradient-to-r from-amber-200 via-yellow-300 to-amber-400 bg-clip-text text-transparent drop-shadow-[0_4px_20px_rgba(0,0,0,0.7)]"
-          >
-            {title}
-          </motion.h1>
-          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}
-            className="text-sm sm:text-base md:text-lg text-amber-50/95 max-w-3xl mx-auto drop-shadow-[0_2px_8px_rgba(0,0,0,0.85)]">
-            {subtitle}
-          </motion.p>
-          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}
-            className="mt-2 text-xs sm:text-sm text-amber-200/80 font-medium">
-            Effective Date: {effectiveDate}
-          </motion.p>
-        </div>
-
-        {stats.length > 0 && (
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
-            className="grid grid-cols-2 sm:grid-cols-4 gap-2 max-w-2xl mx-auto w-full">
-            {stats.map((stat, i) => (
-              <motion.div
-                key={stat.label} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.4 + i * 0.05 }}
-                className="bg-black/40 backdrop-blur-sm rounded-lg p-2 text-center border border-amber-400/30 hover:border-amber-400/60 transition-colors"
-              >
-                <div className="flex items-center justify-center gap-1 mb-0.5 text-amber-300">{stat.icon}
-                  <span className="text-sm sm:text-base font-black text-amber-50 drop-shadow-[0_1px_4px_rgba(0,0,0,0.9)]">{stat.value}</span>
-                </div>
-                <span className="text-[10px] sm:text-xs text-amber-100/85 font-medium leading-tight block">{stat.label}</span>
-              </motion.div>
-            ))}
-          </motion.div>
-        )}
+      <div className="relative z-10 flex flex-col items-center justify-center text-center px-6 sm:px-10 py-12 sm:py-14 min-h-[420px] sm:min-h-[480px] md:min-h-[60vh]">
+        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="flex justify-center mb-5">
+          <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-black/70 backdrop-blur-md text-amber-50 text-xs sm:text-sm font-semibold border border-amber-400/60 shadow-[0_0_30px_rgba(251,191,36,0.35)]">
+            <Shield className="w-4 h-4 text-amber-300" /> {badge} <Sparkles className="w-4 h-4 text-amber-300" />
+          </span>
+        </motion.div>
+        <motion.h1
+          initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
+          className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black mb-4 bg-gradient-to-r from-amber-200 via-yellow-300 to-amber-400 bg-clip-text text-transparent drop-shadow-[0_4px_20px_rgba(0,0,0,0.9)]"
+          style={{ WebkitTextStroke: "1px rgba(0,0,0,0.3)" }}
+        >
+          {title}
+        </motion.h1>
+        <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}
+          className="text-sm sm:text-base md:text-lg text-white max-w-3xl mx-auto font-medium"
+          style={{ textShadow: "0 2px 12px rgba(0,0,0,0.95), 0 0 30px rgba(0,0,0,0.7)" }}>
+          {subtitle}
+        </motion.p>
+        <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}
+          className="mt-3 text-xs sm:text-sm text-amber-200 font-semibold"
+          style={{ textShadow: "0 2px 8px rgba(0,0,0,0.9)" }}>
+          Effective Date: {effectiveDate}
+        </motion.p>
       </div>
 
       <div className="absolute bottom-4 right-4 flex gap-2 z-20">
