@@ -469,6 +469,9 @@ const Profile = () => {
         {/* Activity Heatmap */}
         <ActivityHeatmap userId={userId!} />
 
+        {/* Public Goals */}
+        <PublicGoals userId={userId!} isOwnProfile={currentUserId === userId} />
+
         {/* Daily XP Widget - only for own profile */}
         {currentUserId === userId && (
           <div className="mb-6">
