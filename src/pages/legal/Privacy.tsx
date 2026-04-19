@@ -113,9 +113,10 @@ export default function Privacy() {
               <p>Visit <strong>Settings → Privacy</strong> to manage cookie preferences, or use your browser's cookie controls. Disabling essential cookies will prevent the platform from working.</p>
             </LegalSection>
 
-            <LegalSection id="contact" number="§9" title="Data Protection Officer">
-              <p>Email: <strong>dpo@unique.app</strong></p>
-              <p>Post: UNIQUE s.r.o., Bratislava, Slovak Republic</p>
+            <LegalSection id="contact" number="§9" title="Data Protection Contact">
+              <p>For all privacy-related requests (access, deletion, portability, complaints):</p>
+              <p>Email: <strong>privacy@unique.app</strong></p>
+              <p>We respond to all verified requests within 30 days, regardless of your country of residence.</p>
             </LegalSection>
 
             <AcceptanceTracker documentType="privacy" documentTitle="Privacy & Cookie Policy" />

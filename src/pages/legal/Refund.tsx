@@ -20,15 +20,15 @@ export default function Refund() {
     <div className="min-h-screen bg-background p-4 md:p-8">
       <div className="max-w-7xl mx-auto">
         <LegalHero
-          badge="REFUND & PAYMENTS — UNITY V2.0"
+          badge="GLOBAL REFUND & PAYMENTS — UNITY V2.0"
           title="Refund & Payment Policy"
-          subtitle="How money flows on UNIQUE: credits, subscriptions, creator payouts, revenue splits, and what's refundable (and what's not)."
+          subtitle="How money flows on UNIQUE worldwide: multi-currency credits, subscriptions, creator payouts, revenue splits, and what's refundable (and what's not) — across all supported countries."
           effectiveDate="January 20, 2026"
           stats={[
-            { label: "Currency", value: "EUR", icon: <Banknote className="w-3 h-3" /> },
+            { label: "Currencies", value: "Multi", icon: <Banknote className="w-3 h-3" /> },
             { label: "Processor", value: "Stripe", icon: <CreditCard className="w-3 h-3" /> },
             { label: "Payouts", value: "Weekly", icon: <Coins className="w-3 h-3" /> },
-            { label: "Min", value: "€50", icon: <Scale className="w-3 h-3" /> },
+            { label: "Min", value: "€50 / $50", icon: <Scale className="w-3 h-3" /> },
           ]}
         />
 
