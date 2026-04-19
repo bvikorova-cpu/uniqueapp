@@ -21,6 +21,9 @@ import { ProfileSetup } from "@/components/anonymous-date/ProfileSetup";
 import { ActiveMatches } from "@/components/anonymous-date/ActiveMatches";
 import { AdultWarningModal } from "@/components/anonymous-date/AdultWarningModal";
 import { AccessPaymentGate } from "@/components/anonymous-date/AccessPaymentGate";
+import { AnonymousDatePersonalityCompass } from "@/components/anonymous-date/AnonymousDatePersonalityCompass";
+import { AnonymousDateConversationStarter } from "@/components/anonymous-date/AnonymousDateConversationStarter";
+import { AnonymousDateIdeasShowcase } from "@/components/anonymous-date/AnonymousDateIdeasShowcase";
 import { FloatingParticles } from "@/components/wellness/FloatingParticles";
 
 type ViewType = "hub" | "matches" | "find" | "credits" | "profile";
@@ -289,6 +292,17 @@ export default function AnonymousDate() {
                 <AnonymousDateAchievements />
               </motion.div>
 
+              {/* Daily starter + Personality Compass */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 }}
+                className="grid grid-cols-1 md:grid-cols-2 gap-4"
+              >
+                <AnonymousDateConversationStarter />
+                <AnonymousDatePersonalityCompass />
+              </motion.div>
+
               {/* Main Content: Tools + Sidebar */}
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Left: Tools & Info */}
@@ -438,6 +452,9 @@ export default function AnonymousDate() {
                   </Card>
                 </div>
               </div>
+
+              {/* Tips & Future Features */}
+              <AnonymousDateIdeasShowcase />
             </motion.div>
           ) : (
             <motion.div
