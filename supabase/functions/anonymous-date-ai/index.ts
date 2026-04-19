@@ -1,0 +1,183 @@
+// Anonymous Date AI - 7 paid AI features via Lovable AI Gateway
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+};
+
+type Feature =
+  | "icebreakers"      // 3 cr
+  | "compatibility"    // 5 cr
+  | "reply_coach"      // 2 cr
+  | "personality_mirror" // 8 cr
+  | "voice_preview"    // 10 cr
+  | "date_ideas"       // 5 cr
+  | "love_letter";     // 15 cr
+
+const COSTS: Record<Feature, number> = {
+  icebreakers: 3,
+  compatibility: 5,
+  reply_coach: 2,
+  personality_mirror: 8,
+  voice_preview: 10,
+  date_ideas: 5,
+  love_letter: 15,
+};
+
+const SYSTEM_PROMPTS: Record<Feature, string> = {
+  icebreakers:
+    "You are a witty, warm dating coach. Generate exactly 3 unique, personalised icebreaker questions/lines (max 22 words each) that fit BOTH users' interests and personality traits. Mix tones: playful, deep, flirty. Output ONLY a JSON array of 3 strings.",
+  compatibility:
+    "You are a relationship psychologist. Analyse two anonymous dating profiles and return a JSON object: { score: number 0-100, summary: 1-sentence verdict, strengths: [3 short bullets], watch_outs: [2 short bullets], best_topic: short string }. Be honest, not flattering.",
+  reply_coach:
+    "You are a dating chat coach. Given the last message from the match and context, suggest exactly 3 reply options. Output JSON array of 3 objects: { tone: 'flirty'|'playful'|'sincere', text: string max 30 words }.",
+  personality_mirror:
+    "You are a personality analyst. Based on the user's chat messages and profile, write a deep, warm 'personality mirror' (180-240 words) describing how they likely come across to their match — strengths, vibe, hidden depths. Use second person ('you'). Plain prose, no markdown headers.",
+  voice_preview:
+    "You write a 2-3 sentence (max 35 words) intimate, anonymous voice-note script in the user's vibe. Mysterious, warm, no name reveal. Output ONLY the script text.",
+  date_ideas:
+    "You are a creative date planner. Suggest 5 first-date ideas tailored to shared interests. Output JSON array of 5 objects: { title: string, vibe: string, why_it_works: 1 sentence, est_cost: '€'|'€€'|'€€€' }.",
+  love_letter:
+    "You write a heartfelt, anonymous love letter (200-280 words) from the user to their 7-day match — personality-based, never about looks. Poetic but genuine. Sign with the user's anonymous_name only. Plain prose.",
+};
+
+async function callAI(system: string, userMsg: string, jsonMode = false): Promise<string> {
+  const apiKey = Deno.env.get("LOVABLE_API_KEY");
+  if (!apiKey) throw new Error("LOVABLE_API_KEY not configured");
+
+  const body: any = {
+    model: "google/gemini-2.5-flash",
+    messages: [
+      { role: "system", content: system },
+      { role: "user", content: userMsg },
+    ],
+  };
+  if (jsonMode) body.response_format = { type: "json_object" };
+
+  const r = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+
+  if (r.status === 429) throw new Error("RATE_LIMITED");
+  if (r.status === 402) throw new Error("AI_CREDITS_EXHAUSTED");
+  if (!r.ok) {
+    const t = await r.text();
+    console.error("AI gateway error", r.status, t);
+    throw new Error("AI_ERROR");
+  }
+  const json = await r.json();
+  return json.choices?.[0]?.message?.content ?? "";
+}
+
+Deno.serve(async (req) => {
+  if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
+
+  try {
+    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    const supabaseAnon = Deno.env.get("SUPABASE_ANON_KEY")!;
+    const supabaseService = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const userClient = createClient(supabaseUrl, supabaseAnon, {
+      global: { headers: { Authorization: authHeader } },
+    });
+    const { data: { user } } = await userClient.auth.getUser();
+    if (!user) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const admin = createClient(supabaseUrl, supabaseService);
+
+    const { feature, payload, matchId } = await req.json() as {
+      feature: Feature; payload: any; matchId?: string;
+    };
+
+    if (!SYSTEM_PROMPTS[feature]) {
+      return new Response(JSON.stringify({ error: "Invalid feature" }), {
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const cost = COSTS[feature];
+
+    // Check credits
+    const { data: credits } = await admin
+      .from("anonymous_dating_credits")
+      .select("credits_remaining")
+      .eq("user_id", user.id)
+      .maybeSingle();
+
+    if (!credits || (credits.credits_remaining ?? 0) < cost) {
+      return new Response(JSON.stringify({
+        error: "INSUFFICIENT_CREDITS",
+        message: `You need ${cost} credits for this feature. You have ${credits?.credits_remaining ?? 0}.`,
+      }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+
+    // Build user message from payload
+    const userMsg = JSON.stringify(payload ?? {});
+    const jsonMode = ["icebreakers", "compatibility", "reply_coach", "date_ideas"].includes(feature);
+
+    let aiText: string;
+    try {
+      aiText = await callAI(SYSTEM_PROMPTS[feature], userMsg, jsonMode);
+    } catch (e: any) {
+      const msg = e?.message ?? "AI_ERROR";
+      const status = msg === "RATE_LIMITED" ? 429 : msg === "AI_CREDITS_EXHAUSTED" ? 402 : 500;
+      return new Response(JSON.stringify({ error: msg }), {
+        status, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // Parse if JSON
+    let output: any = aiText;
+    if (jsonMode) {
+      try {
+        const parsed = JSON.parse(aiText);
+        // some prompts ask for array, gateway wraps in object — accept both
+        output = parsed;
+      } catch {
+        output = aiText;
+      }
+    }
+
+    // Deduct credits
+    await admin
+      .from("anonymous_dating_credits")
+      .update({ credits_remaining: credits.credits_remaining - cost, updated_at: new Date().toISOString() })
+      .eq("user_id", user.id);
+
+    // Log usage
+    await admin.from("anonymous_date_ai_usage").insert({
+      user_id: user.id,
+      match_id: matchId ?? null,
+      feature_type: feature,
+      credits_used: cost,
+      input_data: payload ?? {},
+      output_data: typeof output === "string" ? { text: output } : output,
+    });
+
+    return new Response(JSON.stringify({
+      success: true,
+      feature,
+      output,
+      credits_remaining: credits.credits_remaining - cost,
+    }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+  } catch (e: any) {
+    console.error("anonymous-date-ai error", e);
+    return new Response(JSON.stringify({ error: e?.message ?? "Server error" }), {
+      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
+});
