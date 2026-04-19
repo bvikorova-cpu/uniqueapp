@@ -135,7 +135,32 @@ export function PublicGalleryCard() {
                       className="relative rounded-md overflow-hidden border-2 border-amber-300/30 bg-white/60 group text-left"
                       onClick={() => setActiveItem(it)}
                     >
-                      <img src={it.image_url} alt={it.figure_name} className="w-full aspect-square object-cover bg-white" loading="lazy" />
+                      <div className="w-full aspect-square bg-gradient-to-br from-amber-50 to-amber-100 flex items-center justify-center p-3">
+                        <img
+                          src={it.image_url}
+                          alt=""
+                          className="max-w-full max-h-full object-contain"
+                          loading="lazy"
+                          referrerPolicy="no-referrer"
+                          onError={(e) => {
+                            const t = e.currentTarget;
+                            t.style.display = "none";
+                            const parent = t.parentElement;
+                            if (parent && !parent.querySelector(".initials-fallback")) {
+                              const initials = (it.figure_name || "?")
+                                .split(" ")
+                                .map((w: string) => w[0])
+                                .join("")
+                                .slice(0, 3)
+                                .toUpperCase();
+                              const span = document.createElement("span");
+                              span.className = "initials-fallback text-3xl font-serif italic text-amber-700";
+                              span.textContent = initials;
+                              parent.appendChild(span);
+                            }
+                          }}
+                        />
+                      </div>
                       <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-2">
                         <p className="text-[10px] font-semibold text-white truncate">{it.figure_name}</p>
                         <p className="text-[9px] text-white/70 truncate">{it.era}</p>
@@ -201,7 +226,13 @@ export function PublicGalleryCard() {
                 </DialogTitle>
               </DialogHeader>
               <div className="space-y-3">
-                <img src={activeItem.image_url} alt={activeItem.figure_name} className="w-full max-h-48 object-contain rounded-md bg-white border border-amber-200" />
+                <img
+                  src={activeItem.image_url}
+                  alt={activeItem.figure_name}
+                  className="w-full max-h-48 object-contain rounded-md bg-white border border-amber-200 p-3"
+                  referrerPolicy="no-referrer"
+                  onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
+                />
                 <p className="text-xs text-muted-foreground">{activeItem.story}</p>
                 <div className="flex gap-1 flex-wrap text-[10px]">
                   {activeItem.era && <Badge variant="outline">{activeItem.era}</Badge>}
