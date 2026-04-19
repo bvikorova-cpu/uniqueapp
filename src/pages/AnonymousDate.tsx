@@ -19,6 +19,7 @@ import { AnonymousDateComparison } from "@/components/anonymous-date/AnonymousDa
 import { CreditPackages } from "@/components/anonymous-date/CreditPackages";
 import { ProfileSetup } from "@/components/anonymous-date/ProfileSetup";
 import { ActiveMatches } from "@/components/anonymous-date/ActiveMatches";
+import { AnonymousChat } from "@/components/anonymous-date/AnonymousChat";
 import { AdultWarningModal } from "@/components/anonymous-date/AdultWarningModal";
 import { AccessPaymentGate } from "@/components/anonymous-date/AccessPaymentGate";
 import { AnonymousDatePersonalityCompass } from "@/components/anonymous-date/AnonymousDatePersonalityCompass";
@@ -87,6 +88,12 @@ export default function AnonymousDate() {
   const [payingAccess, setPayingAccess] = useState(false);
   const [activeView, setActiveView] = useState<ViewType>("hub");
   const [subscriptionEnd, setSubscriptionEnd] = useState<string | null>(null);
+  const [selectedMatchId, setSelectedMatchId] = useState<string | null>(null);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => setCurrentUserId(data.user?.id ?? null));
+  }, []);
 
   const {
     credits,
@@ -485,9 +492,30 @@ export default function AnonymousDate() {
                 Back to Hub
               </Button>
 
-              {activeView === "matches" && (
-                <ActiveMatches matches={activeMatches} onOpenChat={() => {}} />
+              {activeView === "matches" && !selectedMatchId && (
+                <ActiveMatches matches={activeMatches} onOpenChat={(id) => setSelectedMatchId(id)} />
               )}
+              {activeView === "matches" && selectedMatchId && currentUserId && (() => {
+                const m = activeMatches.find((x: any) => x.id === selectedMatchId);
+                if (!m) { setSelectedMatchId(null); return null; }
+                const isUser1 = m.user1_id === currentUserId;
+                const partner = isUser1 ? m.anonymous_dating_profiles_user2 : m.anonymous_dating_profiles;
+                const me = isUser1 ? m.anonymous_dating_profiles : m.anonymous_dating_profiles_user2;
+                return (
+                  <div className="space-y-3">
+                    <Button variant="ghost" size="sm" onClick={() => setSelectedMatchId(null)} className="gap-2">
+                      <ArrowLeft className="h-4 w-4" /> Back to Matches
+                    </Button>
+                    <AnonymousChat
+                      match={m}
+                      currentUserId={currentUserId}
+                      myName={me?.anonymous_name ?? "You"}
+                      partnerName={partner?.anonymous_name ?? "Match"}
+                      credits={credits}
+                    />
+                  </div>
+                );
+              })()}
               {activeView === "credits" && (
                 <CreditPackages onPurchase={purchaseCredits} currentCredits={credits} />
               )}
