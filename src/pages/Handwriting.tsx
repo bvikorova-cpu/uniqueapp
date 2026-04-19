@@ -175,6 +175,50 @@ const Handwriting = () => {
                 </div>
               </div>
 
+              {/* Forensic Suite */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55 }}
+                className="space-y-4"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="h-px flex-1 bg-gradient-to-r from-transparent via-amber-700/40 to-transparent" />
+                  <h2 className="text-2xl font-black text-amber-900 dark:text-amber-200" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>Forensic Suite</h2>
+                  <div className="h-px flex-1 bg-gradient-to-r from-transparent via-amber-700/40 to-transparent" />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <SignatureAnalyzerCard />
+                  <CompatibilityCard />
+                  <MoodTrackerCard />
+                  <ForgeryDetectorCard />
+                </div>
+              </motion.div>
+
+              {/* Engagement Workshop */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }}
+                className="space-y-4"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="h-px flex-1 bg-gradient-to-r from-transparent via-amber-700/40 to-transparent" />
+                  <h2 className="text-2xl font-black text-amber-900 dark:text-amber-200" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>The Atelier Workshop</h2>
+                  <div className="h-px flex-1 bg-gradient-to-r from-transparent via-amber-700/40 to-transparent" />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <AcademyCard />
+                  <TwinFinderCard />
+                  <FamousComparisonCard />
+                  <Card className="bg-gradient-to-br from-amber-50/80 to-yellow-100/60 border-amber-300/40">
+                    <CardHeader>
+                      <CardTitle className="text-base flex items-center gap-2"><Feather className="w-5 h-5 text-amber-700" /> Forensic PDF Reports</CardTitle>
+                    </CardHeader>
+                    <CardContent className="text-xs text-amber-900/80 space-y-2">
+                      <p>Every analysis can be exported as a court-grade PDF with watermark, executive summary and AI insights.</p>
+                      <p className="italic">Open any analysis in History → "Export Forensic PDF" (5 credits).</p>
+                    </CardContent>
+                  </Card>
+                </div>
+              </motion.div>
+
               {/* How It Works */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
