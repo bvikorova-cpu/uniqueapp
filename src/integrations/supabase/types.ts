@@ -17947,6 +17947,130 @@ export type Database = {
         }
         Relationships: []
       }
+      handwriting_gallery_items: {
+        Row: {
+          ai_traits: Json
+          created_at: string
+          era: string | null
+          figure_name: string
+          id: string
+          image_url: string
+          likes_count: number
+          region: string | null
+          rejection_reason: string | null
+          source_type: string
+          status: string
+          story: string | null
+          submitter_user_id: string | null
+          tags: string[]
+          title: string | null
+          updated_at: string
+          views_count: number
+        }
+        Insert: {
+          ai_traits?: Json
+          created_at?: string
+          era?: string | null
+          figure_name: string
+          id?: string
+          image_url: string
+          likes_count?: number
+          region?: string | null
+          rejection_reason?: string | null
+          source_type?: string
+          status?: string
+          story?: string | null
+          submitter_user_id?: string | null
+          tags?: string[]
+          title?: string | null
+          updated_at?: string
+          views_count?: number
+        }
+        Update: {
+          ai_traits?: Json
+          created_at?: string
+          era?: string | null
+          figure_name?: string
+          id?: string
+          image_url?: string
+          likes_count?: number
+          region?: string | null
+          rejection_reason?: string | null
+          source_type?: string
+          status?: string
+          story?: string | null
+          submitter_user_id?: string | null
+          tags?: string[]
+          title?: string | null
+          updated_at?: string
+          views_count?: number
+        }
+        Relationships: []
+      }
+      handwriting_gallery_likes: {
+        Row: {
+          created_at: string
+          id: string
+          item_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          item_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          item_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "handwriting_gallery_likes_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "handwriting_gallery_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      handwriting_gallery_tour_chats: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          item_id: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          item_id: string
+          role: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          item_id?: string
+          role?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "handwriting_gallery_tour_chats_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "handwriting_gallery_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       handwriting_live_ink_recordings: {
         Row: {
           ai_reading: Json | null
