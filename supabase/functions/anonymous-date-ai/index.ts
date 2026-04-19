@@ -13,7 +13,9 @@ type Feature =
   | "personality_mirror" // 8 cr
   | "voice_preview"    // 10 cr
   | "date_ideas"       // 5 cr
-  | "love_letter";     // 15 cr
+  | "love_letter"      // 15 cr
+  | "daily_question"   // 5 cr
+  | "conversation_coach"; // 10 cr
 
 const COSTS: Record<Feature, number> = {
   icebreakers: 3,
@@ -23,6 +25,8 @@ const COSTS: Record<Feature, number> = {
   voice_preview: 10,
   date_ideas: 5,
   love_letter: 15,
+  daily_question: 5,
+  conversation_coach: 10,
 };
 
 const SYSTEM_PROMPTS: Record<Feature, string> = {
@@ -40,6 +44,10 @@ const SYSTEM_PROMPTS: Record<Feature, string> = {
     "You are a creative date planner. Suggest 5 first-date ideas tailored to shared interests. Output JSON array of 5 objects: { title: string, vibe: string, why_it_works: 1 sentence, est_cost: '€'|'€€'|'€€€' }.",
   love_letter:
     "You write a heartfelt, anonymous love letter (200-280 words) from the user to their 7-day match — personality-based, never about looks. Poetic but genuine. Sign with the user's anonymous_name only. Plain prose.",
+  daily_question:
+    "You generate one thought-provoking daily question for an anonymous dating couple. The question must reveal personality without revealing identity. Mix categories: childhood, dreams, fears, weird preferences, hot takes, hypotheticals. Max 20 words. Output JSON: { question: string, category: string }.",
+  conversation_coach:
+    "You are a dating conversation coach. Analyse the chat history between two anonymous people and give actionable advice. Output JSON: { health_score: 0-100, vibe_summary: 1 sentence, what_is_working: [2 bullets], what_to_improve: [2 bullets], next_move: 1 concrete suggestion (max 25 words), red_flags: [] or [1-2 short strings] }.",
 };
 
 async function callAI(system: string, userMsg: string, jsonMode = false): Promise<string> {
