@@ -23718,6 +23718,42 @@ export type Database = {
           },
         ]
       }
+      lottery_dream_decoder: {
+        Row: {
+          created_at: string
+          credits_used: number | null
+          dream_text: string
+          id: string
+          interpretation: string | null
+          lottery_type: string | null
+          suggested_numbers: number[] | null
+          symbols: Json | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_used?: number | null
+          dream_text: string
+          id?: string
+          interpretation?: string | null
+          lottery_type?: string | null
+          suggested_numbers?: number[] | null
+          symbols?: Json | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_used?: number | null
+          dream_text?: string
+          id?: string
+          interpretation?: string | null
+          lottery_type?: string | null
+          suggested_numbers?: number[] | null
+          symbols?: Json | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       lottery_generations: {
         Row: {
           bonus_numbers: number[] | null
@@ -23745,6 +23781,161 @@ export type Database = {
           lottery_type?: string
           main_numbers?: number[]
           user_id?: string
+        }
+        Relationships: []
+      }
+      lottery_heatmap_snapshots: {
+        Row: {
+          cold_numbers: number[] | null
+          created_at: string
+          frequency_data: Json | null
+          hot_numbers: number[] | null
+          id: string
+          lottery_type: string
+          notes: string | null
+          pair_affinity: Json | null
+          user_id: string
+        }
+        Insert: {
+          cold_numbers?: number[] | null
+          created_at?: string
+          frequency_data?: Json | null
+          hot_numbers?: number[] | null
+          id?: string
+          lottery_type: string
+          notes?: string | null
+          pair_affinity?: Json | null
+          user_id: string
+        }
+        Update: {
+          cold_numbers?: number[] | null
+          created_at?: string
+          frequency_data?: Json | null
+          hot_numbers?: number[] | null
+          id?: string
+          lottery_type?: string
+          notes?: string | null
+          pair_affinity?: Json | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      lottery_numerology: {
+        Row: {
+          birth_date: string
+          created_at: string
+          credits_used: number | null
+          destiny_number: number | null
+          full_name: string
+          id: string
+          life_path_number: number | null
+          lucky_numbers: number[] | null
+          power_days: string[] | null
+          reading: string | null
+          soul_number: number | null
+          user_id: string
+        }
+        Insert: {
+          birth_date: string
+          created_at?: string
+          credits_used?: number | null
+          destiny_number?: number | null
+          full_name: string
+          id?: string
+          life_path_number?: number | null
+          lucky_numbers?: number[] | null
+          power_days?: string[] | null
+          reading?: string | null
+          soul_number?: number | null
+          user_id: string
+        }
+        Update: {
+          birth_date?: string
+          created_at?: string
+          credits_used?: number | null
+          destiny_number?: number | null
+          full_name?: string
+          id?: string
+          life_path_number?: number | null
+          lucky_numbers?: number[] | null
+          power_days?: string[] | null
+          reading?: string | null
+          soul_number?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      lottery_syndicate_members: {
+        Row: {
+          id: string
+          joined_at: string
+          share_percentage: number
+          syndicate_id: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          joined_at?: string
+          share_percentage?: number
+          syndicate_id: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          joined_at?: string
+          share_percentage?: number
+          syndicate_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lottery_syndicate_members_syndicate_id_fkey"
+            columns: ["syndicate_id"]
+            isOneToOne: false
+            referencedRelation: "lottery_syndicates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lottery_syndicates: {
+        Row: {
+          created_at: string
+          id: string
+          join_code: string
+          lottery_type: string
+          max_members: number
+          name: string
+          owner_id: string
+          shared_combinations: Json | null
+          status: string
+          total_winnings: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          join_code: string
+          lottery_type?: string
+          max_members?: number
+          name: string
+          owner_id: string
+          shared_combinations?: Json | null
+          status?: string
+          total_winnings?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          join_code?: string
+          lottery_type?: string
+          max_members?: number
+          name?: string
+          owner_id?: string
+          shared_combinations?: Json | null
+          status?: string
+          total_winnings?: number
+          updated_at?: string
         }
         Relationships: []
       }
@@ -40058,6 +40249,10 @@ export type Database = {
       }
       is_group_member: {
         Args: { p_group_id: string; p_user_id: string }
+        Returns: boolean
+      }
+      is_lottery_syndicate_member: {
+        Args: { _syndicate_id: string; _user_id: string }
         Returns: boolean
       }
       is_shadowbanned: { Args: { p_user_id: string }; Returns: boolean }
