@@ -37,13 +37,13 @@ export const UserContests = ({ userId }: { userId: string }) => {
   }, [userId]);
 
   if (loading) {
-    return <div className="text-center py-8">Načítavam...</div>;
+    return <div className="text-center py-8">Loading...</div>;
   }
 
   if (submissions.length === 0) {
     return (
       <Card className="p-8 text-center text-muted-foreground">
-        Zatiaľ žiadne príspevky do súťaží
+        No contest submissions yet
       </Card>
     );
   }
@@ -89,7 +89,7 @@ export const UserContests = ({ userId }: { userId: string }) => {
                 </p>
               )}
               <p className="text-xs text-muted-foreground mt-2">
-                {new Date(submission.created_at).toLocaleDateString("sk-SK")}
+                {new Date(submission.created_at).toLocaleDateString("en-US")}
               </p>
             </div>
           </div>
