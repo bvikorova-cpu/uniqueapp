@@ -1477,6 +1477,50 @@ export type Database = {
         }
         Relationships: []
       }
+      anonymous_dating_daily_questions: {
+        Row: {
+          created_at: string
+          credits_used: number
+          generated_by: string
+          id: string
+          match_id: string
+          question: string
+          question_date: string
+          user1_answer: string | null
+          user2_answer: string | null
+        }
+        Insert: {
+          created_at?: string
+          credits_used?: number
+          generated_by: string
+          id?: string
+          match_id: string
+          question: string
+          question_date?: string
+          user1_answer?: string | null
+          user2_answer?: string | null
+        }
+        Update: {
+          created_at?: string
+          credits_used?: number
+          generated_by?: string
+          id?: string
+          match_id?: string
+          question?: string
+          question_date?: string
+          user1_answer?: string | null
+          user2_answer?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "anonymous_dating_daily_questions_match_id_fkey"
+            columns: ["match_id"]
+            isOneToOne: false
+            referencedRelation: "anonymous_dating_matches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       anonymous_dating_match_meta: {
         Row: {
           created_at: string
@@ -1527,6 +1571,8 @@ export type Database = {
           expires_at: string | null
           id: string
           match_interests: Json | null
+          reveal_request_at: string | null
+          reveal_request_by: string | null
           revealed_at: string | null
           status: string | null
           updated_at: string | null
@@ -1540,6 +1586,8 @@ export type Database = {
           expires_at?: string | null
           id?: string
           match_interests?: Json | null
+          reveal_request_at?: string | null
+          reveal_request_by?: string | null
           revealed_at?: string | null
           status?: string | null
           updated_at?: string | null
@@ -1553,6 +1601,8 @@ export type Database = {
           expires_at?: string | null
           id?: string
           match_interests?: Json | null
+          reveal_request_at?: string | null
+          reveal_request_by?: string | null
           revealed_at?: string | null
           status?: string | null
           updated_at?: string | null
@@ -1689,6 +1739,41 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      anonymous_dating_safe_words: {
+        Row: {
+          created_at: string
+          id: string
+          match_id: string
+          safe_word: string
+          triggered_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          match_id: string
+          safe_word: string
+          triggered_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          match_id?: string
+          safe_word?: string
+          triggered_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "anonymous_dating_safe_words_match_id_fkey"
+            columns: ["match_id"]
+            isOneToOne: false
+            referencedRelation: "anonymous_dating_matches"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       anonymous_dating_subscriptions: {
         Row: {
