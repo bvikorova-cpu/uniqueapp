@@ -33,14 +33,14 @@ const Terms = () => {
     <div className="min-h-screen bg-background p-4 md:p-8">
       <div className="max-w-7xl mx-auto">
         <LegalHero
-          badge="UNITY V2.0 — PROTECTIVE EDITION"
+          badge="UNITY V2.0 — GLOBAL PROTECTIVE EDITION"
           title="Platform Terms & Conditions"
-          subtitle="The complete legal agreement between you and UNIQUE. Read it carefully — every section, every clause, every safeguard designed to protect creators, users, and the platform."
+          subtitle="The complete legal agreement between you and UNIQUE — a global platform serving creators and users worldwide. Every section, every clause, every safeguard designed to protect creators, users, and the platform across all jurisdictions."
           effectiveDate="January 20, 2026"
           stats={[
             { label: "Sections", value: "12", icon: <FileText className="w-3 h-3" /> },
             { label: "Edition", value: "V2.0", icon: <Shield className="w-3 h-3" /> },
-            { label: "Jurisdiction", value: "EU/SK", icon: <Scale className="w-3 h-3" /> },
+            { label: "Reach", value: "Global", icon: <Scale className="w-3 h-3" /> },
             { label: "Audit", value: "Logged", icon: <Lock className="w-3 h-3" /> },
           ]}
         />
@@ -135,9 +135,10 @@ const Terms = () => {
             </LegalSection>
 
             <LegalSection id="law" number="§11" title="Governing Law & Disputes">
-              <p><strong>11.1.</strong> Governed by the laws of the Slovak Republic.</p>
-              <p><strong>11.2.</strong> Disputes resolved in courts of Bratislava.</p>
-              <p><strong>11.3.</strong> EU consumer rights are not affected.</p>
+              <p><strong>11.1.</strong> UNIQUE operates as a global platform and complies with international standards including GDPR (EU), CCPA (California), UK Data Protection Act, LGPD (Brazil), PIPEDA (Canada), and equivalent privacy and consumer protection laws worldwide.</p>
+              <p><strong>11.2.</strong> Disputes are first addressed through good-faith negotiation, then through binding arbitration under the rules of the International Chamber of Commerce (ICC), with proceedings conducted online in English.</p>
+              <p><strong>11.3.</strong> Mandatory consumer protection rights granted to you by the laws of your country of residence are not affected by these terms.</p>
+              <p><strong>11.4.</strong> Where local law requires, users may also bring claims in the competent courts of their country of residence.</p>
             </LegalSection>
 
             <LegalSection id="changes" number="§12" title="Changes to Terms">
