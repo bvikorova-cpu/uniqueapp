@@ -84,10 +84,6 @@ export const DailyQuestion = ({ matchId, currentUserId, isUser1, partnerName, cr
     if (error) toast({ title: "Submit failed", description: error.message, variant: "destructive" });
     else toast({ title: "Answer locked in", description: "Waiting for partner to answer too." });
   };
-    setSubmitting(false);
-    if (error) toast({ title: "Submit failed", description: error.message, variant: "destructive" });
-    else toast({ title: "Answer locked in", description: "Waiting for partner to answer too." });
-  };
 
   const myAnswer = daily ? (isUser1 ? daily.user1_answer : daily.user2_answer) : null;
   const partnerAnswer = daily ? (isUser1 ? daily.user2_answer : daily.user1_answer) : null;
