@@ -23,6 +23,13 @@ import { ProfileHero } from "@/components/profile/ProfileHero";
 import { AchievementsWall } from "@/components/profile/AchievementsWall";
 import { ActivityHeatmap } from "@/components/profile/ActivityHeatmap";
 import { FounderStory } from "@/components/profile/FounderStory";
+import { StoryHighlights } from "@/components/profile/StoryHighlights";
+import { VoiceIntro } from "@/components/profile/VoiceIntro";
+import { Avatar3D } from "@/components/profile/Avatar3D";
+import { PublicGoals } from "@/components/profile/PublicGoals";
+import { TipJar } from "@/components/profile/TipJar";
+import { ProfileQRCode } from "@/components/profile/ProfileQRCode";
+import { ThemePicker } from "@/components/profile/ThemePicker";
 
 interface Profile {
   id: string;
