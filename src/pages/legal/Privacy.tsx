@@ -21,15 +21,15 @@ export default function Privacy() {
     <div className="min-h-screen bg-background p-4 md:p-8">
       <div className="max-w-7xl mx-auto">
         <LegalHero
-          badge="GDPR COMPLIANT — UNITY V2.0"
+          badge="GLOBAL PRIVACY — UNITY V2.0"
           title="Privacy & Cookies"
-          subtitle="Your data is yours. Here's exactly what we collect, why we collect it, who we share it with, and how you can control all of it."
+          subtitle="Your data is yours. UNIQUE complies with GDPR, CCPA, UK DPA, LGPD, PIPEDA and equivalent privacy laws worldwide. Here's exactly what we collect, why, who we share it with, and how you control it."
           effectiveDate="January 20, 2026"
           stats={[
-            { label: "GDPR", value: "✓", icon: <Lock className="w-3 h-3" /> },
+            { label: "Standards", value: "Global", icon: <Lock className="w-3 h-3" /> },
             { label: "Tracking", value: "Opt-in", icon: <Eye className="w-3 h-3" /> },
             { label: "Cookies", value: "3 types", icon: <Cookie className="w-3 h-3" /> },
-            { label: "Storage", value: "EU only", icon: <Database className="w-3 h-3" /> },
+            { label: "Storage", value: "Multi-region", icon: <Database className="w-3 h-3" /> },
           ]}
         />
 
@@ -113,9 +113,10 @@ export default function Privacy() {
               <p>Visit <strong>Settings → Privacy</strong> to manage cookie preferences, or use your browser's cookie controls. Disabling essential cookies will prevent the platform from working.</p>
             </LegalSection>
 
-            <LegalSection id="contact" number="§9" title="Data Protection Officer">
-              <p>Email: <strong>dpo@unique.app</strong></p>
-              <p>Post: UNIQUE s.r.o., Bratislava, Slovak Republic</p>
+            <LegalSection id="contact" number="§9" title="Data Protection Contact">
+              <p>For all privacy-related requests (access, deletion, portability, complaints):</p>
+              <p>Email: <strong>privacy@unique.app</strong></p>
+              <p>We respond to all verified requests within 30 days, regardless of your country of residence.</p>
             </LegalSection>
 
             <AcceptanceTracker documentType="privacy" documentTitle="Privacy & Cookie Policy" />
