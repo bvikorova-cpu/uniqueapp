@@ -17,6 +17,9 @@ import { ForgeryDetectorCard } from "@/components/handwriting/ForgeryDetectorCar
 import { TwinFinderCard } from "@/components/handwriting/TwinFinderCard";
 import { FamousComparisonCard } from "@/components/handwriting/FamousComparisonCard";
 import { AcademyCard } from "@/components/handwriting/AcademyCard";
+import { CouplesSubscriptionCard } from "@/components/handwriting/CouplesSubscriptionCard";
+import { HrProCard } from "@/components/handwriting/HrProCard";
+import { VoiceDiaryCard } from "@/components/handwriting/VoiceDiaryCard";
 import { useHandwritingCredits } from "@/hooks/useHandwritingCredits";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
