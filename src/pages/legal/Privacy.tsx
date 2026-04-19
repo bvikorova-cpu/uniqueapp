@@ -2,7 +2,6 @@ import { Lock, Cookie, Eye, Database } from "lucide-react";
 import { LegalHero } from "@/components/legal/LegalHero";
 import { LegalSidebar, LegalSection as Section } from "@/components/legal/LegalSidebar";
 import { LegalSection } from "@/components/legal/LegalSection";
-import { LegalAssistant } from "@/components/legal/LegalAssistant";
 import { AcceptanceTracker } from "@/components/legal/AcceptanceTracker";
 
 const SECTIONS: Section[] = [
@@ -16,8 +15,6 @@ const SECTIONS: Section[] = [
   { id: "manage", title: "8. Manage Cookies" },
   { id: "contact", title: "9. Data Protection Officer" },
 ];
-
-const RAW = "UNIQUE Privacy Policy and Cookie Policy under GDPR. We collect account data, content metadata, payment data via Stripe, device info, cookies. Lawful bases include consent, contract, legitimate interest. Rights include access, rectification, erasure, portability, restriction, objection, withdrawal of consent. DPO contact dpo@unique.app.";
 
 export default function Privacy() {
   return (
@@ -40,7 +37,7 @@ export default function Privacy() {
           <LegalSidebar sections={SECTIONS} totalWords={2800} />
 
           <main className="flex-1 space-y-5 min-w-0">
-            <LegalSection id="data" number="§1" title="Data We Collect" documentType="privacy" rawText="We collect: account data (email, username, password hash); profile data (name, avatar, bio); content metadata (uploads, AI generations, comments); payment data via Stripe (we never see card numbers); device data (IP, browser, OS); cookies and session tokens.">
+            <LegalSection id="data" number="§1" title="Data We Collect">
               <ul>
                 <li><strong>Account</strong> — email, username, password hash.</li>
                 <li><strong>Profile</strong> — name, avatar, bio (optional).</li>
@@ -51,7 +48,7 @@ export default function Privacy() {
               </ul>
             </LegalSection>
 
-            <LegalSection id="purpose" number="§2" title="Purpose of Processing" documentType="privacy" rawText="We process your data to: provide the service; process payments and payouts; protect against fraud; improve features through aggregated analytics; comply with legal obligations (tax, AML); send critical service notifications.">
+            <LegalSection id="purpose" number="§2" title="Purpose of Processing">
               <ul>
                 <li>Provide and operate the platform.</li>
                 <li>Process payments and creator payouts.</li>
@@ -62,7 +59,7 @@ export default function Privacy() {
               </ul>
             </LegalSection>
 
-            <LegalSection id="legal" number="§3" title="Legal Basis (GDPR Art. 6)" documentType="privacy" rawText="Lawful bases: consent for analytics and marketing; contract for service delivery and payments; legal obligation for tax records; legitimate interest for fraud prevention and security.">
+            <LegalSection id="legal" number="§3" title="Legal Basis (GDPR Art. 6)">
               <ul>
                 <li><strong>Consent</strong> — analytics, marketing emails.</li>
                 <li><strong>Contract</strong> — service delivery, payments.</li>
@@ -71,7 +68,7 @@ export default function Privacy() {
               </ul>
             </LegalSection>
 
-            <LegalSection id="sharing" number="§4" title="Who We Share Data With" documentType="privacy" rawText="We share data with: Stripe (payments), Supabase (hosting in EU region), Lovable AI Gateway (AI features, anonymized prompts), authorities when legally required. We never sell your data.">
+            <LegalSection id="sharing" number="§4" title="Who We Share Data With">
               <ul>
                 <li><strong>Stripe</strong> — payment processing.</li>
                 <li><strong>Supabase</strong> — hosting (EU region).</li>
@@ -81,7 +78,7 @@ export default function Privacy() {
               <p><strong>We never sell your data.</strong></p>
             </LegalSection>
 
-            <LegalSection id="rights" number="§5" title="Your GDPR Rights" documentType="privacy" rawText="You have the right to: access your data; rectify inaccurate data; erasure (right to be forgotten); data portability; restriction of processing; object to processing; withdraw consent at any time; lodge a complaint with a supervisory authority.">
+            <LegalSection id="rights" number="§5" title="Your GDPR Rights">
               <ul>
                 <li>Access — request a copy of your data.</li>
                 <li>Rectification — correct inaccurate data.</li>
@@ -94,7 +91,7 @@ export default function Privacy() {
               </ul>
             </LegalSection>
 
-            <LegalSection id="retention" number="§6" title="Retention Period" documentType="privacy" rawText="Account data: deleted within 30 days of account closure. Payment records: 10 years (tax law). Logs and security events: 12 months. Anonymized analytics: indefinite.">
+            <LegalSection id="retention" number="§6" title="Retention Period">
               <ul>
                 <li><strong>Account data</strong> — deleted within 30 days of account closure.</li>
                 <li><strong>Payment records</strong> — 10 years (Slovak tax law).</li>
@@ -103,7 +100,7 @@ export default function Privacy() {
               </ul>
             </LegalSection>
 
-            <LegalSection id="cookies" number="§7" title="Cookies We Use" documentType="privacy" rawText="Essential cookies: session, authentication, CSRF (always on). Analytics: anonymized usage stats (opt-in). Preferences: theme, language (opt-in). No third-party advertising cookies.">
+            <LegalSection id="cookies" number="§7" title="Cookies We Use">
               <ul>
                 <li><strong>Essential</strong> — session, auth, CSRF (always on).</li>
                 <li><strong>Analytics</strong> — anonymized usage (opt-in).</li>
@@ -112,11 +109,11 @@ export default function Privacy() {
               <p>We do not use third-party advertising cookies.</p>
             </LegalSection>
 
-            <LegalSection id="manage" number="§8" title="Manage Your Cookies" documentType="privacy" rawText="You can manage cookies in Settings → Privacy or via your browser settings. Disabling essential cookies will break the platform.">
+            <LegalSection id="manage" number="§8" title="Manage Your Cookies">
               <p>Visit <strong>Settings → Privacy</strong> to manage cookie preferences, or use your browser's cookie controls. Disabling essential cookies will prevent the platform from working.</p>
             </LegalSection>
 
-            <LegalSection id="contact" number="§9" title="Data Protection Officer" documentType="privacy" rawText="DPO email dpo@unique.app. Postal address UNIQUE s.r.o., Bratislava, Slovak Republic.">
+            <LegalSection id="contact" number="§9" title="Data Protection Officer">
               <p>Email: <strong>dpo@unique.app</strong></p>
               <p>Post: UNIQUE s.r.o., Bratislava, Slovak Republic</p>
             </LegalSection>
@@ -125,8 +122,6 @@ export default function Privacy() {
           </main>
         </div>
       </div>
-
-      <LegalAssistant documentType="privacy" documentText={RAW} />
     </div>
   );
 }
