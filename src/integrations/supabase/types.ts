@@ -17558,6 +17558,39 @@ export type Database = {
         }
         Relationships: []
       }
+      handwriting_academy_progress: {
+        Row: {
+          completed: boolean
+          completed_at: string | null
+          created_at: string
+          id: string
+          lesson_id: string
+          quiz_score: number | null
+          user_id: string
+          xp_earned: number
+        }
+        Insert: {
+          completed?: boolean
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          lesson_id: string
+          quiz_score?: number | null
+          user_id: string
+          xp_earned?: number
+        }
+        Update: {
+          completed?: boolean
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          lesson_id?: string
+          quiz_score?: number | null
+          user_id?: string
+          xp_earned?: number
+        }
+        Relationships: []
+      }
       handwriting_analyses: {
         Row: {
           analysis_type: string
@@ -17624,6 +17657,51 @@ export type Database = {
         }
         Relationships: []
       }
+      handwriting_compatibility_matches: {
+        Row: {
+          challenges: string[] | null
+          compatibility_score: number | null
+          context: string
+          created_at: string
+          credits_used: number
+          dynamics: Json | null
+          full_report: string | null
+          id: string
+          image_a_url: string
+          image_b_url: string
+          strengths: string[] | null
+          user_id: string
+        }
+        Insert: {
+          challenges?: string[] | null
+          compatibility_score?: number | null
+          context?: string
+          created_at?: string
+          credits_used?: number
+          dynamics?: Json | null
+          full_report?: string | null
+          id?: string
+          image_a_url: string
+          image_b_url: string
+          strengths?: string[] | null
+          user_id: string
+        }
+        Update: {
+          challenges?: string[] | null
+          compatibility_score?: number | null
+          context?: string
+          created_at?: string
+          credits_used?: number
+          dynamics?: Json | null
+          full_report?: string | null
+          id?: string
+          image_a_url?: string
+          image_b_url?: string
+          strengths?: string[] | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       handwriting_credits: {
         Row: {
           created_at: string | null
@@ -17647,6 +17725,240 @@ export type Database = {
           id?: string
           total_credits_purchased?: number
           updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      handwriting_famous_comparisons: {
+        Row: {
+          ai_blurb: string | null
+          created_at: string
+          credits_used: number
+          id: string
+          image_url: string
+          match_score: number | null
+          matched_figure: string
+          shared_traits: string[] | null
+          user_id: string
+        }
+        Insert: {
+          ai_blurb?: string | null
+          created_at?: string
+          credits_used?: number
+          id?: string
+          image_url: string
+          match_score?: number | null
+          matched_figure: string
+          shared_traits?: string[] | null
+          user_id: string
+        }
+        Update: {
+          ai_blurb?: string | null
+          created_at?: string
+          credits_used?: number
+          id?: string
+          image_url?: string
+          match_score?: number | null
+          matched_figure?: string
+          shared_traits?: string[] | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      handwriting_forgery_checks: {
+        Row: {
+          authenticity_probability: number | null
+          created_at: string
+          credits_used: number
+          detailed_report: string | null
+          forgery_probability: number | null
+          id: string
+          matching_traits: Json | null
+          red_flags: Json | null
+          reference_url: string
+          suspect_url: string
+          user_id: string
+          verdict: string | null
+        }
+        Insert: {
+          authenticity_probability?: number | null
+          created_at?: string
+          credits_used?: number
+          detailed_report?: string | null
+          forgery_probability?: number | null
+          id?: string
+          matching_traits?: Json | null
+          red_flags?: Json | null
+          reference_url: string
+          suspect_url: string
+          user_id: string
+          verdict?: string | null
+        }
+        Update: {
+          authenticity_probability?: number | null
+          created_at?: string
+          credits_used?: number
+          detailed_report?: string | null
+          forgery_probability?: number | null
+          id?: string
+          matching_traits?: Json | null
+          red_flags?: Json | null
+          reference_url?: string
+          suspect_url?: string
+          user_id?: string
+          verdict?: string | null
+        }
+        Relationships: []
+      }
+      handwriting_mood_scans: {
+        Row: {
+          ai_insight: string | null
+          created_at: string
+          credits_used: number
+          energy_score: number | null
+          focus_score: number | null
+          id: string
+          image_url: string
+          mood_score: number | null
+          notes: string | null
+          scan_date: string
+          stress_score: number | null
+          user_id: string
+        }
+        Insert: {
+          ai_insight?: string | null
+          created_at?: string
+          credits_used?: number
+          energy_score?: number | null
+          focus_score?: number | null
+          id?: string
+          image_url: string
+          mood_score?: number | null
+          notes?: string | null
+          scan_date?: string
+          stress_score?: number | null
+          user_id: string
+        }
+        Update: {
+          ai_insight?: string | null
+          created_at?: string
+          credits_used?: number
+          energy_score?: number | null
+          focus_score?: number | null
+          id?: string
+          image_url?: string
+          mood_score?: number | null
+          notes?: string | null
+          scan_date?: string
+          stress_score?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      handwriting_pdf_reports: {
+        Row: {
+          created_at: string
+          credits_used: number
+          id: string
+          report_type: string
+          report_url: string | null
+          source_analysis_id: string | null
+          status: string
+          user_id: string
+          watermark: string | null
+        }
+        Insert: {
+          created_at?: string
+          credits_used?: number
+          id?: string
+          report_type?: string
+          report_url?: string | null
+          source_analysis_id?: string | null
+          status?: string
+          user_id: string
+          watermark?: string | null
+        }
+        Update: {
+          created_at?: string
+          credits_used?: number
+          id?: string
+          report_type?: string
+          report_url?: string | null
+          source_analysis_id?: string | null
+          status?: string
+          user_id?: string
+          watermark?: string | null
+        }
+        Relationships: []
+      }
+      handwriting_signature_analyses: {
+        Row: {
+          analysis: Json | null
+          authenticity_score: number | null
+          confidence_score: number | null
+          created_at: string
+          credits_used: number
+          ego_score: number | null
+          id: string
+          image_url: string
+          public_persona: string | null
+          user_id: string
+        }
+        Insert: {
+          analysis?: Json | null
+          authenticity_score?: number | null
+          confidence_score?: number | null
+          created_at?: string
+          credits_used?: number
+          ego_score?: number | null
+          id?: string
+          image_url: string
+          public_persona?: string | null
+          user_id: string
+        }
+        Update: {
+          analysis?: Json | null
+          authenticity_score?: number | null
+          confidence_score?: number | null
+          created_at?: string
+          credits_used?: number
+          ego_score?: number | null
+          id?: string
+          image_url?: string
+          public_persona?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      handwriting_twin_profiles: {
+        Row: {
+          created_at: string
+          display_name: string
+          id: string
+          is_public: boolean
+          sample_url: string
+          trait_vector: Json
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          display_name: string
+          id?: string
+          is_public?: boolean
+          sample_url: string
+          trait_vector: Json
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          display_name?: string
+          id?: string
+          is_public?: boolean
+          sample_url?: string
+          trait_vector?: Json
+          updated_at?: string
           user_id?: string
         }
         Relationships: []
