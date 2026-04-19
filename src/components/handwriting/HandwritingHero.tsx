@@ -43,9 +43,9 @@ export const HandwritingHero = () => {
         autoPlay loop muted playsInline
         className="absolute inset-0 w-full h-full object-cover"
       />
-      {/* Parchment + burgundy gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[hsl(35_45%_15%/.92)] via-[hsl(15_55%_22%/.85)] to-[hsl(45_60%_25%/.80)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,hsl(45_85%_60%/.18),transparent_60%)]" />
+      {/* Parchment + burgundy gradient overlay — lighter for brighter video */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[hsl(35_45%_25%/.55)] via-[hsl(15_55%_30%/.40)] to-[hsl(45_60%_40%/.35)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,hsl(45_85%_70%/.22),transparent_65%)]" />
 
       <div className="relative z-10 px-6 sm:px-12 py-14 sm:py-20 text-center">
         <motion.div
