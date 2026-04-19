@@ -9,15 +9,17 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { 
-  ArrowLeft, 
-  User, 
-  Bell, 
-  Lock, 
-  Globe, 
+import {
+  ArrowLeft,
+  User,
+  Bell,
+  Lock,
+  Globe,
   Palette,
-  Save
+  Save,
+  Settings as SettingsIcon,
 } from "lucide-react";
+import { ProfilePageHero } from "@/components/profile/ProfilePageHero";
 
 export default function Settings() {
   const navigate = useNavigate();
