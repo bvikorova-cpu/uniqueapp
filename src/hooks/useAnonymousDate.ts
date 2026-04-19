@@ -89,10 +89,18 @@ export function useAnonymousDate() {
     }
   };
 
-  const findMatch = async () => {
+  const findMatch = async (filters?: {
+    location?: string;
+    preferred_gender?: string;
+    relationship_goal?: string;
+    languages?: string[];
+    min_shared_interests?: number;
+  }) => {
     try {
       setLoading(true);
-      const { data, error } = await supabase.functions.invoke("find-anonymous-match");
+      const { data, error } = await supabase.functions.invoke("find-anonymous-match", {
+        body: { filters: filters ?? {} },
+      });
 
       if (error) throw error;
 
