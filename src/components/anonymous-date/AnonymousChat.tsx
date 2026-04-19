@@ -4,7 +4,9 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Send, Check, CheckCheck, Settings2 } from "lucide-react";
+import { Send, Check, CheckCheck, Settings2, Download, AlertOctagon } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 import { useAnonymousChat } from "@/hooks/useAnonymousChat";
 import { useMatchMeta } from "@/hooks/useMatchMeta";
 import { TypingIndicator } from "./TypingIndicator";
@@ -16,23 +18,70 @@ import { StreakBadge } from "./StreakBadge";
 import { ConversationMilestones } from "./ConversationMilestones";
 import { MoodSelector } from "./MoodSelector";
 import { ChatThemePicker, themeGradient } from "./ChatThemePicker";
+import { DailyQuestion } from "./DailyQuestion";
+import { ConversationCoach } from "./ConversationCoach";
+import { RevealLock } from "./RevealLock";
+import { SafeWordSettings } from "./SafeWordSettings";
+import { exportChatToPDF } from "@/lib/exportChatPDF";
 
-interface Props {
-  matchId: string;
-  currentUserId: string;
-  partnerId: string;
-  partnerName: string;
-  matchCreatedAt?: string;
-  matchInterests?: string[];
+interface MatchInfo {
+  id: string;
+  user1_id: string;
+  user2_id: string;
+  status: string | null;
+  created_at: string | null;
+  reveal_request_at: string | null;
+  reveal_request_by: string | null;
+  match_interests?: string[] | null;
 }
 
-export const AnonymousChat = ({ matchId, currentUserId, partnerId, partnerName, matchCreatedAt, matchInterests }: Props) => {
+interface Props {
+  match: MatchInfo;
+  currentUserId: string;
+  myName: string;
+  partnerName: string;
+  credits: number;
+}
+
+export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credits }: Props) => {
+  const { toast } = useToast();
+  const partnerId = match.user1_id === currentUserId ? match.user2_id : match.user1_id;
+  const isUser1 = match.user1_id === currentUserId;
+
   const { messages, reactions, partnerTyping, partnerOnline, loading, sendMessage, broadcastTyping, toggleReaction } =
-    useAnonymousChat(matchId, currentUserId, partnerId);
-  const { myMeta, partnerMeta, setMood, setTheme, bumpStreak } = useMatchMeta(matchId, currentUserId);
+    useAnonymousChat(match.id, currentUserId, partnerId);
+  const { myMeta, partnerMeta, setMood, setTheme, bumpStreak } = useMatchMeta(match.id, currentUserId);
+
   const [input, setInput] = useState("");
   const [showSettings, setShowSettings] = useState(false);
+  const [chatLocked, setChatLocked] = useState(false);
+  const [safeWord, setSafeWord] = useState<string | null>(null);
+  const [matchState, setMatchState] = useState(match);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  // Live match updates (reveal request, status)
+  useEffect(() => {
+    const ch = supabase.channel(`match-state:${match.id}`)
+      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "anonymous_dating_matches", filter: `id=eq.${match.id}` },
+        (payload) => setMatchState(prev => ({ ...prev, ...(payload.new as any) })))
+      .subscribe();
+    return () => { supabase.removeChannel(ch); };
+  }, [match.id]);
+
+  // Load own safe-word
+  useEffect(() => {
+    supabase.from("anonymous_dating_safe_words")
+      .select("safe_word").eq("match_id", match.id).eq("user_id", currentUserId).maybeSingle()
+      .then(({ data }) => setSafeWord(data?.safe_word ?? null));
+    const ch = supabase.channel(`safe-word:${match.id}:${currentUserId}`)
+      .on("postgres_changes", { event: "*", schema: "public", table: "anonymous_dating_safe_words", filter: `match_id=eq.${match.id}` },
+        (payload: any) => {
+          const row = payload.new ?? payload.old;
+          if (row?.user_id === currentUserId) setSafeWord(payload.eventType === "DELETE" ? null : row.safe_word);
+        })
+      .subscribe();
+    return () => { supabase.removeChannel(ch); };
+  }, [match.id, currentUserId]);
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
@@ -40,24 +89,49 @@ export const AnonymousChat = ({ matchId, currentUserId, partnerId, partnerName, 
 
   const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!input.trim()) return;
-    const text = input;
+    const text = input.trim();
+    if (!text) return;
+
+    // Safe word check
+    if (safeWord && text.toLowerCase().includes(safeWord)) {
+      setInput("");
+      setChatLocked(true);
+      toast({ title: "Safe word triggered", description: "Chat closed for your safety.", variant: "destructive" });
+      return;
+    }
+
     setInput("");
     await sendMessage(text);
     bumpStreak();
   };
 
+  const downloadPDF = () => {
+    exportChatToPDF({ messages, currentUserId, myName, partnerName, matchCreatedAt: match.created_at ?? undefined });
+    toast({ title: "PDF exported", description: "Your chat memory was downloaded." });
+  };
+
   const theme = myMeta?.theme ?? "midnight";
-  const myMessageCount = messages.filter(m => m.sender_id === currentUserId).length;
   const voiceMessageSent = messages.some(m => m.message_type === "voice");
-  const matchAgeHours = matchCreatedAt ? (Date.now() - new Date(matchCreatedAt).getTime()) / 3600000 : 0;
+  const matchAgeHours = match.created_at ? (Date.now() - new Date(match.created_at).getTime()) / 3600000 : 0;
   const sharedStreak = Math.max(myMeta?.streak_count ?? 0, partnerMeta?.streak_count ?? 0);
+
+  if (chatLocked) {
+    return (
+      <Card className="p-8 text-center bg-gradient-to-br from-destructive/15 to-card border-destructive/40">
+        <AlertOctagon className="h-12 w-12 mx-auto text-destructive mb-3" />
+        <h3 className="text-lg font-black mb-1">Chat Closed</h3>
+        <p className="text-sm text-muted-foreground">
+          You triggered your safe word. The conversation is locked for your safety.
+        </p>
+      </Card>
+    );
+  }
 
   return (
     <div className="space-y-3">
       <Card className={`flex flex-col h-[calc(100vh-16rem)] max-h-[640px] overflow-hidden bg-gradient-to-br ${themeGradient(theme)} backdrop-blur-xl border-primary/20 shadow-2xl`}>
         {/* Header */}
-        <div className="flex items-center justify-between p-3 border-b border-white/10 bg-black/20 backdrop-blur-md">
+        <div className="flex items-center justify-between p-3 border-b border-white/10 bg-black/25 backdrop-blur-md">
           <div className="flex items-center gap-2">
             <AnonymousAvatar seed={partnerName} size={36} online={partnerOnline} />
             <div>
@@ -70,19 +144,18 @@ export const AnonymousChat = ({ matchId, currentUserId, partnerId, partnerName, 
           </div>
           <div className="flex items-center gap-1.5">
             <StreakBadge days={sharedStreak} />
-            <Badge variant="outline" className="text-[10px] border-white/30 text-white">Anonymous</Badge>
-            <button
-              onClick={() => setShowSettings(s => !s)}
-              className="p-1.5 rounded-full bg-white/10 hover:bg-white/20 transition text-white"
-              aria-label="Chat settings"
-            >
+            <Badge variant="outline" className="text-[10px] border-white/30 text-white">Anon</Badge>
+            <button onClick={downloadPDF} className="p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white" title="Export PDF">
+              <Download className="h-3.5 w-3.5" />
+            </button>
+            <button onClick={() => setShowSettings(s => !s)} className="p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white" title="Settings">
               <Settings2 className="h-3.5 w-3.5" />
             </button>
           </div>
         </div>
 
         {/* Messages */}
-        <div ref={scrollRef} className="flex-1 overflow-y-auto p-3 space-y-2 bg-background/40 backdrop-blur-sm">
+        <div ref={scrollRef} className="flex-1 overflow-y-auto p-3 space-y-2 bg-background/50 backdrop-blur-sm">
           {loading && <p className="text-center text-xs text-muted-foreground py-4">Loading conversation…</p>}
           {!loading && messages.length === 0 && (
             <div className="text-center py-8 text-sm text-muted-foreground italic">
@@ -140,11 +213,11 @@ export const AnonymousChat = ({ matchId, currentUserId, partnerId, partnerName, 
         </div>
 
         {/* Input */}
-        <form onSubmit={handleSend} className="p-2 border-t border-white/10 bg-black/20 backdrop-blur-md flex items-center gap-1">
+        <form onSubmit={handleSend} className="p-2 border-t border-white/10 bg-black/25 backdrop-blur-md flex items-center gap-1">
           <Input
             value={input}
             onChange={(e) => { setInput(e.target.value); broadcastTyping(); }}
-            placeholder="Type anonymously…"
+            placeholder={safeWord ? `Type… (safe word active)` : "Type anonymously…"}
             className="flex-1 bg-background/70 border-border/50"
           />
           <VoiceRecorderButton
@@ -157,15 +230,43 @@ export const AnonymousChat = ({ matchId, currentUserId, partnerId, partnerName, 
         </form>
       </Card>
 
-      {/* Live stats below chat */}
+      {/* Live stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-        <CompatibilityMeter messageCount={messages.length} matchInterests={matchInterests} />
+        <CompatibilityMeter messageCount={messages.length} matchInterests={matchState.match_interests ?? []} />
         <ConversationMilestones
           messageCount={messages.length}
           matchAgeHours={matchAgeHours}
           voiceMessageSent={voiceMessageSent}
         />
       </div>
+
+      {/* Reveal lock */}
+      <RevealLock
+        matchId={match.id}
+        currentUserId={currentUserId}
+        partnerName={partnerName}
+        revealRequestAt={matchState.reveal_request_at}
+        revealRequestBy={matchState.reveal_request_by}
+        status={matchState.status ?? "active"}
+      />
+
+      {/* Daily AI question */}
+      <DailyQuestion
+        matchId={match.id}
+        currentUserId={currentUserId}
+        isUser1={isUser1}
+        partnerName={partnerName}
+        credits={credits}
+      />
+
+      {/* AI Coach */}
+      <ConversationCoach
+        matchId={match.id}
+        messages={messages}
+        currentUserId={currentUserId}
+        partnerName={partnerName}
+        credits={credits}
+      />
 
       <AnimatePresence>
         {showSettings && (
@@ -177,6 +278,7 @@ export const AnonymousChat = ({ matchId, currentUserId, partnerId, partnerName, 
           >
             <MoodSelector current={myMeta?.mood ?? null} onChange={setMood} />
             <ChatThemePicker current={theme} onChange={setTheme} />
+            <SafeWordSettings matchId={match.id} currentUserId={currentUserId} />
           </motion.div>
         )}
       </AnimatePresence>

@@ -9,7 +9,9 @@ export type AIFeature =
   | "personality_mirror"
   | "voice_preview"
   | "date_ideas"
-  | "love_letter";
+  | "love_letter"
+  | "daily_question"
+  | "conversation_coach";
 
 export const AI_COSTS: Record<AIFeature, number> = {
   icebreakers: 3,
@@ -19,6 +21,8 @@ export const AI_COSTS: Record<AIFeature, number> = {
   voice_preview: 10,
   date_ideas: 5,
   love_letter: 15,
+  daily_question: 5,
+  conversation_coach: 10,
 };
 
 export function useAnonymousDateAI() {
