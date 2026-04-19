@@ -21,6 +21,9 @@ import { ProfileSetup } from "@/components/anonymous-date/ProfileSetup";
 import { ActiveMatches } from "@/components/anonymous-date/ActiveMatches";
 import { AdultWarningModal } from "@/components/anonymous-date/AdultWarningModal";
 import { AccessPaymentGate } from "@/components/anonymous-date/AccessPaymentGate";
+import { AnonymousDatePersonalityCompass } from "@/components/anonymous-date/AnonymousDatePersonalityCompass";
+import { AnonymousDateConversationStarter } from "@/components/anonymous-date/AnonymousDateConversationStarter";
+import { AnonymousDateIdeasShowcase } from "@/components/anonymous-date/AnonymousDateIdeasShowcase";
 import { FloatingParticles } from "@/components/wellness/FloatingParticles";
 
 type ViewType = "hub" | "matches" | "find" | "credits" | "profile";
