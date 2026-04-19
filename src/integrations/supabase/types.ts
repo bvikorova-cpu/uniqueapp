@@ -22352,6 +22352,75 @@ export type Database = {
         }
         Relationships: []
       }
+      legal_acceptances: {
+        Row: {
+          accepted_at: string
+          created_at: string
+          document_type: string
+          document_version: string
+          id: string
+          ip_address: string | null
+          receipt_hash: string | null
+          user_agent: string | null
+          user_id: string
+        }
+        Insert: {
+          accepted_at?: string
+          created_at?: string
+          document_type: string
+          document_version?: string
+          id?: string
+          ip_address?: string | null
+          receipt_hash?: string | null
+          user_agent?: string | null
+          user_id: string
+        }
+        Update: {
+          accepted_at?: string
+          created_at?: string
+          document_type?: string
+          document_version?: string
+          id?: string
+          ip_address?: string | null
+          receipt_hash?: string | null
+          user_agent?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      legal_ai_chats: {
+        Row: {
+          answer: string
+          created_at: string
+          credits_used: number
+          document_type: string
+          id: string
+          mode: string
+          question: string
+          user_id: string
+        }
+        Insert: {
+          answer: string
+          created_at?: string
+          credits_used?: number
+          document_type: string
+          id?: string
+          mode?: string
+          question: string
+          user_id: string
+        }
+        Update: {
+          answer?: string
+          created_at?: string
+          credits_used?: number
+          document_type?: string
+          id?: string
+          mode?: string
+          question?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       lesson_discussions: {
         Row: {
           created_at: string | null
