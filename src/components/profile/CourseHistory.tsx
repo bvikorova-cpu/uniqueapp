@@ -57,7 +57,7 @@ export const CourseHistory = () => {
   });
 
   if (loadingCompleted || loadingProgress) {
-    return <div className="text-center py-8">Načítavam...</div>;
+    return <div className="text-center py-8">Loading...</div>;
   }
 
   const totalCompleted = completedCourses?.length || 0;
@@ -81,7 +81,7 @@ export const CourseHistory = () => {
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium flex items-center gap-2">
               <Trophy className="h-4 w-4 text-primary" />
-              Dokončené kurzy
+              Completed courses
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -93,7 +93,7 @@ export const CourseHistory = () => {
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium flex items-center gap-2">
               <TrendingUp className="h-4 w-4 text-primary" />
-              Rozpracované
+              In progress
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -105,7 +105,7 @@ export const CourseHistory = () => {
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium flex items-center gap-2">
               <Target className="h-4 w-4 text-primary" />
-              Priemerné skóre
+              Average score
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -117,7 +117,7 @@ export const CourseHistory = () => {
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium flex items-center gap-2">
               <Clock className="h-4 w-4 text-primary" />
-              Celkový čas
+              Total time
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -129,7 +129,7 @@ export const CourseHistory = () => {
       {/* In Progress Courses */}
       {inProgressCourses && inProgressCourses.length > 0 && (
         <div>
-          <h3 className="text-lg font-semibold mb-4">Rozpracované kurzy</h3>
+          <h3 className="text-lg font-semibold mb-4">Courses in progress</h3>
           <div className="grid gap-4">
             {inProgressCourses.map((course) => {
               const progress = (course.completed_topics.length / 10) * 100;
@@ -139,12 +139,12 @@ export const CourseHistory = () => {
                     <div className="flex items-center justify-between">
                       <CardTitle className="text-base">{course.course_name}</CardTitle>
                       <Badge variant="outline">
-                        {course.completed_topics.length}/10 tém
+                        {course.completed_topics.length}/10 topics
                       </Badge>
                     </div>
                     <CardDescription>
-                      Naposledy otvorené:{" "}
-                      {new Date(course.last_accessed_at).toLocaleDateString("sk-SK")}
+                      Last opened:{" "}
+                      {new Date(course.last_accessed_at).toLocaleDateString("en-US")}
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
@@ -160,7 +160,7 @@ export const CourseHistory = () => {
       {/* Completed Courses */}
       {completedCourses && completedCourses.length > 0 && (
         <div>
-          <h3 className="text-lg font-semibold mb-4">Dokončené kurzy</h3>
+          <h3 className="text-lg font-semibold mb-4">Completed courses</h3>
           <div className="grid gap-4">
             {completedCourses.map((course) => (
               <Card key={course.id}>
@@ -177,7 +177,7 @@ export const CourseHistory = () => {
                     </Badge>
                   </div>
                   <CardDescription>
-                    Dokončené: {new Date(course.completion_date).toLocaleDateString("sk-SK")}
+                    Completed: {new Date(course.completion_date).toLocaleDateString("en-US")}
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
