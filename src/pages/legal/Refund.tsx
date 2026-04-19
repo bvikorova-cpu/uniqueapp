@@ -43,48 +43,50 @@ export default function Refund() {
             <LegalSection id="credits" number="§2" title="Credits Are Non-Refundable">
               <p><strong>2.1.</strong> AI credits are consumable digital goods.</p>
               <p><strong>2.2.</strong> Once purchased, they are non-refundable.</p>
-              <p><strong>2.3.</strong> EU 14-day withdrawal applies only if zero credits have been used.</p>
+              <p><strong>2.3.</strong> Where mandatory consumer law in your country (e.g. EU 14-day withdrawal, UK CCRs) provides a cooling-off period, it applies only if no credits have been used.</p>
             </LegalSection>
 
             <LegalSection id="subscriptions" number="§3" title="Subscriptions">
-              <p><strong>3.1.</strong> Billed monthly or annually.</p>
+              <p><strong>3.1.</strong> Billed monthly or annually in your local currency where supported.</p>
               <p><strong>3.2.</strong> Cancel anytime — access continues until end of current period.</p>
-              <p><strong>3.3.</strong> No prorated refunds for unused time (except where EU law requires).</p>
+              <p><strong>3.3.</strong> No prorated refunds for unused time, except where mandatory local consumer law requires.</p>
             </LegalSection>
 
             <LegalSection id="purchases" number="§4" title="One-Time Purchases">
               <p><strong>4.1.</strong> Digital products: non-refundable once delivered.</p>
-              <p><strong>4.2.</strong> Physical products: refundable within 14 days (unopened, undamaged) under EU distance selling.</p>
+              <p><strong>4.2.</strong> Physical products: refundable within the cooling-off period required by your local consumer law (typically 14 days), if unopened and undamaged.</p>
             </LegalSection>
 
             <LegalSection id="splits" number="§5" title="Revenue Splits">
               <ul>
                 <li><strong>Default:</strong> 80% creator / 20% platform</li>
                 <li><strong>Pro tier:</strong> 90% creator / 10% platform</li>
-                <li>Stripe processing fees deducted before split.</li>
+                <li>Stripe processing fees and applicable taxes deducted before split.</li>
                 <li>Splits visible in real-time in Creator Dashboard.</li>
               </ul>
             </LegalSection>
 
             <LegalSection id="payouts" number="§6" title="Creator Payouts">
               <ul>
-                <li>Via Stripe Connect, processed weekly.</li>
-                <li>Minimum payout: <strong>€50</strong></li>
-                <li>KYC verification required before first payout.</li>
-                <li>Available countries per Stripe Connect supported regions.</li>
+                <li>Via Stripe Connect, processed weekly to creators worldwide.</li>
+                <li>Minimum payout: <strong>€50 / $50 / equivalent</strong> in your local currency.</li>
+                <li>KYC verification required before first payout (per Stripe Connect rules).</li>
+                <li>Available in all countries supported by Stripe Connect (45+ countries).</li>
+                <li>Currency conversion handled by Stripe at market rates.</li>
               </ul>
             </LegalSection>
 
             <LegalSection id="disputes" number="§7" title="Disputes & Chargebacks">
-              <p><strong>7.1.</strong> All disputes handled per Stripe's dispute process.</p>
+              <p><strong>7.1.</strong> All disputes handled per Stripe's global dispute process.</p>
               <p><strong>7.2.</strong> Fraudulent chargebacks → account termination + permanent ban.</p>
               <p><strong>7.3.</strong> We will provide evidence to contest fraudulent disputes.</p>
+              <p><strong>7.4.</strong> Cross-border disputes resolved via online arbitration (ICC rules) where direct resolution fails.</p>
             </LegalSection>
 
             <LegalSection id="tax" number="§8" title="Taxes">
-              <p><strong>8.1.</strong> You are responsible for your own income tax and VAT.</p>
-              <p><strong>8.2.</strong> We issue invoices and tax forms where legally required.</p>
-              <p><strong>8.3.</strong> EU VAT MOSS handled by platform for B2C digital services.</p>
+              <p><strong>8.1.</strong> You are responsible for your own income tax, sales tax, GST, or VAT obligations in your country of residence.</p>
+              <p><strong>8.2.</strong> We issue invoices and tax forms (1099, EU invoice, etc.) where legally required by your jurisdiction.</p>
+              <p><strong>8.3.</strong> Platform collects and remits applicable consumption taxes (EU VAT, UK VAT, US sales tax, AU GST, etc.) on B2C digital services automatically.</p>
             </LegalSection>
 
             <AcceptanceTracker documentType="refund" documentTitle="Refund & Payment Policy" />
