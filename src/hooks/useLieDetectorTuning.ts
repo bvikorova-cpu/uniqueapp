@@ -2,8 +2,20 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
+// All lie-detector-* are routed through the consolidated `lie-detector-ai` function.
+const ROUTE_MAP: Record<string, string> = {
+  "lie-detector-coach": "coach",
+  "lie-detector-multi-person": "multi-person",
+  "lie-detector-deepfake": "deepfake",
+  "lie-detector-daily-challenge": "daily-challenge",
+  "lie-detector-verify-report": "verify-report",
+};
 async function invoke<T = any>(name: string, body: Record<string, any>): Promise<T> {
-  const { data, error } = await supabase.functions.invoke(name, { body });
+  const action = ROUTE_MAP[name];
+  const { data, error } = await supabase.functions.invoke(
+    action ? "lie-detector-ai" : name,
+    { body: action ? { action, ...body } : body }
+  );
   if (error) throw new Error(error.message);
   if (data?.error) throw new Error(data.error);
   return data as T;
