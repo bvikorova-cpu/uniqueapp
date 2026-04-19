@@ -73,11 +73,17 @@ export const DailyQuestion = ({ matchId, currentUserId, isUser1, partnerName, cr
   const submitAnswer = async () => {
     if (!daily || !answer.trim()) return;
     setSubmitting(true);
-    const field = isUser1 ? "user1_answer" : "user2_answer";
+    const update = isUser1
+      ? { user1_answer: answer.trim() }
+      : { user2_answer: answer.trim() };
     const { error } = await supabase
       .from("anonymous_dating_daily_questions")
-      .update({ [field]: answer.trim() })
+      .update(update)
       .eq("id", daily.id);
+    setSubmitting(false);
+    if (error) toast({ title: "Submit failed", description: error.message, variant: "destructive" });
+    else toast({ title: "Answer locked in", description: "Waiting for partner to answer too." });
+  };
     setSubmitting(false);
     if (error) toast({ title: "Submit failed", description: error.message, variant: "destructive" });
     else toast({ title: "Answer locked in", description: "Waiting for partner to answer too." });
