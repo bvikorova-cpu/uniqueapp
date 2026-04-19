@@ -16,6 +16,10 @@ import { PastLifeForm } from "@/components/past-life/PastLifeForm";
 import { PastLifeResult } from "@/components/past-life/PastLifeResult";
 import { PastLifeHistory } from "@/components/past-life/PastLifeHistory";
 import { PastLifeCreditsDisplay } from "@/components/past-life/PastLifeCreditsDisplay";
+import { PastLifeEraWheel } from "@/components/past-life/PastLifeEraWheel";
+import { PastLifeDailyVision } from "@/components/past-life/PastLifeDailyVision";
+import { PastLifeIdeasShowcase } from "@/components/past-life/PastLifeIdeasShowcase";
+import { PastLifeEraQuiz } from "@/components/past-life/PastLifeEraQuiz";
 import { usePastLifeCredits } from "@/hooks/usePastLifeCredits";
 
 type ViewType = "hub" | "basic" | "full" | "soulmate" | "history" | "credits";
@@ -103,6 +107,16 @@ const PastLife = () => {
                 <PastLifeAchievements />
               </div>
 
+              {/* Era Compass + Daily Vision + Quiz */}
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                <div className="lg:col-span-2">
+                  <PastLifeEraWheel />
+                </div>
+                <div className="space-y-4">
+                  <PastLifeDailyVision />
+                </div>
+              </div>
+
               {/* Main Content */}
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Tools */}
@@ -163,10 +177,14 @@ const PastLife = () => {
                       </div>
                     ))}
                   </div>
+
+                  {/* Tips & Future Features */}
+                  <PastLifeIdeasShowcase />
                 </div>
 
                 {/* Sidebar */}
                 <div className="space-y-4">
+                  <PastLifeEraQuiz />
                   <PastLifeComparisonTable />
                   <PastLifeTestimonials />
                 </div>
