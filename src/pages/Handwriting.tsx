@@ -20,6 +20,8 @@ import { AcademyCard } from "@/components/handwriting/AcademyCard";
 import { CouplesSubscriptionCard } from "@/components/handwriting/CouplesSubscriptionCard";
 import { HrProCard } from "@/components/handwriting/HrProCard";
 import { VoiceDiaryCard } from "@/components/handwriting/VoiceDiaryCard";
+import { LiveInkCard } from "@/components/handwriting/LiveInkCard";
+import { TimeCapsuleCard } from "@/components/handwriting/TimeCapsuleCard";
 import { useHandwritingCredits } from "@/hooks/useHandwritingCredits";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -210,6 +212,22 @@ const Handwriting = () => {
                   <CouplesSubscriptionCard />
                   <HrProCard />
                   <VoiceDiaryCard />
+                </div>
+              </motion.div>
+
+              {/* Living Studio: Live Ink + Time Capsule */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.58 }}
+                className="space-y-4"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="h-px flex-1 bg-gradient-to-r from-transparent via-amber-700/40 to-transparent" />
+                  <h2 className="text-2xl font-black text-amber-900 dark:text-amber-200" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>The Living Studio</h2>
+                  <div className="h-px flex-1 bg-gradient-to-r from-transparent via-amber-700/40 to-transparent" />
+                </div>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  <LiveInkCard />
+                  <TimeCapsuleCard />
                 </div>
               </motion.div>
 

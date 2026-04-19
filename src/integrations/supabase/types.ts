@@ -17812,6 +17812,60 @@ export type Database = {
         }
         Relationships: []
       }
+      handwriting_evolution_diffs: {
+        Row: {
+          changes: Json
+          created_at: string
+          credits_used: number
+          diff_summary: string | null
+          emotional_shift: string | null
+          entry_a_id: string
+          entry_b_id: string
+          growth_score: number | null
+          id: string
+          user_id: string
+        }
+        Insert: {
+          changes?: Json
+          created_at?: string
+          credits_used?: number
+          diff_summary?: string | null
+          emotional_shift?: string | null
+          entry_a_id: string
+          entry_b_id: string
+          growth_score?: number | null
+          id?: string
+          user_id: string
+        }
+        Update: {
+          changes?: Json
+          created_at?: string
+          credits_used?: number
+          diff_summary?: string | null
+          emotional_shift?: string | null
+          entry_a_id?: string
+          entry_b_id?: string
+          growth_score?: number | null
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "handwriting_evolution_diffs_entry_a_id_fkey"
+            columns: ["entry_a_id"]
+            isOneToOne: false
+            referencedRelation: "handwriting_time_capsule"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "handwriting_evolution_diffs_entry_b_id_fkey"
+            columns: ["entry_b_id"]
+            isOneToOne: false
+            referencedRelation: "handwriting_time_capsule"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       handwriting_famous_comparisons: {
         Row: {
           ai_blurb: string | null
@@ -17890,6 +17944,42 @@ export type Database = {
           suspect_url?: string
           user_id?: string
           verdict?: string | null
+        }
+        Relationships: []
+      }
+      handwriting_live_ink_recordings: {
+        Row: {
+          ai_reading: Json | null
+          created_at: string
+          credits_used: number
+          duration_ms: number
+          id: string
+          pressure_avg: number | null
+          speed_avg: number | null
+          strokes: Json
+          user_id: string
+        }
+        Insert: {
+          ai_reading?: Json | null
+          created_at?: string
+          credits_used?: number
+          duration_ms?: number
+          id?: string
+          pressure_avg?: number | null
+          speed_avg?: number | null
+          strokes?: Json
+          user_id: string
+        }
+        Update: {
+          ai_reading?: Json | null
+          created_at?: string
+          credits_used?: number
+          duration_ms?: number
+          id?: string
+          pressure_avg?: number | null
+          speed_avg?: number | null
+          strokes?: Json
+          user_id?: string
         }
         Relationships: []
       }
@@ -18009,6 +18099,36 @@ export type Database = {
           id?: string
           image_url?: string
           public_persona?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      handwriting_time_capsule: {
+        Row: {
+          captured_at: string
+          created_at: string
+          id: string
+          image_url: string
+          label: string | null
+          notes: string | null
+          user_id: string
+        }
+        Insert: {
+          captured_at?: string
+          created_at?: string
+          id?: string
+          image_url: string
+          label?: string | null
+          notes?: string | null
+          user_id: string
+        }
+        Update: {
+          captured_at?: string
+          created_at?: string
+          id?: string
+          image_url?: string
+          label?: string | null
+          notes?: string | null
           user_id?: string
         }
         Relationships: []

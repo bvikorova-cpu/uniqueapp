@@ -642,6 +642,73 @@ Deno.serve(async (req) => {
       return json({ timeline: tl });
     }
 
+    // ---------- TIME-CAPSULE EVOLUTION DIFF (6 cr) ----------
+    if (action === "capsule-diff") {
+      const { entryAId, entryBId } = body;
+      if (!entryAId || !entryBId) return json({ error: "entryAId and entryBId required" }, 400);
+      if (entryAId === entryBId) return json({ error: "Pick two different entries" }, 400);
+      const { data: entries } = await supabase
+        .from("handwriting_time_capsule")
+        .select("id, image_url, captured_at, label")
+        .in("id", [entryAId, entryBId])
+        .eq("user_id", user.id);
+      if (!entries || entries.length !== 2) return json({ error: "Entries not found" }, 404);
+      await chargeCredits(supabase, user.id, 6);
+      const a = entries.find((e: any) => e.id === entryAId)!;
+      const b = entries.find((e: any) => e.id === entryBId)!;
+      const content = await callAI({
+        model: "google/gemini-2.5-pro",
+        messages: [
+          { role: "system", content: "You are a graphology evolution analyst. Compare TWO handwriting samples from the SAME PERSON taken at different points in time. Detect changes in slant, pressure, size, spacing, baseline, energy and emotional tone. Return strict JSON: { diff_summary: string, changes: { slant: string, pressure: string, size: string, spacing: string, baseline: string, energy: string }, emotional_shift: string, growth_score: -100..100, milestones: string[] }." },
+          { role: "user", content: [
+            { type: "text", text: `Sample A captured ${a.captured_at} (${a.label ?? "unlabeled"}).\nSample B captured ${b.captured_at} (${b.label ?? "unlabeled"}).` },
+            { type: "image_url", image_url: { url: a.image_url } },
+            { type: "image_url", image_url: { url: b.image_url } },
+          ] },
+        ],
+        response_format: { type: "json_object" },
+      });
+      const parsed = JSON.parse(content);
+      const { data: row } = await supabase.from("handwriting_evolution_diffs").insert({
+        user_id: user.id, entry_a_id: entryAId, entry_b_id: entryBId,
+        diff_summary: parsed.diff_summary, changes: parsed.changes,
+        emotional_shift: parsed.emotional_shift, growth_score: parsed.growth_score,
+        credits_used: 6,
+      }).select().single();
+      return json({ diff: row, milestones: parsed.milestones ?? [] });
+    }
+
+    // ---------- LIVE INK STROKE ANALYSIS (4 cr) ----------
+    if (action === "live-ink-analyze") {
+      const { strokes, durationMs, pressureAvg, speedAvg } = body;
+      if (!Array.isArray(strokes) || strokes.length === 0) {
+        return json({ error: "strokes array required" }, 400);
+      }
+      await chargeCredits(supabase, user.id, 4);
+      const strokeStats = {
+        stroke_count: strokes.length,
+        total_points: strokes.reduce((acc: number, s: any) => acc + (s.points?.length ?? 0), 0),
+        avg_pressure: pressureAvg ?? 0.5,
+        avg_speed: speedAvg ?? 0,
+        duration_ms: durationMs ?? 0,
+      };
+      const content = await callAI({
+        model: "google/gemini-2.5-flash",
+        messages: [
+          { role: "system", content: "You are a real-time graphology analyst. From stroke statistics (no image), infer personality cues. Return JSON: { energy: 0-100, confidence: 0-100, focus: 0-100, creativity: 0-100, headline: short tagline, insight: 2-3 sentence reading }." },
+          { role: "user", content: `Stroke metrics: ${JSON.stringify(strokeStats)}` },
+        ],
+        response_format: { type: "json_object" },
+      });
+      const parsed = JSON.parse(content);
+      const { data: row } = await supabase.from("handwriting_live_ink_recordings").insert({
+        user_id: user.id, strokes, duration_ms: durationMs ?? 0,
+        pressure_avg: pressureAvg ?? null, speed_avg: speedAvg ?? null,
+        ai_reading: parsed, credits_used: 4,
+      }).select().single();
+      return json({ recording: row, reading: parsed });
+    }
+
     // ---------- PDF REPORT (5 cr) ----------
     if (action === "pdf-report") {
       const { analysisId, source = "main" } = body;
