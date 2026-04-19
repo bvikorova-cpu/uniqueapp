@@ -21,6 +21,16 @@ const PERSONALITY_TRAITS = [
   "Romantic", "Ambitious", "Easy-going", "Thoughtful", "Spontaneous", "Loyal"
 ];
 
+const GENDERS = ["Male", "Female", "Non-binary", "Other"];
+const PREFERRED_GENDERS = ["Male", "Female", "Any"];
+const RELATIONSHIP_GOALS = [
+  { value: "friendship", label: "Friendship" },
+  { value: "casual", label: "Casual" },
+  { value: "serious", label: "Serious" },
+  { value: "marriage", label: "Marriage" },
+];
+const LANGUAGES = ["English", "Slovak", "Czech", "German", "Spanish", "French", "Italian", "Polish", "Hungarian", "Russian", "Ukrainian", "Other"];
+
 const HOW_IT_WORKS = [
   { step: "1", title: "Create Profile", desc: "Set up your anonymous identity", icon: "🎭", color: "from-pink-500 to-rose-500" },
   { step: "2", title: "Find Match", desc: "AI pairs you by compatibility", icon: "🔍", color: "from-primary to-accent" },
@@ -39,6 +49,11 @@ export function ProfileSetup({ onComplete }: { onComplete: () => void }) {
   const [anonymousName, setAnonymousName] = useState("");
   const [ageRange, setAgeRange] = useState("");
   const [lookingFor, setLookingFor] = useState("");
+  const [location, setLocation] = useState("");
+  const [gender, setGender] = useState("");
+  const [preferredGender, setPreferredGender] = useState("");
+  const [relationshipGoal, setRelationshipGoal] = useState("");
+  const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
   const [selectedTraits, setSelectedTraits] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
@@ -53,6 +68,12 @@ export function ProfileSetup({ onComplete }: { onComplete: () => void }) {
   const toggleTrait = (trait: string) => {
     setSelectedTraits(prev =>
       prev.includes(trait) ? prev.filter(t => t !== trait) : [...prev, trait]
+    );
+  };
+
+  const toggleLanguage = (lang: string) => {
+    setSelectedLanguages(prev =>
+      prev.includes(lang) ? prev.filter(l => l !== lang) : [...prev, lang]
     );
   };
 
@@ -77,6 +98,11 @@ export function ProfileSetup({ onComplete }: { onComplete: () => void }) {
           interests: selectedInterests,
           personality_traits: selectedTraits,
           looking_for: lookingFor,
+          location: location || null,
+          gender: gender || null,
+          preferred_gender: preferredGender || null,
+          relationship_goal: relationshipGoal || null,
+          languages: selectedLanguages.length ? selectedLanguages : null,
           is_active: true,
         });
 
