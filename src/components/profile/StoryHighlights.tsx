@@ -25,10 +25,10 @@ export const StoryHighlights = ({ userId, isOwnProfile }: StoryHighlightsProps) 
     queryFn: async () => {
       const { data } = await supabase
         .from("story_highlights")
-        .select("id, title, cover_url, image_urls")
+        .select("*")
         .eq("user_id", userId)
         .order("order_index", { ascending: true });
-      return (data || []) as Highlight[];
+      return ((data || []) as unknown) as Highlight[];
     },
     enabled: !!userId,
   });

@@ -431,9 +431,23 @@ const Profile = () => {
                   Friends
                 </Button>
               )}
+              <ProfileQRCode userId={userId!} userName={profile.full_name || "user"} />
+              {currentUserId === userId && <ThemePicker userId={userId!} />}
+              {currentUserId !== userId && profile.full_name && (
+                <TipJar recipientId={userId!} recipientName={profile.full_name} currentUserId={currentUserId} />
+              )}
             </>
           }
         />
+
+        {/* Voice intro */}
+        <VoiceIntro userId={userId!} isOwnProfile={currentUserId === userId} />
+
+        {/* Story Highlights */}
+        <StoryHighlights userId={userId!} isOwnProfile={currentUserId === userId} />
+
+        {/* 3D Avatar (if set) */}
+        <Avatar3D userId={userId!} />
 
         {/* Founder Story / Bio */}
         <FounderStory profile={profile} />
