@@ -9881,6 +9881,89 @@ export type Database = {
         }
         Relationships: []
       }
+      couples_compatibility_timeline: {
+        Row: {
+          compatibility_score: number
+          couples_subscription_id: string
+          full_analysis: Json | null
+          id: string
+          mood_trend: Json | null
+          recorded_at: string
+        }
+        Insert: {
+          compatibility_score: number
+          couples_subscription_id: string
+          full_analysis?: Json | null
+          id?: string
+          mood_trend?: Json | null
+          recorded_at?: string
+        }
+        Update: {
+          compatibility_score?: number
+          couples_subscription_id?: string
+          full_analysis?: Json | null
+          id?: string
+          mood_trend?: Json | null
+          recorded_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "couples_compatibility_timeline_couples_subscription_id_fkey"
+            columns: ["couples_subscription_id"]
+            isOneToOne: false
+            referencedRelation: "couples_subscriptions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      couples_subscriptions: {
+        Row: {
+          cancelled_at: string | null
+          created_at: string
+          current_period_end: string | null
+          id: string
+          invite_token: string | null
+          partner_a_user_id: string
+          partner_b_email: string
+          partner_b_user_id: string | null
+          started_at: string | null
+          status: string
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          cancelled_at?: string | null
+          created_at?: string
+          current_period_end?: string | null
+          id?: string
+          invite_token?: string | null
+          partner_a_user_id: string
+          partner_b_email: string
+          partner_b_user_id?: string | null
+          started_at?: string | null
+          status?: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          cancelled_at?: string | null
+          created_at?: string
+          current_period_end?: string | null
+          id?: string
+          invite_token?: string | null
+          partner_a_user_id?: string
+          partner_b_email?: string
+          partner_b_user_id?: string | null
+          started_at?: string | null
+          status?: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       coupon_escrow: {
         Row: {
           amount: number
@@ -19373,6 +19456,175 @@ export type Database = {
           temperament_stat?: number
           total_races?: number
           total_wins?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      hr_bulk_candidates: {
+        Row: {
+          ai_summary: string | null
+          ats_export_data: Json | null
+          attention_score: number | null
+          bulk_job_id: string
+          candidate_alias: string
+          communication_score: number | null
+          created_at: string
+          credits_used: number
+          error_message: string | null
+          id: string
+          image_url: string
+          integrity_score: number | null
+          leadership_score: number | null
+          overall_fit: number | null
+          processed_at: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          ai_summary?: string | null
+          ats_export_data?: Json | null
+          attention_score?: number | null
+          bulk_job_id: string
+          candidate_alias: string
+          communication_score?: number | null
+          created_at?: string
+          credits_used?: number
+          error_message?: string | null
+          id?: string
+          image_url: string
+          integrity_score?: number | null
+          leadership_score?: number | null
+          overall_fit?: number | null
+          processed_at?: string | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          ai_summary?: string | null
+          ats_export_data?: Json | null
+          attention_score?: number | null
+          bulk_job_id?: string
+          candidate_alias?: string
+          communication_score?: number | null
+          created_at?: string
+          credits_used?: number
+          error_message?: string | null
+          id?: string
+          image_url?: string
+          integrity_score?: number | null
+          leadership_score?: number | null
+          overall_fit?: number | null
+          processed_at?: string | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hr_bulk_candidates_bulk_job_id_fkey"
+            columns: ["bulk_job_id"]
+            isOneToOne: false
+            referencedRelation: "hr_bulk_jobs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      hr_bulk_jobs: {
+        Row: {
+          completed_candidates: number
+          created_at: string
+          id: string
+          job_description: string | null
+          job_title: string
+          org_subscription_id: string | null
+          required_traits: string[] | null
+          status: string
+          total_candidates: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          completed_candidates?: number
+          created_at?: string
+          id?: string
+          job_description?: string | null
+          job_title: string
+          org_subscription_id?: string | null
+          required_traits?: string[] | null
+          status?: string
+          total_candidates?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          completed_candidates?: number
+          created_at?: string
+          id?: string
+          job_description?: string | null
+          job_title?: string
+          org_subscription_id?: string | null
+          required_traits?: string[] | null
+          status?: string
+          total_candidates?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hr_bulk_jobs_org_subscription_id_fkey"
+            columns: ["org_subscription_id"]
+            isOneToOne: false
+            referencedRelation: "hr_pro_subscriptions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      hr_pro_subscriptions: {
+        Row: {
+          cancelled_at: string | null
+          created_at: string
+          current_period_end: string | null
+          id: string
+          monthly_candidate_quota: number
+          monthly_candidates_used: number
+          org_name: string
+          quota_reset_at: string | null
+          started_at: string | null
+          status: string
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          cancelled_at?: string | null
+          created_at?: string
+          current_period_end?: string | null
+          id?: string
+          monthly_candidate_quota?: number
+          monthly_candidates_used?: number
+          org_name: string
+          quota_reset_at?: string | null
+          started_at?: string | null
+          status?: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          cancelled_at?: string | null
+          created_at?: string
+          current_period_end?: string | null
+          id?: string
+          monthly_candidate_quota?: number
+          monthly_candidates_used?: number
+          org_name?: string
+          quota_reset_at?: string | null
+          started_at?: string | null
+          status?: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
           updated_at?: string
           user_id?: string
         }
@@ -38451,6 +38703,54 @@ export type Database = {
           unlimited_generations?: boolean | null
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      voice_diaries: {
+        Row: {
+          ai_analysis: Json | null
+          ai_summary: string | null
+          congruence_score: number | null
+          created_at: string
+          credits_used: number
+          emotional_fingerprint: Json | null
+          energy_score: number | null
+          handwriting_image_url: string
+          id: string
+          mood_score: number | null
+          user_id: string
+          voice_duration_sec: number
+          voice_transcript: string
+        }
+        Insert: {
+          ai_analysis?: Json | null
+          ai_summary?: string | null
+          congruence_score?: number | null
+          created_at?: string
+          credits_used?: number
+          emotional_fingerprint?: Json | null
+          energy_score?: number | null
+          handwriting_image_url: string
+          id?: string
+          mood_score?: number | null
+          user_id: string
+          voice_duration_sec?: number
+          voice_transcript: string
+        }
+        Update: {
+          ai_analysis?: Json | null
+          ai_summary?: string | null
+          congruence_score?: number | null
+          created_at?: string
+          credits_used?: number
+          emotional_fingerprint?: Json | null
+          energy_score?: number | null
+          handwriting_image_url?: string
+          id?: string
+          mood_score?: number | null
+          user_id?: string
+          voice_duration_sec?: number
+          voice_transcript?: string
         }
         Relationships: []
       }

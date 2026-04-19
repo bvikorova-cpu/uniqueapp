@@ -1,7 +1,15 @@
-// Router edge function – consolidates 8 handwriting AI tools into one slot.
-// Dispatch via { action: "signature" | "compatibility" | "mood" | "forgery"
-//                       | "twin" | "famous" | "academy" | "pdf-report", ...payload }
+// Router edge function – consolidates handwriting AI tools + billing into one slot.
+// AI actions: signature, compatibility, mood, forgery, twin, famous, academy, pdf-report,
+//             voice-diary, hr-bulk-analyze, couples-record-compatibility
+// Billing actions: couples-checkout, couples-status, accept-couples-invite,
+//                  hr-checkout, hr-status, portal
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import Stripe from "https://esm.sh/stripe@18.5.0";
+
+const PRICES = {
+  couples: "price_1TNs5DGaXSfGtYFtIEzPmxzo", // €14.99/mo
+  hr_pro: "price_1TNs5EGaXSfGtYFt4pks23YW",  // €99/mo
+};
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -73,6 +81,207 @@ Deno.serve(async (req) => {
     const body = await req.json();
     const action = body.action as string;
     if (!action) return json({ error: "action required" }, 400);
+
+    // ============================================================
+    // BILLING ACTIONS (Stripe) — Couples + HR Pro
+    // ============================================================
+    const BILLING_ACTIONS = new Set([
+      "couples-checkout", "couples-status", "accept-couples-invite",
+      "hr-checkout", "hr-status", "portal",
+    ]);
+    if (BILLING_ACTIONS.has(action)) {
+      const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
+      if (!stripeKey) return json({ error: "Stripe not configured" }, 500);
+      if (!user.email) return json({ error: "User email required" }, 400);
+      const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
+      const origin = req.headers.get("origin") || "https://uniqueapp.fun";
+
+      const getCustomerId = async (): Promise<string> => {
+        const list = await stripe.customers.list({ email: user.email!, limit: 1 });
+        if (list.data.length > 0) return list.data[0].id;
+        const c = await stripe.customers.create({ email: user.email!, metadata: { user_id: user.id } });
+        return c.id;
+      };
+
+      // ---- COUPLES CHECKOUT ----
+      if (action === "couples-checkout") {
+        const partnerEmail = (body.partnerEmail as string)?.trim().toLowerCase();
+        if (!partnerEmail || !/.+@.+\..+/.test(partnerEmail)) {
+          return json({ error: "Valid partner email required" }, 400);
+        }
+        if (partnerEmail === user.email!.toLowerCase()) {
+          return json({ error: "Partner email must be different from yours" }, 400);
+        }
+        const customerId = await getCustomerId();
+        const { data: subRow, error: insErr } = await supabase
+          .from("couples_subscriptions")
+          .insert({
+            partner_a_user_id: user.id,
+            partner_b_email: partnerEmail,
+            status: "pending",
+            stripe_customer_id: customerId,
+          })
+          .select()
+          .single();
+        if (insErr) return json({ error: "Could not create subscription record" }, 500);
+        const session = await stripe.checkout.sessions.create({
+          customer: customerId,
+          line_items: [{ price: PRICES.couples, quantity: 1 }],
+          mode: "subscription",
+          success_url: `${origin}/handwriting?couples=success&sub_id=${subRow.id}`,
+          cancel_url: `${origin}/handwriting?couples=cancelled`,
+          metadata: { user_id: user.id, couples_subscription_id: subRow.id, plan: "couples" },
+          subscription_data: { metadata: { user_id: user.id, couples_subscription_id: subRow.id, plan: "couples" } },
+        });
+        return json({ url: session.url, subscriptionId: subRow.id, inviteToken: subRow.invite_token });
+      }
+
+      // ---- COUPLES STATUS ----
+      if (action === "couples-status") {
+        const { data: rows } = await supabase
+          .from("couples_subscriptions")
+          .select("*")
+          .or(`partner_a_user_id.eq.${user.id},partner_b_user_id.eq.${user.id}`)
+          .order("created_at", { ascending: false })
+          .limit(1);
+        const sub = rows?.[0];
+        if (!sub) return json({ active: false });
+        if (sub.stripe_subscription_id) {
+          try {
+            const stripeSub = await stripe.subscriptions.retrieve(sub.stripe_subscription_id);
+            const isActive = ["active", "trialing"].includes(stripeSub.status);
+            const periodEnd = new Date(stripeSub.current_period_end * 1000).toISOString();
+            await supabase
+              .from("couples_subscriptions")
+              .update({
+                status: isActive ? "active" : stripeSub.status,
+                current_period_end: periodEnd,
+                cancelled_at: stripeSub.cancel_at_period_end ? new Date().toISOString() : null,
+              })
+              .eq("id", sub.id);
+            return json({ active: isActive, subscription: { ...sub, status: stripeSub.status, current_period_end: periodEnd } });
+          } catch (_) { /* fall through */ }
+        }
+        const customers = await stripe.customers.list({ email: user.email!, limit: 1 });
+        if (customers.data.length === 0) return json({ active: false, subscription: sub });
+        const subs = await stripe.subscriptions.list({ customer: customers.data[0].id, status: "active", limit: 5 });
+        const couplesSub = subs.data.find((s) => s.items.data.some((i) => i.price.id === PRICES.couples));
+        if (couplesSub) {
+          const periodEnd = new Date(couplesSub.current_period_end * 1000).toISOString();
+          await supabase
+            .from("couples_subscriptions")
+            .update({
+              stripe_subscription_id: couplesSub.id,
+              stripe_customer_id: customers.data[0].id,
+              status: "active",
+              started_at: sub.started_at ?? new Date().toISOString(),
+              current_period_end: periodEnd,
+            })
+            .eq("id", sub.id);
+          return json({ active: true, subscription: { ...sub, status: "active", current_period_end: periodEnd } });
+        }
+        return json({ active: false, subscription: sub });
+      }
+
+      // ---- ACCEPT COUPLES INVITE ----
+      if (action === "accept-couples-invite") {
+        const token = body.inviteToken as string;
+        if (!token) return json({ error: "inviteToken required" }, 400);
+        const { data: sub } = await supabase
+          .from("couples_subscriptions")
+          .select("*")
+          .eq("invite_token", token)
+          .maybeSingle();
+        if (!sub) return json({ error: "Invalid invite token" }, 404);
+        if (sub.partner_b_email.toLowerCase() !== user.email!.toLowerCase()) {
+          return json({ error: "This invite is for a different email" }, 403);
+        }
+        const { error } = await supabase
+          .from("couples_subscriptions")
+          .update({ partner_b_user_id: user.id })
+          .eq("id", sub.id);
+        if (error) return json({ error: "Could not link account" }, 500);
+        return json({ success: true, subscriptionId: sub.id });
+      }
+
+      // ---- HR CHECKOUT ----
+      if (action === "hr-checkout") {
+        const orgName = (body.orgName as string)?.trim();
+        if (!orgName) return json({ error: "Organization name required" }, 400);
+        const customerId = await getCustomerId();
+        const { data: existing } = await supabase
+          .from("hr_pro_subscriptions")
+          .select("id")
+          .eq("user_id", user.id)
+          .maybeSingle();
+        let subId = existing?.id;
+        if (!subId) {
+          const { data: created, error: cErr } = await supabase
+            .from("hr_pro_subscriptions")
+            .insert({ user_id: user.id, org_name: orgName, status: "pending", stripe_customer_id: customerId })
+            .select("id")
+            .single();
+          if (cErr) return json({ error: "Could not create HR subscription" }, 500);
+          subId = created.id;
+        } else {
+          await supabase
+            .from("hr_pro_subscriptions")
+            .update({ org_name: orgName, stripe_customer_id: customerId })
+            .eq("id", subId);
+        }
+        const session = await stripe.checkout.sessions.create({
+          customer: customerId,
+          line_items: [{ price: PRICES.hr_pro, quantity: 1 }],
+          mode: "subscription",
+          success_url: `${origin}/handwriting?hr=success`,
+          cancel_url: `${origin}/handwriting?hr=cancelled`,
+          metadata: { user_id: user.id, hr_subscription_id: subId, plan: "hr_pro" },
+          subscription_data: { metadata: { user_id: user.id, hr_subscription_id: subId, plan: "hr_pro" } },
+        });
+        return json({ url: session.url });
+      }
+
+      // ---- HR STATUS ----
+      if (action === "hr-status") {
+        const { data: hr } = await supabase
+          .from("hr_pro_subscriptions")
+          .select("*")
+          .eq("user_id", user.id)
+          .maybeSingle();
+        if (!hr) return json({ active: false });
+        const customers = await stripe.customers.list({ email: user.email!, limit: 1 });
+        if (customers.data.length === 0) return json({ active: false, subscription: hr });
+        const subs = await stripe.subscriptions.list({ customer: customers.data[0].id, status: "active", limit: 5 });
+        const hrSub = subs.data.find((s) => s.items.data.some((i) => i.price.id === PRICES.hr_pro));
+        if (!hrSub) {
+          await supabase.from("hr_pro_subscriptions").update({ status: "inactive" }).eq("id", hr.id);
+          return json({ active: false, subscription: { ...hr, status: "inactive" } });
+        }
+        const periodEnd = new Date(hrSub.current_period_end * 1000).toISOString();
+        await supabase
+          .from("hr_pro_subscriptions")
+          .update({
+            status: "active",
+            stripe_subscription_id: hrSub.id,
+            stripe_customer_id: customers.data[0].id,
+            started_at: hr.started_at ?? new Date().toISOString(),
+            current_period_end: periodEnd,
+          })
+          .eq("id", hr.id);
+        return json({ active: true, subscription: { ...hr, status: "active", current_period_end: periodEnd, stripe_subscription_id: hrSub.id } });
+      }
+
+      // ---- CUSTOMER PORTAL ----
+      if (action === "portal") {
+        const customers = await stripe.customers.list({ email: user.email!, limit: 1 });
+        if (customers.data.length === 0) return json({ error: "No Stripe customer found" }, 404);
+        const portal = await stripe.billingPortal.sessions.create({
+          customer: customers.data[0].id,
+          return_url: `${origin}/handwriting`,
+        });
+        return json({ url: portal.url });
+      }
+    }
 
     // ---------- SIGNATURE (5 cr) ----------
     if (action === "signature") {
@@ -259,6 +468,178 @@ Deno.serve(async (req) => {
       const { data } = await supabase
         .from("handwriting_academy_progress").select("*").eq("user_id", user.id);
       return json({ progress: data ?? [] });
+    }
+
+    // ---------- VOICE DIARY (8 cr — voice + handwriting fingerprint) ----------
+    if (action === "voice-diary") {
+      const { handwritingImageUrl, voiceTranscript, voiceDurationSec = 0 } = body;
+      if (!handwritingImageUrl || !voiceTranscript) {
+        return json({ error: "handwritingImageUrl and voiceTranscript required" }, 400);
+      }
+      if ((voiceTranscript as string).length < 20) {
+        return json({ error: "Voice transcript too short — record at least a few sentences." }, 400);
+      }
+      await chargeCredits(supabase, user.id, 8);
+
+      const content = await callAI({
+        model: "google/gemini-2.5-pro",
+        messages: [
+          {
+            role: "system",
+            content:
+              "You are a hybrid voice-and-handwriting emotional fingerprint analyst. Compare the spoken words (transcript) with the handwriting sample to detect congruence between expressed and unconscious emotional state. Return strict JSON: { mood_score: 0-100, energy_score: 0-100, congruence_score: 0-100 (how much voice matches handwriting), emotional_fingerprint: { dominant_emotion, secondary_emotions: string[], stress_indicators: string[], hidden_signals: string[] }, ai_summary: 2-3 paragraph diary insight }.",
+          },
+          {
+            role: "user",
+            content: [
+              { type: "text", text: `Voice transcript (${voiceDurationSec}s):\n"${(voiceTranscript as string).slice(0, 4000)}"\n\nHandwriting sample below:` },
+              { type: "image_url", image_url: { url: handwritingImageUrl } },
+            ],
+          },
+        ],
+        response_format: { type: "json_object" },
+      });
+      const parsed = JSON.parse(content);
+      const { data: row } = await supabase
+        .from("voice_diaries")
+        .insert({
+          user_id: user.id,
+          handwriting_image_url: handwritingImageUrl,
+          voice_transcript: voiceTranscript,
+          voice_duration_sec: voiceDurationSec,
+          mood_score: parsed.mood_score,
+          energy_score: parsed.energy_score,
+          congruence_score: parsed.congruence_score,
+          emotional_fingerprint: parsed.emotional_fingerprint,
+          ai_analysis: parsed,
+          ai_summary: parsed.ai_summary,
+          credits_used: 8,
+        })
+        .select()
+        .single();
+      return json({ diary: row });
+    }
+
+    // ---------- HR BULK CANDIDATE (4 cr per candidate, requires HR Pro sub) ----------
+    if (action === "hr-bulk-analyze") {
+      const { candidateId } = body;
+      if (!candidateId) return json({ error: "candidateId required" }, 400);
+
+      const { data: hr } = await supabase
+        .from("hr_pro_subscriptions")
+        .select("*")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      if (!hr || hr.status !== "active") {
+        return json({ error: "Active HR Pro subscription required" }, 403);
+      }
+      if ((hr.monthly_candidates_used ?? 0) >= (hr.monthly_candidate_quota ?? 500)) {
+        return json({ error: "Monthly candidate quota reached" }, 402);
+      }
+
+      const { data: candidate } = await supabase
+        .from("hr_bulk_candidates")
+        .select("*, hr_bulk_jobs!inner(*)")
+        .eq("id", candidateId)
+        .eq("user_id", user.id)
+        .maybeSingle();
+      if (!candidate) return json({ error: "Candidate not found" }, 404);
+      if (candidate.status === "completed") {
+        return json({ candidate, alreadyDone: true });
+      }
+
+      await chargeCredits(supabase, user.id, 4);
+
+      const job = (candidate as any).hr_bulk_jobs;
+      const requiredTraits = (job?.required_traits ?? []).join(", ") || "leadership, communication, attention to detail, integrity";
+
+      try {
+        const content = await callAI({
+          model: "google/gemini-2.5-flash",
+          messages: [
+            {
+              role: "system",
+              content:
+                "You are an HR-grade graphology expert producing anonymized candidate scoring for ATS export. NEVER mention the candidate's identity, ethnicity, age, or gender. Score professionally and impartially. Return strict JSON: { leadership_score: 0-100, communication_score: 0-100, attention_score: 0-100, integrity_score: 0-100, overall_fit: 0-100, ai_summary: 2-paragraph anonymized professional assessment, ats_export: { strengths: string[], development_areas: string[], recommended_role_fit: string, hiring_recommendation: 'STRONG_HIRE'|'HIRE'|'MAYBE'|'NO_HIRE' } }.",
+            },
+            {
+              role: "user",
+              content: [
+                { type: "text", text: `Job: ${job?.job_title ?? "Unspecified"}\nRequired traits: ${requiredTraits}\nCandidate alias: ${candidate.candidate_alias}` },
+                { type: "image_url", image_url: { url: candidate.image_url } },
+              ],
+            },
+          ],
+          response_format: { type: "json_object" },
+        });
+        const parsed = JSON.parse(content);
+
+        const { data: updated } = await supabase
+          .from("hr_bulk_candidates")
+          .update({
+            leadership_score: parsed.leadership_score,
+            communication_score: parsed.communication_score,
+            attention_score: parsed.attention_score,
+            integrity_score: parsed.integrity_score,
+            overall_fit: parsed.overall_fit,
+            ai_summary: parsed.ai_summary,
+            ats_export_data: parsed.ats_export,
+            credits_used: 4,
+            status: "completed",
+            processed_at: new Date().toISOString(),
+          })
+          .eq("id", candidateId)
+          .select()
+          .single();
+
+        await supabase
+          .from("hr_bulk_jobs")
+          .update({
+            completed_candidates: (job?.completed_candidates ?? 0) + 1,
+            status: ((job?.completed_candidates ?? 0) + 1) >= (job?.total_candidates ?? 0) ? "completed" : "processing",
+          })
+          .eq("id", job.id);
+        await supabase
+          .from("hr_pro_subscriptions")
+          .update({ monthly_candidates_used: (hr.monthly_candidates_used ?? 0) + 1 })
+          .eq("id", hr.id);
+
+        return json({ candidate: updated });
+      } catch (err) {
+        await supabase
+          .from("hr_bulk_candidates")
+          .update({ status: "failed", error_message: (err as Error).message })
+          .eq("id", candidateId);
+        throw err;
+      }
+    }
+
+    // ---------- COUPLES TIMELINE (auto-recorded by Compatibility action when sub exists; 0 cr extra) ----------
+    if (action === "couples-record-compatibility") {
+      const { compatibilityScore, moodTrend, fullAnalysis, couplesSubscriptionId } = body;
+      if (!couplesSubscriptionId || compatibilityScore === undefined) {
+        return json({ error: "couplesSubscriptionId and compatibilityScore required" }, 400);
+      }
+      const { data: sub } = await supabase
+        .from("couples_subscriptions")
+        .select("id, partner_a_user_id, partner_b_user_id, status")
+        .eq("id", couplesSubscriptionId)
+        .maybeSingle();
+      if (!sub || sub.status !== "active") return json({ error: "No active couples sub" }, 403);
+      if (sub.partner_a_user_id !== user.id && sub.partner_b_user_id !== user.id) {
+        return json({ error: "Not a member of this subscription" }, 403);
+      }
+      const { data: tl } = await supabase
+        .from("couples_compatibility_timeline")
+        .insert({
+          couples_subscription_id: couplesSubscriptionId,
+          compatibility_score: compatibilityScore,
+          mood_trend: moodTrend ?? {},
+          full_analysis: fullAnalysis ?? {},
+        })
+        .select()
+        .single();
+      return json({ timeline: tl });
     }
 
     // ---------- PDF REPORT (5 cr) ----------
