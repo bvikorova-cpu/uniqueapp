@@ -2,8 +2,30 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
-const invoke = async (fn: string, body: unknown) => {
-  const { data, error } = await supabase.functions.invoke(fn, { body });
+// All 8 tools are routed through a single edge function "handwriting-ai"
+// using { action, ...payload } to stay within the function-slot quota.
+const ROUTED: Record<string, string> = {
+  "handwriting-signature-analyzer": "signature",
+  "handwriting-compatibility": "compatibility",
+  "handwriting-mood-tracker": "mood",
+  "handwriting-forgery-detector": "forgery",
+  "handwriting-twin-finder": "twin",
+  "handwriting-famous-comparison": "famous",
+  "handwriting-academy": "academy",
+  "handwriting-pdf-report": "pdf-report",
+};
+
+const invoke = async (fn: string, body: any) => {
+  const action = ROUTED[fn];
+  const payload = action
+    ? (fn === "handwriting-academy"
+        ? { action, subAction: body?.action, ...body }
+        : { action, ...body })
+    : body;
+  const { data, error } = await supabase.functions.invoke(
+    action ? "handwriting-ai" : fn,
+    { body: payload },
+  );
   if (error) throw error;
   if ((data as any)?.error) throw new Error((data as any).error);
   return data;
