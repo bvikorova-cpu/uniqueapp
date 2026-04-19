@@ -374,213 +374,86 @@ const Profile = () => {
 
   return (
     <div className="min-h-screen bg-background py-8">
-      <div className="container mx-auto px-4 max-w-3xl">
+      <div className="container mx-auto px-3 sm:px-4 max-w-3xl">
         <Button
           variant="ghost"
           onClick={() => navigate("/wall")}
-          className="mb-6 glass-hover rounded-xl"
+          className="mb-4 glass-hover rounded-xl"
         >
           <ArrowLeft className="h-4 w-4 mr-2" />
           Back
         </Button>
 
-        <div className="glass-post-card p-8 mb-6">
-          <div className="flex items-start gap-6 mb-6">
-            <Avatar className="h-32 w-32 ring-4 ring-primary/10 ring-offset-4 ring-offset-background">
-              <AvatarImage src={profile.avatar_url || undefined} />
-              <AvatarFallback className="text-4xl bg-gradient-to-br from-primary/20 to-accent/20 font-bold">
-                {profile.full_name?.[0]?.toUpperCase() || profile.email?.[0]?.toUpperCase() || "U"}
-              </AvatarFallback>
-            </Avatar>
-
-            <div className="flex-1">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-3 flex-wrap">
-                  <h1 className="text-3xl font-bold">
-                    {profile.full_name || "No name"}
-                  </h1>
-                  {/* Verified Founder Badge - prominently displayed */}
-                  <VerifiedFounderBadge 
-                    userName={profile.full_name || ""} 
-                    userEmail={profile.email || undefined}
-                    userId={userId}
-                    size="lg"
-                  />
-                </div>
-                <div className="flex gap-2">
-                  {currentUserId === userId ? (
-                    <Button variant="outline" size="sm" onClick={() => navigate("/edit-profile")} className="glass-button rounded-xl">
-                      <Edit className="h-4 w-4 mr-2" />
-                      Edit Profile
-                    </Button>
-                  ) : (
-                    <>
-                      {friendshipStatus === 'none' && (
-                        <Button variant="outline" size="sm" onClick={handleAddFriend}>
-                          <UserPlus className="h-4 w-4 mr-2" />
-                          Add Friend
-                        </Button>
-                      )}
-                      {friendshipStatus === 'pending_sent' && (
-                        <Button variant="outline" size="sm" disabled>
-                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                          Request Sent
-                        </Button>
-                      )}
-                      {friendshipStatus === 'pending_received' && (
-                        <Button variant="outline" size="sm" onClick={handleAcceptFriend}>
-                          <UserCheck className="h-4 w-4 mr-2" />
-                          Accept Request
-                        </Button>
-                       )}
-                       {friendshipStatus === 'accepted' && (
-                         <Button variant="outline" size="sm" onClick={handleRemoveFriend}>
-                           <Users className="h-4 w-4 mr-2" />
-                           Friends
-                         </Button>
-                       )}
-                       <FollowButton
-                         userId={userId}
-                         currentUserId={currentUserId || undefined}
-                         variant="default"
-                         size="sm"
-                       />
-                    </>
-                  )}
-                </div>
-              </div>
-              
-              {profile.occupation && (
-                <p className="text-lg text-muted-foreground mb-2 font-medium">
-                  {profile.occupation}
-                  {profile.company && ` @ ${profile.company}`}
-                </p>
-              )}
-
-              {profile.bio && (
-                <p className="text-muted-foreground mt-4 leading-relaxed">{profile.bio}</p>
-              )}
-            </div>
-          </div>
-
-          <Separator className="my-6 opacity-50" />
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {profile.email && (
-              <div className="flex items-center gap-2 text-sm">
-                <Mail className="h-4 w-4 text-muted-foreground" />
-                <span>{profile.email}</span>
-              </div>
-            )}
-
-            {profile.location && (
-              <div className="flex items-center gap-2 text-sm">
-                <MapPin className="h-4 w-4 text-muted-foreground" />
-                <span>{profile.location}</span>
-              </div>
-            )}
-
-            {profile.phone && (
-              <div className="flex items-center gap-2 text-sm">
-                <Phone className="h-4 w-4 text-muted-foreground" />
-                <span>{profile.phone}</span>
-              </div>
-            )}
-
-            {profile.website && (
-              <div className="flex items-center gap-2 text-sm">
-                <Globe className="h-4 w-4 text-muted-foreground" />
-                <a href={profile.website} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
-                  {profile.website}
-                </a>
-              </div>
-            )}
-
-            {profile.birth_date && (
-              <div className="flex items-center gap-2 text-sm">
-                <Calendar className="h-4 w-4 text-muted-foreground" />
-                <span>{new Date(profile.birth_date).toLocaleDateString("sk-SK")}</span>
-              </div>
-            )}
-          </div>
-
-          {profile.interests && profile.interests.length > 0 && (
+        {/* Cinematic Hero with video, portrait, live stats */}
+        <ProfileHero
+          profile={profile}
+          userId={userId}
+          currentUserId={currentUserId}
+          isOwnProfile={currentUserId === userId}
+          onEdit={() => navigate("/edit-profile")}
+          stats={{
+            posts: stats.postsCount,
+            followers: followCounts?.followers || 0,
+            following: followCounts?.following || 0,
+            xp: stats.likesGiven * 5 + stats.commentsGiven * 10 + stats.postsCount * 25,
+            level: Math.floor((stats.postsCount + stats.commentsGiven / 5) / 5) + 1,
+          }}
+          friendsAction={
             <>
-              <Separator className="my-6 opacity-30" />
-              <div>
-                <h3 className="text-sm font-semibold mb-3 text-muted-foreground">Interests</h3>
-                <div className="flex flex-wrap gap-2">
-                  {profile.interests.map((interest) => (
-                    <Badge key={interest} variant="secondary" className="glass-button rounded-full px-3 py-1 text-xs">
-                      {interest}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
+              {friendshipStatus === 'none' && (
+                <Button variant="outline" size="sm" onClick={handleAddFriend} className="bg-card/80 backdrop-blur-md border-amber-400/30">
+                  <UserPlus className="h-4 w-4 mr-2" />
+                  Add Friend
+                </Button>
+              )}
+              {friendshipStatus === 'pending_sent' && (
+                <Button variant="outline" size="sm" disabled className="bg-card/80 backdrop-blur-md">
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Sent
+                </Button>
+              )}
+              {friendshipStatus === 'pending_received' && (
+                <Button variant="outline" size="sm" onClick={handleAcceptFriend} className="bg-card/80 backdrop-blur-md border-amber-400/30">
+                  <UserCheck className="h-4 w-4 mr-2" />
+                  Accept
+                </Button>
+              )}
+              {friendshipStatus === 'accepted' && (
+                <Button variant="outline" size="sm" onClick={handleRemoveFriend} className="bg-card/80 backdrop-blur-md border-amber-400/30">
+                  <Users className="h-4 w-4 mr-2" />
+                  Friends
+                </Button>
+              )}
             </>
-          )}
-        </div>
+          }
+        />
+
+        {/* Founder Story / Bio */}
+        <FounderStory profile={profile} />
+
+        {/* Trophy Wall */}
+        <AchievementsWall
+          userId={userId!}
+          stats={{
+            posts: stats.postsCount,
+            friends: stats.friendsCount,
+            contests: stats.submissionsCount,
+            courses: stats.completedCoursesCount,
+            likes: stats.likesGiven,
+            comments: stats.commentsGiven,
+            followers: followCounts?.followers || 0,
+          }}
+        />
+
+        {/* Activity Heatmap */}
+        <ActivityHeatmap userId={userId!} />
 
         {/* Daily XP Widget - only for own profile */}
         {currentUserId === userId && (
-          <div className="mb-8">
+          <div className="mb-6">
             <DailyXPVideoReward userId={userId} />
           </div>
         )}
-
-        {/* Activity Statistics */}
-        <div className="glass-post-card p-8 mb-8">
-          <div className="flex items-center gap-2 mb-4">
-            <TrendingUp className="h-5 w-5 text-primary" />
-            <h2 className="text-xl font-semibold">Activity Statistics</h2>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="text-center">
-              <div className="text-3xl font-bold text-primary">{stats.postsCount}</div>
-              <div className="text-sm text-muted-foreground">Posts</div>
-            </div>
-            <div 
-              className="text-center cursor-pointer hover:bg-accent rounded-lg p-2 transition-colors"
-              onClick={() => {
-                setFollowersModalTab("followers");
-                setFollowersModalOpen(true);
-              }}
-            >
-              <div className="text-3xl font-bold text-primary">{followCounts?.followers || 0}</div>
-              <div className="text-sm text-muted-foreground">Followers</div>
-            </div>
-            <div 
-              className="text-center cursor-pointer hover:bg-accent rounded-lg p-2 transition-colors"
-              onClick={() => {
-                setFollowersModalTab("following");
-                setFollowersModalOpen(true);
-              }}
-            >
-              <div className="text-3xl font-bold text-primary">{followCounts?.following || 0}</div>
-              <div className="text-sm text-muted-foreground">Following</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-primary">{stats.friendsCount}</div>
-              <div className="text-sm text-muted-foreground">Friends</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-primary">{stats.submissionsCount}</div>
-              <div className="text-sm text-muted-foreground">Contests</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-primary">{stats.completedCoursesCount}</div>
-              <div className="text-sm text-muted-foreground">Courses</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-primary">{stats.likesGiven}</div>
-              <div className="text-sm text-muted-foreground">Likes</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-primary">{stats.commentsGiven}</div>
-              <div className="text-sm text-muted-foreground">Comments</div>
-            </div>
-          </div>
-        </div>
 
         {/* Tabs Section - Central Hub */}
         <Tabs defaultValue={defaultTab} className="w-full">
