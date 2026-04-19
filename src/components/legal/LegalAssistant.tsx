@@ -3,7 +3,6 @@ import { Bot, Send, Sparkles, X, MessageSquare, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import ReactMarkdown from "react-markdown";
@@ -86,7 +85,7 @@ export const LegalAssistant = ({ documentType, documentText }: LegalAssistantPro
             <Button variant="ghost" size="icon" onClick={() => setOpen(false)}><X className="w-4 h-4" /></Button>
           </div>
 
-          <ScrollArea className="flex-1 p-3" viewportRef={scrollRef as any}>
+          <div ref={scrollRef} className="flex-1 p-3 overflow-y-auto">
             <div className="space-y-3">
               {messages.map((m, i) => (
                 <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
@@ -109,7 +108,7 @@ export const LegalAssistant = ({ documentType, documentText }: LegalAssistantPro
                 </div>
               )}
             </div>
-          </ScrollArea>
+          </div>
 
           <div className="p-3 border-t border-amber-400/20">
             <div className="flex gap-2">
