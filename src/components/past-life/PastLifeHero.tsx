@@ -111,7 +111,7 @@ export const PastLifeHero = () => {
           className="flex justify-center mb-4"
         >
           <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-card/45 backdrop-blur-md text-foreground text-sm font-semibold border border-primary/40 shadow-[0_0_20px_hsl(var(--primary)/0.3)]">
-            <Infinity className="w-4 h-4 text-primary" />
+            <InfinityIcon className="w-4 h-4 text-primary" />
             Soul Journey Across Time
             <Sparkles className="w-4 h-4 text-accent" />
           </span>
