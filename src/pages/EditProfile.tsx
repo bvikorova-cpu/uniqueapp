@@ -9,8 +9,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Loader2, Upload, Sparkles, ArrowLeft } from "lucide-react";
+import { Loader2, Upload, Sparkles, ArrowLeft, UserCog } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { ProfilePageHero } from "@/components/profile/ProfilePageHero";
 
 interface ProfileData {
   id: string;
@@ -267,19 +268,14 @@ const EditProfile = () => {
 
   return (
     <div className="min-h-screen bg-background py-8">
-      <div className="container mx-auto px-4 max-w-2xl">
-        <Button
-          variant="ghost"
-          onClick={() => navigate("/wall")}
-          className="mb-4"
-        >
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Back
-        </Button>
-
-        <h1 className="text-4xl font-black mb-8 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
-          Edit Profile
-        </h1>
+      <div className="container mx-auto px-3 sm:px-4 max-w-2xl">
+        <ProfilePageHero
+          icon={UserCog}
+          title="Edit Profile"
+          subtitle="Tell the world who you are"
+          badge="Personal"
+          onBack={() => navigate("/wall")}
+        />
 
         <Card className="p-6 space-y-6">
           {/* Avatar Section */}

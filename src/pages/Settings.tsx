@@ -9,15 +9,17 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { 
-  ArrowLeft, 
-  User, 
-  Bell, 
-  Lock, 
-  Globe, 
+import {
+  ArrowLeft,
+  User,
+  Bell,
+  Lock,
+  Globe,
   Palette,
-  Save
+  Save,
+  Settings as SettingsIcon,
 } from "lucide-react";
+import { ProfilePageHero } from "@/components/profile/ProfilePageHero";
 
 export default function Settings() {
   const navigate = useNavigate();
@@ -80,22 +82,14 @@ export default function Settings() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="max-w-4xl mx-auto px-4 pt-24 pb-8">
-        {/* Header */}
-        <div className="flex items-center gap-4 mb-8">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => navigate(-1)}
-            className="rounded-full"
-          >
-            <ArrowLeft className="h-5 w-5" />
-          </Button>
-          <div>
-            <h1 className="text-3xl font-bold">Settings</h1>
-            <p className="text-muted-foreground">Manage your account preferences</p>
-          </div>
-        </div>
+      <div className="max-w-4xl mx-auto px-3 sm:px-4 pt-6 pb-8">
+        <ProfilePageHero
+          icon={SettingsIcon}
+          title="Settings"
+          subtitle="Manage your account, privacy & preferences"
+          badge="Account"
+          onBack={() => navigate(-1)}
+        />
 
         {/* Settings Tabs */}
         <Tabs defaultValue="account" className="space-y-6">
