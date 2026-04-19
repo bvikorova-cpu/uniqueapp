@@ -29290,8 +29290,105 @@ export type Database = {
         }
         Relationships: []
       }
+      profile_goals: {
+        Row: {
+          color: string | null
+          created_at: string
+          current_value: number
+          deadline: string | null
+          id: string
+          target_value: number
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          color?: string | null
+          created_at?: string
+          current_value?: number
+          deadline?: string | null
+          id?: string
+          target_value?: number
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          color?: string | null
+          created_at?: string
+          current_value?: number
+          deadline?: string | null
+          id?: string
+          target_value?: number
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profile_tips: {
+        Row: {
+          amount: number
+          created_at: string
+          currency: string
+          id: string
+          message: string | null
+          recipient_id: string
+          sender_id: string
+        }
+        Insert: {
+          amount?: number
+          created_at?: string
+          currency?: string
+          id?: string
+          message?: string | null
+          recipient_id: string
+          sender_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          currency?: string
+          id?: string
+          message?: string | null
+          recipient_id?: string
+          sender_id?: string
+        }
+        Relationships: []
+      }
+      profile_voice_intros: {
+        Row: {
+          audio_url: string
+          created_at: string
+          duration_seconds: number | null
+          id: string
+          transcript: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          audio_url: string
+          created_at?: string
+          duration_seconds?: number | null
+          id?: string
+          transcript?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          audio_url?: string
+          created_at?: string
+          duration_seconds?: number | null
+          id?: string
+          transcript?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
+          avatar_3d_url: string | null
           avatar_url: string | null
           bio: string | null
           birth_date: string | null
@@ -29317,12 +29414,14 @@ export type Database = {
           stripe_connect_charges_enabled: boolean | null
           stripe_connect_onboarding_complete: boolean | null
           stripe_connect_payouts_enabled: boolean | null
+          theme_color: string | null
           total_reviews: number | null
           updated_at: string
           user_type: string | null
           website: string | null
         }
         Insert: {
+          avatar_3d_url?: string | null
           avatar_url?: string | null
           bio?: string | null
           birth_date?: string | null
@@ -29348,12 +29447,14 @@ export type Database = {
           stripe_connect_charges_enabled?: boolean | null
           stripe_connect_onboarding_complete?: boolean | null
           stripe_connect_payouts_enabled?: boolean | null
+          theme_color?: string | null
           total_reviews?: number | null
           updated_at?: string
           user_type?: string | null
           website?: string | null
         }
         Update: {
+          avatar_3d_url?: string | null
           avatar_url?: string | null
           bio?: string | null
           birth_date?: string | null
@@ -29379,6 +29480,7 @@ export type Database = {
           stripe_connect_charges_enabled?: boolean | null
           stripe_connect_onboarding_complete?: boolean | null
           stripe_connect_payouts_enabled?: boolean | null
+          theme_color?: string | null
           total_reviews?: number | null
           updated_at?: string
           user_type?: string | null
