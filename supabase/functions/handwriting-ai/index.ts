@@ -1,7 +1,15 @@
-// Router edge function – consolidates 8 handwriting AI tools into one slot.
-// Dispatch via { action: "signature" | "compatibility" | "mood" | "forgery"
-//                       | "twin" | "famous" | "academy" | "pdf-report", ...payload }
+// Router edge function – consolidates handwriting AI tools + billing into one slot.
+// AI actions: signature, compatibility, mood, forgery, twin, famous, academy, pdf-report,
+//             voice-diary, hr-bulk-analyze, couples-record-compatibility
+// Billing actions: couples-checkout, couples-status, accept-couples-invite,
+//                  hr-checkout, hr-status, portal
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import Stripe from "https://esm.sh/stripe@18.5.0";
+
+const PRICES = {
+  couples: "price_1TNs5DGaXSfGtYFtIEzPmxzo", // €14.99/mo
+  hr_pro: "price_1TNs5EGaXSfGtYFt4pks23YW",  // €99/mo
+};
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
