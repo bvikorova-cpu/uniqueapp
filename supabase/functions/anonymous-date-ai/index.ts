@@ -43,19 +43,20 @@ const SYSTEM_PROMPTS: Record<Feature, string> = {
 };
 
 async function callAI(system: string, userMsg: string, jsonMode = false): Promise<string> {
-  const apiKey = Deno.env.get("LOVABLE_API_KEY");
-  if (!apiKey) throw new Error("LOVABLE_API_KEY not configured");
+  const apiKey = Deno.env.get("OPENAI_API_KEY");
+  if (!apiKey) throw new Error("OPENAI_API_KEY not configured");
 
   const body: any = {
-    model: "google/gemini-2.5-flash",
+    model: "gpt-4o-mini",
     messages: [
       { role: "system", content: system },
       { role: "user", content: userMsg },
     ],
+    temperature: 0.85,
   };
   if (jsonMode) body.response_format = { type: "json_object" };
 
-  const r = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+  const r = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
     headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
     body: JSON.stringify(body),
@@ -65,7 +66,7 @@ async function callAI(system: string, userMsg: string, jsonMode = false): Promis
   if (r.status === 402) throw new Error("AI_CREDITS_EXHAUSTED");
   if (!r.ok) {
     const t = await r.text();
-    console.error("AI gateway error", r.status, t);
+    console.error("OpenAI error", r.status, t);
     throw new Error("AI_ERROR");
   }
   const json = await r.json();

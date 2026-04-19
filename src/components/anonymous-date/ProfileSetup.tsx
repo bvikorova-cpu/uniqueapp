@@ -145,7 +145,7 @@ export function ProfileSetup({ onComplete }: { onComplete: () => void }) {
             className="text-3xl sm:text-5xl lg:text-6xl font-black mb-3 text-white"
             style={{ textShadow: "0 2px 14px rgba(0,0,0,0.95), 0 0 36px hsl(var(--primary) / 0.55)" }}
           >
-            Find Love <span className="bg-gradient-to-r from-pink-300 via-pink-400 to-rose-400 bg-clip-text text-transparent">Anonymously</span>
+            Find Love <span className="text-white" style={{ textShadow: "0 2px 14px rgba(0,0,0,0.95), 0 0 28px hsl(var(--primary) / 0.65)" }}>Anonymously</span>
           </motion.h1>
 
           <motion.p
