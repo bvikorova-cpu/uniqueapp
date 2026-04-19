@@ -24,6 +24,7 @@ import { AccessPaymentGate } from "@/components/anonymous-date/AccessPaymentGate
 import { AnonymousDatePersonalityCompass } from "@/components/anonymous-date/AnonymousDatePersonalityCompass";
 import { AnonymousDateConversationStarter } from "@/components/anonymous-date/AnonymousDateConversationStarter";
 import { AnonymousDateIdeasShowcase } from "@/components/anonymous-date/AnonymousDateIdeasShowcase";
+import { AnonymousDateAIToolbox } from "@/components/anonymous-date/AnonymousDateAIToolbox";
 import { FloatingParticles } from "@/components/wellness/FloatingParticles";
 
 type ViewType = "hub" | "matches" | "find" | "credits" | "profile";
@@ -290,6 +291,15 @@ export default function AnonymousDate() {
                 <AnonymousDateStreak />
                 <AnonymousDateProgress />
                 <AnonymousDateAchievements />
+              </motion.div>
+
+              {/* AI Toolbox - 7 premium AI features */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.48 }}
+              >
+                <AnonymousDateAIToolbox credits={credits} />
               </motion.div>
 
               {/* Daily starter + Personality Compass */}
