@@ -1417,6 +1417,39 @@ export type Database = {
           },
         ]
       }
+      anonymous_date_ai_usage: {
+        Row: {
+          created_at: string
+          credits_used: number
+          feature_type: string
+          id: string
+          input_data: Json | null
+          match_id: string | null
+          output_data: Json | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_used?: number
+          feature_type: string
+          id?: string
+          input_data?: Json | null
+          match_id?: string | null
+          output_data?: Json | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_used?: number
+          feature_type?: string
+          id?: string
+          input_data?: Json | null
+          match_id?: string | null
+          output_data?: Json | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       anonymous_dating_credits: {
         Row: {
           created_at: string | null
