@@ -35620,24 +35620,33 @@ export type Database = {
       story_highlights: {
         Row: {
           cover_image: string | null
+          cover_url: string | null
           created_at: string | null
           id: string
+          image_urls: string[] | null
+          order_index: number | null
           title: string
           updated_at: string | null
           user_id: string
         }
         Insert: {
           cover_image?: string | null
+          cover_url?: string | null
           created_at?: string | null
           id?: string
+          image_urls?: string[] | null
+          order_index?: number | null
           title: string
           updated_at?: string | null
           user_id: string
         }
         Update: {
           cover_image?: string | null
+          cover_url?: string | null
           created_at?: string | null
           id?: string
+          image_urls?: string[] | null
+          order_index?: number | null
           title?: string
           updated_at?: string | null
           user_id?: string
