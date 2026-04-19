@@ -21,15 +21,15 @@ export default function Privacy() {
     <div className="min-h-screen bg-background p-4 md:p-8">
       <div className="max-w-7xl mx-auto">
         <LegalHero
-          badge="GDPR COMPLIANT — UNITY V2.0"
+          badge="GLOBAL PRIVACY — UNITY V2.0"
           title="Privacy & Cookies"
-          subtitle="Your data is yours. Here's exactly what we collect, why we collect it, who we share it with, and how you can control all of it."
+          subtitle="Your data is yours. UNIQUE complies with GDPR, CCPA, UK DPA, LGPD, PIPEDA and equivalent privacy laws worldwide. Here's exactly what we collect, why, who we share it with, and how you control it."
           effectiveDate="January 20, 2026"
           stats={[
-            { label: "GDPR", value: "✓", icon: <Lock className="w-3 h-3" /> },
+            { label: "Standards", value: "Global", icon: <Lock className="w-3 h-3" /> },
             { label: "Tracking", value: "Opt-in", icon: <Eye className="w-3 h-3" /> },
             { label: "Cookies", value: "3 types", icon: <Cookie className="w-3 h-3" /> },
-            { label: "Storage", value: "EU only", icon: <Database className="w-3 h-3" /> },
+            { label: "Storage", value: "Multi-region", icon: <Database className="w-3 h-3" /> },
           ]}
         />
 
