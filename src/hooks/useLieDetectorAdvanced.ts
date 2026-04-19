@@ -2,8 +2,9 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
-async function invoke<T = any>(name: string, body: Record<string, any>): Promise<T> {
-  const { data, error } = await supabase.functions.invoke(name, { body });
+// All lie-detector-* are routed through the consolidated `lie-detector-ai` function.
+async function invoke<T = any>(action: string, body: Record<string, any>): Promise<T> {
+  const { data, error } = await supabase.functions.invoke("lie-detector-ai", { body: { action, ...body } });
   if (error) throw new Error(error.message);
   if (data?.error) throw new Error(data.error);
   return data as T;
@@ -13,7 +14,7 @@ async function invoke<T = any>(name: string, body: Record<string, any>): Promise
 export function useVoiceLieDetection() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (vars: { audio_base64: string; mime: string }) => invoke("lie-detector-voice", vars),
+    mutationFn: (vars: { audio_base64: string; mime: string }) => invoke("voice", vars),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["lie-detector-credits"] });
       qc.invalidateQueries({ queryKey: ["lie-detector-voice-history"] });
@@ -44,7 +45,7 @@ export function useVoiceHistory(limit = 5) {
 export function useScreenshotForensics() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (vars: { image_base64: string; mime: string }) => invoke("lie-detector-screenshot", vars),
+    mutationFn: (vars: { image_base64: string; mime: string }) => invoke("screenshot", vars),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["lie-detector-credits"] });
       qc.invalidateQueries({ queryKey: ["lie-detector-screenshot-history"] });
@@ -58,7 +59,7 @@ export function useScreenshotForensics() {
 export function useConversationTimeline() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (vars: { messages: string[]; title?: string }) => invoke("lie-detector-timeline", vars),
+    mutationFn: (vars: { messages: string[]; title?: string }) => invoke("timeline", vars),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["lie-detector-credits"] });
       qc.invalidateQueries({ queryKey: ["lie-detector-timelines"] });
@@ -90,7 +91,7 @@ export function useTruthReport() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (vars: { source_type: string; source_id?: string; payload: any; title?: string }) =>
-      invoke("lie-detector-report", vars),
+      invoke("report", vars),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["lie-detector-credits"] });
       toast.success("Report generated");
