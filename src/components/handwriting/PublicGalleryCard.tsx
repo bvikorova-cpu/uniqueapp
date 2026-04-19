@@ -226,7 +226,13 @@ export function PublicGalleryCard() {
                 </DialogTitle>
               </DialogHeader>
               <div className="space-y-3">
-                <img src={activeItem.image_url} alt={activeItem.figure_name} className="w-full max-h-48 object-contain rounded-md bg-white border border-amber-200" />
+                <img
+                  src={activeItem.image_url}
+                  alt={activeItem.figure_name}
+                  className="w-full max-h-48 object-contain rounded-md bg-white border border-amber-200 p-3"
+                  referrerPolicy="no-referrer"
+                  onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
+                />
                 <p className="text-xs text-muted-foreground">{activeItem.story}</p>
                 <div className="flex gap-1 flex-wrap text-[10px]">
                   {activeItem.era && <Badge variant="outline">{activeItem.era}</Badge>}
