@@ -71,10 +71,16 @@ export const PastLifeForm = ({ onSubmit, isAnalyzing, defaultReadingType }: Past
 
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-      <Card className="overflow-hidden bg-card/80 backdrop-blur-xl border-border/50">
+      <Card className="overflow-hidden bg-gradient-to-br from-card/90 via-card/80 to-primary/5 backdrop-blur-xl border-border/50 relative">
+        {/* Mystical decorative orbs */}
+        <div className="absolute -top-12 -right-12 w-40 h-40 rounded-full bg-primary/10 blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-12 -left-12 w-40 h-40 rounded-full bg-accent/10 blur-3xl pointer-events-none" />
         <div className={`h-1.5 bg-gradient-to-r ${selectedType?.gradient || "from-primary to-accent"}`} />
-        <div className="p-5 sm:p-8 space-y-6">
-          <div>
+        <div className="p-5 sm:p-8 space-y-6 relative">
+          <div className="text-center sm:text-left">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-[10px] font-bold tracking-wider uppercase mb-2">
+              ✨ Soul Reading Portal
+            </div>
             <h2 className="text-xl sm:text-2xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
               Discover Your Past Lives
             </h2>
