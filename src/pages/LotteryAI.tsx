@@ -322,7 +322,7 @@ export default function LotteryAI() {
         <LotteryHero />
 
         {/* Feature Cards Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-8">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-8">
           {FEATURE_CARDS.map((card, i) => (
             <motion.div
               key={card.id}
