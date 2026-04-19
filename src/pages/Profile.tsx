@@ -23,6 +23,13 @@ import { ProfileHero } from "@/components/profile/ProfileHero";
 import { AchievementsWall } from "@/components/profile/AchievementsWall";
 import { ActivityHeatmap } from "@/components/profile/ActivityHeatmap";
 import { FounderStory } from "@/components/profile/FounderStory";
+import { StoryHighlights } from "@/components/profile/StoryHighlights";
+import { VoiceIntro } from "@/components/profile/VoiceIntro";
+import { Avatar3D } from "@/components/profile/Avatar3D";
+import { PublicGoals } from "@/components/profile/PublicGoals";
+import { TipJar } from "@/components/profile/TipJar";
+import { ProfileQRCode } from "@/components/profile/ProfileQRCode";
+import { ThemePicker } from "@/components/profile/ThemePicker";
 
 interface Profile {
   id: string;
@@ -424,9 +431,23 @@ const Profile = () => {
                   Friends
                 </Button>
               )}
+              <ProfileQRCode userId={userId!} userName={profile.full_name || "user"} />
+              {currentUserId === userId && <ThemePicker userId={userId!} />}
+              {currentUserId !== userId && profile.full_name && (
+                <TipJar recipientId={userId!} recipientName={profile.full_name} currentUserId={currentUserId} />
+              )}
             </>
           }
         />
+
+        {/* Voice intro */}
+        <VoiceIntro userId={userId!} isOwnProfile={currentUserId === userId} />
+
+        {/* Story Highlights */}
+        <StoryHighlights userId={userId!} isOwnProfile={currentUserId === userId} />
+
+        {/* 3D Avatar (if set) */}
+        <Avatar3D userId={userId!} />
 
         {/* Founder Story / Bio */}
         <FounderStory profile={profile} />
@@ -447,6 +468,9 @@ const Profile = () => {
 
         {/* Activity Heatmap */}
         <ActivityHeatmap userId={userId!} />
+
+        {/* Public Goals */}
+        <PublicGoals userId={userId!} isOwnProfile={currentUserId === userId} />
 
         {/* Daily XP Widget - only for own profile */}
         {currentUserId === userId && (
