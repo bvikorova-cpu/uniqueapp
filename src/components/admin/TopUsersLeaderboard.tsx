@@ -121,7 +121,7 @@ export const TopUsersLeaderboard = () => {
     return () => {
       cancel = true;
     };
-  }, [mode]);
+  }, [mode, range]);
 
   const Icon = MODE_ICON[mode];
   const formatValue = (v: number) => (mode === "active" ? `${v} actions` : `€${v.toFixed(2)}`);
