@@ -20,10 +20,10 @@ export const ProfilePageHero = ({ icon: Icon, title, subtitle, onBack, badge }: 
         loop
         playsInline
         className="absolute inset-0 w-full h-full object-cover"
-        style={{ filter: "brightness(0.9) saturate(1.2) contrast(1.05)" }}
+        style={{ filter: "brightness(1.0) saturate(1.2) contrast(1.05)" }}
         src={heroVideo.url}
       />
-      <div className="absolute inset-0 bg-gradient-to-br from-violet-950/25 via-black/15 to-amber-950/20" />
+      <div className="absolute inset-0 bg-gradient-to-br from-violet-950/55 via-black/40 to-amber-950/40" />
       <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/40 to-black/85" />
 
       <div className="relative z-10 px-5 sm:px-8 py-7 sm:py-9">
