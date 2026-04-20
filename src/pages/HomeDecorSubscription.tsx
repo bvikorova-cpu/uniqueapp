@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import Navbar from "@/components/Navbar";
 import { useNavigate } from "react-router-dom";
+import { ModuleSubscriptionHero } from "@/components/subscription/ModuleSubscriptionHero";
 
 const HomeDecorSubscription = () => {
   const navigate = useNavigate();

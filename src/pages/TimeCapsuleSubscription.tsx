@@ -5,6 +5,7 @@ import { Check, Clock, Zap, AlertCircle, Sparkles, Shield } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
+import { ModuleSubscriptionHero } from "@/components/subscription/ModuleSubscriptionHero";
 
 const CAPSULE_PLANS = {
   oneYear: {
