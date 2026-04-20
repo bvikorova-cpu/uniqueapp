@@ -9,6 +9,7 @@ import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import { Sparkles, Image as ImageIcon, ArrowLeft, Feather, Eye, Skull, Volume2, Pen } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { GothicPageHeader } from '@/components/shadow-arena/GothicPageHeader';
 
 const guidelines = [
   { icon: Pen, title: "Be Original", desc: "Share your unique horror stories, experiences, or creative fiction" },
@@ -68,37 +69,12 @@ export default function ShadowArenaSubmitStory() {
           <ArrowLeft className="w-4 h-4 mr-2" /> Back to Dashboard
         </Button>
 
-        {/* Cinematic hero with video background */}
-        <motion.div
-          className="relative overflow-hidden rounded-2xl mb-8 h-[300px] border border-red-900/30 shadow-[0_0_40px_-10px_rgba(127,29,29,0.4)]"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-        >
-          <video
-            className="absolute inset-0 w-full h-full object-cover"
-            autoPlay muted loop playsInline
-            poster="/__l5e/assets-v1/19b2ee13-ec47-4320-8496-3de3ce361f28/shadow-arena-poster.jpg"
-          >
-            <source
-              src="/__l5e/assets-v1/19b2ee13-ec47-4320-8496-3de3ce361f28/shadow-arena-hero.mp4"
-              type="video/mp4"
-            />
-          </video>
-          <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/60 to-black/85" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-red-900/20 rounded-full blur-[80px]" />
-
-          <div className="relative z-10 h-full flex flex-col justify-center p-8">
-            <div className="flex items-center gap-3 mb-3">
-              <Feather className="h-7 w-7 text-red-400" />
-              <h1 className="text-3xl md:text-5xl font-black bg-gradient-to-r from-red-300 via-purple-400 to-red-400 bg-clip-text text-transparent">
-                Submit Your Horror Story
-              </h1>
-            </div>
-            <p className="text-red-100/70 text-sm md:text-base max-w-lg font-serif italic">
-              Share your terrifying tale and let our AI enhance it with cinematic illustrations and ambient soundtrack
-            </p>
-          </div>
-        </motion.div>
+        {/* Cinematic gothic hero */}
+        <GothicPageHeader
+          icon={Feather}
+          title="Submit Your Horror Story"
+          subtitle="Share your terrifying tale and let our AI enhance it with cinematic illustrations and ambient soundtrack"
+        />
 
         {/* Guidelines grid */}
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-8">
