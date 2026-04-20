@@ -8,3 +8,4 @@ export { EarningsPayoutCard } from "./EarningsPayoutCard";
 export { EarningsLiveTicker } from "./EarningsLiveTicker";
 export { EarningsGoalTracker } from "./EarningsGoalTracker";
 export { EarningsTipsBanner } from "./EarningsTipsBanner";
+export { PayoutMethodsManager } from "./PayoutMethodsManager";
