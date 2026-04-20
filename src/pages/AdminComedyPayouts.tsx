@@ -7,7 +7,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { format } from "date-fns";
-import { DollarSign, Check, X } from "lucide-react";
+import { DollarSign, Check, X, Mic, Download } from "lucide-react";
+import { AdminGuard } from "@/components/admin/AdminGuard";
+import { AdminPageShell, AdminGlassCard } from "@/components/admin/AdminPageShell";
+import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
+import { exportToCsv } from "@/lib/exportCsv";
 
 export default function AdminComedyPayouts() {
   const [requests, setRequests] = useState<any[]>([]);
@@ -96,45 +100,54 @@ export default function AdminComedyPayouts() {
     );
   }
 
+  const pendingCount = requests.filter((r) => r.status === "pending").length;
+  const pendingAmount = requests
+    .filter((r) => r.status === "pending")
+    .reduce((sum, r) => sum + r.amount, 0);
+  const completedToday = requests.filter(
+    (r) =>
+      r.status === "completed" &&
+      r.processed_at &&
+      new Date(r.processed_at).toDateString() === new Date().toDateString()
+  ).length;
+
   return (
-    <div className="min-h-screen bg-background p-6">
-      <div className="max-w-7xl mx-auto space-y-6 mt-16">
-        <div className="flex items-center gap-3">
-          <DollarSign className="h-8 w-8 text-primary" />
-          <div>
-            <h1 className="text-4xl font-bold">Comedy Club Payouts</h1>
-            <p className="text-muted-foreground">Manage comedian withdrawal requests</p>
-          </div>
-        </div>
+    <AdminGuard>
+      <AdminPageShell>
+        <AdminPageHeader
+          title="Comedy Club Payouts"
+          subtitle="Manage withdrawal requests from comedians on the platform."
+          icon={Mic}
+          badge="Comedy"
+          breadcrumbs={[{ label: "Comedy Payouts" }]}
+          stats={[
+            { label: "Pending", value: pendingCount, accent: "amber" },
+            { label: "Pending €", value: `€${pendingAmount.toFixed(0)}`, accent: "purple" },
+            { label: "Today", value: completedToday, accent: "emerald" },
+            { label: "Total", value: requests.length, accent: "cyan" },
+          ]}
+          actions={
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() =>
+                exportToCsv("comedy-payouts", requests, [
+                  { key: "comedian", label: "Comedian", format: (c) => c?.stage_name || "" },
+                  { key: "amount", label: "Amount €" },
+                  { key: "payment_method", label: "Method" },
+                  { key: "status", label: "Status" },
+                  { key: "requested_at", label: "Requested" },
+                  { key: "processed_at", label: "Processed" },
+                ])
+              }
+              className="bg-white/15 backdrop-blur-xl border border-white/30 text-white hover:bg-white/25"
+            >
+              <Download className="h-3.5 w-3.5 mr-1.5" /> Export CSV
+            </Button>
+          }
+        />
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Card className="p-4">
-            <p className="text-sm text-muted-foreground">Pending Requests</p>
-            <p className="text-3xl font-bold">
-              {requests.filter(r => r.status === 'pending').length}
-            </p>
-          </Card>
-          <Card className="p-4">
-            <p className="text-sm text-muted-foreground">Total Pending Amount</p>
-            <p className="text-3xl font-bold text-yellow-500">
-              €{requests
-                .filter(r => r.status === 'pending')
-                .reduce((sum, r) => sum + r.amount, 0)
-                .toFixed(2)}
-            </p>
-          </Card>
-          <Card className="p-4">
-            <p className="text-sm text-muted-foreground">Completed Today</p>
-            <p className="text-3xl font-bold text-green-500">
-              {requests.filter(r => 
-                r.status === 'completed' && 
-                new Date(r.processed_at).toDateString() === new Date().toDateString()
-              ).length}
-            </p>
-          </Card>
-        </div>
-
-        <Card className="p-6">
+        <AdminGlassCard className="p-4 sm:p-6 mb-6">
           <h2 className="text-2xl font-black mb-4">Withdrawal Requests</h2>
           <div className="space-y-3">
             {requests.map((request) => (
@@ -188,7 +201,7 @@ export default function AdminComedyPayouts() {
               </Card>
             ))}
           </div>
-        </Card>
+        </AdminGlassCard>
 
         <Dialog open={!!selectedRequest} onOpenChange={() => setSelectedRequest(null)}>
           <DialogContent>
@@ -249,7 +262,7 @@ export default function AdminComedyPayouts() {
             </DialogFooter>
           </DialogContent>
         </Dialog>
-      </div>
-    </div>
+      </AdminPageShell>
+    </AdminGuard>
   );
 }

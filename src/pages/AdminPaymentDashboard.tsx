@@ -10,7 +10,9 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Loader2, Search, Download, TrendingUp, CreditCard, Users, DollarSign } from "lucide-react";
 import { format } from "date-fns";
-import Navbar from "@/components/Navbar";
+import { AdminGuard } from "@/components/admin/AdminGuard";
+import { AdminPageShell, AdminGlassCard } from "@/components/admin/AdminPageShell";
+import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 
 const AdminPaymentDashboard = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -105,15 +107,21 @@ const AdminPaymentDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Navbar />
-      <div className="flex-1 container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-4xl font-black mb-2">Payment Dashboard</h1>
-          <p className="text-muted-foreground">
-            Monitor all payments, credits, and conversion analytics
-          </p>
-        </div>
+    <AdminGuard>
+      <AdminPageShell>
+        <AdminPageHeader
+          title="Payment Dashboard"
+          subtitle="Monitor payments, credits and conversion analytics in real time."
+          icon={CreditCard}
+          badge="Finance"
+          breadcrumbs={[{ label: "Payment Dashboard" }]}
+          stats={[
+            { label: "Revenue", value: `€${((stats?.totalRevenue || 0) / 100).toFixed(0)}`, accent: "emerald" },
+            { label: "Transactions", value: stats?.totalTransactions || 0, accent: "cyan" },
+            { label: "Customers", value: stats?.uniqueCustomers || 0, accent: "purple" },
+            { label: `Last ${dateRange}d`, value: "•", accent: "amber" },
+          ]}
+        />
 
         {/* Statistics Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -407,8 +415,8 @@ const AdminPaymentDashboard = () => {
             </Card>
           </TabsContent>
         </Tabs>
-      </div>
-    </div>
+      </AdminPageShell>
+    </AdminGuard>
   );
 };
 
