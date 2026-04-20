@@ -6,28 +6,39 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
+const STYLE_MODIFIERS: Record<string, string> = {
+  realistic: "ultra-photorealistic studio portrait, soft natural lighting, sharp eyes, magazine quality, 85mm lens",
+  anime: "vibrant anime portrait, clean line art, expressive eyes, Studio Ghibli inspired, soft cel-shading",
+  cyberpunk: "neon cyberpunk portrait, glowing pink-cyan rim lights, futuristic visor reflections, rainy night atmosphere",
+  watercolor: "delicate watercolor painting portrait, flowing pastel washes, paper texture, artistic brush strokes",
+  pixar: "Pixar / Disney 3D animated character portrait, expressive friendly face, polished render, soft warm lighting",
+  oilpainting: "renaissance oil painting portrait, dramatic chiaroscuro lighting, rich textured brushwork, classical composition",
+  comic: "bold pop-art comic book portrait, halftone shading, vibrant primary colors, ink outlines",
+  fantasy: "epic fantasy portrait, ethereal glowing aura, intricate ornate details, mystical atmosphere",
+};
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    // Rate limit check
     const rateLimitResponse = await withRateLimit(req, RATE_LIMITS.ai_generation, corsHeaders);
     if (rateLimitResponse) return rateLimitResponse;
 
-    const { description } = await req.json();
+    const { description, style } = await req.json();
     const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
 
     if (!OPENAI_API_KEY) {
       throw new Error("OPENAI_API_KEY is not configured");
     }
 
-    console.log("Generating avatar with description:", description);
+    const styleKey = (style || "realistic").toLowerCase();
+    const styleHint = STYLE_MODIFIERS[styleKey] || STYLE_MODIFIERS.realistic;
 
-    const prompt = `Generate a professional avatar/profile picture based on this description: ${description}. 
-    The avatar should be suitable for a social media profile, with a clean, modern aesthetic. 
-    Make it look professional and friendly. Square aspect ratio 1:1.`;
+    console.log("Generating avatar:", { style: styleKey, description });
+
+    const prompt = `Professional avatar / profile picture. Subject: ${description}. Style: ${styleHint}. Centered face, clean background, suitable for a social profile. Square 1:1.`;
 
     const response = await fetch("https://api.openai.com/v1/images/generations", {
       method: "POST",
@@ -37,7 +48,7 @@ serve(async (req) => {
       },
       body: JSON.stringify({
         model: "gpt-image-1",
-        prompt: prompt,
+        prompt,
         n: 1,
         size: "1024x1024",
         quality: "high",
@@ -59,16 +70,10 @@ serve(async (req) => {
     }
 
     const data = await response.json();
-    console.log("Avatar generation response received");
-
     const base64Image = data.data?.[0]?.b64_json;
-    if (!base64Image) {
-      throw new Error("No image generated");
-    }
+    if (!base64Image) throw new Error("No image generated");
 
-    const imageUrl = `data:image/webp;base64,${base64Image}`;
-
-    return new Response(JSON.stringify({ imageUrl }), {
+    return new Response(JSON.stringify({ imageUrl: `data:image/webp;base64,${base64Image}` }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (error) {
