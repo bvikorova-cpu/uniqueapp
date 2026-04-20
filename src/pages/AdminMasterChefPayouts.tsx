@@ -23,7 +23,11 @@ import {
 } from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { ChefHat, Euro, CheckCircle, XCircle, Clock, ArrowLeft } from "lucide-react";
+import { ChefHat, Euro, CheckCircle, XCircle, Clock, Download } from "lucide-react";
+import { AdminGuard } from "@/components/admin/AdminGuard";
+import { AdminPageShell, AdminGlassCard } from "@/components/admin/AdminPageShell";
+import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
+import { exportToCsv } from "@/lib/exportCsv";
 
 interface PlatformEarning {
   id: string;
@@ -210,26 +214,42 @@ export default function AdminMasterChefPayouts() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-500/5 via-background to-red-500/5 py-12 px-4">
-      <div className="max-w-7xl mx-auto">
-        <Button
-          variant="ghost"
-          onClick={() => navigate('/admin')}
-          className="mb-6"
-        >
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Back to Admin Dashboard
-        </Button>
-
-        <div className="mb-8">
-          <div className="flex items-center gap-3 mb-2">
-            <ChefHat className="w-8 h-8 text-orange-500" />
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
-              MasterChef Payouts
-            </h1>
-          </div>
-          <p className="text-muted-foreground">Manage chef gift commissions and payouts</p>
-        </div>
+    <AdminGuard>
+      <AdminPageShell>
+        <AdminPageHeader
+          title="MasterChef Payouts"
+          subtitle="Manage chef gift commissions and process secure payouts."
+          icon={ChefHat}
+          badge="MasterChef"
+          breadcrumbs={[{ label: "MasterChef Payouts" }]}
+          stats={[
+            { label: "Pending €", value: `€${totalPending.toFixed(0)}`, accent: "amber" },
+            { label: "Pending #", value: pendingEarnings.length, accent: "purple" },
+            { label: "Paid #", value: paidEarnings.length, accent: "emerald" },
+            { label: "Comm. €", value: `€${totalCommissions.toFixed(0)}`, accent: "cyan" },
+          ]}
+          actions={
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() =>
+                exportToCsv("masterchef-payouts", earnings, [
+                  { key: "chef_name", label: "Chef" },
+                  { key: "chef_email", label: "Email" },
+                  { key: "total_amount", label: "Total €" },
+                  { key: "chef_amount", label: "Chef €" },
+                  { key: "commission_amount", label: "Commission €" },
+                  { key: "status", label: "Status" },
+                  { key: "created_at", label: "Date" },
+                  { key: "paid_at", label: "Paid" },
+                ])
+              }
+              className="bg-white/15 backdrop-blur-xl border border-white/30 text-white hover:bg-white/25"
+            >
+              <Download className="h-3.5 w-3.5 mr-1.5" /> Export CSV
+            </Button>
+          }
+        />
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -459,7 +479,7 @@ export default function AdminMasterChefPayouts() {
             </DialogFooter>
           </DialogContent>
         </Dialog>
-      </div>
-    </div>
+      </AdminPageShell>
+    </AdminGuard>
   );
 }
