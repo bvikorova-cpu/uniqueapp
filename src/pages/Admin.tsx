@@ -248,28 +248,49 @@ const Admin = () => {
   return (
     <div className="min-h-screen bg-background pt-20 pb-12">
       <div className="container mx-auto px-4">
-        {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="p-3 rounded-lg bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/20">
-              <Terminal className="h-8 w-8 text-primary" />
-            </div>
-            <div>
-              <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent">
-                Unique Tech. Command Center
-              </h1>
-              <p className="text-muted-foreground flex items-center gap-2">
-                <Shield className="h-4 w-4" />
-                Secure Admin Console • Full Platform Control
-              </p>
-            </div>
-          </div>
+        {/* Cinematic Hero */}
+        <AdminHero
+          totalUsers={stats.totalUsers}
+          premiumUsers={stats.premiumUsers}
+          monthlyRevenue={stats.monthlyRevenue}
+        />
+
+        {/* Quick Action Bar */}
+        <div className="flex flex-wrap items-center gap-3 mb-6">
+          <Button
+            onClick={() => setCmdOpen(true)}
+            variant="outline"
+            className="gap-2 bg-card/60 backdrop-blur-md border-primary/30 hover:border-primary/60"
+          >
+            <Command className="h-4 w-4" />
+            Quick Actions
+            <kbd className="ml-2 hidden sm:inline-flex h-5 select-none items-center gap-1 rounded border border-border bg-muted px-1.5 font-mono text-[10px] font-medium">
+              ⌘K
+            </kbd>
+          </Button>
+          <SystemHealthMonitor />
         </div>
 
         {/* Power Tools Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
           <GlobalAnnouncementPanel />
           <TransactionLogPanel />
+        </div>
+
+        {/* AI Insights + Realtime Activity */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+          <AIInsightsPanel stats={stats} />
+          <RealtimeActivityFeed />
+        </div>
+
+        {/* Charts */}
+        <div className="mb-6">
+          <RevenueCharts />
+        </div>
+
+        {/* Audit Log */}
+        <div className="mb-8">
+          <AuditLogPanel />
         </div>
 
         {/* Stats Cards */}
@@ -315,6 +336,8 @@ const Admin = () => {
             </CardContent>
           </Card>
         </div>
+
+        <CommandBar open={cmdOpen} onOpenChange={setCmdOpen} />
 
         {/* Platform Earnings Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
