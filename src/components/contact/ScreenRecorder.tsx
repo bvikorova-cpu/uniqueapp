@@ -18,8 +18,7 @@ export const ScreenRecorder = ({ onRecorded, maxSeconds = 30 }: Props) => {
 
   const start = async () => {
     try {
-      // @ts-expect-error - getDisplayMedia exists on modern browsers
-      const stream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: false });
+      const stream = await (navigator.mediaDevices as MediaDevices & { getDisplayMedia: (c: MediaStreamConstraints) => Promise<MediaStream> }).getDisplayMedia({ video: true, audio: false });
       const rec = new MediaRecorder(stream, { mimeType: "video/webm" });
       chunksRef.current = [];
       rec.ondataavailable = (e) => e.data.size > 0 && chunksRef.current.push(e.data);

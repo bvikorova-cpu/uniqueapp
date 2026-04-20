@@ -45,11 +45,13 @@ export const ContactFAQ = ({ highlightId }: Props) => {
   const vote = async (id: string, kind: "up" | "down") => {
     if (voted[id]) return;
     setVoted((p) => ({ ...p, [id]: kind }));
-    const column = kind === "up" ? "helpful_count" : "not_helpful_count";
     const item = items.find((i) => i.id === id);
     if (!item) return;
-    const newVal = (kind === "up" ? item.helpful_count : item.not_helpful_count) + 1;
-    await supabase.from("support_faq").update({ [column]: newVal }).eq("id", id);
+    const payload =
+      kind === "up"
+        ? { helpful_count: item.helpful_count + 1 }
+        : { not_helpful_count: item.not_helpful_count + 1 };
+    await supabase.from("support_faq").update(payload).eq("id", id);
     toast({ title: "Thanks for your feedback!" });
   };
 
