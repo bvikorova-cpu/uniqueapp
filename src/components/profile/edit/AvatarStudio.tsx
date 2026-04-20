@@ -71,8 +71,8 @@ export const AvatarStudio = ({
                   onClick={() => setStyle(s.id)}
                   className={`text-xs px-2.5 py-1 rounded-full border transition-all ${
                     style === s.id
-                      ? "bg-amber-500/20 border-amber-400/60 text-amber-100 shadow-md shadow-amber-500/20"
-                      : "bg-muted/20 border-border/40 text-muted-foreground hover:border-amber-400/30"
+                      ? "bg-amber-500/25 border-amber-500/60 text-amber-900 dark:text-amber-100 font-semibold shadow-md shadow-amber-500/20"
+                      : "bg-muted/20 border-border/40 text-foreground/80 hover:border-amber-400/40"
                   }`}
                 >
                   <span className="mr-1">{s.emoji}</span>{s.label}

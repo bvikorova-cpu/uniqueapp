@@ -64,8 +64,8 @@ export const ProfileCompleteness = ({ checks }: ProfileCompletenessProps) => {
             key={c.key}
             className={`flex items-center gap-2 text-xs px-2.5 py-1.5 rounded-lg border transition-colors ${
               c.done
-                ? "bg-emerald-500/10 border-emerald-400/30 text-emerald-200"
-                : "bg-muted/20 border-border/40 text-muted-foreground"
+                ? "bg-emerald-500/15 border-emerald-500/40 text-emerald-700 dark:text-emerald-200"
+                : "bg-muted/20 border-border/40 text-foreground/80"
             }`}
           >
             {c.done ? <CheckCircle2 className="h-3.5 w-3.5 shrink-0" /> : <Circle className="h-3.5 w-3.5 shrink-0" />}
