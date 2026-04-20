@@ -570,6 +570,24 @@ const PremiumStore = () => {
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* Confetti on purchase */}
+      <ConfettiBurst trigger={confettiTrigger} />
+
+      {/* Gift dialog */}
+      {giftItem && (
+        <GiftDialog
+          open={!!giftItem}
+          onOpenChange={(v) => !v && setGiftItem(null)}
+          itemType={giftItem.type}
+          itemId={giftItem.id}
+          itemName={giftItem.name}
+          itemEmoji={giftItem.emoji}
+          creditCost={giftItem.cost}
+          userCredits={credits.credits_remaining}
+          onSent={() => setConfettiTrigger((t) => t + 1)}
+        />
+      )}
     </div>
   );
 };
