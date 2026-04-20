@@ -3,6 +3,8 @@ import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Ghost, Skull, Eye, Play, Pause, Volume2, VolumeX, Flame, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import shadowVideo from "@/assets/shadow-arena-hero.mp4.asset.json";
+import shadowPoster from "@/assets/shadow-arena-poster.jpg";
 
 interface Props {
   totalPrizePool?: number;
@@ -49,17 +51,15 @@ export function ShadowArenaHero({ totalPrizePool = 0, activeBattles = 0, topStor
         muted
         loop
         playsInline
-        poster="/__l5e/assets-v1/19b2ee13-ec47-4320-8496-3de3ce361f28/shadow-arena-poster.jpg"
+        poster={shadowPoster}
       >
-        <source
-          src="/__l5e/assets-v1/19b2ee13-ec47-4320-8496-3de3ce361f28/shadow-arena-hero.mp4"
-          type="video/mp4"
-        />
+        <source src={shadowVideo.url} type="video/mp4" />
       </video>
 
       {/* Atmospheric overlays */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-[hsl(0,30%,5%)]/55 to-black/85" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,transparent_0%,rgba(0,0,0,0.7)_100%)]" />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-[hsl(0,30%,5%)]/60 to-black/90" />
+      <div className="absolute inset-0 shadow-vignette" />
+      <div className="absolute inset-0 shadow-grain opacity-40" />
 
       {/* Animated fog particles */}
       {Array.from({ length: 12 }).map((_, i) => (
@@ -97,9 +97,9 @@ export function ShadowArenaHero({ totalPrizePool = 0, activeBattles = 0, topStor
           className="text-5xl md:text-7xl lg:text-8xl font-black mb-4 tracking-tight"
         >
           <motion.span
-            className="block bg-gradient-to-br from-red-300 via-red-500 to-purple-500 bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(220,38,38,0.4)]"
-            animate={{ skewX: [0, -1.5, 0, 1.5, 0] }}
-            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+            className="block font-gothic-display shadow-blood-text shadow-flicker"
+            animate={{ skewX: [0, -1.2, 0, 1.2, 0] }}
+            transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
           >
             Shadow Arena
           </motion.span>
@@ -109,7 +109,7 @@ export function ShadowArenaHero({ totalPrizePool = 0, activeBattles = 0, topStor
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3 }}
-          className="text-base sm:text-lg md:text-xl text-red-100/80 max-w-2xl mb-8 font-serif italic"
+          className="text-base sm:text-lg md:text-xl text-red-100/85 max-w-2xl mb-8 font-gothic-body italic"
         >
           Where terror meets glory. Forge horror with AI, battle live, and claim cash prizes from a pool of fear.
         </motion.p>
