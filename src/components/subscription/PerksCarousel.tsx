@@ -46,7 +46,7 @@ export const PerksCarousel = () => {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 1.05 }}
             transition={{ duration: 0.5 }}
-            className={`absolute inset-0 bg-gradient-to-br ${perk.color} opacity-10`}
+            className={`absolute inset-0 bg-gradient-to-br ${perk.color} opacity-40`}
           />
         </AnimatePresence>
 
