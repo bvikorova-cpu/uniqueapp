@@ -6,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2, Wallet, TrendingUp, Clock, CheckCircle } from "lucide-react";
 import { InfluencerWithdrawalForm } from "./InfluencerWithdrawalForm";
 import { format } from "date-fns";
+import { EarningsHero, EarningsLiveTicker, EarningsTipsBanner } from "@/components/earnings";
 
 export const InfluencerEarningsPage = () => {
   const [selectedInfluencer, setSelectedInfluencer] = useState<string | null>(null);
@@ -98,12 +99,23 @@ export const InfluencerEarningsPage = () => {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold mb-2">Earnings & Payouts</h1>
-        <p className="text-muted-foreground">Manage your influencer earnings and request withdrawals</p>
+      <EarningsHero
+        title="Influencer Earnings"
+        subtitle="Manage your virtual influencer balances and request withdrawals."
+        totalEarnings={Number(balance?.total_earned || 0)}
+        available={Number(balance?.available_balance || 0)}
+        pending={Number(balance?.pending_withdrawal || 0)}
+        paidOut={Number(balance?.withdrawn || 0)}
+        badge="Creator Treasury"
+      />
+
+      <div className="flex items-center justify-between gap-4 flex-wrap">
+        <EarningsLiveTicker />
       </div>
 
-      <Card className="p-4">
+      <EarningsTipsBanner />
+
+      <Card className="p-4 border-amber-500/20">
         <label className="text-sm font-medium mb-2 block">Select Influencer</label>
         <select
           className="w-full p-2 border rounded-md bg-background"
@@ -112,48 +124,13 @@ export const InfluencerEarningsPage = () => {
         >
           <option value="">Choose an influencer...</option>
           {influencers.map((inf) => (
-            <option key={inf.id} value={inf.id}>
-              {inf.name}
-            </option>
+            <option key={inf.id} value={inf.id}>{inf.name}</option>
           ))}
         </select>
       </Card>
 
       {selectedInfluencer && currentInfluencer && (
         <>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <Card className="p-6">
-              <div className="flex items-center gap-2 mb-2">
-                <Wallet className="h-5 w-5 text-primary" />
-                <h3 className="text-sm text-muted-foreground">Available Balance</h3>
-              </div>
-              <p className="text-3xl font-bold">€{balance?.available_balance?.toFixed(2) || "0.00"}</p>
-            </Card>
-
-            <Card className="p-6">
-              <div className="flex items-center gap-2 mb-2">
-                <TrendingUp className="h-5 w-5 text-green-500" />
-                <h3 className="text-sm text-muted-foreground">Total Earned</h3>
-              </div>
-              <p className="text-3xl font-bold">€{balance?.total_earned?.toFixed(2) || "0.00"}</p>
-            </Card>
-
-            <Card className="p-6">
-              <div className="flex items-center gap-2 mb-2">
-                <Clock className="h-5 w-5 text-yellow-500" />
-                <h3 className="text-sm text-muted-foreground">Pending Withdrawal</h3>
-              </div>
-              <p className="text-3xl font-bold">€{balance?.pending_withdrawal?.toFixed(2) || "0.00"}</p>
-            </Card>
-
-            <Card className="p-6">
-              <div className="flex items-center gap-2 mb-2">
-                <CheckCircle className="h-5 w-5 text-blue-500" />
-                <h3 className="text-sm text-muted-foreground">Total Withdrawn</h3>
-              </div>
-              <p className="text-3xl font-bold">€{balance?.withdrawn?.toFixed(2) || "0.00"}</p>
-            </Card>
-          </div>
 
           <Tabs defaultValue="withdraw">
             <TabsList>
