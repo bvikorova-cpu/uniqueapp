@@ -32182,6 +32182,33 @@ export type Database = {
         }
         Relationships: []
       }
+      rewarded_ad_views: {
+        Row: {
+          created_at: string
+          id: string
+          section_key: string
+          user_id: string
+          view_date: string
+          xp_awarded: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          section_key: string
+          user_id: string
+          view_date?: string
+          xp_awarded?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          section_key?: string
+          user_id?: string
+          view_date?: string
+          xp_awarded?: number
+        }
+        Relationships: []
+      }
       routine_entries: {
         Row: {
           created_at: string | null
