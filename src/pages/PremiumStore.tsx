@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -10,10 +10,19 @@ import { usePremiumStore } from "@/hooks/usePremiumStore";
 import { supabase } from "@/integrations/supabase/client";
 import { Progress } from "@/components/ui/progress";
 import { motion } from "framer-motion";
-import { 
-  Sparkles, Zap, Star, Crown, Gift, MessageCircle, Heart, 
-  TrendingUp, Palette, Image as ImageIcon, Award, Loader2, Lock, Eye, Rocket, ArrowLeft, ShoppingBag
+import {
+  Sparkles, Zap, Star, Crown, Gift, Palette, Image as ImageIcon,
+  Award, Loader2, Lock, Eye, Rocket, ArrowLeft, Trophy, Flame, Package
 } from "lucide-react";
+import { PremiumStoreHero } from "@/components/store/PremiumStoreHero";
+import { LiveActivityTicker } from "@/components/store/LiveActivityTicker";
+import { FlashSaleCard } from "@/components/store/FlashSaleCard";
+import { BundlePack } from "@/components/store/BundlePack";
+import { StoreLeaderboard } from "@/components/store/StoreLeaderboard";
+import { LimitedEditionBanner } from "@/components/store/LimitedEditionBanner";
+import { WishlistButton } from "@/components/store/WishlistButton";
+import { GiftDialog } from "@/components/store/GiftDialog";
+import { ConfettiBurst } from "@/components/store/ConfettiBurst";
 
 const LEVEL_REQUIREMENTS: Record<string, number> = {
   'visibility_boost': 5,
@@ -49,8 +58,10 @@ const PremiumStore = () => {
 
   const [purchasing, setPurchasing] = useState<string | null>(null);
   const [userLevel, setUserLevel] = useState(1);
+  const [confettiTrigger, setConfettiTrigger] = useState(0);
+  const [giftItem, setGiftItem] = useState<{ type: string; id: string; name: string; emoji?: string; cost: number } | null>(null);
 
-  useState(() => {
+  useEffect(() => {
     const fetchLevel = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
@@ -63,7 +74,12 @@ const PremiumStore = () => {
       }
     };
     fetchLevel();
-  });
+  }, []);
+
+  const [currentUserId, setCurrentUserId] = useState<string | undefined>();
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => setCurrentUserId(user?.id));
+  }, []);
 
   const getLevelRequirement = (type: string, rarity?: string): number => {
     if (type === 'visibility') return LEVEL_REQUIREMENTS['visibility_boost'] || 5;
@@ -95,7 +111,15 @@ const PremiumStore = () => {
         case 'avatar': success = await purchaseAvatar(id, cost); break;
       }
       if (success) {
-        toast({ title: "Purchase successful!", description: `You've unlocked ${name}` });
+        toast({ title: "🎉 Purchase successful!", description: `You've unlocked ${name}` });
+        setConfettiTrigger((t) => t + 1);
+        // Log to leaderboard
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          await supabase.from('premium_store_purchases').insert({
+            user_id: user.id, item_type: type, item_id: id, item_name: name, credits_spent: cost, is_gift: false,
+          });
+        }
       } else {
         throw new Error("Purchase failed");
       }
@@ -143,69 +167,99 @@ const PremiumStore = () => {
           </Button>
         </motion.div>
 
-        {/* Hero Banner */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/20 via-accent/10 to-purple-500/10 border border-primary/20 p-6 sm:p-8 lg:p-10 mb-8"
-        >
-          <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            <div className="absolute -top-20 -right-20 w-60 h-60 bg-primary/10 rounded-full blur-3xl animate-pulse" />
-            <div className="absolute -bottom-20 -left-20 w-60 h-60 bg-accent/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: "1s" }} />
+        {/* Cinematic vault hero */}
+        <PremiumStoreHero
+          credits={credits.credits_remaining}
+          level={userLevel}
+          onBuyCredits={() => navigate('/ai-credits')}
+        />
+
+        {/* Live activity ticker */}
+        <LiveActivityTicker />
+
+        {/* Limited Edition banner */}
+        <div className="mb-6">
+          <LimitedEditionBanner
+            title="Spring 2026 Mythic Drop"
+            subtitle="Hand-crafted animated avatars & legendary frames. Once they're gone, they're gone."
+            emoji="🐉"
+            totalSupply={500}
+            remaining={183}
+            endsAt="May 31"
+            onView={() => {
+              const el = document.querySelector('[value="avatars"]') as HTMLElement | null;
+              el?.click();
+            }}
+          />
+        </div>
+
+        {/* Daily Flash Sale + Bundles row */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-8">
+          <div className="lg:col-span-1">
+            <FlashSaleCard
+              name="Mega Visibility Pack"
+              description="3× 24h boost + 1× 7-day featured"
+              emoji="🔥"
+              originalPrice={80}
+              discountPercent={40}
+              onBuy={() => handlePurchase('visibility', 'flash_mega', 'Mega Visibility Pack', 48, 5)}
+              disabled={purchasing === 'flash_mega'}
+            />
           </div>
-
-          <div className="relative z-10">
-            <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
-              <Badge className="bg-primary/20 text-primary border-primary/30 mb-3">
-                <Crown className="h-3 w-3 mr-1" /> Premium Store
-              </Badge>
-            </motion.div>
-
-            <motion.h1
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="text-3xl sm:text-4xl lg:text-5xl font-black mb-3 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent"
-            >
-              Unlock Premium Features
-            </motion.h1>
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.4 }}
-              className="text-muted-foreground text-lg max-w-2xl"
-            >
-              Enhance your experience with exclusive items, visibility boosters, and digital collectibles
-            </motion.p>
-
-            {/* Credits & Level Cards */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
-              className="flex flex-wrap gap-4 mt-6"
-            >
-              <div className="flex items-center gap-3 px-5 py-3 rounded-xl backdrop-blur-xl bg-card/60 border border-border/50">
-                <Sparkles className="h-5 w-5 text-primary" />
-                <div>
-                  <p className="text-2xl font-black">{credits.credits_remaining}</p>
-                  <p className="text-xs text-muted-foreground">Credits Available</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3 px-5 py-3 rounded-xl backdrop-blur-xl bg-card/60 border border-border/50">
-                <Star className="h-5 w-5 text-purple-500" />
-                <div>
-                  <p className="text-2xl font-black text-purple-500">Level {userLevel}</p>
-                  <p className="text-xs text-muted-foreground">XP unlocks purchase rights</p>
-                </div>
-              </div>
-              <Button variant="outline" onClick={() => navigate('/ai-credits')} className="gap-2 self-center">
-                <ShoppingBag className="h-4 w-4" /> Buy Credits
-              </Button>
-            </motion.div>
+          <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <BundlePack
+              tier="starter"
+              name="Starter Kit"
+              description="Perfect first taste of premium"
+              items={[
+                { emoji: '🚀', name: '24h Visibility Boost' },
+                { emoji: '🎨', name: 'Basic Theme' },
+                { emoji: '⭐', name: 'Common Badge' },
+              ]}
+              originalPrice={40}
+              bundlePrice={28}
+              onBuy={() => handlePurchase('feature', 'bundle_starter', 'Starter Kit', 28)}
+              disabled={purchasing === 'bundle_starter'}
+            />
+            <BundlePack
+              tier="pro"
+              name="Pro Bundle"
+              description="Everything a power user needs"
+              popular
+              items={[
+                { emoji: '⭐', name: '7-Day Featured' },
+                { emoji: '🎨', name: 'Premium Theme' },
+                { emoji: '👑', name: 'Rare Badge' },
+                { emoji: '🧙', name: 'Animated Avatar' },
+              ]}
+              originalPrice={250}
+              bundlePrice={169}
+              onBuy={() => handlePurchase('feature', 'bundle_pro', 'Pro Bundle', 169, 10)}
+              disabled={purchasing === 'bundle_pro'}
+            />
+            <BundlePack
+              tier="legendary"
+              name="Legendary Vault"
+              description="The ultimate collector's bundle"
+              items={[
+                { emoji: '💎', name: '30-day Spotlight' },
+                { emoji: '👑', name: 'Legendary Badge' },
+                { emoji: '🐉', name: 'Mythic Avatar' },
+                { emoji: '🎨', name: 'All Themes' },
+                { emoji: '🏆', name: 'Top Frame' },
+              ]}
+              originalPrice={600}
+              bundlePrice={399}
+              onBuy={() => handlePurchase('feature', 'bundle_legendary', 'Legendary Vault', 399, 20)}
+              disabled={purchasing === 'bundle_legendary'}
+            />
           </div>
-        </motion.div>
+        </div>
+
+        {/* Leaderboard */}
+        <div className="mb-8">
+          <StoreLeaderboard currentUserId={currentUserId} />
+        </div>
 
         {/* Tabs */}
         <Tabs defaultValue="visibility" className="space-y-6">
@@ -516,6 +570,24 @@ const PremiumStore = () => {
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* Confetti on purchase */}
+      <ConfettiBurst trigger={confettiTrigger} />
+
+      {/* Gift dialog */}
+      {giftItem && (
+        <GiftDialog
+          open={!!giftItem}
+          onOpenChange={(v) => !v && setGiftItem(null)}
+          itemType={giftItem.type}
+          itemId={giftItem.id}
+          itemName={giftItem.name}
+          itemEmoji={giftItem.emoji}
+          creditCost={giftItem.cost}
+          userCredits={credits.credits_remaining}
+          onSent={() => setConfettiTrigger((t) => t + 1)}
+        />
+      )}
     </div>
   );
 };
