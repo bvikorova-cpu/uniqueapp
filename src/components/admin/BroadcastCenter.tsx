@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Megaphone, Send, Users, Crown, Sparkles } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Megaphone, Send, Users, Crown, Sparkles, Save, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -14,12 +14,46 @@ const SEGMENTS = [
   { id: "free", label: "Free tier", icon: Users, color: "bg-slate-500/20 border-slate-400/40 text-slate-200" },
 ];
 
+const DRAFT_KEY = "admin-broadcast-draft";
+
 export const BroadcastCenter = () => {
   const { toast } = useToast();
   const [segment, setSegment] = useState("all");
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [sending, setSending] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
+
+  // Load draft on mount
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(DRAFT_KEY);
+      if (raw) {
+        const d = JSON.parse(raw);
+        if (d.title) setTitle(d.title);
+        if (d.body) setBody(d.body);
+        if (d.segment) setSegment(d.segment);
+      }
+    } catch {}
+  }, []);
+
+  // Auto-save draft
+  useEffect(() => {
+    if (title || body) {
+      localStorage.setItem(DRAFT_KEY, JSON.stringify({ title, body, segment }));
+    }
+  }, [title, body, segment]);
+
+  const saveDraft = () => {
+    localStorage.setItem(DRAFT_KEY, JSON.stringify({ title, body, segment }));
+    toast({ title: "Draft saved", description: "Stored locally on this device" });
+  };
+
+  const clearDraft = () => {
+    localStorage.removeItem(DRAFT_KEY);
+    setTitle("");
+    setBody("");
+  };
 
   const send = async () => {
     if (!title.trim() || !body.trim()) {
