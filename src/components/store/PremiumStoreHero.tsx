@@ -51,18 +51,18 @@ export const PremiumStoreHero = ({ credits, level, onBuyCredits }: PremiumStoreH
           </p>
 
           <div className="flex flex-wrap gap-3 mt-6">
-            <div className="flex items-center gap-3 px-5 py-3 rounded-xl bg-background/60 border border-amber-400/30 backdrop-blur-xl">
-              <Sparkles className="h-5 w-5 text-amber-400" />
+            <div className="flex items-center gap-3 px-5 py-3 rounded-xl bg-black/70 border-2 border-amber-400/60 backdrop-blur-xl shadow-xl shadow-black/40">
+              <Sparkles className="h-5 w-5 text-amber-300 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]" />
               <div>
-                <p className="text-2xl font-black text-white">{credits.toLocaleString()}</p>
-                <p className="text-[10px] uppercase tracking-wider text-white/70">Credits</p>
+                <p className="text-2xl font-black text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]">{credits.toLocaleString()}</p>
+                <p className="text-[10px] uppercase tracking-wider font-bold text-amber-100 drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">Credits</p>
               </div>
             </div>
-            <div className="flex items-center gap-3 px-5 py-3 rounded-xl bg-background/60 border border-purple-400/30 backdrop-blur-xl">
-              <Star className="h-5 w-5 text-purple-300" />
+            <div className="flex items-center gap-3 px-5 py-3 rounded-xl bg-black/70 border-2 border-purple-400/60 backdrop-blur-xl shadow-xl shadow-black/40">
+              <Star className="h-5 w-5 text-purple-200 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]" />
               <div>
-                <p className="text-2xl font-black text-white">Lvl {level}</p>
-                <p className="text-[10px] uppercase tracking-wider text-white/70">XP unlocks rights</p>
+                <p className="text-2xl font-black text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]">Lvl {level}</p>
+                <p className="text-[10px] uppercase tracking-wider font-bold text-purple-100 drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">XP unlocks rights</p>
               </div>
             </div>
             <Button
