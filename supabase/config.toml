@@ -1273,3 +1273,7 @@ verify_jwt = true
 
 [functions.brain-duel-daily-challenge]
 verify_jwt = true
+
+[functions.contact-ai-triage]
+verify_jwt = false
+
