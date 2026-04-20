@@ -29326,6 +29326,45 @@ export type Database = {
         }
         Relationships: []
       }
+      profile_personality: {
+        Row: {
+          archetype: string | null
+          created_at: string
+          id: string
+          raw_answers: Json | null
+          suggested_interests: string[] | null
+          suggested_tone: string | null
+          summary: string | null
+          traits: Json | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          archetype?: string | null
+          created_at?: string
+          id?: string
+          raw_answers?: Json | null
+          suggested_interests?: string[] | null
+          suggested_tone?: string | null
+          summary?: string | null
+          traits?: Json | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          archetype?: string | null
+          created_at?: string
+          id?: string
+          raw_answers?: Json | null
+          suggested_interests?: string[] | null
+          suggested_tone?: string | null
+          summary?: string | null
+          traits?: Json | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profile_tips: {
         Row: {
           amount: number
@@ -29353,6 +29392,42 @@ export type Database = {
           message?: string | null
           recipient_id?: string
           sender_id?: string
+        }
+        Relationships: []
+      }
+      profile_views: {
+        Row: {
+          created_at: string
+          id: string
+          profile_id: string
+          referrer: string | null
+          source: string | null
+          viewer_city: string | null
+          viewer_country: string | null
+          viewer_id: string | null
+          viewer_user_agent: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          profile_id: string
+          referrer?: string | null
+          source?: string | null
+          viewer_city?: string | null
+          viewer_country?: string | null
+          viewer_id?: string | null
+          viewer_user_agent?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          profile_id?: string
+          referrer?: string | null
+          source?: string | null
+          viewer_city?: string | null
+          viewer_country?: string | null
+          viewer_id?: string | null
+          viewer_user_agent?: string | null
         }
         Relationships: []
       }
@@ -29389,6 +29464,8 @@ export type Database = {
       profiles: {
         Row: {
           accent_color: string | null
+          animated_avatar_audio_url: string | null
+          animated_avatar_url: string | null
           avatar_3d_url: string | null
           avatar_url: string | null
           bio: string | null
@@ -29410,6 +29487,7 @@ export type Database = {
           languages: string[] | null
           location: string | null
           occupation: string | null
+          personality_traits: Json | null
           phone: string | null
           profile_theme: string | null
           rating_average: number | null
@@ -29422,13 +29500,17 @@ export type Database = {
           stripe_connect_onboarding_complete: boolean | null
           stripe_connect_payouts_enabled: boolean | null
           theme_color: string | null
+          tone_of_voice: string | null
           total_reviews: number | null
           updated_at: string
           user_type: string | null
+          username: string | null
           website: string | null
         }
         Insert: {
           accent_color?: string | null
+          animated_avatar_audio_url?: string | null
+          animated_avatar_url?: string | null
           avatar_3d_url?: string | null
           avatar_url?: string | null
           bio?: string | null
@@ -29450,6 +29532,7 @@ export type Database = {
           languages?: string[] | null
           location?: string | null
           occupation?: string | null
+          personality_traits?: Json | null
           phone?: string | null
           profile_theme?: string | null
           rating_average?: number | null
@@ -29462,13 +29545,17 @@ export type Database = {
           stripe_connect_onboarding_complete?: boolean | null
           stripe_connect_payouts_enabled?: boolean | null
           theme_color?: string | null
+          tone_of_voice?: string | null
           total_reviews?: number | null
           updated_at?: string
           user_type?: string | null
+          username?: string | null
           website?: string | null
         }
         Update: {
           accent_color?: string | null
+          animated_avatar_audio_url?: string | null
+          animated_avatar_url?: string | null
           avatar_3d_url?: string | null
           avatar_url?: string | null
           bio?: string | null
@@ -29490,6 +29577,7 @@ export type Database = {
           languages?: string[] | null
           location?: string | null
           occupation?: string | null
+          personality_traits?: Json | null
           phone?: string | null
           profile_theme?: string | null
           rating_average?: number | null
@@ -29502,9 +29590,11 @@ export type Database = {
           stripe_connect_onboarding_complete?: boolean | null
           stripe_connect_payouts_enabled?: boolean | null
           theme_color?: string | null
+          tone_of_voice?: string | null
           total_reviews?: number | null
           updated_at?: string
           user_type?: string | null
+          username?: string | null
           website?: string | null
         }
         Relationships: []
