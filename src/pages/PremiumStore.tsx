@@ -58,8 +58,10 @@ const PremiumStore = () => {
 
   const [purchasing, setPurchasing] = useState<string | null>(null);
   const [userLevel, setUserLevel] = useState(1);
+  const [confettiTrigger, setConfettiTrigger] = useState(0);
+  const [giftItem, setGiftItem] = useState<{ type: string; id: string; name: string; emoji?: string; cost: number } | null>(null);
 
-  useState(() => {
+  useEffect(() => {
     const fetchLevel = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
@@ -72,7 +74,12 @@ const PremiumStore = () => {
       }
     };
     fetchLevel();
-  });
+  }, []);
+
+  const [currentUserId, setCurrentUserId] = useState<string | undefined>();
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => setCurrentUserId(user?.id));
+  }, []);
 
   const getLevelRequirement = (type: string, rarity?: string): number => {
     if (type === 'visibility') return LEVEL_REQUIREMENTS['visibility_boost'] || 5;
