@@ -40515,14 +40515,6 @@ export type Database = {
       }
     }
     Views: {
-      premium_store_leaderboard: {
-        Row: {
-          items_purchased: number | null
-          total_credits_spent: number | null
-          user_id: string | null
-        }
-        Relationships: []
-      }
       safety_roleplay_leaderboard: {
         Row: {
           handle: string | null

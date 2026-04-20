@@ -1,0 +1,1 @@
+DROP VIEW IF EXISTS public.premium_store_leaderboard;
