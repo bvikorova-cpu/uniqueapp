@@ -2,8 +2,6 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
 import { callOpenAI, corsHeaders, errorResponse, jsonResponse } from "../_shared/openai.ts";
 
-const SYSTEM = `MasterChef recipe. Return JSON: {recipe_name, servings, ingredients[], steps[], time_minutes, nutrition_per_serving, chef_tip}.`;
-
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
   try {
@@ -16,13 +14,18 @@ serve(async (req) => {
     );
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return errorResponse("Not authenticated", 401);
-    const body = await req.json();
-    const userInput = JSON.stringify(body).slice(0, 4000);
-    const result = await callOpenAI({ system: SYSTEM, user: userInput, json: true, temperature: 0.75 });
-    let parsed = null;
-    try { parsed = JSON.parse(result); } catch {}
-    return jsonResponse({ success: true, result: parsed ?? result, data: parsed, text: result, reply: result });
+
+    const { messages = [], message = "", sign } = await req.json();
+    const recent = messages.slice(-8).map((m: any) => `${m.role}: ${m.content}`).join("\n");
+    const userText = message || messages.slice(-1)[0]?.content || "Tell me about my day";
+
+    const reply = await callOpenAI({
+      system: `You are a wise astrologer. ${sign ? `User's sign: ${sign}.` : ""} Be warm, insightful, mystical. 1-4 sentences per reply.`,
+      user: recent ? `${recent}\nuser: ${userText}` : userText,
+      temperature: 0.85,
+    });
+    return jsonResponse({ reply, message: reply });
   } catch (e: any) {
-    return errorResponse(e.message || "Function failed");
+    return errorResponse(e.message || "Astrology chat failed");
   }
 });

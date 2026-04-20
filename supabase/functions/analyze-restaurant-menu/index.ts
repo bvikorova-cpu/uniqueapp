@@ -2,7 +2,7 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
 import { callOpenAI, corsHeaders, errorResponse, jsonResponse } from "../_shared/openai.ts";
 
-const SYSTEM = `MasterChef recipe. Return JSON: {recipe_name, servings, ingredients[], steps[], time_minutes, nutrition_per_serving, chef_tip}.`;
+const SYSTEM = `Pick healthy menu items. Return JSON: {top_picks:[{item, why, est_calories}], avoid:[{item, why}], modifications[]}.`;
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });

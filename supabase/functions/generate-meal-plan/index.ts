@@ -2,8 +2,6 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
 import { callOpenAI, corsHeaders, errorResponse, jsonResponse } from "../_shared/openai.ts";
 
-const SYSTEM = `MasterChef recipe. Return JSON: {recipe_name, servings, ingredients[], steps[], time_minutes, nutrition_per_serving, chef_tip}.`;
-
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
   try {
@@ -16,13 +14,21 @@ serve(async (req) => {
     );
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return errorResponse("Not authenticated", 401);
+
     const body = await req.json();
-    const userInput = JSON.stringify(body).slice(0, 4000);
-    const result = await callOpenAI({ system: SYSTEM, user: userInput, json: true, temperature: 0.75 });
-    let parsed = null;
-    try { parsed = JSON.parse(result); } catch {}
-    return jsonResponse({ success: true, result: parsed ?? result, data: parsed, text: result, reply: result });
+    const { goal = "balanced", calories = 2000, days = 7, diet = "standard", allergies = [], preferences = "" } = body;
+
+    const result = await callOpenAI({
+      system: "You are a nutritionist. Create a structured meal plan. Return JSON: {plan:[{day, meals:[{type, name, calories, macros:{p,c,f}, ingredients[], prep_minutes}]}], shopping_list[], total_daily_calories}.",
+      user: `Goal: ${goal}. Daily calories: ${calories}. Days: ${days}. Diet: ${diet}. Allergies: ${allergies.join(", ") || "none"}. Notes: ${preferences}`,
+      json: true,
+      temperature: 0.7,
+    });
+    const plan = safeJson(result);
+    return jsonResponse({ success: true, plan, result: plan, text: result });
   } catch (e: any) {
-    return errorResponse(e.message || "Function failed");
+    return errorResponse(e.message || "Meal plan failed");
   }
 });
+
+function safeJson(s: string) { try { return JSON.parse(s); } catch { return null; } }
