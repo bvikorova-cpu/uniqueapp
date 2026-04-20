@@ -271,7 +271,7 @@ export const PayoutMethodsManager = ({ onChange }: Props) => {
           <Globe className="h-8 w-8 mx-auto mb-2 text-amber-500" />
           <p className="text-sm font-bold mb-1">No payout method yet</p>
           <p className="text-xs text-muted-foreground mb-3">
-            Choose from PayPal, Wise, Crypto, IBAN, Stripe Connect, Payoneer or Revolut.
+            Choose from PayPal, Wise, Crypto or Stripe Connect — all fully automated.
           </p>
         </div>
       ) : (
