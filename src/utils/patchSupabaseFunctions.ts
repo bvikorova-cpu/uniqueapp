@@ -284,6 +284,11 @@ const FUNCTION_ALIASES: Record<string, AliasEntry> = {
   "notify-admin-auction-withdrawal":    { target: "check-connect-status", action: "notify_auction_withdrawal" },
   "activate-job-listing":               { target: "check-connect-status", action: "activate_job" },
   "add-teen-career-generation":         { target: "check-subscription", bodyExtras: { tier: "teen_career", action: "increment" } },
+
+  // ─────────────────────────────────────────────────────────────────────
+  // LEGACY NAME REMAPS → existing edge functions (prevents 404/500)
+  // ─────────────────────────────────────────────────────────────────────
+  "analyze-past-life":                  { target: "generate-past-life-regression" },
 };
 
 const originalInvoke = supabase.functions.invoke.bind(supabase.functions);
