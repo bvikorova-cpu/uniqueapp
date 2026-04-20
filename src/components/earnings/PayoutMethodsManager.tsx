@@ -10,10 +10,10 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
-  Banknote, CreditCard, Globe, Bitcoin, Building2, Plus, Trash2, CheckCircle2, Star, Loader2,
+  CreditCard, Globe, Bitcoin, Plus, Trash2, CheckCircle2, Star, Loader2,
 } from "lucide-react";
 
-type MethodType = "iban" | "paypal" | "wise" | "crypto" | "stripe_connect" | "payoneer" | "revolut";
+type MethodType = "paypal" | "wise" | "crypto" | "stripe_connect";
 
 interface PayoutMethod {
   id: string;
