@@ -61,22 +61,24 @@ export const TopUsersLeaderboard = () => {
           });
           await hydrate(agg);
         } else if (mode === "spenders") {
-          const { data } = await supabase
+          let q = supabase
             .from("transactions")
-            .select("buyer_id, amount")
+            .select("buyer_id, amount, created_at")
             .not("buyer_id", "is", null)
             .limit(1000);
+          if (sinceIso) q = q.gte("created_at", sinceIso);
+          const { data } = await q;
           const agg = new Map<string, number>();
           (data || []).forEach((t: any) => {
             agg.set(t.buyer_id, (agg.get(t.buyer_id) || 0) + Number(t.amount || 0));
           });
           await hydrate(agg);
         } else {
-          const since = new Date(Date.now() - 7 * 86400_000).toISOString();
+          const fallbackSince = sinceIso || new Date(Date.now() - 7 * 86400_000).toISOString();
           const { data } = await supabase
             .from("activity_logs")
             .select("user_id")
-            .gte("created_at", since)
+            .gte("created_at", fallbackSince)
             .limit(2000);
           const agg = new Map<string, number>();
           (data || []).forEach((t: any) => {
