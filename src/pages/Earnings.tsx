@@ -150,7 +150,7 @@ const Earnings = () => {
   }
 
   return (
-    <div className="container mx-auto py-8 px-4">
+    <div className="container mx-auto pt-20 sm:pt-24 pb-8 px-4">
       <EarningsHero
         title="My Earnings"
         subtitle="Track every euro — payouts, forecasts, milestones, tax estimates."
