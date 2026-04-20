@@ -8,17 +8,26 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Loader2, Upload, Sparkles, ArrowLeft, UserCog } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { ProfilePageHero } from "@/components/profile/ProfilePageHero";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Loader2, Sparkles, Save, User as UserIcon, BookText, Wrench, Link2, Shield, X } from "lucide-react";
+
+import { EditProfileHero } from "@/components/profile/edit/EditProfileHero";
+import { ProfileCompleteness, computeCompleteness, CompletenessCheck } from "@/components/profile/edit/ProfileCompleteness";
+import { AvatarStudio } from "@/components/profile/edit/AvatarStudio";
+import { CoverBannerUpload } from "@/components/profile/edit/CoverBannerUpload";
+import { SocialLinksSection, SocialLinks } from "@/components/profile/edit/SocialLinksSection";
+import { SkillsEditor, Skill } from "@/components/profile/edit/SkillsEditor";
+import { PrivacyAndStyle, FieldVisibility, ProfileTheme } from "@/components/profile/edit/PrivacyAndStyle";
 
 interface ProfileData {
   id: string;
   full_name: string | null;
   email: string | null;
   avatar_url: string | null;
+  cover_url: string | null;
   bio: string | null;
+  headline: string | null;
   location: string | null;
   birth_date: string | null;
   phone: string | null;
@@ -26,6 +35,12 @@ interface ProfileData {
   interests: string[] | null;
   occupation: string | null;
   company: string | null;
+  social_links: SocialLinks | null;
+  skills: Skill[] | null;
+  languages: string[] | null;
+  accent_color: string | null;
+  profile_theme: ProfileTheme | null;
+  field_visibility: FieldVisibility | null;
 }
 
 const EditProfile = () => {
@@ -35,63 +50,43 @@ const EditProfile = () => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [generatingAvatar, setGeneratingAvatar] = useState(false);
+  const [generatingBio, setGeneratingBio] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [uploadingCover, setUploadingCover] = useState(false);
+
   const [profile, setProfile] = useState<ProfileData>({
-    id: "",
-    full_name: "",
-    email: "",
-    avatar_url: "",
-    bio: "",
-    location: "",
-    birth_date: "",
-    phone: "",
-    website: "",
-    interests: [],
-    occupation: "",
-    company: "",
+    id: "", full_name: "", email: "", avatar_url: "", cover_url: "", bio: "", headline: "",
+    location: "", birth_date: "", phone: "", website: "", interests: [], occupation: "", company: "",
+    social_links: {}, skills: [], languages: [], accent_color: "#f59e0b", profile_theme: "default", field_visibility: {},
   });
   const [newInterest, setNewInterest] = useState("");
+  const [newLanguage, setNewLanguage] = useState("");
   const [avatarDescription, setAvatarDescription] = useState("");
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session) {
-        navigate("/auth");
-      } else {
-        setUser(session.user);
-        fetchProfile(session.user.id);
-      }
+      if (!session) navigate("/auth");
+      else { setUser(session.user); fetchProfile(session.user.id); }
     });
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
-        if (!session) {
-          navigate("/auth");
-        } else {
-          setUser(session.user);
-        }
-      }
-    );
-
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, session) => {
+      if (!session) navigate("/auth");
+      else setUser(session.user);
+    });
     return () => subscription.unsubscribe();
   }, [navigate]);
 
   const fetchProfile = async (userId: string) => {
     try {
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("id", userId)
-        .single();
-
+      const { data, error } = await supabase.from("profiles").select("*").eq("id", userId).single();
       if (error) throw error;
-
       setProfile({
         id: data.id,
         full_name: data.full_name || "",
         email: data.email || "",
         avatar_url: data.avatar_url || "",
+        cover_url: (data as any).cover_url || "",
         bio: data.bio || "",
+        headline: (data as any).headline || "",
         location: data.location || "",
         birth_date: data.birth_date || "",
         phone: data.phone || "",
@@ -99,13 +94,15 @@ const EditProfile = () => {
         interests: data.interests || [],
         occupation: data.occupation || "",
         company: data.company || "",
+        social_links: ((data as any).social_links as SocialLinks) || {},
+        skills: ((data as any).skills as Skill[]) || [],
+        languages: (data as any).languages || [],
+        accent_color: (data as any).accent_color || "#f59e0b",
+        profile_theme: ((data as any).profile_theme as ProfileTheme) || "default",
+        field_visibility: ((data as any).field_visibility as FieldVisibility) || {},
       });
     } catch (error: any) {
-      toast({
-        title: "Error loading profile",
-        description: error.message,
-        variant: "destructive",
-      });
+      toast({ title: "Error loading profile", description: error.message, variant: "destructive" });
     } finally {
       setLoading(false);
     }
@@ -113,150 +110,165 @@ const EditProfile = () => {
 
   const handleSave = async () => {
     if (!user) return;
-
     setSaving(true);
     try {
-      const { error } = await supabase
-        .from("profiles")
-        .update({
-          full_name: profile.full_name,
-          bio: profile.bio,
-          location: profile.location,
-          birth_date: profile.birth_date || null,
-          phone: profile.phone,
-          website: profile.website,
-          interests: profile.interests,
-          occupation: profile.occupation,
-          company: profile.company,
-          avatar_url: profile.avatar_url,
-        })
-        .eq("id", user.id);
-
+      const { error } = await supabase.from("profiles").update({
+        full_name: profile.full_name,
+        bio: profile.bio,
+        headline: profile.headline,
+        location: profile.location,
+        birth_date: profile.birth_date || null,
+        phone: profile.phone,
+        website: profile.website,
+        interests: profile.interests,
+        occupation: profile.occupation,
+        company: profile.company,
+        avatar_url: profile.avatar_url,
+        cover_url: profile.cover_url,
+        social_links: profile.social_links,
+        skills: profile.skills,
+        languages: profile.languages,
+        accent_color: profile.accent_color,
+        profile_theme: profile.profile_theme,
+        field_visibility: profile.field_visibility,
+      } as any).eq("id", user.id);
       if (error) throw error;
-
-      toast({
-        title: "Profile saved",
-        description: "Your profile has been successfully updated",
-      });
-
+      toast({ title: "Profile saved", description: "Your changes are live." });
       navigate("/wall");
     } catch (error: any) {
-      toast({
-        title: "Error saving profile",
-        description: error.message,
-        variant: "destructive",
-      });
+      toast({ title: "Error saving profile", description: error.message, variant: "destructive" });
     } finally {
       setSaving(false);
     }
   };
 
+  const uploadToBucket = async (file: File, bucket: string) => {
+    if (!user) return null;
+    const fileExt = file.name.split(".").pop();
+    const fileName = `${user.id}/${Date.now()}.${fileExt}`;
+    const { error: uploadError } = await supabase.storage.from(bucket).upload(fileName, file, { upsert: true });
+    if (uploadError) throw uploadError;
+    const { data: { publicUrl } } = supabase.storage.from(bucket).getPublicUrl(fileName);
+    return publicUrl;
+  };
+
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files || !e.target.files[0] || !user) return;
-
-    const file = e.target.files[0];
+    if (!e.target.files?.[0]) return;
     setUploadingImage(true);
-
     try {
-      const fileExt = file.name.split(".").pop();
-      const fileName = `${user.id}/${Date.now()}.${fileExt}`;
-
-      const { error: uploadError } = await supabase.storage
-        .from("avatars")
-        .upload(fileName, file, { upsert: true });
-
-      if (uploadError) throw uploadError;
-
-      const { data: { publicUrl } } = supabase.storage
-        .from("avatars")
-        .getPublicUrl(fileName);
-
-      setProfile({ ...profile, avatar_url: publicUrl });
-
-      toast({
-        title: "Photo uploaded",
-        description: "Your profile photo has been successfully uploaded",
-      });
+      const url = await uploadToBucket(e.target.files[0], "avatars");
+      if (url) setProfile({ ...profile, avatar_url: url });
+      toast({ title: "Photo uploaded" });
     } catch (error: any) {
-      toast({
-        title: "Error uploading photo",
-        description: error.message,
-        variant: "destructive",
-      });
+      toast({ title: "Upload error", description: error.message, variant: "destructive" });
     } finally {
       setUploadingImage(false);
     }
   };
 
-  const handleGenerateAvatar = async () => {
+  const handleCoverUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files?.[0]) return;
+    setUploadingCover(true);
+    try {
+      // Try covers bucket first, fall back to avatars if not exists
+      let url: string | null = null;
+      try { url = await uploadToBucket(e.target.files[0], "covers"); }
+      catch { url = await uploadToBucket(e.target.files[0], "avatars"); }
+      if (url) setProfile({ ...profile, cover_url: url });
+      toast({ title: "Cover uploaded" });
+    } catch (error: any) {
+      toast({ title: "Upload error", description: error.message, variant: "destructive" });
+    } finally {
+      setUploadingCover(false);
+    }
+  };
+
+  const handleGenerateAvatar = async (style: string) => {
     if (!avatarDescription.trim()) {
-      toast({
-        title: "Missing description",
-        description: "Please enter a description for the AI avatar",
-        variant: "destructive",
-      });
+      toast({ title: "Add a description first", variant: "destructive" });
       return;
     }
-
     setGeneratingAvatar(true);
     try {
       const { data, error } = await supabase.functions.invoke("generate-avatar", {
-        body: { description: avatarDescription },
+        body: { description: avatarDescription, style },
       });
-
       if (error) throw error;
-
       if (data.imageUrl) {
-        // Convert base64 to blob and upload
-        const base64Response = await fetch(data.imageUrl);
-        const blob = await base64Response.blob();
-        
+        const blob = await (await fetch(data.imageUrl)).blob();
         const fileName = `${user!.id}/${Date.now()}.png`;
-        const { error: uploadError } = await supabase.storage
-          .from("avatars")
-          .upload(fileName, blob, { upsert: true });
-
-        if (uploadError) throw uploadError;
-
-        const { data: { publicUrl } } = supabase.storage
-          .from("avatars")
-          .getPublicUrl(fileName);
-
+        const { error: upErr } = await supabase.storage.from("avatars").upload(fileName, blob, { upsert: true });
+        if (upErr) throw upErr;
+        const { data: { publicUrl } } = supabase.storage.from("avatars").getPublicUrl(fileName);
         setProfile({ ...profile, avatar_url: publicUrl });
         setAvatarDescription("");
-
-        toast({
-          title: "AI avatar created",
-          description: "Your AI avatar has been successfully generated",
-        });
+        toast({ title: "AI avatar created", description: `Style: ${style}` });
       }
     } catch (error: any) {
-      toast({
-        title: "Error generating avatar",
-        description: error.message,
-        variant: "destructive",
-      });
+      toast({ title: "Generation error", description: error.message, variant: "destructive" });
     } finally {
       setGeneratingAvatar(false);
     }
   };
 
-  const addInterest = () => {
-    if (newInterest.trim() && !profile.interests?.includes(newInterest.trim())) {
-      setProfile({
-        ...profile,
-        interests: [...(profile.interests || []), newInterest.trim()],
+  const handleGenerateBio = async (tone: string) => {
+    setGeneratingBio(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("generate-bio", {
+        body: {
+          name: profile.full_name, occupation: profile.occupation, company: profile.company,
+          location: profile.location, interests: profile.interests, skills: profile.skills, tone,
+        },
       });
-      setNewInterest("");
+      if (error) throw error;
+      if (data?.bio) {
+        setProfile({ ...profile, bio: data.bio });
+        toast({ title: "Bio generated", description: "Feel free to tweak it." });
+      } else if (data?.error) {
+        toast({ title: "Bio error", description: data.error, variant: "destructive" });
+      }
+    } catch (error: any) {
+      toast({ title: "Bio error", description: error.message, variant: "destructive" });
+    } finally {
+      setGeneratingBio(false);
     }
   };
 
-  const removeInterest = (interest: string) => {
-    setProfile({
-      ...profile,
-      interests: profile.interests?.filter((i) => i !== interest) || [],
-    });
+  const addInterest = () => {
+    if (newInterest.trim() && !profile.interests?.includes(newInterest.trim())) {
+      setProfile({ ...profile, interests: [...(profile.interests || []), newInterest.trim()] });
+      setNewInterest("");
+    }
   };
+  const removeInterest = (i: string) =>
+    setProfile({ ...profile, interests: profile.interests?.filter((x) => x !== i) || [] });
+
+  const addLanguage = () => {
+    if (newLanguage.trim() && !profile.languages?.includes(newLanguage.trim())) {
+      setProfile({ ...profile, languages: [...(profile.languages || []), newLanguage.trim()] });
+      setNewLanguage("");
+    }
+  };
+  const removeLanguage = (l: string) =>
+    setProfile({ ...profile, languages: profile.languages?.filter((x) => x !== l) || [] });
+
+  // Completeness
+  const checks: CompletenessCheck[] = [
+    { key: "avatar", label: "Profile photo", done: !!profile.avatar_url, weight: 12 },
+    { key: "name", label: "Full name", done: !!profile.full_name?.trim(), weight: 10 },
+    { key: "headline", label: "Tagline / headline", done: !!profile.headline?.trim(), weight: 8 },
+    { key: "bio", label: "About me", done: !!profile.bio && profile.bio.length >= 30, weight: 12 },
+    { key: "occupation", label: "Occupation", done: !!profile.occupation?.trim(), weight: 6 },
+    { key: "location", label: "Location", done: !!profile.location?.trim(), weight: 6 },
+    { key: "interests", label: "3+ interests", done: (profile.interests?.length || 0) >= 3, weight: 10 },
+    { key: "skills", label: "1+ skill", done: (profile.skills?.length || 0) >= 1, weight: 10 },
+    { key: "cover", label: "Cover banner", done: !!profile.cover_url, weight: 10 },
+    { key: "social", label: "Social link", done: Object.values(profile.social_links || {}).some((v) => !!v), weight: 8 },
+    { key: "languages", label: "Language", done: (profile.languages?.length || 0) >= 1, weight: 4 },
+    { key: "phone", label: "Phone number", done: !!profile.phone?.trim(), weight: 4 },
+  ];
+  const percent = computeCompleteness(checks);
+  const unlocked = checks.filter((c) => c.done).length;
 
   if (loading) {
     return (
@@ -267,229 +279,205 @@ const EditProfile = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background py-8">
-      <div className="container mx-auto px-3 sm:px-4 max-w-2xl">
-        <ProfilePageHero
-          icon={UserCog}
-          title="Edit Profile"
-          subtitle="Tell the world who you are"
-          badge="Personal"
+    <div className="min-h-screen bg-background py-6 sm:py-8">
+      <div className="container mx-auto px-3 sm:px-4 max-w-4xl">
+        <EditProfileHero
           onBack={() => navigate("/wall")}
+          completeness={percent}
+          unlockedBadges={unlocked}
+          totalBadges={checks.length}
         />
 
-        <Card className="p-6 space-y-6">
-          {/* Avatar Section */}
-          <div className="flex flex-col items-center gap-4">
-            <Avatar className="h-32 w-32">
-              <AvatarImage src={profile.avatar_url || undefined} />
-              <AvatarFallback className="text-4xl">
-                {profile.full_name?.[0]?.toUpperCase() || "U"}
-              </AvatarFallback>
-            </Avatar>
+        <ProfileCompleteness checks={checks} />
 
-            <div className="flex gap-2">
-              <Label htmlFor="avatar-upload" className="cursor-pointer">
-                <Button variant="outline" disabled={uploadingImage} asChild>
-                  <span>
-                    {uploadingImage ? (
-                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    ) : (
-                      <Upload className="h-4 w-4 mr-2" />
-                    )}
-                    Upload Photo
-                  </span>
-                </Button>
-              </Label>
-              <Input
-                id="avatar-upload"
-                type="file"
-                accept="image/*"
-                onChange={handleImageUpload}
-                className="hidden"
-              />
-            </div>
+        <CoverBannerUpload
+          coverUrl={profile.cover_url || ""}
+          uploading={uploadingCover}
+          onUpload={handleCoverUpload}
+          onRemove={() => setProfile({ ...profile, cover_url: "" })}
+        />
 
-            {/* AI Avatar Generation */}
-            <div className="w-full space-y-2">
-              <Label>Or generate AI avatar</Label>
-              <div className="flex gap-2">
-                <Input
-                  placeholder="Describe how the avatar should look..."
-                  value={avatarDescription}
-                  onChange={(e) => setAvatarDescription(e.target.value)}
-                  onKeyPress={(e) => e.key === "Enter" && handleGenerateAvatar()}
+        <AvatarStudio
+          avatarUrl={profile.avatar_url || ""}
+          fallback={profile.full_name?.[0]?.toUpperCase() || "U"}
+          uploading={uploadingImage}
+          generating={generatingAvatar}
+          description={avatarDescription}
+          onDescriptionChange={setAvatarDescription}
+          onUpload={handleImageUpload}
+          onGenerate={handleGenerateAvatar}
+        />
+
+        <Card className="p-5 sm:p-6 bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl border-border/50">
+          <Tabs defaultValue="identity" className="w-full">
+            <TabsList className="grid grid-cols-5 mb-6 h-auto">
+              <TabsTrigger value="identity" className="flex-col gap-1 py-2">
+                <UserIcon className="h-4 w-4" />
+                <span className="text-[10px] sm:text-xs">Identity</span>
+              </TabsTrigger>
+              <TabsTrigger value="story" className="flex-col gap-1 py-2">
+                <BookText className="h-4 w-4" />
+                <span className="text-[10px] sm:text-xs">Story</span>
+              </TabsTrigger>
+              <TabsTrigger value="skills" className="flex-col gap-1 py-2">
+                <Wrench className="h-4 w-4" />
+                <span className="text-[10px] sm:text-xs">Skills</span>
+              </TabsTrigger>
+              <TabsTrigger value="socials" className="flex-col gap-1 py-2">
+                <Link2 className="h-4 w-4" />
+                <span className="text-[10px] sm:text-xs">Socials</span>
+              </TabsTrigger>
+              <TabsTrigger value="privacy" className="flex-col gap-1 py-2">
+                <Shield className="h-4 w-4" />
+                <span className="text-[10px] sm:text-xs">Style</span>
+              </TabsTrigger>
+            </TabsList>
+
+            {/* IDENTITY */}
+            <TabsContent value="identity" className="space-y-4">
+              <div>
+                <Label htmlFor="full_name">Full Name</Label>
+                <Input id="full_name" value={profile.full_name || ""} onChange={(e) => setProfile({ ...profile, full_name: e.target.value })} />
+              </div>
+              <div>
+                <Label htmlFor="headline">Headline / Tagline</Label>
+                <Input id="headline" placeholder="e.g. Building beautiful things at the edge of AI" maxLength={80} value={profile.headline || ""} onChange={(e) => setProfile({ ...profile, headline: e.target.value })} />
+                <p className="text-[10px] text-muted-foreground mt-1">{(profile.headline || "").length}/80</p>
+              </div>
+              <div>
+                <Label htmlFor="email">Email</Label>
+                <Input id="email" type="email" value={profile.email || ""} disabled className="bg-muted" />
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <Label htmlFor="occupation">Occupation</Label>
+                  <Input id="occupation" placeholder="e.g. Designer" value={profile.occupation || ""} onChange={(e) => setProfile({ ...profile, occupation: e.target.value })} />
+                </div>
+                <div>
+                  <Label htmlFor="company">Company</Label>
+                  <Input id="company" placeholder="e.g. Acme Inc." value={profile.company || ""} onChange={(e) => setProfile({ ...profile, company: e.target.value })} />
+                </div>
+                <div>
+                  <Label htmlFor="location">Location</Label>
+                  <Input id="location" placeholder="e.g. Bratislava, Slovakia" value={profile.location || ""} onChange={(e) => setProfile({ ...profile, location: e.target.value })} />
+                </div>
+                <div>
+                  <Label htmlFor="birth_date">Birth Date</Label>
+                  <Input id="birth_date" type="date" value={profile.birth_date || ""} onChange={(e) => setProfile({ ...profile, birth_date: e.target.value })} />
+                </div>
+                <div>
+                  <Label htmlFor="phone">Phone</Label>
+                  <Input id="phone" type="tel" placeholder="+421 ..." value={profile.phone || ""} onChange={(e) => setProfile({ ...profile, phone: e.target.value })} />
+                </div>
+                <div>
+                  <Label htmlFor="website">Website</Label>
+                  <Input id="website" type="url" placeholder="https://..." value={profile.website || ""} onChange={(e) => setProfile({ ...profile, website: e.target.value })} />
+                </div>
+              </div>
+            </TabsContent>
+
+            {/* STORY */}
+            <TabsContent value="story" className="space-y-4">
+              <div>
+                <div className="flex items-center justify-between mb-1.5">
+                  <Label htmlFor="bio">About Me</Label>
+                  <div className="flex gap-1.5 flex-wrap justify-end">
+                    {["warm", "professional", "playful", "bold", "minimal"].map((tone) => (
+                      <Button
+                        key={tone}
+                        type="button"
+                        size="sm"
+                        variant="outline"
+                        disabled={generatingBio}
+                        onClick={() => handleGenerateBio(tone)}
+                        className="h-7 px-2 text-[10px]"
+                      >
+                        {generatingBio ? <Loader2 className="h-3 w-3 animate-spin" /> : <Sparkles className="h-3 w-3 mr-1 text-amber-400" />}
+                        {tone}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+                <Textarea
+                  id="bio"
+                  rows={5}
+                  placeholder="Write something about yourself... or click an AI tone above to draft it."
+                  value={profile.bio || ""}
+                  onChange={(e) => setProfile({ ...profile, bio: e.target.value })}
+                  maxLength={500}
                 />
-                <Button
-                  onClick={handleGenerateAvatar}
-                  disabled={generatingAvatar || !avatarDescription.trim()}
-                >
-                  {generatingAvatar ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : (
-                    <Sparkles className="h-4 w-4" />
-                  )}
-                </Button>
+                <p className="text-[10px] text-muted-foreground mt-1">{(profile.bio || "").length}/500</p>
               </div>
-            </div>
-          </div>
 
-          {/* Basic Info */}
-          <div className="space-y-4">
-            <div>
-              <Label htmlFor="full_name">Full Name</Label>
-              <Input
-                id="full_name"
-                value={profile.full_name || ""}
-                onChange={(e) =>
-                  setProfile({ ...profile, full_name: e.target.value })
-                }
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                value={profile.email || ""}
-                disabled
-                className="bg-muted"
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="bio">About Me</Label>
-              <Textarea
-                id="bio"
-                rows={4}
-                placeholder="Write something about yourself..."
-                value={profile.bio || ""}
-                onChange={(e) => setProfile({ ...profile, bio: e.target.value })}
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="occupation">Occupation</Label>
-              <Input
-                id="occupation"
-                placeholder="e.g. Software Developer"
-                value={profile.occupation || ""}
-                onChange={(e) =>
-                  setProfile({ ...profile, occupation: e.target.value })
-                }
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="company">Company</Label>
-              <Input
-                id="company"
-                placeholder="e.g. Google"
-                value={profile.company || ""}
-                onChange={(e) =>
-                  setProfile({ ...profile, company: e.target.value })
-                }
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="location">Location</Label>
-              <Input
-                id="location"
-                placeholder="e.g. Bratislava, Slovakia"
-                value={profile.location || ""}
-                onChange={(e) =>
-                  setProfile({ ...profile, location: e.target.value })
-                }
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="birth_date">Birth Date</Label>
-              <Input
-                id="birth_date"
-                type="date"
-                value={profile.birth_date || ""}
-                onChange={(e) =>
-                  setProfile({ ...profile, birth_date: e.target.value })
-                }
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="phone">Phone</Label>
-              <Input
-                id="phone"
-                type="tel"
-                placeholder="+421 XXX XXX XXX"
-                value={profile.phone || ""}
-                onChange={(e) =>
-                  setProfile({ ...profile, phone: e.target.value })
-                }
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="website">Website</Label>
-              <Input
-                id="website"
-                type="url"
-                placeholder="https://example.com"
-                value={profile.website || ""}
-                onChange={(e) =>
-                  setProfile({ ...profile, website: e.target.value })
-                }
-              />
-            </div>
-
-            {/* Interests */}
-            <div>
-              <Label htmlFor="interests">Interests</Label>
-              <div className="flex gap-2 mb-2">
-                <Input
-                  id="interests"
-                  placeholder="Add interest..."
-                  value={newInterest}
-                  onChange={(e) => setNewInterest(e.target.value)}
-                  onKeyPress={(e) => e.key === "Enter" && addInterest()}
-                />
-                <Button onClick={addInterest} variant="outline">
-                  Add
-                </Button>
+              <div>
+                <Label htmlFor="interests">Interests</Label>
+                <div className="flex gap-2 mb-2">
+                  <Input id="interests" placeholder="Add interest..." value={newInterest} onChange={(e) => setNewInterest(e.target.value)} onKeyPress={(e) => e.key === "Enter" && addInterest()} />
+                  <Button onClick={addInterest} variant="outline">Add</Button>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {profile.interests?.map((i) => (
+                    <Badge key={i} variant="secondary" className="cursor-pointer pr-1.5" onClick={() => removeInterest(i)}>
+                      {i}
+                      <X className="h-3 w-3 ml-1" />
+                    </Badge>
+                  ))}
+                </div>
               </div>
-              <div className="flex flex-wrap gap-2">
-                {profile.interests?.map((interest) => (
-                  <Badge
-                    key={interest}
-                    variant="secondary"
-                    className="cursor-pointer"
-                    onClick={() => removeInterest(interest)}
-                  >
-                    {interest} ×
-                  </Badge>
-                ))}
-              </div>
-            </div>
-          </div>
 
-          {/* Save Button */}
-          <div className="flex gap-3">
-            <Button
-              onClick={handleSave}
-              disabled={saving}
-              className="flex-1"
-            >
-              {saving ? (
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-              ) : null}
+              <div>
+                <Label htmlFor="languages">Languages</Label>
+                <div className="flex gap-2 mb-2">
+                  <Input id="languages" placeholder="e.g. English, Slovak..." value={newLanguage} onChange={(e) => setNewLanguage(e.target.value)} onKeyPress={(e) => e.key === "Enter" && addLanguage()} />
+                  <Button onClick={addLanguage} variant="outline">Add</Button>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {profile.languages?.map((l) => (
+                    <Badge key={l} variant="outline" className="cursor-pointer pr-1.5" onClick={() => removeLanguage(l)}>
+                      🌐 {l}
+                      <X className="h-3 w-3 ml-1" />
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            </TabsContent>
+
+            {/* SKILLS */}
+            <TabsContent value="skills">
+              <SkillsEditor
+                skills={profile.skills || []}
+                onChange={(s) => setProfile({ ...profile, skills: s })}
+              />
+            </TabsContent>
+
+            {/* SOCIALS */}
+            <TabsContent value="socials">
+              <SocialLinksSection
+                value={profile.social_links || {}}
+                onChange={(v) => setProfile({ ...profile, social_links: v })}
+              />
+            </TabsContent>
+
+            {/* PRIVACY & STYLE */}
+            <TabsContent value="privacy">
+              <PrivacyAndStyle
+                visibility={profile.field_visibility || {}}
+                onVisibilityChange={(v) => setProfile({ ...profile, field_visibility: v })}
+                accentColor={profile.accent_color || "#f59e0b"}
+                onAccentChange={(c) => setProfile({ ...profile, accent_color: c })}
+                theme={(profile.profile_theme as ProfileTheme) || "default"}
+                onThemeChange={(t) => setProfile({ ...profile, profile_theme: t })}
+              />
+            </TabsContent>
+          </Tabs>
+
+          {/* Save bar */}
+          <div className="flex gap-3 pt-6 mt-6 border-t border-border/40 sticky bottom-0 bg-card/80 backdrop-blur-md -mx-5 sm:-mx-6 px-5 sm:px-6">
+            <Button onClick={handleSave} disabled={saving} className="flex-1 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-background font-bold">
+              {saving ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Save className="h-4 w-4 mr-2" />}
               Save Changes
             </Button>
-            <Button
-              variant="outline"
-              onClick={() => navigate("/wall")}
-            >
-              Cancel
-            </Button>
+            <Button variant="outline" onClick={() => navigate("/wall")}>Cancel</Button>
           </div>
         </Card>
       </div>
