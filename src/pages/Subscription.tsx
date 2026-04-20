@@ -5,7 +5,16 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Check, Crown, Zap, ExternalLink, Sparkles, Shield, Headphones, Award } from "lucide-react";
+import {
+  Check,
+  Crown,
+  Zap,
+  ExternalLink,
+  Sparkles,
+  Shield,
+  Headphones,
+  Award,
+} from "lucide-react";
 import { motion } from "framer-motion";
 import {
   AlertDialog,
@@ -21,6 +30,19 @@ import { ComparisonTable } from "@/components/subscription/ComparisonTable";
 import { SubscriptionFAQ } from "@/components/subscription/SubscriptionFAQ";
 import { SubscriptionTestimonials } from "@/components/subscription/SubscriptionTestimonials";
 import { SavingsCalculator } from "@/components/subscription/SavingsCalculator";
+import { LiveActivityBanner } from "@/components/subscription/LiveActivityBanner";
+import {
+  CurrencySelector,
+  useDetectedCurrency,
+  formatPrice,
+} from "@/components/subscription/CurrencySelector";
+import { UrgencyTimer } from "@/components/subscription/UrgencyTimer";
+import { EnterpriseTier } from "@/components/subscription/EnterpriseTier";
+import { WinBackDialog } from "@/components/subscription/WinBackDialog";
+import { PerksCarousel } from "@/components/subscription/PerksCarousel";
+import { ReferralCard } from "@/components/subscription/ReferralCard";
+import { TrialBanner } from "@/components/subscription/TrialBanner";
+import { RoiDashboard } from "@/components/subscription/RoiDashboard";
 
 const Subscription = () => {
   const navigate = useNavigate();
@@ -31,6 +53,8 @@ const Subscription = () => {
   const [canceling, setCanceling] = useState(false);
   const [stripeUrl, setStripeUrl] = useState<string | null>(null);
   const [yearly, setYearly] = useState(false);
+  const [winBackOpen, setWinBackOpen] = useState(false);
+  const [currency, setCurrency] = useDetectedCurrency();
 
   useEffect(() => {
     checkAuth();
@@ -74,6 +98,47 @@ const Subscription = () => {
     }
   };
 
+  // Three-step retention flow handlers
+  const handlePauseSubscription = async () => {
+    try {
+      const { data, error } = await supabase.functions.invoke("pause-subscription", {
+        body: { months: 1 },
+      });
+      if (error) throw error;
+      toast({
+        title: "Subscription paused ⏸️",
+        description: data?.message || "Your subscription is paused for 1 month.",
+      });
+      await checkAuth();
+    } catch (error) {
+      console.error("Pause error:", error);
+      toast({
+        title: "Couldn't pause",
+        description: "Please try again or contact support.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleAcceptDiscount = async () => {
+    try {
+      const { data, error } = await supabase.functions.invoke("apply-retention-discount", {});
+      if (error) throw error;
+      toast({
+        title: "🎁 Discount applied!",
+        description: data?.message || "50% off applied to your next 3 invoices.",
+      });
+      await checkAuth();
+    } catch (error) {
+      console.error("Discount error:", error);
+      toast({
+        title: "Couldn't apply discount",
+        description: "Please try again or contact support.",
+        variant: "destructive",
+      });
+    }
+  };
+
   const handleCancelSubscription = async () => {
     if (!user || currentTier === "basic") return;
     setCanceling(true);
@@ -86,6 +151,7 @@ const Subscription = () => {
         title: "Subscription cancelled",
         description: data.message || "Subscription will be cancelled at the end of the current period",
       });
+      setWinBackOpen(false);
       await checkAuth();
     } catch (error) {
       console.error("Cancellation error:", error);
@@ -121,17 +187,18 @@ const Subscription = () => {
     );
   }
 
+  // Base prices in EUR — converted via currency selector
   const monthlyPrices = { basic: 5, premium: 15, business: 50 };
-  const yearlyPrices = { basic: 48, premium: 144, business: 480 }; // 20% off ×12
-  const prices = yearly ? yearlyPrices : monthlyPrices;
-  const period = yearly ? "/year" : "/month";
+  const yearlyPrices = { basic: 48, premium: 144, business: 480 }; // ~20% off
+  const basePrices = yearly ? yearlyPrices : monthlyPrices;
+  const period = yearly ? "/yr" : "/mo";
 
   const plans = [
     {
       tier: "basic",
       name: "Basic",
       tagline: "Get started for free essentials",
-      price: prices.basic,
+      basePrice: basePrices.basic,
       icon: Check,
       gradient: "from-slate-500/20 to-slate-700/10",
       iconBg: "bg-slate-500/10",
@@ -150,7 +217,7 @@ const Subscription = () => {
       tier: "premium",
       name: "Premium",
       tagline: "Most loved by serious creators",
-      price: prices.premium,
+      basePrice: basePrices.premium,
       icon: Crown,
       gradient: "from-primary/30 via-purple-500/20 to-amber-400/10",
       iconBg: "bg-gradient-to-br from-primary/20 to-purple-500/20",
@@ -170,7 +237,7 @@ const Subscription = () => {
       tier: "business",
       name: "Business",
       tagline: "Scale without limits",
-      price: prices.business,
+      basePrice: basePrices.business,
       icon: Zap,
       gradient: "from-amber-500/20 via-orange-500/10 to-rose-500/10",
       iconBg: "bg-gradient-to-br from-amber-500/20 to-orange-500/20",
@@ -221,9 +288,39 @@ const Subscription = () => {
         </AlertDialogContent>
       </AlertDialog>
 
+      <WinBackDialog
+        open={winBackOpen}
+        onClose={() => setWinBackOpen(false)}
+        onPause={handlePauseSubscription}
+        onAcceptDiscount={handleAcceptDiscount}
+        onConfirmCancel={handleCancelSubscription}
+        cancelling={canceling}
+      />
+
       <div className="container mx-auto px-4">
+        {/* (1) Hero */}
         <SubscriptionHero currentTier={currentTier} />
 
+        {/* (8) ROI dashboard for paying users */}
+        {user && currentTier !== "basic" && (
+          <RoiDashboard userId={user.id} currency={currency} tier={currentTier} />
+        )}
+
+        {/* (1) Live activity */}
+        <div className="mt-8">
+          <LiveActivityBanner />
+        </div>
+
+        {/* (5) Urgency timer */}
+        <UrgencyTimer />
+
+        {/* (7) Free trial banner — only for non-subscribers */}
+        {currentTier === "basic" && <TrialBanner days={7} />}
+
+        {/* (4) Currency selector + (6) billing toggle */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-2">
+          <CurrencySelector value={currency} onChange={setCurrency} />
+        </div>
         <BillingToggle yearly={yearly} onChange={setYearly} />
 
         {/* Plans grid */}
@@ -231,6 +328,8 @@ const Subscription = () => {
           {plans.map((plan, idx) => {
             const Icon = plan.icon;
             const isCurrent = currentTier === plan.tier;
+            const monthlyEur = monthlyPrices[plan.tier as keyof typeof monthlyPrices];
+            const savingsEur = yearly ? monthlyEur * 12 - plan.basePrice : 0;
             return (
               <motion.div
                 key={plan.tier}
@@ -243,9 +342,7 @@ const Subscription = () => {
                     plan.popular ? "ring-2 ring-primary shadow-xl shadow-primary/20 lg:scale-105" : ""
                   } ${isCurrent ? "border-emerald-500/50" : ""}`}
                 >
-                  {/* Gradient top accent */}
                   <div className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${plan.gradient}`} />
-                  {/* Background gradient */}
                   <div className={`absolute inset-0 bg-gradient-to-br ${plan.gradient} opacity-30 pointer-events-none`} />
 
                   {plan.popular && (
@@ -271,13 +368,18 @@ const Subscription = () => {
                     <p className="text-xs text-muted-foreground mt-1">{plan.tagline}</p>
                     <div className="mt-4 flex items-baseline justify-center gap-1">
                       <span className="text-5xl font-black bg-gradient-to-br from-foreground to-foreground/60 bg-clip-text text-transparent">
-                        €{plan.price}
+                        {formatPrice(plan.basePrice, currency)}
                       </span>
                       <span className="text-muted-foreground text-sm">{period}</span>
                     </div>
-                    {yearly && (
+                    {yearly && savingsEur > 0 && (
                       <p className="text-xs text-emerald-500 font-semibold mt-1">
-                        Save €{(monthlyPrices[plan.tier as keyof typeof monthlyPrices] * 12) - plan.price} vs monthly
+                        Save {formatPrice(savingsEur, currency)} vs monthly
+                      </p>
+                    )}
+                    {plan.tier !== "basic" && currentTier === "basic" && (
+                      <p className="text-[10px] text-primary mt-1 font-semibold uppercase tracking-wider">
+                        ✨ 7-day free trial
                       </p>
                     )}
                   </CardHeader>
@@ -305,7 +407,13 @@ const Subscription = () => {
                       disabled={isCurrent}
                       onClick={() => handleSubscribe(plan.tier)}
                     >
-                      {isCurrent ? "Current Plan" : plan.popular ? "Get Premium" : `Choose ${plan.name}`}
+                      {isCurrent
+                        ? "Current Plan"
+                        : plan.tier === "basic"
+                        ? "Choose Basic"
+                        : currentTier === "basic"
+                        ? `Start ${plan.name} Free`
+                        : `Switch to ${plan.name}`}
                     </Button>
                   </CardContent>
                 </Card>
@@ -313,6 +421,9 @@ const Subscription = () => {
             );
           })}
         </div>
+
+        {/* (3) Enterprise anchor tier */}
+        <EnterpriseTier />
 
         {/* Trust badges */}
         <motion.div
@@ -329,20 +440,23 @@ const Subscription = () => {
           ))}
         </motion.div>
 
-        {/* Cancel button */}
+        {/* (2)+(9) Cancel triggers Win-back flow with pause + discount */}
         {currentTier !== "basic" && (
           <div className="mt-10 text-center">
             <Button
               variant="ghost"
               size="sm"
-              onClick={handleCancelSubscription}
+              onClick={() => setWinBackOpen(true)}
               disabled={canceling}
               className="text-muted-foreground hover:text-destructive"
             >
-              {canceling ? "Cancelling..." : "Cancel current subscription"}
+              Cancel current subscription
             </Button>
           </div>
         )}
+
+        {/* (10) Perks spotlight */}
+        <PerksCarousel />
 
         {/* Savings calculator */}
         <SavingsCalculator />
@@ -352,6 +466,9 @@ const Subscription = () => {
 
         {/* Testimonials */}
         <SubscriptionTestimonials />
+
+        {/* (8) Referral program */}
+        <ReferralCard userId={user?.id} />
 
         {/* FAQ */}
         <SubscriptionFAQ />
@@ -375,10 +492,10 @@ const Subscription = () => {
             disabled={currentTier === "premium"}
           >
             <Crown className="h-4 w-4 mr-2" />
-            {currentTier === "premium" ? "You're on Premium ✨" : "Start Premium Today"}
+            {currentTier === "premium" ? "You're on Premium ✨" : "Start 7-Day Free Trial"}
           </Button>
           <p className="mt-4 text-xs text-muted-foreground">
-            All prices in EUR · Secure payments via Stripe · Cancel anytime
+            Prices in {currency.code} · Secure payments via Stripe · Cancel anytime
           </p>
         </motion.div>
       </div>
