@@ -24,12 +24,14 @@ export const ContactHero = ({ responseTime, todayCount, satisfaction }: Props) =
         loop
         playsInline
         className="absolute inset-0 w-full h-full object-cover"
-        style={{ filter: "brightness(0.85) saturate(1.3) contrast(1.1)" }}
+        style={{ filter: "brightness(0.6) saturate(1.3) contrast(1.05)" }}
         src={heroVideo.url}
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
-      <div className="absolute inset-0 bg-gradient-to-r from-purple-500/25 via-transparent to-pink-500/30" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_60%,transparent_30%,rgba(0,0,0,0.45)_100%)]" />
+      {/* Strong dark overlays for text legibility */}
+      <div className="absolute inset-0 bg-black/45" />
+      <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-background/20" />
+      <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 via-transparent to-pink-600/25" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_30%_70%,rgba(0,0,0,0.6)_0%,transparent_70%)]" />
 
       <div className="relative z-10 h-full flex flex-col justify-end pt-16 sm:pt-12 px-5 sm:px-12 pb-6 sm:pb-12">
         <motion.div
