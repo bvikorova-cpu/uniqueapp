@@ -17,6 +17,7 @@ import SkipLink from "./components/SkipLink";
 import ProgressiveOnboarding from "./components/onboarding/ProgressiveOnboarding";
 import { PageLoader } from "@/components/ui/PageLoader";
 import { GlobalAnnouncementBanner } from "./components/GlobalAnnouncementBanner";
+import { GlobalRewardedAd } from "./components/ads/GlobalRewardedAd";
 
 // Critical pages - loaded immediately for best UX
 import Home from "./pages/Home";
@@ -734,6 +735,7 @@ const App = () => {
                       </Routes>
                     </Suspense>
                   </main>
+                  <GlobalRewardedAd />
                   <Footer />
                 </div>
               </TooltipProvider>
