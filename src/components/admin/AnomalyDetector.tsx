@@ -12,16 +12,16 @@ interface Anomaly {
 }
 
 const SEV_STYLES: Record<string, string> = {
-  info: "border-cyan-400/40 bg-cyan-400/5 text-cyan-200",
-  warn: "border-amber-400/40 bg-amber-400/5 text-amber-200",
-  danger: "border-rose-500/50 bg-rose-500/10 text-rose-200",
+  info: "border-cyan-500/50 bg-cyan-500/10 text-cyan-900 dark:text-cyan-200",
+  warn: "border-amber-500/50 bg-amber-500/10 text-amber-900 dark:text-amber-200",
+  danger: "border-rose-500/60 bg-rose-500/15 text-rose-900 dark:text-rose-200",
 };
 
 const RISK_COLOR: Record<string, string> = {
-  low: "from-emerald-500/20 to-emerald-500/5 border-emerald-400/40 text-emerald-200",
-  medium: "from-amber-500/20 to-amber-500/5 border-amber-400/40 text-amber-200",
-  high: "from-orange-500/20 to-orange-500/5 border-orange-400/40 text-orange-200",
-  critical: "from-rose-500/30 to-rose-500/10 border-rose-500/50 text-rose-200",
+  low: "from-emerald-500/20 to-emerald-500/5 border-emerald-500/50 text-emerald-900 dark:text-emerald-200",
+  medium: "from-amber-500/20 to-amber-500/5 border-amber-500/50 text-amber-900 dark:text-amber-200",
+  high: "from-orange-500/20 to-orange-500/5 border-orange-500/50 text-orange-900 dark:text-orange-200",
+  critical: "from-rose-500/30 to-rose-500/10 border-rose-500/60 text-rose-900 dark:text-rose-200",
 };
 
 export const AnomalyDetector = () => {
