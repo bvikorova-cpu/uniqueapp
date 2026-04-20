@@ -71,7 +71,7 @@ export const RealtimeActivityFeed = () => {
       .channel("admin-feed")
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "profiles" }, (payload: any) => {
         setEvents((prev) => [{
-          id: `u-${payload.new.id}`, type: "user",
+          id: `u-${payload.new.id}`, type: "user" as const,
           title: "New user registered",
           description: payload.new.full_name || payload.new.email || "Unknown",
           created_at: payload.new.created_at,
@@ -79,7 +79,7 @@ export const RealtimeActivityFeed = () => {
       })
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "transactions" }, (payload: any) => {
         setEvents((prev) => [{
-          id: `t-${payload.new.id}`, type: "transaction",
+          id: `t-${payload.new.id}`, type: "transaction" as const,
           title: `${payload.new.item_type || "Transaction"} • €${parseFloat(payload.new.amount || 0).toFixed(2)}`,
           description: "Payment processed",
           created_at: payload.new.created_at,
@@ -87,7 +87,7 @@ export const RealtimeActivityFeed = () => {
       })
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "contact_messages" }, (payload: any) => {
         setEvents((prev) => [{
-          id: `m-${payload.new.id}`, type: "message",
+          id: `m-${payload.new.id}`, type: "message" as const,
           title: "Contact message",
           description: `${payload.new.name}: ${payload.new.subject || ""}`.slice(0, 60),
           created_at: payload.new.created_at,
