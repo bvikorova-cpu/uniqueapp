@@ -6,8 +6,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Clock, CheckCircle, AlertCircle } from "lucide-react";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Clock, CheckCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import {
   EarningsHero,
@@ -20,6 +19,7 @@ import {
   EarningsLiveTicker,
   EarningsGoalTracker,
   EarningsTipsBanner,
+  PayoutMethodsManager,
 } from "@/components/earnings";
 
 interface Transaction {
@@ -47,7 +47,7 @@ const Earnings = () => {
     totalSales: 0,
   });
   const [loading, setLoading] = useState(true);
-  const [hasIban, setHasIban] = useState(false);
+  const [hasPayoutMethod, setHasPayoutMethod] = useState(false);
 
   useEffect(() => {
     checkUser();
@@ -59,12 +59,11 @@ const Earnings = () => {
       navigate('/auth');
       return;
     }
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('iban')
-      .eq('id', user.id)
-      .single();
-    setHasIban(!!profile?.iban);
+    const { count } = await supabase
+      .from('payout_methods')
+      .select('id', { count: 'exact', head: true })
+      .eq('user_id', user.id);
+    setHasPayoutMethod((count || 0) > 0);
     loadTransactions(user.id);
   };
 
@@ -165,25 +164,21 @@ const Earnings = () => {
         <EarningsExport rows={exportRows} filename="my-earnings" />
       </div>
 
-      {!hasIban && (
-        <Alert className="mb-6 border-amber-500/40 bg-amber-500/10">
-          <AlertCircle className="h-4 w-4 text-amber-500" />
-          <AlertDescription className="flex items-center justify-between gap-3 flex-wrap">
-            <span>To receive payouts, add your IBAN in profile settings.</span>
-            <Button size="sm" onClick={() => navigate('/edit-profile')} className="bg-gradient-to-r from-amber-500 to-yellow-500 text-black font-bold">
-              Add IBAN
-            </Button>
-          </AlertDescription>
-        </Alert>
-      )}
+      <div className="mb-6">
+        <PayoutMethodsManager onChange={setHasPayoutMethod} />
+      </div>
 
       <div className="grid lg:grid-cols-3 gap-4 mb-6">
         <EarningsPayoutCard
           available={stats.available}
           minimum={25}
-          hasPayoutMethod={hasIban}
+          hasPayoutMethod={hasPayoutMethod}
           onRequest={handlePayout}
-          onSetupMethod={() => navigate('/edit-profile')}
+          onSetupMethod={() => {
+            const el = document.querySelector('[data-payout-manager]');
+            el?.scrollIntoView({ behavior: 'smooth' });
+          }}
+          methodLabel="PayPal · Wise · Crypto · IBAN · Stripe"
         />
         <EarningsGoalTracker monthEarnings={stats.monthEarnings} />
         <EarningsTipsBanner />

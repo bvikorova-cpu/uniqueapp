@@ -26878,6 +26878,51 @@ export type Database = {
         }
         Relationships: []
       }
+      payout_methods: {
+        Row: {
+          account_details: Json
+          account_holder: string | null
+          country: string | null
+          created_at: string
+          currency: string | null
+          id: string
+          is_default: boolean
+          is_verified: boolean
+          label: string | null
+          method_type: Database["public"]["Enums"]["payout_method_type"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          account_details?: Json
+          account_holder?: string | null
+          country?: string | null
+          created_at?: string
+          currency?: string | null
+          id?: string
+          is_default?: boolean
+          is_verified?: boolean
+          label?: string | null
+          method_type: Database["public"]["Enums"]["payout_method_type"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          account_details?: Json
+          account_holder?: string | null
+          country?: string | null
+          created_at?: string
+          currency?: string | null
+          id?: string
+          is_default?: boolean
+          is_verified?: boolean
+          label?: string | null
+          method_type?: Database["public"]["Enums"]["payout_method_type"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       personality_clones: {
         Row: {
           clone_name: string
@@ -40848,6 +40893,14 @@ export type Database = {
         | "sports"
         | "date"
         | "travel"
+      payout_method_type:
+        | "iban"
+        | "paypal"
+        | "wise"
+        | "crypto"
+        | "stripe_connect"
+        | "payoneer"
+        | "revolut"
       pet_mood: "happy" | "neutral" | "sad" | "excited" | "sleepy" | "hungry"
       pet_rarity: "common" | "uncommon" | "rare" | "epic" | "legendary"
       pet_species:
@@ -41175,6 +41228,15 @@ export const Constants = {
         "sports",
         "date",
         "travel",
+      ],
+      payout_method_type: [
+        "iban",
+        "paypal",
+        "wise",
+        "crypto",
+        "stripe_connect",
+        "payoneer",
+        "revolut",
       ],
       pet_mood: ["happy", "neutral", "sad", "excited", "sleepy", "hungry"],
       pet_rarity: ["common", "uncommon", "rare", "epic", "legendary"],
