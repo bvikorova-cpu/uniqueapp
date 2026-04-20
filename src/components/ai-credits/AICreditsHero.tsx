@@ -16,7 +16,7 @@ interface AICreditsHeroProps {
  */
 export const AICreditsHero = ({ credits, totalPurchased, onScrollToPackages }: AICreditsHeroProps) => {
   return (
-    <div className="relative w-full h-[420px] sm:h-[520px] rounded-3xl overflow-hidden mb-8 border border-primary/20">
+    <div className="relative w-full min-h-[560px] sm:min-h-[520px] sm:h-[520px] rounded-3xl overflow-hidden mb-8 border border-primary/20">
       <video
         autoPlay
         muted
@@ -31,7 +31,7 @@ export const AICreditsHero = ({ credits, totalPurchased, onScrollToPackages }: A
       <div className="absolute inset-0 bg-gradient-to-r from-primary/25 via-transparent to-purple-500/30" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_60%,transparent_30%,rgba(0,0,0,0.45)_100%)]" />
 
-      <div className="relative z-10 h-full flex flex-col justify-end p-6 sm:p-12">
+      <div className="relative z-10 h-full flex flex-col justify-end pt-16 sm:pt-12 px-5 sm:px-12 pb-6 sm:pb-12">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -41,7 +41,7 @@ export const AICreditsHero = ({ credits, totalPurchased, onScrollToPackages }: A
             <Brain className="h-3.5 w-3.5 mr-1.5" /> AI Credits Engine
           </Badge>
 
-          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black leading-[1.05] tracking-tight text-white drop-shadow-[0_4px_20px_rgba(0,0,0,0.8)]">
+          <h1 className="text-3xl sm:text-6xl lg:text-7xl font-black leading-[1.05] tracking-tight text-white drop-shadow-[0_4px_20px_rgba(0,0,0,0.8)]">
             Power your{" "}
             <span className="bg-gradient-to-r from-cyan-300 via-primary to-purple-400 bg-clip-text text-transparent">
               creative AI
