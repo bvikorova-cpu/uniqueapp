@@ -46,7 +46,7 @@ export const PerksCarousel = () => {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 1.05 }}
             transition={{ duration: 0.5 }}
-            className={`absolute inset-0 bg-gradient-to-br ${perk.color} opacity-10`}
+            className={`absolute inset-0 bg-gradient-to-br ${perk.color} opacity-40`}
           />
         </AnimatePresence>
 
@@ -60,11 +60,15 @@ export const PerksCarousel = () => {
               transition={{ duration: 0.4 }}
               className="flex flex-col items-center"
             >
-              <div className={`p-5 rounded-3xl bg-gradient-to-br ${perk.color} shadow-2xl mb-4`}>
-                <Icon className="h-10 w-10 text-white" />
+              <div className={`p-5 rounded-3xl bg-gradient-to-br ${perk.color} shadow-2xl mb-4 ring-2 ring-white/20`}>
+                <Icon className="h-10 w-10 text-white drop-shadow-lg" />
               </div>
-              <h3 className="text-2xl sm:text-3xl font-black mb-2">{perk.title}</h3>
-              <p className="text-muted-foreground max-w-md">{perk.desc}</p>
+              <h3 className="text-2xl sm:text-4xl font-black mb-3 text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)]">
+                {perk.title}
+              </h3>
+              <p className="text-base sm:text-lg text-white/95 max-w-md font-medium drop-shadow-[0_1px_4px_rgba(0,0,0,0.5)]">
+                {perk.desc}
+              </p>
             </motion.div>
           </AnimatePresence>
         </div>
