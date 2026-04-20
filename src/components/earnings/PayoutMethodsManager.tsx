@@ -32,15 +32,6 @@ interface Props {
 }
 
 const METHOD_META: Record<MethodType, { icon: any; label: string; desc: string; fields: { key: string; label: string; placeholder: string; type?: string }[]; color: string }> = {
-  iban: {
-    icon: Building2, label: "Bank transfer (IBAN)",
-    desc: "SEPA Europe — 1-2 business days, free",
-    color: "from-blue-500 to-cyan-500",
-    fields: [
-      { key: "iban", label: "IBAN", placeholder: "DE89 3704 0044 0532 0130 00" },
-      { key: "bic", label: "BIC / SWIFT (optional)", placeholder: "COBADEFFXXX" },
-    ],
-  },
   paypal: {
     icon: Globe, label: "PayPal",
     desc: "Worldwide — instant, ~2% fee",
@@ -71,20 +62,6 @@ const METHOD_META: Record<MethodType, { icon: any; label: string; desc: string; 
     desc: "40+ countries — bank or card payouts",
     color: "from-violet-500 to-purple-500",
     fields: [{ key: "note", label: "Click 'Connect Stripe' below to onboard", placeholder: "" }],
-  },
-  payoneer: {
-    icon: CreditCard, label: "Payoneer",
-    desc: "200+ countries — perfect outside EU/US",
-    color: "from-orange-500 to-red-500",
-    fields: [{ key: "email", label: "Payoneer email", placeholder: "you@example.com", type: "email" }],
-  },
-  revolut: {
-    icon: Banknote, label: "Revolut",
-    desc: "EU/UK/US — instant, free",
-    color: "from-slate-700 to-slate-900",
-    fields: [
-      { key: "phone_or_tag", label: "Phone or @revtag", placeholder: "+421... or @yourtag" },
-    ],
   },
 };
 
