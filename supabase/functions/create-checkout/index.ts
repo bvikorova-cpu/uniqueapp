@@ -129,6 +129,148 @@ serve(async (req) => {
     const customerId = await getStripeCustomer(stripe, email);
     const origin = req.headers.get("origin") || "";
 
+    // ─── ACTION: verify (used by all verify-*-payment aliases) ───
+    // Verifies a Stripe Checkout session id and returns its status.
+    // Body: { action: "verify", sessionId: string, product?: string }
+    if (body.action === "verify") {
+      const sessionId = body.sessionId || body.session_id;
+      if (!sessionId) {
+        return successResponse({ verified: false, error: "Missing sessionId" });
+      }
+      try {
+        const session = await stripe.checkout.sessions.retrieve(sessionId);
+        const paid = session.payment_status === "paid" || session.status === "complete";
+        return successResponse({
+          verified: paid,
+          status: session.status,
+          payment_status: session.payment_status,
+          amount: session.amount_total,
+          metadata: session.metadata,
+          product: body.product || session.metadata?.type || null,
+        });
+      } catch (e) {
+        const msg = e instanceof Error ? e.message : String(e);
+        return successResponse({ verified: false, error: msg });
+      }
+    }
+
+    // ─── PRODUCT-PARAM PATH (used by all create-*-checkout aliases) ───
+    // Body: { product: "pet" | "kids" | ..., amount?, productName?, mode?, metadata?, free? }
+    // For known products without explicit price, builds a generic checkout.
+    if (body.product && !body.priceId && !body.productKey && !body.credits) {
+      // Free actions (e.g. create-character, create-universe) just return ok
+      if (body.free === true) {
+        return successResponse({
+          ok: true,
+          free: true,
+          product: body.product,
+          message: "No payment required for this action.",
+        });
+      }
+
+      const productKey = String(body.product);
+      // Default per-product pricing in EUR cents (used when frontend doesn't pass amount)
+      const PRODUCT_DEFAULTS: Record<string, { amount: number; mode: "payment" | "subscription"; name: string }> = {
+        analyzer_credits:        { amount: 999,  mode: "payment",      name: "Analyzer Credits" },
+        analyzer_subscription:   { amount: 1499, mode: "subscription", name: "Analyzer Subscription" },
+        ar_preview:              { amount: 299,  mode: "payment",      name: "AR Preview Session" },
+        astrology:               { amount: 999,  mode: "subscription", name: "Astrology Premium" },
+        bazaar_order:            { amount: 1999, mode: "payment",      name: "Bazaar Order" },
+        best_friend:             { amount: 999,  mode: "subscription", name: "Best Friend Premium" },
+        brain_duel:              { amount: 199,  mode: "payment",      name: "Brain Duel Entry" },
+        campaign_donation:       { amount: 500,  mode: "payment",      name: "Campaign Donation" },
+        character_credits:       { amount: 999,  mode: "payment",      name: "Character Credits" },
+        companions:              { amount: 1499, mode: "subscription", name: "Companions Premium" },
+        confession:              { amount: 299,  mode: "payment",      name: "Confession Boost" },
+        consultation:            { amount: 4999, mode: "payment",      name: "Consultation" },
+        coupon:                  { amount: 199,  mode: "payment",      name: "Coupon Purchase" },
+        creator_subscription:    { amount: 1999, mode: "subscription", name: "Creator Subscription" },
+        credits:                 { amount: 999,  mode: "payment",      name: "Credits" },
+        decor:                   { amount: 1499, mode: "subscription", name: "Decor Premium" },
+        dna_memory:              { amount: 1999, mode: "payment",      name: "DNA Memory" },
+        emotion_credits:         { amount: 999,  mode: "payment",      name: "Emotion Credits" },
+        emotion_market:          { amount: 499,  mode: "payment",      name: "Emotion Market" },
+        employer_subscription:   { amount: 4999, mode: "subscription", name: "Employer Subscription" },
+        escape_room:             { amount: 999,  mode: "payment",      name: "Escape Room Access" },
+        f1:                      { amount: 1999, mode: "subscription", name: "F1 Premium" },
+        fashion_marketplace:     { amount: 999,  mode: "payment",      name: "Fashion Marketplace" },
+        future_face:             { amount: 999,  mode: "subscription", name: "Future Face Premium" },
+        healthcare_subscription: { amount: 1999, mode: "subscription", name: "Healthcare Subscription" },
+        job_listing:             { amount: 4999, mode: "payment",      name: "Job Listing" },
+        kids_reading:            { amount: 999,  mode: "subscription", name: "Kids Reading" },
+        kids_story_subscription: { amount: 999,  mode: "subscription", name: "Kids Story Subscription" },
+        kids_subscription:       { amount: 999,  mode: "subscription", name: "Kids Subscription" },
+        learning:                { amount: 1999, mode: "payment",      name: "Learning Course" },
+        lie_detector:            { amount: 299,  mode: "payment",      name: "Lie Detector" },
+        marketplace_item:        { amount: 999,  mode: "payment",      name: "Marketplace Item" },
+        multiverse:              { amount: 1499, mode: "subscription", name: "Multiverse Premium" },
+        pet:                     { amount: 999,  mode: "subscription", name: "Pet Premium" },
+        photo_credits:           { amount: 999,  mode: "payment",      name: "Photo Credits" },
+        property_listing:        { amount: 4999, mode: "payment",      name: "Property Listing" },
+        psychology:              { amount: 1999, mode: "subscription", name: "Psychology Premium" },
+        reincarnation:           { amount: 999,  mode: "payment",      name: "Reincarnation Reading" },
+        science:                 { amount: 999,  mode: "subscription", name: "Science Premium" },
+        shadow_subscription:     { amount: 999,  mode: "subscription", name: "Shadow Subscription" },
+        shadow_battle:           { amount: 199,  mode: "payment",      name: "Shadow Battle Entry" },
+        shadow_battle_join:      { amount: 199,  mode: "payment",      name: "Join Shadow Battle" },
+        shadow_gift:             { amount: 299,  mode: "payment",      name: "Shadow Gift" },
+        skill_swap:              { amount: 999,  mode: "subscription", name: "Skill Swap Premium" },
+        sports:                  { amount: 999,  mode: "subscription", name: "Sports Premium" },
+        subscription:            { amount: 999,  mode: "subscription", name: "Premium Subscription" },
+        teen_career:             { amount: 499,  mode: "payment",      name: "Teen Career" },
+        video_ad_credits:        { amount: 999,  mode: "payment",      name: "Video Ad Credits" },
+        vip:                     { amount: 1999, mode: "subscription", name: "VIP" },
+        wellness:                { amount: 999,  mode: "subscription", name: "Wellness Premium" },
+        // Game / action products
+        battle_characters:       { amount: 199,  mode: "payment",      name: "Battle Entry" },
+        battle_pets:             { amount: 199,  mode: "payment",      name: "Pet Battle Entry" },
+        best_friend_messages:    { amount: 499,  mode: "payment",      name: "Best Friend Messages" },
+        psychology_messages:     { amount: 499,  mode: "payment",      name: "Psychology Messages" },
+        content_pack:            { amount: 999,  mode: "payment",      name: "Content Pack" },
+        premium_course:          { amount: 4999, mode: "payment",      name: "Premium Course" },
+        stock_content:           { amount: 999,  mode: "payment",      name: "Stock Content" },
+        tip:                     { amount: 299,  mode: "payment",      name: "Tip" },
+        dating_gift:             { amount: 199,  mode: "payment",      name: "Dating Gift" },
+        fashion_challenge_submit:{ amount: 199,  mode: "payment",      name: "Fashion Challenge Submission" },
+        fashion_challenge_vote:  { amount: 99,   mode: "payment",      name: "Fashion Challenge Vote" },
+        mystery_box_open:        { amount: 299,  mode: "payment",      name: "Mystery Box" },
+        phobia_trade:            { amount: 199,  mode: "payment",      name: "Phobia Trade" },
+        course_enroll:           { amount: 4999, mode: "payment",      name: "Course Enrollment" },
+        coupon_marketplace:      { amount: 999,  mode: "subscription", name: "Coupon Marketplace Access" },
+      };
+
+      const def = PRODUCT_DEFAULTS[productKey];
+      const amount = Number(body.amount) || def?.amount || 999;
+      const productName = String(body.productName || def?.name || `${productKey} purchase`);
+      const mode = (body.mode || def?.mode || "payment") as "payment" | "subscription";
+      const { successUrl, cancelUrl } = resolveUrls(origin, body.successUrl, body.cancelUrl, productKey);
+
+      const session = await stripe.checkout.sessions.create({
+        customer: customerId || undefined,
+        customer_email: customerId ? undefined : email,
+        line_items: [{
+          price_data: {
+            currency: "eur",
+            unit_amount: amount,
+            product_data: { name: productName },
+            ...(mode === "subscription" ? { recurring: { interval: "month" as const } } : {}),
+          },
+          quantity: 1,
+        }],
+        mode,
+        success_url: successUrl,
+        cancel_url: cancelUrl,
+        metadata: {
+          user_id: userId,
+          type: productKey,
+          product: productKey,
+          ...stringifyMetadata(body.metadata || {}),
+        },
+      });
+
+      return successResponse({ url: session.url, session_id: session.id });
+    }
+
     if (body.credits) {
       const credits = Number(body.credits);
       const priceId = ANTIQUE_PRICE_IDS[credits];

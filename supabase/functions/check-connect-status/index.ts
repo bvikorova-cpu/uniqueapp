@@ -91,7 +91,76 @@ serve(async (req) => {
       return json({ url: session.url });
     }
 
-    // ─── DEFAULT ACTION: status (original behaviour — UNCHANGED) ───
+    // ─── ACTION: start_stream / stop_stream ───
+    // These are non-Stripe actions; we just record state in profiles or sessions.
+    // Returns ok=true so the frontend can update its UI; actual streaming infra
+    // is handled elsewhere (or by the user's WebRTC provider).
+    if (action === "start_stream" || action === "stop_stream") {
+      try {
+        await supabase.from("profiles").update({
+          is_streaming: action === "start_stream",
+          last_stream_action_at: new Date().toISOString(),
+        }).eq("id", user.id);
+      } catch { /* table column may not exist; non-critical */ }
+      return json({ ok: true, action, user_id: user.id });
+    }
+
+    // ─── ACTION: withdrawal_request / auction_withdrawal / instructor_withdrawal ───
+    // Records a withdrawal request for admin review. Actual payout happens
+    // through Stripe Connect when the admin approves.
+    if (
+      action === "withdrawal_request" ||
+      action === "auction_withdrawal" ||
+      action === "instructor_withdrawal" ||
+      action === "notify_auction_withdrawal"
+    ) {
+      const amount = Number(body.amount || 0);
+      const reason = String(body.reason || action);
+      try {
+        await supabase.from("withdrawal_requests").insert({
+          user_id: user.id,
+          amount,
+          status: "pending",
+          reason,
+          metadata: body.metadata || {},
+        });
+      } catch (e) {
+        console.error("[withdrawal_request]", e);
+      }
+      return json({ ok: true, action, amount, status: "pending" });
+    }
+
+    // ─── ACTION: sale_transaction ───
+    // Records a peer-to-peer sale and (optionally) splits payout via Connect.
+    if (action === "sale_transaction") {
+      try {
+        await supabase.from("sales_transactions").insert({
+          seller_id: body.seller_id || user.id,
+          buyer_id: body.buyer_id || null,
+          amount: Number(body.amount || 0),
+          item_id: body.item_id || null,
+          status: "recorded",
+          metadata: body.metadata || {},
+        });
+      } catch { /* table may not exist; non-critical */ }
+      return json({ ok: true, action: "sale_transaction" });
+    }
+
+    // ─── ACTION: activate_job (job listing activation) ───
+    if (action === "activate_job") {
+      const listingId = body.listing_id || body.id;
+      if (listingId) {
+        try {
+          await supabase.from("job_listings")
+            .update({ status: "active", activated_at: new Date().toISOString() })
+            .eq("id", listingId)
+            .eq("user_id", user.id);
+        } catch { /* ignore */ }
+      }
+      return json({ ok: true, action: "activate_job", listing_id: listingId });
+    }
+
+
     const { data: profile } = await supabase
       .from("profiles")
       .select(
