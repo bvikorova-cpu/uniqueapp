@@ -44,18 +44,18 @@ export const RealtimeActivityFeed = () => {
 
       const items: Event[] = [];
       users.data?.forEach((u: any) => items.push({
-        id: `u-${u.id}`, type: "user",
+        id: `u-${u.id}`, type: "user" as const,
         title: "New user registered", description: u.full_name || u.email || "Unknown",
         created_at: u.created_at,
       }));
       txs.data?.forEach((t: any) => items.push({
-        id: `t-${t.id}`, type: "transaction",
+        id: `t-${t.id}`, type: "transaction" as const,
         title: `${t.item_type || "Transaction"} • €${parseFloat(t.amount || 0).toFixed(2)}`,
         description: "Payment processed",
         created_at: t.created_at,
       }));
       msgs.data?.forEach((m: any) => items.push({
-        id: `m-${m.id}`, type: "message",
+        id: `m-${m.id}`, type: "message" as const,
         title: "Contact message", description: `${m.name}: ${m.subject || ""}`.slice(0, 60),
         created_at: m.created_at,
       }));
