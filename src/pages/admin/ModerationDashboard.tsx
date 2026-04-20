@@ -488,7 +488,7 @@ const ModerationDashboard = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
+    </AdminPageShell>
   );
 };
 
