@@ -41,7 +41,7 @@ import { EnterpriseTier } from "@/components/subscription/EnterpriseTier";
 import { WinBackDialog } from "@/components/subscription/WinBackDialog";
 import { PerksCarousel } from "@/components/subscription/PerksCarousel";
 import { ReferralCard } from "@/components/subscription/ReferralCard";
-import { TrialBanner } from "@/components/subscription/TrialBanner";
+
 import { RoiDashboard } from "@/components/subscription/RoiDashboard";
 
 const Subscription = () => {
@@ -484,7 +484,7 @@ const Subscription = () => {
             disabled={currentTier === "premium"}
           >
             <Crown className="h-4 w-4 mr-2" />
-            {currentTier === "premium" ? "You're on Premium ✨" : "Start 7-Day Free Trial"}
+            {currentTier === "premium" ? "You're on Premium ✨" : "Start Premium Today"}
           </Button>
           <p className="mt-4 text-xs text-muted-foreground">
             Prices in {currency.code} · Secure payments via Stripe · Cancel anytime
