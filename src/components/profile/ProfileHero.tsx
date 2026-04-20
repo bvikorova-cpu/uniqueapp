@@ -59,14 +59,14 @@ export const ProfileHero = ({
         loop
         playsInline
         className="absolute inset-0 w-full h-full object-cover"
-        style={{ filter: "brightness(0.95) saturate(1.2) contrast(1.05)" }}
+        style={{ filter: "brightness(1.05) saturate(1.2) contrast(1.05)" }}
         src={heroVideo.url}
       />
 
-      {/* Gradient overlays — lighter so video stays visible */}
-      <div className="absolute inset-0 bg-gradient-to-br from-violet-950/20 via-transparent to-amber-950/15" />
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/10 to-black/65" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(251,191,36,0.12),transparent_55%)]" />
+      {/* Gradient overlays for depth */}
+      <div className="absolute inset-0 bg-gradient-to-br from-violet-950/50 via-transparent to-amber-950/40" />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/40 to-black/85" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(251,191,36,0.15),transparent_50%)]" />
 
       {/* Content */}
       <div className="relative z-10 px-5 sm:px-8 pt-8 pb-6">
