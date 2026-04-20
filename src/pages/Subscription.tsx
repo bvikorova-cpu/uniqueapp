@@ -314,9 +314,6 @@ const Subscription = () => {
         {/* (5) Urgency timer */}
         <UrgencyTimer />
 
-        {/* (7) Free trial banner — only for non-subscribers */}
-        {currentTier === "basic" && <TrialBanner days={7} />}
-
         {/* (4) Currency selector + (6) billing toggle */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-2">
           <CurrencySelector value={currency} onChange={setCurrency} />
@@ -375,11 +372,6 @@ const Subscription = () => {
                     {yearly && savingsEur > 0 && (
                       <p className="text-xs text-emerald-500 font-semibold mt-1">
                         Save {formatPrice(savingsEur, currency)} vs monthly
-                      </p>
-                    )}
-                    {plan.tier !== "basic" && currentTier === "basic" && (
-                      <p className="text-[10px] text-primary mt-1 font-semibold uppercase tracking-wider">
-                        ✨ 7-day free trial
                       </p>
                     )}
                   </CardHeader>
