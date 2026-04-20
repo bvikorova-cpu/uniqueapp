@@ -47,20 +47,25 @@ export const StoreLeaderboard = ({ currentUserId }: { currentUserId?: string }) 
 
         // Resolve display names
         const ids = top.map(([id]) => id);
-        const { data: profiles } = await supabase
+        const { data: profilesData } = await supabase
           .from("profiles")
-          .select("user_id, display_name, avatar_url")
-          .in("user_id", ids);
+          .select("id, full_name, username, avatar_url")
+          .in("id", ids);
 
-        const profMap = new Map((profiles || []).map((p) => [p.user_id, p]));
+        const profMap = new Map(
+          (profilesData || []).map((p: any) => [p.id, p])
+        );
         setRows(
-          top.map(([user_id, agg]) => ({
-            user_id,
-            display_name: profMap.get(user_id)?.display_name || "Anonymous",
-            avatar_url: profMap.get(user_id)?.avatar_url || null,
-            items_purchased: agg.items,
-            total_credits_spent: agg.total,
-          }))
+          top.map(([user_id, agg]) => {
+            const p: any = profMap.get(user_id);
+            return {
+              user_id,
+              display_name: p?.full_name || p?.username || "Anonymous",
+              avatar_url: p?.avatar_url || null,
+              items_purchased: agg.items,
+              total_credits_spent: agg.total,
+            };
+          })
         );
       } catch (e) {
         console.error("Leaderboard load error", e);
