@@ -6,9 +6,21 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Euro, TrendingUp, Clock, CheckCircle, ShoppingBag, AlertCircle } from "lucide-react";
+import { Clock, CheckCircle, AlertCircle } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useNavigate } from "react-router-dom";
+import {
+  EarningsHero,
+  EarningsForecastChart,
+  EarningsMilestones,
+  EarningsTaxEstimator,
+  EarningsInsights,
+  EarningsExport,
+  EarningsPayoutCard,
+  EarningsLiveTicker,
+  EarningsGoalTracker,
+  EarningsTipsBanner,
+} from "@/components/earnings";
 
 interface Transaction {
   id: string;
@@ -20,30 +32,21 @@ interface Transaction {
   item_type: string;
   item_id: string;
   buyer_id: string;
-  profiles?: {
-    full_name: string | null;
-  } | null;
-}
-
-interface EarningsStats {
-  totalEarnings: number;
-  pendingPayouts: number;
-  completedPayouts: number;
-  totalSales: number;
 }
 
 const Earnings = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [stats, setStats] = useState<EarningsStats>({
+  const [stats, setStats] = useState({
     totalEarnings: 0,
     pendingPayouts: 0,
     completedPayouts: 0,
+    available: 0,
+    monthEarnings: 0,
     totalSales: 0,
   });
   const [loading, setLoading] = useState(true);
-  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [hasIban, setHasIban] = useState(false);
 
   useEffect(() => {
@@ -56,15 +59,11 @@ const Earnings = () => {
       navigate('/auth');
       return;
     }
-    setCurrentUserId(user.id);
-    
-    // Check if user has IBAN
     const { data: profile } = await supabase
       .from('profiles')
       .select('iban')
       .eq('id', user.id)
       .single();
-    
     setHasIban(!!profile?.iban);
     loadTransactions(user.id);
   };
@@ -76,160 +75,133 @@ const Earnings = () => {
         .select('*')
         .eq('seller_id', userId)
         .order('created_at', { ascending: false });
-
       if (error) throw error;
-
-      setTransactions(data as any || []);
-      calculateStats(data as any || []);
+      const list = (data as any[]) || [];
+      setTransactions(list);
+      calculateStats(list);
     } catch (error) {
       console.error('Error loading transactions:', error);
-      toast({
-        title: "Error",
-        description: "Failed to load transactions",
-        variant: "destructive",
-      });
+      toast({ title: "Error", description: "Failed to load transactions", variant: "destructive" });
     } finally {
       setLoading(false);
     }
   };
 
-  const calculateStats = (transactions: Transaction[]) => {
-    const totalEarnings = transactions.reduce((sum, t) => sum + t.seller_amount, 0);
-    const pendingPayouts = transactions
-      .filter(t => t.status === 'pending')
-      .reduce((sum, t) => sum + t.seller_amount, 0);
-    const completedPayouts = transactions
-      .filter(t => t.status === 'completed')
-      .reduce((sum, t) => sum + t.seller_amount, 0);
-
+  const calculateStats = (txs: Transaction[]) => {
+    const totalEarnings = txs.reduce((s, t) => s + Number(t.seller_amount), 0);
+    const pendingPayouts = txs.filter(t => t.status === 'pending').reduce((s, t) => s + Number(t.seller_amount), 0);
+    const completedPayouts = txs.filter(t => t.status === 'completed').reduce((s, t) => s + Number(t.seller_amount), 0);
+    const now = new Date();
+    const monthEarnings = txs
+      .filter(t => {
+        const d = new Date(t.created_at);
+        return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+      })
+      .reduce((s, t) => s + Number(t.seller_amount), 0);
     setStats({
       totalEarnings,
       pendingPayouts,
       completedPayouts,
-      totalSales: transactions.length,
+      available: completedPayouts, // for demo: paid-out items represent available; real flow would use a balance table
+      monthEarnings,
+      totalSales: txs.length,
     });
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('sk-SK', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  };
+  const formatDate = (s: string) =>
+    new Date(s).toLocaleDateString('sk-SK', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case 'pending':
-        return <Badge variant="outline" className="bg-yellow-50"><Clock className="w-3 h-3 mr-1" />Pending</Badge>;
-      case 'completed':
-        return <Badge variant="outline" className="bg-green-50"><CheckCircle className="w-3 h-3 mr-1" />Paid Out</Badge>;
-      default:
-        return <Badge variant="outline">{status}</Badge>;
+      case 'pending': return <Badge variant="outline" className="border-yellow-500/50 text-yellow-600"><Clock className="w-3 h-3 mr-1" />Pending</Badge>;
+      case 'completed': return <Badge variant="outline" className="border-emerald-500/50 text-emerald-600"><CheckCircle className="w-3 h-3 mr-1" />Paid out</Badge>;
+      default: return <Badge variant="outline">{status}</Badge>;
     }
   };
 
-  const getItemTypeName = (type: string) => {
-    switch (type) {
-      case 'bazaar':
-        return 'Bazaar';
-      case 'auction':
-        return 'Auction';
-      default:
-        return type;
-    }
+  const getItemTypeName = (t: string) => t === 'bazaar' ? 'Bazaar' : t === 'auction' ? 'Auction' : t;
+
+  const handlePayout = async () => {
+    toast({ title: "Payout requested", description: `€${stats.available.toFixed(2)} will be processed within 3-5 business days.` });
   };
+
+  const exportRows = transactions.map(t => ({
+    Date: formatDate(t.created_at),
+    Type: getItemTypeName(t.item_type),
+    Buyer: t.buyer_id.slice(0, 8),
+    Total: t.amount,
+    Commission: t.commission_amount ?? 0,
+    Net: t.seller_amount,
+    Status: t.status,
+  }));
+
+  const history = transactions.map(t => ({
+    created_at: t.created_at,
+    amount: t.seller_amount,
+    item_type: t.item_type,
+  }));
 
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">Loading...</div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-500" />
       </div>
     );
   }
 
   return (
     <div className="container mx-auto py-8 px-4">
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-3xl font-bold">My Earnings</h1>
-          <p className="text-muted-foreground">Overview of your sales and payouts</p>
-        </div>
-        {!hasIban && (
-          <Button onClick={() => navigate('/edit-profile')}>
-            Add IBAN
-          </Button>
-        )}
+      <EarningsHero
+        title="My Earnings"
+        subtitle="Track every euro — payouts, forecasts, milestones, tax estimates."
+        totalEarnings={stats.totalEarnings}
+        available={stats.available}
+        pending={stats.pendingPayouts}
+        paidOut={stats.completedPayouts}
+      />
+
+      <div className="flex items-center justify-between mb-6 gap-4 flex-wrap">
+        <EarningsLiveTicker />
+        <EarningsExport rows={exportRows} filename="my-earnings" />
       </div>
 
       {!hasIban && (
-        <Alert className="mb-6">
-          <AlertCircle className="h-4 w-4" />
-          <AlertDescription>
-            To receive payments, you need to add your IBAN in profile settings.
+        <Alert className="mb-6 border-amber-500/40 bg-amber-500/10">
+          <AlertCircle className="h-4 w-4 text-amber-500" />
+          <AlertDescription className="flex items-center justify-between gap-3 flex-wrap">
+            <span>To receive payouts, add your IBAN in profile settings.</span>
+            <Button size="sm" onClick={() => navigate('/edit-profile')} className="bg-gradient-to-r from-amber-500 to-yellow-500 text-black font-bold">
+              Add IBAN
+            </Button>
           </AlertDescription>
         </Alert>
       )}
 
-      {/* Stats Cards */}
-      <div className="grid gap-4 md:grid-cols-4 mb-6">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Earnings</CardTitle>
-            <Euro className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">€{stats.totalEarnings.toFixed(2)}</div>
-            <p className="text-xs text-muted-foreground">
-              From {stats.totalSales} sales
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Pending Payouts</CardTitle>
-            <Clock className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-yellow-600">€{stats.pendingPayouts.toFixed(2)}</div>
-            <p className="text-xs text-muted-foreground">
-              Processing
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Paid Out</CardTitle>
-            <CheckCircle className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-green-600">€{stats.completedPayouts.toFixed(2)}</div>
-            <p className="text-xs text-muted-foreground">
-              Already in account
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Sales Count</CardTitle>
-            <ShoppingBag className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.totalSales}</div>
-            <p className="text-xs text-muted-foreground">
-              Successful transactions
-            </p>
-          </CardContent>
-        </Card>
+      <div className="grid lg:grid-cols-3 gap-4 mb-6">
+        <EarningsPayoutCard
+          available={stats.available}
+          minimum={25}
+          hasPayoutMethod={hasIban}
+          onRequest={handlePayout}
+          onSetupMethod={() => navigate('/edit-profile')}
+        />
+        <EarningsGoalTracker monthEarnings={stats.monthEarnings} />
+        <EarningsTipsBanner />
       </div>
 
-      {/* Transactions Table */}
-      <Card>
+      <div className="grid lg:grid-cols-3 gap-4 mb-6">
+        <div className="lg:col-span-2">
+          <EarningsForecastChart history={history} />
+        </div>
+        <EarningsInsights history={history} />
+      </div>
+
+      <div className="grid lg:grid-cols-2 gap-4 mb-6">
+        <EarningsMilestones totalEarnings={stats.totalEarnings} />
+        <EarningsTaxEstimator totalEarnings={stats.totalEarnings} />
+      </div>
+
+      <Card className="border-amber-500/20">
         <CardHeader>
           <CardTitle>Transaction History</CardTitle>
         </CardHeader>
@@ -238,29 +210,17 @@ const Earnings = () => {
             <TabsList>
               <TabsTrigger value="all">All</TabsTrigger>
               <TabsTrigger value="pending">Pending</TabsTrigger>
-              <TabsTrigger value="completed">Paid Out</TabsTrigger>
+              <TabsTrigger value="completed">Paid out</TabsTrigger>
             </TabsList>
 
             <TabsContent value="all" className="mt-4">
-              <TransactionsTable transactions={transactions} formatDate={formatDate} getStatusBadge={getStatusBadge} getItemTypeName={getItemTypeName} />
+              <TransactionsTable txs={transactions} formatDate={formatDate} getStatusBadge={getStatusBadge} getItemTypeName={getItemTypeName} />
             </TabsContent>
-
             <TabsContent value="pending" className="mt-4">
-              <TransactionsTable 
-                transactions={transactions.filter(t => t.status === 'pending')} 
-                formatDate={formatDate} 
-                getStatusBadge={getStatusBadge}
-                getItemTypeName={getItemTypeName}
-              />
+              <TransactionsTable txs={transactions.filter(t => t.status === 'pending')} formatDate={formatDate} getStatusBadge={getStatusBadge} getItemTypeName={getItemTypeName} />
             </TabsContent>
-
             <TabsContent value="completed" className="mt-4">
-              <TransactionsTable 
-                transactions={transactions.filter(t => t.status === 'completed')} 
-                formatDate={formatDate} 
-                getStatusBadge={getStatusBadge}
-                getItemTypeName={getItemTypeName}
-              />
+              <TransactionsTable txs={transactions.filter(t => t.status === 'completed')} formatDate={formatDate} getStatusBadge={getStatusBadge} getItemTypeName={getItemTypeName} />
             </TabsContent>
           </Tabs>
         </CardContent>
@@ -269,22 +229,15 @@ const Earnings = () => {
   );
 };
 
-interface TransactionsTableProps {
-  transactions: Transaction[];
-  formatDate: (date: string) => string;
-  getStatusBadge: (status: string) => JSX.Element;
-  getItemTypeName: (type: string) => string;
+interface TableProps {
+  txs: Transaction[];
+  formatDate: (s: string) => string;
+  getStatusBadge: (s: string) => JSX.Element;
+  getItemTypeName: (t: string) => string;
 }
 
-const TransactionsTable = ({ transactions, formatDate, getStatusBadge, getItemTypeName }: TransactionsTableProps) => {
-  if (transactions.length === 0) {
-    return (
-      <div className="text-center py-8 text-muted-foreground">
-        No transactions
-      </div>
-    );
-  }
-
+const TransactionsTable = ({ txs, formatDate, getStatusBadge, getItemTypeName }: TableProps) => {
+  if (txs.length === 0) return <div className="text-center py-8 text-muted-foreground">No transactions</div>;
   return (
     <div className="rounded-md border">
       <Table>
@@ -293,24 +246,22 @@ const TransactionsTable = ({ transactions, formatDate, getStatusBadge, getItemTy
             <TableHead>Date</TableHead>
             <TableHead>Type</TableHead>
             <TableHead>Buyer</TableHead>
-            <TableHead>Total Amount</TableHead>
+            <TableHead>Total</TableHead>
             <TableHead>Commission</TableHead>
             <TableHead>Your Profit</TableHead>
             <TableHead>Status</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {transactions.map((transaction) => (
-            <TableRow key={transaction.id}>
-              <TableCell className="text-sm">{formatDate(transaction.created_at)}</TableCell>
-              <TableCell>
-                <Badge variant="outline">{getItemTypeName(transaction.item_type)}</Badge>
-              </TableCell>
-              <TableCell>ID: {transaction.buyer_id.slice(0, 8)}...</TableCell>
-              <TableCell>€{transaction.amount.toFixed(2)}</TableCell>
-              <TableCell className="text-red-600">-€{(transaction.commission_amount || 0).toFixed(2)}</TableCell>
-              <TableCell className="font-bold text-green-600">€{transaction.seller_amount.toFixed(2)}</TableCell>
-              <TableCell>{getStatusBadge(transaction.status)}</TableCell>
+          {txs.map((t) => (
+            <TableRow key={t.id}>
+              <TableCell className="text-sm">{formatDate(t.created_at)}</TableCell>
+              <TableCell><Badge variant="outline">{getItemTypeName(t.item_type)}</Badge></TableCell>
+              <TableCell className="text-xs font-mono">{t.buyer_id.slice(0, 8)}…</TableCell>
+              <TableCell>€{Number(t.amount).toFixed(2)}</TableCell>
+              <TableCell className="text-rose-500">-€{Number(t.commission_amount || 0).toFixed(2)}</TableCell>
+              <TableCell className="font-bold text-emerald-500">€{Number(t.seller_amount).toFixed(2)}</TableCell>
+              <TableCell>{getStatusBadge(t.status)}</TableCell>
             </TableRow>
           ))}
         </TableBody>
