@@ -29248,6 +29248,123 @@ export type Database = {
         }
         Relationships: []
       }
+      premium_store_gifts: {
+        Row: {
+          claimed_at: string | null
+          created_at: string
+          credits_spent: number
+          id: string
+          item_id: string
+          item_name: string
+          item_type: string
+          message: string | null
+          recipient_id: string
+          sender_id: string
+          status: string
+        }
+        Insert: {
+          claimed_at?: string | null
+          created_at?: string
+          credits_spent?: number
+          id?: string
+          item_id: string
+          item_name: string
+          item_type: string
+          message?: string | null
+          recipient_id: string
+          sender_id: string
+          status?: string
+        }
+        Update: {
+          claimed_at?: string | null
+          created_at?: string
+          credits_spent?: number
+          id?: string
+          item_id?: string
+          item_name?: string
+          item_type?: string
+          message?: string | null
+          recipient_id?: string
+          sender_id?: string
+          status?: string
+        }
+        Relationships: []
+      }
+      premium_store_purchases: {
+        Row: {
+          created_at: string
+          credits_spent: number
+          id: string
+          is_gift: boolean
+          item_id: string
+          item_name: string
+          item_type: string
+          recipient_id: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_spent?: number
+          id?: string
+          is_gift?: boolean
+          item_id: string
+          item_name: string
+          item_type: string
+          recipient_id?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_spent?: number
+          id?: string
+          is_gift?: boolean
+          item_id?: string
+          item_name?: string
+          item_type?: string
+          recipient_id?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      premium_store_wishlist: {
+        Row: {
+          created_at: string
+          credit_cost: number
+          id: string
+          item_icon: string | null
+          item_id: string
+          item_name: string
+          item_type: string
+          level_required: number
+          notify_on_unlock: boolean
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credit_cost?: number
+          id?: string
+          item_icon?: string | null
+          item_id: string
+          item_name: string
+          item_type: string
+          level_required?: number
+          notify_on_unlock?: boolean
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credit_cost?: number
+          id?: string
+          item_icon?: string | null
+          item_id?: string
+          item_name?: string
+          item_type?: string
+          level_required?: number
+          notify_on_unlock?: boolean
+          user_id?: string
+        }
+        Relationships: []
+      }
       premium_themes: {
         Row: {
           available_until: string | null
@@ -40398,6 +40515,14 @@ export type Database = {
       }
     }
     Views: {
+      premium_store_leaderboard: {
+        Row: {
+          items_purchased: number | null
+          total_credits_spent: number | null
+          user_id: string | null
+        }
+        Relationships: []
+      }
       safety_roleplay_leaderboard: {
         Row: {
           handle: string | null
