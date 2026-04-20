@@ -9,9 +9,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { CheckCircle, XCircle, Clock, FileText, ExternalLink, AlertCircle, Building2 } from "lucide-react";
+import { CheckCircle, XCircle, Clock, FileText, ExternalLink, AlertCircle, Building2, Download } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { format } from "date-fns";
+import { AdminGuard } from "@/components/admin/AdminGuard";
+import { AdminPageShell, AdminGlassCard } from "@/components/admin/AdminPageShell";
+import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
+import { exportToCsv } from "@/lib/exportCsv";
 
 interface Verification {
   id: string;
@@ -142,15 +146,39 @@ export default function AdminVerifications() {
   }
 
   return (
-    <div className="min-h-screen bg-background pt-20 pb-12">
-      <div className="container mx-auto p-6 space-y-6">
-        <div className="flex items-center gap-4">
-          <Building2 className="h-8 w-8" />
-          <div>
-            <h1 className="text-3xl font-bold">Employer Verifications</h1>
-            <p className="text-muted-foreground">Review and approve employer verification requests</p>
-          </div>
-        </div>
+    <AdminGuard>
+      <AdminPageShell>
+        <AdminPageHeader
+          title="Employer Verifications"
+          subtitle="Review business documents and approve company accounts on the platform."
+          icon={Building2}
+          badge="Compliance"
+          breadcrumbs={[{ label: "Verifications" }]}
+          stats={[
+            { label: "Pending", value: filteredVerifications("pending").length, accent: "amber" },
+            { label: "Approved", value: filteredVerifications("approved").length, accent: "emerald" },
+            { label: "Rejected", value: filteredVerifications("rejected").length, accent: "pink" },
+            { label: "Resubmit", value: filteredVerifications("requires_resubmission").length, accent: "purple" },
+          ]}
+          actions={
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() =>
+                exportToCsv("verifications", verifications || [], [
+                  { key: "company_name", label: "Company" },
+                  { key: "company_phone", label: "Phone" },
+                  { key: "company_address", label: "Address" },
+                  { key: "verification_status", label: "Status" },
+                  { key: "submitted_at", label: "Submitted" },
+                ])
+              }
+              className="bg-white/15 backdrop-blur-xl border border-white/30 text-white hover:bg-white/25"
+            >
+              <Download className="h-3.5 w-3.5 mr-1.5" /> Export CSV
+            </Button>
+          }
+        />
 
         <Tabs defaultValue="pending" className="space-y-4">
           <TabsList>
@@ -344,7 +372,7 @@ export default function AdminVerifications() {
             </div>
           </DialogContent>
         </Dialog>
-      </div>
-    </div>
+      </AdminPageShell>
+    </AdminGuard>
   );
 }

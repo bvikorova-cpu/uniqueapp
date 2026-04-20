@@ -5,8 +5,12 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Building2, Mail, Phone, Calendar, Users, MessageSquare, Eye, CheckCircle, XCircle } from "lucide-react";
+import { Building2, Mail, Phone, Calendar, Users, MessageSquare, Eye, CheckCircle, XCircle, Briefcase, Download } from "lucide-react";
 import { format } from "date-fns";
+import { AdminGuard } from "@/components/admin/AdminGuard";
+import { AdminPageShell, AdminGlassCard } from "@/components/admin/AdminPageShell";
+import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
+import { exportToCsv } from "@/lib/exportCsv";
 
 interface CorporateInquiry {
   id: string;
@@ -123,13 +127,47 @@ export default function AdminCorporateInquiries() {
     return labels[packageType] || packageType;
   };
 
+  const statusCount = (s: string) => inquiries.filter((i) => i.status === s).length;
+
   return (
-    <div className="min-h-screen bg-background p-6">
-      <div className="container mx-auto max-w-7xl">
-        <div className="mb-8">
-          <h1 className="text-4xl font-black mb-2">Corporate Inquiries Admin</h1>
-          <p className="text-muted-foreground">Manage and respond to corporate event inquiries</p>
-        </div>
+    <AdminGuard>
+      <AdminPageShell>
+        <AdminPageHeader
+          title="Corporate Inquiries"
+          subtitle="Manage corporate event leads, restaurant onboarding and wedding packages."
+          icon={Briefcase}
+          badge="Sales"
+          breadcrumbs={[{ label: "Corporate Inquiries" }]}
+          stats={[
+            { label: "Pending", value: statusCount("pending"), accent: "amber" },
+            { label: "In Progress", value: statusCount("in_progress"), accent: "purple" },
+            { label: "Completed", value: statusCount("completed"), accent: "emerald" },
+            { label: "Total", value: inquiries.length, accent: "cyan" },
+          ]}
+          actions={
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() =>
+                exportToCsv("corporate-inquiries", inquiries, [
+                  { key: "company_name", label: "Company" },
+                  { key: "contact_name", label: "Contact" },
+                  { key: "email", label: "Email" },
+                  { key: "phone", label: "Phone" },
+                  { key: "package_type", label: "Package" },
+                  { key: "event_type", label: "Event" },
+                  { key: "expected_attendees", label: "Attendees" },
+                  { key: "event_date", label: "Date" },
+                  { key: "status", label: "Status" },
+                  { key: "created_at", label: "Submitted" },
+                ])
+              }
+              className="bg-white/15 backdrop-blur-xl border border-white/30 text-white hover:bg-white/25"
+            >
+              <Download className="h-3.5 w-3.5 mr-1.5" /> Export CSV
+            </Button>
+          }
+        />
 
         {/* Filters */}
         <Card className="mb-6">
@@ -383,7 +421,7 @@ export default function AdminCorporateInquiries() {
             )}
           </div>
         </div>
-      </div>
-    </div>
+      </AdminPageShell>
+    </AdminGuard>
   );
 }
