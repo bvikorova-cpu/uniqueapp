@@ -220,12 +220,12 @@ const Index = () => {
           loop
           playsInline
           className="absolute inset-0 w-full h-full object-cover"
-          src="/beach-hero-sm.mp4"
+          src="/unique-hero.mp4"
         />
         {/* Gradient fallback behind video */}
         <div className="absolute inset-0 bg-gradient-to-br from-primary via-accent to-primary animate-gradient-shift -z-10" />
-        {/* Dark overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-black/60" />
+        {/* Lighter overlay so brand video stays vivid */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/15 via-black/10 to-black/45" />
 
         {/* Content */}
         <div className="relative z-10 flex flex-col items-center justify-center min-h-[480px] sm:min-h-[550px] px-4 text-center pt-16 pb-8">
