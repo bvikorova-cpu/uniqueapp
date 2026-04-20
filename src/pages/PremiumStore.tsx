@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -10,10 +10,19 @@ import { usePremiumStore } from "@/hooks/usePremiumStore";
 import { supabase } from "@/integrations/supabase/client";
 import { Progress } from "@/components/ui/progress";
 import { motion } from "framer-motion";
-import { 
-  Sparkles, Zap, Star, Crown, Gift, MessageCircle, Heart, 
-  TrendingUp, Palette, Image as ImageIcon, Award, Loader2, Lock, Eye, Rocket, ArrowLeft, ShoppingBag
+import {
+  Sparkles, Zap, Star, Crown, Gift, Palette, Image as ImageIcon,
+  Award, Loader2, Lock, Eye, Rocket, ArrowLeft, Trophy, Flame, Package
 } from "lucide-react";
+import { PremiumStoreHero } from "@/components/store/PremiumStoreHero";
+import { LiveActivityTicker } from "@/components/store/LiveActivityTicker";
+import { FlashSaleCard } from "@/components/store/FlashSaleCard";
+import { BundlePack } from "@/components/store/BundlePack";
+import { StoreLeaderboard } from "@/components/store/StoreLeaderboard";
+import { LimitedEditionBanner } from "@/components/store/LimitedEditionBanner";
+import { WishlistButton } from "@/components/store/WishlistButton";
+import { GiftDialog } from "@/components/store/GiftDialog";
+import { ConfettiBurst } from "@/components/store/ConfettiBurst";
 
 const LEVEL_REQUIREMENTS: Record<string, number> = {
   'visibility_boost': 5,
