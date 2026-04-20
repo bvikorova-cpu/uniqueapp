@@ -144,14 +144,13 @@ export default function TimeReversalSubscription() {
               Go to Dashboard →
             </Button>
           </div>
-          <div className="inline-block mb-6 px-6 py-2 bg-purple-500/20 rounded-full border border-purple-500/30">
-            <span className="text-purple-600 dark:text-purple-400 font-semibold text-sm uppercase tracking-wider">
-              Time Reversal Social
-            </span>
-          </div>
-          <h1 className="text-5xl md:text-7xl font-black mb-6 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
-            Live Your Life Backwards
-          </h1>
+          <ModuleSubscriptionHero
+            module="Time Reversal Social"
+            icon={Clock}
+            badge="AI age transform"
+            title="Live your life backwards"
+            subtitle="Start at 80, get younger every day. Watch followers experience your reversed life through AI age transformation."
+          />
           <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
             Start at 80, get younger every day. Watch followers experience your life in reverse through AI-powered age transformation.
           </p>

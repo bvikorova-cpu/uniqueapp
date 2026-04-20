@@ -157,20 +157,21 @@ const F1Subscription = () => {
           Back to Racing
         </Button>
 
-        <div className="text-center mb-6 sm:mb-12">
-          <h1 className="text-3xl sm:text-4xl lg:text-6xl font-bold text-white mb-2 sm:mb-4 animate-fade-in">
-            🏎️ Choose Your Plan
-          </h1>
-          <p className="text-lg sm:text-xl lg:text-2xl text-gray-300 mb-4">
-            Premium-Only GP Fantasy Racing Platform
-          </p>
-          {isSubscribed && (
-            <Badge className="bg-green-500 text-white text-sm sm:text-xl px-4 sm:px-6 py-2 sm:py-3">
+        <ModuleSubscriptionHero
+          module="F1 Fantasy Racing"
+          icon={Trophy}
+          badge="Premium GP"
+          title="🏎️ Choose your plan"
+          subtitle="Premium-only GP Fantasy Racing — leagues, live stats, exclusive teams."
+        />
+        {isSubscribed && (
+          <div className="text-center mb-6">
+            <Badge className="bg-emerald-500 text-white text-sm sm:text-xl px-4 sm:px-6 py-2 sm:py-3">
               <Check className="w-4 h-4 sm:w-5 sm:h-5 mr-2 inline" />
               Current Plan: {currentTier?.toUpperCase()}
             </Badge>
-          )}
-        </div>
+          </div>
+        )}
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
           {Object.entries(tiers).map(([key, tier]) => {

@@ -150,14 +150,13 @@ export default function TimeCapsuleSubscription() {
       
       <div className="relative z-10 max-w-7xl mx-auto px-4 pt-24 pb-12">
         <div className="text-center mb-16">
-          <div className="inline-block mb-6 px-6 py-2 bg-blue-500/20 rounded-full border border-blue-500/30">
-            <span className="text-blue-600 dark:text-blue-400 font-semibold text-sm uppercase tracking-wider">
-              Time Capsule Network
-            </span>
-          </div>
-          <h1 className="text-5xl md:text-7xl font-black mb-6 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
-            Time Capsule 2.0
-          </h1>
+          <ModuleSubscriptionHero
+            module="Time Capsule Network"
+            icon={Clock}
+            badge="Future delivery"
+            title="Time Capsule 2.0"
+            subtitle="Send messages, videos and letters to your future self. Delivered automatically at the perfect moment."
+          />
           <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
             Create messages, videos, and letters for your future self or loved ones. Delivered automatically at the perfect moment.
           </p>
