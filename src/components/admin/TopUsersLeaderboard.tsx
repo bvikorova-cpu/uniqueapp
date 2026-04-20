@@ -3,6 +3,14 @@ import { supabase } from "@/integrations/supabase/client";
 import { Trophy, Crown, Flame, TrendingUp } from "lucide-react";
 
 type Mode = "earners" | "spenders" | "active";
+type Range = "24h" | "7d" | "30d" | "all";
+
+const RANGE_MS: Record<Range, number | null> = {
+  "24h": 86_400_000,
+  "7d": 7 * 86_400_000,
+  "30d": 30 * 86_400_000,
+  "all": null,
+};
 
 interface Row {
   user_id: string;
@@ -26,20 +34,27 @@ const MODE_ICON: Record<Mode, any> = {
 
 export const TopUsersLeaderboard = () => {
   const [mode, setMode] = useState<Mode>("earners");
+  const [range, setRange] = useState<Range>("7d");
   const [rows, setRows] = useState<Row[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let cancel = false;
+    const sinceIso = RANGE_MS[range]
+      ? new Date(Date.now() - (RANGE_MS[range] as number)).toISOString()
+      : null;
+
     const load = async () => {
       setLoading(true);
       try {
         if (mode === "earners") {
-          const { data } = await supabase
+          let q = supabase
             .from("transactions")
-            .select("seller_id, amount")
+            .select("seller_id, amount, created_at")
             .not("seller_id", "is", null)
             .limit(1000);
+          if (sinceIso) q = q.gte("created_at", sinceIso);
+          const { data } = await q;
           const agg = new Map<string, number>();
           (data || []).forEach((t: any) => {
             agg.set(t.seller_id, (agg.get(t.seller_id) || 0) + Number(t.amount || 0));
