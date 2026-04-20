@@ -37,21 +37,33 @@ serve(async (req) => {
     const user = userData.user;
     if (!user) throw new Error("Not authenticated");
 
-    // Check credits (3 credits per AI generation)
+    // Credit check ONLY for the legacy gift-message types (style/giftType set).
+    // Universal aliased types (e.g. pet_name, legal, mentor_chat) skip this gate
+    // because each hub has its own credit ledger handled by the calling component.
     const CREDIT_COST = 3;
+    const isLegacyGift = !!style || !!giftType;
+    if (isLegacyGift) {
+      const { data: creditData } = await supabase
+        .from("secret_santa_credits")
+        .select("credits_remaining")
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      const currentCredits = creditData?.credits_remaining || 0;
+      if (currentCredits < CREDIT_COST) {
+        return new Response(
+          JSON.stringify({ error: `Not enough credits. You need ${CREDIT_COST} credits for AI generation.` }),
+          { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+    }
+    // Best-effort fetch of current balance for the deduction step at the end
     const { data: creditData } = await supabase
       .from("secret_santa_credits")
       .select("credits_remaining")
       .eq("user_id", user.id)
       .maybeSingle();
-
     const currentCredits = creditData?.credits_remaining || 0;
-    if (currentCredits < CREDIT_COST) {
-      return new Response(
-        JSON.stringify({ error: `Not enough credits. You need ${CREDIT_COST} credits for AI generation.` }),
-        { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
 
     let systemPrompt = "";
     let userPrompt = "";
