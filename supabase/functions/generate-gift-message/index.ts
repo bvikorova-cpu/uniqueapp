@@ -184,21 +184,26 @@ ${customPrompt ? `Additional context: ${customPrompt}` : ""}`;
     const data = await response.json();
     const message = data.choices?.[0]?.message?.content?.trim() || "Sending you warm wishes!";
 
-    // Deduct credits after successful generation
-    await supabase
-      .from("secret_santa_credits")
-      .update({ credits_remaining: currentCredits - CREDIT_COST })
-      .eq("user_id", user.id);
+    // Deduct credits after successful generation (best-effort, never fail the request)
+    try {
+      await supabase
+        .from("secret_santa_credits")
+        .update({ credits_remaining: currentCredits - CREDIT_COST })
+        .eq("user_id", user.id);
+    } catch { /* ignore */ }
 
-    // Log usage
-    await supabase.from("social_gifts_ai_messages").insert({
-      user_id: user.id,
-      message_type: type || style || "message",
-      prompt: customPrompt || null,
-      generated_message: message,
-    }).catch(() => {}); // Non-critical
+    // Log usage (best-effort)
+    try {
+      await supabase.from("social_gifts_ai_messages").insert({
+        user_id: user.id,
+        message_type: type || style || "message",
+        prompt: customPrompt || null,
+        generated_message: message,
+      });
+    } catch { /* ignore */ }
 
-    return new Response(JSON.stringify({ message }), {
+    // Return ALL common response keys so any frontend component can read it
+    return new Response(JSON.stringify({ message, text: message, result: message, content: message }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (error) {
