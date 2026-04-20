@@ -271,6 +271,7 @@ serve(async (req) => {
       return successResponse({ url: session.url, session_id: session.id });
     }
 
+    if (body.credits) {
       const credits = Number(body.credits);
       const priceId = ANTIQUE_PRICE_IDS[credits];
       if (!priceId) throw new Error(`Invalid credits amount: ${credits}`);
