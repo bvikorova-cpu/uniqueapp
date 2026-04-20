@@ -355,9 +355,8 @@ const Index = () => {
               </Card>
             ))}
           </div>
+          <RewardedAdCard sectionKey="quick_actions" adSlot={AD_PLACEMENTS.FOOTER_BANNER} className="mt-4" />
         </section>
-
-        {/* ── Featured Spotlight ───────────────────────── */}
         <section>
           <SectionHeader icon={Star} title="Spotlight" badge="Featured" badgeClass="bg-gradient-to-r from-yellow-500/20 to-amber-500/20 text-yellow-600 border-yellow-500/30" />
           <Card className="overflow-hidden border-border/30 shadow-xl group">
@@ -411,9 +410,8 @@ const Index = () => {
               </motion.div>
             </AnimatePresence>
           </Card>
+          <RewardedAdCard sectionKey="spotlight" adSlot={AD_PLACEMENTS.FOOTER_BANNER} className="mt-4" />
         </section>
-
-        {/* ── Favorites ────────────────────────────────── */}
         {favoriteModules.length > 0 && (
           <section>
             <SectionHeader icon={Pin} title="Your Favorites" />
@@ -437,8 +435,8 @@ const Index = () => {
         <section>
           <SectionHeader icon={Crown} title="Ecosystem Modules" badge="Premium" badgeClass="bg-gradient-to-r from-yellow-500/20 to-amber-500/20 text-yellow-600 border-yellow-500/30" />
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3">
-            {ecosystemModules.map((mod, i) => <ModuleCard key={i} mod={mod} showFav onNavigate={handleNavigate} isFavorite={isFavorite} toggleFavorite={toggleFavorite} />)}
           </div>
+          <RewardedAdCard sectionKey="ecosystem" adSlot={AD_PLACEMENTS.FOOTER_BANNER} className="mt-4" />
         </section>
 
         {/* ── Core ─────────────────────────────────────── */}
@@ -480,16 +478,16 @@ const Index = () => {
           </motion.div>
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3">
-            {coreModules.filter(m => m.path !== "/beauty-studio").map((mod, i) => <ModuleCard key={i} mod={mod} showFav onNavigate={handleNavigate} isFavorite={isFavorite} toggleFavorite={toggleFavorite} />)}
           </div>
+          <RewardedAdCard sectionKey="core_modules" adSlot={AD_PLACEMENTS.FOOTER_BANNER} className="mt-4" />
         </section>
 
         {/* ── All Services ─────────────────────────────── */}
         <section>
           <SectionHeader icon={Zap} title="All Services" />
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3">
-            {services.map((mod, i) => <ModuleCard key={i} mod={{ ...mod, description: "" }} size="lg" showFav onNavigate={handleNavigate} isFavorite={isFavorite} toggleFavorite={toggleFavorite} />)}
           </div>
+          <RewardedAdCard sectionKey="all_services" adSlot={AD_PLACEMENTS.FOOTER_BANNER} className="mt-4" />
         </section>
 
         {/* ── About Unique ─────────────────────────────── */}
