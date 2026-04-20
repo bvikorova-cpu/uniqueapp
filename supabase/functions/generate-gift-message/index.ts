@@ -12,7 +12,13 @@ serve(async (req) => {
   }
 
   try {
-    const { style, customPrompt, giftType, recipientName, type } = await req.json();
+    const reqBody = await req.json();
+    // Accept many naming conventions used across the frontend
+    const style = reqBody.style;
+    const giftType = reqBody.giftType;
+    const recipientName = reqBody.recipientName;
+    const type = reqBody.type;
+    const customPrompt = reqBody.customPrompt || reqBody.prompt || reqBody.input || reqBody.message || reqBody.query;
     const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
 
     if (!OPENAI_API_KEY) {
