@@ -119,33 +119,43 @@ export const RealtimeActivityFeed = () => {
     const channel = supabase
       .channel("admin-feed")
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "profiles" }, (payload: any) => {
+        if (paused) return;
+        const desc = payload.new.full_name || payload.new.email || "Unknown";
         setEvents((prev) => [{
           id: `u-${payload.new.id}`, type: "user" as const,
-          title: "New user registered",
-          description: payload.new.full_name || payload.new.email || "Unknown",
+          title: "New user registered", description: desc,
           created_at: payload.new.created_at,
         }, ...prev].slice(0, 12));
+        playBleep("user");
+        showNotif("👤 New user registered", desc);
       })
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "transactions" }, (payload: any) => {
+        if (paused) return;
+        const t = `${payload.new.item_type || "Transaction"} • €${parseFloat(payload.new.amount || 0).toFixed(2)}`;
         setEvents((prev) => [{
           id: `t-${payload.new.id}`, type: "transaction" as const,
-          title: `${payload.new.item_type || "Transaction"} • €${parseFloat(payload.new.amount || 0).toFixed(2)}`,
-          description: "Payment processed",
+          title: t, description: "Payment processed",
           created_at: payload.new.created_at,
         }, ...prev].slice(0, 12));
+        playBleep("transaction");
+        showNotif("💰 New transaction", t);
       })
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "contact_messages" }, (payload: any) => {
+        if (paused) return;
+        const desc = `${payload.new.name}: ${payload.new.subject || ""}`.slice(0, 60);
         setEvents((prev) => [{
           id: `m-${payload.new.id}`, type: "message" as const,
-          title: "Contact message",
-          description: `${payload.new.name}: ${payload.new.subject || ""}`.slice(0, 60),
+          title: "Contact message", description: desc,
           created_at: payload.new.created_at,
         }, ...prev].slice(0, 12));
+        playBleep("message");
+        showNotif("✉️ Contact message", desc);
       })
       .subscribe();
 
     return () => { supabase.removeChannel(channel); };
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [paused, soundOn, notifOn]);
 
   return (
     <Card className="bg-gradient-to-br from-card/80 to-card/50 backdrop-blur-xl border-primary/20">
