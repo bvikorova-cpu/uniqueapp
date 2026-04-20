@@ -8,10 +8,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
 const SEGMENTS = [
-  { id: "all", label: "All users", icon: Users, color: "bg-cyan-500/20 border-cyan-400/40 text-cyan-200" },
-  { id: "premium", label: "Premium", icon: Crown, color: "bg-amber-500/20 border-amber-400/40 text-amber-200" },
-  { id: "creators", label: "Creators", icon: Sparkles, color: "bg-fuchsia-500/20 border-fuchsia-400/40 text-fuchsia-200" },
-  { id: "free", label: "Free tier", icon: Users, color: "bg-slate-500/20 border-slate-400/40 text-slate-200" },
+  { id: "all", label: "All users", icon: Users, color: "bg-cyan-500/20 border-cyan-500/50 text-cyan-900 dark:text-cyan-200" },
+  { id: "premium", label: "Premium", icon: Crown, color: "bg-amber-500/20 border-amber-500/50 text-amber-900 dark:text-amber-200" },
+  { id: "creators", label: "Creators", icon: Sparkles, color: "bg-fuchsia-500/20 border-fuchsia-500/50 text-fuchsia-900 dark:text-fuchsia-200" },
+  { id: "free", label: "Free tier", icon: Users, color: "bg-slate-500/20 border-slate-500/50 text-slate-900 dark:text-slate-200" },
 ];
 
 const DRAFT_KEY = "admin-broadcast-draft";

@@ -146,7 +146,7 @@ export const TopUsersLeaderboard = () => {
               onClick={() => setMode(m)}
               className={`px-2 py-1 text-[10px] rounded-md border transition ${
                 mode === m
-                  ? "bg-amber-500/20 border-amber-400/40 text-amber-200"
+                  ? "bg-amber-500/20 border-amber-500/50 text-amber-900 dark:text-amber-200"
                   : "bg-card/40 border-border text-muted-foreground hover:bg-card/60"
               }`}
             >
@@ -164,7 +164,7 @@ export const TopUsersLeaderboard = () => {
             onClick={() => setRange(r)}
             className={`flex-1 px-2 py-1 text-[10px] rounded-md border transition ${
               range === r
-                ? "bg-orange-500/20 border-orange-400/40 text-orange-200"
+                ? "bg-orange-500/20 border-orange-500/50 text-orange-900 dark:text-orange-200"
                 : "bg-card/40 border-border text-muted-foreground hover:bg-card/60"
             }`}
           >
