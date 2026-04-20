@@ -11,6 +11,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { useAuth } from '@/contexts/AuthContext';
 import { motion } from 'framer-motion';
+import { GothicPageHeader } from '@/components/shadow-arena/GothicPageHeader';
+import { BookOpen } from 'lucide-react';
 
 export default function ShadowArenaStoryDetail() {
   const { storyId } = useParams();
@@ -90,51 +92,33 @@ export default function ShadowArenaStoryDetail() {
           <ArrowLeft className="w-4 h-4 mr-2" /> Back to Dashboard
         </Button>
 
-        {/* Story hero header */}
-        <motion.div
-          className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[hsl(0,20%,5%)] via-[hsl(280,30%,8%)] to-[hsl(0,0%,3%)] p-8 mb-6"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+        {/* Cinematic gothic story hero */}
+        <GothicPageHeader
+          icon={BookOpen}
+          title={story.title}
+          height="h-[340px] md:h-[400px]"
         >
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-red-900/15 rounded-full blur-[100px]" />
-
-          <div className="relative z-10 flex flex-col md:flex-row items-start justify-between gap-6">
-            <div className="flex-1">
-              <div className="flex items-center gap-2 mb-4 flex-wrap">
-                {story.is_top_week && (
-                  <Badge className="bg-yellow-600/80 text-yellow-100 text-xs">Top of the Week</Badge>
-                )}
-                <Badge variant="outline" className="border-red-800/40 text-red-400 text-xs">Anonymous</Badge>
-                <span className="flex items-center gap-1 text-xs text-muted-foreground">
-                  <Clock className="w-3 h-3" /> {readingTime} min read
-                </span>
-                <span className="flex items-center gap-1 text-xs text-muted-foreground">
-                  <Eye className="w-3 h-3" /> {story.votes_count} votes
-                </span>
-              </div>
-              <h1 className="text-3xl md:text-4xl font-black bg-gradient-to-r from-red-400 to-purple-400 bg-clip-text text-transparent mb-2">
-                {story.title}
-              </h1>
-            </div>
-
-            <motion.div
-              className="flex flex-col items-center gap-2 shrink-0"
-              whileHover={{ scale: 1.05 }}
-            >
-              <p className="text-4xl font-black text-red-400">{story.votes_count}</p>
-              <p className="text-xs text-muted-foreground">votes</p>
-              <Button
-                onClick={handleVote}
-                disabled={voting}
-                className="bg-gradient-to-r from-red-700 to-red-900 hover:from-red-800 hover:to-red-950 border border-red-700/40"
-                size="sm"
-              >
-                <ThumbsUp className="mr-2 h-4 w-4" />
-                {voting ? 'Voting...' : 'Vote'}
-              </Button>
-            </motion.div>
+          <div className="flex items-center gap-2 mb-4 flex-wrap">
+            {story.is_top_week && (
+              <Badge className="bg-yellow-600/80 text-yellow-100 text-xs">Top of the Week</Badge>
+            )}
+            <Badge variant="outline" className="border-red-800/40 text-red-300 text-xs bg-black/40 backdrop-blur-md">Anonymous</Badge>
+            <span className="flex items-center gap-1 text-xs text-red-200/70 bg-black/40 backdrop-blur-md px-2 py-1 rounded-full">
+              <Clock className="w-3 h-3" /> {readingTime} min read
+            </span>
+            <span className="flex items-center gap-1 text-xs text-red-200/70 bg-black/40 backdrop-blur-md px-2 py-1 rounded-full">
+              <Eye className="w-3 h-3" /> {story.votes_count} votes
+            </span>
           </div>
-        </motion.div>
+          <Button
+            onClick={handleVote}
+            disabled={voting}
+            className="bg-gradient-to-r from-red-700 to-red-900 hover:from-red-800 hover:to-red-950 border border-red-700/40 shadow-[0_0_20px_-5px_rgba(220,38,38,0.6)]"
+          >
+            <ThumbsUp className="mr-2 h-4 w-4" />
+            {voting ? 'Voting...' : `Vote (${story.votes_count})`}
+          </Button>
+        </GothicPageHeader>
 
         {/* AI Voice Narrator */}
         <StoryNarratorPanel

@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
+import { GothicPageHeader } from '@/components/shadow-arena/GothicPageHeader';
 
 interface Battle {
   id: string;
@@ -120,45 +121,29 @@ export default function ShadowArenaBattles() {
           <ArrowLeft className="w-4 h-4 mr-2" /> Back to Dashboard
         </Button>
 
-        {/* Hero header */}
-        <motion.div
-          className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[hsl(280,30%,8%)] via-[hsl(0,20%,6%)] to-[hsl(0,0%,4%)] p-8 mb-8"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+        {/* Cinematic gothic hero */}
+        <GothicPageHeader
+          icon={Swords}
+          title="Battle Arena"
+          subtitle="Monthly horror storytelling competitions with real cash prizes"
         >
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-purple-900/15 rounded-full blur-[80px]" />
-
-          <div className="relative z-10 flex items-center justify-between gap-6 flex-wrap">
-            <div>
-              <div className="flex items-center gap-3 mb-2">
-                <Swords className="h-8 w-8 text-purple-400" />
-                <h1 className="text-3xl md:text-4xl font-black bg-gradient-to-r from-red-400 via-purple-400 to-red-400 bg-clip-text text-transparent">
-                  Battle Arena
-                </h1>
+          <div className="flex flex-wrap items-center gap-3">
+            {totalPool > 0 && (
+              <div className="px-4 py-2 rounded-xl bg-black/60 backdrop-blur-md border border-yellow-800/40">
+                <p className="text-[10px] uppercase tracking-wide text-yellow-400/70">Active Pools</p>
+                <p className="text-lg font-black text-yellow-400">€{totalPool.toFixed(2)}</p>
               </div>
-              <p className="text-red-200/60 text-sm max-w-md">
-                Monthly horror storytelling competitions with real cash prizes
-              </p>
-            </div>
-
-            <div className="flex items-center gap-4">
-              {totalPool > 0 && (
-                <div className="text-center px-4 py-2 rounded-xl bg-yellow-950/30 border border-yellow-800/30">
-                  <p className="text-xs text-yellow-400/70">Active Pools</p>
-                  <p className="text-xl font-black text-yellow-400">€{totalPool.toFixed(2)}</p>
-                </div>
-              )}
-              <Button
-                onClick={createNewBattle}
-                disabled={creating}
-                className="bg-gradient-to-r from-red-700 to-purple-800 hover:from-red-800 hover:to-purple-900 text-white"
-              >
-                <Swords className="w-4 h-4 mr-2" />
-                {creating ? 'Creating...' : 'Create New Battle'}
-              </Button>
-            </div>
+            )}
+            <Button
+              onClick={createNewBattle}
+              disabled={creating}
+              className="bg-gradient-to-r from-red-700 to-red-900 hover:from-red-800 hover:to-red-950 border border-red-700/40 shadow-[0_0_20px_-5px_rgba(220,38,38,0.6)]"
+            >
+              <Swords className="w-4 h-4 mr-2" />
+              {creating ? 'Creating...' : 'Create New Battle'}
+            </Button>
           </div>
-        </motion.div>
+        </GothicPageHeader>
 
         {/* Info grid */}
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-8">

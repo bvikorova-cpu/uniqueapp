@@ -11,6 +11,7 @@ import { toast } from 'sonner';
 import { useAuth } from '@/contexts/AuthContext';
 import { Clock, CheckCircle, ArrowLeft, Swords, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { GothicPageHeader } from '@/components/shadow-arena/GothicPageHeader';
 
 export default function ShadowArenaBattleSubmit() {
   const { battleId } = useParams();
@@ -136,28 +137,17 @@ export default function ShadowArenaBattleSubmit() {
           </motion.div>
         )}
 
-        {/* Hero */}
-        <motion.div
-          className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[hsl(280,30%,8%)] via-[hsl(0,20%,6%)] to-[hsl(0,0%,4%)] p-8 mb-8"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+        {/* Cinematic gothic hero */}
+        <GothicPageHeader
+          icon={Swords}
+          title="Submit Your Battle Story"
+          subtitle="Channel terror into words. Your tale could win the cash pool."
         >
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-purple-900/15 rounded-full blur-[80px]" />
-          <div className="relative z-10">
-            <div className="flex items-center gap-3 mb-3">
-              <Swords className="h-7 w-7 text-purple-400" />
-              <h1 className="text-3xl font-black bg-gradient-to-r from-red-400 via-purple-400 to-red-400 bg-clip-text text-transparent">
-                Submit Your Battle Story
-              </h1>
-            </div>
-            <div className="flex items-center gap-4 text-sm">
-              <span className="flex items-center gap-1 text-red-400">
-                <Clock className="w-4 h-4" />
-                <span className="font-mono">{timeRemaining} minutes remaining</span>
-              </span>
-            </div>
-          </div>
-        </motion.div>
+          <span className="inline-flex items-center gap-2 text-sm text-red-300 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-full border border-red-900/40">
+            <Clock className="w-4 h-4" />
+            <span className="font-mono">{timeRemaining} minutes remaining</span>
+          </span>
+        </GothicPageHeader>
 
         {/* Challenge card */}
         <motion.div

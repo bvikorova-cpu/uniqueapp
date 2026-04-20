@@ -12,6 +12,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { useAuth } from '@/contexts/AuthContext';
 import { motion } from 'framer-motion';
+import { GothicPageHeader } from '@/components/shadow-arena/GothicPageHeader';
 
 const GIFT_TYPES = [
   { type: "faint_whisper", amount: 0.10, name: "Faint Whisper", icon: "W" },
@@ -149,64 +150,44 @@ export default function ShadowArenaBattleDetail() {
           <ArrowLeft className="w-4 h-4 mr-2" /> Back to Battles
         </Button>
 
-        {/* Battle hero */}
-        <motion.div
-          className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[hsl(280,30%,8%)] via-[hsl(0,20%,6%)] to-[hsl(0,0%,4%)] p-8 mb-8"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+        {/* Cinematic gothic battle hero */}
+        <GothicPageHeader
+          icon={Swords}
+          title={battle.challenge_theme}
+          subtitle={battle.challenge_prompt}
+          height="h-[360px] md:h-[420px]"
         >
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-purple-900/15 rounded-full blur-[100px]" />
-
-          <div className="relative z-10 flex flex-col md:flex-row items-start justify-between gap-6">
-            <div className="flex-1">
-              <div className="flex items-center gap-2 mb-3 flex-wrap">
-                <Badge className={`text-xs ${cfg.className}`}>{cfg.label}</Badge>
-                {battle.ends_at && battle.status !== "completed" && (
-                  <span className="flex items-center gap-1 text-sm">
-                    <Clock className="w-3.5 h-3.5 text-muted-foreground" />
-                    <BattleCountdown endsAt={battle.ends_at} />
-                  </span>
-                )}
-              </div>
-              <h1 className="text-3xl md:text-4xl font-black bg-gradient-to-r from-red-400 via-purple-400 to-red-400 bg-clip-text text-transparent mb-3">
-                {battle.challenge_theme}
-              </h1>
-              <p className="text-red-200/60 text-sm mb-4">{battle.challenge_prompt}</p>
-              {battle.challenge_keywords && (
-                <div className="flex flex-wrap gap-2">
-                  <span className="text-xs text-muted-foreground">Required keywords:</span>
-                  {battle.challenge_keywords.map((kw: string, i: number) => (
-                    <Badge key={i} variant="outline" className="text-xs border-purple-800/40 text-purple-300">{kw}</Badge>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            <div className="text-center shrink-0">
-              <motion.div
-                animate={{ scale: [1, 1.05, 1] }}
-                transition={{ duration: 2, repeat: Infinity }}
-              >
-                <Trophy className="h-10 w-10 text-yellow-500 mx-auto mb-2" />
-                <p className="text-3xl font-black text-yellow-400">
-                  {"\u20AC"}{battle.total_prize_pool.toFixed(2)}
-                </p>
-              </motion.div>
-              <p className="text-xs text-muted-foreground mt-1">Prize Pool</p>
+          <div className="flex flex-wrap items-center gap-3 mb-4">
+            <Badge className={`text-xs ${cfg.className}`}>{cfg.label}</Badge>
+            {battle.ends_at && battle.status !== "completed" && (
+              <span className="flex items-center gap-1 text-xs text-red-200/80 bg-black/50 backdrop-blur-md px-3 py-1 rounded-full border border-red-900/40">
+                <Clock className="w-3 h-3" />
+                <BattleCountdown endsAt={battle.ends_at} />
+              </span>
+            )}
+            <div className="flex items-center gap-1.5 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full border border-yellow-800/40">
+              <Trophy className="w-3.5 h-3.5 text-yellow-400" />
+              <span className="text-sm font-black text-yellow-400">€{battle.total_prize_pool.toFixed(2)}</span>
             </div>
           </div>
-
+          {battle.challenge_keywords && battle.challenge_keywords.length > 0 && (
+            <div className="flex flex-wrap gap-2 mb-4">
+              {battle.challenge_keywords.map((kw: string, i: number) => (
+                <Badge key={i} variant="outline" className="text-[10px] border-purple-800/40 text-purple-200 bg-black/40 backdrop-blur-md">{kw}</Badge>
+              ))}
+            </div>
+          )}
           {!userIsParticipant && battle.status === 'waiting_for_participants' && (
             <Button
               onClick={handleJoinBattle}
               size="lg"
-              className="relative z-10 w-full mt-6 bg-gradient-to-r from-red-700 to-purple-800 hover:from-red-800 hover:to-purple-900 border border-red-700/40 shadow-lg"
+              className="bg-gradient-to-r from-red-700 to-red-900 hover:from-red-800 hover:to-red-950 border border-red-700/40 shadow-[0_0_25px_-5px_rgba(220,38,38,0.7)]"
             >
               <Swords className="mr-2 h-5 w-5" />
-              Join Battle ({"\u20AC"}1.00 Entry Fee)
+              Join Battle (€1.00 Entry Fee)
             </Button>
           )}
-        </motion.div>
+        </GothicPageHeader>
 
         {/* Live Audience Reactions */}
         <LiveReactions battleId={battleId!} />
