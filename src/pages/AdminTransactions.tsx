@@ -5,8 +5,12 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { DollarSign, CheckCircle, Clock, Copy } from "lucide-react";
+import { DollarSign, CheckCircle, Clock, Copy, Receipt, Download } from "lucide-react";
 import { format } from "date-fns";
+import { AdminGuard } from "@/components/admin/AdminGuard";
+import { AdminPageShell, AdminGlassCard } from "@/components/admin/AdminPageShell";
+import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
+import { exportToCsv } from "@/lib/exportCsv";
 
 interface Transaction {
   id: string;
@@ -98,32 +102,68 @@ const AdminTransactions = () => {
     .reduce((sum, t) => sum + Number(t.platform_fee), 0);
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold">Transaction Management</h1>
-        <div className="flex gap-2">
+    <AdminGuard>
+      <AdminPageShell>
+        <AdminPageHeader
+          title="Transactions"
+          subtitle="Monitor bazaar and auction transactions, track commissions and pay sellers."
+          icon={Receipt}
+          badge="Finance"
+          breadcrumbs={[{ label: "Transactions" }]}
+          stats={[
+            { label: "Pending €", value: `€${totalPending.toFixed(0)}`, accent: "amber" },
+            { label: "Commission €", value: `€${totalRevenue.toFixed(0)}`, accent: "emerald" },
+            { label: "Total Tx", value: transactions.length, accent: "cyan" },
+            { label: "Filter", value: filter, accent: "purple" },
+          ]}
+          actions={
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() =>
+                exportToCsv("transactions", transactions, [
+                  { key: "created_at", label: "Date" },
+                  { key: "item_type", label: "Type" },
+                  { key: "seller_profile", label: "Seller", format: (s) => s?.email || "" },
+                  { key: "buyer_profile", label: "Buyer", format: (b) => b?.email || "" },
+                  { key: "total_amount", label: "Total €" },
+                  { key: "platform_fee", label: "Commission €" },
+                  { key: "seller_amount", label: "Payout €" },
+                  { key: "status", label: "Status" },
+                ])
+              }
+              className="bg-white/15 backdrop-blur-xl border border-white/30 text-white hover:bg-white/25"
+            >
+              <Download className="h-3.5 w-3.5 mr-1.5" /> Export CSV
+            </Button>
+          }
+        />
+
+        <div className="flex justify-end gap-2 mb-4">
           <Button
             variant={filter === "all" ? "default" : "outline"}
             onClick={() => setFilter("all")}
+            size="sm"
           >
             All
           </Button>
           <Button
             variant={filter === "pending" ? "default" : "outline"}
             onClick={() => setFilter("pending")}
+            size="sm"
           >
             Pending
           </Button>
           <Button
             variant={filter === "completed" ? "default" : "outline"}
             onClick={() => setFilter("completed")}
+            size="sm"
           >
             Paid
           </Button>
         </div>
-      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Pending Payouts</CardTitle>
@@ -261,8 +301,9 @@ const AdminTransactions = () => {
             </div>
           )}
         </CardContent>
-      </Card>
-    </div>
+        </Card>
+      </AdminPageShell>
+    </AdminGuard>
   );
 };
 

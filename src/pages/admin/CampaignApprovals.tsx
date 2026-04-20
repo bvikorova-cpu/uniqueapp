@@ -5,11 +5,13 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { ArrowLeft, Check, X, Eye, FileText, ExternalLink, AlertTriangle } from 'lucide-react';
+import { Check, X, Eye, FileText, ExternalLink, AlertTriangle, Heart } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from '@/hooks/use-toast';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { useIsAdmin } from '@/hooks/useIsAdmin';
+import { AdminPageShell, AdminGlassCard } from '@/components/admin/AdminPageShell';
+import { AdminPageHeader } from '@/components/admin/AdminPageHeader';
 
 interface CampaignApproval {
   id: string;
@@ -244,17 +246,17 @@ export default function CampaignApprovals() {
   }
 
   return (
-    <div className="min-h-screen bg-background py-8 px-4">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex items-center gap-4 mb-8">
-          <Button variant="outline" size="icon" onClick={() => navigate('/admin')}>
-            <ArrowLeft className="h-4 w-4" />
-          </Button>
-          <div>
-            <h1 className="text-3xl font-bold">Campaign Approvals</h1>
-            <p className="text-muted-foreground">Review and approve pending fundraising campaigns</p>
-          </div>
-        </div>
+    <AdminPageShell>
+      <AdminPageHeader
+        title="Campaign Approvals"
+        subtitle="Review and approve fundraising, dream-maker, hero and rescue campaigns."
+        icon={Heart}
+        badge="Fundraising"
+        breadcrumbs={[{ label: "Campaign Approvals" }]}
+        stats={[
+          { label: "Pending", value: approvals.length, accent: "amber" },
+        ]}
+      />
 
         {approvals.length === 0 ? (
           <Card>
@@ -418,9 +420,8 @@ export default function CampaignApprovals() {
                 </CardContent>
               </Card>
             ))}
-          </div>
-        )}
-      </div>
-    </div>
+        </div>
+      )}
+    </AdminPageShell>
   );
 }

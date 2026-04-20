@@ -9,6 +9,10 @@ import {
   EyeOff,
   Loader2
 } from "lucide-react";
+import { AdminGuard } from "@/components/admin/AdminGuard";
+import { AdminPageShell, AdminGlassCard } from "@/components/admin/AdminPageShell";
+import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -167,21 +171,20 @@ const ModerationDashboard = () => {
   const pendingCount = reports?.filter(r => r.status === "pending").length || 0;
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <Shield className="h-8 w-8 text-primary" />
-          <div>
-            <h1 className="text-2xl font-bold">Moderation Dashboard</h1>
-            <p className="text-muted-foreground">Review and manage user reports</p>
-          </div>
-        </div>
-        {pendingCount > 0 && (
-          <Badge variant="destructive" className="text-lg px-4 py-2">
-            {pendingCount} Pending Reports
-          </Badge>
-        )}
-      </div>
+    <AdminPageShell>
+      <AdminPageHeader
+        title="Moderation Dashboard"
+        subtitle="Review reports, take moderator actions and keep the community safe."
+        icon={Shield}
+        badge={pendingCount > 0 ? `${pendingCount} Pending` : "All Clear"}
+        breadcrumbs={[{ label: "Moderation" }]}
+        stats={[
+          { label: "Pending", value: reports?.filter((r) => r.status === "pending").length || 0, accent: "amber" },
+          { label: "Approved", value: reports?.filter((r) => r.status === "approved").length || 0, accent: "emerald" },
+          { label: "Rejected", value: reports?.filter((r) => r.status === "rejected").length || 0, accent: "pink" },
+          { label: "Total", value: reports?.length || 0, accent: "purple" },
+        ]}
+      />
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card>
@@ -485,7 +488,7 @@ const ModerationDashboard = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
+    </AdminPageShell>
   );
 };
 

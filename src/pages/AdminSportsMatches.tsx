@@ -11,8 +11,11 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { Plus, ArrowLeft, Loader2, Trash2, Calendar, TrendingUp } from "lucide-react";
+import { Plus, ArrowLeft, Loader2, Trash2, Calendar, TrendingUp, Trophy } from "lucide-react";
 import { format } from "date-fns";
+import { AdminGuard } from "@/components/admin/AdminGuard";
+import { AdminPageShell, AdminGlassCard } from "@/components/admin/AdminPageShell";
+import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 
 interface Match {
   id: string;
@@ -262,16 +265,21 @@ export default function AdminSportsMatches() {
   };
 
   return (
-    <div className="min-h-screen bg-background py-12 px-4">
-      <div className="container mx-auto max-w-2xl">
-        <Button 
-          variant="ghost" 
-          className="mb-6"
-          onClick={() => navigate("/sports-predictor")}
-        >
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Back to Predictions
-        </Button>
+    <AdminGuard>
+      <AdminPageShell>
+        <AdminPageHeader
+          title="Sports Matches"
+          subtitle="Add matches, attach AI predictions and manage the sports betting lineup."
+          icon={Trophy}
+          badge="Sports"
+          breadcrumbs={[{ label: "Matches" }]}
+          stats={[
+            { label: "Matches", value: matches.length, accent: "cyan" },
+            { label: "Upcoming", value: matches.filter((m) => m.status === "upcoming").length, accent: "amber" },
+            { label: "Live", value: matches.filter((m) => m.status === "live").length, accent: "pink" },
+            { label: "Finished", value: matches.filter((m) => m.status === "finished").length, accent: "emerald" },
+          ]}
+        />
 
         <Card>
           <CardHeader>
@@ -545,7 +553,7 @@ export default function AdminSportsMatches() {
             )}
           </CardContent>
         </Card>
-      </div>
-    </div>
+      </AdminPageShell>
+    </AdminGuard>
   );
 }

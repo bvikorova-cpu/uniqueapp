@@ -1,40 +1,24 @@
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { TrendingUp } from "lucide-react";
 import { AdminPlatformEarnings } from "@/components/admin/AdminPlatformEarnings";
-import { useIsAdmin } from "@/hooks/useIsAdmin";
+import { AdminGuard } from "@/components/admin/AdminGuard";
+import { AdminPageShell, AdminGlassCard } from "@/components/admin/AdminPageShell";
+import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 
 export default function AdminPlatformEarningsPage() {
-  const navigate = useNavigate();
-  const { isAdmin, loading } = useIsAdmin();
-
-  useEffect(() => {
-    if (!loading && !isAdmin) {
-      navigate("/");
-    }
-  }, [isAdmin, loading, navigate]);
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-      </div>
-    );
-  }
-
-  if (!isAdmin) {
-    return null;
-  }
-
   return (
-    <div className="container mx-auto p-6 max-w-7xl">
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold">Platform Earnings</h1>
-        <p className="text-muted-foreground mt-2">
-          Overview of all platform commissions from InfluKing, MasterChef, and Sports sections
-        </p>
-      </div>
-
-      <AdminPlatformEarnings />
-    </div>
+    <AdminGuard>
+      <AdminPageShell>
+        <AdminPageHeader
+          title="Platform Earnings"
+          subtitle="Real-time commission overview across InfluKing, MasterChef and Sports verticals."
+          icon={TrendingUp}
+          badge="Finance"
+          breadcrumbs={[{ label: "Platform Earnings" }]}
+        />
+        <AdminGlassCard className="p-4 sm:p-6">
+          <AdminPlatformEarnings />
+        </AdminGlassCard>
+      </AdminPageShell>
+    </AdminGuard>
   );
 }

@@ -6,7 +6,11 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Check, X, Loader2, ArrowLeft } from "lucide-react";
+import { Check, X, Loader2, Trophy, Download } from "lucide-react";
+import { AdminGuard } from "@/components/admin/AdminGuard";
+import { AdminPageShell, AdminGlassCard } from "@/components/admin/AdminPageShell";
+import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
+import { exportToCsv } from "@/lib/exportCsv";
 
 interface Tipster {
   id: string;
@@ -249,19 +253,48 @@ export default function AdminTipsters() {
     );
   }
 
-  return (
-    <div className="min-h-screen bg-background">
-      <div className="container max-w-7xl mx-auto px-4 py-8">
-        <div className="flex items-center gap-4 mb-8">
-          <Button variant="ghost" size="icon" onClick={() => navigate("/")}>
-            <ArrowLeft className="h-5 w-5" />
-          </Button>
-          <div>
-            <h1 className="text-3xl font-bold">Tipster Management</h1>
-            <p className="text-muted-foreground">Review and manage tipster applications</p>
-          </div>
-        </div>
+  const allTipsters = [...pendingTipsters, ...activeTipsters, ...rejectedTipsters];
 
+  return (
+    <AdminGuard>
+      <AdminPageShell>
+        <AdminPageHeader
+          title="Tipster Management"
+          subtitle="Review applications, monitor performance and approve sports tipsters."
+          icon={Trophy}
+          badge="Sports"
+          breadcrumbs={[{ label: "Tipsters" }]}
+          stats={[
+            { label: "Pending", value: pendingTipsters.length, accent: "amber" },
+            { label: "Active", value: activeTipsters.length, accent: "emerald" },
+            { label: "Rejected", value: rejectedTipsters.length, accent: "pink" },
+            { label: "Total", value: allTipsters.length, accent: "cyan" },
+          ]}
+          actions={
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() =>
+                exportToCsv("tipsters", allTipsters, [
+                  { key: "display_name", label: "Name" },
+                  { key: "sport_specialization", label: "Sport" },
+                  { key: "status", label: "Status" },
+                  { key: "tip_price", label: "Tip €" },
+                  { key: "subscription_price", label: "Sub €" },
+                  { key: "win_rate", label: "Win %" },
+                  { key: "roi", label: "ROI" },
+                  { key: "total_earnings", label: "Earnings €" },
+                  { key: "created_at", label: "Applied" },
+                ])
+              }
+              className="bg-white/15 backdrop-blur-xl border border-white/30 text-white hover:bg-white/25"
+            >
+              <Download className="h-3.5 w-3.5 mr-1.5" /> Export CSV
+            </Button>
+          }
+        />
+
+        <AdminGlassCard className="p-4 sm:p-6">
         <Tabs defaultValue="pending" className="w-full">
           <TabsList className="grid w-full grid-cols-3 mb-8">
             <TabsTrigger value="pending">
@@ -311,7 +344,8 @@ export default function AdminTipsters() {
             )}
           </TabsContent>
         </Tabs>
-      </div>
-    </div>
+        </AdminGlassCard>
+      </AdminPageShell>
+    </AdminGuard>
   );
 }
