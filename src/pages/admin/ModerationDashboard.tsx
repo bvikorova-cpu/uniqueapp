@@ -180,8 +180,8 @@ const ModerationDashboard = () => {
         breadcrumbs={[{ label: "Moderation" }]}
         stats={[
           { label: "Pending", value: reports?.filter((r) => r.status === "pending").length || 0, accent: "amber" },
-          { label: "Reviewed", value: reports?.filter((r) => r.status === "reviewed").length || 0, accent: "cyan" },
-          { label: "Resolved", value: reports?.filter((r) => r.status === "resolved").length || 0, accent: "emerald" },
+          { label: "Approved", value: reports?.filter((r) => r.status === "approved").length || 0, accent: "emerald" },
+          { label: "Rejected", value: reports?.filter((r) => r.status === "rejected").length || 0, accent: "pink" },
           { label: "Total", value: reports?.length || 0, accent: "purple" },
         ]}
       />
