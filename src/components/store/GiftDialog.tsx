@@ -44,11 +44,11 @@ export const GiftDialog = ({
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not signed in");
 
-      // Find recipient by display_name or email-like handle
+      // Find recipient by username or full_name
       const { data: profile } = await supabase
         .from("profiles")
-        .select("user_id")
-        .or(`display_name.eq.${recipient},username.eq.${recipient}`)
+        .select("id")
+        .or(`username.eq.${recipient},full_name.eq.${recipient}`)
         .maybeSingle();
 
       if (!profile) {
@@ -56,9 +56,11 @@ export const GiftDialog = ({
         return;
       }
 
+      const recipientId = (profile as any).id as string;
+
       const { error } = await supabase.from("premium_store_gifts").insert({
         sender_id: user.id,
-        recipient_id: profile.user_id,
+        recipient_id: recipientId,
         item_type: itemType,
         item_id: itemId,
         item_name: itemName,
@@ -76,7 +78,7 @@ export const GiftDialog = ({
         item_name: itemName,
         credits_spent: creditCost,
         is_gift: true,
-        recipient_id: profile.user_id,
+        recipient_id: recipientId,
       });
 
       toast({
