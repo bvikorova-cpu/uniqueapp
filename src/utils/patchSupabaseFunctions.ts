@@ -1,16 +1,37 @@
 /**
  * Global monkey-patch for supabase.functions.invoke
  * 
- * This intercepts ALL calls to supabase.functions.invoke across the entire app
- * and wraps them with robust error handling so that:
- * 1. "non-2xx" errors are caught and translated to user-friendly messages
- * 2. The actual error message from the response body is extracted
- * 3. Network/CORS/timeout errors are gracefully handled
- * 4. The original { data, error } contract is preserved
+ * Two responsibilities:
+ * 1. ALIAS MAP — transparently re-routes legacy function names to consolidated routers
+ *    (so frontend components don't need to be modified after backend consolidation)
+ * 2. ERROR HANDLING — translates "non-2xx" errors into user-friendly messages
  * 
  * Import this ONCE at app startup (main.tsx) before any component renders.
  */
 import { supabase } from "@/integrations/supabase/client";
+
+/**
+ * Maps legacy function name → { target: new router name, action: action to inject }
+ * 
+ * When a component calls supabase.functions.invoke("create-connect-login-link"),
+ * we transparently rewrite it to invoke("check-connect-status", { action: "connect_login" }).
+ * 
+ * This lets us consolidate dozens of edge functions into a few routers without
+ * touching ~200 frontend components.
+ */
+const FUNCTION_ALIASES: Record<string, { target: string; action: string }> = {
+  // ─── Stripe Connect & Customer Portals → check-connect-status ───
+  "create-connect-login-link":          { target: "check-connect-status", action: "connect_login" },
+  "best-friend-customer-portal":        { target: "check-connect-status", action: "customer_portal" },
+  "companions-customer-portal":         { target: "check-connect-status", action: "customer_portal" },
+  "employer-customer-portal":           { target: "check-connect-status", action: "customer_portal" },
+  "f1-customer-portal":                 { target: "check-connect-status", action: "customer_portal" },
+  "healthcare-customer-portal":         { target: "check-connect-status", action: "customer_portal" },
+  "kids-customer-portal":               { target: "check-connect-status", action: "customer_portal" },
+  "kids-story-customer-portal":         { target: "check-connect-status", action: "customer_portal" },
+  "psychology-customer-portal":         { target: "check-connect-status", action: "customer_portal" },
+  "customer-portal-creator":            { target: "check-connect-status", action: "customer_portal" },
+};
 
 const originalInvoke = supabase.functions.invoke.bind(supabase.functions);
 
@@ -18,8 +39,25 @@ supabase.functions.invoke = async function patchedInvoke(
   functionName: string,
   options?: any
 ): Promise<any> {
+  // ─── Apply alias rewrite if mapped ───
+  let targetFunction = functionName;
+  let mergedOptions = options;
+
+  const alias = FUNCTION_ALIASES[functionName];
+  if (alias) {
+    targetFunction = alias.target;
+    mergedOptions = {
+      ...(options || {}),
+      body: {
+        action: alias.action,
+        ...(options?.body || {}),
+      },
+    };
+    console.info(`[EdgeFn:alias] ${functionName} → ${alias.target} (action=${alias.action})`);
+  }
+
   try {
-    const result = await originalInvoke(functionName, options);
+    const result = await originalInvoke(targetFunction, mergedOptions);
 
     if (result.error) {
       let message = "Service temporarily unavailable. Please try again.";
@@ -36,7 +74,6 @@ supabase.functions.invoke = async function patchedInvoke(
             else if (body?.message) message = body.message;
           }
         } else if (err instanceof Error) {
-          // Keep meaningful messages, replace generic "non-2xx" noise
           if (
             !err.message.includes("non-2xx") &&
             !err.message.includes("FunctionsHttpError") &&
@@ -49,13 +86,11 @@ supabase.functions.invoke = async function patchedInvoke(
         // Context stream already consumed or unavailable – keep default
       }
 
-      console.warn(`[EdgeFn:${functionName}]`, message);
+      console.warn(`[EdgeFn:${targetFunction}]`, message);
 
-      // Return a synthetic error object that behaves like the original
       return {
         data: null,
         error: Object.assign(new Error(message), {
-          // Preserve .message for code that checks error.message
           name: "EdgeFunctionError",
         }),
       };
@@ -63,7 +98,6 @@ supabase.functions.invoke = async function patchedInvoke(
 
     return result;
   } catch (networkErr: any) {
-    // Network failures, CORS issues, timeouts
     const raw = networkErr?.message || "Network error";
     let friendly: string;
 
@@ -77,7 +111,7 @@ supabase.functions.invoke = async function patchedInvoke(
       friendly = "Service temporarily unavailable. Please try again.";
     }
 
-    console.warn(`[EdgeFn:${functionName}] network:`, raw);
+    console.warn(`[EdgeFn:${targetFunction}] network:`, raw);
 
     return {
       data: null,
@@ -88,5 +122,4 @@ supabase.functions.invoke = async function patchedInvoke(
   }
 } as typeof supabase.functions.invoke;
 
-// Signal that the patch has been applied
-console.info("[EdgeFn] Global error handler active");
+console.info("[EdgeFn] Global error handler + alias map active");
