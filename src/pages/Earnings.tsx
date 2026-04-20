@@ -178,7 +178,7 @@ const Earnings = () => {
             const el = document.querySelector('[data-payout-manager]');
             el?.scrollIntoView({ behavior: 'smooth' });
           }}
-          methodLabel="PayPal · Wise · Crypto · IBAN · Stripe"
+          methodLabel="PayPal · Wise · Crypto · Stripe Connect"
         />
         <EarningsGoalTracker monthEarnings={stats.monthEarnings} />
         <EarningsTipsBanner />
