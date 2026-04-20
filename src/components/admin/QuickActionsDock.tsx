@@ -13,7 +13,9 @@ import {
 
 export const QuickActionsDock = () => {
   const nav = useNavigate();
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(() =>
+    typeof window !== "undefined" ? window.innerWidth >= 768 : true
+  );
 
   const actions = [
     { icon: ShieldCheck, label: "Verifications", path: "/admin/verifications", color: "from-emerald-500 to-teal-500" },
