@@ -24,6 +24,7 @@ import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 import VerifyReport from "./pages/VerifyReport";
+import UsernameRedirect from "./pages/UsernameRedirect";
 
 // All other pages - lazy loaded
 import {
@@ -431,6 +432,7 @@ const App = () => {
                         <Route path="/course/:courseName" element={<CourseDetail />} />
                         <Route path="/quiz" element={<Quiz />} />
                         <Route path="/profile/:userId" element={<Profile />} />
+                        <Route path="/u/:username" element={<UsernameRedirect />} />
                         <Route path="/edit-profile" element={<ProtectedRoute><EditProfile /></ProtectedRoute>} />
                         <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
                         <Route path="/subscription" element={<Subscription />} />
