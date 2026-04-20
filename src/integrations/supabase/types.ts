@@ -29388,6 +29388,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          accent_color: string | null
           avatar_3d_url: string | null
           avatar_url: string | null
           bio: string | null
@@ -29396,17 +29397,23 @@ export type Database = {
           company: string | null
           company_name: string | null
           completed_exchanges: number | null
+          cover_url: string | null
           created_at: string
           email: string | null
+          field_visibility: Json | null
           full_name: string | null
+          headline: string | null
           iban: string | null
           id: string
           interests: string[] | null
           is_verified: boolean | null
+          languages: string[] | null
           location: string | null
           occupation: string | null
           phone: string | null
+          profile_theme: string | null
           rating_average: number | null
+          skills: Json | null
           skills_offered: string[] | null
           skills_wanted: string[] | null
           social_links: Json | null
@@ -29421,6 +29428,7 @@ export type Database = {
           website: string | null
         }
         Insert: {
+          accent_color?: string | null
           avatar_3d_url?: string | null
           avatar_url?: string | null
           bio?: string | null
@@ -29429,17 +29437,23 @@ export type Database = {
           company?: string | null
           company_name?: string | null
           completed_exchanges?: number | null
+          cover_url?: string | null
           created_at?: string
           email?: string | null
+          field_visibility?: Json | null
           full_name?: string | null
+          headline?: string | null
           iban?: string | null
           id: string
           interests?: string[] | null
           is_verified?: boolean | null
+          languages?: string[] | null
           location?: string | null
           occupation?: string | null
           phone?: string | null
+          profile_theme?: string | null
           rating_average?: number | null
+          skills?: Json | null
           skills_offered?: string[] | null
           skills_wanted?: string[] | null
           social_links?: Json | null
@@ -29454,6 +29468,7 @@ export type Database = {
           website?: string | null
         }
         Update: {
+          accent_color?: string | null
           avatar_3d_url?: string | null
           avatar_url?: string | null
           bio?: string | null
@@ -29462,17 +29477,23 @@ export type Database = {
           company?: string | null
           company_name?: string | null
           completed_exchanges?: number | null
+          cover_url?: string | null
           created_at?: string
           email?: string | null
+          field_visibility?: Json | null
           full_name?: string | null
+          headline?: string | null
           iban?: string | null
           id?: string
           interests?: string[] | null
           is_verified?: boolean | null
+          languages?: string[] | null
           location?: string | null
           occupation?: string | null
           phone?: string | null
+          profile_theme?: string | null
           rating_average?: number | null
+          skills?: Json | null
           skills_offered?: string[] | null
           skills_wanted?: string[] | null
           social_links?: Json | null
