@@ -62,8 +62,8 @@ export const AICreditsFlashSale = ({ onClaim }: AICreditsFlashSaleProps) => {
           </div>
         </div>
 
-        <div className="flex items-center gap-3 sm:flex-col sm:items-end">
-          <div className="flex items-center gap-1.5 font-mono text-foreground">
+        <div className="flex flex-col items-stretch sm:items-end gap-3 w-full sm:w-auto">
+          <div className="flex items-center gap-1.5 font-mono text-foreground self-start sm:self-auto">
             {[
               { v: time.h, l: "h" },
               { v: time.m, l: "m" },
