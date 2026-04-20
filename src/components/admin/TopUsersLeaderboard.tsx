@@ -3,6 +3,14 @@ import { supabase } from "@/integrations/supabase/client";
 import { Trophy, Crown, Flame, TrendingUp } from "lucide-react";
 
 type Mode = "earners" | "spenders" | "active";
+type Range = "24h" | "7d" | "30d" | "all";
+
+const RANGE_MS: Record<Range, number | null> = {
+  "24h": 86_400_000,
+  "7d": 7 * 86_400_000,
+  "30d": 30 * 86_400_000,
+  "all": null,
+};
 
 interface Row {
   user_id: string;
@@ -26,42 +34,51 @@ const MODE_ICON: Record<Mode, any> = {
 
 export const TopUsersLeaderboard = () => {
   const [mode, setMode] = useState<Mode>("earners");
+  const [range, setRange] = useState<Range>("7d");
   const [rows, setRows] = useState<Row[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let cancel = false;
+    const sinceIso = RANGE_MS[range]
+      ? new Date(Date.now() - (RANGE_MS[range] as number)).toISOString()
+      : null;
+
     const load = async () => {
       setLoading(true);
       try {
         if (mode === "earners") {
-          const { data } = await supabase
+          let q = supabase
             .from("transactions")
-            .select("seller_id, amount")
+            .select("seller_id, amount, created_at")
             .not("seller_id", "is", null)
             .limit(1000);
+          if (sinceIso) q = q.gte("created_at", sinceIso);
+          const { data } = await q;
           const agg = new Map<string, number>();
           (data || []).forEach((t: any) => {
             agg.set(t.seller_id, (agg.get(t.seller_id) || 0) + Number(t.amount || 0));
           });
           await hydrate(agg);
         } else if (mode === "spenders") {
-          const { data } = await supabase
+          let q = supabase
             .from("transactions")
-            .select("buyer_id, amount")
+            .select("buyer_id, amount, created_at")
             .not("buyer_id", "is", null)
             .limit(1000);
+          if (sinceIso) q = q.gte("created_at", sinceIso);
+          const { data } = await q;
           const agg = new Map<string, number>();
           (data || []).forEach((t: any) => {
             agg.set(t.buyer_id, (agg.get(t.buyer_id) || 0) + Number(t.amount || 0));
           });
           await hydrate(agg);
         } else {
-          const since = new Date(Date.now() - 7 * 86400_000).toISOString();
+          const fallbackSince = sinceIso || new Date(Date.now() - 7 * 86400_000).toISOString();
           const { data } = await supabase
             .from("activity_logs")
             .select("user_id")
-            .gte("created_at", since)
+            .gte("created_at", fallbackSince)
             .limit(2000);
           const agg = new Map<string, number>();
           (data || []).forEach((t: any) => {
@@ -104,7 +121,7 @@ export const TopUsersLeaderboard = () => {
     return () => {
       cancel = true;
     };
-  }, [mode]);
+  }, [mode, range]);
 
   const Icon = MODE_ICON[mode];
   const formatValue = (v: number) => (mode === "active" ? `${v} actions` : `€${v.toFixed(2)}`);
@@ -137,6 +154,23 @@ export const TopUsersLeaderboard = () => {
             </button>
           ))}
         </div>
+      </div>
+
+      {/* Range picker */}
+      <div className="flex gap-1 mb-3">
+        {(Object.keys(RANGE_MS) as Range[]).map((r) => (
+          <button
+            key={r}
+            onClick={() => setRange(r)}
+            className={`flex-1 px-2 py-1 text-[10px] rounded-md border transition ${
+              range === r
+                ? "bg-orange-500/20 border-orange-400/40 text-orange-200"
+                : "bg-card/40 border-border text-muted-foreground hover:bg-card/60"
+            }`}
+          >
+            {r === "all" ? "ALL" : r.toUpperCase()}
+          </button>
+        ))}
       </div>
 
       <div className="space-y-1.5 max-h-80 overflow-y-auto pr-1">

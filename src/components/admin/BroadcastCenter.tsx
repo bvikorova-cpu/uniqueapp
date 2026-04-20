@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Megaphone, Send, Users, Crown, Sparkles } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Megaphone, Send, Users, Crown, Sparkles, Save, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -14,12 +14,46 @@ const SEGMENTS = [
   { id: "free", label: "Free tier", icon: Users, color: "bg-slate-500/20 border-slate-400/40 text-slate-200" },
 ];
 
+const DRAFT_KEY = "admin-broadcast-draft";
+
 export const BroadcastCenter = () => {
   const { toast } = useToast();
   const [segment, setSegment] = useState("all");
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [sending, setSending] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
+
+  // Load draft on mount
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(DRAFT_KEY);
+      if (raw) {
+        const d = JSON.parse(raw);
+        if (d.title) setTitle(d.title);
+        if (d.body) setBody(d.body);
+        if (d.segment) setSegment(d.segment);
+      }
+    } catch {}
+  }, []);
+
+  // Auto-save draft
+  useEffect(() => {
+    if (title || body) {
+      localStorage.setItem(DRAFT_KEY, JSON.stringify({ title, body, segment }));
+    }
+  }, [title, body, segment]);
+
+  const saveDraft = () => {
+    localStorage.setItem(DRAFT_KEY, JSON.stringify({ title, body, segment }));
+    toast({ title: "Draft saved", description: "Stored locally on this device" });
+  };
+
+  const clearDraft = () => {
+    localStorage.removeItem(DRAFT_KEY);
+    setTitle("");
+    setBody("");
+  };
 
   const send = async () => {
     if (!title.trim() || !body.trim()) {
@@ -52,6 +86,7 @@ export const BroadcastCenter = () => {
       }
 
       toast({ title: "Broadcast sent", description: `Delivered to ${segment} segment` });
+      localStorage.removeItem(DRAFT_KEY);
       setTitle("");
       setBody("");
     } catch (e: any) {
@@ -99,21 +134,59 @@ export const BroadcastCenter = () => {
         value={body}
         onChange={(e) => setBody(e.target.value)}
         rows={4}
-        className="mb-3 bg-card/40 border-fuchsia-500/20"
+        className="mb-1 bg-card/40 border-fuchsia-500/20"
       />
+      <div className="flex justify-between text-[10px] text-muted-foreground mb-3">
+        <span>{body.length} chars</span>
+        <span className={body.length > 280 ? "text-amber-300" : ""}>
+          {body.length > 280 ? "⚠ Long messages may be truncated in push" : "Optimal length"}
+        </span>
+      </div>
 
-      <div className="flex items-center justify-between">
+      {/* Live preview */}
+      {showPreview && (title || body) && (
+        <div className="mb-3 rounded-xl border border-fuchsia-400/30 bg-gradient-to-br from-fuchsia-500/10 to-purple-500/5 p-4">
+          <div className="text-[10px] uppercase tracking-wider text-fuchsia-300 mb-1.5 flex items-center gap-1">
+            <Eye className="h-3 w-3" /> Push preview
+          </div>
+          <div className="font-bold text-sm">{title || "(no title)"}</div>
+          <div className="text-xs text-muted-foreground mt-1 whitespace-pre-wrap">{body || "(no body)"}</div>
+        </div>
+      )}
+
+      <div className="flex items-center justify-between gap-2 flex-wrap">
         <Badge variant="outline" className="text-[10px]">
           Segment: {SEGMENTS.find((s) => s.id === segment)?.label}
         </Badge>
-        <Button
-          onClick={send}
-          disabled={sending}
-          className="bg-gradient-to-r from-fuchsia-500 to-purple-600 hover:from-fuchsia-600 hover:to-purple-700"
-        >
-          <Send className="h-3.5 w-3.5 mr-1.5" />
-          {sending ? "Sending…" : "Broadcast"}
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => setShowPreview((p) => !p)}
+            className="bg-card/40"
+          >
+            <Eye className="h-3.5 w-3.5 mr-1.5" />
+            {showPreview ? "Hide" : "Preview"}
+          </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={saveDraft}
+            disabled={!title && !body}
+            className="bg-card/40"
+          >
+            <Save className="h-3.5 w-3.5 mr-1.5" />
+            Draft
+          </Button>
+          <Button
+            onClick={send}
+            disabled={sending}
+            className="bg-gradient-to-r from-fuchsia-500 to-purple-600 hover:from-fuchsia-600 hover:to-purple-700"
+          >
+            <Send className="h-3.5 w-3.5 mr-1.5" />
+            {sending ? "Sending…" : "Broadcast"}
+          </Button>
+        </div>
       </div>
     </div>
   );
