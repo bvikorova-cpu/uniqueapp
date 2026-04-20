@@ -163,6 +163,42 @@ export type Database = {
         }
         Relationships: []
       }
+      admin_audit_log: {
+        Row: {
+          action: string
+          admin_id: string
+          created_at: string
+          details: Json | null
+          id: string
+          ip_address: string | null
+          target_id: string | null
+          target_type: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          action: string
+          admin_id: string
+          created_at?: string
+          details?: Json | null
+          id?: string
+          ip_address?: string | null
+          target_id?: string | null
+          target_type?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          action?: string
+          admin_id?: string
+          created_at?: string
+          details?: Json | null
+          id?: string
+          ip_address?: string | null
+          target_id?: string | null
+          target_type?: string | null
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       age_progressions: {
         Row: {
           aged_image_url: string | null
@@ -36531,6 +36567,36 @@ export type Database = {
         }
         Relationships: []
       }
+      system_health_checks: {
+        Row: {
+          checked_at: string
+          component: string
+          error_count: number | null
+          id: string
+          latency_ms: number | null
+          metadata: Json | null
+          status: string
+        }
+        Insert: {
+          checked_at?: string
+          component: string
+          error_count?: number | null
+          id?: string
+          latency_ms?: number | null
+          metadata?: Json | null
+          status?: string
+        }
+        Update: {
+          checked_at?: string
+          component?: string
+          error_count?: number | null
+          id?: string
+          latency_ms?: number | null
+          metadata?: Json | null
+          status?: string
+        }
+        Relationships: []
+      }
       system_status_components: {
         Row: {
           description: string | null
@@ -40999,6 +41065,15 @@ export type Database = {
       }
       is_shadowbanned: { Args: { p_user_id: string }; Returns: boolean }
       is_vip_user: { Args: { user_id_param: string }; Returns: boolean }
+      log_admin_action: {
+        Args: {
+          _action: string
+          _details?: Json
+          _target_id?: string
+          _target_type?: string
+        }
+        Returns: string
+      }
       process_influencer_withdrawal: {
         Args: {
           p_admin_id: string
