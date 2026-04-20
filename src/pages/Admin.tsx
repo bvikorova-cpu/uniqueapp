@@ -29,6 +29,7 @@ const Admin = () => {
   const { toast } = useToast();
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [cmdOpen, setCmdOpen] = useState(false);
   
   // Stats
   const [stats, setStats] = useState({
