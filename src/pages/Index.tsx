@@ -249,8 +249,8 @@ const Index = () => {
           </h1>
 
           <p
-            className="text-base sm:text-xl text-white/80 max-w-2xl mb-8 font-light"
-            style={{ textShadow: "0 2px 10px rgba(0,0,0,0.4)" }}
+            className="text-base sm:text-xl text-white max-w-2xl mb-8 font-semibold"
+            style={{ textShadow: "0 2px 12px rgba(0,0,0,0.85), 0 0 20px rgba(0,0,0,0.6)" }}
           >
             Discover, create, connect — your digital universe starts here
           </p>
