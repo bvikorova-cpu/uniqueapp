@@ -156,6 +156,23 @@ export const TopUsersLeaderboard = () => {
         </div>
       </div>
 
+      {/* Range picker */}
+      <div className="flex gap-1 mb-3">
+        {(Object.keys(RANGE_MS) as Range[]).map((r) => (
+          <button
+            key={r}
+            onClick={() => setRange(r)}
+            className={`flex-1 px-2 py-1 text-[10px] rounded-md border transition ${
+              range === r
+                ? "bg-orange-500/20 border-orange-400/40 text-orange-200"
+                : "bg-card/40 border-border text-muted-foreground hover:bg-card/60"
+            }`}
+          >
+            {r === "all" ? "ALL" : r.toUpperCase()}
+          </button>
+        ))}
+      </div>
+
       <div className="space-y-1.5 max-h-80 overflow-y-auto pr-1">
         {loading && <div className="text-center text-xs text-muted-foreground py-6">Loading…</div>}
         {!loading && rows.length === 0 && (
