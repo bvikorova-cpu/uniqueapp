@@ -33,9 +33,11 @@ const HUBS: Hub[] = [
 export const HubPerformanceMatrix = () => {
   const nav = useNavigate();
   const [counts, setCounts] = useState<Record<string, number>>({});
+  const [deltas, setDeltas] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let cancelled = false;
     const load = async () => {
       const result: Record<string, number> = {};
       await Promise.all(
@@ -50,10 +52,38 @@ export const HubPerformanceMatrix = () => {
           }
         }),
       );
-      setCounts(result);
-      setLoading(false);
+      if (!cancelled) {
+        setCounts(result);
+        setLoading(false);
+      }
     };
     load();
+    const refresh = setInterval(load, 60_000);
+
+    // Realtime delta indicators on tracked tables
+    const channels = HUBS.filter((h) => h.table).map((h) =>
+      (supabase as any)
+        .channel(`hub-${h.key}`)
+        .on("postgres_changes", { event: "INSERT", schema: "public", table: h.table }, () => {
+          setCounts((c) => ({ ...c, [h.key]: (c[h.key] || 0) + 1 }));
+          setDeltas((d) => ({ ...d, [h.key]: (d[h.key] || 0) + 1 }));
+          setTimeout(() => {
+            setDeltas((d) => {
+              const n = { ...d };
+              n[h.key] = Math.max(0, (n[h.key] || 1) - 1);
+              if (n[h.key] === 0) delete n[h.key];
+              return n;
+            });
+          }, 4000);
+        })
+        .subscribe(),
+    );
+
+    return () => {
+      cancelled = true;
+      clearInterval(refresh);
+      channels.forEach((c: any) => supabase.removeChannel(c));
+    };
   }, []);
 
   return (
@@ -73,6 +103,7 @@ export const HubPerformanceMatrix = () => {
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5">
         {HUBS.map((h) => {
           const v = counts[h.key];
+          const delta = deltas[h.key] || 0;
           const healthy = v === undefined ? null : v > 0;
           return (
             <button
@@ -81,6 +112,9 @@ export const HubPerformanceMatrix = () => {
               className="group relative overflow-hidden rounded-xl border border-border/50 bg-card/40 hover:bg-card/70 hover:border-primary/40 transition-all p-3 text-left"
             >
               <div className={`absolute inset-0 opacity-0 group-hover:opacity-10 bg-gradient-to-br ${h.color} transition-opacity`} />
+              {delta > 0 && (
+                <div className="absolute inset-0 bg-emerald-400/10 animate-pulse pointer-events-none" />
+              )}
               <div className="relative flex items-start justify-between mb-2">
                 <div className={`p-1.5 rounded-lg bg-gradient-to-br ${h.color}`}>
                   <h.icon className="h-3.5 w-3.5 text-white" />
@@ -94,7 +128,14 @@ export const HubPerformanceMatrix = () => {
                 )}
               </div>
               <div className="relative">
-                <div className="text-[11px] font-medium truncate">{h.label}</div>
+                <div className="text-[11px] font-medium truncate flex items-center gap-1">
+                  {h.label}
+                  {delta > 0 && (
+                    <span className="text-[9px] px-1 rounded bg-emerald-500/30 text-emerald-200 font-bold">
+                      +{delta}
+                    </span>
+                  )}
+                </div>
                 <div className="text-lg font-bold">
                   {loading ? <span className="opacity-30">···</span> : (v ?? "—")}
                 </div>
