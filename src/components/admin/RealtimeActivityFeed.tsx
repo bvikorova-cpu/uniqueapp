@@ -33,6 +33,54 @@ const colorMap = {
 
 export const RealtimeActivityFeed = () => {
   const [events, setEvents] = useState<Event[]>([]);
+  const [soundOn, setSoundOn] = useState(() => localStorage.getItem("admin-feed-sound") === "1");
+  const [notifOn, setNotifOn] = useState(() => localStorage.getItem("admin-feed-notif") === "1");
+  const [paused, setPaused] = useState(false);
+  const audioCtxRef = useRef<AudioContext | null>(null);
+
+  const playBleep = (type: Event["type"]) => {
+    if (!soundOn) return;
+    try {
+      if (!audioCtxRef.current) {
+        audioCtxRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+      }
+      const ctx = audioCtxRef.current;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      const freq = type === "transaction" ? 880 : type === "user" ? 660 : 440;
+      osc.frequency.value = freq;
+      osc.type = "sine";
+      gain.gain.setValueAtTime(0.0001, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.15, ctx.currentTime + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.25);
+      osc.connect(gain).connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.3);
+    } catch {}
+  };
+
+  const showNotif = (title: string, body: string) => {
+    if (!notifOn) return;
+    if (typeof Notification === "undefined" || Notification.permission !== "granted") return;
+    try {
+      new Notification(title, { body, icon: "/favicon.ico", tag: "admin-feed" });
+    } catch {}
+  };
+
+  const toggleSound = () => {
+    const v = !soundOn;
+    setSoundOn(v);
+    localStorage.setItem("admin-feed-sound", v ? "1" : "0");
+  };
+
+  const toggleNotif = async () => {
+    if (!notifOn && typeof Notification !== "undefined" && Notification.permission === "default") {
+      await Notification.requestPermission();
+    }
+    const v = !notifOn && (typeof Notification === "undefined" ? false : Notification.permission === "granted");
+    setNotifOn(v);
+    localStorage.setItem("admin-feed-notif", v ? "1" : "0");
+  };
 
   useEffect(() => {
     // Initial load
