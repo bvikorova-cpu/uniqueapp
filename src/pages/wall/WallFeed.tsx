@@ -5,7 +5,8 @@ import { PostFilters, SortBy, TimeFilter, CategoryFilter } from "@/components/fe
 import { Loader2 } from "lucide-react";
 import { AchievementsBadge } from "@/components/wall/AchievementsBadge";
 import { SearchBar } from "@/components/wall/SearchBar";
-import { VideoAdCard } from "@/components/wall/VideoAdCard";
+import RewardedAdCard from "@/components/ads/RewardedAdCard";
+import { AD_PLACEMENTS } from "@/components/ads/AdPlacements";
 import { useTranslation } from "react-i18next";
 import type { Post, Repost, FeedItem } from "@/types/database";
 
@@ -106,9 +107,8 @@ export default function WallFeed({
             ) : (
               <>
                 {filteredFeedItems.map((item, index) => (
-                  <>
+                  <div key={`${item.type}-${item.data.id}`}>
                     <div 
-                      key={`${item.type}-${item.data.id}`}
                       className="animate-fade-in"
                       style={{ animationDelay: `${index * 0.05}s` }}
                     >
@@ -124,17 +124,19 @@ export default function WallFeed({
                         />
                       )}
                     </div>
-                    {/* Video ad after every 10th post */}
-                    {(index + 1) % 10 === 0 && (
+                    {/* Rewarded ad after every 15th post */}
+                    {(index + 1) % 15 === 0 && (
                       <div 
-                        key={`ad-${index}`}
-                        className="animate-fade-in"
+                        className="animate-fade-in mt-5"
                         style={{ animationDelay: `${index * 0.05}s` }}
                       >
-                        <VideoAdCard adIndex={Math.floor((index + 1) / 10)} />
+                        <RewardedAdCard 
+                          sectionKey={`wall_feed_${Math.floor((index + 1) / 15)}`}
+                          adSlot={AD_PLACEMENTS.FOOTER_BANNER}
+                        />
                       </div>
                     )}
-                  </>
+                  </div>
                 ))}
                 
                 {/* Loading more indicator */}
