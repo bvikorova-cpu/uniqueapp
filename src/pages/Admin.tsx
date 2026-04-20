@@ -10,7 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { 
   DollarSign, Users, TrendingUp, CreditCard, Search, ChefHat, Mic2, ChevronRight, 
-  UserX, Shield, Terminal, Zap, Coins, Megaphone, Activity, Command
+  UserX, Shield, Terminal, Zap, Coins, Megaphone, Activity, Command, Download
 } from "lucide-react";
 import { ShadowBanToggle } from "@/components/admin/ShadowBanToggle";
 import { CreditOverrideDialog } from "@/components/admin/CreditOverrideDialog";
@@ -273,6 +273,36 @@ const Admin = () => {
             <kbd className="ml-2 hidden sm:inline-flex h-5 select-none items-center gap-1 rounded border border-border bg-muted px-1.5 font-mono text-[10px] font-medium">
               ⌘K
             </kbd>
+          </Button>
+          <Button
+            onClick={() => {
+              const ts = new Date().toISOString();
+              const rows = [
+                ["metric", "value", "captured_at"],
+                ["total_users", String(stats.totalUsers), ts],
+                ["premium_users", String(stats.premiumUsers), ts],
+                ["total_revenue_eur", stats.totalRevenue.toFixed(2), ts],
+                ["monthly_revenue_eur", stats.monthlyRevenue.toFixed(2), ts],
+                ["masterchef_earnings_eur", stats.masterchefEarnings.toFixed(2), ts],
+                ["transactions_count", String(transactions.length), ts],
+                ["subscriptions_count", String(subscriptions.length), ts],
+                ["contact_messages_count", String(messages.length), ts],
+              ];
+              const csv = rows.map((r) => r.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(",")).join("\n");
+              const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement("a");
+              a.href = url;
+              a.download = `admin-snapshot-${ts.slice(0, 10)}.csv`;
+              a.click();
+              URL.revokeObjectURL(url);
+              toast({ title: "Snapshot exported", description: "CSV downloaded" });
+            }}
+            variant="outline"
+            className="gap-2 bg-card/60 backdrop-blur-md border-emerald-500/30 hover:border-emerald-500/60"
+          >
+            <Download className="h-4 w-4 text-emerald-400" />
+            Snapshot CSV
           </Button>
           <SystemHealthMonitor />
         </div>
