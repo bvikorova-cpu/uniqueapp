@@ -219,9 +219,13 @@ const Index = () => {
           muted
           loop
           playsInline
+          preload="metadata"
+          poster="/unique-hero-poster.jpg"
           className="absolute inset-0 w-full h-full object-cover"
-          src="/unique-hero.mp4"
-        />
+        >
+          <source src="/unique-hero-mobile.mp4" type="video/mp4" media="(max-width: 767px)" />
+          <source src="/unique-hero-opt.mp4" type="video/mp4" />
+        </video>
         {/* Gradient fallback behind video */}
         <div className="absolute inset-0 bg-gradient-to-br from-primary via-accent to-primary animate-gradient-shift -z-10" />
         {/* Lighter overlay so brand video stays vivid */}
