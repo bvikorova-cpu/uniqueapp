@@ -10,12 +10,19 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { 
   DollarSign, Users, TrendingUp, CreditCard, Search, ChefHat, Mic2, ChevronRight, 
-  UserX, Shield, Terminal, Zap, Coins, Megaphone, Activity
+  UserX, Shield, Terminal, Zap, Coins, Megaphone, Activity, Command
 } from "lucide-react";
 import { ShadowBanToggle } from "@/components/admin/ShadowBanToggle";
 import { CreditOverrideDialog } from "@/components/admin/CreditOverrideDialog";
 import { GlobalAnnouncementPanel } from "@/components/admin/GlobalAnnouncementPanel";
 import { TransactionLogPanel } from "@/components/admin/TransactionLogPanel";
+import { AdminHero } from "@/components/admin/AdminHero";
+import { RealtimeActivityFeed } from "@/components/admin/RealtimeActivityFeed";
+import { AIInsightsPanel } from "@/components/admin/AIInsightsPanel";
+import { RevenueCharts } from "@/components/admin/RevenueCharts";
+import { SystemHealthMonitor } from "@/components/admin/SystemHealthMonitor";
+import { CommandBar } from "@/components/admin/CommandBar";
+import { AuditLogPanel } from "@/components/admin/AuditLogPanel";
 
 const Admin = () => {
   const navigate = useNavigate();
