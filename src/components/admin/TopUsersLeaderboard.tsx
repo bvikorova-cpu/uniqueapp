@@ -1,0 +1,175 @@
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { Trophy, Crown, Flame, TrendingUp } from "lucide-react";
+
+type Mode = "earners" | "spenders" | "active";
+
+interface Row {
+  user_id: string;
+  name: string;
+  email?: string;
+  value: number;
+  avatar?: string | null;
+}
+
+const MODE_LABEL: Record<Mode, string> = {
+  earners: "Top Earners",
+  spenders: "Top Spenders",
+  active: "Most Active",
+};
+
+const MODE_ICON: Record<Mode, any> = {
+  earners: Crown,
+  spenders: Flame,
+  active: TrendingUp,
+};
+
+export const TopUsersLeaderboard = () => {
+  const [mode, setMode] = useState<Mode>("earners");
+  const [rows, setRows] = useState<Row[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let cancel = false;
+    const load = async () => {
+      setLoading(true);
+      try {
+        if (mode === "earners") {
+          const { data } = await supabase
+            .from("transactions")
+            .select("seller_id, amount")
+            .not("seller_id", "is", null)
+            .limit(1000);
+          const agg = new Map<string, number>();
+          (data || []).forEach((t: any) => {
+            agg.set(t.seller_id, (agg.get(t.seller_id) || 0) + Number(t.amount || 0));
+          });
+          await hydrate(agg);
+        } else if (mode === "spenders") {
+          const { data } = await supabase
+            .from("transactions")
+            .select("buyer_id, amount")
+            .not("buyer_id", "is", null)
+            .limit(1000);
+          const agg = new Map<string, number>();
+          (data || []).forEach((t: any) => {
+            agg.set(t.buyer_id, (agg.get(t.buyer_id) || 0) + Number(t.amount || 0));
+          });
+          await hydrate(agg);
+        } else {
+          const since = new Date(Date.now() - 7 * 86400_000).toISOString();
+          const { data } = await supabase
+            .from("activity_logs")
+            .select("user_id")
+            .gte("created_at", since)
+            .limit(2000);
+          const agg = new Map<string, number>();
+          (data || []).forEach((t: any) => {
+            agg.set(t.user_id, (agg.get(t.user_id) || 0) + 1);
+          });
+          await hydrate(agg);
+        }
+      } catch (e) {
+        console.error(e);
+      } finally {
+        if (!cancel) setLoading(false);
+      }
+    };
+
+    const hydrate = async (agg: Map<string, number>) => {
+      const top = [...agg.entries()].sort((a, b) => b[1] - a[1]).slice(0, 7);
+      const ids = top.map(([id]) => id);
+      if (ids.length === 0) {
+        setRows([]);
+        return;
+      }
+      const { data: profiles } = await supabase
+        .from("profiles")
+        .select("id, full_name, email, avatar_url")
+        .in("id", ids);
+      const byId = new Map<string, any>((profiles || []).map((p: any) => [p.id, p]));
+      if (cancel) return;
+      setRows(
+        top.map(([id, v]) => ({
+          user_id: id,
+          name: byId.get(id)?.full_name || "Unknown",
+          email: byId.get(id)?.email,
+          avatar: byId.get(id)?.avatar_url,
+          value: v,
+        })),
+      );
+    };
+
+    load();
+    return () => {
+      cancel = true;
+    };
+  }, [mode]);
+
+  const Icon = MODE_ICON[mode];
+  const formatValue = (v: number) => (mode === "active" ? `${v} actions` : `€${v.toFixed(2)}`);
+  const medal = (i: number) => (i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : `#${i + 1}`);
+
+  return (
+    <div className="rounded-2xl border border-amber-500/20 bg-gradient-to-br from-amber-500/5 via-card/60 to-orange-500/5 backdrop-blur-xl p-5 shadow-xl">
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-3">
+          <div className="p-2 rounded-xl bg-amber-500/15 border border-amber-500/30">
+            <Trophy className="h-5 w-5 text-amber-300" />
+          </div>
+          <div>
+            <h3 className="font-semibold text-base">{MODE_LABEL[mode]}</h3>
+            <p className="text-xs text-muted-foreground">Live leaderboard</p>
+          </div>
+        </div>
+        <div className="flex gap-1">
+          {(Object.keys(MODE_LABEL) as Mode[]).map((m) => (
+            <button
+              key={m}
+              onClick={() => setMode(m)}
+              className={`px-2 py-1 text-[10px] rounded-md border transition ${
+                mode === m
+                  ? "bg-amber-500/20 border-amber-400/40 text-amber-200"
+                  : "bg-card/40 border-border text-muted-foreground hover:bg-card/60"
+              }`}
+            >
+              {m}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="space-y-1.5 max-h-80 overflow-y-auto pr-1">
+        {loading && <div className="text-center text-xs text-muted-foreground py-6">Loading…</div>}
+        {!loading && rows.length === 0 && (
+          <div className="text-center text-xs text-muted-foreground py-6">No data yet</div>
+        )}
+        {rows.map((r, i) => (
+          <div
+            key={r.user_id}
+            className={`flex items-center gap-3 p-2 rounded-lg border ${
+              i < 3 ? "border-amber-500/30 bg-amber-500/5" : "border-border/40 bg-card/30"
+            }`}
+          >
+            <span className="w-7 text-center text-sm font-bold">{medal(i)}</span>
+            {r.avatar ? (
+              <img src={r.avatar} alt="" className="w-8 h-8 rounded-full object-cover" />
+            ) : (
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-purple-500 flex items-center justify-center text-xs font-bold text-white">
+                {r.name?.[0]?.toUpperCase() || "?"}
+              </div>
+            )}
+            <div className="flex-1 min-w-0">
+              <div className="text-sm font-medium truncate">{r.name}</div>
+              <div className="text-[10px] text-muted-foreground truncate">{r.email}</div>
+            </div>
+            <div className="flex items-center gap-1 text-sm font-bold text-amber-300">
+              <Icon className="h-3.5 w-3.5" />
+              {formatValue(r.value)}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};

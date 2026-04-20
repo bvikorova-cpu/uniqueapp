@@ -23,6 +23,12 @@ import { RevenueCharts } from "@/components/admin/RevenueCharts";
 import { SystemHealthMonitor } from "@/components/admin/SystemHealthMonitor";
 import { CommandBar } from "@/components/admin/CommandBar";
 import { AuditLogPanel } from "@/components/admin/AuditLogPanel";
+import { ActivityHeatmap } from "@/components/admin/ActivityHeatmap";
+import { AnomalyDetector } from "@/components/admin/AnomalyDetector";
+import { QuickActionsDock } from "@/components/admin/QuickActionsDock";
+import { BroadcastCenter } from "@/components/admin/BroadcastCenter";
+import { TopUsersLeaderboard } from "@/components/admin/TopUsersLeaderboard";
+import { HubPerformanceMatrix } from "@/components/admin/HubPerformanceMatrix";
 
 const Admin = () => {
   const navigate = useNavigate();
@@ -277,6 +283,17 @@ const Admin = () => {
           <TransactionLogPanel />
         </div>
 
+        {/* Hub Performance Matrix */}
+        <div className="mb-6">
+          <HubPerformanceMatrix />
+        </div>
+
+        {/* Heatmap + Anomaly Detector */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+          <ActivityHeatmap />
+          <AnomalyDetector />
+        </div>
+
         {/* AI Insights + Realtime Activity */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
           <AIInsightsPanel stats={stats} />
@@ -288,10 +305,18 @@ const Admin = () => {
           <RevenueCharts />
         </div>
 
+        {/* Broadcast + Leaderboard */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+          <BroadcastCenter />
+          <TopUsersLeaderboard />
+        </div>
+
         {/* Audit Log */}
         <div className="mb-8">
           <AuditLogPanel />
         </div>
+
+        <QuickActionsDock />
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
