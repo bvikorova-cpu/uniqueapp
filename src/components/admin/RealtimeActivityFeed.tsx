@@ -169,9 +169,38 @@ export const RealtimeActivityFeed = () => {
             </div>
             Live Activity Stream
           </span>
-          <Badge variant="outline" className="text-[10px] uppercase tracking-wider border-cyan-500/40 text-cyan-300">
-            Realtime
-          </Badge>
+          <div className="flex items-center gap-1">
+            <Button
+              size="icon"
+              variant="ghost"
+              onClick={() => setPaused((p) => !p)}
+              title={paused ? "Resume" : "Pause"}
+              className="h-7 w-7"
+            >
+              {paused ? <Play className="h-3.5 w-3.5 text-amber-400" /> : <Pause className="h-3.5 w-3.5 text-cyan-300" />}
+            </Button>
+            <Button
+              size="icon"
+              variant="ghost"
+              onClick={toggleSound}
+              title={soundOn ? "Mute sounds" : "Enable sounds"}
+              className="h-7 w-7"
+            >
+              {soundOn ? <Volume2 className="h-3.5 w-3.5 text-emerald-400" /> : <VolumeX className="h-3.5 w-3.5 text-muted-foreground" />}
+            </Button>
+            <Button
+              size="icon"
+              variant="ghost"
+              onClick={toggleNotif}
+              title={notifOn ? "Disable notifications" : "Enable desktop notifications"}
+              className="h-7 w-7"
+            >
+              {notifOn ? <Bell className="h-3.5 w-3.5 text-emerald-400" /> : <BellOff className="h-3.5 w-3.5 text-muted-foreground" />}
+            </Button>
+            <Badge variant="outline" className={`text-[10px] uppercase tracking-wider ${paused ? "border-amber-500/40 text-amber-300" : "border-cyan-500/40 text-cyan-300"}`}>
+              {paused ? "Paused" : "Live"}
+            </Badge>
+          </div>
         </CardTitle>
       </CardHeader>
       <CardContent className="max-h-[400px] overflow-y-auto scrollbar-hide space-y-2">
