@@ -111,7 +111,15 @@ const PremiumStore = () => {
         case 'avatar': success = await purchaseAvatar(id, cost); break;
       }
       if (success) {
-        toast({ title: "Purchase successful!", description: `You've unlocked ${name}` });
+        toast({ title: "🎉 Purchase successful!", description: `You've unlocked ${name}` });
+        setConfettiTrigger((t) => t + 1);
+        // Log to leaderboard
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          await supabase.from('premium_store_purchases').insert({
+            user_id: user.id, item_type: type, item_id: id, item_name: name, credits_spent: cost, is_gift: false,
+          });
+        }
       } else {
         throw new Error("Purchase failed");
       }
