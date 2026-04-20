@@ -36370,6 +36370,244 @@ export type Database = {
         }
         Relationships: []
       }
+      support_faq: {
+        Row: {
+          answer: string
+          category: string
+          created_at: string
+          display_order: number
+          helpful_count: number
+          id: string
+          is_active: boolean
+          keywords: string[] | null
+          not_helpful_count: number
+          question: string
+          updated_at: string
+          views_count: number
+        }
+        Insert: {
+          answer: string
+          category?: string
+          created_at?: string
+          display_order?: number
+          helpful_count?: number
+          id?: string
+          is_active?: boolean
+          keywords?: string[] | null
+          not_helpful_count?: number
+          question: string
+          updated_at?: string
+          views_count?: number
+        }
+        Update: {
+          answer?: string
+          category?: string
+          created_at?: string
+          display_order?: number
+          helpful_count?: number
+          id?: string
+          is_active?: boolean
+          keywords?: string[] | null
+          not_helpful_count?: number
+          question?: string
+          updated_at?: string
+          views_count?: number
+        }
+        Relationships: []
+      }
+      support_ticket_messages: {
+        Row: {
+          attachments: Json | null
+          content: string
+          created_at: string
+          id: string
+          sender_id: string | null
+          sender_role: string
+          ticket_id: string
+        }
+        Insert: {
+          attachments?: Json | null
+          content: string
+          created_at?: string
+          id?: string
+          sender_id?: string | null
+          sender_role?: string
+          ticket_id: string
+        }
+        Update: {
+          attachments?: Json | null
+          content?: string
+          created_at?: string
+          id?: string
+          sender_id?: string | null
+          sender_role?: string
+          ticket_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "support_ticket_messages_ticket_id_fkey"
+            columns: ["ticket_id"]
+            isOneToOne: false
+            referencedRelation: "support_tickets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      support_tickets: {
+        Row: {
+          ai_suggested_category: string | null
+          ai_suggested_faq_id: string | null
+          assigned_to: string | null
+          attachments: Json | null
+          category: string
+          created_at: string
+          email: string
+          id: string
+          language: string | null
+          message: string
+          name: string
+          priority: string
+          resolved_at: string | null
+          satisfaction_comment: string | null
+          satisfaction_rating: number | null
+          screen_recording_url: string | null
+          sentiment: string | null
+          status: string
+          subject: string
+          ticket_number: string | null
+          updated_at: string
+          user_id: string | null
+          voice_url: string | null
+        }
+        Insert: {
+          ai_suggested_category?: string | null
+          ai_suggested_faq_id?: string | null
+          assigned_to?: string | null
+          attachments?: Json | null
+          category?: string
+          created_at?: string
+          email: string
+          id?: string
+          language?: string | null
+          message: string
+          name: string
+          priority?: string
+          resolved_at?: string | null
+          satisfaction_comment?: string | null
+          satisfaction_rating?: number | null
+          screen_recording_url?: string | null
+          sentiment?: string | null
+          status?: string
+          subject: string
+          ticket_number?: string | null
+          updated_at?: string
+          user_id?: string | null
+          voice_url?: string | null
+        }
+        Update: {
+          ai_suggested_category?: string | null
+          ai_suggested_faq_id?: string | null
+          assigned_to?: string | null
+          attachments?: Json | null
+          category?: string
+          created_at?: string
+          email?: string
+          id?: string
+          language?: string | null
+          message?: string
+          name?: string
+          priority?: string
+          resolved_at?: string | null
+          satisfaction_comment?: string | null
+          satisfaction_rating?: number | null
+          screen_recording_url?: string | null
+          sentiment?: string | null
+          status?: string
+          subject?: string
+          ticket_number?: string | null
+          updated_at?: string
+          user_id?: string | null
+          voice_url?: string | null
+        }
+        Relationships: []
+      }
+      system_status_components: {
+        Row: {
+          description: string | null
+          display_order: number
+          id: string
+          name: string
+          slug: string
+          status: string
+          updated_at: string
+          uptime_30d: number | null
+        }
+        Insert: {
+          description?: string | null
+          display_order?: number
+          id?: string
+          name: string
+          slug: string
+          status?: string
+          updated_at?: string
+          uptime_30d?: number | null
+        }
+        Update: {
+          description?: string | null
+          display_order?: number
+          id?: string
+          name?: string
+          slug?: string
+          status?: string
+          updated_at?: string
+          uptime_30d?: number | null
+        }
+        Relationships: []
+      }
+      system_status_incidents: {
+        Row: {
+          component_id: string | null
+          created_at: string
+          description: string | null
+          id: string
+          resolved_at: string | null
+          severity: string
+          started_at: string
+          status: string
+          title: string
+        }
+        Insert: {
+          component_id?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          resolved_at?: string | null
+          severity?: string
+          started_at?: string
+          status?: string
+          title: string
+        }
+        Update: {
+          component_id?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          resolved_at?: string | null
+          severity?: string
+          started_at?: string
+          status?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "system_status_incidents_component_id_fkey"
+            columns: ["component_id"]
+            isOneToOne: false
+            referencedRelation: "system_status_components"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       talent_campaigns: {
         Row: {
           achievements: string[] | null
