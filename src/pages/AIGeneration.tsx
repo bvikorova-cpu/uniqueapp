@@ -16,6 +16,8 @@ import { InpaintingView } from "@/components/ai-generation/views/InpaintingView"
 import { BatchGenerationView } from "@/components/ai-generation/views/BatchGenerationView";
 import { PromptHistoryView } from "@/components/ai-generation/views/PromptHistoryView";
 import { ImageToPromptView } from "@/components/ai-generation/views/ImageToPromptView";
+import { AICreditsLowBalanceAlert } from "@/components/ai-credits/AICreditsLowBalanceAlert";
+import { AICreditsLiveTicker } from "@/components/ai-credits/AICreditsLiveTicker";
 
 type ActiveView = 'hub' | 'generate' | 'editor' | 'style' | 'upscaler' | 'gallery' | 'variations' | 'community' | 'inpainting' | 'batch' | 'history' | 'img2prompt';
 
@@ -68,6 +70,9 @@ const AIGeneration = () => {
         ) : (
           <>
             <AIGenHero credits={credits.credits_remaining} />
+
+            <AICreditsLowBalanceAlert credits={credits.credits_remaining} />
+            <AICreditsLiveTicker />
 
             {/* Engagement Row */}
             <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-8">
