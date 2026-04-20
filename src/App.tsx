@@ -24,6 +24,7 @@ import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 import VerifyReport from "./pages/VerifyReport";
+import UsernameRedirect from "./pages/UsernameRedirect";
 
 // All other pages - lazy loaded
 import {
