@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Activity, UserPlus, CreditCard, AlertCircle, Zap, MessageSquare } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Activity, UserPlus, CreditCard, AlertCircle, Zap, MessageSquare, Volume2, VolumeX, Bell, BellOff, Pause, Play } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
 import { formatDistanceToNow } from "date-fns";
