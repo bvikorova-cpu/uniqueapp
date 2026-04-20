@@ -5,6 +5,7 @@ import { Check, ChefHat, Crown, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
+import { ModuleSubscriptionHero } from "@/components/subscription/ModuleSubscriptionHero";
 
 const TIERS = {
   amateur: {
@@ -119,14 +120,13 @@ export default function MasterChefSubscription() {
               Go to Dashboard →
             </Button>
           </div>
-          <div className="inline-block mb-6 px-6 py-2 bg-orange-500/20 rounded-full border border-orange-500/30">
-            <span className="text-orange-600 dark:text-orange-400 font-semibold text-sm uppercase tracking-wider">
-              Online Cooking Competition
-            </span>
-          </div>
-          <h1 className="text-5xl md:text-7xl font-black mb-6 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
-            MasterChef Platform
-          </h1>
+          <ModuleSubscriptionHero
+            module="MasterChef Platform"
+            icon={ChefHat}
+            badge="Cooking battles"
+            title="Compete. Cook. Conquer."
+            subtitle="Join the world's most exciting online cooking arena — vote, compete, win prizes."
+          />
           <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed mb-8">
             Compete, vote, and become the king of the kitchen! Choose the package that suits you best.
           </p>

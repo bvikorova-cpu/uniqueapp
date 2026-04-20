@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Check, Crown, Sparkles, Zap, ExternalLink } from "lucide-react";
+import { Check, Crown, Zap, ExternalLink, Sparkles, Shield, Headphones, Award } from "lucide-react";
+import { motion } from "framer-motion";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -14,15 +15,22 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { SubscriptionHero } from "@/components/subscription/SubscriptionHero";
+import { BillingToggle } from "@/components/subscription/BillingToggle";
+import { ComparisonTable } from "@/components/subscription/ComparisonTable";
+import { SubscriptionFAQ } from "@/components/subscription/SubscriptionFAQ";
+import { SubscriptionTestimonials } from "@/components/subscription/SubscriptionTestimonials";
+import { SavingsCalculator } from "@/components/subscription/SavingsCalculator";
 
 const Subscription = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [user, setUser] = useState<any>(null);
-  const [currentTier, setCurrentTier] = useState<string>('basic');
+  const [currentTier, setCurrentTier] = useState<string>("basic");
   const [loading, setLoading] = useState(true);
   const [canceling, setCanceling] = useState(false);
   const [stripeUrl, setStripeUrl] = useState<string | null>(null);
+  const [yearly, setYearly] = useState(false);
 
   useEffect(() => {
     checkAuth();
@@ -31,82 +39,57 @@ const Subscription = () => {
   const checkAuth = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      
       if (!user) {
-        navigate('/auth');
+        navigate("/auth");
         return;
       }
-
       setUser(user);
-
-      // Check current subscription
       const { data: sub } = await supabase
-        .from('subscriptions')
-        .select('*')
-        .eq('user_id', user.id)
-        .eq('status', 'active')
-        .order('created_at', { ascending: false })
+        .from("subscriptions")
+        .select("*")
+        .eq("user_id", user.id)
+        .eq("status", "active")
+        .order("created_at", { ascending: false })
         .limit(1)
         .maybeSingle();
-
-      if (sub) {
-        setCurrentTier(sub.tier);
-      }
+      if (sub) setCurrentTier(sub.tier);
     } catch (error) {
-      console.error('Auth check error:', error);
+      console.error("Auth check error:", error);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleSubscribe = async (tier: string, price: number) => {
+  const handleSubscribe = async (tier: string) => {
     if (!user) return;
-
     try {
-      // Create Stripe checkout session
-      const { data, error } = await supabase.functions.invoke('create-subscription-checkout', {
-        body: { tier }
+      const { data, error } = await supabase.functions.invoke("create-subscription-checkout", {
+        body: { tier, billing: yearly ? "yearly" : "monthly" },
       });
-
       if (error) throw error;
-
-      if (data?.url) {
-        setStripeUrl(data.url);
-      }
+      if (data?.url) setStripeUrl(data.url);
     } catch (error) {
-      console.error('Subscription error:', error);
-      toast({
-        title: "Error",
-        description: "Failed to create payment",
-        variant: "destructive",
-      });
+      console.error("Subscription error:", error);
+      toast({ title: "Error", description: "Failed to create payment", variant: "destructive" });
     }
   };
 
   const handleCancelSubscription = async () => {
-    if (!user || currentTier === 'basic') return;
-
+    if (!user || currentTier === "basic") return;
     setCanceling(true);
     try {
-      const { data, error } = await supabase.functions.invoke('cancel-subscription', {
-        body: { subscriptionType: 'general' }
+      const { data, error } = await supabase.functions.invoke("cancel-subscription", {
+        body: { subscriptionType: "general" },
       });
-
       if (error) throw error;
-
       toast({
         title: "Subscription cancelled",
         description: data.message || "Subscription will be cancelled at the end of the current period",
       });
-
       await checkAuth();
     } catch (error) {
-      console.error('Cancellation error:', error);
-      toast({
-        title: "Error",
-        description: "Failed to cancel subscription",
-        variant: "destructive",
-      });
+      console.error("Cancellation error:", error);
+      toast({ title: "Error", description: "Failed to cancel subscription", variant: "destructive" });
     } finally {
       setCanceling(false);
     }
@@ -115,93 +98,106 @@ const Subscription = () => {
   useEffect(() => {
     const checkPaymentStatus = async () => {
       const urlParams = new URLSearchParams(window.location.search);
-      const success = urlParams.get('success');
-      const tier = urlParams.get('tier');
-
-      if (success === 'true' && tier) {
-        toast({
-          title: "Payment processing",
-          description: "Verifying subscription status...",
-        });
-
-        // Check subscription status
-        const { data, error } = await supabase.functions.invoke('check-subscription');
-        
+      const success = urlParams.get("success");
+      const tier = urlParams.get("tier");
+      if (success === "true" && tier) {
+        toast({ title: "Payment processing", description: "Verifying subscription status..." });
+        const { data, error } = await supabase.functions.invoke("check-subscription");
         if (!error && data?.tier) {
           setCurrentTier(data.tier);
-          toast({
-            title: "Success!",
-            description: `${tier.toUpperCase()} subscription has been activated`,
-          });
+          toast({ title: "Success!", description: `${tier.toUpperCase()} subscription has been activated` });
         }
-
-        // Clean URL
-        window.history.replaceState({}, '', '/subscription');
+        window.history.replaceState({}, "", "/subscription");
       }
     };
-
-    if (user) {
-      checkPaymentStatus();
-    }
+    if (user) checkPaymentStatus();
   }, [user]);
 
   if (loading) {
-    return <div className="min-h-screen bg-background flex items-center justify-center">Loading...</div>;
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary" />
+      </div>
+    );
   }
+
+  const monthlyPrices = { basic: 5, premium: 15, business: 50 };
+  const yearlyPrices = { basic: 48, premium: 144, business: 480 }; // 20% off ×12
+  const prices = yearly ? yearlyPrices : monthlyPrices;
+  const period = yearly ? "/year" : "/month";
 
   const plans = [
     {
-      tier: 'basic',
-      name: 'Basic',
-      price: 5,
+      tier: "basic",
+      name: "Basic",
+      tagline: "Get started for free essentials",
+      price: prices.basic,
       icon: Check,
+      gradient: "from-slate-500/20 to-slate-700/10",
+      iconBg: "bg-slate-500/10",
+      iconColor: "text-slate-400",
       popular: false,
       features: [
-        '5 Bazaar listings/month',
-        '5 auctions/month',
-        'All basic features',
-        '3% sales commission',
-        '20 AI generations/month',
-        'Email support'
+        "5 Bazaar listings/month",
+        "5 auctions/month",
+        "All basic features",
+        "3% sales commission",
+        "20 AI generations/month",
+        "Email support",
       ],
     },
     {
-      tier: 'premium',
-      name: 'Premium',
-      price: 15,
+      tier: "premium",
+      name: "Premium",
+      tagline: "Most loved by serious creators",
+      price: prices.premium,
       icon: Crown,
+      gradient: "from-primary/30 via-purple-500/20 to-amber-400/10",
+      iconBg: "bg-gradient-to-br from-primary/20 to-purple-500/20",
+      iconColor: "text-primary",
       popular: true,
       features: [
-        'Unlimited listings',
-        'Unlimited auctions',
-        '0% sales commission',
-        '50 AI generations/month',
-        'Featured listings (3/month)',
-        'Priority support',
-        'Analytics & statistics'
+        "Unlimited listings",
+        "Unlimited auctions",
+        "0% sales commission",
+        "50 AI generations/month",
+        "Featured listings (3/month)",
+        "Priority support",
+        "Analytics & statistics",
       ],
     },
     {
-      tier: 'business',
-      name: 'Business',
-      price: 50,
+      tier: "business",
+      name: "Business",
+      tagline: "Scale without limits",
+      price: prices.business,
       icon: Zap,
+      gradient: "from-amber-500/20 via-orange-500/10 to-rose-500/10",
+      iconBg: "bg-gradient-to-br from-amber-500/20 to-orange-500/20",
+      iconColor: "text-amber-500",
       popular: false,
       features: [
-        'Everything from Premium',
-        '0% commission forever',
-        'Unlimited AI features',
-        'Unlimited featured listings',
-        'Custom branding',
-        'API access',
-        'Dedicated support',
-        'Personal account manager'
+        "Everything from Premium",
+        "0% commission forever",
+        "Unlimited AI features",
+        "Unlimited featured listings",
+        "Custom branding",
+        "API access",
+        "Dedicated support",
+        "Personal account manager",
       ],
     },
   ];
 
+  const trustBadges = [
+    { icon: Shield, label: "Bank-grade security" },
+    { icon: Award, label: "GDPR compliant" },
+    { icon: Headphones, label: "24/7 support" },
+    { icon: Sparkles, label: "Cancel anytime" },
+  ];
+
   return (
-    <div className="min-h-screen bg-background pt-20 pb-12">
+    <div className="min-h-screen bg-background pt-20 pb-16">
       <AlertDialog open={!!stripeUrl} onOpenChange={() => setStripeUrl(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -209,27 +205,16 @@ const Subscription = () => {
               <Crown className="h-5 w-5 text-primary" />
               Subscription Ready
             </AlertDialogTitle>
-            <AlertDialogDescription className="space-y-4">
-              <p>Click the button below to complete payment via Stripe:</p>
+            <AlertDialogDescription>
+              Click the button below to complete payment securely via Stripe.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="flex-col sm:flex-col gap-2">
-            <Button
-              onClick={() => {
-                if (stripeUrl) {
-                  window.open(stripeUrl, '_blank');
-                }
-              }}
-              className="w-full gap-2"
-            >
+            <Button onClick={() => stripeUrl && window.open(stripeUrl, "_blank")} className="w-full gap-2">
               <ExternalLink className="h-4 w-4" />
               Open Stripe Payment
             </Button>
-            <Button
-              variant="outline"
-              onClick={() => setStripeUrl(null)}
-              className="w-full"
-            >
+            <Button variant="outline" onClick={() => setStripeUrl(null)} className="w-full">
               Cancel
             </Button>
           </AlertDialogFooter>
@@ -237,104 +222,165 @@ const Subscription = () => {
       </AlertDialog>
 
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-black mb-4">
-            Choose Your{" "}
-            <span className="bg-gradient-to-r from-primary to-purple-500 bg-clip-text text-transparent">
-              Subscription
-            </span>
-          </h1>
-          <p className="text-xl text-muted-foreground">
-            Get more from the Unique platform
-          </p>
-          {currentTier !== 'basic' && (
-            <Badge className="mt-4" variant="default">
-              Current: {currentTier.toUpperCase()}
-            </Badge>
-          )}
-        </div>
+        <SubscriptionHero currentTier={currentTier} />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
-          {plans.map((plan) => {
+        <BillingToggle yearly={yearly} onChange={setYearly} />
+
+        {/* Plans grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+          {plans.map((plan, idx) => {
             const Icon = plan.icon;
             const isCurrent = currentTier === plan.tier;
-            
             return (
-              <Card 
+              <motion.div
                 key={plan.tier}
-                className={`relative ${plan.popular ? 'ring-2 ring-primary shadow-lg scale-105' : ''} ${isCurrent ? 'border-green-500' : ''}`}
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 + idx * 0.1 }}
               >
-                {plan.popular && (
-                  <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                    <Badge className="bg-primary text-primary-foreground">
-                      Most Popular
-                    </Badge>
-                  </div>
-                )}
-                
-                {isCurrent && (
-                  <div className="absolute -top-4 right-4">
-                    <Badge className="bg-green-500 text-white">
-                      Current
-                    </Badge>
-                  </div>
-                )}
+                <Card
+                  className={`relative overflow-hidden h-full transition-all hover:scale-[1.02] hover:shadow-2xl ${
+                    plan.popular ? "ring-2 ring-primary shadow-xl shadow-primary/20 lg:scale-105" : ""
+                  } ${isCurrent ? "border-emerald-500/50" : ""}`}
+                >
+                  {/* Gradient top accent */}
+                  <div className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${plan.gradient}`} />
+                  {/* Background gradient */}
+                  <div className={`absolute inset-0 bg-gradient-to-br ${plan.gradient} opacity-30 pointer-events-none`} />
 
-                <CardHeader className="text-center pb-8">
-                  <div className="flex justify-center mb-4">
-                    <div className={`p-3 rounded-full ${plan.popular ? 'bg-primary/10' : 'bg-muted'}`}>
-                      <Icon className={`h-8 w-8 ${plan.popular ? 'text-primary' : 'text-muted-foreground'}`} />
+                  {plan.popular && (
+                    <div className="absolute -top-1 left-1/2 -translate-x-1/2">
+                      <Badge className="bg-gradient-to-r from-primary to-purple-500 text-primary-foreground border-0 px-3 py-1 shadow-lg">
+                        ⭐ Most Popular
+                      </Badge>
                     </div>
-                  </div>
-                  <CardTitle className="text-2xl">{plan.name}</CardTitle>
-                  <div className="mt-4">
-                    <span className="text-4xl font-bold">{plan.price}€</span>
-                    {plan.price > 0 && <span className="text-muted-foreground">/month</span>}
-                  </div>
-                </CardHeader>
+                  )}
+                  {isCurrent && (
+                    <div className="absolute top-4 right-4 z-10">
+                      <Badge className="bg-emerald-500 text-white border-0">Current</Badge>
+                    </div>
+                  )}
 
-                <CardContent className="space-y-6">
-                  <ul className="space-y-3">
-                    {plan.features.map((feature, i) => (
-                      <li key={i} className="flex items-start gap-2">
-                        <Check className="h-5 w-5 text-green-500 shrink-0 mt-0.5" />
-                        <span className="text-sm">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
+                  <CardHeader className="text-center pb-6 relative">
+                    <div className="flex justify-center mb-4">
+                      <div className={`p-4 rounded-2xl ${plan.iconBg}`}>
+                        <Icon className={`h-8 w-8 ${plan.iconColor}`} />
+                      </div>
+                    </div>
+                    <CardTitle className="text-2xl font-black">{plan.name}</CardTitle>
+                    <p className="text-xs text-muted-foreground mt-1">{plan.tagline}</p>
+                    <div className="mt-4 flex items-baseline justify-center gap-1">
+                      <span className="text-5xl font-black bg-gradient-to-br from-foreground to-foreground/60 bg-clip-text text-transparent">
+                        €{plan.price}
+                      </span>
+                      <span className="text-muted-foreground text-sm">{period}</span>
+                    </div>
+                    {yearly && (
+                      <p className="text-xs text-emerald-500 font-semibold mt-1">
+                        Save €{(monthlyPrices[plan.tier as keyof typeof monthlyPrices] * 12) - plan.price} vs monthly
+                      </p>
+                    )}
+                  </CardHeader>
 
-                  <Button
-                    className="w-full"
-                    variant={plan.popular ? 'default' : 'outline'}
-                    disabled={isCurrent}
-                    onClick={() => handleSubscribe(plan.tier, plan.price)}
-                  >
-                    {isCurrent ? 'Current Plan' : 'Select Plan'}
-                  </Button>
-                </CardContent>
-              </Card>
+                  <CardContent className="space-y-6 relative">
+                    <ul className="space-y-3">
+                      {plan.features.map((feature, i) => (
+                        <li key={i} className="flex items-start gap-2.5">
+                          <div className="mt-0.5 p-0.5 rounded-full bg-emerald-500/20">
+                            <Check className="h-3.5 w-3.5 text-emerald-500" strokeWidth={3} />
+                          </div>
+                          <span className="text-sm">{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+
+                    <Button
+                      className={`w-full font-semibold ${
+                        plan.popular
+                          ? "bg-gradient-to-r from-primary to-purple-500 hover:from-primary/90 hover:to-purple-500/90 shadow-lg shadow-primary/30"
+                          : ""
+                      }`}
+                      variant={plan.popular ? "default" : "outline"}
+                      size="lg"
+                      disabled={isCurrent}
+                      onClick={() => handleSubscribe(plan.tier)}
+                    >
+                      {isCurrent ? "Current Plan" : plan.popular ? "Get Premium" : `Choose ${plan.name}`}
+                    </Button>
+                  </CardContent>
+                </Card>
+              </motion.div>
             );
           })}
         </div>
 
-        {currentTier !== 'basic' && (
-          <div className="mt-8 text-center">
-            <Button 
-              variant="outline" 
+        {/* Trust badges */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.6 }}
+          className="mt-10 flex flex-wrap justify-center gap-3 sm:gap-6 text-sm text-muted-foreground"
+        >
+          {trustBadges.map((b) => (
+            <div key={b.label} className="flex items-center gap-1.5">
+              <b.icon className="h-4 w-4 text-primary" />
+              <span>{b.label}</span>
+            </div>
+          ))}
+        </motion.div>
+
+        {/* Cancel button */}
+        {currentTier !== "basic" && (
+          <div className="mt-10 text-center">
+            <Button
+              variant="ghost"
+              size="sm"
               onClick={handleCancelSubscription}
               disabled={canceling}
-              className="text-red-500 border-red-500 hover:bg-red-50 dark:hover:bg-red-950"
+              className="text-muted-foreground hover:text-destructive"
             >
-              {canceling ? 'Cancelling...' : 'Cancel Subscription'}
+              {canceling ? "Cancelling..." : "Cancel current subscription"}
             </Button>
           </div>
         )}
 
-        <div className="mt-12 text-center text-sm text-muted-foreground">
-          <p>All prices are in EUR. Subscription is monthly and can be cancelled anytime.</p>
-          <p className="mt-2">Commissions are charged only on successful sales in Auctions and Bazaar.</p>
-          <p className="mt-2">When cancelling subscription, it remains active until the end of the paid period. Paid amount is non-refundable.</p>
-        </div>
+        {/* Savings calculator */}
+        <SavingsCalculator />
+
+        {/* Comparison */}
+        <ComparisonTable />
+
+        {/* Testimonials */}
+        <SubscriptionTestimonials />
+
+        {/* FAQ */}
+        <SubscriptionFAQ />
+
+        {/* Final CTA */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="mt-20 max-w-4xl mx-auto text-center p-12 rounded-3xl bg-gradient-to-br from-primary/20 via-purple-500/10 to-amber-400/10 border border-primary/30 backdrop-blur-xl"
+        >
+          <Crown className="h-12 w-12 text-primary mx-auto mb-4" />
+          <h2 className="text-3xl sm:text-4xl font-black mb-3">Ready to go Premium?</h2>
+          <p className="text-muted-foreground mb-6 max-w-xl mx-auto">
+            Join thousands of creators turning passion into income. Cancel anytime, keep everything you build.
+          </p>
+          <Button
+            size="lg"
+            className="bg-gradient-to-r from-primary to-purple-500 shadow-lg shadow-primary/30 font-semibold"
+            onClick={() => handleSubscribe("premium")}
+            disabled={currentTier === "premium"}
+          >
+            <Crown className="h-4 w-4 mr-2" />
+            {currentTier === "premium" ? "You're on Premium ✨" : "Start Premium Today"}
+          </Button>
+          <p className="mt-4 text-xs text-muted-foreground">
+            All prices in EUR · Secure payments via Stripe · Cancel anytime
+          </p>
+        </motion.div>
       </div>
     </div>
   );

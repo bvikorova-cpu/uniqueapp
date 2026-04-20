@@ -3,6 +3,7 @@ import SubscriptionPlans from "@/components/nutrition/SubscriptionPlans";
 import { Card, CardContent } from "@/components/ui/card";
 import { useNutritionSubscription } from "@/hooks/useNutritionSubscription";
 import { Apple, Loader2 } from "lucide-react";
+import { ModuleSubscriptionHero } from "@/components/subscription/ModuleSubscriptionHero";
 
 export default function NutritionSubscriptions() {
   const { subscription, loading } = useNutritionSubscription();
@@ -10,18 +11,16 @@ export default function NutritionSubscriptions() {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-      
-      <main className="flex-1 container mx-auto px-4 py-24">
+
+      <main className="flex-1 container mx-auto px-4 pt-20 pb-16">
         <div className="max-w-6xl mx-auto space-y-8">
-          <div className="text-center space-y-4">
-            <div className="inline-flex items-center gap-2 bg-primary/10 px-4 py-2 rounded-full">
-              <Apple className="h-5 w-5 text-primary" />
-              <span className="text-sm font-medium">Nutrition Hub Subscriptions</span>
-            </div>
-            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
-              Upgrade Your Nutrition Journey
-            </h1>
-          </div>
+          <ModuleSubscriptionHero
+            module="Nutrition Hub"
+            icon={Apple}
+            badge="Most popular"
+            title="Upgrade your nutrition journey"
+            subtitle="Personalized AI meal plans, macro tracking, expert guidance — fuel your best self."
+          />
 
           {loading ? (
             <div className="flex items-center justify-center py-12">

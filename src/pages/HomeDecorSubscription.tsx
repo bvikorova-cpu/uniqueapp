@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import Navbar from "@/components/Navbar";
 import { useNavigate } from "react-router-dom";
+import { ModuleSubscriptionHero } from "@/components/subscription/ModuleSubscriptionHero";
 
 const HomeDecorSubscription = () => {
   const navigate = useNavigate();
@@ -58,15 +59,13 @@ const HomeDecorSubscription = () => {
     <div className="min-h-screen bg-background">
       <Navbar />
       <div className="container mx-auto px-4 pt-24 pb-12 max-w-6xl">
-        <div className="text-center mb-12">
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <Home className="h-12 w-12 text-primary" />
-            <h1 className="text-4xl md:text-5xl font-bold">Pro Designer Plans</h1>
-          </div>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Unlock the full power of AI-driven interior design
-          </p>
-        </div>
+        <ModuleSubscriptionHero
+          module="Home Decor Studio"
+          icon={Home}
+          badge="AI designer"
+          title="Pro Designer Plan"
+          subtitle="Unlock the full power of AI-driven interior design — unlimited rooms, palettes and staging."
+        />
 
         {currentSubscription && (
           <Card className="mb-8 bg-gradient-subtle">
