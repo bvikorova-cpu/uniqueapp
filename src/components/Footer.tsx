@@ -41,7 +41,7 @@ const Footer = () => {
               </li>
               <li>
                 <Link 
-                  to="/terms#privacy" 
+                  to="/legal/privacy" 
                   className="text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2"
                 >
                   <Lock className="h-3 w-3" />
@@ -50,7 +50,7 @@ const Footer = () => {
               </li>
               <li>
                 <Link 
-                  to="/terms#privacy" 
+                  to="/legal/privacy" 
                   className="text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2"
                 >
                   <BookOpen className="h-3 w-3" />
