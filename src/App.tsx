@@ -350,6 +350,18 @@ const App = () => {
     document.documentElement.lang = i18n.language;
   }, [i18n.language]);
 
+  // A11Y: Auto-detect prefers-reduced-motion and apply system-wide
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const apply = (matches: boolean) => {
+      document.body.classList.toggle("reduce-animations", matches);
+    };
+    apply(mediaQuery.matches);
+    const handler = (e: MediaQueryListEvent) => apply(e.matches);
+    mediaQuery.addEventListener("change", handler);
+    return () => mediaQuery.removeEventListener("change", handler);
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
