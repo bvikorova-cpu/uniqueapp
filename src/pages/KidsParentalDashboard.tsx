@@ -22,6 +22,7 @@ import { ContentBlocking } from "@/components/kids/parental/ContentBlocking";
 import { AchievementTracking } from "@/components/kids/parental/AchievementTracking";
 import { ActivityTimeline } from "@/components/kids/parental/ActivityTimeline";
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 interface UsageStats {
   homework_tasks: number;
   science_experiments: number;
@@ -150,6 +151,8 @@ export default function KidsParentalDashboard() {
         </div>
 
         <ParentalHero />
+        <HeroRewardedAd sectionKey="page_kidsparentaldashboard" />
+
         <ChildProfileCards />
 
         <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">

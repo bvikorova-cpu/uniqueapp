@@ -32,6 +32,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, Briefcase, Check, Crown, Sparkles } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 const VirtualEscapeRoom = () => {
   const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null);
   const [activeView, setActiveView] = useState("dashboard");
@@ -123,6 +124,8 @@ const VirtualEscapeRoom = () => {
         return (
           <>
             <EscapeRoomHero />
+            <HeroRewardedAd sectionKey="page_virtualescaperoom" />
+
             <EscapeRoomEngagement />
             <h2 className="text-xl font-bold mb-4">Tools & Features</h2>
             <EscapeRoomToolGrid onToolSelect={setActiveView} />

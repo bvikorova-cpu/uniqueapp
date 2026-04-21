@@ -28,6 +28,7 @@ import { AnonymousDateIdeasShowcase } from "@/components/anonymous-date/Anonymou
 import { AnonymousDateAIToolbox } from "@/components/anonymous-date/AnonymousDateAIToolbox";
 import { FloatingParticles } from "@/components/wellness/FloatingParticles";
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 type ViewType = "hub" | "matches" | "find" | "credits" | "profile";
 
 const DATING_TOOLS = [
@@ -260,6 +261,8 @@ export default function AnonymousDate() {
               className="space-y-8"
             >
               <AnonymousDateHero />
+
+              <HeroRewardedAd sectionKey="page_anonymousdate" />
 
               {/* Subscription Status */}
               {subscriptionEnd && (

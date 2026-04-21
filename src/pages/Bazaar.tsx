@@ -23,6 +23,7 @@ import { ListingOptimizerView } from "@/components/bazaar/views/ListingOptimizer
 import { BuyerMatchView } from "@/components/bazaar/views/BuyerMatchView";
 import { FraudDetectorView } from "@/components/bazaar/views/FraudDetectorView";
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 interface BazaarItem {
   id: string;
   title: string;
@@ -310,6 +311,8 @@ const Bazaar = () => {
       <div className="container mx-auto px-3 sm:px-4 max-w-7xl">
         {/* Cinematic Hero */}
         <BazaarHero itemCount={items.length} />
+
+        <HeroRewardedAd sectionKey="page_bazaar" />
 
         {/* 3-Column Engagement Row */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">

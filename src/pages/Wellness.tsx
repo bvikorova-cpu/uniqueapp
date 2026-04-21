@@ -27,6 +27,7 @@ import { DailyWellnessChallenges } from "@/components/wellness/DailyWellnessChal
 import { SleepStories } from "@/components/wellness/SleepStories";
 import { motion, AnimatePresence } from "framer-motion";
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 const WELLNESS_PLANS = {
   basicMonthly: { name: "Basic Monthly", price: "€4.99", period: "/month", priceId: "price_1SQQ0zGaXSfGtYFtXRewT2s9", tier: "basic", isLifetime: false, icon: Wind, gradient: "from-sky-500/15 to-cyan-500/5", accentColor: "text-sky-400", features: ["Breathing Exercises", "5-4-3-2-1 Grounding", "Nature Sounds", "Body Scan Meditation", "Sleep Stories", "Daily Challenges"] },
   premiumMonthly: { name: "Premium Monthly", price: "€9.99", period: "/month", priceId: "price_1SQQ1zGaXSfGtYFt773EG7rN", tier: "premium", isLifetime: false, icon: Crown, gradient: "from-violet-500/15 to-purple-500/5", accentColor: "text-violet-400", popular: true, features: ["All Basic features", "AI Mindfulness Coach", "Gratitude Journal with AI", "Digital Mandala Drawing", "Progress Dashboard"] },
@@ -215,6 +216,8 @@ export default function Wellness() {
       <div className="relative z-10 container mx-auto px-2 sm:px-4 pt-20 pb-12">
         {/* Hero */}
         <WellnessHero />
+
+        <HeroRewardedAd sectionKey="page_wellness" />
 
         {/* New AI Sanctuary — 4 premium AI features */}
         <WellnessAISanctuary />

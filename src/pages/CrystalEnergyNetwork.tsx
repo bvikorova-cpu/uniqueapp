@@ -10,6 +10,7 @@ import { CrystalToolCards } from "@/components/crystal/CrystalToolCards";
 import { CrystalToolView } from "@/components/crystal/CrystalToolView";
 import { CrystalAbout } from "@/components/crystal/CrystalAbout";
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 export default function CrystalEnergyNetwork() {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -41,6 +42,8 @@ export default function CrystalEnergyNetwork() {
       <div className="container mx-auto px-4 pt-24 pb-8">
         {/* Hero */}
         <CrystalHero />
+
+        <HeroRewardedAd sectionKey="page_crystalenergynetwork" />
 
         {/* Engagement Row */}
         <CrystalEngagementRow />

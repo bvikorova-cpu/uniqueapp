@@ -10,6 +10,7 @@ import { MedicalFilters, type DiagnosisFilter, type SortOption } from '@/compone
 import { MedicalCampaignCard } from '@/components/fundraising/medical/MedicalCampaignCard';
 import { MedicalSuccessStories } from '@/components/fundraising/medical/MedicalSuccessStories';
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 interface MedicalCampaign {
   id: string;
   title: string;
@@ -98,6 +99,8 @@ export default function MedicalFundraising() {
   return (
     <div className="min-h-screen bg-background pt-20 pb-12">
       <MedicalHero onCreateCampaign={() => navigate('/fundraising/medical/create')} />
+      <HeroRewardedAd sectionKey="page_medicalfundraising" />
+
 
       <MedicalStepsWizard />
 

@@ -23,6 +23,7 @@ import { CommunityStories } from "@/components/firstaid/CommunityStories";
 import { LiveExpertChat } from "@/components/firstaid/LiveExpertChat";
 import { FirstAidMap } from "@/components/firstaid/FirstAidMap";
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 type ViewType = "hub" | "symptoms" | "emergency" | "quiz" | "kit" | "cpr" | "injury" | "simulator" | "certification" | "wound" | "stories" | "expert" | "map";
 
 const AI_TOOLS = [
@@ -115,6 +116,8 @@ const FirstAid = () => {
       <div className="container mx-auto px-4 max-w-6xl">
         {/* Cinematic Hero */}
         <FirstAidHero stats={stats} loading={statsLoading} />
+
+        <HeroRewardedAd sectionKey="page_firstaid" />
 
         {/* Engagement Row */}
         <div className="grid grid-cols-3 gap-3 mb-8">

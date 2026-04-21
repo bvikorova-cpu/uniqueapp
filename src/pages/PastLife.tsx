@@ -22,6 +22,7 @@ import { PastLifeIdeasShowcase } from "@/components/past-life/PastLifeIdeasShowc
 import { PastLifeEraQuiz } from "@/components/past-life/PastLifeEraQuiz";
 import { usePastLifeCredits } from "@/hooks/usePastLifeCredits";
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 type ViewType = "hub" | "basic" | "full" | "soulmate" | "history" | "credits";
 
 const PAST_LIFE_TOOLS = [
@@ -99,6 +100,8 @@ const PastLife = () => {
               className="space-y-6"
             >
               <PastLifeHero />
+
+              <HeroRewardedAd sectionKey="page_pastlife" />
 
               {/* Engagement Row */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

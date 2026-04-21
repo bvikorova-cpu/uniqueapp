@@ -19,6 +19,7 @@ import { useNavigate } from "react-router-dom";
 import { useKidsDrawingGallery } from "@/hooks/useKidsDrawingGallery";
 import { ParentalGate } from "@/components/kids/ParentalGate";
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 const PARENTAL_GATE_KEY = "parental_gate_verified_kids_drawing_buddy";
 const WIZARD_STEPS = ["Category", "Topic", "Difficulty", "Draw!"];
 
@@ -166,6 +167,8 @@ const KidsDrawingBuddy = () => {
         <div className="max-w-6xl mx-auto space-y-6">
           {/* Hero */}
           <DrawingBuddyHero />
+
+          <HeroRewardedAd sectionKey="page_kidsdrawingbuddy" />
 
           {/* Subscription Status */}
           {isAuthenticated && (

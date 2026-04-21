@@ -31,6 +31,7 @@ import { ConcertStories } from "@/components/concerts/ConcertStories";
 import { CollectibleTickets } from "@/components/concerts/CollectibleTickets";
 import { ConcertAfterparty } from "@/components/concerts/ConcertAfterparty";
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 type ViewType = "hub" | "browse" | "gifts" | "artists" | "leaderboard" | "replay" | 
   "schedule" | "chat" | "analytics" | "vip" | "setlist" | "merch" | "notifications" | "how-it-works" | "musician" |
   "song-requests" | "multi-camera" | "fan-badges" | "stories" | "collectibles" | "afterparty";
@@ -117,6 +118,8 @@ const LiveConcerts = () => {
         {activeView === "hub" ? (
           <>
             <ConcertHero />
+
+            <HeroRewardedAd sectionKey="page_liveconcerts" />
 
             <ConcertEngagement liveShows={0} totalConcerts={0} topGifts={0} />
 

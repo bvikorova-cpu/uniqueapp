@@ -31,6 +31,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { motion, AnimatePresence } from "framer-motion";
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 // 3D F1 Car Component
 function F1Car3D({ position, color }: { position: [number, number, number]; color: string }) {
   return (
@@ -287,6 +288,8 @@ export default function F1RacingArena() {
       <div className="relative z-10 max-w-7xl mx-auto space-y-6 p-4 sm:p-6 pt-20 sm:pt-24">
         {/* Cinematic Video Hero */}
         <GPRacingHero onNavigate={(view) => setActiveView(view === "garage" ? "hub" : view)} />
+        <HeroRewardedAd sectionKey="page_f1racingarena" />
+
 
         {/* Live Ticker */}
         <GPRacingLiveTicker />

@@ -40,6 +40,7 @@ import { Badge } from "@/components/ui/badge";
 import { motion, AnimatePresence } from "framer-motion";
 import { FloatingParticles } from "@/components/wellness/FloatingParticles";
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 const DETECTOR_TOOLS = [
   {
     id: "single",
@@ -117,6 +118,8 @@ const LieDetector = () => {
               className="space-y-6 sm:space-y-8"
             >
               <LieDetectorCinematicHero />
+
+              <HeroRewardedAd sectionKey="page_liedetector" />
 
               {/* Interrogation Mode Toggle */}
               <InterrogationModeToggle />

@@ -12,6 +12,7 @@ import { MembershipToolView } from "@/components/membership/MembershipToolView";
 import { MembershipAbout } from "@/components/membership/MembershipAbout";
 import { MembershipFeaturedCreators } from "@/components/membership/MembershipFeaturedCreators";
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 interface Creator {
   id: string;
   user_id: string;
@@ -86,6 +87,8 @@ export default function MembershipCommunity() {
       <div className="container mx-auto px-4 pt-24 pb-8">
         {/* Hero */}
         <MembershipHero />
+
+        <HeroRewardedAd sectionKey="page_membershipcommunity" />
 
         {/* Creator CTA */}
         <div className="flex justify-center gap-3 mb-8">

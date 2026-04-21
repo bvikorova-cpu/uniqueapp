@@ -27,6 +27,7 @@ import { PhotoEnhancerView } from "@/components/auction/views/PhotoEnhancerView"
 import { NegotiationCoachView } from "@/components/auction/views/NegotiationCoachView";
 import { MarketTrendsView } from "@/components/auction/views/MarketTrendsView";
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 interface AuctionItem {
   id: string;
   title: string;
@@ -227,6 +228,8 @@ const Auction = () => {
         {/* Cinematic Hero */}
         <AuctionHero />
 
+
+        <HeroRewardedAd sectionKey="page_auction" />
 
         {/* Engagement Row */}
         <div className="grid grid-cols-3 gap-3 mb-8">

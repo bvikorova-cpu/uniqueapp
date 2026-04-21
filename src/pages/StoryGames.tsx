@@ -21,6 +21,7 @@ import { Leaderboard } from "@/components/kids/games/Leaderboard";
 import { UnlockableRewards } from "@/components/kids/games/UnlockableRewards";
 import { BonusRounds } from "@/components/kids/games/BonusRounds";
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 export default function StoryGames() {
   const navigate = useNavigate();
   const [score, setScore] = useState(0);
@@ -85,6 +86,8 @@ export default function StoryGames() {
         <div className="max-w-7xl mx-auto">
           {/* Hero */}
           <GameHero totalScore={score} level={level} gamesPlayed={gamesPlayed} />
+
+          <HeroRewardedAd sectionKey="page_storygames" />
 
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
             {/* Main Content */}

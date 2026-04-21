@@ -33,6 +33,7 @@ import bakedCodLemon from "@/assets/recipes/baked-cod-lemon.jpg";
 import spinachQuiche from "@/assets/recipes/spinach-quiche.jpg";
 import chiaPuddingMango from "@/assets/recipes/chia-pudding-mango.jpg";
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 interface Recipe {
   id: string;
   title: string;
@@ -1154,6 +1155,8 @@ const Cooking = () => {
       <Navbar />
       <main className="flex-1 container mx-auto px-4 py-20">
         <CookingHero />
+
+        <HeroRewardedAd sectionKey="page_cooking" />
 
         {/* Engagement Row */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">

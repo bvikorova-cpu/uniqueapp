@@ -30,6 +30,7 @@ import AINutritionCoachChat from "@/components/nutrition/AINutritionCoachChat";
 import AIBarcodeScanner from "@/components/nutrition/AIBarcodeScanner";
 import WeeklyProgressDashboard from "@/components/nutrition/WeeklyProgressDashboard";
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 type ActiveView = "dashboard" | "meal-planner" | "food-scanner" | "macro-tracker" |
   "restaurant" | "quests" | "workout" | "hydration" | "supplements" | "grocery" | "body-predictor" |
   "allergy-scanner" | "meal-challenges" | "nutrition-coach" | "barcode-scanner" | "weekly-progress";
@@ -103,6 +104,8 @@ export default function NutritionHub() {
       <Navbar />
       <main className="flex-1 container mx-auto px-4 py-20">
         <NutritionHero />
+
+        <HeroRewardedAd sectionKey="page_nutritionhub" />
 
         {/* Engagement Row */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">

@@ -18,6 +18,7 @@ import { HolographicGallery } from "@/components/holographic/HolographicGallery"
 import { EvolutionLab } from "@/components/holographic/EvolutionLab";
 import { HolographicHowItWorks } from "@/components/holographic/HolographicHowItWorks";
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 type ViewType = "hub" | "creator" | "customize" | "battle" | "breeding" |
   "emotion-sync" | "marketplace" | "gallery" | "evolution" | "how-it-works";
 
@@ -84,6 +85,8 @@ export default function HolographicAvatars() {
         {activeView === "hub" ? (
           <>
             <HolographicHero />
+
+            <HeroRewardedAd sectionKey="page_holographicavatars" />
 
             {/* Compact Engagement Row */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">

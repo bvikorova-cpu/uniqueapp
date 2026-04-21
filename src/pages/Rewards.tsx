@@ -27,6 +27,7 @@ import RewardsMysteryBadges from "@/components/rewards/RewardsMysteryBadges";
 import RewardsMarketplace from "@/components/rewards/RewardsMarketplace";
 import { Crown, Home, Wand2, Trophy, Layers, Disc3, Target, Award, Medal, Flame, Gift, Eye, Sword, HelpCircle, ShoppingBag } from "lucide-react";
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 const TABS = [
   { id: "overview", icon: Home, label: "Overview" },
   { id: "ai-tools", icon: Wand2, label: "AI Tools" },
@@ -70,6 +71,8 @@ export default function Rewards() {
         <XPMultiplierBanner />
         <RewardsCinematicHero level={2} totalXP={153} streak={0} badges={2} />
 
+
+        <HeroRewardedAd sectionKey="page_rewards" />
 
         <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide mb-6">
           {TABS.map(tab => (

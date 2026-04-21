@@ -47,6 +47,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 const BrainDuel = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -139,6 +140,8 @@ const BrainDuel = () => {
         
         {/* ===== NEON HERO ===== */}
         <BrainDuelHero onlineCount={onlineCount} userId={userId} />
+
+        <HeroRewardedAd sectionKey="page_brainduel" />
 
         {/* ===== SEASONAL THEME BANNER ===== */}
         <div className="max-w-4xl mx-auto mb-6">

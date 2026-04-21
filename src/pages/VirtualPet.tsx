@@ -27,6 +27,7 @@ import {
 import { useAICredits } from "@/hooks/useAICredits";
 import { motion } from "framer-motion";
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 type ActiveView = "dashboard" | "pets" | "battle" | "shop" | "customize" | "trading" | "games" | "breeding" |
   "personality-coach" | "name-generator" | "health-predictor" | "story-generator" |
   "mood-analyzer" | "training-planner" | "compatibility-checker" | "battle-strategy";
@@ -91,6 +92,8 @@ const VirtualPet = () => {
           {activeView === "dashboard" ? (
             <>
               <VirtualPetHero />
+
+              <HeroRewardedAd sectionKey="page_virtualpet" />
 
               {/* Engagement Row */}
               <div className="grid grid-cols-3 gap-3 mb-8">

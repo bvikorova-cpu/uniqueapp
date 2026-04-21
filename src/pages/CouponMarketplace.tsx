@@ -25,6 +25,7 @@ import { PriceHistoryView } from "@/components/coupon/views/PriceHistoryView";
 import { NegotiationBotView } from "@/components/coupon/views/NegotiationBotView";
 import { WishlistAlertsView } from "@/components/coupon/views/WishlistAlertsView";
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 interface CouponListing {
   id: string; title: string; description: string | null; store_name: string;
   original_value: number; selling_price: number; discount_code: string | null;
@@ -229,6 +230,8 @@ const CouponMarketplace = () => {
       <div className="min-h-screen bg-background pt-16 sm:pt-20 pb-12">
         <div className="container mx-auto px-3 sm:px-4 max-w-6xl">
           <CouponHero couponCount={156} />
+
+          <HeroRewardedAd sectionKey="page_couponmarketplace" />
 
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="grid lg:grid-cols-[1.15fr_0.85fr] gap-6 mb-8">
             <Card className="overflow-hidden border-primary/20 bg-gradient-to-br from-card via-card to-primary/5 shadow-2xl">

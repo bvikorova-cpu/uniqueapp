@@ -23,6 +23,7 @@ import { AdventureMap } from "@/components/kids/AdventureMap";
 import { WeeklyTheme } from "@/components/kids/WeeklyTheme";
 import { KidsProfileBadges } from "@/components/kids/KidsProfileBadges";
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 interface Show {
   id: string;
   title: string;
@@ -309,6 +310,8 @@ const KidsChannel = () => {
       <div className="relative z-10 container mx-auto px-4 py-8">
         {/* Animated Hero */}
         <KidsHero />
+
+        <HeroRewardedAd sectionKey="page_kidschannel" />
 
         {/* Engagement row: Stars + Weekly Theme */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">

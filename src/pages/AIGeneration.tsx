@@ -19,6 +19,7 @@ import { ImageToPromptView } from "@/components/ai-generation/views/ImageToPromp
 import { AICreditsLowBalanceAlert } from "@/components/ai-credits/AICreditsLowBalanceAlert";
 import { AICreditsLiveTicker } from "@/components/ai-credits/AICreditsLiveTicker";
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 type ActiveView = 'hub' | 'generate' | 'editor' | 'style' | 'upscaler' | 'gallery' | 'variations' | 'community' | 'inpainting' | 'batch' | 'history' | 'img2prompt';
 
 const tools = [
@@ -70,6 +71,8 @@ const AIGeneration = () => {
         ) : (
           <>
             <AIGenHero credits={credits.credits_remaining} />
+
+            <HeroRewardedAd sectionKey="page_aigeneration" />
 
             <AICreditsLowBalanceAlert credits={credits.credits_remaining} />
             <AICreditsLiveTicker />

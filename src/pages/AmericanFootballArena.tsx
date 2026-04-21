@@ -24,6 +24,7 @@ import { FieldGoal3D } from "@/components/american-football/FieldGoal3D";
 import { EmbeddedGame } from "@/components/arena/EmbeddedGame";
 import { supabase } from "@/integrations/supabase/client";
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 type ViewType = "hub" | "player-creator" | "player-market" | "team-builder" | "training" | "equipment" | "match" | "league" | "tactics" | "scout" | "stadium" | "transfers" | "trophies" | "youth" | "analysis" | "coins" | "field-goal" | "play-game";
 
 const tools = [
@@ -108,6 +109,8 @@ const AmericanFootballArena = () => {
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 pt-20 pb-8 space-y-8">
         <AFArenaHero stats={stats} onNavigate={(v) => setActiveView(v as ViewType)} />
+        <HeroRewardedAd sectionKey="page_americanfootballarena" />
+
         <AFEngagement />
         <div>
           <h2 className="text-xl font-bold mb-4">American Football Arena Tools</h2>

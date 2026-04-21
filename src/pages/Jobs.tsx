@@ -30,6 +30,7 @@ import JobsSkillLeaderboard from "@/components/jobs/JobsSkillLeaderboard";
 import JobsCareerAchievements from "@/components/jobs/JobsCareerAchievements";
 import JobsWeeklyChallenges from "@/components/jobs/JobsWeeklyChallenges";
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 interface JobListing {
   id: string;
   title: string;
@@ -286,6 +287,8 @@ const Jobs = () => {
           totalApplications={jobs.reduce((sum, j) => sum + j.applications_count, 0)}
           streak={0}
         />
+        <HeroRewardedAd sectionKey="page_jobs" />
+
 
 
         {/* Tab Navigation */}

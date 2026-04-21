@@ -16,6 +16,7 @@ import { TimeReversalPlans } from "@/components/time-reversal/TimeReversalPlans"
 import { TimeReversalProfile } from "@/components/time-reversal/TimeReversalProfile";
 import { TimeReversalHowItWorks } from "@/components/time-reversal/TimeReversalHowItWorks";
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 type ViewType = "hub" | "battle" | "timelapse" | "feed" | "story" | "plans" | "profile" | "how-it-works" | "timeline" | "dashboard";
 
 const tools = [
@@ -87,6 +88,8 @@ export default function TimeReversalSocial() {
         {activeView === "hub" ? (
           <>
             <TimeReversalHero />
+
+            <HeroRewardedAd sectionKey="page_timereversalsocial" />
 
             {/* Compact 4-stat Engagement Row */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">

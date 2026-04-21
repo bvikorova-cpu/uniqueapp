@@ -36,6 +36,7 @@ import { BucketListView } from "@/components/best-friend/BucketListView";
 import { SelfCarePlannerView } from "@/components/best-friend/SelfCarePlannerView";
 import ReactMarkdown from "react-markdown";
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 const CHAT_URL = `https://jufrdzeonywluwutvyxz.supabase.co/functions/v1/best-friend-chat`;
 
 type Message = { role: "user" | "assistant"; content: string };
@@ -282,6 +283,8 @@ const BestFriend = () => {
         ) : (
           <>
             <BestFriendHero />
+
+            <HeroRewardedAd sectionKey="page_bestfriend" />
 
             {/* Engagement Row */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">

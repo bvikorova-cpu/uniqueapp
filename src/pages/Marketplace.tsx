@@ -30,6 +30,7 @@ import { RealtimeBiddingView } from "@/components/marketplace/views/RealtimeBidd
 import { motion } from "framer-motion";
 import { Flame, TrendingUp, Award, Check } from "lucide-react";
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 interface Profile {
   full_name: string | null;
   avatar_url: string | null;
@@ -337,6 +338,8 @@ const Marketplace = () => {
         <div className="container mx-auto px-4 max-w-6xl">
           <MarketplaceHero />
 
+
+          <HeroRewardedAd sectionKey="page_marketplace" />
 
           {/* AI Tools Grid */}
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }} className="mb-12">

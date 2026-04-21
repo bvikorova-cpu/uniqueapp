@@ -18,6 +18,7 @@ import FutureFaceDNAAging from "@/components/future-face/FutureFaceDNAAging";
 import FutureFaceSocialShare from "@/components/future-face/FutureFaceSocialShare";
 import FutureFaceSeasonalReport from "@/components/future-face/FutureFaceSeasonalReport";
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 const FutureFace = () => {
   const navigate = useNavigate();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -51,6 +52,8 @@ const FutureFace = () => {
     <div className="min-h-screen bg-background pt-16 sm:pt-20 pb-12">
       <div className="container mx-auto px-3 sm:px-4 max-w-7xl">
         <FutureFaceHero />
+
+        <HeroRewardedAd sectionKey="page_futureface" />
 
         {/* 3-Column Engagement Row */}
         <div className="grid grid-cols-3 gap-2 sm:gap-4 mb-6">

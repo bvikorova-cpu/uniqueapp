@@ -25,6 +25,7 @@ import SafetyBadges from "@/components/safety/SafetyBadges";
 import { SafetyHero } from "@/components/safety/SafetyHero";
 import { SafetyAIShield } from "@/components/safety/SafetyAIShield";
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 interface Message {
   role: "user" | "assistant";
   content: string;
@@ -99,6 +100,8 @@ const SafetyPrevention = () => {
 
       <div className="container mx-auto px-4 py-6">
         <SafetyHero mode={mode} onModeChange={setMode} />
+
+        <HeroRewardedAd sectionKey="page_safetyprevention" />
 
         {/* AI Shield - new premium AI tools */}
         <SafetyAIShield />

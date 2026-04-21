@@ -19,6 +19,7 @@ import { LabNotebookResult } from "@/components/kids-science/LabNotebookResult";
 import { ScienceComprehensionQuiz } from "@/components/kids-science/ScienceComprehensionQuiz";
 import { ExperimentTracker } from "@/components/kids-science/ExperimentTracker";
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 const PARENTAL_GATE_KEY = "parental_gate_verified_kids_science_lab";
 
 const KidsScienceLab = () => {
@@ -133,6 +134,8 @@ const KidsScienceLab = () => {
       <main className="container mx-auto px-4 py-8 mt-16">
         <div className="max-w-4xl mx-auto space-y-6">
           <ScienceLabHero />
+
+          <HeroRewardedAd sectionKey="page_kidssciencelab" />
 
           {/* Safety Warning */}
           <Alert className="border-2 border-orange-500 bg-gradient-to-r from-orange-500/20 to-red-500/20 shadow-lg">

@@ -75,6 +75,7 @@ import smoothieBowlChia from "@/assets/recipes/smoothie-bowl-chia.jpg";
 import sweetPotatoBlackBeans from "@/assets/recipes/sweet-potato-black-beans.jpg";
 import greenDetoxSmoothie from "@/assets/recipes/green-detox-smoothie.jpg";
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 interface FitRecipe {
   id: number; title: string; calories: string; protein?: string; benefit?: string;
   time: string; image: string; ingredients: string[]; instructions: string;
@@ -361,6 +362,8 @@ const FitSlim = () => {
       <Navbar />
       <main className="flex-1 container mx-auto px-4 py-20">
         <FitSlimHero />
+
+        <HeroRewardedAd sectionKey="page_fitslim" />
 
         {/* Engagement Row */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">

@@ -8,6 +8,7 @@ import { PetCampaignCard } from '@/components/fundraising/pet/PetCampaignCard';
 import { VerifiedShelters } from '@/components/fundraising/pet/VerifiedShelters';
 import { PetSuccessStories } from '@/components/fundraising/pet/PetSuccessStories';
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 interface PetCampaign {
   id: string;
   pet_name: string;
@@ -90,6 +91,8 @@ export default function PetRescue() {
     <div className="min-h-screen bg-background pt-20 pb-12 px-4">
       <div className="max-w-7xl mx-auto">
         <PetHero />
+        <HeroRewardedAd sectionKey="page_petrescue" />
+
         <PetStepsWizard />
 
         <div className="mt-12 space-y-6">

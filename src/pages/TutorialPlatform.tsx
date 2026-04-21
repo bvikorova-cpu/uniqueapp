@@ -34,6 +34,7 @@ import { AIStudyPlanView } from "@/components/tutorial-platform/views/AIStudyPla
 import { AIFlashcardMakerView } from "@/components/tutorial-platform/views/AIFlashcardMakerView";
 import { AIPresentationBuilderView } from "@/components/tutorial-platform/views/AIPresentationBuilderView";
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 const TutorialPlatform = () => {
   const [searchParams] = useSearchParams();
   const { toast } = useToast();
@@ -92,6 +93,8 @@ const TutorialPlatform = () => {
         return (
           <>
             <TutorialHero />
+            <HeroRewardedAd sectionKey="page_tutorialplatform" />
+
             <TutorialEngagement />
             <TutorialToolGrid onToolSelect={handleToolSelect} />
           </>

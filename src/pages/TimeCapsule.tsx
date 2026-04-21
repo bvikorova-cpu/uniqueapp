@@ -18,6 +18,7 @@ import { CapsuleTimeline } from "@/components/time-capsule/CapsuleTimeline";
 import { CapsulePlans } from "@/components/time-capsule/CapsulePlans";
 import { TimeCapsuleHowItWorks } from "@/components/time-capsule/TimeCapsuleHowItWorks";
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 type ViewType = "hub" | "creator" | "my-capsules" | "gallery" | "ai-predictor" | "vault" | "collaborative" | "timeline" | "plans" | "how-it-works";
 
 const tools = [
@@ -83,6 +84,8 @@ export default function TimeCapsule() {
         {activeView === "hub" ? (
           <>
             <TimeCapsuleHero />
+
+            <HeroRewardedAd sectionKey="page_timecapsule" />
 
             {/* Compact Engagement Row */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">

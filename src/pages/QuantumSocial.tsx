@@ -24,6 +24,7 @@ import { ObserverLeaderboard } from "@/components/quantum-social/ObserverLeaderb
 import { QuantumTimeTravel } from "@/components/quantum-social/QuantumTimeTravel";
 import { EntanglementNetworkMap } from "@/components/quantum-social/EntanglementNetworkMap";
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 type ViewType = "hub" | "feed" | "profile" | "observer" | "entanglements" | "subscriptions" | "chat" | "voting" | "achievements" | "oracle" | "nfts" | "merge" | "tournaments" | "leaderboard" | "timetravel" | "networkmap";
 
 const tools = [
@@ -88,6 +89,8 @@ const QuantumSocial = () => {
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 pt-20 pb-8 space-y-8">
         <QuantumSocialHero />
+        <HeroRewardedAd sectionKey="page_quantumsocial" />
+
         <QuantumSocialEngagement />
         <div>
           <h2 className="text-xl font-bold mb-4">Explore Quantum Tools</h2>

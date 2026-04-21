@@ -30,6 +30,7 @@ import { PropertyNegotiation } from "@/components/property/PropertyNegotiation";
 import { usePropertyExpiration } from "@/hooks/usePropertyExpiration";
 import { motion } from "framer-motion";
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 type ViewType = "hub" | "map" | "valuator" | "analytics" | "staging" | "mortgage" | "alerts" | "neighborhood" | "photos" | "compare" | "chatbot" | "documents" | "negotiate";
 
 const LISTING_PACKAGES = [
@@ -206,6 +207,8 @@ export default function PropertyMarketplace() {
       <div className="container mx-auto px-4 py-24">
         {/* Hero */}
         <PropertyHero />
+
+        <HeroRewardedAd sectionKey="page_propertymarketplace" />
 
         {/* Engagement Row */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">

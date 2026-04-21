@@ -20,6 +20,7 @@ import { AICompatibility } from "@/components/dating/AICompatibility";
 import { AIDateIdeas } from "@/components/dating/AIDateIdeas";
 import { AIProfileOptimizer } from "@/components/dating/AIProfileOptimizer";
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 interface DatingProfile {
   id: string;
   user_id: string;
@@ -361,6 +362,8 @@ const Dating = () => {
       <div className="min-h-screen bg-background pt-16 sm:pt-20 pb-12">
         <div className="container mx-auto px-4 max-w-6xl">
           <DatingHero />
+
+          <HeroRewardedAd sectionKey="page_dating" />
 
           {/* Description Card */}
           <Card className="border-border/50 bg-card/80 backdrop-blur-sm mb-8">

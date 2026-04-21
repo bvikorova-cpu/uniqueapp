@@ -33,6 +33,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { format } from "date-fns";
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 type ActiveView = "dashboard" | "shows" | "battles" | "clips" | "tickets" | "roast" | "workshop" | "openmic" | "halloffame";
 
 export default function ComedyClub() {
@@ -211,6 +212,8 @@ export default function ComedyClub() {
         {/* Hero Video */}
         <ComedyClubHero />
 
+
+        <HeroRewardedAd sectionKey="page_comedyclub" />
 
         {/* Action Bar */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">

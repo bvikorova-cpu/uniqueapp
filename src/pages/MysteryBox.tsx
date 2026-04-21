@@ -16,6 +16,7 @@ import { MysteryBoxTrading } from "@/components/mystery-box/MysteryBoxTrading";
 import { AIRarityPredictor } from "@/components/mystery-box/AIRarityPredictor";
 import { MysteryBoxRewards } from "@/components/mystery-box/MysteryBoxRewards";
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 type ActiveView = "dashboard" | "shop" | "lucky_wheel" | "trading" | "ai_predictor" | "collection";
 
 const TOOLS: { id: ActiveView; icon: any; label: string; desc: string; cost: string; gradient: string; glow: string }[] = [
@@ -51,6 +52,8 @@ const MysteryBoxPage = () => {
       <Navbar />
       <main className="container mx-auto px-4 py-8 mt-20">
         <MysteryBoxHero />
+
+        <HeroRewardedAd sectionKey="page_mysterybox" />
 
         {/* Engagement Row */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">

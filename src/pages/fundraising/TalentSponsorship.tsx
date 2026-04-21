@@ -6,6 +6,7 @@ import { TalentStepsWizard } from '@/components/fundraising/talent/TalentStepsWi
 import { TalentFilters } from '@/components/fundraising/talent/TalentFilters';
 import { TalentCampaignCard } from '@/components/fundraising/talent/TalentCampaignCard';
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 interface TalentCampaign {
   id: string;
   title: string;
@@ -87,6 +88,8 @@ export default function TalentSponsorship() {
     <div className="min-h-screen bg-background pt-20 pb-12 px-4">
       <div className="max-w-7xl mx-auto">
         <TalentHero />
+        <HeroRewardedAd sectionKey="page_talentsponsorship" />
+
         <TalentStepsWizard />
 
         <div id="campaigns" className="mt-12 space-y-6">

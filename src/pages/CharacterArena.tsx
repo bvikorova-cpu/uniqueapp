@@ -18,6 +18,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { motion } from "framer-motion";
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 type ActiveView = "dashboard" | "creator" | "battle" | "royale" | "social" | "gallery" | "tournament" | "fusion" | "evolution" | "dungeon";
 
 const TOOLS = [
@@ -81,6 +82,8 @@ const CharacterArena = () => {
         {activeView === "dashboard" ? (
           <>
             <CharacterArenaHero stats={stats || { totalCharacters: 0, totalBattles: 0, activeTournaments: 0, onlineWarriors: 0 }} />
+
+            <HeroRewardedAd sectionKey="page_characterarena" />
 
             {/* Engagement Row */}
             <div className="grid grid-cols-3 gap-3 sm:gap-4 mb-8">

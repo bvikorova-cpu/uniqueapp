@@ -20,6 +20,7 @@ import { motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 type ViewType = "hub" | "create" | "my-clones" | "marketplace" | "dating" | "subscriptions" | "analytics" | "quiz" | "voice" | "battles" | "leaderboard" | "feed";
 
 const TOOLS = [
@@ -73,6 +74,8 @@ export default function AIClone() {
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-6 max-w-7xl">
         <CloneHero />
+
+        <HeroRewardedAd sectionKey="page_aiclone" />
 
         {/* Engagement Row */}
         <div className="grid grid-cols-3 gap-3 mb-8">

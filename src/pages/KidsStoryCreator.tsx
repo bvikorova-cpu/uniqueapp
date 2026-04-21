@@ -18,6 +18,7 @@ import { StoryWizardFlow } from "@/components/kids-story/StoryWizardFlow";
 import { StorybookDisplay } from "@/components/kids-story/StorybookDisplay";
 import { Download } from "lucide-react";
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 const KidsStoryCreator = () => {
   const { user } = useAuth();
   const { storiesCreatedThisMonth, isPremium, loading: usageLoading, refreshUsage, manageSubscription } = useKidsStoryCreator();
@@ -170,6 +171,8 @@ const KidsStoryCreator = () => {
       <main className="container mx-auto px-4 py-8 mt-16">
         <div className="max-w-6xl mx-auto">
           <StoryCreatorHero />
+
+          <HeroRewardedAd sectionKey="page_kidsstorycreator" />
 
           {user && !usageLoading && (
             <div className="mb-6 space-y-4">

@@ -25,6 +25,7 @@ import { HairStylist } from "@/components/glamour-world/HairStylist";
 import { CoinShop } from "@/components/glamour-world/CoinShop";
 import { BarbieCreator3D } from "@/components/glamour-world/BarbieCreator3D";
 import { GlamourPokiGame } from "@/components/glamour-world/GlamourPokiGame";
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import {
   Home, Shirt, Gem, PawPrint, Sparkles, BookOpen, Scissors,
   Palette, Crown, Music, Camera, Flower, PartyPopper, GraduationCap,
@@ -106,6 +107,8 @@ const GlamourWorld = () => {
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
       <GlamourHero />
+      <HeroRewardedAd sectionKey="page_glamourworld" />
+
       <GlamourEngagement />
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {tools.map((tool) => (

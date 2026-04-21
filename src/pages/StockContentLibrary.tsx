@@ -23,6 +23,7 @@ import { BulkUploadView } from "@/components/stock-content/views/BulkUploadView"
 import { ContentAnalyticsView } from "@/components/stock-content/views/ContentAnalyticsView";
 import { Tags, Palette, Wand2, Star, Eye, Download } from "lucide-react";
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 const StockContentLibrary = () => {
   const [searchParams] = useSearchParams();
   const { toast } = useToast();
@@ -90,6 +91,8 @@ const StockContentLibrary = () => {
         return (
           <>
             <StockContentHero />
+            <HeroRewardedAd sectionKey="page_stockcontentlibrary" />
+
             <StockContentEngagement />
             <h2 className="text-xl font-bold mb-4">Tools & Features</h2>
             <StockContentToolGrid onToolSelect={handleToolSelect} />

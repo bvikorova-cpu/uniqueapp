@@ -17,6 +17,7 @@ import { LearningPathProgress } from "@/components/education/LearningPathProgres
 import { EnhancedChat } from "@/components/education/EnhancedChat";
 import { GlassmorphismCategories } from "@/components/education/GlassmorphismCategories";
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 const quizCategories = [
   { id: "math", name: "Mathematics", icon: "📐" },
   { id: "biology", name: "Biology", icon: "🧬" },
@@ -130,6 +131,8 @@ const Education = () => {
       <div className="container mx-auto px-2 sm:px-4">
         <EducationHero />
 
+
+        <HeroRewardedAd sectionKey="page_education" />
 
         {/* Stats row: Streak + Quick Challenge + Learning Path */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">

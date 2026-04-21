@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { CREDIT_COSTS } from "@/hooks/useAstrologyCredits";
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 type ActiveView = "dashboard" | "horoscope" | "tarot" | "dream" | "numerology" | "palmistry" | "compatibility" | "yesno" | "rune" | "birthchart" | "livechat";
 
 const TOOLS = [
@@ -86,6 +87,8 @@ const Astrology = () => {
     <div className="min-h-screen bg-background p-2 sm:p-4">
       <div className="container mx-auto max-w-6xl pt-16 sm:pt-20">
         <AstrologyHero />
+
+        <HeroRewardedAd sectionKey="page_astrology" />
 
         {/* Engagement Row */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6 mt-4">

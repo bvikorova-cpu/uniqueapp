@@ -9,6 +9,7 @@ import { UniversityPartners } from '@/components/fundraising/student/UniversityP
 import { StudentSuccessStories } from '@/components/fundraising/student/StudentSuccessStories';
 import { PayItForwardBoard } from '@/components/fundraising/student/PayItForwardBoard';
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 interface StudentCampaign {
   id: string;
   title: string;
@@ -88,6 +89,8 @@ export default function StudentSupport() {
     <div className="min-h-screen bg-background pt-20 pb-12 px-4">
       <div className="max-w-7xl mx-auto">
         <StudentHero />
+        <HeroRewardedAd sectionKey="page_studentsupport" />
+
         <StudentStepsWizard />
 
         <div id="campaigns" className="mt-12 space-y-6">
