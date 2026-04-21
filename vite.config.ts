@@ -14,6 +14,9 @@ export default defineConfig(() => ({
     },
   },
   build: {
+    target: "es2020",
+    cssCodeSplit: true,
+    chunkSizeWarningLimit: 1000,
     rollupOptions: {
       output: {
         manualChunks: {
@@ -21,8 +24,15 @@ export default defineConfig(() => ({
           ui: ["@radix-ui/react-dialog", "@radix-ui/react-dropdown-menu", "@radix-ui/react-tabs"],
           query: ["@tanstack/react-query"],
           supabase: ["@supabase/supabase-js"],
+          motion: ["framer-motion"],
+          icons: ["lucide-react"],
+          forms: ["react-hook-form", "zod", "@hookform/resolvers"],
+          charts: ["recharts"],
         },
       },
     },
+  },
+  optimizeDeps: {
+    include: ["react", "react-dom", "react-router-dom", "framer-motion", "lucide-react"],
   },
 }));
