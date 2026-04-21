@@ -18,6 +18,11 @@ import ProgressiveOnboarding from "./components/onboarding/ProgressiveOnboarding
 import { PageLoader } from "@/components/ui/PageLoader";
 import { GlobalAnnouncementBanner } from "./components/GlobalAnnouncementBanner";
 import { GlobalRewardedAd } from "./components/ads/GlobalRewardedAd";
+import { ErrorBoundary } from "./components/ErrorBoundary";
+import { installGlobalErrorHandlers } from "@/utils/logger";
+
+// Install global error handlers as early as possible
+installGlobalErrorHandlers();
 
 // Critical pages - loaded immediately for best UX
 import Home from "./pages/Home";
@@ -377,9 +382,10 @@ const App = () => {
                   <Navbar />
                   <GlobalAnnouncementBanner />
                   <main id="main-content" className="flex-1">
-                    <Suspense fallback={<PageLoader />}>
-                      {/* All routes render inside this Suspense boundary */}
-                      <Routes>
+                    <ErrorBoundary>
+                      <Suspense fallback={<PageLoader />}>
+                        {/* All routes render inside this Suspense boundary */}
+                        <Routes>
                         <Route path="/" element={<Index />} />
                         <Route path="/index" element={<Navigate to="/" replace />} />
                         <Route path="/wall" element={<Wall />} />
@@ -746,6 +752,7 @@ const App = () => {
                         <Route path="*" element={<NotFound />} />
                       </Routes>
                     </Suspense>
+                    </ErrorBoundary>
                   </main>
                   <Footer />
                 </div>
