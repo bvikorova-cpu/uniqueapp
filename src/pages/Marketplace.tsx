@@ -14,6 +14,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { ServiceOrderDialog } from "@/components/marketplace/ServiceOrderDialog";
 import { MyOrders } from "@/components/marketplace/MyOrders";
 import { MarketplaceHero } from "@/components/marketplace/MarketplaceHero";
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { MarketplaceToolCard } from "@/components/marketplace/MarketplaceToolCard";
 import { ServiceOptimizerView } from "@/components/marketplace/views/ServiceOptimizerView";
 import { PricingAdvisorView } from "@/components/marketplace/views/PricingAdvisorView";

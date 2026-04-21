@@ -10,6 +10,7 @@ import { TutoringCreditsPanel } from "@/components/education/TutoringCreditsPane
 import { useTutoringCredits } from "@/hooks/useTutoringCredits";
 import { toast as sonnerToast } from "sonner";
 import { EducationHero } from "@/components/education/EducationHero";
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { DailyStreak } from "@/components/education/DailyStreak";
 import { EducationLeaderboard } from "@/components/education/EducationLeaderboard";
 import { QuickChallenge } from "@/components/education/QuickChallenge";
@@ -129,6 +130,8 @@ const Education = () => {
     <div className="min-h-screen bg-background pt-20 pb-12">
       <div className="container mx-auto px-2 sm:px-4">
         <EducationHero />
+
+        <HeroRewardedAd sectionKey="page_education" />
 
         {/* Stats row: Streak + Quick Challenge + Learning Path */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">

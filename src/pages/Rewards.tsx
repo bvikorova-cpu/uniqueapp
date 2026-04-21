@@ -14,6 +14,7 @@ import AchievementProgressCards from "@/components/rewards/AchievementProgressCa
 import XPMultiplierBanner from "@/components/rewards/XPMultiplierBanner";
 import RewardsGuide from "@/components/gamification/RewardsGuide";
 import RewardsCinematicHero from "@/components/rewards/RewardsCinematicHero";
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import RewardsAIToolsGrid from "@/components/rewards/RewardsAIToolsGrid";
 import RewardsXPLeaderboard from "@/components/rewards/RewardsXPLeaderboard";
 import RewardsRewardTiers from "@/components/rewards/RewardsRewardTiers";
@@ -69,6 +70,8 @@ export default function Rewards() {
       <div className="container mx-auto px-4 max-w-6xl">
         <XPMultiplierBanner />
         <RewardsCinematicHero level={2} totalXP={153} streak={0} badges={2} />
+
+        <HeroRewardedAd sectionKey="page_rewards" />
 
         <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide mb-6">
           {TABS.map(tab => (

@@ -38,6 +38,7 @@ import WallSaved from "./wall/WallSaved";
 import WallTrending from "./wall/WallTrending";
 import WallInfo from "./wall/WallInfo";
 import WallCinematicHero from "@/components/wall/WallCinematicHero";
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import WallAIToolsGrid from "@/components/wall/WallAIToolsGrid";
 import WallPostingStreaks from "@/components/wall/WallPostingStreaks";
 import WallEngagementLeaderboard from "@/components/wall/WallEngagementLeaderboard";
@@ -565,6 +566,8 @@ const Feed = () => {
             <div className="max-w-3xl mx-auto px-2 sm:px-4 py-3 sm:py-4 space-y-3 sm:space-y-4">
               {/* Cinematic Hero */}
               <WallCinematicHero totalPosts={posts.length} totalUsers={42} totalLikes={feedItems.reduce((acc, item) => acc + (item.type === 'post' ? (item.data as Post).likes_count : 0), 0)} streak={7} />
+
+              <HeroRewardedAd sectionKey="page_wall" />
 
               {/* Hub Tabs */}
               <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">

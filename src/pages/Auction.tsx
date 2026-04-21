@@ -16,6 +16,7 @@ import { useSubscription } from "@/hooks/useSubscription";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { motion } from "framer-motion";
 import { AuctionHero } from "@/components/auction/AuctionHero";
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { PriceEstimatorView } from "@/components/auction/views/PriceEstimatorView";
 import { ListingOptimizerView } from "@/components/auction/views/ListingOptimizerView";
 import { BidStrategyView } from "@/components/auction/views/BidStrategyView";

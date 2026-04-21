@@ -30,6 +30,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { triggerTopPremiumConfetti } from "@/utils/confetti";
 import MegaTalentHero from "@/components/megatalent/MegaTalentHero";
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import MegaTalentCategoryGrid from "@/components/megatalent/MegaTalentCategoryGrid";
 import ContestStatsSidebar from "@/components/megatalent/ContestStatsSidebar";
 import MegaTalentSubmissionCard from "@/components/megatalent/MegaTalentSubmissionCard";
@@ -424,6 +425,8 @@ const Megatalent = () => {
       <div className="container mx-auto px-4 max-w-6xl">
         {/* Cinematic Video Hero */}
         <MegaTalentHero totalVotes={totalVotes} isSubscribed={isSubscribed} subscriptionTier={subscriptionTier} />
+
+        <HeroRewardedAd sectionKey="page_megatalent" />
 
         {/* 3-Column Engagement Row */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
