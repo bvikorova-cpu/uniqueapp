@@ -9,6 +9,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useRecentServices } from "@/hooks/useRecentServices";
 import RewardedAdCard from "@/components/ads/RewardedAdCard";
 import { AD_PLACEMENTS } from "@/components/ads/AdPlacements";
+import heroHdVideo from "@/assets/unique-hero-hd.mp4.asset.json";
 import {
   Car, Baby, GraduationCap, Briefcase, Heart, Sparkles, Trophy, Users,
   Video, Mic, ShoppingBag, Brain, TrendingUp, Ghost, Building2, Crown,
@@ -222,11 +223,12 @@ const Index = () => {
           loop
           playsInline
           preload="metadata"
-          poster="/unique-hero-poster-v3.jpg"
-          className="absolute inset-0 w-full h-full object-cover object-center scale-105"
+          poster="/unique-hero-poster-hd.jpg"
+          className="absolute inset-0 w-full h-full object-cover object-center"
           style={{ objectPosition: "center 35%" }}
         >
           <source src="/unique-hero-mobile-v3.mp4" type="video/mp4" media="(max-width: 767px)" />
+          <source src={heroHdVideo.url} type="video/mp4" media="(min-width: 768px)" />
           <source src="/unique-hero-opt-v3.mp4" type="video/mp4" />
         </video>
         {/* Gradient fallback behind video */}
