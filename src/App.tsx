@@ -382,9 +382,10 @@ const App = () => {
                   <Navbar />
                   <GlobalAnnouncementBanner />
                   <main id="main-content" className="flex-1">
-                    <Suspense fallback={<PageLoader />}>
-                      {/* All routes render inside this Suspense boundary */}
-                      <Routes>
+                    <ErrorBoundary>
+                      <Suspense fallback={<PageLoader />}>
+                        {/* All routes render inside this Suspense boundary */}
+                        <Routes>
                         <Route path="/" element={<Index />} />
                         <Route path="/index" element={<Navigate to="/" replace />} />
                         <Route path="/wall" element={<Wall />} />
