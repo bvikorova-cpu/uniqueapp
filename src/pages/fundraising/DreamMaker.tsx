@@ -7,6 +7,7 @@ import { DreamFilters } from '@/components/fundraising/dream/DreamFilters';
 import { DreamCampaignCard } from '@/components/fundraising/dream/DreamCampaignCard';
 import { DreamSuccessStories } from '@/components/fundraising/dream/DreamSuccessStories';
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 interface DreamCampaign {
   id: string;
   title: string;
@@ -87,6 +88,8 @@ export default function DreamMaker() {
     <div className="min-h-screen bg-background pt-20 pb-12 px-4">
       <div className="max-w-7xl mx-auto">
         <DreamHero />
+        <HeroRewardedAd sectionKey="page_dreammaker" />
+
         <DreamStepsWizard />
 
         <div className="mt-12 space-y-6">

@@ -41,6 +41,7 @@ import {
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 interface SkillOffering {
   id: string;
   user_id: string;
@@ -721,6 +722,8 @@ export default function SkillSwap() {
               </div>
 
               <SkillSwapHero />
+
+              <HeroRewardedAd sectionKey="page_skillswap" />
 
               {/* Subscription Status */}
               {subscription.hasSubscription ? (

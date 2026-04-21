@@ -24,6 +24,7 @@ import ABABTesting from "@/components/content-studio/ABABTesting";
 import BulkContentGenerator from "@/components/content-studio/BulkContentGenerator";
 import SEOKeywordOptimizer from "@/components/content-studio/SEOKeywordOptimizer";
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 type ActiveView = "main" | "templates" | "brand-voice" | "calendar" | "plagiarism" | "generate" | "repurpose" | "analytics" | "ab-test" | "bulk" | "seo";
 
 const CONTENT_TYPES = [
@@ -255,6 +256,8 @@ const ContentStudio = () => {
     <div className="min-h-screen bg-background pt-20 pb-12">
       <div className="container mx-auto px-4 max-w-7xl">
         <ContentStudioHero />
+
+        <HeroRewardedAd sectionKey="page_contentstudio" />
 
         {/* Credits Bar */}
         <div className="flex items-center justify-center gap-4 mb-8">

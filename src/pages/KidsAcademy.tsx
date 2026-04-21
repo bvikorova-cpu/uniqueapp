@@ -11,6 +11,7 @@ import { KidsAcademyParentPanel } from "@/components/kids/academy/KidsAcademyPar
 import { Card, CardContent } from "@/components/ui/card";
 import { Crown } from "lucide-react";
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 const KidsAcademy = () => {
   return (
     <div className="min-h-screen bg-background">
@@ -19,6 +20,8 @@ const KidsAcademy = () => {
         <div className="max-w-6xl mx-auto">
           <KidsAcademyHero />
 
+
+          <HeroRewardedAd sectionKey="page_kidsacademy" />
 
           {/* Premium Banner */}
           <Card className="mb-6 border-2 border-primary/30 bg-gradient-to-r from-primary/5 to-accent/5">

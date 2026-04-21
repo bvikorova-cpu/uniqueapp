@@ -33,6 +33,7 @@ import { LotteryHeatmapLab } from "@/components/lottery/LotteryHeatmapLab";
 import { LotterySyndicate } from "@/components/lottery/LotterySyndicate";
 import { Moon, Hash, Activity, Users } from "lucide-react";
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 const LOTTERY_TYPES = [
   { id: "eurojackpot", name: "EuroJackpot", maxNumber: 50, bonusBalls: 12, mainBalls: 5, bonusCount: 2 },
   { id: "lotto", name: "Lotto 6/49", maxNumber: 49, bonusBalls: 0, mainBalls: 6, bonusCount: 0 },
@@ -320,6 +321,8 @@ export default function LotteryAI() {
       <div className="container mx-auto px-2 sm:px-4">
         {/* Hero */}
         <LotteryHero />
+
+        <HeroRewardedAd sectionKey="page_lotteryai" />
 
         {/* Feature Cards Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-8">

@@ -12,6 +12,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { motion } from "framer-motion";
 import { useState } from "react";
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 const NAV_ITEMS = [
   { icon: MapPin, label: "Check-ins & Reviews", path: "/coffee/checkins" },
   { icon: Users, label: "Coffee Buddy", path: "/coffee/buddy" },
@@ -85,6 +86,8 @@ const Coffee = () => {
       <div className="container mx-auto px-4 py-6 max-w-7xl">
         <CoffeeHero />
 
+
+        <HeroRewardedAd sectionKey="page_coffee" />
 
         {/* Engagement Row */}
         <div className="grid grid-cols-3 gap-3 mb-8">

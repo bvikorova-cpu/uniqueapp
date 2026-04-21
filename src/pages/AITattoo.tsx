@@ -26,6 +26,7 @@ import { TattooCoverUpGenerator } from "@/components/tattoo/TattooCoverUpGenerat
 import { TattooPainMap } from "@/components/tattoo/TattooPainMap";
 import { TattooCareAssistant } from "@/components/tattoo/TattooCareAssistant";
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 type ActiveView = "dashboard" | "generate" | "gallery" | "ar_preview" | "style_mixer" | "aging_sim" | "marketplace" | "color_palette" | "meaning" | "cover_up" | "pain_map" | "care";
 
 interface TattooDesign {
@@ -263,6 +264,8 @@ const AITattoo = () => {
       <Navbar />
       <main className="container mx-auto px-4 py-8 mt-20">
         <TattooHero />
+
+        <HeroRewardedAd sectionKey="page_aitattoo" />
 
         {/* Engagement Row */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">

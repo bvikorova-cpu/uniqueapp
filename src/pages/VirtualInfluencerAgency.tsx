@@ -18,6 +18,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 type ViewType = "hub" | "create" | "dashboard" | "content-calendar" | "brand-deals" | "trend-analyzer" | "battle-arena" | string;
 
 const TOOLS = [
@@ -129,6 +130,8 @@ const VirtualInfluencerAgency = () => {
       <div className="container mx-auto px-4 py-8">
         <div className="mt-16">
           <InfluKingHero />
+          <HeroRewardedAd sectionKey="page_virtualinfluenceragency" />
+
         </div>
 
         {/* Engagement Row */}

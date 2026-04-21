@@ -16,6 +16,7 @@ import { AIActionPlans } from "@/components/mentor/AIActionPlans";
 import { GamificationXP } from "@/components/mentor/GamificationXP";
 import { VoiceCoaching } from "@/components/mentor/VoiceCoaching";
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 const MENTOR_AREAS = [
   {
     id: "career",
@@ -141,6 +142,8 @@ const AIMentor = () => {
     <div className="min-h-screen bg-background pt-20 pb-12">
       <div className="container mx-auto px-2 sm:px-4">
         <MentorHero />
+
+        <HeroRewardedAd sectionKey="page_aimentor" />
 
         {/* Engagement widgets row */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">

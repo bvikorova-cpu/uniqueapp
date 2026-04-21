@@ -8,6 +8,7 @@ import { HeroCampaignCard } from '@/components/fundraising/hero/HeroCampaignCard
 import { CorporateSponsors } from '@/components/fundraising/hero/CorporateSponsors';
 import { HeroSuccessStories } from '@/components/fundraising/hero/HeroSuccessStories';
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 interface HeroCampaign {
   id: string;
   title: string;
@@ -81,6 +82,8 @@ export default function CommunityHero() {
     <div className="min-h-screen bg-background pt-20 pb-12 px-4">
       <div className="max-w-7xl mx-auto">
         <HeroHero />
+        <HeroRewardedAd sectionKey="page_communityhero" />
+
         <HeroStepsWizard />
 
         <div className="mt-12 space-y-6">

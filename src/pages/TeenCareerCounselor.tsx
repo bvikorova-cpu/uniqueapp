@@ -19,6 +19,7 @@ import { CareerResults } from "@/components/teen-career/CareerResults";
 import { CareerComparison } from "@/components/teen-career/CareerComparison";
 import { motion, AnimatePresence } from "framer-motion";
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 interface ShadowArenaAchievement {
   id: string;
   placement: number;
@@ -257,6 +258,8 @@ export default function TeenCareerCounselor() {
       <Navbar />
       <main className="flex-1 container mx-auto px-4 pt-16 pb-8 max-w-4xl">
         <CareerHero />
+
+        <HeroRewardedAd sectionKey="page_teencareercounselor" />
 
         {/* Usage Status */}
         {!checkingUsage && usageData && (

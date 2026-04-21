@@ -6,6 +6,7 @@ import { CrisisStepsWizard } from '@/components/fundraising/crisis/CrisisStepsWi
 import { CrisisFilters } from '@/components/fundraising/crisis/CrisisFilters';
 import { CrisisCampaignCard } from '@/components/fundraising/crisis/CrisisCampaignCard';
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 interface CrisisCampaign {
   id: string;
   crisis_type: string;
@@ -86,6 +87,8 @@ export default function CrisisRelief() {
     <div className="min-h-screen bg-background pt-20 pb-12 px-4">
       <div className="max-w-7xl mx-auto">
         <CrisisHero />
+        <HeroRewardedAd sectionKey="page_crisisrelief" />
+
         <CrisisStepsWizard />
 
         <div id="campaigns" className="mt-8 space-y-6">

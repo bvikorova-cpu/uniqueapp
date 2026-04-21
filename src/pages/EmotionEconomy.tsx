@@ -18,6 +18,7 @@ import { EmotionLeaderboard } from "@/components/emotion-economy/EmotionLeaderbo
 import { AIMoodTherapist } from "@/components/emotion-economy/AIMoodTherapist";
 import { EmotionFutures } from "@/components/emotion-economy/EmotionFutures";
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 type ViewType = "hub" | "feed" | "wallet" | "market" | "mining" | "insurance" | "drops" | "roulette" | "leaderboard" | "therapist" | "futures";
 
 const tools = [
@@ -73,6 +74,8 @@ export default function EmotionEconomy() {
       <div className="container mx-auto px-4 pt-20 pb-8 space-y-8">
         {/* Cinematic Hero */}
         <EmotionEconomyHero />
+
+        <HeroRewardedAd sectionKey="page_emotioneconomy" />
 
         {/* Engagement Row */}
         <EmotionEconomyEngagement />

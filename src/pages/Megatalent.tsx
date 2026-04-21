@@ -36,6 +36,7 @@ import MegaTalentSubmissionCard from "@/components/megatalent/MegaTalentSubmissi
 import MegaTalentFeedFilters, { type FeedFilter } from "@/components/megatalent/MegaTalentFeedFilters";
 import { motion } from "framer-motion";
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 const categoryGroups = [
   { group: "🎨 Art & Creativity", categories: [
     { value: "drawing", label: "🎨 Drawing" }, { value: "painting", label: "🖌️ Painting" },
@@ -425,6 +426,8 @@ const Megatalent = () => {
         {/* Cinematic Video Hero */}
         <MegaTalentHero totalVotes={totalVotes} isSubscribed={isSubscribed} subscriptionTier={subscriptionTier} />
 
+
+        <HeroRewardedAd sectionKey="page_megatalent" />
 
         {/* 3-Column Engagement Row */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">

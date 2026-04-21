@@ -28,6 +28,7 @@ import { GuidedCBT } from "@/components/psychologist/GuidedCBT";
 import { AmbientSounds } from "@/components/psychologist/AmbientSounds";
 import { WeeklyWellnessReport } from "@/components/psychologist/WeeklyWellnessReport";
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 interface Message {
   role: 'user' | 'assistant';
   content: string;
@@ -277,6 +278,8 @@ const Psychology = () => {
   return (
     <div className="min-h-screen bg-background">
       <PsychologyHero />
+
+      <HeroRewardedAd sectionKey="page_psychology" />
 
       <div className="container mx-auto px-4 max-w-6xl -mt-8 relative z-20 pb-12">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>

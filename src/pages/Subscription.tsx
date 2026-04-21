@@ -44,6 +44,7 @@ import { ReferralCard } from "@/components/subscription/ReferralCard";
 
 import { RoiDashboard } from "@/components/subscription/RoiDashboard";
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 const Subscription = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -300,6 +301,8 @@ const Subscription = () => {
       <div className="container mx-auto px-4">
         {/* (1) Hero */}
         <SubscriptionHero currentTier={currentTier} />
+
+        <HeroRewardedAd sectionKey="page_subscription" />
 
         {/* (8) ROI dashboard for paying users */}
         {user && currentTier !== "basic" && (

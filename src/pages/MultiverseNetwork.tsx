@@ -32,6 +32,7 @@ import MultiverseLeaderboard from "@/components/multiverse/MultiverseLeaderboard
 import RealityClashArena from "@/components/multiverse/RealityClashArena";
 import QuantumDestinyForecast from "@/components/multiverse/QuantumDestinyForecast";
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 type ViewType = "hub" | "create" | "my-universes" | "timeline-merger" | "best-self" | 
   "comparison" | "timeline-view" | "quantum-chat" | "reality-lottery" | "pricing" |
   "navigator" | "decision-tree" | "analytics" | "community" | "journal" |
@@ -173,6 +174,8 @@ const MultiverseNetwork = () => {
         {activeView === "hub" ? (
           <>
             <MultiverseHero />
+            <HeroRewardedAd sectionKey="page_multiversenetwork" />
+
             <MultiverseEngagement 
               universesCount={universesCount} 
               bestSelfScore={0} 

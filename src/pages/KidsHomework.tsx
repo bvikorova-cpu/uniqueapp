@@ -27,6 +27,7 @@ import { ParentalGate, useParentalGate } from "@/components/kids/ParentalGate";
 import { SafeContentBadge } from "@/components/kids/SafeContentBadge";
 import { useNavigate } from "react-router-dom";
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 const KidsHomework = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -107,6 +108,8 @@ const KidsHomework = () => {
       <main className="container mx-auto px-4 py-8 mt-16">
         <div className="max-w-6xl mx-auto">
           <HomeworkHero />
+
+          <HeroRewardedAd sectionKey="page_kidshomework" />
 
           {/* Safe Content Badge */}
           <div className="flex justify-center mb-6">

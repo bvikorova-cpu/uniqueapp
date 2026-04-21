@@ -33,6 +33,7 @@ import { useSearchParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { FloatingParticles } from "@/components/wellness/FloatingParticles";
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 const ANALYSIS_TOOLS = [
   {
     id: "personal",
@@ -127,6 +128,8 @@ const Handwriting = () => {
               className="space-y-6 sm:space-y-8"
             >
               <HandwritingHero />
+
+              <HeroRewardedAd sectionKey="page_handwriting" />
 
               {/* Quick Actions */}
               <motion.div

@@ -12,6 +12,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 const TIERS = {
   amateur: {
     name: "Amateur", price: "€19.99", priceId: "price_1SPiaUGaXSfGtYFtpV3Q8jjN",
@@ -77,6 +78,8 @@ export default function MasterChefHub() {
         
         {/* Cinematic Video Hero */}
         <MasterChefHero />
+
+        <HeroRewardedAd sectionKey="page_masterchefhub" />
 
         {/* Free Access Banner */}
         <Card className="bg-orange-500/10 border-orange-500/20">

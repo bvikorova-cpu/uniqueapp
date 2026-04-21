@@ -33,6 +33,7 @@ import { CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2, Download, Lock, Zap, Sparkles, Crown } from "lucide-react";
 import { toast } from "sonner";
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 interface VideoAdResult {
   title: string; script: string;
   scenes: Array<{ duration: string; description: string; voiceover: string; visuals: string; }>;
@@ -181,6 +182,8 @@ const VideoAdGenerator = () => {
         return (
           <>
             <VideoAdHero />
+            <HeroRewardedAd sectionKey="page_videoadgenerator" />
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
               <Card className="p-4 bg-gradient-to-br from-orange-500/10 to-red-500/5 border-orange-500/20">
                 <div className="flex items-center gap-3"><Flame className="w-8 h-8 text-orange-500" /><div><p className="text-2xl font-black">7</p><p className="text-xs text-muted-foreground">Day Streak</p></div></div>

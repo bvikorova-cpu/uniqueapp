@@ -28,6 +28,7 @@ import { DailyChallenge } from "@/components/coloring/DailyChallenge";
 import { AIColorSuggestions } from "@/components/coloring/AIColorSuggestions";
 import { PrintExport } from "@/components/coloring/PrintExport";
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 export default function ColoringPages() {
   const navigate = useNavigate();
   const { credits, isLoading: creditsLoading, checkSubscription } = useColoringCredits();
@@ -181,6 +182,8 @@ export default function ColoringPages() {
       <Navbar />
       <main className="container mx-auto px-4 py-16 max-w-7xl">
         <ColoringHero totalPages={totalPages} credits={creditsDisplay} />
+
+        <HeroRewardedAd sectionKey="page_coloringpages" />
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <div className="overflow-x-auto scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0">

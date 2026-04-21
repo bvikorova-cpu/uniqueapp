@@ -19,6 +19,7 @@ import { CharacterTemplates } from "@/components/character/creator/CharacterTemp
 import { PowerCombination } from "@/components/character/creator/PowerCombination";
 import { AchievementsTracker } from "@/components/character/creator/AchievementsTracker";
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 const hairColors = [
   { id: "brown", name: "Brown", emoji: "🟤" },
   { id: "black", name: "Black", emoji: "⚫" },
@@ -300,6 +301,8 @@ export default function CreateCharacter() {
 
         {/* Hero */}
         <WizardHero />
+
+        <HeroRewardedAd sectionKey="page_createcharacter" />
 
         {/* Templates */}
         <CharacterTemplates onApplyTemplate={handleApplyTemplate} />

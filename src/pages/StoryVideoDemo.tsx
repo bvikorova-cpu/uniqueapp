@@ -12,6 +12,7 @@ import { VideoGallery } from '@/components/kids/story-video/VideoGallery';
 import { StoryRemix } from '@/components/kids/story-video/StoryRemix';
 import { TheaterPlayer } from '@/components/kids/story-video/TheaterPlayer';
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 const StoryVideoDemo = () => {
   const [loading, setLoading] = useState(false);
   const [storyData, setStoryData] = useState<{ scenes: string[]; images: string[]; audioFiles?: string[] } | null>(null);
@@ -113,6 +114,8 @@ const StoryVideoDemo = () => {
 
         {/* Hero */}
         <CinematicHero />
+
+        <HeroRewardedAd sectionKey="page_storyvideodemo" />
 
         {storyData ? (
           <div className="space-y-6">
