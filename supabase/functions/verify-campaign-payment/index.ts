@@ -162,6 +162,25 @@ serve(async (req) => {
       }
     }
 
+    // Record earnings history (for dashboards/analytics)
+    if (influencer) {
+      const { error: earningsError } = await supabaseAdmin
+        .from("influencer_earnings")
+        .insert({
+          influencer_id: influencer.id,
+          user_id: payment.influencer_user_id,
+          amount: payment.amount,
+          platform_fee: payment.platform_fee,
+          net_amount: payment.influencer_amount,
+          source: "brand_collaboration",
+        });
+      if (earningsError) {
+        logStep("ERROR recording earnings", earningsError);
+      } else {
+        logStep("Earnings recorded");
+      }
+    }
+
     // Send notifications
     await supabaseAdmin.from("notifications").insert([
       {
