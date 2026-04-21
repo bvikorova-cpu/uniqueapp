@@ -35,7 +35,7 @@ export const SinHeatmap = () => {
   const loadData = async () => {
     setLoading(true);
     try {
-      let query = supabase.from("confessions").select("*").order("created_at", { ascending: false });
+      let query = (supabase as any).from("confessions_public").select("*").order("created_at", { ascending: false });
 
       if (timeRange === "week") {
         const weekAgo = new Date();

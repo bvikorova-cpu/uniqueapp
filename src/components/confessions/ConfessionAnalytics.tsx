@@ -24,7 +24,7 @@ export const ConfessionAnalytics = () => {
       if (!user) { setLoading(false); return; }
 
       const [confRes, voteRes] = await Promise.all([
-        supabase.from("confessions").select("*").order("created_at", { ascending: true }).limit(500),
+        (supabase as any).from("confessions_public").select("*").order("created_at", { ascending: true }).limit(500),
         supabase.from("absolution_votes").select("*").limit(500),
       ]);
 
