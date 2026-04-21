@@ -228,6 +228,8 @@ const Auction = () => {
         {/* Cinematic Hero */}
         <AuctionHero />
 
+        <HeroRewardedAd sectionKey="page_auction" />
+
         {/* Engagement Row */}
         <div className="grid grid-cols-3 gap-3 mb-8">
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}

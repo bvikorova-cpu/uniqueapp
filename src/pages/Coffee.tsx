@@ -86,6 +86,8 @@ const Coffee = () => {
       <div className="container mx-auto px-4 py-6 max-w-7xl">
         <CoffeeHero />
 
+        <HeroRewardedAd sectionKey="page_coffee" />
+
         {/* Engagement Row */}
         <div className="grid grid-cols-3 gap-3 mb-8">
           <Card className="p-3 sm:p-4 bg-card/80 backdrop-blur-xl border-amber-500/20 text-center">
