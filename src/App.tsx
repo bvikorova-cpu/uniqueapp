@@ -22,6 +22,9 @@ import { ErrorBoundary } from "./components/ErrorBoundary";
 import { installGlobalErrorHandlers } from "@/utils/logger";
 
 // Install global error handlers as early as possible
+import { HelmetProvider } from "react-helmet-async";
+
+// Install global error handlers as early as possible
 installGlobalErrorHandlers();
 
 // Critical pages - loaded immediately for best UX
@@ -368,8 +371,9 @@ const App = () => {
   }, []);
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
+    <HelmetProvider>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
         <BrowserRouter>
           <AuthProvider>
             <AnimationProvider>
@@ -762,6 +766,7 @@ const App = () => {
         </BrowserRouter>
       </ThemeProvider>
     </QueryClientProvider>
+    </HelmetProvider>
   );
 };
 
