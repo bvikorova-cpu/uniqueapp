@@ -9,7 +9,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useRecentServices } from "@/hooks/useRecentServices";
 import RewardedAdCard from "@/components/ads/RewardedAdCard";
 import { AD_PLACEMENTS } from "@/components/ads/AdPlacements";
-import heroHdVideo from "/unique-hero-hd.mp4.asset.json";
+import heroHdVideo from "@/assets/unique-hero-hd.mp4.asset.json";
 import {
   Car, Baby, GraduationCap, Briefcase, Heart, Sparkles, Trophy, Users,
   Video, Mic, ShoppingBag, Brain, TrendingUp, Ghost, Building2, Crown,
