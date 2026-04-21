@@ -2,7 +2,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Navbar from "@/components/Navbar";
 
 import { KidsAcademyHero } from "@/components/kids/academy/KidsAcademyHero";
-import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { AdventureWorldMap } from "@/components/kids/academy/AdventureWorldMap";
 import { KidsAcademyProgress } from "@/components/kids/academy/KidsAcademyProgress";
 import { KidsAcademyStreak } from "@/components/kids/academy/KidsAcademyStreak";
@@ -20,7 +19,6 @@ const KidsAcademy = () => {
         <div className="max-w-6xl mx-auto">
           <KidsAcademyHero />
 
-          <HeroRewardedAd sectionKey="page_kids_academy" />
 
           {/* Premium Banner */}
           <Card className="mb-6 border-2 border-primary/30 bg-gradient-to-r from-primary/5 to-accent/5">

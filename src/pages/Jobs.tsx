@@ -12,7 +12,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Briefcase, MapPin, DollarSign, Clock, Search, Plus, Building2, Globe, Wrench, Flame, Trophy, Medal, Zap } from "lucide-react";
 import JobsCinematicHero from "@/components/jobs/JobsCinematicHero";
-import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { QuickFilterChips } from "@/components/jobs/QuickFilterChips";
 import { JobsSidebar } from "@/components/jobs/JobsSidebar";
 import { JobCardRedesigned } from "@/components/jobs/JobCardRedesigned";
@@ -288,7 +287,6 @@ const Jobs = () => {
           streak={0}
         />
 
-        <HeroRewardedAd sectionKey="page_jobs" />
 
         {/* Tab Navigation */}
         <div className="flex flex-wrap gap-1.5 mb-6 p-1 bg-card/50 backdrop-blur-sm rounded-xl border border-border/30">
