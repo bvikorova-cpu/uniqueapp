@@ -1,3 +1,4 @@
+# Allow all major bots
 User-agent: Googlebot
 Allow: /
 
@@ -12,3 +13,13 @@ Allow: /
 
 User-agent: *
 Allow: /
+
+# Disallow private/admin areas
+Disallow: /admin/
+Disallow: /settings
+Disallow: /messenger
+Disallow: /auth
+Disallow: /reset-password
+
+# Sitemap
+Sitemap: https://uniqueapp.fun/sitemap.xml
