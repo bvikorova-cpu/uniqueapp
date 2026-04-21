@@ -77,6 +77,13 @@ export type Database = {
             referencedRelation: "confessions"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "absolution_votes_confession_id_fkey"
+            columns: ["confession_id"]
+            isOneToOne: false
+            referencedRelation: "confessions_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       achievements: {
@@ -31986,6 +31993,13 @@ export type Database = {
             referencedRelation: "confessions"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "redemption_progress_confession_id_fkey"
+            columns: ["confession_id"]
+            isOneToOne: false
+            referencedRelation: "confessions_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       referral_withdrawal_requests: {
@@ -40930,6 +40944,51 @@ export type Database = {
       }
     }
     Views: {
+      confessions_public: {
+        Row: {
+          absolution_tokens_used: number | null
+          absolution_votes: number | null
+          condemnation_votes: number | null
+          confession_text: string | null
+          created_at: string | null
+          id: string | null
+          is_anonymous: boolean | null
+          severity_score: number | null
+          sin_category: string | null
+          status: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          absolution_tokens_used?: number | null
+          absolution_votes?: number | null
+          condemnation_votes?: number | null
+          confession_text?: string | null
+          created_at?: string | null
+          id?: string | null
+          is_anonymous?: boolean | null
+          severity_score?: number | null
+          sin_category?: string | null
+          status?: string | null
+          updated_at?: string | null
+          user_id?: never
+        }
+        Update: {
+          absolution_tokens_used?: number | null
+          absolution_votes?: number | null
+          condemnation_votes?: number | null
+          confession_text?: string | null
+          created_at?: string | null
+          id?: string | null
+          is_anonymous?: boolean | null
+          severity_score?: number | null
+          sin_category?: string | null
+          status?: string | null
+          updated_at?: string | null
+          user_id?: never
+        }
+        Relationships: []
+      }
       safety_roleplay_leaderboard: {
         Row: {
           handle: string | null
@@ -40948,6 +41007,13 @@ export type Database = {
       }
       add_user_points: {
         Args: { p_activity_type: string; p_points: number; p_user_id: string }
+        Returns: undefined
+      }
+      assign_user_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _target_user_id: string
+        }
         Returns: undefined
       }
       award_points_and_log: {
