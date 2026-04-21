@@ -109,28 +109,27 @@ const ContentGenerator = ({ influencerId, influencer }: ContentGeneratorProps) =
 
       if (updateError) throw updateError;
 
-      // Update or create influencer balance
+      // Update influencer balance (trigger guarantees row exists)
       const { data: existingBalance } = await supabase
         .from("influencer_balances")
         .select("*")
         .eq("influencer_id", influencerId)
-        .single();
+        .maybeSingle();
 
       if (existingBalance) {
         await supabase
           .from("influencer_balances")
           .update({
-            total_earned: existingBalance.total_earned + Number(netEarnings),
-            available_balance: existingBalance.available_balance + Number(netEarnings),
+            total_earned: Number(existingBalance.total_earned) + Number(netEarnings),
           })
           .eq("influencer_id", influencerId);
       } else {
+        // Fallback in case trigger didn't fire (legacy rows)
         await supabase
           .from("influencer_balances")
           .insert({
             influencer_id: influencerId,
             total_earned: Number(netEarnings),
-            available_balance: Number(netEarnings),
             withdrawn: 0,
             pending_withdrawal: 0,
           });
