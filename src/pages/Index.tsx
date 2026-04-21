@@ -214,7 +214,7 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* ── Hero Section ─────────────────────────────── */}
-      <div className="relative overflow-hidden min-h-[500px] sm:min-h-[550px]">
+      <div className="relative overflow-hidden min-h-[500px] sm:min-h-[640px] lg:min-h-[720px] xl:min-h-[820px]">
         {/* Video background */}
         <video
           autoPlay
@@ -223,18 +223,20 @@ const Index = () => {
           playsInline
           preload="metadata"
           poster="/unique-hero-poster-v3.jpg"
-          className="absolute inset-0 w-full h-full object-cover"
+          className="absolute inset-0 w-full h-full object-cover object-center scale-105"
+          style={{ objectPosition: "center 35%" }}
         >
           <source src="/unique-hero-mobile-v3.mp4" type="video/mp4" media="(max-width: 767px)" />
           <source src="/unique-hero-opt-v3.mp4" type="video/mp4" />
         </video>
         {/* Gradient fallback behind video */}
         <div className="absolute inset-0 bg-gradient-to-br from-primary via-accent to-primary animate-gradient-shift -z-10" />
-        {/* Lighter overlay so brand video stays vivid */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/15 via-black/10 to-black/45" />
+        {/* Cinematic overlays — vignette + bottom gradient for text legibility */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/60" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_40%,rgba(0,0,0,0.55)_100%)]" />
 
         {/* Content */}
-        <div className="relative z-10 flex flex-col items-center justify-center min-h-[480px] sm:min-h-[550px] px-4 text-center pt-16 pb-8">
+        <div className="relative z-10 flex flex-col items-center justify-center min-h-[480px] sm:min-h-[640px] lg:min-h-[720px] xl:min-h-[820px] px-4 text-center pt-16 pb-8 max-w-7xl mx-auto">
           <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white/90 text-sm mb-6">
             <Sparkles className="w-4 h-4" />
             <span className="font-medium">All-in-One Digital Platform</span>
