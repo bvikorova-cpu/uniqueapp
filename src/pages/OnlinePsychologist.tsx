@@ -83,33 +83,8 @@ const OnlinePsychologist = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Real-time subscription for new messages
-  useEffect(() => {
-    if (!sessionId) return;
-
-    const channel = supabase
-      .channel("psychology-messages")
-      .on(
-        "postgres_changes",
-        {
-          event: "INSERT",
-          schema: "public",
-          table: "psychology_messages",
-          filter: `session_id=eq.${sessionId}`,
-        },
-        (payload) => {
-          const newMsg = payload.new as any;
-          if (newMsg.role === "assistant") {
-            setMessages(prev => [...prev, { role: "assistant", content: newMsg.content }]);
-          }
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [sessionId]);
+  // Realtime removed for security: psychology_messages no longer published.
+  // Assistant streaming below already updates the UI in real time as tokens arrive.
 
   const handleSend = async () => {
     if (!input.trim() || !sessionId || isLoading) return;
@@ -119,12 +94,17 @@ const OnlinePsychologist = () => {
     setInput("");
     setIsLoading(true);
 
-    // Save user message
-    await supabase.from("psychology_messages").insert({
-      session_id: sessionId,
-      role: "user",
-      content: userMessage.content,
-    });
+    // Save user message via secure edge function
+    if (sessionToken) {
+      await supabase.functions.invoke("psychology-session", {
+        body: {
+          action: "insert-message",
+          session_token: sessionToken,
+          role: "user",
+          content: userMessage.content,
+        },
+      });
+    }
 
     try {
       const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/psychology-chat`;
