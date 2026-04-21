@@ -364,7 +364,6 @@ const App = () => {
                 <div className="flex flex-col min-h-screen">
                   <Navbar />
                   <GlobalAnnouncementBanner />
-                  <GlobalRewardedAd />
                   <main id="main-content" className="flex-1">
                     <Suspense fallback={<PageLoader />}>
                       {/* All routes render inside this Suspense boundary */}
