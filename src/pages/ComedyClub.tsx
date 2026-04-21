@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ComedyClubHero } from "@/components/comedy/ComedyClubHero";
-import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { ComedyCurrencyDisplay } from "@/components/comedy/ComedyCurrencyDisplay";
 import { BattleVoting } from "@/components/comedy/BattleVoting";
 import { VideoPlayer } from "@/components/comedy/VideoPlayer";
@@ -212,7 +211,6 @@ export default function ComedyClub() {
         {/* Hero Video */}
         <ComedyClubHero />
 
-        <HeroRewardedAd sectionKey="page_comedy_club" />
 
         {/* Action Bar */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">

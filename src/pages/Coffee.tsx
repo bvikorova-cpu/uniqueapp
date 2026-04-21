@@ -3,7 +3,6 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { CoffeeHero } from "@/components/coffee/CoffeeHero";
-import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { toast } from "sonner";
 import {
   MapPin, Users, Trophy, Star, Flame, Award, Loader2
@@ -86,7 +85,6 @@ const Coffee = () => {
       <div className="container mx-auto px-4 py-6 max-w-7xl">
         <CoffeeHero />
 
-        <HeroRewardedAd sectionKey="page_coffee" />
 
         {/* Engagement Row */}
         <div className="grid grid-cols-3 gap-3 mb-8">

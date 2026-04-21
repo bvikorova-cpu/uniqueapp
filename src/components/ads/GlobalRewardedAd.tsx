@@ -3,9 +3,10 @@ import RewardedAdCard from "./RewardedAdCard";
 import { AD_PLACEMENTS } from "./AdPlacements";
 
 /**
- * Global rewarded ad shown at the bottom of every page.
- * Section key is derived from the route so the daily limit (3x)
- * applies independently per page/section.
+ * Global rewarded ad shown on EVERY page, placed right under the
+ * navbar/announcement banner so it's visible at the top of the
+ * content. Section key is derived from the route so the daily
+ * limit (3x) applies independently per page/section.
  */
 export const GlobalRewardedAd = () => {
   const { pathname } = useLocation();
@@ -20,7 +21,7 @@ export const GlobalRewardedAd = () => {
   const sectionKey = `page_${pathname.replace(/\//g, "_").replace(/[^a-z0-9_]/gi, "").toLowerCase() || "root"}`.slice(0, 80);
 
   return (
-    <div className="max-w-3xl mx-auto px-4 pb-6 pt-2">
+    <div className="max-w-3xl mx-auto px-4 pt-4 pb-2">
       <RewardedAdCard sectionKey={sectionKey} adSlot={AD_PLACEMENTS.FOOTER_BANNER} />
     </div>
   );
