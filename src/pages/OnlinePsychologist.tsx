@@ -22,79 +22,57 @@ const OnlinePsychologist = () => {
   const [sessionToken, setSessionToken] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Initialize anonymous session
+  // Initialize anonymous session via secure edge function
   useEffect(() => {
     const initSession = async () => {
       let token = localStorage.getItem("psychology_session_token");
-      
+      let isNew = false;
+
       if (!token) {
         token = crypto.randomUUID();
         localStorage.setItem("psychology_session_token", token);
-        
-        const { data, error } = await supabase
-          .from("psychology_sessions")
-          .insert({ session_token: token })
-          .select()
-          .single();
-
-        if (error) {
-          console.error("Error creating session:", error);
-          toast({
-            title: "Error",
-            description: "Failed to create session. Please try again.",
-            variant: "destructive"
-          });
-          return;
-        }
-
-        setSessionId(data.id);
-      } else {
-        const { data, error } = await supabase
-          .from("psychology_sessions")
-          .select()
-          .eq("session_token", token)
-          .single();
-
-        if (error || !data) {
-          const { data: newSession, error: createError } = await supabase
-            .from("psychology_sessions")
-            .insert({ session_token: token })
-            .select()
-            .single();
-
-          if (createError) {
-            console.error("Error creating session:", createError);
-            return;
-          }
-          setSessionId(newSession.id);
-        } else {
-          setSessionId(data.id);
-          await loadMessages(data.id);
-        }
+        isNew = true;
       }
 
+      const { data, error } = await supabase.functions.invoke("psychology-session", {
+        body: { action: "init", session_token: token },
+      });
+
+      if (error || !data?.id) {
+        console.error("Error initializing session:", error);
+        toast({
+          title: "Error",
+          description: "Failed to create session. Please try again.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      setSessionId(data.id);
       setSessionToken(token);
+
+      if (!isNew) {
+        await loadMessages(token);
+      }
     };
 
     initSession();
   }, []);
 
-  // Load existing messages
-  const loadMessages = async (sessId: string) => {
-    const { data, error } = await supabase
-      .from("psychology_messages")
-      .select("*")
-      .eq("session_id", sessId)
-      .order("created_at", { ascending: true });
+  // Load existing messages via secure edge function (token-validated)
+  const loadMessages = async (token: string) => {
+    const { data, error } = await supabase.functions.invoke("psychology-session", {
+      body: { action: "messages", session_token: token },
+    });
 
     if (error) {
       console.error("Error loading messages:", error);
       return;
     }
 
-    const loadedMessages = data.map(msg => ({
+    const loadedMessages = (data?.messages ?? []).map((msg: any) => ({
       role: msg.role as "user" | "assistant",
-      content: msg.content
+      content: msg.content,
     }));
 
     setMessages(loadedMessages);
