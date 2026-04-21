@@ -31,6 +31,7 @@ import { DailyTrainingQuests } from "@/components/horse-racing/DailyTrainingQues
 import { BloodlineGenealogy } from "@/components/horse-racing/BloodlineGenealogy";
 import { WeatherRacingBonuses } from "@/components/horse-racing/WeatherRacingBonuses";
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 type ActiveView = "dashboard" | "stable" | "racing" | "training" | "breeding" | "shop" | "leaderboard" | "auction" | "championships" | "equipment" | "quests" | "bloodline" | "weather";
 
 const tools = [
@@ -96,6 +97,8 @@ export default function HorseRacing() {
   const renderDashboard = () => (
     <>
       <HorseRacingHero stats={heroStats} onNavigate={(v) => setActiveView(v as ActiveView)} />
+      <HeroRewardedAd sectionKey="page_horseracing" />
+
 
       {/* Engagement Row */}
       <div className="grid grid-cols-3 gap-2 md:gap-3 mt-6">

@@ -19,6 +19,7 @@ import { MyTickets } from "@/components/contact/MyTickets";
 import { VoiceRecorder } from "@/components/contact/VoiceRecorder";
 import { ScreenRecorder } from "@/components/contact/ScreenRecorder";
 
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 const CATEGORIES = [
   { id: "support", label: "Support" },
   { id: "billing", label: "Billing" },
@@ -194,6 +195,8 @@ const Contact = () => {
     <div className="min-h-screen bg-background">
       <div className="container max-w-5xl mx-auto px-4 py-6 pt-20">
         <ContactHero responseTime="< 4h" todayCount={47} satisfaction={98} />
+        <HeroRewardedAd sectionKey="page_contact" />
+
 
         <SystemStatusWidget />
 
