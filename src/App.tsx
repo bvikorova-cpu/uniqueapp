@@ -735,7 +735,6 @@ const App = () => {
                       </Routes>
                     </Suspense>
                   </main>
-                  <GlobalRewardedAd />
                   <Footer />
                 </div>
               </TooltipProvider>
