@@ -14,6 +14,9 @@ export default defineConfig(() => ({
     },
   },
   build: {
+    target: "es2020",
+    cssCodeSplit: true,
+    chunkSizeWarningLimit: 1000,
     rollupOptions: {
       output: {
         manualChunks: {
@@ -28,5 +31,8 @@ export default defineConfig(() => ({
         },
       },
     },
+  },
+  optimizeDeps: {
+    include: ["react", "react-dom", "react-router-dom", "framer-motion", "lucide-react"],
   },
 }));
