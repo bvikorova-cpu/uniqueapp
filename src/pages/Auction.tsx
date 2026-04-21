@@ -16,6 +16,7 @@ import { useSubscription } from "@/hooks/useSubscription";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { motion } from "framer-motion";
 import { AuctionHero } from "@/components/auction/AuctionHero";
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { PriceEstimatorView } from "@/components/auction/views/PriceEstimatorView";
 import { ListingOptimizerView } from "@/components/auction/views/ListingOptimizerView";
 import { BidStrategyView } from "@/components/auction/views/BidStrategyView";
@@ -226,6 +227,8 @@ const Auction = () => {
       <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-8">
         {/* Cinematic Hero */}
         <AuctionHero />
+
+        <HeroRewardedAd sectionKey="page_auction" />
 
         {/* Engagement Row */}
         <div className="grid grid-cols-3 gap-3 mb-8">

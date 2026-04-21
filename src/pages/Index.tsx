@@ -10,6 +10,7 @@ import { useRecentServices } from "@/hooks/useRecentServices";
 import RewardedAdCard from "@/components/ads/RewardedAdCard";
 import { AD_PLACEMENTS } from "@/components/ads/AdPlacements";
 import heroHdVideo from "@/assets/unique-hero-hd.mp4.asset.json";
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import {
   Car, Baby, GraduationCap, Briefcase, Heart, Sparkles, Trophy, Users,
   Video, Mic, ShoppingBag, Brain, TrendingUp, Ghost, Building2, Crown,
@@ -326,6 +327,9 @@ const Index = () => {
       </div>
 
       <div className="max-w-7xl mx-auto px-3 sm:px-6 py-6 sm:py-10 space-y-10 sm:space-y-14">
+
+        {/* Watch & Earn 5 XP — under hero */}
+        <HeroRewardedAd sectionKey="page_index" />
 
         {/* ── Stats ────────────────────────────────────── */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mt-2 sm:-mt-16 relative z-20">

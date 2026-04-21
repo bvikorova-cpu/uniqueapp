@@ -14,6 +14,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { ServiceOrderDialog } from "@/components/marketplace/ServiceOrderDialog";
 import { MyOrders } from "@/components/marketplace/MyOrders";
 import { MarketplaceHero } from "@/components/marketplace/MarketplaceHero";
+import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { MarketplaceToolCard } from "@/components/marketplace/MarketplaceToolCard";
 import { ServiceOptimizerView } from "@/components/marketplace/views/ServiceOptimizerView";
 import { PricingAdvisorView } from "@/components/marketplace/views/PricingAdvisorView";
@@ -337,6 +338,8 @@ const Marketplace = () => {
         <div className="container mx-auto px-4 max-w-6xl">
           <MarketplaceHero />
 
+          <HeroRewardedAd sectionKey="page_marketplace" />
+
           {/* AI Tools Grid */}
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }} className="mb-12">
             <h2 className="text-xl sm:text-2xl font-black mb-1">🤖 AI-Powered Tools</h2>
@@ -530,6 +533,8 @@ const Marketplace = () => {
     <div className="min-h-screen bg-background pt-20 sm:pt-24 pb-12">
       <div className="container mx-auto px-4 max-w-6xl">
         <MarketplaceHero />
+
+        <HeroRewardedAd sectionKey="page_marketplace" />
 
         {/* AI Tools Grid */}
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }} className="mb-8">
