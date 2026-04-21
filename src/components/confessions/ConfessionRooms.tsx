@@ -86,8 +86,8 @@ export const ConfessionRooms = () => {
   const loadRoomStats = async () => {
     try {
       // Load message counts per room topic from confessions
-      const { data, count } = await supabase
-        .from("confessions")
+      const { data, count } = await (supabase as any)
+        .from("confessions_public")
         .select("category", { count: "exact" });
 
       setRooms(prev => prev.map(r => ({
