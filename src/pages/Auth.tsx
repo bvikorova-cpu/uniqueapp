@@ -309,7 +309,7 @@ const Auth = () => {
                       <Label htmlFor="privacy-consent" className="text-sm leading-tight cursor-pointer">
                         I agree to the processing of my personal data in accordance with the{" "}
                         <a 
-                          href="/terms#privacy" 
+                          href="/legal/privacy" 
                           target="_blank" 
                           rel="noopener noreferrer"
                           className="text-primary hover:underline font-medium"
