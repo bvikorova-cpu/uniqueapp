@@ -20,12 +20,12 @@ import { GlobalAnnouncementBanner } from "./components/GlobalAnnouncementBanner"
 import { GlobalRewardedAd } from "./components/ads/GlobalRewardedAd";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { installGlobalErrorHandlers } from "@/utils/logger";
-
-// Install global error handlers as early as possible
+import { installImagePerformancePatch } from "@/utils/imagePerformance";
 import { HelmetProvider } from "react-helmet-async";
 
-// Install global error handlers as early as possible
+// Install global runtime patches as early as possible
 installGlobalErrorHandlers();
+installImagePerformancePatch();
 
 // Critical pages - loaded immediately for best UX
 import Home from "./pages/Home";
