@@ -766,6 +766,7 @@ const App = () => {
         </BrowserRouter>
       </ThemeProvider>
     </QueryClientProvider>
+    </HelmetProvider>
   );
 };
 
