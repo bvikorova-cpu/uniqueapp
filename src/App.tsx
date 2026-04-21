@@ -18,6 +18,11 @@ import ProgressiveOnboarding from "./components/onboarding/ProgressiveOnboarding
 import { PageLoader } from "@/components/ui/PageLoader";
 import { GlobalAnnouncementBanner } from "./components/GlobalAnnouncementBanner";
 import { GlobalRewardedAd } from "./components/ads/GlobalRewardedAd";
+import { ErrorBoundary } from "./components/ErrorBoundary";
+import { installGlobalErrorHandlers } from "@/utils/logger";
+
+// Install global error handlers as early as possible
+installGlobalErrorHandlers();
 
 // Critical pages - loaded immediately for best UX
 import Home from "./pages/Home";

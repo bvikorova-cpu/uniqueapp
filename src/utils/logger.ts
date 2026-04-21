@@ -36,7 +36,7 @@ async function persistLog(severity: Severity, payload: LogPayload): Promise<void
 
     const { data: { session } } = await supabase.auth.getSession();
 
-    await supabase.from("app_error_logs").insert({
+    await (supabase.from("app_error_logs") as any).insert({
       user_id: session?.user?.id ?? null,
       severity,
       error_message: payload.message.slice(0, 2000),
