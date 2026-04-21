@@ -423,9 +423,6 @@ const Navbar = () => {
           </div>
 
           <div className="hidden lg:flex items-center space-x-2">
-            {/* Global Search */}
-            <GlobalSearch />
-            
             {user ? (
               <>
                 {/* Dark Mode Toggle */}
