@@ -270,19 +270,10 @@ export default function Settings() {
                 </div>
               </div>
 
-              <div className="pt-4 border-t">
-                <h3 className="text-lg font-semibold mb-4">Data Management</h3>
-                <div className="space-y-2">
-                  <Button variant="outline" className="w-full justify-start">
-                    <Globe className="h-4 w-4 mr-2" />
-                    Download My Data
-                  </Button>
-                  <Button variant="destructive" className="w-full justify-start">
-                    Delete Account
-                  </Button>
-                </div>
-              </div>
             </Card>
+
+            {/* Full GDPR controls: cookie prefs, data export, delete account */}
+            <GDPRPanel />
           </TabsContent>
 
           {/* Appearance Settings */}

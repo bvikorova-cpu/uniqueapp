@@ -103,30 +103,32 @@ export function GDPRPanel() {
     setDeleting(true);
 
     try {
-      // Delete user data from various tables
-      await Promise.all([
-        supabase.from("posts").delete().eq("user_id", user.id),
-        supabase.from("post_comments").delete().eq("user_id", user.id),
-        supabase.from("post_likes").delete().eq("user_id", user.id),
-        supabase.from("messages").delete().or(`sender_id.eq.${user.id},receiver_id.eq.${user.id}`),
-        supabase.from("profiles").delete().eq("id", user.id),
-      ]);
+      // Server-side deletion: edge function uses service role + auth.admin.deleteUser
+      // which cascades FK deletes across the whole schema (true GDPR erasure).
+      const { data, error } = await supabase.functions.invoke(
+        "delete-user-account",
+        { body: { confirm: "DELETE" } },
+      );
 
-      // Sign out
+      if (error || (data as any)?.error) {
+        throw new Error((data as any)?.error || error?.message || "Delete failed");
+      }
+
       await supabase.auth.signOut();
-      
       localStorage.clear();
-      
+
       toast({
         title: "Account deleted",
-        description: "Your account and all data have been deleted.",
+        description: "Your account and all data have been permanently deleted.",
       });
 
       window.location.href = "/";
-    } catch (error) {
+    } catch (error: any) {
       toast({
         title: "Error",
-        description: "Failed to delete account. Please contact support.",
+        description:
+          error?.message ||
+          "Failed to delete account. Please contact support.",
         variant: "destructive",
       });
     } finally {
@@ -242,7 +244,7 @@ export function GDPRPanel() {
               </Button>
               <span className="text-muted-foreground">•</span>
               <Button variant="link" className="p-0 h-auto" asChild>
-                <a href="/terms#privacy" target="_blank">Privacy Policy</a>
+                <a href="/legal/privacy" target="_blank">Privacy Policy</a>
               </Button>
             </div>
           </div>
