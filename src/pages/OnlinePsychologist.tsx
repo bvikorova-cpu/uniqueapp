@@ -171,12 +171,15 @@ const OnlinePsychologist = () => {
         }
       }
 
-      // Save assistant response
-      if (assistantContent) {
-        await supabase.from("psychology_messages").insert({
-          session_id: sessionId,
-          role: "assistant",
-          content: assistantContent,
+      // Save assistant response via secure edge function
+      if (assistantContent && sessionToken) {
+        await supabase.functions.invoke("psychology-session", {
+          body: {
+            action: "insert-message",
+            session_token: sessionToken,
+            role: "assistant",
+            content: assistantContent,
+          },
         });
       }
     } catch (error) {
