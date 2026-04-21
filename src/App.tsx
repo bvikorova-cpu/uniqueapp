@@ -22,6 +22,9 @@ import { ErrorBoundary } from "./components/ErrorBoundary";
 import { installGlobalErrorHandlers } from "@/utils/logger";
 
 // Install global error handlers as early as possible
+import { HelmetProvider } from "react-helmet-async";
+
+// Install global error handlers as early as possible
 installGlobalErrorHandlers();
 
 // Critical pages - loaded immediately for best UX
