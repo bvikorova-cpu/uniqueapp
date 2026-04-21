@@ -77,6 +77,13 @@ export type Database = {
             referencedRelation: "confessions"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "absolution_votes_confession_id_fkey"
+            columns: ["confession_id"]
+            isOneToOne: false
+            referencedRelation: "confessions_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       achievements: {
@@ -3238,6 +3245,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "bazaar_items_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles_safe"
+            referencedColumns: ["id"]
+          },
         ]
       }
       bazaar_messages: {
@@ -3284,10 +3298,24 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "bazaar_messages_receiver_id_fkey"
+            columns: ["receiver_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles_safe"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "bazaar_messages_sender_id_fkey"
             columns: ["sender_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bazaar_messages_sender_id_fkey"
+            columns: ["sender_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles_safe"
             referencedColumns: ["id"]
           },
         ]
@@ -9432,6 +9460,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "completed_courses_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles_safe"
+            referencedColumns: ["id"]
+          },
         ]
       }
       concert_gifts: {
@@ -10738,6 +10773,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "course_progress_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles_safe"
+            referencedColumns: ["id"]
+          },
         ]
       }
       course_purchases: {
@@ -10888,6 +10930,13 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "course_statistics_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles_safe"
             referencedColumns: ["id"]
           },
         ]
@@ -17300,6 +17349,13 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "forum_posts_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles_safe"
             referencedColumns: ["id"]
           },
         ]
@@ -31986,6 +32042,13 @@ export type Database = {
             referencedRelation: "confessions"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "redemption_progress_confession_id_fkey"
+            columns: ["confession_id"]
+            isOneToOne: false
+            referencedRelation: "confessions_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       referral_withdrawal_requests: {
@@ -34749,6 +34812,13 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "skill_offerings_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles_safe"
             referencedColumns: ["id"]
           },
         ]
@@ -39863,6 +39933,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "videos_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles_safe"
+            referencedColumns: ["id"]
+          },
         ]
       }
       vip_subscriptions: {
@@ -40930,6 +41007,176 @@ export type Database = {
       }
     }
     Views: {
+      business_orders_owner_view: {
+        Row: {
+          business_id: string | null
+          created_at: string | null
+          customer_id: string | null
+          customer_name: string | null
+          id: string | null
+          items: Json | null
+          notes: string | null
+          payment_method: string | null
+          pickup_time: string | null
+          status: string | null
+          total_amount: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          business_id?: string | null
+          created_at?: string | null
+          customer_id?: string | null
+          customer_name?: string | null
+          id?: string | null
+          items?: Json | null
+          notes?: string | null
+          payment_method?: string | null
+          pickup_time?: string | null
+          status?: string | null
+          total_amount?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          business_id?: string | null
+          created_at?: string | null
+          customer_id?: string | null
+          customer_name?: string | null
+          id?: string | null
+          items?: Json | null
+          notes?: string | null
+          payment_method?: string | null
+          pickup_time?: string | null
+          status?: string | null
+          total_amount?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "business_orders_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      confessions_public: {
+        Row: {
+          absolution_tokens_used: number | null
+          absolution_votes: number | null
+          condemnation_votes: number | null
+          confession_text: string | null
+          created_at: string | null
+          id: string | null
+          is_anonymous: boolean | null
+          severity_score: number | null
+          sin_category: string | null
+          status: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          absolution_tokens_used?: number | null
+          absolution_votes?: number | null
+          condemnation_votes?: number | null
+          confession_text?: string | null
+          created_at?: string | null
+          id?: string | null
+          is_anonymous?: boolean | null
+          severity_score?: number | null
+          sin_category?: string | null
+          status?: string | null
+          updated_at?: string | null
+          user_id?: never
+        }
+        Update: {
+          absolution_tokens_used?: number | null
+          absolution_votes?: number | null
+          condemnation_votes?: number | null
+          confession_text?: string | null
+          created_at?: string | null
+          id?: string | null
+          is_anonymous?: boolean | null
+          severity_score?: number | null
+          sin_category?: string | null
+          status?: string | null
+          updated_at?: string | null
+          user_id?: never
+        }
+        Relationships: []
+      }
+      public_profiles_safe: {
+        Row: {
+          avatar_3d_url: string | null
+          avatar_url: string | null
+          bio: string | null
+          company: string | null
+          company_name: string | null
+          completed_exchanges: number | null
+          created_at: string | null
+          full_name: string | null
+          id: string | null
+          interests: string[] | null
+          is_verified: boolean | null
+          location: string | null
+          occupation: string | null
+          rating_average: number | null
+          skills_offered: string[] | null
+          skills_wanted: string[] | null
+          social_links: Json | null
+          theme_color: string | null
+          total_reviews: number | null
+          user_type: string | null
+          website: string | null
+        }
+        Insert: {
+          avatar_3d_url?: string | null
+          avatar_url?: string | null
+          bio?: string | null
+          company?: string | null
+          company_name?: string | null
+          completed_exchanges?: number | null
+          created_at?: string | null
+          full_name?: string | null
+          id?: string | null
+          interests?: string[] | null
+          is_verified?: boolean | null
+          location?: string | null
+          occupation?: string | null
+          rating_average?: number | null
+          skills_offered?: string[] | null
+          skills_wanted?: string[] | null
+          social_links?: Json | null
+          theme_color?: string | null
+          total_reviews?: number | null
+          user_type?: string | null
+          website?: string | null
+        }
+        Update: {
+          avatar_3d_url?: string | null
+          avatar_url?: string | null
+          bio?: string | null
+          company?: string | null
+          company_name?: string | null
+          completed_exchanges?: number | null
+          created_at?: string | null
+          full_name?: string | null
+          id?: string | null
+          interests?: string[] | null
+          is_verified?: boolean | null
+          location?: string | null
+          occupation?: string | null
+          rating_average?: number | null
+          skills_offered?: string[] | null
+          skills_wanted?: string[] | null
+          social_links?: Json | null
+          theme_color?: string | null
+          total_reviews?: number | null
+          user_type?: string | null
+          website?: string | null
+        }
+        Relationships: []
+      }
       safety_roleplay_leaderboard: {
         Row: {
           handle: string | null
@@ -40948,6 +41195,13 @@ export type Database = {
       }
       add_user_points: {
         Args: { p_activity_type: string; p_points: number; p_user_id: string }
+        Returns: undefined
+      }
+      assign_user_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _target_user_id: string
+        }
         Returns: undefined
       }
       award_points_and_log: {
