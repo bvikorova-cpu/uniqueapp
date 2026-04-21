@@ -295,7 +295,7 @@ const Navbar = () => {
     <nav className="fixed top-0 w-full bg-white dark:bg-background backdrop-blur-xl border-b border-border/50 z-50 shadow-[0_1px_20px_rgba(0,0,0,0.06)]">
       <div className="container mx-auto px-4">
         <div className="flex items-baseline justify-between h-16 pt-4">
-          <Link to="/" className="flex items-center group">
+          <Link to="/" className="flex items-center group lg:mr-8 xl:mr-12">
             <img src={uniqueLogo} alt="Unique Logo" className="h-8 w-8 object-contain transition-transform duration-300 group-hover:scale-110" />
             <span className="text-3xl font-extrabold bg-gradient-to-r from-primary via-accent to-primary bg-[length:200%_auto] bg-clip-text text-transparent -ml-1 transition-all duration-500 group-hover:bg-[position:100%_0]">
               nique
