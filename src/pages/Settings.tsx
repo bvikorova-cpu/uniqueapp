@@ -20,6 +20,7 @@ import {
   Settings as SettingsIcon,
 } from "lucide-react";
 import { ProfilePageHero } from "@/components/profile/ProfilePageHero";
+import { GDPRPanel } from "@/components/gdpr/GDPRPanel";
 
 export default function Settings() {
   const navigate = useNavigate();
