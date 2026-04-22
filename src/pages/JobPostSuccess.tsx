@@ -50,7 +50,7 @@ export default function JobPostSuccess() {
           )}
           {status === "success" && (
             <>
-              <CheckCircle2 className="h-12 w-12 mx-auto text-emerald-500" />
+              <CheckCircle2 className="h-12 w-12 mx-auto text-primary" />
               <h1 className="text-2xl font-bold">Payment successful</h1>
               <p className="text-muted-foreground">{message}</p>
               <Button onClick={() => navigate("/jobs")} className="w-full">
