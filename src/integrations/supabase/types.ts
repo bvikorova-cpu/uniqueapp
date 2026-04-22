@@ -20748,6 +20748,7 @@ export type Database = {
           processed_at: string | null
           processed_by: string | null
           status: string | null
+          stripe_transfer_id: string | null
           updated_at: string | null
         }
         Insert: {
@@ -20761,6 +20762,7 @@ export type Database = {
           processed_at?: string | null
           processed_by?: string | null
           status?: string | null
+          stripe_transfer_id?: string | null
           updated_at?: string | null
         }
         Update: {
@@ -20774,6 +20776,7 @@ export type Database = {
           processed_at?: string | null
           processed_by?: string | null
           status?: string | null
+          stripe_transfer_id?: string | null
           updated_at?: string | null
         }
         Relationships: [
@@ -20912,6 +20915,7 @@ export type Database = {
           processed_by: string | null
           scheduled_payout_date: string | null
           status: string
+          stripe_transfer_id: string | null
           updated_at: string | null
         }
         Insert: {
@@ -20927,6 +20931,7 @@ export type Database = {
           processed_by?: string | null
           scheduled_payout_date?: string | null
           status?: string
+          stripe_transfer_id?: string | null
           updated_at?: string | null
         }
         Update: {
@@ -20942,6 +20947,7 @@ export type Database = {
           processed_by?: string | null
           scheduled_payout_date?: string | null
           status?: string
+          stripe_transfer_id?: string | null
           updated_at?: string | null
         }
         Relationships: [
@@ -24643,6 +24649,7 @@ export type Database = {
           processed_at: string | null
           processed_by: string | null
           status: string
+          stripe_transfer_id: string | null
           updated_at: string | null
         }
         Insert: {
@@ -24656,6 +24663,7 @@ export type Database = {
           processed_at?: string | null
           processed_by?: string | null
           status?: string
+          stripe_transfer_id?: string | null
           updated_at?: string | null
         }
         Update: {
@@ -24669,6 +24677,7 @@ export type Database = {
           processed_at?: string | null
           processed_by?: string | null
           status?: string
+          stripe_transfer_id?: string | null
           updated_at?: string | null
         }
         Relationships: []
@@ -26022,6 +26031,7 @@ export type Database = {
           processed_at: string | null
           processed_by: string | null
           status: string
+          stripe_transfer_id: string | null
           updated_at: string | null
         }
         Insert: {
@@ -26035,6 +26045,7 @@ export type Database = {
           processed_at?: string | null
           processed_by?: string | null
           status?: string
+          stripe_transfer_id?: string | null
           updated_at?: string | null
         }
         Update: {
@@ -26048,6 +26059,7 @@ export type Database = {
           processed_at?: string | null
           processed_by?: string | null
           status?: string
+          stripe_transfer_id?: string | null
           updated_at?: string | null
         }
         Relationships: [
@@ -32087,6 +32099,7 @@ export type Database = {
           referrer_id: string
           requested_at: string
           status: string
+          stripe_transfer_id: string | null
           updated_at: string
         }
         Insert: {
@@ -32100,6 +32113,7 @@ export type Database = {
           referrer_id: string
           requested_at?: string
           status?: string
+          stripe_transfer_id?: string | null
           updated_at?: string
         }
         Update: {
@@ -32113,6 +32127,7 @@ export type Database = {
           referrer_id?: string
           requested_at?: string
           status?: string
+          stripe_transfer_id?: string | null
           updated_at?: string
         }
         Relationships: []
