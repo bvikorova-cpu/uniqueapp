@@ -98,7 +98,8 @@ serve(async (req) => {
         });
         if (!response.ok) { console.error("AI gateway error:", await response.text()); throw new Error("Image generation failed"); }
         const data = await response.json();
-        const b64 = data.data?.[0]?.b64_json;
+        const b64Url = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+        const b64 = b64Url ? b64Url.replace(/^data:image\/\w+;base64,/, "") : null;
         if (!b64) throw new Error("No image generated");
         result = { imageUrl: `data:image/webp;base64,${b64}` };
         break;
@@ -109,11 +110,12 @@ serve(async (req) => {
         const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
           method: "POST",
           headers: { "Authorization": `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
-          body: JSON.stringify({ model: "google/gemini-2.5-flash-image-preview", prompt: editP, n: 1, size: "1024x1024", quality: "high", output_format: "webp" }),
+          body: JSON.stringify({ model: "google/gemini-2.5-flash-image-preview", messages: [{ role: "user", content: editP }], modalities: ["image", "text"] }),
         });
         if (!response.ok) throw new Error("Image editing failed");
         const data = await response.json();
-        const b64 = data.data?.[0]?.b64_json;
+        const b64Url = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+        const b64 = b64Url ? b64Url.replace(/^data:image\/\w+;base64,/, "") : null;
         if (!b64) throw new Error("No image generated");
         result = { imageUrl: `data:image/webp;base64,${b64}` };
         break;
@@ -124,11 +126,12 @@ serve(async (req) => {
         const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
           method: "POST",
           headers: { "Authorization": `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
-          body: JSON.stringify({ model: "google/gemini-2.5-flash-image-preview", prompt: styleP, n: 1, size: "1024x1024", quality: "high", output_format: "webp" }),
+          body: JSON.stringify({ model: "google/gemini-2.5-flash-image-preview", messages: [{ role: "user", content: styleP }], modalities: ["image", "text"] }),
         });
         if (!response.ok) throw new Error("Style transfer failed");
         const data = await response.json();
-        const b64 = data.data?.[0]?.b64_json;
+        const b64Url = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+        const b64 = b64Url ? b64Url.replace(/^data:image\/\w+;base64,/, "") : null;
         if (!b64) throw new Error("No image generated");
         result = { imageUrl: `data:image/webp;base64,${b64}` };
         break;
@@ -140,11 +143,12 @@ serve(async (req) => {
         const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
           method: "POST",
           headers: { "Authorization": `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
-          body: JSON.stringify({ model: "google/gemini-2.5-flash-image-preview", prompt: upP, n: 1, size, quality: "high", output_format: "webp" }),
+          body: JSON.stringify({ model: "google/gemini-2.5-flash-image-preview", messages: [{ role: "user", content: upP }], modalities: ["image", "text"] }),
         });
         if (!response.ok) throw new Error("Upscale failed");
         const data = await response.json();
-        const b64 = data.data?.[0]?.b64_json;
+        const b64Url = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+        const b64 = b64Url ? b64Url.replace(/^data:image\/\w+;base64,/, "") : null;
         if (!b64) throw new Error("No image generated");
         result = { imageUrl: `data:image/webp;base64,${b64}` };
         break;
@@ -162,11 +166,12 @@ serve(async (req) => {
         const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
           method: "POST",
           headers: { "Authorization": `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
-          body: JSON.stringify({ model: "google/gemini-2.5-flash-image-preview", prompt: varP, n: 1, size: "1024x1024", quality: "high", output_format: "webp" }),
+          body: JSON.stringify({ model: "google/gemini-2.5-flash-image-preview", messages: [{ role: "user", content: varP }], modalities: ["image", "text"] }),
         });
         if (!response.ok) throw new Error("Variation generation failed");
         const data = await response.json();
-        const b64 = data.data?.[0]?.b64_json;
+        const b64Url = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+        const b64 = b64Url ? b64Url.replace(/^data:image\/\w+;base64,/, "") : null;
         if (!b64) throw new Error("No image generated");
         result = { imageUrl: `data:image/webp;base64,${b64}` };
         break;
@@ -177,11 +182,12 @@ serve(async (req) => {
         const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
           method: "POST",
           headers: { "Authorization": `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
-          body: JSON.stringify({ model: "google/gemini-2.5-flash-image-preview", prompt: inpP, n: 1, size: "1024x1024", quality: "high", output_format: "webp" }),
+          body: JSON.stringify({ model: "google/gemini-2.5-flash-image-preview", messages: [{ role: "user", content: inpP }], modalities: ["image", "text"] }),
         });
         if (!response.ok) throw new Error("Inpainting failed");
         const data = await response.json();
-        const b64 = data.data?.[0]?.b64_json;
+        const b64Url = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+        const b64 = b64Url ? b64Url.replace(/^data:image\/\w+;base64,/, "") : null;
         if (!b64) throw new Error("No image generated");
         result = { imageUrl: `data:image/webp;base64,${b64}` };
         break;

@@ -102,12 +102,7 @@ serve(async (req) => {
     }
 
     const data = await response.json();
-    const item = data?.data?.[0];
-    const imageUrl = item?.url
-      ? item.url
-      : item?.b64_json
-      ? `data:image/png;base64,${item.b64_json}`
-      : null;
+    const imageUrl = data.choices?.[0]?.message?.images?.[0]?.image_url?.url || null;
 
     if (!imageUrl) {
       console.error("No image in response:", JSON.stringify(data).slice(0, 500));

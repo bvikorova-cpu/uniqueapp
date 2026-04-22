@@ -46,7 +46,8 @@ serve(async (req) => {
         throw new Error(`Image generation error: ${response.status}`);
       }
       const data = await response.json();
-      const b64 = data.data?.[0]?.b64_json;
+      const b64Url = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+        const b64 = b64Url ? b64Url.replace(/^data:image\/\w+;base64,/, "") : null;
       if (!b64) throw new Error('No image generated');
       return `data:image/webp;base64,${b64}`;
     };

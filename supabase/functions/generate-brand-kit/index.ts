@@ -156,14 +156,7 @@ Format as JSON with keys: slogan, tagline, colors (array), socialStrategy (objec
           'Authorization': `Bearer ${LOVABLE_API_KEY}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          model: "google/gemini-2.5-flash-image-preview",
-          prompt: logoPrompt,
-          n: 1,
-          size: '1024x1024',
-          quality: 'high',
-          output_format: 'webp',
-        }),
+        body: JSON.stringify({ model: "google/gemini-2.5-flash-image-preview", messages: [{ role: "user", content: logoPrompt }], modalities: ["image", "text"] }),
       });
 
       if (logoResponse.ok) {

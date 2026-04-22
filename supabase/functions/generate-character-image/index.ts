@@ -49,15 +49,7 @@ CRITICAL: Pay very close attention to the eye color (${eyeColor || "blue"}), cos
         'Authorization': `Bearer ${LOVABLE_API_KEY}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        model: "google/gemini-2.5-flash-image-preview",
-        prompt: prompt,
-        n: 1,
-        size: '1024x1024',
-        quality: 'high',
-        output_format: 'webp',
-        output_compression: 90,
-      }),
+      body: JSON.stringify({ model: "google/gemini-2.5-flash-image-preview", messages: [{ role: "user", content: prompt }], modalities: ["image", "text"] }),
     });
 
     if (!response.ok) {
