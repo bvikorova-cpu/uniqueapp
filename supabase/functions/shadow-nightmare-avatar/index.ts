@@ -46,7 +46,7 @@ Deno.serve(async (req) => {
     }
 
     // Edit image via Lovable AI Nano Banana
-    const aiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
+    const aiResponse = await fetch("https://api.openai.com/v1/images/generations", {
       method: "POST",
       headers: { Authorization: `Bearer ${lovableKey}`, "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -60,7 +60,6 @@ Deno.serve(async (req) => {
             ],
           },
         ],
-        modalities: ["image", "text"],
       }),
     });
 
@@ -73,7 +72,7 @@ Deno.serve(async (req) => {
     }
 
     const data = await aiResponse.json();
-    const nightmareImageDataUrl = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+    const nightmareImageDataUrl = (data.data?.[0]?.b64_json ? `data:image/png;base64,${data.data[0].b64_json}` : null);
     if (!nightmareImageDataUrl) throw new Error("No image returned");
 
     // Upload generated image to storage bucket

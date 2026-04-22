@@ -71,7 +71,7 @@ serve(async (req) => {
 
     console.log("Generating image, prompt:", prompt.slice(0, 100));
 
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    const response = await fetch("https://api.openai.com/v1/images/generations", {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${OPENAI_API_KEY}`,
@@ -79,8 +79,9 @@ serve(async (req) => {
       },
       body: JSON.stringify({
         model: "gpt-image-1",
-        messages: [{ role: "user", content: prompt }],
-        modalities: ["image", "text"],
+        prompt: prompt,
+        n: 1,
+        size: "1024x1024",
       }),
     });
 
@@ -101,7 +102,7 @@ serve(async (req) => {
     }
 
     const data = await response.json();
-    const imageUrl = data.choices?.[0]?.message?.images?.[0]?.image_url?.url || null;
+    const imageUrl = (data.data?.[0]?.b64_json ? `data:image/png;base64,${data.data[0].b64_json}` : null) || null;
 
     if (!imageUrl) {
       console.error("No image in response:", JSON.stringify(data).slice(0, 500));

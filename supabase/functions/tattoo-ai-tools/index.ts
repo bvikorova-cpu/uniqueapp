@@ -43,8 +43,9 @@ serve(async (req) => {
         headers: { 'Authorization': `Bearer ${OPENAI_API_KEY}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({
           model: "gpt-image-1",
-          messages: [{ role: "user", content: prompt }],
-          modalities: ["image", "text"],
+          prompt: prompt,
+        n: 1,
+        size: "1024x1024",
         }),
       });
       if (!response.ok) {
@@ -52,7 +53,7 @@ serve(async (req) => {
         throw new Error(`Image generation error: ${response.status}`);
       }
       const data = await response.json();
-      const imageUrl = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+      const imageUrl = (data.data?.[0]?.b64_json ? `data:image/png;base64,${data.data[0].b64_json}` : null);
       if (!imageUrl) throw new Error('No image generated');
       return imageUrl;
     };

@@ -91,14 +91,14 @@ serve(async (req) => {
 
     switch (action) {
       case 'generate': {
-        const response = await fetch("https://api.openai.com/v1/chat/completions", {
+        const response = await fetch("https://api.openai.com/v1/images/generations", {
           method: "POST",
           headers: { "Authorization": `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
           body: JSON.stringify({ model: "gpt-image-1", prompt, n: 1, size: "1024x1024", quality: "high", output_format: "webp", output_compression: 90 }),
         });
         if (!response.ok) { console.error("AI gateway error:", await response.text()); throw new Error("Image generation failed"); }
         const data = await response.json();
-        const b64Url = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+        const b64Url = (data.data?.[0]?.b64_json ? `data:image/png;base64,${data.data[0].b64_json}` : null);
         const b64 = b64Url ? b64Url.replace(/^data:image\/\w+;base64,/, "") : null;
         if (!b64) throw new Error("No image generated");
         result = { imageUrl: `data:image/webp;base64,${b64}` };
@@ -107,14 +107,16 @@ serve(async (req) => {
 
       case 'edit': {
         const editP = `${prompt}. Based on the original image concept, create an edited version.`;
-        const response = await fetch("https://api.openai.com/v1/chat/completions", {
+        const response = await fetch("https://api.openai.com/v1/images/generations", {
           method: "POST",
           headers: { "Authorization": `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
-          body: JSON.stringify({ model: "gpt-image-1", messages: [{ role: "user", content: editP }], modalities: ["image", "text"] }),
+          body: JSON.stringify({ model: "gpt-image-1", prompt: editP,
+        n: 1,
+        size: "1024x1024", modalities: ["image", "text"] }),
         });
         if (!response.ok) throw new Error("Image editing failed");
         const data = await response.json();
-        const b64Url = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+        const b64Url = (data.data?.[0]?.b64_json ? `data:image/png;base64,${data.data[0].b64_json}` : null);
         const b64 = b64Url ? b64Url.replace(/^data:image\/\w+;base64,/, "") : null;
         if (!b64) throw new Error("No image generated");
         result = { imageUrl: `data:image/webp;base64,${b64}` };
@@ -123,14 +125,16 @@ serve(async (req) => {
 
       case 'style_transfer': {
         const styleP = `Recreate this concept in the style of ${style}: ${prompt}. Make it a masterful artistic interpretation.`;
-        const response = await fetch("https://api.openai.com/v1/chat/completions", {
+        const response = await fetch("https://api.openai.com/v1/images/generations", {
           method: "POST",
           headers: { "Authorization": `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
-          body: JSON.stringify({ model: "gpt-image-1", messages: [{ role: "user", content: styleP }], modalities: ["image", "text"] }),
+          body: JSON.stringify({ model: "gpt-image-1", prompt: styleP,
+        n: 1,
+        size: "1024x1024", modalities: ["image", "text"] }),
         });
         if (!response.ok) throw new Error("Style transfer failed");
         const data = await response.json();
-        const b64Url = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+        const b64Url = (data.data?.[0]?.b64_json ? `data:image/png;base64,${data.data[0].b64_json}` : null);
         const b64 = b64Url ? b64Url.replace(/^data:image\/\w+;base64,/, "") : null;
         if (!b64) throw new Error("No image generated");
         result = { imageUrl: `data:image/webp;base64,${b64}` };
@@ -140,14 +144,16 @@ serve(async (req) => {
       case 'upscale': {
         const upP = `Create a highly detailed, ultra high resolution, sharp, crystal clear version of: ${prompt}. Maximum detail, 4K quality, enhanced textures and lighting.`;
         const size = targetSize === '1792x1024' ? '1792x1024' : targetSize === '1024x1792' ? '1024x1792' : '1024x1024';
-        const response = await fetch("https://api.openai.com/v1/chat/completions", {
+        const response = await fetch("https://api.openai.com/v1/images/generations", {
           method: "POST",
           headers: { "Authorization": `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
-          body: JSON.stringify({ model: "gpt-image-1", messages: [{ role: "user", content: upP }], modalities: ["image", "text"] }),
+          body: JSON.stringify({ model: "gpt-image-1", prompt: upP,
+        n: 1,
+        size: "1024x1024", modalities: ["image", "text"] }),
         });
         if (!response.ok) throw new Error("Upscale failed");
         const data = await response.json();
-        const b64Url = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+        const b64Url = (data.data?.[0]?.b64_json ? `data:image/png;base64,${data.data[0].b64_json}` : null);
         const b64 = b64Url ? b64Url.replace(/^data:image\/\w+;base64,/, "") : null;
         if (!b64) throw new Error("No image generated");
         result = { imageUrl: `data:image/webp;base64,${b64}` };
@@ -163,14 +169,16 @@ serve(async (req) => {
         ];
         const idx = variationIndex ?? 0;
         const varP = `${prompt}, rendered ${variationStyles[idx % variationStyles.length]}`;
-        const response = await fetch("https://api.openai.com/v1/chat/completions", {
+        const response = await fetch("https://api.openai.com/v1/images/generations", {
           method: "POST",
           headers: { "Authorization": `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
-          body: JSON.stringify({ model: "gpt-image-1", messages: [{ role: "user", content: varP }], modalities: ["image", "text"] }),
+          body: JSON.stringify({ model: "gpt-image-1", prompt: varP,
+        n: 1,
+        size: "1024x1024", modalities: ["image", "text"] }),
         });
         if (!response.ok) throw new Error("Variation generation failed");
         const data = await response.json();
-        const b64Url = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+        const b64Url = (data.data?.[0]?.b64_json ? `data:image/png;base64,${data.data[0].b64_json}` : null);
         const b64 = b64Url ? b64Url.replace(/^data:image\/\w+;base64,/, "") : null;
         if (!b64) throw new Error("No image generated");
         result = { imageUrl: `data:image/webp;base64,${b64}` };
@@ -179,14 +187,16 @@ serve(async (req) => {
 
       case 'inpainting': {
         const inpP = `Create an image of: ${prompt}. However, specifically for the ${region} area: ${editPrompt}. The rest of the image should remain consistent with the original concept.`;
-        const response = await fetch("https://api.openai.com/v1/chat/completions", {
+        const response = await fetch("https://api.openai.com/v1/images/generations", {
           method: "POST",
           headers: { "Authorization": `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
-          body: JSON.stringify({ model: "gpt-image-1", messages: [{ role: "user", content: inpP }], modalities: ["image", "text"] }),
+          body: JSON.stringify({ model: "gpt-image-1", prompt: inpP,
+        n: 1,
+        size: "1024x1024", modalities: ["image", "text"] }),
         });
         if (!response.ok) throw new Error("Inpainting failed");
         const data = await response.json();
-        const b64Url = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+        const b64Url = (data.data?.[0]?.b64_json ? `data:image/png;base64,${data.data[0].b64_json}` : null);
         const b64 = b64Url ? b64Url.replace(/^data:image\/\w+;base64,/, "") : null;
         if (!b64) throw new Error("No image generated");
         result = { imageUrl: `data:image/webp;base64,${b64}` };
@@ -194,7 +204,7 @@ serve(async (req) => {
       }
 
       case 'image_to_prompt': {
-        const chatResponse = await fetch("https://api.openai.com/v1/chat/completions", {
+        const chatResponse = await fetch("https://api.openai.com/v1/images/generations", {
           method: "POST",
           headers: { "Authorization": `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -217,7 +227,7 @@ serve(async (req) => {
       }
 
       case 'prompt_gallery': {
-        const chatResponse = await fetch("https://api.openai.com/v1/chat/completions", {
+        const chatResponse = await fetch("https://api.openai.com/v1/images/generations", {
           method: "POST",
           headers: { "Authorization": `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
           body: JSON.stringify({

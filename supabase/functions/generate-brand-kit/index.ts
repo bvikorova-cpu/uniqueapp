@@ -156,7 +156,9 @@ Format as JSON with keys: slogan, tagline, colors (array), socialStrategy (objec
           'Authorization': `Bearer ${OPENAI_API_KEY}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ model: "gpt-image-1", messages: [{ role: "user", content: logoPrompt }], modalities: ["image", "text"] }),
+        body: JSON.stringify({ model: "gpt-image-1", prompt: logoPrompt,
+        n: 1,
+        size: "1024x1024", modalities: ["image", "text"] }),
       });
 
       if (logoResponse.ok) {

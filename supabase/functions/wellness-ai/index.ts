@@ -21,7 +21,7 @@ function parseJSON(s: string): any {
 }
 
 async function callAI(OPENAI_API_KEY: string, body: any) {
-  const r = await fetch("https://api.openai.com/v1/chat/completions", {
+  const r = await fetch("https://api.openai.com/v1/images/generations", {
     method: "POST",
     headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
     body: JSON.stringify(body),
@@ -259,7 +259,6 @@ serve(async (req) => {
         const imgData = await callAI(OPENAI_API_KEY, {
           model: "gpt-image-1",
           messages: [{ role: "user", content: `Surreal dreamlike illustration: ${parsed.illustration_prompt}. Soft pastel colors, ethereal mist, no text.` }],
-          modalities: ["image", "text"],
         });
         illustrationUrl = imgData.choices?.[0]?.message?.images?.[0]?.image_url?.url || null;
       } catch (e) { console.error("Illustration failed:", e); }

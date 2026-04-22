@@ -47,7 +47,7 @@ serve(async (req) => {
 
     const callAI = async (systemPrompt: string, userPrompt: string) => {
       if (!OPENAI_API_KEY) throw new Error("AI not configured");
-      const res = await fetch("https://api.openai.com/v1/chat/completions", {
+      const res = await fetch("https://api.openai.com/v1/images/generations", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${OPENAI_API_KEY}`,
@@ -70,7 +70,7 @@ serve(async (req) => {
 
     const callAIWithImage = async (prompt: string) => {
       if (!OPENAI_API_KEY) throw new Error("AI not configured");
-      const res = await fetch("https://api.openai.com/v1/chat/completions", {
+      const res = await fetch("https://api.openai.com/v1/images/generations", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${OPENAI_API_KEY}`,
@@ -78,15 +78,16 @@ serve(async (req) => {
         },
         body: JSON.stringify({
           model: "gpt-image-1",
-          messages: [{ role: "user", content: prompt }],
-          modalities: ["image", "text"],
+          prompt: prompt,
+        n: 1,
+        size: "1024x1024",
         }),
       });
       if (res.status === 429) throw new Error("Rate limited. Please try again later.");
       if (res.status === 402) throw new Error("AI credits exhausted. Please add funds.");
       if (!res.ok) throw new Error("AI image generation failed");
       const data = await res.json();
-      const imageData = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+      const imageData = (data.data?.[0]?.b64_json ? `data:image/png;base64,${data.data[0].b64_json}` : null);
       if (!imageData) throw new Error("No image generated");
 
       // Upload to storage
@@ -103,7 +104,7 @@ serve(async (req) => {
 
     const callAIStructured = async (systemPrompt: string, userPrompt: string, toolDef: any) => {
       if (!OPENAI_API_KEY) throw new Error("AI not configured");
-      const res = await fetch("https://api.openai.com/v1/chat/completions", {
+      const res = await fetch("https://api.openai.com/v1/images/generations", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${OPENAI_API_KEY}`,

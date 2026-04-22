@@ -53,7 +53,9 @@ CRITICAL: Pay very close attention to the eye color (${eyeColor || "blue"}), cos
         'Authorization': `Bearer ${OPENAI_API_KEY}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ model: "gpt-image-1", messages: [{ role: "user", content: prompt }], modalities: ["image", "text"] }),
+      body: JSON.stringify({ model: "gpt-image-1", prompt: prompt,
+        n: 1,
+        size: "1024x1024", modalities: ["image", "text"] }),
     });
 
     if (!response.ok) {
@@ -73,7 +75,7 @@ CRITICAL: Pay very close attention to the eye color (${eyeColor || "blue"}), cos
     const data = await response.json();
     console.log('AI response received');
     
-    const imageUrl = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+    const imageUrl = (data.data?.[0]?.b64_json ? `data:image/png;base64,${data.data[0].b64_json}` : null);
 
     if (!imageUrl) {
       console.error('No image in response:', data);
