@@ -7,10 +7,10 @@ import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 
 const COIN_PACKS = [
-  { coins: 1000, price: "€4.99", priceId: "price_af_1000" },
-  { coins: 3000, price: "€9.99", priceId: "price_af_3000", popular: true },
-  { coins: 7000, price: "€19.99", priceId: "price_af_7000" },
-  { coins: 15000, price: "€39.99", priceId: "price_af_15000" },
+  { coins: 1000, price: "€4.99", priceId: "price_1TP7TyGaXSfGtYFtARNxvjo3" },
+  { coins: 3000, price: "€9.99", priceId: "price_1TP7TzGaXSfGtYFtd4ohSEWH", popular: true },
+  { coins: 7000, price: "€19.99", priceId: "price_1TP7U0GaXSfGtYFtm94d2Sy8" },
+  { coins: 15000, price: "€39.99", priceId: "price_1TP7U0GaXSfGtYFtqv9XvN99" },
 ];
 
 export function CoinShop({ onBack }: { onBack: () => void }) {
