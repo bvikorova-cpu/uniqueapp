@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, CheckCircle, XCircle, Clock } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
+import { StripePayoutButton } from "@/components/admin/StripePayoutButton";
 
 export const AdminReferralWithdrawals = () => {
   const [selectedRequest, setSelectedRequest] = useState<string | null>(null);
@@ -181,13 +182,19 @@ export const AdminReferralWithdrawals = () => {
                       setAdminNotes(e.target.value);
                     }}
                   />
-                  <div className="flex gap-2">
+                  <div className="flex flex-wrap gap-2">
+                    <StripePayoutButton
+                      kind="referral"
+                      withdrawalId={request.id}
+                      amount={Number(request.amount)}
+                      onPaid={() => queryClient.invalidateQueries({ queryKey: ["admin-referral-withdrawals"] })}
+                    />
                     <Button
                       onClick={() => processRequest.mutate({ requestId: request.id, action: "approve" })}
                       disabled={processRequest.isPending}
                       variant="outline"
                     >
-                      Approve
+                      Approve only
                     </Button>
                     <Button
                       onClick={() => processRequest.mutate({ requestId: request.id, action: "reject" })}

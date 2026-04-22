@@ -14,6 +14,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CheckCircle, XCircle, Clock, DollarSign } from "lucide-react";
 import { toast } from "sonner";
+import { StripePayoutButton } from "@/components/admin/StripePayoutButton";
 
 interface WithdrawalRequest {
   id: string;
@@ -209,12 +210,21 @@ export const AdminInfluencerWithdrawals = () => {
                     <p className="text-sm">{new Date(request.created_at).toLocaleString()}</p>
                   </div>
 
-                  <Button
-                    onClick={() => setSelectedRequest(request)}
-                    className="w-full"
-                  >
-                    Process Request
-                  </Button>
+                  <div className="flex flex-col gap-2">
+                    <StripePayoutButton
+                      kind="influencer"
+                      withdrawalId={request.id}
+                      amount={Number(request.amount)}
+                      onPaid={loadRequests}
+                    />
+                    <Button
+                      onClick={() => setSelectedRequest(request)}
+                      variant="outline"
+                      className="w-full"
+                    >
+                      Manual process / reject
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
             ))

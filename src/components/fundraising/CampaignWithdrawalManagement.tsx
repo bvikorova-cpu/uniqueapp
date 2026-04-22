@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Check, X, DollarSign, Eye } from "lucide-react";
+import { StripePayoutButton } from "@/components/admin/StripePayoutButton";
 import {
   Dialog,
   DialogContent,
@@ -185,8 +186,15 @@ export function CampaignWithdrawalManagement() {
 
                   {request.status === 'pending' && (
                     <>
+                      <StripePayoutButton
+                        kind="campaign"
+                        withdrawalId={request.id}
+                        amount={Number(request.amount)}
+                        onPaid={loadRequests}
+                      />
                       <Button
                         size="sm"
+                        variant="outline"
                         onClick={() => {
                           setSelectedRequest(request);
                           handleProcess('approve');
@@ -194,7 +202,7 @@ export function CampaignWithdrawalManagement() {
                         disabled={processing}
                       >
                         <Check className="mr-2 h-4 w-4" />
-                        Approve
+                        Approve only
                       </Button>
                       <Button
                         size="sm"

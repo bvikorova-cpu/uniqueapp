@@ -10,6 +10,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, CheckCircle, XCircle, Clock, Eye } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { StripePayoutButton } from "@/components/admin/StripePayoutButton";
 
 interface WithdrawalRequest {
   id: string;
@@ -138,14 +139,20 @@ export function AdminAuctionWithdrawals() {
                     <p className="text-sm capitalize">{request.payment_method.replace('_', ' ')}</p>
                     {getStatusBadge(request.status)}
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex flex-wrap gap-2">
+                    <StripePayoutButton
+                      kind="auction"
+                      withdrawalId={request.id}
+                      amount={Number(request.amount)}
+                      onPaid={() => refetch()}
+                    />
                     <Button
                       variant="outline"
                       size="sm"
                       onClick={() => openDialog(request, 'approve')}
                     >
                       <Eye className="h-4 w-4 mr-1" />
-                      View & Approve
+                      Manual
                     </Button>
                     <Button
                       variant="destructive"

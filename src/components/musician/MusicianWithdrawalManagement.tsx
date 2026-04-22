@@ -14,6 +14,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CheckCircle, XCircle, Clock, DollarSign } from "lucide-react";
 import { toast } from "sonner";
+import { StripePayoutButton } from "@/components/admin/StripePayoutButton";
 
 interface WithdrawalRequest {
   id: string;
@@ -255,14 +256,24 @@ export const MusicianWithdrawalManagement = () => {
                     />
                   </div>
 
-                  <div className="flex gap-3">
+                  <div className="flex flex-wrap gap-3">
+                    <StripePayoutButton
+                      kind="musician"
+                      withdrawalId={selectedRequest.id}
+                      amount={selectedRequest.amount}
+                      onPaid={() => {
+                        setSelectedRequest(null);
+                        loadRequests();
+                      }}
+                    />
                     <Button
                       onClick={() => handleProcessRequest("approved")}
                       disabled={processing}
+                      variant="outline"
                       className="flex-1"
                     >
                       <CheckCircle className="h-4 w-4 mr-2" />
-                      Approve
+                      Approve only
                     </Button>
                     <Button
                       onClick={() => handleProcessRequest("rejected")}

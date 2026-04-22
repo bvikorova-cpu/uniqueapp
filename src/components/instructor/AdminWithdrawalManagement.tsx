@@ -16,6 +16,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { formatCurrency } from "@/lib/utils";
 import { format } from "date-fns";
 import { Check, X, Eye } from "lucide-react";
+import { StripePayoutButton } from "@/components/admin/StripePayoutButton";
 
 interface InstructorProfile {
   user_id: string;
@@ -222,8 +223,14 @@ export function AdminWithdrawalManagement() {
                     </Button>
                     {request.status === "pending" && (
                       <>
+                        <StripePayoutButton
+                          kind="instructor"
+                          withdrawalId={request.id}
+                          amount={request.amount}
+                          onPaid={loadRequests}
+                        />
                         <Button
-                          variant="default"
+                          variant="outline"
                           size="sm"
                           onClick={() => {
                             setSelectedRequest(request);
@@ -231,7 +238,7 @@ export function AdminWithdrawalManagement() {
                           }}
                         >
                           <Check className="h-4 w-4 mr-2" />
-                          Approve
+                          Mark paid
                         </Button>
                         <Button
                           variant="destructive"
