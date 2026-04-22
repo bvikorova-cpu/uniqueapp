@@ -24969,12 +24969,15 @@ export type Database = {
         Row: {
           bonus_votes: number | null
           created_at: string
+          current_period_end: string | null
           expires_at: string | null
           id: string
           price: number
           referred_by: string | null
           started_at: string
           status: string | null
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
           tier: Database["public"]["Enums"]["megatalent_tier"]
           updated_at: string
           user_id: string
@@ -24983,12 +24986,15 @@ export type Database = {
         Insert: {
           bonus_votes?: number | null
           created_at?: string
+          current_period_end?: string | null
           expires_at?: string | null
           id?: string
           price: number
           referred_by?: string | null
           started_at?: string
           status?: string | null
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
           tier?: Database["public"]["Enums"]["megatalent_tier"]
           updated_at?: string
           user_id: string
@@ -24997,12 +25003,15 @@ export type Database = {
         Update: {
           bonus_votes?: number | null
           created_at?: string
+          current_period_end?: string | null
           expires_at?: string | null
           id?: string
           price?: number
           referred_by?: string | null
           started_at?: string
           status?: string | null
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
           tier?: Database["public"]["Enums"]["megatalent_tier"]
           updated_at?: string
           user_id?: string
