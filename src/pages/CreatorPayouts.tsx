@@ -42,9 +42,9 @@ type ConnectStatus = {
 function statusBadge(status: string) {
   const s = (status || "").toLowerCase();
   if (s === "completed" || s === "paid" || s === "approved")
-    return <Badge className="bg-emerald-500/15 text-emerald-400 border-emerald-500/30">Paid</Badge>;
+    return <Badge className="bg-primary/15 text-primary border-primary/30">Paid</Badge>;
   if (s === "pending" || s === "processing")
-    return <Badge className="bg-amber-500/15 text-amber-400 border-amber-500/30">Pending</Badge>;
+    return <Badge className="bg-accent/15 text-accent-foreground border-accent/30">Pending</Badge>;
   if (s === "rejected" || s === "failed")
     return <Badge variant="destructive">Rejected</Badge>;
   return <Badge variant="outline">{status}</Badge>;
@@ -117,11 +117,11 @@ export default function CreatorPayouts() {
           <CardContent className="flex items-center justify-between flex-wrap gap-3">
             <div className="space-y-1">
               {connectReady ? (
-                <Badge className="bg-emerald-500/15 text-emerald-400 border-emerald-500/30">
+                <Badge className="bg-primary/15 text-primary border-primary/30">
                   ✓ Connected — payouts enabled
                 </Badge>
               ) : connect?.connected ? (
-                <Badge className="bg-amber-500/15 text-amber-400 border-amber-500/30">
+                <Badge className="bg-accent/15 text-accent-foreground border-accent/30">
                   Onboarding incomplete
                 </Badge>
               ) : (
@@ -153,7 +153,7 @@ export default function CreatorPayouts() {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <Card>
             <CardContent className="pt-6">
-              <div className="flex items-center gap-2 text-amber-400 mb-2">
+              <div className="flex items-center gap-2 text-accent-foreground mb-2">
                 <Clock className="h-4 w-4" />
                 <span className="text-sm font-medium">Pending</span>
               </div>
@@ -162,7 +162,7 @@ export default function CreatorPayouts() {
           </Card>
           <Card>
             <CardContent className="pt-6">
-              <div className="flex items-center gap-2 text-emerald-400 mb-2">
+              <div className="flex items-center gap-2 text-primary mb-2">
                 <CheckCircle2 className="h-4 w-4" />
                 <span className="text-sm font-medium">Paid out</span>
               </div>
