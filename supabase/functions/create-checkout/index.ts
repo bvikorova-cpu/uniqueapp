@@ -19,6 +19,85 @@ const ANTIQUE_PRICE_IDS: Record<number, string> = {
   150: "price_1SOIJE0QTWhd4oRpow80Xeyd",
 };
 
+// ─── Universal credit pack price-ID map ───
+// All AI-credit modules. Frontend sends: { creditType: "iq", credits: 10 }
+// Routes to the correct success URL automatically.
+const CREDIT_PACKS: Record<string, { prices: Record<number, string>; successPath: string; cancelPath: string }> = {
+  antique: {
+    prices: ANTIQUE_PRICE_IDS,
+    successPath: "/antique-appraisal?payment=success&session_id={CHECKOUT_SESSION_ID}",
+    cancelPath: "/antique-appraisal?payment=canceled",
+  },
+  handwriting: {
+    prices: {
+      10: "price_1SZppoGaXSfGtYFt9LcYpN4i",
+      25: "price_1SZppoGaXSfGtYFtj5zdmxHz",
+      50: "price_1SZpppGaXSfGtYFt8FztYCdY",
+      100: "price_1SZppqGaXSfGtYFt7w4oht6d",
+    },
+    successPath: "/handwriting?payment=success&session_id={CHECKOUT_SESSION_ID}",
+    cancelPath: "/handwriting?payment=cancelled",
+  },
+  iq: {
+    prices: {
+      10: "price_1SX7FLGaXSfGtYFtf8qA5DjG",
+      20: "price_1SX7FNGaXSfGtYFtdIP9DTj6",
+      50: "price_1SX7FOGaXSfGtYFtIoxAWZen",
+    },
+    successPath: "/iq-platform?payment=success&session_id={CHECKOUT_SESSION_ID}",
+    cancelPath: "/iq-platform?payment=canceled",
+  },
+  analyzer: {
+    // Vision Analyzer existing prices
+    prices: {} as Record<number, string>, // populated below from Stripe (price_data fallback works)
+    successPath: "/analyzer?payment=success&session_id={CHECKOUT_SESSION_ID}",
+    cancelPath: "/analyzer?payment=canceled",
+  },
+  cooking: {
+    prices: {} as Record<number, string>,
+    successPath: "/cooking?payment=success&session_id={CHECKOUT_SESSION_ID}",
+    cancelPath: "/cooking?payment=canceled",
+  },
+  video_ad: {
+    prices: {} as Record<number, string>,
+    successPath: "/video-ad-creator?payment=success&session_id={CHECKOUT_SESSION_ID}",
+    cancelPath: "/video-ad-creator?payment=canceled",
+  },
+  astrology: {
+    prices: {} as Record<number, string>,
+    successPath: "/astrology?payment=success&session_id={CHECKOUT_SESSION_ID}",
+    cancelPath: "/astrology?payment=canceled",
+  },
+  // ─── Newly created Phase 3 packs ───
+  character: {
+    prices: {
+      10: "price_1TOwfSGaXSfGtYFtapoRaNMl",
+      30: "price_1TOwfTGaXSfGtYFtyBmPvW8q",
+      100: "price_1TOwfUGaXSfGtYFtCCUOJzbI",
+    },
+    successPath: "/ai-characters?payment=success&session_id={CHECKOUT_SESSION_ID}",
+    cancelPath: "/ai-characters?payment=canceled",
+  },
+  creative_forge: {
+    prices: {
+      10: "price_1TOwfVGaXSfGtYFtTuoGa1FZ",
+      30: "price_1TOwfWGaXSfGtYFt6V478VoY",
+      100: "price_1TOwfXGaXSfGtYFtTWK7Sbf8",
+    },
+    successPath: "/creative-forge?payment=success&session_id={CHECKOUT_SESSION_ID}",
+    cancelPath: "/creative-forge?payment=canceled",
+  },
+  coloring: {
+    prices: {
+      10: "price_1TOwfYGaXSfGtYFtHr3dSsW1",
+      30: "price_1TOwfZGaXSfGtYFthcYmlxhm",
+      100: "price_1TOwfaGaXSfGtYFtlqeVcsSl",
+    },
+    successPath: "/coloring?payment=success&session_id={CHECKOUT_SESSION_ID}",
+    cancelPath: "/coloring?payment=canceled",
+  },
+};
+
 const SPORTS_PACKS: Record<string, Record<string, { amount: number; coins: number }>> = {
   football_coins: {
     price_football_1000: { amount: 299, coins: 1000 },
