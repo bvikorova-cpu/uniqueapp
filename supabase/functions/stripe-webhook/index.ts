@@ -277,6 +277,79 @@ serve(async (req) => {
         break;
       }
 
+      // ─── DUNNING: invoice payment failed (subscription past_due) ─────
+      case "invoice.payment_failed":
+      case "invoice.payment_action_required": {
+        const inv = event.data.object as Stripe.Invoke as unknown as Stripe.Invoice;
+        const customerId = typeof inv.customer === "string" ? inv.customer : inv.customer?.id;
+        const subId = typeof (inv as any).subscription === "string"
+          ? (inv as any).subscription
+          : (inv as any).subscription?.id;
+        if (!customerId || !subId) { log("dunning skip: no cust/sub"); break; }
+
+        // Resolve user_id via email
+        let userId: string | null = null;
+        let email: string | null = (inv as any).customer_email ?? null;
+        if (!email) {
+          try {
+            const cust = await stripe.customers.retrieve(customerId);
+            if (!cust.deleted) email = (cust as Stripe.Customer).email ?? null;
+          } catch (_e) { /* ignore */ }
+        }
+        if (email) {
+          const { data: prof } = await supabase
+            .from("profiles").select("id").eq("email", email).maybeSingle();
+          userId = prof?.id ?? null;
+        }
+
+        const kind = event.type === "invoice.payment_action_required"
+          ? "requires_action" : "failed";
+
+        const { error: dErr } = await supabase.from("dunning_events").insert({
+          stripe_event_id: event.id,
+          stripe_customer_id: customerId,
+          stripe_subscription_id: subId,
+          stripe_invoice_id: inv.id,
+          user_id: userId,
+          email,
+          amount_due_cents: inv.amount_due ?? 0,
+          currency: (inv.currency ?? "eur").toLowerCase(),
+          attempt_count: inv.attempt_count ?? 0,
+          next_retry_at: inv.next_payment_attempt
+            ? new Date(inv.next_payment_attempt * 1000).toISOString()
+            : null,
+          hosted_invoice_url: inv.hosted_invoice_url ?? null,
+          kind,
+        });
+        if (dErr && !dErr.message.includes("duplicate")) {
+          log("dunning insert failed", { err: dErr.message });
+        } else {
+          log("dunning recorded", { sub: subId, kind, attempt: inv.attempt_count });
+        }
+        break;
+      }
+
+      // ─── DUNNING: invoice eventually paid → mark recovered ───────────
+      case "invoice.payment_succeeded": {
+        const inv = event.data.object as Stripe.Invoice;
+        const subId = typeof (inv as any).subscription === "string"
+          ? (inv as any).subscription
+          : (inv as any).subscription?.id;
+        if (!subId) break;
+        // Mark any open dunning rows for this sub as recovered
+        const { error: rErr } = await supabase
+          .from("dunning_events")
+          .update({
+            kind: "recovered",
+            recovered_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+          })
+          .eq("stripe_subscription_id", subId)
+          .in("kind", ["failed", "requires_action"]);
+        if (rErr) log("dunning recover failed", { err: rErr.message });
+        break;
+      }
+
       // ─── TRANSFER (Connect payout to creator confirmed) ──────────────
       case "transfer.created": {
         const transfer = event.data.object as Stripe.Transfer;
