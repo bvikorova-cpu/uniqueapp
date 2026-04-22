@@ -24,3 +24,4 @@ NO health/medical predictions. NO identifiable people/trademarks in videos.
 - [Stripe Disputes](mem://features/stripe-disputes) — stripe_disputes table + webhook lifecycle + admin-submit-dispute-evidence + /admin/disputes UI
 - [Payment Reconciliation](mem://features/reconciliation) — admin-reconcile-payments edge fn + /admin/reconciliation UI for daily Stripe vs ledger comparison
 - [Multi-currency](mem://features/multi-currency) — Global CurrencyProvider + Navbar switcher; useCurrency().format(eurAmount) for any price (display-only, billing stays EUR)
+- [Subscription Lifecycle](mem://features/subscription-lifecycle) — /account/subscriptions UI + list/pause/resume/cancel-by-id edge fns + Stripe portal for upgrades

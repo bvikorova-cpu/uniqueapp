@@ -331,6 +331,7 @@ const AdminReconciliation = lazy(() => import("@/pages/admin/AdminReconciliation
 const CreatorPayouts = lazy(() => import("@/pages/CreatorPayouts"));
 const CreatorAnalytics = lazy(() => import("@/pages/CreatorAnalytics"));
 const Billing = lazy(() => import("@/pages/Billing"));
+const MySubscriptions = lazy(() => import("@/pages/MySubscriptions"));
 const MasterChefHub = lazy(() => import("@/pages/MasterChefHub"));
 const MasterChefAIRecipes = lazy(() => import("@/pages/MasterChefAIRecipes"));
 const MasterChefCookingTimer = lazy(() => import("@/pages/MasterChefCookingTimer"));
