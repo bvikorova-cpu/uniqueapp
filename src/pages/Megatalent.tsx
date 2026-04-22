@@ -649,6 +649,9 @@ const Megatalent = () => {
                       <Badge className="bg-yellow-500 text-black">Active</Badge>
                     </div>
                     <p className="text-sm text-muted-foreground p-4 border rounded-lg bg-muted/50">If you cancel your subscription, it will remain active until the end of the paid period. The paid amount is non-refundable.</p>
+                    <Button variant="default" className="w-full" onClick={handleManageSubscription}>
+                      Manage Subscription (Stripe Portal)
+                    </Button>
                     <Button variant="outline" className="w-full text-destructive border-destructive hover:bg-destructive/10" onClick={handleCancelSubscription} disabled={cancelingSubscription}>
                       {cancelingSubscription ? 'Canceling...' : 'Cancel Subscription'}
                     </Button>
