@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from "next-themes";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { AnimationProvider } from "@/contexts/AnimationContext";
+import { CurrencyProvider } from "@/contexts/CurrencyContext";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
@@ -384,6 +385,7 @@ const App = () => {
         <BrowserRouter>
           <AuthProvider>
             <AnimationProvider>
+              <CurrencyProvider>
               <TooltipProvider delayDuration={0}>
                 <SkipLink />
                 <ProgressiveOnboarding />
@@ -775,6 +777,7 @@ const App = () => {
                   <Footer />
                 </div>
               </TooltipProvider>
+              </CurrencyProvider>
             </AnimationProvider>
           </AuthProvider>
         </BrowserRouter>
