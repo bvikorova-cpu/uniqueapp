@@ -331,6 +331,7 @@ const AdminReconciliation = lazy(() => import("@/pages/admin/AdminReconciliation
 const CreatorPayouts = lazy(() => import("@/pages/CreatorPayouts"));
 const CreatorAnalytics = lazy(() => import("@/pages/CreatorAnalytics"));
 const Billing = lazy(() => import("@/pages/Billing"));
+const MySubscriptions = lazy(() => import("@/pages/MySubscriptions"));
 const MasterChefHub = lazy(() => import("@/pages/MasterChefHub"));
 const MasterChefAIRecipes = lazy(() => import("@/pages/MasterChefAIRecipes"));
 const MasterChefCookingTimer = lazy(() => import("@/pages/MasterChefCookingTimer"));
@@ -615,6 +616,7 @@ const App = () => {
                         <Route path="/creator-payouts" element={<ProtectedRoute><CreatorPayouts /></ProtectedRoute>} />
                         <Route path="/creator-analytics" element={<ProtectedRoute><CreatorAnalytics /></ProtectedRoute>} />
                         <Route path="/billing" element={<ProtectedRoute><Billing /></ProtectedRoute>} />
+                        <Route path="/account/subscriptions" element={<ProtectedRoute><MySubscriptions /></ProtectedRoute>} />
                         <Route path="/payment-documentation" element={<PaymentDocumentation />} />
                         <Route path="/course/:courseId" element={<CourseDetailPage />} />
                         <Route path="/course/:courseId/learn" element={<CourseLearnPage />} />
