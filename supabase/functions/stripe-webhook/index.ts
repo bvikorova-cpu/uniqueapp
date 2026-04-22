@@ -203,6 +203,21 @@ serve(async (req) => {
         const sub = event.data.object as Stripe.Subscription;
         if (sub.status !== "active" && sub.status !== "trialing") break;
 
+        // Win-back claim detection via metadata
+        const winbackId = sub.metadata?.winback_campaign_id;
+        if (winbackId) {
+          await supabase
+            .from("winback_campaigns")
+            .update({
+              status: "claimed",
+              claimed_at: new Date().toISOString(),
+              claimed_subscription_id: sub.id,
+            })
+            .eq("id", winbackId)
+            .neq("status", "claimed");
+          log("winback claimed", { campaign: winbackId, sub: sub.id });
+        }
+
         // Resolve buyer's user_id via customer email → profiles
         const customerId = typeof sub.customer === "string" ? sub.customer : sub.customer?.id;
         if (!customerId) break;
