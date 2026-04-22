@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Copy, Share2, Users, Euro, Gift, TrendingUp, Loader2, Crown, ArrowLeft } from "lucide-react";
+import { Copy, Share2, Users, Euro, Gift, TrendingUp, Loader2, Crown, ArrowLeft, MessageCircle, Send } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useReferralProgram } from "@/hooks/useReferralProgram";
 import { supabase } from "@/integrations/supabase/client";
@@ -11,6 +11,8 @@ import { formatDistanceToNow } from "date-fns";
 import { enUS } from "date-fns/locale";
 import { motion } from "framer-motion";
 import heroVideo from "@/assets/megatalent-hero.mp4.asset.json";
+import { ReferralLeaderboard } from "@/components/referral/ReferralLeaderboard";
+import { ReferralMilestones } from "@/components/referral/ReferralMilestones";
 
 const Referral = () => {
   const { stats, loading, refreshStats } = useReferralProgram();
@@ -48,6 +50,20 @@ const Referral = () => {
     const subject = encodeURIComponent('Join MegaTalent - Win €10,000!');
     const body = encodeURIComponent(`Hi!\n\nI'd like to invite you to MegaTalent, where you can compete for €10,000!\n\nUse my referral code: ${stats.code}\n\nSign up: ${window.location.origin}/auth?ref=${stats.code}`);
     window.location.href = `mailto:?subject=${subject}&body=${body}`;
+  };
+
+  const shareWhatsApp = () => {
+    if (!stats?.code) return;
+    const url = `${window.location.origin}/auth?ref=${stats.code}`;
+    const text = `🎉 Join me on MegaTalent and compete for €10,000! Use my code ${stats.code}: ${url}`;
+    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+  };
+
+  const shareTelegram = () => {
+    if (!stats?.code) return;
+    const url = `${window.location.origin}/auth?ref=${stats.code}`;
+    const text = `🎉 Join me on MegaTalent! Use my code ${stats.code}`;
+    window.open(`https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`, '_blank');
   };
 
   if (loading || !user) {
@@ -93,12 +109,17 @@ const Referral = () => {
                   </div>
                   <Button variant="secondary" onClick={copyReferralCode} className="px-6"><Copy className="h-4 w-4 mr-2" /> Copy</Button>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <Button variant="secondary" onClick={shareReferral} className="w-full"><Share2 className="h-4 w-4 mr-2" /> Share Link</Button>
-                  <Button variant="secondary" onClick={inviteByEmail} className="w-full"><Users className="h-4 w-4 mr-2" /> Invite by Email</Button>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                  <Button variant="secondary" onClick={shareReferral} className="w-full"><Share2 className="h-4 w-4 mr-1.5" /> Share</Button>
+                  <Button variant="secondary" onClick={shareWhatsApp} className="w-full bg-[#25D366]/90 hover:bg-[#25D366] text-white"><MessageCircle className="h-4 w-4 mr-1.5" /> WhatsApp</Button>
+                  <Button variant="secondary" onClick={shareTelegram} className="w-full bg-[#0088cc]/90 hover:bg-[#0088cc] text-white"><Send className="h-4 w-4 mr-1.5" /> Telegram</Button>
+                  <Button variant="secondary" onClick={inviteByEmail} className="w-full"><Users className="h-4 w-4 mr-1.5" /> Email</Button>
                 </div>
               </CardContent>
             </Card>
+
+            {/* Milestones */}
+            <ReferralMilestones totalReferrals={stats?.totalReferrals || 0} />
 
             {/* How it works */}
             <Card className="border-yellow-500/10 bg-card/80 backdrop-blur-xl">
@@ -175,22 +196,7 @@ const Referral = () => {
               </CardContent>
             </Card>
 
-            <Card className="border-yellow-500/10 bg-card/80 backdrop-blur-xl">
-              <CardHeader><CardTitle>🏆 Top Referrers</CardTitle></CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground mb-4">Best referrers this month</p>
-                <div className="flex items-center justify-between p-2 rounded bg-yellow-500/10 border border-yellow-500/20">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold bg-yellow-500 text-black">1</div>
-                    <span className="font-bold">You</span>
-                  </div>
-                  <div className="text-right">
-                    <div className="font-semibold">{stats?.totalReferrals || 0}</div>
-                    <div className="text-xs text-muted-foreground">€{stats?.totalEarnings?.toFixed(2) || 0}</div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            <ReferralLeaderboard currentUserId={user?.id} />
           </div>
         </div>
       </div>
