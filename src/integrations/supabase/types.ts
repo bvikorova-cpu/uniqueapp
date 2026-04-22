@@ -11606,6 +11606,66 @@ export type Database = {
           },
         ]
       }
+      creator_kyc_verifications: {
+        Row: {
+          created_at: string
+          document_type: string | null
+          email: string
+          id: string
+          metadata: Json
+          rejected_at: string | null
+          rejection_reason: string | null
+          status: string
+          stripe_verification_session_id: string | null
+          stripe_verification_url: string | null
+          submitted_at: string | null
+          updated_at: string
+          user_id: string
+          verified_at: string | null
+          verified_country: string | null
+          verified_dob: string | null
+          verified_name: string | null
+        }
+        Insert: {
+          created_at?: string
+          document_type?: string | null
+          email: string
+          id?: string
+          metadata?: Json
+          rejected_at?: string | null
+          rejection_reason?: string | null
+          status?: string
+          stripe_verification_session_id?: string | null
+          stripe_verification_url?: string | null
+          submitted_at?: string | null
+          updated_at?: string
+          user_id: string
+          verified_at?: string | null
+          verified_country?: string | null
+          verified_dob?: string | null
+          verified_name?: string | null
+        }
+        Update: {
+          created_at?: string
+          document_type?: string | null
+          email?: string
+          id?: string
+          metadata?: Json
+          rejected_at?: string | null
+          rejection_reason?: string | null
+          status?: string
+          stripe_verification_session_id?: string | null
+          stripe_verification_url?: string | null
+          submitted_at?: string | null
+          updated_at?: string
+          user_id?: string
+          verified_at?: string | null
+          verified_country?: string | null
+          verified_dob?: string | null
+          verified_name?: string | null
+        }
+        Relationships: []
+      }
       creator_live_stream_access: {
         Row: {
           amount_paid: number
