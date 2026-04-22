@@ -324,6 +324,7 @@ import {
   QuizTaker,
 } from "@/routes/lazyPages";
 
+const AdminRefunds = lazy(() => import("@/pages/admin/AdminRefunds"));
 const MasterChefHub = lazy(() => import("@/pages/MasterChefHub"));
 const MasterChefAIRecipes = lazy(() => import("@/pages/MasterChefAIRecipes"));
 const MasterChefCookingTimer = lazy(() => import("@/pages/MasterChefCookingTimer"));
@@ -600,6 +601,7 @@ const App = () => {
                         <Route path="/admin/withdrawals" element={<ProtectedRoute requireAdmin={true}><AdminWithdrawals /></ProtectedRoute>} />
                         <Route path="/admin/influencer-payouts" element={<ProtectedRoute requireAdmin={true}><AdminInfluencerPayouts /></ProtectedRoute>} />
                         <Route path="/admin/platform-earnings" element={<ProtectedRoute requireAdmin={true}><AdminPlatformEarnings /></ProtectedRoute>} />
+                        <Route path="/admin/refunds" element={<ProtectedRoute requireAdmin={true}><AdminRefunds /></ProtectedRoute>} />
                         <Route path="/admin/payment-dashboard" element={<ProtectedRoute requireAdmin={true}><AdminPaymentDashboard /></ProtectedRoute>} />
                         <Route path="/payment-documentation" element={<PaymentDocumentation />} />
                         <Route path="/course/:courseId" element={<CourseDetailPage />} />
