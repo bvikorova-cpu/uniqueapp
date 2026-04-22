@@ -32,6 +32,7 @@ import { CollectibleTickets } from "@/components/concerts/CollectibleTickets";
 import { ConcertAfterparty } from "@/components/concerts/ConcertAfterparty";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
+import { useOneOffPaymentVerify } from "@/hooks/useOneOffPaymentVerify";
 type ViewType = "hub" | "browse" | "gifts" | "artists" | "leaderboard" | "replay" | 
   "schedule" | "chat" | "analytics" | "vip" | "setlist" | "merch" | "notifications" | "how-it-works" | "musician" |
   "song-requests" | "multi-camera" | "fan-badges" | "stories" | "collectibles" | "afterparty";
@@ -64,6 +65,12 @@ const LiveConcerts = () => {
   const [user, setUser] = useState<any>(null);
   const [checkingAuth, setCheckingAuth] = useState(true);
   const navigate = useNavigate();
+
+  useOneOffPaymentVerify({
+    fn: "verify-concert-ticket-payment",
+    successTitle: "Ticket confirmed!",
+    successDescription: "Your concert ticket is ready in your account.",
+  });
 
   useEffect(() => {
     const check = async () => {

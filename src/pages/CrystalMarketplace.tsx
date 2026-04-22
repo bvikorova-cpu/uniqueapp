@@ -7,6 +7,7 @@ import { Gem, ShoppingCart, Search, Plus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
+import { useOneOffPaymentVerify } from "@/hooks/useOneOffPaymentVerify";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import {
@@ -54,6 +55,13 @@ export default function CrystalMarketplace() {
   const [submittingListing, setSubmittingListing] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
+
+  useOneOffPaymentVerify({
+    fn: "verify-crystal-purchase",
+    successTitle: "Crystal purchased!",
+    successDescription: "Your order has been confirmed. The seller will ship it shortly.",
+    onSuccess: () => loadItems(),
+  });
 
   useEffect(() => {
     loadItems();
