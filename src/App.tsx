@@ -332,6 +332,7 @@ const AdminReconciliation = lazy(() => import("@/pages/admin/AdminReconciliation
 const AdminReferralFraud = lazy(() => import("@/pages/admin/AdminReferralFraud"));
 const ReferralLeaderboard = lazy(() => import("@/pages/ReferralLeaderboard"));
 const AdminSubscriptionAnalytics = lazy(() => import("@/pages/admin/AdminSubscriptionAnalytics"));
+const AdminCohortRetention = lazy(() => import("@/pages/admin/AdminCohortRetention"));
 const CreatorPayouts = lazy(() => import("@/pages/CreatorPayouts"));
 const CreatorAnalytics = lazy(() => import("@/pages/CreatorAnalytics"));
 const Billing = lazy(() => import("@/pages/Billing"));
@@ -620,6 +621,7 @@ const App = () => {
                         <Route path="/admin/referral-fraud" element={<ProtectedRoute requireAdmin={true}><AdminReferralFraud /></ProtectedRoute>} />
                         <Route path="/referrals/leaderboard" element={<ReferralLeaderboard />} />
                         <Route path="/admin/subscription-analytics" element={<ProtectedRoute requireAdmin={true}><AdminSubscriptionAnalytics /></ProtectedRoute>} />
+                        <Route path="/admin/cohort-retention" element={<ProtectedRoute requireAdmin={true}><AdminCohortRetention /></ProtectedRoute>} />
                         <Route path="/admin/payment-dashboard" element={<ProtectedRoute requireAdmin={true}><AdminPaymentDashboard /></ProtectedRoute>} />
                         <Route path="/creator-payouts" element={<ProtectedRoute><CreatorPayouts /></ProtectedRoute>} />
                         <Route path="/creator-analytics" element={<ProtectedRoute><CreatorAnalytics /></ProtectedRoute>} />
