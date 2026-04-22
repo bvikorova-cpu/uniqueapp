@@ -100,10 +100,18 @@ export default function CreatorPayouts() {
               All your earnings from music, courses, recipes, auctions, referrals & more.
             </p>
           </div>
-          <Button variant="outline" size="sm" onClick={refetch} disabled={loading}>
-            <RefreshCw className={`h-4 w-4 mr-2 ${loading ? "animate-spin" : ""}`} />
-            Refresh
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" asChild>
+              <a href="/creator-analytics">
+                <BarChart3 className="h-4 w-4 mr-2" />
+                View analytics
+              </a>
+            </Button>
+            <Button variant="outline" size="sm" onClick={refetch} disabled={loading}>
+              <RefreshCw className={`h-4 w-4 mr-2 ${loading ? "animate-spin" : ""}`} />
+              Refresh
+            </Button>
+          </div>
         </header>
 
         {/* Stripe Connect status card */}
