@@ -14050,6 +14050,78 @@ export type Database = {
         }
         Relationships: []
       }
+      dunning_events: {
+        Row: {
+          amount_due_cents: number
+          attempt_count: number
+          created_at: string
+          currency: string
+          email: string | null
+          hosted_invoice_url: string | null
+          id: string
+          kind: string
+          next_retry_at: string | null
+          recovered_at: string | null
+          stripe_customer_id: string | null
+          stripe_event_id: string
+          stripe_invoice_id: string | null
+          stripe_subscription_id: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          amount_due_cents?: number
+          attempt_count?: number
+          created_at?: string
+          currency?: string
+          email?: string | null
+          hosted_invoice_url?: string | null
+          id?: string
+          kind: string
+          next_retry_at?: string | null
+          recovered_at?: string | null
+          stripe_customer_id?: string | null
+          stripe_event_id: string
+          stripe_invoice_id?: string | null
+          stripe_subscription_id?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          amount_due_cents?: number
+          attempt_count?: number
+          created_at?: string
+          currency?: string
+          email?: string | null
+          hosted_invoice_url?: string | null
+          id?: string
+          kind?: string
+          next_retry_at?: string | null
+          recovered_at?: string | null
+          stripe_customer_id?: string | null
+          stripe_event_id?: string
+          stripe_invoice_id?: string | null
+          stripe_subscription_id?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dunning_events_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dunning_events_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles_safe"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       edge_cache: {
         Row: {
           created_at: string | null
