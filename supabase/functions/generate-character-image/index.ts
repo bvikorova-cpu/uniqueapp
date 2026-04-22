@@ -67,16 +67,15 @@ CRITICAL: Pay very close attention to the eye color (${eyeColor || "blue"}), cos
     }
 
     const data = await response.json();
-    console.log('OpenAI response received');
+    console.log('AI response received');
     
-    const base64Image = data.data?.[0]?.b64_json;
+    const imageUrl = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
 
-    if (!base64Image) {
+    if (!imageUrl) {
       console.error('No image in response:', data);
       throw new Error('No image generated');
     }
 
-    const imageUrl = `data:image/webp;base64,${base64Image}`;
     console.log('Character image generated successfully');
 
     return new Response(

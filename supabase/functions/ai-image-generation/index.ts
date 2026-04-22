@@ -79,9 +79,8 @@ serve(async (req) => {
       },
       body: JSON.stringify({
         model: "google/gemini-2.5-flash-image-preview",
-        prompt,
-        n: 1,
-        size: "1024x1024",
+        messages: [{ role: "user", content: prompt }],
+        modalities: ["image", "text"],
       }),
     });
 

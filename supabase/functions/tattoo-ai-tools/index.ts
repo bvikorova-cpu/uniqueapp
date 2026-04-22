@@ -38,7 +38,9 @@ serve(async (req) => {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${LOVABLE_API_KEY}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: "google/gemini-2.5-flash-image-preview", prompt, n: 1, size: '1024x1024', quality: 'high', output_format: 'webp', output_compression: 90,
+          model: "google/gemini-2.5-flash-image-preview",
+          messages: [{ role: "user", content: prompt }],
+          modalities: ["image", "text"],
         }),
       });
       if (!response.ok) {
@@ -46,10 +48,9 @@ serve(async (req) => {
         throw new Error(`Image generation error: ${response.status}`);
       }
       const data = await response.json();
-      const b64Url = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
-        const b64 = b64Url ? b64Url.replace(/^data:image\/\w+;base64,/, "") : null;
-      if (!b64) throw new Error('No image generated');
-      return `data:image/webp;base64,${b64}`;
+      const imageUrl = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+      if (!imageUrl) throw new Error('No image generated');
+      return imageUrl;
     };
 
     // ─── STYLE MIX ───
