@@ -41163,6 +41163,72 @@ export type Database = {
           },
         ]
       }
+      winback_campaigns: {
+        Row: {
+          cancelled_at: string
+          claimed_at: string | null
+          claimed_subscription_id: string | null
+          created_at: string
+          currency: string | null
+          email: string
+          id: string
+          last_amount_cents: number | null
+          offer_coupon_id: string | null
+          offer_duration_months: number
+          offer_expires_at: string
+          offer_percent_off: number
+          offer_token: string
+          sent_at: string | null
+          status: string
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          cancelled_at?: string
+          claimed_at?: string | null
+          claimed_subscription_id?: string | null
+          created_at?: string
+          currency?: string | null
+          email: string
+          id?: string
+          last_amount_cents?: number | null
+          offer_coupon_id?: string | null
+          offer_duration_months?: number
+          offer_expires_at?: string
+          offer_percent_off?: number
+          offer_token?: string
+          sent_at?: string | null
+          status?: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          cancelled_at?: string
+          claimed_at?: string | null
+          claimed_subscription_id?: string | null
+          created_at?: string
+          currency?: string | null
+          email?: string
+          id?: string
+          last_amount_cents?: number | null
+          offer_coupon_id?: string | null
+          offer_duration_months?: number
+          offer_expires_at?: string
+          offer_percent_off?: number
+          offer_token?: string
+          sent_at?: string | null
+          status?: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       wine_pairings: {
         Row: {
           created_at: string

@@ -203,6 +203,21 @@ serve(async (req) => {
         const sub = event.data.object as Stripe.Subscription;
         if (sub.status !== "active" && sub.status !== "trialing") break;
 
+        // Win-back claim detection via metadata
+        const winbackId = sub.metadata?.winback_campaign_id;
+        if (winbackId) {
+          await supabase
+            .from("winback_campaigns")
+            .update({
+              status: "claimed",
+              claimed_at: new Date().toISOString(),
+              claimed_subscription_id: sub.id,
+            })
+            .eq("id", winbackId)
+            .neq("status", "claimed");
+          log("winback claimed", { campaign: winbackId, sub: sub.id });
+        }
+
         // Resolve buyer's user_id via customer email → profiles
         const customerId = typeof sub.customer === "string" ? sub.customer : sub.customer?.id;
         if (!customerId) break;
@@ -274,6 +289,46 @@ serve(async (req) => {
           },
         });
         log("referral reward credited", { referrer: attr.referrer_id, sub: sub.id });
+        break;
+      }
+
+      // ─── SUBSCRIPTION CANCELLED → create win-back campaign ──────────
+      case "customer.subscription.deleted": {
+        const sub = event.data.object as Stripe.Subscription;
+        const customerId = typeof sub.customer === "string" ? sub.customer : sub.customer?.id;
+        if (!customerId) break;
+        let email: string | null = null;
+        try {
+          const cust = await stripe.customers.retrieve(customerId);
+          if (!cust.deleted) email = (cust as Stripe.Customer).email ?? null;
+        } catch (_e) { /* ignore */ }
+        if (!email) { log("winback skip: no email"); break; }
+
+        const { data: prof } = await supabase
+          .from("profiles").select("id").eq("email", email).maybeSingle();
+        if (!prof?.id) { log("winback skip: no profile"); break; }
+
+        // Skip if user already has an open campaign for this sub
+        const { data: existing } = await supabase
+          .from("winback_campaigns")
+          .select("id")
+          .eq("stripe_subscription_id", sub.id)
+          .maybeSingle();
+        if (existing) { log("winback skip: already exists"); break; }
+
+        const lastAmount = sub.items.data[0]?.price.unit_amount ?? null;
+        const { error: wErr } = await supabase.from("winback_campaigns").insert({
+          user_id: prof.id,
+          email,
+          stripe_customer_id: customerId,
+          stripe_subscription_id: sub.id,
+          last_amount_cents: lastAmount,
+          currency: (sub.currency ?? "eur").toLowerCase(),
+          status: "sent",
+          sent_at: new Date().toISOString(),
+        });
+        if (wErr) log("winback insert failed", { err: wErr.message });
+        else log("winback campaign created", { user: prof.id, sub: sub.id });
         break;
       }
 
