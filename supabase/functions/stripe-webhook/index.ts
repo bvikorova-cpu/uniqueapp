@@ -280,7 +280,7 @@ serve(async (req) => {
       // ─── DUNNING: invoice payment failed (subscription past_due) ─────
       case "invoice.payment_failed":
       case "invoice.payment_action_required": {
-        const inv = event.data.object as Stripe.Invoke as unknown as Stripe.Invoice;
+        const inv = event.data.object as Stripe.Invoice;
         const customerId = typeof inv.customer === "string" ? inv.customer : inv.customer?.id;
         const subId = typeof (inv as any).subscription === "string"
           ? (inv as any).subscription
