@@ -13,8 +13,8 @@ Deno.serve(async (req) => {
   try {
     const openaiKey = Deno.env.get("OPENAI_API_KEY");
     if (!openaiKey) throw new Error("OPENAI_API_KEY not configured");
-    const lovableKey = Deno.env.get("LOVABLE_API_KEY");
-    if (!lovableKey) throw new Error("LOVABLE_API_KEY not configured");
+    const lovableKey = Deno.env.get("OPENAI_API_KEY");
+    if (!lovableKey) throw new Error("OPENAI_API_KEY not configured");
 
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -88,11 +88,11 @@ The story must have a strong opening hook, atmospheric build-up, and chilling en
     if (generateImage) {
       try {
         const imgPrompt = `Cinematic gothic horror illustration for: "${generatedTitle}". ${prompt.slice(0, 200)}. Dark moody atmospheric, deep shadows, crimson accents, painterly oil texture, no text, no watermark.`;
-        const imgResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+        const imgResp = await fetch("https://api.openai.com/v1/chat/completions", {
           method: "POST",
           headers: { Authorization: `Bearer ${lovableKey}`, "Content-Type": "application/json" },
           body: JSON.stringify({
-            model: "google/gemini-2.5-flash-image",
+            model: "gpt-image-1",
             messages: [{ role: "user", content: imgPrompt }],
             modalities: ["image", "text"],
           }),

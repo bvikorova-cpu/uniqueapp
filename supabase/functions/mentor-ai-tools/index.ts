@@ -23,8 +23,8 @@ serve(async (req) => {
     if (authError || !user) throw new Error("Unauthorized");
 
     const { action, mentorArea, moods, message } = await req.json();
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
+    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
+    if (!OPENAI_API_KEY) throw new Error("OPENAI_API_KEY not configured");
 
     if (action === "generate-action-plan") {
       // Fetch recent check-ins and moods for context
@@ -47,11 +47,11 @@ serve(async (req) => {
 5. Motivation & Mindset Tips
 Format with clear markdown headers and bullet points. Be specific and personalized based on the data provided.`;
 
-      const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      const response = await fetch("https://api.openai.com/v1/chat/completions", {
         method: "POST",
-        headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+        headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: "google/gemini-3-flash-preview",
+          model: "gpt-5",
           messages: [
             { role: "system", content: systemPrompt },
             { role: "user", content: contextParts.length > 0 ? `Here's my recent data:\n${contextParts.join("\n")}\n\nGenerate my personalized weekly action plan for ${mentorArea}.` : `Generate a starter weekly action plan for ${mentorArea} coaching. I'm just getting started.` },
@@ -87,11 +87,11 @@ Format with clear markdown headers and bullet points. Be specific and personaliz
     if (action === "voice-coaching") {
       const systemPrompt = `You are a warm, encouraging ${mentorArea} coach speaking directly to your client. Give brief, motivational spoken-style advice (2-3 paragraphs max). Sound natural, empathetic, and actionable. Use "you" language. Don't use markdown formatting — write as if speaking aloud.`;
 
-      const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      const response = await fetch("https://api.openai.com/v1/chat/completions", {
         method: "POST",
-        headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+        headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: "google/gemini-3-flash-preview",
+          model: "gpt-5",
           messages: [
             { role: "system", content: systemPrompt },
             { role: "user", content: message },
@@ -118,11 +118,11 @@ Format with clear markdown headers and bullet points. Be specific and personaliz
       // Generate AI insights from mood history
       const { data: moodData } = await supabase.from("mentor_moods").select("*").eq("user_id", user.id).order("created_at", { ascending: false }).limit(30);
 
-      const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      const response = await fetch("https://api.openai.com/v1/chat/completions", {
         method: "POST",
-        headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+        headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: "google/gemini-3-flash-preview",
+          model: "gpt-5",
           messages: [
             { role: "system", content: "You are a wellness coach analyzing mood patterns. Give brief, actionable insights about trends, patterns, and recommendations. Be encouraging. Keep it under 200 words." },
             { role: "user", content: `Analyze my mood data (last 30 entries): ${JSON.stringify(moodData?.map(m => ({ date: m.created_at, mood: m.mood_score, energy: m.energy_score, stress: m.stress_score })))}` },

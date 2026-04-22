@@ -10,9 +10,9 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
     const ELEVEN = Deno.env.get("ELEVENLABS_API_KEY");
-    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
+    if (!OPENAI_API_KEY) throw new Error("OPENAI_API_KEY not configured");
     if (!ELEVEN) throw new Error("ELEVENLABS_API_KEY not configured");
 
     const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
@@ -33,14 +33,14 @@ Deno.serve(async (req) => {
     if (text.length > 250) throw new Error("Text too long (max 250 chars)");
 
     // 1) Pixar-style avatar via Nano banana
-    const imgRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const imgRes = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        Authorization: `Bearer ${OPENAI_API_KEY}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash-image",
+        model: "gpt-image-1",
         messages: [{
           role: "user",
           content: `Pixar 3D animated character portrait of: ${description}. Friendly expressive face, big eyes, cinematic studio lighting, clean background. NO real person, NO trademark, NO text.`,

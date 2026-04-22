@@ -4,7 +4,7 @@
 // Body: { task: string, imageUrl?: string, prompt?: string, ...extras }
 // The `task` param maps to a system prompt + AI model (vision vs text).
 //
-// Backed by Lovable AI Gateway (LOVABLE_API_KEY) — no per-tier secrets.
+// Backed by Lovable AI Gateway (OPENAI_API_KEY) — no per-tier secrets.
 
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 
@@ -82,7 +82,7 @@ serve(async (req) => {
       return json({ error: `Task '${task}' requires imageUrl` }, 400);
     }
 
-    const apiKey = Deno.env.get("LOVABLE_API_KEY");
+    const apiKey = Deno.env.get("OPENAI_API_KEY");
     if (!apiKey) return json({ error: "AI service not configured" }, 503);
 
     log("invoke", { task, hasImage: !!imageUrl });
@@ -94,14 +94,14 @@ serve(async (req) => {
     if (imageUrl) userContent.push({ type: "image_url", image_url: { url: imageUrl } });
     if (userContent.length === 0) userContent.push({ type: "text", text: "Proceed with the analysis." });
 
-    const aiRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const aiRes = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${apiKey}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
+        model: "gpt-5",
         messages: [
           { role: "system", content: cfg.prompt },
           { role: "user", content: userContent },

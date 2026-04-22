@@ -22,13 +22,13 @@ const json = (b: unknown, status = 200) =>
     headers: { ...corsHeaders, "Content-Type": "application/json" },
   });
 
-const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY")!;
-const AI_URL = "https://ai.gateway.lovable.dev/v1/chat/completions";
+const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY")!;
+const AI_URL = "https://api.openai.com/v1/chat/completions";
 
 async function callAI(body: unknown) {
   const res = await fetch(AI_URL, {
     method: "POST",
-    headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+    headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
     body: JSON.stringify(body),
   });
   if (res.status === 429) throw new Error("Rate limited");
@@ -289,7 +289,7 @@ Deno.serve(async (req) => {
       if (!imageUrl) return json({ error: "imageUrl required" }, 400);
       await chargeCredits(supabase, user.id, 5);
       const content = await callAI({
-        model: "google/gemini-2.5-flash",
+        model: "gpt-5",
         messages: [
           { role: "system", content: "You are a forensic graphologist specializing in signature analysis. Return strict JSON: { ego_score: 0-100, confidence_score: 0-100, public_persona: string, authenticity_score: 0-100, traits: string[], dominance: string, summary: string }." },
           { role: "user", content: [
@@ -315,7 +315,7 @@ Deno.serve(async (req) => {
       if (!imageAUrl || !imageBUrl) return json({ error: "Two images required" }, 400);
       await chargeCredits(supabase, user.id, 12);
       const content = await callAI({
-        model: "google/gemini-2.5-pro",
+        model: "gpt-5",
         messages: [
           { role: "system", content: `You are a graphology compatibility expert. Compare two handwriting samples for ${context} compatibility. Return JSON: { compatibility_score: 0-100, dynamics: { communication, emotional, decision, conflict }, strengths: string[], challenges: string[], full_report: string }.` },
           { role: "user", content: [
@@ -342,7 +342,7 @@ Deno.serve(async (req) => {
       if (!imageUrl) return json({ error: "imageUrl required" }, 400);
       await chargeCredits(supabase, user.id, 3);
       const content = await callAI({
-        model: "google/gemini-2.5-flash",
+        model: "gpt-5",
         messages: [
           { role: "system", content: "You are a graphology mood analyst. Analyze handwriting for current emotional state. Return JSON: { mood_score: 0-100, stress_score: 0-100, energy_score: 0-100, focus_score: 0-100, ai_insight: short paragraph }." },
           { role: "user", content: [
@@ -368,7 +368,7 @@ Deno.serve(async (req) => {
       if (!referenceUrl || !suspectUrl) return json({ error: "Two images required" }, 400);
       await chargeCredits(supabase, user.id, 15);
       const content = await callAI({
-        model: "google/gemini-2.5-pro",
+        model: "gpt-5",
         messages: [
           { role: "system", content: "You are a court-grade forensic document examiner. Compare reference vs suspect signature/handwriting. Return strict JSON: { authenticity_probability: 0-100, forgery_probability: 0-100, verdict: 'AUTHENTIC'|'LIKELY_AUTHENTIC'|'SUSPICIOUS'|'LIKELY_FORGERY'|'FORGERY', red_flags: [{trait, severity}], matching_traits: [{trait, similarity}], detailed_report: string }." },
           { role: "user", content: [
@@ -397,7 +397,7 @@ Deno.serve(async (req) => {
       if (!imageUrl || !displayName) return json({ error: "imageUrl and displayName required" }, 400);
       await chargeCredits(supabase, user.id, 5);
       const content = await callAI({
-        model: "google/gemini-2.5-flash",
+        model: "gpt-5",
         messages: [
           { role: "system", content: "Extract a numeric trait vector for handwriting matching. Return JSON: { vector: { slant, pressure, size, spacing, loops, angularity, speed, regularity, baseline, creativity, extroversion, analytical }, summary: string } where each value is 0..100." },
           { role: "user", content: [{ type: "image_url", image_url: { url: imageUrl } }] },
@@ -425,7 +425,7 @@ Deno.serve(async (req) => {
       if (!imageUrl) return json({ error: "imageUrl required" }, 400);
       await chargeCredits(supabase, user.id, 5);
       const content = await callAI({
-        model: "google/gemini-2.5-flash",
+        model: "gpt-5",
         messages: [
           { role: "system", content: "Compare handwriting to famous historical figures (Einstein, Napoleon, Mozart, Marie Curie, Tesla, Da Vinci, Picasso, Hemingway). Pick best match. Return JSON: { matched_figure: string, match_score: 0-100, shared_traits: string[], ai_blurb: short fun paragraph }." },
           { role: "user", content: [{ type: "image_url", image_url: { url: imageUrl } }] },
@@ -456,7 +456,7 @@ Deno.serve(async (req) => {
       if (sub === "generate-quiz") {
         const { lessonId } = body;
         const content = await callAI({
-          model: "google/gemini-2.5-flash",
+          model: "gpt-5",
           messages: [
             { role: "system", content: "Generate a 5-question multiple-choice graphology quiz. Return JSON: { questions: [{ q, options: [string,string,string,string], correct: 0-3 }] }." },
             { role: "user", content: `Lesson topic: ${lessonId}` },
@@ -482,7 +482,7 @@ Deno.serve(async (req) => {
       await chargeCredits(supabase, user.id, 8);
 
       const content = await callAI({
-        model: "google/gemini-2.5-pro",
+        model: "gpt-5",
         messages: [
           {
             role: "system",
@@ -555,7 +555,7 @@ Deno.serve(async (req) => {
 
       try {
         const content = await callAI({
-          model: "google/gemini-2.5-flash",
+          model: "gpt-5",
           messages: [
             {
               role: "system",
@@ -657,7 +657,7 @@ Deno.serve(async (req) => {
       const a = entries.find((e: any) => e.id === entryAId)!;
       const b = entries.find((e: any) => e.id === entryBId)!;
       const content = await callAI({
-        model: "google/gemini-2.5-pro",
+        model: "gpt-5",
         messages: [
           { role: "system", content: "You are a graphology evolution analyst. Compare TWO handwriting samples from the SAME PERSON taken at different points in time. Detect changes in slant, pressure, size, spacing, baseline, energy and emotional tone. Return strict JSON: { diff_summary: string, changes: { slant: string, pressure: string, size: string, spacing: string, baseline: string, energy: string }, emotional_shift: string, growth_score: -100..100, milestones: string[] }." },
           { role: "user", content: [
@@ -693,7 +693,7 @@ Deno.serve(async (req) => {
         duration_ms: durationMs ?? 0,
       };
       const content = await callAI({
-        model: "google/gemini-2.5-flash",
+        model: "gpt-5",
         messages: [
           { role: "system", content: "You are a real-time graphology analyst. From stroke statistics (no image), infer personality cues. Return JSON: { energy: 0-100, confidence: 0-100, focus: 0-100, creativity: 0-100, headline: short tagline, insight: 2-3 sentence reading }." },
           { role: "user", content: `Stroke metrics: ${JSON.stringify(strokeStats)}` },
@@ -724,7 +724,7 @@ Deno.serve(async (req) => {
       if (item.status !== "pending") return json({ error: "Already moderated" }, 400);
 
       const content = await callAI({
-        model: "google/gemini-2.5-flash",
+        model: "gpt-5",
         messages: [
           { role: "system", content: "You are a museum curator + content safety officer. Decide if a user-submitted handwriting image belongs in a public graphology gallery. Reject if image contains: faces of identifiable people, nudity, hate symbols, copyrighted artwork (not handwriting), or non-handwriting content. Otherwise extract trait vector. Return strict JSON: { decision: 'approved'|'rejected', rejection_reason: string|null, ai_traits: { creativity:0-100, focus:0-100, energy:0-100, originality:0-100, emotion:0-100 }, suggested_tags: string[] }." },
           { role: "user", content: [
@@ -775,7 +775,7 @@ Deno.serve(async (req) => {
       for (const m of history ?? []) messages.push({ role: m.role, content: m.content });
       messages.push({ role: "user", content: message });
 
-      const reply = await callAI({ model: "google/gemini-2.5-flash", messages });
+      const reply = await callAI({ model: "gpt-5", messages });
 
       await supabase.from("handwriting_gallery_tour_chats").insert([
         { user_id: user.id, item_id: itemId, role: "user", content: message },
@@ -800,7 +800,7 @@ Deno.serve(async (req) => {
         .from(tbl).select("*").eq("id", analysisId).eq("user_id", user.id).maybeSingle();
       if (!analysis) return json({ error: "Analysis not found" }, 404);
       const summary = await callAI({
-        model: "google/gemini-2.5-flash",
+        model: "gpt-5",
         messages: [
           { role: "system", content: "Write a forensic-grade executive summary for a handwriting analysis PDF report. Professional, court-ready tone, 250-400 words." },
           { role: "user", content: JSON.stringify(analysis).slice(0, 6000) },

@@ -7,10 +7,10 @@ const corsHeaders = {
 };
 
 async function callAI(apiKey: string, messages: any[]) {
-  const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+  const response = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
     headers: { "Authorization": `Bearer ${apiKey}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ model: "google/gemini-2.5-flash", messages }),
+    body: JSON.stringify({ model: "gpt-5", messages }),
   });
   if (!response.ok) throw new Error(`AI error: ${response.status}`);
   const data = await response.json();
@@ -25,7 +25,7 @@ Deno.serve(async (req) => {
     if (__auth.errorResponse) return __auth.errorResponse;
     const __deduct = __auth.deduct!;
     const { action, ...params } = await req.json();
-    const apiKey = Deno.env.get("LOVABLE_API_KEY");
+    const apiKey = Deno.env.get("OPENAI_API_KEY");
     if (!apiKey) throw new Error("API key not configured");
     let result: any;
     switch (action) {
