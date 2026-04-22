@@ -34,3 +34,4 @@ NO health/medical predictions. NO identifiable people/trademarks in videos.
 - [Win-back Campaigns](mem://features/winback) — auto-create offer on customer.subscription.deleted; public /winback/:token claim with Stripe coupon; /admin/winback dashboard with claim-rate KPIs
 - [SCA / 3DS Handling](mem://features/sca-3ds) — sca_pending_actions table + check-sca/sca-confirm-url/admin-sca edge fns; <SCABanner> opens hosted invoice for 3-D Secure; /admin/sca dashboard
 - [Creator KYC](mem://features/creator-kyc) — Stripe Identity verification (kyc-start/kyc-check/admin-kyc); /account/verification + /admin/kyc; gates payouts >€100; GDPR-minimal storage
+- [Affiliate Tiers](mem://features/affiliate-tiers) — 4-tier referrer rewards (€5→€15) with auto-promotion trigger; stripe-webhook reads dynamic reward via get_affiliate_reward_eur; <AffiliateTierCard> + /admin/affiliate-tiers

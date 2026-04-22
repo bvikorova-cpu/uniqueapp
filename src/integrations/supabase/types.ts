@@ -206,6 +206,57 @@ export type Database = {
         }
         Relationships: []
       }
+      affiliate_tier_config: {
+        Row: {
+          label: string
+          min_referrals: number
+          perks: Json
+          reward_eur: number
+          tier: Database["public"]["Enums"]["affiliate_tier"]
+        }
+        Insert: {
+          label: string
+          min_referrals: number
+          perks?: Json
+          reward_eur: number
+          tier: Database["public"]["Enums"]["affiliate_tier"]
+        }
+        Update: {
+          label?: string
+          min_referrals?: number
+          perks?: Json
+          reward_eur?: number
+          tier?: Database["public"]["Enums"]["affiliate_tier"]
+        }
+        Relationships: []
+      }
+      affiliate_tier_status: {
+        Row: {
+          approved_referrals: number
+          lifetime_earnings_eur: number
+          promoted_at: string | null
+          tier: Database["public"]["Enums"]["affiliate_tier"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          approved_referrals?: number
+          lifetime_earnings_eur?: number
+          promoted_at?: string | null
+          tier?: Database["public"]["Enums"]["affiliate_tier"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          approved_referrals?: number
+          lifetime_earnings_eur?: number
+          promoted_at?: string | null
+          tier?: Database["public"]["Enums"]["affiliate_tier"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       age_progressions: {
         Row: {
           aged_image_url: string | null
@@ -41747,6 +41798,7 @@ export type Database = {
       generate_daily_homework_challenge: { Args: never; Returns: undefined }
       generate_referral_code: { Args: never; Returns: string }
       generate_story_share_code: { Args: never; Returns: string }
+      get_affiliate_reward_eur: { Args: { _user_id: string }; Returns: number }
       get_auth_uid: { Args: never; Returns: string }
       get_current_user_id: { Args: never; Returns: string }
       get_follower_count: { Args: { user_id: string }; Returns: number }
@@ -41925,6 +41977,10 @@ export type Database = {
         Args: { buyer_id: string; listing_id: string }
         Returns: undefined
       }
+      recompute_affiliate_tier: {
+        Args: { _user_id: string }
+        Returns: Database["public"]["Enums"]["affiliate_tier"]
+      }
       reset_best_friend_monthly_messages: { Args: never; Returns: undefined }
       reset_psychology_monthly_messages: { Args: never; Returns: undefined }
       spend_brain_duel_credits: {
@@ -41950,6 +42006,7 @@ export type Database = {
         | "boots"
         | "amulet"
         | "shield"
+      affiliate_tier: "bronze" | "silver" | "gold" | "diamond"
       app_role: "admin" | "moderator" | "user" | "employer"
       clothing_category:
         | "tops"
@@ -42279,6 +42336,7 @@ export const Constants = {
         "amulet",
         "shield",
       ],
+      affiliate_tier: ["bronze", "silver", "gold", "diamond"],
       app_role: ["admin", "moderator", "user", "employer"],
       clothing_category: [
         "tops",
