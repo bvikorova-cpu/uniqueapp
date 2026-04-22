@@ -29892,6 +29892,8 @@ export type Database = {
           phone: string | null
           profile_theme: string | null
           rating_average: number | null
+          signup_ip: string | null
+          signup_user_agent: string | null
           skills: Json | null
           skills_offered: string[] | null
           skills_wanted: string[] | null
@@ -29937,6 +29939,8 @@ export type Database = {
           phone?: string | null
           profile_theme?: string | null
           rating_average?: number | null
+          signup_ip?: string | null
+          signup_user_agent?: string | null
           skills?: Json | null
           skills_offered?: string[] | null
           skills_wanted?: string[] | null
@@ -29982,6 +29986,8 @@ export type Database = {
           phone?: string | null
           profile_theme?: string | null
           rating_average?: number | null
+          signup_ip?: string | null
+          signup_user_agent?: string | null
           skills?: Json | null
           skills_offered?: string[] | null
           skills_wanted?: string[] | null
@@ -32113,30 +32119,89 @@ export type Database = {
           code: string
           created_at: string
           first_subscription_id: string | null
+          fraud_reasons: Json
+          fraud_score: number
           id: string
           referred_user_id: string
           referrer_id: string
           rewarded_at: string | null
+          status: string
         }
         Insert: {
           code: string
           created_at?: string
           first_subscription_id?: string | null
+          fraud_reasons?: Json
+          fraud_score?: number
           id?: string
           referred_user_id: string
           referrer_id: string
           rewarded_at?: string | null
+          status?: string
         }
         Update: {
           code?: string
           created_at?: string
           first_subscription_id?: string | null
+          fraud_reasons?: Json
+          fraud_score?: number
           id?: string
           referred_user_id?: string
           referrer_id?: string
           rewarded_at?: string | null
+          status?: string
         }
         Relationships: []
+      }
+      referral_fraud_flags: {
+        Row: {
+          attribution_id: string | null
+          created_at: string
+          details: Json
+          id: string
+          reason: string
+          referred_user_id: string
+          referrer_id: string
+          reviewed: boolean
+          reviewed_at: string | null
+          reviewed_by: string | null
+          severity: string
+        }
+        Insert: {
+          attribution_id?: string | null
+          created_at?: string
+          details?: Json
+          id?: string
+          reason: string
+          referred_user_id: string
+          referrer_id: string
+          reviewed?: boolean
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          severity?: string
+        }
+        Update: {
+          attribution_id?: string | null
+          created_at?: string
+          details?: Json
+          id?: string
+          reason?: string
+          referred_user_id?: string
+          referrer_id?: string
+          reviewed?: boolean
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          severity?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "referral_fraud_flags_attribution_id_fkey"
+            columns: ["attribution_id"]
+            isOneToOne: false
+            referencedRelation: "referral_attributions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       referral_withdrawal_requests: {
         Row: {
