@@ -33,3 +33,4 @@ NO health/medical predictions. NO identifiable people/trademarks in videos.
 - [Dunning Recovery](mem://features/dunning) — dunning_events table + stripe-webhook invoice.payment_failed/succeeded; <DunningBanner> + update-payment-method portal flow + /admin/dunning dashboard
 - [Win-back Campaigns](mem://features/winback) — auto-create offer on customer.subscription.deleted; public /winback/:token claim with Stripe coupon; /admin/winback dashboard with claim-rate KPIs
 - [SCA / 3DS Handling](mem://features/sca-3ds) — sca_pending_actions table + check-sca/sca-confirm-url/admin-sca edge fns; <SCABanner> opens hosted invoice for 3-D Secure; /admin/sca dashboard
+- [Creator KYC](mem://features/creator-kyc) — Stripe Identity verification (kyc-start/kyc-check/admin-kyc); /account/verification + /admin/kyc; gates payouts >€100; GDPR-minimal storage
