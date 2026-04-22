@@ -11,9 +11,7 @@ import { cn } from "@/lib/utils";
 // HARDCODED FOUNDER IDENTITY - Cannot be changed via database
 const VERIFIED_FOUNDER = {
   name: "Mgr. Beáta Vikorová, MBA, LL.M., MSc.",
-  email: "beata.vikorova@example.com", // Replace with actual founder email
-  // Add user ID when known for additional security
-  // userId: "founder-uuid-here"
+  email: "b.vikorova@gmail.com",
 };
 
 interface VerifiedFounderBadgeProps {

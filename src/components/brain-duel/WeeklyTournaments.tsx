@@ -106,7 +106,7 @@ export const WeeklyTournaments = ({ currentStreak = 0 }: WeeklyTournamentsProps)
                     <div className="flex items-center gap-2 mb-1">
                       <h4 className="font-semibold text-sm">{event.name}</h4>
                       <Badge variant={event.status === "active" ? "default" : "secondary"} className="text-[10px]">
-                        {event.status === "active" ? "🔴 Live" : "Coming Soon"}
+                        {event.status === "active" ? "Live" : "Scheduled"}
                       </Badge>
                     </div>
                     <p className="text-xs text-muted-foreground mb-2">{event.desc}</p>

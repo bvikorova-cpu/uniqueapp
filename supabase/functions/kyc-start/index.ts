@@ -71,7 +71,7 @@ serve(async (req) => {
       } catch (_) { /* fall through to create new */ }
     }
 
-    const origin = req.headers.get("origin") || "http://localhost:3000";
+    const origin = req.headers.get("origin") || "https://uniqueapp.fun";
     const session = await stripe.identity.verificationSessions.create({
       type: "document",
       provided_details: { email: user.email },
