@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { requireAiCredits } from "../_shared/credit-check.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
 const corsHeaders = {
@@ -12,6 +13,9 @@ serve(async (req) => {
   }
 
   try {
+    const __auth = await requireAiCredits(req, corsHeaders, { credits: 1, usageType: "gift_message" });
+    if (__auth.errorResponse) return __auth.errorResponse;
+    const __deduct = __auth.deduct!;
     const reqBody = await req.json();
     // Accept many naming conventions used across the frontend
     const style = reqBody.style;
@@ -19,10 +23,10 @@ serve(async (req) => {
     const recipientName = reqBody.recipientName;
     const type = reqBody.type;
     const customPrompt = reqBody.customPrompt || reqBody.prompt || reqBody.input || reqBody.message || reqBody.query;
-    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
+    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
 
-    if (!OPENAI_API_KEY) {
-      throw new Error("OPENAI_API_KEY is not configured");
+    if (!LOVABLE_API_KEY) {
+      throw new Error("LOVABLE_API_KEY is not configured");
     }
 
     // Auth & credit check
@@ -165,14 +169,14 @@ ${customPrompt ? `Additional context: ${customPrompt}` : ""}`;
 
     console.log("Generating with OpenAI, type:", type || "message", "style:", style);
 
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${OPENAI_API_KEY}`,
+        Authorization: `Bearer ${LOVABLE_API_KEY}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "gpt-4o-mini",
+        model: "google/gemini-2.5-flash",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt },
@@ -215,6 +219,7 @@ ${customPrompt ? `Additional context: ${customPrompt}` : ""}`;
     } catch { /* ignore */ }
 
     // Return ALL common response keys so any frontend component can read it
+    await __deduct().catch((e) => console.error("deduct failed:", e));
     return new Response(JSON.stringify({ message, text: message, result: message, content: message }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });

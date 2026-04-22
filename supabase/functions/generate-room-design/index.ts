@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { requireAiCredits } from "../_shared/credit-check.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
 const corsHeaders = {
@@ -17,6 +18,9 @@ serve(async (req) => {
   );
 
   try {
+    const __auth = await requireAiCredits(req, corsHeaders, { credits: 5, usageType: "room_design" });
+    if (__auth.errorResponse) return __auth.errorResponse;
+    const __deduct = __auth.deduct!;
     const authHeader = req.headers.get("Authorization")!;
     const token = authHeader.replace("Bearer ", "");
     const { data: userData } = await supabaseClient.auth.getUser(token);
@@ -48,8 +52,8 @@ serve(async (req) => {
     }
 
     // Generate AI design using OpenAI
-    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
-    if (!OPENAI_API_KEY) throw new Error("OPENAI_API_KEY not configured");
+    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
 
     const systemPrompt = "You are an expert interior designer specializing in various design styles. Provide detailed, actionable design recommendations.";
 
@@ -64,14 +68,14 @@ serve(async (req) => {
     
     Format the response as a structured design plan.`;
 
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${OPENAI_API_KEY}`,
+        "Authorization": `Bearer ${LOVABLE_API_KEY}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "gpt-4o-mini",
+        model: "google/gemini-2.5-flash",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: aiPrompt }
@@ -115,6 +119,7 @@ serve(async (req) => {
       .update({ designs_used: subscription.designs_used + 1 })
       .eq("user_id", user.id);
 
+    await __deduct().catch((e) => console.error("deduct failed:", e));
     return new Response(JSON.stringify({ 
       design: designSuggestion,
       designs_remaining: subscription.designs_limit - subscription.designs_used - 1,

@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { requireAiCredits } from "../_shared/credit-check.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -9,15 +10,18 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
   try {
+    const __auth = await requireAiCredits(req, corsHeaders, { credits: 1, usageType: "ai_text" });
+    if (__auth.errorResponse) return __auth.errorResponse;
+    const __deduct = __auth.deduct!;
     const { prompt } = await req.json();
-    const openaiKey = Deno.env.get("OPENAI_API_KEY");
-    if (!openaiKey) throw new Error("OpenAI API key not configured");
+    const openaiKey = Deno.env.get("LOVABLE_API_KEY");
+    if (!openaiKey) throw new Error("AI service not configured");
 
-    const res = await fetch("https://api.openai.com/v1/chat/completions", {
+    const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: { Authorization: `Bearer ${openaiKey}`, "Content-Type": "application/json" },
       body: JSON.stringify({
-        model: "gpt-4o-mini",
+        model: "google/gemini-2.5-flash",
         messages: [{ role: "user", content: prompt }],
         max_tokens: 2000,
       }),
@@ -26,6 +30,7 @@ serve(async (req) => {
     const data = await res.json();
     const text = data.choices?.[0]?.message?.content || "";
 
+    await __deduct().catch((e) => console.error("deduct failed:", e));
     return new Response(JSON.stringify({ text, content: text }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });

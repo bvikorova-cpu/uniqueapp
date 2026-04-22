@@ -138,7 +138,7 @@ export default function CalorieQuests() {
                   <span>{challenge.participants_count} participants</span>
                   <span>Entry: €{challenge.entry_fee}</span>
                 </div>
-                <Button size="sm" className="w-full gap-1" onClick={() => toast.info("Join Challenge — coming soon")}><Zap className="h-3 w-3" /> Join Challenge</Button>
+                <Button size="sm" className="w-full gap-1" onClick={() => console.info("[Coming soon] Join Challenge")}><Zap className="h-3 w-3" /> Join Challenge</Button>
               </div>
             ))}
           </CardContent>
@@ -163,7 +163,7 @@ export default function CalorieQuests() {
               <span className="text-sm">{item.text}</span>
             </div>
           ))}
-          <Button className="w-full mt-4 gap-2 bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600" onClick={() => toast.info("Upgrade to Hero Pass (€6.99/month) — coming soon")}>
+          <Button className="w-full mt-4 gap-2 bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600" onClick={() => console.info("[Coming soon] Upgrade to Hero Pass (€6.99/month)")}>
             <Award className="h-4 w-4" /> Upgrade to Hero Pass (€6.99/month)
           </Button>
         </CardContent>

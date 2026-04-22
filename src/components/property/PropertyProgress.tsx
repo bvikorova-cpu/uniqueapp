@@ -36,7 +36,7 @@ export const PropertyProgress = () => {
             </div>
           </div>
 
-          <Button className="w-full bg-gradient-to-r from-sky-500 to-blue-600 hover:opacity-90 text-white" size="sm" onClick={() => toast.info("Search Now — coming soon")}>
+          <Button className="w-full bg-gradient-to-r from-sky-500 to-blue-600 hover:opacity-90 text-white" size="sm" onClick={() => console.info("[Coming soon] Search Now")}>
             <Search className="w-4 h-4 mr-2" />
             Search Now
           </Button>

@@ -62,7 +62,7 @@ export default function FundraisingHub() {
               <AIStoryGenerator
                 campaignType="medical"
                 trigger={
-                  <Button size="lg" className="bg-gradient-to-r from-amber-500 via-rose-500 to-purple-600 hover:from-amber-600 hover:via-rose-600 hover:to-purple-700 text-white font-bold border-0" onClick={() => toast.info("Try AI Story Writer 5 credits — coming soon")}>
+                  <Button size="lg" className="bg-gradient-to-r from-amber-500 via-rose-500 to-purple-600 hover:from-amber-600 hover:via-rose-600 hover:to-purple-700 text-white font-bold border-0" onClick={() => console.info("[Coming soon] Try AI Story Writer 5 credits")}>
                     <Wand2 className="mr-2 h-4 w-4" /> Try AI Story Writer
                     <span className="ml-2 text-[10px] px-2 py-0.5 rounded-full bg-white/20 font-bold">5 credits</span>
                   </Button>

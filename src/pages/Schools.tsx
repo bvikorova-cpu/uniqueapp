@@ -572,7 +572,7 @@ export default function Schools() {
               >
                 {adminLoading ? "Loading..." : "Get Started"}
               </Button>
-              <Button size="lg" variant="outline" onClick={() => toast.info("Contact Sales — coming soon")}>
+              <Button size="lg" variant="outline" onClick={() => console.info("[Coming soon] Contact Sales")}>
                 Contact Sales
               </Button>
             </div>

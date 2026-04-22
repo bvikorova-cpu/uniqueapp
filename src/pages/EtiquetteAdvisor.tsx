@@ -8,7 +8,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Crown, ArrowLeft, Send, Sparkles, Heart, Briefcase, Utensils, Wine, Users, MessageCircle, BookOpen } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
-import { toast } from "sonner";
 
 interface Message {
   id: string;
@@ -307,7 +306,7 @@ const EtiquetteAdvisor = () => {
                         </li>
                       ))}
                     </ul>
-                    <Button variant="ghost" className="w-full mt-4 text-amber-400" onClick={() => toast.info("View All Tips → — coming soon")}>
+                    <Button variant="ghost" className="w-full mt-4 text-amber-400" onClick={() => console.info("[Coming soon] View All Tips →")}>
                       View All Tips →
                     </Button>
                   </CardContent>

@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { requireAiCredits } from "../_shared/credit-check.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
 
 const corsHeaders = {
@@ -10,6 +11,9 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
+    const __auth = await requireAiCredits(req, corsHeaders, { credits: 1, usageType: "fitness_plan" });
+    if (__auth.errorResponse) return __auth.errorResponse;
+    const __deduct = __auth.deduct!;
     const serviceClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
@@ -49,8 +53,8 @@ serve(async (req) => {
     await serviceClient.from("fitness_plans").update({ status: "generating" }).eq("id", plan_id);
 
     const days = plan.plan_type === "weekly" ? 7 : 30;
-    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
-    if (!OPENAI_API_KEY) throw new Error("OPENAI_API_KEY not configured");
+    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
 
     const prompt = `You are a certified personal trainer and nutritionist. Create a detailed, personalized ${days}-day weight loss plan.
 
@@ -113,14 +117,14 @@ Generate a JSON response with this EXACT structure:
 
 IMPORTANT: Generate ALL ${days} days with varied workouts and meals. Include rest days (1-2 per week). Make meals realistic and diverse. All measurements in grams/ml.`;
 
-    const aiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
+    const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${OPENAI_API_KEY}`,
+        Authorization: `Bearer ${LOVABLE_API_KEY}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "gpt-4o-mini",
+        model: "google/gemini-2.5-flash",
         messages: [
           { role: "system", content: "You are a professional fitness coach and nutritionist. Always respond with valid JSON only." },
           { role: "user", content: prompt },
@@ -132,7 +136,7 @@ IMPORTANT: Generate ALL ${days} days with varied workouts and meals. Include res
 
     if (!aiResponse.ok) {
       const errText = await aiResponse.text();
-      console.error("OpenAI error:", aiResponse.status, errText);
+      console.error("AI gateway error:", aiResponse.status, errText);
       await serviceClient.from("fitness_plans").update({ status: "failed" }).eq("id", plan_id);
       throw new Error("AI generation failed");
     }
@@ -174,6 +178,7 @@ IMPORTANT: Generate ALL ${days} days with varied workouts and meals. Include res
 
     if (updateError) throw updateError;
 
+    await __deduct().catch((e) => console.error("deduct failed:", e));
     return new Response(JSON.stringify({
       plan: updatedPlan,
       details: {

@@ -106,7 +106,7 @@ export function AICertificateDesignerView({ onBack }: Props) {
                 <p className="text-sm text-muted-foreground mt-4">{new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
                 <div className="prose prose-sm max-w-none whitespace-pre-wrap text-xs mt-4 text-muted-foreground">{certificate}</div>
               </div>
-              <Button className="w-full mt-4 h-11" variant="outline" onClick={() => toast.info("Download Certificate — coming soon")}><Download className="w-4 h-4 mr-2" />Download Certificate</Button>
+              <Button className="w-full mt-4 h-11" variant="outline" onClick={() => console.info("[Coming soon] Download Certificate")}><Download className="w-4 h-4 mr-2" />Download Certificate</Button>
             </CardContent>
           </Card>
         )}

@@ -26,7 +26,6 @@ import { AnxietyTracker } from "@/components/phobia/AnxietyTracker";
 import { PhobiaPricing } from "@/components/phobia/PhobiaPricing";
 
 import phobiaPoster from "@/assets/phobia-hero-poster.jpg";
-import { toast } from "sonner";
 
 type ToolView = "hub" | "detect" | "my-phobias" | "marketplace" | "cure" | "journal" | "analytics" | "therapist" | "exposure" | "community" | "anxiety" | "pricing";
 
@@ -330,7 +329,7 @@ const PhobiaTrading = () => {
                             </li>
                           ))}
                         </ul>
-                        <Button size="sm" className="w-full mt-4 opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => toast.info("Open — coming soon")}>Open</Button>
+                        <Button size="sm" className="w-full mt-4 opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => console.info("[Coming soon] Open")}>Open</Button>
                       </div>
                     </Card>
                   </motion.div>

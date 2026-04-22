@@ -119,10 +119,10 @@ export const MessageButton = ({ userId, userName, userAvatar }: MessageButtonPro
             </DialogTitle>
             
             <div className="flex items-center gap-1">
-              <Button variant="ghost" size="icon" className="h-8 w-8 text-primary hover:bg-primary/10" onClick={() => toast.info("This action — coming soon")}>
+              <Button variant="ghost" size="icon" className="h-8 w-8 text-primary hover:bg-primary/10" onClick={() => console.info("[Coming soon] This action")}>
                 <Phone className="h-4 w-4" />
               </Button>
-              <Button variant="ghost" size="icon" className="h-8 w-8 text-primary hover:bg-primary/10" onClick={() => toast.info("This action — coming soon")}>
+              <Button variant="ghost" size="icon" className="h-8 w-8 text-primary hover:bg-primary/10" onClick={() => console.info("[Coming soon] This action")}>
                 <Video className="h-4 w-4" />
               </Button>
               
@@ -227,10 +227,10 @@ export const MessageButton = ({ userId, userName, userAvatar }: MessageButtonPro
 
         {/* Input area */}
         <form onSubmit={handleSend} className="flex items-center gap-2 p-3 border-t bg-card">
-          <Button type="button" variant="ghost" size="icon" className="h-8 w-8 text-primary flex-shrink-0" onClick={() => toast.info("This action — coming soon")}>
+          <Button type="button" variant="ghost" size="icon" className="h-8 w-8 text-primary flex-shrink-0" onClick={() => console.info("[Coming soon] This action")}>
             <Image className="h-5 w-5" />
           </Button>
-          <Button type="button" variant="ghost" size="icon" className="h-8 w-8 text-primary flex-shrink-0" onClick={() => toast.info("This action — coming soon")}>
+          <Button type="button" variant="ghost" size="icon" className="h-8 w-8 text-primary flex-shrink-0" onClick={() => console.info("[Coming soon] This action")}>
             <Smile className="h-5 w-5" />
           </Button>
           <Input

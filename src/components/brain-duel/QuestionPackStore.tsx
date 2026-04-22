@@ -193,7 +193,7 @@ export const QuestionPackStore = () => {
                 <p className="text-sm text-muted-foreground mb-4">
                   Build your own question pack with personalized questions
                 </p>
-                <Button variant="outline" size="sm" className="gap-2" onClick={() => toast.info("Generate with AI — coming soon")}>
+                <Button variant="outline" size="sm" className="gap-2" onClick={() => console.info("[Coming soon] Generate with AI")}>
                   <Brain className="h-4 w-4" /> Generate with AI
                 </Button>
               </CardContent>

@@ -79,7 +79,7 @@ export const MemoryVault = ({ onBack }: { onBack: () => void }) => {
                   <p className="font-bold text-sm truncate">{item.name}</p>
                   <p className="text-[10px] text-muted-foreground">{item.size} • {item.uploadedAt}</p>
                 </div>
-                <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-destructive" onClick={() => toast.info("This action — coming soon")}>
+                <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-destructive" onClick={() => console.info("[Coming soon] This action")}>
                   <Trash2 className="w-3.5 h-3.5" />
                 </Button>
               </CardContent>

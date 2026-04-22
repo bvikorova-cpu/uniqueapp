@@ -177,7 +177,7 @@ const SafetyPrevention = () => {
                       </CardHeader>
                       <CardContent>
                         <p className="text-xs text-muted-foreground mb-3">{feature.description}</p>
-                        <Button variant="ghost" size="sm" className="p-0 h-auto text-teal-400 hover:text-teal-300" onClick={() => toast.info("Open → — coming soon")}>
+                        <Button variant="ghost" size="sm" className="p-0 h-auto text-teal-400 hover:text-teal-300" onClick={() => console.info("[Coming soon] Open →")}>
                           Open →
                         </Button>
                       </CardContent>

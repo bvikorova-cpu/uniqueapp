@@ -122,10 +122,10 @@ export const ShoppingList = () => {
               </div>
             </div>
             <div className="flex gap-2">
-              <Button variant="outline" size="icon" onClick={() => toast.info("This action — coming soon")}>
+              <Button variant="outline" size="icon" onClick={() => console.info("[Coming soon] This action")}>
                 <Share2 className="h-4 w-4" />
               </Button>
-              <Button variant="outline" size="icon" onClick={() => toast.info("This action — coming soon")}>
+              <Button variant="outline" size="icon" onClick={() => console.info("[Coming soon] This action")}>
                 <Download className="h-4 w-4" />
               </Button>
             </div>

@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { requireAiCredits } from "../_shared/credit-check.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -15,6 +16,9 @@ serve(async (req) => {
   }
 
   try {
+    const __auth = await requireAiCredits(req, corsHeaders, { credits: 1, usageType: "monetization_ideas" });
+    if (__auth.errorResponse) return __auth.errorResponse;
+    const __deduct = __auth.deduct!;
     const { theme, context } = await req.json();
     
     if (!theme) {
@@ -23,9 +27,9 @@ serve(async (req) => {
 
     logStep("Generating ideas", { theme, context });
 
-    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
-    if (!OPENAI_API_KEY) {
-      throw new Error("OPENAI_API_KEY is not configured");
+    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    if (!LOVABLE_API_KEY) {
+      throw new Error("LOVABLE_API_KEY is not configured");
     }
 
     const systemPrompt = `You are a creative monetization strategist specializing in entertainment platforms. 
@@ -53,14 +57,14 @@ Focus on:
 
 Return creative, unexpected ideas that blend entertainment with monetization seamlessly.`;
 
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${OPENAI_API_KEY}`,
+        Authorization: `Bearer ${LOVABLE_API_KEY}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "gpt-4o-mini",
+        model: "google/gemini-2.5-flash",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt }
@@ -124,6 +128,7 @@ Return creative, unexpected ideas that blend entertainment with monetization sea
     const ideas = JSON.parse(toolCall.function.arguments);
     logStep("Ideas generated", { count: ideas.ideas?.length });
 
+    await __deduct().catch((e) => console.error("deduct failed:", e));
     return new Response(
       JSON.stringify(ideas),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }

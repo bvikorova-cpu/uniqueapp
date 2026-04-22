@@ -386,7 +386,7 @@ export default function GroupDetail() {
               </Button>
             ) : (
               <>
-                <Button variant="outline" size="icon" className="h-9 w-9" onClick={() => toast.info("This action — coming soon")}>
+                <Button variant="outline" size="icon" className="h-9 w-9" onClick={() => console.info("[Coming soon] This action")}>
                   <Bell className="h-4 w-4" />
                 </Button>
                 <DropdownMenu>
@@ -675,7 +675,7 @@ export default function GroupDetail() {
                               {format(new Date(post.created_at), "PPp")}
                             </span>
                           </div>
-                          <Button variant="ghost" size="icon" onClick={() => toast.info("This action — coming soon")}>
+                          <Button variant="ghost" size="icon" onClick={() => console.info("[Coming soon] This action")}>
                             <MoreHorizontal className="h-4 w-4" />
                           </Button>
                         </div>
@@ -691,15 +691,15 @@ export default function GroupDetail() {
                         
                         {/* Post Actions */}
                         <div className="flex items-center gap-4 mt-4 pt-3 border-t">
-                          <Button variant="ghost" size="sm" className="flex-1" onClick={() => toast.info("Like — coming soon")}>
+                          <Button variant="ghost" size="sm" className="flex-1" onClick={() => console.info("[Coming soon] Like")}>
                             <Heart className="h-4 w-4 mr-2" />
                             Like
                           </Button>
-                          <Button variant="ghost" size="sm" className="flex-1" onClick={() => toast.info("Comment — coming soon")}>
+                          <Button variant="ghost" size="sm" className="flex-1" onClick={() => console.info("[Coming soon] Comment")}>
                             <MessageCircle className="h-4 w-4 mr-2" />
                             Comment
                           </Button>
-                          <Button variant="ghost" size="sm" className="flex-1" onClick={() => toast.info("Share — coming soon")}>
+                          <Button variant="ghost" size="sm" className="flex-1" onClick={() => console.info("[Coming soon] Share")}>
                             <Share2 className="h-4 w-4 mr-2" />
                             Share
                           </Button>
@@ -728,7 +728,7 @@ export default function GroupDetail() {
                     placeholder="Enter email or username..."
                     className="flex-1"
                   />
-                  <Button onClick={() => toast.info("Invite — coming soon")}>
+                  <Button onClick={() => console.info("[Coming soon] Invite")}>
                     <Send className="h-4 w-4 mr-2" />
                     Invite
                   </Button>
@@ -898,7 +898,7 @@ export default function GroupDetail() {
                     <p className="text-sm text-muted-foreground mb-3">
                       Customize your group's look with unique themes and colors!
                     </p>
-                    <Button variant="outline" size="sm" onClick={() => toast.info("Customize Theme — coming soon")}>
+                    <Button variant="outline" size="sm" onClick={() => console.info("[Coming soon] Customize Theme")}>
                       <Sparkles className="h-4 w-4 mr-2" />
                       Customize Theme
                     </Button>
@@ -909,7 +909,7 @@ export default function GroupDetail() {
                     <p className="text-sm text-muted-foreground mb-3">
                       Enable achievements and badges for active members!
                     </p>
-                    <Button variant="outline" size="sm" onClick={() => toast.info("Manage Achievements — coming soon")}>
+                    <Button variant="outline" size="sm" onClick={() => console.info("[Coming soon] Manage Achievements")}>
                       <Star className="h-4 w-4 mr-2" />
                       Manage Achievements
                     </Button>
@@ -920,7 +920,7 @@ export default function GroupDetail() {
                     <p className="text-sm text-muted-foreground mb-3">
                       Allow members to post anonymously for sensitive topics!
                     </p>
-                    <Button variant="outline" size="sm" onClick={() => toast.info("Enable Anonymous Posts — coming soon")}>
+                    <Button variant="outline" size="sm" onClick={() => console.info("[Coming soon] Enable Anonymous Posts")}>
                       Enable Anonymous Posts
                     </Button>
                   </div>

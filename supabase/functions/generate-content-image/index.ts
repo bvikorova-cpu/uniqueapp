@@ -44,42 +44,36 @@ serve(async (req) => {
       );
     }
 
-    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
-    if (!OPENAI_API_KEY) {
-      throw new Error("OPENAI_API_KEY not configured");
+    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    if (!LOVABLE_API_KEY) {
+      throw new Error("LOVABLE_API_KEY not configured");
     }
 
-    const response = await fetch("https://api.openai.com/v1/images/generations", {
+    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${OPENAI_API_KEY}`,
+        "Authorization": `Bearer ${LOVABLE_API_KEY}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "gpt-image-1",
-        prompt: `Create a professional, eye-catching image for: ${prompt}`,
-        n: 1,
-        size: "1024x1024",
-        quality: "high",
-        output_format: "webp",
-        output_compression: 90,
+        model: "google/gemini-2.5-flash-image-preview",
+        messages: [{ role: "user", content: `Create a professional, eye-catching image for: ${prompt}` }],
+        modalities: ["image", "text"],
       }),
     });
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error("OpenAI API error:", response.status, errorText);
+      console.error("AI gateway error:", response.status, errorText);
       throw new Error("Failed to generate image");
     }
 
     const data = await response.json();
-    const base64Image = data.data?.[0]?.b64_json;
+    const imageUrl = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
 
-    if (!base64Image) {
+    if (!imageUrl) {
       throw new Error("No image generated");
     }
-
-    const imageUrl = `data:image/webp;base64,${base64Image}`;
 
     await supabaseClient
       .from("ai_credits")

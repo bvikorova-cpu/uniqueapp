@@ -50,7 +50,7 @@ export const AnonymousDateToolCard = ({ tool, onSelect, index }: AnonymousDateTo
               </li>
             ))}
           </ul>
-          <Button size="sm" className="w-full mt-4 opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => toast.info("Open — coming soon")}>
+          <Button size="sm" className="w-full mt-4 opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => console.info("[Coming soon] Open")}>
             Open
           </Button>
         </div>

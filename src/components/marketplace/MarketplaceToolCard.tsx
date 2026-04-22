@@ -47,7 +47,7 @@ export const MarketplaceToolCard = ({ tool, onSelect, index }: MarketplaceToolCa
             </li>
           ))}
         </ul>
-        <Button size="sm" variant="outline" className="w-full gap-2 opacity-80 group-hover:opacity-100 transition-opacity" onClick={() => toast.info("Open Tool — coming soon")}>
+        <Button size="sm" variant="outline" className="w-full gap-2 opacity-80 group-hover:opacity-100 transition-opacity" onClick={() => console.info("[Coming soon] Open Tool")}>
           Open Tool <ArrowRight className="w-3 h-3" />
         </Button>
       </div>

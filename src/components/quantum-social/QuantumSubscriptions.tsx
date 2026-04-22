@@ -72,7 +72,7 @@ const QuantumSubscriptions = ({ onBack }: { onBack: () => void }) => {
                 </div>
               ))}
             </div>
-            <Button className={`w-full bg-${plan.color}-600 hover:bg-${plan.color}-700`} size="sm" onClick={() => toast.info("Subscribe — coming soon")}>
+            <Button className={`w-full bg-${plan.color}-600 hover:bg-${plan.color}-700`} size="sm" onClick={() => console.info("[Coming soon] Subscribe")}>
               <Zap className="h-4 w-4 mr-2" />Subscribe
             </Button>
           </motion.div>

@@ -277,7 +277,7 @@ export default function CourseMarketplace() {
                   <div className="text-2xl font-bold text-primary">
                     €{course.price.toFixed(2)}
                   </div>
-                  <Button size="sm" onClick={() => toast.info("View Course — coming soon")}>
+                  <Button size="sm" onClick={() => console.info("[Coming soon] View Course")}>
                     View Course
                   </Button>
                 </CardFooter>
@@ -293,7 +293,7 @@ export default function CourseMarketplace() {
         <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
           Share your knowledge and earn 80% from every course sale. Start creating today!
         </p>
-        <Button size="lg" onClick={() => toast.info("Become an Instructor — coming soon")}>
+        <Button size="lg" onClick={() => console.info("[Coming soon] Become an Instructor")}>
           <TrendingUp className="mr-2 h-5 w-5" />
           Become an Instructor
         </Button>

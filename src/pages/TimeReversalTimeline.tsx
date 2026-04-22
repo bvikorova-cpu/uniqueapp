@@ -161,15 +161,15 @@ export default function TimeReversalTimeline() {
             <MessageCircle className="h-5 w-5" />
             <span className="text-sm">Create Post</span>
           </Button>
-          <Button variant="outline" className="h-20 flex flex-col gap-1" onClick={() => toast.info("Age Progress — coming soon")}>
+          <Button variant="outline" className="h-20 flex flex-col gap-1" onClick={() => console.info("[Coming soon] Age Progress")}>
             <TrendingDown className="h-5 w-5" />
             <span className="text-sm">Age Progress</span>
           </Button>
-          <Button variant="outline" className="h-20 flex flex-col gap-1" onClick={() => toast.info("Followers — coming soon")}>
+          <Button variant="outline" className="h-20 flex flex-col gap-1" onClick={() => console.info("[Coming soon] Followers")}>
             <Users className="h-5 w-5" />
             <span className="text-sm">Followers</span>
           </Button>
-          <Button variant="outline" className="h-20 flex flex-col gap-1" onClick={() => toast.info("Timeline — coming soon")}>
+          <Button variant="outline" className="h-20 flex flex-col gap-1" onClick={() => console.info("[Coming soon] Timeline")}>
             <Calendar className="h-5 w-5" />
             <span className="text-sm">Timeline</span>
           </Button>

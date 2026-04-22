@@ -1,4 +1,5 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
+import { requireAiCredits } from "../_shared/credit-check.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -6,10 +7,10 @@ const corsHeaders = {
 };
 
 async function callAI(apiKey: string, messages: any[]) {
-  const response = await fetch("https://api.openai.com/v1/chat/completions", {
+  const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
     method: "POST",
     headers: { "Authorization": `Bearer ${apiKey}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ model: "gpt-4o-mini", messages }),
+    body: JSON.stringify({ model: "google/gemini-2.5-flash", messages }),
   });
   if (!response.ok) throw new Error(`AI error: ${response.status}`);
   const data = await response.json();
@@ -20,8 +21,11 @@ async function callAI(apiKey: string, messages: any[]) {
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
   try {
+    const __auth = await requireAiCredits(req, corsHeaders, { credits: 1, usageType: "brand_ai" });
+    if (__auth.errorResponse) return __auth.errorResponse;
+    const __deduct = __auth.deduct!;
     const { action, ...params } = await req.json();
-    const apiKey = Deno.env.get("OPENAI_API_KEY");
+    const apiKey = Deno.env.get("LOVABLE_API_KEY");
     if (!apiKey) throw new Error("API key not configured");
     let result: any;
     switch (action) {
@@ -65,6 +69,7 @@ Deno.serve(async (req) => {
         break;
       default: throw new Error(`Unknown action: ${action}`);
     }
+    await __deduct().catch((e) => console.error("deduct failed:", e));
     return new Response(JSON.stringify(result), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e: any) {
     return new Response(JSON.stringify({ error: e.message }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });

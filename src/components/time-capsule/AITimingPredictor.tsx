@@ -82,7 +82,7 @@ export const AITimingPredictor = ({ onBack }: { onBack: () => void }) => {
                 </div>
               </div>
               <p className="text-sm text-muted-foreground">{prediction.reason}</p>
-              <Button className="w-full" variant="outline" onClick={() => toast.info("Use This Date for My Capsule — coming soon")}>Use This Date for My Capsule</Button>
+              <Button className="w-full" variant="outline" onClick={() => console.info("[Coming soon] Use This Date for My Capsule")}>Use This Date for My Capsule</Button>
             </CardContent>
           </Card>
         </motion.div>
