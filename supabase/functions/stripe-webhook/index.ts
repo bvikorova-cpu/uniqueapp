@@ -248,7 +248,15 @@ serve(async (req) => {
           break;
         }
 
-        // Insert €5 earning (unique index on referrer_id + source_subscription_id)
+        // Resolve dynamic reward based on referrer's affiliate tier (default €5)
+        let rewardEur = 5;
+        try {
+          const { data: rewardData } = await supabase.rpc("get_affiliate_reward_eur", {
+            _user_id: attr.referrer_id,
+          });
+          if (typeof rewardData === "number" && rewardData > 0) rewardEur = Number(rewardData);
+        } catch (_e) { /* fall back to €5 */ }
+
         const periodStart = new Date().toISOString();
         const periodEnd = new Date(Date.now() + 30 * 24 * 3600 * 1000).toISOString();
         const { error: earnErr } = await supabase
@@ -256,7 +264,7 @@ serve(async (req) => {
           .insert({
             referrer_id: attr.referrer_id,
             referred_user_id: buyerProfile.id,
-            amount: 5,
+            amount: rewardEur,
             paid: false,
             period_start: periodStart,
             period_end: periodEnd,
@@ -285,7 +293,7 @@ serve(async (req) => {
             referrer_id: attr.referrer_id,
             referred_user_id: buyerProfile.id,
             subscription_id: sub.id,
-            amount_eur: 5,
+            amount_eur: rewardEur,
           },
         });
         log("referral reward credited", { referrer: attr.referrer_id, sub: sub.id });
