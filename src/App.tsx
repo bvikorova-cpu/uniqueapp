@@ -339,6 +339,7 @@ const AdminDunning = lazy(() => import("@/pages/admin/AdminDunning"));
 const AdminWinBack = lazy(() => import("@/pages/admin/AdminWinBack"));
 const AdminSCA = lazy(() => import("@/pages/admin/AdminSCA"));
 const AdminKYC = lazy(() => import("@/pages/admin/AdminKYC"));
+const AdminAffiliateTiers = lazy(() => import("@/pages/admin/AdminAffiliateTiers"));
 const CreatorVerification = lazy(() => import("@/pages/CreatorVerification"));
 const WinBackOffer = lazy(() => import("@/pages/WinBackOffer"));
 const CreatorPayouts = lazy(() => import("@/pages/CreatorPayouts"));
