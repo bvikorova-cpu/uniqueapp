@@ -144,9 +144,9 @@ export default function AdminReconciliation() {
             </div>
 
             {totalIssues === 0 ? (
-              <Card className="border-green-500/40 bg-green-500/5">
+              <Card className="border-primary/40 bg-primary/5">
                 <CardContent className="py-6 flex items-center gap-3">
-                  <CheckCircle2 className="h-6 w-6 text-green-500" />
+                  <CheckCircle2 className="h-6 w-6 text-primary" />
                   <div>
                     <p className="font-semibold">All reconciled.</p>
                     <p className="text-sm text-muted-foreground">
@@ -159,7 +159,7 @@ export default function AdminReconciliation() {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <AlertTriangle className="h-5 w-5 text-amber-500" />
+                    <AlertTriangle className="h-5 w-5 text-destructive" />
                     Mismatches ({totalIssues})
                   </CardTitle>
                 </CardHeader>
