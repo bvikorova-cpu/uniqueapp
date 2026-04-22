@@ -13,42 +13,53 @@ const corsHeaders = {
 
 const log = (s: string, d?: unknown) => console.log(`[CHECK-SUB] ${s}${d ? ` ${JSON.stringify(d)}` : ""}`);
 
-// Maps tier → array of Stripe Product IDs that grant access
-// Add real product IDs as you create them in Stripe.
+// Maps tier → array of Stripe Product IDs that grant access.
+// SECURITY: tier-specific lists prevent cross-module access (e.g. an Astrology
+// subscriber must NOT unlock F1 / Kids / Companions). Tiers without a list fall
+// back to "any active subscription" — keep that list short and intentional.
 const TIER_PRODUCTS: Record<string, string[]> = {
-  // generic
+  // generic — any active sub
   premium: [],
   vip: [],
-  // hub-specific (fill in as products are created)
-  pet: [],
-  kids: [],
-  kids_story: [],
-  kids_reading: [],
-  wellness: [],
+
+  // Phase 2 — explicit product mapping
+  best_friend:    ["prod_UNhZqCmnlvoxOc"],
+  companions:     ["prod_UNhZr9gtoc34Tc"],
+  decor:          ["prod_UNhZNhxto4L3rY"],
+  f1:             ["prod_UNhZ4YdjqCy4xv"],
+  kids_story:     ["prod_UNhZq78Jlm6UT4", "prod_TPX3oaWoixWYxy", "prod_TPX3I7KEMWnDQb"],
+  kids:           ["prod_UNhZeoa304UJXT", "prod_TOhBTCURKFnRuI", "prod_TOhjk0jsMVNpN3"],
+  science:        ["prod_UNhZeuOF4WDESB"],
+  kids_reading:   ["prod_UNhZJhIsTqwJbq", "prod_TPoGmcPx8m3Zjr"],
+  anonymous_date: ["prod_UNhZFpv835vyrL"],
+
+  // Already-mapped legacy tiers
+  masterchef:     ["prod_TMRUCoB3rBTawE"],
+  shadow:         ["prod_TU3PbgBlAnar5A", "prod_TSzyqkMofSNRNN"],
+  employer:       ["prod_TOAOrEnRtpLdJq", "prod_TOAP0gwcYMZAV7"],
+  healthcare:     [
+    "prod_TOiUnKbNiFrw9m", "prod_TOiVcKvLTfnXvq", "prod_TOiVc2GdFLqEWB",
+    "prod_TOifzd5SCtIiJ2", "prod_TOigeiVz7ZtHdr",
+  ],
+  teen_career:    ["prod_TPpSLmFyniEytR"],
+  pet:            ["prod_TMxIAIiKlSWTef"],
+  future_face:    ["prod_TN6N3EoTKAulED", "prod_TN6cn9F2NV3vo5"],
+
+  // Tiers without products yet — fall through to "any active sub"
   psychology: [],
-  best_friend: [],
-  companions: [],
   creator: [],
-  decor: [],
-  f1: [],
-  future_face: [],
-  healthcare: [],
   holographic: [],
   lottery: [],
-  masterchef: [],
   phobia: [],
-  shadow: [],
   skill_swap: [],
-  science: [],
   sports: [],
   time_capsule: [],
   time_reversal: [],
   tipster: [],
   analyzer: [],
   astrology: [],
-  anonymous_date: [],
   coloring: [],
-  employer: [],
+  wellness: [],
 };
 
 serve(async (req) => {
