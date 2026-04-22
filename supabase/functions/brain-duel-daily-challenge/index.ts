@@ -33,23 +33,23 @@ serve(async (req) => {
 
       if (!challenge) {
         // Generate a new daily challenge using AI
-        const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+        const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
         const categories = ["science", "history", "geography", "film", "music", "sports", "art", "food", "business", "gaming"];
         const category = categories[Math.floor(Math.random() * categories.length)];
         
         let title = `Daily ${category.charAt(0).toUpperCase() + category.slice(1)} Challenge`;
         let description = `Test your ${category} knowledge in today's speed challenge!`;
 
-        if (LOVABLE_API_KEY) {
+        if (OPENAI_API_KEY) {
           try {
-            const aiRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+            const aiRes = await fetch("https://api.openai.com/v1/chat/completions", {
               method: "POST",
               headers: {
-                Authorization: `Bearer ${LOVABLE_API_KEY}`,
+                Authorization: `Bearer ${OPENAI_API_KEY}`,
                 "Content-Type": "application/json",
               },
               body: JSON.stringify({
-                model: "google/gemini-3-flash-preview",
+                model: "gpt-5",
                 messages: [
                   { role: "system", content: "Generate a catchy title and description for a daily brain quiz challenge. Reply with JSON: {\"title\": \"...\", \"description\": \"...\"}" },
                   { role: "user", content: `Category: ${category}. Make it exciting and fun!` },

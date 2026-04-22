@@ -13,11 +13,11 @@ serve(async (req) => {
     const { action, ...params } = body;
     
     // Try Lovable AI first, fall back to OpenAI
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
     const openaiKey = Deno.env.get("OPENAI_API_KEY");
     
-    const useLovable = !!LOVABLE_API_KEY;
-    if (!LOVABLE_API_KEY && !openaiKey) throw new Error("No AI API key configured");
+    const useLovable = !!OPENAI_API_KEY;
+    if (!OPENAI_API_KEY && !openaiKey) throw new Error("No AI API key configured");
 
     let systemPrompt = "";
     let userPrompt = "";
@@ -58,9 +58,9 @@ serve(async (req) => {
         systemPrompt = "You are an expert AI tutor. Help students understand concepts clearly. Use examples, analogies, and step-by-step explanations. Be encouraging and patient. Keep responses concise.";
         const messages = params.messages || [];
         
-        const apiUrl = useLovable ? "https://ai.gateway.lovable.dev/v1/chat/completions" : "https://api.openai.com/v1/chat/completions";
-        const apiKey = useLovable ? LOVABLE_API_KEY : openaiKey;
-        const model = useLovable ? "google/gemini-2.5-flash-lite" : "gpt-4o-mini";
+        const apiUrl = useLovable ? "https://api.openai.com/v1/chat/completions" : "https://api.openai.com/v1/chat/completions";
+        const apiKey = useLovable ? OPENAI_API_KEY : openaiKey;
+        const model = useLovable ? "gpt-5" : "gpt-4o-mini";
         
         const response = await fetch(apiUrl, {
           method: "POST",
@@ -172,9 +172,9 @@ serve(async (req) => {
         });
     }
 
-    const apiUrl = useLovable ? "https://ai.gateway.lovable.dev/v1/chat/completions" : "https://api.openai.com/v1/chat/completions";
-    const apiKey = useLovable ? LOVABLE_API_KEY : openaiKey;
-    const model = useLovable ? "google/gemini-2.5-flash-lite" : "gpt-4o-mini";
+    const apiUrl = useLovable ? "https://api.openai.com/v1/chat/completions" : "https://api.openai.com/v1/chat/completions";
+    const apiKey = useLovable ? OPENAI_API_KEY : openaiKey;
+    const model = useLovable ? "gpt-5" : "gpt-4o-mini";
 
     const fetchBody: any = {
       model,

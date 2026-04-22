@@ -40,9 +40,9 @@ Deno.serve(async (req) => {
     const { action, ...p } = body;
     if (!action) throw new Error("Action required");
 
-    const LOVABLE_KEY = Deno.env.get("LOVABLE_API_KEY");
+    const LOVABLE_KEY = Deno.env.get("OPENAI_API_KEY");
     const OPENAI_KEY = Deno.env.get("OPENAI_API_KEY");
-    const lovableUrl = "https://ai.gateway.lovable.dev/v1/chat/completions";
+    const lovableUrl = "https://api.openai.com/v1/chat/completions";
     const openaiUrl = "https://api.openai.com/v1/chat/completions";
 
     let result: any;
@@ -58,7 +58,7 @@ Deno.serve(async (req) => {
 
       case "body-shape": {
         const [tools, toolChoice] = makeTool("body_shape_result", { shapeAnalysis: { type: "string" }, bestStyles: { type: "string" }, avoidStyles: { type: "string" }, shoppingGuide: { type: "string" } });
-        result = await callAI(LOVABLE_KEY!, lovableUrl, "google/gemini-2.5-flash", [
+        result = await callAI(LOVABLE_KEY!, lovableUrl, "gpt-5", [
           { role: "system", content: "You are a body-positive fashion stylist who helps people dress for their body shape with confidence." },
           { role: "user", content: `Analyze body shape and provide styling advice:\nHeight: ${p.height}cm\nBody Shape: ${p.bodyShape}\nStyle Goal: ${p.styleGoal}` }
         ], tools, toolChoice);
@@ -74,7 +74,7 @@ Deno.serve(async (req) => {
 
       case "color-harmony": {
         const [tools, toolChoice] = makeTool("color_harmony", { harmonicPalette: { type: "string" }, outfitCombinations: { type: "string" }, avoidColors: { type: "string" }, seasonalAdaptation: { type: "string" } });
-        result = await callAI(LOVABLE_KEY!, lovableUrl, "google/gemini-2.5-flash", [
+        result = await callAI(LOVABLE_KEY!, lovableUrl, "gpt-5", [
           { role: "system", content: "You are an expert color consultant specializing in fashion and personal styling." },
           { role: "user", content: `Create a color harmony analysis:\nBase Color: ${p.baseColor}\nOccasion: ${p.occasion}\nSkin Tone: ${p.skinTone}` }
         ], tools, toolChoice);
@@ -125,7 +125,7 @@ Deno.serve(async (req) => {
 
       case "mood-board": {
         const [tools, toolChoice] = makeTool("mood_board", { moodDescription: { type: "string" }, keyPieces: { type: "string" }, textures: { type: "string" }, styling: { type: "string" } });
-        result = await callAI(LOVABLE_KEY!, lovableUrl, "google/gemini-2.5-flash", [
+        result = await callAI(LOVABLE_KEY!, lovableUrl, "gpt-5", [
           { role: "system", content: "You are a creative fashion mood board designer." },
           { role: "user", content: `Create a fashion mood board:\nTheme: ${p.theme}\nAesthetic: ${p.aesthetic}` }
         ], tools, toolChoice);
@@ -183,7 +183,7 @@ Deno.serve(async (req) => {
 
       case "style-dna": {
         const [tools, toolChoice] = makeTool("style_dna_result", { styleProfile: { type: "string" }, colorPalette: { type: "string" }, wardrobeEssentials: { type: "string" }, styleIcons: { type: "string" } });
-        result = await callAI(LOVABLE_KEY!, lovableUrl, "google/gemini-2.5-flash", [
+        result = await callAI(LOVABLE_KEY!, lovableUrl, "gpt-5", [
           { role: "system", content: "You are an expert fashion stylist and personal brand consultant." },
           { role: "user", content: `Analyze my style DNA:\nPreferences: ${p.preferences}\nBody Type: ${p.bodyType}\nLifestyle: ${p.lifestyle}` }
         ], tools, toolChoice);
@@ -199,7 +199,7 @@ Deno.serve(async (req) => {
 
       case "sustainable": {
         const [tools, toolChoice] = makeTool("sustainable_result", { sustainabilityScore: { type: "string" }, swapSuggestions: { type: "string" }, ecoAlternatives: { type: "string" }, actionPlan: { type: "string" } });
-        result = await callAI(LOVABLE_KEY!, lovableUrl, "google/gemini-2.5-flash", [
+        result = await callAI(LOVABLE_KEY!, lovableUrl, "gpt-5", [
           { role: "system", content: "You are a sustainable fashion expert helping people transition to eco-friendly wardrobes." },
           { role: "user", content: `Provide sustainable fashion recommendations:\nCurrent Wardrobe: ${p.wardrobe}\nBudget: ${p.budget}` }
         ], tools, toolChoice);
@@ -208,7 +208,7 @@ Deno.serve(async (req) => {
 
       case "trend-forecaster": {
         const [tools, toolChoice] = makeTool("trend_forecast", { topTrends: { type: "string" }, colorTrends: { type: "string" }, fabricTrends: { type: "string" }, investmentPieces: { type: "string" } });
-        result = await callAI(LOVABLE_KEY!, lovableUrl, "google/gemini-2.5-flash", [
+        result = await callAI(LOVABLE_KEY!, lovableUrl, "gpt-5", [
           { role: "system", content: "You are an expert fashion trend forecaster." },
           { role: "user", content: `Forecast fashion trends for ${p.season} in the ${p.category} category.` }
         ], tools, toolChoice);

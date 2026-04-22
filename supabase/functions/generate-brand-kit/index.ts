@@ -46,20 +46,20 @@ serve(async (req) => {
       );
     }
 
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) {
-      throw new Error('LOVABLE_API_KEY not configured');
+    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
+    if (!OPENAI_API_KEY) {
+      throw new Error('OPENAI_API_KEY not configured');
     }
 
     // Generate brand strategy
-    const strategyResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+    const strategyResponse = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+        'Authorization': `Bearer ${OPENAI_API_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
+        model: "gpt-5",
         messages: [
           {
             role: 'system',
@@ -150,13 +150,15 @@ Format as JSON with keys: slogan, tagline, colors (array), socialStrategy (objec
     
     let logoUrl = null;
     try {
-      const logoResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+      const logoResponse = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+          'Authorization': `Bearer ${OPENAI_API_KEY}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ model: "google/gemini-2.5-flash-image-preview", messages: [{ role: "user", content: logoPrompt }], modalities: ["image", "text"] }),
+        body: JSON.stringify({ model: "gpt-image-1", prompt: logoPrompt,
+        n: 1,
+        size: "1024x1024", modalities: ["image", "text"] }),
       });
 
       if (logoResponse.ok) {

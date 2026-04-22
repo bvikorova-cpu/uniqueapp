@@ -15,7 +15,7 @@ const COSTS: Record<Feature, number> = {
   heatmap_analysis: 4,
 };
 
-const LOVABLE_AI_URL = "https://ai.gateway.lovable.dev/v1/chat/completions";
+const LOVABLE_AI_URL = "https://api.openai.com/v1/chat/completions";
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -58,7 +58,7 @@ Deno.serve(async (req) => {
       }, 402);
     }
 
-    const apiKey = Deno.env.get("LOVABLE_API_KEY");
+    const apiKey = Deno.env.get("OPENAI_API_KEY");
     let output: any = {};
 
     if (feature === "dream_decoder") {
@@ -71,7 +71,7 @@ Deno.serve(async (req) => {
         method: "POST",
         headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: "google/gemini-2.5-flash",
+          model: "gpt-5",
           messages: [
             {
               role: "system",
@@ -146,7 +146,7 @@ Deno.serve(async (req) => {
         method: "POST",
         headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: "google/gemini-2.5-flash",
+          model: "gpt-5",
           messages: [
             { role: "system", content: "You are a numerology reader. Provide a short, encouraging 4-sentence reading. No medical or financial advice." },
             { role: "user", content: `Name: ${fullName}\nBirth: ${birthDate}\nLife Path: ${lifePath}\nDestiny: ${destiny}\nSoul: ${soul}` },

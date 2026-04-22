@@ -22,9 +22,9 @@ serve(async (req) => {
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-    const lovableKey = Deno.env.get("LOVABLE_API_KEY");
+    const lovableKey = Deno.env.get("OPENAI_API_KEY");
 
-    if (!lovableKey) throw new Error("LOVABLE_API_KEY missing");
+    if (!lovableKey) throw new Error("OPENAI_API_KEY missing");
 
     const userClient = createClient(supabaseUrl, supabaseAnonKey, {
       global: { headers: { Authorization: authHeader } },
@@ -88,14 +88,14 @@ Return JSON with EXACTLY these keys:
 - "story": A full campaign story, 4–6 paragraphs, written in second person addressing potential donors. Open with an emotional hook, give context, explain what the funds will do, and end with a clear call to action. ${tone === "urgent" ? "Convey urgency without being pushy." : ""}
 - "appeal": A 1-sentence donation appeal (max 140 chars)`;
 
-    const aiRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const aiRes = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${lovableKey}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-3-flash-preview",
+        model: "gpt-5",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt },

@@ -22,8 +22,8 @@ const STYLE_PROMPTS: Record<string, string> = {
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
   try {
-    const lovableKey = Deno.env.get("LOVABLE_API_KEY");
-    if (!lovableKey) throw new Error("LOVABLE_API_KEY not configured");
+    const lovableKey = Deno.env.get("OPENAI_API_KEY");
+    if (!lovableKey) throw new Error("OPENAI_API_KEY not configured");
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const authHeader = req.headers.get("Authorization");
@@ -46,11 +46,11 @@ Deno.serve(async (req) => {
     }
 
     // Edit image via Lovable AI Nano Banana
-    const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const aiResponse = await fetch("https://api.openai.com/v1/images/generations", {
       method: "POST",
       headers: { Authorization: `Bearer ${lovableKey}`, "Content-Type": "application/json" },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash-image",
+        model: "gpt-image-1",
         messages: [
           {
             role: "user",
@@ -60,7 +60,6 @@ Deno.serve(async (req) => {
             ],
           },
         ],
-        modalities: ["image", "text"],
       }),
     });
 
@@ -73,7 +72,7 @@ Deno.serve(async (req) => {
     }
 
     const data = await aiResponse.json();
-    const nightmareImageDataUrl = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+    const nightmareImageDataUrl = (data.data?.[0]?.b64_json ? `data:image/png;base64,${data.data[0].b64_json}` : null);
     if (!nightmareImageDataUrl) throw new Error("No image returned");
 
     // Upload generated image to storage bucket
