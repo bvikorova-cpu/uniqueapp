@@ -727,6 +727,23 @@ const App = () => {
                         <Route path="/time-reversal" element={<TimeReversalSocial />} />
                         <Route path="/time-reversal/dashboard" element={<ProtectedRoute><TimeReversalDashboard /></ProtectedRoute>} />
                         <Route path="/time-reversal/timeline" element={<TimeReversalTimeline />} />
+                        <Route path="/time-reversal/create-post" element={<ProtectedRoute><TimeReversalDashboard /></ProtectedRoute>} />
+                        {/* Sports Predictor aliases */}
+                        <Route path="/sports-predictor" element={<SportsPredictor />} />
+                        <Route path="/my-purchased-tips" element={<ProtectedRoute><MyPurchasedTips /></ProtectedRoute>} />
+                        <Route path="/tipster-dashboard" element={<ProtectedRoute><TipsterDashboard /></ProtectedRoute>} />
+                        <Route path="/admin/sports-matches" element={<ProtectedRoute requireAdmin={true}><AdminSportsMatches /></ProtectedRoute>} />
+                        {/* Learning aliases */}
+                        <Route path="/courses" element={<CoursesHub />} />
+                        <Route path="/my-learning" element={<ProtectedRoute><MyLearning /></ProtectedRoute>} />
+                        <Route path="/course-creator" element={<ProtectedRoute><TutorialPlatform /></ProtectedRoute>} />
+                        {/* Verification alias */}
+                        <Route path="/verification" element={<Navigate to="/account/verification" replace />} />
+                        {/* MasterChef aliases */}
+                        <Route path="/masterchef" element={<MasterChefHub />} />
+                        <Route path="/masterchef/leaderboard" element={<MasterChefWeeklyAwards />} />
+                        <Route path="/masterchef/live-battles" element={<ProtectedRoute><MasterChefLiveStream /></ProtectedRoute>} />
+                        <Route path="/masterchef/profile" element={<ProtectedRoute><MasterChefDashboard /></ProtectedRoute>} />
                         <Route path="/time-capsule-subscription" element={<Navigate to="/time-capsule" replace />} />
                         <Route path="/time-capsule" element={<TimeCapsule />} />
                         <Route path="/home-decor-subscription" element={<HomeDecorSubscription />} />
