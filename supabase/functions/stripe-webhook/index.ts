@@ -224,10 +224,14 @@ serve(async (req) => {
         // Find attribution row
         const { data: attr } = await supabase
           .from("referral_attributions")
-          .select("id, referrer_id, rewarded_at")
+          .select("id, referrer_id, rewarded_at, status")
           .eq("referred_user_id", buyerProfile.id)
           .maybeSingle();
         if (!attr || attr.rewarded_at) break; // no referrer or already rewarded
+        if (attr.status !== "approved") {
+          log("referral skip: status not approved", { status: attr.status });
+          break;
+        }
 
         // Insert €5 earning (unique index on referrer_id + source_subscription_id)
         const periodStart = new Date().toISOString();
