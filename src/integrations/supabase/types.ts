@@ -33309,6 +33309,57 @@ export type Database = {
           },
         ]
       }
+      sca_pending_actions: {
+        Row: {
+          amount_cents: number
+          created_at: string
+          currency: string
+          email: string
+          hosted_invoice_url: string | null
+          id: string
+          metadata: Json
+          next_action_url: string | null
+          resolved_at: string | null
+          status: string
+          stripe_customer_id: string | null
+          stripe_invoice_id: string | null
+          stripe_payment_intent_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          amount_cents?: number
+          created_at?: string
+          currency?: string
+          email: string
+          hosted_invoice_url?: string | null
+          id?: string
+          metadata?: Json
+          next_action_url?: string | null
+          resolved_at?: string | null
+          status?: string
+          stripe_customer_id?: string | null
+          stripe_invoice_id?: string | null
+          stripe_payment_intent_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          amount_cents?: number
+          created_at?: string
+          currency?: string
+          email?: string
+          hosted_invoice_url?: string | null
+          id?: string
+          metadata?: Json
+          next_action_url?: string | null
+          resolved_at?: string | null
+          status?: string
+          stripe_customer_id?: string | null
+          stripe_invoice_id?: string | null
+          stripe_payment_intent_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       scheduled_posts: {
         Row: {
           content: string
