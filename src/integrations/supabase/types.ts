@@ -36455,6 +36455,77 @@ export type Database = {
           },
         ]
       }
+      stripe_disputes: {
+        Row: {
+          admin_notes: string | null
+          amount_cents: number
+          created_at: string
+          currency: string
+          evidence: Json | null
+          evidence_due_by: string | null
+          evidence_submitted_at: string | null
+          id: string
+          is_charge_refundable: boolean | null
+          payment_record_id: string | null
+          reason: string | null
+          resolution: string | null
+          resolved_at: string | null
+          status: string
+          stripe_charge_id: string | null
+          stripe_dispute_id: string
+          stripe_payment_intent_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          amount_cents?: number
+          created_at?: string
+          currency?: string
+          evidence?: Json | null
+          evidence_due_by?: string | null
+          evidence_submitted_at?: string | null
+          id?: string
+          is_charge_refundable?: boolean | null
+          payment_record_id?: string | null
+          reason?: string | null
+          resolution?: string | null
+          resolved_at?: string | null
+          status?: string
+          stripe_charge_id?: string | null
+          stripe_dispute_id: string
+          stripe_payment_intent_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          admin_notes?: string | null
+          amount_cents?: number
+          created_at?: string
+          currency?: string
+          evidence?: Json | null
+          evidence_due_by?: string | null
+          evidence_submitted_at?: string | null
+          id?: string
+          is_charge_refundable?: boolean | null
+          payment_record_id?: string | null
+          reason?: string | null
+          resolution?: string | null
+          resolved_at?: string | null
+          status?: string
+          stripe_charge_id?: string | null
+          stripe_dispute_id?: string
+          stripe_payment_intent_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stripe_disputes_payment_record_id_fkey"
+            columns: ["payment_record_id"]
+            isOneToOne: false
+            referencedRelation: "payment_records"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       student_campaigns: {
         Row: {
           created_at: string | null

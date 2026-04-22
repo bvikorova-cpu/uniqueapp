@@ -114,40 +114,86 @@ serve(async (req) => {
         break;
       }
 
-      // ─── DISPUTE OPENED (chargeback) ─────────────────────────────────
-      case "charge.dispute.created": {
+      // ─── DISPUTE LIFECYCLE (chargeback) ──────────────────────────────
+      case "charge.dispute.created":
+      case "charge.dispute.updated":
+      case "charge.dispute.closed":
+      case "charge.dispute.funds_withdrawn":
+      case "charge.dispute.funds_reinstated": {
         const dispute = event.data.object as Stripe.Dispute;
         const piId =
           typeof dispute.payment_intent === "string" ? dispute.payment_intent : null;
-        if (!piId) break;
+        const chargeId =
+          typeof dispute.charge === "string" ? dispute.charge : null;
 
-        // Mark payment as disputed (separate status — does NOT auto-refund)
-        await supabase
-          .from("payment_records")
-          .update({
-            status: "disputed",
-            updated_at: new Date().toISOString(),
-            metadata: {
-              dispute_id: dispute.id,
-              dispute_reason: dispute.reason,
-              dispute_amount: dispute.amount,
-              dispute_status: dispute.status,
+        // Find linked payment_record
+        let paymentRecordId: string | null = null;
+        if (piId) {
+          const { data: pr } = await supabase
+            .from("payment_records")
+            .select("id")
+            .eq("stripe_payment_intent_id", piId)
+            .maybeSingle();
+          paymentRecordId = pr?.id ?? null;
+        }
+
+        const resolution =
+          dispute.status === "won"
+            ? "won"
+            : dispute.status === "lost"
+              ? "lost"
+              : dispute.status === "warning_closed"
+                ? "warning_closed"
+                : null;
+
+        // Upsert into stripe_disputes
+        const { error: dispErr } = await supabase
+          .from("stripe_disputes")
+          .upsert(
+            {
+              stripe_dispute_id: dispute.id,
+              stripe_payment_intent_id: piId,
+              stripe_charge_id: chargeId,
+              payment_record_id: paymentRecordId,
+              amount_cents: dispute.amount,
+              currency: dispute.currency,
+              reason: dispute.reason,
+              status: dispute.status,
+              evidence_due_by: dispute.evidence_details?.due_by
+                ? new Date(dispute.evidence_details.due_by * 1000).toISOString()
+                : null,
+              evidence: (dispute.evidence as any) ?? {},
+              is_charge_refundable: dispute.is_charge_refundable ?? true,
+              resolved_at: resolution ? new Date().toISOString() : null,
+              resolution,
+              updated_at: new Date().toISOString(),
             },
-          })
-          .eq("stripe_payment_intent_id", piId);
+            { onConflict: "stripe_dispute_id" },
+          );
+        if (dispErr) log("dispute upsert failed", { error: dispErr.message });
 
-        // Audit log so admins notice
-        await supabase.from("admin_audit_log").insert({
-          admin_id: "00000000-0000-0000-0000-000000000000",
-          action: "stripe_dispute_opened",
-          target_type: "payment_records",
-          target_id: piId,
-          details: {
-            dispute_id: dispute.id,
-            reason: dispute.reason,
-            amount: dispute.amount,
-          },
-        });
+        // Mark payment as disputed (only on first event)
+        if (event.type === "charge.dispute.created" && piId) {
+          await supabase
+            .from("payment_records")
+            .update({
+              status: "disputed",
+              updated_at: new Date().toISOString(),
+            })
+            .eq("stripe_payment_intent_id", piId);
+
+          await supabase.from("admin_audit_log").insert({
+            admin_id: "00000000-0000-0000-0000-000000000000",
+            action: "stripe_dispute_opened",
+            target_type: "payment_records",
+            target_id: piId,
+            details: {
+              dispute_id: dispute.id,
+              reason: dispute.reason,
+              amount: dispute.amount,
+            },
+          });
+        }
         break;
       }
 
