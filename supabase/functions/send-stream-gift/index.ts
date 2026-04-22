@@ -63,6 +63,19 @@ serve(async (req) => {
       },
     });
 
+    // Pre-record so verify can finalize it
+    await supabase.from("stream_gifts").insert({
+      sender_id: user.id,
+      stream_id: streamId,
+      gift_id: giftId,
+      message: message || null,
+      amount: gift.price,
+      status: "pending",
+      stripe_session_id: sessionId,
+    }).then((res) => {
+      if (res.error) console.error("stream_gifts insert failed:", res.error.message);
+    });
+
     return new Response(JSON.stringify({ url, session_id: sessionId }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,

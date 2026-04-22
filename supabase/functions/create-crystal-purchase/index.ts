@@ -60,7 +60,7 @@ serve(async (req) => {
 
     const origin = req.headers.get("origin") || "https://uniqueapp.fun";
 
-    const { url } = await createOneOffSession({
+    const { url, sessionId } = await createOneOffSession({
       productKey: "crystal_purchase",
       amount: Math.round(Number(item.price) * 100),
       name: item.title,
@@ -78,6 +78,12 @@ serve(async (req) => {
         buyer_id: user.id,
       },
     });
+
+    // Link Stripe session to order so verify-* can finalize it
+    await supabase
+      .from("crystal_marketplace_orders")
+      .update({ stripe_payment_id: sessionId })
+      .eq("id", order.id);
 
     log("Checkout session created", { orderId: order.id });
     return new Response(JSON.stringify({ url }), {
