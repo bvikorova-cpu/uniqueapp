@@ -1,116 +1,78 @@
+// Send gift to influencer – wrapper for shared one-off router
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
+import { createOneOffSession } from "../_shared/oneOffCheckout.ts";
 
 const GiftRequestSchema = z.object({
   influencerId: z.string().uuid("Invalid influencer ID"),
   giftId: z.string().uuid("Invalid gift ID"),
-  message: z
-    .string()
-    .max(500, "Message too long")
-    .trim()
-    .optional()
-    .transform((val) => val || ""),
+  message: z.string().max(500).trim().optional().transform((v) => v || ""),
 });
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
+  "Access-Control-Allow-Headers":
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
 serve(async (req) => {
-  if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
-  }
+  if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
-  const supabaseClient = createClient(
+  const supabase = createClient(
     Deno.env.get("SUPABASE_URL") ?? "",
-    Deno.env.get("SUPABASE_ANON_KEY") ?? ""
+    Deno.env.get("SUPABASE_ANON_KEY") ?? "",
   );
 
   try {
     const authHeader = req.headers.get("Authorization")!;
     const token = authHeader.replace("Bearer ", "");
-    const { data } = await supabaseClient.auth.getUser(token);
+    const { data } = await supabase.auth.getUser(token);
     const user = data.user;
     if (!user?.email) throw new Error("User not authenticated");
 
-    const body = await req.json();
-    const validationResult = GiftRequestSchema.safeParse(body);
-
-    if (!validationResult.success) {
+    const validation = GiftRequestSchema.safeParse(await req.json());
+    if (!validation.success) {
       return new Response(
-        JSON.stringify({
-          error: "Invalid input",
-          details: validationResult.error.issues,
-        }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        JSON.stringify({ error: "Invalid input", details: validation.error.issues }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } },
       );
     }
+    const { influencerId, giftId, message } = validation.data;
 
-    const { influencerId, giftId, message } = validationResult.data;
-
-    // Get influencer profile
-    const { data: influencer, error: influencerError } = await supabaseClient
+    const { data: influencer, error: infErr } = await supabase
       .from("influencer_profiles")
       .select("user_id")
       .eq("id", influencerId)
       .single();
-
-    if (influencerError || !influencer) {
-      throw new Error("Influencer not found");
-    }
-
-    // Validate user is not sending gift to themselves
+    if (infErr || !influencer) throw new Error("Influencer not found");
     if (influencer.user_id === user.id) {
       return new Response(
         JSON.stringify({ error: "You cannot send a gift to yourself" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } },
       );
     }
 
-    // Get gift details
-    const { data: gift, error: giftError } = await supabaseClient
+    const { data: gift, error: giftErr } = await supabase
       .from("influencer_gifts")
       .select("*")
       .eq("id", giftId)
       .eq("is_active", true)
       .single();
+    if (giftErr || !gift) throw new Error("Gift not found or not available");
 
-    if (giftError || !gift) {
-      throw new Error("Gift not found or not available");
-    }
+    const origin = req.headers.get("origin") || "https://uniqueapp.fun";
 
-    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
-      apiVersion: "2025-08-27.basil",
-    });
-
-    const customers = await stripe.customers.list({ email: user.email, limit: 1 });
-    let customerId;
-    if (customers.data.length > 0) {
-      customerId = customers.data[0].id;
-    }
-
-    const session = await stripe.checkout.sessions.create({
-      customer: customerId,
-      customer_email: customerId ? undefined : user.email,
-      line_items: [
-        {
-          price_data: {
-            currency: "eur",
-            product_data: {
-              name: `${gift.icon} ${gift.name}`,
-              description: message || gift.description || "Virtual gift for Influencer",
-            },
-            unit_amount: Math.round(gift.price * 100),
-          },
-          quantity: 1,
-        },
-      ],
-      mode: "payment",
-      success_url: `${req.headers.get("origin")}/influ-king?success=true&type=gift`,
-      cancel_url: `${req.headers.get("origin")}/influ-king?canceled=true`,
+    const { url, sessionId } = await createOneOffSession({
+      productKey: "influencer_gift",
+      amount: Math.round(Number(gift.price) * 100),
+      name: `${gift.icon} ${gift.name}`,
+      description: message || gift.description || "Virtual gift for Influencer",
+      userId: user.id,
+      userEmail: user.email,
+      origin,
+      successPath: `/influ-king?success=true&type=gift`,
+      cancelPath: `/influ-king?canceled=true`,
       metadata: {
         sender_id: user.id,
         influencer_id: influencerId,
@@ -119,35 +81,29 @@ serve(async (req) => {
         type: "influencer_gift",
         amount: gift.price.toString(),
       },
-      client_reference_id: user.id,
     });
 
-    // Pre-create gift record with pending status
-    const { error: insertError } = await supabaseClient
-      .from("influencer_sent_gifts")
-      .insert({
-        sender_id: user.id,
-        influencer_id: influencerId,
-        gift_id: giftId,
-        amount: gift.price,
-        message: message || null,
-        status: "pending",
-        stripe_session_id: session.id,
-      });
+    // Pre-record gift with pending status
+    const { error: insertError } = await supabase.from("influencer_sent_gifts").insert({
+      sender_id: user.id,
+      influencer_id: influencerId,
+      gift_id: giftId,
+      amount: gift.price,
+      message: message || null,
+      status: "pending",
+      stripe_session_id: sessionId,
+    });
+    if (insertError) console.error("Error inserting gift record:", insertError);
 
-    if (insertError) {
-      console.error("Error inserting gift record:", insertError);
-    }
-
-    return new Response(
-      JSON.stringify({ url: session.url, sessionId: session.id }),
-      { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 }
-    );
+    return new Response(JSON.stringify({ url, sessionId }), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      status: 200,
+    });
   } catch (error) {
-    console.error("Error creating gift payment:", error);
+    console.error("Error creating influencer gift payment:", error);
     return new Response(
       JSON.stringify({ error: error instanceof Error ? error.message : String(error) }),
-      { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 500 }
+      { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 500 },
     );
   }
 });
