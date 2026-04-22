@@ -16,8 +16,8 @@ interface Offer {
   claimed_at: string | null;
 }
 
-// Default subscription price for win-back claim. Adjust per project.
-const DEFAULT_PRICE_ID = "price_megatalent_monthly";
+// Default subscription price for win-back claim — main monthly plan.
+const DEFAULT_PRICE_ID = "price_1SZr6QGaXSfGtYFtT7ccy644";
 
 const WinBackOffer = () => {
   const { token } = useParams<{ token: string }>();
