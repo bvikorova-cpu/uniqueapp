@@ -21391,11 +21391,16 @@ export type Database = {
           country: string
           created_at: string | null
           description: string
+          duration_days: number
           employer_id: string
+          expires_at: string | null
           id: string
           is_active: boolean | null
+          is_featured: boolean
           job_type: Database["public"]["Enums"]["job_type"]
           location: string
+          paid_status: string
+          published_at: string | null
           requirements: string | null
           salary_currency: string | null
           salary_max: number | null
@@ -21413,11 +21418,16 @@ export type Database = {
           country: string
           created_at?: string | null
           description: string
+          duration_days?: number
           employer_id: string
+          expires_at?: string | null
           id?: string
           is_active?: boolean | null
+          is_featured?: boolean
           job_type: Database["public"]["Enums"]["job_type"]
           location: string
+          paid_status?: string
+          published_at?: string | null
           requirements?: string | null
           salary_currency?: string | null
           salary_max?: number | null
@@ -21435,11 +21445,16 @@ export type Database = {
           country?: string
           created_at?: string | null
           description?: string
+          duration_days?: number
           employer_id?: string
+          expires_at?: string | null
           id?: string
           is_active?: boolean | null
+          is_featured?: boolean
           job_type?: Database["public"]["Enums"]["job_type"]
           location?: string
+          paid_status?: string
+          published_at?: string | null
           requirements?: string | null
           salary_currency?: string | null
           salary_max?: number | null
