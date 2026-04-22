@@ -31,3 +31,4 @@ NO health/medical predictions. NO identifiable people/trademarks in videos.
 - [Subscription Analytics](mem://features/subscription-analytics) — admin-subscription-analytics edge fn pulls live Stripe data; /admin/subscription-analytics shows MRR/ARR/ARPU/LTV/churn + 12mo revenue chart
 - [Cohort Retention](mem://features/cohort-retention) — admin-cohort-retention edge fn + /admin/cohort-retention heatmap of monthly Stripe subscriber cohorts
 - [Dunning Recovery](mem://features/dunning) — dunning_events table + stripe-webhook invoice.payment_failed/succeeded; <DunningBanner> + update-payment-method portal flow + /admin/dunning dashboard
+- [Win-back Campaigns](mem://features/winback) — auto-create offer on customer.subscription.deleted; public /winback/:token claim with Stripe coupon; /admin/winback dashboard with claim-rate KPIs
