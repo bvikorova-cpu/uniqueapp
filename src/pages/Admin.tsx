@@ -29,6 +29,7 @@ import { QuickActionsDock } from "@/components/admin/QuickActionsDock";
 import { BroadcastCenter } from "@/components/admin/BroadcastCenter";
 import { TopUsersLeaderboard } from "@/components/admin/TopUsersLeaderboard";
 import { HubPerformanceMatrix } from "@/components/admin/HubPerformanceMatrix";
+import { PendingPayoutsCard } from "@/components/admin/PendingPayoutsCard";
 
 const Admin = () => {
   const navigate = useNavigate();
@@ -313,9 +314,14 @@ const Admin = () => {
           <TransactionLogPanel />
         </div>
 
-        {/* Hub Performance Matrix */}
-        <div className="mb-6">
-          <HubPerformanceMatrix />
+        {/* Pending Payouts + Hub Performance Matrix */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+          <div className="lg:col-span-1">
+            <PendingPayoutsCard />
+          </div>
+          <div className="lg:col-span-2">
+            <HubPerformanceMatrix />
+          </div>
         </div>
 
         {/* Heatmap + Anomaly Detector */}
