@@ -41534,6 +41534,17 @@ export type Database = {
           isSetofReturn: true
         }
       }
+      get_referral_leaderboard: {
+        Args: { period?: string }
+        Returns: {
+          avatar_url: string
+          display_name: string
+          rank: number
+          referrer_id: string
+          successful_referrals: number
+          total_earned: number
+        }[]
+      }
       get_rls_ref: { Args: never; Returns: string }
       get_user_role: { Args: never; Returns: string }
       give_f1_starter_balance: {
