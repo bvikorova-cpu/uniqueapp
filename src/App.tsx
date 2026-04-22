@@ -199,6 +199,7 @@ import {
   Handwriting,
   CreativeForge,
   Jobs,
+  JobPostSuccess,
   EmployerDashboard,
   EmployerVerification,
   BrandBuilder,
@@ -422,6 +423,7 @@ const App = () => {
                         <Route path="/referral" element={<Referral />} />
                         <Route path="/games" element={<Games />} />
                         <Route path="/jobs" element={<Jobs />} />
+                        <Route path="/jobs/post/success" element={<JobPostSuccess />} />
                         <Route path="/employer-dashboard" element={<ProtectedRoute><EmployerDashboard /></ProtectedRoute>} />
                         <Route path="/employer-verification" element={<ProtectedRoute><EmployerVerification /></ProtectedRoute>} />
                         <Route path="/admin/verifications" element={<ProtectedRoute requireAdmin={true}><AdminVerifications /></ProtectedRoute>} />

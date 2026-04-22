@@ -35,10 +35,10 @@ const JOB_TYPES = {
   remote: "Remote",
 };
 
-const JOB_PACKAGES = [
-  { days: 30, price: 49, popular: false },
-  { days: 60, price: 79, popular: true },
-  { days: 90, price: 99, popular: false },
+const JOB_PACKAGES: Array<{ days: number; price: number; popular: boolean; productKey: string }> = [
+  { days: 7, price: 19, popular: false, productKey: "job_listing_7" },
+  { days: 14, price: 29, popular: true, productKey: "job_listing_14" },
+  { days: 30, price: 49, popular: false, productKey: "job_listing_30" },
 ];
 
 interface CreateJobDialogProps {
@@ -56,18 +56,9 @@ export function CreateJobDialog({ userId, subscribed, onRenewSubscription }: Cre
   const [selectedPackage, setSelectedPackage] = useState<typeof JOB_PACKAGES[0] | null>(null);
 
   const handleOpenDialog = () => {
-    if (!subscribed) {
-      toast({
-        title: "Subscription Required",
-        description: "You need an active subscription to create job listings. Please renew your subscription.",
-        variant: "destructive",
-      });
-      onRenewSubscription();
-      return;
-    }
     setShowCreateDialog(true);
   };
-  
+
   const [newJob, setNewJob] = useState({
     title: "",
     company_name: "",
@@ -95,8 +86,8 @@ export function CreateJobDialog({ userId, subscribed, onRenewSubscription }: Cre
         company_name: newJob.company_name,
         location: newJob.location,
         country: newJob.country,
-        category: newJob.category,
-        job_type: newJob.job_type,
+        category: newJob.category as any,
+        job_type: newJob.job_type as any,
         description: newJob.description,
         requirements: newJob.requirements || null,
         benefits: newJob.benefits || null,
@@ -105,27 +96,25 @@ export function CreateJobDialog({ userId, subscribed, onRenewSubscription }: Cre
         salary_max: newJob.salary_max ? parseInt(newJob.salary_max) : null,
         salary_currency: newJob.salary_currency,
         is_active: false,
-        status: 'pending_payment'
+        paid_status: 'pending',
+        duration_days: selectedPackage.days,
       } as any]).select().single();
 
       if (error) throw error;
-      
       if (!selectedPackage || !jobData) return;
-      
+
       try {
         const { data: paymentData, error: paymentError } = await supabase.functions.invoke(
-          'create-job-listing-payment',
+          'create-one-off-payment',
           {
             body: {
-              jobId: jobData.id,
-              durationDays: selectedPackage.days,
-              price: selectedPackage.price,
+              productKey: selectedPackage.productKey,
+              metadata: { jobListingId: jobData.id },
             },
           }
         );
 
         if (paymentError) throw paymentError;
-
         if (paymentData?.url) {
           window.location.href = paymentData.url;
         }
