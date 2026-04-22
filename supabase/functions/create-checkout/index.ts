@@ -19,6 +19,85 @@ const ANTIQUE_PRICE_IDS: Record<number, string> = {
   150: "price_1SOIJE0QTWhd4oRpow80Xeyd",
 };
 
+// ─── Universal credit pack price-ID map ───
+// All AI-credit modules. Frontend sends: { creditType: "iq", credits: 10 }
+// Routes to the correct success URL automatically.
+const CREDIT_PACKS: Record<string, { prices: Record<number, string>; successPath: string; cancelPath: string }> = {
+  antique: {
+    prices: ANTIQUE_PRICE_IDS,
+    successPath: "/antique-appraisal?payment=success&session_id={CHECKOUT_SESSION_ID}",
+    cancelPath: "/antique-appraisal?payment=canceled",
+  },
+  handwriting: {
+    prices: {
+      10: "price_1SZppoGaXSfGtYFt9LcYpN4i",
+      25: "price_1SZppoGaXSfGtYFtj5zdmxHz",
+      50: "price_1SZpppGaXSfGtYFt8FztYCdY",
+      100: "price_1SZppqGaXSfGtYFt7w4oht6d",
+    },
+    successPath: "/handwriting?payment=success&session_id={CHECKOUT_SESSION_ID}",
+    cancelPath: "/handwriting?payment=cancelled",
+  },
+  iq: {
+    prices: {
+      10: "price_1SX7FLGaXSfGtYFtf8qA5DjG",
+      20: "price_1SX7FNGaXSfGtYFtdIP9DTj6",
+      50: "price_1SX7FOGaXSfGtYFtIoxAWZen",
+    },
+    successPath: "/iq-platform?payment=success&session_id={CHECKOUT_SESSION_ID}",
+    cancelPath: "/iq-platform?payment=canceled",
+  },
+  analyzer: {
+    // Vision Analyzer existing prices
+    prices: {} as Record<number, string>, // populated below from Stripe (price_data fallback works)
+    successPath: "/analyzer?payment=success&session_id={CHECKOUT_SESSION_ID}",
+    cancelPath: "/analyzer?payment=canceled",
+  },
+  cooking: {
+    prices: {} as Record<number, string>,
+    successPath: "/cooking?payment=success&session_id={CHECKOUT_SESSION_ID}",
+    cancelPath: "/cooking?payment=canceled",
+  },
+  video_ad: {
+    prices: {} as Record<number, string>,
+    successPath: "/video-ad-creator?payment=success&session_id={CHECKOUT_SESSION_ID}",
+    cancelPath: "/video-ad-creator?payment=canceled",
+  },
+  astrology: {
+    prices: {} as Record<number, string>,
+    successPath: "/astrology?payment=success&session_id={CHECKOUT_SESSION_ID}",
+    cancelPath: "/astrology?payment=canceled",
+  },
+  // ─── Newly created Phase 3 packs ───
+  character: {
+    prices: {
+      10: "price_1TOwfSGaXSfGtYFtapoRaNMl",
+      30: "price_1TOwfTGaXSfGtYFtyBmPvW8q",
+      100: "price_1TOwfUGaXSfGtYFtCCUOJzbI",
+    },
+    successPath: "/ai-characters?payment=success&session_id={CHECKOUT_SESSION_ID}",
+    cancelPath: "/ai-characters?payment=canceled",
+  },
+  creative_forge: {
+    prices: {
+      10: "price_1TOwfVGaXSfGtYFtTuoGa1FZ",
+      30: "price_1TOwfWGaXSfGtYFt6V478VoY",
+      100: "price_1TOwfXGaXSfGtYFtTWK7Sbf8",
+    },
+    successPath: "/creative-forge?payment=success&session_id={CHECKOUT_SESSION_ID}",
+    cancelPath: "/creative-forge?payment=canceled",
+  },
+  coloring: {
+    prices: {
+      10: "price_1TOwfYGaXSfGtYFtHr3dSsW1",
+      30: "price_1TOwfZGaXSfGtYFthcYmlxhm",
+      100: "price_1TOwfaGaXSfGtYFtlqeVcsSl",
+    },
+    successPath: "/coloring?payment=success&session_id={CHECKOUT_SESSION_ID}",
+    cancelPath: "/coloring?payment=canceled",
+  },
+};
+
 const SPORTS_PACKS: Record<string, Record<string, { amount: number; coins: number }>> = {
   football_coins: {
     price_football_1000: { amount: 299, coins: 1000 },
@@ -273,18 +352,34 @@ serve(async (req) => {
 
     if (body.credits) {
       const credits = Number(body.credits);
-      const priceId = ANTIQUE_PRICE_IDS[credits];
-      if (!priceId) throw new Error(`Invalid credits amount: ${credits}`);
+      const creditType = String(body.creditType || "antique");
+      const pack = CREDIT_PACKS[creditType];
+      if (!pack) throw new Error(`Unknown creditType: ${creditType}`);
 
-      const { successUrl, cancelUrl } = resolveUrls(origin, undefined, undefined, "antique_credits");
+      const priceId = pack.prices[credits];
+      const successUrl = `${origin}${pack.successPath}`;
+      const cancelUrl = `${origin}${pack.cancelPath}`;
+
+      // If a fixed price exists use it, otherwise build dynamic price_data
+      const lineItems = priceId
+        ? [{ price: priceId, quantity: 1 }]
+        : [{
+            price_data: {
+              currency: "eur" as const,
+              unit_amount: Math.max(99, credits * 50), // €0.50 per credit fallback
+              product_data: { name: `${creditType} Credits - ${credits} Pack` },
+            },
+            quantity: 1,
+          }];
+
       const session = await stripe.checkout.sessions.create({
         customer: customerId || undefined,
         customer_email: customerId ? undefined : email,
-        line_items: [{ price: priceId, quantity: 1 }],
+        line_items: lineItems,
         mode: "payment",
         success_url: successUrl,
         cancel_url: cancelUrl,
-        metadata: { user_id: userId, credits: String(credits), type: "antique_credits" },
+        metadata: { user_id: userId, credits: String(credits), type: `${creditType}_credits`, credit_type: creditType },
       });
 
       return successResponse({ url: session.url, session_id: session.id });
