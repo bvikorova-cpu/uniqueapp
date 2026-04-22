@@ -1,68 +1,48 @@
+// Crystal marketplace purchase – wrapper for shared one-off router
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
+import { createOneOffSession } from "../_shared/oneOffCheckout.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
+  "Access-Control-Allow-Headers":
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-const logStep = (step: string, details?: any) => {
-  const detailsStr = details ? ` - ${JSON.stringify(details)}` : '';
-  console.log(`[CREATE-CRYSTAL-PURCHASE] ${step}${detailsStr}`);
-};
+const log = (step: string, details?: any) =>
+  console.log(`[CREATE-CRYSTAL-PURCHASE] ${step}${details ? ` - ${JSON.stringify(details)}` : ""}`);
 
 serve(async (req) => {
-  if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
-  }
+  if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
-  const supabaseClient = createClient(
+  const supabase = createClient(
     Deno.env.get("SUPABASE_URL") ?? "",
-    Deno.env.get("SUPABASE_ANON_KEY") ?? ""
+    Deno.env.get("SUPABASE_ANON_KEY") ?? "",
   );
 
   try {
-    logStep("Function started");
-
+    log("Function started");
     const authHeader = req.headers.get("Authorization")!;
     const token = authHeader.replace("Bearer ", "");
-    const { data } = await supabaseClient.auth.getUser(token);
+    const { data } = await supabase.auth.getUser(token);
     const user = data.user;
     if (!user?.email) throw new Error("User not authenticated");
-    logStep("User authenticated", { userId: user.id, email: user.email });
 
     const { itemId, shippingAddress } = await req.json();
-    logStep("Received request", { itemId });
 
-    // Get item details
-    const { data: item, error: itemError } = await supabaseClient
+    const { data: item, error: itemError } = await supabase
       .from("crystal_marketplace_items")
       .select("*")
       .eq("id", itemId)
       .single();
-
     if (itemError || !item) throw new Error("Item not found");
     if (!item.is_available) throw new Error("Item no longer available");
-    logStep("Item found", { title: item.title, price: item.price });
 
-    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
-      apiVersion: "2025-08-27.basil",
-    });
-
-    const customers = await stripe.customers.list({ email: user.email, limit: 1 });
-    let customerId;
-    if (customers.data.length > 0) {
-      customerId = customers.data[0].id;
-      logStep("Found existing customer", { customerId });
-    }
-
-    // Calculate commission (15%)
+    // 15% platform commission
     const platformCommission = Number((item.price * 0.15).toFixed(2));
     const sellerAmount = Number((item.price - platformCommission).toFixed(2));
 
-    // Create order record
-    const { data: order, error: orderError } = await supabaseClient
+    const { data: order, error: orderError } = await supabase
       .from("crystal_marketplace_orders")
       .insert({
         item_id: itemId,
@@ -76,30 +56,21 @@ serve(async (req) => {
       })
       .select()
       .single();
-
     if (orderError) throw orderError;
-    logStep("Order created", { orderId: order.id });
 
-    const session = await stripe.checkout.sessions.create({
-      customer: customerId,
-      customer_email: customerId ? undefined : user.email,
-      line_items: [
-        {
-          price_data: {
-            currency: "eur",
-            product_data: {
-              name: item.title,
-              description: `${item.crystal_type} - ${item.weight_grams}g`,
-              images: item.image_url ? [item.image_url] : [],
-            },
-            unit_amount: Math.round(item.price * 100),
-          },
-          quantity: 1,
-        },
-      ],
-      mode: "payment",
-      success_url: `${req.headers.get("origin")}/crystal-marketplace?success=true&order_id=${order.id}`,
-      cancel_url: `${req.headers.get("origin")}/crystal-marketplace?canceled=true`,
+    const origin = req.headers.get("origin") || "https://uniqueapp.fun";
+
+    const { url } = await createOneOffSession({
+      productKey: "crystal_purchase",
+      amount: Math.round(Number(item.price) * 100),
+      name: item.title,
+      description: `${item.crystal_type} - ${item.weight_grams}g`,
+      images: item.image_url ? [item.image_url] : undefined,
+      userId: user.id,
+      userEmail: user.email,
+      origin,
+      successPath: `/crystal-marketplace?success=true&order_id=${order.id}`,
+      cancelPath: `/crystal-marketplace?canceled=true`,
       metadata: {
         type: "crystal_purchase",
         order_id: order.id,
@@ -108,20 +79,16 @@ serve(async (req) => {
       },
     });
 
-    logStep("Checkout session created", { sessionId: session.id });
-
-    return new Response(JSON.stringify({ url: session.url }), {
+    log("Checkout session created", { orderId: order.id });
+    return new Response(JSON.stringify({ url }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
     });
   } catch (error) {
-    logStep("ERROR", { message: error instanceof Error ? error.message : "Unknown error" });
+    log("ERROR", { message: error instanceof Error ? error.message : "Unknown error" });
     return new Response(
       JSON.stringify({ error: error instanceof Error ? error.message : "Unknown error" }),
-      {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 500,
-      }
+      { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 500 },
     );
   }
 });
