@@ -122,7 +122,7 @@ export default function MasterChefCompetitions() {
                       <Badge
                         variant={competition.status === "active" ? "default" : "secondary"}
                       >
-                        {competition.status === "active" ? "Active Now" : "Coming Soon"}
+                        {competition.status === "active" ? "Active Now" : "Scheduled"}
                       </Badge>
                     </div>
                     <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
@@ -159,7 +159,7 @@ export default function MasterChefCompetitions() {
                     variant={competition.status === "active" ? "default" : "outline"}
                     disabled={competition.status !== "active"}
                   >
-                    {competition.status === "active" ? "Join Competition" : "Coming Soon"}
+                    {competition.status === "active" ? "Join Competition" : "Opens Soon"}
                   </Button>
                 </div>
               </CardContent>

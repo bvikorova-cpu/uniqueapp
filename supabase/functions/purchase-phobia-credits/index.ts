@@ -42,7 +42,7 @@ serve(async (req) => {
     let customerId;
     if (customers.data.length > 0) customerId = customers.data[0].id;
 
-    const origin = req.headers.get("origin") || "http://localhost:3000";
+    const origin = req.headers.get("origin") || "https://uniqueapp.fun";
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       customer_email: customerId ? undefined : user.email,
