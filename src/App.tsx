@@ -338,6 +338,8 @@ const AdminCohortRetention = lazy(() => import("@/pages/admin/AdminCohortRetenti
 const AdminDunning = lazy(() => import("@/pages/admin/AdminDunning"));
 const AdminWinBack = lazy(() => import("@/pages/admin/AdminWinBack"));
 const AdminSCA = lazy(() => import("@/pages/admin/AdminSCA"));
+const AdminKYC = lazy(() => import("@/pages/admin/AdminKYC"));
+const CreatorVerification = lazy(() => import("@/pages/CreatorVerification"));
 const WinBackOffer = lazy(() => import("@/pages/WinBackOffer"));
 const CreatorPayouts = lazy(() => import("@/pages/CreatorPayouts"));
 const CreatorAnalytics = lazy(() => import("@/pages/CreatorAnalytics"));
@@ -633,6 +635,8 @@ const App = () => {
                         <Route path="/admin/dunning" element={<ProtectedRoute requireAdmin={true}><AdminDunning /></ProtectedRoute>} />
                         <Route path="/admin/winback" element={<ProtectedRoute requireAdmin={true}><AdminWinBack /></ProtectedRoute>} />
                         <Route path="/admin/sca" element={<ProtectedRoute requireAdmin={true}><AdminSCA /></ProtectedRoute>} />
+                        <Route path="/admin/kyc" element={<ProtectedRoute requireAdmin={true}><AdminKYC /></ProtectedRoute>} />
+                        <Route path="/account/verification" element={<ProtectedRoute><CreatorVerification /></ProtectedRoute>} />
                         <Route path="/winback/:token" element={<WinBackOffer />} />
                         <Route path="/admin/payment-dashboard" element={<ProtectedRoute requireAdmin={true}><AdminPaymentDashboard /></ProtectedRoute>} />
                         <Route path="/creator-payouts" element={<ProtectedRoute><CreatorPayouts /></ProtectedRoute>} />
