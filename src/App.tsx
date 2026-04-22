@@ -23,6 +23,7 @@ import { ErrorBoundary } from "./components/ErrorBoundary";
 import { installGlobalErrorHandlers } from "@/utils/logger";
 import { installImagePerformancePatch } from "@/utils/imagePerformance";
 import { HelmetProvider } from "react-helmet-async";
+import { ReferralCaptureMount } from "@/components/referral/ReferralCaptureMount";
 
 // Install global runtime patches as early as possible
 installGlobalErrorHandlers();
