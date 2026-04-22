@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { requireAiCredits } from "../_shared/credit-check.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
 const corsHeaders = {
@@ -12,6 +13,9 @@ serve(async (req) => {
   }
 
   try {
+    const __auth = await requireAiCredits(req, corsHeaders, { credits: 1, usageType: "gift_message" });
+    if (__auth.errorResponse) return __auth.errorResponse;
+    const __deduct = __auth.deduct!;
     const reqBody = await req.json();
     // Accept many naming conventions used across the frontend
     const style = reqBody.style;

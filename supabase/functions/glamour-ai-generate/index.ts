@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { requireAiCredits } from "../_shared/credit-check.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -9,6 +10,9 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
+    const __auth = await requireAiCredits(req, corsHeaders, { credits: 1, usageType: "glamour_ai" });
+    if (__auth.errorResponse) return __auth.errorResponse;
+    const __deduct = __auth.deduct!;
     const { type, prompt } = await req.json();
     const openaiKey = Deno.env.get("LOVABLE_API_KEY");
     if (!openaiKey) throw new Error("AI service not configured");

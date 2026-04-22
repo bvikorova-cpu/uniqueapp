@@ -1,3 +1,4 @@
+import { requireAiCredits } from "../_shared/credit-check.ts";
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
@@ -11,6 +12,9 @@ Deno.serve(async (req) => {
   }
 
   try {
+    const __auth = await requireAiCredits(req, corsHeaders, { credits: 1, usageType: "ai_mood_therapist" });
+    if (__auth.errorResponse) return __auth.errorResponse;
+    const __deduct = __auth.deduct!;
     const { messages } = await req.json()
 
     if (!messages || !Array.isArray(messages)) {
