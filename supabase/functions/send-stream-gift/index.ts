@@ -1,86 +1,58 @@
+// Send gift in live stream – wrapper for shared one-off router
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
+import { createOneOffSession } from "../_shared/oneOffCheckout.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
+  "Access-Control-Allow-Headers":
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
 serve(async (req) => {
-  if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
-  }
+  if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
-  const supabaseClient = createClient(
+  const supabase = createClient(
     Deno.env.get("SUPABASE_URL") ?? "",
-    Deno.env.get("SUPABASE_ANON_KEY") ?? ""
+    Deno.env.get("SUPABASE_ANON_KEY") ?? "",
   );
 
   try {
     const authHeader = req.headers.get("Authorization")!;
     const token = authHeader.replace("Bearer ", "");
-    const { data } = await supabaseClient.auth.getUser(token);
+    const { data } = await supabase.auth.getUser(token);
     const user = data.user;
     if (!user?.email) throw new Error("User not authenticated");
 
     const { streamId, giftId, message } = await req.json();
+    if (!streamId || !giftId) throw new Error("Missing required fields");
 
-    if (!streamId || !giftId) {
-      throw new Error("Missing required fields");
-    }
-
-    // Get gift details
-    const { data: gift, error: giftError } = await supabaseClient
+    const { data: gift, error: giftErr } = await supabase
       .from("platform_gifts")
       .select("*")
       .eq("id", giftId)
       .single();
+    if (giftErr || !gift) throw new Error("Gift not found");
 
-    if (giftError || !gift) {
-      throw new Error("Gift not found");
-    }
-
-    // Get stream details for influencer ID
-    const { data: stream, error: streamError } = await supabaseClient
+    const { data: stream, error: streamErr } = await supabase
       .from("live_streams")
       .select("influencer_id")
       .eq("id", streamId)
       .single();
+    if (streamErr || !stream) throw new Error("Stream not found");
 
-    if (streamError || !stream) {
-      throw new Error("Stream not found");
-    }
+    const origin = req.headers.get("origin") || "https://uniqueapp.fun";
 
-    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
-      apiVersion: "2025-08-27.basil",
-    });
-
-    const customers = await stripe.customers.list({ email: user.email, limit: 1 });
-    let customerId;
-    if (customers.data.length > 0) {
-      customerId = customers.data[0].id;
-    }
-
-    const session = await stripe.checkout.sessions.create({
-      customer: customerId,
-      customer_email: customerId ? undefined : user.email,
-      line_items: [
-        {
-          price_data: {
-            currency: "eur",
-            product_data: {
-              name: `${gift.icon} ${gift.name}`,
-              description: message || "Virtuálny darček pre streamera",
-            },
-            unit_amount: Math.round(gift.price * 100),
-          },
-          quantity: 1,
-        },
-      ],
-      mode: "payment",
-      success_url: `${req.headers.get("origin")}/live-stream/${streamId}?success=true&type=gift`,
-      cancel_url: `${req.headers.get("origin")}/live-stream/${streamId}?canceled=true`,
+    const { url, sessionId } = await createOneOffSession({
+      productKey: "stream_gift",
+      amount: Math.round(Number(gift.price) * 100),
+      name: `${gift.icon} ${gift.name}`,
+      description: message || "Virtuálny darček pre streamera",
+      userId: user.id,
+      userEmail: user.email,
+      origin,
+      successPath: `/live-stream/${streamId}?success=true&type=gift`,
+      cancelPath: `/live-stream/${streamId}?canceled=true`,
       metadata: {
         sender_id: user.id,
         stream_id: streamId,
@@ -89,18 +61,30 @@ serve(async (req) => {
         message: message || "",
         type: "stream_gift",
       },
-      client_reference_id: user.id,
     });
 
-    return new Response(JSON.stringify({ url: session.url, session_id: session.id }), {
+    // Pre-record so verify can finalize it
+    await supabase.from("stream_gifts").insert({
+      sender_id: user.id,
+      stream_id: streamId,
+      gift_id: giftId,
+      message: message || null,
+      amount: gift.price,
+      status: "pending",
+      stripe_session_id: sessionId,
+    }).then((res) => {
+      if (res.error) console.error("stream_gifts insert failed:", res.error.message);
+    });
+
+    return new Response(JSON.stringify({ url, session_id: sessionId }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
     });
   } catch (error) {
     console.error("Stream gift payment error:", error);
-    return new Response(JSON.stringify({ error: error instanceof Error ? error.message : "Unknown error" }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 500,
-    });
+    return new Response(
+      JSON.stringify({ error: error instanceof Error ? error.message : "Unknown error" }),
+      { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 500 },
+    );
   }
 });

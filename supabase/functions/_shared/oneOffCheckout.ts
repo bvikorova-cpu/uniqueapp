@@ -115,12 +115,40 @@ export const PRODUCTS: Record<string, ProductDef> = {
     cancelPath: "/crystal-marketplace",
   },
 
-  // === Platform virtual gift ===
+  // === Platform virtual gift (creator hub) ===
   platform_gift: {
     currency: "eur",
     name: "Virtual Gift",
     successPath: "/",
     cancelPath: "/",
+  },
+
+  // === Influencer / MasterChef / Live-stream gifts ===
+  influencer_gift: {
+    currency: "eur",
+    name: "Influencer Gift",
+    successPath: "/influ-king",
+    cancelPath: "/influ-king",
+  },
+  masterchef_gift: {
+    currency: "eur",
+    name: "MasterChef Gift",
+    successPath: "/masterchef/dashboard",
+    cancelPath: "/masterchef/dashboard",
+  },
+  stream_gift: {
+    currency: "eur",
+    name: "Stream Gift",
+    successPath: "/live-stream",
+    cancelPath: "/live-stream",
+  },
+
+  // === Course purchase (one-off lifetime access) ===
+  course_purchase: {
+    currency: "eur",
+    name: "Course Purchase",
+    successPath: "/course",
+    cancelPath: "/course",
   },
 };
 

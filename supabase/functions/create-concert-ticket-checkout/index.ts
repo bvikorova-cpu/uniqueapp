@@ -76,6 +76,20 @@ serve(async (req) => {
     });
 
     log("Checkout session created", { sessionId });
+
+    // Pre-record purchase as pending so verify-* can finalize it
+    await supabase.from("concert_ticket_purchases").insert({
+      user_id: user.id,
+      concert_id: concertId,
+      ticket_type_id: ticketTypeId,
+      amount: Number(ticketType.price),
+      musician_amount: Number((Number(ticketType.price) * 0.8).toFixed(2)),
+      platform_commission: Number((Number(ticketType.price) * 0.2).toFixed(2)),
+      commission_rate: 0.2,
+      payment_status: "pending",
+      stripe_session_id: sessionId,
+    });
+
     return new Response(JSON.stringify({ url, session_id: sessionId }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
