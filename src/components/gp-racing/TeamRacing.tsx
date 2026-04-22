@@ -131,7 +131,7 @@ export function TeamRacing({ onBack }: { onBack: () => void }) {
                   Request to Join
                 </Button>
               )}
-              <Button variant="outline" className="border-cyan-500/30 text-cyan-300 hover:bg-cyan-950/30 font-mono text-xs uppercase">
+              <Button variant="outline" className="border-cyan-500/30 text-cyan-300 hover:bg-cyan-950/30 font-mono text-xs uppercase" onClick={() => toast.info("Team Chat — coming soon")}>
                 <MessageSquare className="h-3.5 w-3.5 mr-1.5" /> Team Chat
               </Button>
             </div>

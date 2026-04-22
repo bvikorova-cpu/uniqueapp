@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ArrowLeft, Sparkles, Loader2, ImageIcon, Wand2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 
 interface AIContentGeneratorViewProps {
   onBack: () => void;
@@ -113,7 +114,7 @@ export function AIContentGeneratorView({ onBack }: AIContentGeneratorViewProps) 
           {generatedImage ? (
             <div className="space-y-4">
               <img src={generatedImage} alt="Generated" className="w-full rounded-lg shadow-lg" />
-              <Button className="w-full" variant="outline">
+              <Button className="w-full" variant="outline" onClick={() => toast.info("Upload to Library — coming soon")}>
                 Upload to Library
               </Button>
             </div>

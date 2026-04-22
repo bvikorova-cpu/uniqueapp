@@ -16,6 +16,7 @@ import { TravelPlanner } from "@/components/experiences/TravelPlanner";
 import { VirtualPostcards } from "@/components/experiences/VirtualPostcards";
 import { DestinationRecommender } from "@/components/experiences/DestinationRecommender";
 import { ExplorerAchievements } from "@/components/experiences/ExplorerAchievements";
+import { toast } from "sonner";
 
 type ActiveView = "hub" | "tours" | "future" | "travel-planner" | "postcards" | "recommender" | "achievements";
 
@@ -449,7 +450,7 @@ const AIExperiences = () => {
                   )}
                   <CardContent className="pt-3 pb-3">
                     <p className="text-sm text-muted-foreground line-clamp-2">{tour.description}</p>
-                    <Button variant="outline" className="w-full mt-3" size="sm"><Play className="h-4 w-4 mr-2" />Enter Tour</Button>
+                    <Button variant="outline" className="w-full mt-3" size="sm" onClick={() => toast.info("Enter Tour — coming soon")}><Play className="h-4 w-4 mr-2" />Enter Tour</Button>
                   </CardContent>
                 </Card>
               </motion.div>

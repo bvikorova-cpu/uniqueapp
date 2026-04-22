@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { Users, Calendar, Clock, Award, Zap } from "lucide-react";
+import { toast } from "sonner";
 
 const InteractiveWorkshops = () => {
   const { toast } = useToast();
@@ -238,10 +239,10 @@ const InteractiveWorkshops = () => {
               Request a custom workshop for your team or suggest a new topic
             </p>
             <div className="flex gap-4 justify-center">
-              <Button size="lg" variant="outline">
+              <Button size="lg" variant="outline" onClick={() => toast.info("Request Custom Workshop — coming soon")}>
                 Request Custom Workshop
               </Button>
-              <Button size="lg">
+              <Button size="lg" onClick={() => toast.info("Suggest a Topic — coming soon")}>
                 Suggest a Topic
               </Button>
             </div>

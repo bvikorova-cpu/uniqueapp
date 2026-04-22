@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { SendGiftDialog } from "@/components/masterchef/SendGiftDialog";
 import { useMasterChefSubscription } from "@/hooks/useMasterChefSubscription";
+import { toast } from "sonner";
 
 export default function MasterChefDashboard() {
   const navigate = useNavigate();
@@ -257,7 +258,7 @@ export default function MasterChefDashboard() {
                 </div>
                 <div className="text-right">
                   <p className="text-sm font-medium">Today 6:00 PM</p>
-                  <Button size="sm" className="mt-2">
+                  <Button size="sm" className="mt-2" onClick={() => toast.info("Sign Up — coming soon")}>
                     Sign Up
                   </Button>
                 </div>
@@ -270,7 +271,7 @@ export default function MasterChefDashboard() {
                 </div>
                 <div className="text-right">
                   <p className="text-sm font-medium">Tomorrow 8:00 PM</p>
-                  <Button size="sm" variant="outline" className="mt-2">
+                  <Button size="sm" variant="outline" className="mt-2" onClick={() => toast.info("Details — coming soon")}>
                     Details
                   </Button>
                 </div>

@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Zap, Award, Download, Star, Eye } from "lucide-react";
+import { toast } from "sonner";
 
 const certificates = [
   { id: 1, course: "Complete Web Development Bootcamp", student: "John Doe", date: "Mar 15, 2026", style: "Classic Academic", views: 234 },
@@ -51,7 +52,7 @@ export function CertificateGalleryView({ onBack }: Props) {
                 <Badge variant="outline" className="text-[10px]">{cert.style}</Badge>
                 <span className="text-xs text-muted-foreground">{cert.date}</span>
               </div>
-              <Button size="sm" variant="outline" className="w-full h-8 text-xs">
+              <Button size="sm" variant="outline" className="w-full h-8 text-xs" onClick={() => toast.info("Download Certificate — coming soon")}>
                 <Download className="w-3 h-3 mr-1" />Download Certificate
               </Button>
             </CardContent>

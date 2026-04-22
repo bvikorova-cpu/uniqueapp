@@ -1,6 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Check, Crown, Sparkles } from "lucide-react";
+import { toast } from "sonner";
 
 const SubscriptionPlans = () => {
   const plans = [
@@ -97,7 +98,7 @@ const SubscriptionPlans = () => {
                 <Button
                   className="w-full"
                   variant={plan.popular ? "default" : "outline"}
-                >
+                 onClick={() => toast.info("Subscribe Now — coming soon")}>
                   Subscribe Now
                 </Button>
               </CardContent>

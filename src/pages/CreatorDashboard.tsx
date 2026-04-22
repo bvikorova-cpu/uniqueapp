@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 import {
   DollarSign,
   Users,
@@ -154,7 +155,7 @@ export default function CreatorDashboard() {
               </h1>
               <p className="text-muted-foreground mt-1">{profile?.bio}</p>
             </div>
-            <Button>
+            <Button onClick={() => toast.info("Edit Profile — coming soon")}>
               <Plus className="mr-2 h-4 w-4" />
               Edit Profile
             </Button>

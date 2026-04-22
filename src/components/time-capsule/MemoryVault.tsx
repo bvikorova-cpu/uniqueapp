@@ -6,6 +6,7 @@ import { ArrowLeft, Upload, Image, Film, Music, FileText, Loader2, FolderOpen, T
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 
 interface VaultItem {
   id: string; name: string; type: string; url: string; size: string; uploadedAt: string;
@@ -78,7 +79,7 @@ export const MemoryVault = ({ onBack }: { onBack: () => void }) => {
                   <p className="font-bold text-sm truncate">{item.name}</p>
                   <p className="text-[10px] text-muted-foreground">{item.size} • {item.uploadedAt}</p>
                 </div>
-                <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-destructive">
+                <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-destructive" onClick={() => toast.info("This action — coming soon")}>
                   <Trash2 className="w-3.5 h-3.5" />
                 </Button>
               </CardContent>

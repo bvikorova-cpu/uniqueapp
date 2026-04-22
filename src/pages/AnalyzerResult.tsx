@@ -87,8 +87,8 @@ export default function AnalyzerResult() {
             <Button variant="outline" size="icon" onClick={toggleFavorite} className="border-cyan-500/20">
               <Heart className={`w-4 h-4 ${analysis.is_favorite ? 'fill-red-500 text-red-500' : ''}`} />
             </Button>
-            <Button variant="outline" size="icon" className="border-cyan-500/20"><Share2 className="w-4 h-4" /></Button>
-            <Button variant="outline" size="icon" className="border-cyan-500/20"><Download className="w-4 h-4" /></Button>
+            <Button variant="outline" size="icon" className="border-cyan-500/20" onClick={() => toast.info("This action — coming soon")}><Share2 className="w-4 h-4" /></Button>
+            <Button variant="outline" size="icon" className="border-cyan-500/20" onClick={() => toast.info("This action — coming soon")}><Download className="w-4 h-4" /></Button>
           </div>
         </div>
 
@@ -159,7 +159,7 @@ export default function AnalyzerResult() {
                     <h2 className="text-lg font-bold mb-2 text-blue-400">Where to Find</h2>
                     <p className="text-muted-foreground text-sm">{info.details.whereToFind}</p>
                     {info.shopping?.links?.length ? (
-                      <Button className="mt-2 bg-gradient-to-r from-cyan-600 to-blue-600" variant="default">
+                      <Button className="mt-2 bg-gradient-to-r from-cyan-600 to-blue-600" variant="default" onClick={() => toast.info("Shop Similar Items — coming soon")}>
                         <ShoppingBag className="w-4 h-4 mr-2" /> Shop Similar Items
                       </Button>
                     ) : null}

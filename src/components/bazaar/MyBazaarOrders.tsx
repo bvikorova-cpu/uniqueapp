@@ -12,6 +12,7 @@ import BazaarOrderChat from "./BazaarOrderChat";
 import EscrowStatusBadge, { EscrowStatus } from "./EscrowStatusBadge";
 import OrderTracker, { OrderStatus } from "./OrderTracker";
 import OrderActions from "./OrderActions";
+import { toast } from "sonner";
 
 interface BazaarOrder {
   id: string;
@@ -187,7 +188,7 @@ export default function MyBazaarOrders({ userId }: MyBazaarOrdersProps) {
                 </div>
               </div>
             </div>
-            <Button variant="ghost" size="icon">
+            <Button variant="ghost" size="icon" onClick={() => toast.info("This action — coming soon")}>
               <MessageCircle className="h-4 w-4" />
             </Button>
           </div>

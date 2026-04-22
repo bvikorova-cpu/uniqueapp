@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Calendar, MapPin, Users } from 'lucide-react';
 import { format } from 'date-fns';
+import { toast } from "sonner";
 
 export const CoffeeEvents = () => {
   const { data: events, isLoading } = useQuery({
@@ -54,7 +55,7 @@ export const CoffeeEvents = () => {
               <span>{event.max_participants} spots</span>
             </div>
             <div className="pt-2">
-              <Button className="w-full">
+              <Button className="w-full" onClick={() => toast.info("Join Event - € — coming soon")}>
                 Join Event - €{event.ticket_price}
               </Button>
             </div>

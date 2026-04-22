@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { ArrowLeft, Brain, Calendar, Sparkles, Loader2, Target, Clock, Heart } from "lucide-react";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 
 export const AITimingPredictor = ({ onBack }: { onBack: () => void }) => {
   const [message, setMessage] = useState("");
@@ -81,7 +82,7 @@ export const AITimingPredictor = ({ onBack }: { onBack: () => void }) => {
                 </div>
               </div>
               <p className="text-sm text-muted-foreground">{prediction.reason}</p>
-              <Button className="w-full" variant="outline">Use This Date for My Capsule</Button>
+              <Button className="w-full" variant="outline" onClick={() => toast.info("Use This Date for My Capsule — coming soon")}>Use This Date for My Capsule</Button>
             </CardContent>
           </Card>
         </motion.div>

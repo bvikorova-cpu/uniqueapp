@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 
 const categoryConfig: Record<string, { title: string; icon: string; categories: string[] }> = {
   art: { title: "Art & Creativity", icon: "🎨", categories: ["drawing", "painting", "digital_art", "sculpture", "photography", "handmade", "makeup_art", "tattoo"] },
@@ -261,7 +262,7 @@ const MegatalentCategory = () => {
                         <span className="text-xs font-bold">{submission.votes_count || 0}</span>
                       </Button>
 
-                      <Button variant="ghost" size="sm" className="gap-1.5 h-8">
+                      <Button variant="ghost" size="sm" className="gap-1.5 h-8" onClick={() => toast.info("This action — coming soon")}>
                         <MessageCircle className="w-4 h-4" />
                         <span className="text-xs">{commentCounts[submission.id] || 0}</span>
                       </Button>

@@ -14,6 +14,7 @@ import { TipsterRegistrationDialog } from "@/components/sports/TipsterRegistrati
 import { ExpertTips } from "@/components/sports/ExpertTips";
 import { TipstersLeaderboard } from "@/components/sports/TipstersLeaderboard";
 import { getUserFriendlyErrorMessage } from "@/utils/errorHandler";
+import { toast } from "sonner";
 import {
   Trophy,
   TrendingUp,
@@ -280,7 +281,7 @@ export default function SportsPredictor() {
               <Trophy className="mr-2 h-5 w-5" />
               {user ? "Subscribe" : "Sign In"}
             </Button>
-            <Button size="lg" variant="outline">
+            <Button size="lg" variant="outline" onClick={() => toast.info("View Top Tipsters — coming soon")}>
               <BarChart3 className="mr-2 h-5 w-5" />
               View Top Tipsters
             </Button>
@@ -416,7 +417,7 @@ export default function SportsPredictor() {
                                 </div>
                               )}
                               {canViewPredictions && (
-                                <Button variant="outline">
+                                <Button variant="outline" onClick={() => toast.info("Notify — coming soon")}>
                                   <Bell className="mr-2 h-4 w-4" />
                                   Notify
                                 </Button>

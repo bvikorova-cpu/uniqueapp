@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, Image, Sparkles, Loader2, Zap, Download, Palette, Type, Layout } from "lucide-react";
+import { toast } from "sonner";
 
 interface AIThumbnailCreatorProps {
   onBack: () => void;
@@ -192,7 +193,7 @@ const AIThumbnailCreator = ({ onBack }: AIThumbnailCreatorProps) => {
                     </div>
                   </div>
                   <div className="flex gap-2">
-                    <Button variant="outline" className="flex-1 gap-1">
+                    <Button variant="outline" className="flex-1 gap-1" onClick={() => toast.info("Download — coming soon")}>
                       <Download className="h-4 w-4" /> Download
                     </Button>
                     <Button className="flex-1 gap-1" onClick={() => { setGeneratedThumbnail(null); setTitle(""); }}>

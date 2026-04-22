@@ -6,6 +6,7 @@ import { Clock, Heart, MessageCircle, Users, Sparkles, TrendingDown, Calendar } 
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 
 export default function TimeReversalTimeline() {
   const navigate = useNavigate();
@@ -160,15 +161,15 @@ export default function TimeReversalTimeline() {
             <MessageCircle className="h-5 w-5" />
             <span className="text-sm">Create Post</span>
           </Button>
-          <Button variant="outline" className="h-20 flex flex-col gap-1">
+          <Button variant="outline" className="h-20 flex flex-col gap-1" onClick={() => toast.info("Age Progress — coming soon")}>
             <TrendingDown className="h-5 w-5" />
             <span className="text-sm">Age Progress</span>
           </Button>
-          <Button variant="outline" className="h-20 flex flex-col gap-1">
+          <Button variant="outline" className="h-20 flex flex-col gap-1" onClick={() => toast.info("Followers — coming soon")}>
             <Users className="h-5 w-5" />
             <span className="text-sm">Followers</span>
           </Button>
-          <Button variant="outline" className="h-20 flex flex-col gap-1">
+          <Button variant="outline" className="h-20 flex flex-col gap-1" onClick={() => toast.info("Timeline — coming soon")}>
             <Calendar className="h-5 w-5" />
             <span className="text-sm">Timeline</span>
           </Button>

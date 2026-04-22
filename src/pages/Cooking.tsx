@@ -34,6 +34,7 @@ import spinachQuiche from "@/assets/recipes/spinach-quiche.jpg";
 import chiaPuddingMango from "@/assets/recipes/chia-pudding-mango.jpg";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
+import { toast } from "sonner";
 interface Recipe {
   id: string;
   title: string;
@@ -1458,7 +1459,7 @@ const Cooking = () => {
                       loading="lazy"
                     />
                     <div className="absolute top-4 right-4 flex gap-2">
-                      <Button size="sm" variant="premium" className="pointer-events-none">
+                      <Button size="sm" variant="premium" className="pointer-events-none" onClick={() => toast.info("This action — coming soon")}>
                         {selectedRecipe.difficulty}
                       </Button>
                       {selectedRecipe.isUserRecipe && (

@@ -7,6 +7,7 @@ import { ArrowLeft, Award, Loader2, Download, Sparkles, Star } from "lucide-reac
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useTutorialAICredits } from "@/hooks/useTutorialAICredits";
+import { toast } from "sonner";
 
 const CREDITS_COST = 5;
 
@@ -105,7 +106,7 @@ export function AICertificateDesignerView({ onBack }: Props) {
                 <p className="text-sm text-muted-foreground mt-4">{new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
                 <div className="prose prose-sm max-w-none whitespace-pre-wrap text-xs mt-4 text-muted-foreground">{certificate}</div>
               </div>
-              <Button className="w-full mt-4 h-11" variant="outline"><Download className="w-4 h-4 mr-2" />Download Certificate</Button>
+              <Button className="w-full mt-4 h-11" variant="outline" onClick={() => toast.info("Download Certificate — coming soon")}><Download className="w-4 h-4 mr-2" />Download Certificate</Button>
             </CardContent>
           </Card>
         )}

@@ -116,7 +116,7 @@ export const MySongs = () => {
 
             <div className="flex flex-col gap-2">
               {song.status === 'completed' && song.song_url && (
-                <Button variant="outline" size="sm" className="gap-2">
+                <Button variant="outline" size="sm" className="gap-2" onClick={() => toast.info("Export — coming soon")}>
                   <Download className="h-4 w-4" />
                   Export
                 </Button>

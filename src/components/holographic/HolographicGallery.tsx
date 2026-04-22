@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { motion, AnimatePresence } from "framer-motion";
+import { toast } from "sonner";
 
 interface Props { onBack: () => void; }
 
@@ -79,7 +80,7 @@ export const HolographicGallery = ({ onBack }: Props) => {
                       </button>
                       <span className="flex items-center gap-1"><Eye className="w-3.5 h-3.5" />{avatar.views}</span>
                     </div>
-                    <Button size="sm" variant="ghost" className="h-7 px-2"><Share2 className="w-3 h-3" /></Button>
+                    <Button size="sm" variant="ghost" className="h-7 px-2" onClick={() => toast.info("This action — coming soon")}><Share2 className="w-3 h-3" /></Button>
                   </div>
                 </CardContent>
               </Card>

@@ -33,6 +33,7 @@ import { ArrowLeft, Briefcase, Check, Crown, Sparkles } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
+import { toast } from "sonner";
 const VirtualEscapeRoom = () => {
   const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null);
   const [activeView, setActiveView] = useState("dashboard");
@@ -93,7 +94,7 @@ const VirtualEscapeRoom = () => {
                         <li key={j} className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-emerald-500" />{f}</li>
                       ))}
                     </ul>
-                    <Button className="w-full" variant={plan.popular ? "default" : "outline"}>Get Started</Button>
+                    <Button className="w-full" variant={plan.popular ? "default" : "outline"} onClick={() => toast.info("Get Started — coming soon")}>Get Started</Button>
                   </CardContent>
                 </Card>
               ))}

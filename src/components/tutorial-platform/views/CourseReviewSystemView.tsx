@@ -8,6 +8,7 @@ import { ArrowLeft, MessageSquare, Star, ThumbsUp, ThumbsDown, Loader2, Sparkles
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useTutorialAICredits } from "@/hooks/useTutorialAICredits";
+import { toast } from "sonner";
 
 const CREDITS_COST = 4;
 
@@ -137,8 +138,8 @@ export function CourseReviewSystemView({ onBack }: Props) {
             </div>
             <p className="text-sm mb-3">{review.text}</p>
             <div className="flex items-center gap-3">
-              <Button variant="ghost" size="sm" className="h-7 text-xs"><ThumbsUp className="w-3 h-3 mr-1" />Helpful ({review.helpful})</Button>
-              <Button variant="ghost" size="sm" className="h-7 text-xs"><ThumbsDown className="w-3 h-3 mr-1" /></Button>
+              <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={() => toast.info("Helpful ( ) — coming soon")}><ThumbsUp className="w-3 h-3 mr-1" />Helpful ({review.helpful})</Button>
+              <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={() => toast.info("This action — coming soon")}><ThumbsDown className="w-3 h-3 mr-1" /></Button>
             </div>
           </Card>
         ))}

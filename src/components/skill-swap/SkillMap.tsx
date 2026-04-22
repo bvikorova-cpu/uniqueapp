@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Globe, MapPin, Users, Star, MessageSquare, ArrowLeft, Loader2 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 interface SkillMapProps {
   onBack: () => void;
@@ -136,7 +137,7 @@ export const SkillMap = ({ onBack }: SkillMapProps) => {
                       <MapPin className="w-3.5 h-3.5" /> {selectedSwapper.location}
                     </p>
                   </div>
-                  <Button size="sm" className="gap-1.5">
+                  <Button size="sm" className="gap-1.5" onClick={() => toast.info("Connect — coming soon")}>
                     <MessageSquare className="w-3.5 h-3.5" /> Connect
                   </Button>
                 </div>

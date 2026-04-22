@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
+import { toast } from "sonner";
 import { 
   ChefHat, 
   ShoppingCart, 
@@ -121,10 +122,10 @@ export const ShoppingList = () => {
               </div>
             </div>
             <div className="flex gap-2">
-              <Button variant="outline" size="icon">
+              <Button variant="outline" size="icon" onClick={() => toast.info("This action — coming soon")}>
                 <Share2 className="h-4 w-4" />
               </Button>
-              <Button variant="outline" size="icon">
+              <Button variant="outline" size="icon" onClick={() => toast.info("This action — coming soon")}>
                 <Download className="h-4 w-4" />
               </Button>
             </div>

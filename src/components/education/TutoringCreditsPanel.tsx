@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Coins, Sparkles, Zap } from "lucide-react";
 import { useTutoringCredits, TUTORING_CREDIT_PACKAGES } from "@/hooks/useTutoringCredits";
+import { toast } from "sonner";
 
 export const TutoringCreditsPanel = () => {
   const { credits, isLoading, purchaseCredits } = useTutoringCredits();
@@ -52,7 +53,7 @@ export const TutoringCreditsPanel = () => {
                   <CardContent className="p-4 text-center">
                     <div className="text-3xl font-bold text-foreground mb-1">{pkg.credits}</div>
                     <div className="text-sm text-muted-foreground mb-3">credits</div>
-                    <Button className="w-full" variant={pkg.bestValue ? "default" : "outline"}>€{pkg.price}</Button>
+                    <Button className="w-full" variant={pkg.bestValue ? "default" : "outline"} onClick={() => toast.info("€ — coming soon")}>€{pkg.price}</Button>
                   </CardContent>
                 </Card>
               </motion.div>

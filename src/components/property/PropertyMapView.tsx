@@ -6,6 +6,7 @@ import { ArrowLeft, MapPin, Home, Building2, DollarSign, Loader2 } from "lucide-
 import { motion, AnimatePresence } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 interface Props { onBack: () => void; }
 
@@ -133,7 +134,7 @@ export const PropertyMapView = ({ onBack }: Props) => {
                               <div className="text-[10px] text-muted-foreground mt-1">Top Type</div>
                             </div>
                           </div>
-                          <Button size="sm" className="bg-gradient-to-r from-sky-500 to-blue-600">
+                          <Button size="sm" className="bg-gradient-to-r from-sky-500 to-blue-600" onClick={() => toast.info("Browse — coming soon")}>
                             Browse {selectedCity.city}
                           </Button>
                         </div>

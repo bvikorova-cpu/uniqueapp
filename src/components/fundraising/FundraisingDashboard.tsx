@@ -12,6 +12,7 @@ import {
   Share2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 interface Milestone {
   id: string;
@@ -108,7 +109,7 @@ export const FundraisingDashboard = ({
             </div>
           </div>
 
-          <Button className="w-full mt-6" size="lg">
+          <Button className="w-full mt-6" size="lg" onClick={() => toast.info("Prispieť teraz — coming soon")}>
             <Heart className="h-4 w-4 mr-2" />
             Prispieť teraz
           </Button>
@@ -229,7 +230,7 @@ export const FundraisingDashboard = ({
       </Card>
 
       {/* Share */}
-      <Button variant="outline" className="w-full">
+      <Button variant="outline" className="w-full" onClick={() => toast.info("Share Campaign — coming soon")}>
         <Share2 className="h-4 w-4 mr-2" />
         Share Campaign
       </Button>

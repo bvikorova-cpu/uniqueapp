@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Construction } from "lucide-react";
 import { type LucideIcon } from "lucide-react";
+import { toast } from "sonner";
 
 interface GenericToolViewProps {
   onBack: () => void;
@@ -39,7 +40,7 @@ export function GenericToolView({ onBack, title, description, icon: Icon, iconCo
           ))}
         </div>
 
-        <Button size="lg" className="bg-gradient-to-r from-blue-500 to-indigo-600">
+        <Button size="lg" className="bg-gradient-to-r from-blue-500 to-indigo-600" onClick={() => toast.info("Launch Tool Credits)` : \"\"} — coming soon")}>
           <Icon className="w-4 h-4 mr-2" /> Launch Tool {credits ? `(${credits} Credits)` : ""}
         </Button>
       </Card>

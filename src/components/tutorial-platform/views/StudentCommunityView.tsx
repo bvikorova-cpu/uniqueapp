@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Users, Send, MessageCircle, ThumbsUp, Clock, Flame, Pin } from "lucide-react";
+import { toast } from "sonner";
 
 const mockThreads = [
   { id: 1, title: "How to handle async state in React?", author: "StudentJohn", replies: 12, likes: 34, time: "2h ago", course: "Web Development", pinned: true, hot: true },
@@ -44,7 +45,7 @@ export function StudentCommunityView({ onBack }: Props) {
             <Input placeholder="Thread title..." className="h-11" />
             <Textarea placeholder="What's on your mind? Share your question or insight..." rows={4} />
             <div className="flex gap-2">
-              <Button className="bg-gradient-to-r from-sky-500 to-blue-600"><Send className="w-4 h-4 mr-2" />Post Thread</Button>
+              <Button className="bg-gradient-to-r from-sky-500 to-blue-600" onClick={() => toast.info("Post Thread — coming soon")}><Send className="w-4 h-4 mr-2" />Post Thread</Button>
               <Button variant="outline" onClick={() => setNewThread(false)}>Cancel</Button>
             </div>
           </CardContent>

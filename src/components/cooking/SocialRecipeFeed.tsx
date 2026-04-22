@@ -7,6 +7,7 @@ import { ArrowLeft, Heart, MessageCircle, Share2, ChefHat, Send, Star, Loader2 }
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
+import { toast } from "sonner";
 
 interface FeedPost {
   id: string;
@@ -137,10 +138,10 @@ export default function SocialRecipeFeed({ onBack }: Props) {
                     <Button variant="ghost" size="sm" onClick={() => likePost(post.id)} className="gap-1 text-pink-400 hover:text-pink-300">
                       <Heart className="h-4 w-4" /> {post.likes}
                     </Button>
-                    <Button variant="ghost" size="sm" className="gap-1 text-muted-foreground">
+                    <Button variant="ghost" size="sm" className="gap-1 text-muted-foreground" onClick={() => toast.info("Comment — coming soon")}>
                       <MessageCircle className="h-4 w-4" /> Comment
                     </Button>
-                    <Button variant="ghost" size="sm" className="gap-1 text-muted-foreground">
+                    <Button variant="ghost" size="sm" className="gap-1 text-muted-foreground" onClick={() => toast.info("Share — coming soon")}>
                       <Share2 className="h-4 w-4" /> Share
                     </Button>
                   </div>

@@ -180,7 +180,7 @@ export default function MealPlannerGenerator() {
                 </div>
               )}
 
-              <Button variant="outline" className="w-full gap-2">
+              <Button variant="outline" className="w-full gap-2" onClick={() => toast.info("Download Plan — coming soon")}>
                 <Download className="h-4 w-4" /> Download Plan
               </Button>
             </div>

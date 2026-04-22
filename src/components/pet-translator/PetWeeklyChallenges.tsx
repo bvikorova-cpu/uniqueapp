@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Clock, Trophy, Users, Sparkles } from "lucide-react";
+import { toast } from "sonner";
 
 const challenges = [
   { id: 1, title: "Cutest Moment", desc: "Share your pet's cutest moment description and get the most votes", reward: "15 Credits", participants: 342, endsIn: "3d 12h", active: true },
@@ -31,7 +32,7 @@ export default function PetWeeklyChallenges() {
                   <span className="flex items-center gap-1"><Users className="h-3 w-3" /> {c.participants}</span>
                   <span className="flex items-center gap-1"><Clock className="h-3 w-3" /> {c.endsIn}</span>
                 </div>
-                <Button size="sm" className="w-full bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-xs">
+                <Button size="sm" className="w-full bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-xs" onClick={() => toast.info("Join Challenge — coming soon")}>
                   <Sparkles className="h-3 w-3 mr-1" /> Join Challenge
                 </Button>
               </CardContent>

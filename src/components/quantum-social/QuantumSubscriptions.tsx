@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Zap, Check, X, ArrowLeft } from "lucide-react";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 
 interface Subscription {
   id: string;
@@ -71,7 +72,7 @@ const QuantumSubscriptions = ({ onBack }: { onBack: () => void }) => {
                 </div>
               ))}
             </div>
-            <Button className={`w-full bg-${plan.color}-600 hover:bg-${plan.color}-700`} size="sm">
+            <Button className={`w-full bg-${plan.color}-600 hover:bg-${plan.color}-700`} size="sm" onClick={() => toast.info("Subscribe — coming soon")}>
               <Zap className="h-4 w-4 mr-2" />Subscribe
             </Button>
           </motion.div>

@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft, Heart, Clock, Eye, Globe, Lock } from "lucide-react";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 
 const SAMPLE_CAPSULES = [
   { id: "1", title: "Letter to My Future Wife", type: "letter", author: "Alex M.", likes: 342, daysUntil: 730, isPublic: true },
@@ -54,7 +55,7 @@ export const CapsuleGallery = ({ onBack }: { onBack: () => void }) => {
                       {capsule.likes + (liked.has(capsule.id) ? 1 : 0)}
                     </button>
                   </div>
-                  <Button variant="ghost" size="sm" className="text-xs h-7"><Eye className="w-3 h-3 mr-1" /> View</Button>
+                  <Button variant="ghost" size="sm" className="text-xs h-7" onClick={() => toast.info("View — coming soon")}><Eye className="w-3 h-3 mr-1" /> View</Button>
                 </div>
               </CardContent>
             </Card>

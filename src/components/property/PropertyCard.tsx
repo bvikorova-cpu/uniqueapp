@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { MapPin, Maximize2, BedDouble, Eye, Heart } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { PropertyExpirationBadge } from "./PropertyExpirationBadge";
+import { toast } from "sonner";
 
 interface Property {
   id: string;
@@ -85,7 +86,7 @@ export function PropertyCard({ property, onViewDetails }: PropertyCardProps) {
               expiresAt={property.listing_expires_at} 
               status={property.status}
             />
-            <Button variant="ghost" size="icon" className="h-8 w-8">
+            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => toast.info("This action — coming soon")}>
               <Heart className="h-4 w-4" />
             </Button>
           </div>

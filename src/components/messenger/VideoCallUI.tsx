@@ -4,6 +4,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
+import { toast } from "sonner";
 import { 
   Video, VideoOff, Mic, MicOff, Phone, PhoneOff, 
   Maximize2, Minimize2, Users, MessageCircle, Shield,
@@ -152,7 +153,7 @@ export const VideoCallUI = ({
                 variant="secondary"
                 size="icon"
                 className="h-12 w-12 rounded-full"
-              >
+               onClick={() => toast.info("This action — coming soon")}>
                 <MessageCircle className="h-5 w-5" />
               </Button>
             </motion.div>
@@ -162,7 +163,7 @@ export const VideoCallUI = ({
                 variant="secondary"
                 size="icon"
                 className="h-12 w-12 rounded-full"
-              >
+               onClick={() => toast.info("This action — coming soon")}>
                 <Settings className="h-5 w-5" />
               </Button>
             </motion.div>

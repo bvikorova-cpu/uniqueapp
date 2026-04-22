@@ -21,6 +21,7 @@ import { useDirectMessages } from "@/hooks/useDirectMessages";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 
 interface DirectMessagesDialogProps {
   userId?: string;
@@ -114,10 +115,10 @@ export const DirectMessagesDialog = ({
             </DialogTitle>
             
             <div className="flex items-center gap-1">
-              <Button variant="ghost" size="icon" className="h-8 w-8 text-primary hover:bg-primary/10">
+              <Button variant="ghost" size="icon" className="h-8 w-8 text-primary hover:bg-primary/10" onClick={() => toast.info("This action — coming soon")}>
                 <Phone className="h-4 w-4" />
               </Button>
-              <Button variant="ghost" size="icon" className="h-8 w-8 text-primary hover:bg-primary/10">
+              <Button variant="ghost" size="icon" className="h-8 w-8 text-primary hover:bg-primary/10" onClick={() => toast.info("This action — coming soon")}>
                 <Video className="h-4 w-4" />
               </Button>
               
@@ -218,10 +219,10 @@ export const DirectMessagesDialog = ({
 
         {/* Input area */}
         <div className="flex items-center gap-2 p-3 border-t bg-card">
-          <Button type="button" variant="ghost" size="icon" className="h-8 w-8 text-primary flex-shrink-0">
+          <Button type="button" variant="ghost" size="icon" className="h-8 w-8 text-primary flex-shrink-0" onClick={() => toast.info("This action — coming soon")}>
             <Image className="h-5 w-5" />
           </Button>
-          <Button type="button" variant="ghost" size="icon" className="h-8 w-8 text-primary flex-shrink-0">
+          <Button type="button" variant="ghost" size="icon" className="h-8 w-8 text-primary flex-shrink-0" onClick={() => toast.info("This action — coming soon")}>
             <Smile className="h-5 w-5" />
           </Button>
           <Input

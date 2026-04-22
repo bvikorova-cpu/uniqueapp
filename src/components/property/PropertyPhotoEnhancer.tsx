@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Upload, Wand2, Sun, Palette, Maximize, Sparkles, Download, Loader2, Check } from "lucide-react";
+import { toast } from "sonner";
 
 interface Props { onBack: () => void; }
 
@@ -114,7 +115,7 @@ export function PropertyPhotoEnhancer({ onBack }: Props) {
                   </motion.div>
                 ))}
               </div>
-              <Button variant="outline" className="w-full mt-4"><Download className="h-4 w-4 mr-2" />Download All Enhanced Photos</Button>
+              <Button variant="outline" className="w-full mt-4" onClick={() => toast.info("Download All Enhanced Photos — coming soon")}><Download className="h-4 w-4 mr-2" />Download All Enhanced Photos</Button>
             </CardContent>
           </Card>
         </motion.div>
