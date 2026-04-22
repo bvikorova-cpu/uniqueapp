@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -92,6 +92,7 @@ type ActiveView = string | null;
 
 const Megatalent = () => {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [activeView, setActiveView] = useState<ActiveView>(null);
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [subscriptionTier, setSubscriptionTier] = useState<'premium' | 'top_premium' | null>(null);
@@ -126,6 +127,38 @@ const Megatalent = () => {
     fetchUserVotes();
     getCurrentUser();
   }, [selectedCategory]);
+
+  // Handle Stripe checkout return
+  useEffect(() => {
+    const success = searchParams.get('success');
+    const canceled = searchParams.get('canceled');
+    const tierParam = searchParams.get('tier');
+    if (success === 'true') {
+      (async () => {
+        toast({ title: "Verifying payment…", description: "Activating your subscription" });
+        try {
+          const { data: { session } } = await supabase.auth.getSession();
+          const { data, error } = await supabase.functions.invoke('check-megatalent-subscription', {
+            headers: session ? { Authorization: `Bearer ${session.access_token}` } : undefined,
+          });
+          if (error) throw error;
+          if (data?.subscribed) {
+            toast({ title: "Successfully Activated!", description: data.tier === 'top_premium' ? 'TOP Premium is now active!' : 'Premium subscription is now active' });
+            if (data.tier === 'top_premium') triggerTopPremiumConfetti();
+            await checkSubscription();
+          }
+        } catch (e) {
+          console.error('verify error', e);
+          toast({ title: "Verification pending", description: "If your payment was successful, refresh in a moment.", variant: "destructive" });
+        }
+        setSearchParams({}, { replace: true });
+      })();
+    } else if (canceled === 'true') {
+      toast({ title: "Checkout canceled", description: "You can try again anytime." });
+      setSearchParams({}, { replace: true });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (isSubscribed) { fetchTotalVotes(); }
@@ -184,25 +217,59 @@ const Megatalent = () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { toast({ title: "Login Required", description: "Please log in first", variant: "destructive" }); return; }
-      const { data: existingSub } = await supabase.from("megatalent_subscriptions").select("id, status").eq("user_id", user.id).maybeSingle();
-      let referrerId = null;
+
+      // Validate referral code locally before going to Stripe
       if (referralCode.trim()) {
-        if (existingSub) { toast({ title: "Invalid Code", description: "Referral codes are only for new subscribers", variant: "destructive" }); return; }
-        const { data: referralData } = await supabase.from("megatalent_referral_codes").select("user_id").eq("code", referralCode.trim().toUpperCase()).maybeSingle();
+        const { data: referralData } = await supabase
+          .from("megatalent_referral_codes")
+          .select("user_id")
+          .eq("code", referralCode.trim().toUpperCase())
+          .maybeSingle();
         if (!referralData) { toast({ title: "Invalid Code", description: "This referral code doesn't exist", variant: "destructive" }); return; }
         if (referralData.user_id === user.id) { toast({ title: "Error", description: "You can't use your own code", variant: "destructive" }); return; }
-        referrerId = referralData.user_id;
-      } else if (existingSub && existingSub.status === 'active') {
-        toast({ title: "Already Subscribed", description: "You already have an active subscription", variant: "destructive" }); return;
       }
-      const price = tier === 'premium' ? 10 : 15;
-      const { error } = await supabase.from('megatalent_subscriptions').insert({ user_id: user.id, tier, price, bonus_votes: tier === 'top_premium' ? 100000 : 0, win_chance_boost: tier === 'top_premium' ? 50 : 0, status: 'active', referred_by: referrerId });
+
+      const { data: existingSub } = await supabase
+        .from("megatalent_subscriptions")
+        .select("status")
+        .eq("user_id", user.id)
+        .eq("status", "active")
+        .maybeSingle();
+      if (existingSub) {
+        toast({ title: "Already Subscribed", description: "Use Manage Subscription to change your plan." });
+        return;
+      }
+
+      const { data: { session } } = await supabase.auth.getSession();
+      const { data, error } = await supabase.functions.invoke('create-megatalent-checkout', {
+        body: { tier, referralCode: referralCode.trim().toUpperCase() || undefined },
+        headers: session ? { Authorization: `Bearer ${session.access_token}` } : undefined,
+      });
       if (error) throw error;
-      toast({ title: "Successfully Activated!", description: tier === 'premium' ? 'Premium subscription is now active' : 'TOP Premium subscription is now active!' });
-      if (tier === 'top_premium') triggerTopPremiumConfetti();
-      setIsSubscribed(true);
-      setSubscriptionTier(tier);
-    } catch (error) { console.error('Error subscribing:', error); toast({ title: "Error", description: "Failed to activate subscription", variant: "destructive" }); }
+      if (data?.url) {
+        window.open(data.url, '_blank');
+        toast({ title: "Redirecting to Stripe…", description: "Complete the payment in the new tab." });
+      } else {
+        throw new Error("No checkout URL returned");
+      }
+    } catch (error) {
+      console.error('Error starting checkout:', error);
+      toast({ title: "Error", description: error instanceof Error ? error.message : "Failed to start checkout", variant: "destructive" });
+    }
+  };
+
+  const handleManageSubscription = async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const { data, error } = await supabase.functions.invoke('megatalent-customer-portal', {
+        headers: session ? { Authorization: `Bearer ${session.access_token}` } : undefined,
+      });
+      if (error) throw error;
+      if (data?.url) window.open(data.url, '_blank');
+    } catch (error) {
+      console.error('portal error', error);
+      toast({ title: "Error", description: "Failed to open subscription portal", variant: "destructive" });
+    }
   };
 
   const handleCancelSubscription = async () => {
@@ -582,6 +649,9 @@ const Megatalent = () => {
                       <Badge className="bg-yellow-500 text-black">Active</Badge>
                     </div>
                     <p className="text-sm text-muted-foreground p-4 border rounded-lg bg-muted/50">If you cancel your subscription, it will remain active until the end of the paid period. The paid amount is non-refundable.</p>
+                    <Button variant="default" className="w-full" onClick={handleManageSubscription}>
+                      Manage Subscription (Stripe Portal)
+                    </Button>
                     <Button variant="outline" className="w-full text-destructive border-destructive hover:bg-destructive/10" onClick={handleCancelSubscription} disabled={cancelingSubscription}>
                       {cancelingSubscription ? 'Canceling...' : 'Cancel Subscription'}
                     </Button>
