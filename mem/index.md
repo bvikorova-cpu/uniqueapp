@@ -26,3 +26,4 @@ NO health/medical predictions. NO identifiable people/trademarks in videos.
 - [Multi-currency](mem://features/multi-currency) — Global CurrencyProvider + Navbar switcher; useCurrency().format(eurAmount) for any price (display-only, billing stays EUR)
 - [Subscription Lifecycle](mem://features/subscription-lifecycle) — /account/subscriptions UI + list/pause/resume/cancel-by-id edge fns + Stripe portal for upgrades
 - [Referral Payout Automation](mem://features/referral-payout) — ?ref capture → claim-referral → referral_attributions; stripe-webhook customer.subscription.created credits €5 once per subscription into megatalent_referral_earnings
+- [Referral Fraud Detection](mem://features/referral-fraud) — claim-referral scores attributions (self/IP/disposable/velocity); status approved|flagged|blocked gates webhook reward; /admin/referral-fraud review UI
