@@ -25,17 +25,17 @@ serve(async (req) => {
     if (!user) throw new Error("User not authenticated");
 
     // Generate AI past life regression using OpenAI
-    const openaiKey = Deno.env.get("OPENAI_API_KEY");
-    if (!openaiKey) throw new Error("OpenAI API key not configured");
+    const openaiKey = Deno.env.get("LOVABLE_API_KEY");
+    if (!openaiKey) throw new Error("AI service not configured");
 
-    const aiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
+    const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${openaiKey}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "gpt-4o-mini",
+        model: "google/gemini-2.5-flash",
         messages: [
           {
             role: "system",
@@ -71,7 +71,7 @@ Generate 4 key_events, 3 relationships, 4 lessons, and 5 emotional themes. Make 
 
     if (!aiResponse.ok) {
       const errText = await aiResponse.text();
-      console.error("OpenAI error:", errText);
+      console.error("AI gateway error:", errText);
       throw new Error("Failed to generate AI past life regression");
     }
 

@@ -12,10 +12,10 @@ serve(async (req) => {
 
   try {
     const { characterName, hairColor, superpower, eyeColor, costumeColor, ageGroup, personality } = await req.json();
-    const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
+    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
 
-    if (!OPENAI_API_KEY) {
-      throw new Error('OPENAI_API_KEY is not configured');
+    if (!LOVABLE_API_KEY) {
+      throw new Error('LOVABLE_API_KEY is not configured');
     }
 
     const prompt = `Write a creative and engaging short story (150-200 words) for a child's character with these attributes:
@@ -29,14 +29,14 @@ serve(async (req) => {
     
     Make the story fun, adventurous, and age-appropriate. Include how they discovered their superpower and one heroic deed they performed. Write in a warm, storytelling style that children would love.`;
 
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${OPENAI_API_KEY}`,
+        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: "google/gemini-2.5-flash",
         messages: [
           {
             role: 'system',

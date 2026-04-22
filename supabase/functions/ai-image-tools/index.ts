@@ -84,19 +84,19 @@ serve(async (req) => {
       }
     }
 
-    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
-    if (!OPENAI_API_KEY) throw new Error("OPENAI_API_KEY is not configured");
+    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
     let result: any = {};
 
     switch (action) {
       case 'generate': {
-        const response = await fetch("https://api.openai.com/v1/images/generations", {
+        const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
           method: "POST",
-          headers: { "Authorization": `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
-          body: JSON.stringify({ model: "gpt-image-1", prompt, n: 1, size: "1024x1024", quality: "high", output_format: "webp", output_compression: 90 }),
+          headers: { "Authorization": `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({ model: "google/gemini-2.5-flash-image-preview", prompt, n: 1, size: "1024x1024", quality: "high", output_format: "webp", output_compression: 90 }),
         });
-        if (!response.ok) { console.error("OpenAI error:", await response.text()); throw new Error("Image generation failed"); }
+        if (!response.ok) { console.error("AI gateway error:", await response.text()); throw new Error("Image generation failed"); }
         const data = await response.json();
         const b64 = data.data?.[0]?.b64_json;
         if (!b64) throw new Error("No image generated");
@@ -106,10 +106,10 @@ serve(async (req) => {
 
       case 'edit': {
         const editP = `${prompt}. Based on the original image concept, create an edited version.`;
-        const response = await fetch("https://api.openai.com/v1/images/generations", {
+        const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
           method: "POST",
-          headers: { "Authorization": `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
-          body: JSON.stringify({ model: "gpt-image-1", prompt: editP, n: 1, size: "1024x1024", quality: "high", output_format: "webp" }),
+          headers: { "Authorization": `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({ model: "google/gemini-2.5-flash-image-preview", prompt: editP, n: 1, size: "1024x1024", quality: "high", output_format: "webp" }),
         });
         if (!response.ok) throw new Error("Image editing failed");
         const data = await response.json();
@@ -121,10 +121,10 @@ serve(async (req) => {
 
       case 'style_transfer': {
         const styleP = `Recreate this concept in the style of ${style}: ${prompt}. Make it a masterful artistic interpretation.`;
-        const response = await fetch("https://api.openai.com/v1/images/generations", {
+        const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
           method: "POST",
-          headers: { "Authorization": `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
-          body: JSON.stringify({ model: "gpt-image-1", prompt: styleP, n: 1, size: "1024x1024", quality: "high", output_format: "webp" }),
+          headers: { "Authorization": `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({ model: "google/gemini-2.5-flash-image-preview", prompt: styleP, n: 1, size: "1024x1024", quality: "high", output_format: "webp" }),
         });
         if (!response.ok) throw new Error("Style transfer failed");
         const data = await response.json();
@@ -137,10 +137,10 @@ serve(async (req) => {
       case 'upscale': {
         const upP = `Create a highly detailed, ultra high resolution, sharp, crystal clear version of: ${prompt}. Maximum detail, 4K quality, enhanced textures and lighting.`;
         const size = targetSize === '1792x1024' ? '1792x1024' : targetSize === '1024x1792' ? '1024x1792' : '1024x1024';
-        const response = await fetch("https://api.openai.com/v1/images/generations", {
+        const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
           method: "POST",
-          headers: { "Authorization": `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
-          body: JSON.stringify({ model: "gpt-image-1", prompt: upP, n: 1, size, quality: "high", output_format: "webp" }),
+          headers: { "Authorization": `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({ model: "google/gemini-2.5-flash-image-preview", prompt: upP, n: 1, size, quality: "high", output_format: "webp" }),
         });
         if (!response.ok) throw new Error("Upscale failed");
         const data = await response.json();
@@ -159,10 +159,10 @@ serve(async (req) => {
         ];
         const idx = variationIndex ?? 0;
         const varP = `${prompt}, rendered ${variationStyles[idx % variationStyles.length]}`;
-        const response = await fetch("https://api.openai.com/v1/images/generations", {
+        const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
           method: "POST",
-          headers: { "Authorization": `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
-          body: JSON.stringify({ model: "gpt-image-1", prompt: varP, n: 1, size: "1024x1024", quality: "high", output_format: "webp" }),
+          headers: { "Authorization": `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({ model: "google/gemini-2.5-flash-image-preview", prompt: varP, n: 1, size: "1024x1024", quality: "high", output_format: "webp" }),
         });
         if (!response.ok) throw new Error("Variation generation failed");
         const data = await response.json();
@@ -174,10 +174,10 @@ serve(async (req) => {
 
       case 'inpainting': {
         const inpP = `Create an image of: ${prompt}. However, specifically for the ${region} area: ${editPrompt}. The rest of the image should remain consistent with the original concept.`;
-        const response = await fetch("https://api.openai.com/v1/images/generations", {
+        const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
           method: "POST",
-          headers: { "Authorization": `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
-          body: JSON.stringify({ model: "gpt-image-1", prompt: inpP, n: 1, size: "1024x1024", quality: "high", output_format: "webp" }),
+          headers: { "Authorization": `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({ model: "google/gemini-2.5-flash-image-preview", prompt: inpP, n: 1, size: "1024x1024", quality: "high", output_format: "webp" }),
         });
         if (!response.ok) throw new Error("Inpainting failed");
         const data = await response.json();
@@ -188,11 +188,11 @@ serve(async (req) => {
       }
 
       case 'image_to_prompt': {
-        const chatResponse = await fetch("https://api.openai.com/v1/chat/completions", {
+        const chatResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
           method: "POST",
-          headers: { "Authorization": `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
+          headers: { "Authorization": `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
           body: JSON.stringify({
-            model: "gpt-4o-mini",
+            model: "google/gemini-2.5-flash",
             messages: [
               { role: "system", content: "You analyze images and generate detailed prompts that could recreate them. Return JSON with 'prompt' (detailed 30-60 word prompt), 'style' (the art style detected), and 'tags' (array of 5-8 relevant tags)." },
               { role: "user", content: [
@@ -211,11 +211,11 @@ serve(async (req) => {
       }
 
       case 'prompt_gallery': {
-        const chatResponse = await fetch("https://api.openai.com/v1/chat/completions", {
+        const chatResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
           method: "POST",
-          headers: { "Authorization": `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
+          headers: { "Authorization": `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
           body: JSON.stringify({
-            model: "gpt-4o-mini",
+            model: "google/gemini-2.5-flash",
             messages: [
               { role: "system", content: "You are a creative AI image prompt expert. Generate 8 unique, highly detailed image prompts. Return JSON array of objects with 'title' (short 3-5 word title), 'prompt' (detailed 20-40 word prompt), 'category' (one of: Nature, Fantasy, Sci-Fi, Portrait, Abstract, Architecture, Food, Animals), and 'difficulty' (Easy, Medium, Hard)." },
               { role: "user", content: prompt || "Generate diverse trending AI art prompts for various styles" }

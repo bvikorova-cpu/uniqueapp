@@ -10,14 +10,14 @@ serve(async (req) => {
 
   try {
     const { prompt } = await req.json();
-    const openaiKey = Deno.env.get("OPENAI_API_KEY");
-    if (!openaiKey) throw new Error("OpenAI API key not configured");
+    const openaiKey = Deno.env.get("LOVABLE_API_KEY");
+    if (!openaiKey) throw new Error("AI service not configured");
 
-    const res = await fetch("https://api.openai.com/v1/chat/completions", {
+    const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: { Authorization: `Bearer ${openaiKey}`, "Content-Type": "application/json" },
       body: JSON.stringify({
-        model: "gpt-4o-mini",
+        model: "google/gemini-2.5-flash",
         messages: [{ role: "user", content: prompt }],
         max_tokens: 2000,
       }),
