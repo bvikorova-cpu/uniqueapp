@@ -56,18 +56,9 @@ export function CreateJobDialog({ userId, subscribed, onRenewSubscription }: Cre
   const [selectedPackage, setSelectedPackage] = useState<typeof JOB_PACKAGES[0] | null>(null);
 
   const handleOpenDialog = () => {
-    if (!subscribed) {
-      toast({
-        title: "Subscription Required",
-        description: "You need an active subscription to create job listings. Please renew your subscription.",
-        variant: "destructive",
-      });
-      onRenewSubscription();
-      return;
-    }
     setShowCreateDialog(true);
   };
-  
+
   const [newJob, setNewJob] = useState({
     title: "",
     company_name: "",

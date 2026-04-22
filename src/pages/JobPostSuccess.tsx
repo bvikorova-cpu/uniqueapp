@@ -1,0 +1,75 @@
+import { useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { CheckCircle2, Loader2, XCircle } from "lucide-react";
+
+export default function JobPostSuccess() {
+  const [params] = useSearchParams();
+  const navigate = useNavigate();
+  const [status, setStatus] = useState<"verifying" | "success" | "error">("verifying");
+  const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    const sessionId = params.get("session_id");
+    if (!sessionId) {
+      setStatus("error");
+      setMessage("Missing session id");
+      return;
+    }
+    (async () => {
+      try {
+        const { data, error } = await supabase.functions.invoke("verify-job-listing-payment", {
+          body: { sessionId },
+        });
+        if (error) throw error;
+        if (data?.verified) {
+          setStatus("success");
+          setMessage("Your job listing is now live!");
+        } else {
+          setStatus("error");
+          setMessage(`Payment status: ${data?.status ?? "unknown"}`);
+        }
+      } catch (e: any) {
+        setStatus("error");
+        setMessage(e.message || "Verification failed");
+      }
+    })();
+  }, [params]);
+
+  return (
+    <div className="min-h-screen flex items-center justify-center p-6">
+      <Card className="max-w-md w-full">
+        <CardContent className="pt-8 text-center space-y-4">
+          {status === "verifying" && (
+            <>
+              <Loader2 className="h-12 w-12 animate-spin mx-auto text-primary" />
+              <h1 className="text-2xl font-bold">Verifying your payment…</h1>
+            </>
+          )}
+          {status === "success" && (
+            <>
+              <CheckCircle2 className="h-12 w-12 mx-auto text-emerald-500" />
+              <h1 className="text-2xl font-bold">Payment successful</h1>
+              <p className="text-muted-foreground">{message}</p>
+              <Button onClick={() => navigate("/jobs")} className="w-full">
+                Back to Jobs
+              </Button>
+            </>
+          )}
+          {status === "error" && (
+            <>
+              <XCircle className="h-12 w-12 mx-auto text-destructive" />
+              <h1 className="text-2xl font-bold">Verification failed</h1>
+              <p className="text-muted-foreground">{message}</p>
+              <Button variant="outline" onClick={() => navigate("/jobs")} className="w-full">
+                Back to Jobs
+              </Button>
+            </>
+          )}
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
