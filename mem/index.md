@@ -22,3 +22,4 @@ NO health/medical predictions. NO identifiable people/trademarks in videos.
 - [Auto-payout Cron](mem://features/auto-payout-cron) — auto-payout-pending-withdrawals scheduled fn + PendingPayoutsCard widget for sweeping small pending withdrawals weekly
 - [Tax & Invoicing](mem://features/tax-invoicing) — creator-tax-export CSV + get-payment-invoice-url for Stripe-hosted invoice/receipt deep-links
 - [Stripe Disputes](mem://features/stripe-disputes) — stripe_disputes table + webhook lifecycle + admin-submit-dispute-evidence + /admin/disputes UI
+- [Payment Reconciliation](mem://features/reconciliation) — admin-reconcile-payments edge fn + /admin/reconciliation UI for daily Stripe vs ledger comparison
