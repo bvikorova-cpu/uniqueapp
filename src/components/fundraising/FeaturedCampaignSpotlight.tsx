@@ -62,7 +62,7 @@ export function FeaturedCampaignSpotlight() {
               </div>
             </div>
 
-            <Button className="w-full sm:w-auto" onClick={() => toast.info("Start Your Campaign — coming soon")}>
+            <Button className="w-full sm:w-auto" onClick={() => console.info("[Coming soon] Start Your Campaign")}>
               <Star className="mr-2 h-4 w-4" /> Start Your Campaign
             </Button>
           </div>

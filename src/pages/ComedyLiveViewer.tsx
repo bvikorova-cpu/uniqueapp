@@ -178,7 +178,7 @@ export default function ComedyLiveViewer() {
 
               <div className="flex gap-2">
                 <Input placeholder="Type a message..." />
-                <Button size="icon" onClick={() => toast.info("This action — coming soon")}>
+                <Button size="icon" onClick={() => console.info("[Coming soon] This action")}>
                   <Send className="h-4 w-4" />
                 </Button>
               </div>

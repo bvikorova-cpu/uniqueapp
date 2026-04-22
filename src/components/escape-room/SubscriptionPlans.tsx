@@ -98,7 +98,7 @@ const SubscriptionPlans = () => {
                 <Button
                   className="w-full"
                   variant={plan.popular ? "default" : "outline"}
-                 onClick={() => toast.info("Subscribe Now — coming soon")}>
+                 onClick={() => console.info("[Coming soon] Subscribe Now")}>
                   Subscribe Now
                 </Button>
               </CardContent>

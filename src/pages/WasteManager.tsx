@@ -395,7 +395,7 @@ const WasteManager = () => {
                 <p className="text-lg font-medium mb-4">
                   "Use a reusable water bottle for all your drinks today!"
                 </p>
-                <Button className="bg-green-600 hover:bg-green-700" onClick={() => toast.info("Accept Challenge — coming soon")}>
+                <Button className="bg-green-600 hover:bg-green-700" onClick={() => console.info("[Coming soon] Accept Challenge")}>
                   Accept Challenge
                 </Button>
               </CardContent>

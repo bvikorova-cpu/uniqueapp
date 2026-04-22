@@ -125,7 +125,7 @@ const AIContentMarketplace = () => {
                       <span>{item.sales} sales</span>
                     </div>
                   </div>
-                  <Button className="w-full" onClick={() => toast.info("Purchase — coming soon")}>
+                  <Button className="w-full" onClick={() => console.info("[Coming soon] Purchase")}>
                     <ShoppingCart className="w-4 h-4 mr-2" />
                     Purchase
                   </Button>

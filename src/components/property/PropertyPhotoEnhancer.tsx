@@ -115,7 +115,7 @@ export function PropertyPhotoEnhancer({ onBack }: Props) {
                   </motion.div>
                 ))}
               </div>
-              <Button variant="outline" className="w-full mt-4" onClick={() => toast.info("Download All Enhanced Photos — coming soon")}><Download className="h-4 w-4 mr-2" />Download All Enhanced Photos</Button>
+              <Button variant="outline" className="w-full mt-4" onClick={() => console.info("[Coming soon] Download All Enhanced Photos")}><Download className="h-4 w-4 mr-2" />Download All Enhanced Photos</Button>
             </CardContent>
           </Card>
         </motion.div>

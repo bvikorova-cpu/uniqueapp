@@ -55,7 +55,7 @@ export const CapsuleGallery = ({ onBack }: { onBack: () => void }) => {
                       {capsule.likes + (liked.has(capsule.id) ? 1 : 0)}
                     </button>
                   </div>
-                  <Button variant="ghost" size="sm" className="text-xs h-7" onClick={() => toast.info("View — coming soon")}><Eye className="w-3 h-3 mr-1" /> View</Button>
+                  <Button variant="ghost" size="sm" className="text-xs h-7" onClick={() => console.info("[Coming soon] View")}><Eye className="w-3 h-3 mr-1" /> View</Button>
                 </div>
               </CardContent>
             </Card>

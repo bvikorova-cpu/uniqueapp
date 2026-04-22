@@ -303,7 +303,7 @@ export default function MyLearning() {
                     <div className="text-center text-sm text-muted-foreground">
                       Issued on {new Date(cert.issued_at).toLocaleDateString()}
                     </div>
-                    <Button variant="outline" className="w-full gap-2" onClick={() => toast.info("Download Certificate — coming soon")}>
+                    <Button variant="outline" className="w-full gap-2" onClick={() => console.info("[Coming soon] Download Certificate")}>
                       <Download className="h-4 w-4" />
                       Download Certificate
                     </Button>

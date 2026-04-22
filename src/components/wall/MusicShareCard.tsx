@@ -107,7 +107,7 @@ export const MusicShareCard = ({ track }: MusicShareCardProps) => {
                 </a>
               </Button>
             )}
-            <Button variant="ghost" size="sm" className="h-6 text-[10px] gap-1 px-2" onClick={() => toast.info("Share — coming soon")}>
+            <Button variant="ghost" size="sm" className="h-6 text-[10px] gap-1 px-2" onClick={() => console.info("[Coming soon] Share")}>
               <Share2 className="w-3 h-3" /> Share
             </Button>
           </div>

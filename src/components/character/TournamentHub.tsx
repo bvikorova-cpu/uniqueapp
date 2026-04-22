@@ -40,7 +40,7 @@ export const TournamentHub = () => {
               <p className="text-muted-foreground text-sm">Compete for eternal glory and rewards</p>
             </div>
           </div>
-          <Button className="bg-gradient-to-r from-yellow-600 to-amber-600 hover:from-yellow-700 hover:to-amber-700 text-white font-bold" onClick={() => toast.info("Create Tournament — coming soon")}>
+          <Button className="bg-gradient-to-r from-yellow-600 to-amber-600 hover:from-yellow-700 hover:to-amber-700 text-white font-bold" onClick={() => console.info("[Coming soon] Create Tournament")}>
             <Crown className="mr-2 h-4 w-4" /> Create Tournament
           </Button>
         </div>
@@ -83,15 +83,15 @@ export const TournamentHub = () => {
 
                 <div className="shrink-0">
                   {tournament.status === "registration" && (
-                    <Button className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold w-full sm:w-auto" onClick={() => toast.info("Join ( cr) — coming soon")}>
+                    <Button className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold w-full sm:w-auto" onClick={() => console.info("[Coming soon] Join ( cr)")}>
                       <Swords className="mr-2 h-4 w-4" /> Join ({tournament.entry_fee} cr)
                     </Button>
                   )}
                   {tournament.status === "in_progress" && (
-                    <Button variant="outline" className="border-blue-500/30 text-blue-400 w-full sm:w-auto" onClick={() => toast.info("View Bracket — coming soon")}>View Bracket</Button>
+                    <Button variant="outline" className="border-blue-500/30 text-blue-400 w-full sm:w-auto" onClick={() => console.info("[Coming soon] View Bracket")}>View Bracket</Button>
                   )}
                   {tournament.status === "completed" && (
-                    <Button variant="outline" className="border-amber-500/30 text-amber-400 w-full sm:w-auto" onClick={() => toast.info("View Results — coming soon")}>View Results</Button>
+                    <Button variant="outline" className="border-amber-500/30 text-amber-400 w-full sm:w-auto" onClick={() => console.info("[Coming soon] View Results")}>View Results</Button>
                   )}
                 </div>
               </div>

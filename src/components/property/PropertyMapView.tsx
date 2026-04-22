@@ -134,7 +134,7 @@ export const PropertyMapView = ({ onBack }: Props) => {
                               <div className="text-[10px] text-muted-foreground mt-1">Top Type</div>
                             </div>
                           </div>
-                          <Button size="sm" className="bg-gradient-to-r from-sky-500 to-blue-600" onClick={() => toast.info("Browse — coming soon")}>
+                          <Button size="sm" className="bg-gradient-to-r from-sky-500 to-blue-600" onClick={() => console.info("[Coming soon] Browse")}>
                             Browse {selectedCity.city}
                           </Button>
                         </div>

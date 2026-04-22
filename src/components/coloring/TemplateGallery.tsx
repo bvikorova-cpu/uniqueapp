@@ -127,7 +127,7 @@ export function TemplateGallery({ onSelectTemplate }: TemplateGalleryProps) {
                     <span className="text-xs text-muted-foreground capitalize">{template.category}</span>
                   </div>
                   <div className="mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <Button size="sm" className="w-full text-xs gap-1" onClick={() => toast.info("Generate — coming soon")}><Sparkles className="w-3 h-3" /> Generate</Button>
+                    <Button size="sm" className="w-full text-xs gap-1" onClick={() => console.info("[Coming soon] Generate")}><Sparkles className="w-3 h-3" /> Generate</Button>
                   </div>
                 </CardContent>
               </Card>

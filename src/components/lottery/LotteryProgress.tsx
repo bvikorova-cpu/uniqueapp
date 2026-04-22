@@ -36,7 +36,7 @@ export const LotteryProgress = () => {
             </div>
           </div>
 
-          <Button className="w-full bg-gradient-to-r from-primary to-accent hover:opacity-90 text-primary-foreground" size="sm" onClick={() => toast.info("Generate Now — coming soon")}>
+          <Button className="w-full bg-gradient-to-r from-primary to-accent hover:opacity-90 text-primary-foreground" size="sm" onClick={() => console.info("[Coming soon] Generate Now")}>
             <Zap className="w-4 h-4 mr-2" />
             Generate Now
           </Button>

@@ -109,7 +109,7 @@ export const FundraisingDashboard = ({
             </div>
           </div>
 
-          <Button className="w-full mt-6" size="lg" onClick={() => toast.info("Prispieť teraz — coming soon")}>
+          <Button className="w-full mt-6" size="lg" onClick={() => console.info("[Coming soon] Prispieť teraz")}>
             <Heart className="h-4 w-4 mr-2" />
             Prispieť teraz
           </Button>
@@ -230,7 +230,7 @@ export const FundraisingDashboard = ({
       </Card>
 
       {/* Share */}
-      <Button variant="outline" className="w-full" onClick={() => toast.info("Share Campaign — coming soon")}>
+      <Button variant="outline" className="w-full" onClick={() => console.info("[Coming soon] Share Campaign")}>
         <Share2 className="h-4 w-4 mr-2" />
         Share Campaign
       </Button>

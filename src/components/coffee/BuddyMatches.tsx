@@ -91,7 +91,7 @@ export const BuddyMatches = () => {
                   <p className="font-semibold">Coffee Buddy</p>
                   <p className="text-sm text-muted-foreground">Matched recently</p>
                 </div>
-                <Button size="sm" onClick={() => toast.info("Chat — coming soon")}>
+                <Button size="sm" onClick={() => console.info("[Coming soon] Chat")}>
                   <MessageCircle className="mr-2 h-4 w-4" />
                   Chat
                 </Button>

@@ -99,7 +99,7 @@ const CookingAI = () => {
                   <span className="text-sm text-muted-foreground">
                     {feature.credits} {feature.credits === 1 ? 'credit' : 'credits'}
                   </span>
-                  <Button variant="outline" size="sm" onClick={() => toast.info("Launch — coming soon")}>
+                  <Button variant="outline" size="sm" onClick={() => console.info("[Coming soon] Launch")}>
                     Launch
                   </Button>
                 </div>

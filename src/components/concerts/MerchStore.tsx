@@ -34,7 +34,7 @@ export const MerchStore = ({ onBack }: Props) => {
               <h3 className="font-bold text-sm mb-1">{item.name}</h3>
               <Badge variant="secondary" className="text-xs mb-2">{item.category}</Badge>
               <p className="text-lg font-black text-primary">€{item.price.toFixed(2)}</p>
-              <Button size="sm" className="w-full mt-3" onClick={() => toast.info("Buy — coming soon")}>
+              <Button size="sm" className="w-full mt-3" onClick={() => console.info("[Coming soon] Buy")}>
                 <ShoppingBag className="h-4 w-4 mr-1" />Buy
               </Button>
             </CardContent>

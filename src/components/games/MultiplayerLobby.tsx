@@ -171,13 +171,13 @@ export const MultiplayerLobby = () => {
               >
                 {isReady ? "✓ Pripravený" : "Pripraviť sa"}
               </Button>
-              <Button variant="outline" size="icon" onClick={() => toast.info("This action — coming soon")}>
+              <Button variant="outline" size="icon" onClick={() => console.info("[Coming soon] This action")}>
                 <Settings className="h-4 w-4" />
               </Button>
             </div>
 
             {players.every(p => p.isReady) && (
-              <Button className="w-full" size="lg" onClick={() => toast.info("Začať hru — coming soon")}>
+              <Button className="w-full" size="lg" onClick={() => console.info("[Coming soon] Začať hru")}>
                 <Play className="h-4 w-4 mr-2" />
                 Začať hru
               </Button>
@@ -195,7 +195,7 @@ export const MultiplayerLobby = () => {
           <Users className="h-6 w-6" />
           Multiplayer Lobby
         </h2>
-        <Button onClick={() => toast.info("Create Game — coming soon")}>
+        <Button onClick={() => console.info("[Coming soon] Create Game")}>
           <Plus className="h-4 w-4 mr-2" />
           Create Game
         </Button>
