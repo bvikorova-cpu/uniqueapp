@@ -637,6 +637,7 @@ const App = () => {
                         <Route path="/admin/winback" element={<ProtectedRoute requireAdmin={true}><AdminWinBack /></ProtectedRoute>} />
                         <Route path="/admin/sca" element={<ProtectedRoute requireAdmin={true}><AdminSCA /></ProtectedRoute>} />
                         <Route path="/admin/kyc" element={<ProtectedRoute requireAdmin={true}><AdminKYC /></ProtectedRoute>} />
+                        <Route path="/admin/affiliate-tiers" element={<ProtectedRoute requireAdmin={true}><AdminAffiliateTiers /></ProtectedRoute>} />
                         <Route path="/account/verification" element={<ProtectedRoute><CreatorVerification /></ProtectedRoute>} />
                         <Route path="/winback/:token" element={<WinBackOffer />} />
                         <Route path="/admin/payment-dashboard" element={<ProtectedRoute requireAdmin={true}><AdminPaymentDashboard /></ProtectedRoute>} />
