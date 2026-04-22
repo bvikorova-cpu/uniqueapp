@@ -36966,6 +36966,63 @@ export type Database = {
         }
         Relationships: []
       }
+      subscription_pause_config: {
+        Row: {
+          id: number
+          max_months_per_pause: number
+          max_pauses_per_year: number
+          updated_at: string
+        }
+        Insert: {
+          id?: number
+          max_months_per_pause?: number
+          max_pauses_per_year?: number
+          updated_at?: string
+        }
+        Update: {
+          id?: number
+          max_months_per_pause?: number
+          max_pauses_per_year?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      subscription_pause_log: {
+        Row: {
+          created_at: string
+          id: string
+          months: number
+          paused_at: string
+          resumed_at: string | null
+          resumes_at: string | null
+          stripe_subscription_id: string
+          user_email: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          months?: number
+          paused_at?: string
+          resumed_at?: string | null
+          resumes_at?: string | null
+          stripe_subscription_id: string
+          user_email: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          months?: number
+          paused_at?: string
+          resumed_at?: string | null
+          resumes_at?: string | null
+          stripe_subscription_id?: string
+          user_email?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       subscriptions: {
         Row: {
           created_at: string
@@ -41847,6 +41904,7 @@ export type Database = {
         }[]
       }
       get_rls_ref: { Args: never; Returns: string }
+      get_user_pause_count: { Args: { _user_id: string }; Returns: number }
       get_user_role: { Args: never; Returns: string }
       give_f1_starter_balance: {
         Args: { p_user_id: string }
