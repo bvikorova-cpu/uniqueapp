@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
 import { CreditCard, ExternalLink, Loader2, RefreshCw, Receipt } from "lucide-react";
+import { PaymentHistoryCard } from "@/components/billing/PaymentHistoryCard";
 
 interface Subscription {
   id: string;
@@ -234,6 +235,9 @@ export default function Billing() {
             )}
           </CardContent>
         </Card>
+
+        {/* Payment history with invoice download */}
+        <PaymentHistoryCard />
 
         <p className="text-xs text-muted-foreground text-center">
           Cancellations, payment method updates, and invoices are handled securely through
