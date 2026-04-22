@@ -352,18 +352,34 @@ serve(async (req) => {
 
     if (body.credits) {
       const credits = Number(body.credits);
-      const priceId = ANTIQUE_PRICE_IDS[credits];
-      if (!priceId) throw new Error(`Invalid credits amount: ${credits}`);
+      const creditType = String(body.creditType || "antique");
+      const pack = CREDIT_PACKS[creditType];
+      if (!pack) throw new Error(`Unknown creditType: ${creditType}`);
 
-      const { successUrl, cancelUrl } = resolveUrls(origin, undefined, undefined, "antique_credits");
+      const priceId = pack.prices[credits];
+      const successUrl = `${origin}${pack.successPath}`;
+      const cancelUrl = `${origin}${pack.cancelPath}`;
+
+      // If a fixed price exists use it, otherwise build dynamic price_data
+      const lineItems = priceId
+        ? [{ price: priceId, quantity: 1 }]
+        : [{
+            price_data: {
+              currency: "eur" as const,
+              unit_amount: Math.max(99, credits * 50), // €0.50 per credit fallback
+              product_data: { name: `${creditType} Credits - ${credits} Pack` },
+            },
+            quantity: 1,
+          }];
+
       const session = await stripe.checkout.sessions.create({
         customer: customerId || undefined,
         customer_email: customerId ? undefined : email,
-        line_items: [{ price: priceId, quantity: 1 }],
+        line_items: lineItems,
         mode: "payment",
         success_url: successUrl,
         cancel_url: cancelUrl,
-        metadata: { user_id: userId, credits: String(credits), type: "antique_credits" },
+        metadata: { user_id: userId, credits: String(credits), type: `${creditType}_credits`, credit_type: creditType },
       });
 
       return successResponse({ url: session.url, session_id: session.id });
