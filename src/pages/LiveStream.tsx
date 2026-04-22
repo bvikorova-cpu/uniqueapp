@@ -18,6 +18,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { useOneOffPaymentVerify } from "@/hooks/useOneOffPaymentVerify";
 
 interface Message {
   id: string;
