@@ -24948,6 +24948,7 @@ export type Database = {
       megatalent_referral_earnings: {
         Row: {
           amount: number
+          auto_credited: boolean
           created_at: string | null
           id: string
           paid: boolean | null
@@ -24955,10 +24956,12 @@ export type Database = {
           period_start: string
           referred_user_id: string
           referrer_id: string
+          source_subscription_id: string | null
           subscription_id: string
         }
         Insert: {
           amount?: number
+          auto_credited?: boolean
           created_at?: string | null
           id?: string
           paid?: boolean | null
@@ -24966,10 +24969,12 @@ export type Database = {
           period_start: string
           referred_user_id: string
           referrer_id: string
+          source_subscription_id?: string | null
           subscription_id: string
         }
         Update: {
           amount?: number
+          auto_credited?: boolean
           created_at?: string | null
           id?: string
           paid?: boolean | null
@@ -24977,6 +24982,7 @@ export type Database = {
           period_start?: string
           referred_user_id?: string
           referrer_id?: string
+          source_subscription_id?: string | null
           subscription_id?: string
         }
         Relationships: [
@@ -32101,6 +32107,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      referral_attributions: {
+        Row: {
+          code: string
+          created_at: string
+          first_subscription_id: string | null
+          id: string
+          referred_user_id: string
+          referrer_id: string
+          rewarded_at: string | null
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          first_subscription_id?: string | null
+          id?: string
+          referred_user_id: string
+          referrer_id: string
+          rewarded_at?: string | null
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          first_subscription_id?: string | null
+          id?: string
+          referred_user_id?: string
+          referrer_id?: string
+          rewarded_at?: string | null
+        }
+        Relationships: []
       }
       referral_withdrawal_requests: {
         Row: {

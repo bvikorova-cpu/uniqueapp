@@ -197,6 +197,82 @@ serve(async (req) => {
         break;
       }
 
+      // ─── SUBSCRIPTION ACTIVATED → credit referrer €5 (one-shot) ──────
+      case "customer.subscription.created":
+      case "customer.subscription.updated": {
+        const sub = event.data.object as Stripe.Subscription;
+        if (sub.status !== "active" && sub.status !== "trialing") break;
+
+        // Resolve buyer's user_id via customer email → profiles
+        const customerId = typeof sub.customer === "string" ? sub.customer : sub.customer?.id;
+        if (!customerId) break;
+        const customer = await stripe.customers.retrieve(customerId);
+        if (customer.deleted) break;
+        const email = (customer as Stripe.Customer).email;
+        if (!email) break;
+
+        const { data: buyerProfile } = await supabase
+          .from("profiles")
+          .select("id")
+          .eq("email", email)
+          .maybeSingle();
+        if (!buyerProfile?.id) {
+          log("referral skip: no profile for email", { email });
+          break;
+        }
+
+        // Find attribution row
+        const { data: attr } = await supabase
+          .from("referral_attributions")
+          .select("id, referrer_id, rewarded_at")
+          .eq("referred_user_id", buyerProfile.id)
+          .maybeSingle();
+        if (!attr || attr.rewarded_at) break; // no referrer or already rewarded
+
+        // Insert €5 earning (unique index on referrer_id + source_subscription_id)
+        const periodStart = new Date().toISOString();
+        const periodEnd = new Date(Date.now() + 30 * 24 * 3600 * 1000).toISOString();
+        const { error: earnErr } = await supabase
+          .from("megatalent_referral_earnings")
+          .insert({
+            referrer_id: attr.referrer_id,
+            referred_user_id: buyerProfile.id,
+            amount: 5,
+            paid: false,
+            period_start: periodStart,
+            period_end: periodEnd,
+            source_subscription_id: sub.id,
+            auto_credited: true,
+          });
+        if (earnErr) {
+          // Likely duplicate (unique violation) — already credited, just mark attribution
+          log("referral earning insert skipped", { error: earnErr.message });
+        }
+
+        await supabase
+          .from("referral_attributions")
+          .update({
+            rewarded_at: new Date().toISOString(),
+            first_subscription_id: sub.id,
+          })
+          .eq("id", attr.id);
+
+        await supabase.from("admin_audit_log").insert({
+          admin_id: "00000000-0000-0000-0000-000000000000",
+          action: "referral_reward_credited",
+          target_type: "megatalent_referral_earnings",
+          target_id: attr.referrer_id,
+          details: {
+            referrer_id: attr.referrer_id,
+            referred_user_id: buyerProfile.id,
+            subscription_id: sub.id,
+            amount_eur: 5,
+          },
+        });
+        log("referral reward credited", { referrer: attr.referrer_id, sub: sub.id });
+        break;
+      }
+
       // ─── TRANSFER (Connect payout to creator confirmed) ──────────────
       case "transfer.created": {
         const transfer = event.data.object as Stripe.Transfer;
