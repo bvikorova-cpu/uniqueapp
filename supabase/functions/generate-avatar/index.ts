@@ -48,12 +48,8 @@ serve(async (req) => {
       },
       body: JSON.stringify({
         model: "google/gemini-2.5-flash-image-preview",
-        prompt,
-        n: 1,
-        size: "1024x1024",
-        quality: "high",
-        output_format: "webp",
-        output_compression: 90,
+        messages: [{ role: "user", content: prompt }],
+        modalities: ["image", "text"],
       }),
     });
 
@@ -65,15 +61,15 @@ serve(async (req) => {
         );
       }
       const errorText = await response.text();
-      console.error("OpenAI API error:", response.status, errorText);
+      console.error("AI gateway error:", response.status, errorText);
       throw new Error("Failed to generate avatar");
     }
 
     const data = await response.json();
-    const base64Image = data.data?.[0]?.b64_json;
-    if (!base64Image) throw new Error("No image generated");
+    const imageUrl = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+    if (!imageUrl) throw new Error("No image generated");
 
-    return new Response(JSON.stringify({ imageUrl: `data:image/webp;base64,${base64Image}` }), {
+    return new Response(JSON.stringify({ imageUrl }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (error) {

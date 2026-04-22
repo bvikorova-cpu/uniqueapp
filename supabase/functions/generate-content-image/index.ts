@@ -57,29 +57,23 @@ serve(async (req) => {
       },
       body: JSON.stringify({
         model: "google/gemini-2.5-flash-image-preview",
-        prompt: `Create a professional, eye-catching image for: ${prompt}`,
-        n: 1,
-        size: "1024x1024",
-        quality: "high",
-        output_format: "webp",
-        output_compression: 90,
+        messages: [{ role: "user", content: `Create a professional, eye-catching image for: ${prompt}` }],
+        modalities: ["image", "text"],
       }),
     });
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error("OpenAI API error:", response.status, errorText);
+      console.error("AI gateway error:", response.status, errorText);
       throw new Error("Failed to generate image");
     }
 
     const data = await response.json();
-    const base64Image = data.data?.[0]?.b64_json;
+    const imageUrl = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
 
-    if (!base64Image) {
+    if (!imageUrl) {
       throw new Error("No image generated");
     }
-
-    const imageUrl = `data:image/webp;base64,${base64Image}`;
 
     await supabaseClient
       .from("ai_credits")
