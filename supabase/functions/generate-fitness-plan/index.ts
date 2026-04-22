@@ -178,6 +178,7 @@ IMPORTANT: Generate ALL ${days} days with varied workouts and meals. Include res
 
     if (updateError) throw updateError;
 
+    await __deduct().catch((e) => console.error("deduct failed:", e));
     return new Response(JSON.stringify({
       plan: updatedPlan,
       details: {

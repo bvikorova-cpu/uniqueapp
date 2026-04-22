@@ -219,6 +219,7 @@ ${customPrompt ? `Additional context: ${customPrompt}` : ""}`;
     } catch { /* ignore */ }
 
     // Return ALL common response keys so any frontend component can read it
+    await __deduct().catch((e) => console.error("deduct failed:", e));
     return new Response(JSON.stringify({ message, text: message, result: message, content: message }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });

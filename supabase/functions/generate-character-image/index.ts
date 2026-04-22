@@ -82,6 +82,7 @@ CRITICAL: Pay very close attention to the eye color (${eyeColor || "blue"}), cos
 
     console.log('Character image generated successfully');
 
+    await __deduct().catch((e) => console.error("deduct failed:", e));
     return new Response(
       JSON.stringify({ imageUrl }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }

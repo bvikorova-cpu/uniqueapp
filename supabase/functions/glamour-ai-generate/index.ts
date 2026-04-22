@@ -34,6 +34,7 @@ serve(async (req) => {
     const data = await response.json();
     const result = data.choices?.[0]?.message?.content || "No result generated";
 
+    await __deduct().catch((e) => console.error("deduct failed:", e));
     return new Response(JSON.stringify({ result }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (error) {
     return new Response(JSON.stringify({ error: error.message }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });

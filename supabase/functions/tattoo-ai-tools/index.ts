@@ -63,6 +63,7 @@ serve(async (req) => {
       const imageUrl = await generateImage(
         `Create a professional tattoo design that is a creative fusion of ${style1} and ${style2} styles. The design: ${description}. Seamlessly blend the characteristics of both styles. High detail, clean lines, professional tattoo art quality. White background. Ultra high resolution.`
       );
+      await __deduct().catch((e) => console.error("deduct failed:", e));
       return new Response(JSON.stringify({ imageUrl }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
 

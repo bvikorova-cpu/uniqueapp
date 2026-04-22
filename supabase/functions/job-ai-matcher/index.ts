@@ -175,6 +175,7 @@ Return only the top 10 most relevant matches, sorted by score (highest first). O
       };
     }).filter((m: any) => m.job !== null);
 
+    await __deduct().catch((e) => console.error("deduct failed:", e));
     return new Response(
       JSON.stringify({ matches: enrichedMatches }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }

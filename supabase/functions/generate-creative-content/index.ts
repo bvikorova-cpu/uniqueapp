@@ -199,6 +199,7 @@ serve(async (req) => {
 
     console.log(`Successfully generated content, project ID: ${project.id}`);
 
+    await __deduct().catch((e) => console.error("deduct failed:", e));
     return new Response(JSON.stringify({ 
       content: generatedContent,
       project,

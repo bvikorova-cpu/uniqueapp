@@ -31,6 +31,7 @@ serve(async (req) => {
     const data = await res.json();
     const response = data.choices?.[0]?.message?.content || "I'm here to help.";
 
+    await __deduct().catch((e) => console.error("deduct failed:", e));
     return new Response(JSON.stringify({ response }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });

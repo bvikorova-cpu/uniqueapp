@@ -156,6 +156,7 @@ serve(async (req) => {
 
     const result = JSON.parse(toolCall.function.arguments);
 
+    await __deduct().catch((e) => console.error("deduct failed:", e));
     return new Response(JSON.stringify({ type, result }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });

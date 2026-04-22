@@ -123,6 +123,7 @@ Generate 4 key_events, 3 relationships, 4 lessons, and 5 emotional themes. Make 
 
     await supabaseClient.from("karmic_debts").insert(karmicDebts);
 
+    await __deduct().catch((e) => console.error("deduct failed:", e));
     return new Response(
       JSON.stringify({ 
         success: true, 

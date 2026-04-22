@@ -128,6 +128,7 @@ Return creative, unexpected ideas that blend entertainment with monetization sea
     const ideas = JSON.parse(toolCall.function.arguments);
     logStep("Ideas generated", { count: ideas.ideas?.length });
 
+    await __deduct().catch((e) => console.error("deduct failed:", e));
     return new Response(
       JSON.stringify(ideas),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }

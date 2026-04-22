@@ -55,6 +55,7 @@ serve(async (req) => {
     const data = await response.json();
     const result = JSON.parse(data.choices[0].message.content);
 
+    await __deduct().catch((e) => console.error("deduct failed:", e));
     return new Response(JSON.stringify(result), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });

@@ -119,6 +119,7 @@ serve(async (req) => {
       .update({ designs_used: subscription.designs_used + 1 })
       .eq("user_id", user.id);
 
+    await __deduct().catch((e) => console.error("deduct failed:", e));
     return new Response(JSON.stringify({ 
       design: designSuggestion,
       designs_remaining: subscription.designs_limit - subscription.designs_used - 1,

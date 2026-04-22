@@ -164,6 +164,7 @@ serve(async (req) => {
 
     if (!base64Image) {
       console.error("No image in OpenAI response:", JSON.stringify(aiData));
+      await __deduct().catch((e) => console.error("deduct failed:", e));
       return new Response(
         JSON.stringify({ error: "Failed to generate image. Please try again." }),
         { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 500 }

@@ -94,6 +94,7 @@ serve(async (req) => {
       p_value: 1,
     });
 
+    await __deduct().catch((e) => console.error("deduct failed:", e));
     return new Response(JSON.stringify({ analysis }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });

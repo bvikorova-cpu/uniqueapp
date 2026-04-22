@@ -79,6 +79,7 @@ serve(async (req) => {
       throw new Error('No story in response');
     }
 
+    await __deduct().catch((e) => console.error("deduct failed:", e));
     return new Response(
       JSON.stringify({ story }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
