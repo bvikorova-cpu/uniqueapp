@@ -28,3 +28,4 @@ NO health/medical predictions. NO identifiable people/trademarks in videos.
 - [Referral Payout Automation](mem://features/referral-payout) — ?ref capture → claim-referral → referral_attributions; stripe-webhook customer.subscription.created credits €5 once per subscription into megatalent_referral_earnings
 - [Referral Fraud Detection](mem://features/referral-fraud) — claim-referral scores attributions (self/IP/disposable/velocity); status approved|flagged|blocked gates webhook reward; /admin/referral-fraud review UI
 - [Referral Leaderboard](mem://features/referral-leaderboard) — public /referrals/leaderboard, get_referral_leaderboard(period) SQL fn, top-100 ranked by approved auto_credited earnings
+- [Subscription Analytics](mem://features/subscription-analytics) — admin-subscription-analytics edge fn pulls live Stripe data; /admin/subscription-analytics shows MRR/ARR/ARPU/LTV/churn + 12mo revenue chart
