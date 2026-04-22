@@ -272,7 +272,7 @@ function AdminDisputesInner() {
         </AdminGlassCard>
         <AdminGlassCard className="p-4">
           <p className="text-xs text-muted-foreground uppercase tracking-wide">Won</p>
-          <p className="text-3xl font-bold text-green-500">{wonCount}</p>
+          <p className="text-3xl font-bold text-primary">{wonCount}</p>
         </AdminGlassCard>
         <AdminGlassCard className="p-4">
           <p className="text-xs text-muted-foreground uppercase tracking-wide">Lost</p>
