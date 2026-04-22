@@ -14,6 +14,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CheckCircle, XCircle, Clock, DollarSign } from "lucide-react";
 import { toast } from "sonner";
+import { StripePayoutButton } from "@/components/admin/StripePayoutButton";
 
 interface WithdrawalRequest {
   id: string;
@@ -283,12 +284,22 @@ export const ChefWithdrawalManagement = () => {
             <div className="flex flex-col gap-2">
               {selectedRequest?.status === "pending" && (
                 <>
+                  <StripePayoutButton
+                    kind="masterchef"
+                    withdrawalId={selectedRequest.id}
+                    amount={selectedRequest.amount}
+                    onPaid={() => {
+                      setSelectedRequest(null);
+                      loadRequests();
+                    }}
+                  />
                   <Button
                     onClick={() => handleProcessRequest("approved")}
                     disabled={processing}
+                    variant="outline"
                     className="w-full"
                   >
-                    Approve Request
+                    Approve only (no payout)
                   </Button>
                   <Button
                     onClick={() => handleProcessRequest("rejected")}
