@@ -386,6 +386,7 @@ const App = () => {
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
         <BrowserRouter>
           <AuthProvider>
+            <ReferralCaptureMount />
             <AnimationProvider>
               <CurrencyProvider>
               <TooltipProvider delayDuration={0}>
