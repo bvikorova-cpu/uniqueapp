@@ -14,6 +14,7 @@ import { Crown, ShoppingBag, Store, User, Menu, X, MessageSquare, MessageCircle,
 import { useTheme } from "next-themes";
 import { NotificationsDropdown } from "@/components/notifications/NotificationsDropdown";
 import NotificationBell from "@/components/notifications/NotificationBell";
+import { GlobalCurrencySwitcher } from "@/components/GlobalCurrencySwitcher";
 import megatalentLogo from "@/assets/megatalent-logo.png";
 import uniqueLogo from "@/assets/unique-logo.png";
 import { useTranslation } from "react-i18next";
@@ -435,6 +436,9 @@ const Navbar = () => {
                   <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
                 </Button>
                 
+                {/* Global Currency Switcher */}
+                <GlobalCurrencySwitcher />
+
                 {/* Wall Notifications */}
                 <NotificationBell />
 
