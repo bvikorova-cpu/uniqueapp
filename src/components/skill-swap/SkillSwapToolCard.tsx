@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Check, LucideIcon } from "lucide-react";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 
 interface SkillSwapToolCardProps {
   tool: {
@@ -49,7 +50,7 @@ export const SkillSwapToolCard = ({ tool, onSelect, index }: SkillSwapToolCardPr
               </li>
             ))}
           </ul>
-          <Button size="sm" className="w-full mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
+          <Button size="sm" className="w-full mt-4 opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => toast.info("Open — coming soon")}>
             Open
           </Button>
         </div>

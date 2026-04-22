@@ -7,6 +7,7 @@ import { Gamepad2, Trophy, Star, Heart, Zap, Brain, Dribbble, MapPin, Car, Spark
 import { PokiGameWrapper } from "@/components/games/PokiGameWrapper";
 import { pokiGames, getGamesByCategory, gameCategories, type GameCategory } from "@/data/pokigames";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 
 const container = { hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.05 } } };
 const item = { hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0, transition: { duration: 0.35 } } };
@@ -100,7 +101,7 @@ const Games = () => {
                             <Badge variant="secondary" className="text-[10px]">{(game.plays / 1000000).toFixed(1)}M</Badge>
                           )}
                         </div>
-                        <Button className="w-full" size="sm" variant="premium">
+                        <Button className="w-full" size="sm" variant="premium" onClick={() => toast.info("Play on Poki ↗ — coming soon")}>
                           <Gamepad2 className="h-3.5 w-3.5 mr-1.5" /> Play on Poki ↗
                         </Button>
                       </CardContent>

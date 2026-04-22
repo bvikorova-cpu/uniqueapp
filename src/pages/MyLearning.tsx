@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { BookOpen, Award, Clock, TrendingUp, Download } from "lucide-react";
+import { toast } from "sonner";
 
 interface EnrolledCourse {
   id: string;
@@ -302,7 +303,7 @@ export default function MyLearning() {
                     <div className="text-center text-sm text-muted-foreground">
                       Issued on {new Date(cert.issued_at).toLocaleDateString()}
                     </div>
-                    <Button variant="outline" className="w-full gap-2">
+                    <Button variant="outline" className="w-full gap-2" onClick={() => toast.info("Download Certificate — coming soon")}>
                       <Download className="h-4 w-4" />
                       Download Certificate
                     </Button>

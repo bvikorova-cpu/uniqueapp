@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Store, Upload, Euro, TrendingUp, Image, Eye, ShoppingCart, Sparkles } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 
 const AIContentMarketplace = () => {
   const { toast } = useToast();
@@ -124,7 +125,7 @@ const AIContentMarketplace = () => {
                       <span>{item.sales} sales</span>
                     </div>
                   </div>
-                  <Button className="w-full">
+                  <Button className="w-full" onClick={() => toast.info("Purchase — coming soon")}>
                     <ShoppingCart className="w-4 h-4 mr-2" />
                     Purchase
                   </Button>

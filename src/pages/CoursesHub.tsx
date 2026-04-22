@@ -31,6 +31,7 @@ import { Progress } from "@/components/ui/progress";
 import { CourseForm } from "@/components/course-creator/CourseForm";
 import { CoursesList } from "@/components/course-creator/CoursesList";
 import { CreatorEarnings } from "@/components/course-creator/CreatorEarnings";
+import { toast } from "sonner";
 
 interface Course {
   id: string;
@@ -397,7 +398,7 @@ export default function CoursesHub() {
                           <span className="text-2xl font-bold">
                             ${course.price.toFixed(2)}
                           </span>
-                          <Button size="sm">View Course</Button>
+                          <Button size="sm" onClick={() => toast.info("View Course — coming soon")}>View Course</Button>
                         </div>
                       </CardContent>
                     </Card>

@@ -2,6 +2,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, FolderOpen, ImageIcon, Package, Star } from "lucide-react";
+import { toast } from "sonner";
 
 interface CollectionsViewProps {
   onBack: () => void;
@@ -55,7 +56,7 @@ export function CollectionsView({ onBack }: CollectionsViewProps) {
                   <span className="text-2xl font-black">€{col.price}</span>
                   <span className="text-sm text-muted-foreground line-through ml-2">€{(col.price / (1 - col.discount / 100)).toFixed(2)}</span>
                 </div>
-                <Button size="sm">Buy Bundle</Button>
+                <Button size="sm" onClick={() => toast.info("Buy Bundle — coming soon")}>Buy Bundle</Button>
               </div>
             </div>
           </Card>

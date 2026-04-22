@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ArrowLeft, MapPin, Star, MessageSquare, Search, ExternalLink, Crown, Award } from "lucide-react";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 
 interface Props { onBack: () => void; }
 
@@ -108,10 +109,10 @@ export const TattooArtistMarketplace = ({ onBack }: Props) => {
               </div>
 
               <div className="flex gap-2">
-                <Button size="sm" className="flex-1 gap-1 bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-black font-bold shadow-lg shadow-amber-500/20">
+                <Button size="sm" className="flex-1 gap-1 bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-black font-bold shadow-lg shadow-amber-500/20" onClick={() => toast.info("Contact — coming soon")}>
                   <MessageSquare className="h-3.5 w-3.5" /> Contact
                 </Button>
-                <Button size="sm" variant="outline" className="flex-1 gap-1 border-amber-500/20 hover:border-amber-500/40 hover:bg-amber-500/5">
+                <Button size="sm" variant="outline" className="flex-1 gap-1 border-amber-500/20 hover:border-amber-500/40 hover:bg-amber-500/5" onClick={() => toast.info("Portfolio — coming soon")}>
                   <ExternalLink className="h-3.5 w-3.5" /> Portfolio
                 </Button>
               </div>

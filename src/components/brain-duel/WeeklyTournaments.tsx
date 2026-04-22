@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Trophy, Calendar, Clock, Users, Crown, Star, Flame, Gift } from "lucide-react";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 
 interface WeeklyTournamentsProps {
   currentStreak?: number;
@@ -53,7 +54,7 @@ export const WeeklyTournaments = ({ currentStreak = 0 }: WeeklyTournamentsProps)
             ))}
           </div>
 
-          <Button className="w-full gap-2">
+          <Button className="w-full gap-2" onClick={() => toast.info("Enter Weekly Tournament (20 credits) — coming soon")}>
             <Trophy className="h-4 w-4" /> Enter Weekly Tournament (20 credits)
           </Button>
         </CardContent>

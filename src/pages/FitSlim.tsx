@@ -76,6 +76,7 @@ import sweetPotatoBlackBeans from "@/assets/recipes/sweet-potato-black-beans.jpg
 import greenDetoxSmoothie from "@/assets/recipes/green-detox-smoothie.jpg";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
+import { toast } from "sonner";
 interface FitRecipe {
   id: number; title: string; calories: string; protein?: string; benefit?: string;
   time: string; image: string; ingredients: string[]; instructions: string;
@@ -584,7 +585,7 @@ const FitSlim = () => {
                         </div>
                         <p className="text-sm text-muted-foreground">{plan.fitness_goal?.replace(/_/g, " ")} • {plan.activity_level}</p>
                         <p className="text-xs text-muted-foreground">{new Date(plan.created_at).toLocaleDateString()}</p>
-                        {plan.status === "completed" && <Button variant="outline" size="sm" className="w-full mt-2 border-green-500/30 text-green-400 hover:bg-green-500/10">View Plan</Button>}
+                        {plan.status === "completed" && <Button variant="outline" size="sm" className="w-full mt-2 border-green-500/30 text-green-400 hover:bg-green-500/10" onClick={() => toast.info("View Plan — coming soon")}>View Plan</Button>}
                       </CardContent>
                     </Card>
                   ))}

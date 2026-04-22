@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { ChefHat, Camera, Calendar, MessageSquare, Wine, MapPin } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 const CookingAI = () => {
   const navigate = useNavigate();
@@ -98,7 +99,7 @@ const CookingAI = () => {
                   <span className="text-sm text-muted-foreground">
                     {feature.credits} {feature.credits === 1 ? 'credit' : 'credits'}
                   </span>
-                  <Button variant="outline" size="sm">
+                  <Button variant="outline" size="sm" onClick={() => toast.info("Launch — coming soon")}>
                     Launch
                   </Button>
                 </div>

@@ -8,6 +8,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 
 interface Props { onBack: () => void; }
 
@@ -92,7 +93,7 @@ export const ConcertAfterparty = ({ onBack }: Props) => {
         {/* Features Row */}
         <div className="flex gap-2 overflow-x-auto pb-1">
           {PARTY_FEATURES.map((f, i) => (
-            <Button key={i} variant="outline" size="sm" className="flex-shrink-0 text-xs gap-1">
+            <Button key={i} variant="outline" size="sm" className="flex-shrink-0 text-xs gap-1" onClick={() => toast.info("This action — coming soon")}>
               {f.icon} {f.title}
             </Button>
           ))}

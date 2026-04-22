@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Video, Calendar, Clock, Users, Plus, Radio, CheckCircle } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
 
 const mockSessions = [
   { id: 1, title: "React Hooks Deep Dive", instructor: "Sarah Chen", date: "Apr 8, 2026", time: "14:00 CET", attendees: 45, status: "upcoming", live: false },
@@ -45,7 +46,7 @@ export function LiveSessionsView({ onBack }: Props) {
               <Input type="time" className="h-11" />
             </div>
             <div className="flex gap-2">
-              <Button className="flex-1 bg-gradient-to-r from-rose-500 to-pink-600"><Calendar className="w-4 h-4 mr-2" />Schedule</Button>
+              <Button className="flex-1 bg-gradient-to-r from-rose-500 to-pink-600" onClick={() => toast.info("Schedule — coming soon")}><Calendar className="w-4 h-4 mr-2" />Schedule</Button>
               <Button variant="outline" onClick={() => setCreating(false)}>Cancel</Button>
             </div>
           </CardContent>
@@ -74,8 +75,8 @@ export function LiveSessionsView({ onBack }: Props) {
                   <span className="flex items-center gap-1"><Users className="w-3 h-3" />{session.attendees} {session.live ? "watching" : "registered"}</span>
                 </div>
               </div>
-              {session.live && <Button size="sm" className="bg-red-500 hover:bg-red-600 shadow-lg">Join Live</Button>}
-              {session.status === "upcoming" && <Button size="sm" variant="outline">Register</Button>}
+              {session.live && <Button size="sm" className="bg-red-500 hover:bg-red-600 shadow-lg" onClick={() => toast.info("Join Live — coming soon")}>Join Live</Button>}
+              {session.status === "upcoming" && <Button size="sm" variant="outline" onClick={() => toast.info("Register — coming soon")}>Register</Button>}
             </div>
           </Card>
         ))}

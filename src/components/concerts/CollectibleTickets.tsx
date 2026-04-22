@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 
 interface Props { onBack: () => void; }
 
@@ -159,8 +160,8 @@ export const CollectibleTickets = ({ onBack }: Props) => {
 
                 {owned.has(ticket.id) ? (
                   <div className="flex gap-2">
-                    <Button size="sm" variant="outline" className="flex-1"><Share2 className="w-3 h-3 mr-1" /> Share</Button>
-                    <Button size="sm" variant="outline" className="flex-1"><Download className="w-3 h-3 mr-1" /> Save</Button>
+                    <Button size="sm" variant="outline" className="flex-1" onClick={() => toast.info("Share — coming soon")}><Share2 className="w-3 h-3 mr-1" /> Share</Button>
+                    <Button size="sm" variant="outline" className="flex-1" onClick={() => toast.info("Save — coming soon")}><Download className="w-3 h-3 mr-1" /> Save</Button>
                   </div>
                 ) : (
                   <Button onClick={() => handlePurchase(ticket)} disabled={purchasing === ticket.id} className="w-full" size="sm">

@@ -33,6 +33,7 @@ import {
   BookOpen
 } from "lucide-react";
 import { format } from "date-fns";
+import { toast } from "sonner";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -398,13 +399,13 @@ export default function PageDetail() {
                     Following
                   </Button>
                 )}
-                <Button variant="outline" size="icon" className="h-9 w-9">
+                <Button variant="outline" size="icon" className="h-9 w-9" onClick={() => toast.info("This action — coming soon")}>
                   <Bell className="h-4 w-4" />
                 </Button>
               </>
             ) : (
               <>
-                <Button variant="outline" size="icon" className="h-9 w-9">
+                <Button variant="outline" size="icon" className="h-9 w-9" onClick={() => toast.info("This action — coming soon")}>
                   <Bell className="h-4 w-4" />
                 </Button>
                 <DropdownMenu>
@@ -664,15 +665,15 @@ export default function PageDetail() {
                       )}
                       
                       <div className="flex items-center gap-4 mt-4 pt-3 border-t">
-                        <Button variant="ghost" size="sm">
+                        <Button variant="ghost" size="sm" onClick={() => toast.info("This action — coming soon")}>
                           <Heart className="h-4 w-4 mr-1" />
                           {post.likes_count || 0}
                         </Button>
-                        <Button variant="ghost" size="sm">
+                        <Button variant="ghost" size="sm" onClick={() => toast.info("This action — coming soon")}>
                           <MessageCircle className="h-4 w-4 mr-1" />
                           {post.comments_count || 0}
                         </Button>
-                        <Button variant="ghost" size="sm">
+                        <Button variant="ghost" size="sm" onClick={() => toast.info("This action — coming soon")}>
                           <Share2 className="h-4 w-4" />
                         </Button>
                       </div>

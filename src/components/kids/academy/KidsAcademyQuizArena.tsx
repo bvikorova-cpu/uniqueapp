@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { toast } from "sonner";
 
 const QUIZ_CATEGORIES = [
   { id: "animals", name: "Animals", emoji: "🐾", color: "bg-green-500/15 border-green-500/30" },
@@ -102,7 +103,7 @@ export const KidsAcademyQuizArena = () => {
                   {tournament.startLabel} • Prize: {tournament.prize}
                 </p>
               </div>
-              <Button size="sm" variant="outline" className="text-xs">
+              <Button size="sm" variant="outline" className="text-xs" onClick={() => toast.info("Join — coming soon")}>
                 <Crown className="w-3 h-3 mr-1" />
                 Join
               </Button>

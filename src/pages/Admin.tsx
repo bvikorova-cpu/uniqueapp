@@ -30,6 +30,7 @@ import { BroadcastCenter } from "@/components/admin/BroadcastCenter";
 import { TopUsersLeaderboard } from "@/components/admin/TopUsersLeaderboard";
 import { HubPerformanceMatrix } from "@/components/admin/HubPerformanceMatrix";
 import { PendingPayoutsCard } from "@/components/admin/PendingPayoutsCard";
+import { toast } from "sonner";
 
 const Admin = () => {
   const navigate = useNavigate();
@@ -423,7 +424,7 @@ const Admin = () => {
                   <div className="text-3xl font-bold text-orange-500">
                     €{stats.masterchefEarnings.toFixed(2)}
                   </div>
-                  <Button variant="outline" size="sm" className="mt-2">
+                  <Button variant="outline" size="sm" className="mt-2" onClick={() => toast.info("Manage Payouts → — coming soon")}>
                     Manage Payouts →
                   </Button>
                 </div>

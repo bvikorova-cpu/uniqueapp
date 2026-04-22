@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { toast } from "sonner";
 import { 
   Users, 
   MessageCircle, 
@@ -170,13 +171,13 @@ export const MultiplayerLobby = () => {
               >
                 {isReady ? "✓ Pripravený" : "Pripraviť sa"}
               </Button>
-              <Button variant="outline" size="icon">
+              <Button variant="outline" size="icon" onClick={() => toast.info("This action — coming soon")}>
                 <Settings className="h-4 w-4" />
               </Button>
             </div>
 
             {players.every(p => p.isReady) && (
-              <Button className="w-full" size="lg">
+              <Button className="w-full" size="lg" onClick={() => toast.info("Začať hru — coming soon")}>
                 <Play className="h-4 w-4 mr-2" />
                 Začať hru
               </Button>
@@ -194,7 +195,7 @@ export const MultiplayerLobby = () => {
           <Users className="h-6 w-6" />
           Multiplayer Lobby
         </h2>
-        <Button>
+        <Button onClick={() => toast.info("Create Game — coming soon")}>
           <Plus className="h-4 w-4 mr-2" />
           Create Game
         </Button>

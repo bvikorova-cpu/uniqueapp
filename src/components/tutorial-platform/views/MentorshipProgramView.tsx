@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Lightbulb, Star, Users, Clock, Calendar, MessageCircle } from "lucide-react";
+import { toast } from "sonner";
 
 const mentors = [
   { id: 1, name: "Dr. Alan Turing Jr.", specialty: "AI & Machine Learning", rate: 120, rating: 4.9, students: 45, availability: "Mon-Fri", sessions: 234, avatar: "🧑‍🏫" },
@@ -65,10 +66,10 @@ export function MentorshipProgramView({ onBack }: Props) {
                 <span>Available: {mentor.availability}</span>
               </div>
               <div className="flex gap-2">
-                <Button className="flex-1 bg-gradient-to-r from-fuchsia-500 to-purple-600 hover:from-fuchsia-600 hover:to-purple-700 shadow-md">
+                <Button className="flex-1 bg-gradient-to-r from-fuchsia-500 to-purple-600 hover:from-fuchsia-600 hover:to-purple-700 shadow-md" onClick={() => toast.info("Book Session — coming soon")}>
                   <Clock className="w-4 h-4 mr-2" />Book Session
                 </Button>
-                <Button variant="outline" size="icon"><MessageCircle className="w-4 h-4" /></Button>
+                <Button variant="outline" size="icon" onClick={() => toast.info("This action — coming soon")}><MessageCircle className="w-4 h-4" /></Button>
               </div>
             </CardContent>
           </Card>

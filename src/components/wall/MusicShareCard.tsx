@@ -2,6 +2,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Music, Play, Pause, ExternalLink, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 interface MusicTrack {
   title: string;
@@ -106,7 +107,7 @@ export const MusicShareCard = ({ track }: MusicShareCardProps) => {
                 </a>
               </Button>
             )}
-            <Button variant="ghost" size="sm" className="h-6 text-[10px] gap-1 px-2">
+            <Button variant="ghost" size="sm" className="h-6 text-[10px] gap-1 px-2" onClick={() => toast.info("Share — coming soon")}>
               <Share2 className="w-3 h-3" /> Share
             </Button>
           </div>

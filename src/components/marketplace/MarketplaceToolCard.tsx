@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Check, LucideIcon, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 
 interface MarketplaceToolCardProps {
   tool: {
@@ -46,7 +47,7 @@ export const MarketplaceToolCard = ({ tool, onSelect, index }: MarketplaceToolCa
             </li>
           ))}
         </ul>
-        <Button size="sm" variant="outline" className="w-full gap-2 opacity-80 group-hover:opacity-100 transition-opacity">
+        <Button size="sm" variant="outline" className="w-full gap-2 opacity-80 group-hover:opacity-100 transition-opacity" onClick={() => toast.info("Open Tool — coming soon")}>
           Open Tool <ArrowRight className="w-3 h-3" />
         </Button>
       </div>

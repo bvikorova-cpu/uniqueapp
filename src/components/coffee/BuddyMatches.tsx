@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Heart, X, MessageCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { toast } from "sonner";
 
 export const BuddyMatches = () => {
   const { toast } = useToast();
@@ -90,7 +91,7 @@ export const BuddyMatches = () => {
                   <p className="font-semibold">Coffee Buddy</p>
                   <p className="text-sm text-muted-foreground">Matched recently</p>
                 </div>
-                <Button size="sm">
+                <Button size="sm" onClick={() => toast.info("Chat — coming soon")}>
                   <MessageCircle className="mr-2 h-4 w-4" />
                   Chat
                 </Button>

@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Clock, Heart, Star, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { toast } from "sonner";
 
 export function FeaturedCampaignSpotlight() {
   return (
@@ -61,7 +62,7 @@ export function FeaturedCampaignSpotlight() {
               </div>
             </div>
 
-            <Button className="w-full sm:w-auto">
+            <Button className="w-full sm:w-auto" onClick={() => toast.info("Start Your Campaign — coming soon")}>
               <Star className="mr-2 h-4 w-4" /> Start Your Campaign
             </Button>
           </div>

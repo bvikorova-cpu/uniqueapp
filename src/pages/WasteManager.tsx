@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Recycle, ArrowLeft, Camera, Search, Leaf, Trash2, Package, AlertTriangle, CheckCircle, Lightbulb } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 
 interface WasteItem {
   name: string;
@@ -394,7 +395,7 @@ const WasteManager = () => {
                 <p className="text-lg font-medium mb-4">
                   "Use a reusable water bottle for all your drinks today!"
                 </p>
-                <Button className="bg-green-600 hover:bg-green-700">
+                <Button className="bg-green-600 hover:bg-green-700" onClick={() => toast.info("Accept Challenge — coming soon")}>
                   Accept Challenge
                 </Button>
               </CardContent>

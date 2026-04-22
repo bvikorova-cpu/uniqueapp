@@ -5,6 +5,7 @@ import { Slider } from "@/components/ui/slider";
 import { ArrowLeft, Film, Upload, Loader2, Download, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 
 interface Props { onBack: () => void; }
 
@@ -133,7 +134,7 @@ export function TimeLapseCreator({ onBack }: Props) {
                 <div className="text-center text-sm text-muted-foreground">
                   Age: {Math.round(startAge[0] - (startAge[0] - endAge[0]) * (currentFrame / Math.max(generatedFrames.length - 1, 1)))} years
                 </div>
-                <Button variant="outline" className="w-full"><Download className="h-4 w-4 mr-2" /> Download Time-Lapse</Button>
+                <Button variant="outline" className="w-full" onClick={() => toast.info("Download Time-Lapse — coming soon")}><Download className="h-4 w-4 mr-2" /> Download Time-Lapse</Button>
               </div>
             ) : (
               <div className="aspect-square rounded-xl bg-card/50 border border-border/40 flex items-center justify-center">

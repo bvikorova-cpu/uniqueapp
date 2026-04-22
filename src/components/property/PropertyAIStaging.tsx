@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Wand2, Upload, Palette, Sofa, Sparkles, Image } from "lucide-react";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 
 interface Props { onBack: () => void; }
 
@@ -148,8 +149,8 @@ export const PropertyAIStaging = ({ onBack }: Props) => {
                     </div>
                   </div>
                   <div className="flex gap-2 justify-center">
-                    <Button size="sm" variant="outline">Download</Button>
-                    <Button size="sm" className="bg-gradient-to-r from-sky-500 to-blue-600">Use in Listing</Button>
+                    <Button size="sm" variant="outline" onClick={() => toast.info("Download — coming soon")}>Download</Button>
+                    <Button size="sm" className="bg-gradient-to-r from-sky-500 to-blue-600" onClick={() => toast.info("Use in Listing — coming soon")}>Use in Listing</Button>
                   </div>
                 </CardContent>
               </Card>

@@ -241,7 +241,7 @@ export function TrackEditor({ onBack }: { onBack: () => void }) {
                       <p className="font-mono font-bold text-sm text-amber-400">⭐ {track.rating}</p>
                       <p className="text-[9px] font-mono text-cyan-400/30">{track.plays} plays</p>
                     </div>
-                    <Button size="sm" className="bg-cyan-600/20 hover:bg-cyan-600/40 border border-cyan-500/20 text-cyan-300 font-mono text-[10px]">
+                    <Button size="sm" className="bg-cyan-600/20 hover:bg-cyan-600/40 border border-cyan-500/20 text-cyan-300 font-mono text-[10px]" onClick={() => toast.info("Race — coming soon")}>
                       <Play className="h-3 w-3 mr-1" /> Race
                     </Button>
                   </div>

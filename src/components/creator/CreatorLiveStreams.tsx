@@ -6,6 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Video, Calendar, Users, Lock, Play, Loader2 } from "lucide-react";
 import { format } from "date-fns";
+import { toast } from "sonner";
 
 interface LiveStream {
   id: string;
@@ -183,7 +184,7 @@ export function CreatorLiveStreams({ creatorId }: CreatorLiveStreamsProps) {
                   </div>
                   <div className="mt-4">
                     {stream.is_free || hasAccess(stream.id) ? (
-                      <Button className="w-full md:w-auto">
+                      <Button className="w-full md:w-auto" onClick={() => toast.info("This action — coming soon")}>
                         <Play className="mr-2 h-4 w-4" />
                         {stream.status === "live" ? "Watch Now" : "Set Reminder"}
                       </Button>

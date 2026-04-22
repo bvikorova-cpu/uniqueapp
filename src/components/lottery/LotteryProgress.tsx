@@ -2,6 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Zap, Sparkles, Target } from "lucide-react";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 
 export const LotteryProgress = () => {
   return (
@@ -35,7 +36,7 @@ export const LotteryProgress = () => {
             </div>
           </div>
 
-          <Button className="w-full bg-gradient-to-r from-primary to-accent hover:opacity-90 text-primary-foreground" size="sm">
+          <Button className="w-full bg-gradient-to-r from-primary to-accent hover:opacity-90 text-primary-foreground" size="sm" onClick={() => toast.info("Generate Now — coming soon")}>
             <Zap className="w-4 h-4 mr-2" />
             Generate Now
           </Button>

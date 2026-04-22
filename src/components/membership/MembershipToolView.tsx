@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Lock } from "lucide-react";
+import { toast } from "sonner";
 
 interface MembershipToolViewProps {
   toolName: string;
@@ -140,7 +141,7 @@ export const MembershipToolView = ({ toolName, onBack }: MembershipToolViewProps
                 : "Become a creator to unlock this tool and start building your community."
               }
             </p>
-            <Button>
+            <Button onClick={() => toast.info("This action — coming soon")}>
               {toolName === "AI Content Assistant" ? "Purchase AI Credits" : "Get Started"}
             </Button>
           </div>

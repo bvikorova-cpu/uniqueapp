@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Play, Pause, RotateCcw, Timer, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 
 const meditations = [
   { id: "past-life", label: "Past Life Recall", duration: 300, description: "Guided meditation to access past life memories through deep relaxation and visualization." },
@@ -178,7 +179,7 @@ export const MeditationChamber = () => {
                   <Badge variant="outline" className="text-[10px]">
                     <Timer className="h-3 w-3 mr-1" />{Math.floor(med.duration / 60)} min
                   </Badge>
-                  <Button size="sm" variant="ghost" className="h-7 text-xs">
+                  <Button size="sm" variant="ghost" className="h-7 text-xs" onClick={() => toast.info("Start — coming soon")}>
                     <Play className="h-3 w-3 mr-1" />Start
                   </Button>
                 </div>

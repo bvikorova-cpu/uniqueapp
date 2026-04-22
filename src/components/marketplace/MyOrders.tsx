@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { OrderChat } from "./OrderChat";
 import { ShoppingBag, Package, Clock, Euro, MessageCircle, Bell } from "lucide-react";
 import { format } from "date-fns";
+import { toast } from "sonner";
 
 interface Order {
   id: string;
@@ -188,7 +189,7 @@ export function MyOrders({ userId }: MyOrdersProps) {
                 {format(new Date(order.delivery_deadline), "MMM d")}
               </span>
             </div>
-            <Button size="sm" variant="ghost">
+            <Button size="sm" variant="ghost" onClick={() => toast.info("Chat — coming soon")}>
               <MessageCircle className="h-4 w-4 mr-1" />
               Chat
             </Button>

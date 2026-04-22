@@ -21,6 +21,7 @@ import templateSolarSystem from "@/assets/coloring/template-solar-system.jpg";
 import templateHumanBody from "@/assets/coloring/template-human-body.jpg";
 import templateButterflyCollection from "@/assets/coloring/template-butterfly-collection.jpg";
 import templateZenGarden from "@/assets/coloring/template-zen-garden.jpg";
+import { toast } from "sonner";
 
 const CATEGORIES = [
   { id: "all", label: "All", icon: Sparkles },
@@ -126,7 +127,7 @@ export function TemplateGallery({ onSelectTemplate }: TemplateGalleryProps) {
                     <span className="text-xs text-muted-foreground capitalize">{template.category}</span>
                   </div>
                   <div className="mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <Button size="sm" className="w-full text-xs gap-1"><Sparkles className="w-3 h-3" /> Generate</Button>
+                    <Button size="sm" className="w-full text-xs gap-1" onClick={() => toast.info("Generate — coming soon")}><Sparkles className="w-3 h-3" /> Generate</Button>
                   </div>
                 </CardContent>
               </Card>

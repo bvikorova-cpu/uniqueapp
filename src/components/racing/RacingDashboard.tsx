@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { toast } from "sonner";
 import { 
   Trophy, 
   Flag, 
@@ -176,13 +177,13 @@ export const RacingDashboard = () => {
               ))}
 
               <div className="flex justify-center gap-2 pt-4">
-                <Button variant="outline" size="icon">
+                <Button variant="outline" size="icon" onClick={() => toast.info("This action — coming soon")}>
                   <RotateCcw className="h-4 w-4" />
                 </Button>
-                <Button size="icon">
+                <Button size="icon" onClick={() => toast.info("This action — coming soon")}>
                   <Play className="h-4 w-4" />
                 </Button>
-                <Button variant="outline" size="icon">
+                <Button variant="outline" size="icon" onClick={() => toast.info("This action — coming soon")}>
                   <Pause className="h-4 w-4" />
                 </Button>
               </div>
@@ -200,7 +201,7 @@ export const RacingDashboard = () => {
               <p className="text-center text-muted-foreground py-8">
                 Vytvorte si vlastný fantasy tím a súťažte s priateľmi!
               </p>
-              <Button className="w-full">Vytvoriť tím</Button>
+              <Button className="w-full" onClick={() => toast.info("Vytvoriť tím — coming soon")}>Vytvoriť tím</Button>
             </CardContent>
           </Card>
         </TabsContent>

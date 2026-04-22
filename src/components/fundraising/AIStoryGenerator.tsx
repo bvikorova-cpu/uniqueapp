@@ -10,6 +10,7 @@ import { Card } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 
 interface Props {
   campaignType: "medical" | "crisis" | "pet" | "student" | "dream" | "hero" | "talent";
@@ -88,7 +89,7 @@ export function AIStoryGenerator({ campaignType, onGenerated, trigger }: Props) 
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         {trigger ?? (
-          <Button variant="outline" className="gap-2 border-amber-400/40 hover:bg-amber-500/10">
+          <Button variant="outline" className="gap-2 border-amber-400/40 hover:bg-amber-500/10" onClick={() => toast.info("AI Story Writer credits — coming soon")}>
             <Wand2 className="h-4 w-4 text-amber-500" />
             AI Story Writer
             <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-600 font-bold border border-amber-500/40">

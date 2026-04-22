@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { Brain, Sparkles, Loader2, ArrowRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { toast } from "sonner";
 
 const QUESTIONS = [
   { q: "How do you prefer to communicate?", options: ["Short and direct", "Detailed and thoughtful", "Casual with humor", "Formal and professional"] },
@@ -102,7 +103,7 @@ export function ClonePersonalityQuiz() {
             <p className="text-sm text-foreground leading-relaxed mb-6 max-w-lg mx-auto bg-background/50 p-4 rounded-xl border border-border/50">{result}</p>
             <div className="flex gap-3 justify-center">
               <Button variant="outline" onClick={restart}>Retake Quiz</Button>
-              <Button>
+              <Button onClick={() => toast.info("Create Clone with Profile — coming soon")}>
                 <ArrowRight className="h-4 w-4 mr-2" /> Create Clone with Profile
               </Button>
             </div>

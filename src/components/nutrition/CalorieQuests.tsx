@@ -6,6 +6,7 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Trophy, Star, Target, Flame, Award, Users, Zap } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 export default function CalorieQuests() {
   const { data: progress } = useQuery({
@@ -137,7 +138,7 @@ export default function CalorieQuests() {
                   <span>{challenge.participants_count} participants</span>
                   <span>Entry: €{challenge.entry_fee}</span>
                 </div>
-                <Button size="sm" className="w-full gap-1"><Zap className="h-3 w-3" /> Join Challenge</Button>
+                <Button size="sm" className="w-full gap-1" onClick={() => toast.info("Join Challenge — coming soon")}><Zap className="h-3 w-3" /> Join Challenge</Button>
               </div>
             ))}
           </CardContent>
@@ -162,7 +163,7 @@ export default function CalorieQuests() {
               <span className="text-sm">{item.text}</span>
             </div>
           ))}
-          <Button className="w-full mt-4 gap-2 bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600">
+          <Button className="w-full mt-4 gap-2 bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600" onClick={() => toast.info("Upgrade to Hero Pass (€6.99/month) — coming soon")}>
             <Award className="h-4 w-4" /> Upgrade to Hero Pass (€6.99/month)
           </Button>
         </CardContent>

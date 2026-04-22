@@ -10,6 +10,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useBrainDuelCredits } from '@/hooks/useBrainDuelCredits';
 import { motion } from 'framer-motion';
+import { toast } from "sonner";
 
 const categoryIcons: Record<string, typeof Globe> = {
   'Entertainment': Star,
@@ -192,7 +193,7 @@ export const QuestionPackStore = () => {
                 <p className="text-sm text-muted-foreground mb-4">
                   Build your own question pack with personalized questions
                 </p>
-                <Button variant="outline" size="sm" className="gap-2">
+                <Button variant="outline" size="sm" className="gap-2" onClick={() => toast.info("Generate with AI — coming soon")}>
                   <Brain className="h-4 w-4" /> Generate with AI
                 </Button>
               </CardContent>

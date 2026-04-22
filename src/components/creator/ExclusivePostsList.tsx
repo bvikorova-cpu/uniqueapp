@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Heart, MessageCircle, Lock, Image as ImageIcon, ShieldAlert } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
+import { toast } from "sonner";
 
 interface ExclusivePost {
   id: string;
@@ -190,7 +191,7 @@ export function ExclusivePostsList({ creatorId, userTierId, isSubscribed }: Excl
                     variant="ghost"
                     size="sm"
                     className="flex items-center gap-2"
-                  >
+                   onClick={() => toast.info("This action — coming soon")}>
                     <MessageCircle className="h-4 w-4" />
                     {post.comments_count || 0}
                   </Button>

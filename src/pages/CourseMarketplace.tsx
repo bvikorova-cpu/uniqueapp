@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 import {
   BookOpen,
   Search,
@@ -276,7 +277,7 @@ export default function CourseMarketplace() {
                   <div className="text-2xl font-bold text-primary">
                     €{course.price.toFixed(2)}
                   </div>
-                  <Button size="sm">
+                  <Button size="sm" onClick={() => toast.info("View Course — coming soon")}>
                     View Course
                   </Button>
                 </CardFooter>
@@ -292,7 +293,7 @@ export default function CourseMarketplace() {
         <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
           Share your knowledge and earn 80% from every course sale. Start creating today!
         </p>
-        <Button size="lg">
+        <Button size="lg" onClick={() => toast.info("Become an Instructor — coming soon")}>
           <TrendingUp className="mr-2 h-5 w-5" />
           Become an Instructor
         </Button>

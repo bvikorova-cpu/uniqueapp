@@ -11,6 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { motion, AnimatePresence } from "framer-motion";
 import ReactMarkdown from "react-markdown";
+import { toast } from "sonner";
 import {
   Send,
   ArrowLeft,
@@ -297,7 +298,7 @@ const AIMentorChat = () => {
                       <CardTitle className="text-lg flex items-center gap-2">
                         <Target className="h-4 w-4 text-primary" /> Your Goals
                       </CardTitle>
-                      <Button size="sm" variant="outline" className="h-8 w-8 p-0">
+                      <Button size="sm" variant="outline" className="h-8 w-8 p-0" onClick={() => toast.info("This action — coming soon")}>
                         <Plus className="h-4 w-4" />
                       </Button>
                     </div>

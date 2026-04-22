@@ -6,6 +6,7 @@ import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Heart, Zap, Users, Clock, TrendingUp, ArrowLeft } from "lucide-react";
+import { toast } from "sonner";
 
 export function EmotionDrops({ onBack }: { onBack?: () => void }) {
   const { toast } = useToast();
@@ -144,7 +145,7 @@ export function EmotionDrops({ onBack }: { onBack?: () => void }) {
               </div>
             </div>
             
-            <Button variant="outline" className="w-full" size="lg">
+            <Button variant="outline" className="w-full" size="lg" onClick={() => toast.info("Notify Me — coming soon")}>
               <Clock className="mr-2 h-4 w-4" />
               Notify Me
             </Button>
@@ -179,7 +180,7 @@ export function EmotionDrops({ onBack }: { onBack?: () => void }) {
               </div>
             </div>
             
-            <Button variant="outline" className="w-full" size="lg">
+            <Button variant="outline" className="w-full" size="lg" onClick={() => toast.info("Notify Me — coming soon")}>
               <Clock className="mr-2 h-4 w-4" />
               Notify Me
             </Button>
@@ -195,7 +196,7 @@ export function EmotionDrops({ onBack }: { onBack?: () => void }) {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Button className="w-full" size="lg">
+          <Button className="w-full" size="lg" onClick={() => toast.info("Create Emotion Drop — coming soon")}>
             <TrendingUp className="mr-2 h-5 w-5" />
             Create Emotion Drop
           </Button>

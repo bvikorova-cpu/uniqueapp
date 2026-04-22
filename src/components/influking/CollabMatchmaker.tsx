@@ -11,6 +11,7 @@ import { ArrowLeft, Handshake, Users, Search, Send, CheckCircle, Filter, Loader2
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { toast } from "sonner";
 
 interface CollabMatchmakerProps {
   onBack: () => void;
@@ -186,7 +187,7 @@ const CollabMatchmaker = ({ onBack }: CollabMatchmakerProps) => {
                       </div>
                     </div>
 
-                    <Button variant="outline" className="w-full gap-2 group-hover:bg-primary group-hover:text-primary-foreground transition-colors" size="sm">
+                    <Button variant="outline" className="w-full gap-2 group-hover:bg-primary group-hover:text-primary-foreground transition-colors" size="sm" onClick={() => toast.info("Send Proposal — coming soon")}>
                       <Send className="h-3 w-3" /> Send Proposal
                     </Button>
                   </CardContent>

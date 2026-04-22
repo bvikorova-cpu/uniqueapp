@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Search, Users, Star } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { toast } from "sonner";
 
 interface Creator {
   id: string;
@@ -133,7 +134,7 @@ export default function DiscoverCreators() {
                     <CardDescription className="line-clamp-2 mb-4">
                       {creator.bio}
                     </CardDescription>
-                    <Button className="w-full">
+                    <Button className="w-full" onClick={() => toast.info("View Profile — coming soon")}>
                       View Profile
                     </Button>
                   </CardContent>
