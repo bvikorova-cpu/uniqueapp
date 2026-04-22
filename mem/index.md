@@ -25,3 +25,4 @@ NO health/medical predictions. NO identifiable people/trademarks in videos.
 - [Payment Reconciliation](mem://features/reconciliation) — admin-reconcile-payments edge fn + /admin/reconciliation UI for daily Stripe vs ledger comparison
 - [Multi-currency](mem://features/multi-currency) — Global CurrencyProvider + Navbar switcher; useCurrency().format(eurAmount) for any price (display-only, billing stays EUR)
 - [Subscription Lifecycle](mem://features/subscription-lifecycle) — /account/subscriptions UI + list/pause/resume/cancel-by-id edge fns + Stripe portal for upgrades
+- [Referral Payout Automation](mem://features/referral-payout) — ?ref capture → claim-referral → referral_attributions; stripe-webhook customer.subscription.created credits €5 once per subscription into megatalent_referral_earnings
