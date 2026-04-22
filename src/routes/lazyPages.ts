@@ -236,6 +236,7 @@ export const MysteryBox = lazy(() => import("@/pages/MysteryBox"));
 
 // Jobs & Employment
 export const Jobs = lazy(() => import("@/pages/Jobs"));
+export const JobPostSuccess = lazy(() => import("@/pages/JobPostSuccess"));
 export const EmployerDashboard = lazy(() => import("@/pages/EmployerDashboard"));
 export const EmployerVerification = lazy(() => import("@/pages/EmployerVerification"));
 
