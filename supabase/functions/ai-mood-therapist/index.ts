@@ -55,6 +55,7 @@ Keep responses concise, engaging, and use emoji. Format advice with markdown. Be
     const data = await response.json()
     const reply = data.choices?.[0]?.message?.content || 'I apologize, I could not process that. Please try again.'
 
+    await __deduct().catch((e) => console.error("deduct failed:", e));
     return new Response(JSON.stringify({ reply }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     })
