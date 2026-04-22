@@ -3,6 +3,9 @@ project_id = "jufrdzeonywluwutvyxz"
 [functions.auction-stripe-webhook]
 verify_jwt = false
 
+[functions.stripe-webhook]
+verify_jwt = false
+
 [functions.auction-mark-shipped]
 verify_jwt = true
 
