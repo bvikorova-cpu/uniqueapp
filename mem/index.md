@@ -20,3 +20,4 @@ NO health/medical predictions. NO identifiable people/trademarks in videos.
 - [Admin Stripe Refund](mem://features/admin-stripe-refund) — admin-refund-payment edge fn + RefundButton + /admin/refunds page operating on payment_records ledger
 - [Stripe Webhook](mem://features/stripe-webhook) — stripe-webhook edge fn syncs payment_records with Stripe events (refund/dispute/late confirm)
 - [Auto-payout Cron](mem://features/auto-payout-cron) — auto-payout-pending-withdrawals scheduled fn + PendingPayoutsCard widget for sweeping small pending withdrawals weekly
+- [Tax & Invoicing](mem://features/tax-invoicing) — creator-tax-export CSV + get-payment-invoice-url for Stripe-hosted invoice/receipt deep-links
