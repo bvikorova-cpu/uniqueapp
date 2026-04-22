@@ -30,6 +30,7 @@ import {
   RefreshCw,
   Loader2,
   Banknote,
+  BarChart3,
 } from "lucide-react";
 
 type ConnectStatus = {
