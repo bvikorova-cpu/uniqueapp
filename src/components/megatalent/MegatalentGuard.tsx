@@ -129,6 +129,13 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
     const canceled = searchParams.get("canceled") === "true";
     const tier = searchParams.get("tier");
 
+    // ⚡ STRIP Stripe redirect params SYNCHRONOUSLY before any further work.
+    // This guarantees that back/forward/refresh after payment cannot re-trigger
+    // the activation flow — the URL is clean within the same tick.
+    if (success || canceled || tier) {
+      stripStripeParamsFromUrl();
+    }
+
     // ── Session lost during/after payment ─────────────────────────────────
     // If we don't have a user but a payment is pending (either via ?success=true
     // or a previously stored marker), preserve the payment info and bounce to /auth
@@ -164,9 +171,7 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
             title: "Platba zrušená",
             description: "Môžeš to skúsiť znova kedykoľvek.",
           });
-          const next = new URLSearchParams(searchParams);
-          next.delete("canceled");
-          setSearchParams(next, { replace: true });
+          // URL params already stripped synchronously above.
         }
 
         // After-payment activation flow. Triggered by Stripe redirect (?success=true),
@@ -189,10 +194,7 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
                 ? "Vitaj v MegaTalent TOP Premium! Aktivujem prístup..."
                 : "Vitaj v MegaTalent Premium! Aktivujem prístup...",
             });
-            const next = new URLSearchParams(searchParams);
-            next.delete("success");
-            next.delete("tier");
-            setSearchParams(next, { replace: true });
+            // URL params already stripped synchronously above.
           } else if (pending && !reloadFlag) {
             toast({
               title: "Pokračujem v aktivácii",
