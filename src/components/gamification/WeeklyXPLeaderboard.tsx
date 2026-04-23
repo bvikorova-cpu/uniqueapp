@@ -40,9 +40,22 @@ const msUntilNextMonday = () => {
 };
 
 const formatCountdown = (ms: number) => {
-  const days = Math.floor(ms / (1000 * 60 * 60 * 24));
-  const hours = Math.floor((ms / (1000 * 60 * 60)) % 24);
-  return `${days}d ${hours}h`;
+  const totalSec = Math.max(0, Math.floor(ms / 1000));
+  const days = Math.floor(totalSec / 86400);
+  const hours = Math.floor((totalSec % 86400) / 3600);
+  const minutes = Math.floor((totalSec % 3600) / 60);
+  const seconds = totalSec % 60;
+  return { days, hours, minutes, seconds };
+};
+
+const getNextResetDate = () => {
+  const now = new Date();
+  const nextMonday = new Date(now);
+  const day = now.getDay();
+  const daysUntil = day === 0 ? 1 : 8 - day;
+  nextMonday.setDate(now.getDate() + daysUntil);
+  nextMonday.setHours(0, 0, 0, 0);
+  return nextMonday;
 };
 
 export const WeeklyXPLeaderboard = () => {
