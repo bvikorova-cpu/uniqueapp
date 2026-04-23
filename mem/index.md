@@ -36,3 +36,4 @@ NO health/medical predictions. NO identifiable people/trademarks in videos.
 - [Creator KYC](mem://features/creator-kyc) — Stripe Identity verification (kyc-start/kyc-check/admin-kyc); /account/verification + /admin/kyc; gates payouts >€100; GDPR-minimal storage
 - [Affiliate Tiers](mem://features/affiliate-tiers) — 4-tier referrer rewards (€5→€15) with auto-promotion trigger; stripe-webhook reads dynamic reward via get_affiliate_reward_eur; <AffiliateTierCard> + /admin/affiliate-tiers
 - [Subscription Pause Limits](mem://features/subscription-pause-limits) — pause_log + config (3 pauses/year, 3mo max); pause-subscription enforces 429; <PauseLimitCard> + /admin/pauses
+- [Weekly XP Leaderboard & Anti-Fraud](mem://features/weekly-xp-leaderboard) — Unlimited rewarded-ad XP, race-safe 30s throttle (unique idx), weekly leaderboard, Monday cron snapshot awarding 100/50/25 bonus to top 3
