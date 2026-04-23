@@ -35,20 +35,10 @@ export const DailyXPVideoReward = ({ userId }: DailyXPVideoRewardProps) => {
 
   const checkDailyClaim = async () => {
     if (!userId) return;
-    
+
     setIsLoading(true);
     try {
-      const today = new Date().toISOString().split('T')[0];
-      
-      // Check if already claimed today
-      const { data: claim } = await supabase
-        .from("daily_xp_claims")
-        .select("*")
-        .eq("user_id", userId)
-        .eq("claim_date", today)
-        .single();
-
-      // Get total XP earned from video ads
+      // Unlimited XP — fetch lifetime total but never block claiming.
       const { data: totalClaims } = await supabase
         .from("daily_xp_claims")
         .select("xp_earned")
@@ -57,8 +47,8 @@ export const DailyXPVideoReward = ({ userId }: DailyXPVideoRewardProps) => {
       const total = totalClaims?.reduce((sum, c) => sum + c.xp_earned, 0) || 0;
       setTotalXP(total);
 
-      setClaimedToday(!!claim);
-      setCanClaim(!claim);
+      setClaimedToday(false);
+      setCanClaim(true);
     } catch (error) {
       setCanClaim(true);
     } finally {
@@ -86,11 +76,11 @@ export const DailyXPVideoReward = ({ userId }: DailyXPVideoRewardProps) => {
 
   const claimXP = async () => {
     setIsWatching(false);
-    
+
     try {
       const today = new Date().toISOString().split('T')[0];
-      
-      // Insert daily XP claim
+
+      // Insert XP claim (table allows unlimited claims per day now).
       const { error: claimError } = await supabase
         .from("daily_xp_claims")
         .insert({
@@ -111,19 +101,23 @@ export const DailyXPVideoReward = ({ userId }: DailyXPVideoRewardProps) => {
 
       if (pointsError) throw pointsError;
 
-      setClaimedToday(true);
-      setCanClaim(false);
       setTotalXP(prev => prev + 1);
-      
+
       queryClient.invalidateQueries({ queryKey: ["gamification", userId] });
       queryClient.invalidateQueries({ queryKey: ["leaderboard"] });
 
       toast({
         title: "🎉 +1 XP!",
-        description: "You earned 1 XP for watching the ad!",
+        description: "Watch another ad to earn more — no daily limit!",
       });
 
-      setTimeout(() => setShowAdDialog(false), 1500);
+      setTimeout(() => {
+        setShowAdDialog(false);
+        // Reset so the user can immediately watch another ad.
+        setCanClaim(true);
+        setClaimedToday(false);
+        setAdProgress(0);
+      }, 1500);
     } catch (error: any) {
       toast({
         title: "Error",
@@ -157,7 +151,7 @@ export const DailyXPVideoReward = ({ userId }: DailyXPVideoRewardProps) => {
         <CardHeader className="pb-2">
           <CardTitle className="flex items-center gap-2 text-lg">
             <Tv className="h-5 w-5 text-purple-500" />
-            Daily XP for Ad
+            Watch & Earn XP
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -182,7 +176,7 @@ export const DailyXPVideoReward = ({ userId }: DailyXPVideoRewardProps) => {
             <div className="space-y-3">
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Clock className="h-4 w-4" />
-                <span>Watch a 15s ad and earn 1 XP</span>
+                <span>Watch a 15s ad — earn 1 XP. <span className="text-foreground font-semibold">Unlimited.</span></span>
               </div>
               <Button
                 onClick={startWatchingAd}

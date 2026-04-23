@@ -6,7 +6,8 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type",
 };
 
-const DAILY_LIMIT_PER_SECTION = 3;
+// Unlimited daily views — users keep earning XP every time they watch.
+// Hitting a hard cap kills engagement, so we only track views for analytics.
 const XP_PER_VIEW = 5;
 
 Deno.serve(async (req) => {
@@ -54,29 +55,6 @@ Deno.serve(async (req) => {
 
     const today = new Date().toISOString().split("T")[0];
 
-    const { count, error: countErr } = await supabase
-      .from("rewarded_ad_views")
-      .select("*", { count: "exact", head: true })
-      .eq("user_id", user.id)
-      .eq("section_key", sectionKey)
-      .eq("view_date", today);
-
-    if (countErr) throw countErr;
-
-    if ((count ?? 0) >= DAILY_LIMIT_PER_SECTION) {
-      return new Response(
-        JSON.stringify({
-          error: "Daily limit reached for this section",
-          limit: DAILY_LIMIT_PER_SECTION,
-          remaining: 0,
-        }),
-        {
-          status: 429,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        }
-      );
-    }
-
     const { error: insertErr } = await supabase
       .from("rewarded_ad_views")
       .insert({
@@ -98,7 +76,7 @@ Deno.serve(async (req) => {
       JSON.stringify({
         success: true,
         xp_awarded: XP_PER_VIEW,
-        remaining: DAILY_LIMIT_PER_SECTION - ((count ?? 0) + 1),
+        remaining: null, // unlimited
       }),
       {
         status: 200,

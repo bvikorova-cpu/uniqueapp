@@ -1,0 +1,1 @@
+ALTER TABLE public.daily_xp_claims DROP CONSTRAINT IF EXISTS daily_xp_claims_user_id_claim_date_key;
