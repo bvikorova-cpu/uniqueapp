@@ -435,8 +435,8 @@ export default function PropertyMarketplace() {
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <Button onClick={() => handlePurchaseService(service.id, service.price, service.link)} className="w-full" variant="outline">
-                      {service.link ? "Explore" : service.active ? "Learn More" : "Coming Soon"}
+                    <Button onClick={() => handlePurchaseService(service.id, service.price, service.link)} className="w-full" variant="outline" disabled={!service.link && !service.active}>
+                      {service.link ? "Explore" : service.active ? "Learn More" : "Currently Unavailable"}
                     </Button>
                   </CardContent>
                 </Card>

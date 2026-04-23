@@ -22,7 +22,7 @@ export const ForgeIdeasShowcase = () => {
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-amber-100" style={{ fontFamily: "Georgia, serif" }}>
           <Lightbulb className="h-5 w-5 text-amber-400" />
-          Coming Soon — Feature Roadmap
+          Community Feature Roadmap
         </CardTitle>
         <p className="text-xs text-amber-200/60">Vote in the community for what we build next</p>
       </CardHeader>
