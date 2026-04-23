@@ -105,7 +105,17 @@ Deno.serve(async (req) => {
         xp_awarded: XP_PER_VIEW,
         view_date: today,
       });
-    if (insertErr) throw insertErr;
+    if (insertErr) {
+      // 23505 = unique_violation → atomic 30s throttle hit (race-condition safe)
+      const code = (insertErr as { code?: string }).code;
+      if (code === "23505") {
+        return new Response(
+          JSON.stringify({ error: "Too fast", retry_after: 30 }),
+          { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+      throw insertErr;
+    }
 
     const { error: rpcErr } = await supabase.rpc("add_user_points", {
       p_user_id: user.id,
