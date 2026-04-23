@@ -29,16 +29,6 @@ const getRankBg = (rank: number) => {
   return "border-border/30";
 };
 
-const msUntilNextMonday = () => {
-  const now = new Date();
-  const nextMonday = new Date(now);
-  const day = now.getDay();
-  const daysUntil = day === 0 ? 1 : 8 - day;
-  nextMonday.setDate(now.getDate() + daysUntil);
-  nextMonday.setHours(0, 0, 0, 0);
-  return nextMonday.getTime() - now.getTime();
-};
-
 const formatCountdown = (ms: number) => {
   const totalSec = Math.max(0, Math.floor(ms / 1000));
   const days = Math.floor(totalSec / 86400);
