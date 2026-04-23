@@ -125,7 +125,8 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
       });
       if (error) throw error;
       if (data?.url) {
-        window.open(data.url, "_blank");
+        // Redirect in same tab so Stripe sends user back to /megatalent?success=true
+        window.location.href = data.url;
       } else {
         throw new Error("No checkout URL returned");
       }
