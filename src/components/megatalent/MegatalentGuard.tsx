@@ -21,7 +21,7 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const [checking, setChecking] = useState(true);
   const [subscribed, setSubscribed] = useState(false);
   const [checkoutLoading, setCheckoutLoading] = useState<null | "premium" | "top_premium">(null);
@@ -73,6 +73,36 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
     return !!data.session;
   };
 
+  /**
+   * Synchronously strip Stripe redirect params (success, tier, canceled,
+   * session_id) from the URL using history.replaceState. This runs BEFORE any
+   * async work, so a user pressing back/forward or refreshing immediately after
+   * payment will never see the activation flow re-trigger.
+   *
+   * Using window.history directly (instead of setSearchParams) is intentional:
+   *  - it's synchronous (no React render cycle delay)
+   *  - it doesn't add a history entry (replace, not push)
+   *  - it preserves any other unrelated query params the user might have
+   */
+  const stripStripeParamsFromUrl = () => {
+    try {
+      const url = new URL(window.location.href);
+      let mutated = false;
+      for (const key of ["success", "tier", "canceled", "session_id"]) {
+        if (url.searchParams.has(key)) {
+          url.searchParams.delete(key);
+          mutated = true;
+        }
+      }
+      if (mutated) {
+        const newUrl = url.pathname + (url.searchParams.toString() ? `?${url.searchParams}` : "") + url.hash;
+        window.history.replaceState(window.history.state, "", newUrl);
+      }
+    } catch (e) {
+      console.warn("Failed to strip Stripe params from URL", e);
+    }
+  };
+
   const runCheck = async (): Promise<boolean> => {
     if (!user) return false;
     // Admins bypass
@@ -98,6 +128,13 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
     const success = searchParams.get("success") === "true";
     const canceled = searchParams.get("canceled") === "true";
     const tier = searchParams.get("tier");
+
+    // ⚡ STRIP Stripe redirect params SYNCHRONOUSLY before any further work.
+    // This guarantees that back/forward/refresh after payment cannot re-trigger
+    // the activation flow — the URL is clean within the same tick.
+    if (success || canceled || tier) {
+      stripStripeParamsFromUrl();
+    }
 
     // ── Session lost during/after payment ─────────────────────────────────
     // If we don't have a user but a payment is pending (either via ?success=true
@@ -134,9 +171,7 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
             title: "Platba zrušená",
             description: "Môžeš to skúsiť znova kedykoľvek.",
           });
-          const next = new URLSearchParams(searchParams);
-          next.delete("canceled");
-          setSearchParams(next, { replace: true });
+          // URL params already stripped synchronously above.
         }
 
         // After-payment activation flow. Triggered by Stripe redirect (?success=true),
@@ -159,10 +194,7 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
                 ? "Vitaj v MegaTalent TOP Premium! Aktivujem prístup..."
                 : "Vitaj v MegaTalent Premium! Aktivujem prístup...",
             });
-            const next = new URLSearchParams(searchParams);
-            next.delete("success");
-            next.delete("tier");
-            setSearchParams(next, { replace: true });
+            // URL params already stripped synchronously above.
           } else if (pending && !reloadFlag) {
             toast({
               title: "Pokračujem v aktivácii",
