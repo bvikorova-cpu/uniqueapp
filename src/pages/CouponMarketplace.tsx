@@ -145,8 +145,9 @@ const CouponMarketplace = () => {
   const checkCurrentUser = async () => { const { data: { user } } = await supabase.auth.getUser(); setCurrentUserId(user?.id || null); };
 
   const loadCoupons = async () => {
-    const { data, error } = await supabase.from('coupon_listings').select('*').eq('is_active', true).order('created_at', { ascending: false });
-    if (!error) setCoupons(data || []);
+    // Use SECURITY DEFINER function so discount_code is never exposed to non-buyers
+    const { data, error } = await supabase.rpc('get_public_coupon_listings');
+    if (!error) setCoupons((data as any) || []);
   };
 
   const loadMyOrders = async () => {
