@@ -73,6 +73,36 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
     return !!data.session;
   };
 
+  /**
+   * Synchronously strip Stripe redirect params (success, tier, canceled,
+   * session_id) from the URL using history.replaceState. This runs BEFORE any
+   * async work, so a user pressing back/forward or refreshing immediately after
+   * payment will never see the activation flow re-trigger.
+   *
+   * Using window.history directly (instead of setSearchParams) is intentional:
+   *  - it's synchronous (no React render cycle delay)
+   *  - it doesn't add a history entry (replace, not push)
+   *  - it preserves any other unrelated query params the user might have
+   */
+  const stripStripeParamsFromUrl = () => {
+    try {
+      const url = new URL(window.location.href);
+      let mutated = false;
+      for (const key of ["success", "tier", "canceled", "session_id"]) {
+        if (url.searchParams.has(key)) {
+          url.searchParams.delete(key);
+          mutated = true;
+        }
+      }
+      if (mutated) {
+        const newUrl = url.pathname + (url.searchParams.toString() ? `?${url.searchParams}` : "") + url.hash;
+        window.history.replaceState(window.history.state, "", newUrl);
+      }
+    } catch (e) {
+      console.warn("Failed to strip Stripe params from URL", e);
+    }
+  };
+
   const runCheck = async (): Promise<boolean> => {
     if (!user) return false;
     // Admins bypass
