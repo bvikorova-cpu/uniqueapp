@@ -124,10 +124,48 @@ Deno.serve(async (req) => {
     });
     if (rpcErr) console.error("add_user_points failed", rpcErr);
 
+    // #9 Streak bonus — award once per day on the first view that completes a milestone
+    let streakBonus = 0;
+    let streakDays = 0;
+    try {
+      // count today's views (just inserted = 1 means this is the first today)
+      const { count: todayViews } = await supabase
+        .from("rewarded_ad_views")
+        .select("*", { count: "exact", head: true })
+        .eq("user_id", user.id)
+        .eq("view_date", today);
+
+      if ((todayViews ?? 0) === 1) {
+        const { data: streakData } = await supabase.rpc("compute_xp_streak", { p_user_id: user.id });
+        streakDays = Number(streakData ?? 0);
+        const milestoneBonus: Record<number, number> = { 3: 10, 7: 30, 14: 75, 30: 200 };
+        streakBonus = milestoneBonus[streakDays] ?? 0;
+
+        if (streakBonus > 0) {
+          await supabase.rpc("add_user_points", {
+            p_user_id: user.id,
+            p_points: streakBonus,
+            p_activity_type: `xp_streak_${streakDays}d`,
+          });
+          await supabase.from("notifications").insert({
+            user_id: user.id,
+            title: `🔥 ${streakDays}-day streak!`,
+            message: `You earned a +${streakBonus} XP streak bonus. Keep it up!`,
+            type: "xp_streak_bonus",
+            is_read: false,
+          });
+        }
+      }
+    } catch (e) {
+      console.error("streak bonus failed", e);
+    }
+
     return new Response(
       JSON.stringify({
         success: true,
         xp_awarded: XP_PER_VIEW,
+        streak_days: streakDays,
+        streak_bonus: streakBonus,
         remaining: null, // unlimited
       }),
       {
