@@ -117,6 +117,7 @@ export default function Rewards() {
               </div>
               <div className="space-y-6">
                 <WeeklyXPLeaderboard />
+                <LastWeekWinners />
                 <StreakHeatmap userId={user.id} />
                 <RewardHistoryTimeline userId={user.id} />
               </div>
