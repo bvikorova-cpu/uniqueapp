@@ -104,17 +104,15 @@ export default function MedicalDetail() {
 
   const fetchDonations = async () => {
     try {
+      // Use SECURITY DEFINER function so donor_email is never exposed publicly
       const { data, error } = await supabase
-        .from('campaign_donations')
-        .select('*')
-        .eq('campaign_id', id)
-        .eq('campaign_type', 'medical')
-        .eq('status', 'completed')
-        .order('created_at', { ascending: false })
-        .limit(10);
+        .rpc('get_public_campaign_donations', { _campaign_id: id });
 
       if (error) throw error;
-      setDonations(data || []);
+      const filtered = (data || [])
+        .filter((d: any) => d.campaign_type === 'medical')
+        .slice(0, 10);
+      setDonations(filtered);
     } catch (error) {
       console.error('Error fetching donations:', error);
     }

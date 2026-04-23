@@ -41748,6 +41748,19 @@ export type Database = {
         }
         Relationships: []
       }
+      public_instructor_profiles: {
+        Row: {
+          bio: string | null
+          created_at: string | null
+          expertise: string[] | null
+          id: string | null
+          profile_image_url: string | null
+          total_students: number | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Relationships: []
+      }
       public_profiles_safe: {
         Row: {
           avatar_3d_url: string | null
@@ -41919,6 +41932,10 @@ export type Database = {
       generate_story_share_code: { Args: never; Returns: string }
       get_affiliate_reward_eur: { Args: { _user_id: string }; Returns: number }
       get_auth_uid: { Args: never; Returns: string }
+      get_coupon_discount_code: {
+        Args: { _listing_id: string }
+        Returns: string
+      }
       get_current_user_id: { Args: never; Returns: string }
       get_follower_count: { Args: { user_id: string }; Returns: number }
       get_following_count: { Args: { user_id: string }; Returns: number }
@@ -41952,6 +41969,56 @@ export type Database = {
           id: string
           job_type: string
           payload: Json
+        }[]
+      }
+      get_public_campaign_donations: {
+        Args: { _campaign_id?: string }
+        Returns: {
+          amount: number
+          campaign_id: string
+          campaign_type: string
+          created_at: string
+          donor_name: string
+          id: string
+          is_anonymous: boolean
+          is_monthly: boolean
+          message: string
+          status: string
+        }[]
+      }
+      get_public_coupon_listings: {
+        Args: never
+        Returns: {
+          category: string
+          coupon_type: string
+          created_at: string
+          description: string
+          expiry_date: string
+          id: string
+          image_url: string
+          is_active: boolean
+          is_digital: boolean
+          is_sold: boolean
+          original_value: number
+          selling_price: number
+          store_name: string
+          terms_conditions: string
+          title: string
+          updated_at: string
+          user_id: string
+        }[]
+      }
+      get_public_instructor_profiles: {
+        Args: never
+        Returns: {
+          bio: string
+          created_at: string
+          expertise: string[]
+          id: string
+          profile_image_url: string
+          total_students: number
+          updated_at: string
+          user_id: string
         }[]
       }
       get_random_questions: {
