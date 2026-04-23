@@ -38,14 +38,18 @@ const formatCountdown = (ms: number) => {
   return { days, hours, minutes, seconds };
 };
 
+// Server resets at UTC Monday 00:00 (matches SQL date_trunc('week', now()) which uses UTC).
 const getNextResetDate = () => {
   const now = new Date();
-  const nextMonday = new Date(now);
-  const day = now.getDay();
-  const daysUntil = day === 0 ? 1 : 8 - day;
-  nextMonday.setDate(now.getDate() + daysUntil);
-  nextMonday.setHours(0, 0, 0, 0);
-  return nextMonday;
+  const utcDay = now.getUTCDay(); // 0 = Sun
+  const daysUntil = utcDay === 0 ? 1 : 8 - utcDay;
+  const next = new Date(Date.UTC(
+    now.getUTCFullYear(),
+    now.getUTCMonth(),
+    now.getUTCDate() + daysUntil,
+    0, 0, 0, 0
+  ));
+  return next;
 };
 
 export const WeeklyXPLeaderboard = () => {

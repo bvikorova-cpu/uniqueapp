@@ -41101,6 +41101,39 @@ export type Database = {
         }
         Relationships: []
       }
+      weekly_xp_winners: {
+        Row: {
+          bonus_xp: number
+          created_at: string
+          id: string
+          rank: number
+          user_id: string
+          view_count: number
+          week_start: string
+          weekly_xp: number
+        }
+        Insert: {
+          bonus_xp?: number
+          created_at?: string
+          id?: string
+          rank: number
+          user_id: string
+          view_count: number
+          week_start: string
+          weekly_xp: number
+        }
+        Update: {
+          bonus_xp?: number
+          created_at?: string
+          id?: string
+          rank?: number
+          user_id?: string
+          view_count?: number
+          week_start?: string
+          weekly_xp?: number
+        }
+        Relationships: []
+      }
       wellness_ai_sleep_stories: {
         Row: {
           audio_url: string | null
@@ -41818,6 +41851,7 @@ export type Database = {
         Args: { p_activity_type: string; p_points: number; p_user_id: string }
         Returns: undefined
       }
+      bucket_30s: { Args: { ts: string }; Returns: number }
       cache_get: { Args: { p_key: string }; Returns: Json }
       cache_invalidate_by_tag: { Args: { p_tag: string }; Returns: number }
       cache_set: {
@@ -41887,6 +41921,19 @@ export type Database = {
       get_current_user_id: { Args: never; Returns: string }
       get_follower_count: { Args: { user_id: string }; Returns: number }
       get_following_count: { Args: { user_id: string }; Returns: number }
+      get_last_week_xp_winners: {
+        Args: never
+        Returns: {
+          avatar_url: string
+          bonus_xp: number
+          display_name: string
+          rank: number
+          user_id: string
+          view_count: number
+          week_start: string
+          weekly_xp: number
+        }[]
+      }
       get_next_20_cet: { Args: { is_weekly?: boolean }; Returns: string }
       get_next_job: {
         Args: { p_job_types?: string[] }
@@ -42079,6 +42126,7 @@ export type Database = {
       }
       reset_best_friend_monthly_messages: { Args: never; Returns: undefined }
       reset_psychology_monthly_messages: { Args: never; Returns: undefined }
+      snapshot_weekly_xp_winners: { Args: never; Returns: number }
       spend_brain_duel_credits: {
         Args: { p_amount: number; p_user_id: string }
         Returns: undefined
