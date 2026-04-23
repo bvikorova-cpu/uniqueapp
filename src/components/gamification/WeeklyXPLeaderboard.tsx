@@ -69,7 +69,30 @@ export const WeeklyXPLeaderboard = () => {
     refetchInterval: 60_000,
   });
 
-  const countdown = formatCountdown(msUntilNextMonday());
+  const [now, setNow] = useState(Date.now());
+  useEffect(() => {
+    const id = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  const resetDate = getNextResetDate();
+  const countdown = formatCountdown(resetDate.getTime() - now);
+  const resetLabel = resetDate.toLocaleString(undefined, {
+    weekday: "long",
+    day: "numeric",
+    month: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+
+  const TimeBox = ({ value, label }: { value: number; label: string }) => (
+    <div className="flex flex-col items-center min-w-[44px] px-2 py-1.5 rounded-lg bg-background/60 border border-primary/20">
+      <span className="text-lg font-black tabular-nums text-primary leading-none">
+        {String(value).padStart(2, "0")}
+      </span>
+      <span className="text-[9px] uppercase tracking-wider text-muted-foreground mt-0.5">{label}</span>
+    </div>
+  );
 
   return (
     <Card className="bg-gradient-to-br from-primary/5 to-purple-500/5 border-primary/20">
@@ -80,9 +103,31 @@ export const WeeklyXPLeaderboard = () => {
             Weekly XP Leaderboard
           </CardTitle>
           <Badge variant="outline" className="text-[10px]">
-            <Flame className="h-3 w-3 mr-1 text-orange-500" />
-            Resets in {countdown}
+            <RotateCcw className="h-3 w-3 mr-1 text-orange-500" />
+            Auto-reset every Monday 00:00
           </Badge>
+        </div>
+
+        <div className="mt-3 p-3 rounded-xl bg-gradient-to-r from-orange-500/10 via-amber-500/10 to-yellow-500/10 border border-orange-400/20">
+          <div className="flex items-center justify-between flex-wrap gap-3">
+            <div className="flex items-center gap-2">
+              <Clock className="h-4 w-4 text-orange-500" />
+              <div>
+                <p className="text-xs font-bold">Next reset</p>
+                <p className="text-[10px] text-muted-foreground capitalize">{resetLabel}</p>
+              </div>
+            </div>
+            <div className="flex gap-1.5">
+              <TimeBox value={countdown.days} label="days" />
+              <TimeBox value={countdown.hours} label="hrs" />
+              <TimeBox value={countdown.minutes} label="min" />
+              <TimeBox value={countdown.seconds} label="sec" />
+            </div>
+          </div>
+          <p className="text-[10px] text-muted-foreground mt-2 flex items-center gap-1">
+            <Flame className="h-3 w-3 text-orange-500" />
+            Top 3 each week earn bonus XP. Rankings reset every Monday — fresh chance to win!
+          </p>
         </div>
       </CardHeader>
       <CardContent className="space-y-2">
