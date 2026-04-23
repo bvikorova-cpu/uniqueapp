@@ -76,11 +76,11 @@ export const DailyXPVideoReward = ({ userId }: DailyXPVideoRewardProps) => {
 
   const claimXP = async () => {
     setIsWatching(false);
-    
+
     try {
       const today = new Date().toISOString().split('T')[0];
-      
-      // Insert daily XP claim
+
+      // Insert XP claim (table allows unlimited claims per day now).
       const { error: claimError } = await supabase
         .from("daily_xp_claims")
         .insert({
@@ -101,19 +101,23 @@ export const DailyXPVideoReward = ({ userId }: DailyXPVideoRewardProps) => {
 
       if (pointsError) throw pointsError;
 
-      setClaimedToday(true);
-      setCanClaim(false);
       setTotalXP(prev => prev + 1);
-      
+
       queryClient.invalidateQueries({ queryKey: ["gamification", userId] });
       queryClient.invalidateQueries({ queryKey: ["leaderboard"] });
 
       toast({
         title: "🎉 +1 XP!",
-        description: "You earned 1 XP for watching the ad!",
+        description: "Watch another ad to earn more — no daily limit!",
       });
 
-      setTimeout(() => setShowAdDialog(false), 1500);
+      setTimeout(() => {
+        setShowAdDialog(false);
+        // Reset so the user can immediately watch another ad.
+        setCanClaim(true);
+        setClaimedToday(false);
+        setAdProgress(0);
+      }, 1500);
     } catch (error: any) {
       toast({
         title: "Error",
