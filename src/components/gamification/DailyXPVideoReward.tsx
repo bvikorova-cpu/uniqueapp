@@ -35,20 +35,10 @@ export const DailyXPVideoReward = ({ userId }: DailyXPVideoRewardProps) => {
 
   const checkDailyClaim = async () => {
     if (!userId) return;
-    
+
     setIsLoading(true);
     try {
-      const today = new Date().toISOString().split('T')[0];
-      
-      // Check if already claimed today
-      const { data: claim } = await supabase
-        .from("daily_xp_claims")
-        .select("*")
-        .eq("user_id", userId)
-        .eq("claim_date", today)
-        .single();
-
-      // Get total XP earned from video ads
+      // Unlimited XP — fetch lifetime total but never block claiming.
       const { data: totalClaims } = await supabase
         .from("daily_xp_claims")
         .select("xp_earned")
@@ -57,8 +47,8 @@ export const DailyXPVideoReward = ({ userId }: DailyXPVideoRewardProps) => {
       const total = totalClaims?.reduce((sum, c) => sum + c.xp_earned, 0) || 0;
       setTotalXP(total);
 
-      setClaimedToday(!!claim);
-      setCanClaim(!claim);
+      setClaimedToday(false);
+      setCanClaim(true);
     } catch (error) {
       setCanClaim(true);
     } finally {
