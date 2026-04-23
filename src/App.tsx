@@ -63,6 +63,7 @@ import {
   Subscription,
   
   PremiumStore,
+  Premium,
   AICreditsStore,
   MysteryBox,
   Shop,
@@ -500,6 +501,7 @@ const App = () => {
                         <Route path="/rewards" element={<Rewards />} />
                         <Route path="/generate-courses" element={<GenerateCourses />} />
                         <Route path="/premium-store" element={<PremiumStore />} />
+                        <Route path="/premium" element={<Premium />} />
                         <Route path="/ai-mentor" element={<AIMentor />} />
                         <Route path="/ai-mentor/:area" element={<AIMentorChat />} />
                         <Route path="/content-studio" element={<ContentStudio />} />
