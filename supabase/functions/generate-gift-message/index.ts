@@ -233,6 +233,10 @@ serve(async (req) => {
         grateful: "Write a deeply grateful, appreciative thank you.",
       };
       userPrompt = `${styleMap[style] || styleMap.heartfelt} Keep it 2-3 sentences. ${customPrompt || ""}`;
+    } else if (type) {
+      // Unknown type → generic fallback (so we never 404 the frontend)
+      systemPrompt = "You are a helpful AI assistant. Provide a clear, useful, well-structured response.";
+      userPrompt = customPrompt || `Help with: ${type}`;
     } else {
       const stylePrompts: Record<string, string> = {
         romantic: "Write a sweet, loving, and romantic message.",
