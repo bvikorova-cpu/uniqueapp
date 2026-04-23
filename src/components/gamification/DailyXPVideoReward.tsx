@@ -80,7 +80,25 @@ export const DailyXPVideoReward = ({ userId }: DailyXPVideoRewardProps) => {
     try {
       const today = new Date().toISOString().split('T')[0];
 
-      // Insert XP claim (table allows unlimited claims per day now).
+      // 30s soft throttle (anti-fraud)
+      const cutoff = new Date(Date.now() - 30_000).toISOString();
+      const { data: recent } = await supabase
+        .from("daily_xp_claims")
+        .select("created_at")
+        .eq("user_id", userId)
+        .gte("created_at", cutoff)
+        .limit(1);
+
+      if (recent && recent.length > 0) {
+        toast({
+          title: "Slow down ⏱️",
+          description: "Wait 30 seconds between claims.",
+          variant: "destructive",
+        });
+        setShowAdDialog(false);
+        return;
+      }
+
       const { error: claimError } = await supabase
         .from("daily_xp_claims")
         .insert({
@@ -92,7 +110,6 @@ export const DailyXPVideoReward = ({ userId }: DailyXPVideoRewardProps) => {
 
       if (claimError) throw claimError;
 
-      // Add XP points
       const { error: pointsError } = await supabase.rpc('add_user_points', {
         p_user_id: userId,
         p_points: 1,
@@ -105,6 +122,7 @@ export const DailyXPVideoReward = ({ userId }: DailyXPVideoRewardProps) => {
 
       queryClient.invalidateQueries({ queryKey: ["gamification", userId] });
       queryClient.invalidateQueries({ queryKey: ["leaderboard"] });
+      queryClient.invalidateQueries({ queryKey: ["weekly-xp-leaderboard"] });
 
       toast({
         title: "🎉 +1 XP!",
@@ -113,7 +131,6 @@ export const DailyXPVideoReward = ({ userId }: DailyXPVideoRewardProps) => {
 
       setTimeout(() => {
         setShowAdDialog(false);
-        // Reset so the user can immediately watch another ad.
         setCanClaim(true);
         setClaimedToday(false);
         setAdProgress(0);
