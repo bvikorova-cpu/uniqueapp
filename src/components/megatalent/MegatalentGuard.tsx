@@ -25,6 +25,7 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
   const [checking, setChecking] = useState(true);
   const [subscribed, setSubscribed] = useState(false);
   const [checkoutLoading, setCheckoutLoading] = useState<null | "premium" | "top_premium">(null);
+  const [activating, setActivating] = useState(false);
   const successHandledRef = useRef(false);
 
   const runCheck = async (): Promise<boolean> => {
@@ -74,32 +75,41 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
         if (success && !successHandledRef.current) {
           successHandledRef.current = true;
           toast({
-            title: "Payment successful! 🎉",
+            title: "Platba úspešná! 🎉",
             description: tier === "top_premium"
-              ? "Welcome to MegaTalent TOP Premium!"
-              : "Welcome to MegaTalent Premium!",
+              ? "Vitaj v MegaTalent TOP Premium! Aktivujem prístup..."
+              : "Vitaj v MegaTalent Premium! Aktivujem prístup...",
           });
 
-          // Stripe needs a moment to propagate the active subscription.
-          // Poll up to 5x with 1.5s delay.
-          let ok = false;
-          for (let i = 0; i < 5; i++) {
-            ok = await runCheck();
-            if (ok) break;
-            await new Promise((r) => setTimeout(r, 1500));
-          }
-          setSubscribed(ok);
-
-          // strip query params either way
+          // Strip query params immediately so a manual refresh doesn't re-trigger this
           const next = new URLSearchParams(searchParams);
           next.delete("success");
           next.delete("tier");
           setSearchParams(next, { replace: true });
 
-          if (!ok) {
+          // Show "Activating..." UI while we poll Stripe (subscription propagation can take a few seconds)
+          setActivating(true);
+          setChecking(false);
+
+          // Poll up to 8x with 1.5s delay (12s total) — first check is immediate.
+          let ok = false;
+          for (let i = 0; i < 8; i++) {
+            ok = await runCheck();
+            if (ok) break;
+            await new Promise((r) => setTimeout(r, 1500));
+          }
+          setActivating(false);
+          setSubscribed(ok);
+
+          if (ok) {
             toast({
-              title: "Still activating...",
-              description: "Your payment was received but the subscription isn't active yet. Please refresh in a moment.",
+              title: "Prístup aktivovaný ✅",
+              description: "Vitaj v MegaTalent súťaži!",
+            });
+          } else {
+            toast({
+              title: "Stále aktivujem...",
+              description: "Platba prijatá, ale predplatné ešte nie je aktívne. Skús to o pár sekúnd znova.",
               variant: "destructive",
             });
           }
@@ -146,8 +156,26 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="flex flex-col items-center gap-4">
           <Loader2 className="h-12 w-12 animate-spin text-primary" />
-          <p className="text-muted-foreground">Checking MegaTalent access...</p>
+          <p className="text-muted-foreground">Kontrolujem prístup do MegaTalent...</p>
         </div>
+      </div>
+    );
+  }
+
+  if (activating) {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-background via-background to-primary/5">
+        <Card className="max-w-md w-full border-2 border-primary/40 shadow-2xl">
+          <CardHeader className="text-center space-y-3">
+            <div className="mx-auto w-16 h-16 rounded-full bg-primary/15 flex items-center justify-center">
+              <Loader2 className="w-8 h-8 text-primary animate-spin" />
+            </div>
+            <CardTitle className="text-2xl">Aktivujem tvoje predplatné...</CardTitle>
+            <CardDescription className="text-base">
+              Platba prijatá. Stripe potrebuje pár sekúnd na aktiváciu — automaticky ťa presmerujeme do MegaTalentu, len čo bude pripravené.
+            </CardDescription>
+          </CardHeader>
+        </Card>
       </div>
     );
   }
