@@ -5993,6 +5993,13 @@ export type Database = {
             referencedRelation: "businesses"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "business_orders_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       business_products: {
@@ -6043,6 +6050,13 @@ export type Database = {
             referencedRelation: "businesses"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "business_products_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       business_reviews: {
@@ -6079,6 +6093,13 @@ export type Database = {
             columns: ["business_id"]
             isOneToOne: false
             referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "business_reviews_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses_public"
             referencedColumns: ["id"]
           },
         ]
@@ -6126,6 +6147,13 @@ export type Database = {
             columns: ["business_id"]
             isOneToOne: false
             referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "business_subscriptions_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses_public"
             referencedColumns: ["id"]
           },
         ]
@@ -35887,6 +35915,13 @@ export type Database = {
             referencedRelation: "sports_tipsters"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "sports_platform_earnings_tipster_id_fkey"
+            columns: ["tipster_id"]
+            isOneToOne: false
+            referencedRelation: "sports_tipsters_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       sports_predictions: {
@@ -35959,6 +35994,13 @@ export type Database = {
             referencedRelation: "sports_tipsters"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "sports_predictions_tipster_id_fkey"
+            columns: ["tipster_id"]
+            isOneToOne: false
+            referencedRelation: "sports_tipsters_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       sports_purchased_tips: {
@@ -36026,6 +36068,13 @@ export type Database = {
             referencedRelation: "sports_tipsters"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "sports_tipster_followers_tipster_id_fkey"
+            columns: ["tipster_id"]
+            isOneToOne: false
+            referencedRelation: "sports_tipsters_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       sports_tipster_subscriptions: {
@@ -36071,6 +36120,13 @@ export type Database = {
             columns: ["tipster_id"]
             isOneToOne: false
             referencedRelation: "sports_tipsters"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sports_tipster_subscriptions_tipster_id_fkey"
+            columns: ["tipster_id"]
+            isOneToOne: false
+            referencedRelation: "sports_tipsters_public"
             referencedColumns: ["id"]
           },
         ]
@@ -41701,7 +41757,74 @@ export type Database = {
             referencedRelation: "businesses"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "business_orders_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses_public"
+            referencedColumns: ["id"]
+          },
         ]
+      }
+      businesses_public: {
+        Row: {
+          category: string | null
+          cover_image_url: string | null
+          created_at: string | null
+          description: string | null
+          id: string | null
+          is_active: boolean | null
+          is_open_now: boolean | null
+          latitude_approx: number | null
+          logo_url: string | null
+          longitude_approx: number | null
+          name: string | null
+          opening_hours: Json | null
+          owner_id: string | null
+          review_count: number | null
+          total_rating: number | null
+          unique_url_slug: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          category?: string | null
+          cover_image_url?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string | null
+          is_active?: boolean | null
+          is_open_now?: boolean | null
+          latitude_approx?: never
+          logo_url?: string | null
+          longitude_approx?: never
+          name?: string | null
+          opening_hours?: Json | null
+          owner_id?: string | null
+          review_count?: number | null
+          total_rating?: number | null
+          unique_url_slug?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          category?: string | null
+          cover_image_url?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string | null
+          is_active?: boolean | null
+          is_open_now?: boolean | null
+          latitude_approx?: never
+          logo_url?: string | null
+          longitude_approx?: never
+          name?: string | null
+          opening_hours?: Json | null
+          owner_id?: string | null
+          review_count?: number | null
+          total_rating?: number | null
+          unique_url_slug?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
       }
       confessions_public: {
         Row: {
@@ -41840,6 +41963,66 @@ export type Database = {
           sessions_played: number | null
           total_score: number | null
           user_id: string | null
+        }
+        Relationships: []
+      }
+      sports_tipsters_public: {
+        Row: {
+          avatar_url: string | null
+          badge: string | null
+          bio: string | null
+          correct_predictions: number | null
+          created_at: string | null
+          display_name: string | null
+          followers_count: number | null
+          id: string | null
+          roi: number | null
+          sport_specialization: string | null
+          status: string | null
+          subscription_price: number | null
+          tip_price: number | null
+          total_predictions: number | null
+          updated_at: string | null
+          user_id: string | null
+          win_rate: number | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          badge?: string | null
+          bio?: string | null
+          correct_predictions?: number | null
+          created_at?: string | null
+          display_name?: string | null
+          followers_count?: number | null
+          id?: string | null
+          roi?: number | null
+          sport_specialization?: string | null
+          status?: string | null
+          subscription_price?: number | null
+          tip_price?: number | null
+          total_predictions?: number | null
+          updated_at?: string | null
+          user_id?: string | null
+          win_rate?: number | null
+        }
+        Update: {
+          avatar_url?: string | null
+          badge?: string | null
+          bio?: string | null
+          correct_predictions?: number | null
+          created_at?: string | null
+          display_name?: string | null
+          followers_count?: number | null
+          id?: string | null
+          roi?: number | null
+          sport_specialization?: string | null
+          status?: string | null
+          subscription_price?: number | null
+          tip_price?: number | null
+          total_predictions?: number | null
+          updated_at?: string | null
+          user_id?: string | null
+          win_rate?: number | null
         }
         Relationships: []
       }
