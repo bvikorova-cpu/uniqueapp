@@ -55,6 +55,48 @@ Deno.serve(async (req) => {
 
     const today = new Date().toISOString().split("T")[0];
 
+    // Soft throttle: enforce 30s cooldown between claims (anti-fraud, prevents bot spam)
+    const THROTTLE_SECONDS = 30;
+    const cutoff = new Date(Date.now() - THROTTLE_SECONDS * 1000).toISOString();
+    const { data: recent } = await supabase
+      .from("rewarded_ad_views")
+      .select("created_at")
+      .eq("user_id", user.id)
+      .gte("created_at", cutoff)
+      .order("created_at", { ascending: false })
+      .limit(1);
+
+    if (recent && recent.length > 0) {
+      const elapsed = Math.floor((Date.now() - new Date(recent[0].created_at).getTime()) / 1000);
+      const wait = Math.max(1, THROTTLE_SECONDS - elapsed);
+      return new Response(
+        JSON.stringify({ error: "Too fast", retry_after: wait }),
+        { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Soft fraud detection: count today's views (no block, just flag)
+    const { count: todayCount } = await supabase
+      .from("rewarded_ad_views")
+      .select("*", { count: "exact", head: true })
+      .eq("user_id", user.id)
+      .eq("view_date", today);
+
+    const SUSPICIOUS_THRESHOLD = 500;
+    if ((todayCount ?? 0) >= SUSPICIOUS_THRESHOLD) {
+      await supabase
+        .from("rewarded_ad_fraud_flags")
+        .upsert(
+          {
+            user_id: user.id,
+            flag_date: today,
+            view_count: (todayCount ?? 0) + 1,
+            reason: `Exceeded ${SUSPICIOUS_THRESHOLD} views/day`,
+          },
+          { onConflict: "user_id,flag_date" }
+        );
+    }
+
     const { error: insertErr } = await supabase
       .from("rewarded_ad_views")
       .insert({
