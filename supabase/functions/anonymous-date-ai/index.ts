@@ -60,7 +60,6 @@ async function callAI(system: string, userMsg: string, jsonMode = false): Promis
       { role: "system", content: system },
       { role: "user", content: userMsg },
     ],
-    temperature: 0.85,
   };
   if (jsonMode) body.response_format = { type: "json_object" };
 

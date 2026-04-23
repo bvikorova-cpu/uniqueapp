@@ -66,8 +66,7 @@ export async function chatCompletion(options: AIRequestOptions): Promise<AIRespo
   const body: Record<string, unknown> = {
     model: options.model || AI_CONFIG.defaultModel,
     messages: options.messages,
-    max_tokens: options.maxTokens || AI_CONFIG.defaultMaxTokens,
-    temperature: options.temperature ?? AI_CONFIG.defaultTemperature,
+    max_completion_tokens: options.maxTokens || AI_CONFIG.defaultMaxTokens,
   };
   
   if (options.responseFormat === "json_object") {
@@ -196,7 +195,6 @@ export async function analyzeText(
     ],
     responseFormat: "json_object",
     maxTokens: 500,
-    temperature: 0.3,
   });
 }
 
@@ -275,7 +273,7 @@ export async function analyzeImage(
           ],
         },
       ],
-      max_tokens: 1000,
+      max_completion_tokens: 1000,
     }),
   });
 

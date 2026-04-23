@@ -26,7 +26,7 @@ serve(async (req) => {
           { role: "system", content: "You are a children's story writer. Write gentle, magical bedtime stories suitable for children ages 3-10. Keep stories warm, positive, and with happy endings. Use simple language." },
           { role: "user", content: `Write a bedtime story titled "${title || 'A Magical Adventure'}". ${prompt || ''}` },
         ],
-        max_tokens: 1500,
+        max_completion_tokens: 1500,
       }),
     });
 

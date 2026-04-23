@@ -47,8 +47,7 @@ Keep responses concise, engaging, and use emoji. Format advice with markdown. Be
       body: JSON.stringify({
         model: "gpt-5",
         messages: [systemMessage, ...messages.slice(-10)],
-        max_tokens: 500,
-        temperature: 0.8,
+        max_completion_tokens: 500,
       }),
     })
 

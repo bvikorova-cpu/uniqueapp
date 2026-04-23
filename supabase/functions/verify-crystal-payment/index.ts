@@ -133,7 +133,7 @@ Format as a step-by-step healing guide.`,
               { role: "system", content: "You are an expert crystal healer and energy practitioner. Provide detailed, personalized wellness content." },
               { role: "user", content: prompts[featureKey] || "Generate a crystal energy report." },
             ],
-            max_tokens: 2000,
+            max_completion_tokens: 2000,
           }),
         });
 

@@ -68,8 +68,7 @@ Generate 4 key_events, 3 relationships, 4 lessons, and 5 emotional themes. Make 
             content: "Generate a unique past life regression for me. Make it vivid, historically accurate, and deeply personal."
           }
         ],
-        temperature: 0.9,
-        max_tokens: 1500,
+        max_completion_tokens: 1500,
       }),
     });
 

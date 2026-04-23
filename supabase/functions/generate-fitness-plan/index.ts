@@ -129,8 +129,7 @@ IMPORTANT: Generate ALL ${days} days with varied workouts and meals. Include res
           { role: "system", content: "You are a professional fitness coach and nutritionist. Always respond with valid JSON only." },
           { role: "user", content: prompt },
         ],
-        temperature: 0.7,
-        max_tokens: 16000,
+        max_completion_tokens: 16000,
       }),
     });
 
