@@ -45,21 +45,23 @@ const TIER_PRODUCTS: Record<string, string[]> = {
   pet:            ["prod_TMxIAIiKlSWTef"],
   future_face:    ["prod_TN6N3EoTKAulED", "prod_TN6cn9F2NV3vo5"],
 
-  // Tiers without products yet — fall through to "any active sub"
-  psychology: [],
-  creator: [],
-  holographic: [],
-  lottery: [],
-  phobia: [],
-  skill_swap: [],
-  sports: [],
-  time_capsule: [],
-  time_reversal: [],
-  tipster: [],
-  analyzer: [],
-  astrology: [],
-  coloring: [],
-  wellness: [],
+  // Tiers gated by the universal "UniqueApp Premium – All Modules" subscription
+  // (prod_UO5XctMmRHmIpM, €9.99/month). Adding more product IDs here later
+  // enables module-specific premium tiers.
+  psychology:    ["prod_UO5XctMmRHmIpM"],
+  creator:       ["prod_UO5XctMmRHmIpM"],
+  holographic:   ["prod_UO5XctMmRHmIpM"],
+  lottery:       ["prod_UO5XctMmRHmIpM"],
+  phobia:        ["prod_UO5XctMmRHmIpM"],
+  skill_swap:    ["prod_UO5XctMmRHmIpM"],
+  sports:        ["prod_UO5XctMmRHmIpM"],
+  time_capsule:  ["prod_UO5XctMmRHmIpM"],
+  time_reversal: ["prod_UO5XctMmRHmIpM"],
+  tipster:       ["prod_UO5XctMmRHmIpM"],
+  analyzer:      ["prod_UO5XctMmRHmIpM"],
+  astrology:     ["prod_UO5XctMmRHmIpM"],
+  coloring:      ["prod_UO5XctMmRHmIpM"],
+  wellness:      ["prod_UO5XctMmRHmIpM"],
 };
 
 serve(async (req) => {

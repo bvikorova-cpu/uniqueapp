@@ -48,23 +48,42 @@ const CREDIT_PACKS: Record<string, { prices: Record<number, string>; successPath
     cancelPath: "/iq-platform?payment=canceled",
   },
   analyzer: {
-    // Vision Analyzer existing prices
-    prices: {} as Record<number, string>, // populated below from Stripe (price_data fallback works)
+    prices: {
+      10: "price_1TPJLxGaXSfGtYFtRTA10da3",
+      25: "price_1TPJLyGaXSfGtYFt43bltMZ4",
+      50: "price_1TPJLzGaXSfGtYFti6HMW0YE",
+      100: "price_1TPJM0GaXSfGtYFtng6TFukX",
+    },
     successPath: "/analyzer?payment=success&session_id={CHECKOUT_SESSION_ID}",
     cancelPath: "/analyzer?payment=canceled",
   },
   cooking: {
-    prices: {} as Record<number, string>,
+    prices: {
+      10: "price_1TPJM0GaXSfGtYFtB3lzN2mp",
+      25: "price_1TPJM1GaXSfGtYFthFsY16up",
+      50: "price_1TPJM2GaXSfGtYFtCTo0uRPg",
+      100: "price_1TPJM2GaXSfGtYFt3L149zZd",
+    },
     successPath: "/cooking?payment=success&session_id={CHECKOUT_SESSION_ID}",
     cancelPath: "/cooking?payment=canceled",
   },
   video_ad: {
-    prices: {} as Record<number, string>,
+    prices: {
+      10: "price_1TPJM3GaXSfGtYFtC5i9Zn9A",
+      25: "price_1TPJM4GaXSfGtYFthfHhDpTD",
+      50: "price_1TPJM5GaXSfGtYFttZadmLHY",
+      100: "price_1TPJM6GaXSfGtYFtmFAObbIW",
+    },
     successPath: "/video-ad-creator?payment=success&session_id={CHECKOUT_SESSION_ID}",
     cancelPath: "/video-ad-creator?payment=canceled",
   },
   astrology: {
-    prices: {} as Record<number, string>,
+    prices: {
+      10: "price_1TPJM7GaXSfGtYFtFM0wnBlx",
+      25: "price_1TPJM7GaXSfGtYFtoSp6pbJo",
+      50: "price_1TPJM8GaXSfGtYFtPLrK4IAj",
+      100: "price_1TPJM9GaXSfGtYFtXh9bup4F",
+    },
     successPath: "/astrology?payment=success&session_id={CHECKOUT_SESSION_ID}",
     cancelPath: "/astrology?payment=canceled",
   },
