@@ -164,13 +164,19 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
             <div className="mx-auto w-16 h-16 rounded-full bg-primary/15 flex items-center justify-center">
               <Lock className="w-8 h-8 text-primary" />
             </div>
-            <CardTitle className="text-2xl">MegaTalent Subscription Required</CardTitle>
+            <CardTitle className="text-2xl">Odomkni MegaTalent súťaž 🏆</CardTitle>
             <CardDescription className="text-base">
-              Get unlimited uploads, voting, prize eligibility and access to all categories.
-              Choose a plan to continue.
+              Nahrávaj fotky a videá, súťaž o peňažné ceny v 35+ kategóriách
+              a získaj viditeľnosť pred tisíckami fanúšikov. Predplatné spustíš za pár sekúnd.
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-3">
+          <CardContent className="space-y-4">
+            <ul className="text-sm space-y-1.5 bg-muted/40 rounded-lg p-3">
+              <li>✅ Neobmedzené uploady fotiek a videí</li>
+              <li>✅ Hlasovanie a Live Leaderboard</li>
+              <li>✅ Prístup ku všetkým AI Talent nástrojom</li>
+              <li>✅ Nárok na peňažné odmeny pre víťazov</li>
+            </ul>
             <Button
               size="lg"
               className="w-full justify-between"
@@ -181,7 +187,7 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
                 <Star className="h-4 w-4" /> Premium
               </span>
               <span className="font-bold">
-                {checkoutLoading === "premium" ? <Loader2 className="h-4 w-4 animate-spin" /> : "€10 / month"}
+                {checkoutLoading === "premium" ? <Loader2 className="h-4 w-4 animate-spin" /> : "€10 / mesiac"}
               </span>
             </Button>
             <Button
@@ -192,17 +198,17 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
               disabled={checkoutLoading !== null}
             >
               <span className="flex items-center gap-2">
-                <Star className="h-4 w-4 fill-current" /> TOP Premium
+                <Star className="h-4 w-4 fill-current" /> TOP Premium <span className="text-xs opacity-80">(2× váha hlasu)</span>
               </span>
               <span className="font-bold">
-                {checkoutLoading === "top_premium" ? <Loader2 className="h-4 w-4 animate-spin" /> : "€15 / month"}
+                {checkoutLoading === "top_premium" ? <Loader2 className="h-4 w-4 animate-spin" /> : "€15 / mesiac"}
               </span>
             </Button>
             <Button variant="outline" className="w-full" onClick={() => navigate("/")}>
-              Return Home
+              Späť na hlavnú stránku
             </Button>
             <p className="text-xs text-muted-foreground text-center pt-2">
-              Already paid? <button className="underline" onClick={() => window.location.reload()}>Refresh access</button>
+              Už si zaplatil? <button className="underline" onClick={() => window.location.reload()}>Obnoviť prístup</button>
             </p>
           </CardContent>
         </Card>
