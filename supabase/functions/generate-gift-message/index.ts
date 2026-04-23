@@ -213,6 +213,123 @@ serve(async (req) => {
       generic_ai:          "You are a helpful AI assistant. Provide a clear, useful response to the user's request.",
     };
 
+    // ─── IMAGE GENERATION BRANCH ───
+    // Routes media-generating proxies (paint-image, video-thumbnail, virtual-tryon, etc.)
+    // through Lovable AI Gateway (Nano Banana) and returns base64 data URL.
+    const IMAGE_TYPES: Record<string, string> = {
+      // proxyMap keys (snake_case from kebab-case function names)
+      generate_paint_image:        "Detailed acrylic painting, gallery quality, vivid colors, expressive brushwork.",
+      generate_paint_by_numbers:   "Paint-by-numbers template: clean black outlines on white, numbered regions, simple shapes.",
+      generate_video_thumbnail:    "High-CTR YouTube thumbnail, bold composition, dramatic lighting, expressive subject, vibrant colors.",
+      generate_tattoo:             "Detailed tattoo design on white background, fine linework, ready for stencil.",
+      generate_teacher_coloring:   "Black-and-white coloring page, clean outlines, kid-friendly, no shading.",
+      generate_collectible:        "Digital collectible artwork, fantasy/sci-fi style, premium card art quality, intricate detail.",
+      generate_ai_room_design:     "Photorealistic interior room design, magazine quality, natural lighting.",
+      generate_castle_panorama:    "Panoramic 360° castle scene, cinematic lighting, ultra-detailed.",
+      generate_escape_room_panorama:"360° escape-room panorama, dramatic lighting, hidden clues.",
+      generate_virtual_tour:       "Photorealistic 360° panoramic interior view, real-estate quality.",
+      bulk_generate_panoramas:     "Cinematic 360° panorama, ultra-detailed environment.",
+      generate_age_progression:    "Photorealistic portrait showing realistic aging progression, soft natural lighting.",
+      generate_fashion_design:     "Editorial fashion photograph of the described outfit, high-fashion lighting.",
+      generate_story_video:        "Cinematic still frame from the described story scene, film grade.",
+      generate_video_ad:           "Cinematic ad keyframe, brand-quality lighting and composition.",
+      virtual_tryon:               "Photorealistic person wearing the described outfit, full body, studio lighting.",
+      photo_ai_upscaling:          "Ultra-high-resolution photorealistic version of the described image, sharp detail.",
+      restore_old_photo:           "Restored vintage photograph, repaired damage, original colors preserved.",
+      photo_colorization_pro:      "Naturally colorized version of the described black-and-white photo.",
+      photo_face_enhancement:      "Enhanced photorealistic portrait with improved facial detail, soft natural lighting.",
+      photo_background_removal:    "Subject isolated on clean white background, sharp cut-out edges.",
+      photo_damage_detection:      "Photorealistic comparison highlighting damaged regions of an old photograph.",
+      home_virtual_staging:        "Photorealistic virtually-staged interior with stylish furniture, magazine quality.",
+      home_color_palette:          "Interior design mood-board showing a cohesive color palette and material samples.",
+      home_furniture_recommender:  "Photorealistic interior arrangement with recommended furniture pieces.",
+      antique_ar_room:             "Photorealistic AR preview of the antique displayed in a tasteful room setting.",
+      antique_museum_display:      "Museum-grade display of the antique in an elegant exhibition case.",
+      beauty_nail_art:             "High-resolution nail art design, manicure photography, studio lighting.",
+      beauty_transformation:       "Photorealistic before/after beauty transformation portrait.",
+      beauty_tutorial:             "Step-by-step beauty tutorial visual reference, soft studio lighting.",
+      capsule_wardrobe:            "Flat-lay editorial photo of a coordinated capsule wardrobe.",
+      outfit_recommender:          "Editorial flat-lay or full-body shot of the recommended outfit.",
+      // direct/legacy short aliases
+      paint_image:        "Detailed acrylic painting, gallery quality, vivid colors.",
+      paint_by_numbers:   "Paint-by-numbers template: clean outlines, numbered regions.",
+      video_thumbnail:    "High-CTR thumbnail, bold composition, dramatic lighting.",
+      tattoo:             "Detailed tattoo design on white background, fine linework.",
+      teacher_coloring:   "Black-and-white coloring page, clean outlines.",
+      coloring_page:      "Black-and-white coloring page, clean outlines.",
+      collectible:        "Digital collectible artwork, premium card art.",
+      ai_room:            "Photorealistic interior room design.",
+      castle_panorama:    "Panoramic 360° castle scene.",
+      escape_panorama:    "360° escape-room scene.",
+      escape_room_panorama:"360° escape-room panorama.",
+      virtual_tour:       "Photorealistic 360° panoramic interior view.",
+      future_face:        "Photorealistic portrait of the described future face.",
+      age_progression:    "Photorealistic portrait with realistic aging.",
+      fashion_design:     "Editorial fashion photograph of the outfit.",
+      avatar:             "Stylized avatar portrait, clean background.",
+      photo_concept:      "Cinematic photo composition.",
+      generate_image:     "High-quality photorealistic image as described.",
+    };
+
+    if (IMAGE_TYPES[type]) {
+      const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+      if (!LOVABLE_API_KEY) {
+        return new Response(JSON.stringify({ error: "LOVABLE_API_KEY not configured" }), {
+          status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      const stylePrefix = IMAGE_TYPES[type];
+      const subject = customPrompt || reqBody.title || reqBody.description || `a ${type.replace(/_/g, " ")}`;
+      const imgPrompt = `${stylePrefix} Subject: ${subject}`;
+
+      const imgResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${LOVABLE_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: "google/gemini-2.5-flash-image",
+          messages: [{ role: "user", content: imgPrompt }],
+          modalities: ["image", "text"],
+        }),
+      });
+
+      if (!imgResp.ok) {
+        if (imgResp.status === 429) {
+          return new Response(JSON.stringify({ error: "Rate limits exceeded, try again later." }), {
+            status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
+        if (imgResp.status === 402) {
+          return new Response(JSON.stringify({ error: "AI credits exhausted. Add funds in Settings → Workspace → Usage." }), {
+            status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
+        const errText = await imgResp.text();
+        console.error("Image gen error:", errText);
+        return new Response(JSON.stringify({ error: "Image generation failed" }), {
+          status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      const imgData = await imgResp.json();
+      const imageUrl = imgData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+      if (!imageUrl) {
+        return new Response(JSON.stringify({ error: "No image returned from model" }), {
+          status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      await __deduct().catch((e) => console.error("deduct failed:", e));
+      return new Response(JSON.stringify({
+        imageUrl,
+        templateImageUrl: imageUrl,
+        url: imageUrl,
+        image: imageUrl,
+      }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+
     if (UNIVERSAL_PROMPTS[type]) {
       systemPrompt = UNIVERSAL_PROMPTS[type];
       userPrompt = customPrompt || `Generate the ${type} as requested.`;
