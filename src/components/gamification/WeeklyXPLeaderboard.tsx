@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Trophy, Crown, Medal, Award, Sparkles, Flame, Clock, RotateCcw } from "lucide-react";
+import { Trophy, Crown, Medal, Award, Sparkles, Flame, Clock, RotateCcw, User } from "lucide-react";
 import { motion } from "framer-motion";
 
 interface LeaderboardRow {
@@ -13,6 +13,13 @@ interface LeaderboardRow {
   avatar_url: string | null;
   weekly_xp: number;
   view_count: number;
+}
+
+interface MyRankRow {
+  rank: number;
+  weekly_xp: number;
+  view_count: number;
+  total_participants: number;
 }
 
 const getRankIcon = (rank: number) => {
@@ -62,6 +69,21 @@ export const WeeklyXPLeaderboard = () => {
     },
     refetchInterval: 60_000,
   });
+
+  const { data: myRank } = useQuery<MyRankRow | null>({
+    queryKey: ["my-weekly-xp-rank"],
+    queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return null;
+      const { data, error } = await supabase.rpc("get_my_weekly_xp_rank");
+      if (error) throw error;
+      const rows = (data as MyRankRow[]) || [];
+      return rows[0] ?? null;
+    },
+    refetchInterval: 60_000,
+  });
+
+  const isInTop10 = !!(myRank && leaders?.some((l) => Number(l.rank) === Number(myRank.rank) && Number(myRank.rank) <= 10));
 
   const [now, setNow] = useState(Date.now());
   useEffect(() => {
@@ -166,6 +188,33 @@ export const WeeklyXPLeaderboard = () => {
               </div>
             </motion.div>
           ))
+        )}
+
+        {/* Your rank badge — shown when user is signed in */}
+        {myRank && (
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mt-3 p-3 rounded-xl bg-gradient-to-r from-primary/10 to-purple-500/10 border border-primary/30"
+          >
+            <div className="flex items-center gap-3">
+              <div className="h-9 w-9 rounded-full bg-primary/20 flex items-center justify-center">
+                <User className="h-4 w-4 text-primary" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-bold">
+                  {isInTop10 ? "You're in the top 10! 🎉" : "Your position this week"}
+                </p>
+                <p className="text-[10px] text-muted-foreground">
+                  Rank #{myRank.rank} of {myRank.total_participants} · {myRank.view_count} views
+                </p>
+              </div>
+              <div className="text-right">
+                <p className="text-sm font-black text-primary">{Number(myRank.weekly_xp).toLocaleString()}</p>
+                <p className="text-[9px] text-muted-foreground">XP</p>
+              </div>
+            </div>
+          </motion.div>
         )}
       </CardContent>
     </Card>

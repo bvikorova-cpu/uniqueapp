@@ -17,4 +17,11 @@ type: feature
 
 ## Cron
 - `weekly-xp-snapshot` runs every Monday 00:05 UTC.
-- Calls `snapshot_weekly_xp_winners()` — idempotent, archives top 10, awards bonus XP: **#1=100, #2=50, #3=25** via `add_user_points`.
+- Calls `snapshot_weekly_xp_winners()` — idempotent, archives top 10, awards bonus XP: **#1=100, #2=50, #3=25** via `add_user_points`, and inserts in-app `notifications` row for each top-10 finisher (type `weekly_xp_winner`).
+
+## Personal stats
+- `get_my_weekly_xp_rank()` returns `{rank, weekly_xp, view_count, total_participants}` for `auth.uid()`. Used by `WeeklyXPLeaderboard.tsx` to show "Your position" card even outside top 10.
+
+## Streak bonus (#9)
+- `compute_xp_streak(user_id)` counts consecutive days with ≥1 rewarded ad view (capped at 365).
+- Edge fn `claim-rewarded-ad-xp` checks streak on the **first view of the day** and awards milestone bonuses: **3d=+10, 7d=+30, 14d=+75, 30d=+200 XP** + in-app notification (`type='xp_streak_bonus'`).

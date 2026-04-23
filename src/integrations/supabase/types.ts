@@ -41889,6 +41889,7 @@ export type Database = {
         Returns: undefined
       }
       compute_donor_badge_tier: { Args: { _total: number }; Returns: string }
+      compute_xp_streak: { Args: { p_user_id: string }; Returns: number }
       create_notification: {
         Args: {
           p_actor_id: string
@@ -41931,6 +41932,15 @@ export type Database = {
           user_id: string
           view_count: number
           week_start: string
+          weekly_xp: number
+        }[]
+      }
+      get_my_weekly_xp_rank: {
+        Args: never
+        Returns: {
+          rank: number
+          total_participants: number
+          view_count: number
           weekly_xp: number
         }[]
       }
