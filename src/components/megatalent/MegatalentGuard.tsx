@@ -1,6 +1,6 @@
 import { ReactNode, useEffect, useRef, useState } from "react";
 import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
-import { Loader2, Lock, Star } from "lucide-react";
+import { Loader2, Lock, Star, CheckCircle2, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { safeInvoke } from "@/utils/safeInvoke";
 import { useAuth } from "@/contexts/AuthContext";
@@ -26,6 +26,7 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
   const [subscribed, setSubscribed] = useState(false);
   const [checkoutLoading, setCheckoutLoading] = useState<null | "premium" | "top_premium">(null);
   const [activating, setActivating] = useState(false);
+  const [activatedTier, setActivatedTier] = useState<null | "premium" | "top_premium">(null);
   const successHandledRef = useRef(false);
 
   // Pending payment marker survives session loss (localStorage, not sessionStorage)
@@ -193,12 +194,27 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
 
           if (ok) {
             clearPendingPayment();
+            // Determine tier: prefer URL param, else stored pending marker
+            let resolvedTier: "premium" | "top_premium" = "premium";
+            const urlTier = tier;
+            if (urlTier === "top_premium" || urlTier === "premium") {
+              resolvedTier = urlTier;
+            } else {
+              try {
+                const raw = localStorage.getItem(PENDING_KEY);
+                if (raw) {
+                  const parsed = JSON.parse(raw);
+                  if (parsed?.tier === "top_premium") resolvedTier = "top_premium";
+                }
+              } catch { /* ignore */ }
+            }
+            setActivatedTier(resolvedTier);
             setActivating(false);
-            setSubscribed(true);
-            toast({
-              title: "Prístup aktivovaný ✅",
-              description: "Vitaj v MegaTalent súťaži!",
-            });
+            // Show success screen for ~2.5s before granting access
+            setTimeout(() => {
+              setSubscribed(true);
+              setActivatedTier(null);
+            }, 2500);
             return;
           }
 
@@ -283,6 +299,56 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
               Platba prijatá. Stripe potrebuje pár sekúnd na aktiváciu — automaticky ťa presmerujeme do MegaTalentu, len čo bude pripravené.
             </CardDescription>
           </CardHeader>
+        </Card>
+      </div>
+    );
+  }
+
+  if (activatedTier) {
+    const isTop = activatedTier === "top_premium";
+    return (
+      <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-background via-background to-primary/10 animate-in fade-in duration-300">
+        <Card className="max-w-md w-full border-2 border-primary/50 shadow-2xl">
+          <CardHeader className="text-center space-y-3">
+            <div className="mx-auto w-20 h-20 rounded-full bg-green-500/15 flex items-center justify-center animate-in zoom-in duration-500">
+              <CheckCircle2 className="w-12 h-12 text-green-500" />
+            </div>
+            <div className="flex justify-center">
+              <span
+                className={`inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-bold ${
+                  isTop
+                    ? "bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-lg"
+                    : "bg-primary/15 text-primary border border-primary/30"
+                }`}
+              >
+                {isTop ? <Sparkles className="w-4 h-4" /> : <Star className="w-4 h-4" />}
+                MegaTalent {isTop ? "TOP Premium" : "Premium"} aktivované
+              </span>
+            </div>
+            <CardTitle className="text-2xl">Vitaj v súťaži! 🏆</CardTitle>
+            <CardDescription className="text-base">
+              {isTop
+                ? "Máš prístup ku všetkým funkciám + 2× váhu hlasu a denný vote-boost."
+                : "Máš prístup ku všetkým kategóriám, AI nástrojom a hlasovaniu."}
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            <ul className="text-sm space-y-1.5 bg-muted/40 rounded-lg p-3">
+              <li>✅ Neobmedzené uploady fotiek a videí</li>
+              <li>✅ Prístup ku všetkým 35+ kategóriám</li>
+              <li>✅ AI Talent Coach a všetky AI nástroje</li>
+              <li>✅ Nárok na peňažné odmeny pre víťazov</li>
+              {isTop && (
+                <>
+                  <li>⭐ <strong>2× váha tvojich hlasov</strong></li>
+                  <li>⭐ <strong>Denný vote-boost</strong> a TOP Premium odznak</li>
+                </>
+              )}
+            </ul>
+            <p className="text-xs text-muted-foreground text-center pt-1">
+              Otváram MegaTalent...
+            </p>
+          </CardContent>
         </Card>
       </div>
     );
