@@ -151,7 +151,7 @@ export const DailyXPVideoReward = ({ userId }: DailyXPVideoRewardProps) => {
         <CardHeader className="pb-2">
           <CardTitle className="flex items-center gap-2 text-lg">
             <Tv className="h-5 w-5 text-purple-500" />
-            Daily XP for Ad
+            Watch & Earn XP
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -176,7 +176,7 @@ export const DailyXPVideoReward = ({ userId }: DailyXPVideoRewardProps) => {
             <div className="space-y-3">
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Clock className="h-4 w-4" />
-                <span>Watch a 15s ad and earn 1 XP</span>
+                <span>Watch a 15s ad — earn 1 XP. <span className="text-foreground font-semibold">Unlimited.</span></span>
               </div>
               <Button
                 onClick={startWatchingAd}
