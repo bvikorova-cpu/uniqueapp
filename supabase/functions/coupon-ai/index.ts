@@ -286,8 +286,7 @@ Provide:
       body: JSON.stringify({
         model: "gpt-4o-mini",
         messages: [{ role: "system", content: systemPrompt }, { role: "user", content: userPrompt }],
-        max_tokens: 1500,
-        temperature: 0.7,
+        max_completion_tokens: 1500,
       }),
     });
 

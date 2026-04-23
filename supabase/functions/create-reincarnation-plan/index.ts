@@ -89,8 +89,7 @@ Generate 3 soul_missions, 3 karmic_lessons, 5 key_life_events. Make everything d
             content: `Create my reincarnation plan. Name: "${planName || "My Next Life Journey"}". Goal: "${goalDescription || "Spiritual growth"}". My active karmic debts: ${debtsContext}. My past lives: ${livesContext}.`
           }
         ],
-        temperature: 0.9,
-        max_tokens: 2000,
+        max_completion_tokens: 2000,
       }),
     });
 

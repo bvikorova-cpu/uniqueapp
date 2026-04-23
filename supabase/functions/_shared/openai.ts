@@ -21,7 +21,6 @@ export async function callOpenAI(opts: {
       { role: "system", content: opts.system },
       { role: "user", content: opts.user },
     ],
-    temperature: opts.temperature ?? 0.8,
   };
   if (opts.json) body.response_format = { type: "json_object" };
 

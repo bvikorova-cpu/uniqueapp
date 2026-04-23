@@ -26,8 +26,7 @@ serve(async (req) => {
           { role: "system", content: "You are a magical, creative AI assistant for Glamour World - a fun, girly platform. Be enthusiastic, creative, and detailed. Use emojis sparingly. Provide practical, actionable content." },
           { role: "user", content: prompt },
         ],
-        max_tokens: 1500,
-        temperature: 0.8,
+        max_completion_tokens: 1500,
       }),
     });
 

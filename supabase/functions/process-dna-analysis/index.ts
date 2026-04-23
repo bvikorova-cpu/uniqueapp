@@ -60,7 +60,6 @@ Use creative region names (e.g., "Northern European", "East Asian", "Sub-Saharan
               content: `Generate a unique DNA analysis for sample ID: ${sampleId}. Make it creative and personalized with diverse heritage mix.`
             }
           ],
-          temperature: 1.0,
         }),
       });
 
@@ -126,7 +125,6 @@ Use creative region names (e.g., "Northern European", "East Asian", "Sub-Saharan
                   content: `Generate a vivid first-person ancestral memory for: ${ancestor.name}, who lived in the ${ancestor.era} and was a ${ancestor.occupation}. Make it deeply personal and emotionally resonant.`
                 }
               ],
-              temperature: 0.9,
             }),
           });
 

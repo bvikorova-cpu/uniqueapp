@@ -179,7 +179,7 @@ serve(async (req) => {
     const fetchBody: any = {
       model,
       messages: [{ role: "system", content: systemPrompt }, { role: "user", content: userPrompt }],
-      max_tokens: 2000,
+      max_completion_tokens: 2000,
     };
     if (useJsonFormat && !useLovable) {
       fetchBody.response_format = { type: "json_object" };

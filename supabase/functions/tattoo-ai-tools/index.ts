@@ -27,8 +27,7 @@ serve(async (req) => {
         body: JSON.stringify({
           model: "gpt-5",
           messages: [{ role: 'system', content: systemPrompt }, { role: 'user', content: userPrompt }],
-          temperature: 0.7,
-          max_tokens: maxTokens,
+          max_completion_tokens: maxTokens,
         }),
       });
       if (!response.ok) throw new Error(`AI gateway error: ${response.status}`);

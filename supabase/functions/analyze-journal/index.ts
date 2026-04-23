@@ -66,7 +66,7 @@ Return ONLY a valid JSON object:
             content: `Analyze this journal entry. Current mood: ${mood || "unspecified"}\n\nJournal content:\n${journalContent}`
           }
         ],
-        max_tokens: 800,
+        max_completion_tokens: 800,
       }),
     });
 

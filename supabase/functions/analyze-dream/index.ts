@@ -61,7 +61,7 @@ Odpovedaj ako JSON s týmito kľúčmi:
 - symbols: pole objektov s kľúčmi "symbol" a "meaning"`
           }
         ],
-        max_tokens: 1000,
+        max_completion_tokens: 1000,
       }),
     });
 

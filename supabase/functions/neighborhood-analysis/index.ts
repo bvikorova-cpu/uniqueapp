@@ -24,7 +24,7 @@ serve(async (req) => {
           { role: "system", content: "You are a real estate neighborhood analyst. Return JSON with: safety (1-10), schools (1-10), transport (1-10), amenities (1-10), nightlife (1-10), green_spaces (1-10), overall (1-10), summary (string), pros (array of strings), cons (array of strings)." },
           { role: "user", content: `Analyze the neighborhood around: ${address}` },
         ],
-        max_tokens: 800,
+        max_completion_tokens: 800,
         response_format: { type: "json_object" },
       }),
     });

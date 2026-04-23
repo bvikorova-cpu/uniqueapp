@@ -23,7 +23,7 @@ serve(async (req) => {
       body: JSON.stringify({
         model: "gpt-5",
         messages: [{ role: "user", content: prompt }],
-        max_tokens: 2000,
+        max_completion_tokens: 2000,
       }),
     });
 

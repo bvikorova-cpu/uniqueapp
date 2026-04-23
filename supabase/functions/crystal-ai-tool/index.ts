@@ -64,8 +64,7 @@ serve(async (req) => {
       body: JSON.stringify({
         model: "gpt-5",
         messages,
-        max_tokens: 1500,
-        temperature: 0.7,
+        max_completion_tokens: 1500,
       }),
     });
 
