@@ -1,8 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Trophy, Crown, Medal, Award, Sparkles, Flame } from "lucide-react";
+import { Trophy, Crown, Medal, Award, Sparkles, Flame, Clock, RotateCcw } from "lucide-react";
 import { motion } from "framer-motion";
 
 interface LeaderboardRow {
