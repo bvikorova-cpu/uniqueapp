@@ -72,47 +72,71 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
           setSearchParams(next, { replace: true });
         }
 
-        if (success && !successHandledRef.current) {
-          successHandledRef.current = true;
-          toast({
-            title: "Platba úspešná! 🎉",
-            description: tier === "top_premium"
-              ? "Vitaj v MegaTalent TOP Premium! Aktivujem prístup..."
-              : "Vitaj v MegaTalent Premium! Aktivujem prístup...",
-          });
+        // After-payment activation flow. Triggered either by the Stripe redirect (?success=true)
+        // or by a follow-up hard reload that we initiated ourselves (sessionStorage flag).
+        const reloadFlag = sessionStorage.getItem("megatalent_post_payment_reload");
+        const isPostPayment = success || reloadFlag === "1";
 
-          // Strip query params immediately so a manual refresh doesn't re-trigger this
-          const next = new URLSearchParams(searchParams);
-          next.delete("success");
-          next.delete("tier");
-          setSearchParams(next, { replace: true });
+        if (isPostPayment && !successHandledRef.current) {
+          successHandledRef.current = true;
+
+          if (success) {
+            toast({
+              title: "Platba úspešná! 🎉",
+              description: tier === "top_premium"
+                ? "Vitaj v MegaTalent TOP Premium! Aktivujem prístup..."
+                : "Vitaj v MegaTalent Premium! Aktivujem prístup...",
+            });
+            // Strip query params immediately so a manual refresh doesn't re-trigger this
+            const next = new URLSearchParams(searchParams);
+            next.delete("success");
+            next.delete("tier");
+            setSearchParams(next, { replace: true });
+          }
 
           // Show "Activating..." UI while we poll Stripe (subscription propagation can take a few seconds)
           setActivating(true);
           setChecking(false);
 
-          // Poll up to 8x with 1.5s delay (12s total) — first check is immediate.
+          // Poll up to 6x with 1s delay (~6s total) — first check is immediate.
           let ok = false;
-          for (let i = 0; i < 8; i++) {
+          for (let i = 0; i < 6; i++) {
             ok = await runCheck();
             if (ok) break;
-            await new Promise((r) => setTimeout(r, 1500));
+            await new Promise((r) => setTimeout(r, 1000));
           }
-          setActivating(false);
-          setSubscribed(ok);
 
           if (ok) {
+            sessionStorage.removeItem("megatalent_post_payment_reload");
+            setActivating(false);
+            setSubscribed(true);
             toast({
               title: "Prístup aktivovaný ✅",
               description: "Vitaj v MegaTalent súťaži!",
             });
-          } else {
-            toast({
-              title: "Stále aktivujem...",
-              description: "Platba prijatá, ale predplatné ešte nie je aktívne. Skús to o pár sekúnd znova.",
-              variant: "destructive",
-            });
+            return;
           }
+
+          // Still not active after polling. If we haven't tried a hard reload yet, do it now.
+          // Stripe customer/subscription propagation sometimes only shows up on a fresh request.
+          if (reloadFlag !== "1") {
+            sessionStorage.setItem("megatalent_post_payment_reload", "1");
+            // Tiny delay so the toast/UI can render before reload
+            await new Promise((r) => setTimeout(r, 600));
+            window.location.replace("/megatalent");
+            return;
+          }
+
+          // Reload already attempted and still not active — give up gracefully and show paywall
+          // with an informative message. User can click "Obnoviť prístup" to retry manually.
+          sessionStorage.removeItem("megatalent_post_payment_reload");
+          setActivating(false);
+          setSubscribed(false);
+          toast({
+            title: "Aktivácia trvá dlhšie ako zvyčajne",
+            description: "Platba prijatá, ale Stripe ju ešte spracováva. Skús obnoviť prístup o chvíľu.",
+            variant: "destructive",
+          });
           return;
         }
 
