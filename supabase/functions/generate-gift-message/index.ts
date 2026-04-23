@@ -272,51 +272,44 @@ serve(async (req) => {
     };
 
     if (IMAGE_TYPES[type]) {
-      const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-      if (!LOVABLE_API_KEY) {
-        return new Response(JSON.stringify({ error: "LOVABLE_API_KEY not configured" }), {
-          status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
-      }
+      // OpenAI image generation (gpt-image-1) — same OPENAI_API_KEY as text branch.
       const stylePrefix = IMAGE_TYPES[type];
       const subject = customPrompt || reqBody.title || reqBody.description || `a ${type.replace(/_/g, " ")}`;
       const imgPrompt = `${stylePrefix} Subject: ${subject}`;
 
-      const imgResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      const imgResp = await fetch("https://api.openai.com/v1/images/generations", {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${LOVABLE_API_KEY}`,
+          Authorization: `Bearer ${OPENAI_API_KEY}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          model: "google/gemini-2.5-flash-image",
-          messages: [{ role: "user", content: imgPrompt }],
-          modalities: ["image", "text"],
+          model: "gpt-image-1",
+          prompt: imgPrompt,
+          size: "1024x1024",
+          n: 1,
         }),
       });
 
       if (!imgResp.ok) {
         if (imgResp.status === 429) {
-          return new Response(JSON.stringify({ error: "Rate limits exceeded, try again later." }), {
+          return new Response(JSON.stringify({ error: "Rate limit exceeded, try again later." }), {
             status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
           });
         }
-        if (imgResp.status === 402) {
-          return new Response(JSON.stringify({ error: "AI credits exhausted. Add funds in Settings → Workspace → Usage." }), {
-            status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
-          });
-        }
         const errText = await imgResp.text();
-        console.error("Image gen error:", errText);
+        console.error("OpenAI image gen error:", errText);
         return new Response(JSON.stringify({ error: "Image generation failed" }), {
           status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
 
       const imgData = await imgResp.json();
-      const imageUrl = imgData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+      const b64 = imgData.data?.[0]?.b64_json;
+      const directUrl = imgData.data?.[0]?.url;
+      const imageUrl = b64 ? `data:image/png;base64,${b64}` : directUrl;
       if (!imageUrl) {
-        return new Response(JSON.stringify({ error: "No image returned from model" }), {
+        return new Response(JSON.stringify({ error: "No image returned from OpenAI" }), {
           status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
