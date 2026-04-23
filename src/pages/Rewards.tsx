@@ -26,6 +26,7 @@ import RewardsXPBetting from "@/components/rewards/RewardsXPBetting";
 import RewardsMysteryBadges from "@/components/rewards/RewardsMysteryBadges";
 import RewardsMarketplace from "@/components/rewards/RewardsMarketplace";
 import { WeeklyXPLeaderboard } from "@/components/gamification/WeeklyXPLeaderboard";
+import { LastWeekWinners } from "@/components/gamification/LastWeekWinners";
 import { Crown, Home, Wand2, Trophy, Layers, Disc3, Target, Award, Medal, Flame, Gift, Eye, Sword, HelpCircle, ShoppingBag } from "lucide-react";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
