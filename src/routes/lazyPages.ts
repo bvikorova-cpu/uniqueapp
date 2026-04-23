@@ -231,6 +231,7 @@ export const Subscription = lazy(() => import("@/pages/Subscription"));
 
 export const MembershipCommunity = lazy(() => import("@/pages/MembershipCommunity"));
 export const PremiumStore = lazy(() => import("@/pages/PremiumStore"));
+export const Premium = lazy(() => import("@/pages/Premium"));
 export const AICreditsStore = lazy(() => import("@/pages/AICreditsStore"));
 export const MysteryBox = lazy(() => import("@/pages/MysteryBox"));
 

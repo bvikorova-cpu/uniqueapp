@@ -468,9 +468,15 @@ const Navbar = () => {
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
+                      <Link to="/premium" className="w-full cursor-pointer">
+                        <Crown className="h-4 w-4 mr-2 text-primary" />
+                        UniqueApp Premium
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
                       <Link to="/premium-store" className="w-full cursor-pointer">
                         <Award className="h-4 w-4 mr-2" />
-                        Unlock Premium Features
+                        Premium Store
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
