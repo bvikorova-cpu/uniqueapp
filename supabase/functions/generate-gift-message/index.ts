@@ -268,7 +268,13 @@ ${customPrompt ? `Additional context: ${customPrompt}` : ""}`;
           { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt },
         ],
-        max_completion_tokens: type === "travel_planner" ? 1500 : 300,
+        max_completion_tokens: (() => {
+          const longTypes = new Set(["travel_planner", "cultural_guide", "weekly_meal_plan", "fitness_plan", "nutrition_plan", "course_content", "educational", "monetization_ideas"]);
+          const isSport = type && /(_analysis|_tactics|_match|_training|_scout|_chemistry|_prediction)$/.test(type);
+          if (longTypes.has(type)) return 1500;
+          if (isSport) return 1200;
+          return 600;
+        })(),
       }),
     });
 
