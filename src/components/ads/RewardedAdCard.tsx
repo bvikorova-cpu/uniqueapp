@@ -45,15 +45,14 @@ function bumpLocalViews(sectionKey: string) {
 }
 
 const RewardedAdCard = ({ sectionKey, adSlot, className = "" }: RewardedAdCardProps) => {
-  const [phase, setPhase] = useState<"idle" | "watching" | "ready" | "claimed" | "limit">("idle");
+  // Unlimited XP — no daily cap. Users can keep watching & earning forever.
+  const [phase, setPhase] = useState<"idle" | "watching" | "ready" | "claimed">("idle");
   const [secondsLeft, setSecondsLeft] = useState(WATCH_SECONDS);
   const [viewsToday, setViewsToday] = useState(0);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
-    const v = getLocalViews(sectionKey);
-    setViewsToday(v);
-    if (v >= 3) setPhase("limit");
+    setViewsToday(getLocalViews(sectionKey));
   }, [sectionKey]);
 
   useEffect(() => () => {
@@ -93,24 +92,16 @@ const RewardedAdCard = ({ sectionKey, adSlot, className = "" }: RewardedAdCardPr
 
       if (error || (data as { error?: string })?.error) {
         const msg = (data as { error?: string })?.error || error?.message || "Failed to claim";
-        if (msg.toLowerCase().includes("limit")) {
-          setPhase("limit");
-          toast({
-            title: "Daily limit reached",
-            description: "Come back tomorrow for more XP!",
-          });
-          return;
-        }
         throw new Error(msg);
       }
 
       bumpLocalViews(sectionKey);
       const newCount = viewsToday + 1;
       setViewsToday(newCount);
-      setPhase(newCount >= 3 ? "limit" : "claimed");
+      setPhase("claimed");
       toast({
         title: "+5 XP earned! ✨",
-        description: `You can watch ${Math.max(0, 3 - newCount)} more video(s) today.`,
+        description: "Watch another video to earn more — no daily limit!",
       });
     } catch (e) {
       toast({
@@ -131,7 +122,9 @@ const RewardedAdCard = ({ sectionKey, adSlot, className = "" }: RewardedAdCardPr
             </div>
             <div>
               <p className="font-bold text-sm sm:text-base text-foreground">Watch & Earn 5 XP</p>
-              <p className="text-xs text-muted-foreground">{viewsToday}/3 watched today</p>
+              <p className="text-xs text-muted-foreground">
+                {viewsToday} watched today · <span className="text-primary font-semibold">unlimited</span>
+              </p>
             </div>
           </div>
 
@@ -153,11 +146,6 @@ const RewardedAdCard = ({ sectionKey, adSlot, className = "" }: RewardedAdCardPr
           {phase === "claimed" && (
             <Button onClick={() => setPhase("idle")} size="sm" variant="outline">
               <Check className="w-4 h-4 mr-1" /> Watch another
-            </Button>
-          )}
-          {phase === "limit" && (
-            <Button disabled size="sm" variant="outline">
-              Limit reached
             </Button>
           )}
         </div>
