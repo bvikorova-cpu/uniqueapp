@@ -93,36 +93,63 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
 
   useEffect(() => {
     if (authLoading) return;
-    if (!user) {
-      setChecking(false);
-      return;
-    }
 
     const success = searchParams.get("success") === "true";
     const canceled = searchParams.get("canceled") === "true";
     const tier = searchParams.get("tier");
 
+    // ── Session lost during/after payment ─────────────────────────────────
+    // If we don't have a user but a payment is pending (either via ?success=true
+    // or a previously stored marker), preserve the payment info and bounce to /auth
+    // with a redirect param. After login, we'll resume the activation flow.
+    if (!user) {
+      if (success) {
+        markPendingPayment(tier);
+        toast({
+          title: "Platba prijatá ✅ — prihlás sa",
+          description: "Tvoja session vypršala. Po prihlásení automaticky aktivujeme prístup.",
+        });
+        navigate("/auth?redirect=/megatalent", { replace: true });
+        return;
+      }
+      if (hasPendingPayment()) {
+        toast({
+          title: "Dokončenie aktivácie",
+          description: "Prihlás sa, aby sme aktivovali tvoje MegaTalent predplatné.",
+        });
+        navigate("/auth?redirect=/megatalent", { replace: true });
+        return;
+      }
+      setChecking(false);
+      return;
+    }
+
     (async () => {
       try {
         if (canceled && !successHandledRef.current) {
           successHandledRef.current = true;
+          clearPendingPayment();
           toast({
-            title: "Payment canceled",
-            description: "You can try again whenever you're ready.",
+            title: "Platba zrušená",
+            description: "Môžeš to skúsiť znova kedykoľvek.",
           });
-          // strip query params
           const next = new URLSearchParams(searchParams);
           next.delete("canceled");
           setSearchParams(next, { replace: true });
         }
 
-        // After-payment activation flow. Triggered either by the Stripe redirect (?success=true)
-        // or by a follow-up hard reload that we initiated ourselves (sessionStorage flag).
-        const reloadFlag = sessionStorage.getItem("megatalent_post_payment_reload");
-        const isPostPayment = success || reloadFlag === "1";
+        // After-payment activation flow. Triggered by Stripe redirect (?success=true),
+        // a follow-up hard reload (sessionStorage flag), OR a pending marker that
+        // survived a sign-out / page close.
+        const reloadFlag = sessionStorage.getItem(RELOAD_KEY);
+        const pending = hasPendingPayment();
+        const isPostPayment = success || reloadFlag === "1" || pending;
 
         if (isPostPayment && !successHandledRef.current) {
           successHandledRef.current = true;
+
+          // Persist pending marker for the duration of activation (survives reload/logout)
+          markPendingPayment(tier);
 
           if (success) {
             toast({
@@ -131,27 +158,41 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
                 ? "Vitaj v MegaTalent TOP Premium! Aktivujem prístup..."
                 : "Vitaj v MegaTalent Premium! Aktivujem prístup...",
             });
-            // Strip query params immediately so a manual refresh doesn't re-trigger this
             const next = new URLSearchParams(searchParams);
             next.delete("success");
             next.delete("tier");
             setSearchParams(next, { replace: true });
+          } else if (pending && !reloadFlag) {
+            toast({
+              title: "Pokračujem v aktivácii",
+              description: "Dokončujem aktiváciu tvojho predplatného po prihlásení...",
+            });
           }
 
-          // Show "Activating..." UI while we poll Stripe (subscription propagation can take a few seconds)
           setActivating(true);
           setChecking(false);
 
-          // Poll up to 6x with 1s delay (~6s total) — first check is immediate.
+          // Poll up to 6x with 1s delay (~6s total). Verify session before each
+          // call — if it died mid-flight, redirect to /auth keeping the pending marker.
           let ok = false;
           for (let i = 0; i < 6; i++) {
+            const alive = await ensureSessionAlive();
+            if (!alive) {
+              toast({
+                title: "Session vypršala",
+                description: "Prihlás sa znova — platba je uložená a aktivácia bude pokračovať.",
+                variant: "destructive",
+              });
+              navigate("/auth?redirect=/megatalent", { replace: true });
+              return;
+            }
             ok = await runCheck();
             if (ok) break;
             await new Promise((r) => setTimeout(r, 1000));
           }
 
           if (ok) {
-            sessionStorage.removeItem("megatalent_post_payment_reload");
+            clearPendingPayment();
             setActivating(false);
             setSubscribed(true);
             toast({
@@ -161,30 +202,29 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
             return;
           }
 
-          // Still not active after polling. If we haven't tried a hard reload yet, do it now.
-          // Stripe customer/subscription propagation sometimes only shows up on a fresh request.
+          // Not active after polling — try one hard reload (only once per attempt)
           if (reloadFlag !== "1") {
-            sessionStorage.setItem("megatalent_post_payment_reload", "1");
-            // Tiny delay so the toast/UI can render before reload
+            sessionStorage.setItem(RELOAD_KEY, "1");
             await new Promise((r) => setTimeout(r, 600));
             window.location.replace("/megatalent");
             return;
           }
 
-          // Reload already attempted and still not active — give up gracefully and show paywall
-          // with an informative message. User can click "Obnoviť prístup" to retry manually.
-          sessionStorage.removeItem("megatalent_post_payment_reload");
+          // Reload already attempted — show paywall with informative message.
+          // Keep the pending marker so a manual refresh / re-login can still resume.
+          sessionStorage.removeItem(RELOAD_KEY);
           setActivating(false);
           setSubscribed(false);
           toast({
             title: "Aktivácia trvá dlhšie ako zvyčajne",
-            description: "Platba prijatá, ale Stripe ju ešte spracováva. Skús obnoviť prístup o chvíľu.",
+            description: "Platba prijatá, Stripe ju ešte spracováva. Skús obnoviť prístup o chvíľu.",
             variant: "destructive",
           });
           return;
         }
 
         const ok = await runCheck();
+        if (ok) clearPendingPayment(); // any stale pending marker is now obsolete
         setSubscribed(ok);
       } catch (err) {
         console.error("MegatalentGuard error:", err);
