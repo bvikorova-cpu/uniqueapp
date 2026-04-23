@@ -1,5 +1,5 @@
-import { ReactNode, useEffect, useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { ReactNode, useEffect, useRef, useState } from "react";
+import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
 import { Loader2, Lock, Star } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { safeInvoke } from "@/utils/safeInvoke";
@@ -15,15 +15,36 @@ interface MegatalentGuardProps {
 /**
  * Gate for /megatalent and /megatalent/:category.
  * Requires an active MegaTalent subscription (€10 Premium or €15 TOP Premium).
- * Admins bypass the check.
+ * Admins bypass the check. Handles ?success=true / ?canceled=true returns from Stripe.
  */
 export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [checking, setChecking] = useState(true);
   const [subscribed, setSubscribed] = useState(false);
   const [checkoutLoading, setCheckoutLoading] = useState<null | "premium" | "top_premium">(null);
+  const successHandledRef = useRef(false);
+
+  const runCheck = async (): Promise<boolean> => {
+    if (!user) return false;
+    // Admins bypass
+    const { data: roleData } = await supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", user.id)
+      .eq("role", "admin")
+      .maybeSingle();
+    if (roleData) return true;
+
+    const { data, error } = await safeInvoke("check-megatalent-subscription");
+    if (error) {
+      console.error("MegaTalent subscription check failed:", error);
+      return false;
+    }
+    return data?.subscribed === true;
+  };
 
   useEffect(() => {
     if (authLoading) return;
@@ -32,29 +53,61 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
       return;
     }
 
+    const success = searchParams.get("success") === "true";
+    const canceled = searchParams.get("canceled") === "true";
+    const tier = searchParams.get("tier");
+
     (async () => {
       try {
-        // Admins bypass
-        const { data: roleData } = await supabase
-          .from("user_roles")
-          .select("role")
-          .eq("user_id", user.id)
-          .eq("role", "admin")
-          .maybeSingle();
+        if (canceled && !successHandledRef.current) {
+          successHandledRef.current = true;
+          toast({
+            title: "Payment canceled",
+            description: "You can try again whenever you're ready.",
+          });
+          // strip query params
+          const next = new URLSearchParams(searchParams);
+          next.delete("canceled");
+          setSearchParams(next, { replace: true });
+        }
 
-        if (roleData) {
-          setSubscribed(true);
+        if (success && !successHandledRef.current) {
+          successHandledRef.current = true;
+          toast({
+            title: "Payment successful! 🎉",
+            description: tier === "top_premium"
+              ? "Welcome to MegaTalent TOP Premium!"
+              : "Welcome to MegaTalent Premium!",
+          });
+
+          // Stripe needs a moment to propagate the active subscription.
+          // Poll up to 5x with 1.5s delay.
+          let ok = false;
+          for (let i = 0; i < 5; i++) {
+            ok = await runCheck();
+            if (ok) break;
+            await new Promise((r) => setTimeout(r, 1500));
+          }
+          setSubscribed(ok);
+
+          // strip query params either way
+          const next = new URLSearchParams(searchParams);
+          next.delete("success");
+          next.delete("tier");
+          setSearchParams(next, { replace: true });
+
+          if (!ok) {
+            toast({
+              title: "Still activating...",
+              description: "Your payment was received but the subscription isn't active yet. Please refresh in a moment.",
+              variant: "destructive",
+            });
+          }
           return;
         }
 
-        const { data, error } = await safeInvoke("check-megatalent-subscription");
-        if (error) {
-          console.error("MegaTalent subscription check failed:", error);
-          // Fail closed — require subscription
-          setSubscribed(false);
-        } else {
-          setSubscribed(data?.subscribed === true);
-        }
+        const ok = await runCheck();
+        setSubscribed(ok);
       } catch (err) {
         console.error("MegatalentGuard error:", err);
         setSubscribed(false);
@@ -72,7 +125,8 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
       });
       if (error) throw error;
       if (data?.url) {
-        window.open(data.url, "_blank");
+        // Redirect in same tab so Stripe sends user back to /megatalent?success=true
+        window.location.href = data.url;
       } else {
         throw new Error("No checkout URL returned");
       }
