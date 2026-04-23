@@ -12,6 +12,7 @@ import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { SubscriptionGuard } from "@/components/SubscriptionGuard";
+import { MegatalentGuard } from "@/components/megatalent/MegatalentGuard";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import SkipLink from "./components/SkipLink";
@@ -437,8 +438,8 @@ const App = () => {
                         <Route path="/wall/info" element={<Wall />} />
                         <Route path="/post/:id" element={<PostDetail />} />
                         <Route path="/messenger" element={<Messenger />} />
-                        <Route path="/megatalent" element={<Megatalent />} />
-                        <Route path="/megatalent/:category" element={<MegatalentCategory />} />
+                        <Route path="/megatalent" element={<MegatalentGuard><Megatalent /></MegatalentGuard>} />
+                        <Route path="/megatalent/:category" element={<MegatalentGuard><MegatalentCategory /></MegatalentGuard>} />
                         <Route path="/megaforum" element={<Megaforum />} />
                         <Route path="/psychologist" element={<Psychology />} />
                         <Route path="/vacationer" element={<Vacationer />} />
