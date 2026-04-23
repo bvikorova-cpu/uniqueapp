@@ -32622,6 +32622,33 @@ export type Database = {
         }
         Relationships: []
       }
+      rewarded_ad_fraud_flags: {
+        Row: {
+          created_at: string
+          flag_date: string
+          id: string
+          reason: string
+          user_id: string
+          view_count: number
+        }
+        Insert: {
+          created_at?: string
+          flag_date?: string
+          id?: string
+          reason: string
+          user_id: string
+          view_count: number
+        }
+        Update: {
+          created_at?: string
+          flag_date?: string
+          id?: string
+          reason?: string
+          user_id?: string
+          view_count?: number
+        }
+        Relationships: []
+      }
       rewarded_ad_views: {
         Row: {
           created_at: string
@@ -41906,6 +41933,17 @@ export type Database = {
       get_rls_ref: { Args: never; Returns: string }
       get_user_pause_count: { Args: { _user_id: string }; Returns: number }
       get_user_role: { Args: never; Returns: string }
+      get_weekly_xp_leaderboard: {
+        Args: never
+        Returns: {
+          avatar_url: string
+          display_name: string
+          rank: number
+          user_id: string
+          view_count: number
+          weekly_xp: number
+        }[]
+      }
       give_f1_starter_balance: {
         Args: { p_user_id: string }
         Returns: undefined
