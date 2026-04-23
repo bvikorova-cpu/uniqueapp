@@ -28,6 +28,50 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
   const [activating, setActivating] = useState(false);
   const successHandledRef = useRef(false);
 
+  // Pending payment marker survives session loss (localStorage, not sessionStorage)
+  const PENDING_KEY = "megatalent_pending_payment";
+  const RELOAD_KEY = "megatalent_post_payment_reload";
+
+  const markPendingPayment = (tier: string | null) => {
+    try {
+      localStorage.setItem(
+        PENDING_KEY,
+        JSON.stringify({ tier: tier || "premium", at: Date.now() }),
+      );
+    } catch { /* ignore quota errors */ }
+  };
+
+  const clearPendingPayment = () => {
+    try {
+      localStorage.removeItem(PENDING_KEY);
+      sessionStorage.removeItem(RELOAD_KEY);
+    } catch { /* ignore */ }
+  };
+
+  const hasPendingPayment = (): boolean => {
+    try {
+      const raw = localStorage.getItem(PENDING_KEY);
+      if (!raw) return false;
+      const parsed = JSON.parse(raw);
+      // Pending markers older than 1 hour are considered stale
+      if (Date.now() - (parsed?.at ?? 0) > 60 * 60 * 1000) {
+        localStorage.removeItem(PENDING_KEY);
+        return false;
+      }
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
+  // Verify the auth session is still valid. Returns false if the user was
+  // signed out or the JWT expired during the activation polling window.
+  const ensureSessionAlive = async (): Promise<boolean> => {
+    const { data, error } = await supabase.auth.getSession();
+    if (error) return false;
+    return !!data.session;
+  };
+
   const runCheck = async (): Promise<boolean> => {
     if (!user) return false;
     // Admins bypass
