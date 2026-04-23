@@ -28,7 +28,7 @@ const recentReferrals = [
 export function AffiliateProgramView({ onBack }: Props) {
   const { toast } = useToast();
   const [copied, setCopied] = useState(false);
-  const referralLink = "https://academy.example.com/ref/USR-2847";
+  const referralLink = `${typeof window !== "undefined" ? window.location.origin : "https://uniqueapp.fun"}/learning?ref=USR-2847`;
 
   const copyLink = () => {
     navigator.clipboard.writeText(referralLink);

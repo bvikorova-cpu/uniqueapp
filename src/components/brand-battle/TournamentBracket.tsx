@@ -50,7 +50,7 @@ export const TournamentBracket = ({ sponsors }: TournamentBracketProps) => {
           animate={{ scale: 1, opacity: 1 }}
         >
           <Shield className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-          <h3 className="font-bold text-2xl mb-2">Tournament Coming Soon</h3>
+          <h3 className="font-bold text-2xl mb-2">Bracket Awaiting Challengers</h3>
           <p className="text-muted-foreground max-w-md mx-auto">
             At least 2 brands are needed to start a tournament bracket. Invite brands to join and compete for glory!
           </p>

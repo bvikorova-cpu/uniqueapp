@@ -40,7 +40,7 @@ export default function RewardsMysteryBadges() {
   const mysteryEvents = [
     { emoji: "🔮", title: "Mystic Badge", status: "Active", time: "Ends in 2d 14h", rarity: "Legendary" },
     { emoji: "🌙", title: "Night Owl", status: "Active", time: "Ends in 5d", rarity: "Epic" },
-    { emoji: "❄️", title: "Ice Breaker", status: "Coming Soon", time: "Starts Apr 20", rarity: "Rare" },
+    { emoji: "❄️", title: "Ice Breaker", status: "Scheduled", time: "Starts Apr 20", rarity: "Rare" },
   ];
 
   return (
