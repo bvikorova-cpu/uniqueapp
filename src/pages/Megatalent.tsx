@@ -34,6 +34,7 @@ import MegaTalentCategoryGrid from "@/components/megatalent/MegaTalentCategoryGr
 import ContestStatsSidebar from "@/components/megatalent/ContestStatsSidebar";
 import MegaTalentSubmissionCard from "@/components/megatalent/MegaTalentSubmissionCard";
 import MegaTalentFeedFilters, { type FeedFilter } from "@/components/megatalent/MegaTalentFeedFilters";
+import { MegaTalentOnboarding } from "@/components/megatalent/MegaTalentOnboarding";
 import { motion } from "framer-motion";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
@@ -489,6 +490,7 @@ const Megatalent = () => {
 
   return (
     <div className="min-h-screen bg-background pt-20 pb-12">
+      <MegaTalentOnboarding />
       <div className="container mx-auto px-4 max-w-6xl">
         {/* Cinematic Video Hero */}
         <MegaTalentHero totalVotes={totalVotes} isSubscribed={isSubscribed} subscriptionTier={subscriptionTier} />
