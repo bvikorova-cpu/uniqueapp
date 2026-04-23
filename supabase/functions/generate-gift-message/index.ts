@@ -213,6 +213,99 @@ serve(async (req) => {
       generic_ai:          "You are a helpful AI assistant. Provide a clear, useful response to the user's request.",
     };
 
+    // ─── IMAGE GENERATION BRANCH ───
+    // Routes media-generating proxies (paint-image, video-thumbnail, virtual-tryon, etc.)
+    // through Lovable AI Gateway (Nano Banana) and returns base64 data URL.
+    const IMAGE_TYPES: Record<string, string> = {
+      paint_image:        "Detailed acrylic painting, gallery quality, vivid colors, expressive brushwork.",
+      paint_by_numbers:   "Paint-by-numbers template: clean black outlines on white, numbered regions, simple shapes.",
+      video_thumbnail:    "High-CTR YouTube thumbnail, bold composition, dramatic lighting, expressive subject, vibrant colors.",
+      tattoo:             "Detailed tattoo design on white background, fine linework, ready for stencil.",
+      teacher_coloring:   "Black-and-white coloring page, clean outlines, kid-friendly, no shading.",
+      coloring_page:      "Black-and-white coloring page, clean outlines, age-appropriate, no shading.",
+      collectible:        "Digital collectible artwork, fantasy/sci-fi style, premium card art quality, intricate detail.",
+      ai_room:            "Photorealistic interior room design, magazine quality, natural lighting.",
+      castle_panorama:    "Panoramic 360° castle scene, cinematic lighting, ultra-detailed.",
+      escape_panorama:    "360° escape-room scene, atmospheric lighting, hidden clues, mystery vibe.",
+      escape_room_panorama:"360° escape-room panorama, dramatic lighting, hidden clues.",
+      virtual_tour:       "Photorealistic 360° panoramic interior view, real-estate quality.",
+      bulk_panoramas:     "Cinematic 360° panorama, ultra-detailed environment.",
+      future_face:        "Photorealistic portrait of the described person aged/transformed, soft lighting.",
+      age_progression:    "Photorealistic portrait showing realistic aging progression, soft natural lighting.",
+      virtual_tryon:      "Photorealistic person wearing the described outfit, full body, studio lighting.",
+      fashion_design:     "Editorial fashion photograph of the described outfit, high-fashion lighting.",
+      avatar:             "Stylized avatar portrait, clean background, character design quality.",
+      photo_concept:      "Cinematic photo composition, professional lighting, magazine quality.",
+      story_video:        "Cinematic still frame from the described story scene, film grade.",
+      video_ad:           "Cinematic ad keyframe, brand-quality lighting and composition.",
+      photo_upscale:      "Ultra-high-resolution photorealistic version of the described image, sharp detail.",
+      photo_restore:      "Restored vintage photograph, repaired damage, original colors preserved.",
+      photo_colorize:     "Naturally colorized version of the described black-and-white photo.",
+      photo_enhance:      "Enhanced photorealistic portrait with improved facial detail, soft natural lighting.",
+      photo_background_remove: "Subject isolated on transparent/white background, clean cut-out edges.",
+      home_staging:       "Photorealistic virtually-staged interior with stylish furniture, magazine quality.",
+      generate_image:     "High-quality photorealistic image as described.",
+    };
+
+    if (IMAGE_TYPES[type]) {
+      const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+      if (!LOVABLE_API_KEY) {
+        return new Response(JSON.stringify({ error: "LOVABLE_API_KEY not configured" }), {
+          status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      const stylePrefix = IMAGE_TYPES[type];
+      const subject = customPrompt || reqBody.title || reqBody.description || `a ${type.replace(/_/g, " ")}`;
+      const imgPrompt = `${stylePrefix} Subject: ${subject}`;
+
+      const imgResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${LOVABLE_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: "google/gemini-2.5-flash-image",
+          messages: [{ role: "user", content: imgPrompt }],
+          modalities: ["image", "text"],
+        }),
+      });
+
+      if (!imgResp.ok) {
+        if (imgResp.status === 429) {
+          return new Response(JSON.stringify({ error: "Rate limits exceeded, try again later." }), {
+            status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
+        if (imgResp.status === 402) {
+          return new Response(JSON.stringify({ error: "AI credits exhausted. Add funds in Settings → Workspace → Usage." }), {
+            status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
+        const errText = await imgResp.text();
+        console.error("Image gen error:", errText);
+        return new Response(JSON.stringify({ error: "Image generation failed" }), {
+          status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      const imgData = await imgResp.json();
+      const imageUrl = imgData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+      if (!imageUrl) {
+        return new Response(JSON.stringify({ error: "No image returned from model" }), {
+          status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      await __deduct().catch((e) => console.error("deduct failed:", e));
+      return new Response(JSON.stringify({
+        imageUrl,
+        templateImageUrl: imageUrl,
+        url: imageUrl,
+        image: imageUrl,
+      }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+
     if (UNIVERSAL_PROMPTS[type]) {
       systemPrompt = UNIVERSAL_PROMPTS[type];
       userPrompt = customPrompt || `Generate the ${type} as requested.`;
