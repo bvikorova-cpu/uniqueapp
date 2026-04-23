@@ -60,6 +60,8 @@ export const MegaTalentOnboarding = () => {
   const [step, setStep] = useState(0);
 
   useEffect(() => {
+    // Defense-in-depth: even though MegatalentGuard already blocks
+    // unauthenticated/unsubscribed users, never show onboarding without a user.
     if (!user) return;
     const key = STORAGE_KEY_PREFIX + user.id;
     const done = localStorage.getItem(key);
@@ -69,6 +71,9 @@ export const MegaTalentOnboarding = () => {
       return () => clearTimeout(t);
     }
   }, [user]);
+
+  // Hard guard: render nothing if no user (subscription is enforced by MegatalentGuard wrapper)
+  if (!user) return null;
 
   const finish = () => {
     if (user) localStorage.setItem(STORAGE_KEY_PREFIX + user.id, "1");
