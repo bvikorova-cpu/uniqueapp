@@ -33,6 +33,24 @@ serve(async (req) => {
     if (!user?.email) throw new Error("User not authenticated");
     log("auth ok", { email: user.email });
 
+    // FAST PATH: skip Stripe entirely if there are no requires_action rows for this user.
+    // The stripe-webhook keeps `sca_pending_actions` in sync via invoice.payment_action_required
+    // / invoice.payment_succeeded, so the DB is the source of truth for the banner.
+    const { data: pendingRows } = await supabase
+      .from("sca_pending_actions")
+      .select("stripe_invoice_id, amount_cents, currency, hosted_invoice_url, next_action_url")
+      .eq("user_id", user.id)
+      .eq("status", "requires_action")
+      .limit(1);
+
+    if (!pendingRows || pendingRows.length === 0) {
+      return new Response(JSON.stringify({ has_pending: false }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // SLOW PATH: we have a pending row — verify with Stripe it's still requires_action
+    // (user may have already authenticated in another tab).
     const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
 
     const customers = await stripe.customers.list({ email: user.email, limit: 1 });

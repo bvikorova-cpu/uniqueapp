@@ -15,6 +15,8 @@ type Pending = {
 };
 
 const DISMISS_KEY = "sca_dismissed_until";
+const CACHE_KEY = "sca_last_check";
+const CACHE_TTL_MS = 5 * 60 * 1000; // 5 min — webhook keeps DB fresh, this is just a safety net
 
 export const SCABanner = () => {
   const { user } = useAuth();
@@ -30,9 +32,13 @@ export const SCABanner = () => {
       setDismissed(true);
       return;
     }
+    // Throttle: skip the edge fn if we checked recently and got "no pending"
+    const lastCheck = Number(localStorage.getItem(CACHE_KEY) || 0);
+    if (lastCheck && Date.now() - lastCheck < CACHE_TTL_MS) return;
     (async () => {
       const { data, error } = await supabase.functions.invoke("check-sca");
       if (error) return;
+      localStorage.setItem(CACHE_KEY, String(Date.now()));
       if ((data as any)?.has_pending) setPending((data as any).pending);
     })();
   }, [user]);
