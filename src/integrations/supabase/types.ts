@@ -4114,6 +4114,13 @@ export type Database = {
             referencedRelation: "brain_duel_questions"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "brain_duel_answers_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "brain_duel_questions_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       brain_duel_credits: {
@@ -36050,6 +36057,13 @@ export type Database = {
             referencedRelation: "sports_predictions"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "sports_purchased_tips_prediction_id_fkey"
+            columns: ["prediction_id"]
+            isOneToOne: false
+            referencedRelation: "sports_predictions_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       sports_tipster_followers: {
@@ -41720,6 +41734,42 @@ export type Database = {
       }
     }
     Views: {
+      brain_duel_questions_public: {
+        Row: {
+          category: string | null
+          created_at: string | null
+          difficulty: string | null
+          id: string | null
+          option_a: string | null
+          option_b: string | null
+          option_c: string | null
+          option_d: string | null
+          question: string | null
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string | null
+          difficulty?: string | null
+          id?: string | null
+          option_a?: string | null
+          option_b?: string | null
+          option_c?: string | null
+          option_d?: string | null
+          question?: string | null
+        }
+        Update: {
+          category?: string | null
+          created_at?: string | null
+          difficulty?: string | null
+          id?: string | null
+          option_a?: string | null
+          option_b?: string | null
+          option_c?: string | null
+          option_d?: string | null
+          question?: string | null
+        }
+        Relationships: []
+      }
       business_orders_owner_view: {
         Row: {
           business_id: string | null
@@ -41884,6 +41934,130 @@ export type Database = {
           user_id?: never
         }
         Relationships: []
+      }
+      escape_room_puzzles_public: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          hint_cost: number | null
+          hint_text: string | null
+          id: string | null
+          puzzle_data: Json | null
+          puzzle_order: number | null
+          puzzle_type: string | null
+          room_id: string | null
+          title: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          hint_cost?: number | null
+          hint_text?: string | null
+          id?: string | null
+          puzzle_data?: Json | null
+          puzzle_order?: number | null
+          puzzle_type?: string | null
+          room_id?: string | null
+          title?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          hint_cost?: number | null
+          hint_text?: string | null
+          id?: string | null
+          puzzle_data?: Json | null
+          puzzle_order?: number | null
+          puzzle_type?: string | null
+          room_id?: string | null
+          title?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "escape_room_puzzles_room_id_fkey"
+            columns: ["room_id"]
+            isOneToOne: false
+            referencedRelation: "escape_rooms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      iq_questions_public: {
+        Row: {
+          category: string | null
+          created_at: string | null
+          difficulty: string | null
+          id: string | null
+          option_a: string | null
+          option_b: string | null
+          option_c: string | null
+          option_d: string | null
+          question: string | null
+          time_limit: number | null
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string | null
+          difficulty?: string | null
+          id?: string | null
+          option_a?: string | null
+          option_b?: string | null
+          option_c?: string | null
+          option_d?: string | null
+          question?: string | null
+          time_limit?: number | null
+        }
+        Update: {
+          category?: string | null
+          created_at?: string | null
+          difficulty?: string | null
+          id?: string | null
+          option_a?: string | null
+          option_b?: string | null
+          option_c?: string | null
+          option_d?: string | null
+          question?: string | null
+          time_limit?: number | null
+        }
+        Relationships: []
+      }
+      iq_test_questions_public: {
+        Row: {
+          created_at: string | null
+          difficulty: string | null
+          id: string | null
+          options: Json | null
+          order_num: number | null
+          question: string | null
+          test_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          difficulty?: string | null
+          id?: string | null
+          options?: Json | null
+          order_num?: number | null
+          question?: string | null
+          test_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          difficulty?: string | null
+          id?: string | null
+          options?: Json | null
+          order_num?: number | null
+          question?: string | null
+          test_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "iq_test_questions_test_id_fkey"
+            columns: ["test_id"]
+            isOneToOne: false
+            referencedRelation: "iq_tests"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       job_listings_public: {
         Row: {
@@ -42060,6 +42234,85 @@ export type Database = {
           user_id: string | null
         }
         Relationships: []
+      }
+      sports_predictions_public: {
+        Row: {
+          analysis_text: string | null
+          confidence: number | null
+          created_at: string | null
+          id: string | null
+          is_free: boolean | null
+          is_premium: boolean | null
+          key_factors: Json | null
+          match_id: string | null
+          odds: number | null
+          prediction_type: string | null
+          prediction_value: string | null
+          price: number | null
+          result: string | null
+          settled_at: string | null
+          tipster_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          analysis_text?: never
+          confidence?: number | null
+          created_at?: string | null
+          id?: string | null
+          is_free?: boolean | null
+          is_premium?: boolean | null
+          key_factors?: never
+          match_id?: string | null
+          odds?: number | null
+          prediction_type?: string | null
+          prediction_value?: string | null
+          price?: number | null
+          result?: string | null
+          settled_at?: string | null
+          tipster_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          analysis_text?: never
+          confidence?: number | null
+          created_at?: string | null
+          id?: string | null
+          is_free?: boolean | null
+          is_premium?: boolean | null
+          key_factors?: never
+          match_id?: string | null
+          odds?: number | null
+          prediction_type?: string | null
+          prediction_value?: string | null
+          price?: number | null
+          result?: string | null
+          settled_at?: string | null
+          tipster_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sports_predictions_match_id_fkey"
+            columns: ["match_id"]
+            isOneToOne: false
+            referencedRelation: "sports_matches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sports_predictions_tipster_id_fkey"
+            columns: ["tipster_id"]
+            isOneToOne: false
+            referencedRelation: "sports_tipsters"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sports_predictions_tipster_id_fkey"
+            columns: ["tipster_id"]
+            isOneToOne: false
+            referencedRelation: "sports_tipsters_public"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       sports_tipsters_public: {
         Row: {
