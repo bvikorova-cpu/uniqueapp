@@ -1,5 +1,5 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { createClient } from "npm:@supabase/supabase-js@2.57.2";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 import { callOpenAI, corsHeaders, errorResponse, jsonResponse } from "../_shared/openai.ts";
 
 const SYSTEM = `Workout plan. Return JSON: {plan_name, weeks, days_per_week, schedule:[{day, focus, exercises:[{name, sets, reps, rest_sec}]}], progression_notes}.`;

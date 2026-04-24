@@ -1,5 +1,5 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { createClient } from "npm:@supabase/supabase-js@2.57.2";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 import { callOpenAI, corsHeaders, errorResponse, jsonResponse } from "../_shared/openai.ts";
 
 const SYSTEM = `Optimize grocery list. Return JSON: {optimized_list:[{item, qty, est_price, reason}], total_cost, calories_per_dollar, swap_suggestions[]}.`;
