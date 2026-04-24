@@ -33933,6 +33933,54 @@ export type Database = {
         }
         Relationships: []
       }
+      security_scan_snapshots: {
+        Row: {
+          created_at: string
+          critical_count: number
+          duration_ms: number | null
+          findings: Json
+          high_count: number
+          id: string
+          low_count: number
+          medium_count: number
+          meta: Json
+          scan_type: string
+          total_findings: number
+          trigger_source: string
+          triggered_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          critical_count?: number
+          duration_ms?: number | null
+          findings?: Json
+          high_count?: number
+          id?: string
+          low_count?: number
+          medium_count?: number
+          meta?: Json
+          scan_type: string
+          total_findings?: number
+          trigger_source?: string
+          triggered_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          critical_count?: number
+          duration_ms?: number | null
+          findings?: Json
+          high_count?: number
+          id?: string
+          low_count?: number
+          medium_count?: number
+          meta?: Json
+          scan_type?: string
+          total_findings?: number
+          trigger_source?: string
+          triggered_by?: string | null
+        }
+        Relationships: []
+      }
       sent_platform_gifts: {
         Row: {
           amount: number | null
