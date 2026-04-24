@@ -1,0 +1,10 @@
+DROP POLICY IF EXISTS "Videos are publicly accessible" ON storage.objects;
+DROP POLICY IF EXISTS "Voice intros are publicly accessible" ON storage.objects;
+DROP POLICY IF EXISTS "Voice notes are publicly readable" ON storage.objects;
+DROP POLICY IF EXISTS "Public can view all drawings" ON storage.objects;
+DROP POLICY IF EXISTS "Public read access for coloring images" ON storage.objects;
+DROP POLICY IF EXISTS "Public read access for user-uploads" ON storage.objects;
+DROP POLICY IF EXISTS "Public read nightmare avatars" ON storage.objects;
+DROP POLICY IF EXISTS "Public read wellness-ai" ON storage.objects;
+DROP POLICY IF EXISTS "Users can view messenger attachments" ON storage.objects;
+DROP POLICY IF EXISTS "Gallery images publicly viewable" ON storage.objects;
