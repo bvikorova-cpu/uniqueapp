@@ -27,6 +27,7 @@ import { TagInput } from "@/components/megaforum/TagInput";
 import { ThreadSubscription } from "@/components/megaforum/ThreadSubscription";
 import { ForumNotifications } from "@/components/megaforum/ForumNotifications";
 import ReactMarkdown from "react-markdown";
+import { SEO } from "@/components/SEO";
 
 interface Profile {
   id: string;
@@ -309,6 +310,12 @@ const Megaforum = () => {
   );
 
   return (
+    <>
+      <SEO
+        title="Megaforum - Open community discussions"
+        description="Join free, open discussions across 9 categories. Live debates, polls, hot topics and weekly challenges on Unique Megaforum."
+        canonical="/megaforum"
+      />
     <div className="min-h-screen bg-background pt-20 pb-12">
       <div className="container mx-auto px-4 max-w-6xl">
         {/* Hero */}
@@ -675,6 +682,7 @@ const Megaforum = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

@@ -28,6 +28,7 @@ import JobsToolsGrid from "@/components/jobs/JobsToolsGrid";
 import JobsApplicationStreaks from "@/components/jobs/JobsApplicationStreaks";
 import JobsSkillLeaderboard from "@/components/jobs/JobsSkillLeaderboard";
 import JobsCareerAchievements from "@/components/jobs/JobsCareerAchievements";
+import { SEO } from "@/components/SEO";
 import JobsWeeklyChallenges from "@/components/jobs/JobsWeeklyChallenges";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
@@ -278,6 +279,12 @@ const Jobs = () => {
   };
 
   return (
+    <>
+      <SEO
+        title="Jobs - Find your next career opportunity"
+        description="Browse jobs, apply with AI assistance and track applications. Employers post jobs and find verified candidates on Unique."
+        canonical="/jobs"
+      />
     <div className="min-h-screen bg-background pt-16 sm:pt-20 pb-8 sm:pb-12">
       <div className="container mx-auto px-2 sm:px-4">
         {/* Cinematic Hero */}
@@ -576,6 +583,7 @@ const Jobs = () => {
         </Dialog>
       </div>
     </div>
+    </>
   );
 };
 

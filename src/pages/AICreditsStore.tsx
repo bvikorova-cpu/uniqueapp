@@ -15,6 +15,7 @@ import { AICreditsLowBalanceAlert } from "@/components/ai-credits/AICreditsLowBa
 import { AICreditsRecommendation } from "@/components/ai-credits/AICreditsRecommendation";
 import { AIUsageAnalytics } from "@/components/ai-credits/AIUsageAnalytics";
 import { AICommunityGalleryStrip } from "@/components/ai-credits/AICommunityGalleryStrip";
+import { SEO } from "@/components/SEO";
 
 const AICreditsStore = () => {
   const navigate = useNavigate();
@@ -70,6 +71,12 @@ const AICreditsStore = () => {
   };
 
   return (
+    <>
+      <SEO
+        title="AI Credits Store - Top up & unlock AI tools"
+        description="Buy AI credits to generate images, videos, music, courses and more across Unique. Flash sales, packs and bundles available."
+        canonical="/ai-credits-store"
+      />
     <div className="min-h-screen bg-background pt-16 pb-12">
       {loading && (
         <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center">
@@ -198,6 +205,7 @@ const AICreditsStore = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

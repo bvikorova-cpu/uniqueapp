@@ -13,6 +13,7 @@ import { Progress } from "@/components/ui/progress";
 import { Heart, X, MessageCircle, User, Sparkles, Send, Settings, Trash2, Upload, Image as ImageIcon, RotateCcw, Gift, Zap, Eye, Check, CheckCheck, Camera, Video, Plus, XCircle, Shield, MapPin, Star, Clock, Crown, Flame, ArrowLeft, Info, ChevronRight, Brain, Wand2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { SEO } from "@/components/SEO";
 import { motion, AnimatePresence } from "framer-motion";
 import { DatingHero } from "@/components/dating/DatingHero";
 import { AIIcebreaker } from "@/components/dating/AIIcebreaker";
@@ -535,6 +536,12 @@ const Dating = () => {
   const completeness = getProfileCompleteness();
 
   return (
+    <>
+      <SEO
+        title="Dating - Meet your match on Unique"
+        description="Find meaningful connections with smart matching, voice intros and verified profiles. Unique Dating — the safer way to date."
+        canonical="/dating"
+      />
     <div className="min-h-screen bg-background pt-16 sm:pt-20 pb-24">
       <div className="container mx-auto px-4 max-w-7xl">
         {/* Cinematic Hero */}
@@ -883,6 +890,7 @@ const Dating = () => {
         </div>
       )}
     </div>
+    </>
   );
 };
 

@@ -8,6 +8,7 @@ import { PokiGameWrapper } from "@/components/games/PokiGameWrapper";
 import { pokiGames, getGamesByCategory, gameCategories, type GameCategory } from "@/data/pokigames";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
+import { SEO } from "@/components/SEO";
 
 const container = { hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.05 } } };
 const item = { hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0, transition: { duration: 0.35 } } };
@@ -28,6 +29,12 @@ const Games = () => {
   };
 
   return (
+    <>
+      <SEO
+        title="Game Arena - Free online games for everyone"
+        description="Play 100+ free online games — action, puzzle, racing, sports and more. Powered by Poki on Unique Game Arena."
+        canonical="/games"
+      />
     <div className="min-h-screen bg-background pt-20 pb-12">
       <div className="container mx-auto px-2 sm:px-4">
         {/* Hero */}
@@ -114,6 +121,7 @@ const Games = () => {
         </Tabs>
       </div>
     </div>
+    </>
   );
 };
 
