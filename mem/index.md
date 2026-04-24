@@ -37,3 +37,4 @@ NO health/medical predictions. NO identifiable people/trademarks in videos.
 - [Affiliate Tiers](mem://features/affiliate-tiers) — 4-tier referrer rewards (€5→€15) with auto-promotion trigger; stripe-webhook reads dynamic reward via get_affiliate_reward_eur; <AffiliateTierCard> + /admin/affiliate-tiers
 - [Subscription Pause Limits](mem://features/subscription-pause-limits) — pause_log + config (3 pauses/year, 3mo max); pause-subscription enforces 429; <PauseLimitCard> + /admin/pauses
 - [Weekly XP Leaderboard & Anti-Fraud](mem://features/weekly-xp-leaderboard) — Unlimited rewarded-ad XP, race-safe 30s throttle (unique idx), weekly leaderboard, Monday cron snapshot awarding 100/50/25 bonus to top 3
+- [Security Scan](mem://features/security-scan) — Daily + on-demand audit of edge fns (static heuristics + runtime probes) and npm deps (OSV.dev CVE); admin UI at /admin/security-scan, snapshots in security_scan_snapshots

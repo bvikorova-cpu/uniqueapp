@@ -345,6 +345,7 @@ const AdminKYC = lazy(() => import("@/pages/admin/AdminKYC"));
 const AdminAffiliateTiers = lazy(() => import("@/pages/admin/AdminAffiliateTiers"));
 const AdminPauseOverview = lazy(() => import("@/pages/admin/AdminPauseOverview"));
 const AdminErrorLogs = lazy(() => import("@/pages/admin/AdminErrorLogs"));
+const AdminSecurityScan = lazy(() => import("@/pages/admin/AdminSecurityScan"));
 const CreatorVerification = lazy(() => import("@/pages/CreatorVerification"));
 const WinBackOffer = lazy(() => import("@/pages/WinBackOffer"));
 const CreatorPayouts = lazy(() => import("@/pages/CreatorPayouts"));
@@ -632,6 +633,7 @@ const App = () => {
                         <Route path="/instructor-earnings" element={<ProtectedRoute><InstructorEarnings /></ProtectedRoute>} />
                         <Route path="/admin/withdrawals" element={<ProtectedRoute requireAdmin={true}><AdminWithdrawals /></ProtectedRoute>} />
                         <Route path="/admin/error-logs" element={<ProtectedRoute requireAdmin={true}><AdminErrorLogs /></ProtectedRoute>} />
+                        <Route path="/admin/security-scan" element={<ProtectedRoute requireAdmin={true}><AdminSecurityScan /></ProtectedRoute>} />
                         <Route path="/admin/influencer-payouts" element={<ProtectedRoute requireAdmin={true}><AdminInfluencerPayouts /></ProtectedRoute>} />
                         <Route path="/admin/platform-earnings" element={<ProtectedRoute requireAdmin={true}><AdminPlatformEarnings /></ProtectedRoute>} />
                         <Route path="/admin/refunds" element={<ProtectedRoute requireAdmin={true}><AdminRefunds /></ProtectedRoute>} />
