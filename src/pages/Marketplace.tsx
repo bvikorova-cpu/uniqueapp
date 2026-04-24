@@ -28,6 +28,7 @@ import { ProviderBadgeView } from "@/components/marketplace/views/ProviderBadgeV
 import { ContractTemplateView } from "@/components/marketplace/views/ContractTemplateView";
 import { RealtimeBiddingView } from "@/components/marketplace/views/RealtimeBiddingView";
 import { motion } from "framer-motion";
+import { SEO } from "@/components/SEO";
 import { Flame, TrendingUp, Award, Check } from "lucide-react";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
@@ -531,6 +532,12 @@ const Marketplace = () => {
 
   // SUBSCRIBED VIEW
   return (
+    <>
+      <SEO
+        title="Skills Marketplace - Hire freelancers & sell services"
+        description="Hire trusted freelancers or offer your services on Unique Marketplace. AI-powered pricing, proposals, contracts and matching."
+        canonical="/marketplace"
+      />
     <div className="min-h-screen bg-background pt-20 sm:pt-24 pb-12">
       <div className="container mx-auto px-4 max-w-6xl">
         <MarketplaceHero />

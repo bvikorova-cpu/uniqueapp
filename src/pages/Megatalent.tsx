@@ -13,6 +13,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ReferralProgram } from "@/components/megatalent/ReferralProgram";
 import { MegaTalentGuide } from "@/components/megatalent/MegaTalentGuide";
+import { SEO } from "@/components/SEO";
 import { TopPremiumBadge } from "@/components/megatalent/TopPremiumBadge";
 import { AnimatedVoteCounter } from "@/components/megatalent/AnimatedVoteCounter";
 import { VoteBoostTooltip } from "@/components/megatalent/VoteBoostTooltip";
@@ -489,6 +490,12 @@ const Megatalent = () => {
   }
 
   return (
+    <>
+      <SEO
+        title="Megatalent - Talent contest with real prizes"
+        description="Show your talent, get votes and win cash prizes. Join Megatalent — Unique's global talent competition with weekly winners."
+        canonical="/megatalent"
+      />
     <div className="min-h-screen bg-background pt-20 pb-12">
       <MegaTalentOnboarding />
       <div className="container mx-auto px-4 max-w-6xl">

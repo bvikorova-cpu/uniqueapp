@@ -24,6 +24,7 @@ import { BuyerMatchView } from "@/components/bazaar/views/BuyerMatchView";
 import { FraudDetectorView } from "@/components/bazaar/views/FraudDetectorView";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
+import { SEO } from "@/components/SEO";
 interface BazaarItem {
   id: string;
   title: string;
@@ -307,6 +308,12 @@ const Bazaar = () => {
   if (activeView === "fraud-detector") return <div className="min-h-screen bg-background pt-16 sm:pt-20 pb-12"><div className="container mx-auto px-3 sm:px-4 max-w-7xl"><FraudDetectorView onBack={() => setActiveView(null)} /></div></div>;
 
   return (
+    <>
+      <SEO
+        title="Bazaar - Buy & sell with smart AI tools"
+        description="List items, set the right price with AI estimator, and find buyers fast. Unique Bazaar — your community marketplace."
+        canonical="/bazaar"
+      />
     <div className="min-h-screen bg-background pt-16 sm:pt-20 pb-12">
       <div className="container mx-auto px-3 sm:px-4 max-w-7xl">
         {/* Cinematic Hero */}
