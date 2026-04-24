@@ -61,6 +61,7 @@ import {
   Megaforum,
   Megatalent,
   MegatalentCategory,
+  MegatalentSuccess,
   Subscription,
   
   PremiumStore,
@@ -440,6 +441,7 @@ const App = () => {
                         <Route path="/post/:id" element={<PostDetail />} />
                         <Route path="/messenger" element={<Messenger />} />
                         <Route path="/megatalent" element={<MegatalentGuard><Megatalent /></MegatalentGuard>} />
+                        <Route path="/megatalent/success" element={<MegatalentSuccess />} />
                         <Route path="/megatalent/:category" element={<MegatalentGuard><MegatalentCategory /></MegatalentGuard>} />
                         <Route path="/megaforum" element={<Megaforum />} />
                         <Route path="/psychologist" element={<Psychology />} />
