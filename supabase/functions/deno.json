@@ -1,8 +1,12 @@
 {
   "nodeModulesDir": "auto",
+  "compilerOptions": {
+    "skipLibCheck": true,
+    "noImplicitAny": false,
+    "strict": false,
+    "types": ["./openai-stub.d.ts"]
+  },
   "imports": {
-    "openai": "npm:openai@^4.52.5",
-    "npm:openai": "npm:openai@^4.52.5",
-    "npm:openai@^4.52.5": "npm:openai@^4.52.5"
+    "openai": "npm:openai@^4.52.5"
   }
 }
