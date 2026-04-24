@@ -42154,6 +42154,13 @@ export type Database = {
           payload: Json
         }[]
       }
+      get_psychology_stats: {
+        Args: never
+        Returns: {
+          messages_count: number
+          sessions_count: number
+        }[]
+      }
       get_public_campaign_donations: {
         Args: { _campaign_id?: string }
         Returns: {
