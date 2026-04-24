@@ -13,6 +13,7 @@ import { Progress } from "@/components/ui/progress";
 import { Heart, X, MessageCircle, User, Sparkles, Send, Settings, Trash2, Upload, Image as ImageIcon, RotateCcw, Gift, Zap, Eye, Check, CheckCheck, Camera, Video, Plus, XCircle, Shield, MapPin, Star, Clock, Crown, Flame, ArrowLeft, Info, ChevronRight, Brain, Wand2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { SEO } from "@/components/SEO";
 import { motion, AnimatePresence } from "framer-motion";
 import { DatingHero } from "@/components/dating/DatingHero";
 import { AIIcebreaker } from "@/components/dating/AIIcebreaker";
