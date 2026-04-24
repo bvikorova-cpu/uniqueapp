@@ -657,6 +657,7 @@ const Bazaar = () => {
         <BazaarPurchaseDialog item={selectedItem} open={isPurchaseDialogOpen} onOpenChange={setIsPurchaseDialogOpen} />
       </div>
     </div>
+    </>
   );
 };
 

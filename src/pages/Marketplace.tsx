@@ -745,6 +745,7 @@ const Marketplace = () => {
         </Dialog>
       )}
     </div>
+    </>
   );
 };
 

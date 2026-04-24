@@ -121,6 +121,7 @@ const Games = () => {
         </Tabs>
       </div>
     </div>
+    </>
   );
 };
 

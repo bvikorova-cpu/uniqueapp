@@ -753,6 +753,7 @@ const Megatalent = () => {
         </Card>
       </div>
     </div>
+    </>
   );
 };
 

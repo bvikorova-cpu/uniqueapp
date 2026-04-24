@@ -682,6 +682,7 @@ const Megaforum = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

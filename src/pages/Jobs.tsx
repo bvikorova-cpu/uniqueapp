@@ -583,6 +583,7 @@ const Jobs = () => {
         </Dialog>
       </div>
     </div>
+    </>
   );
 };
 
