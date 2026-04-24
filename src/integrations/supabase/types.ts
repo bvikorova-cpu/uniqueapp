@@ -21549,6 +21549,13 @@ export type Database = {
             referencedRelation: "job_listings"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "job_applications_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "job_listings_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       job_listing_payments: {
@@ -21594,6 +21601,13 @@ export type Database = {
             columns: ["job_id"]
             isOneToOne: false
             referencedRelation: "job_listings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "job_listing_payments_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "job_listings_public"
             referencedColumns: ["id"]
           },
         ]
@@ -41868,6 +41882,87 @@ export type Database = {
           status?: string | null
           updated_at?: string | null
           user_id?: never
+        }
+        Relationships: []
+      }
+      job_listings_public: {
+        Row: {
+          applications_count: number | null
+          benefits: string | null
+          category: Database["public"]["Enums"]["job_category"] | null
+          company_name: string | null
+          country: string | null
+          created_at: string | null
+          description: string | null
+          duration_days: number | null
+          employer_id: string | null
+          expires_at: string | null
+          id: string | null
+          is_active: boolean | null
+          is_featured: boolean | null
+          job_type: Database["public"]["Enums"]["job_type"] | null
+          location: string | null
+          paid_status: string | null
+          published_at: string | null
+          requirements: string | null
+          salary_currency: string | null
+          salary_max: number | null
+          salary_min: number | null
+          title: string | null
+          updated_at: string | null
+          views_count: number | null
+        }
+        Insert: {
+          applications_count?: number | null
+          benefits?: string | null
+          category?: Database["public"]["Enums"]["job_category"] | null
+          company_name?: string | null
+          country?: string | null
+          created_at?: string | null
+          description?: string | null
+          duration_days?: number | null
+          employer_id?: string | null
+          expires_at?: string | null
+          id?: string | null
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          job_type?: Database["public"]["Enums"]["job_type"] | null
+          location?: string | null
+          paid_status?: string | null
+          published_at?: string | null
+          requirements?: string | null
+          salary_currency?: string | null
+          salary_max?: number | null
+          salary_min?: number | null
+          title?: string | null
+          updated_at?: string | null
+          views_count?: number | null
+        }
+        Update: {
+          applications_count?: number | null
+          benefits?: string | null
+          category?: Database["public"]["Enums"]["job_category"] | null
+          company_name?: string | null
+          country?: string | null
+          created_at?: string | null
+          description?: string | null
+          duration_days?: number | null
+          employer_id?: string | null
+          expires_at?: string | null
+          id?: string | null
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          job_type?: Database["public"]["Enums"]["job_type"] | null
+          location?: string | null
+          paid_status?: string | null
+          published_at?: string | null
+          requirements?: string | null
+          salary_currency?: string | null
+          salary_max?: number | null
+          salary_min?: number | null
+          title?: string | null
+          updated_at?: string | null
+          views_count?: number | null
         }
         Relationships: []
       }
