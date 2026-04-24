@@ -299,6 +299,14 @@ const Megatalent = () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { toast({ title: "Login Required", description: "Please log in to vote", variant: "destructive" }); return; }
+      if (!isSubscribed) {
+        toast({
+          title: "Megatalent Premium required",
+          description: "Activate Premium (10 €/month) to vote in the contest.",
+          variant: "destructive",
+        });
+        return;
+      }
       const isLiked = likedSubmissions.has(submissionId);
       if (isLiked) {
         await supabase.from('talent_votes').delete().eq('submission_id', submissionId).eq('user_id', user.id);
@@ -329,6 +337,14 @@ const Megatalent = () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { toast({ title: "Login Required", variant: "destructive" }); return; }
+      if (!isSubscribed) {
+        toast({
+          title: "Megatalent Premium required",
+          description: "Activate Premium (10 €/month) to comment.",
+          variant: "destructive",
+        });
+        return;
+      }
       const { error } = await supabase.from('talent_comments').insert({ submission_id: submissionId, user_id: user.id, comment_text: commentText.trim() });
       if (error) throw error;
       setCommentText("");
@@ -365,6 +381,14 @@ const Megatalent = () => {
     if (!file) return;
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { toast({ title: "Login Required", variant: "destructive" }); return; }
+    if (!isSubscribed) {
+      toast({
+        title: "Megatalent Premium required",
+        description: "Activate Premium (10 €/month) to upload to the contest.",
+        variant: "destructive",
+      });
+      return;
+    }
     setUploading(true);
     try {
       const fileExt = file.name.split('.').pop();
@@ -384,6 +408,14 @@ const Megatalent = () => {
     if (!uploadedFile) { toast({ title: "Error", description: "Please upload media first", variant: "destructive" }); return; }
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { toast({ title: "Login Required", variant: "destructive" }); return; }
+    if (!isSubscribed) {
+      toast({
+        title: "Megatalent Premium required",
+        description: "Activate Premium (10 €/month) to publish your submission.",
+        variant: "destructive",
+      });
+      return;
+    }
     setSubmitting(true);
     try {
       const { error } = await supabase.from('talent_submissions').insert({ user_id: user.id, title: title.trim(), description: description.trim(), category: selectedCategory as any, media_url: uploadedFile.url, media_type: uploadedFile.type });
