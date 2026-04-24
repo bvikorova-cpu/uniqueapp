@@ -1,19 +1,33 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Brain, Users, MessageCircle, Heart, Volume2, VolumeX, Play, Pause } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import heroVideo from "@/assets/psychology-hero-v2.mp4.asset.json";
 import { useLiveStats } from "@/hooks/useLiveStats";
+import { supabase } from "@/integrations/supabase/client";
 
 export const PsychologyHero = () => {
   const [isMuted, setIsMuted] = useState(true);
   const [isPlaying, setIsPlaying] = useState(true);
+  const [psychStats, setPsychStats] = useState({ sessions: 0, messages: 0 });
   const { stats } = useLiveStats([
-    { key: "sessions", table: "psychology_sessions" as any },
-    { key: "messages", table: "psychology_messages" as any },
     { key: "moods", table: "psychology_mood_entries" as any },
     { key: "meditations", table: "psychology_meditation_sessions" as any },
   ]);
+
+  // Use safe RPC for psychology stats (tables are RLS-locked, only edge fn can read)
+  useEffect(() => {
+    (async () => {
+      const { data } = await (supabase as any).rpc("get_psychology_stats");
+      const row = Array.isArray(data) ? data[0] : data;
+      if (row) {
+        setPsychStats({
+          sessions: Number(row.sessions_count) || 0,
+          messages: Number(row.messages_count) || 0,
+        });
+      }
+    })();
+  }, []);
 
   const togglePlay = () => {
     const video = document.getElementById("psych-hero-video") as HTMLVideoElement;
@@ -25,8 +39,8 @@ export const PsychologyHero = () => {
   };
 
   const statItems = [
-    { icon: Brain, label: "Sessions", value: stats.sessions || "—" },
-    { icon: Users, label: "Active Users", value: stats.messages || "—" },
+    { icon: Brain, label: "Sessions", value: psychStats.sessions || "—" },
+    { icon: Users, label: "Active Users", value: psychStats.messages || "—" },
     { icon: MessageCircle, label: "Mood Logs", value: stats.moods || "—" },
     { icon: Heart, label: "Meditations", value: stats.meditations || "—" },
   ];
