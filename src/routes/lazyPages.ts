@@ -26,6 +26,7 @@ export const EventDetail = lazy(() => import("@/pages/wall/EventDetail"));
 // Megatalent
 export const Megatalent = lazy(() => import("@/pages/Megatalent"));
 export const MegatalentCategory = lazy(() => import("@/pages/megatalent/MegatalentCategory"));
+export const MegatalentSuccess = lazy(() => import("@/pages/megatalent/MegatalentSuccess"));
 export const Megaforum = lazy(() => import("@/pages/Megaforum"));
 
 // Entertainment & Games

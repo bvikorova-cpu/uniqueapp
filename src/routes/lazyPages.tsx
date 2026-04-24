@@ -41,6 +41,7 @@ export const Megaforum = lazy(() => import("@/pages/Megaforum"));
 // Megatalent
 export const Megatalent = lazy(() => import("@/pages/Megatalent"));
 export const MegatalentCategory = lazy(() => import("@/pages/megatalent/MegatalentCategory"));
+export const MegatalentSuccess = lazy(() => import("@/pages/megatalent/MegatalentSuccess"));
 
 // Subscription & Store
 export const Subscription = lazy(() => import("@/pages/Subscription"));
