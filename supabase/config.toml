@@ -1280,3 +1280,9 @@ verify_jwt = true
 [functions.contact-ai-triage]
 verify_jwt = false
 
+
+[functions.security-scan-edge-functions]
+verify_jwt = false
+
+[functions.security-scan-frontend-deps]
+verify_jwt = false
