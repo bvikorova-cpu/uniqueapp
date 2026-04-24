@@ -10,6 +10,7 @@ import { useRecentServices } from "@/hooks/useRecentServices";
 import RewardedAdCard from "@/components/ads/RewardedAdCard";
 import { AD_PLACEMENTS } from "@/components/ads/AdPlacements";
 import heroHdVideo from "@/assets/unique-hero-hd.mp4.asset.json";
+import { SEO } from "@/components/SEO";
 import {
   Car, Baby, GraduationCap, Briefcase, Heart, Sparkles, Trophy, Users,
   Video, Mic, ShoppingBag, Brain, TrendingUp, Ghost, Building2, Crown,
@@ -213,6 +214,21 @@ const Index = () => {
   const currentSpotlight = spotlightServices[spotlightIdx];
 
   return (
+    <>
+      <SEO
+        title="Unique - All-in-one social platform with AI, marketplace & games"
+        description="Join Unique: AI tools, marketplace, dating, jobs, games, fundraising and creator monetization in one social platform."
+        canonical="/"
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "WebApplication",
+          name: "Unique",
+          url: "https://uniqueapp.fun/",
+          applicationCategory: "SocialNetworkingApplication",
+          operatingSystem: "Web",
+          offers: { "@type": "Offer", price: "0", priceCurrency: "EUR" },
+        }}
+      />
     <div className="min-h-screen bg-background">
       {/* ── Hero Section ─────────────────────────────── */}
       <div className="relative overflow-hidden min-h-[500px] sm:min-h-[640px] lg:min-h-[720px] xl:min-h-[820px]">
