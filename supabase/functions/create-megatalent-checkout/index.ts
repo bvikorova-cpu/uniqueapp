@@ -59,7 +59,7 @@ serve(async (req) => {
       customer_email: customerId ? undefined : user.email,
       line_items: [{ price: priceId, quantity: 1 }],
       mode: "subscription",
-      success_url: `${origin}/megatalent?success=true&tier=${tier}`,
+      success_url: `${origin}/megatalent/success?session_id={CHECKOUT_SESSION_ID}&tier=${tier}`,
       cancel_url: `${origin}/megatalent?canceled=true`,
       metadata: {
         user_id: user.id,
