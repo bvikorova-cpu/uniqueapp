@@ -42332,6 +42332,10 @@ export type Database = {
         Returns: boolean
       }
       is_shadowbanned: { Args: { p_user_id: string }; Returns: boolean }
+      is_video_owner: {
+        Args: { _user_id: string; _video_id: string }
+        Returns: boolean
+      }
       is_vip_user: { Args: { user_id_param: string }; Returns: boolean }
       log_admin_action: {
         Args: {
