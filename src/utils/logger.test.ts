@@ -9,7 +9,7 @@ const getSessionMock = vi.fn().mockResolvedValue({
 
 vi.mock("@/integrations/supabase/client", () => ({
   supabase: {
-    from: (...args: unknown[]) => fromMock(...args),
+    from: (table: string) => fromMock(table),
     auth: { getSession: () => getSessionMock() },
   },
 }));
