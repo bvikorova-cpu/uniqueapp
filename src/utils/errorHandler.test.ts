@@ -48,11 +48,19 @@ describe("getUserFriendlyErrorMessage", () => {
 });
 
 describe("handleSupabaseFunctionError", () => {
-  it("includes action in fallback", () => {
+  it("includes action in fallback when error is technical", () => {
     const msg = handleSupabaseFunctionError(
-      new Error("totally weird unmatched"),
+      new Error("TypeError: weird internal failure"),
       "save profile"
     );
     expect(msg.toLowerCase()).toContain("save profile");
+  });
+
+  it("still translates known patterns over the action fallback", () => {
+    const msg = handleSupabaseFunctionError(
+      new Error("Failed to fetch"),
+      "save profile"
+    );
+    expect(msg.toLowerCase()).toMatch(/network error/);
   });
 });
