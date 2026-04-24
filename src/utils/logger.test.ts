@@ -2,14 +2,14 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 
 // We mock supabase BEFORE importing logger so persistLog uses the mock.
 const insertMock = vi.fn().mockResolvedValue({ error: null });
-const fromMock = vi.fn(() => ({ insert: insertMock }));
+const fromMock: any = vi.fn(() => ({ insert: insertMock }));
 const getSessionMock = vi.fn().mockResolvedValue({
   data: { session: { user: { id: "user-1" } } },
 });
 
 vi.mock("@/integrations/supabase/client", () => ({
   supabase: {
-    from: ((table: string) => fromMock(table)) as any,
+    from: (table: string) => fromMock(table),
     auth: { getSession: () => getSessionMock() },
   },
 }));
