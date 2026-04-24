@@ -170,7 +170,13 @@ const Jobs = () => {
   const { data: jobs = [], isLoading } = useQuery({
     queryKey: ["jobs", searchQuery, selectedCategory, selectedType, selectedCountry],
     queryFn: async () => {
-      let query = supabase.from("job_listings").select("*").eq("is_active", true).order("created_at", { ascending: false });
+      // Read from sanitized view (excludes employer contact_email).
+      // Employers/admins/applicants get the full row by querying job_listings
+      // directly (RLS allows it). Anonymous browsers stay PII-safe.
+      let query = (supabase.from as any)("job_listings_public")
+        .select("*")
+        .eq("is_active", true)
+        .order("created_at", { ascending: false });
       if (searchQuery) query = query.or(`title.ilike.%${searchQuery}%,description.ilike.%${searchQuery}%,company_name.ilike.%${searchQuery}%`);
       if (selectedCategory !== "all") query = query.eq("category", selectedCategory as any);
       if (selectedType !== "all") query = query.eq("job_type", selectedType as any);

@@ -121,8 +121,10 @@ const Contact = () => {
 
   const uploadBlob = async (blob: Blob, ext: string, kind: string) => {
     if (!blob || blob.size === 0) return null;
-    const folder = user?.id ?? "anonymous";
-    const filename = `${folder}/${kind}-${Date.now()}.${ext}`;
+    // Only authenticated users can upload to support-attachments now
+    // (anonymous folder was a security risk and has been removed).
+    if (!user?.id) return null;
+    const filename = `${user.id}/${kind}-${Date.now()}.${ext}`;
     const { error } = await supabase.storage.from("support-attachments").upload(filename, blob, {
       contentType: blob.type,
       upsert: false,
@@ -137,13 +139,20 @@ const Contact = () => {
   const onSubmit = async (data: ContactFormData) => {
     setIsSubmitting(true);
     try {
-      // upload files
-      const folder = user?.id ?? "anonymous";
+      // Attachments require authentication. Anonymous tickets still work
+      // for the textual form fields below; we just skip the file uploads.
       const uploadedAttachments: { name: string; path: string }[] = [];
-      for (const f of files) {
-        const path = `${folder}/file-${Date.now()}-${f.name}`;
-        const { error } = await supabase.storage.from("support-attachments").upload(path, f, { upsert: false });
-        if (!error) uploadedAttachments.push({ name: f.name, path });
+      if (user?.id) {
+        for (const f of files) {
+          const path = `${user.id}/file-${Date.now()}-${f.name}`;
+          const { error } = await supabase.storage.from("support-attachments").upload(path, f, { upsert: false });
+          if (!error) uploadedAttachments.push({ name: f.name, path });
+        }
+      } else if (files.length > 0) {
+        toast({
+          title: "Sign in to attach files",
+          description: "Anonymous tickets can't upload attachments. Please log in to include files.",
+        });
       }
 
       const voicePath = voiceBlob && voiceBlob.size > 0 ? await uploadBlob(voiceBlob, "webm", "voice") : null;
