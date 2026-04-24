@@ -42263,6 +42263,10 @@ export type Database = {
         Returns: undefined
       }
       give_starter_balance: { Args: { p_user_id: string }; Returns: undefined }
+      has_active_megatalent_subscription: {
+        Args: { _user_id: string }
+        Returns: boolean
+      }
       has_confession_access: {
         Args: { service_type_param: string; user_id_param: string }
         Returns: boolean
