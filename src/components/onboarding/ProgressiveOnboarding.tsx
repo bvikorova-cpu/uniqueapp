@@ -81,6 +81,14 @@ export const ProgressiveOnboarding = ({ onComplete }: ProgressiveOnboardingProps
   const [hasSeenOnboarding, setHasSeenOnboarding] = useState(false);
 
   useEffect(() => {
+    const pathname = window.location.pathname;
+    const shouldShowOnboarding = pathname === "/" || pathname === "/index";
+
+    if (!shouldShowOnboarding) {
+      setHasSeenOnboarding(true);
+      return;
+    }
+
     const seen = localStorage.getItem("onboarding_completed");
     if (!seen) {
       // Delay showing onboarding to allow page to load
@@ -88,9 +96,9 @@ export const ProgressiveOnboarding = ({ onComplete }: ProgressiveOnboardingProps
         setIsVisible(true);
       }, 1500);
       return () => clearTimeout(timer);
-    } else {
-      setHasSeenOnboarding(true);
     }
+
+    setHasSeenOnboarding(true);
   }, []);
 
   const handleNext = () => {
