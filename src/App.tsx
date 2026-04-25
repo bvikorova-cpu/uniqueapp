@@ -37,6 +37,7 @@ import Home from "./pages/Home";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
+import Download from "./pages/Download";
 import VerifyReport from "./pages/VerifyReport";
 import UsernameRedirect from "./pages/UsernameRedirect";
 
@@ -425,6 +426,8 @@ const App = () => {
                         <Routes>
                         <Route path="/" element={<Index />} />
                         <Route path="/index" element={<Navigate to="/" replace />} />
+                        <Route path="/download" element={<Download />} />
+                        <Route path="/downloads" element={<Navigate to="/download" replace />} />
                         <Route path="/wall" element={<Wall />} />
                         <Route path="/search" element={<SearchResults />} />
                         <Route path="/wall/messages" element={<Wall />} />
