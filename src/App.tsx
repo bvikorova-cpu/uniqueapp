@@ -37,6 +37,7 @@ import Home from "./pages/Home";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
+import Download from "./pages/Download";
 import VerifyReport from "./pages/VerifyReport";
 import UsernameRedirect from "./pages/UsernameRedirect";
 
