@@ -91,13 +91,16 @@ export default function Download() {
                   </p>
                   <p className="text-xs text-muted-foreground mt-1">{file.size}</p>
                 </div>
-                <Button
-                  onClick={() => handleDownload(file.url, filename)}
-                  className="shrink-0"
-                  size="sm"
-                >
-                  <DownloadIcon className="w-4 h-4 mr-2" />
-                  Stiahnuť
+                <Button asChild className="shrink-0" size="sm">
+                  <a
+                    href={file.url}
+                    download={filename}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <DownloadIcon className="w-4 h-4 mr-2" />
+                    Stiahnuť
+                  </a>
                 </Button>
               </Card>
             );
