@@ -11,6 +11,7 @@ import RewardedAdCard from "@/components/ads/RewardedAdCard";
 import { AD_PLACEMENTS } from "@/components/ads/AdPlacements";
 import heroHdVideo from "@/assets/unique-hero-hd.mp4.asset.json";
 import { SEO } from "@/components/SEO";
+import { Age16Badge } from "@/components/Age16Badge";
 import {
   Car, Baby, GraduationCap, Briefcase, Heart, Sparkles, Trophy, Users,
   Video, Mic, ShoppingBag, Brain, TrendingUp, Ghost, Building2, Crown,
