@@ -16,7 +16,7 @@ interface Hub {
 }
 
 const HUBS: Hub[] = [
-  { key: "chef", label: "MasterChef", icon: ChefHat, color: "from-orange-500 to-red-500", table: "masterchef_chefs", path: "/admin/masterchef-payouts" },
+  { key: "chef", label: "KitchenStars", icon: ChefHat, color: "from-orange-500 to-red-500", table: "masterchef_chefs", path: "/admin/masterchef-payouts" },
   { key: "comedy", label: "Comedy", icon: Mic2, color: "from-purple-500 to-pink-500", table: "comedians", path: "/admin/comedy-payouts" },
   { key: "sports", label: "Sports Tipsters", icon: Trophy, color: "from-emerald-500 to-teal-500", table: "sports_tipsters", path: "/admin/tipsters" },
   { key: "influ", label: "InfluKing", icon: Users, color: "from-fuchsia-500 to-purple-500", table: "instructor_profiles", path: "/admin/influencer-payouts" },
