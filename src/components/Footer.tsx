@@ -1,6 +1,7 @@
 import { Copyright, Shield, Lock, HelpCircle, Mail, FileText, BookOpen, ExternalLink } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Separator } from "@/components/ui/separator";
+import { Age16Badge } from "@/components/Age16Badge";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
