@@ -48,6 +48,7 @@ import { installGlobalErrorHandlers } from "@/utils/logger";
 import { installImagePerformancePatch } from "@/utils/imagePerformance";
 import { HelmetProvider } from "react-helmet-async";
 import { ReferralCaptureMount } from "@/components/referral/ReferralCaptureMount";
+import { LanguagePreferenceMount } from "@/components/LanguagePreferenceMount";
 import { DunningBanner } from "@/components/billing/DunningBanner";
 import { SCABanner } from "@/components/billing/SCABanner";
 
@@ -430,6 +431,7 @@ const App = () => {
         <BrowserRouter>
           <AuthProvider>
             <ReferralCaptureMount />
+            <LanguagePreferenceMount />
             <DunningBanner />
             <SCABanner />
             <AnimationProvider>
