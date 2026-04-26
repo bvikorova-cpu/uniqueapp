@@ -11,6 +11,15 @@ const KitchenStarsRedirect = () => {
   const target = pathname.replace(/^\/kitchenstars/, "/masterchef") + search + hash;
   return <Navigate to={target} replace />;
 };
+
+// Redirect /proclass(es)/<sub-path> -> /masterclass(es)/<sub-path> for brand aliases
+const ProClassRedirect = () => {
+  const { pathname, search, hash } = useLocation();
+  const target = pathname
+    .replace(/^\/proclasses/, "/masterclasses")
+    .replace(/^\/proclass/, "/masterclass") + search + hash;
+  return <Navigate to={target} replace />;
+};
 import { ThemeProvider } from "next-themes";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { AnimationProvider } from "@/contexts/AnimationContext";
@@ -768,6 +777,10 @@ const App = () => {
                         <Route path="/kitchenstars-subscription" element={<Navigate to="/masterchef-subscription" replace />} />
                         <Route path="/kitchenstars/*" element={<KitchenStarsRedirect />} />
                         <Route path="/admin/kitchenstars-payouts" element={<Navigate to="/admin/masterchef-payouts" replace />} />
+                        {/* ProClass brand aliases — redirect to internal /masterclass(es) paths */}
+                        <Route path="/proclasses" element={<Navigate to="/masterclasses" replace />} />
+                        <Route path="/proclass/*" element={<ProClassRedirect />} />
+                        <Route path="/proclasses/*" element={<ProClassRedirect />} />
                         <Route path="/time-capsule-subscription" element={<Navigate to="/time-capsule" replace />} />
                         <Route path="/time-capsule" element={<TimeCapsule />} />
                         <Route path="/home-decor-subscription" element={<HomeDecorSubscription />} />

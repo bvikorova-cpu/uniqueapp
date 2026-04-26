@@ -61,7 +61,7 @@ const InteractiveWorkshops = () => {
     },
     {
       id: "content-creation",
-      title: "Content Creation Masterclass",
+      title: "Content Creation ProClass",
       description: "Build your personal brand and online presence",
       instructor: "Alex Rivera",
       price: 129,

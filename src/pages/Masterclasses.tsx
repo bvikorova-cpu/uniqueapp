@@ -23,9 +23,9 @@ const Masterclasses = () => {
         if (success) {
           toast({
             title: "Registration Confirmed! 🎉",
-            description: "You now have access to your masterclass.",
+            description: "You now have access to your ProClass.",
           });
-          window.history.replaceState({}, '', '/masterclasses');
+          window.history.replaceState({}, '', '/proclasses');
         }
       });
     }
@@ -47,7 +47,7 @@ const Masterclasses = () => {
       rating: 5.0,
       image: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=400",
       topics: ["Inspirational Leadership", "Team Building", "Company Culture", "Vision & Mission"],
-      format: "Video Masterclass + Materials"
+      format: "Video ProClass + Materials"
     },
     {
       id: "ai-innovation",
@@ -68,7 +68,7 @@ const Masterclasses = () => {
     },
     {
       id: "business-strategy",
-      title: "Business Strategy Masterclass with Gary Vaynerchuk",
+      title: "Business Strategy ProClass with Gary Vaynerchuk",
       expert: "Gary Vaynerchuk",
       expertise: "Entrepreneurship & Digital Marketing",
       description: "Master modern business strategy and digital marketing from a serial entrepreneur",
@@ -81,7 +81,7 @@ const Masterclasses = () => {
       rating: 4.9,
       image: "https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=400",
       topics: ["Business Strategy", "Social Media Marketing", "Brand Building", "Hustle Culture"],
-      format: "Video Masterclass + Workbook"
+      format: "Video ProClass + Workbook"
     },
     {
       id: "design-thinking",
@@ -117,7 +117,7 @@ const Masterclasses = () => {
         window.open(sessionUrl, '_blank');
         toast({
           title: "Redirecting to Payment",
-          description: "Complete your payment to access the masterclass.",
+          description: "Complete your payment to access the ProClass.",
         });
       }
     } catch (error) {
@@ -136,7 +136,7 @@ const Masterclasses = () => {
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12 mt-16">
           <h1 className="text-4xl md:text-5xl font-black mb-4 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
-            Expert Masterclasses
+            Expert ProClasses
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Learn directly from world-renowned experts in exclusive live sessions
@@ -220,7 +220,7 @@ const Masterclasses = () => {
                     {registering === masterclass.id 
                       ? "Processing..." 
                       : isPurchased(masterclass.id, "masterclass")
-                      ? "Access Masterclass"
+                      ? "Access ProClass"
                       : "Register Now"}
                   </Button>
                 </div>
@@ -231,7 +231,7 @@ const Masterclasses = () => {
 
         <div className="mt-12">
           <Card className="p-8 bg-gradient-to-r from-primary/10 to-primary/5 text-center">
-            <h3 className="text-2xl font-black mb-4">Want to host your own masterclass?</h3>
+            <h3 className="text-2xl font-black mb-4">Want to host your own ProClass?</h3>
             <p className="text-muted-foreground mb-6">
               Share your expertise with our global community of learners
             </p>

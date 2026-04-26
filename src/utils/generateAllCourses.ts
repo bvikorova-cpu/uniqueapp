@@ -149,7 +149,7 @@ const allCourses = [
   "Muscle Building",
   "Sports Nutrition",
   "Vegan Cooking",
-  "Baking Masterclass",
+  "Baking ProClass",
   "Pastry Arts",
   "Wine Tasting",
   "Coffee Brewing",

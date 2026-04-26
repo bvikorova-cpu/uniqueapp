@@ -302,7 +302,7 @@ export default function ComedyClub() {
             {[
               { icon: "🎭", title: "Comedy Improv AI", desc: "AI-generated improv scenarios with audience participation and scoring" },
               { icon: "📊", title: "Comedy Analytics", desc: "Detailed performance metrics: laugh rate, audience retention, tip patterns" },
-              { icon: "🎓", title: "Comedy Masterclass", desc: "Premium video courses from top comedians with AI-graded assignments" },
+              { icon: "🎓", title: "Comedy ProClass", desc: "Premium video courses from top comedians with AI-graded assignments" },
               { icon: "🤝", title: "Comedian Collab Hub", desc: "Find comedy partners, form duos, and schedule joint shows" },
               { icon: "🎵", title: "Comedy Podcast Studio", desc: "Record, edit, and monetize comedy podcasts with AI enhancement" },
               { icon: "🌍", title: "Global Comedy Festival", desc: "Seasonal multi-day comedy events with international performers and prize pools" },
