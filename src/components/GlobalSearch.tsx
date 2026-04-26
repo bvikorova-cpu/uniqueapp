@@ -87,7 +87,7 @@ const SEARCHABLE_PAGES: SearchResult[] = [
   // Food & Cooking
   { id: "49", title: "Cooking", category: "Food", path: "/cooking" },
   { id: "50", title: "Meal Planner", category: "Food", path: "/meal-planner" },
-  { id: "51", title: "MasterChef", category: "Food", path: "/masterchef-subscription" },
+  { id: "51", title: "KitchenStars", category: "Food", path: "/masterchef-subscription" },
   
   // Education & Learning
   { id: "52", title: "Education", category: "Education", path: "/education" },

@@ -7,7 +7,7 @@ import {
 } from "lucide-react";
 
 const commands = [
-  { label: "MasterChef Payouts", path: "/admin/masterchef-payouts", icon: ChefHat, group: "Finance" },
+  { label: "KitchenStars Payouts", path: "/admin/masterchef-payouts", icon: ChefHat, group: "Finance" },
   { label: "Comedy Club Payouts", path: "/admin/comedy-payouts", icon: Mic2, group: "Finance" },
   { label: "Withdrawals", path: "/admin/withdrawals", icon: Wallet, group: "Finance" },
   { label: "Influencer Payouts", path: "/admin/influencer-payouts", icon: Trophy, group: "Finance" },

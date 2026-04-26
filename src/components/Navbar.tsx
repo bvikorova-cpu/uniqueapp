@@ -225,7 +225,7 @@ const Navbar = () => {
     { path: "/holographic-avatars", label: "Holographic Avatars", icon: Sparkles },
     { path: "/time-capsule", label: "Time Capsule Network", icon: Clock },
     { path: "/time-reversal", label: "Time Reversal Social", icon: Clock },
-    { path: "/masterchef-subscription", label: "MasterChef Competition", icon: ChefHat },
+    { path: "/masterchef-subscription", label: "KitchenStars Competition", icon: ChefHat },
     { path: "/f1-racing", label: "GP Fantasy Racing", icon: Car },
     { path: "/messenger", label: t('services.messenger.title'), icon: Mail },
     { path: "/influ-king", label: t('navbar.influ_king'), icon: Star },
