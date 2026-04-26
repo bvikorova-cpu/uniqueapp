@@ -756,6 +756,11 @@ const App = () => {
                         <Route path="/masterchef/leaderboard" element={<MasterChefWeeklyAwards />} />
                         <Route path="/masterchef/live-battles" element={<ProtectedRoute><MasterChefLiveStream /></ProtectedRoute>} />
                         <Route path="/masterchef/profile" element={<ProtectedRoute><MasterChefDashboard /></ProtectedRoute>} />
+                        {/* KitchenStars brand aliases — redirect to internal /masterchef paths */}
+                        <Route path="/kitchenstars" element={<Navigate to="/masterchef-subscription" replace />} />
+                        <Route path="/kitchenstars-subscription" element={<Navigate to="/masterchef-subscription" replace />} />
+                        <Route path="/kitchenstars/*" element={<KitchenStarsRedirect />} />
+                        <Route path="/admin/kitchenstars-payouts" element={<Navigate to="/admin/masterchef-payouts" replace />} />
                         <Route path="/time-capsule-subscription" element={<Navigate to="/time-capsule" replace />} />
                         <Route path="/time-capsule" element={<TimeCapsule />} />
                         <Route path="/home-decor-subscription" element={<HomeDecorSubscription />} />
