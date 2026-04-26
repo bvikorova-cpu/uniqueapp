@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Heart, Play, Star, Sparkles, Crown, BookOpen, Volume2, Trophy, Moon, CreditCard, Video, Castle, Palette, Unlock, Shield, Library, BarChart3 } from "lucide-react";
 import { toast } from "sonner";
 import { showImages } from "@/components/kids/ShowImages";
-import castleBg from "@/assets/kids/disney-castle-bg.jpg";
+import castleBg from "@/assets/kids/fairy-castle-bg.jpg";
 import { ParentalGate, useParentalGate } from "@/components/kids/ParentalGate";
 import { SafeContentBadge } from "@/components/kids/SafeContentBadge";
 import { useKidsGoldPass } from "@/hooks/useKidsGoldPass";
