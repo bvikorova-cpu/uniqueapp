@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,10 +7,19 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "react-i18next";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, CalendarIcon, ShieldAlert, Baby } from "lucide-react";
 import { LanguageSelector } from "@/components/LanguageSelector";
+import { Age16Badge } from "@/components/Age16Badge";
+import { format, differenceInYears } from "date-fns";
+import { cn } from "@/lib/utils";
+
+const MIN_AGE = 16;
+
+const calculateAge = (birthDate: Date): number => differenceInYears(new Date(), birthDate);
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -30,6 +39,8 @@ const Auth = () => {
   const [showSignupPassword, setShowSignupPassword] = useState(false);
   const [privacyConsent, setPrivacyConsent] = useState(false);
   const [termsConsent, setTermsConsent] = useState(false);
+  const [birthDate, setBirthDate] = useState<Date | undefined>(undefined);
+  const [showAgeBlock, setShowAgeBlock] = useState(false);
 
   // Check if user is already logged in
   useEffect(() => {
@@ -44,7 +55,7 @@ const Auth = () => {
 
   const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
+
     if (!privacyConsent || !termsConsent) {
       toast({
         variant: "destructive",
@@ -53,7 +64,23 @@ const Auth = () => {
       });
       return;
     }
-    
+
+    if (!birthDate) {
+      toast({
+        variant: "destructive",
+        title: "Date of birth required",
+        description: "Please select your date of birth to continue.",
+      });
+      return;
+    }
+
+    const age = calculateAge(birthDate);
+    if (age < MIN_AGE) {
+      // Block under-16 with a friendly Kids Channel redirect
+      setShowAgeBlock(true);
+      return;
+    }
+
     setLoading(true);
 
     const formData = new FormData(e.currentTarget);
@@ -64,6 +91,7 @@ const Auth = () => {
     const companyName = formData.get("companyName") as string;
 
     const selectedLanguage = i18n.language || 'en';
+    const isoBirthDate = format(birthDate, "yyyy-MM-dd");
 
     const { data: signUpData, error } = await supabase.auth.signUp({
       email,
@@ -75,19 +103,23 @@ const Auth = () => {
           phone: phone,
           company_name: companyName || null,
           preferred_language: selectedLanguage,
+          birth_date: isoBirthDate,
         },
       },
     });
 
-    // Persist preferred_language directly to the profile (best-effort, non-blocking)
+    // Persist preferred_language + birth_date directly to the profile (best-effort)
     if (!error && signUpData?.user?.id) {
       try {
         await supabase
           .from('profiles')
-          .update({ preferred_language: selectedLanguage } as any)
+          .update({
+            preferred_language: selectedLanguage,
+            birth_date: isoBirthDate,
+          } as any)
           .eq('id', signUpData.user.id);
       } catch (e) {
-        console.warn('Could not persist preferred_language at signup:', e);
+        console.warn('Could not persist profile fields at signup:', e);
       }
     }
 
@@ -164,13 +196,58 @@ const Auth = () => {
     }
   };
 
+  // Under-16 block screen — friendly redirect to the Kids Channel
+  if (showAgeBlock) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background p-4">
+        <Card className="w-full max-w-md text-center border-primary/30">
+          <CardHeader>
+            <div className="mx-auto w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-3">
+              <ShieldAlert className="w-8 h-8 text-primary" />
+            </div>
+            <CardTitle className="text-2xl">You must be 16 or older</CardTitle>
+            <CardDescription className="text-base">
+              The main Unique platform is intended for users aged 16 and over.
+              For younger children, we offer a safe Kids Channel with parental controls.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <Button
+              className="w-full bg-gradient-to-r from-primary to-accent text-primary-foreground"
+              onClick={() => navigate("/kids-channel")}
+            >
+              <Baby className="w-4 h-4 mr-2" />
+              Visit Kids Channel (6-12)
+            </Button>
+            <Button
+              variant="outline"
+              className="w-full"
+              onClick={() => {
+                setShowAgeBlock(false);
+                setBirthDate(undefined);
+              }}
+            >
+              Back to registration
+            </Button>
+            <p className="text-xs text-muted-foreground pt-2">
+              The Kids Channel requires a parent or guardian to register and supervise.
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <Card className="w-full max-w-md">
         <CardHeader>
           <div className="flex items-start justify-between gap-2">
             <div className="flex-1">
-              <CardTitle>{t('auth.welcome')}</CardTitle>
+              <div className="flex items-center gap-2 mb-1 flex-wrap">
+                <CardTitle>{t('auth.welcome')}</CardTitle>
+                <Age16Badge size="xs" withLabel={false} />
+              </div>
               <CardDescription>{t('auth.please_login')}</CardDescription>
             </div>
             <LanguageSelector />
@@ -326,7 +403,50 @@ const Auth = () => {
                       </Button>
                     </div>
                   </div>
-                  
+                  <div className="space-y-2">
+                    <Label htmlFor="signup-dob" className="flex items-center gap-2">
+                      Date of birth <span className="text-destructive">*</span>
+                      <Age16Badge size="xs" withLabel={false} variant="subtle" />
+                    </Label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          id="signup-dob"
+                          type="button"
+                          variant="outline"
+                          className={cn(
+                            "w-full justify-start text-left font-normal",
+                            !birthDate && "text-muted-foreground"
+                          )}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {birthDate ? format(birthDate, "PPP") : <span>Select your date of birth</span>}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={birthDate}
+                          onSelect={setBirthDate}
+                          disabled={(date) => date > new Date() || date < new Date("1900-01-01")}
+                          captionLayout="dropdown-buttons"
+                          fromYear={1900}
+                          toYear={new Date().getFullYear()}
+                          defaultMonth={birthDate ?? new Date(2005, 0)}
+                          initialFocus
+                          className={cn("p-3 pointer-events-auto")}
+                        />
+                      </PopoverContent>
+                    </Popover>
+                    <p className="text-xs text-muted-foreground">
+                      You must be at least 16 to use the main platform.
+                      Younger users can visit the{" "}
+                      <Link to="/kids-channel" className="text-primary hover:underline">
+                        Kids Channel
+                      </Link>.
+                    </p>
+                  </div>
+
                   <div className="space-y-3 p-3 rounded-lg bg-muted/30 border border-border/50">
                     <div className="flex items-start space-x-2">
                       <Checkbox 
@@ -370,7 +490,7 @@ const Auth = () => {
                     </div>
                   </div>
                   
-                  <Button type="submit" className="w-full" disabled={loading || !privacyConsent || !termsConsent}>
+                  <Button type="submit" className="w-full" disabled={loading || !privacyConsent || !termsConsent || !birthDate}>
                     {loading ? t('auth.registering') : t('auth.sign_up')}
                   </Button>
                 </form>

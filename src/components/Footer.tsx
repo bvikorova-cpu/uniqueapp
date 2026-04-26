@@ -1,6 +1,7 @@
 import { Copyright, Shield, Lock, HelpCircle, Mail, FileText, BookOpen, ExternalLink } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Separator } from "@/components/ui/separator";
+import { Age16Badge } from "@/components/Age16Badge";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -12,14 +13,17 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
           {/* Brand Section */}
           <div className="space-y-4">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
               <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center">
                 <span className="text-primary-foreground font-bold text-lg">U</span>
               </div>
               <span className="font-bold text-xl">UNIQUE</span>
+              <Age16Badge size="xs" withLabel={false} withLink />
             </div>
             <p className="text-sm text-muted-foreground">
               Premium AI-powered platform with 50+ modules for creativity, entertainment, education, and commerce.
+              Suitable for users aged 16 and over. Younger users can visit the{" "}
+              <Link to="/kids-channel" className="text-primary hover:underline">Kids Channel</Link>.
             </p>
           </div>
 
@@ -138,10 +142,12 @@ const Footer = () => {
             <span>{currentYear} UNIQUE Tech. All rights reserved.</span>
           </div>
           
-          <div className="flex items-center gap-6 text-sm text-muted-foreground">
+          <div className="flex items-center gap-3 text-sm text-muted-foreground flex-wrap justify-center">
             <span>Bratislava, Slovak Republic</span>
             <span className="hidden md:inline">•</span>
             <span className="text-xs">GDPR & PCI-DSS Compliant</span>
+            <span className="hidden md:inline">•</span>
+            <Age16Badge size="xs" withLabel={false} variant="subtle" />
           </div>
         </div>
 

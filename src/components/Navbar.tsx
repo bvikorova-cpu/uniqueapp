@@ -17,6 +17,7 @@ import NotificationBell from "@/components/notifications/NotificationBell";
 import { GlobalCurrencySwitcher } from "@/components/GlobalCurrencySwitcher";
 import megatalentLogo from "@/assets/megatalent-logo.png";
 import uniqueLogo from "@/assets/unique-logo.png";
+import { Age16Badge } from "@/components/Age16Badge";
 import { useTranslation } from "react-i18next";
 import GlobalSearch from "@/components/GlobalSearch";
 
@@ -301,6 +302,7 @@ const Navbar = () => {
             <span className="text-3xl font-extrabold bg-gradient-to-r from-primary via-accent to-primary bg-[length:200%_auto] bg-clip-text text-transparent -ml-1 transition-all duration-500 group-hover:bg-[position:100%_0]">
               nique
             </span>
+            <Age16Badge size="xs" withLabel={false} className="ml-2 self-center" />
           </Link>
 
           {/* Desktop Navigation */}
