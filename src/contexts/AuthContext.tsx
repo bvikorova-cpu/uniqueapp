@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useState, ReactNode } from 'react
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
-import { useLanguagePreference } from '@/hooks/useLanguagePreference';
+
 
 interface AuthContextType {
   user: User | null;
@@ -20,7 +20,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  useLanguagePreference();
 
   useEffect(() => {
     // Set up auth state listener FIRST
