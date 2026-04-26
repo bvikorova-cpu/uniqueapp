@@ -196,13 +196,58 @@ const Auth = () => {
     }
   };
 
+  // Under-16 block screen — friendly redirect to the Kids Channel
+  if (showAgeBlock) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background p-4">
+        <Card className="w-full max-w-md text-center border-primary/30">
+          <CardHeader>
+            <div className="mx-auto w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-3">
+              <ShieldAlert className="w-8 h-8 text-primary" />
+            </div>
+            <CardTitle className="text-2xl">You must be 16 or older</CardTitle>
+            <CardDescription className="text-base">
+              The main Unique platform is intended for users aged 16 and over.
+              For younger children, we offer a safe Kids Channel with parental controls.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <Button
+              className="w-full bg-gradient-to-r from-primary to-accent text-primary-foreground"
+              onClick={() => navigate("/kids-channel")}
+            >
+              <Baby className="w-4 h-4 mr-2" />
+              Visit Kids Channel (6-12)
+            </Button>
+            <Button
+              variant="outline"
+              className="w-full"
+              onClick={() => {
+                setShowAgeBlock(false);
+                setBirthDate(undefined);
+              }}
+            >
+              Back to registration
+            </Button>
+            <p className="text-xs text-muted-foreground pt-2">
+              The Kids Channel requires a parent or guardian to register and supervise.
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <Card className="w-full max-w-md">
         <CardHeader>
           <div className="flex items-start justify-between gap-2">
             <div className="flex-1">
-              <CardTitle>{t('auth.welcome')}</CardTitle>
+              <div className="flex items-center gap-2 mb-1 flex-wrap">
+                <CardTitle>{t('auth.welcome')}</CardTitle>
+                <Age16Badge size="xs" withLabel={false} />
+              </div>
               <CardDescription>{t('auth.please_login')}</CardDescription>
             </div>
             <LanguageSelector />
