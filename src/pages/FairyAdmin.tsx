@@ -9,7 +9,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 
-const DisneyAdmin = () => {
+const FairyAdmin = () => {
   const navigate = useNavigate();
   const [isAdmin, setIsAdmin] = useState(false);
   const [selectedCastleId, setSelectedCastleId] = useState<string | null>(null);
@@ -229,4 +229,4 @@ const DisneyAdmin = () => {
   );
 };
 
-export default DisneyAdmin;
+export default FairyAdmin;
