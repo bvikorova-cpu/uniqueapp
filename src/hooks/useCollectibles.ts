@@ -140,7 +140,7 @@ export const useRoomCollectibles = (roomId: string) => {
         .from("castle_room_collectibles")
         .select(`
           *,
-          collectible:disney_collectibles(*)
+          collectible:fairy_collectibles(*)
         `)
         .eq("room_id", roomId);
 
@@ -162,9 +162,9 @@ export const useUserDisneyCollectibles = () => {
         .from("user_collectibles")
         .select(`
           *,
-          collectible:disney_collectibles(*),
-          castle:disney_castles(name),
-          room:disney_castle_rooms(room_name)
+          collectible:fairy_collectibles(*),
+          castle:fairy_castles(name),
+          room:fairy_castle_rooms(room_name)
         `)
         .eq("user_id", user.id)
         .order("found_at", { ascending: false });
@@ -206,7 +206,7 @@ export const useCollectDisneyItem = () => {
 
       // Get collectible details
       const { data: collectible } = await supabase
-        .from("disney_collectibles")
+        .from("fairy_collectibles")
         .select("*")
         .eq("id", collectibleId)
         .single();
@@ -263,7 +263,7 @@ export const useDisneyCollectionStats = () => {
 
       // Get total collectibles
       const { count: total } = await supabase
-        .from("disney_collectibles")
+        .from("fairy_collectibles")
         .select("*", { count: "exact", head: true });
 
       // Get user's collected items with points
@@ -271,7 +271,7 @@ export const useDisneyCollectionStats = () => {
         .from("user_collectibles")
         .select(`
           *,
-          collectible:disney_collectibles(points)
+          collectible:fairy_collectibles(points)
         `)
         .eq("user_id", user.id);
 
