@@ -22,6 +22,7 @@ import { DailyStars } from "@/components/kids/DailyStars";
 import { AdventureMap } from "@/components/kids/AdventureMap";
 import { WeeklyTheme } from "@/components/kids/WeeklyTheme";
 import { KidsProfileBadges } from "@/components/kids/KidsProfileBadges";
+import { UnderageWelcomeBanner } from "@/components/kids/UnderageWelcomeBanner";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 interface Show {
@@ -308,6 +309,9 @@ const KidsChannel = () => {
 
       {/* Content */}
       <div className="relative z-10 container mx-auto px-4 py-8">
+        {/* Welcome banner for under-16 users */}
+        <UnderageWelcomeBanner />
+
         {/* Animated Hero */}
         <KidsHero />
 
