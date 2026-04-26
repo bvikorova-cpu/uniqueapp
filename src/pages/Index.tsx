@@ -256,9 +256,12 @@ const Index = () => {
 
         {/* Content */}
         <div className="relative z-10 flex flex-col items-center justify-center min-h-[480px] sm:min-h-[640px] lg:min-h-[720px] xl:min-h-[820px] px-4 text-center pt-16 pb-8 max-w-7xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white/90 text-sm mb-6">
-            <Sparkles className="w-4 h-4" />
-            <span className="font-medium">All-in-One Digital Platform</span>
+          <div className="flex items-center gap-2 flex-wrap justify-center mb-6">
+            <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white/90 text-sm">
+              <Sparkles className="w-4 h-4" />
+              <span className="font-medium">All-in-One Digital Platform</span>
+            </div>
+            <Age16Badge size="sm" withLabel={false} variant="outline" className="text-white border-white/40 bg-white/10 backdrop-blur-md" />
           </div>
 
           <h1
