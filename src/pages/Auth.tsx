@@ -490,7 +490,7 @@ const Auth = () => {
                     </div>
                   </div>
                   
-                  <Button type="submit" className="w-full" disabled={loading || !privacyConsent || !termsConsent}>
+                  <Button type="submit" className="w-full" disabled={loading || !privacyConsent || !termsConsent || !birthDate}>
                     {loading ? t('auth.registering') : t('auth.sign_up')}
                   </Button>
                 </form>
