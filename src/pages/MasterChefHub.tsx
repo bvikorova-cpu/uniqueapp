@@ -121,7 +121,7 @@ export default function MasterChefHub() {
 
         {/* How It Works */}
         <div className="p-6 md:p-8 rounded-2xl bg-gradient-to-br from-orange-950/60 to-red-950/60 border border-orange-500/30">
-          <h2 className="text-2xl md:text-3xl font-bold text-white mb-6">How MasterChef Arena Works</h2>
+          <h2 className="text-2xl md:text-3xl font-bold text-white mb-6">How KitchenStars Arena Works</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
               { n: "1", t: "Choose Your Tier", d: "Pick Amateur, Pro, or Elite" },

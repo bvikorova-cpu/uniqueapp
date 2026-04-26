@@ -174,7 +174,7 @@ const Admin = () => {
           return sum + commission;
         }, 0) || 0;
 
-      // Load MasterChef earnings
+      // Load KitchenStars earnings
       const { data: masterchefData } = await supabase
         .from('masterchef_platform_earnings')
         .select('commission_amount');
@@ -414,7 +414,7 @@ const Admin = () => {
                     <ChefHat className="h-6 w-6 text-orange-500" />
                   </div>
                   <div>
-                    <CardTitle className="text-xl">MasterChef Earnings</CardTitle>
+                    <CardTitle className="text-xl">KitchenStars Earnings</CardTitle>
                     <p className="text-sm text-muted-foreground mt-1">
                       Platform commissions from virtual gifts (20%)
                     </p>

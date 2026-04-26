@@ -32,7 +32,7 @@ export default function MasterChefDashboard() {
     if (!subscriptionLoading && !subscribed) {
       toast({
         title: "Subscription Required",
-        description: "You need an active MasterChef subscription to access the dashboard",
+        description: "You need an active KitchenStars subscription to access the dashboard",
         variant: "destructive",
       });
       navigate("/masterchef-subscription");
@@ -56,7 +56,7 @@ export default function MasterChefDashboard() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <Trophy className="h-12 w-12 animate-bounce text-primary mx-auto mb-4" />
-          <p className="text-muted-foreground">Loading your MasterChef dashboard...</p>
+          <p className="text-muted-foreground">Loading your KitchenStars dashboard...</p>
         </div>
       </div>
     );
@@ -71,7 +71,7 @@ export default function MasterChefDashboard() {
       <div className="max-w-7xl mx-auto">
         <div className="mb-12 pt-8">
           <h1 className="text-4xl font-black mb-2 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
-            MasterChef Dashboard
+            KitchenStars Dashboard
           </h1>
           <p className="text-muted-foreground">Your journey to culinary perfection</p>
         </div>

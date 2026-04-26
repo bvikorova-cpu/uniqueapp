@@ -22,7 +22,7 @@ export default function MasterChefCompetitions() {
     if (!subscriptionLoading && !subscribed) {
       toast({
         title: "Subscription Required",
-        description: "You need an active MasterChef subscription to view competitions",
+        description: "You need an active KitchenStars subscription to view competitions",
         variant: "destructive",
       });
       navigate("/masterchef-subscription");
@@ -100,7 +100,7 @@ export default function MasterChefCompetitions() {
         <div className="flex justify-between items-center mb-8">
           <div>
             <h1 className="text-4xl font-black mb-2 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
-              MasterChef Competitions
+              KitchenStars Competitions
             </h1>
             <p className="text-muted-foreground">
               Join exciting cooking battles and showcase your skills

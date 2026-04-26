@@ -170,9 +170,9 @@ const NotificationBell = () => {
       case "verification_request":
         return `${actorName} submitted a company verification request`;
       case "masterchef_payout":
-        return "New MasterChef payout pending";
+        return "New KitchenStars payout pending";
       case "masterchef_withdrawal":
-        return notification.message || "New MasterChef withdrawal request";
+        return notification.message || "New KitchenStars withdrawal request";
       case "musician_withdrawal":
         return notification.message || "New Musician withdrawal request";
       case "instructor_withdrawal":

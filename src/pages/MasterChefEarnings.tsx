@@ -120,7 +120,7 @@ export default function MasterChefEarnings() {
           <h1 className="text-4xl font-black mb-2 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
             Platform Earnings
           </h1>
-          <p className="text-muted-foreground">MasterChef gift commissions</p>
+          <p className="text-muted-foreground">KitchenStars gift commissions</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
