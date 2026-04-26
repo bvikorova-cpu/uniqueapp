@@ -3,7 +3,14 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
+
+// Redirect /kitchenstars/<sub-path> -> /masterchef/<sub-path> for brand aliases
+const KitchenStarsRedirect = () => {
+  const { pathname, search, hash } = useLocation();
+  const target = pathname.replace(/^\/kitchenstars/, "/masterchef") + search + hash;
+  return <Navigate to={target} replace />;
+};
 import { ThemeProvider } from "next-themes";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { AnimationProvider } from "@/contexts/AnimationContext";
