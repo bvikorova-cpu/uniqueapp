@@ -22,7 +22,7 @@ const Photography = () => {
         if (success) {
           toast({
             title: "Enrollment Successful! 🎉",
-            description: "You now have access to your photography masterclass.",
+            description: "You now have access to your photography ProClass.",
           });
           window.history.replaceState({}, '', '/photography');
         }
@@ -89,7 +89,7 @@ const Photography = () => {
     if (isPurchased(masterclassId, "photography-masterclass")) {
       toast({
         title: "Already Enrolled",
-        description: "You already have access to this masterclass.",
+        description: "You already have access to this ProClass.",
       });
       return;
     }
@@ -121,7 +121,7 @@ const Photography = () => {
             <span className="font-medium">Professional Training</span>
           </div>
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-black mb-3 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
-            Photography Masterclasses
+            Photography ProClasses
           </h1>
           <p className="text-sm sm:text-lg text-muted-foreground max-w-xl mx-auto">
             Learn from professional photographers and master your craft
@@ -193,7 +193,7 @@ const Photography = () => {
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pt-3 sm:pt-4 border-t">
                   <div>
                     <p className="text-2xl sm:text-3xl font-bold text-primary">€{masterclass.price}</p>
-                    <p className="text-xs text-muted-foreground">Complete masterclass</p>
+                    <p className="text-xs text-muted-foreground">Complete ProClass</p>
                   </div>
                   <Button
                     onClick={() => handleEnroll(masterclass.id, masterclass.price, masterclass.title)}

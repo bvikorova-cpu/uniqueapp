@@ -9,7 +9,7 @@ const trendingCourses = [
   { rank: 2, title: "Full-Stack Web Development", instructor: "Sarah Chen", students: 6800, rating: 4.8, price: 79.99, hot: true, growth: 98, lessons: 48 },
   { rank: 3, title: "Digital Marketing Pro", instructor: "Mike Torres", students: 5200, rating: 4.7, price: 49.99, hot: false, growth: 67, lessons: 28 },
   { rank: 4, title: "Data Science with Python", instructor: "Emily Davis", students: 4900, rating: 4.8, price: 69.99, hot: false, growth: 54, lessons: 36 },
-  { rank: 5, title: "UX Design Masterclass", instructor: "Alex Kim", students: 4100, rating: 4.6, price: 59.99, hot: false, growth: 43, lessons: 22 },
+  { rank: 5, title: "UX Design ProClass", instructor: "Alex Kim", students: 4100, rating: 4.6, price: 59.99, hot: false, growth: 43, lessons: 22 },
   { rank: 6, title: "Blockchain & Web3", instructor: "James Block", students: 3800, rating: 4.5, price: 89.99, hot: false, growth: 38, lessons: 30 },
   { rank: 7, title: "Mobile App Development", instructor: "Lisa Wang", students: 3500, rating: 4.7, price: 74.99, hot: false, growth: 31, lessons: 40 },
   { rank: 8, title: "Cybersecurity Essentials", instructor: "Mark Shield", students: 3200, rating: 4.8, price: 84.99, hot: false, growth: 25, lessons: 34 },

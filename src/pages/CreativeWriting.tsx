@@ -33,7 +33,7 @@ const CreativeWriting = () => {
   const workshops = [
     {
       id: "novel-writing",
-      title: "Novel Writing Masterclass",
+      title: "Novel Writing ProClass",
       description: "Write and complete your first novel with expert guidance",
       price: 199,
       duration: "12 weeks",
