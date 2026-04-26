@@ -119,12 +119,31 @@ const QuantumFeed = ({ onBack }: { onBack: () => void }) => {
 
     if (postError || !post) { toast({ title: "Error", description: "Failed to create post", variant: "destructive" }); return; }
 
+    // Pick the tones we actually need (one per requested version) and call the AI gateway.
+    const selectedTones = Array.from({ length: newPost.versionsCount }, (_, i) =>
+      newPost.tones[i % newPost.tones.length]
+    );
+
+    let aiVersions: { tone: string; content: string }[] = [];
+    try {
+      const { data, error: aiErr } = await supabase.functions.invoke("quantum-generate-versions", {
+        body: { baseContent: newPost.content, tones: selectedTones },
+      });
+      if (aiErr) throw aiErr;
+      aiVersions = Array.isArray(data?.versions) ? data.versions : [];
+    } catch (e) {
+      // Graceful fallback: keep the post, but tag versions clearly so user knows AI was unavailable.
+      aiVersions = selectedTones.map((tone) => ({ tone, content: `${newPost.content} (${tone})` }));
+      toast({ title: "AI unavailable", description: "Versions saved without AI rewriting.", variant: "destructive" });
+    }
+
     for (let i = 0; i < newPost.versionsCount; i++) {
+      const v = aiVersions[i] ?? { tone: selectedTones[i], content: newPost.content };
       await supabase.from("quantum_post_versions").insert([{
         post_id: post.id,
         version_number: i + 1,
-        content: `${newPost.content} [${newPost.tones[i % newPost.tones.length]} version]`,
-        personality_tone: newPost.tones[i % newPost.tones.length],
+        content: v.content,
+        personality_tone: v.tone,
       }]);
     }
 
