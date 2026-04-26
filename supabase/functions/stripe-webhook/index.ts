@@ -86,6 +86,48 @@ serve(async (req) => {
             .eq("stripe_session_id", session.id)
             .neq("status", "refunded");
           if (error) log("checkout sync failed", { error: error.message });
+
+          // ── Brand Collaboration escrow flip: 'awaiting_payment' → 'held' ──
+          if (session.metadata?.type === "brand_campaign_escrow") {
+            const piId = typeof session.payment_intent === "string"
+              ? session.payment_intent
+              : null;
+            const nowIso = new Date().toISOString();
+            const { error: escErr } = await supabase
+              .from("campaign_escrow")
+              .update({
+                status: "held",
+                stripe_payment_intent_id: piId,
+                paid_at: nowIso,
+                updated_at: nowIso,
+              })
+              .eq("stripe_session_id", session.id)
+              .eq("status", "awaiting_payment");
+            if (escErr) log("escrow flip failed", { error: escErr.message });
+
+            const applicationId = session.metadata?.application_id;
+            if (applicationId) {
+              await supabase
+                .from("campaign_applications")
+                .update({ payment_status: "paid", updated_at: nowIso })
+                .eq("id", applicationId);
+
+              // Notify influencer that funds are escrowed.
+              const { data: esc } = await supabase
+                .from("campaign_escrow")
+                .select("influencer_user_id, brand_user_id, amount_cents")
+                .eq("stripe_session_id", session.id)
+                .maybeSingle();
+              if (esc?.influencer_user_id) {
+                await supabase.from("notifications").insert({
+                  user_id: esc.influencer_user_id,
+                  type: "campaign_escrow_funded",
+                  title: "Campaign funded — start the work!",
+                  message: `The brand has paid €${(esc.amount_cents / 100).toFixed(2)} into escrow. Deliver the agreed content; you'll be paid out when the brand confirms.`,
+                });
+              }
+            }
+          }
         }
         break;
       }

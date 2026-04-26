@@ -6281,12 +6281,14 @@ export type Database = {
       }
       campaign_applications: {
         Row: {
+          agreed_amount: number | null
           approved_at: string | null
           approved_by: string | null
           campaign_id: string
           created_at: string
           id: string
           message: string | null
+          payment_status: string
           portfolio_link: string | null
           rejection_reason: string | null
           status: string
@@ -6294,12 +6296,14 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          agreed_amount?: number | null
           approved_at?: string | null
           approved_by?: string | null
           campaign_id: string
           created_at?: string
           id?: string
           message?: string | null
+          payment_status?: string
           portfolio_link?: string | null
           rejection_reason?: string | null
           status?: string
@@ -6307,12 +6311,14 @@ export type Database = {
           user_id: string
         }
         Update: {
+          agreed_amount?: number | null
           approved_at?: string | null
           approved_by?: string | null
           campaign_id?: string
           created_at?: string
           id?: string
           message?: string | null
+          payment_status?: string
           portfolio_link?: string | null
           rejection_reason?: string | null
           status?: string
@@ -6418,6 +6424,90 @@ export type Database = {
           stripe_payment_id?: string | null
         }
         Relationships: []
+      }
+      campaign_escrow: {
+        Row: {
+          amount_cents: number
+          application_id: string
+          brand_user_id: string
+          campaign_id: string
+          created_at: string
+          currency: string
+          id: string
+          influencer_id: string
+          influencer_user_id: string
+          net_cents: number
+          paid_at: string | null
+          platform_fee_cents: number
+          refund_reason: string | null
+          refunded_at: string | null
+          release_note: string | null
+          released_at: string | null
+          status: string
+          stripe_payment_intent_id: string | null
+          stripe_session_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          amount_cents: number
+          application_id: string
+          brand_user_id: string
+          campaign_id: string
+          created_at?: string
+          currency?: string
+          id?: string
+          influencer_id: string
+          influencer_user_id: string
+          net_cents: number
+          paid_at?: string | null
+          platform_fee_cents: number
+          refund_reason?: string | null
+          refunded_at?: string | null
+          release_note?: string | null
+          released_at?: string | null
+          status?: string
+          stripe_payment_intent_id?: string | null
+          stripe_session_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          amount_cents?: number
+          application_id?: string
+          brand_user_id?: string
+          campaign_id?: string
+          created_at?: string
+          currency?: string
+          id?: string
+          influencer_id?: string
+          influencer_user_id?: string
+          net_cents?: number
+          paid_at?: string | null
+          platform_fee_cents?: number
+          refund_reason?: string | null
+          refunded_at?: string | null
+          release_note?: string | null
+          released_at?: string | null
+          status?: string
+          stripe_payment_intent_id?: string | null
+          stripe_session_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "campaign_escrow_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "campaign_applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "campaign_escrow_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "brand_campaigns"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       campaign_milestones: {
         Row: {
