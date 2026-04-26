@@ -142,10 +142,12 @@ const Footer = () => {
             <span>{currentYear} UNIQUE Tech. All rights reserved.</span>
           </div>
           
-          <div className="flex items-center gap-6 text-sm text-muted-foreground">
+          <div className="flex items-center gap-3 text-sm text-muted-foreground flex-wrap justify-center">
             <span>Bratislava, Slovak Republic</span>
             <span className="hidden md:inline">•</span>
             <span className="text-xs">GDPR & PCI-DSS Compliant</span>
+            <span className="hidden md:inline">•</span>
+            <Age16Badge size="xs" withLabel={false} variant="subtle" />
           </div>
         </div>
 
