@@ -10,6 +10,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "react-i18next";
 import { Eye, EyeOff } from "lucide-react";
+import { LanguageSelector } from "@/components/LanguageSelector";
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -152,8 +153,13 @@ const Auth = () => {
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle>{t('auth.welcome')}</CardTitle>
-          <CardDescription>{t('auth.please_login')}</CardDescription>
+          <div className="flex items-start justify-between gap-2">
+            <div className="flex-1">
+              <CardTitle>{t('auth.welcome')}</CardTitle>
+              <CardDescription>{t('auth.please_login')}</CardDescription>
+            </div>
+            <LanguageSelector />
+          </div>
         </CardHeader>
         <CardContent>
           {showForgotPassword ? (
