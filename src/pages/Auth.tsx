@@ -402,8 +402,50 @@ const Auth = () => {
                         )}
                       </Button>
                     </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="signup-dob" className="flex items-center gap-2">
+                      Date of birth <span className="text-destructive">*</span>
+                      <Age16Badge size="xs" withLabel={false} variant="subtle" />
+                    </Label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          id="signup-dob"
+                          type="button"
+                          variant="outline"
+                          className={cn(
+                            "w-full justify-start text-left font-normal",
+                            !birthDate && "text-muted-foreground"
+                          )}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {birthDate ? format(birthDate, "PPP") : <span>Select your date of birth</span>}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={birthDate}
+                          onSelect={setBirthDate}
+                          disabled={(date) => date > new Date() || date < new Date("1900-01-01")}
+                          captionLayout="dropdown-buttons"
+                          fromYear={1900}
+                          toYear={new Date().getFullYear()}
+                          defaultMonth={birthDate ?? new Date(2005, 0)}
+                          initialFocus
+                          className={cn("p-3 pointer-events-auto")}
+                        />
+                      </PopoverContent>
+                    </Popover>
+                    <p className="text-xs text-muted-foreground">
+                      You must be at least 16 to use the main platform.
+                      Younger users can visit the{" "}
+                      <Link to="/kids-channel" className="text-primary hover:underline">
+                        Kids Channel
+                      </Link>.
+                    </p>
                   </div>
-                  
+
                   <div className="space-y-3 p-3 rounded-lg bg-muted/30 border border-border/50">
                     <div className="flex items-start space-x-2">
                       <Checkbox 
