@@ -207,17 +207,32 @@ const Auth = () => {
             </div>
             <CardTitle className="text-2xl">You must be 16 or older</CardTitle>
             <CardDescription className="text-base">
-              The main Unique platform is intended for users aged 16 and over.
-              For younger children, we offer a safe Kids Channel with parental controls.
+              The main Unique platform is intended for users aged 16 and over (GDPR).
+              But don't worry — we built a magical place just for you!
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-3">
+          <CardContent className="space-y-4">
+            {/* Quick explanation of what's inside Kids Channel */}
+            <div className="rounded-lg border border-primary/20 bg-primary/5 p-4 text-left">
+              <p className="text-sm font-semibold mb-2 flex items-center gap-2">
+                <Baby className="w-4 h-4 text-primary" />
+                Kids Channel (ages 6–12) includes:
+              </p>
+              <ul className="text-xs text-muted-foreground space-y-1.5 pl-1">
+                <li>✨ Safe, ad-free stories, games & bedtime tales</li>
+                <li>🎨 AI story creator and character chat</li>
+                <li>🛡️ Parental gate for sensitive features</li>
+                <li>📊 Parent dashboard with screen-time controls</li>
+              </ul>
+            </div>
+
             <Button
+              size="lg"
               className="w-full bg-gradient-to-r from-primary to-accent text-primary-foreground"
               onClick={() => navigate("/kids-channel")}
             >
               <Baby className="w-4 h-4 mr-2" />
-              Visit Kids Channel (6-12)
+              Go to Kids Channel →
             </Button>
             <Button
               variant="outline"
@@ -229,8 +244,8 @@ const Auth = () => {
             >
               Back to registration
             </Button>
-            <p className="text-xs text-muted-foreground pt-2">
-              The Kids Channel requires a parent or guardian to register and supervise.
+            <p className="text-xs text-muted-foreground pt-1">
+              A parent or guardian should set up and supervise the Kids Channel account.
             </p>
           </CardContent>
         </Card>
