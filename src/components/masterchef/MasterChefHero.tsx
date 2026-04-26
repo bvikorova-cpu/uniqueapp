@@ -80,7 +80,7 @@ export function MasterChefHero() {
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
             }}>
-            MasterChef Arena
+            KitchenStars Arena
           </h1>
           
           <p className="text-white/80 text-sm md:text-lg max-w-xl mb-6 leading-relaxed">

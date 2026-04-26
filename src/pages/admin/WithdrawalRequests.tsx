@@ -24,7 +24,7 @@ export default function WithdrawalRequests() {
           <Tabs defaultValue="musicians" className="w-full">
             <TabsList className="grid w-full grid-cols-2 sm:grid-cols-5 gap-1 h-auto">
               <TabsTrigger value="musicians">Musicians</TabsTrigger>
-              <TabsTrigger value="chefs">MasterChefs</TabsTrigger>
+              <TabsTrigger value="chefs">KitchenStars</TabsTrigger>
               <TabsTrigger value="campaigns">Campaigns</TabsTrigger>
               <TabsTrigger value="auctions">Auctions</TabsTrigger>
               <TabsTrigger value="referrals">Referrals</TabsTrigger>

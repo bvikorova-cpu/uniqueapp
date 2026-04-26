@@ -10,7 +10,7 @@ export default function AdminPlatformEarningsPage() {
       <AdminPageShell>
         <AdminPageHeader
           title="Platform Earnings"
-          subtitle="Real-time commission overview across InfluKing, MasterChef and Sports verticals."
+          subtitle="Real-time commission overview across InfluKing, KitchenStars and Sports verticals."
           icon={TrendingUp}
           badge="Finance"
           breadcrumbs={[{ label: "Platform Earnings" }]}

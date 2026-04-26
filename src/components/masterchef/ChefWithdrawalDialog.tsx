@@ -146,7 +146,7 @@ export const ChefWithdrawalDialog = ({
         <DialogHeader>
           <DialogTitle>Request Withdrawal</DialogTitle>
           <DialogDescription>
-            Request to withdraw your MasterChef earnings. Minimum amount: €10
+            Request to withdraw your KitchenStars earnings. Minimum amount: €10
           </DialogDescription>
         </DialogHeader>
 

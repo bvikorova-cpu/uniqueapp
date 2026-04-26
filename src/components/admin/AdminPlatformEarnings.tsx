@@ -174,7 +174,7 @@ export function AdminPlatformEarnings() {
     },
   });
 
-  // Fetch MasterChef earnings
+  // Fetch KitchenStars earnings
   const { data: masterchefEarnings } = useQuery({
     queryKey: ["admin-masterchef-earnings"],
     queryFn: async () => {
@@ -225,7 +225,7 @@ export function AdminPlatformEarnings() {
   // Prepare chart data
   const pieData = [
     { name: "InfluKing", value: influkingStats.total, color: "#8B5CF6" },
-    { name: "MasterChef", value: masterchefStats.total, color: "#F59E0B" },
+    { name: "KitchenStars", value: masterchefStats.total, color: "#F59E0B" },
     { name: "Sports", value: sportsStats.total, color: "#10B981" },
   ].filter(item => item.value > 0);
 
@@ -252,7 +252,7 @@ export function AdminPlatformEarnings() {
       days.push({
         date: format(date, "MMM dd"),
         InfluKing: influkingDaily,
-        MasterChef: masterchefDaily,
+        KitchenStars: masterchefDaily,
         Sports: sportsDaily,
         Total: influkingDaily + masterchefDaily + sportsDaily,
       });
@@ -346,7 +346,7 @@ export function AdminPlatformEarnings() {
               <Tooltip formatter={(value: number) => `€${value.toFixed(2)}`} />
               <Legend />
               <Line type="monotone" dataKey="InfluKing" stroke="#8B5CF6" strokeWidth={2} />
-              <Line type="monotone" dataKey="MasterChef" stroke="#F59E0B" strokeWidth={2} />
+              <Line type="monotone" dataKey="KitchenStars" stroke="#F59E0B" strokeWidth={2} />
               <Line type="monotone" dataKey="Sports" stroke="#10B981" strokeWidth={2} />
             </LineChart>
           </ResponsiveContainer>
@@ -370,7 +370,7 @@ export function AdminPlatformEarnings() {
             InfluKing (€{influkingStats.total.toFixed(2)})
           </TabsTrigger>
           <TabsTrigger value="masterchef">
-            MasterChef (€{masterchefStats.total.toFixed(2)})
+            KitchenStars (€{masterchefStats.total.toFixed(2)})
           </TabsTrigger>
           <TabsTrigger value="sports">
             Sports (€{sportsStats.total.toFixed(2)})

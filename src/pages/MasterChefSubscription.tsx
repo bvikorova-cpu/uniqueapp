@@ -121,7 +121,7 @@ export default function MasterChefSubscription() {
             </Button>
           </div>
           <ModuleSubscriptionHero
-            module="MasterChef Platform"
+            module="KitchenStars Platform"
             icon={ChefHat}
             badge="Cooking battles"
             title="Compete. Cook. Conquer."
@@ -149,9 +149,9 @@ export default function MasterChefSubscription() {
 
         {/* Detailed Description Section */}
         <div className="mb-16 p-6 md:p-8 rounded-2xl bg-gradient-to-br from-orange-950/60 to-red-950/60 border border-orange-500/30">
-          <h2 className="text-2xl md:text-3xl font-bold text-white mb-6">What is MasterChef Platform?</h2>
+          <h2 className="text-2xl md:text-3xl font-bold text-white mb-6">What is KitchenStars Platform?</h2>
           <p className="text-gray-200 mb-6 leading-relaxed">
-            MasterChef Platform is an online cooking competition where home cooks and professional chefs compete against each other in exciting culinary battles. Upload videos of your cooking creations, participate in live cooking challenges, and let the community vote for the best dishes. Whether you're a passionate home cook or an aspiring professional chef, this platform gives you the opportunity to showcase your skills, learn from others, and win amazing prizes.
+            KitchenStars Platform is an online cooking competition where home cooks and professional chefs compete against each other in exciting culinary battles. Upload videos of your cooking creations, participate in live cooking challenges, and let the community vote for the best dishes. Whether you're a passionate home cook or an aspiring professional chef, this platform gives you the opportunity to showcase your skills, learn from others, and win amazing prizes.
           </p>
           
           <h3 className="text-xl font-bold text-yellow-300 mb-4">How to Use:</h3>

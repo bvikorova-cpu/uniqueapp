@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const SAMPLE_EVENTS = [
   "Lukas earned €42 from a course sale",
-  "Maria received a €15 tip in MasterChef",
+  "Maria received a €15 tip in KitchenStars",
   "Anna sold an item in Bazaar — €28 net",
   "David got a brand collab payout — €120",
   "Petra unlocked the €1K milestone",
