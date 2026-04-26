@@ -16,7 +16,7 @@ const Auth = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { toast } = useToast();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   // Where to send the user after successful login. Allow only same-origin paths.
   const redirectParam = searchParams.get("redirect");
@@ -63,7 +63,9 @@ const Auth = () => {
     const phone = formData.get("phone") as string;
     const companyName = formData.get("companyName") as string;
 
-    const { error } = await supabase.auth.signUp({
+    const selectedLanguage = i18n.language || 'en';
+
+    const { data: signUpData, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -72,9 +74,22 @@ const Auth = () => {
           full_name: fullName,
           phone: phone,
           company_name: companyName || null,
+          preferred_language: selectedLanguage,
         },
       },
     });
+
+    // Persist preferred_language directly to the profile (best-effort, non-blocking)
+    if (!error && signUpData?.user?.id) {
+      try {
+        await supabase
+          .from('profiles')
+          .update({ preferred_language: selectedLanguage } as any)
+          .eq('id', signUpData.user.id);
+      } catch (e) {
+        console.warn('Could not persist preferred_language at signup:', e);
+      }
+    }
 
     setLoading(false);
 
