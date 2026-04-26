@@ -39,6 +39,8 @@ const Auth = () => {
   const [showSignupPassword, setShowSignupPassword] = useState(false);
   const [privacyConsent, setPrivacyConsent] = useState(false);
   const [termsConsent, setTermsConsent] = useState(false);
+  const [birthDate, setBirthDate] = useState<Date | undefined>(undefined);
+  const [showAgeBlock, setShowAgeBlock] = useState(false);
 
   // Check if user is already logged in
   useEffect(() => {
