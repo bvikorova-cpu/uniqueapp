@@ -2,6 +2,7 @@
 
 ## Core
 English UI, EUR (€) currency. 100% paid-only model (no free tiers), AI tools cost 3-5 credits.
+Main platform is 16+ (DOB gate at signup blocks under-16 with Kids Channel redirect). Kids Channel = 6-12 with parental controls.
 Theme: Primary purple (270 91%), accent hot pink (330 100%), 0.75rem radius, dark luxury glassmorphism.
 Cinematic Hub 2.0: MP4 video background via .asset.json, 4 stat cards below video.
 Icons: Lucide SVGs exclusively. NO emojis. Display '—' instead of '0' for empty stats.
@@ -38,3 +39,4 @@ NO health/medical predictions. NO identifiable people/trademarks in videos.
 - [Subscription Pause Limits](mem://features/subscription-pause-limits) — pause_log + config (3 pauses/year, 3mo max); pause-subscription enforces 429; <PauseLimitCard> + /admin/pauses
 - [Weekly XP Leaderboard & Anti-Fraud](mem://features/weekly-xp-leaderboard) — Unlimited rewarded-ad XP, race-safe 30s throttle (unique idx), weekly leaderboard, Monday cron snapshot awarding 100/50/25 bonus to top 3
 - [Security Scan](mem://features/security-scan) — Daily + on-demand audit of edge fns (static heuristics + runtime probes) and npm deps (OSV.dev CVE); admin UI at /admin/security-scan, snapshots in security_scan_snapshots
+- [Age Rating 16+](mem://features/age-rating) — DOB gate at signup, &lt;Age16Badge /&gt; in navbar/footer/landing/auth, under-16 redirected to /kids-channel
