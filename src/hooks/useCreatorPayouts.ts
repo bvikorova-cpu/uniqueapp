@@ -30,7 +30,7 @@ interface KindConfig {
 
 const KIND_CONFIG: Record<PayoutKind, KindConfig> = {
   musician: { table: "musician_withdrawal_requests", userIdCol: "musician_id", label: "Musician" },
-  masterchef: { table: "masterchef_withdrawal_requests", userIdCol: "chef_id", label: "Masterchef" },
+  masterchef: { table: "masterchef_withdrawal_requests", userIdCol: "chef_id", label: "KitchenStars" },
   instructor: { table: "instructor_withdrawal_requests", userIdCol: "instructor_id", label: "Instructor" },
   influencer: { table: "influencer_withdrawal_requests", userIdCol: "influencer_id", label: "Influencer" },
   auction: { table: "auction_withdrawal_requests", userIdCol: "seller_id", label: "Auctions" },
