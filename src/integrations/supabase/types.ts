@@ -6551,14 +6551,14 @@ export type Database = {
             foreignKeyName: "castle_room_collectibles_collectible_id_fkey"
             columns: ["collectible_id"]
             isOneToOne: false
-            referencedRelation: "disney_collectibles"
+            referencedRelation: "fairy_collectibles"
             referencedColumns: ["id"]
           },
           {
             foreignKeyName: "castle_room_collectibles_room_id_fkey"
             columns: ["room_id"]
             isOneToOne: false
-            referencedRelation: "disney_castle_rooms"
+            referencedRelation: "fairy_castle_rooms"
             referencedColumns: ["id"]
           },
         ]
@@ -13715,128 +13715,6 @@ export type Database = {
           },
         ]
       }
-      disney_castle_rooms: {
-        Row: {
-          audio_guide_text: string | null
-          castle_id: string | null
-          created_at: string | null
-          description: string | null
-          hotspots: Json | null
-          id: string
-          order_index: number | null
-          panorama_url: string | null
-          room_name: string
-        }
-        Insert: {
-          audio_guide_text?: string | null
-          castle_id?: string | null
-          created_at?: string | null
-          description?: string | null
-          hotspots?: Json | null
-          id?: string
-          order_index?: number | null
-          panorama_url?: string | null
-          room_name: string
-        }
-        Update: {
-          audio_guide_text?: string | null
-          castle_id?: string | null
-          created_at?: string | null
-          description?: string | null
-          hotspots?: Json | null
-          id?: string
-          order_index?: number | null
-          panorama_url?: string | null
-          room_name?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "disney_castle_rooms_castle_id_fkey"
-            columns: ["castle_id"]
-            isOneToOne: false
-            referencedRelation: "disney_castles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      disney_castles: {
-        Row: {
-          country_code: string
-          created_at: string | null
-          description: string | null
-          fun_facts: string[] | null
-          id: string
-          is_premium: boolean | null
-          location: string
-          name: string
-          park_name: string
-          price_coins: number
-          thumbnail_url: string | null
-          updated_at: string | null
-        }
-        Insert: {
-          country_code: string
-          created_at?: string | null
-          description?: string | null
-          fun_facts?: string[] | null
-          id?: string
-          is_premium?: boolean | null
-          location: string
-          name: string
-          park_name: string
-          price_coins?: number
-          thumbnail_url?: string | null
-          updated_at?: string | null
-        }
-        Update: {
-          country_code?: string
-          created_at?: string | null
-          description?: string | null
-          fun_facts?: string[] | null
-          id?: string
-          is_premium?: boolean | null
-          location?: string
-          name?: string
-          park_name?: string
-          price_coins?: number
-          thumbnail_url?: string | null
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
-      disney_collectibles: {
-        Row: {
-          category: string | null
-          created_at: string | null
-          description: string | null
-          id: string
-          image_url: string | null
-          name: string
-          points: number | null
-          rarity: string | null
-        }
-        Insert: {
-          category?: string | null
-          created_at?: string | null
-          description?: string | null
-          id?: string
-          image_url?: string | null
-          name: string
-          points?: number | null
-          rarity?: string | null
-        }
-        Update: {
-          category?: string | null
-          created_at?: string | null
-          description?: string | null
-          id?: string
-          image_url?: string | null
-          name?: string
-          points?: number | null
-          rarity?: string | null
-        }
-        Relationships: []
-      }
       dna_analyses: {
         Row: {
           analysis_data: Json | null
@@ -15791,6 +15669,128 @@ export type Database = {
           tier?: string | null
           updated_at?: string | null
           user_id?: string
+        }
+        Relationships: []
+      }
+      fairy_castle_rooms: {
+        Row: {
+          audio_guide_text: string | null
+          castle_id: string | null
+          created_at: string | null
+          description: string | null
+          hotspots: Json | null
+          id: string
+          order_index: number | null
+          panorama_url: string | null
+          room_name: string
+        }
+        Insert: {
+          audio_guide_text?: string | null
+          castle_id?: string | null
+          created_at?: string | null
+          description?: string | null
+          hotspots?: Json | null
+          id?: string
+          order_index?: number | null
+          panorama_url?: string | null
+          room_name: string
+        }
+        Update: {
+          audio_guide_text?: string | null
+          castle_id?: string | null
+          created_at?: string | null
+          description?: string | null
+          hotspots?: Json | null
+          id?: string
+          order_index?: number | null
+          panorama_url?: string | null
+          room_name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "disney_castle_rooms_castle_id_fkey"
+            columns: ["castle_id"]
+            isOneToOne: false
+            referencedRelation: "fairy_castles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fairy_castles: {
+        Row: {
+          country_code: string
+          created_at: string | null
+          description: string | null
+          fun_facts: string[] | null
+          id: string
+          is_premium: boolean | null
+          location: string
+          name: string
+          park_name: string
+          price_coins: number
+          thumbnail_url: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          country_code: string
+          created_at?: string | null
+          description?: string | null
+          fun_facts?: string[] | null
+          id?: string
+          is_premium?: boolean | null
+          location: string
+          name: string
+          park_name: string
+          price_coins?: number
+          thumbnail_url?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          country_code?: string
+          created_at?: string | null
+          description?: string | null
+          fun_facts?: string[] | null
+          id?: string
+          is_premium?: boolean | null
+          location?: string
+          name?: string
+          park_name?: string
+          price_coins?: number
+          thumbnail_url?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      fairy_collectibles: {
+        Row: {
+          category: string | null
+          created_at: string | null
+          description: string | null
+          id: string
+          image_url: string | null
+          name: string
+          points: number | null
+          rarity: string | null
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          name: string
+          points?: number | null
+          rarity?: string | null
+        }
+        Update: {
+          category?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          name?: string
+          points?: number | null
+          rarity?: string | null
         }
         Relationships: []
       }
@@ -39200,7 +39200,7 @@ export type Database = {
             foreignKeyName: "user_castle_certificates_castle_id_fkey"
             columns: ["castle_id"]
             isOneToOne: false
-            referencedRelation: "disney_castles"
+            referencedRelation: "fairy_castles"
             referencedColumns: ["id"]
           },
         ]
@@ -39232,7 +39232,7 @@ export type Database = {
             foreignKeyName: "user_castle_stamps_castle_id_fkey"
             columns: ["castle_id"]
             isOneToOne: false
-            referencedRelation: "disney_castles"
+            referencedRelation: "fairy_castles"
             referencedColumns: ["id"]
           },
         ]
@@ -39267,7 +39267,7 @@ export type Database = {
             foreignKeyName: "user_castle_visits_castle_id_fkey"
             columns: ["castle_id"]
             isOneToOne: false
-            referencedRelation: "disney_castles"
+            referencedRelation: "fairy_castles"
             referencedColumns: ["id"]
           },
         ]
