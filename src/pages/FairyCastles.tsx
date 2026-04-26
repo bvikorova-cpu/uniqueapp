@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { useDisneyCastles, useUserVisits, useUserStamps } from "@/hooks/useFairyCastles";
+import { useFairyCastles, useUserVisits, useUserStamps } from "@/hooks/useFairyCastles";
 import { useUserCertificates } from "@/hooks/useCertificates";
 import { useUserDisneyCollectibles } from "@/hooks/useCollectibles";
 import { ArrowLeft, Award, BookOpen } from "lucide-react";
@@ -39,7 +39,7 @@ function getCountryFlag(countryCode: string): string {
 
 export default function FairyCastles() {
   const navigate = useNavigate();
-  const { castles, isLoading } = useDisneyCastles();
+  const { castles, isLoading } = useFairyCastles();
   const { visits } = useUserVisits();
   const { stamps } = useUserStamps();
   const { certificates } = useUserCertificates();

@@ -168,7 +168,7 @@ export const CastleCertificate = ({
   };
 
   const handleTwitterShare = () => {
-    const shareText = `I just completed the magical tour of ${castleName}! 🏰✨ #DisneyCastles #MagicalTour`;
+    const shareText = `I just completed the magical tour of ${castleName}! 🏰✨ #FairyCastles #MagicalTour`;
     const shareUrl = window.location.origin;
     
     const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
@@ -258,7 +258,7 @@ export const CastleCertificate = ({
                   Certificate of Achievement
                 </h1>
                 <p className="text-xl text-muted-foreground">
-                  Disney Castle Explorer
+                  Fairy Castle Explorer
                 </p>
               </div>
 
@@ -360,7 +360,7 @@ export const CastleCertificate = ({
                   <div className="text-right">
                     <div className="text-3xl mb-1">🏰</div>
                     <p className="text-sm font-semibold text-primary">
-                      Disney Castles
+                      Fairy Castles
                     </p>
                   </div>
                 </div>

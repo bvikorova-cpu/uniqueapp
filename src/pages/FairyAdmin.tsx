@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Sparkles, Check, X } from "lucide-react";
 import { CastlePanoramaGenerator } from "@/components/fairy-castles/CastlePanoramaGenerator";
-import { useDisneyCastles, useCastleRooms } from "@/hooks/useFairyCastles";
+import { useFairyCastles, useCastleRooms } from "@/hooks/useFairyCastles";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
@@ -16,7 +16,7 @@ const FairyAdmin = () => {
   const [isBulkGenerating, setIsBulkGenerating] = useState(false);
   const [allRooms, setAllRooms] = useState<any[]>([]);
   const [roomsLoading, setRoomsLoading] = useState(false);
-  const { castles, isLoading: castlesLoading } = useDisneyCastles();
+  const { castles, isLoading: castlesLoading } = useFairyCastles();
   const { rooms, isLoading: selectedRoomsLoading } = useCastleRooms(selectedCastleId || "");
 
   useEffect(() => {

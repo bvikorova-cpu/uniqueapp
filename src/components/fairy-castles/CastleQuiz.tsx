@@ -20,12 +20,12 @@ function generateQuestions(castleName: string, funFacts: string[]) {
       correct: 0,
     },
     {
-      q: `How many Disney castles exist around the world?`,
+      q: `How many fairy castles exist around the world?`,
       options: ["4", "6", "8", "10"],
       correct: 1,
     },
     {
-      q: `What can you find inside Disney castles?`,
+      q: `What can you find inside fairy castles?`,
       options: ["Real dragons", "Magical rooms & galleries", "A swimming pool", "A spaceship"],
       correct: 1,
     },

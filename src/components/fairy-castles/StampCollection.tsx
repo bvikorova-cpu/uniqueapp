@@ -25,7 +25,7 @@ export function StampCollection({ castles, stampedIds }: StampCollectionProps) {
             Explorer Stamp Collection
           </span>
         </h2>
-        <p className="text-muted-foreground">Collect all 6 stamps to become a Master Disney Explorer!</p>
+        <p className="text-muted-foreground">Collect all 6 stamps to become a Master Fairy Explorer!</p>
       </div>
 
       <div className="flex justify-center gap-4 flex-wrap mb-6">
@@ -83,7 +83,7 @@ export function StampCollection({ castles, stampedIds }: StampCollectionProps) {
           className="mt-6 text-center"
         >
           <div className="inline-flex items-center gap-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white px-6 py-3 rounded-2xl font-bold shadow-xl">
-            <Sparkles className="h-5 w-5" /> 🎉 Master Disney Explorer Achieved!
+            <Sparkles className="h-5 w-5" /> 🎉 Master Fairy Explorer Achieved!
           </div>
         </motion.div>
       )}

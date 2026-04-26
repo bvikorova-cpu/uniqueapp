@@ -11,7 +11,7 @@ interface LeaderboardEntry {
 
 const mockLeaderboard: LeaderboardEntry[] = [
   { rank: 1, name: "CastleMaster_22", stamps: 6, xp: 2450, avatar: "👸" },
-  { rank: 2, name: "DisneyFan_UK", stamps: 6, xp: 2380, avatar: "🤴" },
+  { rank: 2, name: "FairyFan_UK", stamps: 6, xp: 2380, avatar: "🤴" },
   { rank: 3, name: "MagicExplorer", stamps: 5, xp: 1920, avatar: "🧙" },
   { rank: 4, name: "PrincessAdv", stamps: 5, xp: 1850, avatar: "👧" },
   { rank: 5, name: "TourKing99", stamps: 4, xp: 1600, avatar: "👦" },
