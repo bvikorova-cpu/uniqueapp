@@ -9,7 +9,7 @@ import { Card } from "@/components/ui/card";
 const SECTIONS: Section[] = [
   { id: "scope", title: "1. Scope & Acceptance" },
   { id: "definitions", title: "2. Definitions" },
-  { id: "registration", title: "3. Account Registration" },
+  { id: "registration", title: "3. Registration & Age (16+)" },
   { id: "content", title: "4. User Content & Licenses" },
   { id: "payments", title: "5. Payments & Credits" },
   { id: "creator", title: "6. Creator Obligations" },
@@ -66,6 +66,7 @@ const Terms = () => {
               <p><strong>1.1.</strong> These terms govern the relationship between the Operator (UNIQUE s.r.o., Slovak Republic) and all Users/Creators.</p>
               <p><strong>1.2.</strong> By accessing or using the platform you unconditionally and immediately agree to be bound.</p>
               <p><strong>1.3.</strong> If you disagree with any part, you must stop using the service.</p>
+              <p><strong>1.4. Age rating — 16+.</strong> The main platform is rated <strong>16+</strong>. See <a href="#registration" className="text-amber-400 underline">§3 Registration & Age</a> for full details and the Kids Channel for ages 6–12.</p>
             </LegalSection>
 
             <LegalSection id="definitions" number="§2" title="Definitions">
@@ -78,10 +79,13 @@ const Terms = () => {
               </ul>
             </LegalSection>
 
-            <LegalSection id="registration" number="§3" title="Account Registration">
-              <p><strong>3.1.</strong> You must be at least 18 years old.</p>
-              <p><strong>3.2.</strong> One account per person. You are responsible for keeping credentials secure.</p>
-              <p><strong>3.3.</strong> We may suspend or terminate accounts for breach of these terms.</p>
+            <LegalSection id="registration" number="§3" title="Account Registration & Age Requirement">
+              <p><strong>3.1. Minimum age — 16+.</strong> The main UNIQUE platform is intended for users aged <strong>16 and over</strong>, in line with GDPR Art. 8 and equivalent international child-protection standards. By registering, you confirm you are at least 16 years old.</p>
+              <p><strong>3.2. Date of birth verification.</strong> A date of birth is required at signup. Accounts where the calculated age is below 16 are automatically blocked from the main platform.</p>
+              <p><strong>3.3. Children aged 6–12 — Kids Channel.</strong> Younger children may only use the dedicated <Link to="/kids-channel" className="text-amber-400 underline">Kids Channel</Link>, which requires a parent/guardian account, parental controls and a Gold Pass. Children aged 13–15 are not currently supported.</p>
+              <p><strong>3.4. Misrepresentation of age.</strong> Providing a false date of birth is a material breach of these terms and grounds for immediate termination and deletion of the account and content.</p>
+              <p><strong>3.5. Account integrity.</strong> One account per person. You are responsible for keeping credentials secure.</p>
+              <p><strong>3.6. Suspension.</strong> We may suspend or terminate accounts for breach of these terms, including age misrepresentation.</p>
             </LegalSection>
 
             <LegalSection id="content" number="§4" title="User Content & Licenses">
