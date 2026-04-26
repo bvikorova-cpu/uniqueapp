@@ -20,6 +20,13 @@ const ProClassRedirect = () => {
     .replace(/^\/proclass/, "/masterclass") + search + hash;
   return <Navigate to={target} replace />;
 };
+
+// Redirect /kids-channel/disney-castles/:castleId -> /kids-channel/fairy-castles/:castleId
+const DisneyCastleRedirect = () => {
+  const { pathname, search, hash } = useLocation();
+  const target = pathname.replace(/^\/kids-channel\/disney-castles/, "/kids-channel/fairy-castles") + search + hash;
+  return <Navigate to={target} replace />;
+};
 import { ThemeProvider } from "next-themes";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { AnimationProvider } from "@/contexts/AnimationContext";
