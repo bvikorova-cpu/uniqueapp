@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,10 +7,19 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "react-i18next";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, CalendarIcon, ShieldAlert, Baby } from "lucide-react";
 import { LanguageSelector } from "@/components/LanguageSelector";
+import { Age16Badge } from "@/components/Age16Badge";
+import { format, differenceInYears } from "date-fns";
+import { cn } from "@/lib/utils";
+
+const MIN_AGE = 16;
+
+const calculateAge = (birthDate: Date): number => differenceInYears(new Date(), birthDate);
 
 const Auth = () => {
   const navigate = useNavigate();
