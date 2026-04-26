@@ -37,7 +37,7 @@ function getCountryFlag(countryCode: string): string {
   return { US: "🇺🇸", FR: "🇫🇷", CN: "🇨🇳", HK: "🇭🇰", JP: "🇯🇵" }[countryCode] || "🏰";
 }
 
-export default function DisneyCastles() {
+export default function FairyCastles() {
   const navigate = useNavigate();
   const { castles, isLoading } = useDisneyCastles();
   const { visits } = useUserVisits();

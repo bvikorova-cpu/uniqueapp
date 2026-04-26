@@ -16,7 +16,7 @@ import { useSaveCertificate } from "@/hooks/useCertificates";
 import { supabase } from "@/integrations/supabase/client";
 import { motion } from "framer-motion";
 
-export default function DisneyCastleTour() {
+export default function FairyCastleTour() {
   const { castleId } = useParams<{ castleId: string }>();
   const navigate = useNavigate();
   const [currentRoomIndex, setCurrentRoomIndex] = useState(0);
