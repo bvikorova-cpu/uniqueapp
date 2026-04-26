@@ -9,7 +9,7 @@ import { Card } from "@/components/ui/card";
 const SECTIONS: Section[] = [
   { id: "scope", title: "1. Scope & Acceptance" },
   { id: "definitions", title: "2. Definitions" },
-  { id: "registration", title: "3. Account Registration" },
+  { id: "registration", title: "3. Registration & Age (16+)" },
   { id: "content", title: "4. User Content & Licenses" },
   { id: "payments", title: "5. Payments & Credits" },
   { id: "creator", title: "6. Creator Obligations" },
@@ -66,6 +66,7 @@ const Terms = () => {
               <p><strong>1.1.</strong> These terms govern the relationship between the Operator (UNIQUE s.r.o., Slovak Republic) and all Users/Creators.</p>
               <p><strong>1.2.</strong> By accessing or using the platform you unconditionally and immediately agree to be bound.</p>
               <p><strong>1.3.</strong> If you disagree with any part, you must stop using the service.</p>
+              <p><strong>1.4. Age rating — 16+.</strong> The main platform is rated <strong>16+</strong>. See <a href="#registration" className="text-amber-400 underline">§3 Registration & Age</a> for full details and the Kids Channel for ages 6–12.</p>
             </LegalSection>
 
             <LegalSection id="definitions" number="§2" title="Definitions">
