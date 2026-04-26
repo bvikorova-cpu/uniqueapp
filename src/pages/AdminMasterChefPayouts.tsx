@@ -217,11 +217,11 @@ export default function AdminMasterChefPayouts() {
     <AdminGuard>
       <AdminPageShell>
         <AdminPageHeader
-          title="MasterChef Payouts"
+          title="KitchenStars Payouts"
           subtitle="Manage chef gift commissions and process secure payouts."
           icon={ChefHat}
-          badge="MasterChef"
-          breadcrumbs={[{ label: "MasterChef Payouts" }]}
+          badge="KitchenStars"
+          breadcrumbs={[{ label: "KitchenStars Payouts" }]}
           stats={[
             { label: "Pending €", value: `€${totalPending.toFixed(0)}`, accent: "amber" },
             { label: "Pending #", value: pendingEarnings.length, accent: "purple" },
