@@ -251,10 +251,10 @@ export const ShadowArenaBattleDetail = lazy(() => import("@/pages/ShadowArenaBat
 export const ShadowArenaBattleSubmit = lazy(() => import("@/pages/ShadowArenaBattleSubmit"));
 export const ShadowArenaStoryDetail = lazy(() => import("@/pages/ShadowArenaStoryDetail"));
 
-// Disney
-export const DisneyCastles = lazy(() => import("@/pages/DisneyCastles"));
-export const DisneyCastleTour = lazy(() => import("@/pages/DisneyCastleTour"));
-export const DisneyAdmin = lazy(() => import("@/pages/DisneyAdmin"));
+// FairyCastles (formerly Disney)
+export const FairyCastles = lazy(() => import("@/pages/FairyCastles"));
+export const FairyCastleTour = lazy(() => import("@/pages/FairyCastleTour"));
+export const FairyAdmin = lazy(() => import("@/pages/FairyAdmin"));
 
 // MasterChef
 export const MasterChefSubscription = lazy(() => import("@/pages/MasterChefSubscription"));

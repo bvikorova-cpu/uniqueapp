@@ -54,7 +54,7 @@ export function CastleHero({ stampsCount, totalCastles, visitedCount }: CastleHe
 
         <h1 className="text-5xl md:text-6xl font-black mb-3">
           <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-500 bg-clip-text text-transparent">
-            Disney Castle
+            Fairy Castle
           </span>
           <br />
           <span className="bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 bg-clip-text text-transparent">
@@ -114,7 +114,7 @@ export function CastleHero({ stampsCount, totalCastles, visitedCount }: CastleHe
             animate={{ opacity: 1 }}
             className="text-sm text-amber-600 dark:text-amber-400 font-bold mt-2 flex items-center justify-center gap-1"
           >
-            <Sparkles className="h-4 w-4" /> Master Disney Explorer! 🎉
+            <Sparkles className="h-4 w-4" /> Master Fairy Explorer! 🎉
           </motion.p>
         )}
       </motion.div>

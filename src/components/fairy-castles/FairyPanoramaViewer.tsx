@@ -13,78 +13,78 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 
 // Magical Dreams (Hong Kong) - 10 rooms
-import magicalDreams1 from "@/assets/disney/panoramas/magical-dreams-1.jpg";
-import magicalDreams2 from "@/assets/disney/panoramas/magical-dreams-2.jpg";
-import magicalDreams3 from "@/assets/disney/panoramas/magical-dreams-3.jpg";
-import magicalDreams4 from "@/assets/disney/panoramas/magical-dreams-4.jpg";
-import magicalDreams5 from "@/assets/disney/panoramas/magical-dreams-5.jpg";
-import magicalDreams6 from "@/assets/disney/panoramas/magical-dreams-6.jpg";
-import magicalDreams7 from "@/assets/disney/panoramas/magical-dreams-7.jpg";
-import magicalDreams8 from "@/assets/disney/panoramas/magical-dreams-8.jpg";
-import magicalDreams9 from "@/assets/disney/panoramas/magical-dreams-9.jpg";
-import magicalDreams10 from "@/assets/disney/panoramas/magical-dreams-10.jpg";
+import magicalDreams1 from "@/assets/fairy-castles/panoramas/magical-dreams-1.jpg";
+import magicalDreams2 from "@/assets/fairy-castles/panoramas/magical-dreams-2.jpg";
+import magicalDreams3 from "@/assets/fairy-castles/panoramas/magical-dreams-3.jpg";
+import magicalDreams4 from "@/assets/fairy-castles/panoramas/magical-dreams-4.jpg";
+import magicalDreams5 from "@/assets/fairy-castles/panoramas/magical-dreams-5.jpg";
+import magicalDreams6 from "@/assets/fairy-castles/panoramas/magical-dreams-6.jpg";
+import magicalDreams7 from "@/assets/fairy-castles/panoramas/magical-dreams-7.jpg";
+import magicalDreams8 from "@/assets/fairy-castles/panoramas/magical-dreams-8.jpg";
+import magicalDreams9 from "@/assets/fairy-castles/panoramas/magical-dreams-9.jpg";
+import magicalDreams10 from "@/assets/fairy-castles/panoramas/magical-dreams-10.jpg";
 
 // Cinderella Castle (Magic Kingdom) - 10 rooms
-import cinderella1 from "@/assets/disney/panoramas/cinderella-1.jpg";
-import cinderella2 from "@/assets/disney/panoramas/cinderella-2.jpg";
-import cinderella3 from "@/assets/disney/panoramas/cinderella-3.jpg";
-import cinderella4 from "@/assets/disney/panoramas/cinderella-4.jpg";
-import cinderella5 from "@/assets/disney/panoramas/cinderella-5.jpg";
-import cinderella6 from "@/assets/disney/panoramas/cinderella-6.jpg";
-import cinderella7 from "@/assets/disney/panoramas/cinderella-7.jpg";
-import cinderella8 from "@/assets/disney/panoramas/cinderella-8.jpg";
-import cinderella9 from "@/assets/disney/panoramas/cinderella-9.jpg";
-import cinderella10 from "@/assets/disney/panoramas/cinderella-10.jpg";
+import cinderella1 from "@/assets/fairy-castles/panoramas/cinderella-1.jpg";
+import cinderella2 from "@/assets/fairy-castles/panoramas/cinderella-2.jpg";
+import cinderella3 from "@/assets/fairy-castles/panoramas/cinderella-3.jpg";
+import cinderella4 from "@/assets/fairy-castles/panoramas/cinderella-4.jpg";
+import cinderella5 from "@/assets/fairy-castles/panoramas/cinderella-5.jpg";
+import cinderella6 from "@/assets/fairy-castles/panoramas/cinderella-6.jpg";
+import cinderella7 from "@/assets/fairy-castles/panoramas/cinderella-7.jpg";
+import cinderella8 from "@/assets/fairy-castles/panoramas/cinderella-8.jpg";
+import cinderella9 from "@/assets/fairy-castles/panoramas/cinderella-9.jpg";
+import cinderella10 from "@/assets/fairy-castles/panoramas/cinderella-10.jpg";
 
-// Sleeping Beauty Castle (Disneyland) - 10 rooms
-import sleepingBeauty1 from "@/assets/disney/panoramas/sleeping-beauty-1.jpg";
-import sleepingBeauty2 from "@/assets/disney/panoramas/sleeping-beauty-2.jpg";
-import sleepingBeauty3 from "@/assets/disney/panoramas/sleeping-beauty-3.jpg";
-import sleepingBeauty4 from "@/assets/disney/panoramas/sleeping-beauty-4.jpg";
-import sleepingBeauty5 from "@/assets/disney/panoramas/sleeping-beauty-5.jpg";
-import sleepingBeauty6 from "@/assets/disney/panoramas/sleeping-beauty-6.jpg";
-import sleepingBeauty7 from "@/assets/disney/panoramas/sleeping-beauty-7.jpg";
-import sleepingBeauty8 from "@/assets/disney/panoramas/sleeping-beauty-8.jpg";
-import sleepingBeauty9 from "@/assets/disney/panoramas/sleeping-beauty-9.jpg";
-import sleepingBeauty10 from "@/assets/disney/panoramas/sleeping-beauty-10.jpg";
+// Rose Castle (Magic Resort California) - 10 rooms
+import sleepingBeauty1 from "@/assets/fairy-castles/panoramas/sleeping-beauty-1.jpg";
+import sleepingBeauty2 from "@/assets/fairy-castles/panoramas/sleeping-beauty-2.jpg";
+import sleepingBeauty3 from "@/assets/fairy-castles/panoramas/sleeping-beauty-3.jpg";
+import sleepingBeauty4 from "@/assets/fairy-castles/panoramas/sleeping-beauty-4.jpg";
+import sleepingBeauty5 from "@/assets/fairy-castles/panoramas/sleeping-beauty-5.jpg";
+import sleepingBeauty6 from "@/assets/fairy-castles/panoramas/sleeping-beauty-6.jpg";
+import sleepingBeauty7 from "@/assets/fairy-castles/panoramas/sleeping-beauty-7.jpg";
+import sleepingBeauty8 from "@/assets/fairy-castles/panoramas/sleeping-beauty-8.jpg";
+import sleepingBeauty9 from "@/assets/fairy-castles/panoramas/sleeping-beauty-9.jpg";
+import sleepingBeauty10 from "@/assets/fairy-castles/panoramas/sleeping-beauty-10.jpg";
 
 // Le Château de la Belle au Bois Dormant (Paris) - 10 rooms
-import parisBelle1 from "@/assets/disney/panoramas/paris-belle-1.jpg";
-import parisBelle2 from "@/assets/disney/panoramas/paris-belle-2.jpg";
-import parisBelle3 from "@/assets/disney/panoramas/paris-belle-3.jpg";
-import parisBelle4 from "@/assets/disney/panoramas/paris-belle-4.jpg";
-import parisBelle5 from "@/assets/disney/panoramas/paris-belle-5.jpg";
-import parisBelle6 from "@/assets/disney/panoramas/paris-belle-6.jpg";
-import parisBelle7 from "@/assets/disney/panoramas/paris-belle-7.jpg";
-import parisBelle8 from "@/assets/disney/panoramas/paris-belle-8.jpg";
-import parisBelle9 from "@/assets/disney/panoramas/paris-belle-9.jpg";
-import parisBelle10 from "@/assets/disney/panoramas/paris-belle-10.jpg";
+import parisBelle1 from "@/assets/fairy-castles/panoramas/paris-belle-1.jpg";
+import parisBelle2 from "@/assets/fairy-castles/panoramas/paris-belle-2.jpg";
+import parisBelle3 from "@/assets/fairy-castles/panoramas/paris-belle-3.jpg";
+import parisBelle4 from "@/assets/fairy-castles/panoramas/paris-belle-4.jpg";
+import parisBelle5 from "@/assets/fairy-castles/panoramas/paris-belle-5.jpg";
+import parisBelle6 from "@/assets/fairy-castles/panoramas/paris-belle-6.jpg";
+import parisBelle7 from "@/assets/fairy-castles/panoramas/paris-belle-7.jpg";
+import parisBelle8 from "@/assets/fairy-castles/panoramas/paris-belle-8.jpg";
+import parisBelle9 from "@/assets/fairy-castles/panoramas/paris-belle-9.jpg";
+import parisBelle10 from "@/assets/fairy-castles/panoramas/paris-belle-10.jpg";
 
 // Cinderella Castle (Tokyo) - 10 rooms
-import tokyoCinderella1 from "@/assets/disney/panoramas/tokyo-cinderella-1.jpg";
-import tokyoCinderella2 from "@/assets/disney/panoramas/tokyo-cinderella-2.jpg";
-import tokyoCinderella3 from "@/assets/disney/panoramas/tokyo-cinderella-3.jpg";
-import tokyoCinderella4 from "@/assets/disney/panoramas/tokyo-cinderella-4.jpg";
-import tokyoCinderella5 from "@/assets/disney/panoramas/tokyo-cinderella-5.jpg";
-import tokyoCinderella6 from "@/assets/disney/panoramas/tokyo-cinderella-6.jpg";
-import tokyoCinderella7 from "@/assets/disney/panoramas/tokyo-cinderella-7.jpg";
-import tokyoCinderella8 from "@/assets/disney/panoramas/tokyo-cinderella-8.jpg";
-import tokyoCinderella9 from "@/assets/disney/panoramas/tokyo-cinderella-9.jpg";
-import tokyoCinderella10 from "@/assets/disney/panoramas/tokyo-cinderella-10.jpg";
+import tokyoCinderella1 from "@/assets/fairy-castles/panoramas/tokyo-cinderella-1.jpg";
+import tokyoCinderella2 from "@/assets/fairy-castles/panoramas/tokyo-cinderella-2.jpg";
+import tokyoCinderella3 from "@/assets/fairy-castles/panoramas/tokyo-cinderella-3.jpg";
+import tokyoCinderella4 from "@/assets/fairy-castles/panoramas/tokyo-cinderella-4.jpg";
+import tokyoCinderella5 from "@/assets/fairy-castles/panoramas/tokyo-cinderella-5.jpg";
+import tokyoCinderella6 from "@/assets/fairy-castles/panoramas/tokyo-cinderella-6.jpg";
+import tokyoCinderella7 from "@/assets/fairy-castles/panoramas/tokyo-cinderella-7.jpg";
+import tokyoCinderella8 from "@/assets/fairy-castles/panoramas/tokyo-cinderella-8.jpg";
+import tokyoCinderella9 from "@/assets/fairy-castles/panoramas/tokyo-cinderella-9.jpg";
+import tokyoCinderella10 from "@/assets/fairy-castles/panoramas/tokyo-cinderella-10.jpg";
 
 // Enchanted Storybook Castle (Shanghai) - 10 rooms
-import shanghaiStorybook1 from "@/assets/disney/panoramas/shanghai-storybook-1.jpg";
-import shanghaiStorybook2 from "@/assets/disney/panoramas/shanghai-storybook-2.jpg";
-import shanghaiStorybook3 from "@/assets/disney/panoramas/shanghai-storybook-3.jpg";
-import shanghaiStorybook4 from "@/assets/disney/panoramas/shanghai-storybook-4.jpg";
-import shanghaiStorybook5 from "@/assets/disney/panoramas/shanghai-storybook-5.jpg";
-import shanghaiStorybook6 from "@/assets/disney/panoramas/shanghai-storybook-6.jpg";
-import shanghaiStorybook7 from "@/assets/disney/panoramas/shanghai-storybook-7.jpg";
-import shanghaiStorybook8 from "@/assets/disney/panoramas/shanghai-storybook-8.jpg";
-import shanghaiStorybook9 from "@/assets/disney/panoramas/shanghai-storybook-9.jpg";
-import shanghaiStorybook10 from "@/assets/disney/panoramas/shanghai-storybook-10.jpg";
+import shanghaiStorybook1 from "@/assets/fairy-castles/panoramas/shanghai-storybook-1.jpg";
+import shanghaiStorybook2 from "@/assets/fairy-castles/panoramas/shanghai-storybook-2.jpg";
+import shanghaiStorybook3 from "@/assets/fairy-castles/panoramas/shanghai-storybook-3.jpg";
+import shanghaiStorybook4 from "@/assets/fairy-castles/panoramas/shanghai-storybook-4.jpg";
+import shanghaiStorybook5 from "@/assets/fairy-castles/panoramas/shanghai-storybook-5.jpg";
+import shanghaiStorybook6 from "@/assets/fairy-castles/panoramas/shanghai-storybook-6.jpg";
+import shanghaiStorybook7 from "@/assets/fairy-castles/panoramas/shanghai-storybook-7.jpg";
+import shanghaiStorybook8 from "@/assets/fairy-castles/panoramas/shanghai-storybook-8.jpg";
+import shanghaiStorybook9 from "@/assets/fairy-castles/panoramas/shanghai-storybook-9.jpg";
+import shanghaiStorybook10 from "@/assets/fairy-castles/panoramas/shanghai-storybook-10.jpg";
 
-interface DisneyPanoramaViewerProps {
+interface FairyPanoramaViewerProps {
   imageUrl: string;
   audioGuideText?: string;
   ambientSound?: string;
@@ -138,7 +138,7 @@ function PanoramaSphere({ imageUrl }: { imageUrl: string }) {
       'cinderella-9': cinderella9,
       'cinderella-10': cinderella10,
       
-      // Sleeping Beauty Castle (Disneyland) - 10 rooms
+      // Rose Castle (Magic Resort California) - 10 rooms
       'sleeping-beauty-1': sleepingBeauty1,
       'sleeping-beauty-2': sleepingBeauty2,
       'sleeping-beauty-3': sleepingBeauty3,
@@ -150,7 +150,7 @@ function PanoramaSphere({ imageUrl }: { imageUrl: string }) {
       'sleeping-beauty-9': sleepingBeauty9,
       'sleeping-beauty-10': sleepingBeauty10,
       
-      // Paris Belle (Disneyland Paris) - 10 rooms
+      // Paris Belle (Enchanted Park Paris) - 10 rooms
       'paris-belle-1': parisBelle1,
       'paris-belle-2': parisBelle2,
       'paris-belle-3': parisBelle3,
@@ -310,14 +310,14 @@ const getDefaultLanguage = (): string => {
   return supported ? supported.code : 'en';
 };
 
-export function DisneyPanoramaViewer({ 
+export function FairyPanoramaViewer({ 
   imageUrl, 
   audioGuideText,
   ambientSound,
   collectibles = [],
   onCollectItem,
   collectedIds = []
-}: DisneyPanoramaViewerProps) {
+}: FairyPanoramaViewerProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [showInfo, setShowInfo] = useState(true);
   const [ambientVolume, setAmbientVolume] = useState(0.3);

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ArrowLeft, Award, Calendar, Clock, Trophy, Trash2 } from "lucide-react";
 import { useUserCertificates, useDeleteCertificate } from "@/hooks/useCertificates";
-import { CastleCertificate } from "@/components/disney/CastleCertificate";
+import { CastleCertificate } from "@/components/fairy-castles/CastleCertificate";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -76,7 +76,7 @@ export default function CertificateGallery() {
       <div className="max-w-6xl mx-auto mb-8">
         <Button
           variant="ghost"
-          onClick={() => navigate("/kids-channel/disney-castles")}
+          onClick={() => navigate("/kids-channel/fairy-castles")}
           className="mb-4"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
@@ -153,7 +153,7 @@ export default function CertificateGallery() {
               <p className="text-muted-foreground mb-6">
                 Complete castle tours to earn your first certificate!
               </p>
-              <Button onClick={() => navigate("/kids-channel/disney-castles")}>
+              <Button onClick={() => navigate("/kids-channel/fairy-castles")}>
                 Explore Castles
               </Button>
             </div>

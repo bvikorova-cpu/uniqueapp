@@ -3,20 +3,20 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Sparkles, Check, X } from "lucide-react";
-import { CastlePanoramaGenerator } from "@/components/disney/CastlePanoramaGenerator";
-import { useDisneyCastles, useCastleRooms } from "@/hooks/useDisneyCastles";
+import { CastlePanoramaGenerator } from "@/components/fairy-castles/CastlePanoramaGenerator";
+import { useFairyCastles, useCastleRooms } from "@/hooks/useFairyCastles";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 
-const DisneyAdmin = () => {
+const FairyAdmin = () => {
   const navigate = useNavigate();
   const [isAdmin, setIsAdmin] = useState(false);
   const [selectedCastleId, setSelectedCastleId] = useState<string | null>(null);
   const [isBulkGenerating, setIsBulkGenerating] = useState(false);
   const [allRooms, setAllRooms] = useState<any[]>([]);
   const [roomsLoading, setRoomsLoading] = useState(false);
-  const { castles, isLoading: castlesLoading } = useDisneyCastles();
+  const { castles, isLoading: castlesLoading } = useFairyCastles();
   const { rooms, isLoading: selectedRoomsLoading } = useCastleRooms(selectedCastleId || "");
 
   useEffect(() => {
@@ -107,13 +107,13 @@ const DisneyAdmin = () => {
         <div className="flex items-center gap-4 mb-8">
           <Button
             variant="ghost"
-            onClick={() => navigate("/kids-channel/disney-castles")}
+            onClick={() => navigate("/kids-channel/fairy-castles")}
             className="gap-2"
           >
             <ArrowLeft className="h-4 w-4" />
             Back to castles
           </Button>
-          <h1 className="text-3xl font-bold">Disney Castles - Admin</h1>
+          <h1 className="text-3xl font-bold">Fairy Castles - Admin</h1>
         </div>
 
         {!selectedCastleId ? (
@@ -229,4 +229,4 @@ const DisneyAdmin = () => {
   );
 };
 
-export default DisneyAdmin;
+export default FairyAdmin;

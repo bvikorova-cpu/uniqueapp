@@ -20,6 +20,13 @@ const ProClassRedirect = () => {
     .replace(/^\/proclass/, "/masterclass") + search + hash;
   return <Navigate to={target} replace />;
 };
+
+// Redirect /kids-channel/disney-castles/:castleId -> /kids-channel/fairy-castles/:castleId
+const DisneyCastleRedirect = () => {
+  const { pathname, search, hash } = useLocation();
+  const target = pathname.replace(/^\/kids-channel\/disney-castles/, "/kids-channel/fairy-castles") + search + hash;
+  return <Navigate to={target} replace />;
+};
 import { ThemeProvider } from "next-themes";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { AnimationProvider } from "@/contexts/AnimationContext";
@@ -263,9 +270,9 @@ import {
   ShadowArenaBattleDetail,
   ShadowArenaBattleSubmit,
   ShadowArenaStoryDetail,
-  DisneyCastles,
-  DisneyCastleTour,
-  DisneyAdmin,
+  FairyCastles,
+  FairyCastleTour,
+  FairyAdmin,
   MasterChefSubscription,
   MasterChefDashboard,
   MasterChefCompetitions,
@@ -701,9 +708,13 @@ const App = () => {
                         <Route path="/comedian-dashboard" element={<ProtectedRoute><ComedianDashboard /></ProtectedRoute>} />
                         <Route path="/comedy-live/:showId" element={<ComedyLiveShow />} />
                         <Route path="/comedy-watch/:showId" element={<ComedyLiveViewer />} />
-                        <Route path="/kids-channel/disney-castles" element={<DisneyCastles />} />
-                        <Route path="/kids-channel/disney-castles/:castleId" element={<DisneyCastleTour />} />
-                        <Route path="/kids-channel/disney-admin" element={<ProtectedRoute requireAdmin={true}><DisneyAdmin /></ProtectedRoute>} />
+                        <Route path="/kids-channel/fairy-castles" element={<FairyCastles />} />
+                        <Route path="/kids-channel/fairy-castles/:castleId" element={<FairyCastleTour />} />
+                        <Route path="/kids-channel/fairy-admin" element={<ProtectedRoute requireAdmin={true}><FairyAdmin /></ProtectedRoute>} />
+                        {/* Legacy Disney routes — redirect to new fairy-castles paths */}
+                        <Route path="/kids-channel/disney-castles" element={<Navigate to="/kids-channel/fairy-castles" replace />} />
+                        <Route path="/kids-channel/disney-castles/:castleId" element={<DisneyCastleRedirect />} />
+                        <Route path="/kids-channel/disney-admin" element={<Navigate to="/kids-channel/fairy-admin" replace />} />
                         <Route path="/kids-channel/certificate-gallery" element={<CertificateGallery />} />
                         <Route path="/f1-racing" element={<F1RacingArena />} />
                         <Route path="/f1-racing-old" element={

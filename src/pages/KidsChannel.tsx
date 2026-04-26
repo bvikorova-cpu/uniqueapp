@@ -300,9 +300,9 @@ const KidsChannel = () => {
 
   return (
     <div className="min-h-screen relative overflow-hidden">
-      {/* Disney Castle Background */}
+      {/* Fairy Castle Background */}
       <div className="fixed inset-0">
-        <img src={castleBg} alt="Disney Castle" className="w-full h-full object-cover object-center" />
+        <img src={castleBg} alt="Fairy Castle" className="w-full h-full object-cover object-center" />
         <div className="absolute inset-0 bg-gradient-to-b from-purple-900/20 via-transparent to-purple-900/50" />
       </div>
 
@@ -407,13 +407,13 @@ const KidsChannel = () => {
           />
 
           <FeatureCard
-            title="Disney Castles! 🏰"
-            description="Explore all 6 magical Disney castles around the world in HD 360° tours!"
+            title="Fairy Castles! 🏰"
+            description="Explore all 6 magical fairy castles around the world in HD 360° tours!"
             icon={Castle}
             iconColor="text-blue-500"
             gradient="from-blue-100/95 to-sky-100/95"
             badges={[{ text: "Virtual Tour", color: "bg-blue-500 text-white" }]}
-            onClick={() => navigate('/kids-channel/disney-castles')}
+            onClick={() => navigate('/kids-channel/fairy-castles')}
             delay={0.35}
           />
 
