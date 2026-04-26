@@ -402,6 +402,7 @@ const Auth = () => {
                         )}
                       </Button>
                     </div>
+                  </div>
                   <div className="space-y-2">
                     <Label htmlFor="signup-dob" className="flex items-center gap-2">
                       Date of birth <span className="text-destructive">*</span>
