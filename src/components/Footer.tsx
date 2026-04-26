@@ -13,14 +13,17 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
           {/* Brand Section */}
           <div className="space-y-4">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
               <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center">
                 <span className="text-primary-foreground font-bold text-lg">U</span>
               </div>
               <span className="font-bold text-xl">UNIQUE</span>
+              <Age16Badge size="xs" withLabel={false} withLink />
             </div>
             <p className="text-sm text-muted-foreground">
               Premium AI-powered platform with 50+ modules for creativity, entertainment, education, and commerce.
+              Suitable for users aged 16 and over. Younger users can visit the{" "}
+              <Link to="/kids-channel" className="text-primary hover:underline">Kids Channel</Link>.
             </p>
           </div>
 
