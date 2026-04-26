@@ -36,7 +36,7 @@ import cinderella8 from "@/assets/fairy-castles/panoramas/cinderella-8.jpg";
 import cinderella9 from "@/assets/fairy-castles/panoramas/cinderella-9.jpg";
 import cinderella10 from "@/assets/fairy-castles/panoramas/cinderella-10.jpg";
 
-// Sleeping Beauty Castle (Disneyland) - 10 rooms
+// Rose Castle (Magic Resort California) - 10 rooms
 import sleepingBeauty1 from "@/assets/fairy-castles/panoramas/sleeping-beauty-1.jpg";
 import sleepingBeauty2 from "@/assets/fairy-castles/panoramas/sleeping-beauty-2.jpg";
 import sleepingBeauty3 from "@/assets/fairy-castles/panoramas/sleeping-beauty-3.jpg";
@@ -138,7 +138,7 @@ function PanoramaSphere({ imageUrl }: { imageUrl: string }) {
       'cinderella-9': cinderella9,
       'cinderella-10': cinderella10,
       
-      // Sleeping Beauty Castle (Disneyland) - 10 rooms
+      // Rose Castle (Magic Resort California) - 10 rooms
       'sleeping-beauty-1': sleepingBeauty1,
       'sleeping-beauty-2': sleepingBeauty2,
       'sleeping-beauty-3': sleepingBeauty3,
@@ -150,7 +150,7 @@ function PanoramaSphere({ imageUrl }: { imageUrl: string }) {
       'sleeping-beauty-9': sleepingBeauty9,
       'sleeping-beauty-10': sleepingBeauty10,
       
-      // Paris Belle (Disneyland Paris) - 10 rooms
+      // Paris Belle (Enchanted Park Paris) - 10 rooms
       'paris-belle-1': parisBelle1,
       'paris-belle-2': parisBelle2,
       'paris-belle-3': parisBelle3,

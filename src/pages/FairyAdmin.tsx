@@ -113,7 +113,7 @@ const FairyAdmin = () => {
             <ArrowLeft className="h-4 w-4" />
             Back to castles
           </Button>
-          <h1 className="text-3xl font-bold">Disney Castles - Admin</h1>
+          <h1 className="text-3xl font-bold">Fairy Castles - Admin</h1>
         </div>
 
         {!selectedCastleId ? (
