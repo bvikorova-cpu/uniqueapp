@@ -55,7 +55,7 @@ const Auth = () => {
 
   const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
+
     if (!privacyConsent || !termsConsent) {
       toast({
         variant: "destructive",
@@ -64,7 +64,23 @@ const Auth = () => {
       });
       return;
     }
-    
+
+    if (!birthDate) {
+      toast({
+        variant: "destructive",
+        title: "Date of birth required",
+        description: "Please select your date of birth to continue.",
+      });
+      return;
+    }
+
+    const age = calculateAge(birthDate);
+    if (age < MIN_AGE) {
+      // Block under-16 with a friendly Kids Channel redirect
+      setShowAgeBlock(true);
+      return;
+    }
+
     setLoading(true);
 
     const formData = new FormData(e.currentTarget);
@@ -75,6 +91,7 @@ const Auth = () => {
     const companyName = formData.get("companyName") as string;
 
     const selectedLanguage = i18n.language || 'en';
+    const isoBirthDate = format(birthDate, "yyyy-MM-dd");
 
     const { data: signUpData, error } = await supabase.auth.signUp({
       email,
@@ -86,19 +103,23 @@ const Auth = () => {
           phone: phone,
           company_name: companyName || null,
           preferred_language: selectedLanguage,
+          birth_date: isoBirthDate,
         },
       },
     });
 
-    // Persist preferred_language directly to the profile (best-effort, non-blocking)
+    // Persist preferred_language + birth_date directly to the profile (best-effort)
     if (!error && signUpData?.user?.id) {
       try {
         await supabase
           .from('profiles')
-          .update({ preferred_language: selectedLanguage } as any)
+          .update({
+            preferred_language: selectedLanguage,
+            birth_date: isoBirthDate,
+          } as any)
           .eq('id', signUpData.user.id);
       } catch (e) {
-        console.warn('Could not persist preferred_language at signup:', e);
+        console.warn('Could not persist profile fields at signup:', e);
       }
     }
 
