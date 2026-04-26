@@ -30122,6 +30122,7 @@ export type Database = {
           occupation: string | null
           personality_traits: Json | null
           phone: string | null
+          preferred_language: string | null
           profile_theme: string | null
           rating_average: number | null
           signup_ip: string | null
@@ -30169,6 +30170,7 @@ export type Database = {
           occupation?: string | null
           personality_traits?: Json | null
           phone?: string | null
+          preferred_language?: string | null
           profile_theme?: string | null
           rating_average?: number | null
           signup_ip?: string | null
@@ -30216,6 +30218,7 @@ export type Database = {
           occupation?: string | null
           personality_traits?: Json | null
           phone?: string | null
+          preferred_language?: string | null
           profile_theme?: string | null
           rating_average?: number | null
           signup_ip?: string | null
