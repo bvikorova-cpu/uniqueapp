@@ -43,10 +43,10 @@ const DisneyAdmin = () => {
     setRoomsLoading(true);
     try {
       const { data, error } = await supabase
-        .from('disney_castle_rooms')
+        .from('fairy_castle_rooms')
         .select(`
           *,
-          disney_castles (
+          fairy_castles (
             name,
             park_name
           )

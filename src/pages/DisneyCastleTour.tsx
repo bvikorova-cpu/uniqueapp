@@ -47,7 +47,7 @@ export default function DisneyCastleTour() {
     queryKey: ["castle", castleId],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("disney_castles")
+        .from("fairy_castles")
         .select("*")
         .eq("id", castleId)
         .single();

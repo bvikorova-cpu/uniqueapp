@@ -7,7 +7,7 @@ export const useDisneyCastles = () => {
     queryKey: ["disney-castles"],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("disney_castles")
+        .from("fairy_castles")
         .select("*")
         .order("name");
 
@@ -24,7 +24,7 @@ export const useCastleRooms = (castleId: string) => {
     queryKey: ["castle-rooms", castleId],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("disney_castle_rooms")
+        .from("fairy_castle_rooms")
         .select("*")
         .eq("castle_id", castleId)
         .order("order_index");
@@ -47,7 +47,7 @@ export const useUserVisits = () => {
 
       const { data, error } = await supabase
         .from("user_castle_visits")
-        .select("*, castle:disney_castles(*)")
+        .select("*, castle:fairy_castles(*)")
         .eq("user_id", user.id);
 
       if (error) throw error;
@@ -67,7 +67,7 @@ export const useUserStamps = () => {
 
       const { data, error } = await supabase
         .from("user_castle_stamps")
-        .select("*, castle:disney_castles(*)")
+        .select("*, castle:fairy_castles(*)")
         .eq("user_id", user.id);
 
       if (error) throw error;

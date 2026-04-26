@@ -11,7 +11,7 @@ export const useUserCertificates = () => {
 
       const { data, error } = await supabase
         .from("user_castle_certificates")
-        .select("*, castle:disney_castles(*)")
+        .select("*, castle:fairy_castles(*)")
         .eq("user_id", user.id)
         .order("completed_at", { ascending: false });
 

@@ -62,7 +62,7 @@ export const CastlePanoramaGenerator = ({ castle, rooms, onRoomUpdated }: Castle
 
       // Update room with new panorama URL
       const { error: updateError } = await supabase
-        .from('disney_castle_rooms')
+        .from('fairy_castle_rooms')
         .update({ panorama_url: data.imageUrl })
         .eq('id', room.id);
 
