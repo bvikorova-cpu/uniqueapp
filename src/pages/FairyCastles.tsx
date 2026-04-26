@@ -2,22 +2,22 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { useDisneyCastles, useUserVisits, useUserStamps } from "@/hooks/useDisneyCastles";
+import { useDisneyCastles, useUserVisits, useUserStamps } from "@/hooks/useFairyCastles";
 import { useUserCertificates } from "@/hooks/useCertificates";
 import { useUserDisneyCollectibles } from "@/hooks/useCollectibles";
 import { ArrowLeft, Award, BookOpen } from "lucide-react";
-import { CastleHero } from "@/components/disney/CastleHero";
-import { InteractiveWorldMap } from "@/components/disney/InteractiveWorldMap";
-import { PremiumCastleCard } from "@/components/disney/PremiumCastleCard";
-import { StampCollection } from "@/components/disney/StampCollection";
-import { CastleLeaderboard } from "@/components/disney/CastleLeaderboard";
-import { CollectiblesAlbum } from "@/components/disney/CollectiblesAlbum";
-import cinderellaFlorida from "@/assets/disney/cinderella-castle-florida.jpg";
-import sleepingBeautyCalifornia from "@/assets/disney/sleeping-beauty-castle-california.jpg";
-import parisCastle from "@/assets/disney/paris-castle.jpg";
-import hongkongCastle from "@/assets/disney/hongkong-castle.jpg";
-import shanghaiCastle from "@/assets/disney/shanghai-castle.jpg";
-import tokyoCastle from "@/assets/disney/tokyo-castle-exterior.jpg";
+import { CastleHero } from "@/components/fairy-castles/CastleHero";
+import { InteractiveWorldMap } from "@/components/fairy-castles/InteractiveWorldMap";
+import { PremiumCastleCard } from "@/components/fairy-castles/PremiumCastleCard";
+import { StampCollection } from "@/components/fairy-castles/StampCollection";
+import { CastleLeaderboard } from "@/components/fairy-castles/CastleLeaderboard";
+import { CollectiblesAlbum } from "@/components/fairy-castles/CollectiblesAlbum";
+import cinderellaFlorida from "@/assets/fairy-castles/cinderella-castle-florida.jpg";
+import sleepingBeautyCalifornia from "@/assets/fairy-castles/sleeping-beauty-castle-california.jpg";
+import parisCastle from "@/assets/fairy-castles/paris-castle.jpg";
+import hongkongCastle from "@/assets/fairy-castles/hongkong-castle.jpg";
+import shanghaiCastle from "@/assets/fairy-castles/shanghai-castle.jpg";
+import tokyoCastle from "@/assets/fairy-castles/tokyo-castle-exterior.jpg";
 
 const castleImages: Record<string, string> = {
   "Cinderella Castle": cinderellaFlorida,
@@ -105,7 +105,7 @@ export default function DisneyCastles() {
           castles={castles || []}
           stampedIds={stampedCastleIds}
           visitedIds={visitedCastleIds}
-          onCastleClick={(id) => navigate(`/kids-channel/disney-castles/${id}`)}
+          onCastleClick={(id) => navigate(`/kids-channel/fairy-castles/${id}`)}
         />
 
         {/* Castle Cards */}
@@ -124,7 +124,7 @@ export default function DisneyCastles() {
                 isVisited={visitedCastleIds.includes(castle.id)}
                 hasStamp={stampedCastleIds.includes(castle.id)}
                 countryFlag={getCountryFlag(castle.country_code)}
-                onExplore={() => navigate(`/kids-channel/disney-castles/${castle.id}`)}
+                onExplore={() => navigate(`/kids-channel/fairy-castles/${castle.id}`)}
                 index={i}
               />
             ))}

@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Sparkles, Check, X } from "lucide-react";
-import { CastlePanoramaGenerator } from "@/components/disney/CastlePanoramaGenerator";
-import { useDisneyCastles, useCastleRooms } from "@/hooks/useDisneyCastles";
+import { CastlePanoramaGenerator } from "@/components/fairy-castles/CastlePanoramaGenerator";
+import { useDisneyCastles, useCastleRooms } from "@/hooks/useFairyCastles";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
@@ -107,7 +107,7 @@ const DisneyAdmin = () => {
         <div className="flex items-center gap-4 mb-8">
           <Button
             variant="ghost"
-            onClick={() => navigate("/kids-channel/disney-castles")}
+            onClick={() => navigate("/kids-channel/fairy-castles")}
             className="gap-2"
           >
             <ArrowLeft className="h-4 w-4" />

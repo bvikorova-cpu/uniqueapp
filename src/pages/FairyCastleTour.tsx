@@ -3,14 +3,14 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ArrowLeft, Sparkles, Award, Map, TrendingUp, BookOpen } from "lucide-react";
-import { DisneyPanoramaViewer } from "@/components/disney/DisneyPanoramaViewer";
-import { CastleRoomMiniMap } from "@/components/disney/CastleRoomMiniMap";
-import { CastleProgressTracker } from "@/components/disney/CastleProgressTracker";
-import { CastleCertificate } from "@/components/disney/CastleCertificate";
-import { CastleQuiz } from "@/components/disney/CastleQuiz";
-import { TourOnboarding } from "@/components/disney/TourOnboarding";
+import { FairyPanoramaViewer } from "@/components/fairy-castles/FairyPanoramaViewer";
+import { CastleRoomMiniMap } from "@/components/fairy-castles/CastleRoomMiniMap";
+import { CastleProgressTracker } from "@/components/fairy-castles/CastleProgressTracker";
+import { CastleCertificate } from "@/components/fairy-castles/CastleCertificate";
+import { CastleQuiz } from "@/components/fairy-castles/CastleQuiz";
+import { TourOnboarding } from "@/components/fairy-castles/TourOnboarding";
 import { useQuery } from "@tanstack/react-query";
-import { useCastleRooms, useStartTour, useCompleteRoom, useEarnStamp } from "@/hooks/useDisneyCastles";
+import { useCastleRooms, useStartTour, useCompleteRoom, useEarnStamp } from "@/hooks/useFairyCastles";
 import { useRoomCollectibles, useCollectDisneyItem, useUserDisneyCollectibles } from "@/hooks/useCollectibles";
 import { useSaveCertificate } from "@/hooks/useCertificates";
 import { supabase } from "@/integrations/supabase/client";
@@ -213,7 +213,7 @@ export default function DisneyCastleTour() {
           <div className="flex items-center gap-4">
             <Button
               variant="ghost"
-              onClick={() => navigate("/kids-channel/disney-castles")}
+              onClick={() => navigate("/kids-channel/fairy-castles")}
               className="text-white hover:bg-white/20"
             >
               <ArrowLeft className="mr-2 h-4 w-4" /> Exit
@@ -261,7 +261,7 @@ export default function DisneyCastleTour() {
 
       {/* Panorama Viewer */}
       <div className={`transition-opacity duration-300 ${isFading ? 'opacity-0' : 'opacity-100'}`}>
-        <DisneyPanoramaViewer
+        <FairyPanoramaViewer
           key={`${castleId}-${currentRoomIndex}`}
           imageUrl={panoramaUrl}
           audioGuideText={currentRoom.audio_guide_text || ""}
@@ -359,7 +359,7 @@ export default function DisneyCastleTour() {
         isVisible={showCertificate}
         onClose={() => {
           setShowCertificate(false);
-          navigate("/kids-channel/disney-castles");
+          navigate("/kids-channel/fairy-castles");
         }}
       />
     </div>
