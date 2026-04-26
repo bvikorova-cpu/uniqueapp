@@ -78,10 +78,13 @@ const Terms = () => {
               </ul>
             </LegalSection>
 
-            <LegalSection id="registration" number="§3" title="Account Registration">
-              <p><strong>3.1.</strong> You must be at least 18 years old.</p>
-              <p><strong>3.2.</strong> One account per person. You are responsible for keeping credentials secure.</p>
-              <p><strong>3.3.</strong> We may suspend or terminate accounts for breach of these terms.</p>
+            <LegalSection id="registration" number="§3" title="Account Registration & Age Requirement">
+              <p><strong>3.1. Minimum age — 16+.</strong> The main UNIQUE platform is intended for users aged <strong>16 and over</strong>, in line with GDPR Art. 8 and equivalent international child-protection standards. By registering, you confirm you are at least 16 years old.</p>
+              <p><strong>3.2. Date of birth verification.</strong> A date of birth is required at signup. Accounts where the calculated age is below 16 are automatically blocked from the main platform.</p>
+              <p><strong>3.3. Children aged 6–12 — Kids Channel.</strong> Younger children may only use the dedicated <Link to="/kids-channel" className="text-amber-400 underline">Kids Channel</Link>, which requires a parent/guardian account, parental controls and a Gold Pass. Children aged 13–15 are not currently supported.</p>
+              <p><strong>3.4. Misrepresentation of age.</strong> Providing a false date of birth is a material breach of these terms and grounds for immediate termination and deletion of the account and content.</p>
+              <p><strong>3.5. Account integrity.</strong> One account per person. You are responsible for keeping credentials secure.</p>
+              <p><strong>3.6. Suspension.</strong> We may suspend or terminate accounts for breach of these terms, including age misrepresentation.</p>
             </LegalSection>
 
             <LegalSection id="content" number="§4" title="User Content & Licenses">
