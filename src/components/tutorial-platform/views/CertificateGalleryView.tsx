@@ -23,6 +23,20 @@ const styleColors: Record<string, string> = {
 };
 
 export function CertificateGalleryView({ onBack }: Props) {
+  const handleDownload = (cert: typeof certificates[0]) => {
+    const content = `===== CERTIFICATE OF COMPLETION =====\n\nAwarded to: ${cert.student}\nCourse: ${cert.course}\nStyle: ${cert.style}\nDate: ${cert.date}\n\nIssued by Unique Tutorial Platform\nVerification ID: CERT-${cert.id}-${Date.now()}\n`;
+    const blob = new Blob([content], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `Certificate_${cert.student.replace(/\s+/g, "_")}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    toast.success("Certificate downloaded");
+  };
+
   return (
     <div>
       <Button variant="ghost" onClick={onBack} className="mb-4"><ArrowLeft className="w-4 h-4 mr-2" />Back</Button>
