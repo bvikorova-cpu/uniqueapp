@@ -258,7 +258,7 @@ export default function MasterChefDashboard() {
                 </div>
                 <div className="text-right">
                   <p className="text-sm font-medium">Today 6:00 PM</p>
-                  <Button size="sm" className="mt-2" onClick={() => toast.info("Sign Up — coming soon")}>
+                  <Button size="sm" className="mt-2" onClick={() => toast({ description: "Sign Up — coming soon" })}>
                     Sign Up
                   </Button>
                 </div>
@@ -271,7 +271,7 @@ export default function MasterChefDashboard() {
                 </div>
                 <div className="text-right">
                   <p className="text-sm font-medium">Tomorrow 8:00 PM</p>
-                  <Button size="sm" variant="outline" className="mt-2" onClick={() => toast.info("Details — coming soon")}>
+                  <Button size="sm" variant="outline" className="mt-2" onClick={() => toast({ description: "Details — coming soon" })}>
                     Details
                   </Button>
                 </div>

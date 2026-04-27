@@ -21,12 +21,30 @@ import {
 } from "lucide-react";
 import { ProfilePageHero } from "@/components/profile/ProfilePageHero";
 import { GDPRPanel } from "@/components/gdpr/GDPRPanel";
-import { toast } from "sonner";
+import { toast as sonnerToast } from "sonner";
+import { useTheme } from "next-themes";
 
 export default function Settings() {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { theme, setTheme } = useTheme();
   const [saving, setSaving] = useState(false);
+  const [changingPassword, setChangingPassword] = useState(false);
+
+  const handleChangePassword = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user?.email) {
+      sonnerToast.error("No email on account");
+      return;
+    }
+    setChangingPassword(true);
+    const { error } = await supabase.auth.resetPasswordForEmail(user.email, {
+      redirectTo: `${window.location.origin}/auth?reset=true`,
+    });
+    setChangingPassword(false);
+    if (error) sonnerToast.error(error.message);
+    else sonnerToast.success(`Password reset link sent to ${user.email}`);
+  };
 
   const { data: user } = useQuery({
     queryKey: ["current-user"],
@@ -149,7 +167,9 @@ export default function Settings() {
 
               <div className="pt-4 border-t">
                 <h3 className="text-lg font-semibold mb-4">Password</h3>
-                <Button variant="outline" onClick={() => toast.info("Change Password — coming soon")}>Change Password</Button>
+                <Button variant="outline" onClick={handleChangePassword} disabled={changingPassword}>
+                  {changingPassword ? "Sending..." : "Change Password"}
+                </Button>
               </div>
             </Card>
           </TabsContent>
@@ -287,15 +307,15 @@ export default function Settings() {
                   Choose your preferred theme
                 </p>
                 <div className="grid grid-cols-3 gap-4">
-                  <Button variant="outline" className="h-20 flex-col gap-2" onClick={() => toast.info("Light — coming soon")}>
+                  <Button variant={theme === "light" ? "default" : "outline"} className="h-20 flex-col gap-2" onClick={() => { setTheme("light"); sonnerToast.success("Light theme enabled"); }}>
                     <div className="w-8 h-8 rounded-full bg-background border-2" />
                     <span className="text-xs">Light</span>
                   </Button>
-                  <Button variant="outline" className="h-20 flex-col gap-2" onClick={() => toast.info("Dark — coming soon")}>
+                  <Button variant={theme === "dark" ? "default" : "outline"} className="h-20 flex-col gap-2" onClick={() => { setTheme("dark"); sonnerToast.success("Dark theme enabled"); }}>
                     <div className="w-8 h-8 rounded-full bg-foreground" />
                     <span className="text-xs">Dark</span>
                   </Button>
-                  <Button variant="outline" className="h-20 flex-col gap-2" onClick={() => toast.info("Auto — coming soon")}>
+                  <Button variant={theme === "system" ? "default" : "outline"} className="h-20 flex-col gap-2" onClick={() => { setTheme("system"); sonnerToast.success("Following system theme"); }}>
                     <div className="w-8 h-8 rounded-full bg-background" />
                     <span className="text-xs">Auto</span>
                   </Button>

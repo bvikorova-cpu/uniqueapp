@@ -114,7 +114,7 @@ export function AIContentGeneratorView({ onBack }: AIContentGeneratorViewProps) 
           {generatedImage ? (
             <div className="space-y-4">
               <img src={generatedImage} alt="Generated" className="w-full rounded-lg shadow-lg" />
-              <Button className="w-full" variant="outline" onClick={() => toast.info("Upload to Library — coming soon")}>
+              <Button className="w-full" variant="outline" onClick={() => toast({ description: "Upload to Library — coming soon" })}>
                 Upload to Library
               </Button>
             </div>

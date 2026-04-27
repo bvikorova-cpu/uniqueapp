@@ -134,7 +134,7 @@ export default function DiscoverCreators() {
                     <CardDescription className="line-clamp-2 mb-4">
                       {creator.bio}
                     </CardDescription>
-                    <Button className="w-full" onClick={() => toast.info("View Profile — coming soon")}>
+                    <Button className="w-full" onClick={() => toast({ description: "View Profile — coming soon" })}>
                       View Profile
                     </Button>
                   </CardContent>

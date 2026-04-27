@@ -424,7 +424,7 @@ const Admin = () => {
                   <div className="text-3xl font-bold text-orange-500">
                     €{stats.masterchefEarnings.toFixed(2)}
                   </div>
-                  <Button variant="outline" size="sm" className="mt-2" onClick={() => toast.info("Manage Payouts → — coming soon")}>
+                  <Button variant="outline" size="sm" className="mt-2" onClick={() => toast({ description: "Manage Payouts → — coming soon" })}>
                     Manage Payouts →
                   </Button>
                 </div>

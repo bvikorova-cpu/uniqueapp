@@ -93,7 +93,7 @@ export const ConcertAfterparty = ({ onBack }: Props) => {
         {/* Features Row */}
         <div className="flex gap-2 overflow-x-auto pb-1">
           {PARTY_FEATURES.map((f, i) => (
-            <Button key={i} variant="outline" size="sm" className="flex-shrink-0 text-xs gap-1" onClick={() => toast.info("This action — coming soon")}>
+            <Button key={i} variant="outline" size="sm" className="flex-shrink-0 text-xs gap-1" onClick={() => toast({ description: "This action — coming soon" })}>
               {f.icon} {f.title}
             </Button>
           ))}
