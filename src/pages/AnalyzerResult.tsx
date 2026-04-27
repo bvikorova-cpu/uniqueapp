@@ -87,8 +87,26 @@ export default function AnalyzerResult() {
             <Button variant="outline" size="icon" onClick={toggleFavorite} className="border-cyan-500/20">
               <Heart className={`w-4 h-4 ${analysis.is_favorite ? 'fill-red-500 text-red-500' : ''}`} />
             </Button>
-            <Button variant="outline" size="icon" className="border-cyan-500/20" onClick={() => toast.info("This action — coming soon")}><Share2 className="w-4 h-4" /></Button>
-            <Button variant="outline" size="icon" className="border-cyan-500/20" onClick={() => toast.info("This action — coming soon")}><Download className="w-4 h-4" /></Button>
+            <Button variant="outline" size="icon" className="border-cyan-500/20" onClick={async () => {
+              const url = window.location.href;
+              const shareData = { title: analysis.main_identification || "Analysis", text: "Check out this analysis", url };
+              try {
+                if (navigator.share) await navigator.share(shareData);
+                else { await navigator.clipboard.writeText(url); toast.success("Link skopírovaný!"); }
+              } catch {}
+            }}><Share2 className="w-4 h-4" /></Button>
+            <Button variant="outline" size="icon" className="border-cyan-500/20" onClick={async () => {
+              try {
+                const blob = await (await fetch(analysis.image_url)).blob();
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = `${(analysis.main_identification || "analysis").replace(/\s+/g, "-")}.jpg`;
+                document.body.appendChild(a); a.click(); a.remove();
+                URL.revokeObjectURL(url);
+                toast.success("Stiahnuté");
+              } catch { toast.error("Stiahnutie zlyhalo"); }
+            }}><Download className="w-4 h-4" /></Button>
           </div>
         </div>
 
@@ -159,7 +177,7 @@ export default function AnalyzerResult() {
                     <h2 className="text-lg font-bold mb-2 text-blue-400">Where to Find</h2>
                     <p className="text-muted-foreground text-sm">{info.details.whereToFind}</p>
                     {info.shopping?.links?.length ? (
-                      <Button className="mt-2 bg-gradient-to-r from-cyan-600 to-blue-600" variant="default" onClick={() => toast.info("Shop Similar Items — coming soon")}>
+                      <Button className="mt-2 bg-gradient-to-r from-cyan-600 to-blue-600" variant="default" onClick={() => { const url = info.shopping?.links?.[0]?.url; if (url) window.open(url, "_blank", "noopener"); }}>
                         <ShoppingBag className="w-4 h-4 mr-2" /> Shop Similar Items
                       </Button>
                     ) : null}

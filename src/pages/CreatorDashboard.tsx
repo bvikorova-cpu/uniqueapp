@@ -155,7 +155,7 @@ export default function CreatorDashboard() {
               </h1>
               <p className="text-muted-foreground mt-1">{profile?.bio}</p>
             </div>
-            <Button onClick={() => toast({ description: "Edit Profile — coming soon" })}>
+            <Button onClick={() => { window.location.href = "/profile/edit"; }}>
               <Plus className="mr-2 h-4 w-4" />
               Edit Profile
             </Button>

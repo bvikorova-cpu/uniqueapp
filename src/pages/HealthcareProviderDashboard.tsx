@@ -341,7 +341,7 @@ export default function HealthcareProviderDashboard() {
                           <FileText className="w-4 h-4" />
                           {collection.page_count} pages
                         </span>
-                        <Button size="sm" variant="ghost" onClick={() => toast.info("View Collection — coming soon")}>
+                        <Button size="sm" variant="ghost" onClick={() => { window.location.href = `/healthcare-provider?collection=${collection.id}`; }}>
                           View Collection
                         </Button>
                       </div>

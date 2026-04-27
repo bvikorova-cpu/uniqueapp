@@ -134,7 +134,7 @@ export default function DiscoverCreators() {
                     <CardDescription className="line-clamp-2 mb-4">
                       {creator.bio}
                     </CardDescription>
-                    <Button className="w-full" onClick={() => toast({ description: "View Profile — coming soon" })}>
+                    <Button className="w-full" onClick={() => { window.location.href = `/profile/${(creator as any).user_id || creator.id}`; }}>
                       View Profile
                     </Button>
                   </CardContent>

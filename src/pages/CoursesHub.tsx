@@ -398,7 +398,7 @@ export default function CoursesHub() {
                           <span className="text-2xl font-bold">
                             ${course.price.toFixed(2)}
                           </span>
-                          <Button size="sm" onClick={() => toast({ description: "View Course — coming soon" })}>View Course</Button>
+                          <Button size="sm" onClick={() => { window.location.href = `/courses/${course.id}`; }}>View Course</Button>
                         </div>
                       </CardContent>
                     </Card>
