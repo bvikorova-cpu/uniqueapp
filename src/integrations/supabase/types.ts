@@ -30472,6 +30472,68 @@ export type Database = {
           },
         ]
       }
+      property_documents: {
+        Row: {
+          category: string
+          created_at: string
+          doc_name: string
+          file_path: string
+          id: string
+          original_filename: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          doc_name: string
+          file_path: string
+          id?: string
+          original_filename?: string | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          doc_name?: string
+          file_path?: string
+          id?: string
+          original_filename?: string | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      property_favorites: {
+        Row: {
+          created_at: string
+          id: string
+          property_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          property_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          property_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "property_favorites_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       property_images: {
         Row: {
           created_at: string | null
