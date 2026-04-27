@@ -8,6 +8,8 @@
     "prebuild": "node scripts/generate-sitemap.mjs && node scripts/i18n-check.mjs",
     "build": "vite build",
     "build:dev": "vite build --mode development",
+    "build:analyze": "ANALYZE=true vite build",
+    "bundle:report": "node scripts/bundle-report.mjs",
     "sitemap": "node scripts/generate-sitemap.mjs",
     "i18n:check": "node scripts/i18n-check.mjs",
     "i18n:fill": "node scripts/i18n-fill.mjs",
