@@ -1,5 +1,6 @@
-import { useState } from "react";
-import { MessageCircle, Send, MoreHorizontal, ExternalLink, BellOff, Bell, User, Trash2, Flag, Phone, Video, Search, Image, Smile, ThumbsUp } from "lucide-react";
+import { useRef, useState } from "react";
+import { MessageCircle, Send, MoreHorizontal, ExternalLink, BellOff, Bell, User, Trash2, Flag, Phone, Video, Search, Image, Smile, ThumbsUp, Loader2 } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -34,9 +35,70 @@ export const MessageButton = ({ userId, userName, userAvatar }: MessageButtonPro
   const [open, setOpen] = useState(false);
   const [newMessage, setNewMessage] = useState("");
   const [isMuted, setIsMuted] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const { messages, sendMessage } = useDirectMessages(userId);
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  const EMOJIS = ["😊", "😂", "❤️", "🔥", "👍", "🎉", "😍", "🤔", "🙌", "💯", "🚀", "✨", "😎", "👀", "🙏", "💪"];
+
+  const handleAttachImage = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleImageSelected = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      toast({
+        title: "Invalid file",
+        description: "Please select an image.",
+        variant: "destructive",
+      });
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      toast({
+        title: "File too large",
+        description: "Image must be under 5 MB.",
+        variant: "destructive",
+      });
+      return;
+    }
+    setUploadingImage(true);
+    try {
+      const { data: auth } = await import("@/integrations/supabase/client").then(
+        (m) => m.supabase.auth.getUser(),
+      );
+      const uid = auth.user?.id;
+      if (!uid) throw new Error("Not signed in");
+      const { supabase } = await import("@/integrations/supabase/client");
+      const path = `${uid}/dm-${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.\-_]/g, "_")}`;
+      const { error } = await supabase.storage
+        .from("user-uploads")
+        .upload(path, file);
+      if (error) throw error;
+      const { data: urlData } = supabase.storage
+        .from("user-uploads")
+        .getPublicUrl(path);
+      sendMessage({ receiverId: userId, content: urlData.publicUrl });
+      toast({ title: "Image sent" });
+    } catch (err: any) {
+      toast({
+        title: "Upload failed",
+        description: err.message ?? "Could not upload image.",
+        variant: "destructive",
+      });
+    } finally {
+      setUploadingImage(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  };
+
+  const insertEmoji = (emoji: string) => {
+    setNewMessage((prev) => prev + emoji);
+  };
 
   const handleSend = (e: React.FormEvent) => {
     e.preventDefault();
