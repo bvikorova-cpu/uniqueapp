@@ -115,8 +115,8 @@ export function LiveSessionsView({ onBack }: Props) {
                   <span className="flex items-center gap-1"><Users className="w-3 h-3" />{session.attendees} {session.live ? "watching" : "registered"}</span>
                 </div>
               </div>
-              {session.live && <Button size="sm" className="bg-red-500 hover:bg-red-600 shadow-lg" onClick={() => toast.info("Join Live — coming soon")}>Join Live</Button>}
-              {session.status === "upcoming" && <Button size="sm" variant="outline" onClick={() => toast.info("Register — coming soon")}>Register</Button>}
+              {session.live && <Button size="sm" className="bg-red-500 hover:bg-red-600 shadow-lg" onClick={() => handleJoinLive(session.title)}>Join Live</Button>}
+              {session.status === "upcoming" && <Button size="sm" variant={registered.has(session.id) ? "secondary" : "outline"} onClick={() => handleRegister(session.id)}>{registered.has(session.id) ? "Registered ✓" : "Register"}</Button>}
             </div>
           </Card>
         ))}
