@@ -55,7 +55,7 @@ export function StudentCommunityView({ onBack }: Props) {
           </div>
           <div>
             <h2 className="text-2xl font-black">Student Community</h2>
-            <p className="text-sm text-muted-foreground">{mockThreads.length} active discussions</p>
+            <p className="text-sm text-muted-foreground">{threads.length} active discussions</p>
           </div>
         </div>
         <Button onClick={() => setNewThread(!newThread)} className="bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700">
