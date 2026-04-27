@@ -56,7 +56,18 @@ export function CollectionsView({ onBack }: CollectionsViewProps) {
                   <span className="text-2xl font-black">€{col.price}</span>
                   <span className="text-sm text-muted-foreground line-through ml-2">€{(col.price / (1 - col.discount / 100)).toFixed(2)}</span>
                 </div>
-                <Button size="sm" onClick={() => toast.info("Buy Bundle — coming soon")}>Buy Bundle</Button>
+                <Button size="sm" onClick={async () => {
+                  try {
+                    const { supabase } = await import("@/integrations/supabase/client");
+                    const { data: { session } } = await supabase.auth.getSession();
+                    if (!session) { toast.error("Najprv sa prihlás"); return; }
+                    const { data, error } = await supabase.functions.invoke("create-checkout", {
+                      body: { product_type: "stock_bundle", name: col.name, amount: col.price, bundle_id: col.id }
+                    });
+                    if (error) throw error;
+                    if (data?.url) window.open(data.url, "_blank");
+                  } catch (e: any) { toast.error(e.message || "Checkout zlyhal"); }
+                }}>Buy Bundle</Button>
               </div>
             </div>
           </Card>
