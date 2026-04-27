@@ -41045,6 +41045,51 @@ export type Database = {
           },
         ]
       }
+      vitals_log: {
+        Row: {
+          connection: string | null
+          created_at: string
+          device: string | null
+          id: number
+          metric: string
+          navigation_type: string | null
+          rating: string | null
+          route: string | null
+          session_id: string | null
+          user_agent: string | null
+          user_id: string | null
+          value: number
+        }
+        Insert: {
+          connection?: string | null
+          created_at?: string
+          device?: string | null
+          id?: number
+          metric: string
+          navigation_type?: string | null
+          rating?: string | null
+          route?: string | null
+          session_id?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+          value: number
+        }
+        Update: {
+          connection?: string | null
+          created_at?: string
+          device?: string | null
+          id?: number
+          metric?: string
+          navigation_type?: string | null
+          rating?: string | null
+          route?: string | null
+          session_id?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+          value?: number
+        }
+        Relationships: []
+      }
       voice_clones: {
         Row: {
           created_at: string
@@ -42863,6 +42908,25 @@ export type Database = {
       get_rls_ref: { Args: never; Returns: string }
       get_user_pause_count: { Args: { _user_id: string }; Returns: number }
       get_user_role: { Args: never; Returns: string }
+      get_vitals_daily: {
+        Args: { p_days?: number; p_metric?: string }
+        Returns: {
+          day: string
+          p75: number
+          samples: number
+        }[]
+      }
+      get_vitals_summary: {
+        Args: { p_days?: number; p_route?: string }
+        Returns: {
+          good_pct: number
+          metric: string
+          p50: number
+          p75: number
+          p95: number
+          samples: number
+        }[]
+      }
       get_weekly_xp_leaderboard: {
         Args: never
         Returns: {
