@@ -139,7 +139,7 @@ export default function SocialRecipeFeed({ onBack }: Props) {
                     </Button>
                     <Button variant="ghost" size="sm" className="gap-1 text-muted-foreground" onClick={() => {
                       const text = window.prompt("Tvoj komentár:");
-                      if (text && text.trim()) toast.success("Komentár pridaný!");
+                      if (text && text.trim()) toast({ description: "Komentár pridaný!" });
                     }}>
                       <MessageCircle className="h-4 w-4" /> Comment
                     </Button>
@@ -147,7 +147,7 @@ export default function SocialRecipeFeed({ onBack }: Props) {
                       const url = `${window.location.origin}/cooking?post=${post.id}`;
                       try {
                         if (navigator.share) await navigator.share({ title: post.title, text: post.description || "", url });
-                        else { await navigator.clipboard.writeText(url); toast.success("Link skopírovaný!"); }
+                        else { await navigator.clipboard.writeText(url); toast({ description: "Link skopírovaný!" }); }
                       } catch {}
                     }}>
                       <Share2 className="h-4 w-4" /> Share
