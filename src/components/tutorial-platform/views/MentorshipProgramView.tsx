@@ -66,10 +66,10 @@ export function MentorshipProgramView({ onBack }: Props) {
                 <span>Available: {mentor.availability}</span>
               </div>
               <div className="flex gap-2">
-                <Button className="flex-1 bg-gradient-to-r from-fuchsia-500 to-purple-600 hover:from-fuchsia-600 hover:to-purple-700 shadow-md" onClick={() => console.info("[Coming soon] Book Session")}>
+                <Button className="flex-1 bg-gradient-to-r from-fuchsia-500 to-purple-600 hover:from-fuchsia-600 hover:to-purple-700 shadow-md" onClick={() => toast.info("Book Session — coming soon")}>
                   <Clock className="w-4 h-4 mr-2" />Book Session
                 </Button>
-                <Button variant="outline" size="icon" onClick={() => console.info("[Coming soon] This action")}><MessageCircle className="w-4 h-4" /></Button>
+                <Button variant="outline" size="icon" onClick={() => toast.info("This action — coming soon")}><MessageCircle className="w-4 h-4" /></Button>
               </div>
             </CardContent>
           </Card>

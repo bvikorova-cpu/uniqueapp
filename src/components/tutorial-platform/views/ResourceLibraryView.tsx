@@ -57,7 +57,7 @@ export function ResourceLibraryView({ onBack }: Props) {
                   </div>
                 </div>
                 <p className="text-[10px] text-muted-foreground mb-3">{res.downloads.toLocaleString()} downloads</p>
-                <Button size="sm" className="w-full h-8 text-xs bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700" onClick={() => console.info("[Coming soon] Download")}>
+                <Button size="sm" className="w-full h-8 text-xs bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700" onClick={() => toast.info("Download — coming soon")}>
                   <Download className="w-3 h-3 mr-1" />Download
                 </Button>
               </CardContent>

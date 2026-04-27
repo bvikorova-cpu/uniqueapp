@@ -43,10 +43,10 @@ const MultiverseCommunity = ({ onBack }: MultiverseCommunityProps) => {
               </div>
               <p className="text-xs text-muted-foreground">{explorer.universes} universes · {explorer.specialty}</p>
               <div className="flex gap-2">
-                <Button size="sm" variant="outline" className="flex-1 text-xs h-7" onClick={() => console.info("[Coming soon] Follow")}>
+                <Button size="sm" variant="outline" className="flex-1 text-xs h-7" onClick={() => toast.info("Follow — coming soon")}>
                   <Users className="w-3 h-3 mr-1" /> Follow
                 </Button>
-                <Button size="sm" variant="outline" className="flex-1 text-xs h-7" onClick={() => console.info("[Coming soon] Message")}>
+                <Button size="sm" variant="outline" className="flex-1 text-xs h-7" onClick={() => toast.info("Message — coming soon")}>
                   <MessageSquare className="w-3 h-3 mr-1" /> Message
                 </Button>
               </div>

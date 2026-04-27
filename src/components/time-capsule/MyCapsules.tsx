@@ -79,7 +79,7 @@ export const MyCapsules = ({ onBack }: { onBack: () => void }) => {
                     <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="mt-3 pt-3 border-t border-border/40">
                       <p className="text-sm text-foreground whitespace-pre-wrap">{capsule.message}</p>
                       <div className="flex gap-2 mt-3">
-                        <Button variant="outline" size="sm" className="text-xs" onClick={() => console.info("[Coming soon] Preview")}><Eye className="w-3 h-3 mr-1" /> Preview</Button>
+                        <Button variant="outline" size="sm" className="text-xs" onClick={() => toast.info("Preview — coming soon")}><Eye className="w-3 h-3 mr-1" /> Preview</Button>
                       </div>
                     </motion.div>
                   )}

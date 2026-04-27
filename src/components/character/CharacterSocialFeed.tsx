@@ -120,7 +120,7 @@ export const CharacterSocialFeed = () => {
                     <Button variant="ghost" size="sm" onClick={() => likePost.mutate(post.id)} className="text-muted-foreground hover:text-red-400 gap-1.5 h-8">
                       <Heart className="h-4 w-4" /> {post.likes_count}
                     </Button>
-                    <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-blue-400 gap-1.5 h-8" onClick={() => console.info("[Coming soon] This action")}>
+                    <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-blue-400 gap-1.5 h-8" onClick={() => toast.info("This action — coming soon")}>
                       <MessageCircle className="h-4 w-4" /> {post.comments_count}
                     </Button>
                   </div>

@@ -52,7 +52,7 @@ export function CertificateGalleryView({ onBack }: Props) {
                 <Badge variant="outline" className="text-[10px]">{cert.style}</Badge>
                 <span className="text-xs text-muted-foreground">{cert.date}</span>
               </div>
-              <Button size="sm" variant="outline" className="w-full h-8 text-xs" onClick={() => console.info("[Coming soon] Download Certificate")}>
+              <Button size="sm" variant="outline" className="w-full h-8 text-xs" onClick={() => toast.info("Download Certificate — coming soon")}>
                 <Download className="w-3 h-3 mr-1" />Download Certificate
               </Button>
             </CardContent>

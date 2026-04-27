@@ -54,7 +54,7 @@ export const WeeklyTournaments = ({ currentStreak = 0 }: WeeklyTournamentsProps)
             ))}
           </div>
 
-          <Button className="w-full gap-2" onClick={() => console.info("[Coming soon] Enter Weekly Tournament (20 credits)")}>
+          <Button className="w-full gap-2" onClick={() => toast.info("Enter Weekly Tournament (20 credits) — coming soon")}>
             <Trophy className="h-4 w-4" /> Enter Weekly Tournament (20 credits)
           </Button>
         </CardContent>

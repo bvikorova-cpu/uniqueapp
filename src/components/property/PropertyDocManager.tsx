@@ -83,10 +83,10 @@ export function PropertyDocManager({ onBack }: Props) {
         </Card>
         <Card className="bg-card/60 backdrop-blur-xl border-border/30">
           <CardContent className="p-6">
-            <Button className="w-full bg-gradient-to-r from-sky-500 to-blue-600 text-white mb-2" onClick={() => console.info("[Coming soon] Upload Document")}>
+            <Button className="w-full bg-gradient-to-r from-sky-500 to-blue-600 text-white mb-2" onClick={() => toast.info("Upload Document — coming soon")}>
               <Upload className="h-4 w-4 mr-2" />Upload Document
             </Button>
-            <Button variant="outline" className="w-full" onClick={() => console.info("[Coming soon] Download All")}>
+            <Button variant="outline" className="w-full" onClick={() => toast.info("Download All — coming soon")}>
               <Download className="h-4 w-4 mr-2" />Download All
             </Button>
           </CardContent>
@@ -122,11 +122,11 @@ export function PropertyDocManager({ onBack }: Props) {
                       <Badge variant="outline" className={`text-[10px] ${config.color}`}>{config.label}</Badge>
                       {doc.status === "uploaded" ? (
                         <div className="flex gap-1">
-                          <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => console.info("[Coming soon] This action")}><Eye className="h-3 w-3" /></Button>
-                          <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => console.info("[Coming soon] This action")}><Trash2 className="h-3 w-3" /></Button>
+                          <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => toast.info("This action — coming soon")}><Eye className="h-3 w-3" /></Button>
+                          <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => toast.info("This action — coming soon")}><Trash2 className="h-3 w-3" /></Button>
                         </div>
                       ) : (
-                        <Button variant="outline" size="sm" className="text-xs h-7" onClick={() => console.info("[Coming soon] Upload")}><Upload className="h-3 w-3 mr-1" />Upload</Button>
+                        <Button variant="outline" size="sm" className="text-xs h-7" onClick={() => toast.info("Upload — coming soon")}><Upload className="h-3 w-3 mr-1" />Upload</Button>
                       )}
                     </motion.div>
                   );

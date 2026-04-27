@@ -262,7 +262,7 @@ const MegatalentCategory = () => {
                         <span className="text-xs font-bold">{submission.votes_count || 0}</span>
                       </Button>
 
-                      <Button variant="ghost" size="sm" className="gap-1.5 h-8" onClick={() => console.info("[Coming soon] This action")}>
+                      <Button variant="ghost" size="sm" className="gap-1.5 h-8" onClick={() => toast.info("This action — coming soon")}>
                         <MessageCircle className="w-4 h-4" />
                         <span className="text-xs">{commentCounts[submission.id] || 0}</span>
                       </Button>

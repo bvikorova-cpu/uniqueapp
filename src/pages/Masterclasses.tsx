@@ -235,7 +235,7 @@ const Masterclasses = () => {
             <p className="text-muted-foreground mb-6">
               Share your expertise with our global community of learners
             </p>
-            <Button size="lg" variant="outline" onClick={() => console.info("[Coming soon] Become an Expert Instructor")}>
+            <Button size="lg" variant="outline" onClick={() => toast.info("Become an Expert Instructor — coming soon")}>
               Become an Expert Instructor
             </Button>
           </Card>

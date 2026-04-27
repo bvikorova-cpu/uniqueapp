@@ -188,7 +188,7 @@ export default function MyBazaarOrders({ userId }: MyBazaarOrdersProps) {
                 </div>
               </div>
             </div>
-            <Button variant="ghost" size="icon" onClick={() => console.info("[Coming soon] This action")}>
+            <Button variant="ghost" size="icon" onClick={() => toast.info("This action — coming soon")}>
               <MessageCircle className="h-4 w-4" />
             </Button>
           </div>
