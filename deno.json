@@ -1,5 +1,6 @@
 {
   "nodeModulesDir": "auto",
+  "lock": false,
   "imports": {
     "openai": "npm:openai@^4.52.5",
     "npm:openai@^4.52.5": "npm:openai@^4.52.5",
