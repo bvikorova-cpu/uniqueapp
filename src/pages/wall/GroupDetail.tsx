@@ -54,7 +54,6 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { WallPostActions } from "@/components/wall/WallPostActions";
-import { ReportDialog } from "@/components/wall/ReportDialog";
 
 export default function GroupDetail() {
   const { groupId } = useParams();
@@ -774,15 +773,44 @@ export default function GroupDetail() {
                               {format(new Date(post.created_at), "PPp")}
                             </span>
                           </div>
-                          <ReportDialog
-                            contentType="post"
-                            contentId={post.id}
-                            trigger={
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
                               <Button variant="ghost" size="icon">
                                 <MoreHorizontal className="h-4 w-4" />
                               </Button>
-                            }
-                          />
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuItem
+                                onClick={() => {
+                                  const url = `${window.location.origin}/post/${post.id}`;
+                                  navigator.clipboard.writeText(url);
+                                  toast({ title: "Link copied", description: "Post link copied to clipboard." });
+                                }}
+                              >
+                                <Share2 className="h-4 w-4 mr-2" />
+                                Copy link
+                              </DropdownMenuItem>
+                              {post.user_id === user?.id && (
+                                <DropdownMenuItem
+                                  className="text-destructive"
+                                  onClick={async () => {
+                                    const { error } = await supabase
+                                      .from("posts")
+                                      .delete()
+                                      .eq("id", post.id);
+                                    if (error) {
+                                      toast({ title: "Error", description: error.message, variant: "destructive" });
+                                    } else {
+                                      toast({ title: "Deleted", description: "Post removed." });
+                                      queryClient.invalidateQueries({ queryKey: ["group-posts", groupId] });
+                                    }
+                                  }}
+                                >
+                                  Delete post
+                                </DropdownMenuItem>
+                              )}
+                            </DropdownMenuContent>
+                          </DropdownMenu>
                         </div>
                         <p className="mt-2 whitespace-pre-wrap">{post.content}</p>
                         
