@@ -1,4 +1,3 @@
-import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { requireAiCredits } from "../_shared/credit-check.ts";
 
 const corsHeaders = {
