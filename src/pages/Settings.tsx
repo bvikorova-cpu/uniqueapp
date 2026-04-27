@@ -22,11 +22,29 @@ import {
 import { ProfilePageHero } from "@/components/profile/ProfilePageHero";
 import { GDPRPanel } from "@/components/gdpr/GDPRPanel";
 import { toast } from "sonner";
+import { useTheme } from "next-themes";
 
 export default function Settings() {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { theme, setTheme } = useTheme();
   const [saving, setSaving] = useState(false);
+  const [changingPassword, setChangingPassword] = useState(false);
+
+  const handleChangePassword = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user?.email) {
+      sonnerToast.error("No email on account");
+      return;
+    }
+    setChangingPassword(true);
+    const { error } = await supabase.auth.resetPasswordForEmail(user.email, {
+      redirectTo: `${window.location.origin}/auth?reset=true`,
+    });
+    setChangingPassword(false);
+    if (error) sonnerToast.error(error.message);
+    else sonnerToast.success(`Password reset link sent to ${user.email}`);
+  };
 
   const { data: user } = useQuery({
     queryKey: ["current-user"],
