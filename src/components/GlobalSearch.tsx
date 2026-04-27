@@ -64,7 +64,7 @@ const SEARCHABLE_PAGES: SearchResult[] = [
   { id: "27", title: "AI Companions", category: "AI", path: "/companions" },
   { id: "28", title: "AI Clone", category: "AI", path: "/ai-clone" },
   { id: "29", title: "Beauty Studio", category: "AI", path: "/beauty-studio" },
-  { id: "30", title: "AI Music Producer", category: "AI", path: "/ai-music-producer" },
+  
   { id: "31", title: "AI Tattoo Designer", category: "AI", path: "/ai-tattoo" },
   { id: "32", title: "AI Chef", category: "Food", path: "/cooking-ai" },
   { id: "33", title: "Lie Detector", category: "AI", path: "/lie-detector" },

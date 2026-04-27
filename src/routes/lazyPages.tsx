@@ -186,7 +186,7 @@ export const ComedyLiveViewer = lazy(() => import("@/pages/ComedyLiveViewer"));
 // Music
 export const LiveConcerts = lazy(() => import("@/pages/LiveConcerts"));
 export const MusicianDashboard = lazy(() => import("@/pages/MusicianDashboard"));
-export const AIMusicProducer = lazy(() => import("@/pages/AIMusicProducer"));
+
 
 // Creative Tools
 export const ContentStudio = lazy(() => import("@/pages/ContentStudio"));

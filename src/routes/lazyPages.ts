@@ -74,7 +74,7 @@ export const AIMentorChat = lazy(() => import("@/pages/AIMentorChat"));
 export const AIClone = lazy(() => import("@/pages/AIClone"));
 export const ContentStudio = lazy(() => import("@/pages/ContentStudio"));
 export const BeautyStudio = lazy(() => import("@/pages/BeautyStudio"));
-export const AIMusicProducer = lazy(() => import("@/pages/AIMusicProducer"));
+
 export const AITattoo = lazy(() => import("@/pages/AITattoo"));
 export const PhotoRestoration = lazy(() => import("@/pages/PhotoRestoration"));
 export const UniversalAnalyzer = lazy(() => import("@/pages/UniversalAnalyzer"));

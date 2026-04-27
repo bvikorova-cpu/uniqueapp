@@ -84,7 +84,7 @@ const Home = () => {
     { name: "Online Auctions", path: "/auction", keywords: ["auctions", "auction", "bidding"] },
     { name: "AI Generation", path: "/ai-generation", keywords: ["ai", "generation", "images"] },
     { name: "Best Friend", path: "/best-friend", keywords: ["best friend", "friend", "chatbot"] },
-    { name: "AI Music Producer", path: "/ai-music-producer", keywords: ["music", "songs", "producer"] },
+    
     { name: "Plant Care", path: "/plant-care", keywords: ["plant", "garden", "care"] },
     { name: "AI Tattoo Designer", path: "/ai-tattoo", keywords: ["tattoo", "design", "ai"] },
     { name: "Mystery Box", path: "/mystery-box", keywords: ["mystery", "box", "surprise", "rewards"] },

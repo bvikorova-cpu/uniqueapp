@@ -74,7 +74,7 @@ const services = [
   { title: "Multiverse Network", icon: Sparkles, path: "/multiverse-network", badge: "Exploration", gradient: "from-indigo-600 to-violet-500", category: "entertainment" },
   { title: "Live Concerts", icon: Video, path: "/live-concerts", badge: "Entertainment", gradient: "from-red-600 to-rose-500", category: "entertainment" },
   { title: "AI Mentor", icon: GraduationCap, path: "/ai-mentor", badge: "Coaching", gradient: "from-blue-600 to-cyan-500", category: "learning" },
-  { title: "AI Music Producer", icon: Mic, path: "/ai-music-producer", badge: "Music", gradient: "from-purple-500 to-pink-500", category: "creative" },
+  
   { title: "AI Tattoo Designer", icon: PenTool, path: "/ai-tattoo", badge: "Design", gradient: "from-slate-600 to-zinc-500", category: "creative" },
   { title: "Image Analyzer", icon: Camera, path: "/analyzer", badge: "AI Vision", gradient: "from-sky-500 to-blue-500", category: "creative" },
   { title: "Anonymous Dating", icon: Heart, path: "/anonymous-date", badge: "Dating", gradient: "from-pink-600 to-fuchsia-500", category: "social" },
