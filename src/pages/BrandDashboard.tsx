@@ -21,6 +21,7 @@ import {
 import { toast } from "sonner";
 import { Plus, Calendar, Euro, Tag } from "lucide-react";
 import { BrandCampaignPayments } from "@/components/brand/BrandCampaignPayments";
+import { BrandApplicationsManager } from "@/components/brand/BrandApplicationsManager";
 
 type BrandCampaign = {
   id: string;
@@ -300,8 +301,9 @@ export default function BrandDashboard() {
 
       <main>
         <Tabs defaultValue="campaigns" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 max-w-md">
+          <TabsList className="grid w-full grid-cols-3 max-w-xl">
             <TabsTrigger value="campaigns">Campaigns</TabsTrigger>
+            <TabsTrigger value="applications">Applications & Escrow</TabsTrigger>
             <TabsTrigger value="payments">Payments</TabsTrigger>
           </TabsList>
 
@@ -363,6 +365,12 @@ export default function BrandDashboard() {
                   </CardContent>
                 </Card>
               )}
+            </section>
+          </TabsContent>
+
+          <TabsContent value="applications" className="mt-6">
+            <section aria-label="Applications and escrow">
+              <BrandApplicationsManager />
             </section>
           </TabsContent>
 

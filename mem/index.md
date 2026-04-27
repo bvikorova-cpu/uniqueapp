@@ -41,3 +41,4 @@ NO health/medical predictions. NO identifiable people/trademarks in videos.
 - [Security Scan](mem://features/security-scan) — Daily + on-demand audit of edge fns (static heuristics + runtime probes) and npm deps (OSV.dev CVE); admin UI at /admin/security-scan, snapshots in security_scan_snapshots
 - [Age Rating 16+](mem://features/age-rating) — DOB gate at signup, &lt;Age16Badge /&gt; in navbar/footer/landing/auth, under-16 redirected to /kids-channel
 - [Quantum Social AI versions](mem://features/quantum-versions) — quantum-generate-versions edge fn rewrites base post into N tonal variants via Lovable AI Gateway; called from QuantumFeed.createPost
+- [Brand Collaboration Escrow](mem://features/brand-collaboration-escrow) — campaign_escrow table + brand-campaign-checkout/brand-release-escrow edge fns; BrandApplicationsManager UI handles Approve&Pay → Stripe → Mark Completed → 80% to influencer_earnings
