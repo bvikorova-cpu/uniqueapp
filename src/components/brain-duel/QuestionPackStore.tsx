@@ -193,8 +193,24 @@ export const QuestionPackStore = () => {
                 <p className="text-sm text-muted-foreground mb-4">
                   Build your own question pack with personalized questions
                 </p>
-                <Button variant="outline" size="sm" className="gap-2" onClick={() => toast({ description: "Generate with AI — coming soon" })}>
-                  <Brain className="h-4 w-4" /> Generate with AI
+                <Button variant="outline" size="sm" className="gap-2" onClick={async (e) => {
+                  e.stopPropagation();
+                  const category = window.prompt("Enter a category (Geography, History, Science, Sports, Music, Technology, Art, Entertainment):");
+                  if (!category) return;
+                  if (credits < 50) { toast({ title: "Not enough credits", description: "Custom AI pack costs 50 credits", variant: "destructive" }); return; }
+                  try { await spendCredits(50); } catch { return; }
+                  try {
+                    const { data, error } = await supabase.functions.invoke("generate-gift-message", {
+                      body: { type: "brain_duel_pack", prompt: `Generate 10 trivia questions about ${category}. Format: JSON array of {question, options:[4], correct_index}.` }
+                    });
+                    if (error) throw error;
+                    toast({ title: "AI Pack Ready!", description: `Generated ${category} questions. Check your library.` });
+                    queryClient.invalidateQueries({ queryKey: ['brain-duel-user-packs'] });
+                  } catch (err: any) {
+                    toast({ title: "Generation failed", description: err.message, variant: "destructive" });
+                  }
+                }}>
+                  <Brain className="h-4 w-4" /> Generate with AI (50 credits)
                 </Button>
               </CardContent>
             </Card>
