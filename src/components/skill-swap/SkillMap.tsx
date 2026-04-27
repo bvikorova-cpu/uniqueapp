@@ -7,6 +7,7 @@ import { Globe, MapPin, Users, Star, MessageSquare, ArrowLeft, Loader2 } from "l
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 interface SkillMapProps {
   onBack: () => void;
@@ -14,6 +15,7 @@ interface SkillMapProps {
 
 export const SkillMap = ({ onBack }: SkillMapProps) => {
   const [selectedSwapper, setSelectedSwapper] = useState<any | null>(null);
+  const navigate = useNavigate();
 
   const { data: swappers = [], isLoading } = useQuery({
     queryKey: ['skill-map-swappers'],
@@ -137,7 +139,10 @@ export const SkillMap = ({ onBack }: SkillMapProps) => {
                       <MapPin className="w-3.5 h-3.5" /> {selectedSwapper.location}
                     </p>
                   </div>
-                  <Button size="sm" className="gap-1.5" onClick={() => toast.info("Connect — coming soon")}>
+                  <Button size="sm" className="gap-1.5" onClick={() => {
+                    if (!selectedSwapper.user_id) { toast.error("User not available"); return; }
+                    navigate(`/messenger?to=${selectedSwapper.user_id}`);
+                  }}>
                     <MessageSquare className="w-3.5 h-3.5" /> Connect
                   </Button>
                 </div>
