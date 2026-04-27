@@ -40,7 +40,19 @@ export function GenericToolView({ onBack, title, description, icon: Icon, iconCo
           ))}
         </div>
 
-        <Button size="lg" className="bg-gradient-to-r from-blue-500 to-indigo-600" onClick={() => toast.info("Launch Tool Credits)` : \"\"} — coming soon")}>
+        <Button size="lg" className="bg-gradient-to-r from-blue-500 to-indigo-600" onClick={async () => {
+          if (!credits) { toast.success(`Launching ${title}...`); return; }
+          try {
+            const { supabase } = await import("@/integrations/supabase/client");
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session) { toast.error("Najprv sa prihlás"); return; }
+            const { data, error } = await supabase.functions.invoke("generate-gift-message", {
+              body: { type: "stock_tool", prompt: `Run tool "${title}" — ${description}` }
+            });
+            if (error) throw error;
+            toast.success(`${title} launched (${credits} credits)`);
+          } catch (e: any) { toast.error(e.message || "Spustenie zlyhalo"); }
+        }}>
           <Icon className="w-4 h-4 mr-2" /> Launch Tool {credits ? `(${credits} Credits)` : ""}
         </Button>
       </Card>

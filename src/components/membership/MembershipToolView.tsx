@@ -141,7 +141,9 @@ export const MembershipToolView = ({ toolName, onBack }: MembershipToolViewProps
                 : "Become a creator to unlock this tool and start building your community."
               }
             </p>
-            <Button onClick={() => toast.info("This action — coming soon")}>
+            <Button onClick={() => {
+              window.location.href = toolName === "AI Content Assistant" ? "/billing?tab=credits" : "/become-creator";
+            }}>
               {toolName === "AI Content Assistant" ? "Purchase AI Credits" : "Get Started"}
             </Button>
           </div>
