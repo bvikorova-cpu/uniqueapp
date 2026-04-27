@@ -44,3 +44,4 @@ NO health/medical predictions. NO identifiable people/trademarks in videos.
 - [Brand Collaboration Escrow](mem://features/brand-collaboration-escrow) — campaign_escrow table + brand-campaign-checkout/brand-release-escrow edge fns; BrandApplicationsManager UI handles Approve&Pay → Stripe → Mark Completed → 80% to influencer_earnings
 - [GDPR Right to Erasure](mem://features/gdpr-erasure) — gdpr_purge_user_data SECURITY DEFINER fn dynamically wipes all 695+ public tables with user_id; delete-user-account edge fn calls purge → admin.deleteUser
 - [i18n Completeness](mem://features/i18n-completeness) — EN is source of truth (702 keys); scripts/i18n-check.mjs blocks build if any locale incomplete; scripts/i18n-fill.mjs backfills from EN
+- [Bundle Size](mem://features/bundle-size) — First-load 207 KB gzip / 350 KB budget; manualChunks split three/pdf/charts/markdown/fabric; `npm run build:analyze` + `npm run bundle:report`
