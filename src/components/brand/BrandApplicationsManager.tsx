@@ -336,12 +336,12 @@ export function BrandApplicationsManager() {
                   {isRejected && <Badge variant="destructive">Rejected</Badge>}
                   {escrowAwaiting && <Badge variant="outline">Awaiting payment</Badge>}
                   {escrowHeld && (
-                    <Badge className="bg-amber-500/15 text-amber-700 dark:text-amber-300 border-amber-500/30">
+                    <Badge variant="outline" className="border-primary/40 text-primary">
                       <ShieldCheck className="h-3 w-3 mr-1" /> Escrow held
                     </Badge>
                   )}
                   {escrowReleased && (
-                    <Badge className="bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-500/30">
+                    <Badge variant="outline" className="border-primary text-primary">
                       <CheckCircle2 className="h-3 w-3 mr-1" /> Released
                     </Badge>
                   )}
