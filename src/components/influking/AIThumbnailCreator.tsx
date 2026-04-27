@@ -193,7 +193,29 @@ const AIThumbnailCreator = ({ onBack }: AIThumbnailCreatorProps) => {
                     </div>
                   </div>
                   <div className="flex gap-2">
-                    <Button variant="outline" className="flex-1 gap-1" onClick={() => toast({ description: "Download — coming soon" })}>
+                    <Button variant="outline" className="flex-1 gap-1" onClick={() => {
+                      // Render the preview to a downloadable SVG (works offline, scalable)
+                      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+                        <defs>
+                          <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+                            <stop offset="0%" stop-color="#a855f7" stop-opacity="0.3"/>
+                            <stop offset="100%" stop-color="#ec4899" stop-opacity="0.15"/>
+                          </linearGradient>
+                        </defs>
+                        <rect width="1280" height="720" fill="#0f0f1a"/>
+                        <rect width="1280" height="720" fill="url(#g)"/>
+                        <text x="640" y="360" font-family="Arial Black, sans-serif" font-size="72" font-weight="900" fill="white" text-anchor="middle" dominant-baseline="middle" style="text-shadow: 0 2px 10px rgba(0,0,0,0.5)">${title.replace(/[<>&]/g, "")}</text>
+                        <text x="640" y="450" font-family="Arial, sans-serif" font-size="28" fill="#a855f7" text-anchor="middle">${selectedStyle?.toUpperCase() || ""}</text>
+                      </svg>`;
+                      const blob = new Blob([svg], { type: "image/svg+xml" });
+                      const url = URL.createObjectURL(blob);
+                      const a = document.createElement("a");
+                      a.href = url;
+                      a.download = `thumbnail_${title.replace(/\s+/g, "_").substring(0, 30)}.svg`;
+                      a.click();
+                      URL.revokeObjectURL(url);
+                      toast({ title: "✅ Downloaded", description: "Thumbnail saved as SVG" });
+                    }}>
                       <Download className="h-4 w-4" /> Download
                     </Button>
                     <Button className="flex-1 gap-1" onClick={() => { setGeneratedThumbnail(null); setTitle(""); }}>
