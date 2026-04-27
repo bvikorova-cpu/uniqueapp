@@ -55,7 +55,20 @@ export const CoffeeEvents = () => {
               <span>{event.max_participants} spots</span>
             </div>
             <div className="pt-2">
-              <Button className="w-full" onClick={() => toast.info("Join Event - € — coming soon")}>
+              <Button className="w-full" onClick={async () => {
+                try {
+                  const { data: { session } } = await supabase.auth.getSession();
+                  if (!session) { toast.error("Please sign in first"); return; }
+                  const { data, error } = await supabase.functions.invoke("create-checkout", {
+                    body: { product_type: "coffee_event", event_id: event.id, amount: event.ticket_price, name: event.title }
+                  });
+                  if (error) throw error;
+                  if (data?.url) window.open(data.url, "_blank");
+                  else toast.success("Joined the event!");
+                } catch (e: any) {
+                  toast.error(e.message || "Failed to join event");
+                }
+              }}>
                 Join Event - €{event.ticket_price}
               </Button>
             </div>

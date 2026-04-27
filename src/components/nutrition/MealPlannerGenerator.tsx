@@ -180,7 +180,22 @@ export default function MealPlannerGenerator() {
                 </div>
               )}
 
-              <Button variant="outline" className="w-full gap-2" onClick={() => toast.info("Download Plan — coming soon")}>
+              <Button variant="outline" className="w-full gap-2" onClick={() => {
+                try {
+                  const blob = new Blob([JSON.stringify(generatedPlan, null, 2)], { type: "application/json" });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = `${generatedPlan.title || "meal-plan"}.json`;
+                  document.body.appendChild(a);
+                  a.click();
+                  a.remove();
+                  URL.revokeObjectURL(url);
+                  toast.success("Plan downloaded");
+                } catch (e: any) {
+                  toast.error("Download failed");
+                }
+              }}>
                 <Download className="h-4 w-4" /> Download Plan
               </Button>
             </div>
