@@ -198,8 +198,7 @@ export const QuestionPackStore = () => {
                   const category = window.prompt("Enter a category (Geography, History, Science, Sports, Music, Technology, Art, Entertainment):");
                   if (!category) return;
                   if (credits < 50) { toast({ title: "Not enough credits", description: "Custom AI pack costs 50 credits", variant: "destructive" }); return; }
-                  const ok = await spendCredits(50, "custom_ai_pack");
-                  if (!ok) return;
+                  try { await spendCredits(50); } catch { return; }
                   try {
                     const { data, error } = await supabase.functions.invoke("generate-gift-message", {
                       body: { type: "brain_duel_pack", prompt: `Generate 10 trivia questions about ${category}. Format: JSON array of {question, options:[4], correct_index}.` }
