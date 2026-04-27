@@ -248,39 +248,61 @@ export function WallPostActions({
   };
 
   const submitRepost = async () => {
-    if (!requireAuth()) return;
-    const comment = repostComment.trim();
-    if (!comment) {
-      toast({
-        title: "Comment required",
-        description: "Add a short comment to share this post.",
-        variant: "destructive",
-      });
+    setRepostError(null);
+    if (!requireAuth()) {
+      setRepostError("You must be signed in to share this post.");
       return;
     }
+
+    const parsed = repostSchema.safeParse({ comment: repostComment });
+    if (!parsed.success) {
+      const firstIssue = parsed.error.issues[0];
+      setRepostError(firstIssue?.message ?? "Invalid comment.");
+      return;
+    }
+
     setReposting(true);
     try {
       const { error } = await supabase.from("reposts").insert({
         user_id: userId!,
         original_post_id: postId,
-        comment,
+        comment: parsed.data.comment,
       });
       if (error) throw error;
       setRepostsCount((c) => c + 1);
       setShowShareDialog(false);
       setRepostComment("");
+      setRepostError(null);
       toast({
         title: "Shared",
         description: "Post was shared to your profile.",
       });
     } catch (err: any) {
+      const friendly = friendlyRepostError({
+        code: err?.code,
+        message: err?.message,
+      });
+      setRepostError(friendly);
       toast({
-        title: "Error",
-        description: err.message ?? "Failed to share post",
+        title: "Couldn't share",
+        description: friendly,
         variant: "destructive",
       });
     } finally {
       setReposting(false);
+    }
+  };
+
+  const handleOpenShareDialog = () => {
+    if (!requireAuth()) return;
+    setRepostError(null);
+    setShowShareDialog(true);
+  };
+
+  const handleShareDialogChange = (open: boolean) => {
+    setShowShareDialog(open);
+    if (!open) {
+      setRepostError(null);
     }
   };
 
