@@ -48,6 +48,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { WallPostActions } from "@/components/wall/WallPostActions";
 
 const EMOJIS = ["😊", "😂", "❤️", "🔥", "👍", "🎉", "😍", "🤔", "😢", "😎", "🙏", "💪"];
 
@@ -416,8 +417,14 @@ export default function PageDetail() {
                     Following
                   </Button>
                 )}
-                <Button variant="outline" size="icon" className="h-9 w-9" onClick={() => console.info("[Coming soon] This action")}>
-                  <Bell className="h-4 w-4" />
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="h-9 w-9"
+                  onClick={togglePageNotifications}
+                  title={notifyEnabled ? "Mute notifications" : "Enable notifications"}
+                >
+                  {notifyEnabled ? <Bell className="h-4 w-4" /> : <BellOff className="h-4 w-4" />}
                 </Button>
               </>
             ) : (
