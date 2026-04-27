@@ -42717,6 +42717,15 @@ export type Database = {
         Returns: string
       }
       get_current_user_id: { Args: never; Returns: string }
+      get_dau_series: {
+        Args: { p_days?: number }
+        Returns: {
+          active_users: number
+          day: string
+          new_users: number
+        }[]
+      }
+      get_engagement_metrics: { Args: { p_days?: number }; Returns: Json }
       get_follower_count: { Args: { user_id: string }; Returns: number }
       get_following_count: { Args: { user_id: string }; Returns: number }
       get_last_week_xp_winners: {
