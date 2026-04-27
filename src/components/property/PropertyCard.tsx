@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -5,6 +6,7 @@ import { MapPin, Maximize2, BedDouble, Eye, Heart } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { PropertyExpirationBadge } from "./PropertyExpirationBadge";
 import { toast } from "sonner";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface Property {
   id: string;
@@ -33,19 +35,56 @@ interface PropertyCardProps {
 }
 
 export function PropertyCard({ property, onViewDetails }: PropertyCardProps) {
+  const { user } = useAuth();
+  const [favorited, setFavorited] = useState(false);
+  const [favLoading, setFavLoading] = useState(false);
+
   const primaryImage = property.property_images?.find(img => img.is_primary)?.image_url
     || property.property_images?.[0]?.image_url
     || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800';
 
+  useEffect(() => {
+    if (!user) return;
+    supabase
+      .from("property_favorites")
+      .select("id")
+      .eq("user_id", user.id)
+      .eq("property_id", property.id)
+      .maybeSingle()
+      .then(({ data }) => setFavorited(!!data));
+  }, [user, property.id]);
+
+  const toggleFavorite = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!user) {
+      toast.error("Please sign in to save properties");
+      return;
+    }
+    setFavLoading(true);
+    try {
+      if (favorited) {
+        await supabase.from("property_favorites").delete().eq("user_id", user.id).eq("property_id", property.id);
+        setFavorited(false);
+        toast.success("Removed from favorites");
+      } else {
+        await supabase.from("property_favorites").insert({ user_id: user.id, property_id: property.id });
+        setFavorited(true);
+        toast.success("Added to favorites");
+      }
+    } catch (err: any) {
+      toast.error(err.message || "Failed");
+    } finally {
+      setFavLoading(false);
+    }
+  };
+
   const handleView = async () => {
-    // Increment views using a simple update
     try {
       const { data: currentProperty } = await supabase
         .from('properties')
         .select('views_count')
         .eq('id', property.id)
         .single();
-      
       if (currentProperty) {
         await supabase
           .from('properties')
@@ -86,8 +125,8 @@ export function PropertyCard({ property, onViewDetails }: PropertyCardProps) {
               expiresAt={property.listing_expires_at} 
               status={property.status}
             />
-            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => toast.info("This action — coming soon")}>
-              <Heart className="h-4 w-4" />
+            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={toggleFavorite} disabled={favLoading} aria-label={favorited ? "Remove from favorites" : "Add to favorites"}>
+              <Heart className={`h-4 w-4 ${favorited ? "fill-red-500 text-red-500" : ""}`} />
             </Button>
           </div>
         </div>
