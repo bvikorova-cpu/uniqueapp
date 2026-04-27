@@ -79,7 +79,11 @@ export const MemoryVault = ({ onBack }: { onBack: () => void }) => {
                   <p className="font-bold text-sm truncate">{item.name}</p>
                   <p className="text-[10px] text-muted-foreground">{item.size} • {item.uploadedAt}</p>
                 </div>
-                <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-destructive" onClick={() => toast({ description: "This action — coming soon" })}>
+                <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-destructive" onClick={() => {
+                  if (!confirm(`Remove "${item.name}" from vault?`)) return;
+                  setItems(prev => prev.filter(i => i.id !== item.id));
+                  toast({ title: "Removed", description: `${item.name} removed from vault.` });
+                }}>
                   <Trash2 className="w-3.5 h-3.5" />
                 </Button>
               </CardContent>

@@ -134,7 +134,20 @@ export function TimeLapseCreator({ onBack }: Props) {
                 <div className="text-center text-sm text-muted-foreground">
                   Age: {Math.round(startAge[0] - (startAge[0] - endAge[0]) * (currentFrame / Math.max(generatedFrames.length - 1, 1)))} years
                 </div>
-                <Button variant="outline" className="w-full" onClick={() => toast({ description: "Download Time-Lapse — coming soon" })}><Download className="h-4 w-4 mr-2" /> Download Time-Lapse</Button>
+                <Button variant="outline" className="w-full" onClick={async () => {
+                  try {
+                    const src = generatedFrames[currentFrame];
+                    const res = await fetch(src);
+                    const blob = await res.blob();
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement("a");
+                    a.href = url; a.download = `timelapse-frame-${currentFrame + 1}.jpg`; a.click();
+                    URL.revokeObjectURL(url);
+                    toast({ title: "Frame downloaded", description: `Frame ${currentFrame + 1} saved.` });
+                  } catch {
+                    toast({ title: "Download failed", variant: "destructive" });
+                  }
+                }}><Download className="h-4 w-4 mr-2" /> Download Current Frame</Button>
               </div>
             ) : (
               <div className="aspect-square rounded-xl bg-card/50 border border-border/40 flex items-center justify-center">

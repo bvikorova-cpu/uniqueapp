@@ -79,7 +79,27 @@ export const MyCapsules = ({ onBack }: { onBack: () => void }) => {
                     <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="mt-3 pt-3 border-t border-border/40">
                       <p className="text-sm text-foreground whitespace-pre-wrap">{capsule.message}</p>
                       <div className="flex gap-2 mt-3">
-                        <Button variant="outline" size="sm" className="text-xs" onClick={() => toast.info("Preview — coming soon")}><Eye className="w-3 h-3 mr-1" /> Preview</Button>
+                        <Button variant="outline" size="sm" className="text-xs" onClick={(e) => {
+                          e.stopPropagation();
+                          const content = `Time Capsule: ${capsule.title}\n\nDelivery Date: ${formatDate(capsule.delivery_date)}\nRecipient: ${capsule.recipient_name || 'Self'}\n\nMessage:\n${capsule.message}`;
+                          const blob = new Blob([content], { type: "text/plain" });
+                          const url = URL.createObjectURL(blob);
+                          const a = document.createElement("a");
+                          a.href = url; a.download = `${capsule.title.replace(/[^a-z0-9]/gi, '_')}.txt`; a.click();
+                          URL.revokeObjectURL(url);
+                          toast.success("Capsule preview downloaded");
+                        }}><Eye className="w-3 h-3 mr-1" /> Preview / Export</Button>
+                        {!capsule.is_delivered && (
+                          <Button variant="outline" size="sm" className="text-xs text-destructive hover:text-destructive" onClick={async (e) => {
+                            e.stopPropagation();
+                            if (!confirm(`Delete capsule "${capsule.title}"?`)) return;
+                            const { error } = await supabase.from("time_capsules").delete().eq("id", capsule.id);
+                            if (error) return toast.error(error.message);
+                            setCapsules(prev => prev.filter(c => c.id !== capsule.id));
+                            setSelectedCapsule(null);
+                            toast.success("Capsule deleted");
+                          }}><Trash2 className="w-3 h-3 mr-1" /> Delete</Button>
+                        )}
                       </div>
                     </motion.div>
                   )}

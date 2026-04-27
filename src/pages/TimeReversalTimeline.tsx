@@ -161,22 +161,24 @@ export default function TimeReversalTimeline() {
             <MessageCircle className="h-5 w-5" />
             <span className="text-sm">Create Post</span>
           </Button>
-          <Button variant="outline" className="h-20 flex flex-col gap-1" onClick={() => toast({ description: "Age Progress — coming soon" })}>
+          <Button variant="outline" className="h-20 flex flex-col gap-1" onClick={() => navigate("/time-reversal-subscription")}>
             <TrendingDown className="h-5 w-5" />
             <span className="text-sm">Age Progress</span>
           </Button>
-          <Button variant="outline" className="h-20 flex flex-col gap-1" onClick={() => toast({ description: "Followers — coming soon" })}>
+          <Button variant="outline" className="h-20 flex flex-col gap-1" onClick={() => navigate("/discover-creators")}>
             <Users className="h-5 w-5" />
             <span className="text-sm">Followers</span>
           </Button>
-          <Button variant="outline" className="h-20 flex flex-col gap-1" onClick={() => toast({ description: "Timeline — coming soon" })}>
+          <Button variant="outline" className="h-20 flex flex-col gap-1" onClick={() => {
+            document.querySelector('[data-timeline-feed]')?.scrollIntoView({ behavior: 'smooth' });
+          }}>
             <Calendar className="h-5 w-5" />
             <span className="text-sm">Timeline</span>
           </Button>
         </div>
 
         {/* Timeline Feed */}
-        <div className="space-y-6">
+        <div className="space-y-6" data-timeline-feed>
           <h2 className="text-2xl font-bold flex items-center gap-2">
             <Clock className="h-6 w-6 text-purple-600" />
             Your Reverse Timeline
