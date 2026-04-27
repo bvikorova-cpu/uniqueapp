@@ -160,8 +160,26 @@ export const CollectibleTickets = ({ onBack }: Props) => {
 
                 {owned.has(ticket.id) ? (
                   <div className="flex gap-2">
-                    <Button size="sm" variant="outline" className="flex-1" onClick={() => toast({ description: "Share — coming soon" })}><Share2 className="w-3 h-3 mr-1" /> Share</Button>
-                    <Button size="sm" variant="outline" className="flex-1" onClick={() => toast({ description: "Save — coming soon" })}><Download className="w-3 h-3 mr-1" /> Save</Button>
+                    <Button size="sm" variant="outline" className="flex-1" onClick={async () => {
+                      const shareData = {
+                        title: `${ticket.artist} — ${ticket.event}`,
+                        text: `I own ticket #${ticket.number}/${ticket.totalMinted} (${ticket.edition}) for ${ticket.artist}'s ${ticket.event}!`,
+                        url: window.location.href,
+                      };
+                      try {
+                        if (navigator.share) await navigator.share(shareData);
+                        else { await navigator.clipboard.writeText(`${shareData.text} ${shareData.url}`); toast({ description: "Copied to clipboard" }); }
+                      } catch {}
+                    }}><Share2 className="w-3 h-3 mr-1" /> Share</Button>
+                    <Button size="sm" variant="outline" className="flex-1" onClick={() => {
+                      const data = { ...ticket, ownedAt: new Date().toISOString() };
+                      const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+                      const url = URL.createObjectURL(blob);
+                      const a = document.createElement("a");
+                      a.href = url; a.download = `ticket-${ticket.artist}-${ticket.number}.json`; a.click();
+                      URL.revokeObjectURL(url);
+                      toast({ description: "Ticket saved" });
+                    }}><Download className="w-3 h-3 mr-1" /> Save</Button>
                   </div>
                 ) : (
                   <Button onClick={() => handlePurchase(ticket)} disabled={purchasing === ticket.id} className="w-full" size="sm">

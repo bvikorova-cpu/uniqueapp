@@ -1,13 +1,15 @@
-import { useQuery } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Heart, X, MessageCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { toast } from "sonner";
 
 export const BuddyMatches = () => {
   const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   const { data: matches } = useQuery({
     queryKey: ['coffee-matches'],
@@ -26,18 +28,31 @@ export const BuddyMatches = () => {
     }
   });
 
-  const handleAccept = (matchId: string) => {
-    toast({
-      title: 'Match accepted!',
-      description: 'You can now chat with your coffee buddy'
-    });
+  const updateStatus = async (matchId: string, status: 'accepted' | 'declined') => {
+    const { error } = await supabase
+      .from('coffee_matches')
+      .update({ status })
+      .eq('id', matchId);
+    if (error) {
+      toast({ title: 'Error', description: error.message, variant: 'destructive' });
+      return;
+    }
+    queryClient.invalidateQueries({ queryKey: ['coffee-matches'] });
   };
 
-  const handleDecline = (matchId: string) => {
-    toast({
-      title: 'Match declined',
-      description: 'Looking for more matches...'
-    });
+  const handleAccept = async (matchId: string) => {
+    await updateStatus(matchId, 'accepted');
+    toast({ title: 'Match accepted!', description: 'You can now chat with your coffee buddy' });
+  };
+
+  const handleDecline = async (matchId: string) => {
+    await updateStatus(matchId, 'declined');
+    toast({ title: 'Match declined', description: 'Looking for more matches...' });
+  };
+
+  const openChat = (match: any) => {
+    const buddyId = match.user1_id === match.user2_id ? match.user1_id : match.user2_id;
+    navigate(`/messenger?to=${buddyId}`);
   };
 
   return (
@@ -91,7 +106,7 @@ export const BuddyMatches = () => {
                   <p className="font-semibold">Coffee Buddy</p>
                   <p className="text-sm text-muted-foreground">Matched recently</p>
                 </div>
-                <Button size="sm" onClick={() => toast({ description: "Chat — coming soon" })}>
+                <Button size="sm" onClick={() => openChat(match)}>
                   <MessageCircle className="mr-2 h-4 w-4" />
                   Chat
                 </Button>
