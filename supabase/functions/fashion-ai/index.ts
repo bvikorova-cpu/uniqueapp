@@ -44,7 +44,6 @@ Deno.serve(async (req) => {
     const openaiUrl = "https://api.openai.com/v1/chat/completions";
 
     let result: any;
-    const [tool, tc] = (toolName: string, props: Record<string, { type: string }>) => makeTool(toolName, props);
 
     switch (action) {
       case "battle-score":
