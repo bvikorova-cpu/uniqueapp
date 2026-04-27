@@ -18,6 +18,24 @@ const resources = [
 interface Props { onBack: () => void; }
 
 export function ResourceLibraryView({ onBack }: Props) {
+  const handleDownload = (res: typeof resources[0]) => {
+    if (!res.free) {
+      toast.info(`${res.title} is a Premium resource. Subscribe to unlock.`);
+      return;
+    }
+    const content = `${res.title}\nFormat: ${res.format}\nType: ${res.type}\n\nDownloaded from Unique Resource Library.\n`;
+    const blob = new Blob([content], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${res.title.replace(/\s+/g, "_")}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    toast.success(`Downloading ${res.title}`);
+  };
+
   return (
     <div>
       <Button variant="ghost" onClick={onBack} className="mb-4"><ArrowLeft className="w-4 h-4 mr-2" />Back</Button>
