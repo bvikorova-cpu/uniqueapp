@@ -26,6 +26,7 @@ import {
   Camera,
   MoreHorizontal,
   Bell,
+  BellOff,
   ImagePlus,
   Video,
   Smile,
@@ -47,6 +48,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { WallPostActions } from "@/components/wall/WallPostActions";
 
 const EMOJIS = ["😊", "😂", "❤️", "🔥", "👍", "🎉", "😍", "🤔", "😢", "😎", "🙏", "💪"];
 
@@ -67,6 +69,22 @@ export default function EventDetail() {
   const [editTitle, setEditTitle] = useState("");
   const [editDescription, setEditDescription] = useState("");
   const [editLocation, setEditLocation] = useState("");
+  const [notifyEnabled, setNotifyEnabled] = useState<boolean>(() => {
+    if (typeof window === "undefined") return true;
+    return localStorage.getItem(`event-notify-${eventId}`) !== "off";
+  });
+
+  const toggleEventNotifications = () => {
+    const next = !notifyEnabled;
+    setNotifyEnabled(next);
+    localStorage.setItem(`event-notify-${eventId}`, next ? "on" : "off");
+    toast({
+      title: next ? "Notifications enabled" : "Notifications muted",
+      description: next
+        ? "You'll be notified about updates to this event."
+        : "You won't receive updates from this event.",
+    });
+  };
 
   const { data: user } = useQuery({
     queryKey: ["current-user"],
@@ -392,14 +410,26 @@ export default function EventDetail() {
                   <Star className="h-4 w-4 mr-1" />
                   Interested
                 </Button>
-                <Button variant="outline" size="icon" className="h-9 w-9" onClick={() => console.info("[Coming soon] This action")}>
-                  <Bell className="h-4 w-4" />
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="h-9 w-9"
+                  onClick={toggleEventNotifications}
+                  title={notifyEnabled ? "Mute notifications" : "Enable notifications"}
+                >
+                  {notifyEnabled ? <Bell className="h-4 w-4" /> : <BellOff className="h-4 w-4" />}
                 </Button>
               </>
             ) : (
               <>
-                <Button variant="outline" size="icon" className="h-9 w-9" onClick={() => console.info("[Coming soon] This action")}>
-                  <Bell className="h-4 w-4" />
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="h-9 w-9"
+                  onClick={toggleEventNotifications}
+                  title={notifyEnabled ? "Mute notifications" : "Enable notifications"}
+                >
+                  {notifyEnabled ? <Bell className="h-4 w-4" /> : <BellOff className="h-4 w-4" />}
                 </Button>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -656,19 +686,13 @@ export default function EventDetail() {
                         <img src={post.image_url} alt="Post" className="mt-3 rounded-lg max-h-64 object-cover" />
                       )}
                       
-                      <div className="flex items-center gap-4 mt-4 pt-3 border-t">
-                        <Button variant="ghost" size="sm" onClick={() => console.info("[Coming soon] This action")}>
-                          <Heart className="h-4 w-4 mr-1" />
-                          {post.likes_count || 0}
-                        </Button>
-                        <Button variant="ghost" size="sm" onClick={() => console.info("[Coming soon] This action")}>
-                          <MessageCircle className="h-4 w-4 mr-1" />
-                          {post.comments_count || 0}
-                        </Button>
-                        <Button variant="ghost" size="sm" onClick={() => console.info("[Coming soon] This action")}>
-                          <Share2 className="h-4 w-4" />
-                        </Button>
-                      </div>
+                      <WallPostActions
+                        postId={post.id}
+                        initialLikesCount={post.likes_count || 0}
+                        initialCommentsCount={post.comments_count || 0}
+                        initialRepostsCount={post.reposts_count || 0}
+                        variant="compact"
+                      />
                     </div>
                   </div>
                 </Card>

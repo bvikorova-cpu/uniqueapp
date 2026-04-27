@@ -107,7 +107,32 @@ export const MusicShareCard = ({ track }: MusicShareCardProps) => {
                 </a>
               </Button>
             )}
-            <Button variant="ghost" size="sm" className="h-6 text-[10px] gap-1 px-2" onClick={() => console.info("[Coming soon] Share")}>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-6 text-[10px] gap-1 px-2"
+              onClick={async () => {
+                const shareData = {
+                  title: `${track.title} — ${track.artist}`,
+                  text: `Check out "${track.title}" by ${track.artist}`,
+                  url: track.externalUrl ?? window.location.href,
+                };
+                try {
+                  if (navigator.share && navigator.canShare?.(shareData)) {
+                    await navigator.share(shareData);
+                  } else {
+                    await navigator.clipboard.writeText(
+                      `${shareData.text}\n${shareData.url}`,
+                    );
+                    toast.success("Link copied to clipboard");
+                  }
+                } catch (err: any) {
+                  if (err?.name !== "AbortError") {
+                    toast.error("Could not share track");
+                  }
+                }
+              }}
+            >
               <Share2 className="w-3 h-3" /> Share
             </Button>
           </div>
