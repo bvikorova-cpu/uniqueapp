@@ -281,7 +281,7 @@ export default function SportsPredictor() {
               <Trophy className="mr-2 h-5 w-5" />
               {user ? "Subscribe" : "Sign In"}
             </Button>
-            <Button size="lg" variant="outline" onClick={() => toast({ description: "View Top Tipsters — coming soon" })}>
+            <Button size="lg" variant="outline" onClick={() => navigate("/tipster-dashboard?view=top")}>
               <BarChart3 className="mr-2 h-5 w-5" />
               View Top Tipsters
             </Button>
@@ -417,7 +417,13 @@ export default function SportsPredictor() {
                                 </div>
                               )}
                               {canViewPredictions && (
-                                <Button variant="outline" onClick={() => toast({ description: "Notify — coming soon" })}>
+                                <Button variant="outline" onClick={() => {
+                                  const subs = JSON.parse(localStorage.getItem("sports_match_notify") || "[]");
+                                  if (subs.includes(match.id)) { toast({ description: "Notifikácie už sú zapnuté" }); return; }
+                                  subs.push(match.id);
+                                  localStorage.setItem("sports_match_notify", JSON.stringify(subs));
+                                  toast({ description: "Pošleme ti upozornenie pred zápasom!" });
+                                }}>
                                   <Bell className="mr-2 h-4 w-4" />
                                   Notify
                                 </Button>

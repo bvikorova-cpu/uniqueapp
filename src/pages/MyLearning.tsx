@@ -303,7 +303,17 @@ export default function MyLearning() {
                     <div className="text-center text-sm text-muted-foreground">
                       Issued on {new Date(cert.issued_at).toLocaleDateString()}
                     </div>
-                    <Button variant="outline" className="w-full gap-2" onClick={() => toast({ description: "Download Certificate — coming soon" })}>
+                    <Button variant="outline" className="w-full gap-2" onClick={() => {
+                      const text = `Certificate of Completion\n\n${(cert as any).course_title || "Course"}\nIssued: ${new Date(cert.issued_at).toLocaleDateString()}\nID: ${cert.id}`;
+                      const blob = new Blob([text], { type: "text/plain" });
+                      const url = URL.createObjectURL(blob);
+                      const a = document.createElement("a");
+                      a.href = url;
+                      a.download = `certificate-${cert.id}.txt`;
+                      document.body.appendChild(a); a.click(); a.remove();
+                      URL.revokeObjectURL(url);
+                      toast({ description: "Certifikát stiahnutý" });
+                    }}>
                       <Download className="h-4 w-4" />
                       Download Certificate
                     </Button>

@@ -255,7 +255,7 @@ export default function SearchResults() {
                                 <p className="text-sm text-muted-foreground line-clamp-2">{user.bio}</p>
                               )}
                             </div>
-                            <Button variant="outline" size="sm" onClick={() => toast.info("View Profile — coming soon")}>
+                            <Button variant="outline" size="sm" onClick={() => { window.location.href = `/profile/${user.id || user.user_id || ""}`; }}>
                               View Profile
                             </Button>
                           </div>
