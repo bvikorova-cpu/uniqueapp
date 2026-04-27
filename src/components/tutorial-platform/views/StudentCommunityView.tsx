@@ -20,6 +20,30 @@ interface Props { onBack: () => void; }
 
 export function StudentCommunityView({ onBack }: Props) {
   const [newThread, setNewThread] = useState(false);
+  const [threads, setThreads] = useState(mockThreads);
+  const [title, setTitle] = useState("");
+  const [body, setBody] = useState("");
+
+  const handlePost = () => {
+    if (!title.trim() || !body.trim()) {
+      toast.error("Title and content required");
+      return;
+    }
+    setThreads([{
+      id: Date.now(),
+      title: title.trim(),
+      author: "You",
+      replies: 0,
+      likes: 0,
+      time: "now",
+      course: "General",
+      pinned: false,
+      hot: false,
+    }, ...threads]);
+    setTitle(""); setBody("");
+    setNewThread(false);
+    toast.success("Thread posted!");
+  };
 
   return (
     <div>
