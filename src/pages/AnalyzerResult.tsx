@@ -177,7 +177,7 @@ export default function AnalyzerResult() {
                     <h2 className="text-lg font-bold mb-2 text-blue-400">Where to Find</h2>
                     <p className="text-muted-foreground text-sm">{info.details.whereToFind}</p>
                     {info.shopping?.links?.length ? (
-                      <Button className="mt-2 bg-gradient-to-r from-cyan-600 to-blue-600" variant="default" onClick={() => { const url = info.shopping?.links?.[0]?.url; if (url) window.open(url, "_blank", "noopener"); }}>
+                      <Button className="mt-2 bg-gradient-to-r from-cyan-600 to-blue-600" variant="default" onClick={() => { const link = info.shopping?.links?.[0]; const url = typeof link === "string" ? link : (link as any)?.url; if (url) window.open(url, "_blank", "noopener"); }}>
                         <ShoppingBag className="w-4 h-4 mr-2" /> Shop Similar Items
                       </Button>
                     ) : null}
