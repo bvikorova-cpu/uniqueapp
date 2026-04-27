@@ -18,6 +18,46 @@ interface Props { onBack: () => void; }
 
 export function LiveSessionsView({ onBack }: Props) {
   const [creating, setCreating] = useState(false);
+  const [sessions, setSessions] = useState(mockSessions);
+  const [registered, setRegistered] = useState<Set<number>>(new Set());
+  const [title, setTitle] = useState("");
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
+
+  const handleSchedule = () => {
+    if (!title.trim() || !date || !time) {
+      toast.error("Please fill all fields");
+      return;
+    }
+    const newSession = {
+      id: Date.now(),
+      title: title.trim(),
+      instructor: "You",
+      date: new Date(date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
+      time: `${time} CET`,
+      attendees: 0,
+      status: "upcoming",
+      live: false,
+    };
+    setSessions([newSession, ...sessions]);
+    setTitle(""); setDate(""); setTime("");
+    setCreating(false);
+    toast.success("Session scheduled!");
+  };
+
+  const handleRegister = (id: number) => {
+    if (registered.has(id)) {
+      toast.info("Already registered");
+      return;
+    }
+    setRegistered(new Set([...registered, id]));
+    setSessions(sessions.map(s => s.id === id ? { ...s, attendees: s.attendees + 1 } : s));
+    toast.success("Registered for session!");
+  };
+
+  const handleJoinLive = (title: string) => {
+    toast.success(`Joining: ${title}`);
+  };
 
   return (
     <div>
