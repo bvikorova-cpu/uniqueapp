@@ -50,7 +50,7 @@ export const PastLifeToolCard = ({ tool, onSelect, index }: PastLifeToolCardProp
               </li>
             ))}
           </ul>
-          <Button size="sm" className="w-full mt-4 opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => toast.info("Start Reading — coming soon")}>
+          <Button size="sm" className="w-full mt-4 opacity-0 group-hover:opacity-100 transition-opacity" onClick={(e) => { e.stopPropagation(); onSelect(); }}>
             Start Reading
           </Button>
         </div>

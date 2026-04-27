@@ -80,7 +80,14 @@ export const HolographicGallery = ({ onBack }: Props) => {
                       </button>
                       <span className="flex items-center gap-1"><Eye className="w-3.5 h-3.5" />{avatar.views}</span>
                     </div>
-                    <Button size="sm" variant="ghost" className="h-7 px-2" onClick={() => toast.info("This action — coming soon")}><Share2 className="w-3 h-3" /></Button>
+                    <Button size="sm" variant="ghost" className="h-7 px-2" onClick={async () => {
+                      const url = `${window.location.origin}/holographic?avatar=${avatar.id}`;
+                      const shareData = { title: avatar.name, text: `Check out ${avatar.name} by ${avatar.owner}`, url };
+                      try {
+                        if (navigator.share) await navigator.share(shareData);
+                        else { await navigator.clipboard.writeText(url); toast.success("Link copied!"); }
+                      } catch {}
+                    }}><Share2 className="w-3 h-3" /></Button>
                   </div>
                 </CardContent>
               </Card>
