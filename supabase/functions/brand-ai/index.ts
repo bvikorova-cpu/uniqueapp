@@ -1,4 +1,3 @@
-import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { requireAiCredits } from "../_shared/credit-check.ts";
 
 const corsHeaders = {
@@ -39,7 +38,7 @@ Deno.serve(async (req) => {
           },
           {
             role: "user",
-            content: `Analyze the competitive landscape for "${params.businessName}" in the ${params.industry} industry. Business description: ${description || 'Not provided'}. Identify top competitors and create a unique positioning strategy.`
+            content: `Analyze the competitive landscape for "${params.businessName}" in the ${params.industry} industry. Business description: ${params.description || 'Not provided'}. Identify top competitors and create a unique positioning strategy.`
           }
         ]);
         break;
@@ -51,7 +50,7 @@ Deno.serve(async (req) => {
           },
           {
             role: "user",
-            content: `Generate brand names for a ${params.industry} business. Style: ${params.style}. Keywords/values: ${keywords || 'modern, professional'}. Names should be catchy, easy to pronounce, and available as domain names.`
+            content: `Generate brand names for a ${params.industry} business. Style: ${params.style}. Keywords/values: ${params.keywords || 'modern, professional'}. Names should be catchy, easy to pronounce, and available as domain names.`
           }
         ]);
         break;
@@ -63,7 +62,7 @@ Deno.serve(async (req) => {
           },
           {
             role: "user",
-            content: `Generate a complete social media kit for "${params.brandName}" in the ${params.industry} industry. Brand tone: ${tone || 'professional and modern'}. Target audience: ${targetAudience || 'general'}.`
+            content: `Generate a complete social media kit for "${params.brandName}" in the ${params.industry} industry. Brand tone: ${params.tone || 'professional and modern'}. Target audience: ${params.targetAudience || 'general'}.`
           }
         ]);
         break;

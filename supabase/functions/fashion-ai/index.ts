@@ -1,5 +1,3 @@
-import "jsr:@supabase/functions-js/edge-runtime.d.ts";
-
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
@@ -46,7 +44,6 @@ Deno.serve(async (req) => {
     const openaiUrl = "https://api.openai.com/v1/chat/completions";
 
     let result: any;
-    const [tool, tc] = (toolName: string, props: Record<string, { type: string }>) => makeTool(toolName, props);
 
     switch (action) {
       case "battle-score":
