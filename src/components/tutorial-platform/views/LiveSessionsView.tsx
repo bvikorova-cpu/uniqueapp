@@ -94,7 +94,7 @@ export function LiveSessionsView({ onBack }: Props) {
       )}
 
       <div className="space-y-3">
-        {mockSessions.map(session => (
+        {sessions.map(session => (
           <Card key={session.id} className={`p-4 hover:shadow-lg transition-all ${session.live ? "border-red-500/30 bg-red-500/5 animate-pulse-slow" : ""}`}>
             <div className="flex items-center justify-between">
               <div className="flex-1 min-w-0">
