@@ -333,19 +333,26 @@ export function WallPostActions({
           {labeled ? "Comment" : commentsCount}
           {labeled && commentsCount > 0 ? ` (${commentsCount})` : ""}
         </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          className={labeled ? "flex-1" : ""}
-          onClick={() => {
-            if (!requireAuth()) return;
-            setShowShareDialog(true);
-          }}
-        >
-          <Share2 className="h-4 w-4 mr-1" />
-          {labeled ? "Share" : repostsCount}
-          {labeled && repostsCount > 0 ? ` (${repostsCount})` : ""}
-        </Button>
+        <TooltipProvider delayDuration={300}>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="sm"
+                className={labeled ? "flex-1" : ""}
+                onClick={handleOpenShareDialog}
+                aria-label="Share this post to your profile"
+              >
+                <Share2 className="h-4 w-4 mr-1" />
+                {labeled ? "Share" : repostsCount}
+                {labeled && repostsCount > 0 ? ` (${repostsCount})` : ""}
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="top">
+              Share with a quick comment so your followers know why it matters.
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </div>
 
       {showComments && (
@@ -401,21 +408,87 @@ export function WallPostActions({
         </div>
       )}
 
-      <Dialog open={showShareDialog} onOpenChange={setShowShareDialog}>
+      <Dialog open={showShareDialog} onOpenChange={handleShareDialogChange}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Share to your profile</DialogTitle>
+            <DialogTitle className="flex items-center gap-2">
+              Share to your profile
+              <TooltipProvider delayDuration={200}>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      type="button"
+                      className="text-muted-foreground hover:text-foreground transition-colors"
+                      aria-label="Sharing tips"
+                    >
+                      <Info className="h-4 w-4" />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent side="right" className="max-w-xs">
+                    Add at least {REPOST_MIN} characters explaining why you're sharing.
+                    Your followers will see your comment alongside the original post.
+                    Maximum {REPOST_MAX} characters.
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </DialogTitle>
+            <DialogDescription>
+              Your repost will appear on your profile with the original post embedded.
+            </DialogDescription>
           </DialogHeader>
-          <Textarea
-            value={repostComment}
-            onChange={(e) => setRepostComment(e.target.value)}
-            placeholder="Add a comment about this post…"
-            rows={3}
-          />
+
+          <div className="space-y-2">
+            <Textarea
+              value={repostComment}
+              onChange={(e) => {
+                setRepostComment(e.target.value);
+                if (repostError) setRepostError(null);
+              }}
+              placeholder="Add a comment about this post…"
+              rows={3}
+              maxLength={REPOST_MAX + 50}
+              aria-invalid={!!repostError}
+              aria-describedby={repostError ? "repost-error" : "repost-counter"}
+              className={
+                repostError
+                  ? "border-destructive focus-visible:ring-destructive"
+                  : ""
+              }
+            />
+            <div className="flex items-center justify-between text-xs">
+              {repostError ? (
+                <div
+                  id="repost-error"
+                  role="alert"
+                  className="flex items-start gap-1.5 text-destructive flex-1"
+                >
+                  <AlertCircle className="h-3.5 w-3.5 mt-0.5 shrink-0" />
+                  <span>{repostError}</span>
+                </div>
+              ) : (
+                <span className="text-muted-foreground">
+                  Tip: explain why this post matters to your followers.
+                </span>
+              )}
+              <span
+                id="repost-counter"
+                className={`tabular-nums ml-2 shrink-0 ${
+                  repostComment.trim().length > REPOST_MAX
+                    ? "text-destructive font-semibold"
+                    : repostComment.trim().length >= REPOST_MIN
+                      ? "text-muted-foreground"
+                      : "text-muted-foreground/70"
+                }`}
+              >
+                {repostComment.trim().length}/{REPOST_MAX}
+              </span>
+            </div>
+          </div>
+
           <DialogFooter>
             <Button
               variant="outline"
-              onClick={() => setShowShareDialog(false)}
+              onClick={() => handleShareDialogChange(false)}
               disabled={reposting}
             >
               Cancel
@@ -425,6 +498,8 @@ export function WallPostActions({
                 <>
                   <Loader2 className="h-4 w-4 mr-2 animate-spin" /> Sharing…
                 </>
+              ) : repostError ? (
+                "Try again"
               ) : (
                 "Share"
               )}
