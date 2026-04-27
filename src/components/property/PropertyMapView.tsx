@@ -7,10 +7,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 interface Props { onBack: () => void; }
 
 export const PropertyMapView = ({ onBack }: Props) => {
+  const navigate = useNavigate();
   const [selectedCity, setSelectedCity] = useState<any | null>(null);
   const [filter, setFilter] = useState<string>("all");
 
@@ -134,7 +136,7 @@ export const PropertyMapView = ({ onBack }: Props) => {
                               <div className="text-[10px] text-muted-foreground mt-1">Top Type</div>
                             </div>
                           </div>
-                          <Button size="sm" className="bg-gradient-to-r from-sky-500 to-blue-600" onClick={() => toast.info("Browse — coming soon")}>
+                          <Button size="sm" className="bg-gradient-to-r from-sky-500 to-blue-600" onClick={() => navigate(`/property?city=${encodeURIComponent(selectedCity.city)}`)}>
                             Browse {selectedCity.city}
                           </Button>
                         </div>

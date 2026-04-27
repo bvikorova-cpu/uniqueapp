@@ -2,9 +2,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Search, Sparkles, Target } from "lucide-react";
 import { motion } from "framer-motion";
-import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 export const PropertyProgress = () => {
+  const navigate = useNavigate();
   return (
     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}>
       <Card className="bg-gradient-to-r from-blue-500/10 via-primary/10 to-accent/10 border-primary/20 overflow-hidden relative h-full">
@@ -36,7 +37,7 @@ export const PropertyProgress = () => {
             </div>
           </div>
 
-          <Button className="w-full bg-gradient-to-r from-sky-500 to-blue-600 hover:opacity-90 text-white" size="sm" onClick={() => toast.info("Search Now — coming soon")}>
+          <Button className="w-full bg-gradient-to-r from-sky-500 to-blue-600 hover:opacity-90 text-white" size="sm" onClick={() => navigate("/property")}>
             <Search className="w-4 h-4 mr-2" />
             Search Now
           </Button>
