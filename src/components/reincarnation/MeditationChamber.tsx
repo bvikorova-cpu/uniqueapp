@@ -179,7 +179,7 @@ export const MeditationChamber = () => {
                   <Badge variant="outline" className="text-[10px]">
                     <Timer className="h-3 w-3 mr-1" />{Math.floor(med.duration / 60)} min
                   </Badge>
-                  <Button size="sm" variant="ghost" className="h-7 text-xs" onClick={() => toast({ description: "Start — coming soon" })}>
+                  <Button size="sm" variant="ghost" className="h-7 text-xs" onClick={(e) => { e.stopPropagation(); startMeditation(med.id); }}>
                     <Play className="h-3 w-3 mr-1" />Start
                   </Button>
                 </div>
