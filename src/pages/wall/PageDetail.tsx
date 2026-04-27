@@ -694,7 +694,6 @@ export default function PageDetail() {
                         <img src={post.image_url} alt="Post" className="mt-3 rounded-lg max-h-64 object-cover" />
                       )}
                       
-                      <div className="flex items-center gap-4 mt-4 pt-3 border-t">
                       <WallPostActions
                         postId={post.id}
                         initialLikesCount={post.likes_count || 0}
