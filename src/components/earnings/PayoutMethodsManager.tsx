@@ -229,7 +229,19 @@ export const PayoutMethodsManager = ({ onChange }: Props) => {
                 {selectedType === "stripe_connect" ? (
                   <Button
                     type="button"
-                    onClick={() => toast({ title: "Coming soon", description: "Stripe Connect onboarding will open here." })}
+                    onClick={async () => {
+                      try {
+                        const { supabase } = await import("@/integrations/supabase/client");
+                        const { data: { session } } = await supabase.auth.getSession();
+                        if (!session) { toast({ title: "Najprv sa prihlás", variant: "destructive" }); return; }
+                        const { data, error } = await supabase.functions.invoke("stripe-connect-onboarding", { body: {} });
+                        if (error) throw error;
+                        if (data?.url) window.open(data.url, "_blank");
+                        else toast({ title: "Onboarding spustený" });
+                      } catch (e: any) {
+                        toast({ title: "Chyba", description: e.message || "Stripe Connect zlyhal", variant: "destructive" });
+                      }
+                    }}
                     className="w-full bg-gradient-to-r from-violet-500 to-purple-500 text-white font-bold"
                   >
                     Connect Stripe account

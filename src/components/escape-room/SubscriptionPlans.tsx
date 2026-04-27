@@ -98,7 +98,18 @@ const SubscriptionPlans = () => {
                 <Button
                   className="w-full"
                   variant={plan.popular ? "default" : "outline"}
-                 onClick={() => toast.info("Subscribe Now — coming soon")}>
+                 onClick={async () => {
+                   try {
+                     const { supabase } = await import("@/integrations/supabase/client");
+                     const { data: { session } } = await supabase.auth.getSession();
+                     if (!session) { toast.error("Najprv sa prihlás"); return; }
+                     const { data, error } = await supabase.functions.invoke("create-checkout", {
+                       body: { product_type: "escape_room_subscription", plan_name: plan.name, amount: plan.price, interval: plan.period }
+                     });
+                     if (error) throw error;
+                     if (data?.url) window.open(data.url, "_blank");
+                   } catch (e: any) { toast.error(e.message || "Checkout zlyhal"); }
+                 }}>
                   Subscribe Now
                 </Button>
               </CardContent>

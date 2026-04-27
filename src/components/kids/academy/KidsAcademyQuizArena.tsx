@@ -103,7 +103,13 @@ export const KidsAcademyQuizArena = () => {
                   {tournament.startLabel} • Prize: {tournament.prize}
                 </p>
               </div>
-              <Button size="sm" variant="outline" className="text-xs" onClick={() => toast.info("Join — coming soon")}>
+              <Button size="sm" variant="outline" className="text-xs" onClick={() => {
+                const joined = JSON.parse(localStorage.getItem("kids_quiz_tournaments_joined") || "[]");
+                if (joined.includes(tournament.name)) { toast.info("Už si zapojený"); return; }
+                joined.push(tournament.name);
+                localStorage.setItem("kids_quiz_tournaments_joined", JSON.stringify(joined));
+                toast.success(`Zapojený do "${tournament.name}"!`);
+              }}>
                 <Crown className="w-3 h-3 mr-1" />
                 Join
               </Button>

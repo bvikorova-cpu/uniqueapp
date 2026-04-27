@@ -73,7 +73,22 @@ export const AIChatThemes = ({ onBack, userId }: AIChatThemesProps) => {
               <h3 className="font-black text-lg">AI Theme Generator</h3>
               <p className="text-sm text-muted-foreground">Describe your dream chat theme and AI will create it</p>
             </div>
-            <Button className="bg-gradient-to-r from-primary to-accent text-white gap-2" onClick={() => toast({ description: "Generate (5 credits) — coming soon" })}>
+            <Button className="bg-gradient-to-r from-primary to-accent text-white gap-2" onClick={async () => {
+              const description = window.prompt("Opíš svoj sen o chat téme:");
+              if (!description?.trim()) return;
+              try {
+                const { supabase } = await import("@/integrations/supabase/client");
+                const { data: { session } } = await supabase.auth.getSession();
+                if (!session) { toast({ description: "Najprv sa prihlás" }); return; }
+                const { data, error } = await supabase.functions.invoke("generate-gift-message", {
+                  body: { type: "chat_theme", prompt: `Generate a chat theme color palette (3 hex colors) and a name for: ${description}` }
+                });
+                if (error) throw error;
+                toast({ description: data?.message || data?.text || "Téma vygenerovaná!" });
+              } catch (e: any) {
+                toast({ description: e.message || "Generovanie zlyhalo" });
+              }
+            }}>
               <Sparkles className="h-4 w-4" /> Generate (5 credits)
             </Button>
           </CardContent>

@@ -153,7 +153,7 @@ export const VideoCallUI = ({
                 variant="secondary"
                 size="icon"
                 className="h-12 w-12 rounded-full"
-               onClick={() => toast.info("This action — coming soon")}>
+               onClick={() => { window.location.href = "/messenger"; }}>
                 <MessageCircle className="h-5 w-5" />
               </Button>
             </motion.div>
@@ -163,7 +163,7 @@ export const VideoCallUI = ({
                 variant="secondary"
                 size="icon"
                 className="h-12 w-12 rounded-full"
-               onClick={() => toast.info("This action — coming soon")}>
+               onClick={() => { window.location.href = "/settings"; }}>
                 <Settings className="h-5 w-5" />
               </Button>
             </motion.div>
