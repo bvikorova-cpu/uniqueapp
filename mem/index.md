@@ -47,3 +47,4 @@ NO health/medical predictions. NO identifiable people/trademarks in videos.
 - [Bundle Size](mem://features/bundle-size) — First-load 207 KB gzip / 350 KB budget; manualChunks split three/pdf/charts/markdown/fabric; `npm run build:analyze` + `npm run bundle:report`
 - [Admin Engagement](mem://features/admin-engagement) — /admin/engagement DAU/WAU/MAU + stickiness + signup chart; SQL fns get_engagement_metrics + get_dau_series; admin-engagement edge fn
 - [Activity Tracking](mem://features/activity-tracking) — DB triggers auto-write to activity_feed (post_created/liked/commented, friend_added); useTrackActivity hook for non-table events
+- [Lighthouse CI](mem://features/lighthouse-ci) — Per-PR perf audit on /, /auth, /pricing; LCP/CLS/TBT budgets warn-only, total-byte-weight ≤4.5MB hard-fail; reports on temporary-public-storage
