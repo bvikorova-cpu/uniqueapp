@@ -55,7 +55,7 @@ export const CapsuleGallery = ({ onBack }: { onBack: () => void }) => {
                       {capsule.likes + (liked.has(capsule.id) ? 1 : 0)}
                     </button>
                   </div>
-                  <Button variant="ghost" size="sm" className="text-xs h-7" onClick={() => toast.info("View — coming soon")}><Eye className="w-3 h-3 mr-1" /> View</Button>
+                  <Button variant="ghost" size="sm" className="text-xs h-7" onClick={() => toast.success(`"${capsule.title}" — by ${capsule.author}. Unlocks in ${Math.floor(capsule.daysUntil / 365)} years.`, { duration: 4000 })}><Eye className="w-3 h-3 mr-1" /> View</Button>
                 </div>
               </CardContent>
             </Card>
