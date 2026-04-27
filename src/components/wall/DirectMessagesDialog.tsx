@@ -155,10 +155,22 @@ export const DirectMessagesDialog = ({
             </DialogTitle>
             
             <div className="flex items-center gap-1">
-              <Button variant="ghost" size="icon" className="h-8 w-8 text-primary hover:bg-primary/10" onClick={() => console.info("[Coming soon] This action")}>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 text-primary hover:bg-primary/10"
+                onClick={handleOpenInMessenger}
+                title="Open in Messenger to start a call"
+              >
                 <Phone className="h-4 w-4" />
               </Button>
-              <Button variant="ghost" size="icon" className="h-8 w-8 text-primary hover:bg-primary/10" onClick={() => console.info("[Coming soon] This action")}>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 text-primary hover:bg-primary/10"
+                onClick={handleOpenInMessenger}
+                title="Open in Messenger to start a video call"
+              >
                 <Video className="h-4 w-4" />
               </Button>
               
@@ -259,12 +271,55 @@ export const DirectMessagesDialog = ({
 
         {/* Input area */}
         <div className="flex items-center gap-2 p-3 border-t bg-card">
-          <Button type="button" variant="ghost" size="icon" className="h-8 w-8 text-primary flex-shrink-0" onClick={() => console.info("[Coming soon] This action")}>
-            <Image className="h-5 w-5" />
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={handleImageSelected}
+          />
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 text-primary flex-shrink-0"
+            onClick={handleAttachImage}
+            disabled={uploadingImage}
+            title="Send an image"
+          >
+            {uploadingImage ? (
+              <Loader2 className="h-5 w-5 animate-spin" />
+            ) : (
+              <Image className="h-5 w-5" />
+            )}
           </Button>
-          <Button type="button" variant="ghost" size="icon" className="h-8 w-8 text-primary flex-shrink-0" onClick={() => console.info("[Coming soon] This action")}>
-            <Smile className="h-5 w-5" />
-          </Button>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 text-primary flex-shrink-0"
+                title="Add an emoji"
+              >
+                <Smile className="h-5 w-5" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-56 p-2" side="top" align="start">
+              <div className="grid grid-cols-8 gap-1">
+                {EMOJIS.map((emoji) => (
+                  <button
+                    key={emoji}
+                    type="button"
+                    onClick={() => insertEmoji(emoji)}
+                    className="text-xl hover:bg-muted rounded p-1 transition-colors"
+                  >
+                    {emoji}
+                  </button>
+                ))}
+              </div>
+            </PopoverContent>
+          </Popover>
           <Input
             value={message}
             onChange={(e) => setMessage(e.target.value)}
