@@ -18,6 +18,31 @@ const mentors = [
 interface Props { onBack: () => void; }
 
 export function MentorshipProgramView({ onBack }: Props) {
+  const [bookFor, setBookFor] = useState<typeof mentors[0] | null>(null);
+  const [msgFor, setMsgFor] = useState<typeof mentors[0] | null>(null);
+  const [bookDate, setBookDate] = useState("");
+  const [bookTime, setBookTime] = useState("");
+  const [bookNote, setBookNote] = useState("");
+  const [message, setMessage] = useState("");
+
+  const handleBook = () => {
+    if (!bookDate || !bookTime) {
+      toast.error("Pick date and time");
+      return;
+    }
+    toast.success(`Session booked with ${bookFor?.name} on ${bookDate} at ${bookTime}`);
+    setBookFor(null); setBookDate(""); setBookTime(""); setBookNote("");
+  };
+
+  const handleSend = () => {
+    if (!message.trim()) {
+      toast.error("Message cannot be empty");
+      return;
+    }
+    toast.success(`Message sent to ${msgFor?.name}`);
+    setMsgFor(null); setMessage("");
+  };
+
   return (
     <div>
       <Button variant="ghost" onClick={onBack} className="mb-4"><ArrowLeft className="w-4 h-4 mr-2" />Back</Button>
