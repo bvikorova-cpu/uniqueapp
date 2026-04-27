@@ -67,6 +67,96 @@ export default function GroupDetail() {
   const [inviteEmail, setInviteEmail] = useState("");
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [showLocationInput, setShowLocationInput] = useState(false);
+  const [notifyEnabled, setNotifyEnabled] = useState<boolean>(() => {
+    if (typeof window === "undefined") return true;
+    return localStorage.getItem(`group-notify-${groupId}`) !== "off";
+  });
+  const [themeColor, setThemeColor] = useState<string>(() => {
+    if (typeof window === "undefined") return "violet";
+    return localStorage.getItem(`group-theme-${groupId}`) ?? "violet";
+  });
+  const [achievementsEnabled, setAchievementsEnabled] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
+    return localStorage.getItem(`group-achievements-${groupId}`) === "on";
+  });
+  const [anonymousEnabled, setAnonymousEnabled] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
+    return localStorage.getItem(`group-anonymous-${groupId}`) === "on";
+  });
+  const [showThemeDialog, setShowThemeDialog] = useState(false);
+
+  const toggleNotifications = () => {
+    const next = !notifyEnabled;
+    setNotifyEnabled(next);
+    localStorage.setItem(`group-notify-${groupId}`, next ? "on" : "off");
+    toast({
+      title: next ? "Notifications enabled" : "Notifications muted",
+      description: next
+        ? "You'll be notified about new posts in this group."
+        : "You won't receive notifications from this group.",
+    });
+  };
+
+  const handleInvite = () => {
+    const email = inviteEmail.trim();
+    if (!email) {
+      toast({ title: "Enter an email", variant: "destructive" });
+      return;
+    }
+    const subject = encodeURIComponent(
+      `Join "${group?.name ?? "our group"}" on Unique`,
+    );
+    const body = encodeURIComponent(
+      `Hi! I'd like to invite you to join "${group?.name ?? "our group"}" on Unique.\n\n${window.location.href}`,
+    );
+    window.location.href = `mailto:${encodeURIComponent(email)}?subject=${subject}&body=${body}`;
+    setInviteEmail("");
+    toast({
+      title: "Invite ready",
+      description: `Email draft opened for ${email}.`,
+    });
+  };
+
+  const themeOptions = [
+    { id: "violet", label: "Violet", class: "bg-violet-500" },
+    { id: "rose", label: "Rose", class: "bg-rose-500" },
+    { id: "emerald", label: "Emerald", class: "bg-emerald-500" },
+    { id: "amber", label: "Amber", class: "bg-amber-500" },
+    { id: "sky", label: "Sky", class: "bg-sky-500" },
+  ];
+
+  const applyTheme = (id: string) => {
+    setThemeColor(id);
+    localStorage.setItem(`group-theme-${groupId}`, id);
+    toast({
+      title: "Theme updated",
+      description: `Group theme set to ${id}.`,
+    });
+  };
+
+  const toggleAchievements = () => {
+    const next = !achievementsEnabled;
+    setAchievementsEnabled(next);
+    localStorage.setItem(`group-achievements-${groupId}`, next ? "on" : "off");
+    toast({
+      title: next ? "Achievements enabled" : "Achievements disabled",
+      description: next
+        ? "Members can now earn badges for activity."
+        : "Achievements are turned off for this group.",
+    });
+  };
+
+  const toggleAnonymous = () => {
+    const next = !anonymousEnabled;
+    setAnonymousEnabled(next);
+    localStorage.setItem(`group-anonymous-${groupId}`, next ? "on" : "off");
+    toast({
+      title: next ? "Anonymous posts enabled" : "Anonymous posts disabled",
+      description: next
+        ? "Members can now post anonymously."
+        : "All posts will show authors.",
+    });
+  };
 
   const { data: user } = useQuery({
     queryKey: ["current-user"],
