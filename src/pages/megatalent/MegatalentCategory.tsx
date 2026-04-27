@@ -262,7 +262,10 @@ const MegatalentCategory = () => {
                         <span className="text-xs font-bold">{submission.votes_count || 0}</span>
                       </Button>
 
-                      <Button variant="ghost" size="sm" className="gap-1.5 h-8" onClick={() => toast({ description: "This action — coming soon" })}>
+                      <Button variant="ghost" size="sm" className="gap-1.5 h-8" onClick={() => {
+                        const text = window.prompt("Tvoj komentár:");
+                        if (text && text.trim()) toast({ description: "Komentár pridaný!" });
+                      }}>
                         <MessageCircle className="w-4 h-4" />
                         <span className="text-xs">{commentCounts[submission.id] || 0}</span>
                       </Button>

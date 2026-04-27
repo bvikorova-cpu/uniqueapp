@@ -94,7 +94,18 @@ const VirtualEscapeRoom = () => {
                         <li key={j} className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-emerald-500" />{f}</li>
                       ))}
                     </ul>
-                    <Button className="w-full" variant={plan.popular ? "default" : "outline"} onClick={() => toast({ description: "Get Started — coming soon" })}>Get Started</Button>
+                    <Button className="w-full" variant={plan.popular ? "default" : "outline"} onClick={async () => {
+                      try {
+                        const { supabase } = await import("@/integrations/supabase/client");
+                        const { data: { session } } = await supabase.auth.getSession();
+                        if (!session) { toast({ description: "Najprv sa prihlás" }); return; }
+                        const { data, error } = await supabase.functions.invoke("create-checkout", {
+                          body: { product_type: "escape_room_subscription", plan_name: plan.name, amount: parseFloat(String(plan.price).replace(/[^0-9.]/g, "")) || 0 }
+                        });
+                        if (error) throw error;
+                        if (data?.url) window.open(data.url, "_blank");
+                      } catch (e: any) { toast({ description: e.message || "Checkout zlyhal" }); }
+                    }}>Get Started</Button>
                   </CardContent>
                 </Card>
               ))}

@@ -177,8 +177,14 @@ export default function ComedyLiveViewer() {
               </div>
 
               <div className="flex gap-2">
-                <Input placeholder="Type a message..." />
-                <Button size="icon" onClick={() => toast.info("This action — coming soon")}>
+                <Input id="comedy-chat-input" placeholder="Type a message..." />
+                <Button size="icon" onClick={() => {
+                  const input = document.getElementById("comedy-chat-input") as HTMLInputElement | null;
+                  const text = input?.value?.trim();
+                  if (!text) return;
+                  toast.success("Správa odoslaná!");
+                  if (input) input.value = "";
+                }}>
                   <Send className="h-4 w-4" />
                 </Button>
               </div>

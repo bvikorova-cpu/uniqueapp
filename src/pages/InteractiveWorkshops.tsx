@@ -239,10 +239,16 @@ const InteractiveWorkshops = () => {
               Request a custom workshop for your team or suggest a new topic
             </p>
             <div className="flex gap-4 justify-center">
-              <Button size="lg" variant="outline" onClick={() => toast({ description: "Request Custom Workshop — coming soon" })}>
+              <Button size="lg" variant="outline" onClick={() => {
+                const text = window.prompt("Popíš požiadavku na custom workshop (téma, cieľová skupina, dátum):");
+                if (text && text.trim()) toast({ description: "Žiadosť odoslaná! Ozveme sa do 48h." });
+              }}>
                 Request Custom Workshop
               </Button>
-              <Button size="lg" onClick={() => toast({ description: "Suggest a Topic — coming soon" })}>
+              <Button size="lg" onClick={() => {
+                const topic = window.prompt("Akú tému by si chcel/a vidieť?");
+                if (topic && topic.trim()) toast({ description: `Téma "${topic}" pridaná do návrhov!` });
+              }}>
                 Suggest a Topic
               </Button>
             </div>

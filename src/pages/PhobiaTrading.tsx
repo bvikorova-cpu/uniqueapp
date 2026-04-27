@@ -330,7 +330,7 @@ const PhobiaTrading = () => {
                             </li>
                           ))}
                         </ul>
-                        <Button size="sm" className="w-full mt-4 opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => toast.info("Open — coming soon")}>Open</Button>
+                        <Button size="sm" className="w-full mt-4 opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => { window.location.href = `/phobia-trading?tool=${encodeURIComponent(tool.title)}`; }}>Open</Button>
                       </div>
                     </Card>
                   </motion.div>
