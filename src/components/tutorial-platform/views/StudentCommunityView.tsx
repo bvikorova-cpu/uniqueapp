@@ -77,7 +77,7 @@ export function StudentCommunityView({ onBack }: Props) {
       )}
 
       <div className="space-y-2">
-        {mockThreads.map(thread => (
+        {threads.map(thread => (
           <Card key={thread.id} className={`p-4 hover:shadow-lg cursor-pointer transition-all ${thread.pinned ? "border-amber-500/20 bg-amber-500/5" : ""}`}>
             <div className="flex items-start gap-3">
               <div className="w-8 h-8 rounded-full bg-gradient-to-br from-sky-500/20 to-blue-500/20 flex items-center justify-center shrink-0 mt-0.5 text-sm font-bold">
