@@ -50,3 +50,4 @@ NO health/medical predictions. NO identifiable people/trademarks in videos.
 - [Lighthouse CI](mem://features/lighthouse-ci) — Per-PR perf audit on /, /auth, /pricing; LCP/CLS/TBT budgets warn-only, total-byte-weight ≤4.5MB hard-fail; reports on temporary-public-storage
 - [Web Vitals Telemetry](mem://features/web-vitals) — Real-user CWV (LCP/CLS/INP/FCP/TTFB) → vitals-ingest edge fn → vitals_log; admin chart at /admin/vitals with p50/p75/p95 + daily trend
 - [PWA Install + Offline](mem://features/pwa-install) — public/sw.js (network-first nav + SWR assets, never-cache Supabase/Stripe), /offline.html shell, useInstallPrompt hook, InstallPromptBanner with iOS Share-sheet hint, 14d sticky dismiss
+- [Realtime Presence & Typing](mem://features/realtime-presence) — usePresenceChannel + useTypingIndicator hooks (Supabase Realtime, no DB writes) + PresenceAvatars/TypingDots UI; channelKey convention `post:|dm:|room:|debate:`
