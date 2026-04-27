@@ -104,8 +104,6 @@ export function MentorshipProgramView({ onBack }: Props) {
           </Card>
         ))}
       </div>
-    </div>
-  );
 
       <Dialog open={!!bookFor} onOpenChange={(o) => !o && setBookFor(null)}>
         <DialogContent>
@@ -139,4 +137,6 @@ export function MentorshipProgramView({ onBack }: Props) {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+    </div>
+  );
 }
