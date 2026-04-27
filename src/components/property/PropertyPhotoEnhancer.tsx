@@ -115,7 +115,27 @@ export function PropertyPhotoEnhancer({ onBack }: Props) {
                   </motion.div>
                 ))}
               </div>
-              <Button variant="outline" className="w-full mt-4" onClick={() => toast.info("Download All Enhanced Photos — coming soon")}><Download className="h-4 w-4 mr-2" />Download All Enhanced Photos</Button>
+              <Button variant="outline" className="w-full mt-4" onClick={() => {
+                const content = [
+                  "Enhanced Property Photos — Summary",
+                  "===================================",
+                  `Generated: ${new Date().toLocaleString()}`,
+                  "",
+                  ...BEFORE_AFTER.map(b => `${b.label}: ${b.before} → ${b.after} (${b.improvement})`),
+                  "",
+                  "Re-upload your originals for AI enhancement on next session.",
+                ].join("\n");
+                const blob = new Blob([content], { type: "text/plain" });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = `enhanced-photos-summary-${Date.now()}.txt`;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                URL.revokeObjectURL(url);
+                toast.success("Summary downloaded");
+              }}><Download className="h-4 w-4 mr-2" />Download All Enhanced Photos</Button>
             </CardContent>
           </Card>
         </motion.div>
