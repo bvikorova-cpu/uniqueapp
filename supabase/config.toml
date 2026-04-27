@@ -1286,3 +1286,6 @@ verify_jwt = false
 
 [functions.security-scan-frontend-deps]
 verify_jwt = false
+
+[functions.vitals-ingest]
+verify_jwt = false
