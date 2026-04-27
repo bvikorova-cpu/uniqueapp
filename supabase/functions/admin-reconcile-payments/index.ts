@@ -28,23 +28,30 @@ serve(async (req) => {
       { auth: { persistSession: false } },
     );
 
-    // Auth + admin check
-    const auth = req.headers.get("Authorization");
-    if (!auth) throw new Error("No auth header");
-    const { data: u } = await admin.auth.getUser(auth.replace("Bearer ", ""));
-    if (!u.user) throw new Error("Not authenticated");
-    const { data: roles } = await admin
-      .from("user_roles")
-      .select("role")
-      .eq("user_id", u.user.id);
-    if (!roles?.some((r: any) => r.role === "admin")) {
-      return new Response(JSON.stringify({ error: "Admin only" }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 403,
-      });
+    const body = req.method === "POST" ? await req.json().catch(() => ({})) : {};
+    const isCron = body?.source === "cron";
+    let adminUserId: string | null = null;
+
+    // Auth + admin check (skipped for cron-triggered runs)
+    if (!isCron) {
+      const auth = req.headers.get("Authorization");
+      if (!auth) throw new Error("No auth header");
+      const { data: u } = await admin.auth.getUser(auth.replace("Bearer ", ""));
+      if (!u.user) throw new Error("Not authenticated");
+      const { data: roles } = await admin
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", u.user.id);
+      if (!roles?.some((r: any) => r.role === "admin")) {
+        return new Response(JSON.stringify({ error: "Admin only" }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 403,
+        });
+      }
+      adminUserId = u.user.id;
     }
 
-    const body = req.method === "POST" ? await req.json().catch(() => ({})) : {};
+    const t0 = Date.now();
     const dateStr: string =
       body.date ||
       new Date(Date.now() - 24 * 3600 * 1000).toISOString().slice(0, 10);
@@ -152,21 +159,33 @@ serve(async (req) => {
         status: r.status,
       }));
 
-    // Audit log
-    await admin.from("admin_audit_log").insert({
-      admin_id: u.user.id,
-      action: "reconcile_run",
-      target_type: "payment_records",
-      details: {
-        date: dateStr,
-        stripe_count: charges.length,
-        db_count: records?.length ?? 0,
-        missing_in_db: missingInDb.length,
-        missing_in_stripe: missingInStripe.length,
-        amount_mismatch: amountMismatch.length,
-        status_mismatch: statusMismatch.length,
-      },
+    const summary = {
+      stripe_charges: charges.length,
+      db_records: records?.length ?? 0,
+      missing_in_db: missingInDb.length,
+      missing_in_stripe: missingInStripe.length,
+      amount_mismatch: amountMismatch.length,
+      status_mismatch: statusMismatch.length,
+    };
+
+    // Persist run history
+    await admin.from("reconciliation_runs").insert({
+      run_date: dateStr,
+      trigger_source: isCron ? "cron" : "manual",
+      ...summary,
+      details: { missingInDb, missingInStripe, amountMismatch, statusMismatch },
+      duration_ms: Date.now() - t0,
     });
+
+    // Audit log (only for manual admin runs)
+    if (adminUserId) {
+      await admin.from("admin_audit_log").insert({
+        admin_id: adminUserId,
+        action: "reconcile_run",
+        target_type: "payment_records",
+        details: { date: dateStr, ...summary },
+      });
+    }
 
     return new Response(
       JSON.stringify({
