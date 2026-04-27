@@ -80,6 +80,8 @@ export const DirectMessagesDialog = ({
   };
 
   const insertEmoji = (emoji: string) => setMessage((prev) => prev + emoji);
+
+  const handleSend = () => {
     if (!message.trim() || !userId) return;
     sendMessage({ receiverId: userId, content: message });
     setMessage("");
