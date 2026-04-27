@@ -51,7 +51,9 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogFooter,
 } from "@/components/ui/dialog";
+import { WallPostActions } from "@/components/wall/WallPostActions";
 
 export default function GroupDetail() {
   const { groupId } = useParams();
@@ -67,6 +69,96 @@ export default function GroupDetail() {
   const [inviteEmail, setInviteEmail] = useState("");
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [showLocationInput, setShowLocationInput] = useState(false);
+  const [notifyEnabled, setNotifyEnabled] = useState<boolean>(() => {
+    if (typeof window === "undefined") return true;
+    return localStorage.getItem(`group-notify-${groupId}`) !== "off";
+  });
+  const [themeColor, setThemeColor] = useState<string>(() => {
+    if (typeof window === "undefined") return "violet";
+    return localStorage.getItem(`group-theme-${groupId}`) ?? "violet";
+  });
+  const [achievementsEnabled, setAchievementsEnabled] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
+    return localStorage.getItem(`group-achievements-${groupId}`) === "on";
+  });
+  const [anonymousEnabled, setAnonymousEnabled] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
+    return localStorage.getItem(`group-anonymous-${groupId}`) === "on";
+  });
+  const [showThemeDialog, setShowThemeDialog] = useState(false);
+
+  const toggleNotifications = () => {
+    const next = !notifyEnabled;
+    setNotifyEnabled(next);
+    localStorage.setItem(`group-notify-${groupId}`, next ? "on" : "off");
+    toast({
+      title: next ? "Notifications enabled" : "Notifications muted",
+      description: next
+        ? "You'll be notified about new posts in this group."
+        : "You won't receive notifications from this group.",
+    });
+  };
+
+  const handleInvite = () => {
+    const email = inviteEmail.trim();
+    if (!email) {
+      toast({ title: "Enter an email", variant: "destructive" });
+      return;
+    }
+    const subject = encodeURIComponent(
+      `Join "${group?.name ?? "our group"}" on Unique`,
+    );
+    const body = encodeURIComponent(
+      `Hi! I'd like to invite you to join "${group?.name ?? "our group"}" on Unique.\n\n${window.location.href}`,
+    );
+    window.location.href = `mailto:${encodeURIComponent(email)}?subject=${subject}&body=${body}`;
+    setInviteEmail("");
+    toast({
+      title: "Invite ready",
+      description: `Email draft opened for ${email}.`,
+    });
+  };
+
+  const themeOptions = [
+    { id: "violet", label: "Violet", class: "bg-violet-500" },
+    { id: "rose", label: "Rose", class: "bg-rose-500" },
+    { id: "emerald", label: "Emerald", class: "bg-emerald-500" },
+    { id: "amber", label: "Amber", class: "bg-amber-500" },
+    { id: "sky", label: "Sky", class: "bg-sky-500" },
+  ];
+
+  const applyTheme = (id: string) => {
+    setThemeColor(id);
+    localStorage.setItem(`group-theme-${groupId}`, id);
+    toast({
+      title: "Theme updated",
+      description: `Group theme set to ${id}.`,
+    });
+  };
+
+  const toggleAchievements = () => {
+    const next = !achievementsEnabled;
+    setAchievementsEnabled(next);
+    localStorage.setItem(`group-achievements-${groupId}`, next ? "on" : "off");
+    toast({
+      title: next ? "Achievements enabled" : "Achievements disabled",
+      description: next
+        ? "Members can now earn badges for activity."
+        : "Achievements are turned off for this group.",
+    });
+  };
+
+  const toggleAnonymous = () => {
+    const next = !anonymousEnabled;
+    setAnonymousEnabled(next);
+    localStorage.setItem(`group-anonymous-${groupId}`, next ? "on" : "off");
+    toast({
+      title: next ? "Anonymous posts enabled" : "Anonymous posts disabled",
+      description: next
+        ? "Members can now post anonymously."
+        : "All posts will show authors.",
+    });
+  };
 
   const { data: user } = useQuery({
     queryKey: ["current-user"],
@@ -386,8 +478,14 @@ export default function GroupDetail() {
               </Button>
             ) : (
               <>
-                <Button variant="outline" size="icon" className="h-9 w-9" onClick={() => console.info("[Coming soon] This action")}>
-                  <Bell className="h-4 w-4" />
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="h-9 w-9"
+                  onClick={toggleNotifications}
+                  title={notifyEnabled ? "Mute notifications" : "Enable notifications"}
+                >
+                  {notifyEnabled ? <Bell className="h-4 w-4" /> : <BellOff className="h-4 w-4" />}
                 </Button>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -675,9 +773,44 @@ export default function GroupDetail() {
                               {format(new Date(post.created_at), "PPp")}
                             </span>
                           </div>
-                          <Button variant="ghost" size="icon" onClick={() => console.info("[Coming soon] This action")}>
-                            <MoreHorizontal className="h-4 w-4" />
-                          </Button>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" size="icon">
+                                <MoreHorizontal className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuItem
+                                onClick={() => {
+                                  const url = `${window.location.origin}/post/${post.id}`;
+                                  navigator.clipboard.writeText(url);
+                                  toast({ title: "Link copied", description: "Post link copied to clipboard." });
+                                }}
+                              >
+                                <Share2 className="h-4 w-4 mr-2" />
+                                Copy link
+                              </DropdownMenuItem>
+                              {post.user_id === user?.id && (
+                                <DropdownMenuItem
+                                  className="text-destructive"
+                                  onClick={async () => {
+                                    const { error } = await supabase
+                                      .from("posts")
+                                      .delete()
+                                      .eq("id", post.id);
+                                    if (error) {
+                                      toast({ title: "Error", description: error.message, variant: "destructive" });
+                                    } else {
+                                      toast({ title: "Deleted", description: "Post removed." });
+                                      queryClient.invalidateQueries({ queryKey: ["group-posts", groupId] });
+                                    }
+                                  }}
+                                >
+                                  Delete post
+                                </DropdownMenuItem>
+                              )}
+                            </DropdownMenuContent>
+                          </DropdownMenu>
                         </div>
                         <p className="mt-2 whitespace-pre-wrap">{post.content}</p>
                         
@@ -690,20 +823,13 @@ export default function GroupDetail() {
                         )}
                         
                         {/* Post Actions */}
-                        <div className="flex items-center gap-4 mt-4 pt-3 border-t">
-                          <Button variant="ghost" size="sm" className="flex-1" onClick={() => console.info("[Coming soon] Like")}>
-                            <Heart className="h-4 w-4 mr-2" />
-                            Like
-                          </Button>
-                          <Button variant="ghost" size="sm" className="flex-1" onClick={() => console.info("[Coming soon] Comment")}>
-                            <MessageCircle className="h-4 w-4 mr-2" />
-                            Comment
-                          </Button>
-                          <Button variant="ghost" size="sm" className="flex-1" onClick={() => console.info("[Coming soon] Share")}>
-                            <Share2 className="h-4 w-4 mr-2" />
-                            Share
-                          </Button>
-                        </div>
+                        <WallPostActions
+                          postId={post.id}
+                          initialLikesCount={post.likes_count || 0}
+                          initialCommentsCount={post.comments_count || 0}
+                          initialRepostsCount={post.reposts_count || 0}
+                          variant="labeled"
+                        />
                       </div>
                     </div>
                   </Card>
@@ -728,7 +854,7 @@ export default function GroupDetail() {
                     placeholder="Enter email or username..."
                     className="flex-1"
                   />
-                  <Button onClick={() => console.info("[Coming soon] Invite")}>
+                  <Button onClick={handleInvite}>
                     <Send className="h-4 w-4 mr-2" />
                     Invite
                   </Button>
@@ -898,9 +1024,24 @@ export default function GroupDetail() {
                     <p className="text-sm text-muted-foreground mb-3">
                       Customize your group's look with unique themes and colors!
                     </p>
-                    <Button variant="outline" size="sm" onClick={() => console.info("[Coming soon] Customize Theme")}>
+                    <div className="flex flex-wrap items-center gap-2 mb-3">
+                      {themeOptions.map((opt) => (
+                        <button
+                          key={opt.id}
+                          onClick={() => applyTheme(opt.id)}
+                          className={`h-8 w-8 rounded-full ${opt.class} ring-2 transition-all ${
+                            themeColor === opt.id
+                              ? "ring-foreground scale-110"
+                              : "ring-transparent hover:ring-border"
+                          }`}
+                          aria-label={`Use ${opt.label} theme`}
+                          title={opt.label}
+                        />
+                      ))}
+                    </div>
+                    <Button variant="outline" size="sm" onClick={() => setShowThemeDialog(true)}>
                       <Sparkles className="h-4 w-4 mr-2" />
-                      Customize Theme
+                      Preview Theme
                     </Button>
                   </div>
                   
@@ -909,9 +1050,13 @@ export default function GroupDetail() {
                     <p className="text-sm text-muted-foreground mb-3">
                       Enable achievements and badges for active members!
                     </p>
-                    <Button variant="outline" size="sm" onClick={() => console.info("[Coming soon] Manage Achievements")}>
+                    <Button
+                      variant={achievementsEnabled ? "default" : "outline"}
+                      size="sm"
+                      onClick={toggleAchievements}
+                    >
                       <Star className="h-4 w-4 mr-2" />
-                      Manage Achievements
+                      {achievementsEnabled ? "Achievements: On" : "Enable Achievements"}
                     </Button>
                   </div>
                   
@@ -920,8 +1065,12 @@ export default function GroupDetail() {
                     <p className="text-sm text-muted-foreground mb-3">
                       Allow members to post anonymously for sensitive topics!
                     </p>
-                    <Button variant="outline" size="sm" onClick={() => console.info("[Coming soon] Enable Anonymous Posts")}>
-                      Enable Anonymous Posts
+                    <Button
+                      variant={anonymousEnabled ? "default" : "outline"}
+                      size="sm"
+                      onClick={toggleAnonymous}
+                    >
+                      {anonymousEnabled ? "Anonymous: On" : "Enable Anonymous Posts"}
                     </Button>
                   </div>
                 </div>
