@@ -1,13 +1,27 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import tsconfigPaths from "vite-tsconfig-paths";
+import { visualizer } from "rollup-plugin-visualizer";
+
+const ANALYZE = process.env.ANALYZE === "true";
 
 export default defineConfig(() => ({
   server: {
     host: "::",
     port: 8080,
   },
-  plugins: [react(), tsconfigPaths()],
+  plugins: [
+    react(),
+    tsconfigPaths(),
+    ANALYZE &&
+      visualizer({
+        filename: "dist/bundle-stats.html",
+        template: "treemap",
+        gzipSize: true,
+        brotliSize: true,
+        open: false,
+      }),
+  ].filter(Boolean),
   resolve: {
     alias: {
       "@": "/dev-server/src",
