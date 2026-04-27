@@ -5,10 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "prebuild": "node scripts/generate-sitemap.mjs",
+    "prebuild": "node scripts/generate-sitemap.mjs && node scripts/i18n-check.mjs",
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "sitemap": "node scripts/generate-sitemap.mjs",
+    "i18n:check": "node scripts/i18n-check.mjs",
+    "i18n:fill": "node scripts/i18n-fill.mjs",
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",

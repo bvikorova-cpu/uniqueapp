@@ -42,3 +42,5 @@ NO health/medical predictions. NO identifiable people/trademarks in videos.
 - [Age Rating 16+](mem://features/age-rating) — DOB gate at signup, &lt;Age16Badge /&gt; in navbar/footer/landing/auth, under-16 redirected to /kids-channel
 - [Quantum Social AI versions](mem://features/quantum-versions) — quantum-generate-versions edge fn rewrites base post into N tonal variants via Lovable AI Gateway; called from QuantumFeed.createPost
 - [Brand Collaboration Escrow](mem://features/brand-collaboration-escrow) — campaign_escrow table + brand-campaign-checkout/brand-release-escrow edge fns; BrandApplicationsManager UI handles Approve&Pay → Stripe → Mark Completed → 80% to influencer_earnings
+- [GDPR Right to Erasure](mem://features/gdpr-erasure) — gdpr_purge_user_data SECURITY DEFINER fn dynamically wipes all 695+ public tables with user_id; delete-user-account edge fn calls purge → admin.deleteUser
+- [i18n Completeness](mem://features/i18n-completeness) — EN is source of truth (702 keys); scripts/i18n-check.mjs blocks build if any locale incomplete; scripts/i18n-fill.mjs backfills from EN
