@@ -173,10 +173,10 @@ export const SpiritualCommunity = () => {
                 </div>
                 <p className="text-sm text-foreground/90 leading-relaxed">{post.content}</p>
                 <div className="flex items-center gap-3 mt-3">
-                  <Button variant="ghost" size="sm" className="h-7 text-xs gap-1 text-muted-foreground" onClick={() => console.info("[Coming soon] This action")}>
+                  <Button variant="ghost" size="sm" className="h-7 text-xs gap-1 text-muted-foreground" onClick={() => toast.info("This action — coming soon")}>
                     <Heart className="h-3 w-3" /> {post.likes}
                   </Button>
-                  <Button variant="ghost" size="sm" className="h-7 text-xs gap-1 text-muted-foreground" onClick={() => console.info("[Coming soon] Reply")}>
+                  <Button variant="ghost" size="sm" className="h-7 text-xs gap-1 text-muted-foreground" onClick={() => toast.info("Reply — coming soon")}>
                     <MessageSquare className="h-3 w-3" /> Reply
                   </Button>
                 </div>

@@ -103,7 +103,7 @@ export const KidsAcademyQuizArena = () => {
                   {tournament.startLabel} • Prize: {tournament.prize}
                 </p>
               </div>
-              <Button size="sm" variant="outline" className="text-xs" onClick={() => console.info("[Coming soon] Join")}>
+              <Button size="sm" variant="outline" className="text-xs" onClick={() => toast.info("Join — coming soon")}>
                 <Crown className="w-3 h-3 mr-1" />
                 Join
               </Button>

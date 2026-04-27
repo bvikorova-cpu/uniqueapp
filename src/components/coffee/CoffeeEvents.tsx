@@ -55,7 +55,7 @@ export const CoffeeEvents = () => {
               <span>{event.max_participants} spots</span>
             </div>
             <div className="pt-2">
-              <Button className="w-full" onClick={() => console.info("[Coming soon] Join Event - €")}>
+              <Button className="w-full" onClick={() => toast.info("Join Event - € — coming soon")}>
                 Join Event - €{event.ticket_price}
               </Button>
             </div>

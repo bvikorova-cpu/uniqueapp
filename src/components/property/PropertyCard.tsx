@@ -86,7 +86,7 @@ export function PropertyCard({ property, onViewDetails }: PropertyCardProps) {
               expiresAt={property.listing_expires_at} 
               status={property.status}
             />
-            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => console.info("[Coming soon] This action")}>
+            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => toast.info("This action — coming soon")}>
               <Heart className="h-4 w-4" />
             </Button>
           </div>

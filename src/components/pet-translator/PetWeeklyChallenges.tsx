@@ -32,7 +32,7 @@ export default function PetWeeklyChallenges() {
                   <span className="flex items-center gap-1"><Users className="h-3 w-3" /> {c.participants}</span>
                   <span className="flex items-center gap-1"><Clock className="h-3 w-3" /> {c.endsIn}</span>
                 </div>
-                <Button size="sm" className="w-full bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-xs" onClick={() => console.info("[Coming soon] Join Challenge")}>
+                <Button size="sm" className="w-full bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-xs" onClick={() => toast.info("Join Challenge — coming soon")}>
                   <Sparkles className="h-3 w-3 mr-1" /> Join Challenge
                 </Button>
               </CardContent>

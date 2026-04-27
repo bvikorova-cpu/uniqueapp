@@ -18,7 +18,7 @@ export default function PetSocialNetwork() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-xl sm:text-2xl font-black">🌍 Pet Social Network</h2>
-        <Button size="sm" className="bg-gradient-to-r from-purple-600 to-fuchsia-600 text-xs" onClick={() => console.info("[Coming soon] Share Your Pet")}>
+        <Button size="sm" className="bg-gradient-to-r from-purple-600 to-fuchsia-600 text-xs" onClick={() => toast.info("Share Your Pet — coming soon")}>
           <PawPrint className="h-3 w-3 mr-1" /> Share Your Pet
         </Button>
       </div>

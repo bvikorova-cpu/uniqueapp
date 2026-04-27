@@ -93,14 +93,14 @@ export function RaceReplayViewer({ onBack }: { onBack: () => void }) {
             {/* Controls bar */}
             <div className="absolute bottom-0 left-0 right-0 bg-slate-950/90 backdrop-blur-sm border-t border-cyan-500/20 p-3">
               <div className="flex items-center gap-3">
-                <Button size="icon" variant="ghost" className="h-8 w-8 text-cyan-400 hover:bg-cyan-950/50" onClick={() => console.info("[Coming soon] This action")}>
+                <Button size="icon" variant="ghost" className="h-8 w-8 text-cyan-400 hover:bg-cyan-950/50" onClick={() => toast.info("This action — coming soon")}>
                   <SkipBack className="h-4 w-4" />
                 </Button>
                 <Button size="icon" variant="ghost" className="h-8 w-8 text-cyan-400 hover:bg-cyan-950/50"
                   onClick={() => setIsPlaying(!isPlaying)}>
                   {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
                 </Button>
-                <Button size="icon" variant="ghost" className="h-8 w-8 text-cyan-400 hover:bg-cyan-950/50" onClick={() => console.info("[Coming soon] This action")}>
+                <Button size="icon" variant="ghost" className="h-8 w-8 text-cyan-400 hover:bg-cyan-950/50" onClick={() => toast.info("This action — coming soon")}>
                   <SkipForward className="h-4 w-4" />
                 </Button>
                 <div className="flex-1 h-1 bg-slate-800 rounded-full overflow-hidden">
@@ -113,7 +113,7 @@ export function RaceReplayViewer({ onBack }: { onBack: () => void }) {
                 <span className="text-[10px] font-mono text-cyan-400/60">
                   {isPlaying ? "PLAYING" : "PAUSED"}
                 </span>
-                <Button size="icon" variant="ghost" className="h-8 w-8 text-cyan-400 hover:bg-cyan-950/50" onClick={() => console.info("[Coming soon] This action")}>
+                <Button size="icon" variant="ghost" className="h-8 w-8 text-cyan-400 hover:bg-cyan-950/50" onClick={() => toast.info("This action — coming soon")}>
                   <Maximize2 className="h-4 w-4" />
                 </Button>
               </div>

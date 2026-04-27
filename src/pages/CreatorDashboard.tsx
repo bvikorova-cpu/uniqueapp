@@ -155,7 +155,7 @@ export default function CreatorDashboard() {
               </h1>
               <p className="text-muted-foreground mt-1">{profile?.bio}</p>
             </div>
-            <Button onClick={() => console.info("[Coming soon] Edit Profile")}>
+            <Button onClick={() => toast.info("Edit Profile — coming soon")}>
               <Plus className="mr-2 h-4 w-4" />
               Edit Profile
             </Button>

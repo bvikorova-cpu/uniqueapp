@@ -138,8 +138,8 @@ export function CourseReviewSystemView({ onBack }: Props) {
             </div>
             <p className="text-sm mb-3">{review.text}</p>
             <div className="flex items-center gap-3">
-              <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={() => console.info("[Coming soon] Helpful ( )")}><ThumbsUp className="w-3 h-3 mr-1" />Helpful ({review.helpful})</Button>
-              <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={() => console.info("[Coming soon] This action")}><ThumbsDown className="w-3 h-3 mr-1" /></Button>
+              <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={() => toast.info("Helpful ( ) — coming soon")}><ThumbsUp className="w-3 h-3 mr-1" />Helpful ({review.helpful})</Button>
+              <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={() => toast.info("This action — coming soon")}><ThumbsDown className="w-3 h-3 mr-1" /></Button>
             </div>
           </Card>
         ))}

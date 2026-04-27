@@ -398,7 +398,7 @@ export default function CoursesHub() {
                           <span className="text-2xl font-bold">
                             ${course.price.toFixed(2)}
                           </span>
-                          <Button size="sm" onClick={() => console.info("[Coming soon] View Course")}>View Course</Button>
+                          <Button size="sm" onClick={() => toast.info("View Course — coming soon")}>View Course</Button>
                         </div>
                       </CardContent>
                     </Card>

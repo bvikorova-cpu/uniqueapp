@@ -177,13 +177,13 @@ export const RacingDashboard = () => {
               ))}
 
               <div className="flex justify-center gap-2 pt-4">
-                <Button variant="outline" size="icon" onClick={() => console.info("[Coming soon] This action")}>
+                <Button variant="outline" size="icon" onClick={() => toast.info("This action — coming soon")}>
                   <RotateCcw className="h-4 w-4" />
                 </Button>
-                <Button size="icon" onClick={() => console.info("[Coming soon] This action")}>
+                <Button size="icon" onClick={() => toast.info("This action — coming soon")}>
                   <Play className="h-4 w-4" />
                 </Button>
-                <Button variant="outline" size="icon" onClick={() => console.info("[Coming soon] This action")}>
+                <Button variant="outline" size="icon" onClick={() => toast.info("This action — coming soon")}>
                   <Pause className="h-4 w-4" />
                 </Button>
               </div>
@@ -201,7 +201,7 @@ export const RacingDashboard = () => {
               <p className="text-center text-muted-foreground py-8">
                 Vytvorte si vlastný fantasy tím a súťažte s priateľmi!
               </p>
-              <Button className="w-full" onClick={() => console.info("[Coming soon] Vytvoriť tím")}>Vytvoriť tím</Button>
+              <Button className="w-full" onClick={() => toast.info("Vytvoriť tím — coming soon")}>Vytvoriť tím</Button>
             </CardContent>
           </Card>
         </TabsContent>

@@ -73,7 +73,7 @@ export const AIChatThemes = ({ onBack, userId }: AIChatThemesProps) => {
               <h3 className="font-black text-lg">AI Theme Generator</h3>
               <p className="text-sm text-muted-foreground">Describe your dream chat theme and AI will create it</p>
             </div>
-            <Button className="bg-gradient-to-r from-primary to-accent text-white gap-2" onClick={() => console.info("[Coming soon] Generate (5 credits)")}>
+            <Button className="bg-gradient-to-r from-primary to-accent text-white gap-2" onClick={() => toast.info("Generate (5 credits) — coming soon")}>
               <Sparkles className="h-4 w-4" /> Generate (5 credits)
             </Button>
           </CardContent>

@@ -149,7 +149,7 @@ export default function Settings() {
 
               <div className="pt-4 border-t">
                 <h3 className="text-lg font-semibold mb-4">Password</h3>
-                <Button variant="outline" onClick={() => console.info("[Coming soon] Change Password")}>Change Password</Button>
+                <Button variant="outline" onClick={() => toast.info("Change Password — coming soon")}>Change Password</Button>
               </div>
             </Card>
           </TabsContent>
@@ -287,15 +287,15 @@ export default function Settings() {
                   Choose your preferred theme
                 </p>
                 <div className="grid grid-cols-3 gap-4">
-                  <Button variant="outline" className="h-20 flex-col gap-2" onClick={() => console.info("[Coming soon] Light")}>
+                  <Button variant="outline" className="h-20 flex-col gap-2" onClick={() => toast.info("Light — coming soon")}>
                     <div className="w-8 h-8 rounded-full bg-background border-2" />
                     <span className="text-xs">Light</span>
                   </Button>
-                  <Button variant="outline" className="h-20 flex-col gap-2" onClick={() => console.info("[Coming soon] Dark")}>
+                  <Button variant="outline" className="h-20 flex-col gap-2" onClick={() => toast.info("Dark — coming soon")}>
                     <div className="w-8 h-8 rounded-full bg-foreground" />
                     <span className="text-xs">Dark</span>
                   </Button>
-                  <Button variant="outline" className="h-20 flex-col gap-2" onClick={() => console.info("[Coming soon] Auto")}>
+                  <Button variant="outline" className="h-20 flex-col gap-2" onClick={() => toast.info("Auto — coming soon")}>
                     <div className="w-8 h-8 rounded-full bg-background" />
                     <span className="text-xs">Auto</span>
                   </Button>

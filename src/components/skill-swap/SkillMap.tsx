@@ -137,7 +137,7 @@ export const SkillMap = ({ onBack }: SkillMapProps) => {
                       <MapPin className="w-3.5 h-3.5" /> {selectedSwapper.location}
                     </p>
                   </div>
-                  <Button size="sm" className="gap-1.5" onClick={() => console.info("[Coming soon] Connect")}>
+                  <Button size="sm" className="gap-1.5" onClick={() => toast.info("Connect — coming soon")}>
                     <MessageSquare className="w-3.5 h-3.5" /> Connect
                   </Button>
                 </div>
