@@ -2,7 +2,9 @@
   "nodeModulesDir": "auto",
   "imports": {
     "openai": "npm:openai@^4.52.5",
-    "stripe": "npm:stripe@^18.5.0"
+    "npm:openai@^4.52.5": "npm:openai@^4.52.5",
+    "stripe": "npm:stripe@^18.5.0",
+    "npm:stripe@^18.5.0": "npm:stripe@^18.5.0"
   },
   "compilerOptions": {
     "skipLibCheck": true,
