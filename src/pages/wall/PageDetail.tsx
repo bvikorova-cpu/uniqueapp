@@ -25,6 +25,7 @@ import {
   Camera,
   MoreHorizontal,
   Bell,
+  BellOff,
   ImagePlus,
   Video,
   Smile,
@@ -67,6 +68,22 @@ export default function PageDetail() {
   const [editName, setEditName] = useState("");
   const [editDescription, setEditDescription] = useState("");
   const [editCategory, setEditCategory] = useState("");
+  const [notifyEnabled, setNotifyEnabled] = useState<boolean>(() => {
+    if (typeof window === "undefined") return true;
+    return localStorage.getItem(`page-notify-${pageId}`) !== "off";
+  });
+
+  const togglePageNotifications = () => {
+    const next = !notifyEnabled;
+    setNotifyEnabled(next);
+    localStorage.setItem(`page-notify-${pageId}`, next ? "on" : "off");
+    toast({
+      title: next ? "Notifications enabled" : "Notifications muted",
+      description: next
+        ? "You'll be notified about new posts from this page."
+        : "You won't receive notifications from this page.",
+    });
+  };
 
   const { data: user } = useQuery({
     queryKey: ["current-user"],
