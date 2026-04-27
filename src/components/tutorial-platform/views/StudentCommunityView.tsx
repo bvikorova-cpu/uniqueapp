@@ -66,10 +66,10 @@ export function StudentCommunityView({ onBack }: Props) {
       {newThread && (
         <Card className="mb-6 border-sky-500/20">
           <CardContent className="pt-6 space-y-3">
-            <Input placeholder="Thread title..." className="h-11" />
-            <Textarea placeholder="What's on your mind? Share your question or insight..." rows={4} />
+            <Input placeholder="Thread title..." value={title} onChange={e => setTitle(e.target.value)} className="h-11" />
+            <Textarea placeholder="What's on your mind? Share your question or insight..." value={body} onChange={e => setBody(e.target.value)} rows={4} />
             <div className="flex gap-2">
-              <Button className="bg-gradient-to-r from-sky-500 to-blue-600" onClick={() => toast.info("Post Thread — coming soon")}><Send className="w-4 h-4 mr-2" />Post Thread</Button>
+              <Button className="bg-gradient-to-r from-sky-500 to-blue-600" onClick={handlePost}><Send className="w-4 h-4 mr-2" />Post Thread</Button>
               <Button variant="outline" onClick={() => setNewThread(false)}>Cancel</Button>
             </div>
           </CardContent>
