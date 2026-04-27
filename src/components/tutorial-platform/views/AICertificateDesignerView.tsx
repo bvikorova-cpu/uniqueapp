@@ -106,7 +106,19 @@ export function AICertificateDesignerView({ onBack }: Props) {
                 <p className="text-sm text-muted-foreground mt-4">{new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
                 <div className="prose prose-sm max-w-none whitespace-pre-wrap text-xs mt-4 text-muted-foreground">{certificate}</div>
               </div>
-              <Button className="w-full mt-4 h-11" variant="outline" onClick={() => toast({ description: "Download Certificate — coming soon" })}><Download className="w-4 h-4 mr-2" />Download Certificate</Button>
+              <Button className="w-full mt-4 h-11" variant="outline" onClick={() => {
+                const content = `===== CERTIFICATE OF COMPLETION =====\n\nAwarded to: ${studentName}\nCourse: ${courseName}\nStyle: ${style}\nDate: ${new Date().toLocaleDateString()}\n\n${certificate}\n\nIssued by Unique Tutorial Platform\n`;
+                const blob = new Blob([content], { type: "text/plain" });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = `Certificate_${studentName.replace(/\s+/g, "_") || "Student"}.txt`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                toast({ description: "Certificate downloaded" });
+              }}><Download className="w-4 h-4 mr-2" />Download Certificate</Button>
             </CardContent>
           </Card>
         )}

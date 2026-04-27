@@ -18,6 +18,24 @@ const resources = [
 interface Props { onBack: () => void; }
 
 export function ResourceLibraryView({ onBack }: Props) {
+  const handleDownload = (res: typeof resources[0]) => {
+    if (!res.free) {
+      toast.info(`${res.title} is a Premium resource. Subscribe to unlock.`);
+      return;
+    }
+    const content = `${res.title}\nFormat: ${res.format}\nType: ${res.type}\n\nDownloaded from Unique Resource Library.\n`;
+    const blob = new Blob([content], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${res.title.replace(/\s+/g, "_")}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    toast.success(`Downloading ${res.title}`);
+  };
+
   return (
     <div>
       <Button variant="ghost" onClick={onBack} className="mb-4"><ArrowLeft className="w-4 h-4 mr-2" />Back</Button>
@@ -57,7 +75,7 @@ export function ResourceLibraryView({ onBack }: Props) {
                   </div>
                 </div>
                 <p className="text-[10px] text-muted-foreground mb-3">{res.downloads.toLocaleString()} downloads</p>
-                <Button size="sm" className="w-full h-8 text-xs bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700" onClick={() => toast.info("Download — coming soon")}>
+                <Button size="sm" className="w-full h-8 text-xs bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700" onClick={() => handleDownload(res)}>
                   <Download className="w-3 h-3 mr-1" />Download
                 </Button>
               </CardContent>

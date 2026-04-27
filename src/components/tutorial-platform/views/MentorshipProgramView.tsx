@@ -1,6 +1,10 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { ArrowLeft, Lightbulb, Star, Users, Clock, Calendar, MessageCircle } from "lucide-react";
 import { toast } from "sonner";
 
@@ -14,6 +18,31 @@ const mentors = [
 interface Props { onBack: () => void; }
 
 export function MentorshipProgramView({ onBack }: Props) {
+  const [bookFor, setBookFor] = useState<typeof mentors[0] | null>(null);
+  const [msgFor, setMsgFor] = useState<typeof mentors[0] | null>(null);
+  const [bookDate, setBookDate] = useState("");
+  const [bookTime, setBookTime] = useState("");
+  const [bookNote, setBookNote] = useState("");
+  const [message, setMessage] = useState("");
+
+  const handleBook = () => {
+    if (!bookDate || !bookTime) {
+      toast.error("Pick date and time");
+      return;
+    }
+    toast.success(`Session booked with ${bookFor?.name} on ${bookDate} at ${bookTime}`);
+    setBookFor(null); setBookDate(""); setBookTime(""); setBookNote("");
+  };
+
+  const handleSend = () => {
+    if (!message.trim()) {
+      toast.error("Message cannot be empty");
+      return;
+    }
+    toast.success(`Message sent to ${msgFor?.name}`);
+    setMsgFor(null); setMessage("");
+  };
+
   return (
     <div>
       <Button variant="ghost" onClick={onBack} className="mb-4"><ArrowLeft className="w-4 h-4 mr-2" />Back</Button>
@@ -66,15 +95,48 @@ export function MentorshipProgramView({ onBack }: Props) {
                 <span>Available: {mentor.availability}</span>
               </div>
               <div className="flex gap-2">
-                <Button className="flex-1 bg-gradient-to-r from-fuchsia-500 to-purple-600 hover:from-fuchsia-600 hover:to-purple-700 shadow-md" onClick={() => toast.info("Book Session — coming soon")}>
+                <Button className="flex-1 bg-gradient-to-r from-fuchsia-500 to-purple-600 hover:from-fuchsia-600 hover:to-purple-700 shadow-md" onClick={() => setBookFor(mentor)}>
                   <Clock className="w-4 h-4 mr-2" />Book Session
                 </Button>
-                <Button variant="outline" size="icon" onClick={() => toast.info("This action — coming soon")}><MessageCircle className="w-4 h-4" /></Button>
+                <Button variant="outline" size="icon" onClick={() => setMsgFor(mentor)}><MessageCircle className="w-4 h-4" /></Button>
               </div>
             </CardContent>
           </Card>
         ))}
       </div>
+
+      <Dialog open={!!bookFor} onOpenChange={(o) => !o && setBookFor(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Book Session — {bookFor?.name}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-3">
+            <div className="grid grid-cols-2 gap-3">
+              <Input type="date" value={bookDate} onChange={e => setBookDate(e.target.value)} />
+              <Input type="time" value={bookTime} onChange={e => setBookTime(e.target.value)} />
+            </div>
+            <Textarea placeholder="What do you want to discuss? (optional)" value={bookNote} onChange={e => setBookNote(e.target.value)} rows={3} />
+            <p className="text-xs text-muted-foreground">Rate: €{bookFor?.rate}/hr</p>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setBookFor(null)}>Cancel</Button>
+            <Button className="bg-gradient-to-r from-fuchsia-500 to-purple-600" onClick={handleBook}>Confirm Booking</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={!!msgFor} onOpenChange={(o) => !o && setMsgFor(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Message {msgFor?.name}</DialogTitle>
+          </DialogHeader>
+          <Textarea placeholder="Type your message..." value={message} onChange={e => setMessage(e.target.value)} rows={5} />
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setMsgFor(null)}>Cancel</Button>
+            <Button onClick={handleSend}>Send</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

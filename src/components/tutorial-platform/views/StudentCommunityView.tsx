@@ -20,6 +20,30 @@ interface Props { onBack: () => void; }
 
 export function StudentCommunityView({ onBack }: Props) {
   const [newThread, setNewThread] = useState(false);
+  const [threads, setThreads] = useState(mockThreads);
+  const [title, setTitle] = useState("");
+  const [body, setBody] = useState("");
+
+  const handlePost = () => {
+    if (!title.trim() || !body.trim()) {
+      toast.error("Title and content required");
+      return;
+    }
+    setThreads([{
+      id: Date.now(),
+      title: title.trim(),
+      author: "You",
+      replies: 0,
+      likes: 0,
+      time: "now",
+      course: "General",
+      pinned: false,
+      hot: false,
+    }, ...threads]);
+    setTitle(""); setBody("");
+    setNewThread(false);
+    toast.success("Thread posted!");
+  };
 
   return (
     <div>
@@ -31,7 +55,7 @@ export function StudentCommunityView({ onBack }: Props) {
           </div>
           <div>
             <h2 className="text-2xl font-black">Student Community</h2>
-            <p className="text-sm text-muted-foreground">{mockThreads.length} active discussions</p>
+            <p className="text-sm text-muted-foreground">{threads.length} active discussions</p>
           </div>
         </div>
         <Button onClick={() => setNewThread(!newThread)} className="bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700">
@@ -42,10 +66,10 @@ export function StudentCommunityView({ onBack }: Props) {
       {newThread && (
         <Card className="mb-6 border-sky-500/20">
           <CardContent className="pt-6 space-y-3">
-            <Input placeholder="Thread title..." className="h-11" />
-            <Textarea placeholder="What's on your mind? Share your question or insight..." rows={4} />
+            <Input placeholder="Thread title..." value={title} onChange={e => setTitle(e.target.value)} className="h-11" />
+            <Textarea placeholder="What's on your mind? Share your question or insight..." value={body} onChange={e => setBody(e.target.value)} rows={4} />
             <div className="flex gap-2">
-              <Button className="bg-gradient-to-r from-sky-500 to-blue-600" onClick={() => toast.info("Post Thread — coming soon")}><Send className="w-4 h-4 mr-2" />Post Thread</Button>
+              <Button className="bg-gradient-to-r from-sky-500 to-blue-600" onClick={handlePost}><Send className="w-4 h-4 mr-2" />Post Thread</Button>
               <Button variant="outline" onClick={() => setNewThread(false)}>Cancel</Button>
             </div>
           </CardContent>
@@ -53,7 +77,7 @@ export function StudentCommunityView({ onBack }: Props) {
       )}
 
       <div className="space-y-2">
-        {mockThreads.map(thread => (
+        {threads.map(thread => (
           <Card key={thread.id} className={`p-4 hover:shadow-lg cursor-pointer transition-all ${thread.pinned ? "border-amber-500/20 bg-amber-500/5" : ""}`}>
             <div className="flex items-start gap-3">
               <div className="w-8 h-8 rounded-full bg-gradient-to-br from-sky-500/20 to-blue-500/20 flex items-center justify-center shrink-0 mt-0.5 text-sm font-bold">

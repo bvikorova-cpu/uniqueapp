@@ -30,6 +30,21 @@ export function CourseReviewSystemView({ onBack }: Props) {
   const [newReview, setNewReview] = useState(false);
   const [reviewText, setReviewText] = useState("");
   const [rating, setRating] = useState(5);
+  const [reviews, setReviews] = useState(mockReviews);
+  const [voted, setVoted] = useState<Record<number, "up" | "down">>({});
+
+  const handleVote = (id: number, dir: "up" | "down") => {
+    if (voted[id]) {
+      toast({ description: "Already voted on this review" });
+      return;
+    }
+    setVoted({ ...voted, [id]: dir });
+    setReviews(reviews.map(r => r.id === id
+      ? { ...r, helpful: dir === "up" ? r.helpful + 1 : Math.max(0, r.helpful - 1) }
+      : r
+    ));
+    toast({ description: dir === "up" ? "Marked helpful" : "Marked not helpful" });
+  };
 
   const analyzeSentiment = async () => {
     setAnalyzing(true);
@@ -120,7 +135,7 @@ export function CourseReviewSystemView({ onBack }: Props) {
       )}
 
       <div className="space-y-3">
-        {mockReviews.map(review => (
+        {reviews.map(review => (
           <Card key={review.id} className="p-4 hover:shadow-lg transition-all">
             <div className="flex items-start justify-between mb-2">
               <div>
@@ -138,8 +153,8 @@ export function CourseReviewSystemView({ onBack }: Props) {
             </div>
             <p className="text-sm mb-3">{review.text}</p>
             <div className="flex items-center gap-3">
-              <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={() => toast({ description: "Helpful ( ) — coming soon" })}><ThumbsUp className="w-3 h-3 mr-1" />Helpful ({review.helpful})</Button>
-              <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={() => toast({ description: "This action — coming soon" })}><ThumbsDown className="w-3 h-3 mr-1" /></Button>
+              <Button variant="ghost" size="sm" className={`h-7 text-xs ${voted[review.id] === "up" ? "text-emerald-600" : ""}`} onClick={() => handleVote(review.id, "up")}><ThumbsUp className="w-3 h-3 mr-1" />Helpful ({review.helpful})</Button>
+              <Button variant="ghost" size="sm" className={`h-7 text-xs ${voted[review.id] === "down" ? "text-rose-600" : ""}`} onClick={() => handleVote(review.id, "down")}><ThumbsDown className="w-3 h-3 mr-1" /></Button>
             </div>
           </Card>
         ))}

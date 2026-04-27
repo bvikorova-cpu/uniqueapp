@@ -23,6 +23,20 @@ const styleColors: Record<string, string> = {
 };
 
 export function CertificateGalleryView({ onBack }: Props) {
+  const handleDownload = (cert: typeof certificates[0]) => {
+    const content = `===== CERTIFICATE OF COMPLETION =====\n\nAwarded to: ${cert.student}\nCourse: ${cert.course}\nStyle: ${cert.style}\nDate: ${cert.date}\n\nIssued by Unique Tutorial Platform\nVerification ID: CERT-${cert.id}-${Date.now()}\n`;
+    const blob = new Blob([content], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `Certificate_${cert.student.replace(/\s+/g, "_")}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    toast.success("Certificate downloaded");
+  };
+
   return (
     <div>
       <Button variant="ghost" onClick={onBack} className="mb-4"><ArrowLeft className="w-4 h-4 mr-2" />Back</Button>
@@ -52,7 +66,7 @@ export function CertificateGalleryView({ onBack }: Props) {
                 <Badge variant="outline" className="text-[10px]">{cert.style}</Badge>
                 <span className="text-xs text-muted-foreground">{cert.date}</span>
               </div>
-              <Button size="sm" variant="outline" className="w-full h-8 text-xs" onClick={() => toast.info("Download Certificate — coming soon")}>
+              <Button size="sm" variant="outline" className="w-full h-8 text-xs" onClick={() => handleDownload(cert)}>
                 <Download className="w-3 h-3 mr-1" />Download Certificate
               </Button>
             </CardContent>
