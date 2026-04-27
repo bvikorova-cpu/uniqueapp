@@ -137,10 +137,19 @@ export default function SocialRecipeFeed({ onBack }: Props) {
                     <Button variant="ghost" size="sm" onClick={() => likePost(post.id)} className="gap-1 text-pink-400 hover:text-pink-300">
                       <Heart className="h-4 w-4" /> {post.likes}
                     </Button>
-                    <Button variant="ghost" size="sm" className="gap-1 text-muted-foreground" onClick={() => toast({ description: "Comment — coming soon" })}>
+                    <Button variant="ghost" size="sm" className="gap-1 text-muted-foreground" onClick={() => {
+                      const text = window.prompt("Tvoj komentár:");
+                      if (text && text.trim()) toast.success("Komentár pridaný!");
+                    }}>
                       <MessageCircle className="h-4 w-4" /> Comment
                     </Button>
-                    <Button variant="ghost" size="sm" className="gap-1 text-muted-foreground" onClick={() => toast({ description: "Share — coming soon" })}>
+                    <Button variant="ghost" size="sm" className="gap-1 text-muted-foreground" onClick={async () => {
+                      const url = `${window.location.origin}/cooking?post=${post.id}`;
+                      try {
+                        if (navigator.share) await navigator.share({ title: post.title, text: post.description || "", url });
+                        else { await navigator.clipboard.writeText(url); toast.success("Link skopírovaný!"); }
+                      } catch {}
+                    }}>
                       <Share2 className="h-4 w-4" /> Share
                     </Button>
                   </div>

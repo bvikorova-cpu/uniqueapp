@@ -122,10 +122,26 @@ export const ShoppingList = () => {
               </div>
             </div>
             <div className="flex gap-2">
-              <Button variant="outline" size="icon" onClick={() => toast.info("This action — coming soon")}>
+              <Button variant="outline" size="icon" onClick={async () => {
+                const text = `${recipe.name}\n\n` + (recipe.ingredients || []).map((i: any) => `• ${i.name || i}`).join("\n");
+                try {
+                  if (navigator.share) await navigator.share({ title: recipe.name, text });
+                  else { await navigator.clipboard.writeText(text); toast.success("Skopírované do schránky!"); }
+                } catch {}
+              }}>
                 <Share2 className="h-4 w-4" />
               </Button>
-              <Button variant="outline" size="icon" onClick={() => toast.info("This action — coming soon")}>
+              <Button variant="outline" size="icon" onClick={() => {
+                const text = `${recipe.name}\n\n` + (recipe.ingredients || []).map((i: any) => `• ${i.name || i}`).join("\n");
+                const blob = new Blob([text], { type: "text/plain" });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = `${recipe.name}-shopping-list.txt`;
+                document.body.appendChild(a); a.click(); a.remove();
+                URL.revokeObjectURL(url);
+                toast.success("Stiahnuté");
+              }}>
                 <Download className="h-4 w-4" />
               </Button>
             </div>
