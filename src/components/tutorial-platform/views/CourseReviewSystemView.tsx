@@ -30,6 +30,21 @@ export function CourseReviewSystemView({ onBack }: Props) {
   const [newReview, setNewReview] = useState(false);
   const [reviewText, setReviewText] = useState("");
   const [rating, setRating] = useState(5);
+  const [reviews, setReviews] = useState(mockReviews);
+  const [voted, setVoted] = useState<Record<number, "up" | "down">>({});
+
+  const handleVote = (id: number, dir: "up" | "down") => {
+    if (voted[id]) {
+      toast({ description: "Already voted on this review" });
+      return;
+    }
+    setVoted({ ...voted, [id]: dir });
+    setReviews(reviews.map(r => r.id === id
+      ? { ...r, helpful: dir === "up" ? r.helpful + 1 : Math.max(0, r.helpful - 1) }
+      : r
+    ));
+    toast({ description: dir === "up" ? "Marked helpful" : "Marked not helpful" });
+  };
 
   const analyzeSentiment = async () => {
     setAnalyzing(true);
