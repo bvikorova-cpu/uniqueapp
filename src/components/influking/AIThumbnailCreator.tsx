@@ -193,7 +193,7 @@ const AIThumbnailCreator = ({ onBack }: AIThumbnailCreatorProps) => {
                     </div>
                   </div>
                   <div className="flex gap-2">
-                    <Button variant="outline" className="flex-1 gap-1" onClick={() => toast.info("Download — coming soon")}>
+                    <Button variant="outline" className="flex-1 gap-1" onClick={() => toast({ description: "Download — coming soon" })}>
                       <Download className="h-4 w-4" /> Download
                     </Button>
                     <Button className="flex-1 gap-1" onClick={() => { setGeneratedThumbnail(null); setTitle(""); }}>

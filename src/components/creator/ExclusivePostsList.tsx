@@ -191,7 +191,7 @@ export function ExclusivePostsList({ creatorId, userTierId, isSubscribed }: Excl
                     variant="ghost"
                     size="sm"
                     className="flex items-center gap-2"
-                   onClick={() => toast.info("This action — coming soon")}>
+                   onClick={() => toast({ description: "This action — coming soon" })}>
                     <MessageCircle className="h-4 w-4" />
                     {post.comments_count || 0}
                   </Button>

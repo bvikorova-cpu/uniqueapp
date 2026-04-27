@@ -94,7 +94,7 @@ const VirtualEscapeRoom = () => {
                         <li key={j} className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-emerald-500" />{f}</li>
                       ))}
                     </ul>
-                    <Button className="w-full" variant={plan.popular ? "default" : "outline"} onClick={() => toast.info("Get Started — coming soon")}>Get Started</Button>
+                    <Button className="w-full" variant={plan.popular ? "default" : "outline"} onClick={() => toast({ description: "Get Started — coming soon" })}>Get Started</Button>
                   </CardContent>
                 </Card>
               ))}

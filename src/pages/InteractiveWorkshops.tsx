@@ -239,10 +239,10 @@ const InteractiveWorkshops = () => {
               Request a custom workshop for your team or suggest a new topic
             </p>
             <div className="flex gap-4 justify-center">
-              <Button size="lg" variant="outline" onClick={() => toast.info("Request Custom Workshop — coming soon")}>
+              <Button size="lg" variant="outline" onClick={() => toast({ description: "Request Custom Workshop — coming soon" })}>
                 Request Custom Workshop
               </Button>
-              <Button size="lg" onClick={() => toast.info("Suggest a Topic — coming soon")}>
+              <Button size="lg" onClick={() => toast({ description: "Suggest a Topic — coming soon" })}>
                 Suggest a Topic
               </Button>
             </div>
