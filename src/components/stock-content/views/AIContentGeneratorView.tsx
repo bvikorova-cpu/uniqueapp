@@ -114,7 +114,20 @@ export function AIContentGeneratorView({ onBack }: AIContentGeneratorViewProps) 
           {generatedImage ? (
             <div className="space-y-4">
               <img src={generatedImage} alt="Generated" className="w-full rounded-lg shadow-lg" />
-              <Button className="w-full" variant="outline" onClick={() => toast({ description: "Upload to Library — coming soon" })}>
+              <Button className="w-full" variant="outline" onClick={async () => {
+                try {
+                  const { supabase } = await import("@/integrations/supabase/client");
+                  const { data: { user } } = await supabase.auth.getUser();
+                  if (!user) { toast({ description: "Najprv sa prihlás" }); return; }
+                  const fileName = `stock-${user.id}-${Date.now()}.png`;
+                  const blob = await (await fetch(generatedImage)).blob();
+                  const { error } = await supabase.storage.from("stock-content").upload(fileName, blob, { contentType: "image/png", upsert: false });
+                  if (error) throw error;
+                  toast({ description: "Pridané do knižnice!" });
+                } catch (e: any) {
+                  toast({ description: e.message || "Upload zlyhal" });
+                }
+              }}>
                 Upload to Library
               </Button>
             </div>

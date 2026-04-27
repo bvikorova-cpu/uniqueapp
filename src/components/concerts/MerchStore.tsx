@@ -34,7 +34,18 @@ export const MerchStore = ({ onBack }: Props) => {
               <h3 className="font-bold text-sm mb-1">{item.name}</h3>
               <Badge variant="secondary" className="text-xs mb-2">{item.category}</Badge>
               <p className="text-lg font-black text-primary">€{item.price.toFixed(2)}</p>
-              <Button size="sm" className="w-full mt-3" onClick={() => toast.info("Buy — coming soon")}>
+              <Button size="sm" className="w-full mt-3" onClick={async () => {
+                try {
+                  const { supabase } = await import("@/integrations/supabase/client");
+                  const { data: { session } } = await supabase.auth.getSession();
+                  if (!session) { toast.error("Najprv sa prihlás"); return; }
+                  const { data, error } = await supabase.functions.invoke("create-checkout", {
+                    body: { product_type: "concert_merch", name: item.name, amount: item.price, category: item.category }
+                  });
+                  if (error) throw error;
+                  if (data?.url) window.open(data.url, "_blank");
+                } catch (e: any) { toast.error(e.message || "Checkout zlyhal"); }
+              }}>
                 <ShoppingBag className="h-4 w-4 mr-1" />Buy
               </Button>
             </CardContent>

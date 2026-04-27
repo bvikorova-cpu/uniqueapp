@@ -43,10 +43,16 @@ const MultiverseCommunity = ({ onBack }: MultiverseCommunityProps) => {
               </div>
               <p className="text-xs text-muted-foreground">{explorer.universes} universes · {explorer.specialty}</p>
               <div className="flex gap-2">
-                <Button size="sm" variant="outline" className="flex-1 text-xs h-7" onClick={() => toast.info("Follow — coming soon")}>
+                <Button size="sm" variant="outline" className="flex-1 text-xs h-7" onClick={() => {
+                  const followed = JSON.parse(localStorage.getItem("multiverse_followed") || "[]");
+                  if (followed.includes(explorer.name)) { toast.info(`Už sleduješ ${explorer.name}`); return; }
+                  followed.push(explorer.name);
+                  localStorage.setItem("multiverse_followed", JSON.stringify(followed));
+                  toast.success(`Sleduješ ${explorer.name}!`);
+                }}>
                   <Users className="w-3 h-3 mr-1" /> Follow
                 </Button>
-                <Button size="sm" variant="outline" className="flex-1 text-xs h-7" onClick={() => toast.info("Message — coming soon")}>
+                <Button size="sm" variant="outline" className="flex-1 text-xs h-7" onClick={() => { window.location.href = `/messenger?to=${encodeURIComponent(explorer.name)}`; }}>
                   <MessageSquare className="w-3 h-3 mr-1" /> Message
                 </Button>
               </div>
