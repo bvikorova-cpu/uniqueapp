@@ -429,8 +429,14 @@ export default function PageDetail() {
               </>
             ) : (
               <>
-                <Button variant="outline" size="icon" className="h-9 w-9" onClick={() => console.info("[Coming soon] This action")}>
-                  <Bell className="h-4 w-4" />
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="h-9 w-9"
+                  onClick={togglePageNotifications}
+                  title={notifyEnabled ? "Mute notifications" : "Enable notifications"}
+                >
+                  {notifyEnabled ? <Bell className="h-4 w-4" /> : <BellOff className="h-4 w-4" />}
                 </Button>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -689,18 +695,13 @@ export default function PageDetail() {
                       )}
                       
                       <div className="flex items-center gap-4 mt-4 pt-3 border-t">
-                        <Button variant="ghost" size="sm" onClick={() => console.info("[Coming soon] This action")}>
-                          <Heart className="h-4 w-4 mr-1" />
-                          {post.likes_count || 0}
-                        </Button>
-                        <Button variant="ghost" size="sm" onClick={() => console.info("[Coming soon] This action")}>
-                          <MessageCircle className="h-4 w-4 mr-1" />
-                          {post.comments_count || 0}
-                        </Button>
-                        <Button variant="ghost" size="sm" onClick={() => console.info("[Coming soon] This action")}>
-                          <Share2 className="h-4 w-4" />
-                        </Button>
-                      </div>
+                      <WallPostActions
+                        postId={post.id}
+                        initialLikesCount={post.likes_count || 0}
+                        initialCommentsCount={post.comments_count || 0}
+                        initialRepostsCount={post.reposts_count || 0}
+                        variant="compact"
+                      />
                     </div>
                   </div>
                 </Card>
