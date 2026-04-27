@@ -138,7 +138,13 @@ export default function CalorieQuests() {
                   <span>{challenge.participants_count} participants</span>
                   <span>Entry: €{challenge.entry_fee}</span>
                 </div>
-                <Button size="sm" className="w-full gap-1" onClick={() => toast.info("Join Challenge — coming soon")}><Zap className="h-3 w-3" /> Join Challenge</Button>
+                <Button size="sm" className="w-full gap-1" onClick={() => {
+                  const joined = JSON.parse(localStorage.getItem("nutrition_challenges_joined") || "[]");
+                  if (joined.includes(challenge.id)) { toast.info("Already joined"); return; }
+                  joined.push(challenge.id);
+                  localStorage.setItem("nutrition_challenges_joined", JSON.stringify(joined));
+                  toast.success(`Joined "${challenge.title}"! Entry: €${challenge.entry_fee}`);
+                }}><Zap className="h-3 w-3" /> Join Challenge</Button>
               </div>
             ))}
           </CardContent>
@@ -163,7 +169,19 @@ export default function CalorieQuests() {
               <span className="text-sm">{item.text}</span>
             </div>
           ))}
-          <Button className="w-full mt-4 gap-2 bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600" onClick={() => toast.info("Upgrade to Hero Pass (€6.99/month) — coming soon")}>
+          <Button className="w-full mt-4 gap-2 bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600" onClick={async () => {
+            try {
+              const { data: { session } } = await supabase.auth.getSession();
+              if (!session) { toast.error("Please sign in first"); return; }
+              const { data, error } = await supabase.functions.invoke("create-checkout", {
+                body: { product_type: "hero_pass_subscription", plan_name: "Hero Pass", amount: 6.99, interval: "month" }
+              });
+              if (error) throw error;
+              if (data?.url) window.open(data.url, "_blank");
+            } catch (e: any) {
+              toast.error(e.message || "Failed to start checkout");
+            }
+          }}>
             <Award className="h-4 w-4" /> Upgrade to Hero Pass (€6.99/month)
           </Button>
         </CardContent>

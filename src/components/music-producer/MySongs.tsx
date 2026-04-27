@@ -116,7 +116,21 @@ export const MySongs = () => {
 
             <div className="flex flex-col gap-2">
               {song.status === 'completed' && song.song_url && (
-                <Button variant="outline" size="sm" className="gap-2" onClick={() => toast.info("Export — coming soon")}>
+                <Button variant="outline" size="sm" className="gap-2" onClick={async () => {
+                  try {
+                    const a = document.createElement("a");
+                    a.href = song.song_url;
+                    a.download = `${song.title || "song"}.mp3`;
+                    a.target = "_blank";
+                    a.rel = "noopener";
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                    toast.success("Download started");
+                  } catch (e) {
+                    window.open(song.song_url, "_blank");
+                  }
+                }}>
                   <Download className="h-4 w-4" />
                   Export
                 </Button>
