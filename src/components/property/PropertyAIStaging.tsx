@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, Wand2, Upload, Palette, Sofa, Sparkles, Image } from "lucide-react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 interface Props { onBack: () => void; }
 
@@ -24,11 +25,47 @@ const ROOMS = [
 ];
 
 export const PropertyAIStaging = ({ onBack }: Props) => {
+  const navigate = useNavigate();
   const [selectedStyle, setSelectedStyle] = useState<string>("");
   const [selectedRoom, setSelectedRoom] = useState<string>("");
   const [uploaded, setUploaded] = useState(false);
   const [generating, setGenerating] = useState(false);
   const [generated, setGenerated] = useState(false);
+
+  const downloadStagingConfig = () => {
+    const room = ROOMS.find(r => r.id === selectedRoom)?.name || selectedRoom;
+    const style = STYLES.find(s => s.id === selectedStyle);
+    const content = [
+      "AI Home Staging — Configuration",
+      "================================",
+      `Generated: ${new Date().toLocaleString()}`,
+      `Room: ${room}`,
+      `Style: ${style?.name} ${style?.emoji}`,
+      `Description: ${style?.desc}`,
+      "",
+      "Apply this configuration when listing your property to attract more views.",
+    ].join("\n");
+    const blob = new Blob([content], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `staging-${selectedRoom}-${selectedStyle}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+    toast.success("Staging config downloaded");
+  };
+
+  const useInListing = () => {
+    const params = new URLSearchParams({
+      staged: "1",
+      room: selectedRoom,
+      style: selectedStyle,
+    });
+    navigate(`/property/new?${params.toString()}`);
+    toast.success("Staging applied to your new listing");
+  };
 
   const handleGenerate = () => {
     setGenerating(true);
@@ -149,8 +186,8 @@ export const PropertyAIStaging = ({ onBack }: Props) => {
                     </div>
                   </div>
                   <div className="flex gap-2 justify-center">
-                    <Button size="sm" variant="outline" onClick={() => toast.info("Download — coming soon")}>Download</Button>
-                    <Button size="sm" className="bg-gradient-to-r from-sky-500 to-blue-600" onClick={() => toast.info("Use in Listing — coming soon")}>Use in Listing</Button>
+                    <Button size="sm" variant="outline" onClick={downloadStagingConfig}>Download</Button>
+                    <Button size="sm" className="bg-gradient-to-r from-sky-500 to-blue-600" onClick={useInListing}>Use in Listing</Button>
                   </div>
                 </CardContent>
               </Card>
