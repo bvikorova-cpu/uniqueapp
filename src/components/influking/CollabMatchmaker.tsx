@@ -187,7 +187,12 @@ const CollabMatchmaker = ({ onBack }: CollabMatchmakerProps) => {
                       </div>
                     </div>
 
-                    <Button variant="outline" className="w-full gap-2 group-hover:bg-primary group-hover:text-primary-foreground transition-colors" size="sm" onClick={() => toast({ description: "Send Proposal — coming soon" })}>
+                    <Button variant="outline" className="w-full gap-2 group-hover:bg-primary group-hover:text-primary-foreground transition-colors" size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedInfluencer(inf);
+                        setShowProposalDialog(true);
+                      }}>
                       <Send className="h-3 w-3" /> Send Proposal
                     </Button>
                   </CardContent>

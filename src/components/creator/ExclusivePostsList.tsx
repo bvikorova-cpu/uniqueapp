@@ -191,7 +191,17 @@ export function ExclusivePostsList({ creatorId, userTierId, isSubscribed }: Excl
                     variant="ghost"
                     size="sm"
                     className="flex items-center gap-2"
-                   onClick={() => toast({ description: "This action — coming soon" })}>
+                    onClick={() => {
+                      const el = document.getElementById(`post-comments-${post.id}`);
+                      if (el) {
+                        el.scrollIntoView({ behavior: "smooth", block: "center" });
+                      } else {
+                        toast({
+                          title: "💬 Comments",
+                          description: `${post.comments_count || 0} comments on this post`,
+                        });
+                      }
+                    }}>
                     <MessageCircle className="h-4 w-4" />
                     {post.comments_count || 0}
                   </Button>

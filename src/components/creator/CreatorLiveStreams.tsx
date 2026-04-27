@@ -184,7 +184,28 @@ export function CreatorLiveStreams({ creatorId }: CreatorLiveStreamsProps) {
                   </div>
                   <div className="mt-4">
                     {stream.is_free || hasAccess(stream.id) ? (
-                      <Button className="w-full md:w-auto" onClick={() => toast({ description: "This action — coming soon" })}>
+                      <Button
+                        className="w-full md:w-auto"
+                        onClick={() => {
+                          if (stream.status === "live") {
+                            window.open(`/live-stream/${stream.id}`, "_blank");
+                          } else if (stream.scheduled_at) {
+                            // Generate ICS calendar reminder
+                            const start = new Date(stream.scheduled_at);
+                            const end = new Date(start.getTime() + 60 * 60 * 1000);
+                            const fmt = (d: Date) => d.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
+                            const ics = `BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nUID:${stream.id}@unique\nDTSTAMP:${fmt(new Date())}\nDTSTART:${fmt(start)}\nDTEND:${fmt(end)}\nSUMMARY:${stream.title}\nDESCRIPTION:${stream.description || ""}\nEND:VEVENT\nEND:VCALENDAR`;
+                            const blob = new Blob([ics], { type: "text/calendar" });
+                            const url = URL.createObjectURL(blob);
+                            const a = document.createElement("a");
+                            a.href = url;
+                            a.download = `${stream.title.replace(/\s+/g, "_")}.ics`;
+                            a.click();
+                            URL.revokeObjectURL(url);
+                            toast({ title: "📅 Reminder Saved", description: "Calendar event downloaded" });
+                          }
+                        }}
+                      >
                         <Play className="mr-2 h-4 w-4" />
                         {stream.status === "live" ? "Watch Now" : "Set Reminder"}
                       </Button>
