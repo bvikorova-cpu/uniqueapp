@@ -106,4 +106,37 @@ export function MentorshipProgramView({ onBack }: Props) {
       </div>
     </div>
   );
+
+      <Dialog open={!!bookFor} onOpenChange={(o) => !o && setBookFor(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Book Session — {bookFor?.name}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-3">
+            <div className="grid grid-cols-2 gap-3">
+              <Input type="date" value={bookDate} onChange={e => setBookDate(e.target.value)} />
+              <Input type="time" value={bookTime} onChange={e => setBookTime(e.target.value)} />
+            </div>
+            <Textarea placeholder="What do you want to discuss? (optional)" value={bookNote} onChange={e => setBookNote(e.target.value)} rows={3} />
+            <p className="text-xs text-muted-foreground">Rate: €{bookFor?.rate}/hr</p>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setBookFor(null)}>Cancel</Button>
+            <Button className="bg-gradient-to-r from-fuchsia-500 to-purple-600" onClick={handleBook}>Confirm Booking</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={!!msgFor} onOpenChange={(o) => !o && setMsgFor(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Message {msgFor?.name}</DialogTitle>
+          </DialogHeader>
+          <Textarea placeholder="Type your message..." value={message} onChange={e => setMessage(e.target.value)} rows={5} />
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setMsgFor(null)}>Cancel</Button>
+            <Button onClick={handleSend}>Send</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 }
