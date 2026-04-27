@@ -26,6 +26,7 @@ import {
   Camera,
   MoreHorizontal,
   Bell,
+  BellOff,
   ImagePlus,
   Video,
   Smile,
@@ -47,6 +48,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { WallPostActions } from "@/components/wall/WallPostActions";
 
 const EMOJIS = ["😊", "😂", "❤️", "🔥", "👍", "🎉", "😍", "🤔", "😢", "😎", "🙏", "💪"];
 
@@ -67,6 +69,22 @@ export default function EventDetail() {
   const [editTitle, setEditTitle] = useState("");
   const [editDescription, setEditDescription] = useState("");
   const [editLocation, setEditLocation] = useState("");
+  const [notifyEnabled, setNotifyEnabled] = useState<boolean>(() => {
+    if (typeof window === "undefined") return true;
+    return localStorage.getItem(`event-notify-${eventId}`) !== "off";
+  });
+
+  const toggleEventNotifications = () => {
+    const next = !notifyEnabled;
+    setNotifyEnabled(next);
+    localStorage.setItem(`event-notify-${eventId}`, next ? "on" : "off");
+    toast({
+      title: next ? "Notifications enabled" : "Notifications muted",
+      description: next
+        ? "You'll be notified about updates to this event."
+        : "You won't receive updates from this event.",
+    });
+  };
 
   const { data: user } = useQuery({
     queryKey: ["current-user"],
