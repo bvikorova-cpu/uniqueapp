@@ -1,18 +1,66 @@
 import { useEffect, useState } from "react";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
-import { Heart, MessageCircle, Share2, Loader2 } from "lucide-react";
+import {
+  Heart,
+  MessageCircle,
+  Share2,
+  Loader2,
+  Info,
+  AlertCircle,
+} from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
+
+const REPOST_MIN = 3;
+const REPOST_MAX = 280;
+
+const repostSchema = z.object({
+  comment: z
+    .string()
+    .trim()
+    .min(REPOST_MIN, {
+      message: `Add at least ${REPOST_MIN} characters so your followers get context.`,
+    })
+    .max(REPOST_MAX, {
+      message: `Comment must be ${REPOST_MAX} characters or fewer.`,
+    }),
+});
+
+function friendlyRepostError(err: { code?: string; message?: string } | null) {
+  if (!err) return "Failed to share post. Please try again.";
+  switch (err.code) {
+    case "23505":
+      return "You've already shared this post.";
+    case "23503":
+      return "This post is no longer available.";
+    case "42501":
+      return "You don't have permission to share this post.";
+    case "PGRST301":
+    case "401":
+      return "Your session expired. Please sign in again.";
+    default:
+      return err.message ?? "Failed to share post. Please try again.";
+  }
+}
+
 
 interface WallPostActionsProps {
   postId: string;
@@ -56,6 +104,7 @@ export function WallPostActions({
   const [showShareDialog, setShowShareDialog] = useState(false);
   const [repostComment, setRepostComment] = useState("");
   const [reposting, setReposting] = useState(false);
+  const [repostError, setRepostError] = useState<string | null>(null);
 
   useEffect(() => {
     let mounted = true;
@@ -199,39 +248,61 @@ export function WallPostActions({
   };
 
   const submitRepost = async () => {
-    if (!requireAuth()) return;
-    const comment = repostComment.trim();
-    if (!comment) {
-      toast({
-        title: "Comment required",
-        description: "Add a short comment to share this post.",
-        variant: "destructive",
-      });
+    setRepostError(null);
+    if (!requireAuth()) {
+      setRepostError("You must be signed in to share this post.");
       return;
     }
+
+    const parsed = repostSchema.safeParse({ comment: repostComment });
+    if (!parsed.success) {
+      const firstIssue = parsed.error.issues[0];
+      setRepostError(firstIssue?.message ?? "Invalid comment.");
+      return;
+    }
+
     setReposting(true);
     try {
       const { error } = await supabase.from("reposts").insert({
         user_id: userId!,
         original_post_id: postId,
-        comment,
+        comment: parsed.data.comment,
       });
       if (error) throw error;
       setRepostsCount((c) => c + 1);
       setShowShareDialog(false);
       setRepostComment("");
+      setRepostError(null);
       toast({
         title: "Shared",
         description: "Post was shared to your profile.",
       });
     } catch (err: any) {
+      const friendly = friendlyRepostError({
+        code: err?.code,
+        message: err?.message,
+      });
+      setRepostError(friendly);
       toast({
-        title: "Error",
-        description: err.message ?? "Failed to share post",
+        title: "Couldn't share",
+        description: friendly,
         variant: "destructive",
       });
     } finally {
       setReposting(false);
+    }
+  };
+
+  const handleOpenShareDialog = () => {
+    if (!requireAuth()) return;
+    setRepostError(null);
+    setShowShareDialog(true);
+  };
+
+  const handleShareDialogChange = (open: boolean) => {
+    setShowShareDialog(open);
+    if (!open) {
+      setRepostError(null);
     }
   };
 
@@ -262,19 +333,26 @@ export function WallPostActions({
           {labeled ? "Comment" : commentsCount}
           {labeled && commentsCount > 0 ? ` (${commentsCount})` : ""}
         </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          className={labeled ? "flex-1" : ""}
-          onClick={() => {
-            if (!requireAuth()) return;
-            setShowShareDialog(true);
-          }}
-        >
-          <Share2 className="h-4 w-4 mr-1" />
-          {labeled ? "Share" : repostsCount}
-          {labeled && repostsCount > 0 ? ` (${repostsCount})` : ""}
-        </Button>
+        <TooltipProvider delayDuration={300}>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="sm"
+                className={labeled ? "flex-1" : ""}
+                onClick={handleOpenShareDialog}
+                aria-label="Share this post to your profile"
+              >
+                <Share2 className="h-4 w-4 mr-1" />
+                {labeled ? "Share" : repostsCount}
+                {labeled && repostsCount > 0 ? ` (${repostsCount})` : ""}
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="top">
+              Share with a quick comment so your followers know why it matters.
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </div>
 
       {showComments && (
@@ -330,21 +408,87 @@ export function WallPostActions({
         </div>
       )}
 
-      <Dialog open={showShareDialog} onOpenChange={setShowShareDialog}>
+      <Dialog open={showShareDialog} onOpenChange={handleShareDialogChange}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Share to your profile</DialogTitle>
+            <DialogTitle className="flex items-center gap-2">
+              Share to your profile
+              <TooltipProvider delayDuration={200}>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      type="button"
+                      className="text-muted-foreground hover:text-foreground transition-colors"
+                      aria-label="Sharing tips"
+                    >
+                      <Info className="h-4 w-4" />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent side="right" className="max-w-xs">
+                    Add at least {REPOST_MIN} characters explaining why you're sharing.
+                    Your followers will see your comment alongside the original post.
+                    Maximum {REPOST_MAX} characters.
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </DialogTitle>
+            <DialogDescription>
+              Your repost will appear on your profile with the original post embedded.
+            </DialogDescription>
           </DialogHeader>
-          <Textarea
-            value={repostComment}
-            onChange={(e) => setRepostComment(e.target.value)}
-            placeholder="Add a comment about this post…"
-            rows={3}
-          />
+
+          <div className="space-y-2">
+            <Textarea
+              value={repostComment}
+              onChange={(e) => {
+                setRepostComment(e.target.value);
+                if (repostError) setRepostError(null);
+              }}
+              placeholder="Add a comment about this post…"
+              rows={3}
+              maxLength={REPOST_MAX + 50}
+              aria-invalid={!!repostError}
+              aria-describedby={repostError ? "repost-error" : "repost-counter"}
+              className={
+                repostError
+                  ? "border-destructive focus-visible:ring-destructive"
+                  : ""
+              }
+            />
+            <div className="flex items-center justify-between text-xs">
+              {repostError ? (
+                <div
+                  id="repost-error"
+                  role="alert"
+                  className="flex items-start gap-1.5 text-destructive flex-1"
+                >
+                  <AlertCircle className="h-3.5 w-3.5 mt-0.5 shrink-0" />
+                  <span>{repostError}</span>
+                </div>
+              ) : (
+                <span className="text-muted-foreground">
+                  Tip: explain why this post matters to your followers.
+                </span>
+              )}
+              <span
+                id="repost-counter"
+                className={`tabular-nums ml-2 shrink-0 ${
+                  repostComment.trim().length > REPOST_MAX
+                    ? "text-destructive font-semibold"
+                    : repostComment.trim().length >= REPOST_MIN
+                      ? "text-muted-foreground"
+                      : "text-muted-foreground/70"
+                }`}
+              >
+                {repostComment.trim().length}/{REPOST_MAX}
+              </span>
+            </div>
+          </div>
+
           <DialogFooter>
             <Button
               variant="outline"
-              onClick={() => setShowShareDialog(false)}
+              onClick={() => handleShareDialogChange(false)}
               disabled={reposting}
             >
               Cancel
@@ -354,6 +498,8 @@ export function WallPostActions({
                 <>
                   <Loader2 className="h-4 w-4 mr-2 animate-spin" /> Sharing…
                 </>
+              ) : repostError ? (
+                "Try again"
               ) : (
                 "Share"
               )}
