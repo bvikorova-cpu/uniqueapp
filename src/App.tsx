@@ -218,7 +218,7 @@ import {
   ComedyLiveViewer,
   LiveConcerts,
   MusicianDashboard,
-  AIMusicProducer,
+  
   ContentStudio,
   FashionStudio,
   BeautyStudio,
@@ -567,7 +567,7 @@ const App = () => {
                         <Route path="/brand-builder" element={<BrandBuilder />} />
                         <Route path="/home-designer" element={<HomeDesigner />} />
                         <Route path="/beauty-studio" element={<BeautyStudio />} />
-                        <Route path="/ai-music-producer" element={<AIMusicProducer />} />
+                        
                         <Route path="/plant-care" element={<PlantCare />} />
                         <Route path="/ai-tattoo" element={<AITattoo />} />
                         <Route path="/kids-homework" element={<KidsHomework />} />
