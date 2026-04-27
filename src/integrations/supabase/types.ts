@@ -81,6 +81,13 @@ export type Database = {
             foreignKeyName: "absolution_votes_confession_id_fkey"
             columns: ["confession_id"]
             isOneToOne: false
+            referencedRelation: "confessions_feed"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "absolution_votes_confession_id_fkey"
+            columns: ["confession_id"]
+            isOneToOne: false
             referencedRelation: "confessions_public"
             referencedColumns: ["id"]
           },
@@ -32434,6 +32441,13 @@ export type Database = {
             foreignKeyName: "redemption_progress_confession_id_fkey"
             columns: ["confession_id"]
             isOneToOne: false
+            referencedRelation: "confessions_feed"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "redemption_progress_confession_id_fkey"
+            columns: ["confession_id"]
+            isOneToOne: false
             referencedRelation: "confessions_public"
             referencedColumns: ["id"]
           },
@@ -42031,6 +42045,33 @@ export type Database = {
         }
         Relationships: []
       }
+      confessions_feed: {
+        Row: {
+          confession_text: string | null
+          created_at: string | null
+          id: string | null
+          is_anonymous: boolean | null
+          sin_category: string | null
+          user_id: string | null
+        }
+        Insert: {
+          confession_text?: string | null
+          created_at?: string | null
+          id?: string | null
+          is_anonymous?: boolean | null
+          sin_category?: string | null
+          user_id?: never
+        }
+        Update: {
+          confession_text?: string | null
+          created_at?: string | null
+          id?: string | null
+          is_anonymous?: boolean | null
+          sin_category?: string | null
+          user_id?: never
+        }
+        Relationships: []
+      }
       confessions_public: {
         Row: {
           absolution_tokens_used: number | null
@@ -42603,7 +42644,28 @@ export type Database = {
       generate_referral_code: { Args: never; Returns: string }
       generate_story_share_code: { Args: never; Returns: string }
       get_affiliate_reward_eur: { Args: { _user_id: string }; Returns: number }
+      get_approved_safety_stories: {
+        Args: { _limit?: number; _offset?: number }
+        Returns: {
+          created_at: string
+          id: string
+          is_anonymous: boolean
+          story_data: Json
+          user_id: string
+        }[]
+      }
       get_auth_uid: { Args: never; Returns: string }
+      get_confessions_feed: {
+        Args: { _limit?: number; _offset?: number }
+        Returns: {
+          confession_text: string
+          created_at: string
+          id: string
+          is_anonymous: boolean
+          sin_category: string
+          user_id: string
+        }[]
+      }
       get_coupon_discount_code: {
         Args: { _listing_id: string }
         Returns: string
