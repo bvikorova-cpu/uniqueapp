@@ -80,13 +80,13 @@ export function LiveSessionsView({ onBack }: Props) {
       {creating && (
         <Card className="mb-6 border-rose-500/20">
           <CardContent className="pt-6 space-y-3">
-            <Input placeholder="Session title..." className="h-11" />
+            <Input placeholder="Session title..." value={title} onChange={e => setTitle(e.target.value)} className="h-11" />
             <div className="grid grid-cols-2 gap-3">
-              <Input type="date" className="h-11" />
-              <Input type="time" className="h-11" />
+              <Input type="date" value={date} onChange={e => setDate(e.target.value)} className="h-11" />
+              <Input type="time" value={time} onChange={e => setTime(e.target.value)} className="h-11" />
             </div>
             <div className="flex gap-2">
-              <Button className="flex-1 bg-gradient-to-r from-rose-500 to-pink-600" onClick={() => toast.info("Schedule — coming soon")}><Calendar className="w-4 h-4 mr-2" />Schedule</Button>
+              <Button className="flex-1 bg-gradient-to-r from-rose-500 to-pink-600" onClick={handleSchedule}><Calendar className="w-4 h-4 mr-2" />Schedule</Button>
               <Button variant="outline" onClick={() => setCreating(false)}>Cancel</Button>
             </div>
           </CardContent>
