@@ -1,18 +1,66 @@
 import { useEffect, useState } from "react";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
-import { Heart, MessageCircle, Share2, Loader2 } from "lucide-react";
+import {
+  Heart,
+  MessageCircle,
+  Share2,
+  Loader2,
+  Info,
+  AlertCircle,
+} from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
+
+const REPOST_MIN = 3;
+const REPOST_MAX = 280;
+
+const repostSchema = z.object({
+  comment: z
+    .string()
+    .trim()
+    .min(REPOST_MIN, {
+      message: `Add at least ${REPOST_MIN} characters so your followers get context.`,
+    })
+    .max(REPOST_MAX, {
+      message: `Comment must be ${REPOST_MAX} characters or fewer.`,
+    }),
+});
+
+function friendlyRepostError(err: { code?: string; message?: string } | null) {
+  if (!err) return "Failed to share post. Please try again.";
+  switch (err.code) {
+    case "23505":
+      return "You've already shared this post.";
+    case "23503":
+      return "This post is no longer available.";
+    case "42501":
+      return "You don't have permission to share this post.";
+    case "PGRST301":
+    case "401":
+      return "Your session expired. Please sign in again.";
+    default:
+      return err.message ?? "Failed to share post. Please try again.";
+  }
+}
+
 
 interface WallPostActionsProps {
   postId: string;
