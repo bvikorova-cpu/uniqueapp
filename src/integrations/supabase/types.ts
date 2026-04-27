@@ -32389,6 +32389,51 @@ export type Database = {
         }
         Relationships: []
       }
+      reconciliation_runs: {
+        Row: {
+          amount_mismatch: number
+          created_at: string
+          db_records: number
+          details: Json | null
+          duration_ms: number | null
+          id: string
+          missing_in_db: number
+          missing_in_stripe: number
+          run_date: string
+          status_mismatch: number
+          stripe_charges: number
+          trigger_source: string
+        }
+        Insert: {
+          amount_mismatch?: number
+          created_at?: string
+          db_records?: number
+          details?: Json | null
+          duration_ms?: number | null
+          id?: string
+          missing_in_db?: number
+          missing_in_stripe?: number
+          run_date: string
+          status_mismatch?: number
+          stripe_charges?: number
+          trigger_source?: string
+        }
+        Update: {
+          amount_mismatch?: number
+          created_at?: string
+          db_records?: number
+          details?: Json | null
+          duration_ms?: number | null
+          id?: string
+          missing_in_db?: number
+          missing_in_stripe?: number
+          run_date?: string
+          status_mismatch?: number
+          stripe_charges?: number
+          trigger_source?: string
+        }
+        Relationships: []
+      }
       redemption_progress: {
         Row: {
           certificate_earned: boolean | null
