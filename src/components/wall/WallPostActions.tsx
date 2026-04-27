@@ -104,6 +104,7 @@ export function WallPostActions({
   const [showShareDialog, setShowShareDialog] = useState(false);
   const [repostComment, setRepostComment] = useState("");
   const [reposting, setReposting] = useState(false);
+  const [repostError, setRepostError] = useState<string | null>(null);
 
   useEffect(() => {
     let mounted = true;
