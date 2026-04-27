@@ -50,7 +50,7 @@ Be empathetic, insightful, and avoid being overly clinical. Use markdown formatt
 
 Respond using the suggest_emotions tool.`
           },
-          { role: "user", content: text },
+          { role: "user", content: params.text },
         ]);
         break;
       case "weekly-report":
@@ -73,12 +73,12 @@ Be warm, empathetic, and constructive. Use markdown formatting with headers and 
             role: "user",
             content: `Here is my wellness data for the past week:
 
-**Mood Entries (${(moods || []).length} total):**
-${moodSummary || "No mood entries this week."}
+**Mood Entries (${(params.moods || []).length} total):**
+${params.moodSummary || "No mood entries this week."}
 
-**Meditation:** ${medSummary}
+**Meditation:** ${params.medSummary}
 
-**Dreams:** ${dreamSummary}`
+**Dreams:** ${params.dreamSummary}`
           },
         ]);
         break;
