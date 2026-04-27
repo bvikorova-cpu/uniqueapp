@@ -1,5 +1,7 @@
-import { useState } from "react";
-import { MessageCircle, Send, MoreHorizontal, ExternalLink, BellOff, Bell, User, Trash2, Flag, Phone, Video, Image, Smile, ThumbsUp, X } from "lucide-react";
+import { useRef, useState } from "react";
+import { MessageCircle, Send, MoreHorizontal, ExternalLink, BellOff, Bell, User, Trash2, Flag, Phone, Video, Image, Smile, ThumbsUp, X, Loader2 } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -37,11 +39,47 @@ export const DirectMessagesDialog = ({
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [isMuted, setIsMuted] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const { messages, sendMessage } = useDirectMessages(userId);
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const handleSend = () => {
+  const EMOJIS = ["😊", "😂", "❤️", "🔥", "👍", "🎉", "😍", "🤔", "🙌", "💯", "🚀", "✨", "😎", "👀", "🙏", "💪"];
+
+  const handleAttachImage = () => fileInputRef.current?.click();
+
+  const handleImageSelected = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !userId) return;
+    if (!file.type.startsWith("image/")) {
+      toast({ title: "Invalid file", description: "Please select an image.", variant: "destructive" });
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      toast({ title: "File too large", description: "Image must be under 5 MB.", variant: "destructive" });
+      return;
+    }
+    setUploadingImage(true);
+    try {
+      const { data: auth } = await supabase.auth.getUser();
+      const uid = auth.user?.id;
+      if (!uid) throw new Error("Not signed in");
+      const path = `${uid}/dm-${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.\-_]/g, "_")}`;
+      const { error } = await supabase.storage.from("user-uploads").upload(path, file);
+      if (error) throw error;
+      const { data: urlData } = supabase.storage.from("user-uploads").getPublicUrl(path);
+      sendMessage({ receiverId: userId, content: urlData.publicUrl });
+      toast({ title: "Image sent" });
+    } catch (err: any) {
+      toast({ title: "Upload failed", description: err.message ?? "Could not upload image.", variant: "destructive" });
+    } finally {
+      setUploadingImage(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  };
+
+  const insertEmoji = (emoji: string) => setMessage((prev) => prev + emoji);
     if (!message.trim() || !userId) return;
     sendMessage({ receiverId: userId, content: message });
     setMessage("");
