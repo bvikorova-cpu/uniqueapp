@@ -135,7 +135,7 @@ export function CourseReviewSystemView({ onBack }: Props) {
       )}
 
       <div className="space-y-3">
-        {mockReviews.map(review => (
+        {reviews.map(review => (
           <Card key={review.id} className="p-4 hover:shadow-lg transition-all">
             <div className="flex items-start justify-between mb-2">
               <div>
