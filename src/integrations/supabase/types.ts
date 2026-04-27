@@ -42684,6 +42684,7 @@ export type Database = {
         Returns: undefined
       }
       find_skill_matches: { Args: { p_user_id: string }; Returns: undefined }
+      gdpr_purge_user_data: { Args: { _user_id: string }; Returns: Json }
       generate_certificate_number: { Args: never; Returns: string }
       generate_daily_homework_challenge: { Args: never; Returns: undefined }
       generate_referral_code: { Args: never; Returns: string }

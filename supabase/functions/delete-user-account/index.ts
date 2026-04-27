@@ -62,28 +62,57 @@ Deno.serve(async (req) => {
       );
     }
 
-    // 3. Delete the auth user with service role.
-    // Tables with ON DELETE CASCADE on user_id will be cleaned automatically.
+    // 3. Service-role client for purge + auth deletion.
     const adminClient = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, {
       auth: { autoRefreshToken: false, persistSession: false },
     });
 
-    const { error: deleteErr } = await adminClient.auth.admin.deleteUser(
-      userId,
+    // 3a. Purge all user-owned data across every public table (GDPR Right to Erasure).
+    // The DB function dynamically deletes from every table with a user_id column,
+    // because the schema has no FK CASCADE to auth.users.
+    const { data: purgeReport, error: purgeErr } = await adminClient.rpc(
+      "gdpr_purge_user_data",
+      { _user_id: userId },
     );
 
-    if (deleteErr) {
-      console.error("Failed to delete auth user", { userId, error: deleteErr });
+    if (purgeErr) {
+      console.error("GDPR purge failed", { userId, error: purgeErr });
       return json(
         {
           error:
-            "Failed to delete account. Please contact support so we can complete the deletion manually.",
+            "Failed to erase account data. No changes have been made. Please contact support.",
         },
         500,
       );
     }
 
-    return json({ success: true, deleted_user_id: userId });
+    console.log("GDPR purge completed", { userId, report: purgeReport });
+
+    // 3b. Now delete the auth.users row itself.
+    const { error: deleteErr } = await adminClient.auth.admin.deleteUser(
+      userId,
+    );
+
+    if (deleteErr) {
+      console.error("Failed to delete auth user after purge", {
+        userId,
+        error: deleteErr,
+      });
+      return json(
+        {
+          error:
+            "Account data was erased but the auth record could not be removed. Please contact support to finalize deletion.",
+          purge_report: purgeReport,
+        },
+        500,
+      );
+    }
+
+    return json({
+      success: true,
+      deleted_user_id: userId,
+      purge_report: purgeReport,
+    });
   } catch (err) {
     console.error("Unexpected error in delete-user-account", err);
     return json({ error: "Unexpected server error" }, 500);
