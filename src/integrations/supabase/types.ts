@@ -42603,6 +42603,16 @@ export type Database = {
       }
     }
     Functions: {
+      _log_activity: {
+        Args: {
+          p_activity_type: string
+          p_metadata?: Json
+          p_target_id: string
+          p_target_type: string
+          p_user_id: string
+        }
+        Returns: undefined
+      }
       activate_user_theme: {
         Args: { p_theme_id: string; p_user_id: string }
         Returns: undefined

@@ -46,3 +46,4 @@ NO health/medical predictions. NO identifiable people/trademarks in videos.
 - [i18n Completeness](mem://features/i18n-completeness) — EN is source of truth (702 keys); scripts/i18n-check.mjs blocks build if any locale incomplete; scripts/i18n-fill.mjs backfills from EN
 - [Bundle Size](mem://features/bundle-size) — First-load 207 KB gzip / 350 KB budget; manualChunks split three/pdf/charts/markdown/fabric; `npm run build:analyze` + `npm run bundle:report`
 - [Admin Engagement](mem://features/admin-engagement) — /admin/engagement DAU/WAU/MAU + stickiness + signup chart; SQL fns get_engagement_metrics + get_dau_series; admin-engagement edge fn
+- [Activity Tracking](mem://features/activity-tracking) — DB triggers auto-write to activity_feed (post_created/liked/commented, friend_added); useTrackActivity hook for non-table events
