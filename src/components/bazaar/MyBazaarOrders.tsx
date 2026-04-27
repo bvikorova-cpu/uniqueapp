@@ -188,7 +188,7 @@ export default function MyBazaarOrders({ userId }: MyBazaarOrdersProps) {
                 </div>
               </div>
             </div>
-            <Button variant="ghost" size="icon" onClick={() => toast.info("This action — coming soon")}>
+            <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); setSelectedOrder(order); }}>
               <MessageCircle className="h-4 w-4" />
             </Button>
           </div>

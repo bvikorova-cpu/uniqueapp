@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Milestone {
   id: string;
@@ -109,7 +110,23 @@ export const FundraisingDashboard = ({
             </div>
           </div>
 
-          <Button className="w-full mt-6" size="lg" onClick={() => toast.info("Prispieť teraz — coming soon")}>
+          <Button className="w-full mt-6" size="lg" onClick={async () => {
+            const amountStr = window.prompt("Suma príspevku v €:", "10");
+            if (!amountStr) return;
+            const amount = parseFloat(amountStr);
+            if (isNaN(amount) || amount <= 0) { toast.error("Neplatná suma"); return; }
+            try {
+              const { data: { session } } = await supabase.auth.getSession();
+              if (!session) { toast.error("Najprv sa prihlás"); return; }
+              const { data, error } = await supabase.functions.invoke("create-checkout", {
+                body: { product_type: "fundraising_donation", amount, name: "Fundraising Donation" }
+              });
+              if (error) throw error;
+              if (data?.url) window.open(data.url, "_blank");
+            } catch (e: any) {
+              toast.error(e.message || "Checkout zlyhal");
+            }
+          }}>
             <Heart className="h-4 w-4 mr-2" />
             Prispieť teraz
           </Button>
@@ -230,7 +247,14 @@ export const FundraisingDashboard = ({
       </Card>
 
       {/* Share */}
-      <Button variant="outline" className="w-full" onClick={() => toast.info("Share Campaign — coming soon")}>
+      <Button variant="outline" className="w-full" onClick={async () => {
+        const url = window.location.href;
+        const shareData = { title: "Fundraising Campaign", text: "Podpor túto kampaň!", url };
+        try {
+          if (navigator.share) await navigator.share(shareData);
+          else { await navigator.clipboard.writeText(url); toast.success("Link skopírovaný!"); }
+        } catch {}
+      }}>
         <Share2 className="h-4 w-4 mr-2" />
         Share Campaign
       </Button>

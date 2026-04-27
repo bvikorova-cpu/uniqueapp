@@ -189,7 +189,7 @@ export function MyOrders({ userId }: MyOrdersProps) {
                 {format(new Date(order.delivery_deadline), "MMM d")}
               </span>
             </div>
-            <Button size="sm" variant="ghost" onClick={() => toast.info("Chat — coming soon")}>
+            <Button size="sm" variant="ghost" onClick={(e) => { e.stopPropagation(); setSelectedOrder(order); }}>
               <MessageCircle className="h-4 w-4 mr-1" />
               Chat
             </Button>
