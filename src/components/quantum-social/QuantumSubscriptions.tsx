@@ -72,7 +72,15 @@ const QuantumSubscriptions = ({ onBack }: { onBack: () => void }) => {
                 </div>
               ))}
             </div>
-            <Button className={`w-full bg-${plan.color}-600 hover:bg-${plan.color}-700`} size="sm" onClick={() => toast({ description: "Subscribe — coming soon" })}>
+            <Button className={`w-full bg-${plan.color}-600 hover:bg-${plan.color}-700`} size="sm" onClick={async () => {
+              try {
+                const { data, error } = await supabase.functions.invoke("create-checkout", { body: { product_type: plan.type, plan_name: plan.name } });
+                if (error) throw error;
+                if (data?.url) window.open(data.url, "_blank");
+              } catch (e: any) {
+                toast({ title: "Checkout failed", description: e.message, variant: "destructive" });
+              }
+            }}>
               <Zap className="h-4 w-4 mr-2" />Subscribe
             </Button>
           </motion.div>

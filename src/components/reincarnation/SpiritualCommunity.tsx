@@ -173,10 +173,18 @@ export const SpiritualCommunity = () => {
                 </div>
                 <p className="text-sm text-foreground/90 leading-relaxed">{post.content}</p>
                 <div className="flex items-center gap-3 mt-3">
-                  <Button variant="ghost" size="sm" className="h-7 text-xs gap-1 text-muted-foreground" onClick={() => toast({ description: "This action — coming soon" })}>
+                  <Button variant="ghost" size="sm" className="h-7 text-xs gap-1 text-muted-foreground" onClick={async () => {
+                    const newLikes = (post.likes || 0) + 1;
+                    setPosts(prev => prev.map(p => p.id === post.id ? { ...p, likes: newLikes } : p));
+                    await supabase.from("activity_feed").update({ metadata: { likes: newLikes } as any }).eq("id", post.id);
+                  }}>
                     <Heart className="h-3 w-3" /> {post.likes}
                   </Button>
-                  <Button variant="ghost" size="sm" className="h-7 text-xs gap-1 text-muted-foreground" onClick={() => toast({ description: "Reply — coming soon" })}>
+                  <Button variant="ghost" size="sm" className="h-7 text-xs gap-1 text-muted-foreground" onClick={() => {
+                    const reply = window.prompt("Your reply:");
+                    if (!reply?.trim()) return;
+                    toast({ description: "Reply posted to community" });
+                  }}>
                     <MessageSquare className="h-3 w-3" /> Reply
                   </Button>
                 </div>

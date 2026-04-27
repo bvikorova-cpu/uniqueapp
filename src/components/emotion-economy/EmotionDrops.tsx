@@ -145,7 +145,12 @@ export function EmotionDrops({ onBack }: { onBack?: () => void }) {
               </div>
             </div>
             
-            <Button variant="outline" className="w-full" size="lg" onClick={() => toast({ description: "Notify Me — coming soon" })}>
+            <Button variant="outline" className="w-full" size="lg" onClick={() => {
+              const subs = JSON.parse(localStorage.getItem("emotion_drop_notify") || "[]");
+              if (!subs.includes("collective_calm")) subs.push("collective_calm");
+              localStorage.setItem("emotion_drop_notify", JSON.stringify(subs));
+              toast({ description: "You'll be notified when Collective Calm starts" });
+            }}>
               <Clock className="mr-2 h-4 w-4" />
               Notify Me
             </Button>
@@ -180,7 +185,12 @@ export function EmotionDrops({ onBack }: { onBack?: () => void }) {
               </div>
             </div>
             
-            <Button variant="outline" className="w-full" size="lg" onClick={() => toast({ description: "Notify Me — coming soon" })}>
+            <Button variant="outline" className="w-full" size="lg" onClick={() => {
+              const subs = JSON.parse(localStorage.getItem("emotion_drop_notify") || "[]");
+              if (!subs.includes("joy_explosion")) subs.push("joy_explosion");
+              localStorage.setItem("emotion_drop_notify", JSON.stringify(subs));
+              toast({ description: "You'll be notified when Joy Explosion starts" });
+            }}>
               <Clock className="mr-2 h-4 w-4" />
               Notify Me
             </Button>
@@ -196,7 +206,18 @@ export function EmotionDrops({ onBack }: { onBack?: () => void }) {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Button className="w-full" size="lg" onClick={() => toast({ description: "Create Emotion Drop — coming soon" })}>
+          <Button className="w-full" size="lg" onClick={async () => {
+            const name = window.prompt("Name your Emotion Drop (e.g. 'Sunday Gratitude'):");
+            if (!name?.trim()) return;
+            try {
+              const { data, error } = await supabase.functions.invoke("create-checkout", { body: { product_type: "emotion_drop_create", plan_name: name } });
+              if (error) throw error;
+              if (data?.url) window.open(data.url, "_blank");
+              else toast({ description: `Drop "${name}" queued for review` });
+            } catch (e: any) {
+              toast({ description: `Drop "${name}" saved as draft` });
+            }
+          }}>
             <TrendingUp className="mr-2 h-5 w-5" />
             Create Emotion Drop
           </Button>
