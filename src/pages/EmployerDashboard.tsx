@@ -333,6 +333,9 @@ export default function EmployerDashboard() {
             <TabsTrigger value="applications" className="rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-accent data-[state=active]:text-white gap-1.5">
               <Users className="h-3.5 w-3.5" /> Applications
             </TabsTrigger>
+            <TabsTrigger value="packages" className="rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-accent data-[state=active]:text-white gap-1.5">
+              <Receipt className="h-3.5 w-3.5" /> Packages
+            </TabsTrigger>
             <TabsTrigger value="templates" className="rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-accent data-[state=active]:text-white gap-1.5">
               <MessageSquare className="h-3.5 w-3.5" /> Templates
             </TabsTrigger>
