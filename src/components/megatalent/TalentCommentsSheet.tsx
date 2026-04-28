@@ -4,9 +4,10 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sh
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Loader2, Send, Trash2, MessageCircle, Pencil, Check, X } from "lucide-react";
+import { Loader2, Send, Trash2, MessageCircle, Pencil, Check, X, ShieldCheck, ShieldAlert } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useMegaTalentTier } from "@/hooks/useMegaTalentTier";
 
 interface TalentComment {
   id: string;
