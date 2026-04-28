@@ -1,14 +1,11 @@
 /**
  * KILL-SWITCH service worker.
  *
- * A previous version of this SW cached navigation HTML aggressively, which left
- * users stuck on a stale shell that referenced a missing JS bundle (white/loader
- * screen forever). This file now does the opposite: on install it unregisters
- * itself and wipes every cache, so the next reload fetches a fresh index.html
- * directly from the network.
- *
- * Keep this file in place (and DO NOT re-introduce caching) until we are sure
- * no clients are still pinned to the old SW.
+ * Older versions cached navigation HTML (and even did host redirects), which
+ * trapped users on stale shells / loader screens. This SW now does the OPPOSITE:
+ * on install + activate it wipes every cache and unregisters itself, and on
+ * fetch it just forwards to the network with `cache: no-store`. No redirects,
+ * no caching. Keep it this way until the offline strategy is fully redesigned.
  */
 
 self.addEventListener("install", (event) => {
@@ -27,17 +24,7 @@ self.addEventListener("install", (event) => {
 
 self.addEventListener("fetch", (event) => {
   if (event.request.mode !== "navigate") return;
-
-  const requestUrl = new URL(event.request.url);
-  if (requestUrl.hostname === "preview--uniqueapp.lovable.app") {
-    const targetUrl = new URL("https://id-preview--3ea492b4-277a-4b1d-a6dd-ca2a3efd9225.lovable.app");
-    targetUrl.pathname = requestUrl.pathname;
-    targetUrl.search = requestUrl.search;
-    targetUrl.hash = requestUrl.hash;
-    event.respondWith(Response.redirect(targetUrl.toString(), 302));
-    return;
-  }
-
+  // Always go to network — never serve cached HTML, never redirect.
   event.respondWith(fetch(event.request, { cache: "no-store" }));
 });
 
@@ -62,4 +49,8 @@ self.addEventListener("activate", (event) => {
       }
     })(),
   );
+});
+
+self.addEventListener("message", (event) => {
+  if (event.data === "SKIP_WAITING") self.skipWaiting();
 });
