@@ -290,34 +290,9 @@ serve(async (req) => {
           break;
         }
 
-        // Resolve dynamic reward based on referrer's affiliate tier (default €5)
-        let rewardEur = 5;
-        try {
-          const { data: rewardData } = await supabase.rpc("get_affiliate_reward_eur", {
-            _user_id: attr.referrer_id,
-          });
-          if (typeof rewardData === "number" && rewardData > 0) rewardEur = Number(rewardData);
-        } catch (_e) { /* fall back to €5 */ }
-
-        const periodStart = new Date().toISOString();
-        const periodEnd = new Date(Date.now() + 30 * 24 * 3600 * 1000).toISOString();
-        const { error: earnErr } = await supabase
-          .from("megatalent_referral_earnings")
-          .insert({
-            referrer_id: attr.referrer_id,
-            referred_user_id: buyerProfile.id,
-            amount: rewardEur,
-            paid: false,
-            period_start: periodStart,
-            period_end: periodEnd,
-            source_subscription_id: sub.id,
-            auto_credited: true,
-          });
-        if (earnErr) {
-          // Likely duplicate (unique violation) — already credited, just mark attribution
-          log("referral earning insert skipped", { error: earnErr.message });
-        }
-
+        // Note: actual €5 credit happens on `invoice.payment_succeeded` (so it
+        // also fires on every renewal). Here we only stamp `rewarded_at` on
+        // the attribution to mark the first activation.
         await supabase
           .from("referral_attributions")
           .update({
@@ -326,19 +301,10 @@ serve(async (req) => {
           })
           .eq("id", attr.id);
 
-        await supabase.from("admin_audit_log").insert({
-          admin_id: "00000000-0000-0000-0000-000000000000",
-          action: "referral_reward_credited",
-          target_type: "megatalent_referral_earnings",
-          target_id: attr.referrer_id,
-          details: {
-            referrer_id: attr.referrer_id,
-            referred_user_id: buyerProfile.id,
-            subscription_id: sub.id,
-            amount_eur: rewardEur,
-          },
+        log("referral attribution marked active (credit fires on invoice)", {
+          referrer: attr.referrer_id,
+          sub: sub.id,
         });
-        log("referral reward credited", { referrer: attr.referrer_id, sub: sub.id });
         break;
       }
 
