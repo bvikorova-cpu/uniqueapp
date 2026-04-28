@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { User as SupabaseUser } from "@supabase/supabase-js";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -12,7 +11,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Crown, ShoppingBag, Store, User, Menu, X, MessageSquare, MessageCircle, Briefcase, Users, Brain, Plane, Heart, Activity, Apple, Mail, Video, Gamepad2, Star, FileText, GraduationCap, ChefHat, UserCircle, MoreHorizontal, Sparkles, Gavel, UserPlus, Settings, Bell, Music, Euro, Trophy, Award, Moon, Sun, Shirt, PawPrint, Gift, Zap, Home, Leaf, ImageIcon, BookOpen, Calculator, FlaskConical, Palette, Calendar, DollarSign, Image, Gem, Building2, Coffee, Bot, Globe, Lock, Mic2, Car, Clock, Dna, Scale, Shield, AlertTriangle, TrendingUp, Ghost, PenTool, Ticket } from "lucide-react";
 import { useTheme } from "next-themes";
-import { NotificationsDropdown } from "@/components/notifications/NotificationsDropdown";
 import NotificationBell from "@/components/notifications/NotificationBell";
 import { GlobalCurrencySwitcher } from "@/components/GlobalCurrencySwitcher";
 import megatalentLogo from "@/assets/megatalent-logo.png";
@@ -20,23 +18,7 @@ import uniqueLogo from "@/assets/unique-logo.png";
 import { Age16Badge } from "@/components/Age16Badge";
 import { useTranslation } from "react-i18next";
 import GlobalSearch from "@/components/GlobalSearch";
-
-interface NotificationData {
-  id: string;
-  message: string;
-  created_at: string;
-  is_read: boolean;
-  type: 'marketplace' | 'bazaar';
-  offering_id?: string;
-  item_id?: string;
-  sender_id: string;
-  skill_offerings?: {
-    title: string;
-  };
-  bazaar_items?: {
-    title: string;
-  };
-}
+import { useAuth } from "@/contexts/AuthContext";
 
 const Navbar = () => {
   const { theme, setTheme } = useTheme();
@@ -44,36 +26,17 @@ const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  const [user, setUser] = useState<SupabaseUser | null>(null);
-  const [unreadCount, setUnreadCount] = useState(0);
-  const [notifications, setNotifications] = useState<NotificationData[]>([]);
+  const { user } = useAuth();
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        loadNotifications(session.user.id);
-        checkAdminRole(session.user.id);
-      }
-    });
+    if (!user) {
+      setIsAdmin(false);
+      return;
+    }
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
-        setUser(session?.user ?? null);
-        if (session?.user) {
-          loadNotifications(session.user.id);
-          checkAdminRole(session.user.id);
-        } else {
-          setNotifications([]);
-          setUnreadCount(0);
-          setIsAdmin(false);
-        }
-      }
-    );
-
-    return () => subscription.unsubscribe();
-  }, []);
+    checkAdminRole(user.id);
+  }, [user?.id]);
 
   const checkAdminRole = async (userId: string) => {
     const { data } = await supabase
@@ -84,78 +47,6 @@ const Navbar = () => {
       .maybeSingle();
     
     setIsAdmin(!!data);
-  };
-
-  const loadNotifications = async (userId: string) => {
-    // Load marketplace notifications
-    const { data: marketplaceData } = await supabase
-      .from("marketplace_responses")
-      .select(`
-        *,
-        skill_offerings (
-          title
-        )
-      `)
-      .eq("receiver_id", userId)
-      .eq("is_read", false)
-      .order("created_at", { ascending: false })
-      .limit(10);
-
-    // Load bazaar notifications
-    const { data: bazaarData } = await supabase
-      .from("bazaar_messages")
-      .select(`
-        *,
-        bazaar_items (
-          title
-        )
-      `)
-      .eq("receiver_id", userId)
-      .eq("is_read", false)
-      .order("created_at", { ascending: false })
-      .limit(10);
-
-    // Combine and sort notifications
-    const allNotifications: NotificationData[] = [
-      ...(marketplaceData?.map(n => ({ ...n, type: 'marketplace' as const })) || []),
-      ...(bazaarData?.map(n => ({ ...n, type: 'bazaar' as const })) || [])
-    ].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-
-    setNotifications(allNotifications);
-    setUnreadCount(allNotifications.length);
-  };
-
-  const markAsRead = async (notification: NotificationData) => {
-    if (!user) return;
-
-    const table = notification.type === 'marketplace' ? 'marketplace_responses' : 'bazaar_messages';
-    
-    await supabase
-      .from(table)
-      .update({ is_read: true })
-      .eq("id", notification.id);
-
-    loadNotifications(user.id);
-  };
-
-  const markAllAsRead = async () => {
-    if (!user) return;
-
-    // Mark all marketplace notifications as read
-    await supabase
-      .from("marketplace_responses")
-      .update({ is_read: true })
-      .eq("receiver_id", user.id)
-      .eq("is_read", false);
-
-    // Mark all bazaar notifications as read
-    await supabase
-      .from("bazaar_messages")
-      .update({ is_read: true })
-      .eq("receiver_id", user.id)
-      .eq("is_read", false);
-
-    loadNotifications(user.id);
   };
 
   const handleLogout = async () => {

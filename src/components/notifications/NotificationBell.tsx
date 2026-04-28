@@ -13,6 +13,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { formatDistanceToNow } from "date-fns";
 import { enUS } from "date-fns/locale";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface Notification {
   id: string;
@@ -36,10 +37,10 @@ interface Notification {
 const NotificationBell = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { user } = useAuth();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [user, setUser] = useState<any>(null);
   const channelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
 
   useEffect(() => {
@@ -52,9 +53,8 @@ const NotificationBell = () => {
     }
 
     const init = async () => {
-      const { data: { user: currentUser } } = await supabase.auth.getUser();
+      const currentUser = user;
       if (cancelled || !currentUser) return;
-      setUser(currentUser);
       fetchNotifications(currentUser.id);
 
       const channelName = `notifications-${currentUser.id}-${Date.now()}`;
@@ -107,7 +107,7 @@ const NotificationBell = () => {
         channelRef.current = null;
       }
     };
-  }, []);
+  }, [user?.id]);
 
   const fetchNotifications = async (userId: string) => {
     try {
