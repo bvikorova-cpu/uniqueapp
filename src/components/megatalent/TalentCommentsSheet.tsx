@@ -52,6 +52,45 @@ export function TalentCommentsSheet({ submissionId, open, onOpenChange, onCountC
   const [savingEdit, setSavingEdit] = useState(false);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
   const seenIds = useRef<Set<string>>(new Set());
+  const [checkoutLoading, setCheckoutLoading] = useState<null | "premium" | "top_premium">(null);
+
+  const handleSubscribe = async (tierToBuy: "premium" | "top_premium") => {
+    setCheckoutLoading(tierToBuy);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast({
+          title: "Prihlásenie potrebné",
+          description: "Pre zakúpenie predplatného sa najprv prihlás.",
+          variant: "destructive",
+        });
+        window.location.href = "/auth?redirect=/megatalent";
+        return;
+      }
+      const { data, error } = await supabase.functions.invoke("create-megatalent-checkout", {
+        body: { tier: tierToBuy },
+        headers: { Authorization: `Bearer ${session.access_token}` },
+      });
+      if (error) throw error;
+      if (data?.url) {
+        window.open(data.url, "_blank");
+        toast({
+          title: "Presmerovanie na Stripe…",
+          description: "Po dokončení platby sa vráť späť a obnov stránku.",
+        });
+      } else {
+        throw new Error("Checkout URL nebola vrátená");
+      }
+    } catch (err: any) {
+      toast({
+        title: "Chyba pri checkoute",
+        description: err?.message || "Nepodarilo sa spustiť platbu.",
+        variant: "destructive",
+      });
+    } finally {
+      setCheckoutLoading(null);
+    }
+  };
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setCurrentUserId(data.user?.id ?? null));
