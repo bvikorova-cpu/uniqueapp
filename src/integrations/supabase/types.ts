@@ -37812,6 +37812,7 @@ export type Database = {
           category: Database["public"]["Enums"]["talent_category"]
           created_at: string
           description: string | null
+          dislikes_count: number
           id: string
           is_active: boolean | null
           media_type: string | null
@@ -37825,6 +37826,7 @@ export type Database = {
           category?: Database["public"]["Enums"]["talent_category"]
           created_at?: string
           description?: string | null
+          dislikes_count?: number
           id?: string
           is_active?: boolean | null
           media_type?: string | null
@@ -37838,6 +37840,7 @@ export type Database = {
           category?: Database["public"]["Enums"]["talent_category"]
           created_at?: string
           description?: string | null
+          dislikes_count?: number
           id?: string
           is_active?: boolean | null
           media_type?: string | null
@@ -37855,18 +37858,21 @@ export type Database = {
           id: string
           submission_id: string
           user_id: string
+          vote_type: Database["public"]["Enums"]["talent_vote_type"]
         }
         Insert: {
           created_at?: string
           id?: string
           submission_id: string
           user_id: string
+          vote_type?: Database["public"]["Enums"]["talent_vote_type"]
         }
         Update: {
           created_at?: string
           id?: string
           submission_id?: string
           user_id?: string
+          vote_type?: Database["public"]["Enums"]["talent_vote_type"]
         }
         Relationships: [
           {
@@ -43325,6 +43331,7 @@ export type Database = {
         | "transformation"
         | "pet_talent"
         | "other"
+      talent_vote_type: "like" | "dislike"
       tarot_card_position: "past" | "present" | "future" | "outcome"
       verification_status:
         | "pending"
@@ -43667,6 +43674,7 @@ export const Constants = {
         "pet_talent",
         "other",
       ],
+      talent_vote_type: ["like", "dislike"],
       tarot_card_position: ["past", "present", "future", "outcome"],
       verification_status: [
         "pending",

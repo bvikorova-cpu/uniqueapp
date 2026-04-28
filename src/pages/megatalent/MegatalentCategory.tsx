@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Heart, MessageCircle, ArrowLeft, Play, Trophy, Loader2 } from "lucide-react";
+import { Heart, MessageCircle, ArrowLeft, Play, Trophy, Loader2, ThumbsDown } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
@@ -29,7 +29,7 @@ const MegatalentCategory = () => {
   const { toast } = useToast();
   const [submissions, setSubmissions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [likedSubmissions, setLikedSubmissions] = useState<Set<string>>(new Set());
+  const [userVotes, setUserVotes] = useState<Record<string, 'like' | 'dislike'>>({});
   const [commentCounts, setCommentCounts] = useState<Record<string, number>>({});
   const [expandedMedia, setExpandedMedia] = useState<{ url: string; type: 'image' | 'video' } | null>(null);
 
@@ -97,15 +97,27 @@ const MegatalentCategory = () => {
       if (!user) return;
       const { data } = await supabase
         .from('talent_votes')
-        .select('submission_id')
+        .select('submission_id, vote_type')
         .eq('user_id', user.id);
-      if (data) setLikedSubmissions(new Set(data.map(v => v.submission_id)));
+      if (data) {
+        const map: Record<string, 'like' | 'dislike'> = {};
+        data.forEach((v: any) => { map[v.submission_id] = v.vote_type; });
+        setUserVotes(map);
+      }
     } catch (error) {
       console.error('Error fetching user votes:', error);
     }
   };
 
-  const handleVote = async (submissionId: string) => {
+  const applyDelta = (id: string, likeDelta: number, dislikeDelta: number) => {
+    setSubmissions(prev => prev.map(s => s.id === id ? {
+      ...s,
+      votes_count: Math.max(0, (s.votes_count || 0) + likeDelta),
+      dislikes_count: Math.max(0, (s.dislikes_count || 0) + dislikeDelta),
+    } : s));
+  };
+
+  const handleVote = async (submissionId: string, voteType: 'like' | 'dislike') => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
@@ -113,20 +125,41 @@ const MegatalentCategory = () => {
         return;
       }
 
-      const isLiked = likedSubmissions.has(submissionId);
+      const current = userVotes[submissionId];
 
-      if (isLiked) {
-        await supabase.from('talent_votes').delete().eq('submission_id', submissionId).eq('user_id', user.id);
-        setLikedSubmissions(prev => { const s = new Set(prev); s.delete(submissionId); return s; });
-        setSubmissions(prev => prev.map(s => s.id === submissionId ? { ...s, votes_count: (s.votes_count || 0) - 1 } : s));
+      if (current === voteType) {
+        // toggle off
+        const { error } = await supabase
+          .from('talent_votes')
+          .delete()
+          .eq('submission_id', submissionId)
+          .eq('user_id', user.id);
+        if (error) throw error;
+        setUserVotes(prev => { const c = { ...prev }; delete c[submissionId]; return c; });
+        applyDelta(submissionId, voteType === 'like' ? -1 : 0, voteType === 'dislike' ? -1 : 0);
+      } else if (current && current !== voteType) {
+        // switch
+        const { error } = await supabase
+          .from('talent_votes')
+          .update({ vote_type: voteType })
+          .eq('submission_id', submissionId)
+          .eq('user_id', user.id);
+        if (error) throw error;
+        setUserVotes(prev => ({ ...prev, [submissionId]: voteType }));
+        if (voteType === 'like') applyDelta(submissionId, +1, -1);
+        else applyDelta(submissionId, -1, +1);
       } else {
-        await supabase.from('talent_votes').insert({ submission_id: submissionId, user_id: user.id });
-        setLikedSubmissions(prev => new Set(prev).add(submissionId));
-        setSubmissions(prev => prev.map(s => s.id === submissionId ? { ...s, votes_count: (s.votes_count || 0) + 1 } : s));
+        // new vote
+        const { error } = await supabase
+          .from('talent_votes')
+          .insert({ submission_id: submissionId, user_id: user.id, vote_type: voteType });
+        if (error) throw error;
+        setUserVotes(prev => ({ ...prev, [submissionId]: voteType }));
+        applyDelta(submissionId, voteType === 'like' ? +1 : 0, voteType === 'dislike' ? +1 : 0);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error voting:', error);
-      toast({ title: "Error", description: "Failed to vote", variant: "destructive" });
+      toast({ title: "Error", description: error?.message || "Failed to vote", variant: "destructive" });
     }
   };
 
@@ -252,15 +285,30 @@ const MegatalentCategory = () => {
                     )}
 
                     <div className="flex items-center justify-between pt-2 border-t border-border/20">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleVote(submission.id)}
-                        className={`gap-1.5 h-8 ${likedSubmissions.has(submission.id) ? "text-red-500" : ""}`}
-                      >
-                        <Heart className={`w-4 h-4 ${likedSubmissions.has(submission.id) ? "fill-current" : ""}`} />
-                        <span className="text-xs font-bold">{submission.votes_count || 0}</span>
-                      </Button>
+                      <div className="flex items-center gap-1">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleVote(submission.id, 'like')}
+                          className={`gap-1.5 h-8 ${userVotes[submission.id] === 'like' ? "text-red-500" : ""}`}
+                          aria-label="Páči sa mi"
+                          aria-pressed={userVotes[submission.id] === 'like'}
+                        >
+                          <Heart className={`w-4 h-4 ${userVotes[submission.id] === 'like' ? "fill-current" : ""}`} />
+                          <span className="text-xs font-bold">{submission.votes_count || 0}</span>
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleVote(submission.id, 'dislike')}
+                          className={`gap-1.5 h-8 ${userVotes[submission.id] === 'dislike' ? "text-blue-500" : ""}`}
+                          aria-label="Nepáči sa mi"
+                          aria-pressed={userVotes[submission.id] === 'dislike'}
+                        >
+                          <ThumbsDown className={`w-4 h-4 ${userVotes[submission.id] === 'dislike' ? "fill-current" : ""}`} />
+                          <span className="text-xs font-bold">{submission.dislikes_count || 0}</span>
+                        </Button>
+                      </div>
 
                       <Button variant="ghost" size="sm" className="gap-1.5 h-8" onClick={() => {
                         const text = window.prompt("Tvoj komentár:");
