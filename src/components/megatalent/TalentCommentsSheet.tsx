@@ -45,6 +45,9 @@ export function TalentCommentsSheet({ submissionId, open, onOpenChange, onCountC
   const [submitting, setSubmitting] = useState(false);
   const [text, setText] = useState("");
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingText, setEditingText] = useState("");
+  const [savingEdit, setSavingEdit] = useState(false);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
   const seenIds = useRef<Set<string>>(new Set());
 
