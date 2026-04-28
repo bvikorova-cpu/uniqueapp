@@ -78,6 +78,8 @@
         "rehype-katex": "^7.0.1",
         "remark-math": "^6.0.0",
         "sonner": "^1.7.4",
+        "style-to-js": "1.1.18",
+        "style-to-object": "1.0.11",
         "tailwind-merge": "^2.6.0",
         "tailwindcss-animate": "^1.0.7",
         "three": "^0.160.0",
