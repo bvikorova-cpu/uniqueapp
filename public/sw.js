@@ -15,6 +15,22 @@ self.addEventListener("install", (event) => {
   self.skipWaiting();
 });
 
+self.addEventListener("fetch", (event) => {
+  if (event.request.mode !== "navigate") return;
+
+  const requestUrl = new URL(event.request.url);
+  if (requestUrl.hostname === "preview--uniqueapp.lovable.app") {
+    const targetUrl = new URL("https://id-preview--3ea492b4-277a-4b1d-a6dd-ca2a3efd9225.lovable.app");
+    targetUrl.pathname = requestUrl.pathname;
+    targetUrl.search = requestUrl.search;
+    targetUrl.hash = requestUrl.hash;
+    event.respondWith(Response.redirect(targetUrl.toString(), 302));
+    return;
+  }
+
+  event.respondWith(fetch(event.request, { cache: "no-store" }));
+});
+
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     (async () => {
@@ -25,7 +41,7 @@ self.addEventListener("activate", (event) => {
         /* noop */
       }
       try {
-        await self.registration.unregister();
+        await self.clients.claim();
       } catch {
         /* noop */
       }
@@ -33,7 +49,16 @@ self.addEventListener("activate", (event) => {
         const clients = await self.clients.matchAll({ type: "window" });
         clients.forEach((client) => {
           try {
-            client.navigate(client.url);
+            const clientUrl = new URL(client.url);
+            if (clientUrl.hostname === "preview--uniqueapp.lovable.app") {
+              const targetUrl = new URL("https://id-preview--3ea492b4-277a-4b1d-a6dd-ca2a3efd9225.lovable.app");
+              targetUrl.pathname = clientUrl.pathname;
+              targetUrl.search = clientUrl.search;
+              targetUrl.hash = clientUrl.hash;
+              client.navigate(targetUrl.toString());
+            } else {
+              client.navigate(client.url);
+            }
           } catch {
             /* noop */
           }
@@ -44,6 +69,3 @@ self.addEventListener("activate", (event) => {
     })(),
   );
 });
-
-// Pass-through: never intercept fetches.
-self.addEventListener("fetch", () => {});
