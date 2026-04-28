@@ -177,6 +177,21 @@ export function TalentCommentsSheet({ submissionId, open, onOpenChange, onCountC
           });
         }
       )
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "talent_comments", filter: `submission_id=eq.${submissionId}` },
+        (payload: any) => {
+          const row = payload.new;
+          if (!row?.id) return;
+          setComments((prev) =>
+            prev.map((c) =>
+              c.id === row.id
+                ? { ...c, comment_text: row.comment_text, updated_at: row.updated_at }
+                : c
+            )
+          );
+        }
+      )
       .subscribe();
     return () => {
       supabase.removeChannel(channel);
