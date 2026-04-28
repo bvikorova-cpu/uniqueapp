@@ -52,19 +52,18 @@ import { DunningBanner } from "@/components/billing/DunningBanner";
 import { SCABanner } from "@/components/billing/SCABanner";
 
 const Navbar = lazy(() => import("./components/Navbar"));
+const Index = lazy(() => import("./pages/Index"));
+const Auth = lazy(() => import("./pages/Auth"));
+const Download = lazy(() => import("./pages/Download"));
+const VerifyReport = lazy(() => import("./pages/VerifyReport"));
+const UsernameRedirect = lazy(() => import("./pages/UsernameRedirect"));
 
 // Install global runtime patches as early as possible
 installGlobalErrorHandlers();
 installImagePerformancePatch();
 
-// Critical pages - loaded immediately for best UX
-import Home from "./pages/Home";
-import Index from "./pages/Index";
-import Auth from "./pages/Auth";
+// Critical fallback only - keep heavy pages out of the initial JS boot path
 import NotFound from "./pages/NotFound";
-import Download from "./pages/Download";
-import VerifyReport from "./pages/VerifyReport";
-import UsernameRedirect from "./pages/UsernameRedirect";
 
 // All other pages - lazy loaded
 import {
