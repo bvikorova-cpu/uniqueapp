@@ -32,15 +32,17 @@ function showCrashOverlay(title: string, detail: string) {
   }
 }
 
+let reactRendered = false;
+
 window.addEventListener("error", (e) => {
   console.error("[GlobalError]", e.error || e.message);
-  if (!document.getElementById("root")?.firstElementChild) {
+  if (!reactRendered) {
     showCrashOverlay(e.message || "Unhandled error", String(e.error?.stack || e.error || e.message));
   }
 });
 window.addEventListener("unhandledrejection", (e) => {
   console.error("[UnhandledRejection]", e.reason);
-  if (!document.getElementById("root")?.firstElementChild) {
+  if (!reactRendered) {
     showCrashOverlay("Unhandled promise rejection", String(e.reason?.stack || e.reason));
   }
 });
@@ -50,13 +52,11 @@ console.log("[Boot] main.tsx executing");
 try {
   // Real-user Web Vitals telemetry → vitals_log
   installWebVitals();
-  // PWA offline shell + asset cache
-  registerServiceWorker();
-
   const rootEl = document.getElementById("root");
   if (!rootEl) {
     showCrashOverlay("Missing #root element", "index.html does not contain <div id=\"root\"></div>");
   } else {
+    rootEl.innerHTML = "";
     createRoot(rootEl).render(
       <>
         <App />
@@ -64,7 +64,11 @@ try {
         <InstallPromptBanner />
       </>
     );
+    reactRendered = true;
     console.log("[Boot] React render() called");
+    // PWA offline shell + asset cache: register až po prvom React renderi,
+    // aby service worker nikdy nezablokoval prázdny preview mount.
+    registerServiceWorker();
   }
 } catch (err) {
   console.error("[Boot] crash", err);

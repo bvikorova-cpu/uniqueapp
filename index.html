@@ -11,42 +11,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
-    <!-- Cache-busting (script-only, NOT meta to allow Google indexing) -->
-    <script>
-      (() => {
-        const v = "2026-01-06f";
-        const url = new URL(window.location.href);
-        const host = window.location.hostname;
-        const isLovablePreview =
-          host === "localhost" ||
-          host === "127.0.0.1" ||
-          host.endsWith(".lovableproject.com") ||
-          host.endsWith(".lovable.app");
-
-        if (isLovablePreview && "serviceWorker" in navigator) {
-          Promise.all([
-            navigator.serviceWorker.getRegistrations().then((regs) => Promise.all(regs.map((reg) => reg.unregister()))),
-            "caches" in window
-              ? caches.keys().then((keys) => Promise.all(keys.filter((key) => key.startsWith("unique-")).map((key) => caches.delete(key))))
-              : Promise.resolve(),
-          ])
-            .then(() => {
-              const resetKey = `unique-preview-sw-reset-${v}`;
-              if (navigator.serviceWorker.controller && sessionStorage.getItem(resetKey) !== "1") {
-                sessionStorage.setItem(resetKey, "1");
-                window.location.reload();
-              }
-            })
-            .catch(() => {});
-        }
-
-        if (url.searchParams.get("v") !== v) {
-          url.searchParams.set("v", v);
-          window.location.replace(url.toString());
-        }
-      })();
-    </script>
-
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3821622017213888" crossorigin="anonymous"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
     <meta http-equiv="content-language" content="en" />
@@ -112,7 +76,14 @@
   </head>
 
   <body translate="yes">
-    <div id="root" translate="yes"></div>
+    <div id="root" translate="yes">
+      <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0f0a1f;color:#ffffff;font-family:ui-sans-serif,system-ui,sans-serif;padding:24px;text-align:center;">
+        <div>
+          <div style="font-size:18px;font-weight:700;margin-bottom:8px;">Unique sa načítava…</div>
+          <div style="font-size:13px;color:#c4b5fd;">Ak tento text nezmizne, hlavný JavaScript sa nenačítal.</div>
+        </div>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
