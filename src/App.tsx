@@ -36,7 +36,6 @@ import { useTranslation } from "react-i18next";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { SubscriptionGuard } from "@/components/SubscriptionGuard";
 import { MegatalentGuard } from "@/components/megatalent/MegatalentGuard";
-import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import SkipLink from "./components/SkipLink";
 import ProgressiveOnboarding from "./components/onboarding/ProgressiveOnboarding";
@@ -51,6 +50,8 @@ import { ReferralCaptureMount } from "@/components/referral/ReferralCaptureMount
 import { LanguagePreferenceMount } from "@/components/LanguagePreferenceMount";
 import { DunningBanner } from "@/components/billing/DunningBanner";
 import { SCABanner } from "@/components/billing/SCABanner";
+
+const Navbar = lazy(() => import("./components/Navbar"));
 
 // Install global runtime patches as early as possible
 installGlobalErrorHandlers();
@@ -444,7 +445,11 @@ const App = () => {
                 <Toaster />
                 <Sonner />
                 <div className="flex flex-col min-h-screen">
-                  <Navbar />
+                  <ErrorBoundary fallback={null}>
+                    <Suspense fallback={null}>
+                      <Navbar />
+                    </Suspense>
+                  </ErrorBoundary>
                   <GlobalAnnouncementBanner />
                   <main id="main-content" className="flex-1">
                     <ErrorBoundary>

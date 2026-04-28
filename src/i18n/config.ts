@@ -2,19 +2,9 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
 import en from './locales/en/translation.json';
-import sk from './locales/sk/translation.json';
-import cs from './locales/cs/translation.json';
-import de from './locales/de/translation.json';
-import es from './locales/es/translation.json';
-import fr from './locales/fr/translation.json';
-import it from './locales/it/translation.json';
-import hu from './locales/hu/translation.json';
-import ru from './locales/ru/translation.json';
-import ja from './locales/ja/translation.json';
-import ko from './locales/ko/translation.json';
-import zh from './locales/zh/translation.json';
 
 const SUPPORTED = ['en', 'sk', 'cs', 'de', 'es', 'fr', 'it', 'hu', 'ru', 'ja', 'ko', 'zh'];
+const localeModules = import.meta.glob<Record<string, unknown>>('./locales/*/translation.json');
 
 function detectInitialLanguage(): string {
   // 1. user previously chose a language
@@ -38,24 +28,28 @@ i18n
   .init({
     resources: {
       en: { translation: en },
-      sk: { translation: sk },
-      cs: { translation: cs },
-      de: { translation: de },
-      es: { translation: es },
-      fr: { translation: fr },
-      it: { translation: it },
-      hu: { translation: hu },
-      ru: { translation: ru },
-      ja: { translation: ja },
-      ko: { translation: ko },
-      zh: { translation: zh },
     },
-    lng: detectInitialLanguage(),
+    lng: 'en',
     fallbackLng: 'en',
     interpolation: {
       escapeValue: false,
     },
   });
+
+async function loadLocale(lng: string) {
+  if (lng === 'en' || i18n.hasResourceBundle(lng, 'translation')) return;
+  const loader = localeModules[`./locales/${lng}/translation.json`];
+  if (!loader) return;
+  const mod = await loader();
+  i18n.addResourceBundle(lng, 'translation', mod.default ?? mod, true, true);
+}
+
+const initialLanguage = detectInitialLanguage();
+if (initialLanguage !== 'en') {
+  loadLocale(initialLanguage)
+    .then(() => i18n.changeLanguage(initialLanguage))
+    .catch(() => i18n.changeLanguage('en'));
+}
 
 // persist language changes to localStorage
 i18n.on('languageChanged', (lng) => {
