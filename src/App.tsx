@@ -476,6 +476,7 @@ const App = () => {
                         <Route path="/wall/saved" element={<Wall />} />
                         <Route path="/wall/trending" element={<Wall />} />
                         <Route path="/wall/info" element={<Wall />} />
+                        <Route path="/wall/more" element={<Navigate to="/wall" replace />} />
                         <Route path="/post/:id" element={<PostDetail />} />
                         <Route path="/messenger" element={<Messenger />} />
                         <Route path="/megatalent" element={<MegatalentGuard><Megatalent /></MegatalentGuard>} />
