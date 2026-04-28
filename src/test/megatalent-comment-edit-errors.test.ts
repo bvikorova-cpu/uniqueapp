@@ -49,10 +49,10 @@ const supabaseMock = {
   auth: {
     getUser: vi.fn(async () => ({ data: { user: supabaseState.user } })),
   },
-  from: vi.fn(() => ({
-    update: vi.fn(() => ({
-      eq: vi.fn(() => ({
-        select: vi.fn(() => ({
+  from: vi.fn((_table: string) => ({
+    update: vi.fn((_values: Record<string, unknown>) => ({
+      eq: vi.fn((_col: string, _val: string) => ({
+        select: vi.fn((_cols: string) => ({
           maybeSingle: vi.fn(async () => supabaseState.updateResult),
         })),
       })),
