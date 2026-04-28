@@ -285,15 +285,30 @@ const MegatalentCategory = () => {
                     )}
 
                     <div className="flex items-center justify-between pt-2 border-t border-border/20">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleVote(submission.id)}
-                        className={`gap-1.5 h-8 ${likedSubmissions.has(submission.id) ? "text-red-500" : ""}`}
-                      >
-                        <Heart className={`w-4 h-4 ${likedSubmissions.has(submission.id) ? "fill-current" : ""}`} />
-                        <span className="text-xs font-bold">{submission.votes_count || 0}</span>
-                      </Button>
+                      <div className="flex items-center gap-1">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleVote(submission.id, 'like')}
+                          className={`gap-1.5 h-8 ${userVotes[submission.id] === 'like' ? "text-red-500" : ""}`}
+                          aria-label="Páči sa mi"
+                          aria-pressed={userVotes[submission.id] === 'like'}
+                        >
+                          <Heart className={`w-4 h-4 ${userVotes[submission.id] === 'like' ? "fill-current" : ""}`} />
+                          <span className="text-xs font-bold">{submission.votes_count || 0}</span>
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleVote(submission.id, 'dislike')}
+                          className={`gap-1.5 h-8 ${userVotes[submission.id] === 'dislike' ? "text-blue-500" : ""}`}
+                          aria-label="Nepáči sa mi"
+                          aria-pressed={userVotes[submission.id] === 'dislike'}
+                        >
+                          <ThumbsDown className={`w-4 h-4 ${userVotes[submission.id] === 'dislike' ? "fill-current" : ""}`} />
+                          <span className="text-xs font-bold">{submission.dislikes_count || 0}</span>
+                        </Button>
+                      </div>
 
                       <Button variant="ghost" size="sm" className="gap-1.5 h-8" onClick={() => {
                         const text = window.prompt("Tvoj komentár:");
