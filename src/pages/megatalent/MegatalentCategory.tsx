@@ -29,7 +29,7 @@ const MegatalentCategory = () => {
   const { toast } = useToast();
   const [submissions, setSubmissions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [likedSubmissions, setLikedSubmissions] = useState<Set<string>>(new Set());
+  const [userVotes, setUserVotes] = useState<Record<string, 'like' | 'dislike'>>({});
   const [commentCounts, setCommentCounts] = useState<Record<string, number>>({});
   const [expandedMedia, setExpandedMedia] = useState<{ url: string; type: 'image' | 'video' } | null>(null);
 
