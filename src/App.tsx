@@ -32,7 +32,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { AnimationProvider } from "@/contexts/AnimationContext";
 import { CurrencyProvider } from "@/contexts/CurrencyContext";
 import { useEffect } from "react";
-import { useTranslation } from "react-i18next";
+import i18n from "@/i18n/config";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { SubscriptionGuard } from "@/components/SubscriptionGuard";
 import { MegatalentGuard } from "@/components/megatalent/MegatalentGuard";
@@ -409,11 +409,14 @@ const queryClient = new QueryClient({
 });
 
 const App = () => {
-  const { i18n } = useTranslation();
-
   useEffect(() => {
-    document.documentElement.lang = i18n.language;
-  }, [i18n.language]);
+    const applyLanguage = (lng: string) => {
+      document.documentElement.lang = lng || "en";
+    };
+    applyLanguage(i18n.language);
+    i18n.on("languageChanged", applyLanguage);
+    return () => i18n.off("languageChanged", applyLanguage);
+  }, []);
 
   // A11Y: Auto-detect prefers-reduced-motion and apply system-wide
   useEffect(() => {

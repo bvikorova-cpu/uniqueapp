@@ -4,11 +4,15 @@ import "./index.css";
 import "./i18n/config";
 import { installWebVitals } from "./utils/webVitals";
 import { registerServiceWorker } from "./utils/registerSW";
+import App from "./App";
+import { CookieConsentBanner } from "./components/gdpr/CookieConsentBanner";
+import { InstallPromptBanner } from "./components/pwa/InstallPromptBanner";
 
 declare global {
   interface Window {
     __UNIQUE_MAIN_EXECUTED__?: boolean;
     __UNIQUE_REACT_RENDERED__?: boolean;
+    __UNIQUE_ROOT__?: ReturnType<typeof createRoot>;
   }
 }
 
@@ -38,16 +42,6 @@ function showCrashOverlay(title: string, detail: string) {
 
 let reactRendered = false;
 
-const BootLoader = () => (
-  <div className="min-h-screen flex items-center justify-center bg-background text-foreground px-6 text-center">
-    <div>
-      <div className="mx-auto mb-4 h-10 w-10 animate-spin rounded-full border-2 border-primary/30 border-t-primary" />
-      <p className="text-base font-semibold">Unique sa načítava…</p>
-      <p className="mt-2 text-sm text-muted-foreground">Pripravujem tvoju reláciu.</p>
-    </div>
-  </div>
-);
-
 window.addEventListener("error", (e) => {
   console.error("[GlobalError]", e.error || e.message);
   if (!reactRendered) {
@@ -64,7 +58,7 @@ window.addEventListener("unhandledrejection", (e) => {
 window.__UNIQUE_MAIN_EXECUTED__ = true;
 console.log("[Boot] main.tsx executing");
 
-async function boot() {
+function boot() {
   // Real-user Web Vitals telemetry → vitals_log
   installWebVitals();
   const rootEl = document.getElementById("root");
@@ -73,17 +67,10 @@ async function boot() {
     return;
   }
 
-  rootEl.innerHTML = "";
-  const root = createRoot(rootEl);
-  root.render(<BootLoader />);
-
+  const root = window.__UNIQUE_ROOT__ ?? createRoot(rootEl);
+  window.__UNIQUE_ROOT__ = root;
+  if (!window.__UNIQUE_REACT_RENDERED__) rootEl.innerHTML = "";
   try {
-    const [{ default: App }, { CookieConsentBanner }, { InstallPromptBanner }] = await Promise.all([
-      import("./App.tsx"),
-      import("./components/gdpr/CookieConsentBanner"),
-      import("./components/pwa/InstallPromptBanner"),
-    ]);
-
     root.render(
       <>
         <App />
@@ -103,4 +90,4 @@ async function boot() {
   }
 }
 
-void boot();
+boot();
