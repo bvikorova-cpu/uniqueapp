@@ -60,27 +60,6 @@ self.addEventListener("activate", (event) => {
       } catch {
         /* noop */
       }
-      try {
-        const clients = await self.clients.matchAll({ type: "window" });
-        clients.forEach((client) => {
-          try {
-            const clientUrl = new URL(client.url);
-            if (clientUrl.hostname === "preview--uniqueapp.lovable.app") {
-              const targetUrl = new URL("https://id-preview--3ea492b4-277a-4b1d-a6dd-ca2a3efd9225.lovable.app");
-              targetUrl.pathname = clientUrl.pathname;
-              targetUrl.search = clientUrl.search;
-              targetUrl.hash = clientUrl.hash;
-              client.navigate(targetUrl.toString());
-            } else {
-              client.navigate(client.url);
-            }
-          } catch {
-            /* noop */
-          }
-        });
-      } catch {
-        /* noop */
-      }
     })(),
   );
 });
