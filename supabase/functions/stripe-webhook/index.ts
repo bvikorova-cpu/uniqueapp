@@ -566,3 +566,16 @@ serve(async (req) => {
     });
   }
 });
+
+// Returns true if the attribution row already has rewarded_at stamped.
+async function hasRewardedAt(
+  supabase: ReturnType<typeof createClient>,
+  attributionId: string,
+): Promise<boolean> {
+  const { data } = await supabase
+    .from("referral_attributions")
+    .select("rewarded_at")
+    .eq("id", attributionId)
+    .maybeSingle();
+  return !!(data as any)?.rewarded_at;
+}
