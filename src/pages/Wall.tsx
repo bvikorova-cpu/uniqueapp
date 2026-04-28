@@ -110,6 +110,7 @@ const Feed = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [savedPosts, setSavedPosts] = useState<Post[]>([]);
   const [loadingSaved, setLoadingSaved] = useState(false);
+  const [createPostOpen, setCreatePostOpen] = useState(false);
 
   const { data: userProfile } = useQuery({
     queryKey: ["profile", user?.id],
@@ -674,7 +675,7 @@ const Feed = () => {
         <MobileWallMenu onPostCreated={fetchPosts} />
         
         {/* Mobile FAB for creating posts */}
-        <Sheet>
+        <Sheet open={createPostOpen} onOpenChange={setCreatePostOpen}>
           <SheetTrigger asChild>
             <Button
               size="icon"
@@ -683,9 +684,15 @@ const Feed = () => {
               <span className="text-2xl font-bold">+</span>
             </Button>
           </SheetTrigger>
-          <SheetContent side="bottom" className="h-auto max-h-[80vh] rounded-t-3xl">
+          <SheetContent side="bottom" className="h-auto max-h-[80vh] rounded-t-3xl overflow-y-auto">
             <div className="py-4">
-              <EnhancedCreatePost onPostCreated={fetchPosts} userProfile={userProfile} />
+              <EnhancedCreatePost
+                onPostCreated={() => {
+                  fetchPosts();
+                  setCreatePostOpen(false);
+                }}
+                userProfile={userProfile}
+              />
             </div>
           </SheetContent>
         </Sheet>
