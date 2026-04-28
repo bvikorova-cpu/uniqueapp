@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
+import i18n from '@/i18n/config';
 import { supabase } from '@/integrations/supabase/client';
 
 /**
@@ -8,8 +8,6 @@ import { supabase } from '@/integrations/supabase/client';
  * is logged in and changes it manually.
  */
 export function useLanguagePreference() {
-  const { i18n } = useTranslation();
-
   useEffect(() => {
     let isMounted = true;
 
@@ -54,5 +52,5 @@ export function useLanguagePreference() {
       subscription.unsubscribe();
       i18n.off('languageChanged', handleChange);
     };
-  }, [i18n]);
+  }, []);
 }
