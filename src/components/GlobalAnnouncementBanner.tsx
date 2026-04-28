@@ -8,11 +8,28 @@ export const GlobalAnnouncementBanner = () => {
   const [dismissed, setDismissed] = useState(false);
 
   useEffect(() => {
+    let cancelled = false;
+
+    const loadAnnouncement = async () => {
+      const { data } = await supabase
+        .from('global_announcements')
+        .select('*')
+        .eq('is_active', true)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (!cancelled) {
+        setAnnouncement(data);
+        setDismissed(false);
+      }
+    };
+
     loadAnnouncement();
-    
+
     // Subscribe to changes
     const channel = supabase
-      .channel('global-announcements')
+      .channel(`global-announcements-${crypto.randomUUID()}`)
       .on('postgres_changes', {
         event: '*',
         schema: 'public',
@@ -23,22 +40,10 @@ export const GlobalAnnouncementBanner = () => {
       .subscribe();
 
     return () => {
+      cancelled = true;
       supabase.removeChannel(channel);
     };
   }, []);
-
-  const loadAnnouncement = async () => {
-    const { data } = await supabase
-      .from('global_announcements')
-      .select('*')
-      .eq('is_active', true)
-      .order('created_at', { ascending: false })
-      .limit(1)
-      .maybeSingle();
-
-    setAnnouncement(data);
-    setDismissed(false);
-  };
 
   if (!announcement || dismissed) return null;
 
