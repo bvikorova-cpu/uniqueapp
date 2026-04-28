@@ -266,6 +266,60 @@ export function TalentCommentsSheet({ submissionId, open, onOpenChange, onCountC
     }
   };
 
+  const startEdit = (c: TalentComment) => {
+    setEditingId(c.id);
+    setEditingText(c.comment_text);
+  };
+
+  const cancelEdit = () => {
+    setEditingId(null);
+    setEditingText("");
+  };
+
+  const saveEdit = async () => {
+    if (!editingId) return;
+    const parsed = commentSchema.safeParse({ comment_text: editingText });
+    if (!parsed.success) {
+      toast({ title: "Neplatný komentár", description: parsed.error.errors[0].message, variant: "destructive" });
+      return;
+    }
+    try {
+      setSavingEdit(true);
+      const { data, error } = await supabase
+        .from("talent_comments")
+        .update({ comment_text: parsed.data.comment_text, updated_at: new Date().toISOString() })
+        .eq("id", editingId)
+        .select("id, comment_text, updated_at")
+        .single();
+      if (error) {
+        if (error.message?.toLowerCase().includes("row-level security")) {
+          toast({
+            title: "Nedostatočné oprávnenia",
+            description: "Upraviť môžeš iba vlastné komentáre.",
+            variant: "destructive",
+          });
+        } else {
+          throw error;
+        }
+        return;
+      }
+      if (data) {
+        setComments((prev) =>
+          prev.map((c) =>
+            c.id === data.id ? { ...c, comment_text: data.comment_text, updated_at: data.updated_at } : c
+          )
+        );
+      }
+      toast({ title: "Komentár upravený" });
+      cancelEdit();
+    } catch (err: any) {
+      console.error("Error updating comment:", err);
+      toast({ title: "Chyba", description: err?.message || "Nepodarilo sa upraviť komentár", variant: "destructive" });
+    } finally {
+      setSavingEdit(false);
+    }
+  };
+
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="bottom" className="h-[80vh] flex flex-col p-0">
