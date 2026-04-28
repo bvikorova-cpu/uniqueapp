@@ -4,6 +4,9 @@ import "./index.css";
 import "./i18n/config";
 import { installWebVitals } from "./utils/webVitals";
 import { registerServiceWorker } from "./utils/registerSW";
+import App from "./App";
+import { CookieConsentBanner } from "./components/gdpr/CookieConsentBanner";
+import { InstallPromptBanner } from "./components/pwa/InstallPromptBanner";
 
 declare global {
   interface Window {
@@ -64,7 +67,7 @@ window.addEventListener("unhandledrejection", (e) => {
 window.__UNIQUE_MAIN_EXECUTED__ = true;
 console.log("[Boot] main.tsx executing");
 
-async function boot() {
+function boot() {
   // Real-user Web Vitals telemetry → vitals_log
   installWebVitals();
   const rootEl = document.getElementById("root");
@@ -75,15 +78,7 @@ async function boot() {
 
   rootEl.innerHTML = "";
   const root = createRoot(rootEl);
-  root.render(<BootLoader />);
-
   try {
-    const [{ default: App }, { CookieConsentBanner }, { InstallPromptBanner }] = await Promise.all([
-      import("./App.tsx"),
-      import("./components/gdpr/CookieConsentBanner"),
-      import("./components/pwa/InstallPromptBanner"),
-    ]);
-
     root.render(
       <>
         <App />
@@ -103,4 +98,4 @@ async function boot() {
   }
 }
 
-void boot();
+boot();
