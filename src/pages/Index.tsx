@@ -460,6 +460,9 @@ const Index = () => {
         <section>
           <SectionHeader icon={Crown} title="Ecosystem Modules" badge="Premium" badgeClass="bg-gradient-to-r from-yellow-500/20 to-amber-500/20 text-yellow-600 border-yellow-500/30" />
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3">
+            {ecosystemModules.map((mod, i) => (
+              <ModuleCard key={i} mod={mod} showFav onNavigate={handleNavigate} isFavorite={isFavorite} toggleFavorite={toggleFavorite} />
+            ))}
           </div>
           <RewardedAdCard sectionKey="ecosystem" adSlot={AD_PLACEMENTS.FOOTER_BANNER} className="mt-4" />
         </section>
@@ -503,6 +506,9 @@ const Index = () => {
           </motion.div>
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3">
+            {coreModules.map((mod, i) => (
+              <ModuleCard key={i} mod={mod} showFav onNavigate={handleNavigate} isFavorite={isFavorite} toggleFavorite={toggleFavorite} />
+            ))}
           </div>
           <RewardedAdCard sectionKey="core_modules" adSlot={AD_PLACEMENTS.FOOTER_BANNER} className="mt-4" />
         </section>
@@ -511,6 +517,9 @@ const Index = () => {
         <section>
           <SectionHeader icon={Zap} title="All Services" />
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3">
+            {services.map((mod, i) => (
+              <ModuleCard key={i} mod={{ ...mod, description: "" }} showFav onNavigate={handleNavigate} isFavorite={isFavorite} toggleFavorite={toggleFavorite} />
+            ))}
           </div>
           <RewardedAdCard sectionKey="all_services" adSlot={AD_PLACEMENTS.FOOTER_BANNER} className="mt-4" />
         </section>
