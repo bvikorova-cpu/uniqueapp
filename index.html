@@ -107,19 +107,34 @@
     </div>
     <script type="module" src="/src/main.tsx" data-unique-main></script>
     <script>
-      // Watchdog: ak main.tsx nenabootuje do 8s, agresívne vyčisti SW + cache
-      // a tvrdo reloadni s parametrom, ktorý zabráni opätovnému uviaznutiu.
+      // Watchdog: ak main.tsx nenabootuje do 10s, agresívne vyčisti SW + cache
+      // a tvrdo reloadni. Recovery flag sa maže OKAMŽITE pri prvom úspešnom
+      // boot-e (cez Object.defineProperty), aby sa nedal "zaseknúť" ani keď
+      // appka nabootuje rýchlejšie ako 1s.
       (function () {
-        var BOOT_TIMEOUT_MS = 8000;
-        // Recovery is rate-limited (max once per 60s) instead of once per session,
-        // so users on mobile s starým SW sa nikdy nezaseknú na "Vypni SW" hláške.
+        var BOOT_TIMEOUT_MS = 10000;
         var RECOVERY_COOLDOWN_MS = 60 * 1000;
-        var lastRecovery = (function () {
-          try {
-            var raw = sessionStorage.getItem("__unique_boot_recovered_at__");
-            return raw ? parseInt(raw, 10) || 0 : 0;
-          } catch (e) { return 0; }
-        })();
+
+        function clearRecoveryFlag() {
+          try { sessionStorage.removeItem("__unique_boot_recovered_at__"); } catch (e) {}
+        }
+
+        // Hook na __UNIQUE_MAIN_EXECUTED__: akonáhle sa nastaví na true, flag preč.
+        try {
+          var _executed = !!window.__UNIQUE_MAIN_EXECUTED__;
+          if (_executed) clearRecoveryFlag();
+          Object.defineProperty(window, "__UNIQUE_MAIN_EXECUTED__", {
+            configurable: true,
+            get: function () { return _executed; },
+            set: function (v) { _executed = !!v; if (_executed) clearRecoveryFlag(); },
+          });
+        } catch (e) { /* noop */ }
+
+        var lastRecovery = 0;
+        try {
+          var raw = sessionStorage.getItem("__unique_boot_recovered_at__");
+          lastRecovery = raw ? parseInt(raw, 10) || 0 : 0;
+        } catch (e) {}
         var recentlyRecovered = lastRecovery && (Date.now() - lastRecovery) < RECOVERY_COOLDOWN_MS;
 
         setTimeout(function () {
@@ -128,13 +143,19 @@
 
           if (recentlyRecovered) {
             if (msg) {
-              msg.innerHTML = "Načítanie stále zlyháva. <a href=\"javascript:void(0)\" id=\"unique-force-retry\" style=\"color:#fde68a;text-decoration:underline;font-weight:600;\">Skúsiť znova</a>";
+              msg.innerHTML = "Načítanie trvá dlhšie. <a href=\"javascript:void(0)\" id=\"unique-force-retry\" style=\"color:#fde68a;text-decoration:underline;font-weight:600;\">Skúsiť znova</a>";
               var btn = document.getElementById("unique-force-retry");
               if (btn) btn.addEventListener("click", function () {
-                try { sessionStorage.removeItem("__unique_boot_recovered_at__"); } catch (e) {}
-                window.location.reload();
+                clearRecoveryFlag();
+                window.location.replace(window.location.pathname);
               });
             }
+            // Auto-retry po ďalších 8s, kompletne bez query parametrov.
+            setTimeout(function () {
+              if (window.__UNIQUE_MAIN_EXECUTED__) return;
+              clearRecoveryFlag();
+              window.location.replace(window.location.pathname);
+            }, 8000);
             return;
           }
 
@@ -161,23 +182,9 @@
           try { sessionStorage.setItem("__unique_boot_recovered_at__", String(Date.now())); } catch (e) {}
 
           Promise.all(tasks).finally(function () {
-            try {
-              var url = new URL(window.location.href);
-              url.searchParams.set("nosw", String(Date.now()));
-              window.location.replace(url.toString());
-            } catch (e) {
-              window.location.reload();
-            }
+            window.location.replace(window.location.pathname);
           });
         }, BOOT_TIMEOUT_MS);
-
-        // Ak main.tsx nabootoval, vyčisti recovery flag aby ďalšie reload bolo čisté.
-        var clearFlagWhenBooted = setInterval(function () {
-          if (window.__UNIQUE_MAIN_EXECUTED__) {
-            clearInterval(clearFlagWhenBooted);
-            try { sessionStorage.removeItem("__unique_boot_recovered_at__"); } catch (e) {}
-          }
-        }, 1000);
       })();
     </script>
   </body>
