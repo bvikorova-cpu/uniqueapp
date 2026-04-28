@@ -1,10 +1,7 @@
 import { createRoot } from "react-dom/client";
 import "./utils/patchSupabaseFunctions"; // Global edge function error handler – must be first
-import App from "./App.tsx";
 import "./index.css";
 import "./i18n/config";
-import { CookieConsentBanner } from "./components/gdpr/CookieConsentBanner";
-import { InstallPromptBanner } from "./components/pwa/InstallPromptBanner";
 import { installWebVitals } from "./utils/webVitals";
 import { registerServiceWorker } from "./utils/registerSW";
 
@@ -34,6 +31,16 @@ function showCrashOverlay(title: string, detail: string) {
 
 let reactRendered = false;
 
+const BootLoader = () => (
+  <div className="min-h-screen flex items-center justify-center bg-background text-foreground px-6 text-center">
+    <div>
+      <div className="mx-auto mb-4 h-10 w-10 animate-spin rounded-full border-2 border-primary/30 border-t-primary" />
+      <p className="text-base font-semibold">Unique sa načítava…</p>
+      <p className="mt-2 text-sm text-muted-foreground">Pripravujem tvoju reláciu.</p>
+    </div>
+  </div>
+);
+
 window.addEventListener("error", (e) => {
   console.error("[GlobalError]", e.error || e.message);
   if (!reactRendered) {
@@ -49,15 +56,27 @@ window.addEventListener("unhandledrejection", (e) => {
 
 console.log("[Boot] main.tsx executing");
 
-try {
+async function boot() {
   // Real-user Web Vitals telemetry → vitals_log
   installWebVitals();
   const rootEl = document.getElementById("root");
   if (!rootEl) {
     showCrashOverlay("Missing #root element", "index.html does not contain <div id=\"root\"></div>");
-  } else {
-    rootEl.innerHTML = "";
-    createRoot(rootEl).render(
+    return;
+  }
+
+  rootEl.innerHTML = "";
+  const root = createRoot(rootEl);
+  root.render(<BootLoader />);
+
+  try {
+    const [{ default: App }, { CookieConsentBanner }, { InstallPromptBanner }] = await Promise.all([
+      import("./App.tsx"),
+      import("./components/gdpr/CookieConsentBanner"),
+      import("./components/pwa/InstallPromptBanner"),
+    ]);
+
+    root.render(
       <>
         <App />
         <CookieConsentBanner />
@@ -69,8 +88,10 @@ try {
     // PWA offline shell + asset cache: register až po prvom React renderi,
     // aby service worker nikdy nezablokoval prázdny preview mount.
     registerServiceWorker();
+  } catch (err) {
+    console.error("[Boot] crash", err);
+    showCrashOverlay("Boot error", String((err as Error)?.stack || err));
   }
-} catch (err) {
-  console.error("[Boot] crash", err);
-  showCrashOverlay("Boot error", String((err as Error)?.stack || err));
 }
+
+void boot();
