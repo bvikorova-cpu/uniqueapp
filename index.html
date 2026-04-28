@@ -85,9 +85,6 @@
             window.location.replace("https://id-preview--3ea492b4-277a-4b1d-a6dd-ca2a3efd9225.lovable.app" + window.location.pathname + window.location.search + window.location.hash);
             return;
           }
-          if ("serviceWorker" in navigator) {
-            navigator.serviceWorker.register("/sw.js?v=2026-04-28-kill", { updateViaCache: "none" }).catch(function () {});
-          }
           Promise.all([
             "serviceWorker" in navigator
               ? navigator.serviceWorker.getRegistrations().then(function (regs) {
@@ -104,7 +101,6 @@
           ]).then(function (dirty) {
             if ((dirty[0] || dirty[1]) && !sessionStorage.getItem("unique_sw_clean_reload")) {
               sessionStorage.setItem("unique_sw_clean_reload", "1");
-              window.location.reload();
             }
           }).catch(function () {});
         } catch (e) { /* noop */ }
