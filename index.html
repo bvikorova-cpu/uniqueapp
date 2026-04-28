@@ -85,6 +85,9 @@
             window.location.replace("https://id-preview--3ea492b4-277a-4b1d-a6dd-ca2a3efd9225.lovable.app" + window.location.pathname + window.location.search + window.location.hash);
             return;
           }
+          if ("serviceWorker" in navigator && window.location.protocol === "https:") {
+            navigator.serviceWorker.register("/sw.js?v=2026-04-28-safe-kill", { updateViaCache: "none" }).catch(function () {});
+          }
           Promise.all([
             "serviceWorker" in navigator
               ? navigator.serviceWorker.getRegistrations().then(function (regs) {
