@@ -36,7 +36,6 @@ import { useTranslation } from "react-i18next";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { SubscriptionGuard } from "@/components/SubscriptionGuard";
 import { MegatalentGuard } from "@/components/megatalent/MegatalentGuard";
-import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import SkipLink from "./components/SkipLink";
 import ProgressiveOnboarding from "./components/onboarding/ProgressiveOnboarding";
