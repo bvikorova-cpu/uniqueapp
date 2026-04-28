@@ -13,6 +13,7 @@ interface TalentComment {
   user_id: string;
   comment_text: string;
   created_at: string;
+  updated_at?: string | null;
   profiles?: { full_name: string | null; avatar_url: string | null } | null;
 }
 
