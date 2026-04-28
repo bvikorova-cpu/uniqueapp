@@ -25,6 +25,7 @@ import { useEmployerVerification } from "@/hooks/useEmployerVerification";
 import { CreateJobDialog } from "@/components/jobs/CreateJobDialog";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { EmployerSubscriptionTiers } from "@/components/employer/EmployerSubscriptionTiers";
+import { JobPostingsStatus } from "@/components/employer/JobPostingsStatus";
 import { motion } from "framer-motion";
 
 interface JobWithStats {
