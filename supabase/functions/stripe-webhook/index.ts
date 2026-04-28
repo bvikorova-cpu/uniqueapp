@@ -441,6 +441,7 @@ serve(async (req) => {
           ? (inv as any).subscription
           : (inv as any).subscription?.id;
         if (!subId) break;
+
         // Mark any open dunning rows for this sub as recovered
         const { error: rErr } = await supabase
           .from("dunning_events")
@@ -452,6 +453,124 @@ serve(async (req) => {
           .eq("stripe_subscription_id", subId)
           .in("kind", ["failed", "requires_action"]);
         if (rErr) log("dunning recover failed", { err: rErr.message });
+
+        // ─── RECURRING REFERRAL REWARD ─────────────────────────────────
+        // Credit referrer on EVERY successful subscription invoice (initial
+        // + every renewal). Idempotent via unique source_invoice_id.
+        try {
+          if (!inv.id) break;
+          // Only count actual paid charges (skip €0 invoices, credits, etc.)
+          const amountPaid = (inv as any).amount_paid ?? 0;
+          if (amountPaid <= 0) {
+            log("referral skip: zero-amount invoice", { invoice: inv.id });
+            break;
+          }
+
+          const customerId = typeof inv.customer === "string"
+            ? inv.customer
+            : (inv.customer as any)?.id;
+          if (!customerId) break;
+
+          // Resolve buyer via Stripe customer email → profile
+          let email: string | null = (inv as any).customer_email ?? null;
+          if (!email) {
+            const cust = await stripe.customers.retrieve(customerId);
+            if (!cust.deleted) email = (cust as Stripe.Customer).email ?? null;
+          }
+          if (!email) { log("referral skip: no email"); break; }
+
+          const { data: buyerProfile } = await supabase
+            .from("profiles")
+            .select("id")
+            .eq("email", email)
+            .maybeSingle();
+          if (!buyerProfile?.id) {
+            log("referral skip: no profile for email", { email });
+            break;
+          }
+
+          // Find approved attribution
+          const { data: attr } = await supabase
+            .from("referral_attributions")
+            .select("id, referrer_id, status")
+            .eq("referred_user_id", buyerProfile.id)
+            .maybeSingle();
+          if (!attr) break;
+          if (attr.status !== "approved") {
+            log("referral skip: attribution not approved", { status: attr.status });
+            break;
+          }
+
+          // Resolve dynamic reward (default €5)
+          let rewardEur = 5;
+          try {
+            const { data: rewardData } = await supabase.rpc("get_affiliate_reward_eur", {
+              _user_id: attr.referrer_id,
+            });
+            if (typeof rewardData === "number" && rewardData > 0) rewardEur = Number(rewardData);
+          } catch (_e) { /* fall back to €5 */ }
+
+          const periodStart = new Date().toISOString();
+          const periodEnd = new Date(Date.now() + 30 * 24 * 3600 * 1000).toISOString();
+
+          const { error: earnErr } = await supabase
+            .from("megatalent_referral_earnings")
+            .insert({
+              referrer_id: attr.referrer_id,
+              referred_user_id: buyerProfile.id,
+              amount: rewardEur,
+              paid: false,
+              period_start: periodStart,
+              period_end: periodEnd,
+              source_subscription_id: subId,
+              source_invoice_id: inv.id,
+              auto_credited: true,
+            });
+
+          if (earnErr) {
+            // Duplicate (unique on source_invoice_id) → already credited, no-op
+            if (earnErr.message?.toLowerCase().includes("duplicate")) {
+              log("referral already credited for invoice", { invoice: inv.id });
+            } else {
+              log("referral earning insert failed", { error: earnErr.message });
+            }
+            break;
+          }
+
+          // Mark first-payment timestamp on the attribution (one-shot)
+          if (!(await hasRewardedAt(supabase, attr.id))) {
+            await supabase
+              .from("referral_attributions")
+              .update({
+                rewarded_at: new Date().toISOString(),
+                first_subscription_id: subId,
+              })
+              .eq("id", attr.id);
+          }
+
+          await supabase.from("admin_audit_log").insert({
+            admin_id: "00000000-0000-0000-0000-000000000000",
+            action: "referral_recurring_reward_credited",
+            target_type: "megatalent_referral_earnings",
+            target_id: attr.referrer_id,
+            details: {
+              referrer_id: attr.referrer_id,
+              referred_user_id: buyerProfile.id,
+              subscription_id: subId,
+              invoice_id: inv.id,
+              amount_eur: rewardEur,
+            },
+          });
+          log("recurring referral reward credited", {
+            referrer: attr.referrer_id,
+            invoice: inv.id,
+            amount: rewardEur,
+          });
+        } catch (refErr) {
+          log("recurring referral handler error", {
+            err: (refErr as Error).message,
+          });
+        }
         break;
       }
 
