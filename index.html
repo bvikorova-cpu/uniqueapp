@@ -104,18 +104,6 @@
               window.location.reload();
             }
           }).catch(function () {});
-          setTimeout(function () {
-            if (window.__UNIQUE_MAIN_EXECUTED__) return;
-            var s = document.createElement("script");
-            s.type = "module";
-            s.src = "/src/main.tsx?v=20260428-rescue-" + Date.now();
-            s.setAttribute("data-unique-rescue-main", "true");
-            s.onerror = function () {
-              var root = document.getElementById("root");
-              if (root) root.innerHTML = '<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0f0a1f;color:#fff;font-family:ui-sans-serif,system-ui,sans-serif;padding:24px;text-align:center;"><div><div style="font-size:18px;font-weight:700;margin-bottom:8px;">Preview používa starú cache</div><div style="font-size:13px;color:#c4b5fd;">Stlač Ctrl + F5 alebo otvor preview v novom tabe.</div></div></div>';
-            };
-            document.body.appendChild(s);
-          }, 2500);
         } catch (e) { /* noop */ }
       })();
     </script>
@@ -130,6 +118,6 @@
         </div>
       </div>
     </div>
-    <script type="module" src="/src/main.tsx?v=20260428-rescue" data-unique-main></script>
+    <script type="module" src="/src/main.tsx" data-unique-main></script>
   </body>
 </html>
