@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
+
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -18,7 +18,7 @@ import { JobCardRedesigned } from "@/components/jobs/JobCardRedesigned";
 import { User as SupabaseUser } from "@supabase/supabase-js";
 import { JobPreferencesDialog } from "@/components/jobs/JobPreferencesDialog";
 import { JobAIAssistant } from "@/components/jobs/JobAIAssistant";
-import { JobApplicationDialog } from "@/components/jobs/JobApplicationDialog";
+
 import { OneClickApplyDialog } from "@/components/jobs/OneClickApplyDialog";
 import { AIJobOptimizer } from "@/components/jobs/AIJobOptimizer";
 import { WorkUserGuide } from "@/components/work/WorkUserGuide";
