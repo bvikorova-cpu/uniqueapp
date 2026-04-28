@@ -10,6 +10,7 @@ export interface ReferralEarning {
   created_at: string;
   period_start: string;
   period_end: string;
+  source_kind?: string | null;
   profiles?: {
     full_name: string | null;
   };
