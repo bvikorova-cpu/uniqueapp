@@ -74,35 +74,23 @@
     }
     </script>
 
-    <!-- Emergency SW + cache cleanup: if an old service worker still controls a
-         standalone preview tab, unregister it and do one guarded reload so the
-         current page is no longer served from the stale app shell. -->
+    <!-- Emergency SW + cache cleanup: old service worker versions cached stale
+         navigation HTML. Keep this cleanup lightweight and never block boot. -->
     <script>
       (function () {
         window.__UNIQUE_MAIN_EXECUTED__ = false;
         window.__UNIQUE_REACT_RENDERED__ = false;
-        var reloadKey = "unique-sw-hard-reload-2026-04-28";
         try {
-          var wasControlled = !!(navigator.serviceWorker && navigator.serviceWorker.controller);
-          var cleanup = Promise.resolve();
           if ("serviceWorker" in navigator) {
-            cleanup = navigator.serviceWorker.getRegistrations().then(function (regs) {
+            navigator.serviceWorker.getRegistrations().then(function (regs) {
               regs.forEach(function (r) { try { r.unregister(); } catch (e) {} });
             }).catch(function () {});
           }
           if (typeof caches !== "undefined" && caches.keys) {
-            cleanup = cleanup.then(function () { return caches.keys(); }).then(function (keys) {
+            caches.keys().then(function (keys) {
               keys.forEach(function (k) { try { caches.delete(k); } catch (e) {} });
             }).catch(function () {});
           }
-          window.__UNIQUE_SW_CLEANUP__ = cleanup.then(function () {
-            if (wasControlled && !sessionStorage.getItem(reloadKey)) {
-              sessionStorage.setItem(reloadKey, "1");
-              var freshUrl = new URL(window.location.href);
-              freshUrl.searchParams.set("unique_fresh", String(Date.now()));
-              window.location.replace(freshUrl.toString());
-            }
-          });
         } catch (e) { /* noop */ }
       })();
     </script>
@@ -117,7 +105,7 @@
         </div>
       </div>
     </div>
-    <script type="module" src="/src/main.tsx?v=20260428-swfix" data-unique-main></script>
+    <script type="module" src="/src/main.tsx?v=20260428-runtimefix" data-unique-main></script>
     <script>
       (function () {
         window.setTimeout(function () {
