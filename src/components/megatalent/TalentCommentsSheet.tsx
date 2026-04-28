@@ -283,6 +283,27 @@ export function TalentCommentsSheet({ submissionId, open, onOpenChange, onCountC
       toast({ title: "Neplatný komentár", description: parsed.error.errors[0].message, variant: "destructive" });
       return;
     }
+
+    // Local pre-flight: must be signed in and must own the comment
+    const target = comments.find((c) => c.id === editingId);
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      toast({
+        title: "Prihlásenie potrebné",
+        description: "Pre úpravu komentára sa najprv prihlás.",
+        variant: "destructive",
+      });
+      return;
+    }
+    if (target && target.user_id !== user.id) {
+      toast({
+        title: "Nemáš oprávnenie",
+        description: "Upraviť môžeš iba vlastné komentáre.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
       setSavingEdit(true);
       const { data, error } = await supabase
@@ -290,12 +311,23 @@ export function TalentCommentsSheet({ submissionId, open, onOpenChange, onCountC
         .update({ comment_text: parsed.data.comment_text, updated_at: new Date().toISOString() })
         .eq("id", editingId)
         .select("id, comment_text, updated_at")
-        .single();
+        .maybeSingle();
+
       if (error) {
-        if (error.message?.toLowerCase().includes("row-level security")) {
+        const msg = (error.message || "").toLowerCase();
+        const code = (error as any).code;
+        if (msg.includes("row-level security") || code === "42501") {
+          // Could be: not the owner, OR no active Megatalent subscription
           toast({
-            title: "Nedostatočné oprávnenia",
-            description: "Upraviť môžeš iba vlastné komentáre.",
+            title: "Úprava zamietnutá",
+            description:
+              "Komentár vieš upraviť len ako jeho autor a s aktívnym Megatalent predplatným. Skontroluj svoje predplatné a skús to znova.",
+            variant: "destructive",
+          });
+        } else if (msg.includes("jwt") || msg.includes("not authenticated")) {
+          toast({
+            title: "Relácia vypršala",
+            description: "Prihlás sa znova a skús úpravu zopakovať.",
             variant: "destructive",
           });
         } else {
@@ -303,18 +335,33 @@ export function TalentCommentsSheet({ submissionId, open, onOpenChange, onCountC
         }
         return;
       }
-      if (data) {
-        setComments((prev) =>
-          prev.map((c) =>
-            c.id === data.id ? { ...c, comment_text: data.comment_text, updated_at: data.updated_at } : c
-          )
-        );
+
+      if (!data) {
+        // No row returned → RLS silently filtered it (no active subscription
+        // or no longer the owner) or the comment was deleted in the meantime.
+        toast({
+          title: "Úpravu sa nepodarilo uložiť",
+          description:
+            "Pravdepodobne nemáš aktívne Megatalent predplatné, alebo bol komentár medzitým odstránený.",
+          variant: "destructive",
+        });
+        return;
       }
+
+      setComments((prev) =>
+        prev.map((c) =>
+          c.id === data.id ? { ...c, comment_text: data.comment_text, updated_at: data.updated_at } : c
+        )
+      );
       toast({ title: "Komentár upravený" });
       cancelEdit();
     } catch (err: any) {
       console.error("Error updating comment:", err);
-      toast({ title: "Chyba", description: err?.message || "Nepodarilo sa upraviť komentár", variant: "destructive" });
+      toast({
+        title: "Chyba pri ukladaní",
+        description: err?.message || "Nepodarilo sa upraviť komentár. Skús to prosím znova.",
+        variant: "destructive",
+      });
     } finally {
       setSavingEdit(false);
     }
