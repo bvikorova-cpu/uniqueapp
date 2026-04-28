@@ -4,9 +4,10 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sh
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Loader2, Send, Trash2, MessageCircle, Pencil, Check, X } from "lucide-react";
+import { Loader2, Send, Trash2, MessageCircle, Pencil, Check, X, ShieldCheck, ShieldAlert } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useMegaTalentTier } from "@/hooks/useMegaTalentTier";
 
 interface TalentComment {
   id: string;
@@ -36,6 +37,7 @@ const commentSchema = z.object({
 
 export function TalentCommentsSheet({ submissionId, open, onOpenChange, onCountChange }: Props) {
   const { toast } = useToast();
+  const { isSubscribed, tier, loading: subLoading, refetch: refetchTier } = useMegaTalentTier();
   const [comments, setComments] = useState<TalentComment[]>([]);
   const [totalCount, setTotalCount] = useState(0);
   const [page, setPage] = useState(0);
@@ -125,6 +127,7 @@ export function TalentCommentsSheet({ submissionId, open, onOpenChange, onCountC
   useEffect(() => {
     if (open && submissionId) {
       loadInitial(submissionId);
+      refetchTier();
     } else {
       setComments([]);
       setText("");
@@ -267,6 +270,14 @@ export function TalentCommentsSheet({ submissionId, open, onOpenChange, onCountC
   };
 
   const startEdit = (c: TalentComment) => {
+    if (!subLoading && !isSubscribed) {
+      toast({
+        title: "Vyžadované Megatalent predplatné",
+        description: "Pre úpravu komentára potrebuješ aktívne Megatalent predplatné (od €10/mesiac).",
+        variant: "destructive",
+      });
+      return;
+    }
     setEditingId(c.id);
     setEditingText(c.comment_text);
   };
@@ -375,6 +386,23 @@ export function TalentCommentsSheet({ submissionId, open, onOpenChange, onCountC
             <MessageCircle className="h-4 w-4" />
             Komentáre {totalCount > 0 && <span className="text-muted-foreground text-sm">({totalCount})</span>}
           </SheetTitle>
+          {!subLoading && (
+            isSubscribed ? (
+              <div className="flex items-center gap-2 text-[11px] text-emerald-500 bg-emerald-500/10 border border-emerald-500/20 rounded-md px-2 py-1 mt-1">
+                <ShieldCheck className="h-3.5 w-3.5 flex-shrink-0" />
+                <span>
+                  Aktívne Megatalent predplatné{tier ? ` (${tier === "top_premium" ? "TOP Premium" : "Premium"})` : ""} — môžeš pridávať a upravovať komentáre.
+                </span>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2 text-[11px] text-amber-500 bg-amber-500/10 border border-amber-500/20 rounded-md px-2 py-1 mt-1">
+                <ShieldAlert className="h-3.5 w-3.5 flex-shrink-0" />
+                <span>
+                  Bez aktívneho Megatalent predplatného (od €10/mesiac) si komentáre len zobrazíš — pridávanie a úprava sú zamknuté.
+                </span>
+              </div>
+            )
+          )}
         </SheetHeader>
 
         <ScrollArea className="flex-1 px-4 py-3">
