@@ -31,9 +31,9 @@ export default function JobsCinematicHero({ totalJobs, totalCompanies, totalAppl
   }, []);
 
   const statCards = [
-    { value: totalJobs > 0 ? totalJobs.toLocaleString() : "—", label: "Active Jobs", icon: Briefcase, accent: "from-amber-500/20 to-yellow-500/10", iconColor: "text-amber-400" },
-    { value: totalCompanies > 0 ? totalCompanies.toLocaleString() : "—", label: "Companies", icon: Building2, accent: "from-blue-500/20 to-cyan-500/10", iconColor: "text-blue-400" },
-    { value: totalApplications > 0 ? totalApplications.toLocaleString() : "—", label: "Applications", icon: Users, accent: "from-emerald-500/20 to-green-500/10", iconColor: "text-emerald-400" },
+    { value: totalJobs.toLocaleString(), label: "Active Jobs", icon: Briefcase, accent: "from-amber-500/20 to-yellow-500/10", iconColor: "text-amber-400" },
+    { value: totalCompanies.toLocaleString(), label: "Companies", icon: Building2, accent: "from-blue-500/20 to-cyan-500/10", iconColor: "text-blue-400" },
+    { value: totalApplications.toLocaleString(), label: "Applications", icon: Users, accent: "from-emerald-500/20 to-green-500/10", iconColor: "text-emerald-400" },
     { value: `${timeLeft.days}d ${timeLeft.hours}h`, label: "Challenge Ends", icon: Globe, accent: "from-purple-500/20 to-violet-500/10", iconColor: "text-purple-400" },
   ];
 

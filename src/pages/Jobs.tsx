@@ -423,12 +423,33 @@ const Jobs = () => {
                   </div>
                 ) : filteredJobs.length === 0 ? (
                   <div className="text-center py-16">
-                    <div className="h-20 w-20 mx-auto mb-4 rounded-3xl bg-muted/50 flex items-center justify-center">
-                      <Briefcase className="h-10 w-10 text-muted-foreground" />
+                    <div className="h-20 w-20 mx-auto mb-4 rounded-3xl bg-gradient-to-br from-amber-500/20 to-yellow-500/10 flex items-center justify-center">
+                      <Briefcase className="h-10 w-10 text-amber-500" />
                     </div>
-                    <p className="text-lg font-semibold mb-1">No positions found</p>
-                    <p className="text-sm text-muted-foreground">Try adjusting your filters</p>
+                    <p className="text-lg font-semibold mb-1">
+                      {jobs.length === 0 ? "Be the first employer" : "No positions found"}
+                    </p>
+                    <p className="text-sm text-muted-foreground mb-4">
+                      {jobs.length === 0
+                        ? "No active job listings yet. Post the first one and reach thousands of candidates."
+                        : "Try adjusting your filters or search query"}
+                    </p>
+                    {user && !isEmployer && jobs.length === 0 && (
+                      <Button onClick={() => registerEmployerMutation.mutate()} disabled={registerEmployerMutation.isPending} size="sm">
+                        <Building2 className="h-4 w-4 mr-1.5" />
+                        Register as Employer
+                      </Button>
+                    )}
+                    {user && isEmployer && jobs.length === 0 && (
+                      <Button onClick={() => navigate('/employer-dashboard')} size="sm">
+                        <Plus className="h-4 w-4 mr-1.5" /> Post a Job
+                      </Button>
+                    )}
+                    {!user && jobs.length === 0 && (
+                      <Button onClick={() => window.location.href = "/auth"} size="sm">Sign In to Post</Button>
+                    )}
                   </div>
+
                 ) : (
                   <div className="space-y-3">
                     <p className="text-xs text-muted-foreground font-medium px-1">{filteredJobs.length} position{filteredJobs.length !== 1 ? "s" : ""} found</p>
