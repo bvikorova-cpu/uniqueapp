@@ -73,7 +73,7 @@ export function TalentCommentsSheet({ submissionId, open, onOpenChange, onCountC
     const to = from + PAGE_SIZE - 1;
     const { data, error, count } = await supabase
       .from("talent_comments")
-      .select("id, user_id, comment_text, created_at", { count: "exact" })
+      .select("id, user_id, comment_text, created_at, updated_at", { count: "exact" })
       .eq("submission_id", id)
       .order("created_at", { ascending: false })
       .range(from, to);
