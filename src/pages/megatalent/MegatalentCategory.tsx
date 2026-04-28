@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
+import { TalentCommentsSheet } from "@/components/megatalent/TalentCommentsSheet";
 
 const categoryConfig: Record<string, { title: string; icon: string; categories: string[] }> = {
   art: { title: "Art & Creativity", icon: "🎨", categories: ["drawing", "painting", "digital_art", "sculpture", "photography", "handmade", "makeup_art", "tattoo"] },
