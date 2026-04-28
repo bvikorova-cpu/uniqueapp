@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Briefcase, Users, Eye, TrendingUp, Mail, FileText, ArrowLeft, Download, MessageSquare, CheckCircle2, AlertCircle, Sparkles, Crown, BarChart3 } from "lucide-react";
+import { Briefcase, Users, Eye, TrendingUp, Mail, FileText, ArrowLeft, Download, MessageSquare, CheckCircle2, AlertCircle, Sparkles, Crown, BarChart3, Receipt } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -25,6 +25,7 @@ import { useEmployerVerification } from "@/hooks/useEmployerVerification";
 import { CreateJobDialog } from "@/components/jobs/CreateJobDialog";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { EmployerSubscriptionTiers } from "@/components/employer/EmployerSubscriptionTiers";
+import { JobPostingsStatus } from "@/components/employer/JobPostingsStatus";
 import { motion } from "framer-motion";
 
 interface JobWithStats {
@@ -332,6 +333,9 @@ export default function EmployerDashboard() {
             <TabsTrigger value="applications" className="rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-accent data-[state=active]:text-white gap-1.5">
               <Users className="h-3.5 w-3.5" /> Applications
             </TabsTrigger>
+            <TabsTrigger value="packages" className="rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-accent data-[state=active]:text-white gap-1.5">
+              <Receipt className="h-3.5 w-3.5" /> Packages
+            </TabsTrigger>
             <TabsTrigger value="templates" className="rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-accent data-[state=active]:text-white gap-1.5">
               <MessageSquare className="h-3.5 w-3.5" /> Templates
             </TabsTrigger>
@@ -516,6 +520,10 @@ export default function EmployerDashboard() {
                 </div>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="packages" className="space-y-4">
+            <JobPostingsStatus />
           </TabsContent>
 
           <TabsContent value="templates" className="space-y-4">
