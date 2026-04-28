@@ -33,6 +33,7 @@ const MegatalentCategory = () => {
   const [userVotes, setUserVotes] = useState<Record<string, 'like' | 'dislike'>>({});
   const [commentCounts, setCommentCounts] = useState<Record<string, number>>({});
   const [expandedMedia, setExpandedMedia] = useState<{ url: string; type: 'image' | 'video' } | null>(null);
+  const [commentsForId, setCommentsForId] = useState<string | null>(null);
 
   const config = category ? categoryConfig[category] : null;
 
