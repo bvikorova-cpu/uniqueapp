@@ -81,6 +81,10 @@
         window.__UNIQUE_MAIN_EXECUTED__ = false;
         window.__UNIQUE_REACT_RENDERED__ = false;
         try {
+          if (window.location.hostname === "preview--uniqueapp.lovable.app") {
+            window.location.replace("https://id-preview--3ea492b4-277a-4b1d-a6dd-ca2a3efd9225.lovable.app" + window.location.pathname + window.location.search + window.location.hash);
+            return;
+          }
           if ("serviceWorker" in navigator) {
             navigator.serviceWorker.getRegistrations().then(function (regs) {
               regs.forEach(function (r) { try { r.unregister(); } catch (e) {} });
@@ -105,27 +109,6 @@
         </div>
       </div>
     </div>
-    <script type="module" src="/src/main.tsx?v=20260428-runtimefix" data-unique-main></script>
-    <script>
-      (function () {
-        window.setTimeout(function () {
-          if (window.__UNIQUE_MAIN_EXECUTED__) return;
-          var main = document.querySelector("script[data-unique-main]");
-          var src = main && main.src ? main.src : "/src/main.tsx";
-          var url = new URL(src, window.location.href);
-          url.searchParams.set("recover", String(Date.now()));
-          var retry = document.createElement("script");
-          retry.type = "module";
-          retry.src = url.toString();
-          retry.onerror = function () {
-            var root = document.getElementById("root");
-            if (root && !window.__UNIQUE_MAIN_EXECUTED__) {
-              root.innerHTML = '<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0f0a1f;color:#fff;font-family:ui-sans-serif,system-ui,sans-serif;padding:24px;text-align:center;"><div><div style="font-size:18px;font-weight:700;margin-bottom:8px;">Preview sa nepodarilo načítať</div><div style="font-size:13px;color:#c4b5fd;max-width:520px;">Otvor aktuálnu preview adresu projektu alebo sprav tvrdý refresh tejto karty.</div></div></div>';
-            }
-          };
-          document.head.appendChild(retry);
-        }, 6000);
-      })();
-    </script>
+    <script type="module" src="/src/main.tsx" data-unique-main></script>
   </body>
 </html>
