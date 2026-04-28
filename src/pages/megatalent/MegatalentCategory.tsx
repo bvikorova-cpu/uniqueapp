@@ -340,6 +340,13 @@ const MegatalentCategory = () => {
           )}
         </DialogContent>
       </Dialog>
+
+      <TalentCommentsSheet
+        submissionId={commentsForId}
+        open={!!commentsForId}
+        onOpenChange={(o) => !o && setCommentsForId(null)}
+        onCountChange={(id, count) => setCommentCounts((prev) => ({ ...prev, [id]: count }))}
+      />
     </div>
   );
 };
