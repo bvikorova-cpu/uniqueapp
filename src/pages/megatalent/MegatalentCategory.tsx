@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
+import { TalentCommentsSheet } from "@/components/megatalent/TalentCommentsSheet";
 
 const categoryConfig: Record<string, { title: string; icon: string; categories: string[] }> = {
   art: { title: "Art & Creativity", icon: "🎨", categories: ["drawing", "painting", "digital_art", "sculpture", "photography", "handmade", "makeup_art", "tattoo"] },
@@ -32,6 +33,7 @@ const MegatalentCategory = () => {
   const [userVotes, setUserVotes] = useState<Record<string, 'like' | 'dislike'>>({});
   const [commentCounts, setCommentCounts] = useState<Record<string, number>>({});
   const [expandedMedia, setExpandedMedia] = useState<{ url: string; type: 'image' | 'video' } | null>(null);
+  const [commentsForId, setCommentsForId] = useState<string | null>(null);
 
   const config = category ? categoryConfig[category] : null;
 
@@ -310,10 +312,13 @@ const MegatalentCategory = () => {
                         </Button>
                       </div>
 
-                      <Button variant="ghost" size="sm" className="gap-1.5 h-8" onClick={() => {
-                        const text = window.prompt("Tvoj komentár:");
-                        if (text && text.trim()) toast({ description: "Komentár pridaný!" });
-                      }}>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="gap-1.5 h-8"
+                        onClick={() => setCommentsForId(submission.id)}
+                        aria-label="Otvoriť komentáre"
+                      >
                         <MessageCircle className="w-4 h-4" />
                         <span className="text-xs">{commentCounts[submission.id] || 0}</span>
                       </Button>
@@ -335,6 +340,13 @@ const MegatalentCategory = () => {
           )}
         </DialogContent>
       </Dialog>
+
+      <TalentCommentsSheet
+        submissionId={commentsForId}
+        open={!!commentsForId}
+        onOpenChange={(o) => !o && setCommentsForId(null)}
+        onCountChange={(id, count) => setCommentCounts((prev) => ({ ...prev, [id]: count }))}
+      />
     </div>
   );
 };
