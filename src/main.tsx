@@ -1,12 +1,14 @@
 import { createRoot } from "react-dom/client";
-import "./utils/patchSupabaseFunctions"; // Global edge function error handler – must be first
+import { Component, lazy, ReactNode, Suspense } from "react";
 import "./index.css";
-import "./i18n/config";
-import { installWebVitals } from "./utils/webVitals";
-import { registerServiceWorker } from "./utils/registerSW";
-import App from "./App";
-import { CookieConsentBanner } from "./components/gdpr/CookieConsentBanner";
-import { InstallPromptBanner } from "./components/pwa/InstallPromptBanner";
+
+const App = lazy(() => import("./App"));
+const CookieConsentBanner = lazy(() =>
+  import("./components/gdpr/CookieConsentBanner").then((module) => ({ default: module.CookieConsentBanner }))
+);
+const InstallPromptBanner = lazy(() =>
+  import("./components/pwa/InstallPromptBanner").then((module) => ({ default: module.InstallPromptBanner }))
+);
 
 declare global {
   interface Window {
@@ -42,6 +44,37 @@ function showCrashOverlay(title: string, detail: string) {
 
 let reactRendered = false;
 
+const BootFallback = () => (
+  <div className="min-h-screen flex items-center justify-center bg-background text-foreground">
+    <div className="h-10 w-10 rounded-full border-2 border-primary/30 border-t-primary animate-spin" />
+  </div>
+);
+
+class BootErrorBoundary extends Component<{ children: ReactNode }, { error: Error | null }> {
+  state = { error: null };
+
+  static getDerivedStateFromError(error: Error) {
+    return { error };
+  }
+
+  render() {
+    if (this.state.error) {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-background p-4 text-foreground">
+          <div className="max-w-lg rounded-lg border border-destructive/40 bg-card p-5 shadow-xl">
+            <h1 className="text-lg font-semibold">Preview crash</h1>
+            <pre className="mt-3 max-h-64 overflow-auto whitespace-pre-wrap text-xs text-muted-foreground">
+              {this.state.error.stack || this.state.error.message}
+            </pre>
+          </div>
+        </div>
+      );
+    }
+
+    return this.props.children;
+  }
+}
+
 window.addEventListener("error", (e) => {
   console.error("[GlobalError]", e.error || e.message);
   if (!reactRendered) {
@@ -59,8 +92,6 @@ window.__UNIQUE_MAIN_EXECUTED__ = true;
 console.log("[Boot] main.tsx executing");
 
 function boot() {
-  // Real-user Web Vitals telemetry → vitals_log
-  installWebVitals();
   const rootEl = document.getElementById("root");
   if (!rootEl) {
     showCrashOverlay("Missing #root element", "index.html does not contain <div id=\"root\"></div>");
@@ -72,18 +103,24 @@ function boot() {
   if (!window.__UNIQUE_REACT_RENDERED__) rootEl.innerHTML = "";
   try {
     root.render(
-      <>
-        <App />
-        <CookieConsentBanner />
-        <InstallPromptBanner />
-      </>
+      <BootErrorBoundary>
+        <Suspense fallback={<BootFallback />}>
+          <App />
+          <Suspense fallback={null}>
+            <CookieConsentBanner />
+            <InstallPromptBanner />
+          </Suspense>
+        </Suspense>
+      </BootErrorBoundary>
     );
     reactRendered = true;
     window.__UNIQUE_REACT_RENDERED__ = true;
     console.log("[Boot] React render() called");
-    // PWA offline shell + asset cache: register až po prvom React renderi,
-    // aby service worker nikdy nezablokoval prázdny preview mount.
-    registerServiceWorker();
+    window.setTimeout(() => {
+      import("./utils/patchSupabaseFunctions").catch((err) => console.error("[Boot] edge patch failed", err));
+      import("./utils/webVitals").then(({ installWebVitals }) => installWebVitals()).catch((err) => console.error("[Boot] web vitals failed", err));
+      import("./utils/registerSW").then(({ registerServiceWorker }) => registerServiceWorker()).catch((err) => console.error("[Boot] service worker failed", err));
+    }, 0);
   } catch (err) {
     console.error("[Boot] crash", err);
     showCrashOverlay("Boot error", String((err as Error)?.stack || err));
