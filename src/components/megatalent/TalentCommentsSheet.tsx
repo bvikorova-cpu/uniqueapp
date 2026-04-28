@@ -269,6 +269,14 @@ export function TalentCommentsSheet({ submissionId, open, onOpenChange, onCountC
   };
 
   const startEdit = (c: TalentComment) => {
+    if (!subLoading && !isSubscribed) {
+      toast({
+        title: "Vyžadované Megatalent predplatné",
+        description: "Pre úpravu komentára potrebuješ aktívne Megatalent predplatné (od €10/mesiac).",
+        variant: "destructive",
+      });
+      return;
+    }
     setEditingId(c.id);
     setEditingText(c.comment_text);
   };
