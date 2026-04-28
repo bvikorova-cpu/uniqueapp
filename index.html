@@ -73,6 +73,27 @@
       }
     }
     </script>
+
+    <!-- Emergency SW + cache cleanup: a previous service worker version cached
+         stale navigation HTML and trapped users on a loader screen. Proactively
+         unregister any existing SW and purge caches BEFORE the module script
+         runs, so the rest of the app always boots from a fresh network state. -->
+    <script>
+      (function () {
+        try {
+          if ("serviceWorker" in navigator) {
+            navigator.serviceWorker.getRegistrations().then(function (regs) {
+              regs.forEach(function (r) { try { r.unregister(); } catch (e) {} });
+            }).catch(function () {});
+          }
+          if (typeof caches !== "undefined" && caches.keys) {
+            caches.keys().then(function (keys) {
+              keys.forEach(function (k) { try { caches.delete(k); } catch (e) {} });
+            }).catch(function () {});
+          }
+        } catch (e) { /* noop */ }
+      })();
+    </script>
   </head>
 
   <body translate="yes">

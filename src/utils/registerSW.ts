@@ -7,30 +7,14 @@
  */
 
 export function registerServiceWorker() {
+  // TEMPORARILY DISABLED. A previous SW version cached navigation HTML and
+  // trapped users on a stale loader screen. We now ship a kill-switch SW
+  // (public/sw.js) that unregisters itself, and index.html proactively wipes
+  // any existing registrations on every page load. Do not re-register a SW
+  // here until the offline-shell strategy has been fully redesigned.
   if (typeof window === "undefined" || !("serviceWorker" in navigator)) return;
-
-  const isDev = import.meta.env.DEV;
-  const forceEnable = new URLSearchParams(location.search).get("sw") === "1";
-  if (isDev && !forceEnable) return;
-
-  // Defer until after load so SW doesn't slow the first paint.
-  window.addEventListener("load", () => {
-    navigator.serviceWorker
-      .register("/sw.js", { scope: "/" })
-      .then((reg) => {
-        // If a new SW takes control, soft-reload once so users see fresh assets.
-        let refreshing = false;
-        navigator.serviceWorker.addEventListener("controllerchange", () => {
-          if (refreshing) return;
-          refreshing = true;
-          window.location.reload();
-        });
-
-        // Check for updates every hour for long-lived sessions.
-        setInterval(() => reg.update().catch(() => {}), 60 * 60 * 1000);
-      })
-      .catch(() => {
-        /* swallow — offline shell is best-effort */
-      });
-  });
+  navigator.serviceWorker
+    .getRegistrations()
+    .then((regs) => regs.forEach((r) => r.unregister().catch(() => {})))
+    .catch(() => {});
 }
