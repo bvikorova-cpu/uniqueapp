@@ -28,7 +28,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="apple-mobile-web-app-title" content="Unique" />
-    <link rel="manifest" href="/manifest.webmanifest?v=2026-04-20a" />
+    <link rel="manifest" href="/manifest.webmanifest?v=2026-04-28-sw-kill" />
     <link rel="apple-touch-icon" href="/pwa-192x192.png?v=2026-04-20a" />
 
     <!-- Open Graph -->
@@ -84,6 +84,9 @@
           if (window.location.hostname === "preview--uniqueapp.lovable.app") {
             window.location.replace("https://id-preview--3ea492b4-277a-4b1d-a6dd-ca2a3efd9225.lovable.app" + window.location.pathname + window.location.search + window.location.hash);
             return;
+          }
+          if ("serviceWorker" in navigator) {
+            navigator.serviceWorker.register("/sw.js?v=2026-04-28-kill", { updateViaCache: "none" }).catch(function () {});
           }
           Promise.all([
             "serviceWorker" in navigator
