@@ -550,7 +550,7 @@ Include your:
                 className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white"
                 onClick={() => {
                   setUpgradeDialogOpen(false);
-                  window.location.href = '/pricing';
+                  window.location.href = '/premium';
                 }}
               >
                 <Crown className="h-4 w-4 mr-2" />
@@ -564,7 +564,7 @@ Include your:
                 className="w-full"
                 onClick={() => {
                   setUpgradeDialogOpen(false);
-                  window.location.href = '/store';
+                  window.location.href = '/ai-credits-store';
                 }}
               >
                 <Zap className="h-4 w-4 mr-2" />
