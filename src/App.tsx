@@ -52,6 +52,8 @@ import { LanguagePreferenceMount } from "@/components/LanguagePreferenceMount";
 import { DunningBanner } from "@/components/billing/DunningBanner";
 import { SCABanner } from "@/components/billing/SCABanner";
 
+const Navbar = lazy(() => import("./components/Navbar"));
+
 // Install global runtime patches as early as possible
 installGlobalErrorHandlers();
 installImagePerformancePatch();
@@ -444,7 +446,11 @@ const App = () => {
                 <Toaster />
                 <Sonner />
                 <div className="flex flex-col min-h-screen">
-                  <Navbar />
+                  <ErrorBoundary fallback={null}>
+                    <Suspense fallback={null}>
+                      <Navbar />
+                    </Suspense>
+                  </ErrorBoundary>
                   <GlobalAnnouncementBanner />
                   <main id="main-content" className="flex-1">
                     <ErrorBoundary>
