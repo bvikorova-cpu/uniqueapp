@@ -522,6 +522,10 @@ export default function EmployerDashboard() {
             </Card>
           </TabsContent>
 
+          <TabsContent value="packages" className="space-y-4">
+            <JobPostingsStatus />
+          </TabsContent>
+
           <TabsContent value="templates" className="space-y-4">
             <ResponseTemplatesManager />
           </TabsContent>
