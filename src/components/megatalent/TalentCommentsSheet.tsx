@@ -4,7 +4,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sh
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Loader2, Send, Trash2, MessageCircle, Pencil, Check, X, ShieldCheck, ShieldAlert } from "lucide-react";
+import { Loader2, Send, Trash2, MessageCircle, Pencil, Check, X, ShieldCheck, ShieldAlert, Crown } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useMegaTalentTier } from "@/hooks/useMegaTalentTier";
@@ -52,6 +52,45 @@ export function TalentCommentsSheet({ submissionId, open, onOpenChange, onCountC
   const [savingEdit, setSavingEdit] = useState(false);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
   const seenIds = useRef<Set<string>>(new Set());
+  const [checkoutLoading, setCheckoutLoading] = useState<null | "premium" | "top_premium">(null);
+
+  const handleSubscribe = async (tierToBuy: "premium" | "top_premium") => {
+    setCheckoutLoading(tierToBuy);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast({
+          title: "Prihlásenie potrebné",
+          description: "Pre zakúpenie predplatného sa najprv prihlás.",
+          variant: "destructive",
+        });
+        window.location.href = "/auth?redirect=/megatalent";
+        return;
+      }
+      const { data, error } = await supabase.functions.invoke("create-megatalent-checkout", {
+        body: { tier: tierToBuy },
+        headers: { Authorization: `Bearer ${session.access_token}` },
+      });
+      if (error) throw error;
+      if (data?.url) {
+        window.open(data.url, "_blank");
+        toast({
+          title: "Presmerovanie na Stripe…",
+          description: "Po dokončení platby sa vráť späť a obnov stránku.",
+        });
+      } else {
+        throw new Error("Checkout URL nebola vrátená");
+      }
+    } catch (err: any) {
+      toast({
+        title: "Chyba pri checkoute",
+        description: err?.message || "Nepodarilo sa spustiť platbu.",
+        variant: "destructive",
+      });
+    } finally {
+      setCheckoutLoading(null);
+    }
+  };
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setCurrentUserId(data.user?.id ?? null));
@@ -395,11 +434,43 @@ export function TalentCommentsSheet({ submissionId, open, onOpenChange, onCountC
                 </span>
               </div>
             ) : (
-              <div className="flex items-center gap-2 text-[11px] text-amber-500 bg-amber-500/10 border border-amber-500/20 rounded-md px-2 py-1 mt-1">
-                <ShieldAlert className="h-3.5 w-3.5 flex-shrink-0" />
-                <span>
-                  Bez aktívneho Megatalent predplatného (od €10/mesiac) si komentáre len zobrazíš — pridávanie a úprava sú zamknuté.
-                </span>
+              <div className="mt-1 rounded-md border border-amber-500/20 bg-amber-500/10 px-2 py-2 space-y-2">
+                <div className="flex items-center gap-2 text-[11px] text-amber-500">
+                  <ShieldAlert className="h-3.5 w-3.5 flex-shrink-0" />
+                  <span>
+                    Bez aktívneho Megatalent predplatného (od €10/mesiac) si komentáre len zobrazíš — pridávanie a úprava sú zamknuté.
+                  </span>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <Button
+                    size="sm"
+                    variant="default"
+                    className="h-7 text-xs"
+                    onClick={() => handleSubscribe("premium")}
+                    disabled={checkoutLoading !== null}
+                  >
+                    {checkoutLoading === "premium" ? (
+                      <Loader2 className="h-3.5 w-3.5 mr-1 animate-spin" />
+                    ) : (
+                      <Crown className="h-3.5 w-3.5 mr-1" />
+                    )}
+                    Predplatiť Premium (€10/m)
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="h-7 text-xs"
+                    onClick={() => handleSubscribe("top_premium")}
+                    disabled={checkoutLoading !== null}
+                  >
+                    {checkoutLoading === "top_premium" ? (
+                      <Loader2 className="h-3.5 w-3.5 mr-1 animate-spin" />
+                    ) : (
+                      <Crown className="h-3.5 w-3.5 mr-1" />
+                    )}
+                    TOP Premium (€15/m)
+                  </Button>
+                </div>
               </div>
             )
           )}
