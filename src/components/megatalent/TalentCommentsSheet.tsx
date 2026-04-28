@@ -4,7 +4,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sh
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Loader2, Send, Trash2, MessageCircle } from "lucide-react";
+import { Loader2, Send, Trash2, MessageCircle, Pencil, Check, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
@@ -13,6 +13,7 @@ interface TalentComment {
   user_id: string;
   comment_text: string;
   created_at: string;
+  updated_at?: string | null;
   profiles?: { full_name: string | null; avatar_url: string | null } | null;
 }
 
@@ -44,6 +45,9 @@ export function TalentCommentsSheet({ submissionId, open, onOpenChange, onCountC
   const [submitting, setSubmitting] = useState(false);
   const [text, setText] = useState("");
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingText, setEditingText] = useState("");
+  const [savingEdit, setSavingEdit] = useState(false);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
   const seenIds = useRef<Set<string>>(new Set());
 
@@ -69,7 +73,7 @@ export function TalentCommentsSheet({ submissionId, open, onOpenChange, onCountC
     const to = from + PAGE_SIZE - 1;
     const { data, error, count } = await supabase
       .from("talent_comments")
-      .select("id, user_id, comment_text, created_at", { count: "exact" })
+      .select("id, user_id, comment_text, created_at, updated_at", { count: "exact" })
       .eq("submission_id", id)
       .order("created_at", { ascending: false })
       .range(from, to);
@@ -173,6 +177,21 @@ export function TalentCommentsSheet({ submissionId, open, onOpenChange, onCountC
           });
         }
       )
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "talent_comments", filter: `submission_id=eq.${submissionId}` },
+        (payload: any) => {
+          const row = payload.new;
+          if (!row?.id) return;
+          setComments((prev) =>
+            prev.map((c) =>
+              c.id === row.id
+                ? { ...c, comment_text: row.comment_text, updated_at: row.updated_at }
+                : c
+            )
+          );
+        }
+      )
       .subscribe();
     return () => {
       supabase.removeChannel(channel);
@@ -247,6 +266,60 @@ export function TalentCommentsSheet({ submissionId, open, onOpenChange, onCountC
     }
   };
 
+  const startEdit = (c: TalentComment) => {
+    setEditingId(c.id);
+    setEditingText(c.comment_text);
+  };
+
+  const cancelEdit = () => {
+    setEditingId(null);
+    setEditingText("");
+  };
+
+  const saveEdit = async () => {
+    if (!editingId) return;
+    const parsed = commentSchema.safeParse({ comment_text: editingText });
+    if (!parsed.success) {
+      toast({ title: "Neplatný komentár", description: parsed.error.errors[0].message, variant: "destructive" });
+      return;
+    }
+    try {
+      setSavingEdit(true);
+      const { data, error } = await supabase
+        .from("talent_comments")
+        .update({ comment_text: parsed.data.comment_text, updated_at: new Date().toISOString() })
+        .eq("id", editingId)
+        .select("id, comment_text, updated_at")
+        .single();
+      if (error) {
+        if (error.message?.toLowerCase().includes("row-level security")) {
+          toast({
+            title: "Nedostatočné oprávnenia",
+            description: "Upraviť môžeš iba vlastné komentáre.",
+            variant: "destructive",
+          });
+        } else {
+          throw error;
+        }
+        return;
+      }
+      if (data) {
+        setComments((prev) =>
+          prev.map((c) =>
+            c.id === data.id ? { ...c, comment_text: data.comment_text, updated_at: data.updated_at } : c
+          )
+        );
+      }
+      toast({ title: "Komentár upravený" });
+      cancelEdit();
+    } catch (err: any) {
+      console.error("Error updating comment:", err);
+      toast({ title: "Chyba", description: err?.message || "Nepodarilo sa upraviť komentár", variant: "destructive" });
+    } finally {
+      setSavingEdit(false);
+    }
+  };
+
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="bottom" className="h-[80vh] flex flex-col p-0">
@@ -297,20 +370,74 @@ export function TalentCommentsSheet({ submissionId, open, onOpenChange, onCountC
                               hour: "2-digit",
                               minute: "2-digit",
                             })}
+                            {c.updated_at && new Date(c.updated_at).getTime() - new Date(c.created_at).getTime() > 2000 && (
+                              <span className="ml-1 italic">(upravené)</span>
+                            )}
                           </span>
                         </div>
-                        <p className="text-sm whitespace-pre-wrap break-words mt-0.5">{c.comment_text}</p>
+                        {editingId === c.id ? (
+                          <div className="mt-1 space-y-1.5">
+                            <Textarea
+                              value={editingText}
+                              onChange={(e) => setEditingText(e.target.value.slice(0, 500))}
+                              maxLength={500}
+                              className="min-h-[60px] text-sm resize-none"
+                              disabled={savingEdit}
+                              autoFocus
+                            />
+                            <div className="flex items-center justify-between">
+                              <span className="text-[10px] text-muted-foreground">{editingText.length}/500</span>
+                              <div className="flex gap-1">
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="h-7 px-2 text-xs"
+                                  onClick={cancelEdit}
+                                  disabled={savingEdit}
+                                >
+                                  <X className="h-3 w-3 mr-1" /> Zrušiť
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  className="h-7 px-2 text-xs"
+                                  onClick={saveEdit}
+                                  disabled={savingEdit || !editingText.trim() || editingText.trim() === c.comment_text}
+                                >
+                                  {savingEdit ? (
+                                    <Loader2 className="h-3 w-3 mr-1 animate-spin" />
+                                  ) : (
+                                    <Check className="h-3 w-3 mr-1" />
+                                  )}
+                                  Uložiť
+                                </Button>
+                              </div>
+                            </div>
+                          </div>
+                        ) : (
+                          <p className="text-sm whitespace-pre-wrap break-words mt-0.5">{c.comment_text}</p>
+                        )}
                       </div>
-                      {isOwn && (
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-7 w-7 text-destructive hover:text-destructive hover:bg-destructive/10 flex-shrink-0"
-                          onClick={() => handleDelete(c.id)}
-                          aria-label="Odstrániť komentár"
-                        >
-                          <Trash2 className="h-3.5 w-3.5" />
-                        </Button>
+                      {isOwn && editingId !== c.id && (
+                        <div className="flex flex-col gap-1 flex-shrink-0">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-7 w-7 text-muted-foreground hover:text-foreground"
+                            onClick={() => startEdit(c)}
+                            aria-label="Upraviť komentár"
+                          >
+                            <Pencil className="h-3.5 w-3.5" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-7 w-7 text-destructive hover:text-destructive hover:bg-destructive/10"
+                            onClick={() => handleDelete(c.id)}
+                            aria-label="Odstrániť komentár"
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </Button>
+                        </div>
                       )}
                     </li>
                   );
