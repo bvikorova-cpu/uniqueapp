@@ -154,7 +154,15 @@ const Referral = () => {
                           </div>
                           <div className="min-w-0">
                             <p className="font-semibold text-sm truncate">{referral.profiles?.full_name || "New user"}</p>
-                            <p className="text-xs text-muted-foreground">{formatDistanceToNow(new Date(referral.created_at), { addSuffix: true, locale: enUS })}</p>
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <p className="text-xs text-muted-foreground">{formatDistanceToNow(new Date(referral.created_at), { addSuffix: true, locale: enUS })}</p>
+                              {referral.source_kind === "subscription" && (
+                                <Badge variant="outline" className="text-[10px] py-0 px-1.5 border-emerald-500/40 text-emerald-400">Predplatné</Badge>
+                              )}
+                              {referral.source_kind === "one_off" && (
+                                <Badge variant="outline" className="text-[10px] py-0 px-1.5 border-blue-500/40 text-blue-400">Jednorazová</Badge>
+                              )}
+                            </div>
                           </div>
                         </div>
                         <div className="text-right shrink-0">

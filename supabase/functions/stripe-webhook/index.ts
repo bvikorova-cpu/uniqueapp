@@ -490,6 +490,7 @@ serve(async (req) => {
               period_end: periodEnd,
               source_subscription_id: subId,
               source_invoice_id: inv.id,
+              source_kind: "subscription",
               auto_credited: true,
             });
 
@@ -527,6 +528,19 @@ serve(async (req) => {
               amount_eur: rewardEur,
             },
           });
+          // In-app notification for the referrer
+          try {
+            await supabase.from("notifications").insert({
+              user_id: attr.referrer_id,
+              type: "referral_bonus",
+              title: `+${rewardEur} € referral bonus`,
+              message: `Tvoj pozvaný používateľ zaplatil predplatné — pripísali sme ti ${rewardEur} € bonus.`,
+              is_read: false,
+            });
+          } catch (notifErr) {
+            log("notification insert failed", { err: (notifErr as Error).message });
+          }
+
           log("recurring referral reward credited", {
             referrer: attr.referrer_id,
             invoice: inv.id,
