@@ -95,7 +95,15 @@ export default defineConfig(() => ({
     },
   },
   optimizeDeps: {
-    include: ["react", "react-dom", "react-router-dom", "framer-motion", "lucide-react"],
-    exclude: ["react-markdown"],
+    include: [
+      "react",
+      "react-dom",
+      "react-router-dom",
+      "framer-motion",
+      "lucide-react",
+      "react-markdown",
+      "style-to-js",
+      "style-to-object",
+    ],
   },
 }));
