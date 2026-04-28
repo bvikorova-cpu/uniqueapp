@@ -85,16 +85,25 @@
             window.location.replace("https://id-preview--3ea492b4-277a-4b1d-a6dd-ca2a3efd9225.lovable.app" + window.location.pathname + window.location.search + window.location.hash);
             return;
           }
-          if ("serviceWorker" in navigator) {
-            navigator.serviceWorker.getRegistrations().then(function (regs) {
-              regs.forEach(function (r) { try { r.unregister(); } catch (e) {} });
-            }).catch(function () {});
-          }
-          if (typeof caches !== "undefined" && caches.keys) {
-            caches.keys().then(function (keys) {
-              keys.forEach(function (k) { try { caches.delete(k); } catch (e) {} });
-            }).catch(function () {});
-          }
+          Promise.all([
+            "serviceWorker" in navigator
+              ? navigator.serviceWorker.getRegistrations().then(function (regs) {
+                  return Promise.all(regs.map(function (r) { return r.unregister().catch(function () { return false; }); }))
+                    .then(function () { return regs.length > 0 || !!navigator.serviceWorker.controller; });
+                }).catch(function () { return false; })
+              : Promise.resolve(false),
+            typeof caches !== "undefined" && caches.keys
+              ? caches.keys().then(function (keys) {
+                  return Promise.all(keys.map(function (k) { return caches.delete(k).catch(function () { return false; }); }))
+                    .then(function () { return keys.length > 0; });
+                }).catch(function () { return false; })
+              : Promise.resolve(false)
+          ]).then(function (dirty) {
+            if ((dirty[0] || dirty[1]) && !sessionStorage.getItem("unique_sw_clean_reload")) {
+              sessionStorage.setItem("unique_sw_clean_reload", "1");
+              window.location.reload();
+            }
+          }).catch(function () {});
         } catch (e) { /* noop */ }
       })();
     </script>
@@ -109,6 +118,6 @@
         </div>
       </div>
     </div>
-    <script type="module" src="/src/main.tsx" data-unique-main></script>
+    <script type="module" src="/src/main.tsx?v=20260428-clean" data-unique-main></script>
   </body>
 </html>
