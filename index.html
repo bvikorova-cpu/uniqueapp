@@ -74,8 +74,8 @@
     }
     </script>
 
-    <!-- Emergency SW + cache cleanup: old service worker versions cached stale
-         navigation HTML. Keep this cleanup lightweight and never block boot. -->
+    <!-- SW cleanup only. Never register a service worker in Lovable preview/iframe;
+         it caches stale navigation HTML and traps users on the loader screen. -->
     <script>
       (function () {
         window.__UNIQUE_MAIN_EXECUTED__ = false;
@@ -85,27 +85,16 @@
             window.location.replace("https://id-preview--3ea492b4-277a-4b1d-a6dd-ca2a3efd9225.lovable.app" + window.location.pathname + window.location.search + window.location.hash);
             return;
           }
-          if ("serviceWorker" in navigator && window.location.protocol === "https:") {
-            navigator.serviceWorker.register("/sw.js?v=2026-04-28-safe-kill", { updateViaCache: "none" }).catch(function () {});
+          if ("serviceWorker" in navigator) {
+            navigator.serviceWorker.getRegistrations().then(function (regs) {
+              regs.forEach(function (r) { r.unregister().catch(function () {}); });
+            }).catch(function () {});
           }
-          Promise.all([
-            "serviceWorker" in navigator
-              ? navigator.serviceWorker.getRegistrations().then(function (regs) {
-                  return Promise.all(regs.map(function (r) { return r.unregister().catch(function () { return false; }); }))
-                    .then(function () { return regs.length > 0 || !!navigator.serviceWorker.controller; });
-                }).catch(function () { return false; })
-              : Promise.resolve(false),
-            typeof caches !== "undefined" && caches.keys
-              ? caches.keys().then(function (keys) {
-                  return Promise.all(keys.map(function (k) { return caches.delete(k).catch(function () { return false; }); }))
-                    .then(function () { return keys.length > 0; });
-                }).catch(function () { return false; })
-              : Promise.resolve(false)
-          ]).then(function (dirty) {
-            if ((dirty[0] || dirty[1]) && !sessionStorage.getItem("unique_sw_clean_reload")) {
-              sessionStorage.setItem("unique_sw_clean_reload", "1");
-            }
-          }).catch(function () {});
+          if (typeof caches !== "undefined" && caches.keys) {
+            caches.keys().then(function (keys) {
+              keys.forEach(function (k) { caches.delete(k).catch(function () {}); });
+            }).catch(function () {});
+          }
         } catch (e) { /* noop */ }
       })();
     </script>
@@ -122,23 +111,14 @@
     </div>
     <script type="module" src="/src/main.tsx" data-unique-main></script>
     <script>
-      // Watchdog: ak sa main.tsx neukáže do 8s (Vite stratil spojenie, sandbox spadol),
-      // skús jeden tvrdý reload bez cache. Druhýkrát už len zobraz hlášku.
+      // Watchdog: iba zobrazí hlášku ak main.tsx nenabootuje do 15s.
+      // Žiadne automatické reloady — spôsobovali nekonečnú slučku v iframe.
       (function () {
         setTimeout(function () {
           if (window.__UNIQUE_MAIN_EXECUTED__) return;
-          var key = "unique_boot_recover_" + new Date().toISOString().slice(0, 13);
-          try {
-            if (!sessionStorage.getItem(key)) {
-              sessionStorage.setItem(key, "1");
-              var url = window.location.pathname + (window.location.search ? window.location.search + "&" : "?") + "_r=" + Date.now() + window.location.hash;
-              window.location.replace(url);
-              return;
-            }
-          } catch (e) {}
           var msg = document.getElementById("unique-boot-msg");
-          if (msg) msg.innerHTML = "Dev server sa reštartuje. Skús refresh (Ctrl+Shift+R) o pár sekúnd.";
-        }, 8000);
+          if (msg) msg.innerHTML = "Načítanie trvá dlhšie ako zvyčajne. Skús obnoviť stránku (Ctrl+Shift+R).";
+        }, 15000);
       })();
     </script>
   </body>
