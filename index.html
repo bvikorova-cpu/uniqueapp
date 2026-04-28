@@ -111,16 +111,30 @@
       // a tvrdo reloadni s parametrom, ktorý zabráni opätovnému uviaznutiu.
       (function () {
         var BOOT_TIMEOUT_MS = 8000;
-        var alreadyRecovered = (function () {
-          try { return sessionStorage.getItem("__unique_boot_recovered__") === "1"; } catch (e) { return false; }
+        // Recovery is rate-limited (max once per 60s) instead of once per session,
+        // so users on mobile s starým SW sa nikdy nezaseknú na "Vypni SW" hláške.
+        var RECOVERY_COOLDOWN_MS = 60 * 1000;
+        var lastRecovery = (function () {
+          try {
+            var raw = sessionStorage.getItem("__unique_boot_recovered_at__");
+            return raw ? parseInt(raw, 10) || 0 : 0;
+          } catch (e) { return 0; }
         })();
+        var recentlyRecovered = lastRecovery && (Date.now() - lastRecovery) < RECOVERY_COOLDOWN_MS;
 
         setTimeout(function () {
           if (window.__UNIQUE_MAIN_EXECUTED__) return;
           var msg = document.getElementById("unique-boot-msg");
 
-          if (alreadyRecovered) {
-            if (msg) msg.innerHTML = "Načítanie zlyháva. Vypni Service Worker v nastaveniach prehliadača a skús znova.";
+          if (recentlyRecovered) {
+            if (msg) {
+              msg.innerHTML = "Načítanie stále zlyháva. <a href=\"javascript:void(0)\" id=\"unique-force-retry\" style=\"color:#fde68a;text-decoration:underline;font-weight:600;\">Skúsiť znova</a>";
+              var btn = document.getElementById("unique-force-retry");
+              if (btn) btn.addEventListener("click", function () {
+                try { sessionStorage.removeItem("__unique_boot_recovered_at__"); } catch (e) {}
+                window.location.reload();
+              });
+            }
             return;
           }
 
@@ -144,7 +158,7 @@
             }
           } catch (e) { /* noop */ }
 
-          try { sessionStorage.setItem("__unique_boot_recovered__", "1"); } catch (e) {}
+          try { sessionStorage.setItem("__unique_boot_recovered_at__", String(Date.now())); } catch (e) {}
 
           Promise.all(tasks).finally(function () {
             try {
@@ -161,7 +175,7 @@
         var clearFlagWhenBooted = setInterval(function () {
           if (window.__UNIQUE_MAIN_EXECUTED__) {
             clearInterval(clearFlagWhenBooted);
-            try { sessionStorage.removeItem("__unique_boot_recovered__"); } catch (e) {}
+            try { sessionStorage.removeItem("__unique_boot_recovered_at__"); } catch (e) {}
           }
         }, 1000);
       })();
