@@ -50,13 +50,11 @@ console.log("[Boot] main.tsx executing");
 try {
   // Real-user Web Vitals telemetry → vitals_log
   installWebVitals();
-  // PWA offline shell + asset cache
-  registerServiceWorker();
-
   const rootEl = document.getElementById("root");
   if (!rootEl) {
     showCrashOverlay("Missing #root element", "index.html does not contain <div id=\"root\"></div>");
   } else {
+    rootEl.innerHTML = "";
     createRoot(rootEl).render(
       <>
         <App />
@@ -65,6 +63,9 @@ try {
       </>
     );
     console.log("[Boot] React render() called");
+    // PWA offline shell + asset cache: register až po prvom React renderi,
+    // aby service worker nikdy nezablokoval prázdny preview mount.
+    registerServiceWorker();
   }
 } catch (err) {
   console.error("[Boot] crash", err);
