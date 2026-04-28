@@ -25285,6 +25285,7 @@ export type Database = {
           period_start: string
           referred_user_id: string
           referrer_id: string
+          source_invoice_id: string | null
           source_subscription_id: string | null
           subscription_id: string
         }
@@ -25298,6 +25299,7 @@ export type Database = {
           period_start: string
           referred_user_id: string
           referrer_id: string
+          source_invoice_id?: string | null
           source_subscription_id?: string | null
           subscription_id: string
         }
@@ -25311,6 +25313,7 @@ export type Database = {
           period_start?: string
           referred_user_id?: string
           referrer_id?: string
+          source_invoice_id?: string | null
           source_subscription_id?: string | null
           subscription_id?: string
         }
