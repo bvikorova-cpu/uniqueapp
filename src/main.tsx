@@ -5,6 +5,14 @@ import "./i18n/config";
 import { installWebVitals } from "./utils/webVitals";
 import { registerServiceWorker } from "./utils/registerSW";
 
+declare global {
+  interface Window {
+    __UNIQUE_MAIN_EXECUTED__?: boolean;
+    __UNIQUE_REACT_RENDERED__?: boolean;
+    __UNIQUE_SW_CLEANUP__?: Promise<void>;
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Global crash overlay: ak React app spadne pri mounte alebo neskôr nezachytenou
 // chybou, namiesto bielej obrazovky sa zobrazí čitateľná hláška priamo v preview.
@@ -54,9 +62,11 @@ window.addEventListener("unhandledrejection", (e) => {
   }
 });
 
+window.__UNIQUE_MAIN_EXECUTED__ = true;
 console.log("[Boot] main.tsx executing");
 
 async function boot() {
+  await window.__UNIQUE_SW_CLEANUP__?.catch(() => {});
   // Real-user Web Vitals telemetry → vitals_log
   installWebVitals();
   const rootEl = document.getElementById("root");
@@ -84,6 +94,7 @@ async function boot() {
       </>
     );
     reactRendered = true;
+    window.__UNIQUE_REACT_RENDERED__ = true;
     console.log("[Boot] React render() called");
     // PWA offline shell + asset cache: register až po prvom React renderi,
     // aby service worker nikdy nezablokoval prázdny preview mount.
