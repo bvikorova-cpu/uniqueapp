@@ -32,15 +32,17 @@ function showCrashOverlay(title: string, detail: string) {
   }
 }
 
+let reactRendered = false;
+
 window.addEventListener("error", (e) => {
   console.error("[GlobalError]", e.error || e.message);
-  if (!document.getElementById("root")?.firstElementChild) {
+  if (!reactRendered) {
     showCrashOverlay(e.message || "Unhandled error", String(e.error?.stack || e.error || e.message));
   }
 });
 window.addEventListener("unhandledrejection", (e) => {
   console.error("[UnhandledRejection]", e.reason);
-  if (!document.getElementById("root")?.firstElementChild) {
+  if (!reactRendered) {
     showCrashOverlay("Unhandled promise rejection", String(e.reason?.stack || e.reason));
   }
 });
@@ -62,6 +64,7 @@ try {
         <InstallPromptBanner />
       </>
     );
+    reactRendered = true;
     console.log("[Boot] React render() called");
     // PWA offline shell + asset cache: register až po prvom React renderi,
     // aby service worker nikdy nezablokoval prázdny preview mount.
