@@ -416,6 +416,16 @@ const Navbar = () => {
             )}
           </div>
 
+          {/* Mobile: Login button (visible only when logged out) */}
+          {!user && (
+            <Link to="/auth" className="lg:hidden ml-auto mr-2">
+              <Button variant="hero" size="sm" className="h-9 px-3">
+                <User className="h-4 w-4 mr-1" />
+                {t('navbar.login')}
+              </Button>
+            </Link>
+          )}
+
           {/* Mobile Menu Button */}
           <Button
             variant="ghost"
