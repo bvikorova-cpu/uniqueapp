@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -12,16 +13,16 @@ export const ProtectedRoute = ({ children, requireAdmin = false }: ProtectedRout
   const [isChecking, setIsChecking] = useState(true);
   const [hasAccess, setHasAccess] = useState(false);
   const { toast } = useToast();
+  const { user, loading } = useAuth();
 
   useEffect(() => {
+    if (loading) return;
     checkAccess();
-  }, []);
+  }, [loading, user?.id, requireAdmin]);
 
   const checkAccess = async () => {
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      if (!session) {
+      if (!user) {
         setHasAccess(false);
         setIsChecking(false);
         toast({
@@ -36,7 +37,7 @@ export const ProtectedRoute = ({ children, requireAdmin = false }: ProtectedRout
         const { data: roleData, error } = await supabase
           .from('user_roles')
           .select('role')
-          .eq('user_id', session.user.id)
+          .eq('user_id', user.id)
           .eq('role', 'admin')
           .maybeSingle();
 
