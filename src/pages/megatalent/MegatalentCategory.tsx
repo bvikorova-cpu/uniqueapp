@@ -312,10 +312,13 @@ const MegatalentCategory = () => {
                         </Button>
                       </div>
 
-                      <Button variant="ghost" size="sm" className="gap-1.5 h-8" onClick={() => {
-                        const text = window.prompt("Tvoj komentár:");
-                        if (text && text.trim()) toast({ description: "Komentár pridaný!" });
-                      }}>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="gap-1.5 h-8"
+                        onClick={() => setCommentsForId(submission.id)}
+                        aria-label="Otvoriť komentáre"
+                      >
                         <MessageCircle className="w-4 h-4" />
                         <span className="text-xs">{commentCounts[submission.id] || 0}</span>
                       </Button>
