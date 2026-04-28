@@ -60,7 +60,7 @@ const services = [
   { title: "Live Streaming", icon: Video, path: "/livestream", badge: "Entertainment", gradient: "from-indigo-500 to-purple-500", category: "entertainment" },
   { title: "Comedy Club", icon: Mic, path: "/comedy-club", badge: "Entertainment", gradient: "from-fuchsia-500 to-pink-500", category: "entertainment" },
   { title: "Marketplace", icon: ShoppingBag, path: "/marketplace", badge: "Shopping", gradient: "from-violet-500 to-purple-500", category: "shopping" },
-  { title: "AI Services", icon: Brain, path: "/psychology-chat", badge: "Wellness", gradient: "from-emerald-500 to-teal-500", category: "wellness" },
+  { title: "AI Services", icon: Brain, path: "/psychologist", badge: "Wellness", gradient: "from-emerald-500 to-teal-500", category: "wellness" },
   { title: "IQ Platform", icon: Brain, path: "/iq-platform", badge: "Intelligence", gradient: "from-blue-600 to-indigo-600", category: "learning" },
   { title: "Shadow Arena", icon: Ghost, path: "/shadow-arena", badge: "Horror", gradient: "from-purple-600 to-fuchsia-600", category: "entertainment" },
   { title: "Lottery AI", icon: TrendingUp, path: "/lottery-ai", badge: "AI Predictions", gradient: "from-amber-600 to-yellow-500", category: "entertainment" },
@@ -126,7 +126,7 @@ const uniqueModules = allModules.filter((m, i, arr) => arr.findIndex(x => x.path
 const quickActions = [
   { label: "Chat Now", icon: MessageCircle, path: "/messenger", gradient: "from-cyan-500 to-blue-500" },
   { label: "Create Content", icon: PenTool, path: "/content-studio", gradient: "from-purple-500 to-indigo-500" },
-  { label: "AI Services", icon: Brain, path: "/psychology-chat", gradient: "from-emerald-500 to-teal-500" },
+  { label: "AI Services", icon: Brain, path: "/psychologist", gradient: "from-emerald-500 to-teal-500" },
   { label: "Explore World", icon: Globe, path: "/ai-experiences", gradient: "from-blue-500 to-violet-500" },
   { label: "Go Live", icon: Video, path: "/livestream", gradient: "from-red-500 to-pink-500" },
   { label: "Learn", icon: BookOpen, path: "/education", gradient: "from-green-500 to-emerald-500" },
