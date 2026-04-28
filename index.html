@@ -81,10 +81,6 @@
         window.__UNIQUE_MAIN_EXECUTED__ = false;
         window.__UNIQUE_REACT_RENDERED__ = false;
         try {
-          if (window.location.hostname === "preview--uniqueapp.lovable.app") {
-            window.location.replace("https://id-preview--3ea492b4-277a-4b1d-a6dd-ca2a3efd9225.lovable.app" + window.location.pathname + window.location.search + window.location.hash);
-            return;
-          }
           if ("serviceWorker" in navigator) {
             navigator.serviceWorker.getRegistrations().then(function (regs) {
               regs.forEach(function (r) { r.unregister().catch(function () {}); });
@@ -111,14 +107,63 @@
     </div>
     <script type="module" src="/src/main.tsx" data-unique-main></script>
     <script>
-      // Watchdog: iba zobrazí hlášku ak main.tsx nenabootuje do 15s.
-      // Žiadne automatické reloady — spôsobovali nekonečnú slučku v iframe.
+      // Watchdog: ak main.tsx nenabootuje do 8s, agresívne vyčisti SW + cache
+      // a tvrdo reloadni s parametrom, ktorý zabráni opätovnému uviaznutiu.
       (function () {
+        var BOOT_TIMEOUT_MS = 8000;
+        var alreadyRecovered = (function () {
+          try { return sessionStorage.getItem("__unique_boot_recovered__") === "1"; } catch (e) { return false; }
+        })();
+
         setTimeout(function () {
           if (window.__UNIQUE_MAIN_EXECUTED__) return;
           var msg = document.getElementById("unique-boot-msg");
-          if (msg) msg.innerHTML = "Načítanie trvá dlhšie ako zvyčajne. Skús obnoviť stránku (Ctrl+Shift+R).";
-        }, 15000);
+
+          if (alreadyRecovered) {
+            if (msg) msg.innerHTML = "Načítanie zlyháva. Vypni Service Worker v nastaveniach prehliadača a skús znova.";
+            return;
+          }
+
+          if (msg) msg.innerHTML = "Obnovujem aplikáciu, počkaj…";
+
+          var tasks = [];
+          try {
+            if ("serviceWorker" in navigator) {
+              tasks.push(
+                navigator.serviceWorker.getRegistrations().then(function (regs) {
+                  return Promise.all(regs.map(function (r) { return r.unregister().catch(function () {}); }));
+                }).catch(function () {})
+              );
+            }
+            if (typeof caches !== "undefined" && caches.keys) {
+              tasks.push(
+                caches.keys().then(function (keys) {
+                  return Promise.all(keys.map(function (k) { return caches.delete(k).catch(function () {}); }));
+                }).catch(function () {})
+              );
+            }
+          } catch (e) { /* noop */ }
+
+          try { sessionStorage.setItem("__unique_boot_recovered__", "1"); } catch (e) {}
+
+          Promise.all(tasks).finally(function () {
+            try {
+              var url = new URL(window.location.href);
+              url.searchParams.set("nosw", String(Date.now()));
+              window.location.replace(url.toString());
+            } catch (e) {
+              window.location.reload();
+            }
+          });
+        }, BOOT_TIMEOUT_MS);
+
+        // Ak main.tsx nabootoval, vyčisti recovery flag aby ďalšie reload bolo čisté.
+        var clearFlagWhenBooted = setInterval(function () {
+          if (window.__UNIQUE_MAIN_EXECUTED__) {
+            clearInterval(clearFlagWhenBooted);
+            try { sessionStorage.removeItem("__unique_boot_recovered__"); } catch (e) {}
+          }
+        }, 1000);
       })();
     </script>
   </body>
