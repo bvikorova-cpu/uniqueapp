@@ -370,20 +370,74 @@ export function TalentCommentsSheet({ submissionId, open, onOpenChange, onCountC
                               hour: "2-digit",
                               minute: "2-digit",
                             })}
+                            {c.updated_at && new Date(c.updated_at).getTime() - new Date(c.created_at).getTime() > 2000 && (
+                              <span className="ml-1 italic">(upravené)</span>
+                            )}
                           </span>
                         </div>
-                        <p className="text-sm whitespace-pre-wrap break-words mt-0.5">{c.comment_text}</p>
+                        {editingId === c.id ? (
+                          <div className="mt-1 space-y-1.5">
+                            <Textarea
+                              value={editingText}
+                              onChange={(e) => setEditingText(e.target.value.slice(0, 500))}
+                              maxLength={500}
+                              className="min-h-[60px] text-sm resize-none"
+                              disabled={savingEdit}
+                              autoFocus
+                            />
+                            <div className="flex items-center justify-between">
+                              <span className="text-[10px] text-muted-foreground">{editingText.length}/500</span>
+                              <div className="flex gap-1">
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="h-7 px-2 text-xs"
+                                  onClick={cancelEdit}
+                                  disabled={savingEdit}
+                                >
+                                  <X className="h-3 w-3 mr-1" /> Zrušiť
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  className="h-7 px-2 text-xs"
+                                  onClick={saveEdit}
+                                  disabled={savingEdit || !editingText.trim() || editingText.trim() === c.comment_text}
+                                >
+                                  {savingEdit ? (
+                                    <Loader2 className="h-3 w-3 mr-1 animate-spin" />
+                                  ) : (
+                                    <Check className="h-3 w-3 mr-1" />
+                                  )}
+                                  Uložiť
+                                </Button>
+                              </div>
+                            </div>
+                          </div>
+                        ) : (
+                          <p className="text-sm whitespace-pre-wrap break-words mt-0.5">{c.comment_text}</p>
+                        )}
                       </div>
-                      {isOwn && (
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-7 w-7 text-destructive hover:text-destructive hover:bg-destructive/10 flex-shrink-0"
-                          onClick={() => handleDelete(c.id)}
-                          aria-label="Odstrániť komentár"
-                        >
-                          <Trash2 className="h-3.5 w-3.5" />
-                        </Button>
+                      {isOwn && editingId !== c.id && (
+                        <div className="flex flex-col gap-1 flex-shrink-0">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-7 w-7 text-muted-foreground hover:text-foreground"
+                            onClick={() => startEdit(c)}
+                            aria-label="Upraviť komentár"
+                          >
+                            <Pencil className="h-3.5 w-3.5" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-7 w-7 text-destructive hover:text-destructive hover:bg-destructive/10"
+                            onClick={() => handleDelete(c.id)}
+                            aria-label="Odstrániť komentár"
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </Button>
+                        </div>
                       )}
                     </li>
                   );
