@@ -12,6 +12,7 @@ declare global {
   interface Window {
     __UNIQUE_MAIN_EXECUTED__?: boolean;
     __UNIQUE_REACT_RENDERED__?: boolean;
+    __UNIQUE_ROOT__?: ReturnType<typeof createRoot>;
   }
 }
 
@@ -41,16 +42,6 @@ function showCrashOverlay(title: string, detail: string) {
 
 let reactRendered = false;
 
-const BootLoader = () => (
-  <div className="min-h-screen flex items-center justify-center bg-background text-foreground px-6 text-center">
-    <div>
-      <div className="mx-auto mb-4 h-10 w-10 animate-spin rounded-full border-2 border-primary/30 border-t-primary" />
-      <p className="text-base font-semibold">Unique sa načítava…</p>
-      <p className="mt-2 text-sm text-muted-foreground">Pripravujem tvoju reláciu.</p>
-    </div>
-  </div>
-);
-
 window.addEventListener("error", (e) => {
   console.error("[GlobalError]", e.error || e.message);
   if (!reactRendered) {
@@ -76,8 +67,9 @@ function boot() {
     return;
   }
 
-  rootEl.innerHTML = "";
-  const root = createRoot(rootEl);
+  const root = window.__UNIQUE_ROOT__ ?? createRoot(rootEl);
+  window.__UNIQUE_ROOT__ = root;
+  if (!window.__UNIQUE_REACT_RENDERED__) rootEl.innerHTML = "";
   try {
     root.render(
       <>
