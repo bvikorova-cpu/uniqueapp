@@ -127,6 +127,7 @@ export function TalentCommentsSheet({ submissionId, open, onOpenChange, onCountC
   useEffect(() => {
     if (open && submissionId) {
       loadInitial(submissionId);
+      refetchTier();
     } else {
       setComments([]);
       setText("");
