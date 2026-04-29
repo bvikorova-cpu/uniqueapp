@@ -462,7 +462,7 @@ const BrainDuel = () => {
                               disabled={isPurchasing}
                               className="shadow-lg shadow-primary/20"
                             >
-                              Buy
+                              {isPurchasing ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : "Buy"}
                             </Button>
                           </div>
                         </CardContent>
