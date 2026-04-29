@@ -121,15 +121,16 @@ export default function MedicalDetail() {
   const verifyDonation = async (sessionId: string) => {
     try {
       const { data, error } = await supabase.functions.invoke('verify-donation', {
-        body: { sessionId },
+        body: { session_id: sessionId },
       });
 
       if (error) throw error;
 
-      if (data.verified) {
+      if (data?.verified) {
+        const eur = ((data?.amount_cents ?? 0) / 100).toFixed(2);
         toast({
           title: 'Thank you!',
-          description: `Your contribution of ${data.donation.amount}€ was successfully processed.`,
+          description: `Your contribution of €${eur} was successfully processed.`,
         });
         // Refresh campaign data
         fetchCampaign();
