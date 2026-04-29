@@ -42758,6 +42758,28 @@ export type Database = {
         Args: { _target_user_id: string }
         Returns: Json
       }
+      admin_get_xp_reconciliation_report: {
+        Args: {
+          _limit?: number
+          _min_abs_mismatch?: number
+          _only_mismatches?: boolean
+        }
+        Returns: {
+          activity_logs_xp: number
+          avatar_url: string
+          daily_rewards_xp: number
+          daily_xp_claims_xp: number
+          full_name: string
+          is_consistent: boolean
+          last_event_at: string
+          level: number
+          mismatch: number
+          rewarded_ads_xp: number
+          total_recorded_xp: number
+          user_id: string
+          user_points_total: number
+        }[]
+      }
       admin_search_users_for_xp_audit: {
         Args: { _query: string }
         Returns: {
