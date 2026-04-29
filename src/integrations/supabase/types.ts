@@ -43318,6 +43318,7 @@ export type Database = {
       }
       reset_best_friend_monthly_messages: { Args: never; Returns: undefined }
       reset_psychology_monthly_messages: { Args: never; Returns: undefined }
+      rotate_seasonal_missions: { Args: never; Returns: Json }
       snapshot_weekly_xp_winners: { Args: never; Returns: number }
       spend_brain_duel_credits: {
         Args: { p_amount: number; p_user_id: string }
