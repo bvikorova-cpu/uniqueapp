@@ -420,31 +420,31 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
                 }`}
               >
                 {isTop ? <Sparkles className="w-4 h-4" /> : <Star className="w-4 h-4" />}
-                MegaTalent {isTop ? "TOP Premium" : "Premium"} aktivované
+                {isTop ? t("megatalent.paywall.activated_top_premium_label") : t("megatalent.paywall.activated_premium_label")}
               </span>
             </div>
-            <CardTitle className="text-2xl">Vitaj v súťaži! 🏆</CardTitle>
+            <CardTitle className="text-2xl">{t("megatalent.paywall.welcome_title")}</CardTitle>
             <CardDescription className="text-base">
               {isTop
-                ? "Máš prístup ku všetkým funkciám + 2× váhu hlasu a denný vote-boost."
-                : "Máš prístup ku všetkým kategóriám, AI nástrojom a hlasovaniu."}
+                ? t("megatalent.paywall.activated_top_premium_desc")
+                : t("megatalent.paywall.activated_premium_desc")}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-2">
             <ul className="text-sm space-y-1.5 bg-muted/40 rounded-lg p-3">
-              <li>✅ Neobmedzené uploady fotiek a videí</li>
-              <li>✅ Prístup ku všetkým 35+ kategóriám</li>
-              <li>✅ AI Talent Coach a všetky AI nástroje</li>
-              <li>✅ Nárok na peňažné odmeny pre víťazov</li>
+              <li>{t("megatalent.paywall.activated_li_unlimited")}</li>
+              <li>{t("megatalent.paywall.activated_li_categories")}</li>
+              <li>{t("megatalent.paywall.activated_li_ai")}</li>
+              <li>{t("megatalent.paywall.activated_li_prizes")}</li>
               {isTop && (
                 <>
-                  <li>⭐ <strong>2× váha tvojich hlasov</strong></li>
-                  <li>⭐ <strong>Denný vote-boost</strong> a TOP Premium odznak</li>
+                  <li>{t("megatalent.paywall.activated_li_top_weight")}</li>
+                  <li>{t("megatalent.paywall.activated_li_top_boost")}</li>
                 </>
               )}
             </ul>
             <p className="text-xs text-muted-foreground text-center pt-1">
-              Otváram MegaTalent...
+              {t("megatalent.paywall.opening")}
             </p>
           </CardContent>
         </Card>
