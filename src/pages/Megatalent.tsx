@@ -130,37 +130,10 @@ const Megatalent = () => {
     getCurrentUser();
   }, [selectedCategory]);
 
-  // Handle Stripe checkout return
-  useEffect(() => {
-    const success = searchParams.get('success');
-    const canceled = searchParams.get('canceled');
-    const tierParam = searchParams.get('tier');
-    if (success === 'true') {
-      (async () => {
-        toast({ title: "Verifying payment…", description: "Activating your subscription" });
-        try {
-          const { data: { session } } = await supabase.auth.getSession();
-          const { data, error } = await supabase.functions.invoke('check-megatalent-subscription', {
-            headers: session ? { Authorization: `Bearer ${session.access_token}` } : undefined,
-          });
-          if (error) throw error;
-          if (data?.subscribed) {
-            toast({ title: "Successfully Activated!", description: data.tier === 'top_premium' ? 'TOP Premium is now active!' : 'Premium subscription is now active' });
-            if (data.tier === 'top_premium') triggerTopPremiumConfetti();
-            await checkSubscription();
-          }
-        } catch (e) {
-          console.error('verify error', e);
-          toast({ title: "Verification pending", description: "If your payment was successful, refresh in a moment.", variant: "destructive" });
-        }
-        setSearchParams({}, { replace: true });
-      })();
-    } else if (canceled === 'true') {
-      toast({ title: "Checkout canceled", description: "You can try again anytime." });
-      setSearchParams({}, { replace: true });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // NOTE: Stripe checkout return is handled by MegatalentGuard (parent route guard).
+  // Do not duplicate the success/canceled handling here — it would race with the guard
+  // and cause double activation toasts and URL param conflicts.
+
 
   useEffect(() => {
     if (isSubscribed) { fetchTotalVotes(); }
