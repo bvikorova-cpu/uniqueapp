@@ -416,7 +416,9 @@ export default function ColoringPages() {
                     <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> No watermark</li>
                     <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> PNG + PDF formats</li>
                   </ul>
-                  <Button onClick={() => payPerUseMutation.mutate()} disabled={payPerUseMutation.isPending} className="w-full">Buy 1 Credit</Button>
+                  <Button onClick={() => payPerUseMutation.mutate()} disabled={payPerUseMutation.isPending} className="w-full">
+                    {payPerUseMutation.isPending ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Processing...</> : "Buy 1 Credit"}
+                  </Button>
                 </CardContent>
               </Card>
               <Card className="backdrop-blur-xl bg-card/80 border-border/30 hover:border-purple-500/20 transition-all">
