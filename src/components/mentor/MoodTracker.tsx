@@ -25,6 +25,7 @@ export function MoodTracker() {
   const [energy, setEnergy] = useState(5);
   const [stress, setStress] = useState(5);
   const [notes, setNotes] = useState("");
+  const [area, setArea] = useState("career");
   const [history, setHistory] = useState<MoodEntry[]>([]);
   const [saving, setSaving] = useState(false);
   const [loadingInsight, setLoadingInsight] = useState(false);
