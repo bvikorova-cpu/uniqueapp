@@ -12,6 +12,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { ParentalGate, useParentalGate } from "@/components/kids/ParentalGate";
 import { SafeContentBadge } from "@/components/kids/SafeContentBadge";
 import { AnimatePresence, motion } from "framer-motion";
+import { useChatCredits } from "@/hooks/useChatCredits";
+import { ChatCreditBanner } from "@/components/kids/chat/ChatCreditBanner";
 
 // New chat components
 import { AnimatedChatBubble } from "@/components/kids/chat/AnimatedChatBubble";
