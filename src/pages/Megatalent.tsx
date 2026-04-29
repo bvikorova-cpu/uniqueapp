@@ -123,12 +123,23 @@ const Megatalent = () => {
   const [feedFilter, setFeedFilter] = useState<FeedFilter>("hot");
   const [shareSheetSubmission, setShareSheetSubmission] = useState<any>(null);
 
+  // Subscription/auth checks: run ONCE on mount (guard already verified access).
   useEffect(() => {
     checkSubscription();
-    fetchSubmissions();
     fetchUserVotes();
     getCurrentUser();
+  }, []);
+
+  // Re-fetch submissions only when the category changes.
+  useEffect(() => {
+    fetchSubmissions();
   }, [selectedCategory]);
+
+  // Safety net: never let loading state hang forever.
+  useEffect(() => {
+    const t = setTimeout(() => setLoading(false), 4000);
+    return () => clearTimeout(t);
+  }, []);
 
   // NOTE: Stripe checkout return is handled by MegatalentGuard (parent route guard).
   // Do not duplicate the success/canceled handling here — it would race with the guard
