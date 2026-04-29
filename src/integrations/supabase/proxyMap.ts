@@ -122,7 +122,7 @@ export const CHECKOUT_PROXY_MAP: Record<string, { product: string; module: strin
   "create-bazaar-order-checkout": { product: "bazaar-order", module: "bazaar-order" },
   "create-best-friend-checkout": { product: "best-friend", module: "best-friend" },
   "create-brain-duel-payment": { product: "brain-duel", module: "brain-duel" },
-  "create-campaign-donation": { product: "campaign-donation", module: "campaign-donation" },
+  "create-campaign-donation": { product: "campaign_donation", module: "campaign_donation" },
   "create-character": { product: "character", module: "character" },
   "create-character-credits-payment": { product: "character-credits", module: "character-credits" },
   "create-companions-checkout": { product: "companions", module: "companions" },
