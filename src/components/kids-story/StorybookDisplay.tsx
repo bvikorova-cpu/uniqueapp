@@ -42,34 +42,35 @@ export const StorybookDisplay = ({ story, onSave, onContinue, showContinue, cont
       return;
     }
 
+    const text = pages[pageIndex];
+    if (!text) {
+      toast.error("Nothing to read on this page");
+      return;
+    }
+
     setIsReading(true);
     setReadingPage(pageIndex);
 
     try {
-      const response = await fetch(
-        `https://jufrdzeonywluwutvyxz.supabase.co/functions/v1/kids-story-tts`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            apikey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp1ZnJkemVvbnl3bHV3dXR2eXh6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkxMzU0MTgsImV4cCI6MjA3NDcxMTQxOH0.UOe-_WQoTeBGFmnezRHRcjFJaJd71a7rYlurDkI6h4Q",
-            Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp1ZnJkemVvbnl3bHV3dXR2eXh6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkxMzU0MTgsImV4cCI6MjA3NDcxMTQxOH0.UOe-_WQoTeBGFmnezRHRcjFJaJd71a7rYlurDkI6h4Q`,
-          },
-          body: JSON.stringify({ text: pages[pageIndex] }),
-        }
-      );
+      const { data, error } = await supabase.functions.invoke('kids-story-tts', {
+        body: { text },
+      });
 
-      if (!response.ok) throw new Error("TTS failed");
+      if (error) throw error;
 
-      const audioBlob = await response.blob();
-      const audioUrl = URL.createObjectURL(audioBlob);
+      // Edge function may return either a base64 string or an object { audioContent }
+      const audioBase64: string | undefined =
+        typeof data === "string" ? data : (data?.audioContent || data?.audio);
+
+      if (!audioBase64) throw new Error("No audio returned");
+
+      const audioUrl = `data:audio/mpeg;base64,${audioBase64}`;
       const audio = new Audio(audioUrl);
       audioRef.current = audio;
 
       audio.onended = () => {
         setIsReading(false);
         setReadingPage(null);
-        URL.revokeObjectURL(audioUrl);
       };
 
       await audio.play();
