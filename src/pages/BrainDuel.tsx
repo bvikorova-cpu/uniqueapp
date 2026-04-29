@@ -14,7 +14,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import { BrainDuelCreditsDisplay } from "@/components/brain-duel/BrainDuelCreditsDisplay";
 import { BrainDuelGame } from "@/components/brain-duel/BrainDuelGame";
-import { BrainDuelLeaderboard } from "@/components/brain-duel/BrainDuelLeaderboard";
+// BrainDuelLeaderboard import removed — not used on this page (AnimatedLeaderboard is used instead)
 import { FriendChallenges } from "@/components/brain-duel/FriendChallenges";
 import FriendChallengesLeaderboard from "@/components/brain-duel/FriendChallengesLeaderboard";
 import { GameModeSelector } from "@/components/brain-duel/GameModeSelector";
