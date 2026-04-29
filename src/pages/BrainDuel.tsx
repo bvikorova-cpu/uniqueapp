@@ -227,10 +227,11 @@ const BrainDuel = () => {
           <NotificationCenter />
         </motion.div>
         <motion.div
+          id="brain-duel-game-anchor"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.5 }}
-          className="max-w-3xl mx-auto mb-10"
+          className="max-w-3xl mx-auto mb-10 scroll-mt-24"
         >
           <BrainDuelGame />
         </motion.div>
