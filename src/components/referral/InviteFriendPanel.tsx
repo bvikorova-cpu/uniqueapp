@@ -3,7 +3,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useReferralProgram } from "@/hooks/useReferralProgram";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import { Separator } from "@/components/ui/separator";
+import { useReferralProgram, type ReferralEarning } from "@/hooks/useReferralProgram";
 import { useToast } from "@/hooks/use-toast";
 import {
   Copy,
@@ -14,14 +22,51 @@ import {
   Loader2,
   CheckCircle2,
   Clock,
+  CreditCard,
   MessageCircle,
   Send,
   Mail,
   ExternalLink,
+  Calendar,
+  Hash,
+  ChevronRight,
 } from "lucide-react";
-import { formatDistanceToNow } from "date-fns";
+import { format, formatDistanceToNow } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+
+type ReferralStatus = "pending" | "paid" | "withdrawn";
+
+const STATUS_META: Record<
+  ReferralStatus,
+  { label: string; badgeClass: string; icon: typeof Clock; description: string }
+> = {
+  pending: {
+    label: "Čaká",
+    badgeClass: "bg-amber-500/20 text-amber-500 border border-amber-500/30",
+    icon: Clock,
+    description: "Pozvaný sa zaregistroval, ale ešte nezaplatil predplatné.",
+  },
+  paid: {
+    label: "Zaplatil",
+    badgeClass: "bg-blue-500/20 text-blue-400 border border-blue-500/30",
+    icon: CreditCard,
+    description: "Pozvaný zaplatil — odmena je pripravená na výplatu.",
+  },
+  withdrawn: {
+    label: "Vyplatené",
+    badgeClass: "bg-emerald-500/90 text-white",
+    icon: CheckCircle2,
+    description: "Odmena bola vyplatená na tvoj účet.",
+  },
+};
+
+function getStatus(r: ReferralEarning): ReferralStatus {
+  if (r.paid) return "withdrawn";
+  if (Number(r.amount) > 0) return "paid";
+  return "pending";
+}
+
 
 /**
  * Compact "Invite a friend" panel for the user's profile/dashboard.
