@@ -356,7 +356,7 @@ export default function BedtimeStories() {
             {/* Sidebar */}
             <div className="space-y-4">
               <Card className="p-4 bg-white/5 backdrop-blur-md border-purple-400/20 shadow-xl">
-                <BedtimeStreak currentStreak={0} dreamTokens={0} storiesListened={visitedStories.size} />
+                <BedtimeStreak currentStreak={streak} dreamTokens={dreamTokens} storiesListened={visitedStories.size} />
               </Card>
 
               <Card className="p-4 bg-white/5 backdrop-blur-md border-purple-400/20 shadow-xl">
