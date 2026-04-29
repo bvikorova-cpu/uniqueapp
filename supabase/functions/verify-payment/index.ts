@@ -114,6 +114,43 @@ serve(async (req) => {
       }
     }
 
+    // Donation processing — runs even for guest checkouts (no userId required)
+    if (isPaid && (detectedType === "donation" || result.metadata?.type === "campaign_donation")) {
+      try {
+        const md = result.metadata || {};
+        const campaignId = md.campaign_id;
+        const campaignType = md.campaign_type;
+        const amountEur = (amount || 0) / 100;
+        if (campaignId && campaignType && amountEur > 0) {
+          const paymentId =
+            result.payment_intent_id ||
+            (typeof session.subscription === "string" ? session.subscription : session.subscription?.id) ||
+            session.id;
+          const { data: rpcRes, error: rpcErr } = await supabaseAdmin.rpc(
+            "process_campaign_donation",
+            {
+              _campaign_id: campaignId,
+              _campaign_type: campaignType,
+              _donor_id: userId,
+              _donor_email: md.donor_email || result.customer_email || null,
+              _donor_name: md.donor_name || null,
+              _amount: amountEur,
+              _is_monthly: md.is_monthly === "true",
+              _is_anonymous: md.is_anonymous === "true",
+              _message: md.donation_message || null,
+              _stripe_payment_id: paymentId,
+            }
+          );
+          if (rpcErr) log("donation RPC error", rpcErr);
+          else log("donation recorded", rpcRes);
+        } else {
+          log("donation metadata incomplete", md);
+        }
+      } catch (e) {
+        log("donation handler error", e instanceof Error ? e.message : e);
+      }
+    }
+
     return new Response(JSON.stringify(result), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
