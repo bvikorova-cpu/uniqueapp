@@ -458,7 +458,7 @@ export default function TeenCareerCounselor() {
                 </Card>
 
                 <p className="text-xs text-muted-foreground italic">
-                  Your first career guidance session is completely FREE! Additional sessions cost just €5 each.
+                  Each AI career guidance session costs {TEEN_CAREER_CREDIT_COST} credits. Buy a credit pack to start exploring your future.
                 </p>
               </CardContent>
             </Card>
