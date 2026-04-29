@@ -248,14 +248,25 @@ export default function KidsMagicLibrary() {
   };
 
   const toggleFavorite = useCallback(
-    (id: string) => {
-      setFavorites((prev) => {
-        const next = prev.includes(id) ? prev.filter((f) => f !== id) : [...prev, id];
-        if (user) localStorage.setItem(`kids_gallery_favorites_${user.id}`, JSON.stringify(next));
-        return next;
-      });
+    async (id: string) => {
+      if (!user) return;
+      const isFav = favorites.includes(id);
+      setFavorites((prev) =>
+        isFav ? prev.filter((f) => f !== id) : [...prev, id]
+      );
+      if (isFav) {
+        await supabase
+          .from("kids_gallery_favorites")
+          .delete()
+          .eq("user_id", user.id)
+          .eq("item_id", id);
+      } else {
+        await supabase
+          .from("kids_gallery_favorites")
+          .insert({ user_id: user.id, item_id: id, item_type: "gallery" });
+      }
     },
-    [user]
+    [user, favorites]
   );
 
   const handleDownload = async (url: string, filename: string) => {
