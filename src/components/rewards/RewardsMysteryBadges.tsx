@@ -37,11 +37,9 @@ export default function RewardsMysteryBadges() {
     }
   };
 
-  const mysteryEvents = [
-    { emoji: "🔮", title: "Mystic Badge", status: "Active", time: "Ends in 2d 14h", rarity: "Legendary" },
-    { emoji: "🌙", title: "Night Owl", status: "Active", time: "Ends in 5d", rarity: "Epic" },
-    { emoji: "❄️", title: "Ice Breaker", status: "Scheduled", time: "Starts Apr 20", rarity: "Rare" },
-  ];
+  // Real mystery badge events are not yet seeded in the DB; keep the
+  // section empty so users aren't shown fake "Active" badges they can't earn.
+  const mysteryEvents: { emoji: string; title: string; status: string; time: string; rarity: string }[] = [];
 
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
