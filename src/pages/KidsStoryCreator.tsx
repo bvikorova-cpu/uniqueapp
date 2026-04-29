@@ -71,6 +71,11 @@ const KidsStoryCreator = () => {
       toast.error("Please fill in all fields");
       return;
     }
+    if (!user) {
+      toast.error("Please sign in to create stories");
+      navigate('/auth');
+      return;
+    }
 
     setLoading(true);
     try {
