@@ -1,9 +1,10 @@
 import { motion } from "framer-motion";
-import { useState } from "react";
-import { ShoppingBag, Coins, Sparkles, Lock } from "lucide-react";
+import { useState, useEffect } from "react";
+import { ShoppingBag, Coins, Lock, Check } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { toast } from "sonner";
 
 const SHOP_ITEMS = [
   { id: "avatar-robot", name: "Robot Avatar", emoji: "🤖", price: 50, category: "avatar", owned: false },
@@ -29,11 +30,37 @@ const CATEGORIES = [
 ];
 
 export const KidsAcademyShop = () => {
-  const [stars] = useState(() => {
+  const [stars, setStars] = useState(() => {
     const saved = localStorage.getItem("kids-academy-stars");
     return saved ? parseInt(saved, 10) : 0;
   });
+  const [owned, setOwned] = useState<string[]>(() => {
+    const saved = localStorage.getItem("kids-academy-shop-owned");
+    return saved ? JSON.parse(saved) : [];
+  });
   const [filter, setFilter] = useState("all");
+
+  useEffect(() => {
+    localStorage.setItem("kids-academy-stars", String(stars));
+  }, [stars]);
+
+  useEffect(() => {
+    localStorage.setItem("kids-academy-shop-owned", JSON.stringify(owned));
+  }, [owned]);
+
+  const handleBuy = (item: typeof SHOP_ITEMS[0]) => {
+    if (owned.includes(item.id)) {
+      toast.info("You already own this item!");
+      return;
+    }
+    if (stars < item.price) {
+      toast.error("Not enough stars!", { description: `You need ${item.price - stars} more stars.` });
+      return;
+    }
+    setStars(prev => prev - item.price);
+    setOwned(prev => [...prev, item.id]);
+    toast.success(`Unlocked: ${item.name} ${item.emoji}`);
+  };
 
   const filteredItems = filter === "all" ? SHOP_ITEMS : SHOP_ITEMS.filter(i => i.category === filter);
 
@@ -91,6 +118,7 @@ export const KidsAcademyShop = () => {
           {/* Items grid */}
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
             {filteredItems.map((item, i) => {
+              const isOwned = owned.includes(item.id);
               const canAfford = stars >= item.price;
               return (
                 <motion.div
@@ -98,8 +126,10 @@ export const KidsAcademyShop = () => {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.04 }}
-                  className={`relative p-3 rounded-xl border-2 text-center transition-all ${
-                    canAfford
+                  className={`relative p-3 rounded-xl border-2 text-center transition-all flex flex-col ${
+                    isOwned
+                      ? "border-green-500/40 bg-green-500/5"
+                      : canAfford
                       ? "border-primary/30 bg-card hover:border-primary/50 hover:shadow-md"
                       : "border-border/50 bg-muted/20 opacity-70"
                   }`}
@@ -111,17 +141,27 @@ export const KidsAcademyShop = () => {
                     {item.emoji}
                   </motion.span>
                   <h4 className="text-xs font-bold text-foreground mb-1 truncate">{item.name}</h4>
-                  <div className="flex items-center justify-center gap-1 text-xs">
+                  <div className="flex items-center justify-center gap-1 text-xs mb-2">
                     <span>⭐</span>
                     <span className={`font-bold ${canAfford ? "text-amber-600" : "text-muted-foreground"}`}>
                       {item.price}
                     </span>
                   </div>
-                  {!canAfford && (
-                    <div className="absolute inset-0 flex items-center justify-center rounded-xl bg-background/50">
-                      <Lock className="w-4 h-4 text-muted-foreground" />
-                    </div>
-                  )}
+                  <Button
+                    size="sm"
+                    variant={isOwned ? "outline" : "default"}
+                    className="w-full text-[10px] h-7 mt-auto"
+                    disabled={isOwned || !canAfford}
+                    onClick={() => handleBuy(item)}
+                  >
+                    {isOwned ? (
+                      <><Check className="w-3 h-3 mr-1" /> Owned</>
+                    ) : !canAfford ? (
+                      <><Lock className="w-3 h-3 mr-1" /> Locked</>
+                    ) : (
+                      "Buy"
+                    )}
+                  </Button>
                 </motion.div>
               );
             })}

@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { PenTool, FlaskConical, Palette, BookOpen, Calculator, Shield } from "lucide-react";
+import { PenTool, FlaskConical, Palette, BookOpen, Calculator, Briefcase, Shield } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 const worlds = [
@@ -63,6 +63,18 @@ const worlds = [
     border: "border-rose-500/30",
     glow: "shadow-rose-500/20",
     features: ["Math", "Spelling", "Science"],
+  },
+  {
+    id: "career",
+    name: "Career Compass",
+    emoji: "🧭",
+    icon: Briefcase,
+    description: "Discover your future career (13-18y)",
+    path: "/teen-career-counselor",
+    gradient: "from-indigo-500/20 to-purple-500/20",
+    border: "border-indigo-500/30",
+    glow: "shadow-indigo-500/20",
+    features: ["AI Guidance", "Teens 13-18"],
   },
 ];
 
