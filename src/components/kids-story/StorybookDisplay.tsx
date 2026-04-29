@@ -23,13 +23,14 @@ export const StorybookDisplay = ({ story, onSave, onContinue, showContinue, cont
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // Split story into pages (~150 words each)
-  const words = story.story.split(/\s+/);
+  const words = (story.story || "").trim().split(/\s+/).filter(Boolean);
   const WORDS_PER_PAGE = 120;
   const pages: string[] = [];
 
   for (let i = 0; i < words.length; i += WORDS_PER_PAGE) {
     pages.push(words.slice(i, i + WORDS_PER_PAGE).join(" "));
   }
+  if (pages.length === 0) pages.push("(This story is empty.)");
 
   const totalPages = pages.length;
 
