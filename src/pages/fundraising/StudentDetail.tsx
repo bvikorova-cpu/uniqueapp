@@ -55,6 +55,7 @@ export default function StudentDetail() {
     donorEmail: '',
     donorName: '',
   });
+  useDonationReturn(() => fetchCampaign());
 
   useEffect(() => {
     if (id) {

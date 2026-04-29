@@ -53,6 +53,7 @@ export default function DreamDetail() {
     donorEmail: '',
     donorName: '',
   });
+  useDonationReturn(() => fetchCampaign());
 
   useEffect(() => {
     if (id) {
