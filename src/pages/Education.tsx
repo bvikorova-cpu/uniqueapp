@@ -82,6 +82,7 @@ const Education = () => {
   const [chatHistory, setChatHistory] = useState<Array<{ role: string; content: string }>>([]);
   const [isLoading, setIsLoading] = useState(false);
   const { credits, isLoading: creditsLoading, useCredit, activatePurchase, refundCredit, isUsingCredit } = useTutoringCredits();
+  const { data: eduStats } = useEducationStats();
 
   useEffect(() => {
     const purchase = searchParams.get("purchase");
