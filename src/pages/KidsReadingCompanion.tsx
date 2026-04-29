@@ -3,12 +3,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BookOpen, Lock, Sparkles } from "lucide-react";
+import { BookOpen, Lock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
-import { useKidsReadingSubscription } from "@/hooks/useKidsReadingSubscription";
-import { Progress } from "@/components/ui/progress";
+import { useKidsReadingCredits, KIDS_READING_CREDIT_COST } from "@/hooks/useKidsReadingCredits";
+import { CreditBanner } from "@/components/kids/CreditBanner";
 import { ParentalGate } from "@/components/kids/ParentalGate";
 import { useNavigate } from "react-router-dom";
 import { ReadingHero } from "@/components/kids-reading/ReadingHero";
