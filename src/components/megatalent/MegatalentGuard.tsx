@@ -32,6 +32,7 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const [checking, setChecking] = useState(true);
   const [subscribed, setSubscribed] = useState(false);
