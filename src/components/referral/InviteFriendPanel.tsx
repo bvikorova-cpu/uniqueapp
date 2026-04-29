@@ -346,6 +346,125 @@ export const InviteFriendPanel = () => {
           </Button>
         </CardContent>
       </Card>
+
+      {/* Detail dialog */}
+      <Dialog open={!!selected} onOpenChange={(open) => !open && setSelected(null)}>
+        <DialogContent className="max-w-md">
+          {selected && (() => {
+            const status = getStatus(selected);
+            const meta = STATUS_META[status];
+            const StatusIcon = meta.icon;
+            const name = selected.profiles?.full_name || "Nový používateľ";
+            const created = new Date(selected.created_at);
+            const periodStart = selected.period_start ? new Date(selected.period_start) : null;
+            const periodEnd = selected.period_end ? new Date(selected.period_end) : null;
+            return (
+              <>
+                <DialogHeader>
+                  <DialogTitle className="flex items-center gap-2">
+                    <Gift className="h-5 w-5 text-primary" />
+                    Detail pozvania
+                  </DialogTitle>
+                  <DialogDescription>{meta.description}</DialogDescription>
+                </DialogHeader>
+
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary to-accent text-base font-bold text-primary-foreground">
+                      {name.charAt(0).toUpperCase()}
+                    </div>
+                    <div className="min-w-0">
+                      <p className="truncate text-base font-semibold">{name}</p>
+                      <p className="text-xs text-muted-foreground">
+                        Pozvaný {formatDistanceToNow(created, { addSuffix: true })}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="rounded-lg border border-border/50 bg-muted/30 p-4">
+                    <div className="mb-2 flex items-center justify-between">
+                      <span className="text-sm text-muted-foreground">Stav odmeny</span>
+                      <Badge className={`${meta.badgeClass} gap-1`}>
+                        <StatusIcon className="h-3 w-3" />
+                        {meta.label}
+                      </Badge>
+                    </div>
+                    <div className="text-3xl font-bold text-emerald-500">
+                      +€{Number(selected.amount).toFixed(2)}
+                    </div>
+                  </div>
+
+                  <Separator />
+
+                  <dl className="space-y-2 text-sm">
+                    <div className="flex items-start justify-between gap-3">
+                      <dt className="flex items-center gap-1.5 text-muted-foreground">
+                        <Hash className="h-3.5 w-3.5" /> Typ
+                      </dt>
+                      <dd className="font-medium">
+                        {selected.source_kind === "subscription"
+                          ? "Predplatné (mesačne)"
+                          : selected.source_kind === "one_off"
+                          ? "Jednorazová platba"
+                          : "—"}
+                      </dd>
+                    </div>
+                    <div className="flex items-start justify-between gap-3">
+                      <dt className="flex items-center gap-1.5 text-muted-foreground">
+                        <Calendar className="h-3.5 w-3.5" /> Vytvorené
+                      </dt>
+                      <dd className="font-medium">{format(created, "d. M. yyyy HH:mm")}</dd>
+                    </div>
+                    {periodStart && periodEnd && (
+                      <div className="flex items-start justify-between gap-3">
+                        <dt className="flex items-center gap-1.5 text-muted-foreground">
+                          <Calendar className="h-3.5 w-3.5" /> Obdobie
+                        </dt>
+                        <dd className="text-right font-medium">
+                          {format(periodStart, "d. M. yyyy")} – {format(periodEnd, "d. M. yyyy")}
+                        </dd>
+                      </div>
+                    )}
+                    <div className="flex items-start justify-between gap-3">
+                      <dt className="flex items-center gap-1.5 text-muted-foreground">
+                        <Hash className="h-3.5 w-3.5" /> ID záznamu
+                      </dt>
+                      <dd className="max-w-[60%] truncate font-mono text-xs">{selected.id}</dd>
+                    </div>
+                  </dl>
+
+                  {status === "pending" && (
+                    <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 p-3 text-xs text-amber-200">
+                      Pozvaný sa zaregistroval, ale ešte neuhradil prvé predplatné. Po prvej platbe
+                      ti automaticky pripíšeme €5.
+                    </div>
+                  )}
+                  {status === "paid" && (
+                    <div className="rounded-lg border border-blue-500/30 bg-blue-500/10 p-3 text-xs text-blue-200">
+                      Odmena je tvoja — môžeš si ju vyžiadať na výplatu v plnom paneli.
+                    </div>
+                  )}
+                  {status === "withdrawn" && (
+                    <div className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 p-3 text-xs text-emerald-200">
+                      Táto odmena bola už vyplatená na tvoj účet.
+                    </div>
+                  )}
+
+                  <Button
+                    className="w-full gap-2"
+                    onClick={() => {
+                      setSelected(null);
+                      navigate("/referral");
+                    }}
+                  >
+                    Otvoriť plný panel <ExternalLink className="h-3.5 w-3.5" />
+                  </Button>
+                </div>
+              </>
+            );
+          })()}
+        </DialogContent>
+      </Dialog>
     </motion.div>
   );
 };
