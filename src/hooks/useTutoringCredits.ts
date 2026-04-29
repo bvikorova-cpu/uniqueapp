@@ -92,7 +92,8 @@ export const useTutoringCredits = () => {
 
       if (error) throw error;
       if (data?.url) {
-        window.open(data.url, "_blank");
+        // Same-tab redirect so the user returns with ?session_id=... and credits activate.
+        window.location.href = data.url;
       }
     },
     onError: (error) => {
@@ -101,21 +102,50 @@ export const useTutoringCredits = () => {
     },
   });
 
-  const addCredits = useMutation({
-    mutationFn: async (creditsToAdd: number) => {
-      const { error } = await supabase.functions.invoke("tutoring-add-credits", {
-        body: { credits: creditsToAdd },
+  // Activates credits after Stripe redirect. Server verifies the session and
+  // resolves the credit amount from the Stripe price id (client value ignored).
+  const activatePurchase = useMutation({
+    mutationFn: async (sessionId: string) => {
+      const { data, error } = await supabase.functions.invoke("tutoring-add-credits", {
+        body: { session_id: sessionId },
       });
-
       if (error) throw error;
+      return data as { success: boolean; credits?: number; alreadyCredited?: boolean };
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["tutoring-credits"] });
+      if (!data?.alreadyCredited && data?.credits) {
+        toast.success(`${data.credits} credits added!`);
+      }
+    },
+    onError: (error) => {
+      console.error("Activate purchase error:", error);
+      toast.error("Could not activate purchase. Contact support.");
+    },
+  });
+
+  // Refund a previously-deducted credit (used when AI call fails after deduction)
+  const refundCredit = useMutation({
+    mutationFn: async (reason: string) => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      const { data: cur } = await supabase
+        .from("tutoring_credits")
+        .select("credits_remaining")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      if (!cur) return;
+      await supabase
+        .from("tutoring_credits")
+        .update({
+          credits_remaining: cur.credits_remaining + 1,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("user_id", user.id);
+      console.log("[refundCredit]", reason);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tutoring-credits"] });
-      toast.success("Credits added successfully!");
-    },
-    onError: (error) => {
-      console.error("Add credits error:", error);
-      toast.error("Failed to add credits");
     },
   });
 
@@ -125,7 +155,8 @@ export const useTutoringCredits = () => {
     isLoading,
     useCredit: useCredit.mutateAsync,
     purchaseCredits: purchaseCredits.mutate,
-    addCredits: addCredits.mutate,
+    activatePurchase: activatePurchase.mutateAsync,
+    refundCredit: refundCredit.mutateAsync,
     isUsingCredit: useCredit.isPending,
   };
 };

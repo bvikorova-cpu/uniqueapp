@@ -56,7 +56,7 @@ serve(async (req) => {
         },
       ],
       mode: "payment",
-      success_url: `${req.headers.get("origin")}/education?purchase=success&credits=${CREDIT_PACKAGES[priceId]}`,
+      success_url: `${req.headers.get("origin")}/education?purchase=success&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${req.headers.get("origin")}/education?purchase=canceled`,
       metadata: {
         user_id: user.id,
