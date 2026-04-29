@@ -347,9 +347,10 @@ const BrainDuel = () => {
               </Card>
 
               <GameModeSelector onSelectMode={(mode) => {
-                toast.info(`Selected ${mode.name} mode`, {
-                  description: `${mode.questions} questions, ${mode.entry} credits entry`
+                toast.success(`${mode.name} mode selected`, {
+                  description: `${mode.questions} questions, ${mode.entry} credits entry. Scroll up to start a duel!`,
                 });
+                document.getElementById("brain-duel-game-anchor")?.scrollIntoView({ behavior: "smooth", block: "start" });
               }} />
 
               {/* Mystery Category */}
