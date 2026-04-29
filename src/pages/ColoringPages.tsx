@@ -171,6 +171,18 @@ export default function ColoringPages() {
 
         <HeroRewardedAd sectionKey="page_coloringpages" />
 
+        {/* Credit balance banner — paid-only model */}
+        <div className="mb-6">
+          <CreditBanner
+            label="Coloring"
+            creditsRemaining={balance}
+            costPerUse={costPerUse}
+            onBuyCredits={() => buyCreditsPack(100)}
+            unitName="page"
+          />
+        </div>
+
+
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <div className="overflow-x-auto scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0">
              <TabsList className="inline-flex gap-2 sm:grid sm:grid-cols-6 lg:grid-cols-7 xl:grid-cols-14 w-max sm:w-full h-auto p-2">
