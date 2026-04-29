@@ -213,6 +213,12 @@ export default function AdminXPAudit() {
             </p>
           </div>
         </div>
+        <Button asChild variant="outline" size="sm">
+          <Link to="/admin/xp-audit/reconciliation">
+            <Shield className="h-4 w-4 mr-1" />
+            Global reconciliation report
+          </Link>
+        </Button>
       </div>
 
       {/* Search */}
