@@ -16,6 +16,7 @@ import { QuickChallenge } from "@/components/education/QuickChallenge";
 import { LearningPathProgress } from "@/components/education/LearningPathProgress";
 import { EnhancedChat } from "@/components/education/EnhancedChat";
 import { GlassmorphismCategories } from "@/components/education/GlassmorphismCategories";
+import { useEducationStats } from "@/hooks/useEducationStats";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 const quizCategories = [
