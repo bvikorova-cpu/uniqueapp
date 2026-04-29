@@ -136,6 +136,22 @@
           lastRecovery = raw ? parseInt(raw, 10) || 0 : 0;
         } catch (e) {}
         var recentlyRecovered = lastRecovery && (Date.now() - lastRecovery) < RECOVERY_COOLDOWN_MS;
+        var isFramed = false;
+        try { isFramed = window.self !== window.top; } catch (e) { isFramed = true; }
+
+        function cleanPreviewUrl() {
+          return window.location.origin + window.location.pathname;
+        }
+
+        function openCleanPreview() {
+          clearRecoveryFlag();
+          var url = cleanPreviewUrl();
+          if (isFramed) {
+            try { window.top.location.href = url; return; } catch (e) {}
+            try { window.open(url, "_blank", "noopener,noreferrer"); return; } catch (e) {}
+          }
+          window.location.replace(window.location.pathname);
+        }
 
         setTimeout(function () {
           if (window.__UNIQUE_MAIN_EXECUTED__) return;
@@ -143,13 +159,15 @@
 
           if (recentlyRecovered) {
             if (msg) {
-              msg.innerHTML = "Načítanie trvá dlhšie. <a href=\"javascript:void(0)\" id=\"unique-force-retry\" style=\"color:#fde68a;text-decoration:underline;font-weight:600;\">Skúsiť znova</a>";
+              msg.innerHTML = isFramed
+                ? "Lovable náhľad v iframe blokuje načítanie. <a href=\"" + cleanPreviewUrl() + "\" target=\"_top\" id=\"unique-force-retry\" style=\"color:#fde68a;text-decoration:underline;font-weight:600;\">Otvoriť mimo náhľad</a>"
+                : "Načítanie trvá dlhšie. <a href=\"javascript:void(0)\" id=\"unique-force-retry\" style=\"color:#fde68a;text-decoration:underline;font-weight:600;\">Skúsiť znova</a>";
               var btn = document.getElementById("unique-force-retry");
               if (btn) btn.addEventListener("click", function () {
-                clearRecoveryFlag();
-                window.location.replace(window.location.pathname);
+                openCleanPreview();
               });
             }
+            if (isFramed) return;
             // Auto-retry po ďalších 8s, kompletne bez query parametrov.
             setTimeout(function () {
               if (window.__UNIQUE_MAIN_EXECUTED__) return;
