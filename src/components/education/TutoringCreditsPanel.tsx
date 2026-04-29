@@ -21,7 +21,9 @@ export const TutoringCreditsPanel = () => {
               <CardTitle className="text-lg">Your Credits</CardTitle>
             </div>
             <Badge variant="outline" className="text-lg px-3 py-1 bg-amber-500/20 text-amber-700 dark:text-amber-300 border-amber-400">
-              {isLoading ? "..." : credits} credits
+              {isLoading
+                ? <span className="inline-block h-4 w-16 rounded bg-amber-500/30 animate-pulse" />
+                : <>{credits} credits</>}
             </Badge>
           </div>
           <CardDescription>1 credit = 1 tutoring message. Purchase credits to continue learning.</CardDescription>
