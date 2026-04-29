@@ -89,7 +89,7 @@ export default function ColoringPages() {
       setGeneratedImage(data.coloringPage.processed_image_url);
       toast.success("Coloring page generated!");
       refetchPages();
-      checkSubscription();
+      refresh();
       setImageUrl("");
       setUploadedFile(null);
     },
@@ -113,7 +113,7 @@ export default function ColoringPages() {
       setGeneratedImage(data.coloringPage.processed_image_url);
       toast.success("AI coloring page created!");
       refetchPages();
-      checkSubscription();
+      refresh();
     },
     onError: (error: Error) => {
       toast.error("Failed to generate: " + error.message);
