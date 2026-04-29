@@ -1,5 +1,6 @@
 import { ReactNode, useEffect, useRef, useState } from "react";
 import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Loader2, Lock, Star, CheckCircle2, Sparkles, Eye, Heart, MessageCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { safeInvoke } from "@/utils/safeInvoke";
@@ -31,6 +32,7 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const [checking, setChecking] = useState(true);
   const [subscribed, setSubscribed] = useState(false);
@@ -230,16 +232,16 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
 
           if (success) {
             toast({
-              title: "Platba úspešná! 🎉",
+              title: t("megatalent.paywall.toast_payment_success_title"),
               description: tier === "top_premium"
-                ? "Vitaj v MegaTalent TOP Premium! Aktivujem prístup..."
-                : "Vitaj v MegaTalent Premium! Aktivujem prístup...",
+                ? t("megatalent.paywall.toast_welcome_top")
+                : t("megatalent.paywall.toast_welcome_premium"),
             });
             // URL params already stripped synchronously above.
           } else if (pending && !reloadFlag) {
             toast({
-              title: "Pokračujem v aktivácii",
-              description: "Dokončujem aktiváciu tvojho predplatného po prihlásení...",
+              title: t("megatalent.paywall.toast_continuing_title"),
+              description: t("megatalent.paywall.toast_continuing_desc"),
             });
           }
 
@@ -390,9 +392,9 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
             <div className="mx-auto w-16 h-16 rounded-full bg-primary/15 flex items-center justify-center">
               <Loader2 className="w-8 h-8 text-primary animate-spin" />
             </div>
-            <CardTitle className="text-2xl">Aktivujem tvoje predplatné...</CardTitle>
+            <CardTitle className="text-2xl">{t("megatalent.paywall.activating_title")}</CardTitle>
             <CardDescription className="text-base">
-              Platba prijatá. Stripe potrebuje pár sekúnd na aktiváciu — automaticky ťa presmerujeme do MegaTalentu, len čo bude pripravené.
+              {t("megatalent.paywall.activating_desc")}
             </CardDescription>
           </CardHeader>
         </Card>
@@ -418,31 +420,31 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
                 }`}
               >
                 {isTop ? <Sparkles className="w-4 h-4" /> : <Star className="w-4 h-4" />}
-                MegaTalent {isTop ? "TOP Premium" : "Premium"} aktivované
+                {isTop ? t("megatalent.paywall.activated_top_premium_label") : t("megatalent.paywall.activated_premium_label")}
               </span>
             </div>
-            <CardTitle className="text-2xl">Vitaj v súťaži! 🏆</CardTitle>
+            <CardTitle className="text-2xl">{t("megatalent.paywall.welcome_title")}</CardTitle>
             <CardDescription className="text-base">
               {isTop
-                ? "Máš prístup ku všetkým funkciám + 2× váhu hlasu a denný vote-boost."
-                : "Máš prístup ku všetkým kategóriám, AI nástrojom a hlasovaniu."}
+                ? t("megatalent.paywall.activated_top_premium_desc")
+                : t("megatalent.paywall.activated_premium_desc")}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-2">
             <ul className="text-sm space-y-1.5 bg-muted/40 rounded-lg p-3">
-              <li>✅ Neobmedzené uploady fotiek a videí</li>
-              <li>✅ Prístup ku všetkým 35+ kategóriám</li>
-              <li>✅ AI Talent Coach a všetky AI nástroje</li>
-              <li>✅ Nárok na peňažné odmeny pre víťazov</li>
+              <li>{t("megatalent.paywall.activated_li_unlimited")}</li>
+              <li>{t("megatalent.paywall.activated_li_categories")}</li>
+              <li>{t("megatalent.paywall.activated_li_ai")}</li>
+              <li>{t("megatalent.paywall.activated_li_prizes")}</li>
               {isTop && (
                 <>
-                  <li>⭐ <strong>2× váha tvojich hlasov</strong></li>
-                  <li>⭐ <strong>Denný vote-boost</strong> a TOP Premium odznak</li>
+                  <li>{t("megatalent.paywall.activated_li_top_weight")}</li>
+                  <li>{t("megatalent.paywall.activated_li_top_boost")}</li>
                 </>
               )}
             </ul>
             <p className="text-xs text-muted-foreground text-center pt-1">
-              Otváram MegaTalent...
+              {t("megatalent.paywall.opening")}
             </p>
           </CardContent>
         </Card>
@@ -460,13 +462,13 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
         <div className="max-w-5xl mx-auto space-y-8">
           {/* Preview tease: 3 latest submissions, blurred + non-interactive */}
           {previewItems.length > 0 && (
-            <section aria-label="Ukážka MegaTalent príspevkov" className="space-y-3">
+            <section aria-label={t("megatalent.paywall.preview_heading")} className="space-y-3">
               <div className="flex items-center justify-between">
                 <h2 className="text-lg sm:text-xl font-semibold flex items-center gap-2">
                   <Eye className="w-5 h-5 text-primary" />
-                  Ukážka súťaže
+                  {t("megatalent.paywall.preview_heading")}
                 </h2>
-                <Badge variant="secondary" className="text-xs">3 z mnohých</Badge>
+                <Badge variant="secondary" className="text-xs">{t("megatalent.paywall.preview_badge")}</Badge>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 {previewItems.map((item) => (
@@ -495,7 +497,7 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
                     <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/40 to-transparent" />
                     <div className="absolute inset-0 flex flex-col justify-end p-3 gap-1">
                       <p className="text-sm font-semibold line-clamp-1">
-                        {item.title || "Príspevok súťažiaceho"}
+                        {item.title || t("megatalent.paywall.preview_default_title")}
                       </p>
                       <div className="flex items-center gap-3 text-xs text-muted-foreground">
                         <span className="flex items-center gap-1">
@@ -510,29 +512,28 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
                     </div>
                     <div className="absolute top-2 right-2 bg-background/85 backdrop-blur px-2 py-1 rounded-full flex items-center gap-1 text-[10px] font-semibold">
                       <Lock className="w-3 h-3" />
-                      Zamknuté
+                      {t("megatalent.paywall.preview_locked")}
                     </div>
                   </div>
                 ))}
               </div>
               <p className="text-xs text-muted-foreground text-center">
-                Toto sú 3 z najnovších príspevkov. Odomkni predplatným a získaj prístup ku všetkým 35+ kategóriám.
+                {t("megatalent.paywall.preview_footnote")}
               </p>
             </section>
           )}
 
           {previewLoaded && previewItems.length === 0 && (
             <section
-              aria-label="Žiadne príspevky na ukážku"
+              aria-label={t("megatalent.paywall.empty_aria")}
               className="rounded-xl border border-dashed border-primary/30 bg-muted/30 p-6 text-center space-y-2"
             >
               <div className="mx-auto w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
                 <Sparkles className="w-6 h-6 text-primary" />
               </div>
-              <h2 className="text-lg font-semibold">Súťaž práve štartuje 🚀</h2>
+              <h2 className="text-lg font-semibold">{t("megatalent.paywall.empty_heading")}</h2>
               <p className="text-sm text-muted-foreground max-w-md mx-auto">
-                Zatiaľ tu nie sú žiadne aktívne príspevky na ukážku. Buď medzi prvými —
-                odomkni predplatným a nahraj svoj talent ako prvý v 35+ kategóriách.
+                {t("megatalent.paywall.empty_desc")}
               </p>
             </section>
           )}
@@ -542,18 +543,17 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
               <div className="mx-auto w-16 h-16 rounded-full bg-primary/15 flex items-center justify-center">
                 <Lock className="w-8 h-8 text-primary" />
               </div>
-              <CardTitle className="text-2xl">Odomkni MegaTalent súťaž 🏆</CardTitle>
+              <CardTitle className="text-2xl">{t("megatalent.paywall.lock_title")}</CardTitle>
               <CardDescription className="text-base">
-                Nahrávaj fotky a videá, súťaž o peňažné ceny v 35+ kategóriách
-                a získaj viditeľnosť pred tisíckami fanúšikov. Predplatné spustíš za pár sekúnd.
+                {t("megatalent.paywall.lock_desc")}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <ul className="text-sm space-y-1.5 bg-muted/40 rounded-lg p-3">
-                <li>✅ Neobmedzené uploady fotiek a videí</li>
-                <li>✅ Hlasovanie a Live Leaderboard</li>
-                <li>✅ Prístup ku všetkým AI Talent nástrojom</li>
-                <li>✅ Nárok na peňažné odmeny pre víťazov</li>
+                <li>{t("megatalent.paywall.feature_unlimited")}</li>
+                <li>{t("megatalent.paywall.feature_voting")}</li>
+                <li>{t("megatalent.paywall.feature_ai_tools")}</li>
+                <li>{t("megatalent.paywall.feature_prizes")}</li>
               </ul>
               <Button
                 size="lg"
@@ -562,10 +562,10 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
                 disabled={checkoutLoading !== null}
               >
                 <span className="flex items-center gap-2">
-                  <Star className="h-4 w-4" /> Premium
+                  <Star className="h-4 w-4" /> {t("megatalent.paywall.premium_label")}
                 </span>
                 <span className="font-bold">
-                  {checkoutLoading === "premium" ? <Loader2 className="h-4 w-4 animate-spin" /> : "€10 / mesiac"}
+                  {checkoutLoading === "premium" ? <Loader2 className="h-4 w-4 animate-spin" /> : t("megatalent.paywall.price_premium")}
                 </span>
               </Button>
               <Button
@@ -576,17 +576,17 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
                 disabled={checkoutLoading !== null}
               >
                 <span className="flex items-center gap-2">
-                  <Sparkles className="h-4 w-4 fill-current" /> TOP Premium <span className="text-xs opacity-80">(2× váha hlasu)</span>
+                  <Sparkles className="h-4 w-4 fill-current" /> {t("megatalent.paywall.top_premium_label")} <span className="text-xs opacity-80">{t("megatalent.paywall.top_premium_note")}</span>
                 </span>
                 <span className="font-bold">
-                  {checkoutLoading === "top_premium" ? <Loader2 className="h-4 w-4 animate-spin" /> : "€15 / mesiac"}
+                  {checkoutLoading === "top_premium" ? <Loader2 className="h-4 w-4 animate-spin" /> : t("megatalent.paywall.price_top_premium")}
                 </span>
               </Button>
               <Button variant="outline" className="w-full" onClick={() => navigate("/")}>
-                Späť na hlavnú stránku
+                {t("megatalent.paywall.back_home")}
               </Button>
               <p className="text-xs text-muted-foreground text-center pt-2">
-                Už si zaplatil? <button className="underline" onClick={() => window.location.reload()}>Obnoviť prístup</button>
+                {t("megatalent.paywall.already_paid")} <button className="underline" onClick={() => window.location.reload()}>{t("megatalent.paywall.refresh_access")}</button>
               </p>
             </CardContent>
           </Card>
