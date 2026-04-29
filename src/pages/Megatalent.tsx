@@ -238,8 +238,9 @@ const Megatalent = () => {
       });
       if (error) throw error;
       if (data?.url) {
-        window.open(data.url, '_blank');
-        toast({ title: "Redirecting to Stripe…", description: "Complete the payment in the new tab." });
+        // Redirect in same tab so Stripe returns the user to /megatalent?success=true
+        // and MegatalentGuard can resume the activation flow.
+        window.location.href = data.url;
       } else {
         throw new Error("No checkout URL returned");
       }
