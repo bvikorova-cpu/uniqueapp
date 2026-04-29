@@ -322,10 +322,7 @@ const AIMentorChat = () => {
                       <CardTitle className="text-lg flex items-center gap-2">
                         <Target className="h-4 w-4 text-primary" /> Your Goals
                       </CardTitle>
-                      <Button size="sm" variant="outline" className="h-8 w-8 p-0" onClick={() => {
-                        const goal = window.prompt("Aký cieľ si chceš pridať?");
-                        if (goal && goal.trim()) toast({ description: `Cieľ "${goal}" pridaný!` });
-                      }}>
+                      <Button size="sm" variant="outline" className="h-8 w-8 p-0" onClick={handleAddGoal}>
                         <Plus className="h-4 w-4" />
                       </Button>
                     </div>
