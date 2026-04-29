@@ -137,6 +137,20 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
     return data?.subscribed === true;
   };
 
+  // Hard safety net: if checking takes >8s, stop blocking the UI and show paywall.
+  // Better than an infinite spinner — user can retry or contact support.
+  useEffect(() => {
+    const t = setTimeout(() => {
+      setChecking((prev) => {
+        if (prev) {
+          console.warn("[MegatalentGuard] check timeout — releasing UI");
+        }
+        return false;
+      });
+    }, 8000);
+    return () => clearTimeout(t);
+  }, []);
+
   useEffect(() => {
     if (authLoading) return;
 
