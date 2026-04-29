@@ -1,0 +1,116 @@
+// Kids Story TTS — converts story text to speech using OpenAI TTS
+// Returns base64 MP3 audio for client playback
+
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers":
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
+};
+
+const MAX_TEXT_LENGTH = 4000; // OpenAI TTS hard limit is 4096 chars
+const ALLOWED_VOICES = new Set([
+  "alloy",
+  "echo",
+  "fable",
+  "onyx",
+  "nova",
+  "shimmer",
+]);
+
+Deno.serve(async (req) => {
+  if (req.method === "OPTIONS") {
+    return new Response(null, { headers: corsHeaders });
+  }
+
+  try {
+    if (req.method !== "POST") {
+      return new Response(
+        JSON.stringify({ error: "Method not allowed" }),
+        { status: 405, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
+
+    const apiKey = Deno.env.get("OPENAI_API_KEY");
+    if (!apiKey) {
+      console.error("OPENAI_API_KEY not configured");
+      return new Response(
+        JSON.stringify({ error: "TTS service not configured" }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
+
+    let body: { text?: unknown; voice?: unknown };
+    try {
+      body = await req.json();
+    } catch {
+      return new Response(
+        JSON.stringify({ error: "Invalid JSON body" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
+
+    const text = typeof body.text === "string" ? body.text.trim() : "";
+    const voice =
+      typeof body.voice === "string" && ALLOWED_VOICES.has(body.voice)
+        ? body.voice
+        : "nova"; // friendly default for kids
+
+    if (!text) {
+      return new Response(
+        JSON.stringify({ error: "text is required" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
+
+    const truncated = text.slice(0, MAX_TEXT_LENGTH);
+
+    const ttsResponse = await fetch("https://api.openai.com/v1/audio/speech", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "tts-1",
+        voice,
+        input: truncated,
+        response_format: "mp3",
+        speed: 0.95,
+      }),
+    });
+
+    if (!ttsResponse.ok) {
+      const errText = await ttsResponse.text();
+      console.error("OpenAI TTS error:", ttsResponse.status, errText);
+      return new Response(
+        JSON.stringify({ error: "TTS generation failed" }),
+        { status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
+
+    const audioBuffer = await ttsResponse.arrayBuffer();
+
+    // Convert to base64 in chunks to avoid stack overflow on large buffers
+    const bytes = new Uint8Array(audioBuffer);
+    let binary = "";
+    const chunkSize = 0x8000;
+    for (let i = 0; i < bytes.length; i += chunkSize) {
+      binary += String.fromCharCode(...bytes.subarray(i, i + chunkSize));
+    }
+    const audioBase64 = btoa(binary);
+
+    return new Response(
+      JSON.stringify({ audioContent: audioBase64, mimeType: "audio/mpeg" }),
+      {
+        status: 200,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      },
+    );
+  } catch (err) {
+    console.error("kids-story-tts unexpected error:", err);
+    return new Response(
+      JSON.stringify({ error: "Unexpected error" }),
+      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+    );
+  }
+});
