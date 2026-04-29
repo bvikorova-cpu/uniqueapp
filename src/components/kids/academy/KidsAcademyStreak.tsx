@@ -187,7 +187,7 @@ export const KidsAcademyStreak = () => {
                     </Badge>
                   )}
                 </div>
-              </motion.div>
+              </motion.button>
             );
           })}
         </CardContent>
