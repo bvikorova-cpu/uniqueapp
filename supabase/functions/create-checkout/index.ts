@@ -105,6 +105,24 @@ const CREDIT_PACKS: Record<string, { prices: Record<number, string>; successPath
     successPath: "/kids-voice-chat?payment=success&session_id={CHECKOUT_SESSION_ID}",
     cancelPath: "/kids-voice-chat?payment=canceled",
   },
+  // Kids Drawing Buddy credits — dynamic price_data (€0.50/credit) — AI image analysis & transformation
+  kids_drawing: {
+    prices: {},
+    successPath: "/kids-drawing-buddy?payment=success&session_id={CHECKOUT_SESSION_ID}",
+    cancelPath: "/kids-drawing-buddy?payment=canceled",
+  },
+  // Kids Reading Companion credits — dynamic price_data (€0.50/credit) — AI reading analysis & quizzes
+  kids_reading: {
+    prices: {},
+    successPath: "/kids-reading-companion?payment=success&session_id={CHECKOUT_SESSION_ID}",
+    cancelPath: "/kids-reading-companion?payment=canceled",
+  },
+  // Kids Story Creator credits — dynamic price_data (€0.50/credit) — AI story generation
+  kids_story: {
+    prices: {},
+    successPath: "/kids-story-creator?payment=success&session_id={CHECKOUT_SESSION_ID}",
+    cancelPath: "/kids-story-creator?payment=canceled",
+  },
   // ─── Newly created Phase 3 packs ───
   character: {
     prices: {
