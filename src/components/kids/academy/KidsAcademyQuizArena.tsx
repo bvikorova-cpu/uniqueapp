@@ -1,10 +1,9 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
-import { Swords, Trophy, Users, Timer, Zap, Crown } from "lucide-react";
+import { Swords, Trophy, Users, Zap, Crown } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
 
 const QUIZ_CATEGORIES = [
@@ -60,12 +59,30 @@ export const KidsAcademyQuizArena = () => {
             ))}
           </div>
 
-          <div className="flex gap-2">
-            <Button className="flex-1" disabled={!selectedCategory}>
+          <div className="flex flex-col sm:flex-row gap-2">
+            <Button
+              className="flex-1"
+              disabled={!selectedCategory}
+              onClick={() => {
+                const cat = QUIZ_CATEGORIES.find(c => c.id === selectedCategory);
+                toast.success(`Starting ${cat?.name} Quiz! ${cat?.emoji}`, {
+                  description: "5 questions • +20 XP per correct answer",
+                });
+              }}
+            >
               <Zap className="w-4 h-4 mr-2" />
               Quick Quiz (5 questions)
             </Button>
-            <Button variant="outline" className="flex-1" disabled={!selectedCategory}>
+            <Button
+              variant="outline"
+              className="flex-1"
+              disabled={!selectedCategory}
+              onClick={() => {
+                toast.info("Friend challenge coming soon!", {
+                  description: "Invite friends to compete in real-time quizzes.",
+                });
+              }}
+            >
               <Users className="w-4 h-4 mr-2" />
               Challenge a Friend
             </Button>

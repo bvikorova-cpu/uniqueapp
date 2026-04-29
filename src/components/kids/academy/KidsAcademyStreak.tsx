@@ -1,9 +1,9 @@
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
-import { Flame, Gift, Star, Sparkles } from "lucide-react";
+import { Flame, Star, Sparkles } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { toast } from "sonner";
 
 const DAYS = ["M", "T", "W", "T", "F", "S", "S"];
 
@@ -33,8 +33,21 @@ export const KidsAcademyStreak = () => {
     return data.date === new Date().toDateString() ? data.completed : [];
   });
 
-  const todayChallenge = DAILY_CHALLENGES[new Date().getDay() % DAILY_CHALLENGES.length];
   const weekendBonus = new Date().getDay() === 0 || new Date().getDay() === 6;
+
+  const handleCompleteChallenge = (challenge: typeof DAILY_CHALLENGES[0]) => {
+    if (completedToday.includes(challenge.id)) return;
+    const newCompleted = [...completedToday, challenge.id];
+    setCompletedToday(newCompleted);
+    const xpGained = weekendBonus ? challenge.xpReward * 2 : challenge.xpReward;
+    const currentXp = parseInt(localStorage.getItem("kids-academy-xp") || "0", 10);
+    localStorage.setItem("kids-academy-xp", String(currentXp + xpGained));
+    toast.success(`+${xpGained} XP earned!`, { description: challenge.title });
+    if (newCompleted.length === DAILY_CHALLENGES.length) {
+      setStreak(prev => prev + 1);
+      toast.success("🔥 Streak +1!", { description: "All daily challenges complete!" });
+    }
+  };
 
   useEffect(() => {
     localStorage.setItem("kids-academy-streak", String(streak));

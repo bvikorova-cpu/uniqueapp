@@ -63,6 +63,8 @@ export const KidsAcademyParentPanel = () => {
                 { name: "Science Lab", emoji: "🧪", time: "0m", pct: 0 },
                 { name: "Drawing Buddy", emoji: "🎨", time: "0m", pct: 0 },
                 { name: "Reading Companion", emoji: "📚", time: "0m", pct: 0 },
+                { name: "Homework Helper", emoji: "🏠", time: "0m", pct: 0 },
+                { name: "Career Counselor", emoji: "🧭", time: "0m", pct: 0 },
               ].map((mod, i) => (
                 <div key={i} className="flex items-center gap-3 p-2 rounded-lg bg-card/50 border border-border/50">
                   <span className="text-xl">{mod.emoji}</span>
