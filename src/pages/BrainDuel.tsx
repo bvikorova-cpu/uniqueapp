@@ -4,17 +4,17 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { 
-  Trophy, Zap, Users, ShoppingCart, Crown, Flame, Clock, 
+  Trophy, Zap, Users, ShoppingCart, Crown, Clock, 
   Globe, BookOpen, FlaskConical, Film, Dumbbell, Music, 
   Pizza, Briefcase, Palette, Gamepad2, Target, Brain,
-  TrendingUp, Heart, Sparkles, User, Radio, ChevronRight,
-  Swords, Calendar, Gift, Bot, BarChart3, Bell
+  TrendingUp, Sparkles, User, Radio, ChevronRight,
+  Swords, Calendar, Bot, BarChart3, Loader2
 } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import { BrainDuelCreditsDisplay } from "@/components/brain-duel/BrainDuelCreditsDisplay";
 import { BrainDuelGame } from "@/components/brain-duel/BrainDuelGame";
-import { BrainDuelLeaderboard } from "@/components/brain-duel/BrainDuelLeaderboard";
+// BrainDuelLeaderboard import removed — not used on this page (AnimatedLeaderboard is used instead)
 import { FriendChallenges } from "@/components/brain-duel/FriendChallenges";
 import FriendChallengesLeaderboard from "@/components/brain-duel/FriendChallengesLeaderboard";
 import { GameModeSelector } from "@/components/brain-duel/GameModeSelector";
@@ -227,10 +227,11 @@ const BrainDuel = () => {
           <NotificationCenter />
         </motion.div>
         <motion.div
+          id="brain-duel-game-anchor"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.5 }}
-          className="max-w-3xl mx-auto mb-10"
+          className="max-w-3xl mx-auto mb-10 scroll-mt-24"
         >
           <BrainDuelGame />
         </motion.div>
@@ -347,9 +348,10 @@ const BrainDuel = () => {
               </Card>
 
               <GameModeSelector onSelectMode={(mode) => {
-                toast.info(`Selected ${mode.name} mode`, {
-                  description: `${mode.questions} questions, ${mode.entry} credits entry`
+                toast.success(`${mode.name} mode selected`, {
+                  description: `${mode.questions} questions, ${mode.entry} credits entry. Scroll up to start a duel!`,
                 });
+                document.getElementById("brain-duel-game-anchor")?.scrollIntoView({ behavior: "smooth", block: "start" });
               }} />
 
               {/* Mystery Category */}
@@ -379,7 +381,13 @@ const BrainDuel = () => {
                           <Button
                             variant="outline"
                             className={`h-auto min-h-[80px] sm:min-h-[90px] py-3 sm:py-4 flex-col gap-2 px-2 sm:px-3 whitespace-normal w-full bg-gradient-to-br ${category.bg} border-border/50 hover:border-primary/30 hover:shadow-lg transition-all duration-300`}
-                           onClick={() => { window.location.href = `/brain-duel?category=${encodeURIComponent(category.id)}`; }}>
+                            onClick={() => {
+                              toast.success(`${category.name} selected`, {
+                                description: "Choose this category in the duel panel above to start playing.",
+                              });
+                              document.getElementById("brain-duel-game-anchor")?.scrollIntoView({ behavior: "smooth", block: "start" });
+                            }}
+                          >
                             <div className="p-2 rounded-xl bg-background/50">
                               <Icon className={`h-5 w-5 sm:h-6 sm:w-6 flex-shrink-0 ${category.color}`} />
                             </div>
@@ -454,7 +462,7 @@ const BrainDuel = () => {
                               disabled={isPurchasing}
                               className="shadow-lg shadow-primary/20"
                             >
-                              Buy
+                              {isPurchasing ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : "Buy"}
                             </Button>
                           </div>
                         </CardContent>
