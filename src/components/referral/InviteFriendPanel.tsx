@@ -389,54 +389,118 @@ export const InviteFriendPanel = () => {
                   const StatusIcon = meta.icon;
                   return (
                     <li key={r.id}>
-                      <button
-                        type="button"
-                        onClick={() => setSelected(r)}
-                        className="flex w-full items-center justify-between gap-3 rounded-lg border border-border/40 bg-background/40 p-3 text-left transition hover:border-primary/40 hover:bg-background/70 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-                        aria-label={`Detail pozvania pre ${name}`}
-                      >
-                        <div className="flex min-w-0 items-center gap-3">
-                          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary to-accent text-sm font-bold text-primary-foreground">
-                            {initial}
-                          </div>
-                          <div className="min-w-0">
-                            <p className="truncate text-sm font-semibold">{name}</p>
-                            <div className="flex flex-wrap items-center gap-1.5">
-                              <span className="text-xs text-muted-foreground">
-                                {formatDistanceToNow(new Date(r.created_at), { addSuffix: true })}
-                              </span>
-                              {r.source_kind === "subscription" && (
-                                <Badge
-                                  variant="outline"
-                                  className="border-emerald-500/40 px-1.5 py-0 text-[10px] text-emerald-400"
-                                >
-                                  Predplatné
-                                </Badge>
-                              )}
-                              {r.source_kind === "one_off" && (
-                                <Badge
-                                  variant="outline"
-                                  className="border-blue-500/40 px-1.5 py-0 text-[10px] text-blue-400"
-                                >
-                                  Jednorazová
-                                </Badge>
-                              )}
+                      <HoverCard openDelay={150} closeDelay={80}>
+                        <HoverCardTrigger asChild>
+                          <button
+                            type="button"
+                            onClick={() => setSelected(r)}
+                            className="flex w-full items-center justify-between gap-3 rounded-lg border border-border/40 bg-background/40 p-3 text-left transition hover:border-primary/40 hover:bg-background/70 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                            aria-label={`Detail pozvania pre ${name}`}
+                          >
+                            <div className="flex min-w-0 items-center gap-3">
+                              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary to-accent text-sm font-bold text-primary-foreground">
+                                {initial}
+                              </div>
+                              <div className="min-w-0">
+                                <p className="truncate text-sm font-semibold">{name}</p>
+                                <div className="flex flex-wrap items-center gap-1.5">
+                                  <span className="text-xs text-muted-foreground">
+                                    {formatDistanceToNow(new Date(r.created_at), { addSuffix: true })}
+                                  </span>
+                                  {r.source_kind === "subscription" && (
+                                    <Badge
+                                      variant="outline"
+                                      className="border-emerald-500/40 px-1.5 py-0 text-[10px] text-emerald-400"
+                                    >
+                                      Predplatné
+                                    </Badge>
+                                  )}
+                                  {r.source_kind === "one_off" && (
+                                    <Badge
+                                      variant="outline"
+                                      className="border-blue-500/40 px-1.5 py-0 text-[10px] text-blue-400"
+                                    >
+                                      Jednorazová
+                                    </Badge>
+                                  )}
+                                </div>
+                              </div>
                             </div>
+                            <div className="flex shrink-0 items-center gap-2">
+                              <div className="flex flex-col items-end gap-1">
+                                <span className="text-base font-bold text-emerald-500">
+                                  +€{Number(r.amount).toFixed(2)}
+                                </span>
+                                <Badge className={`${meta.badgeClass} gap-1`}>
+                                  <StatusIcon className="h-3 w-3" />
+                                  {meta.label}
+                                </Badge>
+                              </div>
+                              <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                            </div>
+                          </button>
+                        </HoverCardTrigger>
+                        <HoverCardContent
+                          side="left"
+                          align="start"
+                          className="w-72 border-primary/20 bg-card/95 backdrop-blur-xl"
+                        >
+                          <div className="space-y-3">
+                            <div className="flex items-center gap-3">
+                              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary to-accent text-sm font-bold text-primary-foreground">
+                                {initial}
+                              </div>
+                              <div className="min-w-0">
+                                <p className="truncate text-sm font-semibold">{name}</p>
+                                <p className="text-xs text-muted-foreground">
+                                  {format(new Date(r.created_at), "d. M. yyyy HH:mm")}
+                                </p>
+                              </div>
+                            </div>
+
+                            <div className="flex items-center justify-between rounded-md border border-border/40 bg-background/50 px-3 py-2">
+                              <span className="text-xs text-muted-foreground">Odmena</span>
+                              <span className="text-base font-bold text-emerald-500">
+                                +€{Number(r.amount).toFixed(2)}
+                              </span>
+                            </div>
+
+                            <div className="flex items-center justify-between text-xs">
+                              <span className="text-muted-foreground">Stav</span>
+                              <Badge className={`${meta.badgeClass} gap-1`}>
+                                <StatusIcon className="h-3 w-3" />
+                                {meta.label}
+                              </Badge>
+                            </div>
+                            <div className="flex items-center justify-between text-xs">
+                              <span className="text-muted-foreground">Typ</span>
+                              <span className="font-medium">
+                                {r.source_kind === "subscription"
+                                  ? "Predplatné"
+                                  : r.source_kind === "one_off"
+                                  ? "Jednorazová"
+                                  : "—"}
+                              </span>
+                            </div>
+                            {r.period_start && r.period_end && (
+                              <div className="flex items-center justify-between text-xs">
+                                <span className="text-muted-foreground">Obdobie</span>
+                                <span className="font-medium">
+                                  {format(new Date(r.period_start), "d. M.")} –{" "}
+                                  {format(new Date(r.period_end), "d. M. yyyy")}
+                                </span>
+                              </div>
+                            )}
+
+                            <p className="border-t border-border/40 pt-2 text-[11px] leading-relaxed text-muted-foreground">
+                              {meta.description}
+                            </p>
+                            <p className="text-[11px] text-muted-foreground/70">
+                              Klikni pre celý detail →
+                            </p>
                           </div>
-                        </div>
-                        <div className="flex shrink-0 items-center gap-2">
-                          <div className="flex flex-col items-end gap-1">
-                            <span className="text-base font-bold text-emerald-500">
-                              +€{Number(r.amount).toFixed(2)}
-                            </span>
-                            <Badge className={`${meta.badgeClass} gap-1`}>
-                              <StatusIcon className="h-3 w-3" />
-                              {meta.label}
-                            </Badge>
-                          </div>
-                          <ChevronRight className="h-4 w-4 text-muted-foreground" />
-                        </div>
-                      </button>
+                        </HoverCardContent>
+                      </HoverCard>
                     </li>
                   );
                 })}
