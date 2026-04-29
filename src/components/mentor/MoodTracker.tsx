@@ -56,7 +56,7 @@ export function MoodTracker() {
     try {
       const { error } = await supabase.from("mentor_moods").insert({
         user_id: user.id,
-        mentor_area: "career",
+        mentor_area: area as any,
         mood_score: mood,
         energy_score: energy,
         stress_score: stress,
