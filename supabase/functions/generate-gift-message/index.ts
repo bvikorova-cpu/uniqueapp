@@ -61,6 +61,51 @@ serve(async (req) => {
         );
       }
     }
+
+    // ─── KIDS HUB-SPECIFIC CREDIT GATING (paid-only model) ───
+    // Each kids module has its own credit ledger. Deduct from the right table here
+    // before invoking the AI. If insufficient, return 402.
+    const KIDS_CREDIT_MAP: Record<string, { table: string; cost: number }> = {
+      kids_drawing: { table: "kids_drawing_credits", cost: 2 },
+      kids_reading: { table: "kids_reading_credits", cost: 2 },
+      kids_story:   { table: "kids_story_credits",   cost: 3 },
+    };
+    const kidsCfg = type ? KIDS_CREDIT_MAP[type] : undefined;
+    if (kidsCfg) {
+      const adminClient = createClient(
+        Deno.env.get("SUPABASE_URL") ?? "",
+        Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+      );
+      const { data: kidsRow } = await adminClient
+        .from(kidsCfg.table)
+        .select("credits_remaining")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      const kidsBalance = kidsRow?.credits_remaining ?? 0;
+      if (kidsBalance < kidsCfg.cost) {
+        return new Response(
+          JSON.stringify({
+            error: `Insufficient credits. Need ${kidsCfg.cost}, have ${kidsBalance}.`,
+            creditsRequired: kidsCfg.cost,
+            creditsRemaining: kidsBalance,
+          }),
+          { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+      // Atomic optimistic-concurrency deduction
+      const { error: deductErr } = await adminClient
+        .from(kidsCfg.table)
+        .update({ credits_remaining: kidsBalance - kidsCfg.cost })
+        .eq("user_id", user.id)
+        .eq("credits_remaining", kidsBalance);
+      if (deductErr) {
+        return new Response(
+          JSON.stringify({ error: "Failed to deduct credits, please retry" }),
+          { status: 409, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+    }
+
     // Best-effort fetch of current balance for the deduction step at the end
     const { data: creditData } = await supabase
       .from("secret_santa_credits")
