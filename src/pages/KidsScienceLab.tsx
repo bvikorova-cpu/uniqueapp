@@ -4,14 +4,12 @@ import { AlertTriangle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
-import { useScienceSubscription } from "@/hooks/useScienceSubscription";
+import { useScienceCredits, SCIENCE_CREDITS_PER_RUN } from "@/hooks/useScienceCredits";
 import { ScienceLimitBanner } from "@/components/kids-science/ScienceLimitBanner";
-import { ScienceSubscriptionManagement } from "@/components/kids-science/ScienceSubscriptionManagement";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { ParentalGate } from "@/components/kids/ParentalGate";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-// New components
 import { ScienceLabHero } from "@/components/kids-science/ScienceLabHero";
 import { ExperimentWizard } from "@/components/kids-science/ExperimentWizard";
 import { ExperimentTemplates } from "@/components/kids-science/ExperimentTemplates";
@@ -20,18 +18,25 @@ import { ScienceComprehensionQuiz } from "@/components/kids-science/ScienceCompr
 import { ExperimentTracker } from "@/components/kids-science/ExperimentTracker";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
+
 const PARENTAL_GATE_KEY = "parental_gate_verified_kids_science_lab";
 
 const KidsScienceLab = () => {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [category, setCategory] = useState("");
   const [hypothesis, setHypothesis] = useState("");
   const [observations, setObservations] = useState("");
   const [difficulty, setDifficulty] = useState("explorer");
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<{
+    conclusion: string;
+    explanation: string;
+    funFacts: string[];
+  } | null>(null);
   const [showQuiz, setShowQuiz] = useState(false);
-  const { subscription, refreshSubscription, subscribe, manageSubscription, incrementUsage } = useScienceSubscription();
+  const [analysesCompleted, setAnalysesCompleted] = useState(0);
+  const credits = useScienceCredits();
 
   // Parental gate state
   const [isVerified, setIsVerified] = useState<boolean>(() => {
@@ -51,7 +56,10 @@ const KidsScienceLab = () => {
   useEffect(() => {
     const tick = () => {
       const stored = sessionStorage.getItem(PARENTAL_GATE_KEY);
-      if (!stored) { if (isVerified) setIsVerified(false); return; }
+      if (!stored) {
+        if (isVerified) setIsVerified(false);
+        return;
+      }
       try {
         const { expiresAt } = JSON.parse(stored);
         if (Date.now() >= expiresAt) {
@@ -67,9 +75,36 @@ const KidsScienceLab = () => {
     return () => clearInterval(interval);
   }, [isVerified]);
 
+  // Handle Stripe redirect: ?payment=success&session_id=…
   useEffect(() => {
-    if (isVerified) refreshSubscription();
-  }, [isVerified]);
+    const payment = searchParams.get("payment");
+    const sessionId = searchParams.get("session_id");
+    if (payment === "success" && sessionId) {
+      (async () => {
+        try {
+          const { data, error } = await supabase.functions.invoke("verify-credits-payment", {
+            body: { session_id: sessionId },
+          });
+          if (error) throw error;
+          if (data?.success) {
+            toast.success(`Added ${data.credits_added ?? ""} Science credits! 🔬`);
+            credits.refresh();
+          }
+        } catch (e) {
+          console.error("verify-credits-payment", e);
+        } finally {
+          searchParams.delete("payment");
+          searchParams.delete("session_id");
+          setSearchParams(searchParams, { replace: true });
+        }
+      })();
+    } else if (payment === "canceled") {
+      toast.info("Checkout canceled.");
+      searchParams.delete("payment");
+      setSearchParams(searchParams, { replace: true });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
 
   const handleVerificationSuccess = () => setIsVerified(true);
 
@@ -85,34 +120,52 @@ const KidsScienceLab = () => {
       toast.error("Please fill in all fields");
       return;
     }
-    if (!subscription.subscribed && subscription.experiments_used >= subscription.experiments_limit) {
-      toast.error("Monthly limit reached! Upgrade to Premium.");
+    if (!credits.canRun) {
+      toast.error(
+        `Need ${SCIENCE_CREDITS_PER_RUN} Science credits to run an analysis. Tap "Buy credits" below.`,
+      );
       return;
     }
 
     setLoading(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) { toast.error("Please sign in to analyze experiments"); return; }
+      if (!user) {
+        toast.error("Please sign in to analyze experiments");
+        navigate("/auth");
+        return;
+      }
 
-      const { data, error } = await supabase.functions.invoke('kids-science-lab', {
-        body: { category, hypothesis, observations, difficulty }
+      const { data, error } = await supabase.functions.invoke("kids-science-lab", {
+        body: { category, hypothesis, observations, difficulty },
       });
-      if (error) throw error;
 
-      setResult(data);
+      if (error) throw error;
+      if (!data || data.error) throw new Error(data?.error || "AI analysis failed");
+
+      setResult({
+        conclusion: String(data.conclusion ?? ""),
+        explanation: String(data.explanation ?? ""),
+        funFacts: Array.isArray(data.funFacts) ? data.funFacts.map(String) : [],
+      });
       setShowQuiz(true);
-      await incrementUsage();
+      setAnalysesCompleted((n) => n + 1);
+      await credits.refresh();
       toast.success("AI analyzed your experiment! 🔬");
     } catch (error: any) {
-      console.error('Error:', error);
-      toast.error(error.message || "Failed to analyze experiment");
+      console.error("Error:", error);
+      const msg = error?.message || "Failed to analyze experiment";
+      if (msg.toLowerCase().includes("credit")) {
+        toast.error(msg);
+      } else if (msg.includes("429") || msg.toLowerCase().includes("rate limit")) {
+        toast.error("Too many requests. Please wait a moment.");
+      } else {
+        toast.error(msg);
+      }
     } finally {
       setLoading(false);
     }
   };
-
-  const canAnalyze = subscription.subscribed || subscription.experiments_used < subscription.experiments_limit;
 
   if (!isVerified) {
     return (
@@ -145,24 +198,16 @@ const KidsScienceLab = () => {
             </AlertDescription>
           </Alert>
 
-          {/* Subscription Banner */}
-          {subscription.loading ? (
+          {/* Credit Banner */}
+          {credits.loading ? (
             <div className="animate-pulse text-center py-4 text-muted-foreground">
-              Loading subscription status...
+              Loading Science credits…
             </div>
           ) : (
             <ScienceLimitBanner
-              experimentsUsed={subscription.experiments_used}
-              experimentsLimit={subscription.experiments_limit}
-              isPremium={subscription.subscribed}
-              onUpgrade={() => navigate('/kids-science-pricing')}
-            />
-          )}
-
-          {subscription.subscribed && (
-            <ScienceSubscriptionManagement
-              subscribed={subscription.subscribed}
-              onManageSubscription={manageSubscription}
+              creditsRemaining={credits.credits_remaining}
+              creditsPerRun={SCIENCE_CREDITS_PER_RUN}
+              onBuyCredits={() => navigate("/kids-science-pricing")}
             />
           )}
 
@@ -186,15 +231,11 @@ const KidsScienceLab = () => {
                 setDifficulty={setDifficulty}
                 onAnalyze={handleAnalyze}
                 loading={loading}
-                canAnalyze={canAnalyze}
+                canAnalyze={credits.canRun}
               />
 
-              {/* Results */}
-              {result && (
-                <LabNotebookResult result={result} category={category} />
-              )}
+              {result && <LabNotebookResult result={result} category={category} />}
 
-              {/* Comprehension Quiz */}
               {showQuiz && result && (
                 <ScienceComprehensionQuiz
                   category={category}
@@ -211,7 +252,7 @@ const KidsScienceLab = () => {
             </TabsContent>
 
             <TabsContent value="tracker">
-              <ExperimentTracker experimentsCompleted={subscription.experiments_used} />
+              <ExperimentTracker experimentsCompleted={analysesCompleted} />
             </TabsContent>
           </Tabs>
         </div>

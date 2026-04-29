@@ -1,23 +1,36 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Check, Sparkles, Crown } from "lucide-react";
+import { Check, Sparkles, FlaskConical } from "lucide-react";
 import Navbar from "@/components/Navbar";
-import { useScienceSubscription } from "@/hooks/useScienceSubscription";
+import { useScienceCredits, SCIENCE_CREDITS_PER_RUN } from "@/hooks/useScienceCredits";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { toast } from "sonner";
+
+const PACKS = [
+  { credits: 10, price: 5, label: "Starter", subtitle: `~${Math.floor(10 / SCIENCE_CREDITS_PER_RUN)} analyses` },
+  { credits: 25, price: 12, label: "Explorer", subtitle: `~${Math.floor(25 / SCIENCE_CREDITS_PER_RUN)} analyses`, popular: true },
+  { credits: 50, price: 22, label: "Researcher", subtitle: `~${Math.floor(50 / SCIENCE_CREDITS_PER_RUN)} analyses` },
+  { credits: 100, price: 39, label: "Scientist", subtitle: `~${Math.floor(100 / SCIENCE_CREDITS_PER_RUN)} analyses` },
+];
 
 const KidsSciencePricing = () => {
   const navigate = useNavigate();
-  const { subscription, subscribe } = useScienceSubscription();
+  const credits = useScienceCredits();
+  const [busy, setBusy] = useState<number | null>(null);
 
-  const features = {
-    premium: [
-      "Unlimited experiment analyses",
-      "Priority AI analysis",
-      "Detailed scientific explanations",
-      "Extra fun facts & learning resources",
-      "Ad-free experience",
-      "Save experiment history",
-    ],
+  const buy = async (amount: number) => {
+    setBusy(amount);
+    try {
+      const url = await credits.purchaseCredits(amount);
+      if (url) {
+        window.location.href = url;
+      } else {
+        toast.error("Could not start checkout. Try again.");
+      }
+    } finally {
+      setBusy(null);
+    }
   };
 
   return (
@@ -25,119 +38,97 @@ const KidsSciencePricing = () => {
       <Navbar />
       <main className="container mx-auto px-4 py-8 mt-16">
         <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-12">
-            <h1 className="text-4xl font-black mb-4 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
-              Choose Your Plan
+          <div className="text-center mb-10">
+            <h1 className="text-4xl font-black mb-3 bg-gradient-to-r from-emerald-400 via-cyan-400 to-purple-400 bg-clip-text text-transparent">
+              Science Credit Packs
             </h1>
             <p className="text-muted-foreground text-lg">
-              Start learning science with AI-powered experiment analysis
+              Pay only for what you use. Each AI experiment analysis costs{" "}
+              <strong>{SCIENCE_CREDITS_PER_RUN}</strong> credits.
             </p>
+            {!credits.loading && (
+              <p className="mt-3 text-sm text-emerald-600 font-medium">
+                You currently have {credits.credits_remaining} credits.
+              </p>
+            )}
           </div>
 
-          <div className="flex justify-center">
-            {/* Premium Plan */}
-            <Card className="border-2 border-primary relative shadow-lg max-w-md w-full">
-              <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                <div className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white px-4 py-1 rounded-full text-sm font-semibold">
-                  Most Popular
-                </div>
-              </div>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-2xl">
-                  <Crown className="w-6 h-6 text-yellow-500" />
-                  Premium Plan
-                </CardTitle>
-                <CardDescription className="text-lg">
-                  Unlimited science learning for young explorers
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div>
-                  <div className="text-4xl font-black mb-2">
-                    €5
-                    <span className="text-lg font-normal text-muted-foreground">/month</span>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {PACKS.map((pack) => (
+              <Card
+                key={pack.credits}
+                className={`relative ${pack.popular ? "border-2 border-emerald-500 shadow-lg" : ""}`}
+              >
+                {pack.popular && (
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                    <div className="bg-gradient-to-r from-emerald-500 to-cyan-500 text-white px-3 py-1 rounded-full text-xs font-semibold">
+                      Most Popular
+                    </div>
                   </div>
-                  <p className="text-sm text-muted-foreground">Cancel anytime</p>
-                </div>
+                )}
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <FlaskConical className="w-5 h-5 text-emerald-500" />
+                    {pack.label}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <div className="text-3xl font-black">€{pack.price}</div>
+                    <p className="text-sm text-muted-foreground">
+                      {pack.credits} credits · {pack.subtitle}
+                    </p>
+                  </div>
+                  <Button
+                    className="w-full bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600"
+                    onClick={() => buy(pack.credits)}
+                    disabled={busy !== null}
+                  >
+                    {busy === pack.credits ? (
+                      "Opening checkout…"
+                    ) : (
+                      <>
+                        <Sparkles className="mr-2 h-4 w-4" />
+                        Buy {pack.credits} credits
+                      </>
+                    )}
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
 
-                <ul className="space-y-3">
-                  {features.premium.map((feature, index) => (
-                    <li key={index} className="flex items-start gap-2">
-                      <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                      <span className="text-sm font-medium">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
+          <div className="mt-10 text-center">
+            <Button variant="ghost" onClick={() => navigate("/kids-science-lab")}>
+              ← Back to Science Lab
+            </Button>
+          </div>
 
-                <Button
-                  className="w-full bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600"
-                  onClick={subscribe}
-                  disabled={subscription.subscribed}
-                >
-                  {subscription.subscribed ? (
-                    <>
-                      <Check className="mr-2 h-4 w-4" />
-                      Current Plan
-                    </>
-                  ) : (
-                    <>
-                      <Sparkles className="mr-2 h-4 w-4" />
-                      Upgrade to Premium
-                    </>
-                  )}
-                </Button>
+          <div className="mt-12 grid md:grid-cols-2 gap-4">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base flex items-center gap-2">
+                  <Check className="w-4 h-4 text-emerald-500" />
+                  How credits work
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="text-sm text-muted-foreground">
+                Credits never expire. Use them whenever your child wants to analyze a new
+                experiment. Each AI analysis deducts {SCIENCE_CREDITS_PER_RUN} credits.
               </CardContent>
             </Card>
-          </div>
-
-          {/* FAQ Section */}
-          <div className="mt-16">
-            <h2 className="text-2xl font-bold text-center mb-8">Frequently Asked Questions</h2>
-            <div className="grid md:grid-cols-2 gap-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">What experiments can I analyze?</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground">
-                    You can analyze any science experiment across Physics, Chemistry, Biology, Earth Science, and Astronomy. Simply describe what you did and what you observed!
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">Is it safe for kids?</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground">
-                    Yes! Our AI provides kid-friendly explanations perfect for ages 6-12. Remember: real experiments should always be done under adult supervision.
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">Can I cancel anytime?</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground">
-                    Absolutely! You can cancel your premium subscription at any time. No questions asked, no cancellation fees.
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">What payment methods do you accept?</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground">
-                    We accept all major credit cards through our secure Stripe payment processor. Your payment information is encrypted and secure.
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base flex items-center gap-2">
+                  <Check className="w-4 h-4 text-emerald-500" />
+                  Safe & age-appropriate
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="text-sm text-muted-foreground">
+                Explanations are tailored for ages 6–12 with clear language and analogies.
+                Real experiments should always be done with adult supervision.
+              </CardContent>
+            </Card>
           </div>
         </div>
       </main>
