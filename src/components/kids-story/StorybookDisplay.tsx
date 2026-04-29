@@ -2,7 +2,6 @@ import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, Download, Volume2, VolumeX, BookOpen, Loader2, Plus } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 interface StorybookDisplayProps {
@@ -24,58 +23,56 @@ export const StorybookDisplay = ({ story, onSave, onContinue, showContinue, cont
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // Split story into pages (~150 words each)
-  const words = story.story.split(/\s+/);
+  const words = (story.story || "").trim().split(/\s+/).filter(Boolean);
   const WORDS_PER_PAGE = 120;
   const pages: string[] = [];
 
   for (let i = 0; i < words.length; i += WORDS_PER_PAGE) {
     pages.push(words.slice(i, i + WORDS_PER_PAGE).join(" "));
   }
+  if (pages.length === 0) pages.push("(This story is empty.)");
 
   const totalPages = pages.length;
 
-  const handleReadAloud = async (pageIndex: number) => {
+  const handleReadAloud = (pageIndex: number) => {
+    if (typeof window === "undefined" || !("speechSynthesis" in window)) {
+      toast.error("Read aloud is not supported on this device");
+      return;
+    }
+
     if (isReading) {
-      audioRef.current?.pause();
+      window.speechSynthesis.cancel();
       setIsReading(false);
       setReadingPage(null);
       return;
     }
 
-    setIsReading(true);
-    setReadingPage(pageIndex);
+    const text = pages[pageIndex];
+    if (!text) {
+      toast.error("Nothing to read on this page");
+      return;
+    }
 
     try {
-      const response = await fetch(
-        `https://jufrdzeonywluwutvyxz.supabase.co/functions/v1/kids-story-tts`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            apikey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp1ZnJkemVvbnl3bHV3dXR2eXh6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkxMzU0MTgsImV4cCI6MjA3NDcxMTQxOH0.UOe-_WQoTeBGFmnezRHRcjFJaJd71a7rYlurDkI6h4Q",
-            Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp1ZnJkemVvbnl3bHV3dXR2eXh6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkxMzU0MTgsImV4cCI6MjA3NDcxMTQxOH0.UOe-_WQoTeBGFmnezRHRcjFJaJd71a7rYlurDkI6h4Q`,
-          },
-          body: JSON.stringify({ text: pages[pageIndex] }),
-        }
-      );
-
-      if (!response.ok) throw new Error("TTS failed");
-
-      const audioBlob = await response.blob();
-      const audioUrl = URL.createObjectURL(audioBlob);
-      const audio = new Audio(audioUrl);
-      audioRef.current = audio;
-
-      audio.onended = () => {
+      window.speechSynthesis.cancel();
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.rate = 0.95;
+      utter.pitch = 1.1;
+      utter.lang = navigator.language || "en-US";
+      utter.onend = () => {
         setIsReading(false);
         setReadingPage(null);
-        URL.revokeObjectURL(audioUrl);
       };
-
-      await audio.play();
+      utter.onerror = () => {
+        setIsReading(false);
+        setReadingPage(null);
+      };
+      setIsReading(true);
+      setReadingPage(pageIndex);
+      window.speechSynthesis.speak(utter);
     } catch (err) {
       console.error("Read aloud error:", err);
-      toast.error("Read aloud is not available right now");
+      toast.error("Read aloud failed");
       setIsReading(false);
       setReadingPage(null);
     }
@@ -84,6 +81,9 @@ export const StorybookDisplay = ({ story, onSave, onContinue, showContinue, cont
   useEffect(() => {
     return () => {
       audioRef.current?.pause();
+      if (typeof window !== "undefined" && "speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+      }
     };
   }, []);
 
@@ -164,6 +164,7 @@ export const StorybookDisplay = ({ story, onSave, onContinue, showContinue, cont
                   <button
                     key={i}
                     onClick={() => setCurrentPage(i)}
+                    aria-label={`Go to page ${i + 1}`}
                     className={`w-2.5 h-2.5 rounded-full transition-all ${
                       i === currentPage ? "bg-primary scale-125" : "bg-muted-foreground/30"
                     }`}

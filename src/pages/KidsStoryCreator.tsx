@@ -16,11 +16,12 @@ import { StoryCreatorHero } from "@/components/kids-story/StoryCreatorHero";
 import { StoryQuickTemplates } from "@/components/kids-story/StoryQuickTemplates";
 import { StoryWizardFlow } from "@/components/kids-story/StoryWizardFlow";
 import { StorybookDisplay } from "@/components/kids-story/StorybookDisplay";
-import { Download } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 const KidsStoryCreator = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const { storiesCreatedThisMonth, isPremium, loading: usageLoading, refreshUsage, manageSubscription } = useKidsStoryCreator();
   const [loading, setLoading] = useState(false);
   const [continuingStory, setContinuingStory] = useState(false);
@@ -68,6 +69,11 @@ const KidsStoryCreator = () => {
   const handleGenerate = async (data: { title: string; characters: string; theme: string; category: string; illustrationStyle: string }) => {
     if (!data.title.trim() || !data.characters.trim() || !data.theme.trim()) {
       toast.error("Please fill in all fields");
+      return;
+    }
+    if (!user) {
+      toast.error("Please sign in to create stories");
+      navigate('/auth');
       return;
     }
 
