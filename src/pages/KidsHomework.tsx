@@ -9,12 +9,11 @@ import Navbar from "@/components/Navbar";
 import { useAuth } from "@/contexts/AuthContext";
 import { useKidsHomeworkProgress } from "@/hooks/useKidsHomeworkProgress";
 import { useKidsDailyChallenge } from "@/hooks/useKidsDailyChallenge";
-import { useKidsHomework } from "@/hooks/useKidsHomework";
+import { useHomeworkCredits, HOMEWORK_CREDITS_PER_QUESTION } from "@/hooks/useHomeworkCredits";
 import { ProgressCard } from "@/components/kids-homework/ProgressCard";
 import { AchievementsGrid } from "@/components/kids-homework/AchievementsGrid";
 import { DailyChallengeCard } from "@/components/kids-homework/DailyChallengeCard";
 import { HomeworkLimitBanner } from "@/components/kids-homework/HomeworkLimitBanner";
-import { SubscriptionManagement } from "@/components/kids-homework/SubscriptionManagement";
 import { HomeworkHero } from "@/components/kids-homework/HomeworkHero";
 import { SubjectSelector } from "@/components/kids-homework/SubjectSelector";
 import { QuestionTemplates } from "@/components/kids-homework/QuestionTemplates";
@@ -25,26 +24,35 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useQueryClient } from "@tanstack/react-query";
 import { ParentalGate, useParentalGate } from "@/components/kids/ParentalGate";
 import { SafeContentBadge } from "@/components/kids/SafeContentBadge";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
+
 const KidsHomework = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const queryClient = useQueryClient();
   const { points, achievements, unlockedAchievements, isLoading: progressLoading } = useKidsHomeworkProgress();
   const { challenge, progress, isCompleted, isLoading: challengeLoading } = useKidsDailyChallenge();
-  const { questionsUsed, questionsLimit, isPremium, loading: usageLoading, refreshUsage, manageSubscription } = useKidsHomework();
+  const {
+    credits_remaining,
+    canAsk,
+    loading: usageLoading,
+    refresh: refreshCredits,
+    purchaseCredits,
+  } = useHomeworkCredits();
+
   const [subject, setSubject] = useState("");
   const [question, setQuestion] = useState("");
   const [difficulty, setDifficulty] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
   const [lastQuestion, setLastQuestion] = useState("");
-  
+
   const { isVerified, checkVerification } = useParentalGate();
   const [showParentalGate, setShowParentalGate] = useState(false);
-  const [isGateChecked, setIsGateChecked] = useState(false);
+  const [, setIsGateChecked] = useState(false);
 
   useEffect(() => {
     const verified = checkVerification();
@@ -52,10 +60,28 @@ const KidsHomework = () => {
     setIsGateChecked(true);
   }, []);
 
+  // Refresh credits after returning from Stripe success
+  useEffect(() => {
+    if (searchParams.get("payment") === "success") {
+      toast.success("Payment successful! Credits added to your account.");
+      refreshCredits();
+    } else if (searchParams.get("payment") === "canceled") {
+      toast.info("Payment canceled.");
+    }
+  }, [searchParams, refreshCredits]);
+
   const handleParentalGateSuccess = () => setShowParentalGate(false);
   const handleParentalGateCancel = () => {
     setShowParentalGate(false);
     window.location.assign("/");
+  };
+
+  const handleBuyCredits = async () => {
+    if (!user) {
+      navigate("/auth");
+      return;
+    }
+    navigate("/kids-homework-pricing");
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -66,7 +92,11 @@ const KidsHomework = () => {
     }
     if (!user) {
       toast.error("Please sign in to ask questions");
-      navigate('/auth');
+      navigate("/auth");
+      return;
+    }
+    if (!canAsk) {
+      toast.error(`You need ${HOMEWORK_CREDITS_PER_QUESTION} Homework credits.`);
       return;
     }
 
@@ -74,33 +104,23 @@ const KidsHomework = () => {
     setLastQuestion(question);
     setResult(null);
     try {
-      const { data, error } = await supabase.functions.invoke('kids-homework-helper', {
-        body: { subject, question, difficulty }
+      const { data, error } = await supabase.functions.invoke("kids-homework-helper", {
+        body: { subject, question, difficulty },
       });
 
-      if (error) {
-        if (error.message?.includes('Daily limit reached')) {
-          toast.error('Daily limit reached! Upgrade to Premium for unlimited questions.');
-          refreshUsage();
-          return;
-        }
-        throw error;
-      }
-      
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+
       setResult(data);
-      refreshUsage();
-      
-      if (user) {
-        const today = new Date().toISOString().split('T')[0];
-        queryClient.invalidateQueries({ queryKey: ['kids-homework-points', user.id] });
-        queryClient.invalidateQueries({ queryKey: ['daily-progress', user.id, today] });
-        queryClient.invalidateQueries({ queryKey: ['challenge-completion', user.id] });
-        toast.success("Homework help ready! You earned 10 points! 🎉");
-      } else {
-        toast.success("Homework help ready! 🎉");
-      }
+      refreshCredits();
+
+      const today = new Date().toISOString().split("T")[0];
+      queryClient.invalidateQueries({ queryKey: ["kids-homework-points", user.id] });
+      queryClient.invalidateQueries({ queryKey: ["daily-progress", user.id, today] });
+      queryClient.invalidateQueries({ queryKey: ["challenge-completion", user.id] });
+      toast.success(`Homework help ready! ${HOMEWORK_CREDITS_PER_QUESTION} credits used.`);
     } catch (error: any) {
-      console.error('Error:', error);
+      console.error("Error:", error);
       toast.error(error.message || "Failed to get homework help");
     } finally {
       setLoading(false);
@@ -121,13 +141,14 @@ const KidsHomework = () => {
             <SafeContentBadge variant="compact" />
           </div>
 
-          {/* Usage & Subscription */}
+          {/* Credit balance */}
           {!usageLoading && (
-            <div className="mb-6 space-y-4">
-              <HomeworkLimitBanner questionsUsed={questionsUsed} questionsLimit={questionsLimit} isPremium={isPremium} />
-              {isPremium && (
-                <SubscriptionManagement subscribed={isPremium} onManageSubscription={manageSubscription} />
-              )}
+            <div className="mb-6">
+              <HomeworkLimitBanner
+                creditsRemaining={credits_remaining}
+                creditsPerQuestion={HOMEWORK_CREDITS_PER_QUESTION}
+                onBuyCredits={handleBuyCredits}
+              />
             </div>
           )}
 
@@ -143,19 +164,12 @@ const KidsHomework = () => {
 
           <Tabs defaultValue="homework" className="w-full">
             <TabsList className="grid w-full grid-cols-3 mb-6 h-auto">
-              <TabsTrigger value="homework" className="text-xs sm:text-sm">
-                📚 Ask AI
-              </TabsTrigger>
-              <TabsTrigger value="mastery" className="text-xs sm:text-sm">
-                🗺️ Mastery
-              </TabsTrigger>
-              <TabsTrigger value="achievements" className="text-xs sm:text-sm">
-                🏆 Achievements
-              </TabsTrigger>
+              <TabsTrigger value="homework" className="text-xs sm:text-sm">📚 Ask AI</TabsTrigger>
+              <TabsTrigger value="mastery" className="text-xs sm:text-sm">🗺️ Mastery</TabsTrigger>
+              <TabsTrigger value="achievements" className="text-xs sm:text-sm">🏆 Achievements</TabsTrigger>
             </TabsList>
 
             <TabsContent value="homework" className="space-y-6">
-              {/* Subject & Difficulty selector */}
               <Card className="border-2 border-primary/20">
                 <CardHeader className="pb-3">
                   <CardTitle className="flex items-center gap-2">
@@ -163,7 +177,7 @@ const KidsHomework = () => {
                     Ask Your Question
                   </CardTitle>
                   <CardDescription>
-                    Choose a subject, pick difficulty, then type or select a question! 📝
+                    Choose a subject, pick difficulty, then type or select a question. Each question costs {HOMEWORK_CREDITS_PER_QUESTION} credits.
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-5">
@@ -174,13 +188,8 @@ const KidsHomework = () => {
                     onDifficultyChange={setDifficulty}
                   />
 
-                  {/* Question templates */}
-                  <QuestionTemplates
-                    subject={subject}
-                    onSelectTemplate={(q) => setQuestion(q)}
-                  />
+                  <QuestionTemplates subject={subject} onSelectTemplate={(q) => setQuestion(q)} />
 
-                  {/* Question input */}
                   <form onSubmit={handleSubmit} className="space-y-3">
                     <Textarea
                       value={question}
@@ -191,19 +200,19 @@ const KidsHomework = () => {
                     <Button
                       type="submit"
                       className="w-full h-11"
-                      disabled={loading || (!isPremium && questionsUsed >= questionsLimit) || !subject || !difficulty}
+                      disabled={loading || !canAsk || !subject || !difficulty}
                     >
                       {loading ? (
                         <>
                           <Sparkles className="w-4 h-4 mr-2 animate-spin" />
                           AI is thinking...
                         </>
-                      ) : (!isPremium && questionsUsed >= questionsLimit) ? (
-                        '🔒 Daily Limit Reached - Upgrade to Premium'
+                      ) : !canAsk ? (
+                        `🔒 Need ${HOMEWORK_CREDITS_PER_QUESTION} credits — buy more`
                       ) : (
                         <>
                           <Send className="w-4 h-4 mr-2" />
-                          Get Help! ✨
+                          Get Help! ✨ ({HOMEWORK_CREDITS_PER_QUESTION} credits)
                         </>
                       )}
                     </Button>
@@ -211,21 +220,10 @@ const KidsHomework = () => {
                 </CardContent>
               </Card>
 
-              {/* Chat-style response */}
-              <ChatResponse
-                result={result}
-                isLoading={loading}
-                question={lastQuestion}
-                subject={subject}
-              />
+              <ChatResponse result={result} isLoading={loading} question={lastQuestion} subject={subject} />
 
-              {/* Comprehension quiz after answer */}
               {result && !result.wasFiltered && subject && (
-                <ComprehensionQuiz
-                  subject={subject}
-                  question={lastQuestion}
-                  explanation={result.explanation}
-                />
+                <ComprehensionQuiz subject={subject} question={lastQuestion} explanation={result.explanation} />
               )}
             </TabsContent>
 
@@ -270,16 +268,13 @@ const KidsHomework = () => {
                     <p className="text-muted-foreground mb-4">
                       Sign in to track your achievements and earn awesome badges! 🏆
                     </p>
-                    <Button onClick={() => navigate('/auth')}>
-                      Sign In to Start Earning
-                    </Button>
+                    <Button onClick={() => navigate("/auth")}>Sign In to Start Earning</Button>
                   </CardContent>
                 </Card>
               )}
             </TabsContent>
           </Tabs>
 
-          {/* Safe Content Badge - Full */}
           <div className="max-w-2xl mx-auto mt-8">
             <SafeContentBadge />
           </div>
