@@ -27,6 +27,7 @@ import { CommunityGallery } from "@/components/coloring/CommunityGallery";
 import { DailyChallenge } from "@/components/coloring/DailyChallenge";
 import { AIColorSuggestions } from "@/components/coloring/AIColorSuggestions";
 import { PrintExport } from "@/components/coloring/PrintExport";
+import { CreditBanner } from "@/components/kids/CreditBanner";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 export default function ColoringPages() {
