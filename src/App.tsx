@@ -594,7 +594,9 @@ const App = () => {
                         <Route path="/kids-science-pricing" element={<KidsSciencePricing />} />
                         <Route path="/kids-science-admin" element={<ProtectedRoute requireAdmin={true}><KidsScienceAdmin /></ProtectedRoute>} />
                         <Route path="/kids-drawing-buddy" element={<KidsDrawingBuddy />} />
+                        <Route path="/kids-drawing-pricing" element={<KidsDrawingPricing />} />
                         <Route path="/kids-reading-companion" element={<KidsReadingCompanion />} />
+                        <Route path="/kids-reading-pricing" element={<KidsReadingPricing />} />
                         <Route path="/kids" element={<Navigate to="/kids-academy" replace />} />
                         <Route path="/kids-academy" element={<KidsAcademy />} />
                         <Route path="/photo-restoration" element={<PhotoRestoration />} />
