@@ -3,64 +3,72 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Disc3, Gift, Sparkles } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-
-const SPIN_STORAGE_KEY = "rewards_lucky_spin_last_date";
+import { supabase } from "@/integrations/supabase/client";
+import { useQueryClient } from "@tanstack/react-query";
 
 const prizes = [
-  { label: "+25 XP", emoji: "⭐", color: "text-yellow-400", weight: 30 },
-  { label: "+50 XP", emoji: "💫", color: "text-amber-400", weight: 25 },
-  { label: "+100 XP", emoji: "🔥", color: "text-orange-500", weight: 15 },
-  { label: "Mystery Badge", emoji: "🏅", color: "text-purple-400", weight: 8 },
-  { label: "Streak Shield", emoji: "🛡️", color: "text-blue-400", weight: 10 },
-  { label: "+200 XP", emoji: "💎", color: "text-cyan-400", weight: 5 },
-  { label: "1 Free AI Credit", emoji: "🤖", color: "text-emerald-400", weight: 5 },
-  { label: "JACKPOT +500 XP", emoji: "👑", color: "text-amber-300", weight: 2 },
+  { label: "+25 XP", emoji: "⭐", color: "text-yellow-400" },
+  { label: "+50 XP", emoji: "💫", color: "text-amber-400" },
+  { label: "+100 XP", emoji: "🔥", color: "text-orange-500" },
+  { label: "Mystery Badge", emoji: "🏅", color: "text-purple-400" },
+  { label: "Streak Shield", emoji: "🛡️", color: "text-blue-400" },
+  { label: "+200 XP", emoji: "💎", color: "text-cyan-400" },
+  { label: "1 Free AI Credit", emoji: "🤖", color: "text-emerald-400" },
+  { label: "JACKPOT +500 XP", emoji: "👑", color: "text-amber-300" },
 ];
 
 export default function RewardsLuckyWheel() {
   const [spinning, setSpinning] = useState(false);
-  const [result, setResult] = useState<typeof prizes[0] | null>(null);
-  const [spinsLeft, setSpinsLeft] = useState(0);
+  const [result, setResult] = useState<{ label: string; emoji: string; color: string } | null>(null);
+  const [canSpin, setCanSpin] = useState(true);
   const [rotation, setRotation] = useState(0);
   const { toast } = useToast();
+  const qc = useQueryClient();
 
-  // Daily spin gate — persists across reloads via localStorage (one free spin per UTC day).
   useEffect(() => {
-    const today = new Date().toISOString().slice(0, 10);
-    const last = typeof window !== "undefined" ? window.localStorage.getItem(SPIN_STORAGE_KEY) : null;
-    setSpinsLeft(last === today ? 0 : 1);
+    (async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      const start = new Date(); start.setUTCHours(0, 0, 0, 0);
+      const { count } = await supabase
+        .from("lucky_spin_log")
+        .select("id", { count: "exact", head: true })
+        .eq("user_id", user.id)
+        .gte("created_at", start.toISOString());
+      setCanSpin((count ?? 0) === 0);
+    })();
   }, []);
 
-  const spin = () => {
-    if (spinning || spinsLeft <= 0) return;
+  const spin = async () => {
+    if (spinning || !canSpin) return;
     setSpinning(true);
     setResult(null);
+    setRotation((r) => r + 1440 + Math.random() * 360);
 
-    const totalWeight = prizes.reduce((sum, p) => sum + p.weight, 0);
-    let random = Math.random() * totalWeight;
-    let selected = prizes[0];
-    for (const prize of prizes) {
-      random -= prize.weight;
-      if (random <= 0) { selected = prize; break; }
-    }
-
-    const newRotation = rotation + 1440 + Math.random() * 360;
-    setRotation(newRotation);
-
-    setTimeout(() => {
-      setResult(selected);
+    try {
+      const { data, error } = await supabase.rpc("spin_lucky_wheel");
+      if (error) throw error;
+      const res = data as { error?: string; prize?: string };
+      if (res?.error) {
+        toast({ title: "Spin failed", description: res.error.replace(/_/g, " "), variant: "destructive" });
+        if (res.error === "already_spun_today") setCanSpin(false);
+        setSpinning(false);
+        return;
+      }
+      const matched = prizes.find((p) => p.label === res.prize) || { label: res.prize!, emoji: "🎁", color: "text-amber-400" };
+      setTimeout(() => {
+        setResult(matched);
+        setSpinning(false);
+        setCanSpin(false);
+        toast({ title: `🎉 You won: ${matched.label}!`, description: "XP/item credited to your account." });
+        qc.invalidateQueries({ queryKey: ["rewards-stats"] });
+        qc.invalidateQueries({ queryKey: ["gamification"] });
+      }, 3000);
+    } catch (e) {
       setSpinning(false);
-      setSpinsLeft(0);
-      try {
-        window.localStorage.setItem(SPIN_STORAGE_KEY, new Date().toISOString().slice(0, 10));
-      } catch {}
-      toast({
-        title: `🎉 You won: ${selected.label}!`,
-        description: `${selected.emoji} Preview prize — full backend integration coming soon.`,
-      });
-    }, 3000);
+      toast({ title: "Error", description: e instanceof Error ? e.message : "Spin failed", variant: "destructive" });
+    }
   };
 
   return (
@@ -68,10 +76,8 @@ export default function RewardsLuckyWheel() {
       <Card className="p-6 bg-gradient-to-br from-amber-500/10 to-yellow-500/5 border-amber-400/20 backdrop-blur-md text-center">
         <h3 className="font-bold text-lg flex items-center justify-center gap-2 mb-4">
           <Disc3 className="h-5 w-5 text-amber-500" /> Daily Lucky Spin
-          <Badge variant="outline" className="text-[9px] ml-1 border-amber-400/40 text-amber-500">PREVIEW</Badge>
         </h3>
 
-        {/* Wheel */}
         <div className="relative w-48 h-48 mx-auto mb-6">
           <motion.div
             className="w-full h-full rounded-full border-4 border-amber-400/40 bg-gradient-to-br from-amber-900/30 to-yellow-900/20 flex items-center justify-center relative overflow-hidden"
@@ -81,14 +87,7 @@ export default function RewardsLuckyWheel() {
             {prizes.map((prize, i) => {
               const angle = (i / prizes.length) * 360;
               return (
-                <div
-                  key={i}
-                  className="absolute text-lg"
-                  style={{
-                    transform: `rotate(${angle}deg) translateY(-70px)`,
-                    transformOrigin: "center center",
-                  }}
-                >
+                <div key={i} className="absolute text-lg" style={{ transform: `rotate(${angle}deg) translateY(-70px)`, transformOrigin: "center center" }}>
                   {prize.emoji}
                 </div>
               );
@@ -99,22 +98,20 @@ export default function RewardsLuckyWheel() {
               </div>
             </div>
           </motion.div>
-          {/* Pointer */}
           <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1 text-2xl z-20">▼</div>
         </div>
 
         <Button
           onClick={spin}
-          disabled={spinning || spinsLeft <= 0}
+          disabled={spinning || !canSpin}
           className="bg-gradient-to-r from-amber-500 to-yellow-500 text-white font-bold hover:opacity-90 w-full"
         >
-          {spinning ? "Spinning..." : spinsLeft > 0 ? `Spin the Wheel (${spinsLeft} left)` : "Come Back Tomorrow!"}
+          {spinning ? "Spinning..." : canSpin ? "Spin the Wheel" : "Come Back Tomorrow!"}
         </Button>
 
-        <p className="text-xs text-muted-foreground mt-2">1 free spin daily • Login streak adds bonus spins</p>
+        <p className="text-xs text-muted-foreground mt-2">1 free spin daily • Real XP and items credited instantly</p>
       </Card>
 
-      {/* Prize result */}
       <AnimatePresence>
         {result && (
           <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }}>
@@ -127,7 +124,6 @@ export default function RewardsLuckyWheel() {
         )}
       </AnimatePresence>
 
-      {/* Prize table */}
       <Card className="p-4 bg-card/80 backdrop-blur-md border-amber-400/15">
         <h4 className="font-bold text-sm mb-3 flex items-center gap-2"><Gift className="h-4 w-4 text-amber-500" /> Possible Prizes</h4>
         <div className="grid grid-cols-2 gap-2">
