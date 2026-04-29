@@ -38,6 +38,7 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
   const [activating, setActivating] = useState(false);
   const [activatedTier, setActivatedTier] = useState<null | "premium" | "top_premium">(null);
   const [previewItems, setPreviewItems] = useState<PreviewSubmission[]>([]);
+  const [previewLoaded, setPreviewLoaded] = useState(false);
   const successHandledRef = useRef(false);
 
   // Pending payment marker survives session loss (localStorage, not sessionStorage)
@@ -339,6 +340,8 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
         if (!cancelled && data) setPreviewItems(data as PreviewSubmission[]);
       } catch (err) {
         console.warn("[MegatalentGuard] preview fetch failed", err);
+      } finally {
+        if (!cancelled) setPreviewLoaded(true);
       }
     })();
     return () => { cancelled = true; };
@@ -514,6 +517,22 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
               </div>
               <p className="text-xs text-muted-foreground text-center">
                 Toto sú 3 z najnovších príspevkov. Odomkni predplatným a získaj prístup ku všetkým 35+ kategóriám.
+              </p>
+            </section>
+          )}
+
+          {previewLoaded && previewItems.length === 0 && (
+            <section
+              aria-label="Žiadne príspevky na ukážku"
+              className="rounded-xl border border-dashed border-primary/30 bg-muted/30 p-6 text-center space-y-2"
+            >
+              <div className="mx-auto w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                <Sparkles className="w-6 h-6 text-primary" />
+              </div>
+              <h2 className="text-lg font-semibold">Súťaž práve štartuje 🚀</h2>
+              <p className="text-sm text-muted-foreground max-w-md mx-auto">
+                Zatiaľ tu nie sú žiadne aktívne príspevky na ukážku. Buď medzi prvými —
+                odomkni predplatným a nahraj svoj talent ako prvý v 35+ kategóriách.
               </p>
             </section>
           )}
