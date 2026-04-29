@@ -4,11 +4,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { 
-  Trophy, Zap, Users, ShoppingCart, Crown, Flame, Clock, 
+  Trophy, Zap, Users, ShoppingCart, Crown, Clock, 
   Globe, BookOpen, FlaskConical, Film, Dumbbell, Music, 
   Pizza, Briefcase, Palette, Gamepad2, Target, Brain,
-  TrendingUp, Heart, Sparkles, User, Radio, ChevronRight,
-  Swords, Calendar, Gift, Bot, BarChart3, Bell
+  TrendingUp, Sparkles, User, Radio, ChevronRight,
+  Swords, Calendar, Bot, BarChart3, Loader2
 } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
