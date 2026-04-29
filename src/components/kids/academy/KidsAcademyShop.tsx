@@ -1,9 +1,10 @@
 import { motion } from "framer-motion";
-import { useState } from "react";
-import { ShoppingBag, Coins, Sparkles, Lock } from "lucide-react";
+import { useState, useEffect } from "react";
+import { ShoppingBag, Coins, Lock, Check } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { toast } from "sonner";
 
 const SHOP_ITEMS = [
   { id: "avatar-robot", name: "Robot Avatar", emoji: "🤖", price: 50, category: "avatar", owned: false },
@@ -29,11 +30,37 @@ const CATEGORIES = [
 ];
 
 export const KidsAcademyShop = () => {
-  const [stars] = useState(() => {
+  const [stars, setStars] = useState(() => {
     const saved = localStorage.getItem("kids-academy-stars");
     return saved ? parseInt(saved, 10) : 0;
   });
+  const [owned, setOwned] = useState<string[]>(() => {
+    const saved = localStorage.getItem("kids-academy-shop-owned");
+    return saved ? JSON.parse(saved) : [];
+  });
   const [filter, setFilter] = useState("all");
+
+  useEffect(() => {
+    localStorage.setItem("kids-academy-stars", String(stars));
+  }, [stars]);
+
+  useEffect(() => {
+    localStorage.setItem("kids-academy-shop-owned", JSON.stringify(owned));
+  }, [owned]);
+
+  const handleBuy = (item: typeof SHOP_ITEMS[0]) => {
+    if (owned.includes(item.id)) {
+      toast.info("You already own this item!");
+      return;
+    }
+    if (stars < item.price) {
+      toast.error("Not enough stars!", { description: `You need ${item.price - stars} more stars.` });
+      return;
+    }
+    setStars(prev => prev - item.price);
+    setOwned(prev => [...prev, item.id]);
+    toast.success(`Unlocked: ${item.name} ${item.emoji}`);
+  };
 
   const filteredItems = filter === "all" ? SHOP_ITEMS : SHOP_ITEMS.filter(i => i.category === filter);
 
