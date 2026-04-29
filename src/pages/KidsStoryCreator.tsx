@@ -21,6 +21,7 @@ import { useNavigate } from "react-router-dom";
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 const KidsStoryCreator = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const { storiesCreatedThisMonth, isPremium, loading: usageLoading, refreshUsage, manageSubscription } = useKidsStoryCreator();
   const [loading, setLoading] = useState(false);
   const [continuingStory, setContinuingStory] = useState(false);
