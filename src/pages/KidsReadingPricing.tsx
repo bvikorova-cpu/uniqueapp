@@ -5,18 +5,18 @@ import Navbar from "@/components/Navbar";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
-import { useKidsStoryCredits, KIDS_STORY_CREDIT_COST } from "@/hooks/useKidsStoryCredits";
+import { useKidsReadingCredits, KIDS_READING_CREDIT_COST } from "@/hooks/useKidsReadingCredits";
 
 const PACKS = [
-  { credits: 9, price: "€4.99", label: "Starter", description: "3 stories" },
-  { credits: 30, price: "€14.99", label: "Storyteller", description: "10 stories", popular: true },
-  { credits: 75, price: "€34.99", label: "Author", description: "25 stories" },
+  { credits: 10, price: "€4.99", label: "Starter", description: "5 reading sessions" },
+  { credits: 30, price: "€12.99", label: "Reader", description: "15 reading sessions", popular: true },
+  { credits: 80, price: "€29.99", label: "Bookworm", description: "40 reading sessions" },
 ];
 
-const KidsStoryPricing = () => {
+const KidsReadingPricing = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { balance, purchase } = useKidsStoryCredits();
+  const { balance, purchase } = useKidsReadingCredits();
 
   const handleBuy = async (credits: number) => {
     if (!user) {
@@ -35,10 +35,10 @@ const KidsStoryPricing = () => {
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-10">
             <h1 className="text-4xl font-black mb-3 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              Story Creator Credits
+              Reading Companion Credits
             </h1>
             <p className="text-muted-foreground text-lg">
-              Pay only for what you use • {KIDS_STORY_CREDIT_COST} credits per AI-generated story
+              Pay only for what you use • {KIDS_READING_CREDIT_COST} credits per AI reading analysis
             </p>
             <p className="mt-2 text-sm text-muted-foreground">
               Current balance: <span className="font-bold text-primary">{balance} credits</span>
@@ -79,10 +79,10 @@ const KidsStoryPricing = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
-              <div className="flex items-start gap-2"><Check className="h-4 w-4 text-primary mt-1" /><span className="text-sm">AI-generated personalized stories</span></div>
-              <div className="flex items-start gap-2"><Check className="h-4 w-4 text-primary mt-1" /><span className="text-sm">AI illustrations included</span></div>
-              <div className="flex items-start gap-2"><Check className="h-4 w-4 text-primary mt-1" /><span className="text-sm">Choose theme, characters & setting</span></div>
-              <div className="flex items-start gap-2"><Sparkles className="h-4 w-4 text-primary mt-1" /><span className="text-sm">Save to Story Library — included free</span></div>
+              <div className="flex items-start gap-2"><Check className="h-4 w-4 text-primary mt-1" /><span className="text-sm">AI reading comprehension analysis</span></div>
+              <div className="flex items-start gap-2"><Check className="h-4 w-4 text-primary mt-1" /><span className="text-sm">Personalized quizzes from any book</span></div>
+              <div className="flex items-start gap-2"><Check className="h-4 w-4 text-primary mt-1" /><span className="text-sm">Vocabulary building and explanations</span></div>
+              <div className="flex items-start gap-2"><Sparkles className="h-4 w-4 text-primary mt-1" /><span className="text-sm">Progress tracking — included free</span></div>
             </CardContent>
           </Card>
         </div>
@@ -91,4 +91,4 @@ const KidsStoryPricing = () => {
   );
 };
 
-export default KidsStoryPricing;
+export default KidsReadingPricing;
