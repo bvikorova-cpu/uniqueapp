@@ -7,8 +7,8 @@ import { CheckCircle, XCircle, Brain, Star, Trophy } from "lucide-react";
 
 interface ComprehensionQuizProps {
   subject: string;
-  question: string;
-  explanation: string;
+  question?: string;
+  explanation?: string;
 }
 
 // Generate simple quiz questions based on subject

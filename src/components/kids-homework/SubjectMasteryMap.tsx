@@ -17,9 +17,10 @@ interface SubjectMasteryMapProps {
 }
 
 export const SubjectMasteryMap = ({ points }: SubjectMasteryMapProps) => {
-  // In a real app, this would come from per-subject tracking
-  // For now, distribute total points across subjects as demo
   const totalPoints = points?.total_points || 0;
+  // Until per-subject tracking is wired, distribute total points evenly across subjects
+  // so the map reflects actual user activity instead of always showing 0.
+  const perSubject = Math.floor(totalPoints / SUBJECTS.length);
 
   return (
     <Card className="border-2 border-primary/20">
@@ -31,8 +32,7 @@ export const SubjectMasteryMap = ({ points }: SubjectMasteryMapProps) => {
       </CardHeader>
       <CardContent className="space-y-3">
         {SUBJECTS.map((sub, i) => {
-          // Simulated per-subject progress (in production, track per-subject)
-          const subjectPoints = 0;
+          const subjectPoints = perSubject;
           const mastery = Math.min((subjectPoints / 100) * 100, 100);
           const level = mastery >= 80 ? "Master" : mastery >= 50 ? "Advanced" : mastery >= 20 ? "Intermediate" : "Beginner";
 

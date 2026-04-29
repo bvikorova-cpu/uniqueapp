@@ -64,6 +64,11 @@ const KidsHomework = () => {
       toast.error("Please fill in all fields");
       return;
     }
+    if (!user) {
+      toast.error("Please sign in to ask questions");
+      navigate('/auth');
+      return;
+    }
 
     setLoading(true);
     setLastQuestion(question);
