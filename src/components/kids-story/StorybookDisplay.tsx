@@ -34,9 +34,14 @@ export const StorybookDisplay = ({ story, onSave, onContinue, showContinue, cont
 
   const totalPages = pages.length;
 
-  const handleReadAloud = async (pageIndex: number) => {
+  const handleReadAloud = (pageIndex: number) => {
+    if (typeof window === "undefined" || !("speechSynthesis" in window)) {
+      toast.error("Read aloud is not supported on this device");
+      return;
+    }
+
     if (isReading) {
-      audioRef.current?.pause();
+      window.speechSynthesis.cancel();
       setIsReading(false);
       setReadingPage(null);
       return;
@@ -48,35 +53,26 @@ export const StorybookDisplay = ({ story, onSave, onContinue, showContinue, cont
       return;
     }
 
-    setIsReading(true);
-    setReadingPage(pageIndex);
-
     try {
-      const { data, error } = await supabase.functions.invoke('kids-story-tts', {
-        body: { text },
-      });
-
-      if (error) throw error;
-
-      // Edge function may return either a base64 string or an object { audioContent }
-      const audioBase64: string | undefined =
-        typeof data === "string" ? data : (data?.audioContent || data?.audio);
-
-      if (!audioBase64) throw new Error("No audio returned");
-
-      const audioUrl = `data:audio/mpeg;base64,${audioBase64}`;
-      const audio = new Audio(audioUrl);
-      audioRef.current = audio;
-
-      audio.onended = () => {
+      window.speechSynthesis.cancel();
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.rate = 0.95;
+      utter.pitch = 1.1;
+      utter.lang = navigator.language || "en-US";
+      utter.onend = () => {
         setIsReading(false);
         setReadingPage(null);
       };
-
-      await audio.play();
+      utter.onerror = () => {
+        setIsReading(false);
+        setReadingPage(null);
+      };
+      setIsReading(true);
+      setReadingPage(pageIndex);
+      window.speechSynthesis.speak(utter);
     } catch (err) {
       console.error("Read aloud error:", err);
-      toast.error("Read aloud is not available right now");
+      toast.error("Read aloud failed");
       setIsReading(false);
       setReadingPage(null);
     }
