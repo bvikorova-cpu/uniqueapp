@@ -1,12 +1,22 @@
 import { ReactNode, useEffect, useRef, useState } from "react";
 import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
-import { Loader2, Lock, Star, CheckCircle2, Sparkles } from "lucide-react";
+import { Loader2, Lock, Star, CheckCircle2, Sparkles, Eye, Heart, MessageCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { safeInvoke } from "@/utils/safeInvoke";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
+
+interface PreviewSubmission {
+  id: string;
+  title: string | null;
+  media_url: string | null;
+  media_type: string | null;
+  category: string | null;
+  votes_count: number | null;
+}
 
 interface MegatalentGuardProps {
   children: ReactNode;
@@ -27,6 +37,7 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
   const [checkoutLoading, setCheckoutLoading] = useState<null | "premium" | "top_premium">(null);
   const [activating, setActivating] = useState(false);
   const [activatedTier, setActivatedTier] = useState<null | "premium" | "top_premium">(null);
+  const [previewItems, setPreviewItems] = useState<PreviewSubmission[]>([]);
   const successHandledRef = useRef(false);
 
   // Pending payment marker survives session loss (localStorage, not sessionStorage)
@@ -312,6 +323,27 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
     })();
   }, [user, authLoading]);
 
+  // Fetch 3 latest active submissions for preview tease above paywall.
+  // Runs only when paywall is about to show (no active subscription, done checking).
+  useEffect(() => {
+    if (checking || activating || activatedTier || subscribed) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const { data } = await supabase
+          .from("talent_submissions")
+          .select("id, title, media_url, media_type, category, votes_count")
+          .eq("is_active", true)
+          .order("created_at", { ascending: false })
+          .limit(3);
+        if (!cancelled && data) setPreviewItems(data as PreviewSubmission[]);
+      } catch (err) {
+        console.warn("[MegatalentGuard] preview fetch failed", err);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [checking, activating, activatedTier, subscribed]);
+
   const startCheckout = async (tier: "premium" | "top_premium") => {
     setCheckoutLoading(tier);
     try {
@@ -421,60 +453,125 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
 
   if (!subscribed) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-background via-background to-primary/5">
-        <Card className="max-w-lg w-full border-2 border-primary/40 shadow-2xl">
-          <CardHeader className="text-center space-y-3">
-            <div className="mx-auto w-16 h-16 rounded-full bg-primary/15 flex items-center justify-center">
-              <Lock className="w-8 h-8 text-primary" />
-            </div>
-            <CardTitle className="text-2xl">Odomkni MegaTalent súťaž 🏆</CardTitle>
-            <CardDescription className="text-base">
-              Nahrávaj fotky a videá, súťaž o peňažné ceny v 35+ kategóriách
-              a získaj viditeľnosť pred tisíckami fanúšikov. Predplatné spustíš za pár sekúnd.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <ul className="text-sm space-y-1.5 bg-muted/40 rounded-lg p-3">
-              <li>✅ Neobmedzené uploady fotiek a videí</li>
-              <li>✅ Hlasovanie a Live Leaderboard</li>
-              <li>✅ Prístup ku všetkým AI Talent nástrojom</li>
-              <li>✅ Nárok na peňažné odmeny pre víťazov</li>
-            </ul>
-            <Button
-              size="lg"
-              className="w-full justify-between"
-              onClick={() => startCheckout("premium")}
-              disabled={checkoutLoading !== null}
-            >
-              <span className="flex items-center gap-2">
-                <Star className="h-4 w-4" /> Premium
-              </span>
-              <span className="font-bold">
-                {checkoutLoading === "premium" ? <Loader2 className="h-4 w-4 animate-spin" /> : "€10 / mesiac"}
-              </span>
-            </Button>
-            <Button
-              size="lg"
-              variant="secondary"
-              className="w-full justify-between"
-              onClick={() => startCheckout("top_premium")}
-              disabled={checkoutLoading !== null}
-            >
-              <span className="flex items-center gap-2">
-                <Star className="h-4 w-4 fill-current" /> TOP Premium <span className="text-xs opacity-80">(2× váha hlasu)</span>
-              </span>
-              <span className="font-bold">
-                {checkoutLoading === "top_premium" ? <Loader2 className="h-4 w-4 animate-spin" /> : "€15 / mesiac"}
-              </span>
-            </Button>
-            <Button variant="outline" className="w-full" onClick={() => navigate("/")}>
-              Späť na hlavnú stránku
-            </Button>
-            <p className="text-xs text-muted-foreground text-center pt-2">
-              Už si zaplatil? <button className="underline" onClick={() => window.location.reload()}>Obnoviť prístup</button>
-            </p>
-          </CardContent>
-        </Card>
+      <div className="min-h-screen p-4 py-10 bg-gradient-to-br from-background via-background to-primary/5">
+        <div className="max-w-5xl mx-auto space-y-8">
+          {/* Preview tease: 3 latest submissions, blurred + non-interactive */}
+          {previewItems.length > 0 && (
+            <section aria-label="Ukážka MegaTalent príspevkov" className="space-y-3">
+              <div className="flex items-center justify-between">
+                <h2 className="text-lg sm:text-xl font-semibold flex items-center gap-2">
+                  <Eye className="w-5 h-5 text-primary" />
+                  Ukážka súťaže
+                </h2>
+                <Badge variant="secondary" className="text-xs">3 z mnohých</Badge>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                {previewItems.map((item) => (
+                  <div
+                    key={item.id}
+                    aria-hidden="true"
+                    className="relative rounded-xl overflow-hidden border border-primary/20 bg-muted/40 aspect-[4/5] select-none pointer-events-none"
+                  >
+                    {item.media_url && item.media_type === "video" ? (
+                      <video
+                        src={item.media_url}
+                        muted
+                        playsInline
+                        className="w-full h-full object-cover blur-md scale-110"
+                      />
+                    ) : item.media_url ? (
+                      <img
+                        src={item.media_url}
+                        alt=""
+                        loading="lazy"
+                        className="w-full h-full object-cover blur-md scale-110"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-primary/20 to-accent/20" />
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/40 to-transparent" />
+                    <div className="absolute inset-0 flex flex-col justify-end p-3 gap-1">
+                      <p className="text-sm font-semibold line-clamp-1">
+                        {item.title || "Príspevok súťažiaceho"}
+                      </p>
+                      <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                        <span className="flex items-center gap-1">
+                          <Heart className="w-3.5 h-3.5" />
+                          {item.votes_count ?? 0}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <MessageCircle className="w-3.5 h-3.5" />
+                          —
+                        </span>
+                      </div>
+                    </div>
+                    <div className="absolute top-2 right-2 bg-background/85 backdrop-blur px-2 py-1 rounded-full flex items-center gap-1 text-[10px] font-semibold">
+                      <Lock className="w-3 h-3" />
+                      Zamknuté
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <p className="text-xs text-muted-foreground text-center">
+                Toto sú 3 z najnovších príspevkov. Odomkni predplatným a získaj prístup ku všetkým 35+ kategóriám.
+              </p>
+            </section>
+          )}
+
+          <Card className="max-w-lg mx-auto w-full border-2 border-primary/40 shadow-2xl">
+            <CardHeader className="text-center space-y-3">
+              <div className="mx-auto w-16 h-16 rounded-full bg-primary/15 flex items-center justify-center">
+                <Lock className="w-8 h-8 text-primary" />
+              </div>
+              <CardTitle className="text-2xl">Odomkni MegaTalent súťaž 🏆</CardTitle>
+              <CardDescription className="text-base">
+                Nahrávaj fotky a videá, súťaž o peňažné ceny v 35+ kategóriách
+                a získaj viditeľnosť pred tisíckami fanúšikov. Predplatné spustíš za pár sekúnd.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <ul className="text-sm space-y-1.5 bg-muted/40 rounded-lg p-3">
+                <li>✅ Neobmedzené uploady fotiek a videí</li>
+                <li>✅ Hlasovanie a Live Leaderboard</li>
+                <li>✅ Prístup ku všetkým AI Talent nástrojom</li>
+                <li>✅ Nárok na peňažné odmeny pre víťazov</li>
+              </ul>
+              <Button
+                size="lg"
+                className="w-full justify-between"
+                onClick={() => startCheckout("premium")}
+                disabled={checkoutLoading !== null}
+              >
+                <span className="flex items-center gap-2">
+                  <Star className="h-4 w-4" /> Premium
+                </span>
+                <span className="font-bold">
+                  {checkoutLoading === "premium" ? <Loader2 className="h-4 w-4 animate-spin" /> : "€10 / mesiac"}
+                </span>
+              </Button>
+              <Button
+                size="lg"
+                variant="secondary"
+                className="w-full justify-between"
+                onClick={() => startCheckout("top_premium")}
+                disabled={checkoutLoading !== null}
+              >
+                <span className="flex items-center gap-2">
+                  <Sparkles className="h-4 w-4 fill-current" /> TOP Premium <span className="text-xs opacity-80">(2× váha hlasu)</span>
+                </span>
+                <span className="font-bold">
+                  {checkoutLoading === "top_premium" ? <Loader2 className="h-4 w-4 animate-spin" /> : "€15 / mesiac"}
+                </span>
+              </Button>
+              <Button variant="outline" className="w-full" onClick={() => navigate("/")}>
+                Späť na hlavnú stránku
+              </Button>
+              <p className="text-xs text-muted-foreground text-center pt-2">
+                Už si zaplatil? <button className="underline" onClick={() => window.location.reload()}>Obnoviť prístup</button>
+              </p>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     );
   }
