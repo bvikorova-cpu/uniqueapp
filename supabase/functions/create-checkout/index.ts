@@ -462,6 +462,7 @@ serve(async (req) => {
             : creditType === "kids_reading" ? "kids_reading_credits"
             : creditType === "kids_story" ? "kids_story_credits"
             : creditType === "teen_career" ? "teen_career_credits"
+            : creditType === "coloring" ? "coloring_credits"
             : creditType,
         },
       });
