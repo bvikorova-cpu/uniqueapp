@@ -1,0 +1,1 @@
+GRANT EXECUTE ON FUNCTION public.get_weekly_xp_leaderboard TO authenticated, anon;
