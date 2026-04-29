@@ -197,6 +197,7 @@ import {
   Rewards,
   XPAuditLog,
   AdminXPAudit,
+  AdminXPReconciliation,
   LiveStream,
   LiveStreamList,
   CharacterArena,
@@ -546,6 +547,7 @@ const App = () => {
                         <Route path="/rewards" element={<Rewards />} />
                         <Route path="/rewards/audit" element={<ProtectedRoute><XPAuditLog /></ProtectedRoute>} />
                         <Route path="/admin/xp-audit" element={<ProtectedRoute><AdminXPAudit /></ProtectedRoute>} />
+                        <Route path="/admin/xp-audit/reconciliation" element={<ProtectedRoute><AdminXPReconciliation /></ProtectedRoute>} />
                         <Route path="/generate-courses" element={<GenerateCourses />} />
                         <Route path="/premium-store" element={<PremiumStore />} />
                         <Route path="/premium" element={<Premium />} />
