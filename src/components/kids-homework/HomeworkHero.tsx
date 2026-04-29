@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
-import { BookOpen, Sparkles, GraduationCap, Brain, Rocket, Star } from "lucide-react";
+import { BookOpen, Sparkles, Brain, Rocket, Star } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 const mascotMessages = [
