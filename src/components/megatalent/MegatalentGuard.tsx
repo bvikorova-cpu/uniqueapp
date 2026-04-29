@@ -323,6 +323,27 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
     })();
   }, [user, authLoading]);
 
+  // Fetch 3 latest active submissions for preview tease above paywall.
+  // Runs only when paywall is about to show (no active subscription, done checking).
+  useEffect(() => {
+    if (checking || activating || activatedTier || subscribed) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const { data } = await supabase
+          .from("talent_submissions")
+          .select("id, title, media_url, media_type, category, votes_count")
+          .eq("is_active", true)
+          .order("created_at", { ascending: false })
+          .limit(3);
+        if (!cancelled && data) setPreviewItems(data as PreviewSubmission[]);
+      } catch (err) {
+        console.warn("[MegatalentGuard] preview fetch failed", err);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [checking, activating, activatedTier, subscribed]);
+
   const startCheckout = async (tier: "premium" | "top_premium") => {
     setCheckoutLoading(tier);
     try {
