@@ -170,6 +170,26 @@ export const InviteFriendPanel = () => {
   const totalReferrals = stats?.totalReferrals ?? 0;
   const recent = stats?.recentReferrals ?? [];
 
+  const filtered = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    return recent.filter((r) => {
+      if (q) {
+        const name = (r.profiles?.full_name || "").toLowerCase();
+        if (!name.includes(q)) return false;
+      }
+      if (typeFilter !== "all" && r.source_kind !== typeFilter) return false;
+      if (statusFilter !== "all" && getStatus(r) !== statusFilter) return false;
+      return true;
+    });
+  }, [recent, search, typeFilter, statusFilter]);
+
+  const filtersActive = search.trim() !== "" || typeFilter !== "all" || statusFilter !== "all";
+  const clearFilters = () => {
+    setSearch("");
+    setTypeFilter("all");
+    setStatusFilter("all");
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
