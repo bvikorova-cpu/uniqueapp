@@ -117,6 +117,7 @@ import {
   KidsAcademy,
   ColoringPages,
   TeenCareerCounselor,
+  TeenCareerPricing,
   KidsChannel,
   KidsShowDetail,
   ChooseAdventure,
@@ -604,6 +605,7 @@ const App = () => {
                         <Route path="/photo-restoration" element={<PhotoRestoration />} />
                         <Route path="/antique-appraisal" element={<AntiqueAppraisal />} />
                         <Route path="/teen-career-counselor" element={<TeenCareerCounselor />} />
+                        <Route path="/teen-career-pricing" element={<TeenCareerPricing />} />
                         <Route path="/premium-courses" element={<PremiumCourses />} />
                         <Route path="/masterclasses" element={<Masterclasses />} />
                         <Route path="/masterclass/:masterclassId" element={<MasterclassLearning />} />

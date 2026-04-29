@@ -5,12 +5,14 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Briefcase, Heart, TrendingUp, Lightbulb, Download, CreditCard, Sparkles, ArrowRight, ArrowLeft, ArrowLeftRight, ClipboardList } from "lucide-react";
+import { Briefcase, Heart, TrendingUp, Lightbulb, Sparkles, ArrowRight, ArrowLeft, ArrowLeftRight, ClipboardList } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import jsPDF from "jspdf";
 import { useNavigate } from "react-router-dom";
 import { useHasShadowArenaAchievementsForCareer } from "@/hooks/useShadowArenaAchievements";
+import { useTeenCareerCredits, TEEN_CAREER_CREDIT_COST } from "@/hooks/useTeenCareerCredits";
+import { CreditBanner } from "@/components/kids/CreditBanner";
 import { CareerHero } from "@/components/teen-career/CareerHero";
 import { CareerWizardStepper } from "@/components/teen-career/CareerWizardStepper";
 import { CareerQuiz, QuizAnswers } from "@/components/teen-career/CareerQuiz";
@@ -36,66 +38,37 @@ export default function TeenCareerCounselor() {
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("guidance");
   const [shadowArenaAchievements, setShadowArenaAchievements] = useState<ShadowArenaAchievement[]>([]);
-  const [usageData, setUsageData] = useState<{
-    canGenerate: boolean;
-    hasFreeTrial: boolean;
-    freeGenerationsUsed: number;
-    paidGenerations: number;
-  } | null>(null);
-  const [checkingUsage, setCheckingUsage] = useState(true);
   const { toast } = useToast();
   const navigate = useNavigate();
   const { data: shadowArenaData } = useHasShadowArenaAchievementsForCareer();
+  const {
+    balance,
+    canUse,
+    isLoading: creditsLoading,
+    purchase,
+    refresh: refreshCredits,
+    costPerUse,
+  } = useTeenCareerCredits();
 
   useEffect(() => {
-    checkUsage();
     const params = new URLSearchParams(window.location.search);
-    if (params.get('payment') === 'success') {
-      handlePaymentSuccess(params.get('session_id'));
-      window.history.replaceState({}, '', window.location.pathname);
+    if (params.get("payment") === "success") {
+      toast({ title: "Payment successful!", description: "Your career credits have been added." });
+      refreshCredits();
+      window.history.replaceState({}, "", window.location.pathname);
     }
-  }, []);
-
-  const checkUsage = async () => {
-    setCheckingUsage(true);
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
+    // Require sign-in
+    supabase.auth.getSession().then(({ data: { session } }) => {
       if (!session) {
         toast({ title: "Authentication Required", description: "Please sign in to use Career Counselor", variant: "destructive" });
         navigate("/auth");
-        return;
       }
-      const { data, error } = await supabase.functions.invoke('check-teen-career-usage');
-      if (error) throw error;
-      setUsageData(data);
-    } catch (error) {
-      console.error('Error checking usage:', error);
-    } finally {
-      setCheckingUsage(false);
-    }
-  };
+    });
+  }, []);
 
-  const handlePaymentSuccess = async (sessionId: string | null) => {
-    if (!sessionId) return;
-    try {
-      const { error } = await supabase.functions.invoke('add-teen-career-generation', { body: { session_id: sessionId } });
-      if (error) throw error;
-      toast({ title: "Payment Successful!", description: "Your career guidance session has been added" });
-      await checkUsage();
-    } catch (error) {
-      console.error('Error:', error);
-    }
-  };
-
-  const handlePurchase = async () => {
-    try {
-      const { data, error } = await supabase.functions.invoke('create-teen-career-payment');
-      if (error) throw error;
-      if (data.url) window.open(data.url, '_blank');
-    } catch (error) {
-      console.error('Error:', error);
-      toast({ title: "Error", description: "Failed to initiate payment", variant: "destructive" });
-    }
+  const handleBuyCredits = async () => {
+    const url = await purchase(25);
+    if (url) window.location.href = url;
   };
 
   const handleQuizComplete = (answers: QuizAnswers) => {
@@ -113,8 +86,8 @@ export default function TeenCareerCounselor() {
       return;
     }
 
-    if (usageData && !usageData.canGenerate) {
-      toast({ title: "No Sessions Available", description: "Please purchase additional career guidance sessions", variant: "destructive" });
+    if (!canUse) {
+      toast({ title: "Not enough credits", description: `You need ${costPerUse} credits per session. Buy more to continue.`, variant: "destructive" });
       return;
     }
 
@@ -125,8 +98,9 @@ export default function TeenCareerCounselor() {
       });
 
       if (error) {
-        if (error.message?.includes('requiresPayment')) {
-          toast({ title: "Payment Required", description: "You've used your free session. Purchase more to continue.", variant: "destructive" });
+        if (error.message?.toLowerCase().includes('insufficient credits')) {
+          toast({ title: "Not enough credits", description: "Please purchase more career credits to continue.", variant: "destructive" });
+          refreshCredits();
           return;
         }
         throw error;
@@ -134,7 +108,7 @@ export default function TeenCareerCounselor() {
 
       setGuidance(data.guidance);
       if (data.shadowArenaAchievements) setShadowArenaAchievements(data.shadowArenaAchievements);
-      await checkUsage();
+      refreshCredits();
       setWizardStep(3);
 
       if (data.hasShadowArenaBadge) {
@@ -261,28 +235,17 @@ export default function TeenCareerCounselor() {
 
         <HeroRewardedAd sectionKey="page_teencareercounselor" />
 
-        {/* Usage Status */}
-        {!checkingUsage && usageData && (
-          <Card className="mb-6 border-primary/20">
-            <CardContent className="pt-4 pb-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <Sparkles className="h-5 w-5 text-primary" />
-                  <div>
-                    <p className="font-semibold text-sm">Your Sessions</p>
-                    <p className="text-xs text-muted-foreground">
-                      {usageData.hasFreeTrial ? "1 free session available" : `${usageData.paidGenerations} paid session${usageData.paidGenerations !== 1 ? 's' : ''} remaining`}
-                    </p>
-                  </div>
-                </div>
-                {!usageData.canGenerate && (
-                  <Button onClick={handlePurchase} size="sm" className="gap-2">
-                    <CreditCard className="h-4 w-4" /> Buy (€5)
-                  </Button>
-                )}
-              </div>
-            </CardContent>
-          </Card>
+        {/* Credit balance */}
+        {!creditsLoading && (
+          <div className="mb-6">
+            <CreditBanner
+              label="Career"
+              creditsRemaining={balance}
+              costPerUse={costPerUse}
+              onBuyCredits={handleBuyCredits}
+              unitName="session"
+            />
+          </div>
         )}
 
         {/* Main content tabs */}
@@ -404,19 +367,23 @@ export default function TeenCareerCounselor() {
                         </Button>
                         <Button
                           onClick={getCareerGuidance}
-                          disabled={loading || (usageData !== null && !usageData.canGenerate)}
+                          disabled={loading || !canUse}
                           className="flex-1 gap-2"
                         >
                           <Sparkles className="h-4 w-4" />
-                          {loading ? "Analyzing Your Profile..." : "Get AI Career Guidance"}
+                          {loading
+                            ? "Analyzing Your Profile..."
+                            : !canUse
+                              ? `Buy credits (need ${TEEN_CAREER_CREDIT_COST})`
+                              : `Get AI Career Guidance (${TEEN_CAREER_CREDIT_COST} credits)`}
                         </Button>
                       </div>
 
-                      {usageData && !usageData.canGenerate && (
+                      {!canUse && (
                         <div className="bg-accent/10 border border-accent/20 rounded-xl p-4 text-center">
-                          <p className="text-sm font-medium mb-2">Need More Sessions?</p>
-                          <Button onClick={handlePurchase} className="gap-2">
-                            <CreditCard className="h-4 w-4" /> Purchase Session (€5)
+                          <p className="text-sm font-medium mb-2">Need more credits?</p>
+                          <Button onClick={handleBuyCredits} className="gap-2">
+                            <Sparkles className="h-4 w-4" /> Buy Career credits
                           </Button>
                         </div>
                       )}
@@ -491,7 +458,7 @@ export default function TeenCareerCounselor() {
                 </Card>
 
                 <p className="text-xs text-muted-foreground italic">
-                  Your first career guidance session is completely FREE! Additional sessions cost just €5 each.
+                  Each AI career guidance session costs {TEEN_CAREER_CREDIT_COST} credits. Buy a credit pack to start exploring your future.
                 </p>
               </CardContent>
             </Card>

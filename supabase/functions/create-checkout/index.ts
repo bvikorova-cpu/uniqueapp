@@ -123,6 +123,12 @@ const CREDIT_PACKS: Record<string, { prices: Record<number, string>; successPath
     successPath: "/kids-story-creator?payment=success&session_id={CHECKOUT_SESSION_ID}",
     cancelPath: "/kids-story-creator?payment=canceled",
   },
+  // Teen Career Counselor credits — dynamic price_data (€0.50/credit) — AI guidance sessions (5 credits/session)
+  teen_career: {
+    prices: {},
+    successPath: "/teen-career-counselor?payment=success&session_id={CHECKOUT_SESSION_ID}",
+    cancelPath: "/teen-career-counselor?payment=canceled",
+  },
   // ─── Newly created Phase 3 packs ───
   character: {
     prices: {
@@ -449,6 +455,7 @@ serve(async (req) => {
             : creditType === "kids_drawing" ? "kids_drawing_credits"
             : creditType === "kids_reading" ? "kids_reading_credits"
             : creditType === "kids_story" ? "kids_story_credits"
+            : creditType === "teen_career" ? "teen_career_credits"
             : creditType,
         },
       });
