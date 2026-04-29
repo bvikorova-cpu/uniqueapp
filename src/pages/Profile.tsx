@@ -7,7 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, ArrowLeft, Briefcase, Video, Bookmark, Trophy, GraduationCap, Brain, Package, Sparkles, ArrowRightLeft, Users, UserPlus, UserCheck } from "lucide-react";
+import { Loader2, ArrowLeft, Briefcase, Video, Bookmark, Trophy, GraduationCap, Brain, Package, Sparkles, ArrowRightLeft, Users, UserPlus, UserCheck, Gift } from "lucide-react";
+import { InviteFriendPanel } from "@/components/referral/InviteFriendPanel";
 import { BrainDuelStats } from "@/components/profile/BrainDuelStats";
 import { useToast } from "@/hooks/use-toast";
 import PostCard from "@/components/feed/PostCard";
@@ -481,7 +482,7 @@ const Profile = () => {
 
         {/* Tabs Section - Central Hub */}
         <Tabs defaultValue={defaultTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-4 md:grid-cols-8 h-auto gap-1">
+          <TabsList className={`grid w-full ${currentUserId === userId ? "grid-cols-3 md:grid-cols-9" : "grid-cols-4 md:grid-cols-8"} h-auto gap-1`}>
             <TabsTrigger value="posts">Posts</TabsTrigger>
             <TabsTrigger value="listings">
               <Package className="h-4 w-4 mr-1 hidden sm:inline" />
@@ -502,6 +503,12 @@ const Profile = () => {
               Duel
             </TabsTrigger>
             <TabsTrigger value="friends">Friends</TabsTrigger>
+            {currentUserId === userId && (
+              <TabsTrigger value="invite">
+                <Gift className="h-4 w-4 mr-1 hidden sm:inline" />
+                Invite
+              </TabsTrigger>
+            )}
           </TabsList>
           
           <TabsContent value="posts" className="space-y-4 mt-4">
@@ -576,6 +583,12 @@ const Profile = () => {
               </div>
             )}
           </TabsContent>
+
+          {currentUserId === userId && (
+            <TabsContent value="invite" className="mt-4">
+              <InviteFriendPanel />
+            </TabsContent>
+          )}
         </Tabs>
 
         <FollowersModal
