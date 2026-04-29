@@ -71,31 +71,62 @@ export default function KidsMagicLibrary() {
   const { hasGoldPass } = useKidsGoldPass();
   const [activeCategory, setActiveCategory] = useState<GalleryCategory>("all");
   const [search, setSearch] = useState("");
-  const [favorites, setFavorites] = useState<string[]>(() => {
-    if (!user) return [];
-    const stored = localStorage.getItem(`kids_gallery_favorites_${user?.id}`);
-    return stored ? JSON.parse(stored) : [];
-  });
+  const [favorites, setFavorites] = useState<string[]>([]);
   const [lightboxIndex, setLightboxIndex] = useState(-1);
 
-  // Fetch stories
+  // Load favorites from DB
+  useState(() => {
+    if (!user) return;
+    supabase
+      .from("kids_gallery_favorites")
+      .select("item_id")
+      .eq("user_id", user.id)
+      .then(({ data }) => {
+        if (data) setFavorites(data.map((r: any) => r.item_id));
+      });
+  });
+
+  // Fetch stories from DB
   const { data: stories = [] } = useQuery({
-    queryKey: ["kids-stories", user?.id],
+    queryKey: ["kids-stories-db", user?.id],
     queryFn: async () => {
       if (!user) return [];
-      const stored = localStorage.getItem(`kids_stories_${user.id}`);
-      return stored ? (JSON.parse(stored) as Story[]) : [];
+      const { data, error } = await supabase
+        .from("kids_stories")
+        .select("id,title,category,story_text,illustration_url,created_at")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return (data || []).map((r: any) => ({
+        id: r.id,
+        title: r.title,
+        category: r.category || "story",
+        story_content: r.story_text,
+        illustration_url: r.illustration_url,
+        created_at: r.created_at,
+      })) as Story[];
     },
     enabled: !!user,
   });
 
-  // Fetch drawings
+  // Fetch drawings from DB
   const { data: drawings = [] } = useQuery({
-    queryKey: ["kids-drawings", user?.id],
+    queryKey: ["kids-drawings-db", user?.id],
     queryFn: async () => {
       if (!user) return [];
-      const stored = localStorage.getItem(`kids_drawings_${user.id}`);
-      return stored ? (JSON.parse(stored) as Drawing[]) : [];
+      const { data, error } = await supabase
+        .from("kids_drawings")
+        .select("id,title,drawing_url,tutorial_topic,difficulty,created_at")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return (data || []).map((r: any) => ({
+        id: r.id,
+        title: r.title || r.tutorial_topic || "Drawing",
+        image_url: r.drawing_url,
+        category: r.difficulty || "drawing",
+        created_at: r.created_at,
+      })) as Drawing[];
     },
     enabled: !!user,
   });
@@ -131,6 +162,7 @@ export default function KidsMagicLibrary() {
     },
     enabled: !!user,
   });
+
 
   // Build unified gallery items
   const allItems = useMemo<GalleryItem[]>(() => {
