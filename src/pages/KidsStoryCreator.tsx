@@ -16,7 +16,7 @@ import { StoryCreatorHero } from "@/components/kids-story/StoryCreatorHero";
 import { StoryQuickTemplates } from "@/components/kids-story/StoryQuickTemplates";
 import { StoryWizardFlow } from "@/components/kids-story/StoryWizardFlow";
 import { StorybookDisplay } from "@/components/kids-story/StorybookDisplay";
-import { Download } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 const KidsStoryCreator = () => {
