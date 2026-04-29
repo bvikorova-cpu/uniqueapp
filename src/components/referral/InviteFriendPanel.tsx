@@ -3,6 +3,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Dialog,
   DialogContent,
@@ -30,6 +38,9 @@ import {
   Calendar,
   Hash,
   ChevronRight,
+  Search,
+  X,
+  Filter,
 } from "lucide-react";
 import { format, formatDistanceToNow } from "date-fns";
 import { useNavigate } from "react-router-dom";
@@ -82,6 +93,9 @@ export const InviteFriendPanel = () => {
   const navigate = useNavigate();
   const [copied, setCopied] = useState(false);
   const [selected, setSelected] = useState<ReferralEarning | null>(null);
+  const [search, setSearch] = useState("");
+  const [typeFilter, setTypeFilter] = useState<"all" | "subscription" | "one_off">("all");
+  const [statusFilter, setStatusFilter] = useState<"all" | ReferralStatus>("all");
 
   const inviteUrl = useMemo(() => {
     if (!stats?.code) return "";
@@ -155,6 +169,26 @@ export const InviteFriendPanel = () => {
   const paidEarnings = stats?.paidEarnings ?? 0;
   const totalReferrals = stats?.totalReferrals ?? 0;
   const recent = stats?.recentReferrals ?? [];
+
+  const filtered = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    return recent.filter((r) => {
+      if (q) {
+        const name = (r.profiles?.full_name || "").toLowerCase();
+        if (!name.includes(q)) return false;
+      }
+      if (typeFilter !== "all" && r.source_kind !== typeFilter) return false;
+      if (statusFilter !== "all" && getStatus(r) !== statusFilter) return false;
+      return true;
+    });
+  }, [recent, search, typeFilter, statusFilter]);
+
+  const filtersActive = search.trim() !== "" || typeFilter !== "all" || statusFilter !== "all";
+  const clearFilters = () => {
+    setSearch("");
+    setTypeFilter("all");
+    setStatusFilter("all");
+  };
 
   return (
     <motion.div
@@ -262,7 +296,66 @@ export const InviteFriendPanel = () => {
             Obnoviť
           </Button>
         </CardHeader>
-        <CardContent className="pt-0">
+        <CardContent className="space-y-3 pt-0">
+          {recent.length > 0 && (
+            <div className="space-y-2">
+              <div className="flex flex-col gap-2 sm:flex-row">
+                <div className="relative flex-1">
+                  <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                  <Input
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    placeholder="Hľadať podľa mena..."
+                    className="pl-9"
+                    aria-label="Hľadať pozvaného"
+                  />
+                  {search && (
+                    <button
+                      type="button"
+                      onClick={() => setSearch("")}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
+                      aria-label="Vymazať hľadanie"
+                    >
+                      <X className="h-3.5 w-3.5" />
+                    </button>
+                  )}
+                </div>
+                <Select value={typeFilter} onValueChange={(v) => setTypeFilter(v as typeof typeFilter)}>
+                  <SelectTrigger className="w-full sm:w-[160px]" aria-label="Filter podľa typu">
+                    <SelectValue placeholder="Typ" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Všetky typy</SelectItem>
+                    <SelectItem value="subscription">Predplatné</SelectItem>
+                    <SelectItem value="one_off">Jednorazová</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Select value={statusFilter} onValueChange={(v) => setStatusFilter(v as typeof statusFilter)}>
+                  <SelectTrigger className="w-full sm:w-[160px]" aria-label="Filter podľa stavu">
+                    <SelectValue placeholder="Stav" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Všetky stavy</SelectItem>
+                    <SelectItem value="pending">Čaká</SelectItem>
+                    <SelectItem value="paid">Zaplatil</SelectItem>
+                    <SelectItem value="withdrawn">Vyplatené</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="flex items-center justify-between text-xs text-muted-foreground">
+                <span className="flex items-center gap-1.5">
+                  <Filter className="h-3.5 w-3.5" />
+                  {filtered.length} z {recent.length} {recent.length === 1 ? "záznamu" : "záznamov"}
+                </span>
+                {filtersActive && (
+                  <Button variant="ghost" size="sm" className="h-7 px-2 text-xs" onClick={clearFilters}>
+                    Zrušiť filtre
+                  </Button>
+                )}
+              </div>
+            </div>
+          )}
+
           {recent.length === 0 ? (
             <div className="rounded-lg border border-dashed border-border/50 py-10 text-center">
               <Gift className="mx-auto mb-2 h-8 w-8 text-muted-foreground/50" />
@@ -270,10 +363,20 @@ export const InviteFriendPanel = () => {
                 Zatiaľ žiadne odmeny. Zdieľaj svoj kód a získaj €5 za každého platiaceho priateľa.
               </p>
             </div>
+          ) : filtered.length === 0 ? (
+            <div className="rounded-lg border border-dashed border-border/50 py-10 text-center">
+              <Search className="mx-auto mb-2 h-8 w-8 text-muted-foreground/50" />
+              <p className="mb-3 text-sm text-muted-foreground">
+                Žiadne záznamy nezodpovedajú filtrom.
+              </p>
+              <Button variant="outline" size="sm" onClick={clearFilters}>
+                Zrušiť filtre
+              </Button>
+            </div>
           ) : (
             <ScrollArea className="h-[320px] pr-3">
               <ul className="space-y-2">
-                {recent.map((r) => {
+                {filtered.map((r) => {
                   const name = r.profiles?.full_name || "Nový používateľ";
                   const initial = name.charAt(0).toUpperCase();
                   const status = getStatus(r);
