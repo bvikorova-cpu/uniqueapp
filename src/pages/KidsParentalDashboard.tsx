@@ -47,11 +47,10 @@ export default function KidsParentalDashboard() {
     queryKey: ["parental-stats", user?.id],
     queryFn: async () => {
       if (!user) return null;
-      // Real counts from DB across kids modules
-      const [homework, science, vocab, stories, drawings, gateLogs] = await Promise.all([
-        supabase.from("kids_homework_tasks" as any).select("id", { count: "exact", head: true }).eq("user_id", user.id),
+      const [homework, science, reading, stories, drawings, gateLogs] = await Promise.all([
+        supabase.from("kids_homework" as any).select("id", { count: "exact", head: true }).eq("user_id", user.id),
         supabase.from("kids_science_experiments" as any).select("id", { count: "exact", head: true }).eq("user_id", user.id),
-        supabase.from("kids_vocabulary" as any).select("id", { count: "exact", head: true }).eq("user_id", user.id),
+        supabase.from("kids_reading_sessions" as any).select("id", { count: "exact", head: true }).eq("user_id", user.id),
         supabase.from("kids_stories" as any).select("id", { count: "exact", head: true }).eq("user_id", user.id),
         supabase.from("kids_drawings" as any).select("id", { count: "exact", head: true }).eq("user_id", user.id),
         supabase.from("kids_parental_gate_log").select("id", { count: "exact", head: true }).eq("user_id", user.id),
@@ -59,14 +58,53 @@ export default function KidsParentalDashboard() {
       return {
         homework_tasks: homework.count || 0,
         science_experiments: science.count || 0,
-        vocabulary_learned: vocab.count || 0,
+        vocabulary_learned: reading.count || 0,
         stories_created: stories.count || 0,
         drawings_made: drawings.count || 0,
-        total_time_minutes: (gateLogs.count || 0) * 5, // approximate: 5 min per session
+        total_time_minutes: (gateLogs.count || 0) * 5,
       } as UsageStats;
     },
     enabled: !!user,
   });
+
+  // Real weekly chart data — last 7 days from DB
+  const { data: weeklyData = [] } = useQuery({
+    queryKey: ["parental-weekly", user?.id],
+    queryFn: async () => {
+      if (!user) return [];
+      const since = new Date();
+      since.setDate(since.getDate() - 6);
+      since.setHours(0, 0, 0, 0);
+      const sinceIso = since.toISOString();
+
+      const [hw, sc, rd] = await Promise.all([
+        supabase.from("kids_homework" as any).select("created_at").eq("user_id", user.id).gte("created_at", sinceIso),
+        supabase.from("kids_science_experiments" as any).select("created_at").eq("user_id", user.id).gte("created_at", sinceIso),
+        supabase.from("kids_reading_sessions" as any).select("created_at").eq("user_id", user.id).gte("created_at", sinceIso),
+      ]);
+
+      const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+      const buckets: Record<string, { day: string; homework: number; science: number; reading: number }> = {};
+      for (let i = 0; i < 7; i++) {
+        const d = new Date(since);
+        d.setDate(since.getDate() + i);
+        const key = d.toISOString().slice(0, 10);
+        buckets[key] = { day: days[d.getDay()], homework: 0, science: 0, reading: 0 };
+      }
+      const bump = (rows: any, field: "homework" | "science" | "reading") => {
+        (rows.data || []).forEach((r: any) => {
+          const key = (r.created_at || "").slice(0, 10);
+          if (buckets[key]) buckets[key][field]++;
+        });
+      };
+      bump(hw, "homework");
+      bump(sc, "science");
+      bump(rd, "reading");
+      return Object.values(buckets);
+    },
+    enabled: !!user,
+  });
+
 
   const { data: settings } = useQuery({
     queryKey: ["parental-settings", user?.id],
