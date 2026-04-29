@@ -105,7 +105,7 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
 
   const runCheck = async (): Promise<boolean> => {
     if (!user) return false;
-    // Admins bypass
+    // 1) Admins bypass
     const { data: roleData } = await supabase
       .from("user_roles")
       .select("role")
@@ -114,6 +114,21 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
       .maybeSingle();
     if (roleData) return true;
 
+    // 2) DB-first: trust local active row (fast, no Stripe round-trip).
+    //    Stripe webhook + check-megatalent-subscription keep this fresh.
+    const { data: localSub } = await supabase
+      .from("megatalent_subscriptions")
+      .select("status, current_period_end")
+      .eq("user_id", user.id)
+      .eq("status", "active")
+      .maybeSingle();
+    if (localSub) {
+      const stillValid = !localSub.current_period_end ||
+        new Date(localSub.current_period_end).getTime() > Date.now();
+      if (stillValid) return true;
+    }
+
+    // 3) Fallback: hit Stripe via edge function (slower, ~2-6s).
     const { data, error } = await safeInvoke("check-megatalent-subscription");
     if (error) {
       console.error("MegaTalent subscription check failed:", error);
@@ -121,6 +136,20 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
     }
     return data?.subscribed === true;
   };
+
+  // Hard safety net: if checking takes >8s, stop blocking the UI and show paywall.
+  // Better than an infinite spinner — user can retry or contact support.
+  useEffect(() => {
+    const t = setTimeout(() => {
+      setChecking((prev) => {
+        if (prev) {
+          console.warn("[MegatalentGuard] check timeout — releasing UI");
+        }
+        return false;
+      });
+    }, 8000);
+    return () => clearTimeout(t);
+  }, []);
 
   useEffect(() => {
     if (authLoading) return;
