@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -29,7 +29,7 @@ import { CollaborationMatcherView } from "@/components/megatalent/CollaborationM
 import { AchievementSystemView } from "@/components/megatalent/AchievementSystemView";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import { triggerTopPremiumConfetti } from "@/utils/confetti";
+
 import MegaTalentHero from "@/components/megatalent/MegaTalentHero";
 import MegaTalentCategoryGrid from "@/components/megatalent/MegaTalentCategoryGrid";
 import ContestStatsSidebar from "@/components/megatalent/ContestStatsSidebar";
@@ -94,7 +94,7 @@ type ActiveView = string | null;
 
 const Megatalent = () => {
   const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
+  
   const [activeView, setActiveView] = useState<ActiveView>(null);
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [subscriptionTier, setSubscriptionTier] = useState<'premium' | 'top_premium' | null>(null);
