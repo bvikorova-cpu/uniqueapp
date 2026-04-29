@@ -445,60 +445,39 @@ const Megatalent = () => {
   };
 
   if (loading) {
-    return <div className="min-h-screen bg-background pt-20 pb-12 flex items-center justify-center"><p className="text-lg">Loading...</p></div>;
-  }
-
-  // Paywall screen for non-subscribers
-  if (!isSubscribed) {
     return (
       <div className="min-h-screen bg-background pt-20 pb-12">
-        <div className="container mx-auto px-4 max-w-4xl text-center space-y-8">
-          <Badge className="bg-yellow-500 text-black font-bold">🏆 Monthly Prize: €10,000</Badge>
-          <h1 className="text-4xl md:text-6xl font-black bg-gradient-to-r from-yellow-500 via-amber-400 to-yellow-600 bg-clip-text text-transparent">
-            Enter MegaTalent
-          </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Showcase your talent across 30+ categories and compete for €10,000 every month!
-          </p>
-
-          <div className="p-4 bg-muted rounded-lg max-w-md mx-auto">
-            <label className="text-sm font-medium mb-2 block">Referral Code (optional)</label>
-            <Input type="text" placeholder="Enter referral code..." value={referralCode} onChange={(e) => setReferralCode(e.target.value.toUpperCase())} maxLength={8} className="text-center tracking-wider font-mono text-lg" />
+        <div className="container mx-auto px-4 max-w-6xl space-y-6">
+          {/* Hero skeleton */}
+          <div className="h-64 rounded-2xl bg-gradient-to-br from-yellow-500/10 via-amber-500/5 to-yellow-500/10 animate-pulse" />
+          {/* Stats row skeleton */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {[0, 1, 2].map((i) => (
+              <div key={i} className="h-20 rounded-xl bg-card/60 border border-border/30 animate-pulse" />
+            ))}
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto">
-            <Card className="bg-card border-yellow-500/20">
-              <CardHeader className="text-center">
-                <CardTitle className="text-2xl">Premium</CardTitle>
-                <div className="text-4xl font-bold text-yellow-500">10 €<span className="text-lg">/month</span></div>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {["Access to all categories", "Chance to win €10,000", "Upload photos & videos", "Voting & commenting", "Referral program (€5/friend)"].map(f => (
-                  <div key={f} className="flex items-center gap-2 text-sm"><Star className="h-4 w-4 text-yellow-500" />{f}</div>
-                ))}
-                <Button className="w-full bg-gradient-to-r from-yellow-500 to-amber-600 text-black font-bold" size="lg" onClick={() => handleSubscribe('premium')}>Activate Premium</Button>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-card border-yellow-500/50 relative overflow-hidden">
-              <Badge className="absolute top-4 right-4 bg-yellow-500 text-black">Recommended</Badge>
-              <CardHeader className="text-center">
-                <CardTitle className="text-2xl">TOP Premium</CardTitle>
-                <div className="text-4xl font-bold text-yellow-400">15 €<span className="text-lg">/month</span></div>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <p className="text-sm font-semibold text-yellow-500">All Premium features +</p>
-                {["50% Win chance boost", "+100,000 Automatic bonus votes", "Priority display in categories", "Exclusive TOP Premium badge"].map(f => (
-                  <div key={f} className="flex items-center gap-2 text-sm"><Zap className="h-4 w-4 text-yellow-400" />{f}</div>
-                ))}
-                <Button className="w-full bg-gradient-to-r from-yellow-400 to-yellow-700 text-black font-bold" size="lg" onClick={() => handleSubscribe('top_premium')}>Activate TOP Premium</Button>
-              </CardContent>
-            </Card>
+          {/* AI tools skeleton */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+            {Array.from({ length: 10 }).map((_, i) => (
+              <div key={i} className="h-28 rounded-xl bg-card/60 border border-border/30 animate-pulse" />
+            ))}
+          </div>
+          {/* Feed skeleton */}
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            <div className="h-96 rounded-xl bg-card/60 border border-border/30 animate-pulse lg:col-span-1" />
+            <div className="lg:col-span-3 space-y-4">
+              {[0, 1].map((i) => (
+                <div key={i} className="h-72 rounded-xl bg-card/60 border border-border/30 animate-pulse" />
+              ))}
+            </div>
           </div>
         </div>
       </div>
     );
   }
+
+  // Note: Paywall is fully handled by MegatalentGuard (parent route guard).
+  // If we reach this point, the user is guaranteed to be subscribed (or admin).
 
   const sortedSubmissions = [...submissions].sort((a, b) => {
     if (feedFilter === "top") return (b.votes_count || 0) - (a.votes_count || 0);
