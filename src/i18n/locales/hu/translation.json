@@ -802,7 +802,12 @@
       "activated_li_prizes": "✅ Pénzdíjra jogosult a győzteseknek",
       "activated_li_top_weight": "⭐ Szavazataid 2× súlya",
       "activated_li_top_boost": "⭐ Napi vote-boost és TOP Premium jelvény",
-      "opening": "MegaTalent megnyitása..."
+      "opening": "MegaTalent megnyitása...",
+      "toast_payment_success_title": "Sikeres fizetés! 🎉",
+      "toast_welcome_top": "Üdv a MegaTalent TOP Premium-ban! Hozzáférés aktiválása...",
+      "toast_welcome_premium": "Üdv a MegaTalent Premium-ban! Hozzáférés aktiválása...",
+      "toast_continuing_title": "Aktiválás folytatása",
+      "toast_continuing_desc": "Előfizetés aktiválásának befejezése bejelentkezés után..."
     }
   },
   "auth": {

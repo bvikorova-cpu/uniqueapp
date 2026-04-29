@@ -802,7 +802,12 @@
       "activated_li_prizes": "✅ 有资格获得现金奖品",
       "activated_li_top_weight": "⭐ 您投票的2倍权重",
       "activated_li_top_boost": "⭐ 每日 vote-boost 和 TOP Premium 徽章",
-      "opening": "正在打开 MegaTalent..."
+      "opening": "正在打开 MegaTalent...",
+      "toast_payment_success_title": "付款成功! 🎉",
+      "toast_welcome_top": "欢迎加入 MegaTalent TOP Premium! 正在激活访问...",
+      "toast_welcome_premium": "欢迎加入 MegaTalent Premium! 正在激活访问...",
+      "toast_continuing_title": "继续激活",
+      "toast_continuing_desc": "登录后完成订阅激活..."
     }
   },
   "auth": {

@@ -802,7 +802,12 @@
       "activated_li_prizes": "✅ Право на денежные призы",
       "activated_li_top_weight": "⭐ 2× вес ваших голосов",
       "activated_li_top_boost": "⭐ Ежедневный vote-boost и значок TOP Premium",
-      "opening": "Открываю MegaTalent..."
+      "opening": "Открываю MegaTalent...",
+      "toast_payment_success_title": "Платёж успешен! 🎉",
+      "toast_welcome_top": "Добро пожаловать в MegaTalent TOP Premium! Активирую доступ...",
+      "toast_welcome_premium": "Добро пожаловать в MegaTalent Premium! Активирую доступ...",
+      "toast_continuing_title": "Продолжаю активацию",
+      "toast_continuing_desc": "Завершаю активацию подписки после входа..."
     }
   },
   "auth": {

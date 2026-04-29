@@ -802,7 +802,12 @@
       "activated_li_prizes": "✅ 우승자에게 현금 상금 자격",
       "activated_li_top_weight": "⭐ 투표 2배 가중치",
       "activated_li_top_boost": "⭐ 매일 vote-boost 및 TOP Premium 배지",
-      "opening": "MegaTalent을 여는 중..."
+      "opening": "MegaTalent을 여는 중...",
+      "toast_payment_success_title": "결제 성공! 🎉",
+      "toast_welcome_top": "MegaTalent TOP Premium에 오신 것을 환영합니다! 액세스 활성화 중...",
+      "toast_welcome_premium": "MegaTalent Premium에 오신 것을 환영합니다! 액세스 활성화 중...",
+      "toast_continuing_title": "활성화 계속",
+      "toast_continuing_desc": "로그인 후 구독 활성화 완료 중..."
     }
   },
   "auth": {

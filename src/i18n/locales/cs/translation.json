@@ -802,7 +802,12 @@
       "activated_li_prizes": "✅ Nárok na peněžní odměny pro vítěze",
       "activated_li_top_weight": "⭐ 2× váha tvých hlasů",
       "activated_li_top_boost": "⭐ Denní vote-boost a TOP Premium odznak",
-      "opening": "Otevírám MegaTalent..."
+      "opening": "Otevírám MegaTalent...",
+      "toast_payment_success_title": "Platba úspěšná! 🎉",
+      "toast_welcome_top": "Vítej v MegaTalent TOP Premium! Aktivuji přístup...",
+      "toast_welcome_premium": "Vítej v MegaTalent Premium! Aktivuji přístup...",
+      "toast_continuing_title": "Pokračuji v aktivaci",
+      "toast_continuing_desc": "Dokončuji aktivaci tvého předplatného po přihlášení..."
     }
   },
   "auth": {

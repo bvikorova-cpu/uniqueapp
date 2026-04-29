@@ -232,16 +232,16 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
 
           if (success) {
             toast({
-              title: "Platba úspešná! 🎉",
+              title: t("megatalent.paywall.toast_payment_success_title"),
               description: tier === "top_premium"
-                ? "Vitaj v MegaTalent TOP Premium! Aktivujem prístup..."
-                : "Vitaj v MegaTalent Premium! Aktivujem prístup...",
+                ? t("megatalent.paywall.toast_welcome_top")
+                : t("megatalent.paywall.toast_welcome_premium"),
             });
             // URL params already stripped synchronously above.
           } else if (pending && !reloadFlag) {
             toast({
-              title: "Pokračujem v aktivácii",
-              description: "Dokončujem aktiváciu tvojho predplatného po prihlásení...",
+              title: t("megatalent.paywall.toast_continuing_title"),
+              description: t("megatalent.paywall.toast_continuing_desc"),
             });
           }
 

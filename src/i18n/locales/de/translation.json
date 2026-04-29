@@ -802,7 +802,12 @@
       "activated_li_prizes": "✅ Anspruch auf Geldpreise für Gewinner",
       "activated_li_top_weight": "⭐ 2× Gewicht deiner Stimmen",
       "activated_li_top_boost": "⭐ Täglicher Vote-Boost und TOP Premium Badge",
-      "opening": "Öffne MegaTalent..."
+      "opening": "Öffne MegaTalent...",
+      "toast_payment_success_title": "Zahlung erfolgreich! 🎉",
+      "toast_welcome_top": "Willkommen bei MegaTalent TOP Premium! Aktiviere Zugang...",
+      "toast_welcome_premium": "Willkommen bei MegaTalent Premium! Aktiviere Zugang...",
+      "toast_continuing_title": "Aktivierung fortsetzen",
+      "toast_continuing_desc": "Schließe Abo-Aktivierung nach Login ab..."
     }
   },
   "auth": {

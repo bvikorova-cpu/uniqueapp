@@ -802,7 +802,12 @@
       "activated_li_prizes": "✅ 勝者への賞金対象",
       "activated_li_top_weight": "⭐ あなたの投票の2倍の重み",
       "activated_li_top_boost": "⭐ 毎日のvote-boostとTOP Premiumバッジ",
-      "opening": "MegaTalentを開いています..."
+      "opening": "MegaTalentを開いています...",
+      "toast_payment_success_title": "支払い成功! 🎉",
+      "toast_welcome_top": "MegaTalent TOP Premiumへようこそ! アクセスを有効化中...",
+      "toast_welcome_premium": "MegaTalent Premiumへようこそ! アクセスを有効化中...",
+      "toast_continuing_title": "アクティベーションを継続",
+      "toast_continuing_desc": "ログイン後にサブスクリプションの有効化を完了します..."
     }
   },
   "auth": {
