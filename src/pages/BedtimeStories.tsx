@@ -34,6 +34,9 @@ export default function BedtimeStories() {
   const fadeIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const { toast } = useToast();
 
+  const [streak, setStreak] = useState(0);
+  const [dreamTokens, setDreamTokens] = useState(0);
+
   // Load progress from DB
   useEffect(() => {
     (async () => {
@@ -41,14 +44,37 @@ export default function BedtimeStories() {
       if (!session) return;
       const { data } = await supabase
         .from("kids_bedtime_progress")
-        .select("story_id, rating")
+        .select("story_id, rating, listened_at")
         .eq("user_id", session.user.id);
-      if (data) {
-        setVisitedStories(new Set(data.map((r: any) => parseInt(r.story_id, 10))));
-        const r: Record<number, number> = {};
-        data.forEach((row: any) => { if (row.rating) r[parseInt(row.story_id, 10)] = row.rating; });
-        setRatings(r);
+      if (!data) return;
+
+      setVisitedStories(new Set(data.map((r: any) => parseInt(r.story_id, 10))));
+      const r: Record<number, number> = {};
+      let tokens = 0;
+      data.forEach((row: any) => {
+        if (row.rating) {
+          r[parseInt(row.story_id, 10)] = row.rating;
+          tokens += row.rating;
+        }
+      });
+      setRatings(r);
+      setDreamTokens(tokens + data.length); // 1 token per listen + bonus per star
+
+      // Compute consecutive-day streak ending today
+      const dayKeys = new Set(
+        data.map((row: any) => (row.listened_at || "").slice(0, 10)).filter(Boolean)
+      );
+      let s = 0;
+      const cursor = new Date();
+      // allow start from yesterday if not listened today
+      if (!dayKeys.has(cursor.toISOString().slice(0, 10))) {
+        cursor.setDate(cursor.getDate() - 1);
       }
+      while (dayKeys.has(cursor.toISOString().slice(0, 10))) {
+        s++;
+        cursor.setDate(cursor.getDate() - 1);
+      }
+      setStreak(s);
     })();
   }, []);
 
@@ -330,7 +356,7 @@ export default function BedtimeStories() {
             {/* Sidebar */}
             <div className="space-y-4">
               <Card className="p-4 bg-white/5 backdrop-blur-md border-purple-400/20 shadow-xl">
-                <BedtimeStreak currentStreak={0} dreamTokens={0} storiesListened={visitedStories.size} />
+                <BedtimeStreak currentStreak={streak} dreamTokens={dreamTokens} storiesListened={visitedStories.size} />
               </Card>
 
               <Card className="p-4 bg-white/5 backdrop-blur-md border-purple-400/20 shadow-xl">
