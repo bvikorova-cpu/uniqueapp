@@ -644,7 +644,25 @@ const Megatalent = () => {
                   <h2 className="text-xl sm:text-2xl font-bold">{categoryGroups.flatMap(g => g.categories).find(c => c.value === selectedCategory)?.label || "Posts"}</h2>
                 </div>
                 <MegaTalentFeedFilters active={feedFilter} onChange={setFeedFilter} />
-                {sortedSubmissions.length === 0 ? (
+                {feedLoading ? (
+                  <div className="space-y-4">
+                    {[0, 1, 2].map((i) => (
+                      <Card key={i} className="overflow-hidden backdrop-blur-xl bg-card/60 border-yellow-500/10 animate-pulse">
+                        <div className="aspect-video bg-gradient-to-br from-yellow-500/5 via-amber-500/5 to-yellow-500/5" />
+                        <CardContent className="p-4 space-y-3">
+                          <div className="h-5 w-3/4 rounded bg-muted/60" />
+                          <div className="h-3 w-full rounded bg-muted/40" />
+                          <div className="h-3 w-2/3 rounded bg-muted/40" />
+                          <div className="flex gap-3 pt-2">
+                            <div className="h-8 w-16 rounded bg-muted/40" />
+                            <div className="h-8 w-16 rounded bg-muted/40" />
+                            <div className="h-8 w-16 rounded bg-muted/40" />
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                ) : sortedSubmissions.length === 0 ? (
                   <Card className="p-8 text-center backdrop-blur-xl bg-card/80 border-yellow-500/10"><p className="text-muted-foreground">No posts in this category yet. Be the first!</p></Card>
                 ) : (
                   sortedSubmissions.map((submission, index) => (
