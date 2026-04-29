@@ -75,7 +75,7 @@ export default function KidsMagicLibrary() {
   const [lightboxIndex, setLightboxIndex] = useState(-1);
 
   // Load favorites from DB
-  useState(() => {
+  useEffect(() => {
     if (!user) return;
     supabase
       .from("kids_gallery_favorites")
@@ -84,7 +84,7 @@ export default function KidsMagicLibrary() {
       .then(({ data }) => {
         if (data) setFavorites(data.map((r: any) => r.item_id));
       });
-  });
+  }, [user]);
 
   // Fetch stories from DB
   const { data: stories = [] } = useQuery({
