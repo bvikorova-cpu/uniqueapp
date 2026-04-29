@@ -9,7 +9,9 @@ import { KidsAcademyQuizArena } from "@/components/kids/academy/KidsAcademyQuizA
 import { KidsAcademyShop } from "@/components/kids/academy/KidsAcademyShop";
 import { KidsAcademyParentPanel } from "@/components/kids/academy/KidsAcademyParentPanel";
 import { Card, CardContent } from "@/components/ui/card";
-import { Crown } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Coins, Sparkles } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 const KidsAcademy = () => {
