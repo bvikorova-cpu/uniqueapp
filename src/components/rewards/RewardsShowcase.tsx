@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Award, Loader2, CreditCard, Eye, Share2, Crown } from "lucide-react";
+import { Award, Loader2, CreditCard, Eye, Share2, Crown, History } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -13,15 +13,39 @@ import ReactMarkdown from "react-markdown";
 export default function RewardsShowcase() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<string | null>(null);
+  const [historyLoaded, setHistoryLoaded] = useState(false);
   const [badgeCount, setBadgeCount] = useState("");
   const [topBadges, setTopBadges] = useState("");
   const [level, setLevel] = useState("");
   const [style, setStyle] = useState("");
   const { toast } = useToast();
 
+  // Auto-prefill from user_points + user_badges and load saved showcase
+  useEffect(() => {
+    (async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      const [pointsRes, badgesRes, historyRes] = await Promise.all([
+        supabase.from("user_points").select("level").eq("user_id", user.id).maybeSingle(),
+        supabase.from("user_badges").select("id", { count: "exact", head: true }).eq("user_id", user.id),
+        supabase.from("rewards_ai_history").select("result, input").eq("user_id", user.id).eq("action", "achievement_showcase").order("created_at", { ascending: false }).limit(1).maybeSingle(),
+      ]);
+      if (pointsRes.data) setLevel(String(pointsRes.data.level ?? 1));
+      if (typeof badgesRes.count === "number") setBadgeCount(String(badgesRes.count));
+      if (historyRes.data) {
+        setResult(historyRes.data.result);
+        setHistoryLoaded(true);
+        const inp: any = historyRes.data.input || {};
+        if (inp.top_badges) setTopBadges(inp.top_badges);
+        if (inp.showcase_style) setStyle(inp.showcase_style);
+      }
+    })();
+  }, []);
+
   const handleSubmit = async () => {
     setLoading(true);
     setResult(null);
+    setHistoryLoaded(false);
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) throw new Error("Please sign in");
@@ -31,6 +55,7 @@ export default function RewardsShowcase() {
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       setResult(data.result);
+      toast({ title: "Saved", description: "Showcase saved — view it again anytime free." });
     } catch (e: any) {
       toast({ title: "Error", description: e.message, variant: "destructive" });
     } finally {
@@ -47,7 +72,7 @@ export default function RewardsShowcase() {
           </div>
           <div>
             <h3 className="font-bold text-lg">Achievement Showcase</h3>
-            <p className="text-xs text-muted-foreground flex items-center gap-1"><CreditCard className="h-3 w-3" /> 4 credits per generation</p>
+            <p className="text-xs text-muted-foreground flex items-center gap-1"><CreditCard className="h-3 w-3" /> 4 credits • Auto-filled from your profile</p>
           </div>
         </div>
 
@@ -87,7 +112,12 @@ export default function RewardsShowcase() {
 
       {result && (
         <Card className="p-5 bg-card/90 backdrop-blur-md border-amber-400/20">
-          <h4 className="font-bold mb-3 text-amber-500">🏅 Your Achievement Showcase</h4>
+          <div className="flex items-center justify-between mb-3">
+            <h4 className="font-bold text-amber-500">🏅 Your Achievement Showcase</h4>
+            {historyLoaded && (
+              <span className="text-[10px] text-muted-foreground flex items-center gap-1"><History className="h-3 w-3" /> Saved (free)</span>
+            )}
+          </div>
           <div className="prose prose-sm dark:prose-invert max-w-none"><ReactMarkdown>{result}</ReactMarkdown></div>
         </Card>
       )}
