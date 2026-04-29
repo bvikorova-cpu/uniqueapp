@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ChevronRight, ChevronLeft, Sparkles, Crown, Settings, Paintbrush, Palette, Zap, Trophy } from "lucide-react";
+import { ChevronRight, ChevronLeft, Sparkles, Coins, Paintbrush, Palette, Zap, Trophy } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
@@ -14,9 +14,8 @@ import { DrawingDifficultySelector } from "@/components/kids-drawing/DrawingDiff
 import { DrawingWizardStepper } from "@/components/kids-drawing/DrawingWizardStepper";
 import { QuickDrawTemplates } from "@/components/kids-drawing/QuickDrawTemplates";
 import { DrawingAchievements } from "@/components/kids-drawing/DrawingAchievements";
-import { useKidsDrawingSubscription, useCreateDrawingCheckout, useIncrementDrawingUsage, useOpenDrawingCustomerPortal } from "@/hooks/useKidsDrawingSubscription";
-import { useNavigate } from "react-router-dom";
-import { useKidsDrawingGallery } from "@/hooks/useKidsDrawingGallery";
+import { useKidsDrawingCredits, KIDS_DRAWING_CREDIT_COST } from "@/hooks/useKidsDrawingCredits";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { ParentalGate } from "@/components/kids/ParentalGate";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
@@ -25,6 +24,7 @@ const WIZARD_STEPS = ["Category", "Topic", "Difficulty", "Draw!"];
 
 const KidsDrawingBuddy = () => {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [topic, setTopic] = useState("");
   const [category, setCategory] = useState("");
   const [difficulty, setDifficulty] = useState("");
@@ -34,15 +34,8 @@ const KidsDrawingBuddy = () => {
   const [wizardStep, setWizardStep] = useState(0);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [activeTab, setActiveTab] = useState("tutorial");
-  const [freestyleMode, setFreestyleMode] = useState(false);
 
-  const { data: subscription, isLoading: subLoading } = useKidsDrawingSubscription();
-  const { drawings } = useKidsDrawingGallery();
-  const createCheckout = useCreateDrawingCheckout();
-  const incrementUsage = useIncrementDrawingUsage();
-  const openPortal = useOpenDrawingCustomerPortal();
-
-  const galleryLocked = !subscription?.subscribed && (drawings?.length || 0) > 0;
+  const { balance, canUse, refresh, costPerUse } = useKidsDrawingCredits();
 
   // Parental gate
   const [isVerified, setIsVerified] = useState<boolean>(() => {
@@ -88,11 +81,29 @@ const KidsDrawingBuddy = () => {
     return () => authSub.unsubscribe();
   }, []);
 
-  const canStartTutorial = () => {
-    if (!isAuthenticated) return false;
-    if (subscription?.subscribed) return true;
-    return (subscription?.tutorials_used || 0) < (subscription?.tutorials_limit || 1);
-  };
+  // Verify Stripe payment on return
+  useEffect(() => {
+    const sessionId = searchParams.get("session_id");
+    const paymentStatus = searchParams.get("payment");
+    if (sessionId && paymentStatus === "success") {
+      (async () => {
+        try {
+          const { data, error } = await supabase.functions.invoke("verify-credits-payment", {
+            body: { session_id: sessionId },
+          });
+          if (error) throw error;
+          if (data?.success) {
+            toast.success(`${data.credits_added} credits added! 🎨`);
+            refresh();
+          }
+        } catch (e: any) {
+          toast.error("Failed to verify payment");
+        } finally {
+          setSearchParams({});
+        }
+      })();
+    }
+  }, [searchParams, setSearchParams, refresh]);
 
   const startTutorial = async (overrideTopic?: string, overrideDifficulty?: string) => {
     const t = overrideTopic || topic;
@@ -107,24 +118,25 @@ const KidsDrawingBuddy = () => {
       toast.error("Please select topic and difficulty");
       return;
     }
-    if (!canStartTutorial()) {
-      toast.error("You've used your free tutorial. Upgrade to Premium for unlimited access!");
+    if (!canUse) {
+      toast.error(`You need ${costPerUse} credits to start. Buy a credit pack!`);
+      navigate("/kids-drawing-pricing");
       return;
     }
 
     setLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke('kids-drawing-tutorial', {
+      const { data, error } = await supabase.functions.invoke("kids-drawing-tutorial", {
         body: { topic: t, difficulty: d }
       });
       if (error) throw error;
       setTutorial(data);
       setCurrentStep(0);
       setWizardStep(3);
-      await incrementUsage.mutateAsync();
+      refresh();
       toast.success("Let's start drawing! 🎨");
     } catch (error: any) {
-      console.error('Error:', error);
+      console.error("Error:", error);
       toast.error(error.message || "Failed to load tutorial");
     } finally {
       setLoading(false);
@@ -143,7 +155,6 @@ const KidsDrawingBuddy = () => {
     setTopic("");
     setCategory("");
     setDifficulty("");
-    setFreestyleMode(false);
   };
 
   if (!isVerified) {
@@ -165,56 +176,27 @@ const KidsDrawingBuddy = () => {
       <Navbar />
       <main className="container mx-auto px-4 py-8 mt-16">
         <div className="max-w-6xl mx-auto space-y-6">
-          {/* Hero */}
           <DrawingBuddyHero />
 
           <HeroRewardedAd sectionKey="page_kidsdrawingbuddy" />
 
-          {/* Subscription Status */}
+          {/* Credit Balance Banner */}
           {isAuthenticated && (
-            <Card className={subscription?.subscribed ? "border-2 border-primary" : "border-2"}>
+            <Card className="border-2 border-primary/30 bg-gradient-to-r from-primary/10 to-accent/10">
               <CardHeader className="pb-3">
                 <CardTitle className="flex items-center justify-between flex-wrap gap-2">
                   <span className="flex items-center gap-2 text-sm sm:text-base">
-                    {subscription?.subscribed ? (
-                      <><Crown className="w-5 h-5 text-primary" /> Premium Member</>
-                    ) : (
-                      <><Sparkles className="w-5 h-5" /> Free Plan</>
-                    )}
+                    <Coins className="w-5 h-5 text-primary" />
+                    Drawing Credits: <span className="text-primary font-black">{balance}</span>
                   </span>
-                  <div className="flex gap-2">
-                    {subscription?.subscribed ? (
-                      <Button onClick={() => openPortal.mutate()} size="sm" variant="outline" disabled={openPortal.isPending}>
-                        <Settings className="w-4 h-4 mr-1" /> Manage
-                      </Button>
-                    ) : (
-                      <Button onClick={() => createCheckout.mutate()} size="sm" disabled={createCheckout.isPending}>
-                        <Crown className="w-4 h-4 mr-1" /> Upgrade
-                      </Button>
-                    )}
-                  </div>
+                  <Button onClick={() => navigate("/kids-drawing-pricing")} size="sm" variant={canUse ? "outline" : "default"}>
+                    <Coins className="w-4 h-4 mr-1" /> Buy Credits
+                  </Button>
                 </CardTitle>
                 <CardDescription className="text-xs">
-                  {subscription?.subscribed
-                    ? `Unlimited tutorials${subscription?.subscription_end ? ` • Renews ${new Date(subscription.subscription_end).toLocaleDateString()}` : ""}`
-                    : `${(subscription?.tutorials_limit || 1) - (subscription?.tutorials_used || 0)} free tutorial(s) remaining`}
+                  {costPerUse} credits per AI drawing tutorial • Save & Freestyle are free
                 </CardDescription>
               </CardHeader>
-              {!subscription?.subscribed && (
-                <CardContent className="pt-0">
-                  <div className="bg-primary/5 rounded-lg p-3 text-xs space-y-1">
-                    <h4 className="font-semibold flex items-center gap-1">
-                      <Crown className="w-3.5 h-3.5 text-primary" /> Premium – €5/mo
-                    </h4>
-                    <div className="grid grid-cols-2 gap-1 text-muted-foreground">
-                      <span>✓ Unlimited tutorials</span>
-                      <span>✓ All topics & levels</span>
-                      <span>✓ Full gallery access</span>
-                      <span>✓ Download artwork</span>
-                    </div>
-                  </div>
-                </CardContent>
-              )}
             </Card>
           )}
 
@@ -235,7 +217,6 @@ const KidsDrawingBuddy = () => {
               </TabsTrigger>
             </TabsList>
 
-            {/* TUTORIAL TAB - Wizard */}
             <TabsContent value="tutorial" className="space-y-4">
               {!tutorial ? (
                 <Card>
@@ -253,10 +234,7 @@ const KidsDrawingBuddy = () => {
                       <DrawingCategorySelector
                         selectedCategory={category}
                         selectedTopic=""
-                        onSelectCategory={(c) => {
-                          setCategory(c);
-                          setWizardStep(1);
-                        }}
+                        onSelectCategory={(c) => { setCategory(c); setWizardStep(1); }}
                         onSelectTopic={() => {}}
                       />
                     )}
@@ -266,10 +244,7 @@ const KidsDrawingBuddy = () => {
                         selectedCategory={category}
                         selectedTopic={topic}
                         onSelectCategory={setCategory}
-                        onSelectTopic={(t) => {
-                          setTopic(t);
-                          setWizardStep(2);
-                        }}
+                        onSelectTopic={(t) => { setTopic(t); setWizardStep(2); }}
                       />
                     )}
 
@@ -277,9 +252,7 @@ const KidsDrawingBuddy = () => {
                       <div className="space-y-4">
                         <DrawingDifficultySelector
                           selected={difficulty}
-                          onSelect={(d) => {
-                            setDifficulty(d);
-                          }}
+                          onSelect={(d) => setDifficulty(d)}
                         />
                         {difficulty && (
                           <div className="flex gap-2">
@@ -287,18 +260,18 @@ const KidsDrawingBuddy = () => {
                               <Button onClick={() => navigate("/auth")} className="w-full">
                                 Sign In to Start Drawing
                               </Button>
-                            ) : !canStartTutorial() ? (
+                            ) : !canUse ? (
                               <div className="w-full space-y-2">
                                 <p className="text-sm text-muted-foreground text-center">
-                                  Free tutorial used this month
+                                  Need {costPerUse} credits — you have {balance}
                                 </p>
-                                <Button onClick={() => createCheckout.mutate()} className="w-full" disabled={createCheckout.isPending}>
-                                  <Crown className="w-4 h-4 mr-2" /> Upgrade for Unlimited
+                                <Button onClick={() => navigate("/kids-drawing-pricing")} className="w-full">
+                                  <Coins className="w-4 h-4 mr-2" /> Buy Credits
                                 </Button>
                               </div>
                             ) : (
                               <Button onClick={() => startTutorial()} className="w-full" disabled={loading}>
-                                {loading ? "Generating tutorial..." : "🎨 Start Drawing!"}
+                                {loading ? "Generating tutorial..." : `🎨 Start Drawing (${costPerUse} credits)`}
                               </Button>
                             )}
                           </div>
@@ -306,7 +279,6 @@ const KidsDrawingBuddy = () => {
                       </div>
                     )}
 
-                    {/* Back button */}
                     {wizardStep > 0 && wizardStep < 3 && (
                       <Button variant="ghost" size="sm" onClick={() => setWizardStep(wizardStep - 1)}>
                         <ChevronLeft className="w-4 h-4 mr-1" /> Back
@@ -315,44 +287,29 @@ const KidsDrawingBuddy = () => {
                   </CardContent>
                 </Card>
               ) : (
-                /* Active Tutorial */
                 <div className="space-y-4">
                   <Card>
                     <CardHeader>
                       <CardTitle>{tutorial.title}</CardTitle>
-                      <CardDescription>
-                        Step {currentStep + 1} of {tutorial.steps.length}
-                      </CardDescription>
+                      <CardDescription>Step {currentStep + 1} of {tutorial.steps.length}</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
                       <div className="bg-background/50 p-4 rounded-lg">
                         <p className="font-medium text-lg">{tutorial.steps[currentStep].instruction}</p>
                       </div>
-
                       <DrawingCanvas
                         tutorialImage={tutorial.steps[currentStep].image}
                         stepNumber={currentStep + 1}
                         category={topic}
                       />
-
                       <div className="flex gap-2">
-                        <Button
-                          variant="outline"
-                          onClick={() => setCurrentStep(Math.max(0, currentStep - 1))}
-                          disabled={currentStep === 0}
-                          className="flex-1"
-                        >
+                        <Button variant="outline" onClick={() => setCurrentStep(Math.max(0, currentStep - 1))} disabled={currentStep === 0} className="flex-1">
                           <ChevronLeft className="w-4 h-4 mr-1" /> Previous
                         </Button>
-                        <Button
-                          onClick={() => setCurrentStep(Math.min(tutorial.steps.length - 1, currentStep + 1))}
-                          disabled={currentStep === tutorial.steps.length - 1}
-                          className="flex-1"
-                        >
+                        <Button onClick={() => setCurrentStep(Math.min(tutorial.steps.length - 1, currentStep + 1))} disabled={currentStep === tutorial.steps.length - 1} className="flex-1">
                           Next <ChevronRight className="w-4 h-4 ml-1" />
                         </Button>
                       </div>
-
                       <Button variant="outline" onClick={resetWizard} className="w-full">
                         Choose New Tutorial
                       </Button>
@@ -362,16 +319,14 @@ const KidsDrawingBuddy = () => {
               )}
             </TabsContent>
 
-            {/* FREESTYLE TAB */}
             <TabsContent value="freestyle" className="space-y-4">
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <Palette className="w-5 h-5" />
-                    Freestyle Canvas
+                    <Palette className="w-5 h-5" /> Freestyle Canvas
                   </CardTitle>
                   <CardDescription>
-                    Draw anything you want! No tutorial needed — just pure creativity.
+                    Draw anything you want! Free to use — no credits needed.
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -380,7 +335,6 @@ const KidsDrawingBuddy = () => {
               </Card>
             </TabsContent>
 
-            {/* QUICK DRAW TAB */}
             <TabsContent value="templates" className="space-y-4">
               <QuickDrawTemplates
                 onSelectTemplate={(t, d) => {
@@ -391,34 +345,12 @@ const KidsDrawingBuddy = () => {
               />
             </TabsContent>
 
-            {/* ACHIEVEMENTS TAB */}
             <TabsContent value="achievements" className="space-y-4">
-              <DrawingAchievements completedCount={subscription?.tutorials_used || 0} />
+              <DrawingAchievements completedCount={0} />
             </TabsContent>
           </Tabs>
 
-          {/* Gallery */}
-          {isAuthenticated && (
-            galleryLocked ? (
-              <Card className="border-2">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-muted-foreground">
-                    <Crown className="w-5 h-5" /> Gallery Locked
-                  </CardTitle>
-                  <CardDescription>
-                    Free users can save drawings but need Premium to view the full gallery.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Button onClick={() => createCheckout.mutate()} className="w-full" disabled={createCheckout.isPending}>
-                    <Crown className="w-4 h-4 mr-2" /> Unlock Gallery with Premium
-                  </Button>
-                </CardContent>
-              </Card>
-            ) : (
-              <DrawingGallery />
-            )
-          )}
+          {isAuthenticated && <DrawingGallery />}
         </div>
       </main>
     </div>
