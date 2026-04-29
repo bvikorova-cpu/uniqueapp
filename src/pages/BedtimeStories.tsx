@@ -108,6 +108,17 @@ export default function BedtimeStories() {
     setCurrentStory(storyId);
     setVisitedStories(prev => new Set(prev).add(storyId));
 
+    // Persist visited
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        await supabase.from("kids_bedtime_progress").upsert(
+          { user_id: session.user.id, story_id: String(storyId), listened_at: new Date().toISOString() },
+          { onConflict: "user_id,story_id" }
+        );
+      }
+    } catch (e) { console.warn("progress save failed", e); }
+
     try {
       const { data, error } = await supabase.functions.invoke('translate-and-generate-audio', {
         body: { text: story.text, language }
