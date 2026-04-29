@@ -171,32 +171,22 @@ const KidsReadingCompanion = () => {
 
           <ReadingStreakDashboard {...stats} />
 
-          {/* Subscription status */}
-          {!subscription.loading && (
+          {/* Credit balance */}
+          {!creditsLoading && isAuthenticated && (
+            <div className="mb-6">
+              <CreditBanner
+                label="Reading"
+                creditsRemaining={balance}
+                costPerUse={costPerUse}
+                onBuyCredits={handleBuyCredits}
+                unitName="analysis"
+              />
+            </div>
+          )}
+          {!isAuthenticated && (
             <Card className="mb-6 border border-border/50">
-              <CardContent className="pt-4 pb-4">
-                {subscription.subscribed ? (
-                  <div className="flex items-center justify-center gap-2 text-sm">
-                    <Sparkles className="w-4 h-4 text-primary" />
-                    <span className="font-semibold text-primary">Premium Active — Unlimited Access</span>
-                  </div>
-                ) : isAuthenticated ? (
-                  <div className="space-y-3">
-                    <div className="flex justify-between text-xs text-muted-foreground">
-                      <span>Analyses: {subscription.analyses_used}/{subscription.analyses_limit === 999999 ? '∞' : subscription.analyses_limit}</span>
-                      <span>Quizzes: {subscription.quizzes_used}/{subscription.quizzes_limit === 999999 ? '∞' : subscription.quizzes_limit}</span>
-                    </div>
-                    <Progress value={subscription.analyses_limit === 999999 ? 0 : (subscription.analyses_used / subscription.analyses_limit) * 100} className="h-1.5" />
-                    <div className="text-center">
-                      <Button onClick={createCheckout} size="sm" className="gap-1 text-xs">
-                        <Sparkles className="w-3 h-3" />
-                        Get Premium — €5/month
-                      </Button>
-                    </div>
-                  </div>
-                ) : (
-                  <p className="text-center text-sm text-muted-foreground">Sign in to start reading</p>
-                )}
+              <CardContent className="py-4 text-center text-sm text-muted-foreground">
+                Sign in to start reading
               </CardContent>
             </Card>
           )}
