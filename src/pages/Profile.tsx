@@ -583,6 +583,12 @@ const Profile = () => {
               </div>
             )}
           </TabsContent>
+
+          {currentUserId === userId && (
+            <TabsContent value="invite" className="mt-4">
+              <InviteFriendPanel />
+            </TabsContent>
+          )}
         </Tabs>
 
         <FollowersModal
