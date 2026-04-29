@@ -6612,6 +6612,54 @@ export type Database = {
           },
         ]
       }
+      campaign_payouts: {
+        Row: {
+          amount_cents: number
+          campaign_id: string
+          campaign_type: string
+          completed_at: string | null
+          created_at: string
+          currency: string
+          failure_reason: string | null
+          id: string
+          owner_user_id: string
+          requested_at: string
+          status: string
+          stripe_destination_account: string
+          stripe_transfer_id: string | null
+        }
+        Insert: {
+          amount_cents: number
+          campaign_id: string
+          campaign_type: string
+          completed_at?: string | null
+          created_at?: string
+          currency?: string
+          failure_reason?: string | null
+          id?: string
+          owner_user_id: string
+          requested_at?: string
+          status?: string
+          stripe_destination_account: string
+          stripe_transfer_id?: string | null
+        }
+        Update: {
+          amount_cents?: number
+          campaign_id?: string
+          campaign_type?: string
+          completed_at?: string | null
+          created_at?: string
+          currency?: string
+          failure_reason?: string | null
+          id?: string
+          owner_user_id?: string
+          requested_at?: string
+          status?: string
+          stripe_destination_account?: string
+          stripe_transfer_id?: string | null
+        }
+        Relationships: []
+      }
       castle_room_collectibles: {
         Row: {
           collectible_id: string
@@ -43580,6 +43628,14 @@ export type Database = {
         }[]
       }
       get_auth_uid: { Args: never; Returns: string }
+      get_campaign_available_balance: {
+        Args: { _campaign_id: string; _campaign_type: string }
+        Returns: {
+          available_cents: number
+          total_paid_out_cents: number
+          total_raised_cents: number
+        }[]
+      }
       get_confessions_feed: {
         Args: { _limit?: number; _offset?: number }
         Returns: {
@@ -43838,6 +43894,10 @@ export type Database = {
         Returns: undefined
       }
       is_age_verified: { Args: { p_user_id: string }; Returns: boolean }
+      is_campaign_owner: {
+        Args: { _campaign_id: string; _campaign_type: string; _user_id: string }
+        Returns: boolean
+      }
       is_conversation_participant: {
         Args: { conversation_id: string; user_id: string }
         Returns: boolean
