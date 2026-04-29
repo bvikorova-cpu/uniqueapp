@@ -195,6 +195,7 @@ import {
   TutorialPlatform,
   Games,
   Rewards,
+  XPAuditLog,
   LiveStream,
   LiveStreamList,
   CharacterArena,
@@ -542,6 +543,7 @@ const App = () => {
                         <Route path="/live/:streamId" element={<LiveStream />} />
                         <Route path="/stories/:userId" element={<Stories />} />
                         <Route path="/rewards" element={<Rewards />} />
+                        <Route path="/rewards/audit" element={<ProtectedRoute><XPAuditLog /></ProtectedRoute>} />
                         <Route path="/generate-courses" element={<GenerateCourses />} />
                         <Route path="/premium-store" element={<PremiumStore />} />
                         <Route path="/premium" element={<Premium />} />
