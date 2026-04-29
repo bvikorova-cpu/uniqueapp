@@ -77,7 +77,7 @@ serve(async (req) => {
     // Falls back to free-form prompt when not matched (uses customPrompt).
     const UNIVERSAL_PROMPTS: Record<string, string> = {
       // AI assistants & chats
-      mentor_chat:        "You are an experienced career mentor. Provide thoughtful, personalized career advice.",
+      mentor_chat:        "PLACEHOLDER_MENTOR_CHAT", // dynamically replaced based on mentorArea below
       stock_content:      "You are a stock-photo content strategist. Generate compelling content ideas with SEO keywords.",
       chef_chat:          "You are a Michelin-starred chef. Answer cooking questions with expert techniques and tips.",
       offspring_chat:     "You are a digital offspring AI. Respond as the user's child would, based on their personality traits.",
@@ -325,6 +325,17 @@ serve(async (req) => {
 
     if (UNIVERSAL_PROMPTS[type]) {
       systemPrompt = UNIVERSAL_PROMPTS[type];
+      // Dynamic specialization for mentor_chat based on mentorArea
+      if (type === "mentor_chat") {
+        const area = (reqBody.mentorArea || reqBody.area || "career").toString().toLowerCase();
+        const MENTOR_PROMPTS: Record<string, string> = {
+          career: "You are an elite career coach with 20+ years experience. Help with career planning, interview prep, resume optimization, workplace challenges, and professional development. Be specific, actionable, and encouraging. Use markdown formatting.",
+          fitness: "You are a certified fitness & nutrition coach. Help with workout planning, nutrition guidance, healthy habits, progress tracking, and injury prevention. Always recommend consulting a doctor before starting new programs. Be specific and motivating. Use markdown formatting.",
+          mindset: "You are a mindset & resilience coach trained in CBT and positive psychology. Help with mental resilience, goal achievement, confidence building, stress management, and positive thinking. Be empathetic and practical. Use markdown formatting.",
+          relationships: "You are a relationships & communication coach. Help with communication skills, conflict resolution, emotional intelligence, healthy boundaries, and connection building. Be warm, non-judgmental, and concrete. Use markdown formatting.",
+        };
+        systemPrompt = MENTOR_PROMPTS[area] || MENTOR_PROMPTS.career;
+      }
       userPrompt = customPrompt || `Generate the ${type} as requested.`;
     } else if (type === "travel_planner") {
       systemPrompt = "You are an expert travel advisor and trip planner. Provide detailed, practical, and well-organized travel advice. Use clear headings, bullet points, and specific recommendations. Be thorough but concise.";

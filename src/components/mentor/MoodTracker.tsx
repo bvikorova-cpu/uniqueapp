@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { motion, AnimatePresence } from "framer-motion";
@@ -24,6 +25,7 @@ export function MoodTracker() {
   const [energy, setEnergy] = useState(5);
   const [stress, setStress] = useState(5);
   const [notes, setNotes] = useState("");
+  const [area, setArea] = useState("career");
   const [history, setHistory] = useState<MoodEntry[]>([]);
   const [saving, setSaving] = useState(false);
   const [loadingInsight, setLoadingInsight] = useState(false);
@@ -54,7 +56,7 @@ export function MoodTracker() {
     try {
       const { error } = await supabase.from("mentor_moods").insert({
         user_id: user.id,
-        mentor_area: "career",
+        mentor_area: area as any,
         mood_score: mood,
         energy_score: energy,
         stress_score: stress,
@@ -132,6 +134,19 @@ export function MoodTracker() {
       </CardHeader>
 
       <CardContent className="space-y-4">
+        {/* Area selector */}
+        <Select value={area} onValueChange={setArea}>
+          <SelectTrigger className="h-9 text-sm">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="career">🎯 Career</SelectItem>
+            <SelectItem value="fitness">💪 Fitness</SelectItem>
+            <SelectItem value="mindset">🧠 Mindset</SelectItem>
+            <SelectItem value="relationships">❤️ Relationships</SelectItem>
+          </SelectContent>
+        </Select>
+
         {/* Quick log */}
         <div className="space-y-3">
           <div className="flex items-center justify-between">

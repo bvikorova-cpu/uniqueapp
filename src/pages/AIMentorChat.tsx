@@ -137,17 +137,41 @@ const AIMentorChat = () => {
       });
 
       if (error) throw error;
-      setMessages(prev => [...prev, { role: "assistant", content: data.message }]);
-      setSessionId(data.sessionId);
-    } catch (error) {
+      const replyText = data?.message || data?.text || data?.result || data?.content || "I'm here to help.";
+      setMessages(prev => [...prev, { role: "assistant", content: replyText }]);
+      if (data?.sessionId) setSessionId(data.sessionId);
+    } catch (error: any) {
       console.error('Error:', error);
+      // Restore the user's message so they can retry
+      setMessage(userMessage);
+      setMessages(prev => prev.slice(0, -1));
       toast({
-        title: "Error",
-        description: "Failed to get response from AI mentor",
+        title: "Failed to send",
+        description: error?.message || "Could not reach the AI mentor. Try again.",
         variant: "destructive",
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleAddGoal = async () => {
+    if (!user) return;
+    const goalTitle = window.prompt("What goal do you want to set?");
+    if (!goalTitle?.trim()) return;
+    try {
+      const { error } = await supabase.from('mentor_goals').insert({
+        user_id: user.id,
+        mentor_area: area as any,
+        title: goalTitle.trim(),
+        progress: 0,
+        status: 'active',
+      });
+      if (error) throw error;
+      toast({ description: `Goal "${goalTitle.trim()}" added!` });
+      await loadGoals(user.id);
+    } catch (e: any) {
+      toast({ title: "Error", description: e?.message || "Could not save goal", variant: "destructive" });
     }
   };
 
@@ -298,10 +322,7 @@ const AIMentorChat = () => {
                       <CardTitle className="text-lg flex items-center gap-2">
                         <Target className="h-4 w-4 text-primary" /> Your Goals
                       </CardTitle>
-                      <Button size="sm" variant="outline" className="h-8 w-8 p-0" onClick={() => {
-                        const goal = window.prompt("Aký cieľ si chceš pridať?");
-                        if (goal && goal.trim()) toast({ description: `Cieľ "${goal}" pridaný!` });
-                      }}>
+                      <Button size="sm" variant="outline" className="h-8 w-8 p-0" onClick={handleAddGoal}>
                         <Plus className="h-4 w-4" />
                       </Button>
                     </div>
