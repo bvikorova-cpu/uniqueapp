@@ -127,7 +127,7 @@ const KidsStoryCreator = () => {
         title: story.title,
         story: story.story + "\n\n--- Part 2 ---\n\n" + (result?.story || ""),
       });
-      refreshUsage();
+      refreshCredits();
       toast.success("Story continued! 📖✨");
     } catch (err: any) {
       console.error('Continue error:', err);
@@ -172,7 +172,7 @@ const KidsStoryCreator = () => {
     );
   }
 
-  const isLimitReached = !isPremium && storiesCreatedThisMonth >= 1;
+  const isLimitReached = !canUse;
 
   return (
     <div className="min-h-screen bg-background">
@@ -183,12 +183,15 @@ const KidsStoryCreator = () => {
 
           <HeroRewardedAd sectionKey="page_kidsstorycreator" />
 
-          {user && !usageLoading && (
-            <div className="mb-6 space-y-4">
-              <StoryLimitBanner storiesCreatedThisMonth={storiesCreatedThisMonth} isPremium={isPremium} />
-              {isPremium && (
-                <StorySubscriptionManagement subscribed={isPremium} onManageSubscription={manageSubscription} />
-              )}
+          {user && !creditsLoading && (
+            <div className="mb-6">
+              <CreditBanner
+                label="Story"
+                creditsRemaining={balance}
+                costPerUse={costPerUse}
+                onBuyCredits={handleBuyCredits}
+                unitName="story"
+              />
             </div>
           )}
 
@@ -205,7 +208,7 @@ const KidsStoryCreator = () => {
                     story={story}
                     onSave={handleSaveStory}
                     onContinue={handleContinueStory}
-                    showContinue={isPremium}
+                    showContinue={canUse}
                     continuingStory={continuingStory}
                   />
                   <div className="text-center">
