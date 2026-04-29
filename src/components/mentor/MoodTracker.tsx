@@ -134,6 +134,19 @@ export function MoodTracker() {
       </CardHeader>
 
       <CardContent className="space-y-4">
+        {/* Area selector */}
+        <Select value={area} onValueChange={setArea}>
+          <SelectTrigger className="h-9 text-sm">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="career">🎯 Career</SelectItem>
+            <SelectItem value="fitness">💪 Fitness</SelectItem>
+            <SelectItem value="mindset">🧠 Mindset</SelectItem>
+            <SelectItem value="relationships">❤️ Relationships</SelectItem>
+          </SelectContent>
+        </Select>
+
         {/* Quick log */}
         <div className="space-y-3">
           <div className="flex items-center justify-between">
