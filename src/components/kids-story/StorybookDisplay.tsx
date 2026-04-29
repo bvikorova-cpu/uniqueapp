@@ -80,6 +80,9 @@ export const StorybookDisplay = ({ story, onSave, onContinue, showContinue, cont
   useEffect(() => {
     return () => {
       audioRef.current?.pause();
+      if (typeof window !== "undefined" && "speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+      }
     };
   }, []);
 
