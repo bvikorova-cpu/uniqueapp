@@ -51,8 +51,57 @@ serve(async (req) => {
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
 
-    // ============ KIDS MODE: stateless chat with safety guardrails ============
+    // ============ KIDS MODE: stateless chat with safety guardrails (paid-only, 1 credit/message) ============
     if (Array.isArray(messages) && characterName) {
+      // --- Service-role client for atomic credit deduction (bypasses RLS) ---
+      const adminClient = createClient(
+        Deno.env.get("SUPABASE_URL") ?? "",
+        Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+        { auth: { persistSession: false } }
+      );
+
+      // Read balance (lazy-create row if missing)
+      const { data: creditRow } = await adminClient
+        .from("chat_credits")
+        .select("credits_remaining")
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      const balance = creditRow?.credits_remaining ?? 0;
+      if (balance < 1) {
+        if (!creditRow) {
+          await adminClient
+            .from("chat_credits")
+            .insert({ user_id: user.id, credits_remaining: 0, total_credits_purchased: 0 });
+        }
+        return new Response(
+          JSON.stringify({ error: "Not enough Chat credits. Please buy more to keep chatting." }),
+          { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+
+      // Deduct 1 credit BEFORE calling AI (optimistic concurrency)
+      const { error: deductErr, data: deductData } = await adminClient
+        .from("chat_credits")
+        .update({ credits_remaining: balance - 1 })
+        .eq("user_id", user.id)
+        .eq("credits_remaining", balance)
+        .select("credits_remaining");
+
+      if (deductErr || !deductData || deductData.length === 0) {
+        return new Response(
+          JSON.stringify({ error: "Could not reserve credit, please try again." }),
+          { status: 409, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+
+      const refund = async () => {
+        await adminClient
+          .from("chat_credits")
+          .update({ credits_remaining: balance })
+          .eq("user_id", user.id);
+      };
+
       // Cap payload
       const safeMessages = messages
         .slice(-20)
@@ -77,25 +126,32 @@ serve(async (req) => {
       });
 
       if (response.status === 429) {
+        await refund();
         return new Response(JSON.stringify({ error: "Too many messages. Please slow down!" }), {
           status: 429,
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
       if (response.status === 402) {
-        return new Response(JSON.stringify({ error: "AI credits exhausted. Please add funds." }), {
+        await refund();
+        return new Response(JSON.stringify({ error: "AI service unavailable. Credit refunded." }), {
           status: 402,
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
       if (!response.ok || !response.body) {
+        await refund();
         const errText = await response.text();
         console.error("AI Gateway error:", response.status, errText);
         throw new Error("AI service error");
       }
 
       return new Response(response.body, {
-        headers: { ...corsHeaders, "Content-Type": "text/event-stream" },
+        headers: {
+          ...corsHeaders,
+          "Content-Type": "text/event-stream",
+          "X-Credits-Remaining": String(balance - 1),
+        },
       });
     }
 
