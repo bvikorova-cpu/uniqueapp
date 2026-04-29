@@ -86,8 +86,8 @@ export default function TeenCareerCounselor() {
       return;
     }
 
-    if (usageData && !usageData.canGenerate) {
-      toast({ title: "No Sessions Available", description: "Please purchase additional career guidance sessions", variant: "destructive" });
+    if (!canUse) {
+      toast({ title: "Not enough credits", description: `You need ${costPerUse} credits per session. Buy more to continue.`, variant: "destructive" });
       return;
     }
 
@@ -98,8 +98,9 @@ export default function TeenCareerCounselor() {
       });
 
       if (error) {
-        if (error.message?.includes('requiresPayment')) {
-          toast({ title: "Payment Required", description: "You've used your free session. Purchase more to continue.", variant: "destructive" });
+        if (error.message?.toLowerCase().includes('insufficient credits')) {
+          toast({ title: "Not enough credits", description: "Please purchase more career credits to continue.", variant: "destructive" });
+          refreshCredits();
           return;
         }
         throw error;
@@ -107,7 +108,7 @@ export default function TeenCareerCounselor() {
 
       setGuidance(data.guidance);
       if (data.shadowArenaAchievements) setShadowArenaAchievements(data.shadowArenaAchievements);
-      await checkUsage();
+      refreshCredits();
       setWizardStep(3);
 
       if (data.hasShadowArenaBadge) {
