@@ -5,10 +5,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
 import { useAuth } from "@/contexts/AuthContext";
-import { useKidsStoryCreator } from "@/hooks/useKidsStoryCreator";
-import { StoryLimitBanner } from "@/components/kids-story/StoryLimitBanner";
+import { useKidsStoryCredits, KIDS_STORY_CREDIT_COST } from "@/hooks/useKidsStoryCredits";
+import { CreditBanner } from "@/components/kids/CreditBanner";
 import { StoryLibrary } from "@/components/kids-story/StoryLibrary";
-import { StorySubscriptionManagement } from "@/components/kids-story/StorySubscriptionManagement";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ParentalGate } from "@/components/kids/ParentalGate";
 import { SafeContentBadge } from "@/components/kids/SafeContentBadge";
@@ -22,7 +21,11 @@ import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 const KidsStoryCreator = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const { storiesCreatedThisMonth, isPremium, loading: usageLoading, refreshUsage, manageSubscription } = useKidsStoryCreator();
+  const { balance, canUse, isLoading: creditsLoading, purchase, refresh: refreshCredits, costPerUse } = useKidsStoryCredits();
+  const handleBuyCredits = async () => {
+    const url = await purchase(50);
+    if (url) window.location.href = url;
+  };
   const [loading, setLoading] = useState(false);
   const [continuingStory, setContinuingStory] = useState(false);
   const [story, setStory] = useState<any>(null);
@@ -84,16 +87,16 @@ const KidsStoryCreator = () => {
       });
 
       if (error) {
-        if (error.message?.includes('Monthly limit reached')) {
-          toast.error('Monthly limit reached! Upgrade to Premium for unlimited stories.', { duration: 5000 });
-          refreshUsage();
+        if (error.message?.toLowerCase().includes('insufficient credits') || error.message?.toLowerCase().includes('limit')) {
+          toast.error(`You need ${costPerUse} Story credits. Buy more to continue!`, { duration: 5000 });
+          refreshCredits();
           return;
         }
         throw error;
       }
 
       setStory(result);
-      refreshUsage();
+      refreshCredits();
       toast.success("Your story is ready! 📖");
     } catch (error: any) {
       console.error('Error:', error);
@@ -124,7 +127,7 @@ const KidsStoryCreator = () => {
         title: story.title,
         story: story.story + "\n\n--- Part 2 ---\n\n" + (result?.story || ""),
       });
-      refreshUsage();
+      refreshCredits();
       toast.success("Story continued! 📖✨");
     } catch (err: any) {
       console.error('Continue error:', err);
@@ -169,7 +172,7 @@ const KidsStoryCreator = () => {
     );
   }
 
-  const isLimitReached = !isPremium && storiesCreatedThisMonth >= 1;
+  const isLimitReached = !canUse;
 
   return (
     <div className="min-h-screen bg-background">
@@ -180,12 +183,15 @@ const KidsStoryCreator = () => {
 
           <HeroRewardedAd sectionKey="page_kidsstorycreator" />
 
-          {user && !usageLoading && (
-            <div className="mb-6 space-y-4">
-              <StoryLimitBanner storiesCreatedThisMonth={storiesCreatedThisMonth} isPremium={isPremium} />
-              {isPremium && (
-                <StorySubscriptionManagement subscribed={isPremium} onManageSubscription={manageSubscription} />
-              )}
+          {user && !creditsLoading && (
+            <div className="mb-6">
+              <CreditBanner
+                label="Story"
+                creditsRemaining={balance}
+                costPerUse={costPerUse}
+                onBuyCredits={handleBuyCredits}
+                unitName="story"
+              />
             </div>
           )}
 
@@ -202,7 +208,7 @@ const KidsStoryCreator = () => {
                     story={story}
                     onSave={handleSaveStory}
                     onContinue={handleContinueStory}
-                    showContinue={isPremium}
+                    showContinue={canUse}
                     continuingStory={continuingStory}
                   />
                   <div className="text-center">

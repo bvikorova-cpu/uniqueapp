@@ -3,12 +3,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BookOpen, Lock, Sparkles } from "lucide-react";
+import { BookOpen, Lock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
-import { useKidsReadingSubscription } from "@/hooks/useKidsReadingSubscription";
-import { Progress } from "@/components/ui/progress";
+import { useKidsReadingCredits, KIDS_READING_CREDIT_COST } from "@/hooks/useKidsReadingCredits";
+import { CreditBanner } from "@/components/kids/CreditBanner";
 import { ParentalGate } from "@/components/kids/ParentalGate";
 import { useNavigate } from "react-router-dom";
 import { ReadingHero } from "@/components/kids-reading/ReadingHero";
@@ -31,7 +31,12 @@ const KidsReadingCompanion = () => {
   const [readingLevel, setReadingLevel] = useState("intermediate");
   const [activeView, setActiveView] = useState<"input" | "results" | "flashcards" | "quiz">("input");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const { subscription, createCheckout, incrementAnalysisUsage, incrementQuizUsage } = useKidsReadingSubscription();
+  const { balance, canUse, isLoading: creditsLoading, purchase, refresh: refreshCredits, costPerUse } = useKidsReadingCredits();
+
+  const handleBuyCredits = async () => {
+    const url = await purchase(50);
+    if (url) window.location.href = url;
+  };
 
   // Stats (local for now)
   const [stats, setStats] = useState({
@@ -88,8 +93,8 @@ const KidsReadingCompanion = () => {
   const analyzeText = async () => {
     if (!bookText.trim()) { toast.error("Please paste some text to analyze"); return; }
     if (!isAuthenticated) { toast.error("Please sign in to use this feature"); return; }
-    if (!subscription.subscribed && subscription.analyses_used >= subscription.analyses_limit) {
-      toast.error("You've reached your free limit. Subscribe for unlimited access!");
+    if (!canUse) {
+      toast.error(`You need ${costPerUse} Reading credits. Buy more to continue!`);
       return;
     }
 
@@ -101,7 +106,7 @@ const KidsReadingCompanion = () => {
       if (error) throw error;
       setAnalysis(data);
       setActiveView("results");
-      await incrementAnalysisUsage();
+      refreshCredits();
       setStats(prev => ({
         ...prev,
         textsAnalyzed: prev.textsAnalyzed + 1,
@@ -118,8 +123,8 @@ const KidsReadingCompanion = () => {
 
   const generateQuiz = async () => {
     if (!isAuthenticated) { toast.error("Please sign in to use this feature"); return; }
-    if (!subscription.subscribed && subscription.quizzes_used >= subscription.quizzes_limit) {
-      toast.error("You've reached your free limit. Subscribe for unlimited access!");
+    if (!canUse) {
+      toast.error(`You need ${costPerUse} Reading credits. Buy more to continue!`);
       return;
     }
 
@@ -131,7 +136,7 @@ const KidsReadingCompanion = () => {
       if (error) throw error;
       setQuiz(data);
       setActiveView("quiz");
-      await incrementQuizUsage();
+      refreshCredits();
       toast.success("Quiz ready! 🎯");
     } catch (error: any) {
       console.error('Error:', error);
@@ -166,32 +171,22 @@ const KidsReadingCompanion = () => {
 
           <ReadingStreakDashboard {...stats} />
 
-          {/* Subscription status */}
-          {!subscription.loading && (
+          {/* Credit balance */}
+          {!creditsLoading && isAuthenticated && (
+            <div className="mb-6">
+              <CreditBanner
+                label="Reading"
+                creditsRemaining={balance}
+                costPerUse={costPerUse}
+                onBuyCredits={handleBuyCredits}
+                unitName="analysis"
+              />
+            </div>
+          )}
+          {!isAuthenticated && (
             <Card className="mb-6 border border-border/50">
-              <CardContent className="pt-4 pb-4">
-                {subscription.subscribed ? (
-                  <div className="flex items-center justify-center gap-2 text-sm">
-                    <Sparkles className="w-4 h-4 text-primary" />
-                    <span className="font-semibold text-primary">Premium Active — Unlimited Access</span>
-                  </div>
-                ) : isAuthenticated ? (
-                  <div className="space-y-3">
-                    <div className="flex justify-between text-xs text-muted-foreground">
-                      <span>Analyses: {subscription.analyses_used}/{subscription.analyses_limit === 999999 ? '∞' : subscription.analyses_limit}</span>
-                      <span>Quizzes: {subscription.quizzes_used}/{subscription.quizzes_limit === 999999 ? '∞' : subscription.quizzes_limit}</span>
-                    </div>
-                    <Progress value={subscription.analyses_limit === 999999 ? 0 : (subscription.analyses_used / subscription.analyses_limit) * 100} className="h-1.5" />
-                    <div className="text-center">
-                      <Button onClick={createCheckout} size="sm" className="gap-1 text-xs">
-                        <Sparkles className="w-3 h-3" />
-                        Get Premium — €5/month
-                      </Button>
-                    </div>
-                  </div>
-                ) : (
-                  <p className="text-center text-sm text-muted-foreground">Sign in to start reading</p>
-                )}
+              <CardContent className="py-4 text-center text-sm text-muted-foreground">
+                Sign in to start reading
               </CardContent>
             </Card>
           )}
@@ -231,22 +226,22 @@ const KidsReadingCompanion = () => {
                       <div className="grid grid-cols-2 gap-2">
                         <Button
                           onClick={analyzeText}
-                          disabled={loading || !bookText.trim() || (!subscription.subscribed && subscription.analyses_used >= subscription.analyses_limit)}
+                          disabled={loading || !bookText.trim() || !canUse}
                           className="text-sm"
                         >
-                          {loading ? "Analyzing..." : (!subscription.subscribed && subscription.analyses_used >= subscription.analyses_limit) ? (
-                            <><Lock className="w-3 h-3 mr-1" />Premium</>
-                          ) : "📝 Analyze Text"}
+                          {loading ? "Analyzing..." : !canUse ? (
+                            <><Lock className="w-3 h-3 mr-1" />Buy credits</>
+                          ) : `📝 Analyze (${KIDS_READING_CREDIT_COST})`}
                         </Button>
                         <Button
                           onClick={generateQuiz}
-                          disabled={loading || !bookText.trim() || (!subscription.subscribed && subscription.quizzes_used >= subscription.quizzes_limit)}
+                          disabled={loading || !bookText.trim() || !canUse}
                           variant="outline"
                           className="text-sm"
                         >
-                          {(!subscription.subscribed && subscription.quizzes_used >= subscription.quizzes_limit) ? (
-                            <><Lock className="w-3 h-3 mr-1" />Premium</>
-                          ) : "🎯 Quick Quiz"}
+                          {!canUse ? (
+                            <><Lock className="w-3 h-3 mr-1" />Buy credits</>
+                          ) : `🎯 Quiz (${KIDS_READING_CREDIT_COST})`}
                         </Button>
                       </div>
                     </CardContent>
