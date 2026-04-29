@@ -155,15 +155,17 @@ export const KidsAcademyStreak = () => {
           {DAILY_CHALLENGES.map((challenge, i) => {
             const done = completedToday.includes(challenge.id);
             return (
-              <motion.div
+              <motion.button
                 key={challenge.id}
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: i * 0.06 }}
-                className={`flex items-center gap-3 p-3 rounded-xl border transition-all ${
+                onClick={() => handleCompleteChallenge(challenge)}
+                disabled={done}
+                className={`w-full text-left flex items-center gap-3 p-3 rounded-xl border transition-all ${
                   done
-                    ? "bg-green-500/10 border-green-500/30"
-                    : "bg-card/50 border-border/50 hover:border-primary/30"
+                    ? "bg-green-500/10 border-green-500/30 cursor-default"
+                    : "bg-card/50 border-border/50 hover:border-primary/30 hover:bg-primary/5 cursor-pointer"
                 }`}
               >
                 <span className="text-2xl">{challenge.emoji}</span>
