@@ -226,22 +226,22 @@ const KidsReadingCompanion = () => {
                       <div className="grid grid-cols-2 gap-2">
                         <Button
                           onClick={analyzeText}
-                          disabled={loading || !bookText.trim() || (!subscription.subscribed && subscription.analyses_used >= subscription.analyses_limit)}
+                          disabled={loading || !bookText.trim() || !canUse}
                           className="text-sm"
                         >
-                          {loading ? "Analyzing..." : (!subscription.subscribed && subscription.analyses_used >= subscription.analyses_limit) ? (
-                            <><Lock className="w-3 h-3 mr-1" />Premium</>
-                          ) : "📝 Analyze Text"}
+                          {loading ? "Analyzing..." : !canUse ? (
+                            <><Lock className="w-3 h-3 mr-1" />Buy credits</>
+                          ) : `📝 Analyze (${KIDS_READING_CREDIT_COST})`}
                         </Button>
                         <Button
                           onClick={generateQuiz}
-                          disabled={loading || !bookText.trim() || (!subscription.subscribed && subscription.quizzes_used >= subscription.quizzes_limit)}
+                          disabled={loading || !bookText.trim() || !canUse}
                           variant="outline"
                           className="text-sm"
                         >
-                          {(!subscription.subscribed && subscription.quizzes_used >= subscription.quizzes_limit) ? (
-                            <><Lock className="w-3 h-3 mr-1" />Premium</>
-                          ) : "🎯 Quick Quiz"}
+                          {!canUse ? (
+                            <><Lock className="w-3 h-3 mr-1" />Buy credits</>
+                          ) : `🎯 Quiz (${KIDS_READING_CREDIT_COST})`}
                         </Button>
                       </div>
                     </CardContent>
