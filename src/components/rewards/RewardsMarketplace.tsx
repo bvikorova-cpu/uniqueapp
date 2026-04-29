@@ -1,106 +1,129 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { ShoppingBag, Loader2, CreditCard, ArrowLeftRight, Sparkles, Crown, Zap } from "lucide-react";
+import { ShoppingBag, Loader2, Crown, Package } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import ReactMarkdown from "react-markdown";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
-const shopItems = [
-  { id: "ai-credits-10", name: "10 AI Credits", cost: "500 XP", emoji: "🤖", desc: "Use across all AI tools", category: "credits" },
-  { id: "streak-shield", name: "Streak Shield", cost: "200 XP", emoji: "🛡️", desc: "Protect streak for 1 day", category: "booster" },
-  { id: "xp-doubler", name: "XP Doubler (24h)", cost: "750 XP", emoji: "⚡", desc: "2x XP for 24 hours", category: "booster" },
-  { id: "mystery-box", name: "Mystery Badge Box", cost: "1000 XP", emoji: "📦", desc: "Random rare badge", category: "badge" },
-  { id: "premium-avatar", name: "Premium Avatar Frame", cost: "1500 XP", emoji: "👑", desc: "Golden profile frame", category: "cosmetic" },
-  { id: "vip-access", name: "VIP Chat Room (7d)", cost: "2000 XP", emoji: "💎", desc: "Exclusive community access", category: "access" },
-];
+interface ShopItem {
+  code: string;
+  name: string;
+  description: string | null;
+  emoji: string | null;
+  category: string;
+  cost_xp: number;
+  stock: number | null;
+}
+
+interface InventoryRow {
+  item_code: string;
+  quantity: number;
+  expires_at: string | null;
+}
 
 export default function RewardsMarketplace() {
-  const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<string | null>(null);
-  const [selectedItem, setSelectedItem] = useState<string | null>(null);
-  const [currentXP, setCurrentXP] = useState("");
-  const [spendingGoal, setSpendingGoal] = useState("");
   const { toast } = useToast();
+  const qc = useQueryClient();
+  const [pending, setPending] = useState<string | null>(null);
 
-  const handleAnalyze = async () => {
-    setLoading(true);
-    setResult(null);
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) throw new Error("Please sign in");
-      const { data, error } = await supabase.functions.invoke("rewards-ai", {
-        body: { action: "reward_marketplace", current_xp: currentXP, spending_goal: spendingGoal, selected_item: selectedItem },
-      });
+  const { data: items } = useQuery<ShopItem[]>({
+    queryKey: ["shop-items"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("shop_items")
+        .select("code,name,description,emoji,category,cost_xp,stock")
+        .eq("is_active", true)
+        .order("cost_xp");
       if (error) throw error;
-      if (data?.error) throw new Error(data.error);
-      setResult(data.result);
-    } catch (e: any) {
-      toast({ title: "Error", description: e.message, variant: "destructive" });
-    } finally {
-      setLoading(false);
-    }
-  };
+      return (data ?? []) as ShopItem[];
+    },
+  });
+
+  const { data: inv } = useQuery<InventoryRow[]>({
+    queryKey: ["rewards-inventory"],
+    queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return [];
+      const { data, error } = await supabase
+        .from("rewards_inventory")
+        .select("item_code,quantity,expires_at")
+        .eq("user_id", user.id);
+      if (error) throw error;
+      return (data ?? []) as InventoryRow[];
+    },
+  });
+
+  const redeem = useMutation({
+    mutationFn: async (code: string) => {
+      setPending(code);
+      const { data, error } = await supabase.rpc("redeem_shop_item", { _item_code: code });
+      if (error) throw error;
+      const res = data as { error?: string; ok?: boolean };
+      if (res?.error) throw new Error(res.error.replace(/_/g, " "));
+      return res;
+    },
+    onSuccess: () => {
+      toast({ title: "✅ Item purchased!", description: "Added to your inventory." });
+      qc.invalidateQueries({ queryKey: ["rewards-inventory"] });
+      qc.invalidateQueries({ queryKey: ["rewards-stats"] });
+      qc.invalidateQueries({ queryKey: ["gamification"] });
+    },
+    onError: (e: Error) => toast({ title: "Purchase failed", description: e.message, variant: "destructive" }),
+    onSettled: () => setPending(null),
+  });
 
   return (
-    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
-      {/* Shop Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-        {shopItems.map((item, i) => (
-          <motion.div key={item.id} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
-            <Card
-              onClick={() => setSelectedItem(item.id === selectedItem ? null : item.id)}
-              className={`p-3 cursor-pointer transition-all hover:shadow-lg ${selectedItem === item.id ? "border-amber-500 bg-amber-500/10 shadow-amber-500/10 ring-1 ring-amber-500" : "bg-card/80 border-border/30 hover:border-amber-400/30"}`}
-            >
-              <span className="text-2xl">{item.emoji}</span>
-              <h4 className="font-bold text-xs mt-1.5">{item.name}</h4>
-              <p className="text-[10px] text-muted-foreground">{item.desc}</p>
-              <p className="text-xs font-black text-amber-500 mt-1.5">{item.cost}</p>
-            </Card>
-          </motion.div>
-        ))}
-      </div>
-
-      {/* AI Shopping Advisor */}
-      <Card className="p-5 bg-card/90 backdrop-blur-md border-amber-400/20">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center">
+    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+      <Card className="p-6 bg-gradient-to-br from-violet-500/10 to-fuchsia-500/5 border-violet-400/20 backdrop-blur-md">
+        <div className="flex items-center gap-3 mb-2">
+          <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center shadow-lg shadow-violet-500/40">
             <ShoppingBag className="h-6 w-6 text-white" />
           </div>
           <div>
-            <h3 className="font-bold text-lg">AI Shopping Advisor</h3>
-            <p className="text-xs text-muted-foreground flex items-center gap-1"><CreditCard className="h-3 w-3" /> 4 credits — optimize your spending</p>
+            <h2 className="font-black text-xl">XP Marketplace</h2>
+            <p className="text-xs text-muted-foreground">Spend your XP on real boosters & cosmetics</p>
           </div>
         </div>
-
-        <div className="space-y-3">
-          <Input placeholder="Your current XP balance" value={currentXP} onChange={e => setCurrentXP(e.target.value)} />
-          <Select value={spendingGoal} onValueChange={setSpendingGoal}>
-            <SelectTrigger><SelectValue placeholder="Spending priority" /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="maximize-value">Maximize Value</SelectItem>
-              <SelectItem value="boost-progression">Boost Progression</SelectItem>
-              <SelectItem value="collect-cosmetics">Collect Cosmetics</SelectItem>
-              <SelectItem value="ai-tools">Get More AI Credits</SelectItem>
-              <SelectItem value="balanced">Balanced Strategy</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
-        <Button onClick={handleAnalyze} disabled={loading} className="w-full mt-4 bg-gradient-to-r from-emerald-500 to-teal-500 text-white hover:opacity-90">
-          {loading ? <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Analyzing...</> : <><ArrowLeftRight className="h-4 w-4 mr-2" /> Get Shopping Advice — 4 Credits</>}
-        </Button>
       </Card>
 
-      {result && (
-        <Card className="p-5 bg-card/90 backdrop-blur-md border-emerald-400/20">
-          <h4 className="font-bold mb-3 text-emerald-500">🛒 Shopping Recommendation</h4>
-          <div className="prose prose-sm dark:prose-invert max-w-none"><ReactMarkdown>{result}</ReactMarkdown></div>
-        </Card>
-      )}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {(items ?? []).map((it) => {
+          const owned = inv?.find((x) => x.item_code === it.code);
+          return (
+            <Card key={it.code} className="p-4 bg-card/80 border-violet-400/15 backdrop-blur-md">
+              <div className="flex items-start justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <span className="text-3xl">{it.emoji}</span>
+                  <div>
+                    <h3 className="font-bold">{it.name}</h3>
+                    <p className="text-xs text-muted-foreground">{it.description}</p>
+                  </div>
+                </div>
+                <Badge variant="outline" className="capitalize">{it.category}</Badge>
+              </div>
+              {owned && (
+                <p className="text-xs text-emerald-500 mb-2 flex items-center gap-1">
+                  <Package className="h-3 w-3" /> Owned ×{owned.quantity}
+                  {owned.expires_at && ` · expires ${new Date(owned.expires_at).toLocaleDateString()}`}
+                </p>
+              )}
+              <Button
+                onClick={() => redeem.mutate(it.code)}
+                disabled={pending === it.code}
+                className="w-full bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white"
+                size="sm"
+              >
+                {pending === it.code ? <Loader2 className="h-4 w-4 animate-spin" /> : (
+                  <><Crown className="h-4 w-4 mr-1" /> {it.cost_xp} XP</>
+                )}
+              </Button>
+            </Card>
+          );
+        })}
+      </div>
     </motion.div>
   );
 }

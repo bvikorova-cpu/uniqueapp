@@ -24489,6 +24489,36 @@ export type Database = {
         }
         Relationships: []
       }
+      lucky_spin_log: {
+        Row: {
+          created_at: string
+          id: string
+          item_code: string | null
+          prize_kind: string
+          prize_label: string
+          user_id: string
+          xp_awarded: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          item_code?: string | null
+          prize_kind: string
+          prize_label: string
+          user_id: string
+          xp_awarded?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          item_code?: string | null
+          prize_kind?: string
+          prize_label?: string
+          user_id?: string
+          xp_awarded?: number
+        }
+        Relationships: []
+      }
       macro_tracking: {
         Row: {
           calories: number | null
@@ -32945,6 +32975,41 @@ export type Database = {
         }
         Relationships: []
       }
+      rewards_inventory: {
+        Row: {
+          acquired_at: string
+          expires_at: string | null
+          id: string
+          item_code: string
+          quantity: number
+          user_id: string
+        }
+        Insert: {
+          acquired_at?: string
+          expires_at?: string | null
+          id?: string
+          item_code: string
+          quantity?: number
+          user_id: string
+        }
+        Update: {
+          acquired_at?: string
+          expires_at?: string | null
+          id?: string
+          item_code?: string
+          quantity?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rewards_inventory_item_code_fkey"
+            columns: ["item_code"]
+            isOneToOne: false
+            referencedRelation: "shop_items"
+            referencedColumns: ["code"]
+          },
+        ]
+      }
       routine_entries: {
         Row: {
           created_at: string | null
@@ -35475,6 +35540,45 @@ export type Database = {
           shadowbanned_at?: string | null
           shadowbanned_by?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      shop_items: {
+        Row: {
+          category: string
+          code: string
+          cost_xp: number
+          created_at: string
+          description: string | null
+          emoji: string | null
+          id: string
+          is_active: boolean
+          name: string
+          stock: number | null
+        }
+        Insert: {
+          category: string
+          code: string
+          cost_xp: number
+          created_at?: string
+          description?: string | null
+          emoji?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          stock?: number | null
+        }
+        Update: {
+          category?: string
+          code?: string
+          cost_xp?: number
+          created_at?: string
+          description?: string | null
+          emoji?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          stock?: number | null
         }
         Relationships: []
       }
@@ -42143,6 +42247,75 @@ export type Database = {
           },
         ]
       }
+      xp_bets: {
+        Row: {
+          bet_amount: number
+          challenge_target: number
+          challenge_type: string
+          ends_at: string
+          id: string
+          payout: number
+          progress: number
+          resolved_at: string | null
+          starts_at: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          bet_amount: number
+          challenge_target: number
+          challenge_type: string
+          ends_at: string
+          id?: string
+          payout?: number
+          progress?: number
+          resolved_at?: string | null
+          starts_at?: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          bet_amount?: number
+          challenge_target?: number
+          challenge_type?: string
+          ends_at?: string
+          id?: string
+          payout?: number
+          progress?: number
+          resolved_at?: string | null
+          starts_at?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      xp_gifts: {
+        Row: {
+          amount: number
+          created_at: string
+          id: string
+          message: string | null
+          recipient_id: string
+          sender_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          id?: string
+          message?: string | null
+          recipient_id: string
+          sender_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          id?: string
+          message?: string | null
+          recipient_id?: string
+          sender_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       brain_duel_questions_public: {
@@ -42951,6 +43124,7 @@ export type Database = {
         Args: { p_amount: number; p_comedian_id: string }
         Returns: undefined
       }
+      evaluate_xp_bets: { Args: never; Returns: number }
       expire_featured_listings: { Args: never; Returns: undefined }
       fail_job: {
         Args: { p_error?: string; p_job_id: string }
@@ -43175,6 +43349,10 @@ export type Database = {
           weekly_xp: number
         }[]
       }
+      gift_xp: {
+        Args: { _amount: number; _message?: string; _recipient: string }
+        Returns: Json
+      }
       give_f1_starter_balance: {
         Args: { p_user_id: string }
         Returns: undefined
@@ -43267,6 +43445,15 @@ export type Database = {
         }
         Returns: string
       }
+      place_xp_bet: {
+        Args: {
+          _amount: number
+          _challenge_type: string
+          _hours: number
+          _target: number
+        }
+        Returns: Json
+      }
       process_influencer_withdrawal: {
         Args: {
           p_admin_id: string
@@ -43316,6 +43503,7 @@ export type Database = {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["affiliate_tier"]
       }
+      redeem_shop_item: { Args: { _item_code: string }; Returns: Json }
       reset_best_friend_monthly_messages: { Args: never; Returns: undefined }
       reset_psychology_monthly_messages: { Args: never; Returns: undefined }
       rotate_seasonal_missions: { Args: never; Returns: Json }
@@ -43324,6 +43512,7 @@ export type Database = {
         Args: { p_amount: number; p_user_id: string }
         Returns: undefined
       }
+      spin_lucky_wheel: { Args: never; Returns: Json }
       update_battle_stats: {
         Args: { loser_id: string; winner_id: string }
         Returns: undefined
