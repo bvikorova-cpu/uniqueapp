@@ -15,6 +15,7 @@ import { toast } from '@/hooks/use-toast';
 import { formatDistanceToNow } from 'date-fns';
 import { sk } from 'date-fns/locale';
 import { CampaignDetailEnhancements, CampaignDetailLiveFeed } from '@/components/fundraising/CampaignDetailEnhancements';
+import { CampaignPayoutPanel } from '@/components/fundraising/CampaignPayoutPanel';
 
 interface MedicalCampaign {
   id: string;
@@ -376,6 +377,11 @@ export default function MedicalDetail() {
               supportersCount={(campaign.monthly_donors_count ?? 0) + (campaign.one_time_donors_count ?? 0)}
               campaignType="medical"
               topDonations={donations.map(d => ({ id: d.id, amount: d.amount, donor_name: d.donor_name, is_anonymous: d.is_anonymous, created_at: d.created_at }))}
+            />
+            <CampaignPayoutPanel
+              campaignType="medical"
+              campaignId={campaign.id}
+              ownerUserId={campaign.user_id}
             />
             {/* Donation Stats */}
             <Card>
