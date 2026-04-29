@@ -99,6 +99,12 @@ const CREDIT_PACKS: Record<string, { prices: Record<number, string>; successPath
     successPath: "/kids-homework?payment=success&session_id={CHECKOUT_SESSION_ID}",
     cancelPath: "/kids-homework?payment=canceled",
   },
+  // Character Chat credits — dynamic price_data (€0.10/message, 1 credit = 1 message)
+  chat: {
+    prices: {},
+    successPath: "/kids-voice-chat?payment=success&session_id={CHECKOUT_SESSION_ID}",
+    cancelPath: "/kids-voice-chat?payment=canceled",
+  },
   // ─── Newly created Phase 3 packs ───
   character: {
     prices: {
