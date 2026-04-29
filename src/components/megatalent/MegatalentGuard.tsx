@@ -1,12 +1,22 @@
 import { ReactNode, useEffect, useRef, useState } from "react";
 import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
-import { Loader2, Lock, Star, CheckCircle2, Sparkles } from "lucide-react";
+import { Loader2, Lock, Star, CheckCircle2, Sparkles, Eye, Heart, MessageCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { safeInvoke } from "@/utils/safeInvoke";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
+
+interface PreviewSubmission {
+  id: string;
+  title: string | null;
+  media_url: string | null;
+  media_type: string | null;
+  category: string | null;
+  votes_count: number | null;
+}
 
 interface MegatalentGuardProps {
   children: ReactNode;
