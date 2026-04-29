@@ -31,7 +31,12 @@ const KidsReadingCompanion = () => {
   const [readingLevel, setReadingLevel] = useState("intermediate");
   const [activeView, setActiveView] = useState<"input" | "results" | "flashcards" | "quiz">("input");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const { subscription, createCheckout, incrementAnalysisUsage, incrementQuizUsage } = useKidsReadingSubscription();
+  const { balance, canUse, isLoading: creditsLoading, purchase, refresh: refreshCredits, costPerUse } = useKidsReadingCredits();
+
+  const handleBuyCredits = async () => {
+    const url = await purchase(50);
+    if (url) window.location.href = url;
+  };
 
   // Stats (local for now)
   const [stats, setStats] = useState({
