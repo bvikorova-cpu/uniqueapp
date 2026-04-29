@@ -197,6 +197,7 @@ const Megatalent = () => {
   };
 
   const fetchSubmissions = async () => {
+    setFeedLoading(true);
     try {
       const { data: submissionsData, error } = await supabase.from('talent_submissions').select('*').eq('category', selectedCategory as any).eq('is_active', true).order('created_at', { ascending: false }).limit(10);
       if (error) throw error;
@@ -213,7 +214,7 @@ const Megatalent = () => {
         setCommentCounts(counts);
         setSubmissions(submissionsData.map(s => ({ ...s, profiles: profilesData?.find(p => p.id === s.user_id), subscriptionTier: userTiers[s.user_id] || null })));
       } else { setSubmissions([]); }
-    } catch (error) { console.error('Error fetching submissions:', error); }
+    } catch (error) { console.error('Error fetching submissions:', error); } finally { setFeedLoading(false); }
   };
 
   const handleSubscribe = async (tier: 'premium' | 'top_premium') => {
