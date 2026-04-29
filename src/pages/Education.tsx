@@ -150,9 +150,13 @@ const Education = () => {
 
         {/* Stats row: Streak + Quick Challenge + Learning Path */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-          <DailyStreak currentStreak={0} bestStreak={0} todayCompleted={false} />
+          <DailyStreak
+            currentStreak={eduStats?.currentStreak ?? 0}
+            bestStreak={eduStats?.bestStreak ?? 0}
+            todayCompleted={eduStats?.todayCompleted ?? false}
+          />
           <QuickChallenge />
-          <LearningPathProgress currentXP={0} />
+          <LearningPathProgress currentXP={eduStats?.currentXP ?? 0} />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
