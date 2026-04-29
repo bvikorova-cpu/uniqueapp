@@ -4,14 +4,20 @@ import { Sparkles, FlaskConical, BookOpen, Lightbulb } from "lucide-react";
 
 interface LabNotebookResultProps {
   result: {
-    conclusion: string;
-    explanation: string;
-    funFacts: string[];
+    conclusion?: string;
+    explanation?: string;
+    funFacts?: string[];
   };
   category: string;
 }
 
-export const LabNotebookResult = ({ result, category }: LabNotebookResultProps) => {
+export const LabNotebookResult = ({ result, category: _category }: LabNotebookResultProps) => {
+  const conclusion =
+    result?.conclusion?.trim() || "The AI couldn't generate a conclusion. Please try again.";
+  const explanation = result?.explanation?.trim() || "No explanation available.";
+  const funFacts = Array.isArray(result?.funFacts)
+    ? result.funFacts.filter((f) => typeof f === "string" && f.trim())
+    : [];
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
@@ -48,7 +54,7 @@ export const LabNotebookResult = ({ result, category }: LabNotebookResultProps) 
             transition={{ delay: 0.3 }}
             className="text-foreground leading-relaxed"
           >
-            {result.conclusion}
+            {conclusion}
           </motion.p>
         </CardContent>
       </Card>
@@ -68,7 +74,7 @@ export const LabNotebookResult = ({ result, category }: LabNotebookResultProps) 
             transition={{ delay: 0.5 }}
             className="text-foreground leading-relaxed"
           >
-            {result.explanation}
+            {explanation}
           </motion.p>
         </CardContent>
       </Card>
@@ -83,22 +89,26 @@ export const LabNotebookResult = ({ result, category }: LabNotebookResultProps) 
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <ul className="space-y-3">
-            {result.funFacts.map((fact: string, index: number) => (
-              <motion.li
-                key={index}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.7 + index * 0.15 }}
-                className="flex items-start gap-3 p-3 rounded-xl bg-background/50 border border-amber-500/10"
-              >
-                <span className="text-xl flex-shrink-0">
-                  {["🌟", "💫", "⭐"][index % 3]}
-                </span>
-                <span className="text-foreground text-sm">{fact}</span>
-              </motion.li>
-            ))}
-          </ul>
+          {funFacts.length === 0 ? (
+            <p className="text-sm text-muted-foreground italic">No fun facts available.</p>
+          ) : (
+            <ul className="space-y-3">
+              {funFacts.map((fact, index) => (
+                <motion.li
+                  key={index}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.7 + index * 0.15 }}
+                  className="flex items-start gap-3 p-3 rounded-xl bg-background/50 border border-amber-500/10"
+                >
+                  <span className="text-xl flex-shrink-0">
+                    {["🌟", "💫", "⭐"][index % 3]}
+                  </span>
+                  <span className="text-foreground text-sm">{fact}</span>
+                </motion.li>
+              ))}
+            </ul>
+          )}
         </CardContent>
       </Card>
     </motion.div>

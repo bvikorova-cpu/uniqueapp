@@ -87,6 +87,12 @@ const CREDIT_PACKS: Record<string, { prices: Record<number, string>; successPath
     successPath: "/astrology?payment=success&session_id={CHECKOUT_SESSION_ID}",
     cancelPath: "/astrology?payment=canceled",
   },
+  // Science Lab credits — dynamic price_data fallback (€0.50/credit) until fixed prices created
+  science: {
+    prices: {},
+    successPath: "/kids-science-lab?payment=success&session_id={CHECKOUT_SESSION_ID}",
+    cancelPath: "/kids-science-lab?payment=canceled",
+  },
   // ─── Newly created Phase 3 packs ───
   character: {
     prices: {
@@ -398,7 +404,16 @@ serve(async (req) => {
         mode: "payment",
         success_url: successUrl,
         cancel_url: cancelUrl,
-        metadata: { user_id: userId, credits: String(credits), type: `${creditType}_credits`, credit_type: creditType },
+        metadata: {
+          user_id: userId,
+          credits: String(credits),
+          type: `${creditType}_credits`,
+          // verify-credits-payment uses `credit_type` directly as the table name. Most legacy
+          // packs have their own verify alias, but the universal verify expects the full table
+          // name (e.g. `science_credits`). For science we pass the full table name to avoid
+          // needing yet another verify alias.
+          credit_type: creditType === "science" ? "science_credits" : creditType,
+        },
       });
 
       return successResponse({ url: session.url, session_id: session.id });
