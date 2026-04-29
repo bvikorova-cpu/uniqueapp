@@ -42,8 +42,14 @@ export const BuyVotesDialog = ({ open, onOpenChange }: BuyVotesDialogProps) => {
       const { data, error } = await supabase.functions.invoke("create-brand-votes-payment", { body: { priceId } });
       if (error) throw error;
       if (data?.url) {
-        window.open(data.url, "_blank");
+        const win = window.open(data.url, "_blank");
+        if (!win || win.closed || typeof win.closed === "undefined") {
+          toast({ title: "Popup blocked", description: "Please allow popups, or click the link to continue.", variant: "destructive" });
+          return;
+        }
         toast({ title: "Payment created", description: `We've opened the payment gateway for ${votes} votes.` });
+      } else {
+        toast({ title: "Checkout unavailable", description: "Please try again later.", variant: "destructive" });
       }
     } catch (error: any) {
       console.error("Error creating payment:", error);
@@ -64,7 +70,7 @@ export const BuyVotesDialog = ({ open, onOpenChange }: BuyVotesDialogProps) => {
           <DialogDescription>Choose a vote package. Purchased votes can be used today.</DialogDescription>
         </DialogHeader>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
           {VOTE_PACKAGES.map((pkg, i) => (
             <motion.div
               key={pkg.id}

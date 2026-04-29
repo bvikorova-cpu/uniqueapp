@@ -188,14 +188,14 @@ export default function BrandBattle() {
     },
   });
 
-  const handleVote = async (brandId: string, brandName: string) => {
+  const handleVote = async (brandId: string, _brandName?: string) => {
     if (!user) {
       toast.error("Please sign in to vote");
       navigate("/auth");
       return;
     }
     if ((votes?.remaining || 0) <= 0) {
-      toast.error("Not enough votes. Buy extra votes!");
+      toast.error("No votes left today. Buy extra votes to keep voting!");
       return;
     }
     voteMutation.mutate(brandId);
