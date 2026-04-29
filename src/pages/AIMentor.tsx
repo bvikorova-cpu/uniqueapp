@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { Briefcase, Dumbbell, Brain, Heart } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 import { MentorHero } from "@/components/mentor/MentorHero";
 import { MentorCard } from "@/components/mentor/MentorCard";
 import { TestimonialsCarousel } from "@/components/mentor/TestimonialsCarousel";
