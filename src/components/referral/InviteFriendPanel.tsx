@@ -81,6 +81,7 @@ export const InviteFriendPanel = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [copied, setCopied] = useState(false);
+  const [selected, setSelected] = useState<ReferralEarning | null>(null);
 
   const inviteUrl = useMemo(() => {
     if (!stats?.code) return "";
