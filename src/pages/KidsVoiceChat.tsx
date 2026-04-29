@@ -28,6 +28,7 @@ import { MagicalParticles } from "@/components/kids/chat/MagicalParticles";
 export default function KidsVoiceChat() {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { credits_remaining, loading: creditsLoading, canSendMessage, refresh: refreshCredits } = useChatCredits();
   const [selectedCharacter, setSelectedCharacter] = useState<Character | null>(null);
   const [messages, setMessages] = useState<Array<{ role: string; content: string }>>([]);
   const [inputMessage, setInputMessage] = useState("");
@@ -52,6 +53,17 @@ export default function KidsVoiceChat() {
   const sendMessage = async (overrideMessage?: string) => {
     const msgText = overrideMessage || inputMessage.trim();
     if (!msgText || !selectedCharacter || isLoading) return;
+
+    // Paid-only guard
+    if (!canSendMessage) {
+      toast({
+        title: "Out of Chat credits",
+        description: "Buy more credits to keep chatting with your characters!",
+        variant: "destructive",
+      });
+      navigate("/kids-voice-chat-pricing");
+      return;
+    }
 
     const userMessage = { role: "user", content: msgText };
     const newMessages = [...messages, userMessage];
