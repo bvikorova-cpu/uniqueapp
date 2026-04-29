@@ -439,7 +439,9 @@ export default function ColoringPages() {
                     <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> PNG + PDF formats</li>
                     <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> Custom templates</li>
                   </ul>
-                  <Button onClick={() => subscribeMutation.mutate('basic')} disabled={subscribeMutation.isPending} className="w-full">Subscribe</Button>
+                  <Button onClick={() => subscribeMutation.mutate('basic')} disabled={subscribeMutation.isPending} className="w-full">
+                    {subscribeMutation.isPending && subscribeMutation.variables === 'basic' ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Redirecting...</> : "Subscribe"}
+                  </Button>
                 </CardContent>
               </Card>
               <Card className="backdrop-blur-xl bg-card/80 border-primary/30 hover:border-primary/50 transition-all relative overflow-hidden">
