@@ -30,6 +30,7 @@ import { LastWeekWinners } from "@/components/gamification/LastWeekWinners";
 import { Crown, Home, Wand2, Trophy, Layers, Disc3, Target, Award, Medal, Flame, Gift, Eye, Sword, HelpCircle, ShoppingBag } from "lucide-react";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
+import { useRewardsStats } from "@/hooks/useRewardsStats";
 const TABS = [
   { id: "overview", icon: Home, label: "Overview" },
   { id: "ai-tools", icon: Wand2, label: "AI Tools" },
@@ -51,6 +52,7 @@ export default function Rewards() {
   const navigate = useNavigate();
   const [user, setUser] = useState<any>(null);
   const [activeView, setActiveView] = useState("overview");
+  const { data: stats } = useRewardsStats(user?.id);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
@@ -71,7 +73,12 @@ export default function Rewards() {
     <div className="min-h-screen bg-background pt-24 pb-8">
       <div className="container mx-auto px-4 max-w-6xl">
         <XPMultiplierBanner />
-        <RewardsCinematicHero level={2} totalXP={153} streak={0} badges={2} />
+        <RewardsCinematicHero
+          level={stats?.level ?? 1}
+          totalXP={stats?.totalXP ?? 0}
+          streak={stats?.streak ?? 0}
+          badges={stats?.badges ?? 0}
+        />
 
 
         <HeroRewardedAd sectionKey="page_rewards" />

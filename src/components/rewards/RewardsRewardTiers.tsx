@@ -1,7 +1,10 @@
 import { motion } from "framer-motion";
-import { Crown, Star, Shield, Gem, Lock, CheckCircle } from "lucide-react";
+import { Crown, Star, Shield, Gem, Lock, CheckCircle, Loader2 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { useRewardsStats } from "@/hooks/useRewardsStats";
+import { supabase } from "@/integrations/supabase/client";
+import { useEffect, useState } from "react";
 
 const tiers = [
   { id: "bronze", name: "Bronze", emoji: "🥉", minXP: 0, maxXP: 500, color: "from-amber-700 to-orange-800", perks: ["Daily reward +10%", "Basic badge display"], icon: Shield },
@@ -12,8 +15,22 @@ const tiers = [
 ];
 
 export default function RewardsRewardTiers() {
-  const currentXP = 153;
-  const currentTierIdx = tiers.findIndex(t => currentXP >= t.minXP && currentXP < t.maxXP);
+  const [userId, setUserId] = useState<string | undefined>();
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => setUserId(data.user?.id));
+  }, []);
+  const { data: stats, isLoading } = useRewardsStats(userId);
+
+  if (isLoading || !stats) {
+    return (
+      <Card className="p-8 text-center bg-card/80 border-amber-400/15">
+        <Loader2 className="h-5 w-5 animate-spin mx-auto text-muted-foreground" />
+      </Card>
+    );
+  }
+
+  const currentXP = stats.totalXP;
+  const currentTierIdx = Math.max(0, tiers.findIndex(t => currentXP >= t.minXP && currentXP < t.maxXP));
 
   return (
     <div className="space-y-3">
@@ -24,7 +41,7 @@ export default function RewardsRewardTiers() {
           <div className="flex-1">
             <p className="font-black text-lg">{tiers[currentTierIdx]?.name || "Bronze"}</p>
             <Progress value={((currentXP - (tiers[currentTierIdx]?.minXP || 0)) / ((tiers[currentTierIdx]?.maxXP || 500) - (tiers[currentTierIdx]?.minXP || 0))) * 100} className="h-2 mt-1" />
-            <p className="text-[10px] text-muted-foreground mt-0.5">{currentXP} / {tiers[currentTierIdx]?.maxXP} XP to next tier</p>
+            <p className="text-[10px] text-muted-foreground mt-0.5">{currentXP.toLocaleString()} / {tiers[currentTierIdx]?.maxXP.toLocaleString()} XP to next tier</p>
           </div>
         </div>
       </Card>

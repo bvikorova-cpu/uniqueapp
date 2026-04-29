@@ -13,12 +13,15 @@ const seasons = [
   { id: "winter", name: "Winter Gala", emoji: "❄️", icon: Snowflake, color: "from-blue-400 to-cyan-500", active: false },
 ];
 
+// Real seasonal mission tracking is not yet wired to user activity.
+// Until backend tracking is implemented we show 0/target so users see
+// what's available without being misled by fake progress.
 const currentMissions = [
-  { id: "m1", emoji: "📸", title: "Summer Snapshot", desc: "Post 10 photos this season", progress: 6, target: 10, reward: "☀️ Summer Photographer Badge", xp: 300 },
-  { id: "m2", emoji: "🏖️", title: "Beach Vibes", desc: "Use 5 seasonal hashtags", progress: 2, target: 5, reward: "🏖️ Beach Explorer Badge", xp: 150 },
-  { id: "m3", emoji: "🎆", title: "Festival Star", desc: "Attend 3 community events", progress: 1, target: 3, reward: "🎆 Festival VIP Badge", xp: 500 },
-  { id: "m4", emoji: "🌊", title: "Wave Rider", desc: "Maintain a 14-day streak during summer", progress: 7, target: 14, reward: "🌊 Wave Rider Badge", xp: 750 },
-  { id: "m5", emoji: "🍹", title: "Social Mixer", desc: "Comment on 50 posts", progress: 23, target: 50, reward: "🍹 Social Butterfly Badge", xp: 200 },
+  { id: "m1", emoji: "📸", title: "Summer Snapshot", desc: "Post 10 photos this season", progress: 0, target: 10, reward: "☀️ Summer Photographer Badge", xp: 300 },
+  { id: "m2", emoji: "🏖️", title: "Beach Vibes", desc: "Use 5 seasonal hashtags", progress: 0, target: 5, reward: "🏖️ Beach Explorer Badge", xp: 150 },
+  { id: "m3", emoji: "🎆", title: "Festival Star", desc: "Attend 3 community events", progress: 0, target: 3, reward: "🎆 Festival VIP Badge", xp: 500 },
+  { id: "m4", emoji: "🌊", title: "Wave Rider", desc: "Maintain a 14-day streak during summer", progress: 0, target: 14, reward: "🌊 Wave Rider Badge", xp: 750 },
+  { id: "m5", emoji: "🍹", title: "Social Mixer", desc: "Comment on 50 posts", progress: 0, target: 50, reward: "🍹 Social Butterfly Badge", xp: 200 },
 ];
 
 export default function RewardsSeasonalMissions() {

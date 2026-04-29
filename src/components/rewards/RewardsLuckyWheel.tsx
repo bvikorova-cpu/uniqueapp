@@ -1,9 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Disc3, Gift, Star, Sparkles } from "lucide-react";
+import { Disc3, Gift, Sparkles } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
+
+const SPIN_STORAGE_KEY = "rewards_lucky_spin_last_date";
 
 const prizes = [
   { label: "+25 XP", emoji: "⭐", color: "text-yellow-400", weight: 30 },
@@ -19,9 +22,16 @@ const prizes = [
 export default function RewardsLuckyWheel() {
   const [spinning, setSpinning] = useState(false);
   const [result, setResult] = useState<typeof prizes[0] | null>(null);
-  const [spinsLeft, setSpinsLeft] = useState(1);
+  const [spinsLeft, setSpinsLeft] = useState(0);
   const [rotation, setRotation] = useState(0);
   const { toast } = useToast();
+
+  // Daily spin gate — persists across reloads via localStorage (one free spin per UTC day).
+  useEffect(() => {
+    const today = new Date().toISOString().slice(0, 10);
+    const last = typeof window !== "undefined" ? window.localStorage.getItem(SPIN_STORAGE_KEY) : null;
+    setSpinsLeft(last === today ? 0 : 1);
+  }, []);
 
   const spin = () => {
     if (spinning || spinsLeft <= 0) return;
@@ -42,8 +52,14 @@ export default function RewardsLuckyWheel() {
     setTimeout(() => {
       setResult(selected);
       setSpinning(false);
-      setSpinsLeft(prev => prev - 1);
-      toast({ title: `🎉 You won: ${selected.label}!`, description: `${selected.emoji} Prize added to your account!` });
+      setSpinsLeft(0);
+      try {
+        window.localStorage.setItem(SPIN_STORAGE_KEY, new Date().toISOString().slice(0, 10));
+      } catch {}
+      toast({
+        title: `🎉 You won: ${selected.label}!`,
+        description: `${selected.emoji} Preview prize — full backend integration coming soon.`,
+      });
     }, 3000);
   };
 
@@ -52,6 +68,7 @@ export default function RewardsLuckyWheel() {
       <Card className="p-6 bg-gradient-to-br from-amber-500/10 to-yellow-500/5 border-amber-400/20 backdrop-blur-md text-center">
         <h3 className="font-bold text-lg flex items-center justify-center gap-2 mb-4">
           <Disc3 className="h-5 w-5 text-amber-500" /> Daily Lucky Spin
+          <Badge variant="outline" className="text-[9px] ml-1 border-amber-400/40 text-amber-500">PREVIEW</Badge>
         </h3>
 
         {/* Wheel */}
