@@ -324,8 +324,20 @@ export default function KidsMagicLibrary() {
             variant="outline"
             size="sm"
             className="gap-1.5"
-            onClick={() => {
-              toast.success("Portfolio link copied! 🔗");
+            onClick={async () => {
+              const url = window.location.href;
+              try {
+                if (navigator.share) {
+                  await navigator.share({ title: "My Magic Library 🎨", url });
+                } else {
+                  await navigator.clipboard.writeText(url);
+                  toast.success("Portfolio link copied! 🔗");
+                }
+              } catch (err: any) {
+                if (err?.name !== "AbortError") {
+                  toast.error("Couldn't share — copy the URL from the address bar.");
+                }
+              }
             }}
           >
             <Share2 className="h-4 w-4" /> Share Portfolio
