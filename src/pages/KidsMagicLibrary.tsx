@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -71,31 +71,62 @@ export default function KidsMagicLibrary() {
   const { hasGoldPass } = useKidsGoldPass();
   const [activeCategory, setActiveCategory] = useState<GalleryCategory>("all");
   const [search, setSearch] = useState("");
-  const [favorites, setFavorites] = useState<string[]>(() => {
-    if (!user) return [];
-    const stored = localStorage.getItem(`kids_gallery_favorites_${user?.id}`);
-    return stored ? JSON.parse(stored) : [];
-  });
+  const [favorites, setFavorites] = useState<string[]>([]);
   const [lightboxIndex, setLightboxIndex] = useState(-1);
 
-  // Fetch stories
+  // Load favorites from DB
+  useEffect(() => {
+    if (!user) return;
+    supabase
+      .from("kids_gallery_favorites")
+      .select("item_id")
+      .eq("user_id", user.id)
+      .then(({ data }) => {
+        if (data) setFavorites(data.map((r: any) => r.item_id));
+      });
+  }, [user]);
+
+  // Fetch stories from DB
   const { data: stories = [] } = useQuery({
-    queryKey: ["kids-stories", user?.id],
+    queryKey: ["kids-stories-db", user?.id],
     queryFn: async () => {
       if (!user) return [];
-      const stored = localStorage.getItem(`kids_stories_${user.id}`);
-      return stored ? (JSON.parse(stored) as Story[]) : [];
+      const { data, error } = await supabase
+        .from("kids_stories")
+        .select("id,title,category,story_text,illustration_url,created_at")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return (data || []).map((r: any) => ({
+        id: r.id,
+        title: r.title,
+        category: r.category || "story",
+        story_content: r.story_text,
+        illustration_url: r.illustration_url,
+        created_at: r.created_at,
+      })) as Story[];
     },
     enabled: !!user,
   });
 
-  // Fetch drawings
+  // Fetch drawings from DB
   const { data: drawings = [] } = useQuery({
-    queryKey: ["kids-drawings", user?.id],
+    queryKey: ["kids-drawings-db", user?.id],
     queryFn: async () => {
       if (!user) return [];
-      const stored = localStorage.getItem(`kids_drawings_${user.id}`);
-      return stored ? (JSON.parse(stored) as Drawing[]) : [];
+      const { data, error } = await supabase
+        .from("kids_drawings")
+        .select("id,title,drawing_url,tutorial_topic,difficulty,created_at")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return (data || []).map((r: any) => ({
+        id: r.id,
+        title: r.title || r.tutorial_topic || "Drawing",
+        image_url: r.drawing_url,
+        category: r.difficulty || "drawing",
+        created_at: r.created_at,
+      })) as Drawing[];
     },
     enabled: !!user,
   });
@@ -131,6 +162,7 @@ export default function KidsMagicLibrary() {
     },
     enabled: !!user,
   });
+
 
   // Build unified gallery items
   const allItems = useMemo<GalleryItem[]>(() => {
@@ -216,14 +248,25 @@ export default function KidsMagicLibrary() {
   };
 
   const toggleFavorite = useCallback(
-    (id: string) => {
-      setFavorites((prev) => {
-        const next = prev.includes(id) ? prev.filter((f) => f !== id) : [...prev, id];
-        if (user) localStorage.setItem(`kids_gallery_favorites_${user.id}`, JSON.stringify(next));
-        return next;
-      });
+    async (id: string) => {
+      if (!user) return;
+      const isFav = favorites.includes(id);
+      setFavorites((prev) =>
+        isFav ? prev.filter((f) => f !== id) : [...prev, id]
+      );
+      if (isFav) {
+        await supabase
+          .from("kids_gallery_favorites")
+          .delete()
+          .eq("user_id", user.id)
+          .eq("item_id", id);
+      } else {
+        await supabase
+          .from("kids_gallery_favorites")
+          .insert({ user_id: user.id, item_id: id, item_type: "gallery" });
+      }
     },
-    [user]
+    [user, favorites]
   );
 
   const handleDownload = async (url: string, filename: string) => {

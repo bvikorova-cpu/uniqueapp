@@ -34,6 +34,24 @@ export default function BedtimeStories() {
   const fadeIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const { toast } = useToast();
 
+  // Load progress from DB
+  useEffect(() => {
+    (async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) return;
+      const { data } = await supabase
+        .from("kids_bedtime_progress")
+        .select("story_id, rating")
+        .eq("user_id", session.user.id);
+      if (data) {
+        setVisitedStories(new Set(data.map((r: any) => parseInt(r.story_id, 10))));
+        const r: Record<number, number> = {};
+        data.forEach((row: any) => { if (row.rating) r[parseInt(row.story_id, 10)] = row.rating; });
+        setRatings(r);
+      }
+    })();
+  }, []);
+
   const languages = [
     { code: 'en-US', name: 'English 🇬🇧' },
     { code: 'sk-SK', name: 'Slovak 🇸🇰' },
@@ -89,6 +107,17 @@ export default function BedtimeStories() {
     setIsGenerating(true);
     setCurrentStory(storyId);
     setVisitedStories(prev => new Set(prev).add(storyId));
+
+    // Persist visited
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        await supabase.from("kids_bedtime_progress").upsert(
+          { user_id: session.user.id, story_id: String(storyId), listened_at: new Date().toISOString() },
+          { onConflict: "user_id,story_id" }
+        );
+      }
+    } catch (e) { console.warn("progress save failed", e); }
 
     try {
       const { data, error } = await supabase.functions.invoke('translate-and-generate-audio', {
@@ -271,7 +300,16 @@ export default function BedtimeStories() {
                     isCurrentStory={currentStory === story.id}
                     rating={ratings[story.id] || 0}
                     onPlay={() => handlePlayStory(story.id)}
-                    onRate={(r) => setRatings(prev => ({ ...prev, [story.id]: r }))}
+                    onRate={async (r) => {
+                      setRatings(prev => ({ ...prev, [story.id]: r }));
+                      const { data: { session } } = await supabase.auth.getSession();
+                      if (session) {
+                        await supabase.from("kids_bedtime_progress").upsert(
+                          { user_id: session.user.id, story_id: String(story.id), rating: r, listened_at: new Date().toISOString() },
+                          { onConflict: "user_id,story_id" }
+                        );
+                      }
+                    }}
                   />
                 ))}
               </div>

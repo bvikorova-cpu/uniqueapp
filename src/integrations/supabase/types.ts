@@ -21977,6 +21977,30 @@ export type Database = {
         }
         Relationships: []
       }
+      kids_bedtime_progress: {
+        Row: {
+          id: string
+          listened_at: string
+          rating: number | null
+          story_id: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          listened_at?: string
+          rating?: number | null
+          story_id: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          listened_at?: string
+          rating?: number | null
+          story_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       kids_drawing_subscriptions: {
         Row: {
           created_at: string | null
@@ -22160,6 +22184,30 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      kids_gallery_favorites: {
+        Row: {
+          created_at: string
+          id: string
+          item_id: string
+          item_type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          item_id: string
+          item_type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          item_id?: string
+          item_type?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       kids_game_progress: {
         Row: {
