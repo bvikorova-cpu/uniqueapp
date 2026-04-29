@@ -93,6 +93,9 @@ export const InviteFriendPanel = () => {
   const navigate = useNavigate();
   const [copied, setCopied] = useState(false);
   const [selected, setSelected] = useState<ReferralEarning | null>(null);
+  const [search, setSearch] = useState("");
+  const [typeFilter, setTypeFilter] = useState<"all" | "subscription" | "one_off">("all");
+  const [statusFilter, setStatusFilter] = useState<"all" | ReferralStatus>("all");
 
   const inviteUrl = useMemo(() => {
     if (!stats?.code) return "";
