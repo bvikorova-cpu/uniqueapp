@@ -300,7 +300,16 @@ export default function BedtimeStories() {
                     isCurrentStory={currentStory === story.id}
                     rating={ratings[story.id] || 0}
                     onPlay={() => handlePlayStory(story.id)}
-                    onRate={(r) => setRatings(prev => ({ ...prev, [story.id]: r }))}
+                    onRate={async (r) => {
+                      setRatings(prev => ({ ...prev, [story.id]: r }));
+                      const { data: { session } } = await supabase.auth.getSession();
+                      if (session) {
+                        await supabase.from("kids_bedtime_progress").upsert(
+                          { user_id: session.user.id, story_id: String(story.id), rating: r, listened_at: new Date().toISOString() },
+                          { onConflict: "user_id,story_id" }
+                        );
+                      }
+                    }}
                   />
                 ))}
               </div>
