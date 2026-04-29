@@ -33912,6 +33912,57 @@ export type Database = {
         }
         Relationships: []
       }
+      seasonal_missions: {
+        Row: {
+          created_at: string
+          description: string
+          emoji: string
+          ends_at: string
+          id: string
+          is_active: boolean
+          metric: string
+          reward_label: string
+          season: string
+          starts_at: string
+          target: number
+          title: string
+          updated_at: string
+          xp_reward: number
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          emoji?: string
+          ends_at: string
+          id?: string
+          is_active?: boolean
+          metric: string
+          reward_label: string
+          season: string
+          starts_at?: string
+          target: number
+          title: string
+          updated_at?: string
+          xp_reward?: number
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          emoji?: string
+          ends_at?: string
+          id?: string
+          is_active?: boolean
+          metric?: string
+          reward_label?: string
+          season?: string
+          starts_at?: string
+          target?: number
+          title?: string
+          updated_at?: string
+          xp_reward?: number
+        }
+        Relationships: []
+      }
       secret_santa_challenge_progress: {
         Row: {
           challenge_id: string
@@ -39866,6 +39917,44 @@ export type Database = {
         }
         Relationships: []
       }
+      user_mission_progress: {
+        Row: {
+          claimed_at: string | null
+          created_at: string
+          id: string
+          mission_id: string
+          progress: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          claimed_at?: string | null
+          created_at?: string
+          id?: string
+          mission_id: string
+          progress?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          claimed_at?: string | null
+          created_at?: string
+          id?: string
+          mission_id?: string
+          progress?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_mission_progress_mission_id_fkey"
+            columns: ["mission_id"]
+            isOneToOne: false
+            referencedRelation: "seasonal_missions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_mystery_boxes: {
         Row: {
           box_id: string | null
@@ -42725,6 +42814,10 @@ export type Database = {
       }
     }
     Functions: {
+      _increment_mission_progress: {
+        Args: { _delta?: number; _metric: string; _user_id: string }
+        Returns: undefined
+      }
       _log_activity: {
         Args: {
           p_activity_type: string
@@ -42831,6 +42924,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      claim_mission_reward: { Args: { _mission_id: string }; Returns: Json }
       cleanup_expired_cache: { Args: never; Returns: number }
       cleanup_old_jobs: { Args: never; Returns: number }
       cleanup_rate_limits: { Args: never; Returns: undefined }
@@ -43030,6 +43124,25 @@ export type Database = {
         }[]
       }
       get_rls_ref: { Args: never; Returns: string }
+      get_user_mission_progress: {
+        Args: never
+        Returns: {
+          claimed_at: string
+          description: string
+          emoji: string
+          ends_at: string
+          is_complete: boolean
+          metric: string
+          mission_id: string
+          progress: number
+          reward_label: string
+          season: string
+          starts_at: string
+          target: number
+          title: string
+          xp_reward: number
+        }[]
+      }
       get_user_pause_count: { Args: { _user_id: string }; Returns: number }
       get_user_role: { Args: never; Returns: string }
       get_vitals_daily: {
