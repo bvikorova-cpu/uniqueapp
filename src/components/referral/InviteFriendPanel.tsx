@@ -3,7 +3,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useReferralProgram } from "@/hooks/useReferralProgram";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import { Separator } from "@/components/ui/separator";
+import { useReferralProgram, type ReferralEarning } from "@/hooks/useReferralProgram";
 import { useToast } from "@/hooks/use-toast";
 import {
   Copy,
@@ -14,14 +22,51 @@ import {
   Loader2,
   CheckCircle2,
   Clock,
+  CreditCard,
   MessageCircle,
   Send,
   Mail,
   ExternalLink,
+  Calendar,
+  Hash,
+  ChevronRight,
 } from "lucide-react";
-import { formatDistanceToNow } from "date-fns";
+import { format, formatDistanceToNow } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+
+type ReferralStatus = "pending" | "paid" | "withdrawn";
+
+const STATUS_META: Record<
+  ReferralStatus,
+  { label: string; badgeClass: string; icon: typeof Clock; description: string }
+> = {
+  pending: {
+    label: "Čaká",
+    badgeClass: "bg-amber-500/20 text-amber-500 border border-amber-500/30",
+    icon: Clock,
+    description: "Pozvaný sa zaregistroval, ale ešte nezaplatil predplatné.",
+  },
+  paid: {
+    label: "Zaplatil",
+    badgeClass: "bg-blue-500/20 text-blue-400 border border-blue-500/30",
+    icon: CreditCard,
+    description: "Pozvaný zaplatil — odmena je pripravená na výplatu.",
+  },
+  withdrawn: {
+    label: "Vyplatené",
+    badgeClass: "bg-emerald-500/90 text-white",
+    icon: CheckCircle2,
+    description: "Odmena bola vyplatená na tvoj účet.",
+  },
+};
+
+function getStatus(r: ReferralEarning): ReferralStatus {
+  if (r.paid) return "withdrawn";
+  if (Number(r.amount) > 0) return "paid";
+  return "pending";
+}
+
 
 /**
  * Compact "Invite a friend" panel for the user's profile/dashboard.
@@ -36,6 +81,7 @@ export const InviteFriendPanel = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [copied, setCopied] = useState(false);
+  const [selected, setSelected] = useState<ReferralEarning | null>(null);
 
   const inviteUrl = useMemo(() => {
     if (!stats?.code) return "";
@@ -230,54 +276,59 @@ export const InviteFriendPanel = () => {
                 {recent.map((r) => {
                   const name = r.profiles?.full_name || "Nový používateľ";
                   const initial = name.charAt(0).toUpperCase();
+                  const status = getStatus(r);
+                  const meta = STATUS_META[status];
+                  const StatusIcon = meta.icon;
                   return (
-                    <li
-                      key={r.id}
-                      className="flex items-center justify-between gap-3 rounded-lg border border-border/40 bg-background/40 p-3"
-                    >
-                      <div className="flex min-w-0 items-center gap-3">
-                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary to-accent text-sm font-bold text-primary-foreground">
-                          {initial}
-                        </div>
-                        <div className="min-w-0">
-                          <p className="truncate text-sm font-semibold">{name}</p>
-                          <div className="flex flex-wrap items-center gap-1.5">
-                            <span className="text-xs text-muted-foreground">
-                              {formatDistanceToNow(new Date(r.created_at), { addSuffix: true })}
-                            </span>
-                            {r.source_kind === "subscription" && (
-                              <Badge
-                                variant="outline"
-                                className="border-emerald-500/40 px-1.5 py-0 text-[10px] text-emerald-400"
-                              >
-                                Predplatné
-                              </Badge>
-                            )}
-                            {r.source_kind === "one_off" && (
-                              <Badge
-                                variant="outline"
-                                className="border-blue-500/40 px-1.5 py-0 text-[10px] text-blue-400"
-                              >
-                                Jednorazová
-                              </Badge>
-                            )}
+                    <li key={r.id}>
+                      <button
+                        type="button"
+                        onClick={() => setSelected(r)}
+                        className="flex w-full items-center justify-between gap-3 rounded-lg border border-border/40 bg-background/40 p-3 text-left transition hover:border-primary/40 hover:bg-background/70 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                        aria-label={`Detail pozvania pre ${name}`}
+                      >
+                        <div className="flex min-w-0 items-center gap-3">
+                          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary to-accent text-sm font-bold text-primary-foreground">
+                            {initial}
+                          </div>
+                          <div className="min-w-0">
+                            <p className="truncate text-sm font-semibold">{name}</p>
+                            <div className="flex flex-wrap items-center gap-1.5">
+                              <span className="text-xs text-muted-foreground">
+                                {formatDistanceToNow(new Date(r.created_at), { addSuffix: true })}
+                              </span>
+                              {r.source_kind === "subscription" && (
+                                <Badge
+                                  variant="outline"
+                                  className="border-emerald-500/40 px-1.5 py-0 text-[10px] text-emerald-400"
+                                >
+                                  Predplatné
+                                </Badge>
+                              )}
+                              {r.source_kind === "one_off" && (
+                                <Badge
+                                  variant="outline"
+                                  className="border-blue-500/40 px-1.5 py-0 text-[10px] text-blue-400"
+                                >
+                                  Jednorazová
+                                </Badge>
+                              )}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                      <div className="flex shrink-0 flex-col items-end gap-1">
-                        <span className="text-base font-bold text-emerald-500">
-                          +€{Number(r.amount).toFixed(2)}
-                        </span>
-                        <Badge
-                          className={
-                            r.paid
-                              ? "bg-emerald-500/90 text-white"
-                              : "bg-amber-500/20 text-amber-500"
-                          }
-                        >
-                          {r.paid ? "Vyplatené" : "Čaká"}
-                        </Badge>
-                      </div>
+                        <div className="flex shrink-0 items-center gap-2">
+                          <div className="flex flex-col items-end gap-1">
+                            <span className="text-base font-bold text-emerald-500">
+                              +€{Number(r.amount).toFixed(2)}
+                            </span>
+                            <Badge className={`${meta.badgeClass} gap-1`}>
+                              <StatusIcon className="h-3 w-3" />
+                              {meta.label}
+                            </Badge>
+                          </div>
+                          <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                        </div>
+                      </button>
                     </li>
                   );
                 })}
@@ -295,6 +346,125 @@ export const InviteFriendPanel = () => {
           </Button>
         </CardContent>
       </Card>
+
+      {/* Detail dialog */}
+      <Dialog open={!!selected} onOpenChange={(open) => !open && setSelected(null)}>
+        <DialogContent className="max-w-md">
+          {selected && (() => {
+            const status = getStatus(selected);
+            const meta = STATUS_META[status];
+            const StatusIcon = meta.icon;
+            const name = selected.profiles?.full_name || "Nový používateľ";
+            const created = new Date(selected.created_at);
+            const periodStart = selected.period_start ? new Date(selected.period_start) : null;
+            const periodEnd = selected.period_end ? new Date(selected.period_end) : null;
+            return (
+              <>
+                <DialogHeader>
+                  <DialogTitle className="flex items-center gap-2">
+                    <Gift className="h-5 w-5 text-primary" />
+                    Detail pozvania
+                  </DialogTitle>
+                  <DialogDescription>{meta.description}</DialogDescription>
+                </DialogHeader>
+
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary to-accent text-base font-bold text-primary-foreground">
+                      {name.charAt(0).toUpperCase()}
+                    </div>
+                    <div className="min-w-0">
+                      <p className="truncate text-base font-semibold">{name}</p>
+                      <p className="text-xs text-muted-foreground">
+                        Pozvaný {formatDistanceToNow(created, { addSuffix: true })}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="rounded-lg border border-border/50 bg-muted/30 p-4">
+                    <div className="mb-2 flex items-center justify-between">
+                      <span className="text-sm text-muted-foreground">Stav odmeny</span>
+                      <Badge className={`${meta.badgeClass} gap-1`}>
+                        <StatusIcon className="h-3 w-3" />
+                        {meta.label}
+                      </Badge>
+                    </div>
+                    <div className="text-3xl font-bold text-emerald-500">
+                      +€{Number(selected.amount).toFixed(2)}
+                    </div>
+                  </div>
+
+                  <Separator />
+
+                  <dl className="space-y-2 text-sm">
+                    <div className="flex items-start justify-between gap-3">
+                      <dt className="flex items-center gap-1.5 text-muted-foreground">
+                        <Hash className="h-3.5 w-3.5" /> Typ
+                      </dt>
+                      <dd className="font-medium">
+                        {selected.source_kind === "subscription"
+                          ? "Predplatné (mesačne)"
+                          : selected.source_kind === "one_off"
+                          ? "Jednorazová platba"
+                          : "—"}
+                      </dd>
+                    </div>
+                    <div className="flex items-start justify-between gap-3">
+                      <dt className="flex items-center gap-1.5 text-muted-foreground">
+                        <Calendar className="h-3.5 w-3.5" /> Vytvorené
+                      </dt>
+                      <dd className="font-medium">{format(created, "d. M. yyyy HH:mm")}</dd>
+                    </div>
+                    {periodStart && periodEnd && (
+                      <div className="flex items-start justify-between gap-3">
+                        <dt className="flex items-center gap-1.5 text-muted-foreground">
+                          <Calendar className="h-3.5 w-3.5" /> Obdobie
+                        </dt>
+                        <dd className="text-right font-medium">
+                          {format(periodStart, "d. M. yyyy")} – {format(periodEnd, "d. M. yyyy")}
+                        </dd>
+                      </div>
+                    )}
+                    <div className="flex items-start justify-between gap-3">
+                      <dt className="flex items-center gap-1.5 text-muted-foreground">
+                        <Hash className="h-3.5 w-3.5" /> ID záznamu
+                      </dt>
+                      <dd className="max-w-[60%] truncate font-mono text-xs">{selected.id}</dd>
+                    </div>
+                  </dl>
+
+                  {status === "pending" && (
+                    <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 p-3 text-xs text-amber-200">
+                      Pozvaný sa zaregistroval, ale ešte neuhradil prvé predplatné. Po prvej platbe
+                      ti automaticky pripíšeme €5.
+                    </div>
+                  )}
+                  {status === "paid" && (
+                    <div className="rounded-lg border border-blue-500/30 bg-blue-500/10 p-3 text-xs text-blue-200">
+                      Odmena je tvoja — môžeš si ju vyžiadať na výplatu v plnom paneli.
+                    </div>
+                  )}
+                  {status === "withdrawn" && (
+                    <div className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 p-3 text-xs text-emerald-200">
+                      Táto odmena bola už vyplatená na tvoj účet.
+                    </div>
+                  )}
+
+                  <Button
+                    className="w-full gap-2"
+                    onClick={() => {
+                      setSelected(null);
+                      navigate("/referral");
+                    }}
+                  >
+                    Otvoriť plný panel <ExternalLink className="h-3.5 w-3.5" />
+                  </Button>
+                </div>
+              </>
+            );
+          })()}
+        </DialogContent>
+      </Dialog>
     </motion.div>
   );
 };
