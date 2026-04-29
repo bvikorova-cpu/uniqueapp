@@ -246,6 +246,7 @@ export const EmployerVerification = lazy(() => import("@/pages/EmployerVerificat
 export const Earnings = lazy(() => import("@/pages/Earnings"));
 export const InstructorEarnings = lazy(() => import("@/pages/InstructorEarnings"));
 export const Rewards = lazy(() => import("@/pages/Rewards"));
+export const XPAuditLog = lazy(() => import("@/pages/XPAuditLog"));
 export const Referral = lazy(() => import("@/pages/Referral"));
 
 // Quiz & Challenges

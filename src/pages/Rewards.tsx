@@ -127,6 +127,14 @@ export default function Rewards() {
                 <LastWeekWinners />
                 <StreakHeatmap userId={user.id} />
                 <RewardHistoryTimeline userId={user.id} />
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  onClick={() => navigate('/rewards/audit')}
+                >
+                  <Eye className="h-4 w-4 mr-1" />
+                  View full XP audit log
+                </Button>
               </div>
             </div>
 
