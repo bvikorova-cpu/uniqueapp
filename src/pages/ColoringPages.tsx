@@ -187,7 +187,7 @@ export default function ColoringPages() {
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <div className="overflow-x-auto scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0">
-             <TabsList className="inline-flex gap-2 sm:grid sm:grid-cols-6 lg:grid-cols-12 w-max sm:w-full h-auto p-2">
+             <TabsList className="inline-flex gap-2 sm:grid sm:grid-cols-6 lg:grid-cols-7 xl:grid-cols-14 w-max sm:w-full h-auto p-2">
               <TabsTrigger value="generate" className="px-3 py-2 text-xs whitespace-nowrap gap-1.5">
                 <Palette className="w-3.5 h-3.5" /> Create
               </TabsTrigger>
@@ -223,6 +223,12 @@ export default function ColoringPages() {
               </TabsTrigger>
               <TabsTrigger value="schools" className="px-3 py-2 text-xs whitespace-nowrap gap-1.5">
                 <GraduationCap className="w-3.5 h-3.5" /> Schools
+              </TabsTrigger>
+              <TabsTrigger value="healthcare" className="px-3 py-2 text-xs whitespace-nowrap gap-1.5">
+                <Heart className="w-3.5 h-3.5" /> Healthcare
+              </TabsTrigger>
+              <TabsTrigger value="corporate" className="px-3 py-2 text-xs whitespace-nowrap gap-1.5">
+                <Crown className="w-3.5 h-3.5" /> Corporate
               </TabsTrigger>
             </TabsList>
           </div>
@@ -361,7 +367,13 @@ export default function ColoringPages() {
           </TabsContent>
 
           {/* Color Online (hidden tab triggered by button) */}
-          <TabsContent value="color-online">
+          <TabsContent value="color-online" className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-semibold">Color Online</h2>
+              <Button variant="outline" size="sm" onClick={() => setActiveTab("my-pages")}>
+                ← Back to My Pages
+              </Button>
+            </div>
             {coloringCanvasImage ? (
               <ColoringCanvas imageUrl={coloringCanvasImage} />
             ) : (
@@ -404,7 +416,9 @@ export default function ColoringPages() {
                     <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> No watermark</li>
                     <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> PNG + PDF formats</li>
                   </ul>
-                  <Button onClick={() => payPerUseMutation.mutate()} disabled={payPerUseMutation.isPending} className="w-full">Buy 1 Credit</Button>
+                  <Button onClick={() => payPerUseMutation.mutate()} disabled={payPerUseMutation.isPending} className="w-full">
+                    {payPerUseMutation.isPending ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Processing...</> : "Buy 1 Credit"}
+                  </Button>
                 </CardContent>
               </Card>
               <Card className="backdrop-blur-xl bg-card/80 border-border/30 hover:border-purple-500/20 transition-all">
@@ -425,7 +439,9 @@ export default function ColoringPages() {
                     <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> PNG + PDF formats</li>
                     <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> Custom templates</li>
                   </ul>
-                  <Button onClick={() => subscribeMutation.mutate('basic')} disabled={subscribeMutation.isPending} className="w-full">Subscribe</Button>
+                  <Button onClick={() => subscribeMutation.mutate('basic')} disabled={subscribeMutation.isPending} className="w-full">
+                    {subscribeMutation.isPending && subscribeMutation.variables === 'basic' ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Redirecting...</> : "Subscribe"}
+                  </Button>
                 </CardContent>
               </Card>
               <Card className="backdrop-blur-xl bg-card/80 border-primary/30 hover:border-primary/50 transition-all relative overflow-hidden">
@@ -448,7 +464,9 @@ export default function ColoringPages() {
                     <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> Priority processing</li>
                     <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> Custom branding</li>
                   </ul>
-                  <Button onClick={() => subscribeMutation.mutate('premium')} disabled={subscribeMutation.isPending} className="w-full">Subscribe</Button>
+                  <Button onClick={() => subscribeMutation.mutate('premium')} disabled={subscribeMutation.isPending} className="w-full">
+                    {subscribeMutation.isPending && subscribeMutation.variables === 'premium' ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Redirecting...</> : "Subscribe"}
+                  </Button>
                 </CardContent>
               </Card>
             </div>
@@ -480,6 +498,8 @@ export default function ColoringPages() {
           </TabsContent>
 
           <TabsContent value="schools"><SchoolsTab /></TabsContent>
+          <TabsContent value="healthcare"><HealthcareTab /></TabsContent>
+          <TabsContent value="corporate"><CorporateTab /></TabsContent>
         </Tabs>
       </main>
     </div>
