@@ -164,6 +164,7 @@ export const StorybookDisplay = ({ story, onSave, onContinue, showContinue, cont
                   <button
                     key={i}
                     onClick={() => setCurrentPage(i)}
+                    aria-label={`Go to page ${i + 1}`}
                     className={`w-2.5 h-2.5 rounded-full transition-all ${
                       i === currentPage ? "bg-primary scale-125" : "bg-muted-foreground/30"
                     }`}
