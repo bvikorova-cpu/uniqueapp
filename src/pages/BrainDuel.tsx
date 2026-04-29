@@ -381,7 +381,13 @@ const BrainDuel = () => {
                           <Button
                             variant="outline"
                             className={`h-auto min-h-[80px] sm:min-h-[90px] py-3 sm:py-4 flex-col gap-2 px-2 sm:px-3 whitespace-normal w-full bg-gradient-to-br ${category.bg} border-border/50 hover:border-primary/30 hover:shadow-lg transition-all duration-300`}
-                           onClick={() => { window.location.href = `/brain-duel?category=${encodeURIComponent(category.id)}`; }}>
+                            onClick={() => {
+                              toast.success(`${category.name} selected`, {
+                                description: "Choose this category in the duel panel above to start playing.",
+                              });
+                              document.getElementById("brain-duel-game-anchor")?.scrollIntoView({ behavior: "smooth", block: "start" });
+                            }}
+                          >
                             <div className="p-2 rounded-xl bg-background/50">
                               <Icon className={`h-5 w-5 sm:h-6 sm:w-6 flex-shrink-0 ${category.color}`} />
                             </div>
