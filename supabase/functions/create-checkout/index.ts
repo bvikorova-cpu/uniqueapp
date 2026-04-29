@@ -446,6 +446,9 @@ serve(async (req) => {
             creditType === "science" ? "science_credits"
             : creditType === "homework" ? "homework_credits"
             : creditType === "chat" ? "chat_credits"
+            : creditType === "kids_drawing" ? "kids_drawing_credits"
+            : creditType === "kids_reading" ? "kids_reading_credits"
+            : creditType === "kids_story" ? "kids_story_credits"
             : creditType,
         },
       });
