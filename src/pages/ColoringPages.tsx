@@ -367,7 +367,13 @@ export default function ColoringPages() {
           </TabsContent>
 
           {/* Color Online (hidden tab triggered by button) */}
-          <TabsContent value="color-online">
+          <TabsContent value="color-online" className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-semibold">Color Online</h2>
+              <Button variant="outline" size="sm" onClick={() => setActiveTab("my-pages")}>
+                ← Back to My Pages
+              </Button>
+            </div>
             {coloringCanvasImage ? (
               <ColoringCanvas imageUrl={coloringCanvasImage} />
             ) : (
