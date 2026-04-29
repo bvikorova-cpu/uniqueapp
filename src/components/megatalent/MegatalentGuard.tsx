@@ -521,6 +521,22 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
             </section>
           )}
 
+          {previewLoaded && previewItems.length === 0 && (
+            <section
+              aria-label="Žiadne príspevky na ukážku"
+              className="rounded-xl border border-dashed border-primary/30 bg-muted/30 p-6 text-center space-y-2"
+            >
+              <div className="mx-auto w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                <Sparkles className="w-6 h-6 text-primary" />
+              </div>
+              <h2 className="text-lg font-semibold">Súťaž práve štartuje 🚀</h2>
+              <p className="text-sm text-muted-foreground max-w-md mx-auto">
+                Zatiaľ tu nie sú žiadne aktívne príspevky na ukážku. Buď medzi prvými —
+                odomkni predplatným a nahraj svoj talent ako prvý v 35+ kategóriách.
+              </p>
+            </section>
+          )}
+
           <Card className="max-w-lg mx-auto w-full border-2 border-primary/40 shadow-2xl">
             <CardHeader className="text-center space-y-3">
               <div className="mx-auto w-16 h-16 rounded-full bg-primary/15 flex items-center justify-center">
