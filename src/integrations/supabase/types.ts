@@ -26443,6 +26443,48 @@ export type Database = {
           },
         ]
       }
+      mystery_badge_events: {
+        Row: {
+          active_from: string
+          active_until: string
+          created_at: string
+          description: string
+          emoji: string
+          hint: string
+          id: string
+          rarity: string
+          reward_xp: number
+          status: string
+          title: string
+        }
+        Insert: {
+          active_from?: string
+          active_until?: string
+          created_at?: string
+          description: string
+          emoji: string
+          hint: string
+          id?: string
+          rarity?: string
+          reward_xp?: number
+          status?: string
+          title: string
+        }
+        Update: {
+          active_from?: string
+          active_until?: string
+          created_at?: string
+          description?: string
+          emoji?: string
+          hint?: string
+          id?: string
+          rarity?: string
+          reward_xp?: number
+          status?: string
+          title?: string
+        }
+        Relationships: []
+      }
       mystery_box_items: {
         Row: {
           box_id: string | null
@@ -32972,6 +33014,33 @@ export type Database = {
           user_id?: string
           view_date?: string
           xp_awarded?: number
+        }
+        Relationships: []
+      }
+      rewards_ai_history: {
+        Row: {
+          action: string
+          created_at: string
+          id: string
+          input: Json
+          result: string
+          user_id: string
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          id?: string
+          input?: Json
+          result: string
+          user_id: string
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -43506,6 +43575,7 @@ export type Database = {
       redeem_shop_item: { Args: { _item_code: string }; Returns: Json }
       reset_best_friend_monthly_messages: { Args: never; Returns: undefined }
       reset_psychology_monthly_messages: { Args: never; Returns: undefined }
+      rotate_mystery_events: { Args: never; Returns: undefined }
       rotate_seasonal_missions: { Args: never; Returns: Json }
       snapshot_weekly_xp_winners: { Args: never; Returns: number }
       spend_brain_duel_credits: {

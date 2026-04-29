@@ -136,6 +136,14 @@ serve(async (req) => {
     await supabase.from("ai_credits").update({ credits_remaining: remaining - creditCost }).eq("user_id", user.id);
     await supabase.from("ai_usage_history").insert({ user_id: user.id, usage_type: `rewards_${action}`, credits_used: creditCost, description: `Rewards AI: ${action}` });
 
+    // Persist result so user can re-view it without paying again
+    await supabase.from("rewards_ai_history").insert({
+      user_id: user.id,
+      action,
+      input: params,
+      result,
+    });
+
     return new Response(JSON.stringify({ result }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e: any) {
     console.error("rewards-ai error:", e);
