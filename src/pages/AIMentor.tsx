@@ -133,8 +133,25 @@ const AIMentor = () => {
 
   if (loading || adminLoading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center text-muted-foreground">Loading...</div>
+      <div className="min-h-screen bg-background pt-20 pb-12">
+        <div className="container mx-auto px-2 sm:px-4 space-y-6">
+          <Skeleton className="h-48 w-full rounded-2xl" />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {[0, 1, 2].map((i) => <Skeleton key={i} className="h-32 rounded-2xl" />)}
+          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2 space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {[0, 1, 2, 3].map((i) => <Skeleton key={i} className="h-48 rounded-2xl" />)}
+              </div>
+              <Skeleton className="h-64 rounded-2xl" />
+            </div>
+            <div className="space-y-4">
+              <Skeleton className="h-40 rounded-2xl" />
+              <Skeleton className="h-64 rounded-2xl" />
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
