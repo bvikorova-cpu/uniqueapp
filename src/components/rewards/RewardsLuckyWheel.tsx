@@ -1,9 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Disc3, Gift, Star, Sparkles } from "lucide-react";
+import { Disc3, Gift, Sparkles } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
+
+const SPIN_STORAGE_KEY = "rewards_lucky_spin_last_date";
 
 const prizes = [
   { label: "+25 XP", emoji: "⭐", color: "text-yellow-400", weight: 30 },
@@ -19,9 +22,16 @@ const prizes = [
 export default function RewardsLuckyWheel() {
   const [spinning, setSpinning] = useState(false);
   const [result, setResult] = useState<typeof prizes[0] | null>(null);
-  const [spinsLeft, setSpinsLeft] = useState(1);
+  const [spinsLeft, setSpinsLeft] = useState(0);
   const [rotation, setRotation] = useState(0);
   const { toast } = useToast();
+
+  // Daily spin gate — persists across reloads via localStorage (one free spin per UTC day).
+  useEffect(() => {
+    const today = new Date().toISOString().slice(0, 10);
+    const last = typeof window !== "undefined" ? window.localStorage.getItem(SPIN_STORAGE_KEY) : null;
+    setSpinsLeft(last === today ? 0 : 1);
+  }, []);
 
   const spin = () => {
     if (spinning || spinsLeft <= 0) return;
