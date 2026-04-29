@@ -11,7 +11,7 @@ import { useQueryClient } from "@tanstack/react-query";
 
 interface Profile {
   id: string;
-  display_name: string | null;
+  full_name: string | null;
   avatar_url: string | null;
 }
 
@@ -31,8 +31,8 @@ export default function RewardsGiftXP() {
     setSearching(true);
     const { data } = await supabase
       .from("profiles")
-      .select("id,display_name,avatar_url")
-      .ilike("display_name", `%${query}%`)
+      .select("id,full_name,avatar_url")
+      .ilike("full_name", `%${query}%`)
       .limit(10);
     setResults((data ?? []) as Profile[]);
     setSearching(false);
@@ -64,7 +64,7 @@ export default function RewardsGiftXP() {
       toast({ title: "Gift failed", description: res.error.replace(/_/g, " "), variant: "destructive" });
       return;
     }
-    toast({ title: "🎁 XP sent!", description: `${amt} XP delivered to ${recipient.display_name}` });
+    toast({ title: "🎁 XP sent!", description: `${amt} XP delivered to ${recipient.full_name}` });
     setRecipient(null); setQuery(""); setResults([]); setMessage("");
     qc.invalidateQueries({ queryKey: ["rewards-stats"] });
     qc.invalidateQueries({ queryKey: ["gamification"] });
@@ -94,9 +94,9 @@ export default function RewardsGiftXP() {
               {results.map((p) => (
                 <button key={p.id} onClick={() => setRecipient(p)} className="w-full flex items-center gap-2 p-2 rounded-lg hover:bg-muted/40 text-left">
                   <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center text-xs font-bold">
-                    {p.display_name?.[0]?.toUpperCase() ?? "?"}
+                    {p.full_name?.[0]?.toUpperCase() ?? "?"}
                   </div>
-                  <span className="text-sm">{p.display_name ?? "Unnamed"}</span>
+                  <span className="text-sm">{p.full_name ?? "Unnamed"}</span>
                 </button>
               ))}
             </div>
@@ -104,7 +104,7 @@ export default function RewardsGiftXP() {
 
           {recipient && (
             <div className="flex items-center justify-between p-3 rounded-lg bg-pink-500/10 border border-pink-400/30">
-              <span className="text-sm">→ {recipient.display_name}</span>
+              <span className="text-sm">→ {recipient.full_name}</span>
               <Button variant="ghost" size="sm" onClick={() => setRecipient(null)}>Change</Button>
             </div>
           )}
