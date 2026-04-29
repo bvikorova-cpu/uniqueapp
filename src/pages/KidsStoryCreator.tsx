@@ -87,16 +87,16 @@ const KidsStoryCreator = () => {
       });
 
       if (error) {
-        if (error.message?.includes('Monthly limit reached')) {
-          toast.error('Monthly limit reached! Upgrade to Premium for unlimited stories.', { duration: 5000 });
-          refreshUsage();
+        if (error.message?.toLowerCase().includes('insufficient credits') || error.message?.toLowerCase().includes('limit')) {
+          toast.error(`You need ${costPerUse} Story credits. Buy more to continue!`, { duration: 5000 });
+          refreshCredits();
           return;
         }
         throw error;
       }
 
       setStory(result);
-      refreshUsage();
+      refreshCredits();
       toast.success("Your story is ready! 📖");
     } catch (error: any) {
       console.error('Error:', error);
