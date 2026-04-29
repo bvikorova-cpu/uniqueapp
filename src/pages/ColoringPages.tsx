@@ -464,7 +464,9 @@ export default function ColoringPages() {
                     <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> Priority processing</li>
                     <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> Custom branding</li>
                   </ul>
-                  <Button onClick={() => subscribeMutation.mutate('premium')} disabled={subscribeMutation.isPending} className="w-full">Subscribe</Button>
+                  <Button onClick={() => subscribeMutation.mutate('premium')} disabled={subscribeMutation.isPending} className="w-full">
+                    {subscribeMutation.isPending && subscribeMutation.variables === 'premium' ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Redirecting...</> : "Subscribe"}
+                  </Button>
                 </CardContent>
               </Card>
             </div>
