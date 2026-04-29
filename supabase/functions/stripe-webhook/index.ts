@@ -73,6 +73,67 @@ serve(async (req) => {
       case "checkout.session.completed": {
         const session = event.data.object as Stripe.Checkout.Session;
         if (session.payment_status === "paid") {
+          // ── Tutoring credits auto-activation (safety net if user closes tab
+          //    before frontend redirect runs `tutoring-add-credits`) ─────────
+          try {
+            const TUTORING_PRICE_TO_CREDITS: Record<string, number> = {
+              price_1ScY0zGaXSfGtYFtoe91oxmX: 10,
+              price_1ScY10GaXSfGtYFt3F1cPJaE: 30,
+              price_1ScY12GaXSfGtYFt3zw96KfT: 100,
+            };
+            const full = await stripe.checkout.sessions.retrieve(session.id, {
+              expand: ["line_items"],
+            });
+            const priceId = full.line_items?.data?.[0]?.price?.id;
+            if (priceId && priceId in TUTORING_PRICE_TO_CREDITS) {
+              // Idempotency: skip if already credited via tutoring-add-credits
+              const { data: existingTx } = await supabase
+                .from("tutoring_credit_transactions")
+                .select("id")
+                .eq("stripe_session_id", session.id)
+                .maybeSingle();
+              if (!existingTx) {
+                const email = full.customer_details?.email ?? null;
+                if (email) {
+                  const { data: prof } = await supabase
+                    .from("profiles").select("id").eq("email", email).maybeSingle();
+                  if (prof?.id) {
+                    const credits = TUTORING_PRICE_TO_CREDITS[priceId];
+                    const { data: cur } = await supabase
+                      .from("tutoring_credits")
+                      .select("*")
+                      .eq("user_id", prof.id)
+                      .maybeSingle();
+                    if (cur) {
+                      await supabase.from("tutoring_credits").update({
+                        credits_remaining: cur.credits_remaining + credits,
+                        total_credits_purchased: cur.total_credits_purchased + credits,
+                        updated_at: new Date().toISOString(),
+                      }).eq("user_id", prof.id);
+                    } else {
+                      await supabase.from("tutoring_credits").insert({
+                        user_id: prof.id,
+                        credits_remaining: credits,
+                        total_credits_purchased: credits,
+                      });
+                    }
+                    await supabase.from("tutoring_credit_transactions").insert({
+                      user_id: prof.id,
+                      delta: credits,
+                      reason: "stripe_webhook",
+                      stripe_session_id: session.id,
+                    });
+                    log("tutoring credits auto-credited via webhook", {
+                      user: prof.id, credits, sessionId: session.id,
+                    });
+                  }
+                }
+              }
+            }
+          } catch (tcErr) {
+            log("tutoring credit webhook handler error", { err: (tcErr as Error).message });
+          }
+
           const { error } = await supabase
             .from("payment_records")
             .update({

@@ -71,7 +71,12 @@ export default function QuizTaker() {
     questions.forEach((q) => { if (answers[q.id] === q.correct_answer) correct++; });
     const score = Math.round((correct / questions.length) * 100);
     const passed = score >= (quiz.passing_score || 70);
-    await submitAttempt.mutateAsync({ quizId: quiz.id, answers, score, passed });
+    try {
+      await submitAttempt.mutateAsync({ quizId: quiz.id, answers, score, passed });
+    } catch (err) {
+      // Show results even if save fails so the user isn't stuck on an empty screen.
+      console.error("[QuizTaker] submit failed", err);
+    }
     setShowResults(true);
   };
 

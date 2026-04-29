@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Zap, Clock, Trophy } from "lucide-react";
@@ -6,8 +7,12 @@ import { useNavigate } from "react-router-dom";
 
 export const QuickChallenge = () => {
   const navigate = useNavigate();
-  const randomCategories = ["math", "biology", "history", "geography", "science"];
-  const randomCategory = randomCategories[Math.floor(Math.random() * randomCategories.length)];
+  // Pick a category once per mount — recomputing on every render caused the
+  // button target to flicker and broke the navigate URL when clicked twice.
+  const randomCategory = useMemo(() => {
+    const randomCategories = ["math", "biology", "history", "geography", "science"];
+    return randomCategories[Math.floor(Math.random() * randomCategories.length)];
+  }, []);
 
   return (
     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}>

@@ -103,9 +103,13 @@ export const EducationHero = () => {
                 <div className={`w-9 h-9 mx-auto mb-2 rounded-lg bg-gradient-to-br ${statColors[i]} flex items-center justify-center shadow-md group-hover:scale-110 transition-transform`}>
                   <Icon className="h-4 w-4 text-white" />
                 </div>
-                <p className="text-lg md:text-2xl font-black">
-                  {(stat as any).staticLabel ? (stat as any).staticLabel : loading ? "..." : <AnimatedCounter target={stat.value} suffix={stat.suffix} />}
-                </p>
+                <div className="text-lg md:text-2xl font-black min-h-[1.75rem] flex items-center justify-center">
+                  {(stat as any).staticLabel
+                    ? <span>{(stat as any).staticLabel}</span>
+                    : loading
+                      ? <span className="inline-block h-5 w-12 rounded bg-muted/60 animate-pulse" />
+                      : <AnimatedCounter target={stat.value} suffix={stat.suffix} />}
+                </div>
                 <p className="text-[10px] md:text-xs text-muted-foreground font-medium">{stat.label}</p>
               </div>
             </motion.div>
