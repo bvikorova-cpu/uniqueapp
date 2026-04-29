@@ -221,8 +221,21 @@ const MegatalentCategory = () => {
 
         {/* Content */}
         {loading ? (
-          <div className="flex items-center justify-center py-20">
-            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <Card key={i} className="overflow-hidden backdrop-blur-xl bg-card/60 border-border/30 animate-pulse">
+                <div className="aspect-video bg-gradient-to-br from-primary/10 via-accent/5 to-primary/10" />
+                <CardContent className="p-4 space-y-3">
+                  <div className="h-5 w-3/4 rounded bg-muted/60" />
+                  <div className="h-3 w-full rounded bg-muted/40" />
+                  <div className="h-3 w-2/3 rounded bg-muted/40" />
+                  <div className="flex gap-3 pt-2">
+                    <div className="h-8 w-16 rounded bg-muted/40" />
+                    <div className="h-8 w-16 rounded bg-muted/40" />
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         ) : submissions.length === 0 ? (
           <motion.div
