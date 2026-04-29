@@ -7240,6 +7240,36 @@ export type Database = {
         }
         Relationships: []
       }
+      chat_credits: {
+        Row: {
+          created_at: string
+          credits_remaining: number
+          id: string
+          last_purchase_at: string | null
+          total_credits_purchased: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_remaining?: number
+          id?: string
+          last_purchase_at?: string | null
+          total_credits_purchased?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_remaining?: number
+          id?: string
+          last_purchase_at?: string | null
+          total_credits_purchased?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       chef_chat_sessions: {
         Row: {
           created_at: string

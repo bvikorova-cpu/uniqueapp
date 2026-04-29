@@ -12,6 +12,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { ParentalGate, useParentalGate } from "@/components/kids/ParentalGate";
 import { SafeContentBadge } from "@/components/kids/SafeContentBadge";
 import { AnimatePresence, motion } from "framer-motion";
+import { useChatCredits } from "@/hooks/useChatCredits";
+import { ChatCreditBanner } from "@/components/kids/chat/ChatCreditBanner";
 
 // New chat components
 import { AnimatedChatBubble } from "@/components/kids/chat/AnimatedChatBubble";
@@ -26,6 +28,7 @@ import { MagicalParticles } from "@/components/kids/chat/MagicalParticles";
 export default function KidsVoiceChat() {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { credits_remaining, loading: creditsLoading, canSendMessage, refresh: refreshCredits } = useChatCredits();
   const [selectedCharacter, setSelectedCharacter] = useState<Character | null>(null);
   const [messages, setMessages] = useState<Array<{ role: string; content: string }>>([]);
   const [inputMessage, setInputMessage] = useState("");
@@ -47,9 +50,46 @@ export default function KidsVoiceChat() {
     }
   }, []);
 
+  // Verify Stripe checkout return (?payment=success&session_id=...)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const status = params.get("payment");
+    const sessionId = params.get("session_id");
+    if (status === "success" && sessionId) {
+      (async () => {
+        try {
+          await supabase.functions.invoke("verify-credits-payment", {
+            body: { session_id: sessionId },
+          });
+          await refreshCredits();
+          toast({ title: "Credits added! 🎉", description: "You can now keep chatting." });
+        } catch (e) {
+          console.error("verify-credits-payment failed", e);
+        } finally {
+          window.history.replaceState({}, "", "/kids-voice-chat");
+        }
+      })();
+    } else if (status === "canceled") {
+      toast({ title: "Payment canceled", description: "No credits were added." });
+      window.history.replaceState({}, "", "/kids-voice-chat");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const sendMessage = async (overrideMessage?: string) => {
     const msgText = overrideMessage || inputMessage.trim();
     if (!msgText || !selectedCharacter || isLoading) return;
+
+    // Paid-only guard
+    if (!canSendMessage) {
+      toast({
+        title: "Out of Chat credits",
+        description: "Buy more credits to keep chatting with your characters!",
+        variant: "destructive",
+      });
+      navigate("/kids-voice-chat-pricing");
+      return;
+    }
 
     const userMessage = { role: "user", content: msgText };
     const newMessages = [...messages, userMessage];
@@ -80,6 +120,17 @@ export default function KidsVoiceChat() {
       if (response.status === 401) {
         toast({ title: "Sign in required", description: "Please sign in to chat.", variant: "destructive" });
         navigate("/auth");
+        return;
+      }
+      if (response.status === 402) {
+        toast({
+          title: "Out of credits",
+          description: "You need more Chat credits to continue.",
+          variant: "destructive",
+        });
+        setMessages(prev => prev.slice(0, -1));
+        await refreshCredits();
+        navigate("/kids-voice-chat-pricing");
         return;
       }
       if (response.status === 429) {
@@ -121,6 +172,9 @@ export default function KidsVoiceChat() {
           } catch {}
         }
       }
+
+      // Refresh credit balance after successful message
+      await refreshCredits();
     } catch (error) {
       console.error('Chat error:', error);
       toast({ title: "Error", description: "Failed to send message. Please try again.", variant: "destructive" });
@@ -173,6 +227,9 @@ export default function KidsVoiceChat() {
             </motion.h1>
             <p className="text-lg text-gray-600">Choose a character and start an amazing conversation!</p>
           </motion.div>
+
+          {/* Credit balance banner (paid-only) */}
+          <ChatCreditBanner credits={credits_remaining} loading={creditsLoading} />
 
           {!selectedCharacter ? (
             /* Character Selection */

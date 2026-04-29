@@ -9,10 +9,13 @@ import { KidsAcademyQuizArena } from "@/components/kids/academy/KidsAcademyQuizA
 import { KidsAcademyShop } from "@/components/kids/academy/KidsAcademyShop";
 import { KidsAcademyParentPanel } from "@/components/kids/academy/KidsAcademyParentPanel";
 import { Card, CardContent } from "@/components/ui/card";
-import { Crown } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Coins, Sparkles } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 const KidsAcademy = () => {
+  const navigate = useNavigate();
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -23,14 +26,33 @@ const KidsAcademy = () => {
 
           <HeroRewardedAd sectionKey="page_kidsacademy" />
 
-          {/* Premium Banner */}
-          <Card className="mb-6 border-2 border-primary/30 bg-gradient-to-r from-primary/5 to-accent/5">
-            <CardContent className="py-3">
-              <div className="flex items-center justify-center gap-3 flex-wrap">
-                <Crown className="w-5 h-5 text-primary" />
-                <span className="font-semibold text-sm text-foreground">Premium: €5/month</span>
-                <span className="text-muted-foreground">•</span>
-                <span className="text-sm text-muted-foreground">Unlimited access to ALL modules</span>
+          {/* Buy Credits Hub Banner (paid-only model) */}
+          <Card className="mb-6 border-2 border-primary/30 bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10">
+            <CardContent className="py-4">
+              <div className="flex items-center justify-between gap-3 flex-wrap">
+                <div className="flex items-center gap-3">
+                  <Coins className="w-6 h-6 text-primary" />
+                  <div>
+                    <p className="font-bold text-sm text-foreground">Pay only for what you use</p>
+                    <p className="text-xs text-muted-foreground">
+                      Credits for AI tools — Science, Homework, Stories, Chat & more
+                    </p>
+                  </div>
+                </div>
+                <div className="flex gap-2 flex-wrap">
+                  <Button size="sm" variant="outline" onClick={() => navigate("/kids-science-pricing")}>
+                    🧪 Science
+                  </Button>
+                  <Button size="sm" variant="outline" onClick={() => navigate("/kids-homework-pricing")}>
+                    📚 Homework
+                  </Button>
+                  <Button size="sm" variant="outline" onClick={() => navigate("/kids-voice-chat-pricing")}>
+                    💬 Chat
+                  </Button>
+                  <Button size="sm" onClick={() => navigate("/kids-story-pricing")}>
+                    <Sparkles className="w-3 h-3 mr-1" /> Stories
+                  </Button>
+                </div>
               </div>
             </CardContent>
           </Card>

@@ -99,6 +99,12 @@ const CREDIT_PACKS: Record<string, { prices: Record<number, string>; successPath
     successPath: "/kids-homework?payment=success&session_id={CHECKOUT_SESSION_ID}",
     cancelPath: "/kids-homework?payment=canceled",
   },
+  // Character Chat credits — dynamic price_data (€0.10/message, 1 credit = 1 message)
+  chat: {
+    prices: {},
+    successPath: "/kids-voice-chat?payment=success&session_id={CHECKOUT_SESSION_ID}",
+    cancelPath: "/kids-voice-chat?payment=canceled",
+  },
   // ─── Newly created Phase 3 packs ───
   character: {
     prices: {
@@ -392,12 +398,15 @@ serve(async (req) => {
       const cancelUrl = `${origin}${pack.cancelPath}`;
 
       // If a fixed price exists use it, otherwise build dynamic price_data
+      // Chat credits are cheaper (€0.10 per credit / message); other dynamic packs use €0.50
+      const unitAmount = creditType === "chat" ? 10 : 50;
+      const minTotal = creditType === "chat" ? 99 : 99; // €0.99 minimum
       const lineItems = priceId
         ? [{ price: priceId, quantity: 1 }]
         : [{
             price_data: {
               currency: "eur" as const,
-              unit_amount: Math.max(99, credits * 50), // €0.50 per credit fallback
+              unit_amount: Math.max(minTotal, credits * unitAmount),
               product_data: { name: `${creditType} Credits - ${credits} Pack` },
             },
             quantity: 1,
@@ -414,13 +423,11 @@ serve(async (req) => {
           user_id: userId,
           credits: String(credits),
           type: `${creditType}_credits`,
-          // verify-credits-payment uses `credit_type` directly as the table name. Most legacy
-          // packs have their own verify alias, but the universal verify expects the full table
-          // name (e.g. `science_credits`). For science we pass the full table name to avoid
-          // needing yet another verify alias.
+          // verify-credits-payment uses `credit_type` directly as the table name.
           credit_type:
             creditType === "science" ? "science_credits"
             : creditType === "homework" ? "homework_credits"
+            : creditType === "chat" ? "chat_credits"
             : creditType,
         },
       });

@@ -119,6 +119,7 @@ import {
   KidsShowDetail,
   ChooseAdventure,
   KidsVoiceChat,
+  KidsVoiceChatPricing,
   CreateCharacter,
   CharacterGalleryPage,
   CharacterGallery,
@@ -651,6 +652,7 @@ const App = () => {
                         <Route path="/kids-channel/:showId" element={<KidsShowDetail />} />
                         <Route path="/choose-adventure" element={<ChooseAdventure />} />
                         <Route path="/kids-voice-chat" element={<KidsVoiceChat />} />
+                        <Route path="/kids-voice-chat-pricing" element={<KidsVoiceChatPricing />} />
                         <Route path="/create-character" element={<CreateCharacter />} />
                         <Route path="/educational-stories" element={<EducationalStories />} />
                         <Route path="/bedtime-stories" element={<BedtimeStories />} />

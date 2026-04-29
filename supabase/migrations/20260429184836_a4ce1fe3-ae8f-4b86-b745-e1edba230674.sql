@@ -1,0 +1,1 @@
+ALTER TABLE public.chat_credits RENAME COLUMN total_purchased TO total_credits_purchased;
