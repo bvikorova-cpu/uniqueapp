@@ -4,260 +4,235 @@ import { withRateLimit, RATE_LIMITS } from "../_shared/rate-limit.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+const KIDS_SAFETY_PROMPT = `\n\nIMPORTANT SAFETY RULES (children ages 6-12):
+- Always be kind, encouraging, and age-appropriate
+- Never discuss violence, scary content, romance, drugs, alcohol, or adult themes
+- Never share personal information requests (address, school, last name, phone)
+- If asked about something inappropriate, gently redirect: "Let's talk about something fun instead!"
+- Use simple, friendly language
+- Encourage creativity, learning, and positive values
+- If the child seems sad or upset, suggest they talk to a parent or trusted adult`;
+
 serve(async (req) => {
-  if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
-  }
+  if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    // Use ANON KEY - RLS policies will enforce access control
     const supabaseClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_ANON_KEY") ?? "",
       { auth: { persistSession: false } }
     );
 
-    const authHeader = req.headers.get("Authorization")!;
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader) throw new Error("Unauthorized");
     const token = authHeader.replace("Bearer ", "");
     const { data: userData } = await supabaseClient.auth.getUser(token);
     const user = userData.user;
+    if (!user) throw new Error("Unauthorized");
 
-    if (!user) {
-      throw new Error("Unauthorized");
-    }
-
-    // Rate limit check
     const rateLimitResponse = await withRateLimit(req, RATE_LIMITS.ai_generation, corsHeaders, user.id);
     if (rateLimitResponse) return rateLimitResponse;
 
     const body = await req.json();
-    const { conversationId, message, characterId } = body;
+    const {
+      // Legacy mode (DB-backed conversations)
+      conversationId,
+      characterId,
+      // Kids mode (stateless)
+      messages,
+      characterName,
+      characterPersonality,
+      message,
+    } = body;
 
-    // Input validation
-    if (!message || typeof message !== 'string') {
-      throw new Error("Message is required and must be a string");
+    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
+
+    // ============ KIDS MODE: stateless chat with safety guardrails ============
+    if (Array.isArray(messages) && characterName) {
+      // Cap payload
+      const safeMessages = messages
+        .slice(-20)
+        .map((m: any) => ({
+          role: m.role === "assistant" ? "assistant" : "user",
+          content: String(m.content || "").slice(0, 2000),
+        }));
+
+      const systemPrompt = `You are ${characterName}, a beloved children's character. Personality: ${characterPersonality || "friendly, kind, playful"}.${KIDS_SAFETY_PROMPT}`;
+
+      const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${LOVABLE_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: "google/gemini-2.5-flash",
+          messages: [{ role: "system", content: systemPrompt }, ...safeMessages],
+          stream: true,
+        }),
+      });
+
+      if (response.status === 429) {
+        return new Response(JSON.stringify({ error: "Too many messages. Please slow down!" }), {
+          status: 429,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      if (response.status === 402) {
+        return new Response(JSON.stringify({ error: "AI credits exhausted. Please add funds." }), {
+          status: 402,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      if (!response.ok || !response.body) {
+        const errText = await response.text();
+        console.error("AI Gateway error:", response.status, errText);
+        throw new Error("AI service error");
+      }
+
+      return new Response(response.body, {
+        headers: { ...corsHeaders, "Content-Type": "text/event-stream" },
+      });
     }
 
-    if (message.trim().length === 0) {
-      throw new Error("Message cannot be empty");
-    }
+    // ============ LEGACY MODE: DB-backed conversation ============
+    const userMessage = message;
+    if (!userMessage || typeof userMessage !== "string") throw new Error("Message is required");
+    if (userMessage.length > 2000) throw new Error("Message too long (max 2000 chars)");
 
-    if (message.length > 2000) {
-      throw new Error("Message too long (max 2000 characters)");
-    }
-
-    // Validate UUID format
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-    
-    if (!conversationId || !uuidRegex.test(conversationId)) {
-      throw new Error("Invalid conversation ID format");
-    }
+    if (!conversationId || !uuidRegex.test(conversationId)) throw new Error("Invalid conversation ID");
+    if (!characterId || !uuidRegex.test(characterId)) throw new Error("Invalid character ID");
 
-    if (!characterId || !uuidRegex.test(characterId)) {
-      throw new Error("Invalid character ID format");
-    }
-
-    // Verify conversation ownership and character match
-    const { data: conversationOwnership, error: convError } = await supabaseClient
-      .from('character_conversations')
-      .select('user_id, character_id')
-      .eq('id', conversationId)
-      .single();
-
-    if (convError || !conversationOwnership) {
-      throw new Error("Conversation not found");
-    }
-
-    if (conversationOwnership.user_id !== user.id) {
-      throw new Error("Unauthorized: This conversation does not belong to you");
-    }
-
-    if (conversationOwnership.character_id !== characterId) {
-      throw new Error("Character ID does not match conversation");
-    }
-
-    // Check companions subscription for non-premium characters
-    const { data: companionsSub } = await supabaseClient
-      .from("companions_subscriptions")
-      .select("*")
-      .eq("user_id", user.id)
-      .maybeSingle();
-
-    // Get character to check if premium
-    const { data: charCheck } = await supabaseClient
-      .from("ai_characters")
-      .select("is_premium")
-      .eq("id", characterId)
-      .single();
-
-    // For non-premium characters (Max, Alex), check subscription
-    if (charCheck && !charCheck.is_premium) {
-      const isSubscribed = companionsSub?.subscription_status === "active";
-      const freeMessagesUsed = companionsSub?.free_messages_used || 0;
-      
-      if (!isSubscribed && freeMessagesUsed >= 5) {
-        return new Response(
-          JSON.stringify({ error: "Free message limit reached. Subscribe for unlimited conversations." }),
-          { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
-      }
-    }
-
-    // Check message limits for free users (legacy system)
-    const { data: limits } = await supabaseClient
-      .from("user_message_limits")
-      .select("*")
-      .eq("user_id", user.id)
-      .maybeSingle();
-
-    // Get character details
-    const { data: character } = await supabaseClient
-      .from("ai_characters")
-      .select("*")
-      .eq("id", characterId)
-      .single();
-
-    if (!character) {
-      throw new Error("Character not found");
-    }
-
-    // Check if user has access to premium characters
-    if (character.is_premium) {
-      const { data: access } = await supabaseClient
-        .from("user_character_access")
-        .select("*")
-        .eq("user_id", user.id)
-        .eq("character_id", characterId)
-        .maybeSingle();
-
-      if (!access) {
-        return new Response(
-          JSON.stringify({ error: "Premium character access required" }),
-          { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
-      }
-    }
-
-    // Get conversation history for context
-    const { data: messages } = await supabaseClient
-      .from("character_messages")
-      .select("*")
-      .eq("conversation_id", conversationId)
-      .order("created_at", { ascending: true })
-      .limit(20); // Last 20 messages for context
-
-    // Get conversation memory
-    const { data: conversation } = await supabaseClient
+    const { data: conv, error: convErr } = await supabaseClient
       .from("character_conversations")
-      .select("memory_context, summary")
+      .select("user_id, character_id, memory_context, summary")
       .eq("id", conversationId)
       .single();
 
-    // Build context with memory
-    const conversationHistory = messages?.map(m => ({
-      role: m.role,
-      content: m.content
-    })) || [];
+    if (convErr || !conv) throw new Error("Conversation not found");
+    if (conv.user_id !== user.id) throw new Error("Unauthorized");
+    if (conv.character_id !== characterId) throw new Error("Character mismatch");
 
-    const memoryContext = conversation?.memory_context || {};
-    const memoryString = Object.keys(memoryContext).length > 0
-      ? `\n\nImportant context about the user: ${JSON.stringify(memoryContext)}`
-      : '';
+    const { data: charCheck } = await supabaseClient
+      .from("ai_characters")
+      .select("is_premium, system_prompt, name")
+      .eq("id", characterId)
+      .single();
 
-    const summaryContext = conversation?.summary
-      ? `\n\nConversation summary: ${conversation.summary}`
-      : '';
+    if (!charCheck) throw new Error("Character not found");
 
-    // Call OpenAI
-    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
-    if (!OPENAI_API_KEY) {
-      throw new Error("OPENAI_API_KEY not configured");
+    if (charCheck.is_premium) {
+      const { data: access } = await supabaseClient
+        .from("user_character_access")
+        .select("id")
+        .eq("user_id", user.id)
+        .eq("character_id", characterId)
+        .maybeSingle();
+      if (!access) {
+        return new Response(JSON.stringify({ error: "Premium character access required" }), {
+          status: 403,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
     }
 
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    const { data: companionsSub } = await supabaseClient
+      .from("companions_subscriptions")
+      .select("subscription_status, free_messages_used")
+      .eq("user_id", user.id)
+      .maybeSingle();
+
+    if (!charCheck.is_premium) {
+      const isSubscribed = companionsSub?.subscription_status === "active";
+      const freeUsed = companionsSub?.free_messages_used || 0;
+      if (!isSubscribed && freeUsed >= 5) {
+        return new Response(JSON.stringify({ error: "Free message limit reached. Subscribe for unlimited." }), {
+          status: 402,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+    }
+
+    const { data: history } = await supabaseClient
+      .from("character_messages")
+      .select("role, content")
+      .eq("conversation_id", conversationId)
+      .order("created_at", { ascending: true })
+      .limit(20);
+
+    const memStr = conv.memory_context && Object.keys(conv.memory_context).length
+      ? `\n\nUser context: ${JSON.stringify(conv.memory_context)}`
+      : "";
+    const sumStr = conv.summary ? `\n\nSummary: ${conv.summary}` : "";
+
+    const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${OPENAI_API_KEY}`,
+        "Authorization": `Bearer ${LOVABLE_API_KEY}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "gpt-4o-mini",
+        model: "google/gemini-2.5-flash",
         messages: [
-          {
-            role: "system",
-            content: character.system_prompt + memoryString + summaryContext
-          },
-          ...conversationHistory,
-          {
-            role: "user",
-            content: message
-          }
+          { role: "system", content: charCheck.system_prompt + memStr + sumStr + KIDS_SAFETY_PROMPT },
+          ...(history || []),
+          { role: "user", content: userMessage },
         ],
       }),
     });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error("OpenAI API error:", response.status, errorText);
-      throw new Error("Failed to generate response");
+    if (aiResp.status === 429) {
+      return new Response(JSON.stringify({ error: "Too many requests" }), {
+        status: 429,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    if (aiResp.status === 402) {
+      return new Response(JSON.stringify({ error: "AI credits exhausted" }), {
+        status: 402,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    if (!aiResp.ok) {
+      console.error("AI Gateway error:", aiResp.status, await aiResp.text());
+      throw new Error("AI service error");
     }
 
-    const data = await response.json();
-    const aiResponse = data.choices?.[0]?.message?.content;
+    const aiData = await aiResp.json();
+    const aiMsg = aiData.choices?.[0]?.message?.content;
+    if (!aiMsg) throw new Error("No response generated");
 
-    if (!aiResponse) {
-      throw new Error("No response generated");
-    }
+    await supabaseClient.from("character_messages").insert([
+      { conversation_id: conversationId, role: "user", content: userMessage },
+      { conversation_id: conversationId, role: "assistant", content: aiMsg },
+    ]);
 
-    // Save user message
-    await supabaseClient.from("character_messages").insert({
-      conversation_id: conversationId,
-      role: "user",
-      content: message,
-    });
-
-    // Save AI response
-    await supabaseClient.from("character_messages").insert({
-      conversation_id: conversationId,
-      role: "assistant",
-      content: aiResponse,
-    });
-
-    // Update message count for free users
-    if (limits && !limits.is_premium) {
-      await supabaseClient
-        .from("user_message_limits")
-        .update({ messages_used_today: limits.messages_used_today + 1 })
-        .eq("user_id", user.id);
-    }
-
-    // Increment free messages used for companions subscription (non-premium characters)
-    if (charCheck && !charCheck.is_premium && companionsSub && companionsSub.subscription_status !== "active") {
+    if (!charCheck.is_premium && companionsSub && companionsSub.subscription_status !== "active") {
       await supabaseClient
         .from("companions_subscriptions")
         .update({ free_messages_used: (companionsSub.free_messages_used || 0) + 1 })
         .eq("user_id", user.id);
     }
 
-    // Update conversation timestamp
     await supabaseClient
       .from("character_conversations")
       .update({ updated_at: new Date().toISOString() })
       .eq("id", conversationId);
 
-    return new Response(
-      JSON.stringify({ response: aiResponse }),
-      { headers: { ...corsHeaders, "Content-Type": "application/json" } }
-    );
+    return new Response(JSON.stringify({ response: aiMsg }), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : String(error);
-    console.error("Error:", errorMessage);
-    return new Response(
-      JSON.stringify({ error: errorMessage }),
-      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-    );
+    const msg = error instanceof Error ? error.message : String(error);
+    console.error("character-chat error:", msg);
+    return new Response(JSON.stringify({ error: msg }), {
+      status: 500,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
   }
 });

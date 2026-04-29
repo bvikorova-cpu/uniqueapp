@@ -12,6 +12,7 @@ import { ArrowLeft, BarChart3, Shield, Crown, Timer, Trophy, Eye, Clock, Brain, 
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
 import { useKidsGoldPass } from "@/hooks/useKidsGoldPass";
+import { supabase } from "@/integrations/supabase/client";
 
 import { ParentalHero } from "@/components/kids/parental/ParentalHero";
 import { ChildProfileCards } from "@/components/kids/parental/ChildProfileCards";
@@ -44,14 +45,26 @@ export default function KidsParentalDashboard() {
 
   const { data: stats } = useQuery({
     queryKey: ["parental-stats", user?.id],
-    queryFn: async () => ({
-      homework_tasks: Math.floor(Math.random() * 30) + 10,
-      science_experiments: Math.floor(Math.random() * 15) + 5,
-      vocabulary_learned: Math.floor(Math.random() * 50) + 20,
-      stories_created: Math.floor(Math.random() * 10) + 2,
-      drawings_made: Math.floor(Math.random() * 8) + 3,
-      total_time_minutes: Math.floor(Math.random() * 300) + 100,
-    } as UsageStats),
+    queryFn: async () => {
+      if (!user) return null;
+      // Real counts from DB across kids modules
+      const [homework, science, vocab, stories, drawings, gateLogs] = await Promise.all([
+        supabase.from("kids_homework_tasks" as any).select("id", { count: "exact", head: true }).eq("user_id", user.id),
+        supabase.from("kids_science_experiments" as any).select("id", { count: "exact", head: true }).eq("user_id", user.id),
+        supabase.from("kids_vocabulary" as any).select("id", { count: "exact", head: true }).eq("user_id", user.id),
+        supabase.from("kids_stories" as any).select("id", { count: "exact", head: true }).eq("user_id", user.id),
+        supabase.from("kids_drawings" as any).select("id", { count: "exact", head: true }).eq("user_id", user.id),
+        supabase.from("kids_parental_gate_log").select("id", { count: "exact", head: true }).eq("user_id", user.id),
+      ]);
+      return {
+        homework_tasks: homework.count || 0,
+        science_experiments: science.count || 0,
+        vocabulary_learned: vocab.count || 0,
+        stories_created: stories.count || 0,
+        drawings_made: drawings.count || 0,
+        total_time_minutes: (gateLogs.count || 0) * 5, // approximate: 5 min per session
+      } as UsageStats;
+    },
     enabled: !!user,
   });
 
@@ -59,8 +72,12 @@ export default function KidsParentalDashboard() {
     queryKey: ["parental-settings", user?.id],
     queryFn: async () => {
       if (!user) return null;
-      const stored = localStorage.getItem(`kids_parental_settings_${user.id}`);
-      return stored ? JSON.parse(stored) : null;
+      const { data } = await supabase
+        .from("kids_parental_settings")
+        .select("*")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      return data;
     },
     enabled: !!user,
   });
@@ -76,14 +93,17 @@ export default function KidsParentalDashboard() {
   const saveMutation = useMutation({
     mutationFn: async (data: { sleep_timer_enabled: boolean; daily_limit_minutes: number; email_reports: boolean }) => {
       if (!user) throw new Error("Not authenticated");
-      localStorage.setItem(`kids_parental_settings_${user.id}`, JSON.stringify(data));
+      const { error } = await supabase
+        .from("kids_parental_settings")
+        .upsert({ user_id: user.id, ...data }, { onConflict: "user_id" });
+      if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["parental-settings"] });
       toast.success("Settings saved!");
     },
-    onError: () => {
-      toast.error("Failed to save settings");
+    onError: (err: any) => {
+      toast.error(err?.message || "Failed to save settings");
     },
   });
 

@@ -4,6 +4,7 @@ import { DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/di
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Shield, AlertCircle, CheckCircle } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 
 interface ParentalGateProps {
@@ -61,21 +62,34 @@ export function ParentalGate({
     return () => document.removeEventListener("keydown", handleKeyDown, true);
   }, [isOpen]);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const numAnswer = parseInt(userAnswer, 10);
     if (numAnswer === mathQuestion.answer) {
       setSuccess(true);
       setError(false);
       // Store in sessionStorage for 30 minutes
-      const expiresAt = Date.now() + 30 * 60 * 1000; // 30 minutes
+      const expiresAt = Date.now() + 30 * 60 * 1000;
       sessionStorage.setItem(storageKey, JSON.stringify({ expiresAt }));
+
+      // Server-side audit log (fire-and-forget)
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          await supabase.from("kids_parental_gate_log").insert({
+            user_id: user.id,
+            feature_name: featureName,
+          });
+        }
+      } catch (e) {
+        console.warn("Could not log parental gate verification:", e);
+      }
+
       setTimeout(() => {
         onSuccess();
       }, 800);
     } else {
       setError(true);
       setSuccess(false);
-      // Generate new question after wrong answer
       setTimeout(() => {
         setMathQuestion(generateMathQuestion());
         setUserAnswer("");

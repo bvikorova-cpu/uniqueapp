@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ArrowLeft } from "lucide-react";
 import Navbar from "@/components/Navbar";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 import { MemoryMatch } from "@/components/kids/games/MemoryMatch";
 import { WordPuzzle } from "@/components/kids/games/WordPuzzle";
 import { HiddenObjects } from "@/components/kids/games/HiddenObjects";
@@ -28,9 +30,36 @@ export default function StoryGames() {
   const [activeGame, setActiveGame] = useState<string | null>(null);
   const [gamesPlayed, setGamesPlayed] = useState(0);
   const [bestScores, setBestScores] = useState<Record<number, number>>({});
+  const [userId, setUserId] = useState<string | null>(null);
 
   const level = Math.floor(score / 50) + 1;
-  const streak = 0; // Starts from zero
+  const streak = 0;
+
+  // Load persisted progress on mount
+  useEffect(() => {
+    (async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      setUserId(user.id);
+      const { data } = await supabase
+        .from("kids_game_progress")
+        .select("game_id, best_score, total_plays, total_xp")
+        .eq("user_id", user.id);
+      if (data) {
+        const scores: Record<number, number> = {};
+        let totalXP = 0;
+        let totalPlays = 0;
+        data.forEach(row => {
+          scores[row.game_id] = row.best_score;
+          totalXP += row.total_xp;
+          totalPlays += row.total_plays;
+        });
+        setBestScores(scores);
+        setScore(totalXP);
+        setGamesPlayed(totalPlays);
+      }
+    })();
+  }, []);
 
   const games = [
     { id: 1, title: "Memory Match", emoji: "🎴", description: "Match the story characters to unlock the next chapter!", difficulty: "Easy", stars: 3 },
@@ -41,7 +70,7 @@ export default function StoryGames() {
     { id: 6, title: "Number Adventure", emoji: "🔢", description: "Solve math puzzles to help the hero!", difficulty: "Hard", stars: 6 },
   ];
 
-  const handleGameComplete = (gameScore: number) => {
+  const handleGameComplete = async (gameScore: number) => {
     setScore(prev => prev + gameScore);
     setGamesPlayed(prev => prev + 1);
 
@@ -49,13 +78,33 @@ export default function StoryGames() {
     if (activeGame) {
       const gameId = gameMap[activeGame];
       if (gameId) {
-        setBestScores(prev => ({
-          ...prev,
-          [gameId]: Math.max(prev[gameId] || 0, gameScore),
-        }));
+        const newBest = Math.max(bestScores[gameId] || 0, gameScore);
+        setBestScores(prev => ({ ...prev, [gameId]: newBest }));
+
+        // Persist to DB (upsert)
+        if (userId) {
+          try {
+            const { data: existing } = await supabase
+              .from("kids_game_progress")
+              .select("total_plays, total_xp")
+              .eq("user_id", userId)
+              .eq("game_id", gameId)
+              .maybeSingle();
+            await supabase.from("kids_game_progress").upsert({
+              user_id: userId,
+              game_id: gameId,
+              best_score: newBest,
+              total_plays: (existing?.total_plays || 0) + 1,
+              total_xp: (existing?.total_xp || 0) + gameScore,
+              last_played_at: new Date().toISOString(),
+            }, { onConflict: "user_id,game_id" });
+          } catch (e) {
+            console.error("Failed to save game progress:", e);
+            toast.error("Couldn't save your score");
+          }
+        }
       }
     }
-
     setActiveGame(null);
   };
 

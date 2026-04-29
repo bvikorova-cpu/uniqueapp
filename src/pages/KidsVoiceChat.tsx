@@ -8,6 +8,7 @@ import type { Character } from "@/data/kidsCharacters";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 import { ParentalGate, useParentalGate } from "@/components/kids/ParentalGate";
 import { SafeContentBadge } from "@/components/kids/SafeContentBadge";
 import { AnimatePresence, motion } from "framer-motion";
@@ -58,11 +59,16 @@ export default function KidsVoiceChat() {
     setMessagesSent(prev => prev + 1);
 
     try {
+      const { data: { session } } = await supabase.auth.getSession();
       const response = await fetch(
-        'https://jufrdzeonywluwutvyxz.supabase.co/functions/v1/kids-character-chat',
+        'https://jufrdzeonywluwutvyxz.supabase.co/functions/v1/character-chat',
         {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${session?.access_token ?? ''}`,
+            'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp1ZnJkemVvbnl3bHV3dXR2eXh6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkxMzU0MTgsImV4cCI6MjA3NDcxMTQxOH0.UOe-_WQoTeBGFmnezRHRcjFJaJd71a7rYlurDkI6h4Q',
+          },
           body: JSON.stringify({
             messages: newMessages,
             characterName: selectedCharacter.name,
@@ -71,6 +77,16 @@ export default function KidsVoiceChat() {
         }
       );
 
+      if (response.status === 401) {
+        toast({ title: "Sign in required", description: "Please sign in to chat.", variant: "destructive" });
+        navigate("/auth");
+        return;
+      }
+      if (response.status === 429) {
+        toast({ title: "Slow down!", description: "Too many messages. Wait a moment.", variant: "destructive" });
+        setMessages(prev => prev.slice(0, -1));
+        return;
+      }
       if (!response.ok || !response.body) throw new Error('Failed to get response');
 
       const reader = response.body.getReader();

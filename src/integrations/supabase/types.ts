@@ -22161,6 +22161,42 @@ export type Database = {
           },
         ]
       }
+      kids_game_progress: {
+        Row: {
+          best_score: number
+          created_at: string
+          game_id: number
+          id: string
+          last_played_at: string
+          total_plays: number
+          total_xp: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          best_score?: number
+          created_at?: string
+          game_id: number
+          id?: string
+          last_played_at?: string
+          total_plays?: number
+          total_xp?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          best_score?: number
+          created_at?: string
+          game_id?: number
+          id?: string
+          last_played_at?: string
+          total_plays?: number
+          total_xp?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       kids_homework: {
         Row: {
           ai_explanation: string | null
@@ -22449,6 +22485,57 @@ export type Database = {
           level?: number | null
           problems_solved?: number | null
           score?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      kids_parental_gate_log: {
+        Row: {
+          feature_name: string
+          id: string
+          user_id: string
+          verified_at: string
+        }
+        Insert: {
+          feature_name: string
+          id?: string
+          user_id: string
+          verified_at?: string
+        }
+        Update: {
+          feature_name?: string
+          id?: string
+          user_id?: string
+          verified_at?: string
+        }
+        Relationships: []
+      }
+      kids_parental_settings: {
+        Row: {
+          created_at: string
+          daily_limit_minutes: number
+          email_reports: boolean
+          id: string
+          sleep_timer_enabled: boolean
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          daily_limit_minutes?: number
+          email_reports?: boolean
+          id?: string
+          sleep_timer_enabled?: boolean
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          daily_limit_minutes?: number
+          email_reports?: boolean
+          id?: string
+          sleep_timer_enabled?: boolean
+          updated_at?: string
           user_id?: string
         }
         Relationships: []
