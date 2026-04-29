@@ -11,6 +11,7 @@ import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ArrowLeft, Star, Users, Trophy, Target, Heart, Link as LinkIcon } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
+import { useDonationReturn } from "@/hooks/useDonationReturn";
 import { CampaignDetailEnhancements, CampaignDetailLiveFeed } from '@/components/fundraising/CampaignDetailEnhancements';
 
 interface TalentCampaign {
@@ -57,6 +58,7 @@ export default function TalentDetail() {
     donorEmail: '',
     donorName: '',
   });
+  useDonationReturn(() => fetchCampaign());
 
   useEffect(() => {
     if (id) {

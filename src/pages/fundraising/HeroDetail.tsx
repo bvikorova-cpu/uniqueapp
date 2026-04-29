@@ -11,6 +11,7 @@ import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ArrowLeft, Shield, Users, CheckCircle, Heart } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
+import { useDonationReturn } from "@/hooks/useDonationReturn";
 import { CampaignDetailEnhancements, CampaignDetailLiveFeed } from '@/components/fundraising/CampaignDetailEnhancements';
 
 interface HeroCampaign {
@@ -55,6 +56,7 @@ export default function HeroDetail() {
     donorEmail: '',
     donorName: '',
   });
+  useDonationReturn(() => fetchCampaign());
 
   useEffect(() => {
     if (id) {

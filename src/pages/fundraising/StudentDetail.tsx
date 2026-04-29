@@ -11,6 +11,7 @@ import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ArrowLeft, GraduationCap, Users, Heart, Sparkles } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
+import { useDonationReturn } from "@/hooks/useDonationReturn";
 import { CampaignDetailEnhancements, CampaignDetailLiveFeed } from '@/components/fundraising/CampaignDetailEnhancements';
 
 interface StudentCampaign {
@@ -54,6 +55,7 @@ export default function StudentDetail() {
     donorEmail: '',
     donorName: '',
   });
+  useDonationReturn(() => fetchCampaign());
 
   useEffect(() => {
     if (id) {

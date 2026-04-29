@@ -267,13 +267,31 @@ serve(async (req) => {
   if (rateLimitResponse) return rateLimitResponse;
 
   try {
-    const { userId, email } = await authenticateUser(req);
-    if (!email) throw new Error("User email not available");
-
     const body = await req.json();
     const stripe = createStripeClient();
-    const customerId = await getStripeCustomer(stripe, email);
     const origin = req.headers.get("origin") || "";
+
+    // Donations support guest checkout — auth is optional
+    const isDonation = body.product === "campaign_donation" || body.product === "campaign-donation";
+    let userId: string | null = null;
+    let email: string | null = null;
+    if (isDonation) {
+      try {
+        const auth = await authenticateUser(req);
+        userId = auth.userId;
+        email = auth.email ?? null;
+      } catch {
+        userId = null;
+        email = body.donorEmail ? String(body.donorEmail) : null;
+      }
+      if (!email) throw new Error("Email required for donation (sign in or provide donorEmail)");
+    } else {
+      const auth = await authenticateUser(req);
+      userId = auth.userId;
+      email = auth.email ?? null;
+      if (!email) throw new Error("User email not available");
+    }
+    const customerId = await getStripeCustomer(stripe, email);
 
     // ─── ACTION: verify (used by all verify-*-payment aliases) ───
     // Verifies a Stripe Checkout session id and returns its status.
@@ -300,9 +318,68 @@ serve(async (req) => {
       }
     }
 
+    // ─── CAMPAIGN DONATION PATH ───
+    // Body: { product: "campaign_donation", campaignId, campaignType, amount (EUR),
+    //         isMonthly, isAnonymous, message, donorEmail, donorName }
+    if (body.product === "campaign_donation" || body.product === "campaign-donation") {
+      const campaignId = String(body.campaignId || body.campaign_id || "");
+      const campaignType = String(body.campaignType || body.campaign_type || "");
+      const donationAmount = Number(body.amount);
+      if (!campaignId || !campaignType) throw new Error("Missing campaignId/campaignType");
+      if (!Number.isFinite(donationAmount) || donationAmount < 1) {
+        throw new Error("Donation amount must be at least 1 EUR");
+      }
+      const VALID_TYPES = ["medical","dream","hero","pet","student","crisis","talent"];
+      if (!VALID_TYPES.includes(campaignType)) {
+        throw new Error(`Invalid campaignType: ${campaignType}`);
+      }
+
+      const isMonthly = body.isMonthly === true;
+      const isAnonymous = body.isAnonymous === true;
+      const donorEmail = String(body.donorEmail || email || "");
+      const donorName = body.donorName ? String(body.donorName) : "";
+      const donationMessage = body.message ? String(body.message) : "";
+
+      const successUrl = `${origin}/fundraising/${campaignType}/${campaignId}?donation=success&session_id={CHECKOUT_SESSION_ID}`;
+      const cancelUrl = `${origin}/fundraising/${campaignType}/${campaignId}?donation=canceled`;
+
+      const session = await stripe.checkout.sessions.create({
+        customer: customerId || undefined,
+        customer_email: customerId ? undefined : (donorEmail || email),
+        line_items: [{
+          price_data: {
+            currency: "eur",
+            unit_amount: Math.round(donationAmount * 100),
+            product_data: {
+              name: isMonthly ? `Monthly donation – ${campaignType} campaign` : `Donation – ${campaignType} campaign`,
+            },
+            ...(isMonthly ? { recurring: { interval: "month" as const } } : {}),
+          },
+          quantity: 1,
+        }],
+        mode: isMonthly ? "subscription" : "payment",
+        success_url: successUrl,
+        cancel_url: cancelUrl,
+        metadata: {
+          type: "campaign_donation",
+          product: "campaign_donation",
+          product_type: "donation",
+          campaign_id: campaignId,
+          campaign_type: campaignType,
+          donor_email: donorEmail,
+          donor_name: isAnonymous ? "" : donorName,
+          is_monthly: String(isMonthly),
+          is_anonymous: String(isAnonymous),
+          donation_message: donationMessage.slice(0, 450),
+          user_id: userId || "",
+        },
+      });
+
+      return successResponse({ url: session.url, session_id: session.id });
+    }
+
     // ─── PRODUCT-PARAM PATH (used by all create-*-checkout aliases) ───
     // Body: { product: "pet" | "kids" | ..., amount?, productName?, mode?, metadata?, free? }
-    // For known products without explicit price, builds a generic checkout.
     if (body.product && !body.priceId && !body.productKey && !body.credits) {
       // Free actions (e.g. create-character, create-universe) just return ok
       if (body.free === true) {
