@@ -96,6 +96,17 @@ export default function KidsVoiceChat() {
         navigate("/auth");
         return;
       }
+      if (response.status === 402) {
+        toast({
+          title: "Out of credits",
+          description: "You need more Chat credits to continue.",
+          variant: "destructive",
+        });
+        setMessages(prev => prev.slice(0, -1));
+        await refreshCredits();
+        navigate("/kids-voice-chat-pricing");
+        return;
+      }
       if (response.status === 429) {
         toast({ title: "Slow down!", description: "Too many messages. Wait a moment.", variant: "destructive" });
         setMessages(prev => prev.slice(0, -1));
@@ -135,6 +146,9 @@ export default function KidsVoiceChat() {
           } catch {}
         }
       }
+
+      // Refresh credit balance after successful message
+      await refreshCredits();
     } catch (error) {
       console.error('Chat error:', error);
       toast({ title: "Error", description: "Failed to send message. Please try again.", variant: "destructive" });
