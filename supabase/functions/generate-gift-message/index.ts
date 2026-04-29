@@ -69,6 +69,7 @@ serve(async (req) => {
       kids_drawing: { table: "kids_drawing_credits", cost: 2 },
       kids_reading: { table: "kids_reading_credits", cost: 2 },
       kids_story:   { table: "kids_story_credits",   cost: 3 },
+      teen_career:  { table: "teen_career_credits",  cost: 5 },
     };
     const kidsCfg = type ? KIDS_CREDIT_MAP[type] : undefined;
     if (kidsCfg) {
