@@ -13,6 +13,7 @@ import { ArrowLeft, Shield, Users, CheckCircle, Heart } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { useDonationReturn } from "@/hooks/useDonationReturn";
 import { CampaignDetailEnhancements, CampaignDetailLiveFeed } from '@/components/fundraising/CampaignDetailEnhancements';
+import { CampaignPayoutPanel } from '@/components/fundraising/CampaignPayoutPanel';
 
 interface HeroCampaign {
   id: string;
@@ -256,6 +257,11 @@ export default function HeroDetail() {
               targetAmount={campaign.target_amount}
               supportersCount={campaign.supporters_count ?? 0}
               campaignType="hero"
+            />
+            <CampaignPayoutPanel
+              campaignType="hero"
+              campaignId={campaign.id}
+              ownerUserId={campaign.user_id}
             />
             <Card>
               <CardHeader>

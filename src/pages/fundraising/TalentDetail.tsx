@@ -13,6 +13,7 @@ import { ArrowLeft, Star, Users, Trophy, Target, Heart, Link as LinkIcon } from 
 import { toast } from '@/hooks/use-toast';
 import { useDonationReturn } from "@/hooks/useDonationReturn";
 import { CampaignDetailEnhancements, CampaignDetailLiveFeed } from '@/components/fundraising/CampaignDetailEnhancements';
+import { CampaignPayoutPanel } from '@/components/fundraising/CampaignPayoutPanel';
 
 interface TalentCampaign {
   id: string;
@@ -303,6 +304,11 @@ export default function TalentDetail() {
               targetAmount={campaign.target_amount}
               supportersCount={campaign.sponsors_count ?? 0}
               campaignType="talent"
+            />
+            <CampaignPayoutPanel
+              campaignType="talent"
+              campaignId={campaign.id}
+              ownerUserId={campaign.user_id}
             />
             <Card>
               <CardHeader>

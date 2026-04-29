@@ -13,6 +13,7 @@ import { ArrowLeft, GraduationCap, Users, Heart, Sparkles } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { useDonationReturn } from "@/hooks/useDonationReturn";
 import { CampaignDetailEnhancements, CampaignDetailLiveFeed } from '@/components/fundraising/CampaignDetailEnhancements';
+import { CampaignPayoutPanel } from '@/components/fundraising/CampaignPayoutPanel';
 
 interface StudentCampaign {
   id: string;
@@ -243,6 +244,11 @@ export default function StudentDetail() {
               targetAmount={campaign.target_amount}
               supportersCount={campaign.supporters_count ?? 0}
               campaignType="student"
+            />
+            <CampaignPayoutPanel
+              campaignType="student"
+              campaignId={campaign.id}
+              ownerUserId={campaign.user_id}
             />
             <Card>
               <CardHeader>

@@ -13,6 +13,7 @@ import { ArrowLeft, Sparkles, Users, Target, Heart } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { useDonationReturn } from "@/hooks/useDonationReturn";
 import { CampaignDetailEnhancements, CampaignDetailLiveFeed } from '@/components/fundraising/CampaignDetailEnhancements';
+import { CampaignPayoutPanel } from '@/components/fundraising/CampaignPayoutPanel';
 
 interface DreamCampaign {
   id: string;
@@ -238,6 +239,11 @@ export default function DreamDetail() {
               targetAmount={campaign.target_amount}
               supportersCount={campaign.supporters_count ?? 0}
               campaignType="dream"
+            />
+            <CampaignPayoutPanel
+              campaignType="dream"
+              campaignId={campaign.id}
+              ownerUserId={campaign.user_id}
             />
             <Card>
               <CardHeader>
