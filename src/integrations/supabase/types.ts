@@ -43886,6 +43886,21 @@ export type Database = {
         }
         Returns: Json
       }
+      process_campaign_donation: {
+        Args: {
+          _amount: number
+          _campaign_id: string
+          _campaign_type: string
+          _donor_email: string
+          _donor_id: string
+          _donor_name: string
+          _is_anonymous: boolean
+          _is_monthly: boolean
+          _message: string
+          _stripe_payment_id: string
+        }
+        Returns: Json
+      }
       process_influencer_withdrawal: {
         Args: {
           p_admin_id: string
