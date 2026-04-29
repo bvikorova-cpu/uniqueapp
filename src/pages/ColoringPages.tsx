@@ -31,7 +31,7 @@ import { PrintExport } from "@/components/coloring/PrintExport";
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 export default function ColoringPages() {
   const navigate = useNavigate();
-  const { credits, isLoading: creditsLoading, checkSubscription } = useColoringCredits();
+  const { credits, isLoading: creditsLoading, balance, canUse, costPerUse, purchase, refresh } = useColoringCredits();
   const [imageUrl, setImageUrl] = useState("");
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [uploadMode, setUploadMode] = useState<"url" | "file">("file");
