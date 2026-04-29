@@ -1,76 +1,60 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
-import { useIsAdmin } from "./useIsAdmin";
-import { useKidsGoldPass } from "./useKidsGoldPass";
 
+export const COLORING_CREDIT_COST = 5; // 5 credits per coloring page generation
+
+/**
+ * Coloring Pages credits — paid-only model, consistent with other 7 modules.
+ * Replaces legacy subscription/pay-per-use approach.
+ */
 export const useColoringCredits = () => {
+  const { user } = useAuth();
   const queryClient = useQueryClient();
-  const { isAdmin } = useIsAdmin();
-  const { hasGoldPass } = useKidsGoldPass();
 
-  const { data: credits, isLoading } = useQuery({
-    queryKey: ["coloring-credits"],
+  const { data, isLoading, refetch } = useQuery({
+    queryKey: ["coloring-credits", user?.id],
     queryFn: async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return null;
-
-      const { data, error } = await supabase
+      if (!user) return { credits_remaining: 0, total_credits_purchased: 0 };
+      const { data } = await supabase
         .from("coloring_credits")
-        .select("*")
+        .select("credits_remaining, total_credits_purchased")
         .eq("user_id", user.id)
         .maybeSingle();
-
-      if (error) throw error;
-      
-      // If no credits record exists, create one
-      if (!data) {
-        const { data: newData, error: insertError } = await supabase
-          .from("coloring_credits")
-          .insert({
-            user_id: user.id,
-            credits_remaining: 0,
-            tier: 'none'
-          })
-          .select()
-          .single();
-
-        if (insertError) throw insertError;
-        return newData;
-      }
-
-      return data;
+      return data || { credits_remaining: 0, total_credits_purchased: 0 };
     },
-    enabled: true,
+    enabled: !!user,
   });
 
-  // Admin and Gold Pass users have unlimited premium credits
-  const effectiveCredits = (isAdmin || hasGoldPass) && credits
-    ? { ...credits, credits_remaining: 999999, tier: 'premium' as const } 
-    : credits;
+  const balance = data?.credits_remaining ?? 0;
+  const canUse = balance >= COLORING_CREDIT_COST;
 
-  const checkSubscription = useMutation({
-    mutationFn: async () => {
-      const { data, error } = await supabase.functions.invoke(
-        "check-coloring-subscription"
-      );
-      if (error) throw error;
-      return data;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["coloring-credits"] });
-      toast.success("Subscription status updated");
-    },
-    onError: (error: Error) => {
-      toast.error("Failed to check subscription: " + error.message);
-    },
-  });
+  const purchase = async (credits: number): Promise<string | null> => {
+    const { data: res, error } = await supabase.functions.invoke("create-checkout", {
+      body: { credits, creditType: "coloring" },
+    });
+    if (error || !res?.url) {
+      toast.error("Failed to start checkout");
+      return null;
+    }
+    return res.url as string;
+  };
+
+  const refresh = () => {
+    queryClient.invalidateQueries({ queryKey: ["coloring-credits"] });
+    refetch();
+  };
 
   return {
-    credits: effectiveCredits,
+    balance,
+    canUse,
     isLoading,
-    hasGoldPassAccess: hasGoldPass,
-    checkSubscription: checkSubscription.mutate,
-    isCheckingSubscription: checkSubscription.isPending,
+    purchase,
+    refresh,
+    costPerUse: COLORING_CREDIT_COST,
+    // Legacy compatibility — old components used `credits.credits_remaining`
+    credits: data,
+    checkSubscription: refresh,
   };
 };

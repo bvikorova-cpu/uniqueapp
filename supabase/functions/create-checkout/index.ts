@@ -129,6 +129,12 @@ const CREDIT_PACKS: Record<string, { prices: Record<number, string>; successPath
     successPath: "/teen-career-counselor?payment=success&session_id={CHECKOUT_SESSION_ID}",
     cancelPath: "/teen-career-counselor?payment=canceled",
   },
+  // Coloring Pages credits — dynamic price_data (€0.50/credit) — 5 credits per page
+  coloring: {
+    prices: {},
+    successPath: "/coloring-pages?payment=success&session_id={CHECKOUT_SESSION_ID}",
+    cancelPath: "/coloring-pages?payment=canceled",
+  },
   // ─── Newly created Phase 3 packs ───
   character: {
     prices: {
@@ -456,6 +462,7 @@ serve(async (req) => {
             : creditType === "kids_reading" ? "kids_reading_credits"
             : creditType === "kids_story" ? "kids_story_credits"
             : creditType === "teen_career" ? "teen_career_credits"
+            : creditType === "coloring" ? "coloring_credits"
             : creditType,
         },
       });

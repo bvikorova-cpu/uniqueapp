@@ -8770,6 +8770,7 @@ export type Database = {
           expires_at: string | null
           id: string
           tier: string
+          total_credits_purchased: number
           updated_at: string
           user_id: string
         }
@@ -8779,6 +8780,7 @@ export type Database = {
           expires_at?: string | null
           id?: string
           tier?: string
+          total_credits_purchased?: number
           updated_at?: string
           user_id: string
         }
@@ -8788,6 +8790,7 @@ export type Database = {
           expires_at?: string | null
           id?: string
           tier?: string
+          total_credits_purchased?: number
           updated_at?: string
           user_id?: string
         }
