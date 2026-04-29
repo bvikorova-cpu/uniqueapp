@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -29,7 +29,7 @@ import { CollaborationMatcherView } from "@/components/megatalent/CollaborationM
 import { AchievementSystemView } from "@/components/megatalent/AchievementSystemView";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import { triggerTopPremiumConfetti } from "@/utils/confetti";
+
 import MegaTalentHero from "@/components/megatalent/MegaTalentHero";
 import MegaTalentCategoryGrid from "@/components/megatalent/MegaTalentCategoryGrid";
 import ContestStatsSidebar from "@/components/megatalent/ContestStatsSidebar";
@@ -94,7 +94,7 @@ type ActiveView = string | null;
 
 const Megatalent = () => {
   const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
+  
   const [activeView, setActiveView] = useState<ActiveView>(null);
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [subscriptionTier, setSubscriptionTier] = useState<'premium' | 'top_premium' | null>(null);
@@ -130,37 +130,10 @@ const Megatalent = () => {
     getCurrentUser();
   }, [selectedCategory]);
 
-  // Handle Stripe checkout return
-  useEffect(() => {
-    const success = searchParams.get('success');
-    const canceled = searchParams.get('canceled');
-    const tierParam = searchParams.get('tier');
-    if (success === 'true') {
-      (async () => {
-        toast({ title: "Verifying payment…", description: "Activating your subscription" });
-        try {
-          const { data: { session } } = await supabase.auth.getSession();
-          const { data, error } = await supabase.functions.invoke('check-megatalent-subscription', {
-            headers: session ? { Authorization: `Bearer ${session.access_token}` } : undefined,
-          });
-          if (error) throw error;
-          if (data?.subscribed) {
-            toast({ title: "Successfully Activated!", description: data.tier === 'top_premium' ? 'TOP Premium is now active!' : 'Premium subscription is now active' });
-            if (data.tier === 'top_premium') triggerTopPremiumConfetti();
-            await checkSubscription();
-          }
-        } catch (e) {
-          console.error('verify error', e);
-          toast({ title: "Verification pending", description: "If your payment was successful, refresh in a moment.", variant: "destructive" });
-        }
-        setSearchParams({}, { replace: true });
-      })();
-    } else if (canceled === 'true') {
-      toast({ title: "Checkout canceled", description: "You can try again anytime." });
-      setSearchParams({}, { replace: true });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // NOTE: Stripe checkout return is handled by MegatalentGuard (parent route guard).
+  // Do not duplicate the success/canceled handling here — it would race with the guard
+  // and cause double activation toasts and URL param conflicts.
+
 
   useEffect(() => {
     if (isSubscribed) { fetchTotalVotes(); }
@@ -170,12 +143,28 @@ const Megatalent = () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { setLoading(false); return; }
+
+      // Admins always have full access (matches MegatalentGuard behavior)
+      const { data: roleData } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", user.id)
+        .eq("role", "admin")
+        .maybeSingle();
+      if (roleData) {
+        setIsSubscribed(true);
+        setSubscriptionTier('top_premium');
+        setLoading(false);
+        return;
+      }
+
       const { data, error } = await supabase.from('megatalent_subscriptions').select('*').eq('user_id', user.id).eq('status', 'active').maybeSingle();
       if (error) throw error;
       setIsSubscribed(!!data);
       setSubscriptionTier(data?.tier || null);
     } catch (error) { console.error('Error checking subscription:', error); } finally { setLoading(false); }
   };
+
 
   const fetchTotalVotes = async () => {
     try {
@@ -249,8 +238,9 @@ const Megatalent = () => {
       });
       if (error) throw error;
       if (data?.url) {
-        window.open(data.url, '_blank');
-        toast({ title: "Redirecting to Stripe…", description: "Complete the payment in the new tab." });
+        // Redirect in same tab so Stripe returns the user to /megatalent?success=true
+        // and MegatalentGuard can resume the activation flow.
+        window.location.href = data.url;
       } else {
         throw new Error("No checkout URL returned");
       }
