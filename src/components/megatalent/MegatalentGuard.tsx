@@ -37,6 +37,7 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
   const [checkoutLoading, setCheckoutLoading] = useState<null | "premium" | "top_premium">(null);
   const [activating, setActivating] = useState(false);
   const [activatedTier, setActivatedTier] = useState<null | "premium" | "top_premium">(null);
+  const [previewItems, setPreviewItems] = useState<PreviewSubmission[]>([]);
   const successHandledRef = useRef(false);
 
   // Pending payment marker survives session loss (localStorage, not sessionStorage)
