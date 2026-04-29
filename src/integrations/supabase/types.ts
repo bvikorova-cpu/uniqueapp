@@ -39375,6 +39375,33 @@ export type Database = {
         }
         Relationships: []
       }
+      tutoring_credit_transactions: {
+        Row: {
+          created_at: string
+          delta: number
+          id: string
+          reason: string
+          stripe_session_id: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          delta: number
+          id?: string
+          reason: string
+          stripe_session_id?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          delta?: number
+          id?: string
+          reason?: string
+          stripe_session_id?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       tutoring_credits: {
         Row: {
           created_at: string
