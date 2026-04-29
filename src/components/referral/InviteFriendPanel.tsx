@@ -18,6 +18,11 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 import { Separator } from "@/components/ui/separator";
 import { useReferralProgram, type ReferralEarning } from "@/hooks/useReferralProgram";
 import { useToast } from "@/hooks/use-toast";
