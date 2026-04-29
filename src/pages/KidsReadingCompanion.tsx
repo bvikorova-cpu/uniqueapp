@@ -93,8 +93,8 @@ const KidsReadingCompanion = () => {
   const analyzeText = async () => {
     if (!bookText.trim()) { toast.error("Please paste some text to analyze"); return; }
     if (!isAuthenticated) { toast.error("Please sign in to use this feature"); return; }
-    if (!subscription.subscribed && subscription.analyses_used >= subscription.analyses_limit) {
-      toast.error("You've reached your free limit. Subscribe for unlimited access!");
+    if (!canUse) {
+      toast.error(`You need ${costPerUse} Reading credits. Buy more to continue!`);
       return;
     }
 
@@ -106,7 +106,7 @@ const KidsReadingCompanion = () => {
       if (error) throw error;
       setAnalysis(data);
       setActiveView("results");
-      await incrementAnalysisUsage();
+      refreshCredits();
       setStats(prev => ({
         ...prev,
         textsAnalyzed: prev.textsAnalyzed + 1,
@@ -123,8 +123,8 @@ const KidsReadingCompanion = () => {
 
   const generateQuiz = async () => {
     if (!isAuthenticated) { toast.error("Please sign in to use this feature"); return; }
-    if (!subscription.subscribed && subscription.quizzes_used >= subscription.quizzes_limit) {
-      toast.error("You've reached your free limit. Subscribe for unlimited access!");
+    if (!canUse) {
+      toast.error(`You need ${costPerUse} Reading credits. Buy more to continue!`);
       return;
     }
 
@@ -136,7 +136,7 @@ const KidsReadingCompanion = () => {
       if (error) throw error;
       setQuiz(data);
       setActiveView("quiz");
-      await incrementQuizUsage();
+      refreshCredits();
       toast.success("Quiz ready! 🎯");
     } catch (error: any) {
       console.error('Error:', error);
