@@ -4,14 +4,20 @@ import { Sparkles, FlaskConical, BookOpen, Lightbulb } from "lucide-react";
 
 interface LabNotebookResultProps {
   result: {
-    conclusion: string;
-    explanation: string;
-    funFacts: string[];
+    conclusion?: string;
+    explanation?: string;
+    funFacts?: string[];
   };
   category: string;
 }
 
-export const LabNotebookResult = ({ result, category }: LabNotebookResultProps) => {
+export const LabNotebookResult = ({ result, category: _category }: LabNotebookResultProps) => {
+  const conclusion =
+    result?.conclusion?.trim() || "The AI couldn't generate a conclusion. Please try again.";
+  const explanation = result?.explanation?.trim() || "No explanation available.";
+  const funFacts = Array.isArray(result?.funFacts)
+    ? result.funFacts.filter((f) => typeof f === "string" && f.trim())
+    : [];
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
