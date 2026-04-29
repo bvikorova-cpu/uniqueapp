@@ -120,25 +120,10 @@ export default function ColoringPages() {
     },
   });
 
-  const subscribeMutation = useMutation({
-    mutationFn: async (tier: string) => {
-      const { data, error } = await supabase.functions.invoke("create-coloring-subscription", { body: { tier } });
-      if (error) throw error;
-      return data;
-    },
-    onSuccess: (data) => { window.open(data.url, "_blank"); },
-    onError: (error: Error) => { toast.error("Failed to create subscription: " + error.message); },
-  });
-
-  const payPerUseMutation = useMutation({
-    mutationFn: async () => {
-      const { data, error } = await supabase.functions.invoke("create-coloring-payment");
-      if (error) throw error;
-      return data;
-    },
-    onSuccess: (data) => { window.open(data.url, "_blank"); },
-    onError: (error: Error) => { toast.error("Failed to create payment: " + error.message); },
-  });
+  const buyCreditsPack = async (creditCount: number) => {
+    const url = await purchase(creditCount);
+    if (url) window.open(url, "_blank");
+  };
 
   const handleDownload = (url: string, filename: string) => {
     const link = document.createElement("a");
