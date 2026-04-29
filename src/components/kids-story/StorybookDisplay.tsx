@@ -35,25 +35,20 @@ export const StorybookDisplay = ({ story, onSave, onContinue, showContinue, cont
 
   const totalPages = pages.length;
 
-  const handleReadAloud = (pageIndex: number) => {
-    if (typeof window === "undefined" || !("speechSynthesis" in window)) {
-      toast.error("Read aloud is not supported on this device");
-      return;
-    }
-
-    if (isReading) {
+  const stopPlayback = () => {
+    audioRef.current?.pause();
+    audioRef.current = null;
+    if (typeof window !== "undefined" && "speechSynthesis" in window) {
       window.speechSynthesis.cancel();
-      setIsReading(false);
-      setReadingPage(null);
-      return;
     }
+    setIsReading(false);
+    setReadingPage(null);
+  };
 
-    const text = pages[pageIndex];
-    if (!text) {
-      toast.error("Nothing to read on this page");
-      return;
+  const speakWithBrowser = (text: string, pageIndex: number): boolean => {
+    if (typeof window === "undefined" || !("speechSynthesis" in window)) {
+      return false;
     }
-
     try {
       window.speechSynthesis.cancel();
       const utter = new SpeechSynthesisUtterance(text);
@@ -71,11 +66,63 @@ export const StorybookDisplay = ({ story, onSave, onContinue, showContinue, cont
       setIsReading(true);
       setReadingPage(pageIndex);
       window.speechSynthesis.speak(utter);
+      return true;
+    } catch (err) {
+      console.error("Browser TTS error:", err);
+      return false;
+    }
+  };
+
+  const handleReadAloud = async (pageIndex: number) => {
+    if (isReading) {
+      stopPlayback();
+      return;
+    }
+
+    const text = pages[pageIndex];
+    if (!text) {
+      toast.error("Nothing to read on this page");
+      return;
+    }
+
+    setIsReading(true);
+    setReadingPage(pageIndex);
+
+    try {
+      const { data, error } = await supabase.functions.invoke("kids-story-tts", {
+        body: { text },
+      });
+
+      if (error) throw error;
+
+      const audioBase64: string | undefined =
+        typeof data === "string" ? data : (data?.audioContent || data?.audio);
+
+      if (!audioBase64) throw new Error("No audio returned");
+
+      const mimeType = (data && data.mimeType) || "audio/mpeg";
+      const audio = new Audio(`data:${mimeType};base64,${audioBase64}`);
+      audioRef.current = audio;
+
+      audio.onended = () => {
+        setIsReading(false);
+        setReadingPage(null);
+      };
+      audio.onerror = () => {
+        setIsReading(false);
+        setReadingPage(null);
+      };
+
+      await audio.play();
     } catch (err) {
       console.error("Read aloud error:", err);
-      toast.error("Read aloud failed");
-      setIsReading(false);
-      setReadingPage(null);
+      // Fallback: try the browser's built-in voice so the feature still works.
+      const ok = speakWithBrowser(text, pageIndex);
+      if (!ok) {
+        toast.error("Read aloud is not available right now");
+        setIsReading(false);
+        setReadingPage(null);
+      }
     }
   };
 
