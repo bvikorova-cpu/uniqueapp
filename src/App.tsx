@@ -104,6 +104,7 @@ import {
   AIClone,
   AIExperiences,
   KidsHomework,
+  KidsHomeworkPricing,
   KidsStoryCreator,
   KidsStoryPricing,
   KidsScienceLab,
@@ -585,6 +586,7 @@ const App = () => {
                         <Route path="/plant-care" element={<PlantCare />} />
                         <Route path="/ai-tattoo" element={<AITattoo />} />
                         <Route path="/kids-homework" element={<KidsHomework />} />
+                        <Route path="/kids-homework-pricing" element={<KidsHomeworkPricing />} />
                         <Route path="/kids-story-creator" element={<KidsStoryCreator />} />
                         <Route path="/kids-story-pricing" element={<KidsStoryPricing />} />
                         <Route path="/kids-science-lab" element={<KidsScienceLab />} />
