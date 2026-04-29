@@ -7246,7 +7246,7 @@ export type Database = {
           credits_remaining: number
           id: string
           last_purchase_at: string | null
-          total_purchased: number
+          total_credits_purchased: number
           updated_at: string
           user_id: string
         }
@@ -7255,7 +7255,7 @@ export type Database = {
           credits_remaining?: number
           id?: string
           last_purchase_at?: string | null
-          total_purchased?: number
+          total_credits_purchased?: number
           updated_at?: string
           user_id: string
         }
@@ -7264,7 +7264,7 @@ export type Database = {
           credits_remaining?: number
           id?: string
           last_purchase_at?: string | null
-          total_purchased?: number
+          total_credits_purchased?: number
           updated_at?: string
           user_id?: string
         }
