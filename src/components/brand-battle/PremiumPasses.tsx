@@ -33,6 +33,13 @@ export const PremiumPasses = () => {
   const [loading, setLoading] = useState<string | null>(null);
 
   const subscribe = async (tier: "voter_pass" | "mega_sponsor") => {
+    if (tier === "mega_sponsor") {
+      // Enterprise tier — route to sales contact, not Stripe checkout
+      window.location.href =
+        "mailto:sales@unique-platform.com?subject=Mega%20Sponsor%20Inquiry%20-%20Brand%20Titan&body=Hi%2C%20I%27m%20interested%20in%20the%20Mega%20Sponsor%20package.%20Please%20contact%20me%20with%20more%20details.";
+      toast.success("Opening email client to contact our sales team…");
+      return;
+    }
     setLoading(tier);
     try {
       const { data, error } = await supabase.functions.invoke("create-checkout", {
