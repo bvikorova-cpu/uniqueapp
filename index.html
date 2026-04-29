@@ -74,23 +74,13 @@
     }
     </script>
 
-    <!-- Boot recovery: aggressively remove any old service worker/cache before app boot.
-         Older SW versions cached stale HTML and could trap the preview on the loader. -->
+    <!-- Silently unregister any old service worker so the preview always loads fresh code. -->
     <script>
       (function () {
-        window.__UNIQUE_MAIN_EXECUTED__ = false;
-        window.__UNIQUE_REACT_RENDERED__ = false;
-        window.__UNIQUE_BOOT_VERSION__ = "2026-04-29-hard-reset";
         try {
           if ("serviceWorker" in navigator) {
             navigator.serviceWorker.getRegistrations().then(function (regs) {
-              regs.forEach(function (r) {
-                try { if (r.waiting) r.waiting.postMessage("SKIP_WAITING"); } catch (e) {}
-                try { if (r.active) r.active.postMessage("SKIP_WAITING"); } catch (e) {}
-                r.update().catch(function () {}).finally(function () {
-                  r.unregister().catch(function () {});
-                });
-              });
+              regs.forEach(function (r) { r.unregister().catch(function () {}); });
             }).catch(function () {});
           }
           if (typeof caches !== "undefined" && caches.keys) {
@@ -104,101 +94,7 @@
   </head>
 
   <body translate="yes">
-    <div id="root" translate="yes">
-      <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0f0a1f;color:#ffffff;font-family:ui-sans-serif,system-ui,sans-serif;padding:24px;text-align:center;">
-        <div>
-          <div style="font-size:18px;font-weight:700;margin-bottom:8px;">Unique sa načítava…</div>
-          <div style="font-size:13px;color:#c4b5fd;" id="unique-boot-msg">Ak tento text nezmizne, hlavný JavaScript sa nenačítal.</div>
-        </div>
-      </div>
-    </div>
-    <script type="module" src="/src/main.tsx?v=2026-04-29-hard-reset" data-unique-main></script>
-    <script>
-      // Watchdog: if /src/main.tsx does not execute, the browser is almost
-      // always serving stale cached HTML/JS. Clear every browser cache/SW and
-      // reload with a cache-busting URL even inside Lovable preview iframes.
-      (function () {
-        var BOOT_TIMEOUT_MS = 12000;
-        var MAX_RECOVERY_ATTEMPTS = 3;
-        var BOOT_VERSION = window.__UNIQUE_BOOT_VERSION__ || "2026-04-29-hard-reset";
-
-        function clearRecoveryState() {
-          try { sessionStorage.removeItem("__unique_boot_recovered_at__"); } catch (e) {}
-          try { sessionStorage.removeItem("__unique_boot_retry_count__"); } catch (e) {}
-        }
-
-        // Hook: as soon as main.tsx executes, recovery state is cleared.
-        try {
-          var _executed = !!window.__UNIQUE_MAIN_EXECUTED__;
-          if (_executed) clearRecoveryState();
-          Object.defineProperty(window, "__UNIQUE_MAIN_EXECUTED__", {
-            configurable: true,
-            get: function () { return _executed; },
-            set: function (v) { _executed = !!v; if (_executed) clearRecoveryState(); },
-          });
-        } catch (e) { /* noop */ }
-
-        function retryCount() {
-          try { return parseInt(sessionStorage.getItem("__unique_boot_retry_count__") || "0", 10) || 0; }
-          catch (e) { return 0; }
-        }
-
-        function setRetryCount(value) {
-          try { sessionStorage.setItem("__unique_boot_retry_count__", String(value)); } catch (e) {}
-          try { sessionStorage.setItem("__unique_boot_recovered_at__", String(Date.now())); } catch (e) {}
-        }
-
-        function reloadWithCacheBust(attempt) {
-          var url = new URL(window.location.href);
-          url.searchParams.set("__unique_boot", BOOT_VERSION);
-          url.searchParams.set("__unique_try", String(attempt));
-          url.searchParams.set("t", String(Date.now()));
-          window.location.replace(url.toString());
-        }
-
-        setTimeout(function () {
-          if (window.__UNIQUE_MAIN_EXECUTED__) return;
-          var msg = document.getElementById("unique-boot-msg");
-          var nextAttempt = retryCount() + 1;
-
-          if (nextAttempt > MAX_RECOVERY_ATTEMPTS) {
-            if (msg) {
-              msg.innerHTML = "Prehliadač stále drží starú cache. <a href=\"javascript:void(0)\" id=\"unique-force-retry\" style=\"color:#fde68a;text-decoration:underline;font-weight:600;\">Vyčistiť a skúsiť znova</a>";
-              var btn = document.getElementById("unique-force-retry");
-              if (btn) btn.addEventListener("click", function () {
-                clearRecoveryState();
-                reloadWithCacheBust(1);
-              });
-            }
-            return;
-          }
-
-          if (msg) msg.innerHTML = "Čistím cache a obnovujem aplikáciu…";
-          setRetryCount(nextAttempt);
-
-          var tasks = [];
-          try {
-            if ("serviceWorker" in navigator) {
-              tasks.push(
-                navigator.serviceWorker.getRegistrations().then(function (regs) {
-                  return Promise.all(regs.map(function (r) { return r.unregister().catch(function () {}); }));
-                }).catch(function () {})
-              );
-            }
-            if (typeof caches !== "undefined" && caches.keys) {
-              tasks.push(
-                caches.keys().then(function (keys) {
-                  return Promise.all(keys.map(function (k) { return caches.delete(k).catch(function () {}); }));
-                }).catch(function () {})
-              );
-            }
-          } catch (e) { /* noop */ }
-
-          Promise.all(tasks).finally(function () {
-            reloadWithCacheBust(nextAttempt);
-          });
-        }, BOOT_TIMEOUT_MS);
-      })();
-    </script>
+    <div id="root" translate="yes"></div>
+    <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
