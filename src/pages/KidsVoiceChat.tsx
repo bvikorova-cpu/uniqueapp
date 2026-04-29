@@ -50,6 +50,32 @@ export default function KidsVoiceChat() {
     }
   }, []);
 
+  // Verify Stripe checkout return (?payment=success&session_id=...)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const status = params.get("payment");
+    const sessionId = params.get("session_id");
+    if (status === "success" && sessionId) {
+      (async () => {
+        try {
+          await supabase.functions.invoke("verify-credits-payment", {
+            body: { session_id: sessionId },
+          });
+          await refreshCredits();
+          toast({ title: "Credits added! 🎉", description: "You can now keep chatting." });
+        } catch (e) {
+          console.error("verify-credits-payment failed", e);
+        } finally {
+          window.history.replaceState({}, "", "/kids-voice-chat");
+        }
+      })();
+    } else if (status === "canceled") {
+      toast({ title: "Payment canceled", description: "No credits were added." });
+      window.history.replaceState({}, "", "/kids-voice-chat");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const sendMessage = async (overrideMessage?: string) => {
     const msgText = overrideMessage || inputMessage.trim();
     if (!msgText || !selectedCharacter || isLoading) return;
