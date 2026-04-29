@@ -25,12 +25,13 @@ export default function RewardsStreakCoach() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
       const [pointsRes, historyRes] = await Promise.all([
-        supabase.from("user_points").select("login_streak, best_streak").eq("user_id", user.id).maybeSingle(),
+        supabase.from("user_points").select("login_streak").eq("user_id", user.id).maybeSingle(),
         supabase.from("rewards_ai_history").select("result, input, created_at").eq("user_id", user.id).eq("action", "streak_coach").order("created_at", { ascending: false }).limit(1).maybeSingle(),
       ]);
       if (pointsRes.data) {
-        setCurrentStreak(String(pointsRes.data.login_streak ?? 0));
-        setBestStreak(String((pointsRes.data as any).best_streak ?? pointsRes.data.login_streak ?? 0));
+        const s = pointsRes.data.login_streak ?? 0;
+        setCurrentStreak(String(s));
+        setBestStreak(String(s));
       }
       if (historyRes.data) {
         setResult(historyRes.data.result);
