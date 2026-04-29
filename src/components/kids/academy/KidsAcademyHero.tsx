@@ -167,7 +167,7 @@ export const KidsAcademyHero = () => {
             transition={{ duration: 0.5, delay: 0.3 }}
           >
             {[
-              { icon: Rocket, value: "4+", label: "Modules" },
+              { icon: Rocket, value: "6+", label: "Modules" },
               { icon: Wand2, value: "AI", label: "Powered" },
               { icon: Sparkles, value: "∞", label: "Adventures" },
             ].map((stat, i) => (
