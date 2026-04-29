@@ -77,7 +77,7 @@ serve(async (req) => {
     // Falls back to free-form prompt when not matched (uses customPrompt).
     const UNIVERSAL_PROMPTS: Record<string, string> = {
       // AI assistants & chats
-      mentor_chat:        "You are an experienced career mentor. Provide thoughtful, personalized career advice.",
+      mentor_chat:        "PLACEHOLDER_MENTOR_CHAT", // dynamically replaced based on mentorArea below
       stock_content:      "You are a stock-photo content strategist. Generate compelling content ideas with SEO keywords.",
       chef_chat:          "You are a Michelin-starred chef. Answer cooking questions with expert techniques and tips.",
       offspring_chat:     "You are a digital offspring AI. Respond as the user's child would, based on their personality traits.",
