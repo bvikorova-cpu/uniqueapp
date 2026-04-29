@@ -52,8 +52,14 @@ export default function RewardsLuckyWheel() {
     setTimeout(() => {
       setResult(selected);
       setSpinning(false);
-      setSpinsLeft(prev => prev - 1);
-      toast({ title: `🎉 You won: ${selected.label}!`, description: `${selected.emoji} Prize added to your account!` });
+      setSpinsLeft(0);
+      try {
+        window.localStorage.setItem(SPIN_STORAGE_KEY, new Date().toISOString().slice(0, 10));
+      } catch {}
+      toast({
+        title: `🎉 You won: ${selected.label}!`,
+        description: `${selected.emoji} Preview prize — full backend integration coming soon.`,
+      });
     }, 3000);
   };
 
@@ -62,6 +68,7 @@ export default function RewardsLuckyWheel() {
       <Card className="p-6 bg-gradient-to-br from-amber-500/10 to-yellow-500/5 border-amber-400/20 backdrop-blur-md text-center">
         <h3 className="font-bold text-lg flex items-center justify-center gap-2 mb-4">
           <Disc3 className="h-5 w-5 text-amber-500" /> Daily Lucky Spin
+          <Badge variant="outline" className="text-[9px] ml-1 border-amber-400/40 text-amber-500">PREVIEW</Badge>
         </h3>
 
         {/* Wheel */}
