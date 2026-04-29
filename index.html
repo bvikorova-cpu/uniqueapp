@@ -74,16 +74,23 @@
     }
     </script>
 
-    <!-- SW cleanup only. Never register a service worker in Lovable preview/iframe;
-         it caches stale navigation HTML and traps users on the loader screen. -->
+    <!-- Boot recovery: aggressively remove any old service worker/cache before app boot.
+         Older SW versions cached stale HTML and could trap the preview on the loader. -->
     <script>
       (function () {
         window.__UNIQUE_MAIN_EXECUTED__ = false;
         window.__UNIQUE_REACT_RENDERED__ = false;
+        window.__UNIQUE_BOOT_VERSION__ = "2026-04-29-hard-reset";
         try {
           if ("serviceWorker" in navigator) {
             navigator.serviceWorker.getRegistrations().then(function (regs) {
-              regs.forEach(function (r) { r.unregister().catch(function () {}); });
+              regs.forEach(function (r) {
+                try { if (r.waiting) r.waiting.postMessage("SKIP_WAITING"); } catch (e) {}
+                try { if (r.active) r.active.postMessage("SKIP_WAITING"); } catch (e) {}
+                r.update().catch(function () {}).finally(function () {
+                  r.unregister().catch(function () {});
+                });
+              });
             }).catch(function () {});
           }
           if (typeof caches !== "undefined" && caches.keys) {
@@ -105,79 +112,69 @@
         </div>
       </div>
     </div>
-    <script type="module" src="/src/main.tsx" data-unique-main></script>
+    <script type="module" src="/src/main.tsx?v=2026-04-29-hard-reset" data-unique-main></script>
     <script>
-      // Watchdog: ak main.tsx nenabootuje do 10s, agresívne vyčisti SW + cache
-      // a tvrdo reloadni. Recovery flag sa maže OKAMŽITE pri prvom úspešnom
-      // boot-e (cez Object.defineProperty), aby sa nedal "zaseknúť" ani keď
-      // appka nabootuje rýchlejšie ako 1s.
+      // Watchdog: if /src/main.tsx does not execute, the browser is almost
+      // always serving stale cached HTML/JS. Clear every browser cache/SW and
+      // reload with a cache-busting URL even inside Lovable preview iframes.
       (function () {
-        var BOOT_TIMEOUT_MS = 10000;
-        var RECOVERY_COOLDOWN_MS = 60 * 1000;
+        var BOOT_TIMEOUT_MS = 12000;
+        var MAX_RECOVERY_ATTEMPTS = 3;
+        var BOOT_VERSION = window.__UNIQUE_BOOT_VERSION__ || "2026-04-29-hard-reset";
 
-        function clearRecoveryFlag() {
+        function clearRecoveryState() {
           try { sessionStorage.removeItem("__unique_boot_recovered_at__"); } catch (e) {}
+          try { sessionStorage.removeItem("__unique_boot_retry_count__"); } catch (e) {}
         }
 
-        // Hook na __UNIQUE_MAIN_EXECUTED__: akonáhle sa nastaví na true, flag preč.
+        // Hook: as soon as main.tsx executes, recovery state is cleared.
         try {
           var _executed = !!window.__UNIQUE_MAIN_EXECUTED__;
-          if (_executed) clearRecoveryFlag();
+          if (_executed) clearRecoveryState();
           Object.defineProperty(window, "__UNIQUE_MAIN_EXECUTED__", {
             configurable: true,
             get: function () { return _executed; },
-            set: function (v) { _executed = !!v; if (_executed) clearRecoveryFlag(); },
+            set: function (v) { _executed = !!v; if (_executed) clearRecoveryState(); },
           });
         } catch (e) { /* noop */ }
 
-        var lastRecovery = 0;
-        try {
-          var raw = sessionStorage.getItem("__unique_boot_recovered_at__");
-          lastRecovery = raw ? parseInt(raw, 10) || 0 : 0;
-        } catch (e) {}
-        var recentlyRecovered = lastRecovery && (Date.now() - lastRecovery) < RECOVERY_COOLDOWN_MS;
-        var isFramed = false;
-        try { isFramed = window.self !== window.top; } catch (e) { isFramed = true; }
-
-        function cleanPreviewUrl() {
-          return window.location.origin + window.location.pathname;
+        function retryCount() {
+          try { return parseInt(sessionStorage.getItem("__unique_boot_retry_count__") || "0", 10) || 0; }
+          catch (e) { return 0; }
         }
 
-        function openCleanPreview() {
-          clearRecoveryFlag();
-          var url = cleanPreviewUrl();
-          if (isFramed) {
-            try { window.top.location.href = url; return; } catch (e) {}
-            try { window.open(url, "_blank", "noopener,noreferrer"); return; } catch (e) {}
-          }
-          window.location.replace(window.location.pathname);
+        function setRetryCount(value) {
+          try { sessionStorage.setItem("__unique_boot_retry_count__", String(value)); } catch (e) {}
+          try { sessionStorage.setItem("__unique_boot_recovered_at__", String(Date.now())); } catch (e) {}
+        }
+
+        function reloadWithCacheBust(attempt) {
+          var url = new URL(window.location.href);
+          url.searchParams.set("__unique_boot", BOOT_VERSION);
+          url.searchParams.set("__unique_try", String(attempt));
+          url.searchParams.set("t", String(Date.now()));
+          window.location.replace(url.toString());
         }
 
         setTimeout(function () {
           if (window.__UNIQUE_MAIN_EXECUTED__) return;
           var msg = document.getElementById("unique-boot-msg");
+          var nextAttempt = retryCount() + 1;
 
-          if (recentlyRecovered) {
+          if (nextAttempt > MAX_RECOVERY_ATTEMPTS) {
             if (msg) {
-              msg.innerHTML = isFramed
-                ? "Lovable náhľad v iframe blokuje načítanie. <a href=\"" + cleanPreviewUrl() + "\" target=\"_top\" id=\"unique-force-retry\" style=\"color:#fde68a;text-decoration:underline;font-weight:600;\">Otvoriť mimo náhľad</a>"
-                : "Načítanie trvá dlhšie. <a href=\"javascript:void(0)\" id=\"unique-force-retry\" style=\"color:#fde68a;text-decoration:underline;font-weight:600;\">Skúsiť znova</a>";
+              msg.innerHTML = "Prehliadač stále drží starú cache. <a href=\"javascript:void(0)\" id=\"unique-force-retry\" style=\"color:#fde68a;text-decoration:underline;font-weight:600;\">Vyčistiť a skúsiť znova</a>";
               var btn = document.getElementById("unique-force-retry");
               if (btn) btn.addEventListener("click", function () {
-                openCleanPreview();
+                clearRecoveryState();
+                reloadWithCacheBust(1);
               });
             }
-            if (isFramed) return;
-            // Auto-retry po ďalších 8s, kompletne bez query parametrov.
-            setTimeout(function () {
-              if (window.__UNIQUE_MAIN_EXECUTED__) return;
-              clearRecoveryFlag();
-              window.location.replace(window.location.pathname);
-            }, 8000);
             return;
           }
 
-          if (msg) msg.innerHTML = "Obnovujem aplikáciu, počkaj…";
+          if (msg) msg.innerHTML = "Čistím cache a obnovujem aplikáciu…";
+          setRetryCount(nextAttempt);
 
           var tasks = [];
           try {
@@ -197,10 +194,8 @@
             }
           } catch (e) { /* noop */ }
 
-          try { sessionStorage.setItem("__unique_boot_recovered_at__", String(Date.now())); } catch (e) {}
-
           Promise.all(tasks).finally(function () {
-            window.location.replace(window.location.pathname);
+            reloadWithCacheBust(nextAttempt);
           });
         }, BOOT_TIMEOUT_MS);
       })();
