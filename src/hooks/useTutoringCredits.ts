@@ -155,7 +155,8 @@ export const useTutoringCredits = () => {
     isLoading,
     useCredit: useCredit.mutateAsync,
     purchaseCredits: purchaseCredits.mutate,
-    addCredits: addCredits.mutate,
+    activatePurchase: activatePurchase.mutateAsync,
+    refundCredit: refundCredit.mutateAsync,
     isUsingCredit: useCredit.isPending,
   };
 };
