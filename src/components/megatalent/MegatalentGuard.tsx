@@ -340,6 +340,8 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
         if (!cancelled && data) setPreviewItems(data as PreviewSubmission[]);
       } catch (err) {
         console.warn("[MegatalentGuard] preview fetch failed", err);
+      } finally {
+        if (!cancelled) setPreviewLoaded(true);
       }
     })();
     return () => { cancelled = true; };
