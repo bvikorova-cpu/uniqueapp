@@ -153,15 +153,7 @@ export default function KidsParentalDashboard() {
     });
   };
 
-  const weeklyData = [
-    { day: "Mon", homework: 12, science: 5, reading: 8 },
-    { day: "Tue", homework: 8, science: 3, reading: 10 },
-    { day: "Wed", homework: 15, science: 7, reading: 6 },
-    { day: "Thu", homework: 10, science: 4, reading: 12 },
-    { day: "Fri", homework: 6, science: 8, reading: 9 },
-    { day: "Sat", homework: 3, science: 10, reading: 15 },
-    { day: "Sun", homework: 5, science: 6, reading: 11 },
-  ];
+
 
   const categoryData = [
     { name: "Homework", value: stats?.homework_tasks || 0 },
