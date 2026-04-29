@@ -202,6 +202,9 @@ export default function KidsVoiceChat() {
             <p className="text-lg text-gray-600">Choose a character and start an amazing conversation!</p>
           </motion.div>
 
+          {/* Credit balance banner (paid-only) */}
+          <ChatCreditBanner credits={credits_remaining} loading={creditsLoading} />
+
           {!selectedCharacter ? (
             /* Character Selection */
             <div className="space-y-8">
