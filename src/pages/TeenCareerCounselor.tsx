@@ -235,28 +235,17 @@ export default function TeenCareerCounselor() {
 
         <HeroRewardedAd sectionKey="page_teencareercounselor" />
 
-        {/* Usage Status */}
-        {!checkingUsage && usageData && (
-          <Card className="mb-6 border-primary/20">
-            <CardContent className="pt-4 pb-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <Sparkles className="h-5 w-5 text-primary" />
-                  <div>
-                    <p className="font-semibold text-sm">Your Sessions</p>
-                    <p className="text-xs text-muted-foreground">
-                      {usageData.hasFreeTrial ? "1 free session available" : `${usageData.paidGenerations} paid session${usageData.paidGenerations !== 1 ? 's' : ''} remaining`}
-                    </p>
-                  </div>
-                </div>
-                {!usageData.canGenerate && (
-                  <Button onClick={handlePurchase} size="sm" className="gap-2">
-                    <CreditCard className="h-4 w-4" /> Buy (€5)
-                  </Button>
-                )}
-              </div>
-            </CardContent>
-          </Card>
+        {/* Credit balance */}
+        {!creditsLoading && (
+          <div className="mb-6">
+            <CreditBanner
+              label="Career"
+              creditsRemaining={balance}
+              costPerUse={costPerUse}
+              onBuyCredits={handleBuyCredits}
+              unitName="session"
+            />
+          </div>
         )}
 
         {/* Main content tabs */}
@@ -378,19 +367,23 @@ export default function TeenCareerCounselor() {
                         </Button>
                         <Button
                           onClick={getCareerGuidance}
-                          disabled={loading || (usageData !== null && !usageData.canGenerate)}
+                          disabled={loading || !canUse}
                           className="flex-1 gap-2"
                         >
                           <Sparkles className="h-4 w-4" />
-                          {loading ? "Analyzing Your Profile..." : "Get AI Career Guidance"}
+                          {loading
+                            ? "Analyzing Your Profile..."
+                            : !canUse
+                              ? `Buy credits (need ${TEEN_CAREER_CREDIT_COST})`
+                              : `Get AI Career Guidance (${TEEN_CAREER_CREDIT_COST} credits)`}
                         </Button>
                       </div>
 
-                      {usageData && !usageData.canGenerate && (
+                      {!canUse && (
                         <div className="bg-accent/10 border border-accent/20 rounded-xl p-4 text-center">
-                          <p className="text-sm font-medium mb-2">Need More Sessions?</p>
-                          <Button onClick={handlePurchase} className="gap-2">
-                            <CreditCard className="h-4 w-4" /> Purchase Session (€5)
+                          <p className="text-sm font-medium mb-2">Need more credits?</p>
+                          <Button onClick={handleBuyCredits} className="gap-2">
+                            <Sparkles className="h-4 w-4" /> Buy Career credits
                           </Button>
                         </div>
                       )}
