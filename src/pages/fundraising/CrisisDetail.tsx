@@ -11,6 +11,7 @@ import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ArrowLeft, AlertTriangle, Users, MapPin, Clock, Heart, CheckCircle } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
+import { useDonationReturn } from "@/hooks/useDonationReturn";
 import { formatDistanceToNow } from 'date-fns';
 import { CampaignDetailEnhancements, CampaignDetailLiveFeed } from '@/components/fundraising/CampaignDetailEnhancements';
 
