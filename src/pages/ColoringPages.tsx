@@ -381,79 +381,61 @@ export default function ColoringPages() {
             />
           </TabsContent>
 
-          {/* Pricing Tab */}
+          {/* Pricing Tab — credit packs (paid-only model) */}
           <TabsContent value="pricing">
+            <div className="text-center mb-6">
+              <p className="text-sm text-muted-foreground">
+                Each coloring page costs <strong>{costPerUse}</strong> credits. Buy a pack — credits never expire.
+              </p>
+            </div>
             <div className="grid md:grid-cols-3 gap-6">
-              <Card className="backdrop-blur-xl bg-card/80 border-border/30 hover:border-pink-500/20 transition-all">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500/20 to-cyan-500/20 flex items-center justify-center">
-                      <ImageIcon className="h-4 w-4 text-blue-500" />
-                    </div>
-                    Pay Per Use
-                  </CardTitle>
-                  <CardDescription>Perfect for occasional use</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div><p className="text-3xl font-black">€2</p><p className="text-sm text-muted-foreground">per coloring page</p></div>
-                  <ul className="space-y-2 text-sm">
-                    <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> HD Quality (1024x1024)</li>
-                    <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> No watermark</li>
-                    <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> PNG + PDF formats</li>
-                  </ul>
-                  <Button onClick={() => payPerUseMutation.mutate()} disabled={payPerUseMutation.isPending} className="w-full">
-                    {payPerUseMutation.isPending ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Processing...</> : "Buy 1 Credit"}
-                  </Button>
-                </CardContent>
-              </Card>
-              <Card className="backdrop-blur-xl bg-card/80 border-border/30 hover:border-purple-500/20 transition-all">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center">
-                      <Sparkles className="h-4 w-4 text-purple-500" />
-                    </div>
-                    Basic
-                  </CardTitle>
-                  <CardDescription>Great for regular users</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div><p className="text-3xl font-black">€5</p><p className="text-sm text-muted-foreground">per month</p></div>
-                  <ul className="space-y-2 text-sm">
-                    <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> 20 HD coloring pages/month</li>
-                    <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> No watermark</li>
-                    <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> PNG + PDF formats</li>
-                    <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> Custom templates</li>
-                  </ul>
-                  <Button onClick={() => subscribeMutation.mutate('basic')} disabled={subscribeMutation.isPending} className="w-full">
-                    {subscribeMutation.isPending && subscribeMutation.variables === 'basic' ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Redirecting...</> : "Subscribe"}
-                  </Button>
-                </CardContent>
-              </Card>
-              <Card className="backdrop-blur-xl bg-card/80 border-primary/30 hover:border-primary/50 transition-all relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-3xl" />
-                <CardHeader className="relative z-10">
-                  <CardTitle className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-500/20 to-orange-500/20 flex items-center justify-center">
-                      <Crown className="h-4 w-4 text-amber-500" />
-                    </div>
-                    Premium
-                  </CardTitle>
-                  <CardDescription>For power users</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4 relative z-10">
-                  <div><p className="text-3xl font-black">€12</p><p className="text-sm text-muted-foreground">per month</p></div>
-                  <ul className="space-y-2 text-sm">
-                    <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> UNLIMITED Ultra HD (2048x2048)</li>
-                    <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> All formats (PNG, PDF, SVG)</li>
-                    <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> Bulk download</li>
-                    <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> Priority processing</li>
-                    <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> Custom branding</li>
-                  </ul>
-                  <Button onClick={() => subscribeMutation.mutate('premium')} disabled={subscribeMutation.isPending} className="w-full">
-                    {subscribeMutation.isPending && subscribeMutation.variables === 'premium' ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Redirecting...</> : "Subscribe"}
-                  </Button>
-                </CardContent>
-              </Card>
+              {[
+                { credits: 25, label: "Starter", desc: "5 coloring pages", popular: false },
+                { credits: 100, label: "Family", desc: "20 coloring pages · best value", popular: true },
+                { credits: 500, label: "Studio", desc: "100 coloring pages · bulk discount", popular: false },
+              ].map((pack) => {
+                const pages = Math.floor(pack.credits / costPerUse);
+                const price = (pack.credits * 0.5).toFixed(2);
+                return (
+                  <Card
+                    key={pack.credits}
+                    className={`backdrop-blur-xl bg-card/80 transition-all ${pack.popular ? "border-primary border-2 shadow-xl shadow-primary/10 relative" : "border-border/30 hover:border-primary/20"}`}
+                  >
+                    {pack.popular && (
+                      <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-xs px-3 py-1 rounded-full font-semibold">
+                        MOST POPULAR
+                      </div>
+                    )}
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center">
+                          {pack.popular ? <Crown className="h-4 w-4 text-amber-500" /> : <Sparkles className="h-4 w-4 text-purple-500" />}
+                        </div>
+                        {pack.label}
+                      </CardTitle>
+                      <CardDescription>{pack.desc}</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div>
+                        <p className="text-3xl font-black">€{price}</p>
+                        <p className="text-sm text-muted-foreground">{pack.credits} credits · ≈ {pages} pages</p>
+                      </div>
+                      <ul className="space-y-2 text-sm">
+                        <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> HD Quality (1024x1024)</li>
+                        <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> No watermark · PNG + PDF</li>
+                        <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> Credits never expire</li>
+                      </ul>
+                      <Button
+                        onClick={() => buyCreditsPack(pack.credits)}
+                        className="w-full"
+                        variant={pack.popular ? "default" : "outline"}
+                      >
+                        Buy {pack.credits} credits
+                      </Button>
+                    </CardContent>
+                  </Card>
+                );
+              })}
             </div>
           </TabsContent>
 
