@@ -392,9 +392,9 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
             <div className="mx-auto w-16 h-16 rounded-full bg-primary/15 flex items-center justify-center">
               <Loader2 className="w-8 h-8 text-primary animate-spin" />
             </div>
-            <CardTitle className="text-2xl">Aktivujem tvoje predplatné...</CardTitle>
+            <CardTitle className="text-2xl">{t("megatalent.paywall.activating_title")}</CardTitle>
             <CardDescription className="text-base">
-              Platba prijatá. Stripe potrebuje pár sekúnd na aktiváciu — automaticky ťa presmerujeme do MegaTalentu, len čo bude pripravené.
+              {t("megatalent.paywall.activating_desc")}
             </CardDescription>
           </CardHeader>
         </Card>
