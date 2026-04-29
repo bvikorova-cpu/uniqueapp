@@ -21,7 +21,11 @@ import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 const KidsStoryCreator = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const { storiesCreatedThisMonth, isPremium, loading: usageLoading, refreshUsage, manageSubscription } = useKidsStoryCreator();
+  const { balance, canUse, isLoading: creditsLoading, purchase, refresh: refreshCredits, costPerUse } = useKidsStoryCredits();
+  const handleBuyCredits = async () => {
+    const url = await purchase(50);
+    if (url) window.location.href = url;
+  };
   const [loading, setLoading] = useState(false);
   const [continuingStory, setContinuingStory] = useState(false);
   const [story, setStory] = useState<any>(null);
