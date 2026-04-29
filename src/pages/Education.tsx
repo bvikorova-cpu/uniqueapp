@@ -80,22 +80,21 @@ const Education = () => {
   const [chatMessage, setChatMessage] = useState("");
   const [chatHistory, setChatHistory] = useState<Array<{ role: string; content: string }>>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const { credits, isLoading: creditsLoading, useCredit, addCredits, isUsingCredit } = useTutoringCredits();
+  const { credits, isLoading: creditsLoading, useCredit, activatePurchase, refundCredit, isUsingCredit } = useTutoringCredits();
 
   useEffect(() => {
     const purchase = searchParams.get("purchase");
-    const creditsParam = searchParams.get("credits");
-    if (purchase === "success" && creditsParam) {
-      const creditsToAdd = parseInt(creditsParam, 10);
-      if (!isNaN(creditsToAdd)) {
-        addCredits(creditsToAdd);
+    const sessionId = searchParams.get("session_id");
+    if (purchase === "success" && sessionId) {
+      // Server verifies the Stripe session and credits the authoritative amount.
+      activatePurchase(sessionId).finally(() => {
         navigate("/education", { replace: true });
-      }
+      });
     } else if (purchase === "canceled") {
       sonnerToast.error("Purchase was canceled");
       navigate("/education", { replace: true });
     }
-  }, [searchParams, addCredits, navigate]);
+  }, [searchParams, activatePurchase, navigate]);
 
   const handleSendMessage = async () => {
     if (!chatMessage.trim()) return;
@@ -107,14 +106,27 @@ const Education = () => {
     setChatMessage("");
     setChatHistory(prev => [...prev, { role: "user", content: userMessage }]);
     setIsLoading(true);
+    let creditDeducted = false;
     try {
       await useCredit();
+      creditDeducted = true;
       const { data, error } = await supabase.functions.invoke("tutoring-chat", { body: { message: userMessage, history: chatHistory } });
       if (error) throw error;
       setChatHistory(prev => [...prev, { role: "assistant", content: data.response }]);
     } catch (error) {
       console.error("Error:", error);
-      toast({ title: "Error", description: "Failed to send message", variant: "destructive" });
+      // Refund the credit if the AI call failed after deduction
+      if (creditDeducted) {
+        try { await refundCredit("ai_call_failed"); } catch (e) { console.error("refund failed", e); }
+      }
+      // Roll back the optimistic user message so they can retry without losing context
+      setChatHistory(prev => prev.slice(0, -1));
+      setChatMessage(userMessage);
+      toast({
+        title: "Message failed",
+        description: creditDeducted ? "Your credit was refunded. Try again." : "Failed to send message",
+        variant: "destructive",
+      });
     } finally {
       setIsLoading(false);
     }
