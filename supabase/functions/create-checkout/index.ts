@@ -404,7 +404,13 @@ serve(async (req) => {
         mode: "payment",
         success_url: successUrl,
         cancel_url: cancelUrl,
-        metadata: { user_id: userId, credits: String(credits), type: `${creditType}_credits`, credit_type: creditType },
+        metadata: {
+          user_id: userId,
+          credits: String(credits),
+          type: `${creditType}_credits`,
+          // verify-credits-payment uses `credit_type` as the table name → use full table name
+          credit_type: `${creditType}_credits`,
+        },
       });
 
       return successResponse({ url: session.url, session_id: session.id });
