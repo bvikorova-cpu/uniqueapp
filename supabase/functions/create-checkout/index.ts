@@ -267,13 +267,31 @@ serve(async (req) => {
   if (rateLimitResponse) return rateLimitResponse;
 
   try {
-    const { userId, email } = await authenticateUser(req);
-    if (!email) throw new Error("User email not available");
-
     const body = await req.json();
     const stripe = createStripeClient();
-    const customerId = await getStripeCustomer(stripe, email);
     const origin = req.headers.get("origin") || "";
+
+    // Donations support guest checkout — auth is optional
+    const isDonation = body.product === "campaign_donation" || body.product === "campaign-donation";
+    let userId: string | null = null;
+    let email: string | null = null;
+    if (isDonation) {
+      try {
+        const auth = await authenticateUser(req);
+        userId = auth.userId;
+        email = auth.email ?? null;
+      } catch {
+        userId = null;
+        email = body.donorEmail ? String(body.donorEmail) : null;
+      }
+      if (!email) throw new Error("Email required for donation (sign in or provide donorEmail)");
+    } else {
+      const auth = await authenticateUser(req);
+      userId = auth.userId;
+      email = auth.email ?? null;
+      if (!email) throw new Error("User email not available");
+    }
+    const customerId = await getStripeCustomer(stripe, email);
 
     // ─── ACTION: verify (used by all verify-*-payment aliases) ───
     // Verifies a Stripe Checkout session id and returns its status.
