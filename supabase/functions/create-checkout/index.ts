@@ -408,8 +408,11 @@ serve(async (req) => {
           user_id: userId,
           credits: String(credits),
           type: `${creditType}_credits`,
-          // verify-credits-payment uses `credit_type` as the table name → use full table name
-          credit_type: `${creditType}_credits`,
+          // verify-credits-payment uses `credit_type` directly as the table name. Most legacy
+          // packs have their own verify alias, but the universal verify expects the full table
+          // name (e.g. `science_credits`). For science we pass the full table name to avoid
+          // needing yet another verify alias.
+          credit_type: creditType === "science" ? "science_credits" : creditType,
         },
       });
 
