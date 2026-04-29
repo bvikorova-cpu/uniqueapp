@@ -87,6 +87,12 @@ const CREDIT_PACKS: Record<string, { prices: Record<number, string>; successPath
     successPath: "/astrology?payment=success&session_id={CHECKOUT_SESSION_ID}",
     cancelPath: "/astrology?payment=canceled",
   },
+  // Science Lab credits — dynamic price_data fallback (€0.50/credit) until fixed prices created
+  science: {
+    prices: {},
+    successPath: "/kids-science-lab?payment=success&session_id={CHECKOUT_SESSION_ID}",
+    cancelPath: "/kids-science-lab?payment=canceled",
+  },
   // ─── Newly created Phase 3 packs ───
   character: {
     prices: {
