@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Flame, Loader2, CreditCard, Zap, Shield, Calendar } from "lucide-react";
+import { Flame, Loader2, CreditCard, Zap, Shield, History } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -12,15 +12,40 @@ import ReactMarkdown from "react-markdown";
 export default function RewardsStreakCoach() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<string | null>(null);
+  const [historyLoaded, setHistoryLoaded] = useState(false);
   const [currentStreak, setCurrentStreak] = useState("");
   const [bestStreak, setBestStreak] = useState("");
   const [timezone, setTimezone] = useState("");
   const [challengeAreas, setChallengeAreas] = useState("");
   const { toast } = useToast();
 
+  // Auto-prefill from user_points + load latest saved coaching
+  useEffect(() => {
+    (async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      const [pointsRes, historyRes] = await Promise.all([
+        supabase.from("user_points").select("login_streak, best_streak").eq("user_id", user.id).maybeSingle(),
+        supabase.from("rewards_ai_history").select("result, input, created_at").eq("user_id", user.id).eq("action", "streak_coach").order("created_at", { ascending: false }).limit(1).maybeSingle(),
+      ]);
+      if (pointsRes.data) {
+        setCurrentStreak(String(pointsRes.data.login_streak ?? 0));
+        setBestStreak(String((pointsRes.data as any).best_streak ?? pointsRes.data.login_streak ?? 0));
+      }
+      if (historyRes.data) {
+        setResult(historyRes.data.result);
+        setHistoryLoaded(true);
+        const inp: any = historyRes.data.input || {};
+        if (inp.timezone) setTimezone(inp.timezone);
+        if (inp.challenge_areas) setChallengeAreas(inp.challenge_areas);
+      }
+    })();
+  }, []);
+
   const handleSubmit = async () => {
     setLoading(true);
     setResult(null);
+    setHistoryLoaded(false);
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) throw new Error("Please sign in");
@@ -30,6 +55,7 @@ export default function RewardsStreakCoach() {
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       setResult(data.result);
+      toast({ title: "Saved", description: "Your coaching plan is saved — view it anytime free." });
     } catch (e: any) {
       toast({ title: "Error", description: e.message, variant: "destructive" });
     } finally {
@@ -46,7 +72,7 @@ export default function RewardsStreakCoach() {
           </div>
           <div>
             <h3 className="font-bold text-lg">AI Streak Coach</h3>
-            <p className="text-xs text-muted-foreground flex items-center gap-1"><CreditCard className="h-3 w-3" /> 4 credits per use</p>
+            <p className="text-xs text-muted-foreground flex items-center gap-1"><CreditCard className="h-3 w-3" /> 4 credits per use • Auto-filled from your stats</p>
           </div>
         </div>
 
@@ -85,7 +111,12 @@ export default function RewardsStreakCoach() {
 
       {result && (
         <Card className="p-5 bg-card/90 backdrop-blur-md border-amber-400/20">
-          <h4 className="font-bold mb-3 text-amber-500">🔥 Your Streak Coach Plan</h4>
+          <div className="flex items-center justify-between mb-3">
+            <h4 className="font-bold text-amber-500">🔥 Your Streak Coach Plan</h4>
+            {historyLoaded && (
+              <span className="text-[10px] text-muted-foreground flex items-center gap-1"><History className="h-3 w-3" /> Saved plan (free)</span>
+            )}
+          </div>
           <div className="prose prose-sm dark:prose-invert max-w-none"><ReactMarkdown>{result}</ReactMarkdown></div>
         </Card>
       )}
