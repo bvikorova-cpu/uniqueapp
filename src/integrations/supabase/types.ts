@@ -42743,6 +42743,31 @@ export type Database = {
         Args: { p_activity_type: string; p_points: number; p_user_id: string }
         Returns: undefined
       }
+      admin_get_xp_events: {
+        Args: { _target_user_id: string }
+        Returns: {
+          description: string
+          event_id: string
+          event_type: string
+          occurred_at: string
+          source: string
+          xp: number
+        }[]
+      }
+      admin_get_xp_reconciliation: {
+        Args: { _target_user_id: string }
+        Returns: Json
+      }
+      admin_search_users_for_xp_audit: {
+        Args: { _query: string }
+        Returns: {
+          avatar_url: string
+          full_name: string
+          level: number
+          total_points: number
+          user_id: string
+        }[]
+      }
       assign_user_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
