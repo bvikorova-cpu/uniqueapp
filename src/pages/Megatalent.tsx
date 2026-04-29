@@ -106,6 +106,7 @@ const Megatalent = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [submissions, setSubmissions] = useState<any[]>([]);
+  const [feedLoading, setFeedLoading] = useState(true);
   const [totalVotes, setTotalVotes] = useState(0);
   const photoInputRef = useRef<HTMLInputElement>(null);
   const videoInputRef = useRef<HTMLInputElement>(null);
