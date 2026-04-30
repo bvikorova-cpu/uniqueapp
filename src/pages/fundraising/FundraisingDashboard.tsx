@@ -27,6 +27,7 @@ interface Campaign {
   current_amount: number;
   status: string;
   verified: boolean;
+  rejection_reason?: string | null;
   monthly_donors_count?: number;
   one_time_donors_count?: number;
   supporters_count?: number;
