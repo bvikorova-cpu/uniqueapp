@@ -247,44 +247,44 @@ export default function CreativeForge() {
                           {CATEGORIES.find(c => c.id === selectedCategory)?.emoji}
                           {CATEGORIES.find(c => c.id === selectedCategory)?.name}
                         </CardTitle>
-                        <CardDescription>Describe your creative vision</CardDescription>
+                        <CardDescription>{t("forge.form.describe_vision")}</CardDescription>
                       </CardHeader>
                       <CardContent className="space-y-3">
-                        <div><Label>Title / Theme *</Label><Input placeholder="Enter the main theme or title..." value={title} onChange={(e) => setTitle(e.target.value)} /></div>
+                        <div><Label>{t("forge.form.title_label")}</Label><Input placeholder={t("forge.form.title_placeholder")} value={title} onChange={(e) => setTitle(e.target.value)} /></div>
                         <div className="grid grid-cols-2 gap-3">
-                          <div><Label>Genre / Style</Label><Input placeholder="e.g., Romance, Thriller..." value={genre} onChange={(e) => setGenre(e.target.value)} /></div>
-                          <div><Label>Mood / Tone</Label><Input placeholder="e.g., Melancholic, Upbeat..." value={mood} onChange={(e) => setMood(e.target.value)} /></div>
+                          <div><Label>{t("forge.form.genre")}</Label><Input placeholder={t("forge.form.genre_placeholder")} value={genre} onChange={(e) => setGenre(e.target.value)} /></div>
+                          <div><Label>{t("forge.form.mood")}</Label><Input placeholder={t("forge.form.mood_placeholder")} value={mood} onChange={(e) => setMood(e.target.value)} /></div>
                         </div>
-                        <div><Label>Description</Label><Textarea placeholder="Describe what you want in detail..." value={description} onChange={(e) => setDescription(e.target.value)} rows={3} /></div>
+                        <div><Label>{t("forge.form.description")}</Label><Textarea placeholder={t("forge.form.description_placeholder")} value={description} onChange={(e) => setDescription(e.target.value)} rows={3} /></div>
                         {(selectedCategory === "screenplay" || selectedCategory === "theater_play" || selectedCategory === "novel_chapter") && (
                           <div className="grid grid-cols-2 gap-3">
-                            <div><Label>Characters</Label><Input placeholder="Main characters..." value={characters} onChange={(e) => setCharacters(e.target.value)} /></div>
-                            <div><Label>Setting</Label><Input placeholder="Time and place..." value={setting} onChange={(e) => setSetting(e.target.value)} /></div>
+                            <div><Label>{t("forge.form.characters")}</Label><Input placeholder={t("forge.form.characters_placeholder")} value={characters} onChange={(e) => setCharacters(e.target.value)} /></div>
+                            <div><Label>{t("forge.form.setting")}</Label><Input placeholder={t("forge.form.setting_placeholder")} value={setting} onChange={(e) => setSetting(e.target.value)} /></div>
                           </div>
                         )}
-                        {selectedCategory === "ad_copy" && (<div><Label>Target Audience</Label><Input placeholder="Who is this for..." value={targetAudience} onChange={(e) => setTargetAudience(e.target.value)} /></div>)}
+                        {selectedCategory === "ad_copy" && (<div><Label>{t("forge.form.target_audience")}</Label><Input placeholder={t("forge.form.target_audience_placeholder")} value={targetAudience} onChange={(e) => setTargetAudience(e.target.value)} /></div>)}
                         <div className="grid grid-cols-2 gap-3">
                           <div>
-                            <Label>Style Reference</Label>
-                            <Select value={styleReference} onValueChange={setStyleReference}><SelectTrigger><SelectValue placeholder="Write in the style of..." /></SelectTrigger>
-                              <SelectContent><SelectItem value="none">No specific style</SelectItem>{STYLE_REFERENCES[selectedCategory]?.map((ref) => (<SelectItem key={ref} value={ref}>{ref}</SelectItem>))}</SelectContent>
+                            <Label>{t("forge.form.style_reference")}</Label>
+                            <Select value={styleReference} onValueChange={setStyleReference}><SelectTrigger><SelectValue placeholder={t("forge.form.style_reference_placeholder")} /></SelectTrigger>
+                              <SelectContent><SelectItem value="none">{t("forge.form.no_specific_style")}</SelectItem>{STYLE_REFERENCES[selectedCategory]?.map((ref) => (<SelectItem key={ref} value={ref}>{ref}</SelectItem>))}</SelectContent>
                             </Select>
                           </div>
                           <div>
-                            <Label>Content Length</Label>
+                            <Label>{t("forge.form.content_length")}</Label>
                             <Select value={contentLength} onValueChange={setContentLength}><SelectTrigger><SelectValue /></SelectTrigger>
-                              <SelectContent><SelectItem value="short">Short</SelectItem><SelectItem value="medium">Medium</SelectItem><SelectItem value="long">Long</SelectItem></SelectContent>
+                              <SelectContent><SelectItem value="short">{t("forge.form.length_short")}</SelectItem><SelectItem value="medium">{t("forge.form.length_medium")}</SelectItem><SelectItem value="long">{t("forge.form.length_long")}</SelectItem></SelectContent>
                             </Select>
                           </div>
                         </div>
                         <Button onClick={handleGenerate} disabled={isGenerating || !title.trim()} className="w-full" size="lg">
-                          {isGenerating ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Generating...</> : <><Sparkles className="mr-2 h-4 w-4" /> Generate ({CREDIT_COSTS[selectedCategory]} credits)</>}
+                          {isGenerating ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> {t("forge.generating")}</> : <><Sparkles className="mr-2 h-4 w-4" /> {t("forge.generate")} ({CREDIT_COSTS[selectedCategory]} {t("forge.credit_short")})</>}
                         </Button>
                       </CardContent>
                     </Card>
                     {/* Output */}
                     <Card className="border-border/50 backdrop-blur-xl bg-card/80">
-                      <CardHeader className="pb-3"><CardTitle className="text-lg">Generated Content</CardTitle><CardDescription>Your AI-created masterpiece</CardDescription></CardHeader>
+                      <CardHeader className="pb-3"><CardTitle className="text-lg">{t("forge.output.title")}</CardTitle><CardDescription>{t("forge.output.subtitle")}</CardDescription></CardHeader>
                       <CardContent>
                         {generatedContent ? (
                           <div className="space-y-3">
