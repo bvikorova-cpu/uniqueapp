@@ -244,9 +244,11 @@ const KidsScienceLab = () => {
 
               {result && <LabNotebookResult result={result} category={category} />}
 
-              {showQuiz && result && (
+              {showQuiz && result && result.quiz.length === 5 && (
                 <ScienceComprehensionQuiz
                   category={category}
+                  difficulty={difficulty}
+                  questions={result.quiz}
                   onComplete={(xp) => {
                     toast.success(`You earned +${xp} XP from the quiz! 🧠`);
                     setShowQuiz(false);
