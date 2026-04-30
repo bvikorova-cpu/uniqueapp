@@ -281,14 +281,10 @@ serve(async (req) => {
       const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
       const parsed = toolCall ? JSON.parse(toolCall.function.arguments) : {};
 
-      let illustrationUrl: string | null = null;
-      try {
-        const imgData = await callAI(OPENAI_API_KEY, {
-          model: "google/gemini-2.5-flash-image-preview",
-          messages: [{ role: "user", content: `Surreal dreamlike illustration: ${parsed.illustration_prompt}. Soft pastel colors, ethereal mist, no text.` }],
-        });
-        illustrationUrl = imgData.choices?.[0]?.message?.images?.[0]?.image_url?.url || null;
-      } catch (e) { console.error("Illustration failed:", e); }
+      const illustrationUrl = await callImage(
+        OPENAI_API_KEY,
+        `Surreal dreamlike illustration: ${parsed.illustration_prompt}. Soft pastel colors, ethereal mist, no text.`
+      );
 
       await supabase.from("wellness_dream_interpretations").update({
         interpretation: parsed.interpretation, symbols: parsed.symbols || [],
