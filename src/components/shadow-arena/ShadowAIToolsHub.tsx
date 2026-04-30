@@ -88,7 +88,7 @@ export function ShadowAIToolsHub() {
             value={storyPrompt}
             onChange={(e) => setStoryPrompt(e.target.value)}
             rows={3}
-            placeholder="A few words... 'abandoned doll factory at midnight'"
+            placeholder={t("shadow.studio.story_placeholder")}
             className="bg-black/60 border-red-800/50 text-red-50 placeholder:text-red-200/50 font-serif"
           />
           <div className="grid grid-cols-2 gap-2">
@@ -97,7 +97,7 @@ export function ShadowAIToolsHub() {
               onChange={(e) => setStoryTone(e.target.value)}
               className="bg-black/60 border border-red-800/50 text-red-50 rounded-md px-3 py-2 text-sm"
             >
-              {TONES.map((t) => <option key={t} value={t} className="bg-black text-red-50">{t}</option>)}
+              {TONES.map((tone) => <option key={tone} value={tone} className="bg-black text-red-50">{tone}</option>)}
             </select>
             <select
               value={storyLength}
@@ -109,11 +109,11 @@ export function ShadowAIToolsHub() {
           </div>
           <label className="flex items-center gap-2 text-xs text-red-100 font-medium">
             <input type="checkbox" checked={storyImage} onChange={(e) => setStoryImage(e.target.checked)} />
-            Include AI horror illustration
+            {t("shadow.studio.story_include_image")}
           </label>
           <Button
             onClick={() => {
-              if (!storyPrompt.trim()) { toast.error("Enter a prompt"); return; }
+              if (!storyPrompt.trim()) { toast.error(t("shadow.studio.story_need_prompt")); return; }
               if (!requireCredits(SHADOW_AI_COSTS.story)) return;
               generateStory.mutate(
                 { prompt: storyPrompt, tone: storyTone, length: storyLength, generateImage: storyImage },
@@ -124,8 +124,8 @@ export function ShadowAIToolsHub() {
             className="w-full bg-gradient-to-r from-red-700 to-purple-800 hover:from-red-800 hover:to-purple-900"
           >
             {generateStory.isPending
-              ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Conjuring horror...</>
-              : <><Sparkles className="w-4 h-4 mr-2" /> Generate Story ({SHADOW_AI_COSTS.story} credits)</>}
+              ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> {t("shadow.studio.story_loading")}</>
+              : <><Sparkles className="w-4 h-4 mr-2" /> {t("shadow.studio.story_btn")} ({SHADOW_AI_COSTS.story} {t("shadow.credits.credits_unit")})</>}
           </Button>
           {storyResult && (
             <motion.div
