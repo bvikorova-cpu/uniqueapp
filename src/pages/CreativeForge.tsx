@@ -12,6 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useCreativeForgeCredits, CREDIT_COSTS, CreativeCategory } from "@/hooks/useCreativeForgeCredits";
 import { useQuery } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import {
   Sparkles, Download, Copy, Star, History, CreditCard, Loader2, RefreshCw,
   Music, Film, Theater, BookOpen, Feather, Mic2, Podcast, Megaphone, ArrowLeft
