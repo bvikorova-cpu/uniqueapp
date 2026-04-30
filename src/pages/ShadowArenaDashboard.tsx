@@ -150,11 +150,11 @@ export default function ShadowArenaDashboard() {
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="stories">
               <BookOpen className="mr-2 h-4 w-4" />
-              Top Stories
+              {t('shadow.dashboard.tab_stories')}
             </TabsTrigger>
             <TabsTrigger value="battles">
               <Trophy className="mr-2 h-4 w-4" />
-              Recent Battles
+              {t('shadow.dashboard.tab_battles')}
             </TabsTrigger>
           </TabsList>
 
@@ -164,8 +164,12 @@ export default function ShadowArenaDashboard() {
                 <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary mx-auto" />
               </div>
             ) : stories.length === 0 ? (
-              <Card className="p-12 text-center">
-                <p className="text-muted-foreground">No stories yet. Be the first to submit!</p>
+              <Card className="p-12 text-center space-y-4">
+                <p className="text-muted-foreground">{t('shadow.dashboard.no_stories')}</p>
+                <Button onClick={() => navigate('/shadow-arena/submit-story')}>
+                  <Plus className="mr-2 h-4 w-4" />
+                  {t('shadow.dashboard.submit_story_cta')}
+                </Button>
               </Card>
             ) : (
               <div className="grid gap-4 md:grid-cols-2">
@@ -182,8 +186,12 @@ export default function ShadowArenaDashboard() {
                 <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary mx-auto" />
               </div>
             ) : battles.length === 0 ? (
-              <Card className="p-12 text-center">
-                <p className="text-muted-foreground">No battles yet. Create the first one!</p>
+              <Card className="p-12 text-center space-y-4">
+                <p className="text-muted-foreground">{t('shadow.dashboard.no_battles')}</p>
+                <Button onClick={() => navigate('/shadow-arena/battles')}>
+                  <Swords className="mr-2 h-4 w-4" />
+                  {t('shadow.dashboard.create_battle_cta')}
+                </Button>
               </Card>
             ) : (
               battles.map((battle) => (
