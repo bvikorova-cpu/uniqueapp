@@ -68,6 +68,7 @@ export default function CreativeForge() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { toast } = useToast();
+  const { t } = useTranslation();
   const { credits, isLoading: creditsLoading, purchaseCredits, verifyPayment, refreshCredits } = useCreativeForgeCredits();
 
   const [activeView, setActiveView] = useState<"hub" | "create" | "history" | "credits">("hub");
