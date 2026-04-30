@@ -378,18 +378,18 @@ export default function CreativeForge() {
                 <div className="space-y-6">
                   <ForgeCreditPackages onPurchase={handlePurchase} />
                   <Card className="border-border/50 backdrop-blur-xl bg-card/80">
-                    <CardHeader><CardTitle>Credit Costs</CardTitle><CardDescription>How many credits each content type uses</CardDescription></CardHeader>
+                    <CardHeader><CardTitle>{t("forge.credits_view.costs_title")}</CardTitle><CardDescription>{t("forge.credits_view.costs_subtitle")}</CardDescription></CardHeader>
                     <CardContent>
                       <div className="grid sm:grid-cols-2 gap-2">
                         {CATEGORIES.map((category) => (
                           <div key={category.id} className="flex items-center justify-between p-2.5 border border-border/50 rounded-lg">
                             <div className="flex items-center gap-2"><span>{category.emoji}</span><span className="text-sm font-medium">{category.name}</span></div>
-                            <Badge variant="secondary">{CREDIT_COSTS[category.id as CreativeCategory]} credits</Badge>
+                            <Badge variant="secondary">{t("forge.credits", { count: CREDIT_COSTS[category.id as CreativeCategory] })}</Badge>
                           </div>
                         ))}
                         <div className="flex items-center justify-between p-2.5 border border-dashed border-border/50 rounded-lg">
-                          <div className="flex items-center gap-2"><RefreshCw className="h-4 w-4 text-muted-foreground" /><span className="text-sm font-medium">Revision</span></div>
-                          <Badge variant="outline">{CREDIT_COSTS.revision} credits</Badge>
+                          <div className="flex items-center gap-2"><RefreshCw className="h-4 w-4 text-muted-foreground" /><span className="text-sm font-medium">{t("forge.credits_view.revision")}</span></div>
+                          <Badge variant="outline">{t("forge.credits", { count: CREDIT_COSTS.revision })}</Badge>
                         </div>
                       </div>
                     </CardContent>
