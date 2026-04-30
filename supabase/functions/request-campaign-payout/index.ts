@@ -149,6 +149,13 @@ serve(async (req) => {
 
     // 6a. If review is required → STOP here, admin will approve later.
     if (needsReview) {
+      await supabase.from("notifications").insert({
+        user_id: user.id,
+        type: "campaign_payout_pending_review",
+        title: "Žiadosť o výplatu odoslaná na schválenie",
+        message: `Tvoja žiadosť o výplatu €${(amount_cents / 100).toFixed(2)} čaká na schválenie administrátorom.${reviewReason ? ` Dôvod kontroly: ${reviewReason}` : ""}`,
+        related_id: payoutRow.id,
+      });
       return json({
         success: true,
         status: "pending_review",
