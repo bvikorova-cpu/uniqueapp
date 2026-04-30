@@ -165,6 +165,13 @@ const CREDIT_PACKS: Record<string, { prices: Record<number, string>; successPath
     successPath: "/coloring?payment=success&session_id={CHECKOUT_SESSION_ID}",
     cancelPath: "/coloring?payment=canceled",
   },
+  // Shadow Arena AI credits — dynamic pricing via SHADOW_ARENA_TOTALS below.
+  // Public packages: 30 (€4.99), 100 (€12.99), 280 (€29.99).
+  shadow_arena: {
+    prices: {},
+    successPath: "/shadow-arena/dashboard?payment=success&session_id={CHECKOUT_SESSION_ID}",
+    cancelPath: "/shadow-arena/dashboard?payment=canceled",
+  },
 };
 
 const SPORTS_PACKS: Record<string, Record<string, { amount: number; coins: number }>> = {
