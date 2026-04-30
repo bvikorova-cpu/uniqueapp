@@ -50,15 +50,17 @@ const ICON_MAP: Record<string, any> = {
   poetry: Feather, standup: Mic2, podcast_script: Podcast, ad_copy: Megaphone,
 };
 
+// NOTE: `credits` here MUST match the backend CREDIT_COSTS in
+// supabase/functions/generate-creative-content/index.ts. Do not change one without the other.
 const FORGE_TOOLS = [
-  { id: "song_lyrics", name: "Song Lyrics", icon: Music, description: "Professional lyrics with verses, chorus & bridge structure", color: "from-pink-500 to-rose-600", features: ["Verse/Chorus/Bridge", "Style references", "Multiple genres", "Rhyme schemes", "Emotional depth"], credits: 3 },
-  { id: "screenplay", name: "Screenplay", icon: Film, description: "Hollywood-format scripts with scenes & dialogue", color: "from-amber-500 to-orange-600", features: ["Proper formatting", "Scene headings", "Character dialogue", "Stage directions", "Style references"], credits: 5 },
-  { id: "theater_play", name: "Theater Play", icon: Theater, description: "Stage plays with stage directions & acts", color: "from-violet-500 to-purple-600", features: ["Act structure", "Stage directions", "Character arcs", "Dramatic tension", "Monologues"], credits: 5 },
-  { id: "novel_chapter", name: "Novel Chapter", icon: BookOpen, description: "Compelling prose, rich world-building & storytelling", color: "from-emerald-500 to-green-600", features: ["Rich prose", "World building", "Character development", "Plot hooks", "Multiple genres"], credits: 5 },
-  { id: "poetry", name: "Poetry", icon: Feather, description: "Poems in sonnets, haiku, free verse & more", color: "from-sky-500 to-cyan-600", features: ["Multiple forms", "Imagery & metaphor", "Emotional resonance", "Style references", "Rhyme patterns"], credits: 2 },
-  { id: "standup", name: "Stand-up Comedy", icon: Mic2, description: "Comedy routines with setups & punchlines", color: "from-red-500 to-rose-600", features: ["Setup & punchline", "Observational humor", "Timing cues", "Crowd work", "Style references"], credits: 3 },
-  { id: "podcast_script", name: "Podcast Script", icon: Podcast, description: "Engaging podcast scripts with segues & CTAs", color: "from-indigo-500 to-blue-600", features: ["Intro & outro", "Segment transitions", "Interview format", "CTAs", "Engagement hooks"], credits: 4 },
-  { id: "ad_copy", name: "Ad Copy", icon: Megaphone, description: "Persuasive advertising & marketing copy", color: "from-yellow-500 to-amber-600", features: ["Headlines", "CTAs", "Target audience", "Brand voice", "Conversion focus"], credits: 3 },
+  { id: "song_lyrics", name: "Song Lyrics", icon: Music, description: "Professional lyrics with verses, chorus & bridge structure", color: "from-pink-500 to-rose-600", features: ["Verse/Chorus/Bridge", "Style references", "Multiple genres", "Rhyme schemes", "Emotional depth"], credits: CREDIT_COSTS.song_lyrics },
+  { id: "screenplay", name: "Screenplay", icon: Film, description: "Hollywood-format scripts with scenes & dialogue", color: "from-amber-500 to-orange-600", features: ["Proper formatting", "Scene headings", "Character dialogue", "Stage directions", "Style references"], credits: CREDIT_COSTS.screenplay },
+  { id: "theater_play", name: "Theater Play", icon: Theater, description: "Stage plays with stage directions & acts", color: "from-violet-500 to-purple-600", features: ["Act structure", "Stage directions", "Character arcs", "Dramatic tension", "Monologues"], credits: CREDIT_COSTS.theater_play },
+  { id: "novel_chapter", name: "Novel Chapter", icon: BookOpen, description: "Compelling prose, rich world-building & storytelling", color: "from-emerald-500 to-green-600", features: ["Rich prose", "World building", "Character development", "Plot hooks", "Multiple genres"], credits: CREDIT_COSTS.novel_chapter },
+  { id: "poetry", name: "Poetry", icon: Feather, description: "Poems in sonnets, haiku, free verse & more", color: "from-sky-500 to-cyan-600", features: ["Multiple forms", "Imagery & metaphor", "Emotional resonance", "Style references", "Rhyme patterns"], credits: CREDIT_COSTS.poetry },
+  { id: "standup", name: "Stand-up Comedy", icon: Mic2, description: "Comedy routines with setups & punchlines", color: "from-red-500 to-rose-600", features: ["Setup & punchline", "Observational humor", "Timing cues", "Crowd work", "Style references"], credits: CREDIT_COSTS.standup },
+  { id: "podcast_script", name: "Podcast Script", icon: Podcast, description: "Engaging podcast scripts with segues & CTAs", color: "from-indigo-500 to-blue-600", features: ["Intro & outro", "Segment transitions", "Interview format", "CTAs", "Engagement hooks"], credits: CREDIT_COSTS.podcast_script },
+  { id: "ad_copy", name: "Ad Copy", icon: Megaphone, description: "Persuasive advertising & marketing copy", color: "from-yellow-500 to-amber-600", features: ["Headlines", "CTAs", "Target audience", "Brand voice", "Conversion focus"], credits: CREDIT_COSTS.ad_copy },
 ];
 
 export default function CreativeForge() {
