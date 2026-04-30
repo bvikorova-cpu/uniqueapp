@@ -1,0 +1,1 @@
+DROP VIEW IF EXISTS public.campaign_payouts_pending_review;

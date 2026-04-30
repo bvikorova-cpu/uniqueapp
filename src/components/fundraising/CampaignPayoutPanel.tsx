@@ -4,10 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Wallet, Loader2, CheckCircle2, AlertTriangle, ExternalLink } from "lucide-react";
+import { Wallet, Loader2, CheckCircle2, AlertTriangle, ExternalLink, Clock, XCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { format } from "date-fns";
 
 type CampaignType = "medical" | "dream" | "hero" | "pet" | "student" | "crisis" | "talent";
 
@@ -30,12 +31,30 @@ interface Balance {
   available_cents: number;
 }
 
+interface RecentPayout {
+  id: string;
+  amount_cents: number;
+  status: string;
+  requested_at: string;
+  rejection_reason: string | null;
+  review_reason: string | null;
+}
+
 const fmtEur = (cents: number) => `€${(cents / 100).toFixed(2)}`;
+
+const STATUS_META: Record<string, { label: string; cls: string; icon: any }> = {
+  pending_review: { label: "Awaiting admin review", cls: "border-amber-500/40 text-amber-600 dark:text-amber-400", icon: Clock },
+  pending: { label: "Processing", cls: "border-blue-500/40 text-blue-600 dark:text-blue-400", icon: Clock },
+  completed: { label: "Paid out", cls: "border-green-500/40 text-green-600 dark:text-green-400", icon: CheckCircle2 },
+  rejected: { label: "Rejected", cls: "border-red-500/40 text-red-600 dark:text-red-400", icon: XCircle },
+  failed: { label: "Failed", cls: "border-red-500/40 text-red-600 dark:text-red-400", icon: XCircle },
+};
 
 export function CampaignPayoutPanel({ campaignType, campaignId, ownerUserId }: Props) {
   const { user } = useAuth();
   const [balance, setBalance] = useState<Balance | null>(null);
   const [connect, setConnect] = useState<ConnectStatus | null>(null);
+  const [recent, setRecent] = useState<RecentPayout[]>([]);
   const [amountEur, setAmountEur] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -46,12 +65,19 @@ export function CampaignPayoutPanel({ campaignType, campaignId, ownerUserId }: P
     if (!isOwner) return;
     setLoading(true);
     try {
-      const [balRes, connectRes] = await Promise.all([
+      const [balRes, connectRes, recentRes] = await Promise.all([
         supabase.rpc("get_campaign_available_balance", {
           _campaign_type: campaignType,
           _campaign_id: campaignId,
         }),
         supabase.functions.invoke("check-connect-status", { body: { action: "status" } }),
+        supabase
+          .from("campaign_payouts")
+          .select("id, amount_cents, status, requested_at, rejection_reason, review_reason")
+          .eq("campaign_id", campaignId)
+          .eq("campaign_type", campaignType)
+          .order("requested_at", { ascending: false })
+          .limit(5),
       ]);
 
       if (balRes.error) throw balRes.error;
@@ -74,6 +100,10 @@ export function CampaignPayoutPanel({ campaignType, campaignId, ownerUserId }: P
         });
       } else {
         setConnect({ has_account: false, payouts_enabled: false });
+      }
+
+      if (!recentRes.error && recentRes.data) {
+        setRecent(((recentRes.data as unknown) as RecentPayout[]) || []);
       }
     } catch (e: any) {
       console.error("[payout panel] refresh failed", e);
@@ -127,7 +157,15 @@ export function CampaignPayoutPanel({ campaignType, campaignId, ownerUserId }: P
       const res = data as any;
       if (res?.error) throw new Error(res.error);
 
-      toast.success(`Payout sent! ${fmtEur(cents)} is on its way to your bank.`);
+      const status = res?.status;
+      if (status === "pending_review") {
+        toast.info("Withdrawal queued for admin review", {
+          description: res?.review_reason || "You will be notified once approved.",
+          duration: 7000,
+        });
+      } else {
+        toast.success(`Payout sent! ${fmtEur(cents)} is on its way to your bank.`);
+      }
       setAmountEur("");
       await refresh();
     } catch (e: any) {
@@ -226,6 +264,38 @@ export function CampaignPayoutPanel({ campaignType, campaignId, ownerUserId }: P
                   </p>
                 </div>
               </>
+            )}
+
+            {/* Recent payouts history */}
+            {recent.length > 0 && (
+              <div className="pt-3 border-t space-y-2">
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Recent payouts</p>
+                {recent.map((r) => {
+                  const meta = STATUS_META[r.status] ?? STATUS_META.pending;
+                  const Icon = meta.icon;
+                  return (
+                    <div key={r.id} className="flex items-start justify-between gap-2 text-sm">
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-2">
+                          <Badge variant="outline" className={`gap-1 ${meta.cls}`}>
+                            <Icon className="h-3 w-3" />
+                            {meta.label}
+                          </Badge>
+                          <span className="font-semibold">{fmtEur(r.amount_cents)}</span>
+                        </div>
+                        {(r.rejection_reason || (r.status === "pending_review" && r.review_reason)) && (
+                          <p className="text-xs text-muted-foreground mt-1">
+                            {r.rejection_reason || r.review_reason}
+                          </p>
+                        )}
+                      </div>
+                      <span className="text-xs text-muted-foreground whitespace-nowrap">
+                        {format(new Date(r.requested_at), "MMM d")}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
             )}
           </>
         )}

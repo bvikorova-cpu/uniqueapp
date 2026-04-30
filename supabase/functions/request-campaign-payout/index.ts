@@ -109,7 +109,24 @@ serve(async (req) => {
       }, 400);
     }
 
-    // 4. Insert pending payout row (audit trail BEFORE Stripe call)
+    // 4. Decide if payout requires manual admin review (Plan B + D + safety net)
+    const { data: reviewDecision, error: reviewErr } = await supabase.rpc(
+      "payout_requires_review",
+      {
+        _campaign_type: campaign_type,
+        _campaign_id: campaign_id,
+        _amount_cents: amount_cents,
+      },
+    );
+    if (reviewErr) {
+      console.error("payout_requires_review failed", reviewErr);
+      return json({ error: "Review decision failed" }, 500);
+    }
+    const decision = (reviewDecision as any)?.[0] || { needs_review: false, reason: null };
+    const needsReview: boolean = !!decision.needs_review;
+    const reviewReason: string | null = decision.reason ?? null;
+
+    // 5. Insert audit row (status reflects whether review is needed)
     const { data: payoutRow, error: insErr } = await supabase
       .from("campaign_payouts")
       .insert({
@@ -119,7 +136,9 @@ serve(async (req) => {
         amount_cents,
         currency: "eur",
         stripe_destination_account: connectAccount,
-        status: "pending",
+        status: needsReview ? "pending_review" : "pending",
+        requires_review: needsReview,
+        review_reason: reviewReason,
       })
       .select("id")
       .single();
@@ -128,7 +147,20 @@ serve(async (req) => {
       return json({ error: "Could not record payout" }, 500);
     }
 
-    // 5. Create Stripe transfer (platform balance → connected account)
+    // 6a. If review is required → STOP here, admin will approve later.
+    if (needsReview) {
+      return json({
+        success: true,
+        status: "pending_review",
+        payout_id: payoutRow.id,
+        amount_cents,
+        currency: "eur",
+        review_reason: reviewReason,
+        message: "Your withdrawal request is awaiting admin approval. You will be notified once reviewed.",
+      });
+    }
+
+    // 6b. Auto-approved path: create Stripe transfer immediately.
     const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
     try {
       const transfer = await stripe.transfers.create({
@@ -155,6 +187,7 @@ serve(async (req) => {
 
       return json({
         success: true,
+        status: "completed",
         transfer_id: transfer.id,
         amount_cents,
         currency: "eur",

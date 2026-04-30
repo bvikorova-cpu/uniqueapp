@@ -43937,6 +43937,17 @@ export type Database = {
         }
         Returns: string
       }
+      payout_requires_review: {
+        Args: {
+          _amount_cents: number
+          _campaign_id: string
+          _campaign_type: string
+        }
+        Returns: {
+          needs_review: boolean
+          reason: string
+        }[]
+      }
       place_xp_bet: {
         Args: {
           _amount: number
