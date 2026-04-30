@@ -98,7 +98,11 @@ serve(async (req) => {
 Hypothesis: ${hypothesis}
 Observations: ${observations}
 
-Analyze the experiment. Return a kind, encouraging conclusion (1–2 sentences), a clear scientific explanation (2–4 sentences), and exactly 3 short fun facts related to the topic.`;
+Analyze the experiment. Return:
+- a kind, encouraging conclusion (1–2 sentences),
+- a clear scientific explanation (2–4 sentences),
+- exactly 3 short fun facts,
+- exactly 5 multiple-choice quiz questions (each with 3 options and the index 0–2 of the correct option). Questions must be age-appropriate, in the SAME language as the hypothesis/observations, and directly tied to the explanation.`;
 
     const aiResp = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
