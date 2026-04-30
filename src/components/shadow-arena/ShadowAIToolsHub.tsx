@@ -187,7 +187,7 @@ export function ShadowAIToolsHub() {
           <Input
             value={avatarUrl}
             onChange={(e) => setAvatarUrl(e.target.value)}
-            placeholder="Public image URL (selfie or photo)"
+            placeholder={t("shadow.studio.avatar_placeholder")}
             className="bg-black/60 border-red-800/50 text-red-50 placeholder:text-red-200/50"
           />
           <select
@@ -199,7 +199,7 @@ export function ShadowAIToolsHub() {
           </select>
           <Button
             onClick={() => {
-              if (!avatarUrl.trim()) { toast.error("Enter image URL"); return; }
+              if (!avatarUrl.trim()) { toast.error(t("shadow.studio.avatar_need_url")); return; }
               if (!requireCredits(SHADOW_AI_COSTS.avatar)) return;
               generateAvatar.mutate(
                 { sourceImageUrl: avatarUrl, style: avatarStyle },
@@ -210,8 +210,8 @@ export function ShadowAIToolsHub() {
             className="w-full bg-gradient-to-r from-red-700 to-purple-800 hover:from-red-800 hover:to-purple-900"
           >
             {generateAvatar.isPending
-              ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Twisting reality...</>
-              : <><Skull className="w-4 h-4 mr-2" /> Create Nightmare ({SHADOW_AI_COSTS.avatar} credits)</>}
+              ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> {t("shadow.studio.avatar_loading")}</>
+              : <><Skull className="w-4 h-4 mr-2" /> {t("shadow.studio.avatar_btn")} ({SHADOW_AI_COSTS.avatar} {t("shadow.credits.credits_unit")})</>}
           </Button>
           {avatarResult && (
             <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}>
