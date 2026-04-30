@@ -21,6 +21,7 @@ const VOICES = [
 const AVATAR_STYLES = ["Demonic", "Vampire", "Zombie", "Possessed", "Wraith", "Cursed doll"];
 
 export function ShadowAIToolsHub() {
+  const { t } = useTranslation();
   const { generateStory, narrate, generateAvatar } = useShadowAITools();
   const { credits } = useShadowArenaCredits();
   const balance = credits?.credits_remaining ?? 0;
@@ -44,7 +45,7 @@ export function ShadowAIToolsHub() {
 
   const requireCredits = (need: number) => {
     if (balance < need) {
-      toast.error(`Need ${need} credits — you have ${balance}. Buy more above.`);
+      toast.error(t("shadow.studio.need_credits", { need, have: balance }));
       return false;
     }
     return true;
