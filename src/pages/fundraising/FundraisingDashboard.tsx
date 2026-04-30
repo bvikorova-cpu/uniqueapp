@@ -98,7 +98,7 @@ export default function FundraisingDashboard() {
         try {
           const { data, error } = await supabase
             .from(table as any)
-            .select('id, title, target_amount, current_amount, status, verified, monthly_donors_count, one_time_donors_count, supporters_count, created_at')
+            .select('id, title, target_amount, current_amount, status, verified, rejection_reason, monthly_donors_count, one_time_donors_count, supporters_count, created_at')
             .eq('user_id', userId)
             .order('created_at', { ascending: false });
 
