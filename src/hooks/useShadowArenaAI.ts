@@ -24,9 +24,9 @@ export const useShadowArenaCredits = () => {
   });
 
   const buyCredits = useMutation({
-    mutationFn: async (packageId: "starter" | "creator" | "pro") => {
-      const { data, error } = await supabase.functions.invoke("shadow-credits-checkout", {
-        body: { packageId },
+    mutationFn: async (credits: 30 | 100 | 280) => {
+      const { data, error } = await supabase.functions.invoke("create-checkout", {
+        body: { creditType: "shadow_arena", credits },
       });
       if (error) throw error;
       if (data?.url) window.location.href = data.url;
