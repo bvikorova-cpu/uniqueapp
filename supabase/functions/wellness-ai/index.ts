@@ -20,24 +20,47 @@ function parseJSON(s: string): any {
   } catch { return null; }
 }
 
-async function callAI(LOVABLE_API_KEY: string, body: any) {
-  // Image-capable models route via Lovable AI Gateway image-generation modalities
-  const isImageModel = typeof body?.model === "string" && body.model.startsWith("google/gemini-2.5-flash-image");
-  const url = "https://ai.gateway.lovable.dev/v1/chat/completions";
-  const payload = isImageModel ? { ...body, modalities: ["image", "text"] } : body;
-  const r = await fetch(url, {
+// Map legacy model identifiers to OpenAI equivalents.
+function mapModel(m: any): string {
+  if (typeof m !== "string") return "gpt-4o-mini";
+  if (m.startsWith("openai/")) return m.replace("openai/", "");
+  if (m.includes("gpt-5") && m.includes("mini")) return "gpt-4o-mini";
+  if (m.includes("gpt-5")) return "gpt-4o";
+  if (m.includes("gemini") && m.includes("pro")) return "gpt-4o";
+  if (m.includes("gemini")) return "gpt-4o-mini";
+  return m;
+}
+
+async function callAI(OPENAI_API_KEY: string, body: any) {
+  // Image generation requests are routed differently — caller should use callImage().
+  const payload = { ...body, model: mapModel(body?.model) };
+  const r = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
-    headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+    headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   });
   if (!r.ok) {
     const t = await r.text();
-    console.error("AI gateway error:", r.status, t);
+    console.error("OpenAI error:", r.status, t);
     if (r.status === 429) throw new Error("AI rate limit exceeded, please try again shortly.");
-    if (r.status === 402) throw new Error("AI credits exhausted, please top up.");
+    if (r.status === 401) throw new Error("OpenAI API key invalid.");
+    if (r.status === 402) throw new Error("OpenAI credits exhausted, please top up.");
     throw new Error("AI request failed");
   }
   return r.json();
+}
+
+async function callImage(OPENAI_API_KEY: string, prompt: string): Promise<string | null> {
+  try {
+    const r = await fetch("https://api.openai.com/v1/images/generations", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ model: "dall-e-3", prompt: prompt.slice(0, 3900), size: "1024x1024", quality: "standard", n: 1 }),
+    });
+    if (!r.ok) { console.error("DALL-E error:", await r.text()); return null; }
+    const d = await r.json();
+    return d?.data?.[0]?.url || null;
+  } catch (e) { console.error("Image gen failed:", e); return null; }
 }
 
 async function ttsUpload(
