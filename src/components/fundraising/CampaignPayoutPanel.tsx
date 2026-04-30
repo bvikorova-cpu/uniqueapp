@@ -31,12 +31,30 @@ interface Balance {
   available_cents: number;
 }
 
+interface RecentPayout {
+  id: string;
+  amount_cents: number;
+  status: string;
+  requested_at: string;
+  rejection_reason: string | null;
+  review_reason: string | null;
+}
+
 const fmtEur = (cents: number) => `€${(cents / 100).toFixed(2)}`;
+
+const STATUS_META: Record<string, { label: string; cls: string; icon: any }> = {
+  pending_review: { label: "Awaiting admin review", cls: "border-amber-500/40 text-amber-600 dark:text-amber-400", icon: Clock },
+  pending: { label: "Processing", cls: "border-blue-500/40 text-blue-600 dark:text-blue-400", icon: Clock },
+  completed: { label: "Paid out", cls: "border-green-500/40 text-green-600 dark:text-green-400", icon: CheckCircle2 },
+  rejected: { label: "Rejected", cls: "border-red-500/40 text-red-600 dark:text-red-400", icon: XCircle },
+  failed: { label: "Failed", cls: "border-red-500/40 text-red-600 dark:text-red-400", icon: XCircle },
+};
 
 export function CampaignPayoutPanel({ campaignType, campaignId, ownerUserId }: Props) {
   const { user } = useAuth();
   const [balance, setBalance] = useState<Balance | null>(null);
   const [connect, setConnect] = useState<ConnectStatus | null>(null);
+  const [recent, setRecent] = useState<RecentPayout[]>([]);
   const [amountEur, setAmountEur] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
