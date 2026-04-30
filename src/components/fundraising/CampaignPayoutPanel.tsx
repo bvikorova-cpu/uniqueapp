@@ -303,4 +303,3 @@ export function CampaignPayoutPanel({ campaignType, campaignId, ownerUserId }: P
     </Card>
   );
 }
-}
