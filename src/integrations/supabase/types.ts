@@ -42954,26 +42954,6 @@ export type Database = {
         }
         Relationships: []
       }
-      campaign_payouts_pending_review: {
-        Row: {
-          amount_cents: number | null
-          campaign_id: string | null
-          campaign_type: string | null
-          completed_at: string | null
-          created_at: string | null
-          currency: string | null
-          failure_reason: string | null
-          id: string | null
-          owner_email: string | null
-          owner_name: string | null
-          owner_user_id: string | null
-          requested_at: string | null
-          status: string | null
-          stripe_destination_account: string | null
-          stripe_transfer_id: string | null
-        }
-        Relationships: []
-      }
       confessions_feed: {
         Row: {
           confession_text: string | null
