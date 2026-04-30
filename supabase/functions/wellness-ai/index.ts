@@ -20,11 +20,15 @@ function parseJSON(s: string): any {
   } catch { return null; }
 }
 
-async function callAI(OPENAI_API_KEY: string, body: any) {
-  const r = await fetch("https://api.openai.com/v1/images/generations", {
+async function callAI(LOVABLE_API_KEY: string, body: any) {
+  // Image-capable models route via Lovable AI Gateway image-generation modalities
+  const isImageModel = typeof body?.model === "string" && body.model.startsWith("google/gemini-2.5-flash-image");
+  const url = "https://ai.gateway.lovable.dev/v1/chat/completions";
+  const payload = isImageModel ? { ...body, modalities: ["image", "text"] } : body;
+  const r = await fetch(url, {
     method: "POST",
-    headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
-    body: JSON.stringify(body),
+    headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
   });
   if (!r.ok) {
     const t = await r.text();
@@ -65,9 +69,9 @@ serve(async (req) => {
 
   try {
     const supabase = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
-    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
+    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     const ELEVENLABS_API_KEY = Deno.env.get("ELEVENLABS_API_KEY");
-    if (!OPENAI_API_KEY) throw new Error("OPENAI_API_KEY not configured");
+    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
 
     const auth = req.headers.get("Authorization");
     if (!auth) throw new Error("No authorization header");
@@ -101,7 +105,7 @@ serve(async (req) => {
     if (action === "decoder") {
       const { input_text } = body;
       if (!input_text || input_text.length < 5) throw new Error("Message too short");
-      const aiData = await callAI(OPENAI_API_KEY, {
+      const aiData = await callAI(LOVABLE_API_KEY, {
         model: "openai/gpt-5-mini",
         messages: [
           { role: "system", content: `You analyze bullying messages. Output ONLY JSON: {"severity":"low|medium|high|critical","bully_type":"verbal|cyber|social|physical-threat|sexual|discriminatory","emotional_impact":"<2 sentences>","suggested_response":"<safe assertive reply>","action_steps":[{"step":"...","priority":"high|medium|low"}],"red_flags":["..."]}` },
@@ -118,7 +122,7 @@ serve(async (req) => {
     } else if (action === "evidence") {
       const { title, incidents } = body;
       if (!title || !Array.isArray(incidents) || incidents.length === 0) throw new Error("Title + incidents required");
-      const aiData = await callAI(OPENAI_API_KEY, {
+      const aiData = await callAI(LOVABLE_API_KEY, {
         model: "openai/gpt-5-mini",
         messages: [
           { role: "system", content: `Build a formal bullying evidence pack. Output ONLY JSON: {"incident_summary":"...","timeline":[{"date":"YYYY-MM-DD","event":"...","severity":"low|medium|high"}],"recommended_recipients":[{"name":"...","reason":"..."}],"formal_report":"<~400 word neutral report>"}` },
@@ -135,7 +139,7 @@ serve(async (req) => {
     } else if (action === "coach") {
       const { scenario, user_response } = body;
       if (!scenario || !user_response) throw new Error("Scenario + response required");
-      const aiData = await callAI(OPENAI_API_KEY, {
+      const aiData = await callAI(LOVABLE_API_KEY, {
         model: "openai/gpt-5-mini",
         messages: [
           { role: "system", content: `Score a roleplay bullying response. Output ONLY JSON: {"assertiveness_score":0-100,"empathy_score":0-100,"safety_score":0-100,"feedback":"...","improved_response":"...","next_steps":["..."]}` },
@@ -153,7 +157,7 @@ serve(async (req) => {
     } else if (action === "riskscan") {
       const { scan_input } = body;
       if (!scan_input || scan_input.length < 10) throw new Error("Input too short");
-      const aiData = await callAI(OPENAI_API_KEY, {
+      const aiData = await callAI(LOVABLE_API_KEY, {
         model: "openai/gpt-5-mini",
         messages: [
           { role: "system", content: `Cyberbullying risk analyst. Output ONLY JSON: {"risk_level":"safe|caution|elevated|severe","overall_score":0-100,"threat_patterns":[{"pattern":"...","frequency":"low|medium|high","example":"..."}],"flagged_phrases":["..."],"safety_recommendations":[{"action":"...","why":"..."}]}` },
@@ -171,7 +175,7 @@ serve(async (req) => {
     } else if (action === "weekly_insight") {
       const { entries, mood_logs } = body;
       if (!Array.isArray(entries)) throw new Error("entries[] required");
-      const aiData = await callAI(OPENAI_API_KEY, {
+      const aiData = await callAI(LOVABLE_API_KEY, {
         model: "openai/gpt-5-mini",
         messages: [
           { role: "system", content: `You are a compassionate safety coach. Analyze 7 days of journal + mood logs. Output ONLY JSON: {"trend":"improving|stable|declining|critical","insight_text":"<3-4 supportive sentences>","recommendations":[{"title":"...","action":"...","priority":"high|medium|low"}]}` },
@@ -190,7 +194,7 @@ serve(async (req) => {
     } else if (action === "roleplay_score") {
       const { scenario_id, scenario, user_response, difficulty = "easy", mode = "text" } = body;
       if (!scenario || !user_response) throw new Error("Scenario + response required");
-      const aiData = await callAI(OPENAI_API_KEY, {
+      const aiData = await callAI(LOVABLE_API_KEY, {
         model: "openai/gpt-5-mini",
         messages: [
           { role: "system", content: `Score a bullying-response roleplay. Difficulty: ${difficulty}. Output ONLY JSON: {"total_score":0-100,"assertiveness":0-100,"empathy":0-100,"safety":0-100,"feedback":"...","next_line_from_bully":"<what bully says next, in character>"}` },
@@ -209,7 +213,7 @@ serve(async (req) => {
     } else if (action === "wall_filter") {
       const { message } = body;
       if (!message) throw new Error("Message required");
-      const aiData = await callAI(OPENAI_API_KEY, {
+      const aiData = await callAI(LOVABLE_API_KEY, {
         model: "openai/gpt-5-mini",
         messages: [
           { role: "system", content: `Safety filter for a peer support wall. Output ONLY JSON: {"safe":true|false,"reason":"...","suggested_rewrite":"<if unsafe, supportive rewrite>"}` },
@@ -227,7 +231,7 @@ serve(async (req) => {
         .insert({ user_id: user.id, dream_text, status: "processing", credits_used: COST }).select().single();
       if (insErr) throw insErr;
 
-      const aiData = await callAI(OPENAI_API_KEY, {
+      const aiData = await callAI(LOVABLE_API_KEY, {
         model: "openai/gpt-5-mini",
         messages: [
           { role: "system", content: "You are a compassionate dream analyst combining Jungian psychology, modern neuroscience, and gentle spiritual insight." },
@@ -256,8 +260,8 @@ serve(async (req) => {
 
       let illustrationUrl: string | null = null;
       try {
-        const imgData = await callAI(OPENAI_API_KEY, {
-          model: "gpt-image-1",
+        const imgData = await callAI(LOVABLE_API_KEY, {
+          model: "google/gemini-2.5-flash-image-preview",
           messages: [{ role: "user", content: `Surreal dreamlike illustration: ${parsed.illustration_prompt}. Soft pastel colors, ethereal mist, no text.` }],
         });
         illustrationUrl = imgData.choices?.[0]?.message?.images?.[0]?.image_url?.url || null;
@@ -278,7 +282,7 @@ serve(async (req) => {
         .insert({ user_id: user.id, topic, duration_minutes, voice_id, status: "processing", credits_used: COST }).select().single();
       if (insErr) throw insErr;
 
-      const aiData = await callAI(OPENAI_API_KEY, {
+      const aiData = await callAI(LOVABLE_API_KEY, {
         model: "openai/gpt-5-mini",
         messages: [
           { role: "system", content: `You are a master meditation teacher. Write a ${duration_minutes}-minute guided meditation script. Use calm language. Include "..." for natural pauses. No SSML, no labels. Speak in second person.` },
@@ -315,7 +319,7 @@ serve(async (req) => {
         }
       } catch (e) { console.error("Selfie upload failed:", e); }
 
-      const aiData = await callAI(OPENAI_API_KEY, {
+      const aiData = await callAI(LOVABLE_API_KEY, {
         model: "openai/gpt-5-mini",
         messages: [{
           role: "user",
@@ -379,7 +383,7 @@ serve(async (req) => {
       }).select().single();
       if (insErr) throw insErr;
 
-      const aiData = await callAI(OPENAI_API_KEY, {
+      const aiData = await callAI(LOVABLE_API_KEY, {
         model: "openai/gpt-5-mini",
         messages: [
           { role: "system", content: `You are a soothing sleep story writer. Write a ~${duration_minutes}-minute calm bedtime story (~${duration_minutes * 130} words). Slow, dreamy, descriptive. No conflict. Use "..." for pauses. End with sleep.` },
