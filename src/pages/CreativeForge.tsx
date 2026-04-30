@@ -322,11 +322,11 @@ export default function CreativeForge() {
               {activeView === "history" && (
                 <Card className="border-border/50 backdrop-blur-xl bg-card/80">
                   <CardHeader>
-                    <CardTitle>Your Projects</CardTitle><CardDescription>Previously generated content</CardDescription>
+                    <CardTitle>{t("forge.history.title")}</CardTitle><CardDescription>{t("forge.history.subtitle")}</CardDescription>
                     <div className="flex flex-col sm:flex-row gap-3 mt-3">
-                      <Input placeholder="Search projects..." value={historySearch} onChange={(e) => setHistorySearch(e.target.value)} className="flex-1" />
-                      <Select value={historyFilter} onValueChange={setHistoryFilter}><SelectTrigger className="w-full sm:w-48"><SelectValue placeholder="All types" /></SelectTrigger>
-                        <SelectContent><SelectItem value="all">All Types</SelectItem>{CATEGORIES.map((c) => (<SelectItem key={c.id} value={c.id}>{c.emoji} {c.name}</SelectItem>))}</SelectContent>
+                      <Input placeholder={t("forge.history.search_placeholder")} value={historySearch} onChange={(e) => setHistorySearch(e.target.value)} className="flex-1" />
+                      <Select value={historyFilter} onValueChange={setHistoryFilter}><SelectTrigger className="w-full sm:w-48"><SelectValue placeholder={t("forge.history.filter_all")} /></SelectTrigger>
+                        <SelectContent><SelectItem value="all">{t("forge.history.filter_all")}</SelectItem>{CATEGORIES.map((c) => (<SelectItem key={c.id} value={c.id}>{c.emoji} {c.name}</SelectItem>))}</SelectContent>
                       </Select>
                     </div>
                   </CardHeader>
