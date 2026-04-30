@@ -520,15 +520,20 @@ serve(async (req) => {
       const CREATIVE_FORGE_TOTALS: Record<number, number> = {
         30: 800, 75: 1800, 150: 3200, 400: 7500,
       };
+      // Shadow Arena: 30 → €4.99, 100 → €12.99, 280 → €29.99
+      const SHADOW_ARENA_TOTALS: Record<number, number> = {
+        30: 499, 100: 1299, 280: 2999,
+      };
       const unitAmount = creditType === "chat" ? 10 : 50;
       const minTotal = creditType === "chat" ? 99 : 99; // €0.99 minimum
       const cfTotal = creditType === "creative_forge" ? CREATIVE_FORGE_TOTALS[credits] : undefined;
+      const saTotal = creditType === "shadow_arena" ? SHADOW_ARENA_TOTALS[credits] : undefined;
       const lineItems = priceId
         ? [{ price: priceId, quantity: 1 }]
         : [{
             price_data: {
               currency: "eur" as const,
-              unit_amount: cfTotal ?? Math.max(minTotal, credits * unitAmount),
+              unit_amount: cfTotal ?? saTotal ?? Math.max(minTotal, credits * unitAmount),
               product_data: { name: `${creditType} Credits - ${credits} Pack` },
             },
             quantity: 1,
