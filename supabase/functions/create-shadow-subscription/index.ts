@@ -7,13 +7,25 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
+const DEFAULT_APP_ORIGIN = "https://uniqueapp.fun";
+
+function normalizeOrigin(value: string | null) {
+  if (!value || value === "null") return DEFAULT_APP_ORIGIN;
+  try {
+    const url = new URL(value);
+    return url.protocol === "http:" || url.protocol === "https:" ? url.origin : DEFAULT_APP_ORIGIN;
+  } catch {
+    return DEFAULT_APP_ORIGIN;
+  }
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
   try {
     const url = `${Deno.env.get("SUPABASE_URL")}/functions/v1/create-checkout`;
     const auth = req.headers.get("Authorization") ?? "";
     const apikey = Deno.env.get("SUPABASE_ANON_KEY") ?? "";
-    const origin = req.headers.get("origin") || "https://uniqueapp.fun";
+    const origin = normalizeOrigin(req.headers.get("origin"));
 
     const r = await fetch(url, {
       method: "POST",

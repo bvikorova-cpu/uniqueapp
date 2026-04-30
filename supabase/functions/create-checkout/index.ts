@@ -12,6 +12,18 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
+const DEFAULT_APP_ORIGIN = "https://uniqueapp.fun";
+
+function normalizeOrigin(value: string | null) {
+  if (!value || value === "null") return DEFAULT_APP_ORIGIN;
+  try {
+    const url = new URL(value);
+    return url.protocol === "http:" || url.protocol === "https:" ? url.origin : DEFAULT_APP_ORIGIN;
+  } catch {
+    return DEFAULT_APP_ORIGIN;
+  }
+}
+
 const ANTIQUE_PRICE_IDS: Record<number, string> = {
   10: "price_1SOII2GaXSfGtYFtPltUZvxb",
   25: "price_1SOIIMGaXSfGtYFtonaY4jqs",
@@ -217,6 +229,7 @@ const DEFAULT_PATHS: Record<string, { success: string; cancel: string }> = {
   clone_subscription: { success: "/ai-clone?payment=success&session_id={CHECKOUT_SESSION_ID}", cancel: "/ai-clone?payment=canceled" },
   clone_dating: { success: "/ai-clone?payment=success&session_id={CHECKOUT_SESSION_ID}", cancel: "/ai-clone?payment=canceled" },
   crystal_energy: { success: "/crystal-energy-network?success=true&session_id={CHECKOUT_SESSION_ID}", cancel: "/crystal-energy-network?canceled=true" },
+  shadow_subscription: { success: "/shadow-arena/dashboard?subscription=success&session_id={CHECKOUT_SESSION_ID}", cancel: "/shadow-arena/dashboard?subscription=canceled" },
 };
 
 const CLONE_PRODUCTS: Record<string, { amount: number; mode: "payment" | "subscription"; name: string; metadata: Record<string, string> }> = {
@@ -278,7 +291,7 @@ serve(async (req) => {
   try {
     const body = await req.json();
     const stripe = createStripeClient();
-    const origin = req.headers.get("origin") || "";
+    const origin = normalizeOrigin(req.headers.get("origin"));
 
     // Donations support guest checkout — auth is optional
     const isDonation = body.product === "campaign_donation" || body.product === "campaign-donation";
