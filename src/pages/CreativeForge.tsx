@@ -471,11 +471,11 @@ export default function CreativeForge() {
             <ForgeTestimonials />
             {/* Quick Actions */}
             <Card className="backdrop-blur-xl bg-card/80 border-primary/20">
-              <CardHeader className="pb-3"><CardTitle className="text-base flex items-center gap-2"><CreditCard className="w-4 h-4 text-primary" /> Quick Actions</CardTitle></CardHeader>
+              <CardHeader className="pb-3"><CardTitle className="text-base flex items-center gap-2"><CreditCard className="w-4 h-4 text-primary" /> {t("forge.tools.quick_actions")}</CardTitle></CardHeader>
               <CardContent className="space-y-2">
-                <Button variant="outline" className="w-full justify-start gap-2" onClick={() => setActiveView("history")}><History className="h-4 w-4" /> View History</Button>
-                <Button variant="outline" className="w-full justify-start gap-2" onClick={() => setActiveView("credits")}><CreditCard className="h-4 w-4" /> Buy Credits</Button>
-                <Button variant="outline" className="w-full justify-start gap-2" onClick={() => setCowriterOpen(true)}><Sparkles className="h-4 w-4" /> AI Co-Writer Chat</Button>
+                <Button variant="outline" className="w-full justify-start gap-2" onClick={() => setActiveView("history")}><History className="h-4 w-4" /> {t("forge.tools.view_history")}</Button>
+                <Button variant="outline" className="w-full justify-start gap-2" onClick={() => setActiveView("credits")}><CreditCard className="h-4 w-4" /> {t("forge.tools.buy_credits")}</Button>
+                <Button variant="outline" className="w-full justify-start gap-2" onClick={() => setCowriterOpen(true)}><Sparkles className="h-4 w-4" /> {t("forge.tools.ai_cowriter_chat")}</Button>
               </CardContent>
             </Card>
           </div>
