@@ -4,10 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Wallet, Loader2, CheckCircle2, AlertTriangle, ExternalLink } from "lucide-react";
+import { Wallet, Loader2, CheckCircle2, AlertTriangle, ExternalLink, Clock, XCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { format } from "date-fns";
 
 type CampaignType = "medical" | "dream" | "hero" | "pet" | "student" | "crisis" | "talent";
 
