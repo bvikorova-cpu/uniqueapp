@@ -16,6 +16,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { sk } from 'date-fns/locale';
 import { CampaignDetailEnhancements, CampaignDetailLiveFeed } from '@/components/fundraising/CampaignDetailEnhancements';
 import { CampaignPayoutPanel } from '@/components/fundraising/CampaignPayoutPanel';
+import { PendingCampaignGuard } from '@/components/fundraising/PendingCampaignGuard';
 
 interface MedicalCampaign {
   id: string;
@@ -266,6 +267,7 @@ export default function MedicalDetail() {
   }
 
   return (
+    <PendingCampaignGuard campaign={campaign as any}>
     <div className="min-h-screen bg-background py-12 px-4">
       <div className="max-w-6xl mx-auto">
         <Button
@@ -604,5 +606,6 @@ export default function MedicalDetail() {
       </div>
       <CampaignDetailLiveFeed />
     </div>
+    </PendingCampaignGuard>
   );
 }

@@ -15,6 +15,7 @@ import { useDonationReturn } from "@/hooks/useDonationReturn";
 import { formatDistanceToNow } from 'date-fns';
 import { CampaignDetailEnhancements, CampaignDetailLiveFeed } from '@/components/fundraising/CampaignDetailEnhancements';
 import { CampaignPayoutPanel } from '@/components/fundraising/CampaignPayoutPanel';
+import { PendingCampaignGuard } from '@/components/fundraising/PendingCampaignGuard';
 
 interface CrisisCampaign {
   id: string;
@@ -177,6 +178,7 @@ export default function CrisisDetail() {
   const timeLeft = campaign.expires_at ? formatDistanceToNow(new Date(campaign.expires_at), { addSuffix: true }) : null;
 
   return (
+    <PendingCampaignGuard campaign={campaign as any}>
     <div className="min-h-screen bg-background py-12 px-4">
       <div className="max-w-6xl mx-auto">
         <Button variant="outline" size="sm" onClick={() => navigate('/fundraising/crisis')} className="mb-6">
@@ -397,5 +399,6 @@ export default function CrisisDetail() {
       </div>
       <CampaignDetailLiveFeed />
     </div>
+    </PendingCampaignGuard>
   );
 }
