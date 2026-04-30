@@ -35,7 +35,7 @@ const KidsReadingCompanion = () => {
 
   const handleBuyCredits = async () => {
     const url = await purchase(50);
-    if (url) window.location.href = url;
+    if (url) { const __w = window.open(url, "_blank", "noopener,noreferrer"); if (!__w) window.location.href = url; }
   };
 
   // Stats (local for now)

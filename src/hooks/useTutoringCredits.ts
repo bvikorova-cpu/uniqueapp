@@ -93,7 +93,7 @@ export const useTutoringCredits = () => {
       if (error) throw error;
       if (data?.url) {
         // Same-tab redirect so the user returns with ?session_id=... and credits activate.
-        { const __w = window.open(data.url, "_blank", "noopener,noreferrer"); if (!__w) window.location.href = data.url; }
+        { const __w = window.open(data.url, "_blank", "noopener,noreferrer"); if (!__w) { const __w = window.open(data.url, "_blank", "noopener,noreferrer"); if (!__w) window.location.href = data.url; } }
       }
     },
     onError: (error) => {

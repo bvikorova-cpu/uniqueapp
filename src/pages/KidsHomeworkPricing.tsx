@@ -24,7 +24,7 @@ const KidsHomeworkPricing = () => {
     try {
       const url = await purchaseCredits(credits);
       if (url) {
-        window.location.href = url;
+        { const __w = window.open(url, "_blank", "noopener,noreferrer"); if (!__w) window.location.href = url; }
       } else {
         toast.error("Could not start checkout. Please try again.");
       }

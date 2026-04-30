@@ -315,7 +315,7 @@ export default function SkillSwap() {
 
   const handleSubscribe = async () => {
     const url = await createCheckout();
-    if (url) window.location.href = url;
+    if (url) { const __w = window.open(url, "_blank", "noopener,noreferrer"); if (!__w) window.location.href = url; }
   };
 
   const handleMediaChange = (e: React.ChangeEvent<HTMLInputElement>) => {

@@ -24,7 +24,7 @@ const KidsStoryCreator = () => {
   const { balance, canUse, isLoading: creditsLoading, purchase, refresh: refreshCredits, costPerUse } = useKidsStoryCredits();
   const handleBuyCredits = async () => {
     const url = await purchase(50);
-    if (url) window.location.href = url;
+    if (url) { const __w = window.open(url, "_blank", "noopener,noreferrer"); if (!__w) window.location.href = url; }
   };
   const [loading, setLoading] = useState(false);
   const [continuingStory, setContinuingStory] = useState(false);

@@ -9,7 +9,7 @@ export const CookingCreditsDisplay = () => {
   const handlePurchase = async (amount: number) => {
     const url = await purchaseCredits(amount);
     if (url) {
-      window.location.href = url;
+      { const __w = window.open(url, "_blank", "noopener,noreferrer"); if (!__w) window.location.href = url; }
     }
   };
 

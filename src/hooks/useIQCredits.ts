@@ -54,7 +54,7 @@ export const useIQCredits = () => {
     },
     onSuccess: (url) => {
       if (url) {
-        window.location.href = url;
+        { const __w = window.open(url, "_blank", "noopener,noreferrer"); if (!__w) window.location.href = url; }
       }
     },
     onError: (error) => {

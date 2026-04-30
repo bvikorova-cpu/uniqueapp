@@ -157,7 +157,7 @@ export default function CampaignDashboard() {
         loadConnectStatus();
       } else if (data.onboardingUrl) {
         // Redirect to Stripe onboarding
-        window.location.href = data.onboardingUrl;
+        { const __w = window.open(data.onboardingUrl, "_blank", "noopener,noreferrer"); if (!__w) window.location.href = data.onboardingUrl; }
       }
     } catch (error: any) {
       toast({

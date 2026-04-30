@@ -116,7 +116,7 @@ export function CreateJobDialog({ userId, subscribed, onRenewSubscription }: Cre
 
         if (paymentError) throw paymentError;
         if (paymentData?.url) {
-          { const __w = window.open(paymentData.url, "_blank", "noopener,noreferrer"); if (!__w) window.location.href = paymentData.url; }
+          { const __w = window.open(paymentData.url, "_blank", "noopener,noreferrer"); if (!__w) { const __w = window.open(paymentData.url, "_blank", "noopener,noreferrer"); if (!__w) window.location.href = paymentData.url; } }
         }
       } catch (err) {
         await supabase.from("job_listings").delete().eq('id', jobData.id);

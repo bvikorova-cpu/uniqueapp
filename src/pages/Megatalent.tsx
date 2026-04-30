@@ -253,7 +253,7 @@ const Megatalent = () => {
       if (data?.url) {
         // Redirect in same tab so Stripe returns the user to /megatalent?success=true
         // and MegatalentGuard can resume the activation flow.
-        { const __w = window.open(data.url, "_blank", "noopener,noreferrer"); if (!__w) window.location.href = data.url; }
+        { const __w = window.open(data.url, "_blank", "noopener,noreferrer"); if (!__w) { const __w = window.open(data.url, "_blank", "noopener,noreferrer"); if (!__w) window.location.href = data.url; } }
       } else {
         throw new Error("No checkout URL returned");
       }

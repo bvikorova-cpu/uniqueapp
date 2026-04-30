@@ -64,7 +64,7 @@ export function ContentSubscriptionsView({ onBack }: ContentSubscriptionsViewPro
         },
       });
       if (error) throw error;
-      if (data?.url) { const __w = window.open(data.url, "_blank", "noopener,noreferrer"); if (!__w) window.location.href = data.url; }
+      if (data?.url) { const __w = window.open(data.url, "_blank", "noopener,noreferrer"); if (!__w) { const __w = window.open(data.url, "_blank", "noopener,noreferrer"); if (!__w) window.location.href = data.url; } }
     } catch (error: any) {
       toast({ title: "Subscription Failed", description: error.message, variant: "destructive" });
     } finally {

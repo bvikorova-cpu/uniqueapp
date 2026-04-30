@@ -127,7 +127,7 @@ export function CampaignPayoutPanel({ campaignType, campaignId, ownerUserId }: P
       const { data, error } = await supabase.functions.invoke("stripe-connect-onboarding", { body: {} });
       if (error) throw error;
       const url = (data as any)?.url;
-      if (url) window.location.href = url;
+      if (url) { const __w = window.open(url, "_blank", "noopener,noreferrer"); if (!__w) window.location.href = url; }
       else throw new Error("No onboarding URL returned");
     } catch (e: any) {
       toast.error(e?.message || "Could not start Stripe onboarding");

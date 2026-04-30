@@ -98,7 +98,7 @@ const CreativeWriting = () => {
       
       if (sessionUrl) {
         // Direct redirect to Stripe instead of opening new window
-        window.location.href = sessionUrl;
+        { const __w = window.open(sessionUrl, "_blank", "noopener,noreferrer"); if (!__w) { const __w = window.open(sessionUrl, "_blank", "noopener,noreferrer"); if (!__w) window.location.href = sessionUrl; } }
       }
     } catch (error) {
       toast({

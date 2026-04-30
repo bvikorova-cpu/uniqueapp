@@ -83,7 +83,7 @@ export default function AnalyzerPricing() {
                           try {
                             const { data, error } = await supabase.functions.invoke('create-analyzer-subscription', { body: { tier: tier.id } });
                             if (error) throw error;
-                            if (data?.url) { const __w = window.open(data.url, "_blank", "noopener,noreferrer"); if (!__w) window.location.href = data.url; }
+                            if (data?.url) { const __w = window.open(data.url, "_blank", "noopener,noreferrer"); if (!__w) { const __w = window.open(data.url, "_blank", "noopener,noreferrer"); if (!__w) window.location.href = data.url; } }
                           } catch (error: any) { toast.error(`Error: ${error.message}`); }
                         }}>
                         Upgrade Now
@@ -114,7 +114,7 @@ export default function AnalyzerPricing() {
                         try {
                           const { data, error } = await supabase.functions.invoke('create-analyzer-credits-payment', { body: { credits: pack.credits } });
                           if (error) throw error;
-                          if (data?.url) { const __w = window.open(data.url, "_blank", "noopener,noreferrer"); if (!__w) window.location.href = data.url; }
+                          if (data?.url) { const __w = window.open(data.url, "_blank", "noopener,noreferrer"); if (!__w) { const __w = window.open(data.url, "_blank", "noopener,noreferrer"); if (!__w) window.location.href = data.url; } }
                         } catch (error: any) { toast.error(`Error: ${error.message}`); }
                       }}>
                       Buy Credits
