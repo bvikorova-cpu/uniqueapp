@@ -27,6 +27,7 @@ interface Campaign {
   current_amount: number;
   status: string;
   verified: boolean;
+  rejection_reason?: string | null;
   monthly_donors_count?: number;
   one_time_donors_count?: number;
   supporters_count?: number;
@@ -97,7 +98,7 @@ export default function FundraisingDashboard() {
         try {
           const { data, error } = await supabase
             .from(table as any)
-            .select('id, title, target_amount, current_amount, status, verified, monthly_donors_count, one_time_donors_count, supporters_count, created_at')
+            .select('id, title, target_amount, current_amount, status, verified, rejection_reason, monthly_donors_count, one_time_donors_count, supporters_count, created_at')
             .eq('user_id', userId)
             .order('created_at', { ascending: false });
 
@@ -264,10 +265,13 @@ export default function FundraisingDashboard() {
               <TabsList>
                 <TabsTrigger value="all">All ({campaigns.length})</TabsTrigger>
                 <TabsTrigger value="active">
-                  Active ({campaigns.filter(c => c.status === 'active').length})
+                  Active ({campaigns.filter(c => c.status === 'active' && c.verified).length})
                 </TabsTrigger>
                 <TabsTrigger value="pending">
-                  Pending ({campaigns.filter(c => c.status === 'pending').length})
+                  Pending ({campaigns.filter(c => c.status === 'pending' || (c.status === 'active' && !c.verified)).length})
+                </TabsTrigger>
+                <TabsTrigger value="rejected">
+                  Rejected ({campaigns.filter(c => c.status === 'rejected').length})
                 </TabsTrigger>
               </TabsList>
 
@@ -366,21 +370,60 @@ export default function FundraisingDashboard() {
               </TabsContent>
 
               <TabsContent value="pending" className="space-y-4 mt-4">
-                {campaigns.filter(c => c.status === 'pending').map((campaign) => (
-                  <Card key={campaign.id}>
-                    <CardContent className="pt-6">
-                      <div className="flex items-start justify-between mb-4">
-                        <div className="flex-1">
-                          <h3 className="text-xl font-semibold mb-2">{campaign.title}</h3>
-                          {getStatusBadge(campaign)}
+                {campaigns.filter(c => c.status === 'pending' || (c.status === 'active' && !c.verified)).length === 0 ? (
+                  <div className="text-center py-8">
+                    <Clock className="h-10 w-10 text-muted-foreground mx-auto mb-2" />
+                    <p className="text-muted-foreground">No pending campaigns</p>
+                  </div>
+                ) : (
+                  campaigns.filter(c => c.status === 'pending' || (c.status === 'active' && !c.verified)).map((campaign) => (
+                    <Card key={campaign.id} className="border-amber-500/30 bg-amber-500/5">
+                      <CardContent className="pt-6">
+                        <div className="flex items-start justify-between mb-4">
+                          <div className="flex-1">
+                            <h3 className="text-xl font-semibold mb-2">{campaign.title}</h3>
+                            {getStatusBadge(campaign)}
+                          </div>
                         </div>
-                      </div>
-                      <p className="text-sm text-muted-foreground">
-                        Campaign is pending verification and admin approval. You will be notified by email.
-                      </p>
-                    </CardContent>
-                  </Card>
-                ))}
+                        <p className="text-sm text-muted-foreground">
+                          Campaign is pending verification and admin approval. It is hidden from the public hub until approved. You will be notified once reviewed.
+                        </p>
+                      </CardContent>
+                    </Card>
+                  ))
+                )}
+              </TabsContent>
+
+              <TabsContent value="rejected" className="space-y-4 mt-4">
+                {campaigns.filter(c => c.status === 'rejected').length === 0 ? (
+                  <div className="text-center py-8">
+                    <XCircle className="h-10 w-10 text-muted-foreground mx-auto mb-2" />
+                    <p className="text-muted-foreground">No rejected campaigns</p>
+                  </div>
+                ) : (
+                  campaigns.filter(c => c.status === 'rejected').map((campaign) => (
+                    <Card key={campaign.id} className="border-destructive/30 bg-destructive/5">
+                      <CardContent className="pt-6">
+                        <div className="flex items-start justify-between mb-4">
+                          <div className="flex-1">
+                            <h3 className="text-xl font-semibold mb-2">{campaign.title}</h3>
+                            {getStatusBadge(campaign)}
+                          </div>
+                        </div>
+                        {campaign.rejection_reason ? (
+                          <div className="rounded-lg bg-background/50 border border-destructive/20 p-3">
+                            <p className="text-xs font-semibold text-destructive mb-1">Reason for rejection:</p>
+                            <p className="text-sm text-muted-foreground">{campaign.rejection_reason}</p>
+                          </div>
+                        ) : (
+                          <p className="text-sm text-muted-foreground">
+                            Campaign was rejected. Please contact support for more information.
+                          </p>
+                        )}
+                      </CardContent>
+                    </Card>
+                  ))
+                )}
               </TabsContent>
             </Tabs>
           </CardContent>

@@ -14,6 +14,7 @@ import { toast } from '@/hooks/use-toast';
 import { useDonationReturn } from "@/hooks/useDonationReturn";
 import { CampaignDetailEnhancements, CampaignDetailLiveFeed } from '@/components/fundraising/CampaignDetailEnhancements';
 import { CampaignPayoutPanel } from '@/components/fundraising/CampaignPayoutPanel';
+import { PendingCampaignGuard } from '@/components/fundraising/PendingCampaignGuard';
 
 interface StudentCampaign {
   id: string;
@@ -173,6 +174,7 @@ export default function StudentDetail() {
   const progress = Math.min((campaign.current_amount / campaign.target_amount) * 100, 100);
 
   return (
+    <PendingCampaignGuard campaign={campaign as any}>
     <div className="min-h-screen bg-background py-12 px-4">
       <div className="max-w-6xl mx-auto">
         <Button variant="outline" size="sm" onClick={() => navigate('/fundraising/student')} className="mb-6">
@@ -368,5 +370,6 @@ export default function StudentDetail() {
       </div>
       <CampaignDetailLiveFeed />
     </div>
+    </PendingCampaignGuard>
   );
 }
