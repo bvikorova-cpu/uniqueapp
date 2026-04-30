@@ -1,5 +1,4 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { requireAiCredits } from "../_shared/credit-check.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
 const corsHeaders = {
@@ -75,9 +74,9 @@ serve(async (req) => {
   }
 
   try {
-    const __auth = await requireAiCredits(req, corsHeaders, { credits: 1, usageType: "creative_content" });
-    if (__auth.errorResponse) return __auth.errorResponse;
-    const __deduct = __auth.deduct!;
+    // NOTE: CreativeForge uses its own dedicated `creative_forge_credits` ledger
+    // (purchased via the dedicated checkout). Do NOT also debit the unified
+    // ai_credits ledger here — that caused double-charging users.
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
@@ -199,7 +198,14 @@ serve(async (req) => {
 
     console.log(`Successfully generated content, project ID: ${project.id}`);
 
-    await __deduct().catch((e) => console.error("deduct failed:", e));
+    // Log AI usage history for analytics (without re-debiting credits)
+    await supabase.from("ai_usage_history").insert({
+      user_id: user.id,
+      usage_type: "creative_content",
+      credits_used: creditCost,
+      description: `${category}${isRevision ? " (revision)" : ""}: ${title}`,
+    }).then(() => {}, (e) => console.error("usage log failed:", e));
+
     return new Response(JSON.stringify({ 
       content: generatedContent,
       project,
