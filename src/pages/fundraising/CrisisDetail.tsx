@@ -14,6 +14,7 @@ import { toast } from '@/hooks/use-toast';
 import { useDonationReturn } from "@/hooks/useDonationReturn";
 import { formatDistanceToNow } from 'date-fns';
 import { CampaignDetailEnhancements, CampaignDetailLiveFeed } from '@/components/fundraising/CampaignDetailEnhancements';
+import { CampaignPayoutPanel } from '@/components/fundraising/CampaignPayoutPanel';
 
 interface CrisisCampaign {
   id: string;
@@ -272,6 +273,11 @@ export default function CrisisDetail() {
               targetAmount={campaign.target_amount}
               supportersCount={campaign.supporters_count}
               campaignType="crisis"
+            />
+            <CampaignPayoutPanel
+              campaignType="crisis"
+              campaignId={campaign.id}
+              ownerUserId={campaign.user_id}
             />
             <Card>
               <CardHeader>

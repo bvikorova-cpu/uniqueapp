@@ -13,6 +13,7 @@ import { ArrowLeft, PawPrint, Users, AlertTriangle, Heart } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { useDonationReturn } from "@/hooks/useDonationReturn";
 import { CampaignDetailEnhancements, CampaignDetailLiveFeed } from '@/components/fundraising/CampaignDetailEnhancements';
+import { CampaignPayoutPanel } from '@/components/fundraising/CampaignPayoutPanel';
 
 interface PetCampaign {
   id: string;
@@ -262,6 +263,11 @@ export default function PetDetail() {
               targetAmount={campaign.target_amount}
               supportersCount={campaign.supporters_count ?? 0}
               campaignType="pet"
+            />
+            <CampaignPayoutPanel
+              campaignType="pet"
+              campaignId={campaign.id}
+              ownerUserId={campaign.user_id}
             />
             <Card>
               <CardHeader>
