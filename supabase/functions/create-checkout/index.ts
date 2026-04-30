@@ -146,6 +146,8 @@ const CREDIT_PACKS: Record<string, { prices: Record<number, string>; successPath
     cancelPath: "/ai-characters?payment=canceled",
   },
   creative_forge: {
+    // Legacy fixed Stripe prices (10/30/100). Public packages 30/75/150/400
+    // fall through to dynamic price_data below using CREATIVE_FORGE_PRICES.
     prices: {
       10: "price_1TOwfVGaXSfGtYFtTuoGa1FZ",
       30: "price_1TOwfWGaXSfGtYFt6V478VoY",
@@ -504,16 +506,22 @@ serve(async (req) => {
       const successUrl = `${origin}${pack.successPath}`;
       const cancelUrl = `${origin}${pack.cancelPath}`;
 
-      // If a fixed price exists use it, otherwise build dynamic price_data
-      // Chat credits are cheaper (€0.10 per credit / message); other dynamic packs use €0.50
+      // Per-credit pricing for dynamic packs.
+      // - chat: €0.10/credit
+      // - creative_forge public packages (30/75/150/400 → €8/€18/€32/€75) — override below
+      // - default: €0.50/credit
+      const CREATIVE_FORGE_TOTALS: Record<number, number> = {
+        30: 800, 75: 1800, 150: 3200, 400: 7500,
+      };
       const unitAmount = creditType === "chat" ? 10 : 50;
       const minTotal = creditType === "chat" ? 99 : 99; // €0.99 minimum
+      const cfTotal = creditType === "creative_forge" ? CREATIVE_FORGE_TOTALS[credits] : undefined;
       const lineItems = priceId
         ? [{ price: priceId, quantity: 1 }]
         : [{
             price_data: {
               currency: "eur" as const,
-              unit_amount: Math.max(minTotal, credits * unitAmount),
+              unit_amount: cfTotal ?? Math.max(minTotal, credits * unitAmount),
               product_data: { name: `${creditType} Credits - ${credits} Pack` },
             },
             quantity: 1,
@@ -540,6 +548,7 @@ serve(async (req) => {
             : creditType === "kids_story" ? "kids_story_credits"
             : creditType === "teen_career" ? "teen_career_credits"
             : creditType === "coloring" ? "coloring_credits"
+            : creditType === "creative_forge" ? "creative_forge_credits"
             : creditType,
         },
       });

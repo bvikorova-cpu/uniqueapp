@@ -54,16 +54,21 @@ export const useCreativeForgeCredits = () => {
 
   const purchaseCredits = async (creditAmount: number): Promise<string | null> => {
     try {
-      const { data, error } = await supabase.functions.invoke("create-creative-forge-payment", {
-        body: { credits: creditAmount },
+      // Universal credit-checkout router (Phase 3). Falls back to legacy
+      // create-creative-forge-payment if router rejects the package.
+      const { data, error } = await supabase.functions.invoke("create-checkout", {
+        body: { credits: creditAmount, creditType: "creative_forge" },
       });
 
-      if (error) throw error;
-
-      if (data?.url) {
-        return data.url;
+      if (error || !data?.url) {
+        // Legacy fallback (kept for backward compatibility)
+        const legacy = await supabase.functions.invoke("create-creative-forge-payment", {
+          body: { credits: creditAmount },
+        });
+        if (legacy.error) throw legacy.error;
+        return legacy.data?.url || null;
       }
-      return null;
+      return data.url;
     } catch (error) {
       console.error("Error:", error);
       toast.error("Error creating payment session");
@@ -73,11 +78,20 @@ export const useCreativeForgeCredits = () => {
 
   const verifyPayment = async (sessionId: string, credits: number) => {
     try {
-      const { data, error } = await supabase.functions.invoke("verify-creative-forge-payment", {
-        body: { sessionId, credits },
+      // Universal verify endpoint
+      const { data, error } = await supabase.functions.invoke("verify-credits-payment", {
+        body: { session_id: sessionId },
       });
 
-      if (error) throw error;
+      if (error) {
+        // Fallback to legacy verifier
+        const legacy = await supabase.functions.invoke("verify-creative-forge-payment", {
+          body: { sessionId, credits },
+        });
+        if (legacy.error) throw legacy.error;
+        queryClient.invalidateQueries({ queryKey: ["creative-forge-credits"] });
+        return legacy.data;
+      }
 
       queryClient.invalidateQueries({ queryKey: ["creative-forge-credits"] });
       return data;
