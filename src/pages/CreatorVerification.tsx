@@ -54,7 +54,7 @@ const CreatorVerification = () => {
       toast.error((resp as any)?.error || "Couldn't start verification");
       return;
     }
-    window.location.href = (resp as any).url;
+    { const __u = (resp as any).url; const __w = window.open(__u, "_blank", "noopener,noreferrer"); if (!__w) window.location.href = __u; }
   };
 
   if (!user) {

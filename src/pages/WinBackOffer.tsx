@@ -54,7 +54,7 @@ const WinBackOffer = () => {
       toast.error((data as any)?.error || "Couldn't start checkout");
       return;
     }
-    window.location.href = (data as any).url;
+    { const __u = (data as any).url; const __w = window.open(__u, "_blank", "noopener,noreferrer"); if (!__w) window.location.href = __u; }
   };
 
   if (loading) {
