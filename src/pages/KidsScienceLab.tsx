@@ -33,6 +33,7 @@ const KidsScienceLab = () => {
     conclusion: string;
     explanation: string;
     funFacts: string[];
+    quiz: { question: string; options: string[]; correctIndex: number }[];
   } | null>(null);
   const [showQuiz, setShowQuiz] = useState(false);
   const [analysesCompleted, setAnalysesCompleted] = useState(0);
