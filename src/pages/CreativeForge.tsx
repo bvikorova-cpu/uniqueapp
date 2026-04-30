@@ -360,7 +360,15 @@ export default function CreativeForge() {
                         })}
                       </div>
                     ) : (
-                      <div className="text-center py-12 text-muted-foreground"><History className="h-12 w-12 mx-auto mb-4 opacity-30" /><p className="text-sm">{historySearch || historyFilter !== "all" ? "No matching projects" : "No projects yet. Start creating!"}</p></div>
+                      <div className="text-center py-12 text-muted-foreground">
+                        <History className="h-12 w-12 mx-auto mb-4 opacity-30" />
+                        <p className="text-sm mb-4">{historySearch || historyFilter !== "all" ? t("forge.history.no_matching") : t("forge.history.no_projects")}</p>
+                        {!(historySearch || historyFilter !== "all") && (
+                          <Button onClick={() => openTool("song_lyrics")} className="gap-2">
+                            <Sparkles className="h-4 w-4" /> {t("forge.history.start_creating")}
+                          </Button>
+                        )}
+                      </div>
                     )}
                   </CardContent>
                 </Card>
