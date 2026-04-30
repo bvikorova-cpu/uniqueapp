@@ -65,12 +65,19 @@ export function CampaignPayoutPanel({ campaignType, campaignId, ownerUserId }: P
     if (!isOwner) return;
     setLoading(true);
     try {
-      const [balRes, connectRes] = await Promise.all([
+      const [balRes, connectRes, recentRes] = await Promise.all([
         supabase.rpc("get_campaign_available_balance", {
           _campaign_type: campaignType,
           _campaign_id: campaignId,
         }),
         supabase.functions.invoke("check-connect-status", { body: { action: "status" } }),
+        supabase
+          .from("campaign_payouts")
+          .select("id, amount_cents, status, requested_at, rejection_reason, review_reason")
+          .eq("campaign_id", campaignId)
+          .eq("campaign_type", campaignType)
+          .order("requested_at", { ascending: false })
+          .limit(5),
       ]);
 
       if (balRes.error) throw balRes.error;
@@ -93,6 +100,10 @@ export function CampaignPayoutPanel({ campaignType, campaignId, ownerUserId }: P
         });
       } else {
         setConnect({ has_account: false, payouts_enabled: false });
+      }
+
+      if (!recentRes.error && recentRes.data) {
+        setRecent(((recentRes.data as unknown) as RecentPayout[]) || []);
       }
     } catch (e: any) {
       console.error("[payout panel] refresh failed", e);
@@ -146,7 +157,15 @@ export function CampaignPayoutPanel({ campaignType, campaignId, ownerUserId }: P
       const res = data as any;
       if (res?.error) throw new Error(res.error);
 
-      toast.success(`Payout sent! ${fmtEur(cents)} is on its way to your bank.`);
+      const status = res?.status;
+      if (status === "pending_review") {
+        toast.info("Withdrawal queued for admin review", {
+          description: res?.review_reason || "You will be notified once approved.",
+          duration: 7000,
+        });
+      } else {
+        toast.success(`Payout sent! ${fmtEur(cents)} is on its way to your bank.`);
+      }
       setAmountEur("");
       await refresh();
     } catch (e: any) {
