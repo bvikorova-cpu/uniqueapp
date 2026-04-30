@@ -503,12 +503,12 @@ export default function CreativeForge() {
 
         {/* How it works */}
         <div className="max-w-3xl mx-auto">
-          <div className="text-center mb-6"><h2 className="text-2xl font-bold">How It Works</h2></div>
+          <div className="text-center mb-6"><h2 className="text-2xl font-bold">{t("forge.hub.how_it_works")}</h2></div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
-              { step: "1", title: "Choose Content Type", desc: "Select from 8 creative writing categories" },
-              { step: "2", title: "Describe Your Vision", desc: "Add details, style references, and templates" },
-              { step: "3", title: "Generate & Refine", desc: "Get AI content instantly, revise as needed" },
+              { step: "1", title: t("forge.hub.step1_title"), desc: t("forge.hub.step1_desc") },
+              { step: "2", title: t("forge.hub.step2_title"), desc: t("forge.hub.step2_desc") },
+              { step: "3", title: t("forge.hub.step3_title"), desc: t("forge.hub.step3_desc") },
             ].map((item, i) => (
               <motion.div key={i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 + i * 0.1 }} className="text-center">
                 <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3">
