@@ -265,10 +265,13 @@ export default function FundraisingDashboard() {
               <TabsList>
                 <TabsTrigger value="all">All ({campaigns.length})</TabsTrigger>
                 <TabsTrigger value="active">
-                  Active ({campaigns.filter(c => c.status === 'active').length})
+                  Active ({campaigns.filter(c => c.status === 'active' && c.verified).length})
                 </TabsTrigger>
                 <TabsTrigger value="pending">
-                  Pending ({campaigns.filter(c => c.status === 'pending').length})
+                  Pending ({campaigns.filter(c => c.status === 'pending' || (c.status === 'active' && !c.verified)).length})
+                </TabsTrigger>
+                <TabsTrigger value="rejected">
+                  Rejected ({campaigns.filter(c => c.status === 'rejected').length})
                 </TabsTrigger>
               </TabsList>
 
