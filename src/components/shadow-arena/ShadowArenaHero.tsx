@@ -88,7 +88,7 @@ export function ShadowArenaHero({ totalPrizePool = 0, activeBattles = 0, topStor
         >
           <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-950/50 backdrop-blur-md text-red-200 text-xs font-semibold border border-red-800/40">
             <Sparkles className="w-3.5 h-3.5 text-red-400" />
-            Live Horror Arena · AI-Powered
+            {t("shadow.hero.badge")}
           </span>
         </motion.div>
 
@@ -103,7 +103,7 @@ export function ShadowArenaHero({ totalPrizePool = 0, activeBattles = 0, topStor
             animate={{ skewX: [0, -1.2, 0, 1.2, 0] }}
             transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
           >
-            Shadow Arena
+            {t("shadow.hero.title")}
           </motion.span>
         </motion.h1>
 
@@ -113,7 +113,7 @@ export function ShadowArenaHero({ totalPrizePool = 0, activeBattles = 0, topStor
           transition={{ delay: 0.3 }}
           className="text-base sm:text-lg md:text-xl text-red-100/85 max-w-2xl mb-8 font-gothic-body italic"
         >
-          Where terror meets glory. Forge horror with AI, battle live, and claim cash prizes from a pool of fear.
+          {t("shadow.hero.tagline")}
         </motion.p>
 
         {/* CTAs */}
@@ -129,7 +129,7 @@ export function ShadowArenaHero({ totalPrizePool = 0, activeBattles = 0, topStor
             className="bg-gradient-to-r from-red-700 to-red-900 hover:from-red-800 hover:to-red-950 border border-red-700/40 shadow-[0_0_25px_-5px_rgba(220,38,38,0.6)]"
           >
             <Skull className="mr-2 h-4 w-4" />
-            Submit Horror Story
+            {t("shadow.hero.cta_submit")}
           </Button>
           <Button
             size="lg"
@@ -138,7 +138,7 @@ export function ShadowArenaHero({ totalPrizePool = 0, activeBattles = 0, topStor
             className="bg-black/40 backdrop-blur-md border-purple-700/40 text-purple-100 hover:bg-purple-950/40"
           >
             <Flame className="mr-2 h-4 w-4" />
-            Enter Live Battles
+            {t("shadow.hero.cta_battles")}
           </Button>
         </motion.div>
 
