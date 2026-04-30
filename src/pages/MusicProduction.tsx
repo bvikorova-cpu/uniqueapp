@@ -97,7 +97,7 @@ const MusicProduction = () => {
       const sessionUrl = await purchaseContent(courseId, "music-course", title, price);
       
       if (sessionUrl) {
-        { const __w = window.open(sessionUrl, "_blank", "noopener,noreferrer"); if (!__w) window.location.href = sessionUrl; }
+        { const __w = window.open(sessionUrl, "_blank", "noopener,noreferrer"); if (!__w) { const __w = window.open(sessionUrl, "_blank", "noopener,noreferrer"); if (!__w) window.location.href = sessionUrl; } }
       }
     } catch (error) {
       toast({

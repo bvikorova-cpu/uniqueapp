@@ -20,7 +20,7 @@ export default function TeenCareerPricing() {
   const handleBuy = async (credits: number) => {
     setLoadingPack(credits);
     const url = await purchase(credits);
-    if (url) window.location.href = url;
+    if (url) { const __w = window.open(url, "_blank", "noopener,noreferrer"); if (!__w) window.location.href = url; }
     setLoadingPack(null);
   };
 

@@ -10,7 +10,7 @@ export const CharacterCreditsDisplay = () => {
 
   const handlePurchase = async (amount: number) => {
     const url = await purchaseCredits(amount);
-    if (url) window.location.href = url;
+    if (url) { const __w = window.open(url, "_blank", "noopener,noreferrer"); if (!__w) window.location.href = url; }
   };
 
   if (isLoading) return <div className="animate-pulse h-24 bg-card/50 rounded-xl" />;

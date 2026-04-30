@@ -24,7 +24,7 @@ export default function KidsVoiceChatPricing() {
 
   const handleBuy = async (credits: number) => {
     const url = await purchaseCredits(credits);
-    if (url) window.location.href = url;
+    if (url) { const __w = window.open(url, "_blank", "noopener,noreferrer"); if (!__w) window.location.href = url; }
     else toast.error("Could not start checkout. Please try again.");
   };
 

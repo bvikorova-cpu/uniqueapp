@@ -100,7 +100,7 @@ const Photography = () => {
       const sessionUrl = await purchaseContent(masterclassId, "photography-masterclass", title, price);
       
       if (sessionUrl) {
-        { const __w = window.open(sessionUrl, "_blank", "noopener,noreferrer"); if (!__w) window.location.href = sessionUrl; }
+        { const __w = window.open(sessionUrl, "_blank", "noopener,noreferrer"); if (!__w) { const __w = window.open(sessionUrl, "_blank", "noopener,noreferrer"); if (!__w) window.location.href = sessionUrl; } }
       }
     } catch (error) {
       toast({
