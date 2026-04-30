@@ -344,7 +344,7 @@ export default function CreativeForge() {
                                   <div className="flex items-center gap-2 mb-1 flex-wrap">
                                     <h4 className="font-medium text-sm">{project.title}</h4>
                                     <Badge variant="outline" className="text-xs">{category?.name}</Badge>
-                                    <Badge variant="secondary" className="text-xs">{project.credits_used} cr</Badge>
+                                    <Badge variant="secondary" className="text-xs">{project.credits_used} {t("forge.credit_short")}</Badge>
                                   </div>
                                   <p className="text-xs text-muted-foreground mb-2">{new Date(project.created_at).toLocaleDateString()}</p>
                                   <ScrollArea className="h-20 border rounded-lg p-2 bg-muted/20"><pre className="whitespace-pre-wrap text-xs font-mono">{project.generated_content?.substring(0, 500)}...</pre></ScrollArea>
