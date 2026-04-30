@@ -28,7 +28,17 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="apple-mobile-web-app-title" content="Unique" />
-    <link rel="manifest" href="/manifest.webmanifest?v=2026-04-28-sw-kill" />
+    <script>
+      (function () {
+        var host = window.location.hostname;
+        if (!host.includes("lovableproject.com") && !host.includes("lovable.app")) {
+          var link = document.createElement("link");
+          link.rel = "manifest";
+          link.href = "/manifest.webmanifest?v=2026-04-28-sw-kill";
+          document.head.appendChild(link);
+        }
+      })();
+    </script>
     <link rel="apple-touch-icon" href="/pwa-192x192.png?v=2026-04-20a" />
 
     <!-- Open Graph -->
