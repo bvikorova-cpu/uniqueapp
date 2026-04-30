@@ -63,22 +63,22 @@ export function ShadowAIToolsHub() {
         </motion.div>
         <div>
           <h2 className="text-xl font-black bg-gradient-to-r from-purple-200 to-red-300 bg-clip-text text-transparent drop-shadow-[0_0_15px_rgba(168,85,247,0.4)]">
-            Shadow AI Studio
+            {t("shadow.studio.title")}
           </h2>
-          <p className="text-xs text-red-100/90 font-medium">Forge horror with premium AI tools</p>
+          <p className="text-xs text-red-100/90 font-medium">{t("shadow.studio.subtitle")}</p>
         </div>
       </div>
 
       <Tabs defaultValue="story">
         <TabsList className="grid grid-cols-3 w-full bg-black/60 border border-red-800/50">
           <TabsTrigger value="story" className="text-red-100 data-[state=active]:bg-red-800/60 data-[state=active]:text-white">
-            <BookOpen className="w-3.5 h-3.5 mr-1" /> Story
+            <BookOpen className="w-3.5 h-3.5 mr-1" /> {t("shadow.studio.tab_story")}
           </TabsTrigger>
           <TabsTrigger value="narrator" className="text-red-100 data-[state=active]:bg-red-800/60 data-[state=active]:text-white">
-            <Volume2 className="w-3.5 h-3.5 mr-1" /> Voice
+            <Volume2 className="w-3.5 h-3.5 mr-1" /> {t("shadow.studio.tab_voice")}
           </TabsTrigger>
           <TabsTrigger value="avatar" className="text-red-100 data-[state=active]:bg-red-800/60 data-[state=active]:text-white">
-            <UserIcon className="w-3.5 h-3.5 mr-1" /> Avatar
+            <UserIcon className="w-3.5 h-3.5 mr-1" /> {t("shadow.studio.tab_avatar")}
           </TabsTrigger>
         </TabsList>
 
