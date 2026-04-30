@@ -20,11 +20,15 @@ function parseJSON(s: string): any {
   } catch { return null; }
 }
 
-async function callAI(OPENAI_API_KEY: string, body: any) {
-  const r = await fetch("https://api.openai.com/v1/images/generations", {
+async function callAI(LOVABLE_API_KEY: string, body: any) {
+  // Image-capable models route via Lovable AI Gateway image-generation modalities
+  const isImageModel = typeof body?.model === "string" && body.model.startsWith("google/gemini-2.5-flash-image");
+  const url = "https://ai.gateway.lovable.dev/v1/chat/completions";
+  const payload = isImageModel ? { ...body, modalities: ["image", "text"] } : body;
+  const r = await fetch(url, {
     method: "POST",
-    headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
-    body: JSON.stringify(body),
+    headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
   });
   if (!r.ok) {
     const t = await r.text();
