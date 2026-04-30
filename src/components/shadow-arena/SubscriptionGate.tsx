@@ -100,7 +100,7 @@ export function SubscriptionGate({ children }: SubscriptionGateProps) {
             className="text-center mb-6"
           >
             <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-950/60 backdrop-blur border border-red-900/60 text-red-300 text-[11px] tracking-[0.25em] uppercase font-gothic-display">
-              <Sparkles className="w-3 h-3" /> Forbidden Access
+              <Sparkles className="w-3 h-3" /> {t('shadow.gate.eyebrow')}
             </span>
           </motion.div>
 
@@ -111,7 +111,7 @@ export function SubscriptionGate({ children }: SubscriptionGateProps) {
             transition={{ duration: 0.9 }}
             className="text-center font-gothic-display font-black tracking-tight mb-4 text-5xl sm:text-7xl md:text-8xl shadow-blood-text shadow-flicker leading-[0.9]"
           >
-            Shadow Arena
+            {t('shadow.hero.title')}
           </motion.h1>
           <motion.p
             initial={{ opacity: 0 }}
@@ -119,10 +119,10 @@ export function SubscriptionGate({ children }: SubscriptionGateProps) {
             transition={{ delay: 0.3 }}
             className="text-center font-gothic-body italic text-red-100/80 text-base sm:text-xl max-w-2xl mx-auto mb-2"
           >
-            Where the dead tell stories. Where the living compete for blood and gold.
+            {t('shadow.gate.subtitle')}
           </motion.p>
           <p className="text-center text-[11px] tracking-[0.3em] uppercase text-red-500/70 font-gothic-display mb-12">
-            — Enter at your own risk —
+            {t('shadow.gate.warning')}
           </p>
 
           {/* Lock + lore */}
@@ -136,21 +136,20 @@ export function SubscriptionGate({ children }: SubscriptionGateProps) {
               <Lock className="w-9 h-9 text-red-100 drop-shadow-[0_0_10px_rgba(255,255,255,0.6)]" />
             </div>
             <h2 className="text-center font-gothic-display text-2xl sm:text-3xl text-red-200 mt-6 mb-4">
-              Access Sealed by Ancient Curse
+              {t('shadow.gate.lock_title')}
             </h2>
             <p className="font-gothic-body text-center text-red-100/85 text-sm sm:text-base leading-relaxed max-w-2xl mx-auto">
-              Beyond this seal lies the darkest corner of storytelling. Live horror battles, AI-summoned tales,
-              real cash prizes. Speak the rite — pay the offering — and the gate shall open.
+              {t('shadow.gate.lock_desc')}
             </p>
           </motion.div>
 
           {/* Features grid */}
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-12">
-            {FEATURES.map((f, i) => {
+            {FEATURE_KEYS.map((f, i) => {
               const Icon = f.icon;
               return (
                 <motion.div
-                  key={f.title}
+                  key={f.titleKey}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.5 + i * 0.07 }}
@@ -159,8 +158,8 @@ export function SubscriptionGate({ children }: SubscriptionGateProps) {
                 >
                   <div className="absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent via-red-700/60 to-transparent" />
                   <Icon className="w-8 h-8 text-red-400 mb-3 group-hover:text-red-300 transition-colors drop-shadow-[0_0_10px_rgba(220,38,38,0.4)]" />
-                  <h3 className="font-gothic-display text-red-100 text-base mb-1.5 tracking-wide">{f.title}</h3>
-                  <p className="font-gothic-body text-red-200/65 text-sm leading-relaxed">{f.desc}</p>
+                  <h3 className="font-gothic-display text-red-100 text-base mb-1.5 tracking-wide">{t(f.titleKey)}</h3>
+                  <p className="font-gothic-body text-red-200/65 text-sm leading-relaxed">{t(f.descKey)}</p>
                 </motion.div>
               );
             })}
