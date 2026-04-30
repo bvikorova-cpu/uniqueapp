@@ -24,9 +24,9 @@ export const useShadowArenaCredits = () => {
   });
 
   const buyCredits = useMutation({
-    mutationFn: async (packageId: "starter" | "creator" | "pro") => {
-      const { data, error } = await supabase.functions.invoke("shadow-credits-checkout", {
-        body: { packageId },
+    mutationFn: async (credits: 30 | 100 | 280) => {
+      const { data, error } = await supabase.functions.invoke("create-checkout", {
+        body: { creditType: "shadow_arena", credits },
       });
       if (error) throw error;
       if (data?.url) window.location.href = data.url;
@@ -49,7 +49,7 @@ export const useShadowAITools = () => {
       if (data?.error) throw new Error(data.error);
       return data;
     },
-    onSuccess: () => { invalidate(); toast.success("Horror story generated!"); },
+    onSuccess: () => { invalidate(); toast.success("Story ready!"); },
     onError: (e: Error) => toast.error(e.message || "Story generation failed"),
   });
 
