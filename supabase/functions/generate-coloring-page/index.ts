@@ -1,5 +1,5 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { requireAiCredits } from "../_shared/credit-check.ts";
+
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 import { withRateLimit, RATE_LIMITS } from "../_shared/rate-limit.ts";
 
@@ -30,10 +30,16 @@ serve(async (req) => {
   );
 
   try {
-    const __auth = await requireAiCredits(req, corsHeaders, { credits: 5, usageType: "coloring_page" });
-    if (__auth.errorResponse) return __auth.errorResponse;
-    const __deduct = __auth.deduct!;
-    const authHeader = req.headers.get("Authorization")!;
+    // NOTE: ColoringPage uses its dedicated `coloring_credits` ledger
+    // (purchased via plan tiers). Do NOT also debit unified ai_credits — that
+    // caused double-charging users.
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader) {
+      return new Response(
+        JSON.stringify({ error: "Not authenticated" }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 401 }
+      );
+    }
     const token = authHeader.replace("Bearer ", "");
     const { data } = await supabaseClient.auth.getUser(token);
     const user = data.user;
@@ -164,7 +170,7 @@ serve(async (req) => {
 
     if (!base64Image) {
       console.error("No image in OpenAI response:", JSON.stringify(aiData));
-      await __deduct().catch((e) => console.error("deduct failed:", e));
+      
       return new Response(
         JSON.stringify({ error: "Failed to generate image. Please try again." }),
         { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 500 }
