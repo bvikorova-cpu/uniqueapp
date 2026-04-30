@@ -92,7 +92,8 @@ async function actionPolygraph(supabase: any, user: any, body: any) {
 
 async function actionCrossExam(supabase: any, user: any, body: any) {
   const COST = 8;
-  const { subject_text, qa_thread, action } = body;
+  const { subject_text, qa_thread } = body;
+  const action = body.sub_action ?? body.subAction ?? body.op ?? "question";
   if (!subject_text || typeof subject_text !== "string") return json({ error: "subject_text required" }, 400);
   const cc = await checkCredits(supabase, user.id, COST); if (cc.err) return cc.err;
   const thread = Array.isArray(qa_thread) ? qa_thread : [];
