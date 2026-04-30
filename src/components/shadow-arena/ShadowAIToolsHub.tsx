@@ -150,7 +150,7 @@ export function ShadowAIToolsHub() {
             value={narratorText}
             onChange={(e) => setNarratorText(e.target.value)}
             rows={5}
-            placeholder="Paste the horror text to be narrated by a chilling AI voice..."
+            placeholder={t("shadow.studio.voice_placeholder")}
             className="bg-black/60 border-red-800/50 text-red-50 placeholder:text-red-200/50 font-serif"
           />
           <select
@@ -162,8 +162,8 @@ export function ShadowAIToolsHub() {
           </select>
           <Button
             onClick={() => {
-              if (!narratorText.trim()) { toast.error("Enter text to narrate"); return; }
-              if (narratorText.length > 2500) { toast.error("Max 2500 chars"); return; }
+              if (!narratorText.trim()) { toast.error(t("shadow.studio.voice_need_text")); return; }
+              if (narratorText.length > 2500) { toast.error(t("shadow.studio.voice_too_long")); return; }
               if (!requireCredits(SHADOW_AI_COSTS.narrator)) return;
               narrate.mutate(
                 { text: narratorText, voiceId: narratorVoice, voiceLabel: VOICES.find(v => v.id === narratorVoice)?.label },
@@ -174,8 +174,8 @@ export function ShadowAIToolsHub() {
             className="w-full bg-gradient-to-r from-purple-700 to-red-800 hover:from-purple-800 hover:to-red-900"
           >
             {narrate.isPending
-              ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Summoning voice...</>
-              : <><Volume2 className="w-4 h-4 mr-2" /> Narrate ({SHADOW_AI_COSTS.narrator} credits)</>}
+              ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> {t("shadow.studio.voice_loading")}</>
+              : <><Volume2 className="w-4 h-4 mr-2" /> {t("shadow.studio.voice_btn")} ({SHADOW_AI_COSTS.narrator} {t("shadow.credits.credits_unit")})</>}
           </Button>
           {narratorAudio && (
             <audio controls src={narratorAudio} className="w-full mt-3" />
