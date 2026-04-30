@@ -485,8 +485,8 @@ export default function CreativeForge() {
         {FORGE_TOOLS.length > 6 && (
           <div className="mb-8">
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-4">
-              <h2 className="text-2xl font-black">More Content Types</h2>
-              <p className="text-sm text-muted-foreground">Explore all available writing categories</p>
+              <h2 className="text-2xl font-black">{t("forge.hub.more_types")}</h2>
+              <p className="text-sm text-muted-foreground">{t("forge.hub.more_types_subtitle")}</p>
             </motion.div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               {FORGE_TOOLS.slice(6).map((tool, i) => (
