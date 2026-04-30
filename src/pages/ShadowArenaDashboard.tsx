@@ -45,9 +45,39 @@ interface Story {
 
 export default function ShadowArenaDashboard() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const queryClient = useQueryClient();
   const [battles, setBattles] = useState<Battle[]>([]);
   const [stories, setStories] = useState<Story[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Verify payment after Stripe redirect
+  useEffect(() => {
+    const sessionId = searchParams.get('session_id');
+    const paymentStatus = searchParams.get('payment');
+    if (paymentStatus === 'canceled') {
+      toast.error(t('shadow.credits.purchase_canceled'));
+      searchParams.delete('payment');
+      setSearchParams(searchParams, { replace: true });
+      return;
+    }
+    if (paymentStatus === 'success' && sessionId) {
+      supabase.functions
+        .invoke('verify-credits-payment', { body: { session_id: sessionId } })
+        .then(({ data, error }) => {
+          if (error || !data?.success) {
+            toast.error(t('shadow.credits.verify_failed'));
+          } else {
+            toast.success(t('shadow.credits.purchase_success'));
+            queryClient.invalidateQueries({ queryKey: ['shadow-arena-credits'] });
+          }
+          searchParams.delete('payment');
+          searchParams.delete('session_id');
+          setSearchParams(searchParams, { replace: true });
+        });
+    }
+  }, [searchParams, setSearchParams, t, queryClient]);
 
   useEffect(() => {
     fetchData();
