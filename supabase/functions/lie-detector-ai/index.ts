@@ -477,8 +477,10 @@ async function actionMultiPerson(supabase: any, user: any, body: any) {
 }
 
 async function actionDailyChallenge(supabase: any, user: any, body: any) {
-  const { action, answer, challenge_id } = body;
-  if (action === "get") {
+  // Router uses `action` for top-level dispatch; sub-action arrives as `sub_action`.
+  const sub = body.sub_action ?? body.subAction ?? body.op ?? "get";
+  const { answer, challenge_id } = body;
+  if (sub === "get") {
     const today = new Date().toISOString().slice(0, 10);
     const { data } = await supabase.from("lie_daily_challenges").select("*").eq("challenge_date", today).maybeSingle();
     if (data) return json({ challenge: data });
@@ -494,7 +496,7 @@ async function actionDailyChallenge(supabase: any, user: any, body: any) {
     }).select().single();
     return json({ challenge: ins });
   }
-  if (action === "submit") {
+  if (sub === "submit") {
     const { data: ch } = await supabase.from("lie_daily_challenges").select("*").eq("id", challenge_id).maybeSingle();
     if (!ch) return json({ error: "challenge not found" }, 404);
     const correct = ch.correct_verdict === answer;
