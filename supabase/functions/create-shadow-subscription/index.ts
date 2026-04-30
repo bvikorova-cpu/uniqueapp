@@ -13,11 +13,22 @@ serve(async (req) => {
     const url = `${Deno.env.get("SUPABASE_URL")}/functions/v1/create-checkout`;
     const auth = req.headers.get("Authorization") ?? "";
     const apikey = Deno.env.get("SUPABASE_ANON_KEY") ?? "";
+    const origin = req.headers.get("origin") || "https://uniqueapp.fun";
 
     const r = await fetch(url, {
       method: "POST",
-      headers: { "Content-Type": "application/json", Authorization: auth, apikey },
-      body: JSON.stringify({ product: "shadow_subscription", mode: "subscription" }),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: auth,
+        apikey,
+        origin, // forward so create-checkout can build absolute URLs
+      },
+      body: JSON.stringify({
+        product: "shadow_subscription",
+        mode: "subscription",
+        successUrl: `${origin}/shadow-arena/dashboard?subscription=success&session_id={CHECKOUT_SESSION_ID}`,
+        cancelUrl: `${origin}/shadow-arena/dashboard?subscription=canceled`,
+      }),
     });
     const body = await r.text();
     return new Response(body, {
