@@ -49,7 +49,7 @@ export const useShadowAITools = () => {
       if (data?.error) throw new Error(data.error);
       return data;
     },
-    onSuccess: () => { invalidate(); toast.success("Horror story generated!"); },
+    onSuccess: () => { invalidate(); toast.success("Story ready!"); },
     onError: (e: Error) => toast.error(e.message || "Story generation failed"),
   });
 
