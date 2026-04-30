@@ -108,22 +108,26 @@ export default function CreativeForge() {
     const payment = searchParams.get("payment");
     const creditsParam = searchParams.get("credits");
     const sessionId = searchParams.get("session_id");
-    if (payment === "success" && creditsParam) {
+    if (payment === "success") {
       const addCredits = async () => {
-        try { if (sessionId) await verifyPayment(sessionId, parseInt(creditsParam)); toast({ title: "Payment Successful!", description: `${creditsParam} credits added.` }); refreshCredits(); } catch (error) { console.error("Error verifying payment:", error); }
+        try {
+          if (sessionId) await verifyPayment(sessionId, parseInt(creditsParam || "0"));
+          toast({ title: t("forge.payment_success_title"), description: t("forge.payment_success_desc", { count: creditsParam || "" }) });
+          refreshCredits();
+        } catch (error) { console.error("Error verifying payment:", error); }
       };
       addCredits();
       navigate("/creative-forge", { replace: true });
     } else if (payment === "canceled") {
-      toast({ title: "Payment Canceled", description: "Your payment was canceled.", variant: "destructive" });
+      toast({ title: t("forge.payment_canceled_title"), description: t("forge.payment_canceled_desc"), variant: "destructive" });
       navigate("/creative-forge", { replace: true });
     }
   }, [searchParams]);
 
   const handleGenerate = async () => {
-    if (!title.trim()) { toast({ title: "Error", description: "Please enter a title or theme", variant: "destructive" }); return; }
+    if (!title.trim()) { toast({ title: t("forge.error"), description: t("forge.title_required"), variant: "destructive" }); return; }
     const cost = CREDIT_COSTS[selectedCategory];
-    if ((credits?.credits_remaining || 0) < cost) { toast({ title: "Insufficient Credits", description: `You need ${cost} credits.`, variant: "destructive" }); setActiveView("credits"); return; }
+    if ((credits?.credits_remaining || 0) < cost) { toast({ title: t("forge.insufficient_credits_title"), description: t("forge.insufficient_credits_desc", { count: cost }), variant: "destructive" }); setActiveView("credits"); return; }
     setIsGenerating(true);
     if (generatedContent) setPreviousContent(generatedContent);
     setGeneratedContent(null);
@@ -134,34 +138,34 @@ export default function CreativeForge() {
       if (error) throw error;
       setGeneratedContent(data.content);
       refreshCredits(); refetchProjects();
-      toast({ title: "Content Generated!", description: `Used ${data.creditsUsed} credits. ${data.creditsRemaining} remaining.` });
+      toast({ title: t("forge.content_generated"), description: t("forge.credits_used_remaining", { used: data.creditsUsed, remaining: data.creditsRemaining }) });
     } catch (error: any) {
       console.error("Generation error:", error);
-      toast({ title: "Generation Failed", description: error.message || "Failed to generate content", variant: "destructive" });
+      toast({ title: t("forge.generation_failed"), description: error.message || t("forge.generation_failed_desc"), variant: "destructive" });
     } finally { setIsGenerating(false); }
   };
 
   const handleRevision = async (originalContent: string, revisionNotes: string) => {
-    if ((credits?.credits_remaining || 0) < CREDIT_COSTS.revision) { toast({ title: "Insufficient Credits", description: `You need ${CREDIT_COSTS.revision} credits.`, variant: "destructive" }); return; }
+    if ((credits?.credits_remaining || 0) < CREDIT_COSTS.revision) { toast({ title: t("forge.insufficient_credits_title"), description: t("forge.insufficient_credits_desc", { count: CREDIT_COSTS.revision }), variant: "destructive" }); return; }
     setIsGenerating(true); setPreviousContent(originalContent);
     try {
       const { data, error } = await supabase.functions.invoke("generate-creative-content", { body: { category: selectedCategory, title, inputData: { revisionNotes }, isRevision: true, originalContent } });
       if (error) throw error;
       setGeneratedContent(data.content); refreshCredits(); refetchProjects();
-      toast({ title: "Revision Complete!", description: `Used ${data.creditsUsed} credits.` });
-    } catch (error: any) { toast({ title: "Revision Failed", description: error.message, variant: "destructive" }); }
+      toast({ title: t("forge.revision_complete"), description: t("forge.revision_used", { used: data.creditsUsed }) });
+    } catch (error: any) { toast({ title: t("forge.revision_failed"), description: error.message, variant: "destructive" }); }
     finally { setIsGenerating(false); }
   };
 
   const handlePurchase = async (creditAmount: number) => { const url = await purchaseCredits(creditAmount); if (url) window.open(url, "_blank"); };
-  const copyToClipboard = (text: string) => { navigator.clipboard.writeText(text); toast({ title: "Copied!", description: "Content copied to clipboard" }); };
+  const copyToClipboard = (text: string) => { navigator.clipboard.writeText(text); toast({ title: t("forge.copied"), description: t("forge.copied_desc") }); };
   const downloadContent = (content: string, filename: string) => {
     const blob = new Blob([content], { type: "text/plain" }); const url = URL.createObjectURL(blob);
     const a = document.createElement("a"); a.href = url; a.download = `${filename}.txt`; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
-    toast({ title: "Downloaded!", description: "Content saved to file" });
+    toast({ title: t("forge.downloaded"), description: t("forge.downloaded_desc") });
   };
-  const shareContent = (content: string, t: string) => { if (navigator.share) { navigator.share({ title: `CreativeForge: ${t}`, text: content }).catch(() => {}); } else { copyToClipboard(content); } };
-  const applyTemplate = (t: QuickTemplate) => { setTitle(t.title); setGenre(t.genre); setMood(t.mood); setDescription(t.description); setCharacters(t.characters); setSetting(t.setting); setStyleReference(t.styleReference); toast({ title: "Template Applied", description: `"${t.label}" loaded — customize and generate!` }); };
+  const shareContent = (content: string, ttl: string) => { if (navigator.share) { navigator.share({ title: `CreativeForge: ${ttl}`, text: content }).catch(() => {}); } else { copyToClipboard(content); } };
+  const applyTemplate = (tpl: QuickTemplate) => { setTitle(tpl.title); setGenre(tpl.genre); setMood(tpl.mood); setDescription(tpl.description); setCharacters(tpl.characters); setSetting(tpl.setting); setStyleReference(tpl.styleReference); toast({ title: t("forge.template_applied"), description: t("forge.template_loaded", { name: tpl.label }) }); };
 
   const filteredProjects = (projects || []).filter((p: any) => {
     if (historyFilter !== "all" && p.category !== historyFilter) return false;
