@@ -89,6 +89,15 @@ serve(async (req) => {
           reviewed_at: new Date().toISOString(),
         })
         .eq("id", payout_id);
+
+      await supabase.from("notifications").insert({
+        user_id: payout.owner_user_id,
+        type: "campaign_payout_rejected",
+        title: "Žiadosť o výplatu zamietnutá",
+        message: `Tvoja žiadosť o výplatu €${(Number(payout.amount_cents) / 100).toFixed(2)} bola zamietnutá. Dôvod: ${rejection_reason}`,
+        related_id: payout_id,
+      });
+
       return json({ success: true, status: "rejected", payout_id });
     }
 
@@ -119,6 +128,14 @@ serve(async (req) => {
           completed_at: new Date().toISOString(),
         })
         .eq("id", payout_id);
+
+      await supabase.from("notifications").insert({
+        user_id: payout.owner_user_id,
+        type: "campaign_payout_completed",
+        title: "Výplata schválená a odoslaná",
+        message: `Tvoja žiadosť o výplatu €${(Number(payout.amount_cents) / 100).toFixed(2)} bola schválená. Peniaze boli prevedené na tvoj Stripe účet.`,
+        related_id: payout_id,
+      });
 
       return json({
         success: true,
