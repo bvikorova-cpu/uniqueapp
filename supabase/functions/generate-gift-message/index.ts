@@ -13,10 +13,25 @@ serve(async (req) => {
   }
 
   try {
-    const __auth = await requireAiCredits(req, corsHeaders, { credits: 1, usageType: "gift_message" });
-    if (__auth.errorResponse) return __auth.errorResponse;
-    const __deduct = __auth.deduct!;
     const reqBody = await req.json();
+    // Module-specific ledgers below (secret_santa_credits, kids_*_credits, teen_career_credits)
+    // already act as the credit gate for legacy gift + kids flows. Universal AI helpers
+    // (mentor_chat, chef_chat, legal, etc.) still need the unified ai_credits gate.
+    // We therefore only apply requireAiCredits when NO module-specific ledger applies,
+    // to prevent the user being charged twice (Bug fix 2026-04-30).
+    const __style = reqBody.style;
+    const __giftType = reqBody.giftType;
+    const __type = reqBody.type;
+    const __isLegacyGift = !!__style || !!__giftType;
+    const __KIDS_TYPES = new Set(["kids_drawing", "kids_reading", "kids_story", "teen_career"]);
+    const __hasModuleLedger = __isLegacyGift || (__type && __KIDS_TYPES.has(__type));
+
+    let __deduct: () => Promise<void> = async () => {};
+    if (!__hasModuleLedger) {
+      const __auth = await requireAiCredits(req, corsHeaders, { credits: 1, usageType: "gift_message" });
+      if (__auth.errorResponse) return __auth.errorResponse;
+      __deduct = __auth.deduct!;
+    }
     // Accept many naming conventions used across the frontend
     const style = reqBody.style;
     const giftType = reqBody.giftType;
