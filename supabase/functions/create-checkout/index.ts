@@ -146,6 +146,8 @@ const CREDIT_PACKS: Record<string, { prices: Record<number, string>; successPath
     cancelPath: "/ai-characters?payment=canceled",
   },
   creative_forge: {
+    // Legacy fixed Stripe prices (10/30/100). Public packages 30/75/150/400
+    // fall through to dynamic price_data below using CREATIVE_FORGE_PRICES.
     prices: {
       10: "price_1TOwfVGaXSfGtYFtTuoGa1FZ",
       30: "price_1TOwfWGaXSfGtYFt6V478VoY",
