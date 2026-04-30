@@ -349,9 +349,9 @@ export default function CreativeForge() {
                                   <p className="text-xs text-muted-foreground mb-2">{new Date(project.created_at).toLocaleDateString()}</p>
                                   <ScrollArea className="h-20 border rounded-lg p-2 bg-muted/20"><pre className="whitespace-pre-wrap text-xs font-mono">{project.generated_content?.substring(0, 500)}...</pre></ScrollArea>
                                   <div className="flex gap-2 mt-2">
-                                    <Button size="sm" variant="outline" onClick={() => copyToClipboard(project.generated_content)}><Copy className="h-3 w-3 mr-1" /> Copy</Button>
-                                    <Button size="sm" variant="outline" onClick={() => downloadContent(project.generated_content, project.title)}><Download className="h-3 w-3 mr-1" /> Download</Button>
-                                    <Button size="sm" variant="outline" onClick={() => shareContent(project.generated_content, project.title)}><Star className="h-3 w-3 mr-1" /> Share</Button>
+                                    <Button size="sm" variant="outline" onClick={() => copyToClipboard(project.generated_content)}><Copy className="h-3 w-3 mr-1" /> {t("forge.output.copy")}</Button>
+                                    <Button size="sm" variant="outline" onClick={() => downloadContent(project.generated_content, project.title)}><Download className="h-3 w-3 mr-1" /> {t("forge.output.download")}</Button>
+                                    <Button size="sm" variant="outline" onClick={() => shareContent(project.generated_content, project.title)}><Star className="h-3 w-3 mr-1" /> {t("forge.output.share")}</Button>
                                   </div>
                                 </div>
                               </div>
