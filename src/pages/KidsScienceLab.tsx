@@ -33,6 +33,7 @@ const KidsScienceLab = () => {
     conclusion: string;
     explanation: string;
     funFacts: string[];
+    quiz: { question: string; options: string[]; correctIndex: number }[];
   } | null>(null);
   const [showQuiz, setShowQuiz] = useState(false);
   const [analysesCompleted, setAnalysesCompleted] = useState(0);
@@ -147,6 +148,13 @@ const KidsScienceLab = () => {
         conclusion: String(data.conclusion ?? ""),
         explanation: String(data.explanation ?? ""),
         funFacts: Array.isArray(data.funFacts) ? data.funFacts.map(String) : [],
+        quiz: Array.isArray(data.quiz)
+          ? data.quiz.map((q: any) => ({
+              question: String(q?.question ?? ""),
+              options: Array.isArray(q?.options) ? q.options.map(String).slice(0, 3) : [],
+              correctIndex: Math.max(0, Math.min(2, Number(q?.correctIndex ?? 0))),
+            }))
+          : [],
       });
       setShowQuiz(true);
       setAnalysesCompleted((n) => n + 1);
@@ -236,9 +244,11 @@ const KidsScienceLab = () => {
 
               {result && <LabNotebookResult result={result} category={category} />}
 
-              {showQuiz && result && (
+              {showQuiz && result && result.quiz.length === 5 && (
                 <ScienceComprehensionQuiz
                   category={category}
+                  difficulty={difficulty}
+                  questions={result.quiz}
                   onComplete={(xp) => {
                     toast.success(`You earned +${xp} XP from the quiz! 🧠`);
                     setShowQuiz(false);

@@ -98,7 +98,11 @@ serve(async (req) => {
 Hypothesis: ${hypothesis}
 Observations: ${observations}
 
-Analyze the experiment. Return a kind, encouraging conclusion (1–2 sentences), a clear scientific explanation (2–4 sentences), and exactly 3 short fun facts related to the topic.`;
+Analyze the experiment. Return:
+- a kind, encouraging conclusion (1–2 sentences),
+- a clear scientific explanation (2–4 sentences),
+- exactly 3 short fun facts,
+- exactly 5 multiple-choice quiz questions (each with 3 options and the index 0–2 of the correct option). Questions must be age-appropriate, in the SAME language as the hypothesis/observations, and directly tied to the explanation.`;
 
     const aiResp = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
@@ -129,8 +133,28 @@ Analyze the experiment. Return a kind, encouraging conclusion (1–2 sentences),
                     minItems: 3,
                     maxItems: 3,
                   },
+                  quiz: {
+                    type: "array",
+                    minItems: 5,
+                    maxItems: 5,
+                    items: {
+                      type: "object",
+                      properties: {
+                        question: { type: "string" },
+                        options: {
+                          type: "array",
+                          items: { type: "string" },
+                          minItems: 3,
+                          maxItems: 3,
+                        },
+                        correctIndex: { type: "integer", minimum: 0, maximum: 2 },
+                      },
+                      required: ["question", "options", "correctIndex"],
+                      additionalProperties: false,
+                    },
+                  },
                 },
-                required: ["conclusion", "explanation", "funFacts"],
+                required: ["conclusion", "explanation", "funFacts", "quiz"],
                 additionalProperties: false,
               },
             },
@@ -159,7 +183,12 @@ Analyze the experiment. Return a kind, encouraging conclusion (1–2 sentences),
       return jsonResp({ error: "AI returned no analysis. Please try again." }, 500);
     }
 
-    let parsed: { conclusion: string; explanation: string; funFacts: string[] };
+    let parsed: {
+      conclusion: string;
+      explanation: string;
+      funFacts: string[];
+      quiz: { question: string; options: string[]; correctIndex: number }[];
+    };
     try {
       parsed = JSON.parse(toolCall.function.arguments);
     } catch (e) {
@@ -167,7 +196,14 @@ Analyze the experiment. Return a kind, encouraging conclusion (1–2 sentences),
       return jsonResp({ error: "AI returned invalid format. Please try again." }, 500);
     }
 
-    if (!parsed.conclusion || !parsed.explanation || !Array.isArray(parsed.funFacts) || parsed.funFacts.length === 0) {
+    if (
+      !parsed.conclusion ||
+      !parsed.explanation ||
+      !Array.isArray(parsed.funFacts) ||
+      parsed.funFacts.length === 0 ||
+      !Array.isArray(parsed.quiz) ||
+      parsed.quiz.length !== 5
+    ) {
       return jsonResp({ error: "AI returned incomplete analysis. Please try again." }, 500);
     }
 
@@ -193,6 +229,7 @@ Analyze the experiment. Return a kind, encouraging conclusion (1–2 sentences),
       conclusion: parsed.conclusion,
       explanation: parsed.explanation,
       funFacts: parsed.funFacts,
+      quiz: parsed.quiz,
       creditsRemaining: remaining - CREDITS_PER_RUN,
     });
   } catch (e) {
