@@ -33,10 +33,10 @@ serve(async (req) => {
       __deduct = __auth.deduct!;
     }
     // Accept many naming conventions used across the frontend
-    const style = reqBody.style;
-    const giftType = reqBody.giftType;
+    const style = __style;
+    const giftType = __giftType;
     const recipientName = reqBody.recipientName;
-    const type = reqBody.type;
+    const type = __type;
     const customPrompt = reqBody.customPrompt || reqBody.prompt || reqBody.input || reqBody.message || reqBody.query;
     const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
 
