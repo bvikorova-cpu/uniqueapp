@@ -84,7 +84,7 @@ export const usePhotoCredits = () => {
       if (error) throw error;
 
       if (data?.url) {
-        window.location.href = data.url;
+        { const __w = window.open(data.url, "_blank", "noopener,noreferrer"); if (!__w) window.location.href = data.url; }
       }
     } catch (error) {
       console.error('Purchase error:', error);

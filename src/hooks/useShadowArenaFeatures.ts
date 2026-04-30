@@ -241,7 +241,7 @@ export const usePatronCheckout = () => {
       const { data, error } = await supabase.functions.invoke("shadow-patron-checkout", { body: vars });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
-      if (data?.url) window.location.href = data.url;
+      if (data?.url) { const __w = window.open(data.url, "_blank", "noopener,noreferrer"); if (!__w) window.location.href = data.url; }
       return data;
     },
     onError: (e: Error) => toast.error(e.message),

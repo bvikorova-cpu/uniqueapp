@@ -35,7 +35,10 @@ export function SubscriptionGate({ children }: SubscriptionGateProps) {
     try {
       const { data, error } = await supabase.functions.invoke('create-shadow-subscription');
       if (error) throw error;
-      if (data.url) window.location.href = data.url;
+      if (data.url) {
+        // Open Stripe Checkout in new tab — Stripe blocks iframe embedding
+        window.open(data.url, '_blank', 'noopener,noreferrer');
+      }
     } catch (error) {
       console.error('Subscription error:', error);
       toast.error(t('shadow.gate.subscribe_failed'));
