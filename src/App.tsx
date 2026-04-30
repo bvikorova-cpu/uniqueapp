@@ -721,7 +721,7 @@ const App = () => {
                         <Route path="/tutorial-platform" element={<TutorialPlatform />} />
                         <Route path="/monetization-ideas" element={<MonetizationIdeas />} />
                         <Route path="/shadow-arena" element={<ShadowArena />} />
-                        <Route path="/shadow-arena/dashboard" element={<ProtectedRoute><ShadowArenaDashboard /></ProtectedRoute>} />
+                        <Route path="/shadow-arena/dashboard" element={<ShadowArenaDashboard />} />
                         <Route path="/shadow-arena/submit-story" element={<ShadowArenaSubmitStory />} />
                         <Route path="/shadow-arena/battles" element={<ShadowArenaBattles />} />
                         <Route path="/shadow-arena/battle/:battleId" element={<ShadowArenaBattleDetail />} />
