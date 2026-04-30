@@ -261,7 +261,7 @@ serve(async (req) => {
       let illustrationUrl: string | null = null;
       try {
         const imgData = await callAI(LOVABLE_API_KEY, {
-          model: "gpt-image-1",
+          model: "google/gemini-2.5-flash-image-preview",
           messages: [{ role: "user", content: `Surreal dreamlike illustration: ${parsed.illustration_prompt}. Soft pastel colors, ethereal mist, no text.` }],
         });
         illustrationUrl = imgData.choices?.[0]?.message?.images?.[0]?.image_url?.url || null;
