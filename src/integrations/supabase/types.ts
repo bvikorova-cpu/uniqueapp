@@ -22843,6 +22843,50 @@ export type Database = {
         }
         Relationships: []
       }
+      kids_science_certificates: {
+        Row: {
+          attempt_id: string | null
+          category: string
+          child_name: string
+          difficulty: string
+          id: string
+          issued_at: string
+          score: number
+          total_questions: number
+          user_id: string
+        }
+        Insert: {
+          attempt_id?: string | null
+          category: string
+          child_name?: string
+          difficulty?: string
+          id?: string
+          issued_at?: string
+          score: number
+          total_questions?: number
+          user_id: string
+        }
+        Update: {
+          attempt_id?: string | null
+          category?: string
+          child_name?: string
+          difficulty?: string
+          id?: string
+          issued_at?: string
+          score?: number
+          total_questions?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "kids_science_certificates_attempt_id_fkey"
+            columns: ["attempt_id"]
+            isOneToOne: false
+            referencedRelation: "kids_science_quiz_attempts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       kids_science_experiments: {
         Row: {
           ai_insights: Json | null
@@ -22878,6 +22922,42 @@ export type Database = {
           hypothesis?: string | null
           id?: string
           observations?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      kids_science_quiz_attempts: {
+        Row: {
+          category: string
+          created_at: string
+          difficulty: string
+          id: string
+          passed: boolean
+          questions_json: Json
+          score: number
+          total_questions: number
+          user_id: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          difficulty?: string
+          id?: string
+          passed?: boolean
+          questions_json?: Json
+          score: number
+          total_questions?: number
+          user_id: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          difficulty?: string
+          id?: string
+          passed?: boolean
+          questions_json?: Json
+          score?: number
+          total_questions?: number
           user_id?: string
         }
         Relationships: []
