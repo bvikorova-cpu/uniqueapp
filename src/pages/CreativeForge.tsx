@@ -290,27 +290,27 @@ export default function CreativeForge() {
                           <div className="space-y-3">
                             {previousContent && (
                               <div className="grid grid-cols-2 gap-2 mb-2">
-                                <Button size="sm" variant="outline" className="text-xs" onClick={() => { setGeneratedContent(previousContent); setPreviousContent(null); }}>← Previous Version</Button>
-                                <Badge variant="secondary" className="flex items-center justify-center text-xs">Current Version</Badge>
+                                <Button size="sm" variant="outline" className="text-xs" onClick={() => { setGeneratedContent(previousContent); setPreviousContent(null); }}>{t("forge.output.previous_version")}</Button>
+                                <Badge variant="secondary" className="flex items-center justify-center text-xs">{t("forge.output.current_version")}</Badge>
                               </div>
                             )}
                             <ScrollArea className="h-[300px] border rounded-xl p-4 bg-muted/20"><pre className="whitespace-pre-wrap font-mono text-sm leading-relaxed">{generatedContent}</pre></ScrollArea>
                             <div className="flex gap-2">
-                              <Button variant="outline" size="sm" onClick={() => copyToClipboard(generatedContent)} className="flex-1"><Copy className="mr-1.5 h-3.5 w-3.5" /> Copy</Button>
-                              <Button variant="outline" size="sm" onClick={() => downloadContent(generatedContent, `${selectedCategory}-${title}`)} className="flex-1"><Download className="mr-1.5 h-3.5 w-3.5" /> Download</Button>
-                              <Button variant="outline" size="sm" onClick={() => shareContent(generatedContent, title)} className="flex-1"><Star className="mr-1.5 h-3.5 w-3.5" /> Share</Button>
+                              <Button variant="outline" size="sm" onClick={() => copyToClipboard(generatedContent)} className="flex-1"><Copy className="mr-1.5 h-3.5 w-3.5" /> {t("forge.output.copy")}</Button>
+                              <Button variant="outline" size="sm" onClick={() => downloadContent(generatedContent, `${selectedCategory}-${title}`)} className="flex-1"><Download className="mr-1.5 h-3.5 w-3.5" /> {t("forge.output.download")}</Button>
+                              <Button variant="outline" size="sm" onClick={() => shareContent(generatedContent, title)} className="flex-1"><Star className="mr-1.5 h-3.5 w-3.5" /> {t("forge.output.share")}</Button>
                             </div>
                             <div className="pt-2 border-t">
-                              <Label className="text-xs">Request Revision ({CREDIT_COSTS.revision} credits)</Label>
+                              <Label className="text-xs">{t("forge.output.request_revision", { count: CREDIT_COSTS.revision })}</Label>
                               <div className="flex gap-2 mt-1">
-                                <Input placeholder="What should be changed..." id="revision-notes" className="text-sm" />
+                                <Input placeholder={t("forge.output.revision_placeholder")} id="revision-notes" className="text-sm" />
                                 <Button size="sm" variant="secondary" onClick={() => { const notes = (document.getElementById("revision-notes") as HTMLInputElement)?.value; if (notes) handleRevision(generatedContent, notes); }} disabled={isGenerating}><RefreshCw className="h-4 w-4" /></Button>
                               </div>
                             </div>
                           </div>
                         ) : (
                           <div className="h-[400px] flex items-center justify-center text-muted-foreground">
-                            <div className="text-center"><Sparkles className="h-12 w-12 mx-auto mb-4 opacity-30" /><p className="text-sm">Select a template or describe your vision</p><p className="text-xs text-muted-foreground mt-1">Generated content will appear here</p></div>
+                            <div className="text-center"><Sparkles className="h-12 w-12 mx-auto mb-4 opacity-30" /><p className="text-sm">{t("forge.output.empty_title")}</p><p className="text-xs text-muted-foreground mt-1">{t("forge.output.empty_subtitle")}</p></div>
                           </div>
                         )}
                       </CardContent>
