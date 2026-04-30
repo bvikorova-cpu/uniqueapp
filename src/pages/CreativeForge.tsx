@@ -424,8 +424,8 @@ export default function CreativeForge() {
                 <Wand2 className="h-5 w-5 text-white" />
               </div>
               <div>
-                <h4 className="font-bold text-amber-100" style={{ fontFamily: "Georgia, serif" }}>Style Transfer</h4>
-                <p className="text-xs text-amber-200/60">Rewrite as Shakespeare, Tarantino…</p>
+                <h4 className="font-bold text-amber-100" style={{ fontFamily: "Georgia, serif" }}>{t("forge.premium.style_transfer_title")}</h4>
+                <p className="text-xs text-amber-200/60">{t("forge.premium.style_transfer_desc")}</p>
               </div>
             </div>
           </button>
@@ -435,8 +435,8 @@ export default function CreativeForge() {
                 <Mic className="h-5 w-5 text-white" />
               </div>
               <div>
-                <h4 className="font-bold text-amber-100" style={{ fontFamily: "Georgia, serif" }}>Voice-to-Script</h4>
-                <p className="text-xs text-amber-200/60">Speak your idea, get a polished draft</p>
+                <h4 className="font-bold text-amber-100" style={{ fontFamily: "Georgia, serif" }}>{t("forge.premium.voice_title")}</h4>
+                <p className="text-xs text-amber-200/60">{t("forge.premium.voice_desc")}</p>
               </div>
             </div>
           </button>
@@ -446,8 +446,8 @@ export default function CreativeForge() {
                 <Users className="h-5 w-5 text-white" />
               </div>
               <div>
-                <h4 className="font-bold text-amber-100" style={{ fontFamily: "Georgia, serif" }}>Collaboration Rooms</h4>
-                <p className="text-xs text-amber-200/60">Co-write with friends + AI moderator</p>
+                <h4 className="font-bold text-amber-100" style={{ fontFamily: "Georgia, serif" }}>{t("forge.premium.rooms_title")}</h4>
+                <p className="text-xs text-amber-200/60">{t("forge.premium.rooms_desc")}</p>
               </div>
             </div>
           </button>
