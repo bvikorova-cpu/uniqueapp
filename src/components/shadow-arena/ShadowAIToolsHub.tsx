@@ -8,6 +8,7 @@ import { Skull, Volume2, Sparkles, Wand2, Loader2, Image as ImageIcon, BookOpen,
 import { useShadowAITools, useShadowArenaCredits, SHADOW_AI_COSTS } from "@/hooks/useShadowArenaAI";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 const TONES = ["Cosmic dread", "Slasher", "Gothic", "Psychological", "Folk horror", "Body horror"];
 const LENGTHS = ["short", "medium", "long"];
