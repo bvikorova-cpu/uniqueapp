@@ -79,8 +79,16 @@ export const ProgressiveOnboarding = ({ onComplete }: ProgressiveOnboardingProps
   const [isVisible, setIsVisible] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [hasSeenOnboarding, setHasSeenOnboarding] = useState(false);
+  const isLovablePreview = typeof window !== "undefined" &&
+    (window.location.hostname.includes("lovableproject.com") || window.location.hostname.includes("lovable.app"));
 
   useEffect(() => {
+    if (isLovablePreview) {
+      setHasSeenOnboarding(true);
+      setIsVisible(false);
+      return;
+    }
+
     const pathname = window.location.pathname;
     const shouldShowOnboarding = pathname === "/" || pathname === "/index";
 
@@ -130,7 +138,7 @@ export const ProgressiveOnboarding = ({ onComplete }: ProgressiveOnboardingProps
   const progress = ((currentStep + 1) / onboardingSteps.length) * 100;
   const step = onboardingSteps[currentStep];
 
-  if (hasSeenOnboarding || !isVisible) return null;
+  if (isLovablePreview || hasSeenOnboarding || !isVisible) return null;
 
   return (
     <AnimatePresence>
