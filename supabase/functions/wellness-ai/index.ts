@@ -20,24 +20,47 @@ function parseJSON(s: string): any {
   } catch { return null; }
 }
 
-async function callAI(LOVABLE_API_KEY: string, body: any) {
-  // Image-capable models route via Lovable AI Gateway image-generation modalities
-  const isImageModel = typeof body?.model === "string" && body.model.startsWith("google/gemini-2.5-flash-image");
-  const url = "https://ai.gateway.lovable.dev/v1/chat/completions";
-  const payload = isImageModel ? { ...body, modalities: ["image", "text"] } : body;
-  const r = await fetch(url, {
+// Map legacy model identifiers to OpenAI equivalents.
+function mapModel(m: any): string {
+  if (typeof m !== "string") return "gpt-4o-mini";
+  if (m.startsWith("openai/")) return m.replace("openai/", "");
+  if (m.includes("gpt-5") && m.includes("mini")) return "gpt-4o-mini";
+  if (m.includes("gpt-5")) return "gpt-4o";
+  if (m.includes("gemini") && m.includes("pro")) return "gpt-4o";
+  if (m.includes("gemini")) return "gpt-4o-mini";
+  return m;
+}
+
+async function callAI(OPENAI_API_KEY: string, body: any) {
+  // Image generation requests are routed differently — caller should use callImage().
+  const payload = { ...body, model: mapModel(body?.model) };
+  const r = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
-    headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+    headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   });
   if (!r.ok) {
     const t = await r.text();
-    console.error("AI gateway error:", r.status, t);
+    console.error("OpenAI error:", r.status, t);
     if (r.status === 429) throw new Error("AI rate limit exceeded, please try again shortly.");
-    if (r.status === 402) throw new Error("AI credits exhausted, please top up.");
+    if (r.status === 401) throw new Error("OpenAI API key invalid.");
+    if (r.status === 402) throw new Error("OpenAI credits exhausted, please top up.");
     throw new Error("AI request failed");
   }
   return r.json();
+}
+
+async function callImage(OPENAI_API_KEY: string, prompt: string): Promise<string | null> {
+  try {
+    const r = await fetch("https://api.openai.com/v1/images/generations", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ model: "dall-e-3", prompt: prompt.slice(0, 3900), size: "1024x1024", quality: "standard", n: 1 }),
+    });
+    if (!r.ok) { console.error("DALL-E error:", await r.text()); return null; }
+    const d = await r.json();
+    return d?.data?.[0]?.url || null;
+  } catch (e) { console.error("Image gen failed:", e); return null; }
 }
 
 async function ttsUpload(
@@ -69,9 +92,9 @@ serve(async (req) => {
 
   try {
     const supabase = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
     const ELEVENLABS_API_KEY = Deno.env.get("ELEVENLABS_API_KEY");
-    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
+    if (!OPENAI_API_KEY) throw new Error("OPENAI_API_KEY not configured");
 
     const auth = req.headers.get("Authorization");
     if (!auth) throw new Error("No authorization header");
@@ -105,8 +128,8 @@ serve(async (req) => {
     if (action === "decoder") {
       const { input_text } = body;
       if (!input_text || input_text.length < 5) throw new Error("Message too short");
-      const aiData = await callAI(LOVABLE_API_KEY, {
-        model: "openai/gpt-5-mini",
+      const aiData = await callAI(OPENAI_API_KEY, {
+        model: "gpt-4o-mini",
         messages: [
           { role: "system", content: `You analyze bullying messages. Output ONLY JSON: {"severity":"low|medium|high|critical","bully_type":"verbal|cyber|social|physical-threat|sexual|discriminatory","emotional_impact":"<2 sentences>","suggested_response":"<safe assertive reply>","action_steps":[{"step":"...","priority":"high|medium|low"}],"red_flags":["..."]}` },
           { role: "user", content: `Analyze: """${input_text}"""` },
@@ -122,8 +145,8 @@ serve(async (req) => {
     } else if (action === "evidence") {
       const { title, incidents } = body;
       if (!title || !Array.isArray(incidents) || incidents.length === 0) throw new Error("Title + incidents required");
-      const aiData = await callAI(LOVABLE_API_KEY, {
-        model: "openai/gpt-5-mini",
+      const aiData = await callAI(OPENAI_API_KEY, {
+        model: "gpt-4o-mini",
         messages: [
           { role: "system", content: `Build a formal bullying evidence pack. Output ONLY JSON: {"incident_summary":"...","timeline":[{"date":"YYYY-MM-DD","event":"...","severity":"low|medium|high"}],"recommended_recipients":[{"name":"...","reason":"..."}],"formal_report":"<~400 word neutral report>"}` },
           { role: "user", content: `Title: ${title}\nIncidents:\n${incidents.map((i: any, n: number) => `${n + 1}. ${i.date || "unknown"} — ${i.description}`).join("\n")}` },
@@ -139,8 +162,8 @@ serve(async (req) => {
     } else if (action === "coach") {
       const { scenario, user_response } = body;
       if (!scenario || !user_response) throw new Error("Scenario + response required");
-      const aiData = await callAI(LOVABLE_API_KEY, {
-        model: "openai/gpt-5-mini",
+      const aiData = await callAI(OPENAI_API_KEY, {
+        model: "gpt-4o-mini",
         messages: [
           { role: "system", content: `Score a roleplay bullying response. Output ONLY JSON: {"assertiveness_score":0-100,"empathy_score":0-100,"safety_score":0-100,"feedback":"...","improved_response":"...","next_steps":["..."]}` },
           { role: "user", content: `Scenario: ${scenario}\nResponse: ${user_response}` },
@@ -157,8 +180,8 @@ serve(async (req) => {
     } else if (action === "riskscan") {
       const { scan_input } = body;
       if (!scan_input || scan_input.length < 10) throw new Error("Input too short");
-      const aiData = await callAI(LOVABLE_API_KEY, {
-        model: "openai/gpt-5-mini",
+      const aiData = await callAI(OPENAI_API_KEY, {
+        model: "gpt-4o-mini",
         messages: [
           { role: "system", content: `Cyberbullying risk analyst. Output ONLY JSON: {"risk_level":"safe|caution|elevated|severe","overall_score":0-100,"threat_patterns":[{"pattern":"...","frequency":"low|medium|high","example":"..."}],"flagged_phrases":["..."],"safety_recommendations":[{"action":"...","why":"..."}]}` },
           { role: "user", content: `Scan: """${scan_input.slice(0, 5000)}"""` },
@@ -175,8 +198,8 @@ serve(async (req) => {
     } else if (action === "weekly_insight") {
       const { entries, mood_logs } = body;
       if (!Array.isArray(entries)) throw new Error("entries[] required");
-      const aiData = await callAI(LOVABLE_API_KEY, {
-        model: "openai/gpt-5-mini",
+      const aiData = await callAI(OPENAI_API_KEY, {
+        model: "gpt-4o-mini",
         messages: [
           { role: "system", content: `You are a compassionate safety coach. Analyze 7 days of journal + mood logs. Output ONLY JSON: {"trend":"improving|stable|declining|critical","insight_text":"<3-4 supportive sentences>","recommendations":[{"title":"...","action":"...","priority":"high|medium|low"}]}` },
           { role: "user", content: `Journal entries:\n${JSON.stringify(entries).slice(0, 4000)}\n\nMood logs:\n${JSON.stringify(mood_logs || []).slice(0, 2000)}` },
@@ -194,8 +217,8 @@ serve(async (req) => {
     } else if (action === "roleplay_score") {
       const { scenario_id, scenario, user_response, difficulty = "easy", mode = "text" } = body;
       if (!scenario || !user_response) throw new Error("Scenario + response required");
-      const aiData = await callAI(LOVABLE_API_KEY, {
-        model: "openai/gpt-5-mini",
+      const aiData = await callAI(OPENAI_API_KEY, {
+        model: "gpt-4o-mini",
         messages: [
           { role: "system", content: `Score a bullying-response roleplay. Difficulty: ${difficulty}. Output ONLY JSON: {"total_score":0-100,"assertiveness":0-100,"empathy":0-100,"safety":0-100,"feedback":"...","next_line_from_bully":"<what bully says next, in character>"}` },
           { role: "user", content: `Scenario: ${scenario}\nUser response: ${user_response}` },
@@ -213,8 +236,8 @@ serve(async (req) => {
     } else if (action === "wall_filter") {
       const { message } = body;
       if (!message) throw new Error("Message required");
-      const aiData = await callAI(LOVABLE_API_KEY, {
-        model: "openai/gpt-5-mini",
+      const aiData = await callAI(OPENAI_API_KEY, {
+        model: "gpt-4o-mini",
         messages: [
           { role: "system", content: `Safety filter for a peer support wall. Output ONLY JSON: {"safe":true|false,"reason":"...","suggested_rewrite":"<if unsafe, supportive rewrite>"}` },
           { role: "user", content: message.slice(0, 1000) },
@@ -231,8 +254,8 @@ serve(async (req) => {
         .insert({ user_id: user.id, dream_text, status: "processing", credits_used: COST }).select().single();
       if (insErr) throw insErr;
 
-      const aiData = await callAI(LOVABLE_API_KEY, {
-        model: "openai/gpt-5-mini",
+      const aiData = await callAI(OPENAI_API_KEY, {
+        model: "gpt-4o-mini",
         messages: [
           { role: "system", content: "You are a compassionate dream analyst combining Jungian psychology, modern neuroscience, and gentle spiritual insight." },
           { role: "user", content: `Interpret this dream: ${dream_text}` },
@@ -258,14 +281,10 @@ serve(async (req) => {
       const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
       const parsed = toolCall ? JSON.parse(toolCall.function.arguments) : {};
 
-      let illustrationUrl: string | null = null;
-      try {
-        const imgData = await callAI(LOVABLE_API_KEY, {
-          model: "google/gemini-2.5-flash-image-preview",
-          messages: [{ role: "user", content: `Surreal dreamlike illustration: ${parsed.illustration_prompt}. Soft pastel colors, ethereal mist, no text.` }],
-        });
-        illustrationUrl = imgData.choices?.[0]?.message?.images?.[0]?.image_url?.url || null;
-      } catch (e) { console.error("Illustration failed:", e); }
+      const illustrationUrl = await callImage(
+        OPENAI_API_KEY,
+        `Surreal dreamlike illustration: ${parsed.illustration_prompt}. Soft pastel colors, ethereal mist, no text.`
+      );
 
       await supabase.from("wellness_dream_interpretations").update({
         interpretation: parsed.interpretation, symbols: parsed.symbols || [],
@@ -282,8 +301,8 @@ serve(async (req) => {
         .insert({ user_id: user.id, topic, duration_minutes, voice_id, status: "processing", credits_used: COST }).select().single();
       if (insErr) throw insErr;
 
-      const aiData = await callAI(LOVABLE_API_KEY, {
-        model: "openai/gpt-5-mini",
+      const aiData = await callAI(OPENAI_API_KEY, {
+        model: "gpt-4o-mini",
         messages: [
           { role: "system", content: `You are a master meditation teacher. Write a ${duration_minutes}-minute guided meditation script. Use calm language. Include "..." for natural pauses. No SSML, no labels. Speak in second person.` },
           { role: "user", content: `Topic: ${topic}` },
@@ -319,8 +338,8 @@ serve(async (req) => {
         }
       } catch (e) { console.error("Selfie upload failed:", e); }
 
-      const aiData = await callAI(LOVABLE_API_KEY, {
-        model: "openai/gpt-5-mini",
+      const aiData = await callAI(OPENAI_API_KEY, {
+        model: "gpt-4o-mini",
         messages: [{
           role: "user",
           content: [
@@ -383,8 +402,8 @@ serve(async (req) => {
       }).select().single();
       if (insErr) throw insErr;
 
-      const aiData = await callAI(LOVABLE_API_KEY, {
-        model: "openai/gpt-5-mini",
+      const aiData = await callAI(OPENAI_API_KEY, {
+        model: "gpt-4o-mini",
         messages: [
           { role: "system", content: `You are a soothing sleep story writer. Write a ~${duration_minutes}-minute calm bedtime story (~${duration_minutes * 130} words). Slow, dreamy, descriptive. No conflict. Use "..." for pauses. End with sleep.` },
           { role: "user", content: `Theme: ${theme}\nProtagonist: ${protagonist}\nSetting: ${setting || "AI's choice"}` },
