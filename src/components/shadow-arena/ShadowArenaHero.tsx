@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Ghost, Skull, Eye, Play, Pause, Volume2, VolumeX, Flame, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import shadowVideo from "@/assets/shadow-arena-hero.mp4.asset.json";
 import shadowPoster from "@/assets/shadow-arena-poster.jpg";
 
