@@ -186,7 +186,7 @@ export default function SponsorRegistration() {
       if (response.error) throw response.error;
 
       if (response.data?.url) {
-        { const __w = window.open(response.data.url, "_blank", "noopener,noreferrer"); if (!__w) window.location.href = response.data.url; }
+        { const __w = window.open(response.data.url, "_blank", "noopener,noreferrer"); if (!__w) { const __w = window.open(response.data.url, "_blank", "noopener,noreferrer"); if (!__w) window.location.href = response.data.url; } }
       } else {
         throw new Error("No checkout URL received");
       }

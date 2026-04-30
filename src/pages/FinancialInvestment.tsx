@@ -97,7 +97,7 @@ const FinancialInvestment = () => {
       const sessionUrl = await purchaseContent(educationId, "investment-education", title, price);
       
       if (sessionUrl) {
-        window.location.href = sessionUrl;
+        { const __w = window.open(sessionUrl, "_blank", "noopener,noreferrer"); if (!__w) window.location.href = sessionUrl; }
       }
     } catch (error) {
       toast({

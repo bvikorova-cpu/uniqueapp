@@ -97,7 +97,7 @@ const PublicSpeaking = () => {
       const sessionUrl = await purchaseContent(academyId, "speaking-academy", title, price);
       
       if (sessionUrl) {
-        window.location.href = sessionUrl;
+        { const __w = window.open(sessionUrl, "_blank", "noopener,noreferrer"); if (!__w) window.location.href = sessionUrl; }
       }
     } catch (error) {
       toast({
