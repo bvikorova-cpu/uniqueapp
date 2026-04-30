@@ -50,7 +50,6 @@ const ICON_MAP: Record<string, any> = {
   poetry: Feather, standup: Mic2, podcast_script: Podcast, ad_copy: Megaphone,
 };
 
-const FORGE_TOOLS = [
 // NOTE: `credits` here MUST match the backend CREDIT_COSTS in
 // supabase/functions/generate-creative-content/index.ts. Do not change one without the other.
 const FORGE_TOOLS = [
