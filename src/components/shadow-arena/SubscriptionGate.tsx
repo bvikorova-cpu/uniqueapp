@@ -25,10 +25,11 @@ const FEATURE_KEYS = [
 export function SubscriptionGate({ children }: SubscriptionGateProps) {
   const { user } = useAuth();
   const { subscribed, loading } = useShadowSubscription();
+  const { t } = useTranslation();
 
   const handleSubscribe = async () => {
     if (!user) {
-      toast.error('Please sign in to subscribe');
+      toast.error(t('shadow.gate.sign_in_required'));
       return;
     }
     try {
@@ -37,7 +38,7 @@ export function SubscriptionGate({ children }: SubscriptionGateProps) {
       if (data.url) window.location.href = data.url;
     } catch (error) {
       console.error('Subscription error:', error);
-      toast.error('Failed to create subscription');
+      toast.error(t('shadow.gate.subscribe_failed'));
     }
   };
 
