@@ -561,6 +561,7 @@ serve(async (req) => {
             : creditType === "teen_career" ? "teen_career_credits"
             : creditType === "coloring" ? "coloring_credits"
             : creditType === "creative_forge" ? "creative_forge_credits"
+            : creditType === "shadow_arena" ? "shadow_arena_credits"
             : creditType,
         },
       });
