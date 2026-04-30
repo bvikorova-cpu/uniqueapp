@@ -18,6 +18,7 @@ export function ShadowArenaHero({ totalPrizePool = 0, activeBattles = 0, topStor
   const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(true);
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (videoRef.current) videoRef.current.play().catch(() => setIsPlaying(false));
@@ -36,10 +37,10 @@ export function ShadowArenaHero({ totalPrizePool = 0, activeBattles = 0, topStor
   };
 
   const stats = [
-    { icon: Flame, label: "Prize Pool", value: `€${totalPrizePool.toFixed(2)}` },
-    { icon: Skull, label: "Active Battles", value: activeBattles.toString() },
-    { icon: Eye, label: "Top Stories", value: topStories.toString() },
-    { icon: Ghost, label: "Platform Cut", value: "20%" },
+    { icon: Flame, label: t("shadow.hero.stat_pool"), value: `€${totalPrizePool.toFixed(2)}` },
+    { icon: Skull, label: t("shadow.hero.stat_battles"), value: activeBattles.toString() },
+    { icon: Eye, label: t("shadow.hero.stat_stories"), value: topStories.toString() },
+    { icon: Ghost, label: t("shadow.hero.stat_cut"), value: "20%" },
   ];
 
   return (
