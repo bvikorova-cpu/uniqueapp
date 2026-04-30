@@ -70,7 +70,7 @@ export function CampaignPayoutReviews() {
         .order("requested_at", { ascending: true });
       if (error) throw error;
 
-      const rows = (data || []) as PendingPayout[];
+      const rows = ((data || []) as unknown) as PendingPayout[];
 
       // Enrich with owner name + campaign title (best-effort, parallel)
       const enriched = await Promise.all(rows.map(async (r) => {
