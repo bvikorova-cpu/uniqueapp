@@ -158,7 +158,7 @@ export const CHECKOUT_PROXY_MAP: Record<string, { product: string; module: strin
   "create-reincarnation-checkout": { product: "reincarnation", module: "reincarnation" },
   "create-science-checkout": { product: "science", module: "science" },
   "create-shadow-battle": { product: "shadow-battle", module: "shadow-battle" },
-  "create-shadow-subscription": { product: "shadow", module: "shadow" },
+  "create-shadow-subscription": { product: "shadow_subscription", module: "shadow_subscription" },
   "create-skill-swap-checkout": { product: "skill-swap", module: "skill-swap" },
   "create-sports-checkout": { product: "sports", module: "sports" },
   "create-subscription-checkout": { product: "subscription", module: "subscription" },
