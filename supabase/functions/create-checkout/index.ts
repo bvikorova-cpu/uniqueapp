@@ -442,7 +442,7 @@ serve(async (req) => {
         psychology:              { amount: 1999, mode: "subscription", name: "Psychology Premium" },
         reincarnation:           { amount: 999,  mode: "payment",      name: "Reincarnation Reading" },
         science:                 { amount: 999,  mode: "subscription", name: "Science Premium" },
-        shadow_subscription:     { amount: 999,  mode: "subscription", name: "Shadow Subscription" },
+        shadow_subscription:     { amount: 200,  mode: "subscription", name: "Shadow Arena — Pact of the Seal" },
         shadow_battle:           { amount: 199,  mode: "payment",      name: "Shadow Battle Entry" },
         shadow_battle_join:      { amount: 199,  mode: "payment",      name: "Join Shadow Battle" },
         shadow_gift:             { amount: 299,  mode: "payment",      name: "Shadow Gift" },
