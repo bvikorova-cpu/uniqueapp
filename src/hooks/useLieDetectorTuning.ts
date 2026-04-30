@@ -12,9 +12,16 @@ const ROUTE_MAP: Record<string, string> = {
 };
 async function invoke<T = any>(name: string, body: Record<string, any>): Promise<T> {
   const action = ROUTE_MAP[name];
+  // Router action MUST win over body.action. Sub-actions (e.g. daily-challenge get/submit)
+  // are forwarded as `sub_action` so the edge function can dispatch them.
+  let payload: Record<string, any> = body;
+  if (action) {
+    const { action: subAction, ...rest } = body;
+    payload = { ...rest, action, ...(subAction !== undefined ? { sub_action: subAction } : {}) };
+  }
   const { data, error } = await supabase.functions.invoke(
     action ? "lie-detector-ai" : name,
-    { body: action ? { action, ...body } : body }
+    { body: payload }
   );
   if (error) throw new Error(error.message);
   if (data?.error) throw new Error(data.error);

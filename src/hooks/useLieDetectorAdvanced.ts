@@ -4,7 +4,10 @@ import { toast } from "sonner";
 
 // All lie-detector-* are routed through the consolidated `lie-detector-ai` function.
 async function invoke<T = any>(action: string, body: Record<string, any>): Promise<T> {
-  const { data, error } = await supabase.functions.invoke("lie-detector-ai", { body: { action, ...body } });
+  // Router action MUST win over body.action. Sub-actions become `sub_action`.
+  const { action: subAction, ...rest } = body;
+  const payload = { ...rest, action, ...(subAction !== undefined ? { sub_action: subAction } : {}) };
+  const { data, error } = await supabase.functions.invoke("lie-detector-ai", { body: payload });
   if (error) throw new Error(error.message);
   if (data?.error) throw new Error(data.error);
   return data as T;

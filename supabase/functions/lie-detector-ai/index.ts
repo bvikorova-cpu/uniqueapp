@@ -92,7 +92,8 @@ async function actionPolygraph(supabase: any, user: any, body: any) {
 
 async function actionCrossExam(supabase: any, user: any, body: any) {
   const COST = 8;
-  const { subject_text, qa_thread, action } = body;
+  const { subject_text, qa_thread } = body;
+  const action = body.sub_action ?? body.subAction ?? body.op ?? "question";
   if (!subject_text || typeof subject_text !== "string") return json({ error: "subject_text required" }, 400);
   const cc = await checkCredits(supabase, user.id, COST); if (cc.err) return cc.err;
   const thread = Array.isArray(qa_thread) ? qa_thread : [];
@@ -302,38 +303,40 @@ async function actionBulk(supabase: any, user: any, body: any) {
 }
 
 async function actionApiKeys(supabase: any, user: any, body: any) {
-  const { action, label, key_id } = body;
-  if (action === "create") {
+  const sub = body.sub_action ?? body.subAction ?? body.op;
+  const { label, key_id } = body;
+  if (sub === "create") {
     const apiKey = `lk_${crypto.randomUUID().replace(/-/g, "")}`;
     const { data } = await supabase.from("lie_api_keys").insert({ user_id: user.id, label: label || "Untitled", api_key: apiKey }).select().single();
     return json({ key: data });
   }
-  if (action === "revoke") {
+  if (sub === "revoke") {
     await supabase.from("lie_api_keys").update({ revoked_at: new Date().toISOString() }).eq("id", key_id).eq("user_id", user.id);
     return json({ ok: true });
   }
-  return json({ error: "invalid action" }, 400);
+  return json({ error: "invalid sub_action (expected create|revoke)" }, 400);
 }
 
 async function actionMonitor(supabase: any, user: any, body: any) {
-  const { action, job_id, target_url, target_type, frequency, title } = body;
-  if (action === "create") {
+  const sub = body.sub_action ?? body.subAction ?? body.op;
+  const { job_id, target_url, target_type, frequency, title } = body;
+  if (sub === "create") {
     const { data } = await supabase.from("lie_monitoring_jobs").insert({
       user_id: user.id, title: title || "Monitor", target_url, target_type: target_type || "url",
       frequency: frequency || "daily", is_active: true,
     }).select().single();
     return json({ job: data });
   }
-  if (action === "toggle") {
+  if (sub === "toggle") {
     const { data: cur } = await supabase.from("lie_monitoring_jobs").select("is_active").eq("id", job_id).eq("user_id", user.id).maybeSingle();
     await supabase.from("lie_monitoring_jobs").update({ is_active: !cur?.is_active }).eq("id", job_id);
     return json({ ok: true });
   }
-  if (action === "delete") {
+  if (sub === "delete") {
     await supabase.from("lie_monitoring_jobs").delete().eq("id", job_id).eq("user_id", user.id);
     return json({ ok: true });
   }
-  return json({ error: "invalid action" }, 400);
+  return json({ error: "invalid sub_action (expected create|toggle|delete)" }, 400);
 }
 
 async function actionSocialCard(supabase: any, user: any, body: any) {
@@ -477,8 +480,10 @@ async function actionMultiPerson(supabase: any, user: any, body: any) {
 }
 
 async function actionDailyChallenge(supabase: any, user: any, body: any) {
-  const { action, answer, challenge_id } = body;
-  if (action === "get") {
+  // Router uses `action` for top-level dispatch; sub-action arrives as `sub_action`.
+  const sub = body.sub_action ?? body.subAction ?? body.op ?? "get";
+  const { answer, challenge_id } = body;
+  if (sub === "get") {
     const today = new Date().toISOString().slice(0, 10);
     const { data } = await supabase.from("lie_daily_challenges").select("*").eq("challenge_date", today).maybeSingle();
     if (data) return json({ challenge: data });
@@ -494,7 +499,7 @@ async function actionDailyChallenge(supabase: any, user: any, body: any) {
     }).select().single();
     return json({ challenge: ins });
   }
-  if (action === "submit") {
+  if (sub === "submit") {
     const { data: ch } = await supabase.from("lie_daily_challenges").select("*").eq("id", challenge_id).maybeSingle();
     if (!ch) return json({ error: "challenge not found" }, 404);
     const correct = ch.correct_verdict === answer;
