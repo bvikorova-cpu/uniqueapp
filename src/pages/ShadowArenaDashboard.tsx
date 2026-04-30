@@ -19,8 +19,11 @@ import { CursedAchievementsCard } from '@/components/shadow-arena/CursedAchievem
 import { HorrorReelsCard } from '@/components/shadow-arena/HorrorReelsCard';
 import { PushNotificationsCard } from '@/components/shadow-arena/PushNotificationsCard';
 import { Plus, Swords, BookOpen, Trophy } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
+import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
+import { useQueryClient } from '@tanstack/react-query';
 
 interface Battle {
   id: string;
