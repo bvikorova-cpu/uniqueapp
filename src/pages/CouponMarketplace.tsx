@@ -123,7 +123,7 @@ const CouponMarketplace = () => {
       if (!session) { toast({ title: "Login Required", description: "Please log in to purchase access", variant: "destructive" }); return; }
       const { data, error } = await supabase.functions.invoke('coupon-marketplace-access', { body: { action: 'purchase' }, headers: { Authorization: `Bearer ${session.access_token}` } });
       if (error) throw error;
-      if (data?.url) { const win = window.open(data.url, "_blank", "noopener,noreferrer"); if (!win) window.location.href = data.url; }
+      if (data?.url) { const win = window.open(data.url, "_blank", "noopener,noreferrer"); if (!win) { const __w = window.open(data.url, "_blank", "noopener,noreferrer"); if (!__w) window.location.href = data.url; } }
     } catch (error) { console.error('Error purchasing access:', error); toast({ title: "Error", description: "Failed to initiate payment.", variant: "destructive" }); }
     finally { setIsPurchasingAccess(false); }
   };
@@ -196,7 +196,7 @@ const CouponMarketplace = () => {
       const { data: { session } } = await supabase.auth.getSession();
       const { data, error } = await supabase.functions.invoke('create-coupon-checkout', { body: { couponId: coupon.id }, headers: session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : undefined });
       if (error) throw error;
-      if (data?.url) window.location.href = data.url;
+      if (data?.url) { const __w = window.open(data.url, "_blank", "noopener,noreferrer"); if (!__w) window.location.href = data.url; }
     } catch (error) { toast({ title: "Error", description: "Failed to initiate purchase.", variant: "destructive" }); }
     finally { setIsPurchasing(false); }
   };

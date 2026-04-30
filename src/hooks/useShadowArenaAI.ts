@@ -29,7 +29,7 @@ export const useShadowArenaCredits = () => {
         body: { creditType: "shadow_arena", credits },
       });
       if (error) throw error;
-      if (data?.url) window.location.href = data.url;
+      if (data?.url) { const __w = window.open(data.url, "_blank", "noopener,noreferrer"); if (!__w) window.location.href = data.url; }
       return data;
     },
     onError: (e: Error) => toast.error(e.message || "Checkout failed"),

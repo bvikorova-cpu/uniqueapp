@@ -119,7 +119,7 @@ const ReincarnationSocial = () => {
       if (!session) { toast({ title: "Authentication Required", variant: "destructive" }); return; }
       const { data, error } = await supabase.functions.invoke('create-reincarnation-checkout', { body: { serviceType } });
       if (error) throw error;
-      if (data?.url) window.location.href = data.url;
+      if (data?.url) { const __w = window.open(data.url, "_blank", "noopener,noreferrer"); if (!__w) window.location.href = data.url; }
     } catch (error) {
       toast({ title: "Error", description: "Failed to process purchase.", variant: "destructive" });
     } finally {
