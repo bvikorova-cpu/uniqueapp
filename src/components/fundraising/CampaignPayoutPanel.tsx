@@ -265,9 +265,42 @@ export function CampaignPayoutPanel({ campaignType, campaignId, ownerUserId }: P
                 </div>
               </>
             )}
+
+            {/* Recent payouts history */}
+            {recent.length > 0 && (
+              <div className="pt-3 border-t space-y-2">
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Recent payouts</p>
+                {recent.map((r) => {
+                  const meta = STATUS_META[r.status] ?? STATUS_META.pending;
+                  const Icon = meta.icon;
+                  return (
+                    <div key={r.id} className="flex items-start justify-between gap-2 text-sm">
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-2">
+                          <Badge variant="outline" className={`gap-1 ${meta.cls}`}>
+                            <Icon className="h-3 w-3" />
+                            {meta.label}
+                          </Badge>
+                          <span className="font-semibold">{fmtEur(r.amount_cents)}</span>
+                        </div>
+                        {(r.rejection_reason || (r.status === "pending_review" && r.review_reason)) && (
+                          <p className="text-xs text-muted-foreground mt-1">
+                            {r.rejection_reason || r.review_reason}
+                          </p>
+                        )}
+                      </div>
+                      <span className="text-xs text-muted-foreground whitespace-nowrap">
+                        {format(new Date(r.requested_at), "MMM d")}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </>
         )}
       </CardContent>
     </Card>
   );
+}
 }
