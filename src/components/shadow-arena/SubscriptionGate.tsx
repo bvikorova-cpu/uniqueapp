@@ -175,10 +175,10 @@ export function SubscriptionGate({ children }: SubscriptionGateProps) {
             <div className="absolute inset-0 shadow-grain" />
             <div className="relative">
               <p className="text-[11px] uppercase tracking-[0.4em] text-red-400/70 font-gothic-display mb-3">
-                The Offering
+                {t('shadow.gate.offering')}
               </p>
               <p className="font-gothic-display text-5xl sm:text-6xl shadow-blood-text mb-2">€2.00</p>
-              <p className="text-red-200/60 text-sm font-gothic-body italic mb-6">per moon · break the pact anytime</p>
+              <p className="text-red-200/60 text-sm font-gothic-body italic mb-6">{t('shadow.gate.price_period')}</p>
 
               <Button
                 onClick={handleSubscribe}
@@ -186,19 +186,19 @@ export function SubscriptionGate({ children }: SubscriptionGateProps) {
                 className="w-full sm:w-auto px-12 py-7 text-lg font-gothic-display tracking-[0.15em] uppercase bg-gradient-to-r from-red-700 via-red-800 to-red-900 hover:from-red-600 hover:via-red-700 hover:to-red-800 text-red-50 border border-red-500/40 shadow-[0_0_40px_rgba(220,38,38,0.45)] hover:shadow-[0_0_60px_rgba(220,38,38,0.7)] transition-all"
               >
                 <Zap className="mr-2 w-5 h-5" />
-                Break the Seal
+                {t('shadow.gate.cta')}
               </Button>
 
               <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 mt-6 text-[11px] uppercase tracking-widest text-red-300/60 font-gothic-display">
-                <span>· Instant Entry ·</span>
-                <span>· Stripe Secure ·</span>
-                <span>· Cancel Anytime ·</span>
+                <span>{t('shadow.gate.trust_instant')}</span>
+                <span>{t('shadow.gate.trust_secure')}</span>
+                <span>{t('shadow.gate.trust_cancel')}</span>
               </div>
             </div>
           </motion.div>
 
           <p className="text-center text-xs text-red-500/50 italic mt-8 font-gothic-body">
-            "The arena does not forget those who refuse the offering."
+            {t('shadow.gate.footnote')}
           </p>
         </div>
       </div>
