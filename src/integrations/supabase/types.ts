@@ -12446,6 +12446,7 @@ export type Database = {
           id: string
           images: string[] | null
           location: string | null
+          rejection_reason: string | null
           status: string | null
           story: string
           supporters_count: number | null
@@ -12467,6 +12468,7 @@ export type Database = {
           id?: string
           images?: string[] | null
           location?: string | null
+          rejection_reason?: string | null
           status?: string | null
           story: string
           supporters_count?: number | null
@@ -12488,6 +12490,7 @@ export type Database = {
           id?: string
           images?: string[] | null
           location?: string | null
+          rejection_reason?: string | null
           status?: string | null
           story?: string
           supporters_count?: number | null
@@ -14094,6 +14097,7 @@ export type Database = {
           id: string
           image_url: string | null
           milestones: Json | null
+          rejection_reason: string | null
           status: string | null
           story: string
           supporters_count: number | null
@@ -14115,6 +14119,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           milestones?: Json | null
+          rejection_reason?: string | null
           status?: string | null
           story: string
           supporters_count?: number | null
@@ -14136,6 +14141,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           milestones?: Json | null
+          rejection_reason?: string | null
           status?: string | null
           story?: string
           supporters_count?: number | null
@@ -19276,6 +19282,7 @@ export type Database = {
           id: string
           image_url: string | null
           organization_name: string | null
+          rejection_reason: string | null
           sponsors: Json | null
           status: string | null
           story: string
@@ -19297,6 +19304,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           organization_name?: string | null
+          rejection_reason?: string | null
           sponsors?: Json | null
           status?: string | null
           story: string
@@ -19318,6 +19326,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           organization_name?: string | null
+          rejection_reason?: string | null
           sponsors?: Json | null
           status?: string | null
           story?: string
@@ -25513,6 +25522,7 @@ export type Database = {
           monthly_donors_count: number | null
           one_time_donors_count: number | null
           patient_name: string
+          rejection_reason: string | null
           status: string | null
           story: string
           target_amount: number
@@ -25537,6 +25547,7 @@ export type Database = {
           monthly_donors_count?: number | null
           one_time_donors_count?: number | null
           patient_name: string
+          rejection_reason?: string | null
           status?: string | null
           story: string
           target_amount: number
@@ -25561,6 +25572,7 @@ export type Database = {
           monthly_donors_count?: number | null
           one_time_donors_count?: number | null
           patient_name?: string
+          rejection_reason?: string | null
           status?: string | null
           story?: string
           target_amount?: number
@@ -28160,6 +28172,7 @@ export type Database = {
           medical_condition: string | null
           pet_name: string
           pet_type: string
+          rejection_reason: string | null
           shelter_name: string | null
           status: string | null
           story: string
@@ -28182,6 +28195,7 @@ export type Database = {
           medical_condition?: string | null
           pet_name: string
           pet_type: string
+          rejection_reason?: string | null
           shelter_name?: string | null
           status?: string | null
           story: string
@@ -28204,6 +28218,7 @@ export type Database = {
           medical_condition?: string | null
           pet_name?: string
           pet_type?: string
+          rejection_reason?: string | null
           shelter_name?: string | null
           status?: string | null
           story?: string
@@ -37831,6 +37846,7 @@ export type Database = {
           id: string
           image_url: string | null
           pay_it_forward: boolean | null
+          rejection_reason: string | null
           school_name: string | null
           status: string | null
           story: string
@@ -37852,6 +37868,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           pay_it_forward?: boolean | null
+          rejection_reason?: string | null
           school_name?: string | null
           status?: string | null
           story: string
@@ -37873,6 +37890,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           pay_it_forward?: boolean | null
+          rejection_reason?: string | null
           school_name?: string | null
           status?: string | null
           story?: string
@@ -38299,6 +38317,7 @@ export type Database = {
           images: string[] | null
           portfolio_url: string | null
           premium_subscriber: boolean | null
+          rejection_reason: string | null
           sponsors: Json | null
           sponsors_count: number | null
           status: string | null
@@ -38323,6 +38342,7 @@ export type Database = {
           images?: string[] | null
           portfolio_url?: string | null
           premium_subscriber?: boolean | null
+          rejection_reason?: string | null
           sponsors?: Json | null
           sponsors_count?: number | null
           status?: string | null
@@ -38347,6 +38367,7 @@ export type Database = {
           images?: string[] | null
           portfolio_url?: string | null
           premium_subscriber?: boolean | null
+          rejection_reason?: string | null
           sponsors?: Json | null
           sponsors_count?: number | null
           status?: string | null
