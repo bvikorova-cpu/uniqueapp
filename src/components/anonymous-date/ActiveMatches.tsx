@@ -28,9 +28,11 @@ export function ActiveMatches({ matches, onOpenChat }: ActiveMatchesProps) {
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {matches.map((match, i) => {
-          const isUser1 = match.user1_id === match.user_id;
-          const partner = isUser1 ? match.anonymous_dating_profiles_user2 : match.anonymous_dating_profiles;
-          const daysLeft = Math.max(0, Math.ceil((new Date(match.expires_at).getTime() - Date.now()) / (1000 * 60 * 60 * 24)));
+          const partner = match.partner_profile;
+          const expiresAt = match.expires_at ? new Date(match.expires_at).getTime() : null;
+          const daysLeft = expiresAt
+            ? Math.max(0, Math.ceil((expiresAt - Date.now()) / (1000 * 60 * 60 * 24)))
+            : 0;
 
           return (
             <motion.div
@@ -44,8 +46,8 @@ export function ActiveMatches({ matches, onOpenChat }: ActiveMatchesProps) {
                 <div className="p-4 space-y-3">
                   <div className="flex items-start justify-between gap-2">
                     <div>
-                      <h3 className="text-lg font-bold">{partner?.anonymous_name}</h3>
-                      <p className="text-xs text-muted-foreground">{partner?.age_range}</p>
+                      <h3 className="text-lg font-bold">{partner?.anonymous_name ?? "Anonymous Match"}</h3>
+                      <p className="text-xs text-muted-foreground">{partner?.age_range ?? "—"}</p>
                     </div>
                     {match.status === "revealed" ? (
                       <Badge className="bg-emerald-500/10 text-emerald-500 border-emerald-500/20 text-[10px]">
@@ -58,7 +60,7 @@ export function ActiveMatches({ matches, onOpenChat }: ActiveMatchesProps) {
                     )}
                   </div>
 
-                  {partner?.interests && (
+                  {partner?.interests && partner.interests.length > 0 && (
                     <div className="flex flex-wrap gap-1">
                       {partner.interests.slice(0, 4).map((interest: string) => (
                         <span key={interest} className="text-[10px] px-2 py-0.5 rounded-full bg-pink-500/10 text-pink-500 border border-pink-500/20">
@@ -70,8 +72,8 @@ export function ActiveMatches({ matches, onOpenChat }: ActiveMatchesProps) {
 
                   <div className="flex items-center gap-2 text-xs text-muted-foreground">
                     <Clock className="h-3.5 w-3.5 flex-shrink-0" />
-                    {match.status === "revealed"
-                      ? <span>Revealed {formatDistanceToNow(new Date(match.revealed_at!))} ago</span>
+                    {match.status === "revealed" && match.revealed_at
+                      ? <span>Revealed {formatDistanceToNow(new Date(match.revealed_at))} ago</span>
                       : <span>{daysLeft} days until reveal</span>
                     }
                   </div>
