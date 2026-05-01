@@ -82,7 +82,7 @@ export function AccessPaymentGate({ onPayAccess, loading }: AccessPaymentGatePro
                 {loading ? "Processing..." : "Subscribe for €1/month & Start Dating"}
               </Button>
               <p className="text-[10px] text-muted-foreground">
-                Secure payment via Stripe. By subscribing, you confirm you are 18+.
+                Secure payment via Stripe. By subscribing, you confirm you are 16+.
               </p>
             </div>
           </Card>
