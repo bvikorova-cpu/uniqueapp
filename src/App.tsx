@@ -580,6 +580,7 @@ const App = () => {
                         <Route path="/handwriting" element={<Handwriting />} />
                         <Route path="/past-life" element={<PastLife />} />
                         <Route path="/anonymous-date" element={<AnonymousDate />} />
+                        <Route path="/anonymous-dating" element={<Navigate to="/anonymous-date" replace />} />
                         <Route path="/lie-detector" element={<LieDetector />} />
                         <Route path="/verify-report" element={<VerifyReport />} />
                         <Route path="/secret-santa" element={<SecretSanta />} />

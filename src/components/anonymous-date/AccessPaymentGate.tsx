@@ -43,7 +43,7 @@ export function AccessPaymentGate({ onPayAccess, loading }: AccessPaymentGatePro
             Welcome to Anonymous Date
           </h1>
           <p className="text-muted-foreground max-w-lg mx-auto">
-            A unique anonymous dating experience for adults (18+).
+            A unique anonymous dating experience for users aged 16 and over (16+).
             Connect based on personality, not appearance.
           </p>
         </motion.div>
@@ -82,7 +82,7 @@ export function AccessPaymentGate({ onPayAccess, loading }: AccessPaymentGatePro
                 {loading ? "Processing..." : "Subscribe for €1/month & Start Dating"}
               </Button>
               <p className="text-[10px] text-muted-foreground">
-                Secure payment via Stripe. By subscribing, you confirm you are 18+.
+                Secure payment via Stripe. By subscribing, you confirm you are 16+.
               </p>
             </div>
           </Card>
