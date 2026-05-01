@@ -27,19 +27,19 @@ export function AdultWarningModal({ open, onAccept, onDecline }: AdultWarningMod
             </div>
           </div>
           <DialogTitle className="text-center text-2xl font-black">
-            Adult Content Warning
+            Age Restriction Notice
           </DialogTitle>
           <DialogDescription className="text-center space-y-4 pt-4">
             <p className="text-base font-semibold text-foreground">
-              This section is for adults only (18+)
+              This section is for users aged 16 and over (16+)
             </p>
             <p className="text-sm text-muted-foreground">
-              Anonymous Date is a dating platform designed exclusively for adults aged 18 and over.
+              Anonymous Date is a dating platform designed exclusively for users aged 16 and over.
               By continuing, you confirm that:
             </p>
             <div className="text-sm text-left space-y-2">
               {[
-                "You are at least 18 years old",
+                "You are at least 16 years old",
                 "You understand this is an anonymous dating platform",
                 "You agree to respectful communication",
                 "You accept the platform's terms and conditions",
@@ -54,10 +54,10 @@ export function AdultWarningModal({ open, onAccept, onDecline }: AdultWarningMod
         </DialogHeader>
         <DialogFooter className="flex-col sm:flex-row gap-2 sm:gap-2 mt-2">
           <Button variant="outline" onClick={onDecline} className="w-full sm:w-auto">
-            I'm Under 18 / Decline
+            I'm Under 16 / Decline
           </Button>
           <Button onClick={onAccept} className="w-full sm:w-auto">
-            I'm 18+ / Accept & Continue
+            I'm 16+ / Accept & Continue
           </Button>
         </DialogFooter>
       </DialogContent>
