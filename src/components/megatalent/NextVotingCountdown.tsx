@@ -95,6 +95,15 @@ export default function NextVotingCountdown() {
     timeZoneName: "short",
   });
 
+  const startDateTime = t.start.toLocaleString(undefined, {
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZone: DRAW_TIMEZONE,
+  });
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -109,6 +118,12 @@ export default function NextVotingCountdown() {
           <div className="text-sm sm:text-base font-black flex items-center gap-1.5 justify-center sm:justify-start">
             <Flame className="h-4 w-4 text-orange-400" />
             Next voting round & €10,000 prize draw
+          </div>
+          <div className="text-xs text-muted-foreground flex items-center gap-1 justify-center sm:justify-start mt-0.5">
+            <PlayCircle className="h-3 w-3 text-green-400" />
+            <span>
+              Voting open since <span className="text-green-300 font-semibold">{startDateTime}</span>
+            </span>
           </div>
           <div className="text-xs text-muted-foreground flex items-center gap-1 justify-center sm:justify-start mt-0.5">
             <Clock className="h-3 w-3" />
