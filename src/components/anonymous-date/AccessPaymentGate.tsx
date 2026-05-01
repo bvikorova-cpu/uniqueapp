@@ -43,7 +43,7 @@ export function AccessPaymentGate({ onPayAccess, loading }: AccessPaymentGatePro
             Welcome to Anonymous Date
           </h1>
           <p className="text-muted-foreground max-w-lg mx-auto">
-            A unique anonymous dating experience for adults (18+).
+            A unique anonymous dating experience for users aged 16 and over (16+).
             Connect based on personality, not appearance.
           </p>
         </motion.div>
