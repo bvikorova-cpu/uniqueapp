@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Trophy, Clock, Flame } from "lucide-react";
+import { Trophy, Clock, Flame, PlayCircle } from "lucide-react";
 
 /**
  * Countdown to the next MegaTalent voting round / €10,000 prize draw.
@@ -54,9 +54,13 @@ function getTimeLeft() {
   const lastDay = new Date(Date.UTC(z.year, z.month, 0)).getUTCDate();
   const endUtcMs = zonedTimeToUtc(z.year, z.month, lastDay, 23, 59, 59, DRAW_TIMEZONE);
   const end = new Date(endUtcMs);
+  // Voting for the current round opened on the 1st day of this month at 00:00 in DRAW_TIMEZONE
+  const startUtcMs = zonedTimeToUtc(z.year, z.month, 1, 0, 0, 0, DRAW_TIMEZONE);
+  const start = new Date(startUtcMs);
   const diff = Math.max(0, endUtcMs - now.getTime());
   return {
     end,
+    start,
     days: Math.floor(diff / 86_400_000),
     hours: Math.floor((diff % 86_400_000) / 3_600_000),
     minutes: Math.floor((diff % 3_600_000) / 60_000),
@@ -91,6 +95,15 @@ export default function NextVotingCountdown() {
     timeZoneName: "short",
   });
 
+  const startDateTime = t.start.toLocaleString(undefined, {
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZone: DRAW_TIMEZONE,
+  });
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -105,6 +118,12 @@ export default function NextVotingCountdown() {
           <div className="text-sm sm:text-base font-black flex items-center gap-1.5 justify-center sm:justify-start">
             <Flame className="h-4 w-4 text-orange-400" />
             Next voting round & €10,000 prize draw
+          </div>
+          <div className="text-xs text-muted-foreground flex items-center gap-1 justify-center sm:justify-start mt-0.5">
+            <PlayCircle className="h-3 w-3 text-green-400" />
+            <span>
+              Voting open since <span className="text-green-300 font-semibold">{startDateTime}</span>
+            </span>
           </div>
           <div className="text-xs text-muted-foreground flex items-center gap-1 justify-center sm:justify-start mt-0.5">
             <Clock className="h-3 w-3" />
