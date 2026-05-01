@@ -283,6 +283,51 @@ Deno.serve(async (req) => {
       }
     }
 
+    // ---------- ANALYZE (personal/professional/relationship/business) ----------
+    if (action === "analyze") {
+      const { imageUrl, analysisType } = body;
+      if (!imageUrl || !analysisType) return json({ error: "imageUrl and analysisType required" }, 400);
+      const COSTS: Record<string, number> = { personal: 5, professional: 10, relationship: 15, business: 20 };
+      const cost = COSTS[analysisType];
+      if (!cost) return json({ error: "Invalid analysisType" }, 400);
+      await chargeCredits(supabase, user.id, cost);
+
+      const focus: Record<string, string> = {
+        personal: "Focus on: Personal growth, emotional intelligence, self-awareness, relationship compatibility, life balance.",
+        professional: "Focus on: Career strengths, work style, team collaboration, leadership potential, professional development areas.",
+        relationship: "Focus on: Communication patterns, emotional availability, conflict resolution style, intimacy indicators, partner compatibility.",
+        business: "Focus on: Decision-making under pressure, risk tolerance, negotiation style, strategic thinking, business acumen.",
+      };
+      const sys = `You are a professional graphologist with 20+ years of experience. Return ONLY valid JSON with this exact structure: { "personality_traits": { "openness": string, "conscientiousness": string, "extraversion": string, "agreeableness": string, "neuroticism": string }, "strengths": string[], "weaknesses": string[], "emotional_state": string, "communication_style": string, "work_approach": string, "relationship_patterns": string, "decision_making": string, "stress_indicators": string, "creativity_level": string, "leadership_qualities": string, "detailed_analysis": string, "recommendations": string[] }. ${focus[analysisType] ?? ""}`;
+
+      const content = await callAI({
+        model: "gpt-4o",
+        messages: [
+          { role: "system", content: sys },
+          { role: "user", content: [
+            { type: "text", text: "Please analyze this handwriting sample in detail." },
+            { type: "image_url", image_url: { url: imageUrl } },
+          ] },
+        ],
+        response_format: { type: "json_object" },
+      });
+      let parsed: any;
+      try { parsed = JSON.parse(content); } catch { return json({ error: "Invalid AI response format" }, 502); }
+
+      const { data: saved, error: insErr } = await supabase.from("handwriting_analyses").insert({
+        user_id: user.id, image_url: imageUrl, analysis_type: analysisType, credits_used: cost,
+        personality_traits: parsed.personality_traits, strengths: parsed.strengths,
+        weaknesses: parsed.weaknesses, emotional_state: parsed.emotional_state,
+        communication_style: parsed.communication_style, work_approach: parsed.work_approach,
+        relationship_patterns: parsed.relationship_patterns, decision_making: parsed.decision_making,
+        stress_indicators: parsed.stress_indicators, creativity_level: parsed.creativity_level,
+        leadership_qualities: parsed.leadership_qualities, detailed_analysis: parsed.detailed_analysis,
+        recommendations: parsed.recommendations,
+      }).select().single();
+      if (insErr) return json({ error: insErr.message }, 500);
+      return json({ success: true, analysis: saved });
+    }
+
     // ---------- SIGNATURE (5 cr) ----------
     if (action === "signature") {
       const { imageUrl } = body;
