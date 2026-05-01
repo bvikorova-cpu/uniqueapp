@@ -65,6 +65,26 @@ SUPABASE_SERVICE_ROLE_KEY=<key>        \
 match + partner profile already exist in the DB (manual seed) and skips
 cleanup. Never commit any of these values.
 
+### RLS enforcement test
+
+`anonymous-dating-rls-authed.spec.ts` logs in as a real user and asserts
+that Row-Level Security only exposes:
+
+- the user's own profile,
+- profiles of partners they share an active/revealed match with,
+- matches where they are `user1_id` or `user2_id`.
+
+It also probes for sensitive PII columns (`email`, `phone`, `real_name`,
+`full_name`) and fails if any of them exist on `anonymous_dating_profiles`.
+
+Requires one extra env var on top of the authed-refresh test:
+
+```bash
+E2E_TEST_OUTSIDER_USER_ID=<uuid of a profile the test user has NO match with>
+```
+
+Auto-skips when any required env var is missing.
+
 ## Why this is not in `bun run test`
 
 Vitest (`src/**/*.test.ts`) is fast, headless, and runs in CI on every push.
