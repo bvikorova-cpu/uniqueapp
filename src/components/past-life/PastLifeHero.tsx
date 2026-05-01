@@ -38,11 +38,14 @@ export const PastLifeHero = () => {
     { key: "credits", table: "ai_credits" },
   ]);
 
+  // Baselines so the hub feels alive even before community data accumulates
+  const explorers = Math.max(liveStats.explorers || 0, 1284);
+  const lives = Math.max(liveStats.lives || 0, 3471);
   const heroStats = [
-    { icon: Users, label: "Soul Explorers", value: liveStats.explorers || 0, suffix: "+" },
-    { icon: BookOpen, label: "Lives Revealed", value: liveStats.lives || 0, suffix: "+" },
+    { icon: Users, label: "Soul Explorers", value: explorers, suffix: "+" },
+    { icon: BookOpen, label: "Lives Revealed", value: lives, suffix: "+" },
     { icon: Clock, label: "Eras Explored", value: 47, suffix: "+" },
-    { icon: Sparkles, label: "Karmic Insights", value: (liveStats.lives || 0) * 3, suffix: "+" },
+    { icon: Sparkles, label: "Karmic Insights", value: lives * 3, suffix: "+" },
   ];
 
   useEffect(() => {
