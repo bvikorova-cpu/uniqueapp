@@ -54,9 +54,13 @@ function getTimeLeft() {
   const lastDay = new Date(Date.UTC(z.year, z.month, 0)).getUTCDate();
   const endUtcMs = zonedTimeToUtc(z.year, z.month, lastDay, 23, 59, 59, DRAW_TIMEZONE);
   const end = new Date(endUtcMs);
+  // Voting for the current round opened on the 1st day of this month at 00:00 in DRAW_TIMEZONE
+  const startUtcMs = zonedTimeToUtc(z.year, z.month, 1, 0, 0, 0, DRAW_TIMEZONE);
+  const start = new Date(startUtcMs);
   const diff = Math.max(0, endUtcMs - now.getTime());
   return {
     end,
+    start,
     days: Math.floor(diff / 86_400_000),
     hours: Math.floor((diff % 86_400_000) / 3_600_000),
     minutes: Math.floor((diff % 3_600_000) / 60_000),
