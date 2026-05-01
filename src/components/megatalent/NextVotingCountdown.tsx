@@ -85,6 +85,7 @@ export default function NextVotingCountdown() {
     day: "2-digit",
     month: "long",
     year: "numeric",
+    timeZone: DRAW_TIMEZONE,
   });
 
   return (
