@@ -43,6 +43,28 @@ Place `*.spec.ts` files inside `e2e/`. Use `test.describe` to group flows.
 Avoid tests that require a real authenticated user or paid Stripe flows
 in this folder — those belong in a separate gated suite.
 
+## Authenticated tests (opt-in via env vars)
+
+`anonymous-date-authed-refresh.spec.ts` logs in as a real test user, seeds
+an `anonymous_dating_matches` row + partner profile, and verifies the
+partner's name / age / interests render after a full page refresh.
+
+It auto-skips when the required env vars are missing, so it never breaks
+default `bunx playwright test` runs. To execute it:
+
+```bash
+E2E_TEST_USER_EMAIL=tester@example.com \
+E2E_TEST_USER_PASSWORD='...'           \
+E2E_TEST_USER_ID=<uuid>                \
+E2E_TEST_PARTNER_USER_ID=<uuid>        \
+SUPABASE_SERVICE_ROLE_KEY=<key>        \
+  bunx playwright test e2e/anonymous-date-authed-refresh.spec.ts
+```
+
+`SUPABASE_SERVICE_ROLE_KEY` is optional — without it the test assumes the
+match + partner profile already exist in the DB (manual seed) and skips
+cleanup. Never commit any of these values.
+
 ## Why this is not in `bun run test`
 
 Vitest (`src/**/*.test.ts`) is fast, headless, and runs in CI on every push.
