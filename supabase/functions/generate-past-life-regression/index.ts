@@ -1,11 +1,30 @@
+// Past Life Reading edge function.
+// Aliased from "analyze-past-life" via patchSupabaseFunctions.ts.
+//
+// Honors readingType (basic=1 life/5cr, full=3 lives/15cr, soulmate=3+partner/20cr),
+// deducts from past_life_credits, writes to past_life_readings, and returns
+// { reading: { pastLives, overallKarmicTheme, soulmateConnection } } matching the UI.
+
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { requireAiCredits } from "../_shared/credit-check.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
+  "Access-Control-Allow-Headers":
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
+
+const COSTS: Record<string, number> = { basic: 5, full: 15, soulmate: 20 };
+const LIVES_COUNT: Record<string, number> = { basic: 1, full: 3, soulmate: 3 };
+
+interface RequestBody {
+  birthDate: string;
+  dreamsDejavu?: string;
+  talentsPhobias?: string;
+  readingType: string;
+  partnerBirthDate?: string;
+  partnerInfo?: string;
+}
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -13,136 +32,194 @@ serve(async (req) => {
   }
 
   try {
-    const __auth = await requireAiCredits(req, corsHeaders, { credits: 1, usageType: "past_life" });
-    if (__auth.errorResponse) return __auth.errorResponse;
-    const __deduct = __auth.deduct!;
-    const supabaseClient = createClient(
-      Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_ANON_KEY") ?? ""
-    );
+    const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
+    const anonKey = Deno.env.get("SUPABASE_ANON_KEY") ?? "";
+    const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
 
-    const authHeader = req.headers.get("Authorization")!;
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader) {
+      return jsonResponse({ error: "Not authenticated" }, 401);
+    }
     const token = authHeader.replace("Bearer ", "");
-    const { data } = await supabaseClient.auth.getUser(token);
-    const user = data.user;
-    
-    if (!user) throw new Error("User not authenticated");
 
-    // Generate AI past life regression using OpenAI
+    const supabaseAuth = createClient(supabaseUrl, anonKey);
+    const { data: userData, error: userErr } = await supabaseAuth.auth.getUser(token);
+    if (userErr || !userData.user) {
+      return jsonResponse({ error: "Not authenticated" }, 401);
+    }
+    const user = userData.user;
+
+    const body = (await req.json().catch(() => ({}))) as Partial<RequestBody>;
+    const readingType = (body.readingType ?? "full").toLowerCase();
+    if (!COSTS[readingType]) {
+      return jsonResponse({ error: "Invalid readingType. Must be basic, full, or soulmate." }, 400);
+    }
+    if (!body.birthDate) {
+      return jsonResponse({ error: "birthDate is required" }, 400);
+    }
+    if (readingType === "soulmate" && !body.partnerBirthDate) {
+      return jsonResponse({ error: "partnerBirthDate is required for soulmate readings" }, 400);
+    }
+
+    const cost = COSTS[readingType];
+    const livesCount = LIVES_COUNT[readingType];
+
+    // Service-role client for credit deduction + insertion (bypass RLS for reliable writes).
+    const supabaseAdmin = createClient(supabaseUrl, serviceKey);
+
+    // Ensure credits row exists, then check balance.
+    const { data: creditsRow } = await supabaseAdmin
+      .from("past_life_credits")
+      .select("credits_remaining")
+      .eq("user_id", user.id)
+      .maybeSingle();
+
+    const currentCredits = creditsRow?.credits_remaining ?? 0;
+    if (currentCredits < cost) {
+      return jsonResponse({ requiresPayment: true, error: "Insufficient credits", needed: cost, balance: currentCredits }, 402);
+    }
+
+    // Generate the AI reading.
+    const lovableKey = Deno.env.get("LOVABLE_API_KEY");
     const openaiKey = Deno.env.get("OPENAI_API_KEY");
-    if (!openaiKey) throw new Error("AI service not configured");
+    if (!lovableKey && !openaiKey) {
+      return jsonResponse({ error: "AI service not configured" }, 500);
+    }
 
-    const aiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
+    const userContext = [
+      `Birth date: ${body.birthDate}`,
+      body.dreamsDejavu ? `Dreams / déjà vu: ${body.dreamsDejavu}` : "",
+      body.talentsPhobias ? `Talents / phobias: ${body.talentsPhobias}` : "",
+    ].filter(Boolean).join("\n");
+
+    const partnerContext = readingType === "soulmate"
+      ? `\nPartner birth date: ${body.partnerBirthDate}\n${body.partnerInfo ? `About partner: ${body.partnerInfo}` : ""}`
+      : "";
+
+    const systemPrompt = `You are a mystical past life regression expert. Generate vivid, historically rich past life readings.
+Return ONLY valid JSON with this exact structure (no markdown):
+{
+  "pastLives": [
+    {
+      "period": "specific historical era with year range",
+      "location": "specific city/region/country",
+      "profession": "specific role/profession",
+      "name": "historically appropriate name",
+      "story": "4-6 sentence vivid narrative",
+      "karmicLesson": "the lesson this life teaches the soul today"
+    }
+  ],
+  "overallKarmicTheme": "2-3 paragraph synthesis of the soul's journey across these lives, written in second person",
+  "soulmateConnection": ${readingType === "soulmate" ? '"2-3 paragraph analysis of past life connections with the partner, shared lifetimes, and karmic patterns in the current relationship"' : "null"}
+}
+Generate exactly ${livesCount} past ${livesCount === 1 ? "life" : "lives"}. Make each completely unique across different eras and continents.`;
+
+    const userPrompt = `Generate a unique past life reading.\n\n${userContext}${partnerContext}`;
+
+    const useLovable = !!lovableKey;
+    const aiUrl = useLovable
+      ? "https://ai.gateway.lovable.dev/v1/chat/completions"
+      : "https://api.openai.com/v1/chat/completions";
+    const aiKey = useLovable ? lovableKey : openaiKey;
+    const model = useLovable ? "google/gemini-2.5-flash" : "gpt-4o-mini";
+
+    const aiResponse = await fetch(aiUrl, {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${openaiKey}`,
+        "Authorization": `Bearer ${aiKey}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "gpt-5",
+        model,
         messages: [
-          {
-            role: "system",
-            content: `You are a mystical past life regression expert. Generate a detailed, unique past life story. Return ONLY valid JSON with this exact structure:
-{
-  "life_era": "specific historical period with year",
-  "life_location": "specific city/region",
-  "life_role": "specific role/profession",
-  "life_name": "a historically appropriate name",
-  "life_story": "3-4 sentence compelling narrative of this past life",
-  "key_events": [
-    {"event": "description", "age": number, "significance": "why it mattered"}
-  ],
-  "relationships": [
-    {"person": "role", "connection": "nature of bond", "lesson": "karmic lesson"}
-  ],
-  "lessons_learned": ["lesson1", "lesson2", "lesson3", "lesson4"],
-  "emotional_themes": ["theme1", "theme2", "theme3", "theme4", "theme5"],
-  "historical_context": "2-3 sentences about the era and how this person fit into it",
-  "verification_score": number between 70-99
-}
-Generate 4 key_events, 3 relationships, 4 lessons, and 5 emotional themes. Make each regression completely unique and historically rich.`
-          },
-          {
-            role: "user",
-            content: "Generate a unique past life regression for me. Make it vivid, historically accurate, and deeply personal."
-          }
+          { role: "system", content: systemPrompt },
+          { role: "user", content: userPrompt },
         ],
-        max_completion_tokens: 1500,
       }),
     });
 
     if (!aiResponse.ok) {
       const errText = await aiResponse.text();
-      console.error("AI gateway error:", errText);
-      throw new Error("Failed to generate AI past life regression");
+      console.error("AI error:", aiResponse.status, errText);
+      if (aiResponse.status === 429) {
+        return jsonResponse({ error: "Rate limited. Please try again in a moment." }, 429);
+      }
+      if (aiResponse.status === 402) {
+        return jsonResponse({ error: "AI workspace credits exhausted." }, 402);
+      }
+      return jsonResponse({ error: "Failed to generate past life reading" }, 500);
     }
 
     const aiData = await aiResponse.json();
-    const content = aiData.choices[0]?.message?.content;
-    
-    // Parse AI response
-    let regression;
+    const content = aiData.choices?.[0]?.message?.content ?? "";
+    const cleaned = content.replace(/```json\s*/gi, "").replace(/```\s*/g, "").trim();
+
+    let reading: { pastLives: any[]; overallKarmicTheme: string; soulmateConnection?: string | null };
     try {
-      const cleaned = content.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
-      regression = JSON.parse(cleaned);
+      reading = JSON.parse(cleaned);
     } catch (e) {
-      console.error("Failed to parse AI response:", content);
-      throw new Error("Failed to parse AI response");
+      console.error("Parse failure:", cleaned.slice(0, 500));
+      return jsonResponse({ error: "AI returned malformed data. Please retry." }, 500);
     }
 
-    // Insert regression
-    const { data: insertedRegression, error: insertError } = await supabaseClient
-      .from("past_life_regressions")
+    if (!Array.isArray(reading.pastLives) || reading.pastLives.length === 0) {
+      return jsonResponse({ error: "AI did not produce any past lives." }, 500);
+    }
+
+    // Persist to past_life_readings (matches PastLifeHistory.tsx).
+    const { data: inserted, error: insertErr } = await supabaseAdmin
+      .from("past_life_readings")
       .insert({
         user_id: user.id,
-        ...regression
+        birth_date: body.birthDate,
+        dreams_dejavu: body.dreamsDejavu ?? null,
+        talents_phobias: body.talentsPhobias ?? null,
+        reading_type: readingType,
+        credits_used: cost,
+        past_lives: reading.pastLives,
+        karmic_lessons: reading.overallKarmicTheme ?? null,
+        soulmate_analysis: reading.soulmateConnection ?? null,
+        partner_birth_date: body.partnerBirthDate ?? null,
+        partner_info: body.partnerInfo ?? null,
       })
       .select()
       .single();
 
-    if (insertError) throw insertError;
+    if (insertErr) {
+      console.error("Insert failed:", insertErr);
+      return jsonResponse({ error: "Failed to save reading" }, 500);
+    }
 
-    // Generate karmic debt based on AI past life
-    const karmicDebts = [
-      {
-        user_id: user.id,
-        debt_type: "Unfinished Business",
-        description: `A karmic debt from your life as ${regression.life_name} in ${regression.life_era} requires resolution`,
-        origin_life: regression.life_era,
-        severity: Math.floor(Math.random() * 5) + 3,
-        balance_score: Math.floor(Math.random() * 40) + 20,
-        resolution_steps: [
-          { step: 1, action: "Acknowledge the past", status: "pending" },
-          { step: 2, action: "Make amends in current life", status: "pending" },
-          { step: 3, action: "Learn the lesson", status: "pending" }
-        ]
-      }
-    ];
+    // Deduct credits AFTER successful save.
+    const { error: deductErr } = await supabaseAdmin
+      .from("past_life_credits")
+      .update({ credits_remaining: currentCredits - cost, updated_at: new Date().toISOString() })
+      .eq("user_id", user.id);
 
-    await supabaseClient.from("karmic_debts").insert(karmicDebts);
+    if (deductErr) {
+      console.error("Deduct failed (reading still saved):", deductErr);
+    }
 
-    await __deduct().catch((e) => console.error("deduct failed:", e));
-    return new Response(
-      JSON.stringify({ 
-        success: true, 
-        regression: insertedRegression,
-        karmic_insights: karmicDebts.length 
-      }),
-      {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 200,
-      }
-    );
+    return jsonResponse({
+      success: true,
+      reading: {
+        pastLives: reading.pastLives,
+        overallKarmicTheme: reading.overallKarmicTheme,
+        soulmateConnection: reading.soulmateConnection ?? undefined,
+      },
+      readingId: inserted.id,
+      creditsRemaining: currentCredits - cost,
+    }, 200);
   } catch (error: unknown) {
-    console.error("Error:", error);
-    const errorMessage = error instanceof Error ? error.message : "Unknown error";
-    return new Response(
-      JSON.stringify({ error: errorMessage }),
-      {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 500,
-      }
-    );
+    console.error("Unhandled error:", error);
+    const message = error instanceof Error ? error.message : "Unknown error";
+    return jsonResponse({ error: message }, 500);
   }
 });
+
+function jsonResponse(body: unknown, status: number) {
+  return new Response(JSON.stringify(body), {
+    headers: { ...corsHeaders, "Content-Type": "application/json" },
+    status,
+  });
+}
