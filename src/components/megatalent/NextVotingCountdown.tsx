@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Trophy, Clock, Flame } from "lucide-react";
+import { Trophy, Clock, Flame, PlayCircle } from "lucide-react";
 
 /**
  * Countdown to the next MegaTalent voting round / €10,000 prize draw.
