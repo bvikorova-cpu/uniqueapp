@@ -31,6 +31,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 
 import MegaTalentHero from "@/components/megatalent/MegaTalentHero";
+import NextVotingCountdown from "@/components/megatalent/NextVotingCountdown";
 import MegaTalentCategoryGrid from "@/components/megatalent/MegaTalentCategoryGrid";
 import ContestStatsSidebar from "@/components/megatalent/ContestStatsSidebar";
 import MegaTalentSubmissionCard from "@/components/megatalent/MegaTalentSubmissionCard";
@@ -513,6 +514,9 @@ const Megatalent = () => {
     <div className="min-h-screen bg-background pt-20 pb-12">
       <MegaTalentOnboarding />
       <div className="container mx-auto px-4 max-w-6xl">
+        {/* Countdown to next voting round + €10,000 prize draw */}
+        <NextVotingCountdown />
+
         {/* Cinematic Video Hero */}
         <MegaTalentHero totalVotes={totalVotes} isSubscribed={isSubscribed} subscriptionTier={subscriptionTier} />
 
