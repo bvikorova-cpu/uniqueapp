@@ -81,11 +81,14 @@ export default function NextVotingCountdown() {
     </div>
   );
 
-  const drawDate = t.end.toLocaleDateString(undefined, {
+  const drawDateTime = t.end.toLocaleString(undefined, {
     day: "2-digit",
     month: "long",
     year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
     timeZone: DRAW_TIMEZONE,
+    timeZoneName: "short",
   });
 
   return (
@@ -104,7 +107,11 @@ export default function NextVotingCountdown() {
             Next voting round & €10,000 prize draw
           </div>
           <div className="text-xs text-muted-foreground flex items-center gap-1 justify-center sm:justify-start mt-0.5">
-            <Clock className="h-3 w-3" /> Ends {drawDate}
+            <Clock className="h-3 w-3" />
+            <span>
+              Draw: <span className="text-yellow-300 font-semibold">{drawDateTime}</span>
+              <span className="opacity-70"> · {DRAW_TIMEZONE}</span>
+            </span>
           </div>
         </div>
       </div>
