@@ -61,7 +61,35 @@ export function useAnonymousDate() {
 
       if (error) throw error;
 
-      setActiveMatches(data || []);
+      // Enrich each match with both user profiles so the UI can render names/interests.
+      const matches = data || [];
+      const partnerIds = Array.from(
+        new Set(
+          matches.flatMap((m: any) =>
+            [m.user1_id, m.user2_id].filter((id) => id && id !== user.id)
+          )
+        )
+      );
+
+      let profilesById: Record<string, any> = {};
+      if (partnerIds.length > 0) {
+        const { data: profiles } = await supabase
+          .from("anonymous_dating_profiles")
+          .select("user_id, anonymous_name, age_range, interests, personality_traits")
+          .in("user_id", partnerIds);
+        profilesById = Object.fromEntries((profiles ?? []).map((p: any) => [p.user_id, p]));
+      }
+
+      const enriched = matches.map((m: any) => {
+        const partnerId = m.user1_id === user.id ? m.user2_id : m.user1_id;
+        return {
+          ...m,
+          current_user_id: user.id,
+          partner_profile: profilesById[partnerId] ?? null,
+        };
+      });
+
+      setActiveMatches(enriched);
     } catch (error) {
       console.error("Error fetching matches:", error);
     }

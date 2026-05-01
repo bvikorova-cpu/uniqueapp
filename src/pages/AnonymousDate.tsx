@@ -206,6 +206,15 @@ export default function AnonymousDate() {
 
   const handleToolSelect = (toolId: string) => {
     if (toolId === "find") {
+      if (credits < 5) {
+        toast({
+          title: "Not enough credits",
+          description: "Finding a new match costs 5 credits. Visit the Credit Store to top up.",
+          variant: "destructive",
+        });
+        setActiveView("credits");
+        return;
+      }
       findMatch();
       return;
     }
@@ -501,9 +510,8 @@ export default function AnonymousDate() {
               {activeView === "matches" && selectedMatchId && currentUserId && (() => {
                 const m = activeMatches.find((x: any) => x.id === selectedMatchId);
                 if (!m) { setSelectedMatchId(null); return null; }
-                const isUser1 = m.user1_id === currentUserId;
-                const partner = isUser1 ? m.anonymous_dating_profiles_user2 : m.anonymous_dating_profiles;
-                const me = isUser1 ? m.anonymous_dating_profiles : m.anonymous_dating_profiles_user2;
+                const partner = m.partner_profile;
+                const me = { anonymous_name: "You" };
                 return (
                   <div className="space-y-3">
                     <Button variant="ghost" size="sm" onClick={() => setSelectedMatchId(null)} className="gap-2">
