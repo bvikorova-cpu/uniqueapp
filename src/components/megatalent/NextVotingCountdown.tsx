@@ -4,12 +4,57 @@ import { Trophy, Clock, Flame } from "lucide-react";
 
 /**
  * Countdown to the next MegaTalent voting round / €10,000 prize draw.
- * Round ends at the last day of the current calendar month at 23:59:59 local time.
+ * Round ends at the last day of the current calendar month at 23:59:59
+ * in the configured timezone (default: Europe/Bratislava), independent of
+ * the visitor's local time.
  */
+const DRAW_TIMEZONE = "Europe/Bratislava";
+
+/** Get the current Y/M/D/H/M/S in a given IANA timezone. */
+function getZonedParts(date: Date, timeZone: string) {
+  const fmt = new Intl.DateTimeFormat("en-US", {
+    timeZone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+  });
+  const parts = Object.fromEntries(
+    fmt.formatToParts(date).filter((p) => p.type !== "literal").map((p) => [p.type, Number(p.value)])
+  ) as Record<string, number>;
+  return parts;
+}
+
+/** Build a UTC timestamp for a given wall-clock moment in `timeZone`. */
+function zonedTimeToUtc(
+  year: number,
+  month: number, // 1-12
+  day: number,
+  hour: number,
+  minute: number,
+  second: number,
+  timeZone: string
+) {
+  // Initial guess assuming wall time is UTC, then correct using the offset
+  // implied by Intl for that instant in the target timezone.
+  const guess = Date.UTC(year, month - 1, day, hour, minute, second);
+  const p = getZonedParts(new Date(guess), timeZone);
+  const asIfUtc = Date.UTC(p.year, p.month - 1, p.day, p.hour, p.minute, p.second);
+  const offset = asIfUtc - guess; // ms the zone is ahead of UTC at that instant
+  return guess - offset;
+}
+
 function getTimeLeft() {
   const now = new Date();
-  const end = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
-  const diff = Math.max(0, end.getTime() - now.getTime());
+  const z = getZonedParts(now, DRAW_TIMEZONE);
+  // Last day of current month in target timezone = day 0 of next month
+  const lastDay = new Date(Date.UTC(z.year, z.month, 0)).getUTCDate();
+  const endUtcMs = zonedTimeToUtc(z.year, z.month, lastDay, 23, 59, 59, DRAW_TIMEZONE);
+  const end = new Date(endUtcMs);
+  const diff = Math.max(0, endUtcMs - now.getTime());
   return {
     end,
     days: Math.floor(diff / 86_400_000),
