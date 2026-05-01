@@ -349,6 +349,11 @@ export const CampaignSuccess = lazy(() => import("@/pages/fundraising/CampaignSu
 // Glamour World
 export const GlamourWorld = lazy(() => import("@/pages/GlamourWorld"));
 
+// E2E test harness — only used by Playwright. Page itself is a no-op in production.
+export const E2EAnonymousDateMatches = lazy(
+  () => import("@/pages/E2EAnonymousDateMatches")
+);
+
 // Misc
 export const Contact = lazy(() => import("@/pages/Contact"));
 export const Terms = lazy(() => import("@/pages/Terms"));

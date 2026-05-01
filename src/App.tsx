@@ -215,6 +215,7 @@ import {
   TennisArena,
   AmericanFootballArena,
   GlamourWorld,
+  E2EAnonymousDateMatches,
   F1Racing,
   F1Subscription,
   F1FantasyTeam,
@@ -895,6 +896,7 @@ const App = () => {
                         <Route path="/home-decor" element={<HomeDecorMarketplace />} />
                         
                         <Route path="/glamour-world" element={<GlamourWorld />} />
+                        <Route path="/__e2e/anonymous-date-matches" element={<E2EAnonymousDateMatches />} />
                         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                         <Route path="*" element={<NotFound />} />
                       </Routes>
