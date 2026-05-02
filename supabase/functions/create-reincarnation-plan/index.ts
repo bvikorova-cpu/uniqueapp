@@ -17,11 +17,12 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_ANON_KEY") ?? ""
     );
 
-    const authHeader = req.headers.get("Authorization")!;
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader) throw new Error("Missing authorization header");
     const token = authHeader.replace("Bearer ", "");
     const { data } = await supabaseClient.auth.getUser(token);
     const user = data.user;
-    
+
     if (!user) throw new Error("User not authenticated");
 
     const { planName, goalDescription } = await req.json();
@@ -136,11 +137,13 @@ Generate 3 soul_missions, 3 karmic_lessons, 5 key_life_events. Make everything d
   } catch (error: unknown) {
     console.error("Error:", error);
     const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    const lower = errorMessage.toLowerCase();
+    const smartStatus = (lower.includes("authorization") || lower.includes("authenticated") || lower.includes("bearer") || lower.includes("unauthorized") || lower.includes("jwt")) ? 401 : (lower.includes("required") || lower.includes("missing") || lower.includes("invalid")) ? 400 : 500;
     return new Response(
       JSON.stringify({ error: errorMessage }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 500,
+        status: smartStatus,
       }
     );
   }
