@@ -78,12 +78,15 @@ serve(async (req) => {
       status: 200,
     });
   } catch (error) {
-    logStep("ERROR", { message: error instanceof Error ? error.message : "Unknown error" });
+    const msg = error instanceof Error ? error.message : "Unknown error";
+    logStep("ERROR", { message: msg });
+    const lower = msg.toLowerCase();
+    const smartStatus = (lower.includes("authorization") || lower.includes("authenticated") || lower.includes("bearer") || lower.includes("unauthorized") || lower.includes("jwt")) ? 401 : (lower.includes("required") || lower.includes("missing") || lower.includes("invalid")) ? 400 : 500;
     return new Response(
-      JSON.stringify({ error: error instanceof Error ? error.message : "Unknown error" }),
+      JSON.stringify({ error: msg }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 500,
+        status: smartStatus,
       }
     );
   }
