@@ -43701,6 +43701,10 @@ export type Database = {
       }
       create_payout_batch: { Args: { p_batch_date: string }; Returns: string }
       deactivate_expired_listings: { Args: never; Returns: undefined }
+      deduct_ai_credits: {
+        Args: { p_amount: number; p_user_id: string }
+        Returns: boolean
+      }
       deduct_comedian_balance: {
         Args: { p_amount: number; p_comedian_id: string }
         Returns: undefined
