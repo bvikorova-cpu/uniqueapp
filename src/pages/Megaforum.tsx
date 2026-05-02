@@ -313,7 +313,7 @@ const Megaforum = () => {
     <>
       <SEO
         title="Megaforum - Open community discussions"
-        description="Join free, open discussions across 9 categories. Live debates, polls, hot topics and weekly challenges on Unique Megaforum."
+        description="Join premium, member-only discussions across 9 categories. Live debates, polls, hot topics and weekly challenges on Unique Megaforum."
         canonical="/megaforum"
       />
     <div className="min-h-screen bg-background pt-20 pb-12">
@@ -413,8 +413,8 @@ const Megaforum = () => {
               </CardHeader>
               <CardContent>
                 <p className="text-xs text-muted-foreground">
-                  Megaforum is a free, open community. Create posts, start polls, debate topics, and earn karma.
-                  AI features are premium. Use Markdown for rich formatting!
+                  Megaforum is a premium, members-only community. Create posts, start polls, debate topics, and earn karma.
+                  AI features cost credits. Use Markdown for rich formatting!
                 </p>
               </CardContent>
             </Card>

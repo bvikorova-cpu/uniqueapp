@@ -76,7 +76,7 @@ export const MegaforumHero = ({ totalPosts, totalUsers, todayPosts, trendingTopi
           transition={{ duration: 0.6 }}
         >
           <span className="inline-block px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-bold mb-3 border border-emerald-500/30">
-            🌐 Open Community • 100% Free
+            🌐 Premium Community • Members Only
           </span>
           <h1
             className="text-3xl sm:text-5xl font-black text-white mb-2"
