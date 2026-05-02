@@ -1,23 +1,70 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+const CREDIT_COSTS: Record<string, number> = {
+  "skill-valuation": 4,
+  "live-demo-script": 3,
+  "skill-certification": 5,
+  "workshop-planner": 4,
+};
+
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader) {
+      return new Response(JSON.stringify({ error: "Not authenticated" }), {
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const supabase = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_ANON_KEY")!,
+      { global: { headers: { Authorization: authHeader } } }
+    );
+
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    if (authError || !user) {
+      return new Response(JSON.stringify({ error: "Not authenticated" }), {
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const { action, ...params } = await req.json();
+    const credits = CREDIT_COSTS[action];
+    if (!credits) {
+      return new Response(JSON.stringify({ error: "Unknown action" }), {
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // Check credits balance
+    const { data: balance } = await supabase
+      .from("ai_credits")
+      .select("credits_remaining")
+      .eq("user_id", user.id)
+      .single();
+
+    if (!balance || balance.credits_remaining < credits) {
+      return new Response(JSON.stringify({
+        error: `Insufficient credits. You need ${credits} credits for this action.`,
+      }), {
+        status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
 
     let systemPrompt = "";
     let userPrompt = "";
-    let credits = 3;
 
     switch (action) {
       case "skill-valuation": {
-        credits = 4;
         systemPrompt = `You are an expert skill market analyst. Analyze the given skill and provide:
 1. **Market Value Score** (1-100): How valuable this skill is in the current market
 2. **Demand Level**: Low/Medium/High/Very High
@@ -31,76 +78,58 @@ Format with clear headings and actionable insights.`;
         userPrompt = `Analyze this skill for exchange value:\n\nSkill: ${params.skillName}\nExperience Level: ${params.experienceLevel || "Intermediate"}\nLocation: ${params.location || "Global"}\nAdditional Details: ${params.details || "None provided"}`;
         break;
       }
-
       case "live-demo-script": {
-        credits = 3;
         systemPrompt = `You are an expert presentation coach specializing in skill demonstrations. Create a compelling live demo script that will help the user showcase their skill effectively to potential exchange partners. Include:
-1. **Opening Hook** (30 seconds): Attention-grabbing introduction
-2. **Skill Overview** (2 minutes): What the skill involves and why it's valuable
-3. **Live Demonstration Plan** (5-7 minutes): Step-by-step demo with talking points
-4. **Audience Engagement**: Interactive elements and Q&A prompts
-5. **Closing & CTA**: How to convert viewers into exchange partners
-6. **Technical Setup**: Equipment and tools needed for the demo
-7. **Tips for Success**: Presentation best practices
+1. **Opening Hook** (30 seconds)
+2. **Skill Overview** (2 minutes)
+3. **Live Demonstration Plan** (5-7 minutes)
+4. **Audience Engagement**
+5. **Closing & CTA**
+6. **Technical Setup**
+7. **Tips for Success**
 
 Make it practical, engaging, and professional.`;
         userPrompt = `Create a live skill demo script for:\n\nSkill: ${params.skillName}\nTarget Audience: ${params.targetAudience || "General"}\nDemo Duration: ${params.duration || "10 minutes"}\nExperience Level: ${params.experienceLevel || "Intermediate"}\nKey Strengths: ${params.strengths || "Not specified"}`;
         break;
       }
-
       case "skill-certification": {
-        credits = 5;
-        systemPrompt = `You are an AI skill assessor and certification specialist. Based on the user's answers to assessment questions, provide:
-1. **Overall Score** (0-100): Comprehensive skill proficiency score
-2. **Proficiency Level**: Beginner / Intermediate / Advanced / Expert / Master
-3. **Strengths Identified**: Areas where the user excels
-4. **Areas for Improvement**: Gaps in knowledge or practice
-5. **Certification Recommendation**: Whether they qualify for certification
-6. **Detailed Feedback**: Per-question analysis with correct answers explained
-7. **Learning Path**: Recommended next steps to improve
-8. **Digital Badge Description**: What the certification badge would represent
+        systemPrompt = `You are an AI skill assessor and certification specialist. Provide:
+1. **Overall Score** (0-100)
+2. **Proficiency Level**
+3. **Strengths Identified**
+4. **Areas for Improvement**
+5. **Certification Recommendation**
+6. **Detailed Feedback**
+7. **Learning Path**
+8. **Digital Badge Description**
 
-Be thorough but encouraging. Provide actionable feedback.`;
+Be thorough but encouraging.`;
         userPrompt = `Assess and certify this skill:\n\nSkill: ${params.skillName}\nSelf-Assessment Answers:\n${params.answers || "General assessment requested"}\nClaimed Experience: ${params.experience || "Not specified"}\nPortfolio Description: ${params.portfolio || "None provided"}`;
         break;
       }
-
       case "workshop-planner": {
-        credits = 4;
-        systemPrompt = `You are an expert workshop facilitator and curriculum designer. Create a comprehensive group workshop plan for teaching a skill to multiple learners simultaneously. Include:
-1. **Workshop Title**: Catchy, marketable name
-2. **Workshop Overview**: Description, objectives, target audience
-3. **Duration & Structure**: Timeline with segments and breaks
-4. **Materials Needed**: Tools, supplies, software for participants
-5. **Lesson Plan**: Detailed session-by-session breakdown with activities
-6. **Interactive Exercises**: Hands-on activities for group engagement
-7. **Assessment Criteria**: How to measure participant progress
-8. **Pricing Recommendation**: Suggested credit cost per participant
-9. **Marketing Tips**: How to attract participants
-10. **Follow-up Plan**: Post-workshop engagement strategy
-
-Make it practical, scalable, and engaging for groups of 5-20 people.`;
+        systemPrompt = `You are an expert workshop facilitator. Design a comprehensive workshop plan with:
+1. Workshop Title
+2. Overview & Objectives
+3. Duration & Structure
+4. Materials Needed
+5. Lesson Plan
+6. Interactive Exercises
+7. Assessment Criteria
+8. Pricing Recommendation
+9. Marketing Tips
+10. Follow-up Plan`;
         userPrompt = `Design a group workshop for:\n\nSkill: ${params.skillName}\nGroup Size: ${params.groupSize || "5-10 participants"}\nDuration: ${params.workshopDuration || "2 hours"}\nDifficulty Level: ${params.difficultyLevel || "Beginner-friendly"}\nFormat: ${params.format || "Online"}\nSpecial Requirements: ${params.requirements || "None"}`;
         break;
       }
-
-      default:
-        return new Response(JSON.stringify({ error: "Unknown action" }), {
-          status: 400,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
     }
 
-    // Lovable AI Gateway (auto-provided LOVABLE_API_KEY in Cloud projects)
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
-      headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
-      },
+      headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
       body: JSON.stringify({
         model: "google/gemini-2.5-flash",
         messages: [
@@ -116,7 +145,7 @@ Make it practical, scalable, and engaging for groups of 5-20 people.`;
       });
     }
     if (response.status === 402) {
-      return new Response(JSON.stringify({ error: "AI credits depleted. Please top up your Lovable AI workspace." }), {
+      return new Response(JSON.stringify({ error: "AI credits depleted. Please top up." }), {
         status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
@@ -129,12 +158,20 @@ Make it practical, scalable, and engaging for groups of 5-20 people.`;
     const data = await response.json();
     const result = data.choices?.[0]?.message?.content || "No result generated";
 
+    // Deduct credits AFTER successful AI call
+    const { error: deductErr } = await supabase.rpc("deduct_ai_credits" as any, {
+      p_user_id: user.id,
+      p_amount: credits,
+    });
+    if (deductErr) console.error("Credit deduction failed:", deductErr);
+
     return new Response(JSON.stringify({ result, credits_used: credits }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (error) {
     console.error("skill-swap-ai error:", error);
-    return new Response(JSON.stringify({ error: error.message || "Service error" }), {
+    const msg = error instanceof Error ? error.message : String(error);
+    return new Response(JSON.stringify({ error: msg || "Service error" }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
