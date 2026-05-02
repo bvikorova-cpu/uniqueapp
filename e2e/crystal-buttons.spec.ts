@@ -42,7 +42,9 @@ const CRYSTAL_EDGE_FUNCTIONS = [
   "verify-crystal-payment",
   "verify-crystal-purchase",
   "crystal-ai-tool",
-  "analyze-crystal-energy",
+  // Note: analyze-crystal-energy is routed through the proxy router on the
+  // client (resolveProxy in src/integrations/supabase/client.ts), not deployed
+  // as a standalone edge function — so it 404s on direct HTTP and is excluded.
 ];
 
 const SUPABASE_URL = "https://jufrdzeonywluwutvyxz.supabase.co";
