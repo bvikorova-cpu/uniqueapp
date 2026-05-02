@@ -18,6 +18,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { User as SupabaseUser } from "@supabase/supabase-js";
 import { MegaforumHero } from "@/components/megaforum/MegaforumHero";
+import { HowItWorksCard } from "@/components/megaforum/HowItWorksCard";
+import { PaywallModal } from "@/components/megaforum/PaywallModal";
 import { ForumPolls } from "@/components/megaforum/ForumPolls";
 import { ReputationSystem } from "@/components/megaforum/ReputationSystem";
 import { LiveDebateRooms } from "@/components/megaforum/LiveDebateRooms";
@@ -75,6 +77,16 @@ const Megaforum = () => {
   const [newPostTags, setNewPostTags] = useState<string[]>([]);
   const [useMarkdown, setUseMarkdown] = useState(false);
   const [filterTag, setFilterTag] = useState<string | null>(null);
+  const [paywallOpen, setPaywallOpen] = useState(false);
+  const [paywallAction, setPaywallAction] = useState<string>("interact");
+  const requireAuth = (action: string): boolean => {
+    if (!user) {
+      setPaywallAction(action);
+      setPaywallOpen(true);
+      return false;
+    }
+    return true;
+  };
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -326,6 +338,9 @@ const Megaforum = () => {
           trendingTopics={new Set(posts.map(p => p.category)).size}
         />
 
+        {/* How it works */}
+        <HowItWorksCard />
+
         {/* Tools Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 mb-8">
           {TOOLS.map((tool, i) => (
@@ -470,7 +485,7 @@ const Megaforum = () => {
                   variant="hero"
                   className="w-full"
                   onClick={() => {
-                    if (!user) { toast({ title: "Login Required", variant: "destructive" }); return; }
+                    if (!requireAuth("publish a post")) return;
                     if (!newPostTitle.trim() || !newPostContent.trim()) { toast({ title: "Fill in all fields", variant: "destructive" }); return; }
                     createPostMutation.mutate();
                   }}
@@ -600,7 +615,7 @@ const Megaforum = () => {
                             <div className="flex items-center gap-3 pt-2 border-t border-border/30">
                               <Button
                                 variant="ghost" size="sm"
-                                onClick={() => { if (!user) { toast({ title: "Login Required", variant: "destructive" }); return; } likeMutation.mutate(post.id); }}
+                                onClick={() => { if (!requireAuth("like this post")) return; likeMutation.mutate(post.id); }}
                                 className={`h-7 text-xs hover:text-primary ${isLiked ? "text-primary" : ""}`}
                               >
                                 <ThumbsUp className={`h-3.5 w-3.5 mr-1 ${isLiked ? "fill-current" : ""}`} />
@@ -609,7 +624,7 @@ const Megaforum = () => {
 
                               <Sheet>
                                 <SheetTrigger asChild>
-                                  <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={() => setSelectedPost(post.id)}>
+                                  <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={() => { if (!requireAuth("view & comment")) return; setSelectedPost(post.id); }}>
                                     <Reply className="h-3.5 w-3.5 mr-1" />
                                     {post.replies_count} replies
                                   </Button>
@@ -682,6 +697,11 @@ const Megaforum = () => {
         </div>
       </div>
     </div>
+    <PaywallModal
+      open={paywallOpen}
+      onClose={() => setPaywallOpen(false)}
+      action={paywallAction}
+    />
     </>
   );
 };
