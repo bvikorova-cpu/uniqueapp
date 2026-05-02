@@ -137,11 +137,13 @@ Generate 3 soul_missions, 3 karmic_lessons, 5 key_life_events. Make everything d
   } catch (error: unknown) {
     console.error("Error:", error);
     const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    const lower = errorMessage.toLowerCase();
+    const smartStatus = (lower.includes("authorization") || lower.includes("authenticated") || lower.includes("bearer") || lower.includes("unauthorized") || lower.includes("jwt")) ? 401 : (lower.includes("required") || lower.includes("missing") || lower.includes("invalid")) ? 400 : 500;
     return new Response(
       JSON.stringify({ error: errorMessage }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 500,
+        status: smartStatus,
       }
     );
   }
