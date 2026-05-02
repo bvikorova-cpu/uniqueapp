@@ -133,6 +133,7 @@ for path in \
   /multiverse-network \
   /blockchain-confessions \
   /phobia-trading \
+  /live-concerts \
   /auth \
   ; do
   probe_route "$path" "200"
