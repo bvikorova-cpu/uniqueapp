@@ -13,6 +13,30 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
+    // Auth gate — only authenticated users may verify a session
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader) {
+      return new Response(
+        JSON.stringify({ code: "UNAUTHORIZED_NO_AUTH_HEADER", error: "Missing authorization header" }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 401 },
+      );
+    }
+
+    const authClient = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_ANON_KEY") ?? "",
+    );
+    const { data: userData, error: userErr } = await authClient.auth.getUser(
+      authHeader.replace("Bearer ", ""),
+    );
+    if (userErr || !userData.user) {
+      return new Response(
+        JSON.stringify({ error: "Invalid token" }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 401 },
+      );
+    }
+    const authedUserId = userData.user.id;
+
     const { sessionId } = await req.json();
     if (!sessionId) throw new Error("sessionId required");
 
@@ -34,6 +58,16 @@ serve(async (req) => {
     );
 
     const orderId = session.metadata?.order_id;
+    const buyerId = session.metadata?.buyer_id;
+
+    // Defence in depth: only the original buyer may flip the order to paid
+    if (buyerId && buyerId !== authedUserId) {
+      return new Response(
+        JSON.stringify({ error: "User mismatch" }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 403 },
+      );
+    }
+
     const query = supabase
       .from("crystal_marketplace_orders")
       .update({ status: "paid", stripe_payment_id: sessionId, updated_at: new Date().toISOString() });
