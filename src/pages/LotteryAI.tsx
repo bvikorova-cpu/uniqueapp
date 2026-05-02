@@ -220,12 +220,27 @@ export default function LotteryAI() {
       return;
     }
     try {
+      // Find latest generation matching this exact combination (array equality on Postgres arrays)
       const { data: existing } = await supabase
-        .from("lottery_generations").select("id").eq("user_id", user.id)
-        .eq("main_numbers", generatedNumbers).maybeSingle();
-      if (existing) {
-        await supabase.from("lottery_generations").update({ is_favorite: true }).eq("id", existing.id);
+        .from("lottery_generations")
+        .select("id, main_numbers")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false })
+        .limit(20);
+      const match = existing?.find(
+        (row: any) => Array.isArray(row.main_numbers)
+          && row.main_numbers.length === generatedNumbers.length
+          && row.main_numbers.every((n: number, i: number) => n === generatedNumbers[i])
+      );
+      if (!match) {
+        toast({ title: "Cannot save", description: "Generate numbers first, then save.", variant: "destructive" });
+        return;
       }
+      const { error: updErr } = await supabase
+        .from("lottery_generations")
+        .update({ is_favorite: true })
+        .eq("id", match.id);
+      if (updErr) throw updErr;
       await loadHistory();
       toast({ title: "Combination Saved! 💾", description: "Your lucky numbers have been marked as favorite." });
     } catch (error) {
