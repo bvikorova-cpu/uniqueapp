@@ -115,10 +115,20 @@ export default function LotteryAI() {
   }, [searchParams]);
 
   const checkAuth = async () => {
-    const { data: { session } } = await supabase.auth.getSession();
-    setUser(session?.user ?? null);
-    if (session?.user) { await checkSubscription(); await loadHistory(); }
-    setLoading(false);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      setUser(session?.user ?? null);
+      setLoading(false);
+
+      if (session?.user) {
+        void checkSubscription();
+        void loadHistory();
+      }
+    } catch (error) {
+      console.error("Error checking auth:", error);
+      setUser(null);
+      setLoading(false);
+    }
   };
 
   const checkSubscription = async () => {
