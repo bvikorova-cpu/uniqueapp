@@ -28,9 +28,31 @@ export function successResponse(data: unknown, status = 200): Response {
  */
 export function errorResponse(error: unknown, status = 500): Response {
   const message = error instanceof Error ? error.message : String(error);
+  // Auto-detect auth errors and surface a clean 401 instead of a generic 500.
+  // Keeps button audits and clients from seeing crashes when no JWT is sent.
+  let finalStatus = status;
+  if (status === 500) {
+    const lower = message.toLowerCase();
+    if (
+      lower.includes("authorization header") ||
+      lower.includes("bearer token") ||
+      lower.includes("not authenticated") ||
+      lower.includes("unauthorized") ||
+      lower.includes("invalid jwt") ||
+      lower.includes("jwt expired")
+    ) {
+      finalStatus = 401;
+    } else if (
+      lower.includes("missing ") ||
+      lower.includes("invalid ") ||
+      lower.includes("required")
+    ) {
+      finalStatus = 400;
+    }
+  }
   return new Response(JSON.stringify({ error: message }), {
     headers: { ...corsHeaders, "Content-Type": "application/json" },
-    status,
+    status: finalStatus,
   });
 }
 
