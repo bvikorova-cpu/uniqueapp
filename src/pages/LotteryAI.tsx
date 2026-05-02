@@ -141,25 +141,77 @@ export default function LotteryAI() {
     } catch (error) { console.error("Error loading history:", error); }
   };
 
+  const describeError = (error: any, fallback: string): { title: string; description: string } => {
+    const raw = (error?.message || error?.error_description || "").toString();
+    const msg = raw.toLowerCase();
+    if (!raw && !error) return { title: "Network Issue", description: "Please check your connection and try again." };
+    if (msg.includes("401") || msg.includes("unauthorized") || msg.includes("jwt") || msg.includes("not authenticated")) {
+      return { title: "Sign-in Required", description: "Your session expired. Please sign in again." };
+    }
+    if (msg.includes("402") || msg.includes("insufficient") || msg.includes("credit")) {
+      return { title: "Not Enough Credits", description: "Top up your AI credits to continue." };
+    }
+    if (msg.includes("429") || msg.includes("rate limit") || msg.includes("too many")) {
+      return { title: "Slow Down", description: "Too many requests. Try again in a moment." };
+    }
+    if (msg.includes("403") || msg.includes("forbidden") || msg.includes("subscription")) {
+      return { title: "Subscription Required", description: "An active subscription is required for this action." };
+    }
+    if (msg.includes("400") || msg.includes("validation") || msg.includes("invalid") || msg.includes("required")) {
+      return { title: "Invalid Input", description: raw || "Please check the inputs and try again." };
+    }
+    if (msg.includes("failed to fetch") || msg.includes("network")) {
+      return { title: "Network Issue", description: "Please check your connection and try again." };
+    }
+    if (msg.includes("stripe") || msg.includes("checkout") || msg.includes("payment")) {
+      return { title: "Payment Error", description: raw || "Stripe checkout failed. Try again." };
+    }
+    return { title: "Error", description: raw || fallback };
+  };
+
   const handleSubscribe = async (tier: "basic" | "pro") => {
-    if (!user) { navigate("/auth"); return; }
+    if (!user) {
+      toast({ title: "Sign-in Required", description: "Please sign in to subscribe.", variant: "destructive" });
+      navigate("/auth");
+      return;
+    }
+    if (!tier || !SUBSCRIPTION_TIERS[tier]) {
+      toast({ title: "Invalid Plan", description: "Please choose Basic or Pro.", variant: "destructive" });
+      return;
+    }
     try {
       const priceId = SUBSCRIPTION_TIERS[tier].price_id;
       const { data, error } = await supabase.functions.invoke("create-lottery-subscription", { body: { priceId } });
       if (error) throw error;
-      if (data.url) window.open(data.url, "_blank");
+      if (!data?.url) {
+        toast({ title: "Checkout Unavailable", description: "Stripe didn't return a checkout URL. Try again shortly.", variant: "destructive" });
+        return;
+      }
+      window.open(data.url, "_blank");
+      toast({ title: "Redirecting to Stripe…", description: "Complete your payment in the new tab." });
     } catch (error: any) {
-      toast({ title: "Error", description: error.message || "Failed to start checkout", variant: "destructive" });
+      const e = describeError(error, "Failed to start Stripe checkout.");
+      toast({ title: e.title, description: e.description, variant: "destructive" });
     }
   };
 
   const handleManageSubscription = async () => {
+    if (!user) {
+      toast({ title: "Sign-in Required", description: "Please sign in to manage your subscription.", variant: "destructive" });
+      navigate("/auth");
+      return;
+    }
     try {
       const { data, error } = await supabase.functions.invoke("customer-portal");
       if (error) throw error;
-      if (data.url) window.open(data.url, "_blank");
+      if (!data?.url) {
+        toast({ title: "Portal Unavailable", description: "Stripe customer portal didn't return a URL.", variant: "destructive" });
+        return;
+      }
+      window.open(data.url, "_blank");
     } catch (error: any) {
-      toast({ title: "Error", description: error.message || "Failed to open customer portal", variant: "destructive" });
+      const e = describeError(error, "Failed to open customer portal.");
+      toast({ title: e.title, description: e.description, variant: "destructive" });
     }
   };
 
