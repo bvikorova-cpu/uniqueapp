@@ -352,20 +352,20 @@ All colors MUST be HSL.
 
     --transition-smooth: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 
-    --glass-bg: hsla(250, 25%, 97%, 0.72);
-    --glass-border: hsla(270, 60%, 80%, 0.18);
-    --glass-shadow: 0 8px 40px 0 hsla(270, 91%, 58%, 0.08);
+    --glass-bg: hsla(240, 18%, 6%, 0.8);
+    --glass-border: hsla(270, 60%, 40%, 0.2);
+    --glass-shadow: 0 8px 40px 0 hsla(270, 91%, 58%, 0.12);
 
     --radius: 0.75rem;
 
-    --sidebar-background: 250 20% 98%;
-    --sidebar-foreground: 240 8% 26%;
-    --sidebar-primary: 270 91% 58%;
+    --sidebar-background: 240 16% 8%;
+    --sidebar-foreground: 0 0% 90%;
+    --sidebar-primary: 270 91% 65%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 270 20% 96%;
-    --sidebar-accent-foreground: 240 8% 10%;
-    --sidebar-border: 250 12% 91%;
-    --sidebar-ring: 270 91% 58%;
+    --sidebar-accent: 240 12% 13%;
+    --sidebar-accent-foreground: 0 0% 90%;
+    --sidebar-border: 240 12% 14%;
+    --sidebar-ring: 270 91% 65%;
   }
 
   .dark {
