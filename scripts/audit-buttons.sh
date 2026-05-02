@@ -93,6 +93,10 @@ for fn in \
   generate-avatar \
   animated-avatar \
   shadow-nightmare-avatar \
+  check-time-capsule-access \
+  create-time-capsule-payment \
+  create-time-capsule-premium-subscription \
+  save-time-capsule \
   ; do
   probe_edge "$fn" "400|401|403" '{}' POST anon
 done

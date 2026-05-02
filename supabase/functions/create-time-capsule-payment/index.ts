@@ -23,18 +23,32 @@ serve(async (req) => {
     { global: { headers: { Authorization: req.headers.get("Authorization")! } } }
   );
 
+  const authHeader = req.headers.get("Authorization");
+  if (!authHeader?.startsWith("Bearer ")) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+      status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
+
   try {
     logStep("Function started");
 
-    const authHeader = req.headers.get("Authorization")!;
     const token = authHeader.replace("Bearer ", "");
     const { data } = await supabaseClient.auth.getUser(token);
     const user = data.user;
-    if (!user?.email) throw new Error("User not authenticated");
+    if (!user?.email) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
     logStep("User authenticated", { userId: user.id, email: user.email });
 
-    const { priceId, durationYears, capsuleData } = await req.json();
-    if (!priceId || !durationYears) throw new Error("Price ID and duration required");
+    const { priceId, durationYears, capsuleData } = await req.json().catch(() => ({}));
+    if (!priceId || !durationYears) {
+      return new Response(JSON.stringify({ error: "Price ID and duration required" }), {
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
     logStep("Request data", { priceId, durationYears });
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
