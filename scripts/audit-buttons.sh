@@ -79,6 +79,15 @@ for fn in \
   check-phobia-subscription \
   create-phobia-subscription \
   purchase-phobia-credits \
+  create-concert-payment \
+  create-concert-ticket-checkout \
+  verify-concert-ticket-payment \
+  send-stream-gift \
+  send-influencer-gift \
+  send-masterchef-gift \
+  send-gift-payment \
+  send-comedy-tip \
+  check-tipster-subscription \
   ; do
   probe_edge "$fn" "400|401|403" '{}' POST anon
 done
