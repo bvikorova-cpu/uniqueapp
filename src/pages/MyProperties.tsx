@@ -32,7 +32,7 @@ export default function MyProperties() {
         }
       };
       verifyPayment();
-    } else if (payment === 'cancelled') {
+    } else if (payment === 'cancelled' || payment === 'canceled') {
       toast({ variant: "destructive", title: "Payment Cancelled", description: "Your Lead Boost purchase was cancelled." });
       window.history.replaceState({}, '', '/my-properties');
     }
