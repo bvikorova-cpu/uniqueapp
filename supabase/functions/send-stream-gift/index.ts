@@ -91,9 +91,12 @@ serve(async (req) => {
     });
   } catch (error) {
     console.error("Stream gift payment error:", error);
-    return new Response(
-      JSON.stringify({ error: error instanceof Error ? error.message : "Unknown error" }),
-      { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 500 },
-    );
+    const msg = error instanceof Error ? error.message : String(error);
+    const status = /not authenticated|unauthorized/i.test(msg) ? 401
+      : /missing|not found|already have|unsupported|required/i.test(msg) ? 400
+      : 500;
+    return new Response(JSON.stringify({ error: msg }), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" }, status,
+    });
   }
 });
