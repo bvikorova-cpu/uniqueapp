@@ -133,6 +133,8 @@ probe_edge create-reincarnation-plan            "400|401" '{}' POST anon
 probe_edge create-phobia-subscription           "400|401" '{}' POST anon
 probe_edge purchase-phobia-credits              "400|401" '{}' POST anon
 probe_edge send-gift-payment                    "400|401" '{}' POST anon
+probe_edge create-time-capsule-payment          "400|401" '{}' POST anon
+probe_edge save-time-capsule                    "400|401" '{}' POST anon
 
 echo "── Stripe verify endpoints: empty sessionId (expect 400/401) ──"
 probe_edge verify-payment                  "400|401" '{"sessionId":""}' POST anon
