@@ -104,6 +104,8 @@ const FUNCTION_ALIASES: Record<string, AliasEntry> = {
   "create-pet-checkout":                     { target: "create-checkout", bodyExtras: { product: "pet" } },
   "create-photo-credits-payment":            { target: "create-checkout", bodyExtras: { product: "photo_credits" } },
   "create-property-listing-checkout":        { target: "create-checkout", bodyExtras: { product: "property_listing" } },
+  "create-lead-boost-payment":               { target: "create-checkout", bodyExtras: { product: "lead_boost" } },
+  "create-virtual-tour-payment":             { target: "create-checkout", bodyExtras: { product: "virtual_tour" } },
   "create-psychology-checkout":              { target: "create-checkout", bodyExtras: { product: "psychology" } },
   "create-reincarnation-checkout":           { target: "create-checkout", bodyExtras: { product: "reincarnation" } },
   "create-science-checkout":                 { target: "create-checkout", bodyExtras: { product: "science" } },

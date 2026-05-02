@@ -230,6 +230,9 @@ const DEFAULT_PATHS: Record<string, { success: string; cancel: string }> = {
   clone_dating: { success: "/ai-clone?payment=success&session_id={CHECKOUT_SESSION_ID}", cancel: "/ai-clone?payment=canceled" },
   crystal_energy: { success: "/crystal-energy-network?success=true&session_id={CHECKOUT_SESSION_ID}", cancel: "/crystal-energy-network?canceled=true" },
   shadow_subscription: { success: "/shadow-arena/dashboard?subscription=success&session_id={CHECKOUT_SESSION_ID}", cancel: "/shadow-arena/dashboard?subscription=canceled" },
+  property_listing: { success: "/property-marketplace?payment=success&session_id={CHECKOUT_SESSION_ID}", cancel: "/property-marketplace?payment=canceled" },
+  lead_boost: { success: "/my-properties?payment=success&session_id={CHECKOUT_SESSION_ID}", cancel: "/my-properties?payment=canceled" },
+  virtual_tour: { success: "/property-marketplace?payment=success&session_id={CHECKOUT_SESSION_ID}", cancel: "/property-marketplace?payment=canceled" },
 };
 
 const CLONE_PRODUCTS: Record<string, { amount: number; mode: "payment" | "subscription"; name: string; metadata: Record<string, string> }> = {
@@ -452,6 +455,8 @@ serve(async (req) => {
         pet:                     { amount: 999,  mode: "subscription", name: "Pet Premium" },
         photo_credits:           { amount: 999,  mode: "payment",      name: "Photo Credits" },
         property_listing:        { amount: 4999, mode: "payment",      name: "Property Listing" },
+        lead_boost:              { amount: 1900, mode: "payment",      name: "Lead Boost" },
+        virtual_tour:            { amount: 9900, mode: "payment",      name: "Virtual Tour Hosting" },
         psychology:              { amount: 1999, mode: "subscription", name: "Psychology Premium" },
         reincarnation:           { amount: 999,  mode: "payment",      name: "Reincarnation Reading" },
         science:                 { amount: 999,  mode: "subscription", name: "Science Premium" },
@@ -485,8 +490,20 @@ serve(async (req) => {
       };
 
       const def = PRODUCT_DEFAULTS[productKey];
-      const amount = Number(body.amount) || def?.amount || 999;
-      const productName = String(body.productName || def?.name || `${productKey} purchase`);
+
+      // Property Listing package overrides (basic/premium/featured)
+      const PROPERTY_PACKAGES: Record<string, { amount: number; name: string }> = {
+        basic:    { amount: 2900, name: "Basic Property Listing (30 days)" },
+        premium:  { amount: 7900, name: "Premium Property Listing (60 days)" },
+        featured: { amount: 14900, name: "Featured Property Listing (90 days)" },
+      };
+      const pkgOverride =
+        productKey === "property_listing" && typeof body.packageType === "string"
+          ? PROPERTY_PACKAGES[body.packageType]
+          : undefined;
+
+      const amount = Number(body.amount) || pkgOverride?.amount || def?.amount || 999;
+      const productName = String(body.productName || pkgOverride?.name || def?.name || `${productKey} purchase`);
       const mode = (body.mode || def?.mode || "payment") as "payment" | "subscription";
       const { successUrl, cancelUrl } = resolveUrls(origin, body.successUrl, body.cancelUrl, productKey);
 

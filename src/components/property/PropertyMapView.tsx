@@ -136,7 +136,7 @@ export const PropertyMapView = ({ onBack }: Props) => {
                               <div className="text-[10px] text-muted-foreground mt-1">Top Type</div>
                             </div>
                           </div>
-                          <Button size="sm" className="bg-gradient-to-r from-sky-500 to-blue-600" onClick={() => navigate(`/property?city=${encodeURIComponent(selectedCity.city)}`)}>
+                          <Button size="sm" className="bg-gradient-to-r from-sky-500 to-blue-600" onClick={() => navigate(`/property-marketplace?city=${encodeURIComponent(selectedCity.city)}`)}>
                             Browse {selectedCity.city}
                           </Button>
                         </div>
