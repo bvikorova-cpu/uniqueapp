@@ -46,6 +46,12 @@ function showCrashOverlay(title: string, detail: string) {
 function hasVisibleRootContent(root: HTMLElement): boolean {
   if (root.querySelector("[data-unique-crash-overlay]")) return true;
 
+  const rect = root.getBoundingClientRect();
+  const rootStyle = window.getComputedStyle(root);
+  if (rect.width > 0 && rect.height > 0 && rootStyle.display !== "none" && rootStyle.visibility !== "hidden" && root.children.length > 0) {
+    return true;
+  }
+
   const text = (root.textContent ?? "").replace(/\s+/g, "");
   if (text.length > 3) return true;
 
