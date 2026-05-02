@@ -48,9 +48,10 @@ serve(async (req) => {
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     log("ERROR", { message: errorMessage });
-    return new Response(JSON.stringify({ error: errorMessage }), {
+    const status = /authoriz|authentic|missing sub|invalid claim|bearer/i.test(errorMessage) ? 401 : 500;
+    return new Response(JSON.stringify({ error: status === 401 ? "Unauthorized" : errorMessage }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 500,
+      status,
     });
   }
 });
