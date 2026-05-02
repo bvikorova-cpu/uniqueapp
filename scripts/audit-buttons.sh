@@ -76,6 +76,9 @@ for fn in \
   vote-absolution \
   generate-redemption-plan \
   verify-confession-payment \
+  check-phobia-subscription \
+  create-phobia-subscription \
+  purchase-phobia-credits \
   ; do
   probe_edge "$fn" "400|401|403" '{}' POST anon
 done
@@ -113,6 +116,7 @@ for path in \
   /time-reversal \
   /multiverse \
   /blockchain-confessions \
+  /phobia-trading \
   /auth \
   ; do
   probe_route "$path" "200"
