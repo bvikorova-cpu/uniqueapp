@@ -216,9 +216,17 @@ export default function LotteryAI() {
   };
 
   const generateNumbers = async () => {
-    if (!user) { navigate("/auth"); return; }
+    if (!user) {
+      toast({ title: "Sign-in Required", description: "Please sign in to generate numbers.", variant: "destructive" });
+      navigate("/auth");
+      return;
+    }
     if (!subscription?.subscribed) {
-      toast({ title: "Subscription Required", description: "You need an active subscription to generate lucky numbers.", variant: "destructive" });
+      toast({ title: "Subscription Required", description: "Subscribe to Basic or Pro to generate AI lucky numbers.", variant: "destructive" });
+      return;
+    }
+    if (!selectedLottery?.id) {
+      toast({ title: "Invalid Input", description: "Please select a lottery type first.", variant: "destructive" });
       return;
     }
     if (subscription.isBasic && !subscription.isPro) {
@@ -227,9 +235,13 @@ export default function LotteryAI() {
       const { count, error: countError } = await supabase
         .from("lottery_generations").select("*", { count: 'exact', head: true })
         .eq("user_id", user.id).gte("created_at", monthStart);
-      if (countError) console.error("Error checking generation count:", countError);
-      else if (count !== null && count >= 10) {
-        toast({ title: "Generation Limit Reached", description: "Upgrade to Pro for more generations!", variant: "destructive" });
+      if (countError) {
+        console.error("Error checking generation count:", countError);
+        toast({ title: "Could Not Verify Limit", description: "We couldn't check your monthly usage. Try again.", variant: "destructive" });
+        return;
+      }
+      if (count !== null && count >= 10) {
+        toast({ title: "Monthly Limit Reached", description: "You've used 10/10 generations this month. Upgrade to Pro for more.", variant: "destructive" });
         return;
       }
     }
@@ -241,51 +253,65 @@ export default function LotteryAI() {
         'generate-lottery-numbers', { body: { lotteryType: selectedLottery.id, preferences: {} } }
       );
       if (aiError) throw aiError;
+      if (!aiResult?.numbers || !Array.isArray(aiResult.numbers) || aiResult.numbers.length === 0) {
+        throw new Error("AI returned no numbers. Please try again.");
+      }
       generatedData = aiResult;
       setGeneratedNumbers(aiResult.numbers);
       setBonusNumbers(aiResult.bonusNumbers || []);
       setAiAnalysis(aiResult.analysis);
-      toast({ title: "AI Analysis Complete! 🤖", description: aiResult.analysis.reasoning });
+      toast({ title: "AI Analysis Complete! 🤖", description: aiResult.analysis?.reasoning || "Your numbers are ready." });
     } catch (error: any) {
       console.error('Error generating numbers:', error);
-      toast({ title: "Generation Error", description: error.message || "Failed to generate numbers.", variant: "destructive" });
+      const e = describeError(error, "Failed to generate numbers.");
+      toast({ title: e.title, description: e.description, variant: "destructive" });
       setIsGenerating(false);
       return;
     }
 
     try {
-      await supabase.from("lottery_generations").insert({
+      const { error: insErr } = await supabase.from("lottery_generations").insert({
         user_id: user.id, lottery_type: selectedLottery.name,
         main_numbers: generatedData.numbers,
         bonus_numbers: generatedData.bonusNumbers?.length > 0 ? generatedData.bonusNumbers : null,
       });
+      if (insErr) throw insErr;
       await loadHistory();
       setIsGenerating(false);
-      toast({ title: "Numbers Generated! 🎰", description: "Your AI-predicted lucky numbers are ready!" });
-    } catch (error) { console.error("Error saving generation:", error); setIsGenerating(false); }
+      toast({ title: "Numbers Generated! 🎰", description: "Saved to your history." });
+    } catch (error: any) {
+      console.error("Error saving generation:", error);
+      setIsGenerating(false);
+      const e = describeError(error, "Numbers generated but couldn't be saved to history.");
+      toast({ title: `Saved Failed: ${e.title}`, description: e.description, variant: "destructive" });
+    }
   };
 
   const saveCombination = async () => {
-    if (!user) { navigate("/auth"); return; }
+    if (!user) {
+      toast({ title: "Sign-in Required", description: "Please sign in to save combinations.", variant: "destructive" });
+      navigate("/auth");
+      return;
+    }
     if (generatedNumbers.length === 0) {
-      toast({ title: "No Numbers", description: "Generate numbers first before saving", variant: "destructive" });
+      toast({ title: "Nothing to Save", description: "Generate numbers first, then save them as favorite.", variant: "destructive" });
       return;
     }
     try {
-      // Find latest generation matching this exact combination (array equality on Postgres arrays)
-      const { data: existing } = await supabase
+      const { data: existing, error: fetchErr } = await supabase
         .from("lottery_generations")
         .select("id, main_numbers")
         .eq("user_id", user.id)
         .order("created_at", { ascending: false })
         .limit(20);
+      if (fetchErr) throw fetchErr;
       const match = existing?.find(
         (row: any) => Array.isArray(row.main_numbers)
           && row.main_numbers.length === generatedNumbers.length
           && row.main_numbers.every((n: number, i: number) => n === generatedNumbers[i])
       );
       if (!match) {
-        toast({ title: "Cannot save", description: "Generate numbers first, then save.", variant: "destructive" });
+        toast({ title: "Combination Not Found", description: "We couldn't locate this generation in your history. Generate again, then save.", variant: "destructive" });
         return;
       }
       const { error: updErr } = await supabase
@@ -294,10 +320,11 @@ export default function LotteryAI() {
         .eq("id", match.id);
       if (updErr) throw updErr;
       await loadHistory();
-      toast({ title: "Combination Saved! 💾", description: "Your lucky numbers have been marked as favorite." });
-    } catch (error) {
+      toast({ title: "Combination Saved! 💾", description: "Marked as favorite in your history." });
+    } catch (error: any) {
       console.error("Error saving combination:", error);
-      toast({ title: "Error", description: "Failed to save combination", variant: "destructive" });
+      const e = describeError(error, "Failed to save combination.");
+      toast({ title: e.title, description: e.description, variant: "destructive" });
     }
   };
 
