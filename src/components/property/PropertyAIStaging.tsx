@@ -63,7 +63,7 @@ export const PropertyAIStaging = ({ onBack }: Props) => {
       room: selectedRoom,
       style: selectedStyle,
     });
-    navigate(`/property/new?${params.toString()}`);
+    navigate(`/property-submission?${params.toString()}`);
     toast.success("Staging applied to your new listing");
   };
 

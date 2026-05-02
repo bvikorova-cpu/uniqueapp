@@ -37,7 +37,7 @@ export const PropertyProgress = () => {
             </div>
           </div>
 
-          <Button className="w-full bg-gradient-to-r from-sky-500 to-blue-600 hover:opacity-90 text-white" size="sm" onClick={() => navigate("/property")}>
+          <Button className="w-full bg-gradient-to-r from-sky-500 to-blue-600 hover:opacity-90 text-white" size="sm" onClick={() => navigate("/property-marketplace")}>
             <Search className="w-4 h-4 mr-2" />
             Search Now
           </Button>
