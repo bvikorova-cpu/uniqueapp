@@ -1,5 +1,6 @@
 // Thin proxy → check-subscription with tier="holographic"
-// See supabase/functions/check-subscription/index.ts for logic.
+// Rejects anonymous callers up front with 401 to keep parity with the rest
+// of the auth-gated edge functions.
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 
 const corsHeaders = {
@@ -9,8 +10,16 @@ const corsHeaders = {
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
-  const url = `${Deno.env.get("SUPABASE_URL")}/functions/v1/check-subscription`;
+
   const auth = req.headers.get("Authorization") ?? "";
+  if (!auth.startsWith("Bearer ")) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+      status: 401,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
+
+  const url = `${Deno.env.get("SUPABASE_URL")}/functions/v1/check-subscription`;
   const apikey = Deno.env.get("SUPABASE_ANON_KEY") ?? "";
   const r = await fetch(url, {
     method: "POST",
@@ -18,5 +27,8 @@ serve(async (req) => {
     body: JSON.stringify({ tier: "holographic" }),
   });
   const body = await r.text();
-  return new Response(body, { status: r.status, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+  return new Response(body, {
+    status: r.status,
+    headers: { ...corsHeaders, "Content-Type": "application/json" },
+  });
 });
