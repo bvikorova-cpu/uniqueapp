@@ -74,7 +74,7 @@ export default function MembershipCommunity() {
         .single();
       if (error) throw error;
       toast({ title: "Success!", description: "Your creator profile has been created." });
-      if (newProfile) navigate(`/creator/${newProfile.id}`);
+      if (newProfile) navigate(`/creator/${newProfile.user_id}`);
     } catch (error: any) {
       toast({ title: "Error", description: error.message, variant: "destructive" });
     } finally {
