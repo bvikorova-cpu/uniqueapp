@@ -120,9 +120,25 @@ probe_edge reality-jump       "401" '{}' POST anon
 probe_edge merge-timelines    "401" '{}' POST anon
 probe_edge reality-lottery    "401" '{}' POST anon
 
-echo "── Edge functions: bad input validation (expect 400/401) ──"
-probe_edge create-checkout "400|401" '{"invalid":true}' POST anon
-probe_edge verify-payment  "400|401" '{}' POST anon
+echo "── Stripe checkout endpoints: missing-input validation (expect 400/401) ──"
+probe_edge create-checkout                      "400|401" '{"invalid":true}' POST anon
+probe_edge create-concert-payment               "400|401" '{}' POST anon
+probe_edge create-concert-ticket-checkout       "400|401" '{}' POST anon
+probe_edge create-holographic-avatar-checkout   "400|401" '{}' POST anon
+probe_edge create-reincarnation-plan            "400|401" '{}' POST anon
+probe_edge create-phobia-subscription           "400|401" '{}' POST anon
+probe_edge purchase-phobia-credits              "400|401" '{}' POST anon
+probe_edge send-gift-payment                    "400|401" '{}' POST anon
+
+echo "── Stripe verify endpoints: empty sessionId (expect 400/401) ──"
+probe_edge verify-payment                  "400|401" '{"sessionId":""}' POST anon
+probe_edge verify-concert-ticket-payment   "400|401" '{"sessionId":""}' POST anon
+probe_edge verify-reincarnation-payment    "400|401" '{"sessionId":""}' POST anon
+probe_edge verify-confession-payment       "400|401" '{"sessionId":""}' POST anon
+
+echo "── Stripe verify endpoints: bogus sessionId (expect 400/401) ──"
+probe_edge verify-payment                  "400|401" '{"sessionId":"cs_test_invalid_xxx"}' POST anon
+probe_edge verify-concert-ticket-payment   "400|401" '{"sessionId":"cs_test_invalid_xxx"}' POST anon
 
 echo "── Public routes (expect 200) ──"
 for path in \
@@ -140,6 +156,10 @@ for path in \
   /phobia-trading \
   /live-concerts \
   /auth \
+  /payment-success \
+  /payment-canceled \
+  /concert-ticket-success \
+  /concert-ticket-cancel \
   ; do
   probe_route "$path" "200"
 done
