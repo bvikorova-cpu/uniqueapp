@@ -99,14 +99,14 @@ export function CookieConsentBanner() {
   if (!showBanner) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 p-4 bg-background/95 backdrop-blur-sm border-t border-border shadow-lg">
+    <div className="fixed bottom-0 left-0 right-0 z-50 p-4 bg-background/95 backdrop-blur-sm border-t border-border shadow-lg sm:bg-transparent sm:border-t-0 sm:shadow-none">
       <div className="container mx-auto max-w-4xl">
-        <Card className="p-6">
-          <div className="flex items-start gap-4">
+        <Card className="p-5 sm:p-6 shadow-xl">
+          <div className="flex items-start gap-3 sm:gap-4">
             <div className="p-3 rounded-full bg-primary/10">
               <Cookie className="h-6 w-6 text-primary" />
             </div>
-            <div className="flex-1">
+            <div className="flex-1 min-w-0">
               <h3 className="font-semibold text-lg mb-2 flex items-center gap-2">
                 <Shield className="h-5 w-5" />
                 Protecting your privacy
@@ -115,7 +115,7 @@ export function CookieConsentBanner() {
                 We use cookies to improve your experience, personalize content, and analyze traffic. 
                 You can choose which cookies you want to allow.
               </p>
-              <div className="flex flex-wrap gap-3">
+              <div className="flex flex-col sm:flex-row sm:flex-wrap gap-3">
                 <Button onClick={acceptAll} className="gap-2">
                   Accept all
                 </Button>
