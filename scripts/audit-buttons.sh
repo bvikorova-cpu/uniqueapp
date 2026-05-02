@@ -97,6 +97,8 @@ for fn in \
   create-time-capsule-payment \
   create-time-capsule-premium-subscription \
   save-time-capsule \
+  check-time-reversal-subscription \
+  time-reversal-timelapse \
   ; do
   probe_edge "$fn" "400|401|403" '{}' POST anon
 done
@@ -135,6 +137,8 @@ probe_edge purchase-phobia-credits              "400|401" '{}' POST anon
 probe_edge send-gift-payment                    "400|401" '{}' POST anon
 probe_edge create-time-capsule-payment          "400|401" '{}' POST anon
 probe_edge save-time-capsule                    "400|401" '{}' POST anon
+probe_edge create-time-reversal-checkout        "400|401" '{}' POST anon
+probe_edge time-reversal-timelapse              "400|401" '{"imageUrl":""}' POST anon
 
 echo "── Stripe verify endpoints: empty sessionId (expect 400/401) ──"
 probe_edge verify-payment                  "400|401" '{"sessionId":""}' POST anon
