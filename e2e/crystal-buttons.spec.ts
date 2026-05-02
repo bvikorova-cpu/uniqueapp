@@ -122,6 +122,64 @@ test.describe("Crystal Energy Network — buttons + redirects", () => {
 
     expect(failures, `Per-tool failures:\n${failures.join("\n")}`).toEqual([]);
   });
+
+  // After each click, ensure no loading spinner is left behind and the page
+  // is interactive again (no aria-busy=true, no .animate-spin elements,
+  // and the underlying tool button is clickable for re-entry).
+  test("loading spinners clear after each tool click and page stays interactive", async ({
+    page,
+  }) => {
+    // Tools that route to a separate page — covered by the "redirects" test;
+    // skip them here so we focus on in-hub spinner behavior.
+    const inHubTools = CRYSTAL_TOOLS.filter((n) => n !== "Crystal Marketplace");
+    const failures: string[] = [];
+
+    for (const name of inHubTools) {
+      await page.getByText(name, { exact: true }).first().click();
+
+      // Wait for the tool view to mount (Back-to-Hub button is its sentinel).
+      const back = page.getByRole("button", { name: /back to hub/i });
+      try {
+        await expect(back).toBeVisible({ timeout: 10_000 });
+      } catch {
+        failures.push(`${name}: tool view never mounted`);
+        await page.goto("/crystal-energy-network", { waitUntil: "domcontentloaded" });
+        continue;
+      }
+
+      // 1) No element should remain in aria-busy state once the view is shown.
+      const busy = page.locator('[aria-busy="true"]');
+      try {
+        await expect(busy).toHaveCount(0, { timeout: 8_000 });
+      } catch {
+        failures.push(`${name}: aria-busy element still present after load`);
+      }
+
+      // 2) No .animate-spin spinner should still be visible on the tool view.
+      //    Tools may render brief spinners during async work; we wait up to
+      //    8s for them to disappear before failing.
+      const spinner = page.locator(".animate-spin").first();
+      try {
+        await expect(spinner).toBeHidden({ timeout: 8_000 });
+      } catch {
+        failures.push(`${name}: .animate-spin still visible after load`);
+      }
+
+      // 3) Page must be interactive: clicking "Back to Hub" returns to hub
+      //    and the hub re-renders so the same tool button is clickable again.
+      try {
+        await back.click();
+        const hubBtn = page.getByText(name, { exact: true }).first();
+        await expect(hubBtn).toBeVisible({ timeout: 8_000 });
+        await expect(hubBtn).toBeEnabled();
+      } catch {
+        failures.push(`${name}: hub not interactive after back-navigation`);
+        await page.goto("/crystal-energy-network", { waitUntil: "domcontentloaded" });
+      }
+    }
+
+    expect(failures, `Spinner / interactivity failures:\n${failures.join("\n")}`).toEqual([]);
+  });
 });
 
 test.describe("Crystal edge functions — anonymous calls must be rejected", () => {
