@@ -487,8 +487,20 @@ serve(async (req) => {
       };
 
       const def = PRODUCT_DEFAULTS[productKey];
-      const amount = Number(body.amount) || def?.amount || 999;
-      const productName = String(body.productName || def?.name || `${productKey} purchase`);
+
+      // Property Listing package overrides (basic/premium/featured)
+      const PROPERTY_PACKAGES: Record<string, { amount: number; name: string }> = {
+        basic:    { amount: 2900, name: "Basic Property Listing (30 days)" },
+        premium:  { amount: 7900, name: "Premium Property Listing (60 days)" },
+        featured: { amount: 14900, name: "Featured Property Listing (90 days)" },
+      };
+      const pkgOverride =
+        productKey === "property_listing" && typeof body.packageType === "string"
+          ? PROPERTY_PACKAGES[body.packageType]
+          : undefined;
+
+      const amount = Number(body.amount) || pkgOverride?.amount || def?.amount || 999;
+      const productName = String(body.productName || pkgOverride?.name || def?.name || `${productKey} purchase`);
       const mode = (body.mode || def?.mode || "payment") as "payment" | "subscription";
       const { successUrl, cancelUrl } = resolveUrls(origin, body.successUrl, body.cancelUrl, productKey);
 
