@@ -95,7 +95,7 @@ export default function PropertyMarketplace() {
     const payment = searchParams.get('payment');
     if (payment === 'success') {
       toast({ title: "Payment Successful!", description: "Your listing has been activated." });
-    } else if (payment === 'cancelled') {
+    } else if (payment === 'cancelled' || payment === 'canceled') {
       toast({ title: "Payment Canceled", description: "You can complete the payment later.", variant: "destructive" });
     }
   }, [searchParams]);
