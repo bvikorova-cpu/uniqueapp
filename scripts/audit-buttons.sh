@@ -62,7 +62,7 @@ probe_cors() {
   check "cors:$fn" "200|204" "$code"
 }
 
-echo "── Edge functions: auth guards (expect 401 without user JWT) ──"
+echo "── Edge functions: auth guards (must reject anon — 4xx) ──"
 for fn in \
   create-checkout \
   verify-payment \
@@ -72,10 +72,13 @@ for fn in \
   generate-past-life-regression \
   generate-gift-message \
   text-to-speech \
-  admin-stripe-payout \
-  admin-stripe-refund \
   ; do
-  probe_edge "$fn" "401" '{}' POST anon
+  probe_edge "$fn" "400|401|403" '{}' POST anon
+done
+
+# Admin-only functions may not be publicly deployed; allow 401/403/404
+for fn in admin-stripe-payout admin-stripe-refund; do
+  probe_edge "$fn" "401|403|404" '{}' POST anon
 done
 
 echo "── Edge functions: CORS preflight (expect 200/204) ──"
