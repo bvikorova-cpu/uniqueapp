@@ -6014,6 +6014,13 @@ export type Database = {
             referencedRelation: "businesses_public"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "business_orders_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "public_businesses"
+            referencedColumns: ["id"]
+          },
         ]
       }
       business_products: {
@@ -6071,6 +6078,13 @@ export type Database = {
             referencedRelation: "businesses_public"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "business_products_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "public_businesses"
+            referencedColumns: ["id"]
+          },
         ]
       }
       business_reviews: {
@@ -6114,6 +6128,13 @@ export type Database = {
             columns: ["business_id"]
             isOneToOne: false
             referencedRelation: "businesses_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "business_reviews_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "public_businesses"
             referencedColumns: ["id"]
           },
         ]
@@ -6168,6 +6189,13 @@ export type Database = {
             columns: ["business_id"]
             isOneToOne: false
             referencedRelation: "businesses_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "business_subscriptions_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "public_businesses"
             referencedColumns: ["id"]
           },
         ]
@@ -42993,6 +43021,13 @@ export type Database = {
             referencedRelation: "businesses_public"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "business_orders_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "public_businesses"
+            referencedColumns: ["id"]
+          },
         ]
       }
       businesses_public: {
@@ -43329,6 +43364,72 @@ export type Database = {
           title?: string | null
           updated_at?: string | null
           views_count?: number | null
+        }
+        Relationships: []
+      }
+      public_businesses: {
+        Row: {
+          address: string | null
+          category: string | null
+          cover_image_url: string | null
+          created_at: string | null
+          description: string | null
+          id: string | null
+          is_active: boolean | null
+          is_open_now: boolean | null
+          latitude: number | null
+          logo_url: string | null
+          longitude: number | null
+          name: string | null
+          opening_hours: Json | null
+          owner_id: string | null
+          qr_code_url: string | null
+          review_count: number | null
+          total_rating: number | null
+          unique_url_slug: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          address?: string | null
+          category?: string | null
+          cover_image_url?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string | null
+          is_active?: boolean | null
+          is_open_now?: boolean | null
+          latitude?: number | null
+          logo_url?: string | null
+          longitude?: number | null
+          name?: string | null
+          opening_hours?: Json | null
+          owner_id?: string | null
+          qr_code_url?: string | null
+          review_count?: number | null
+          total_rating?: number | null
+          unique_url_slug?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          address?: string | null
+          category?: string | null
+          cover_image_url?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string | null
+          is_active?: boolean | null
+          is_open_now?: boolean | null
+          latitude?: number | null
+          logo_url?: string | null
+          longitude?: number | null
+          name?: string | null
+          opening_hours?: Json | null
+          owner_id?: string | null
+          qr_code_url?: string | null
+          review_count?: number | null
+          total_rating?: number | null
+          unique_url_slug?: string | null
+          updated_at?: string | null
         }
         Relationships: []
       }
