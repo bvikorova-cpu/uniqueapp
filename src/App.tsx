@@ -456,8 +456,8 @@ const App = () => {
                 <Toaster />
                 <Sonner />
                 <div className="flex flex-col min-h-screen">
-                  <ErrorBoundary fallback={null}>
-                    <Suspense fallback={null}>
+                  <ErrorBoundary>
+                    <Suspense fallback={<div className="h-16 border-b border-border bg-background/95" aria-hidden="true" />}>
                       <Navbar />
                     </Suspense>
                   </ErrorBoundary>
