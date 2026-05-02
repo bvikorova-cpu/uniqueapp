@@ -17,6 +17,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { CreditCard, ExternalLink, Loader2, RefreshCw, Receipt } from "lucide-react";
 import { PaymentHistoryCard } from "@/components/billing/PaymentHistoryCard";
+import { PurchaseAICreditsDialog } from "@/components/billing/PurchaseAICreditsDialog";
 
 interface Subscription {
   id: string;
@@ -178,6 +179,21 @@ export default function Billing() {
             </CardContent>
           </Card>
         </div>
+
+        {/* AI Credits top-up */}
+        <Card className="border-primary/30">
+          <CardContent className="pt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <div className="text-sm font-medium">AI Credits</div>
+              <p className="text-xs text-muted-foreground mt-1">
+                Top up credits for any AI module — IQ, Analyzer, Cooking, Astrology, Handwriting, Characters and more.
+              </p>
+            </div>
+            <div className="sm:w-64">
+              <PurchaseAICreditsDialog />
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Subscriptions table */}
         <Card>
