@@ -452,6 +452,8 @@ serve(async (req) => {
         pet:                     { amount: 999,  mode: "subscription", name: "Pet Premium" },
         photo_credits:           { amount: 999,  mode: "payment",      name: "Photo Credits" },
         property_listing:        { amount: 4999, mode: "payment",      name: "Property Listing" },
+        lead_boost:              { amount: 1900, mode: "payment",      name: "Lead Boost" },
+        virtual_tour:            { amount: 9900, mode: "payment",      name: "Virtual Tour Hosting" },
         psychology:              { amount: 1999, mode: "subscription", name: "Psychology Premium" },
         reincarnation:           { amount: 999,  mode: "payment",      name: "Reincarnation Reading" },
         science:                 { amount: 999,  mode: "subscription", name: "Science Premium" },
