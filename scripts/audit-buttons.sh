@@ -112,6 +112,7 @@ for path in \
   /time-capsule \
   /time-reversal \
   /multiverse \
+  /blockchain-confessions \
   /auth \
   ; do
   probe_route "$path" "200"
