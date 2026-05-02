@@ -9,8 +9,27 @@ const corsHeaders = {
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
-  const url = `${Deno.env.get("SUPABASE_URL")}/functions/v1/check-subscription`;
+
   const auth = req.headers.get("Authorization") ?? "";
+  if (!auth.startsWith("Bearer ")) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+      status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
+
+  // Validate JWT belongs to a real user (reject anon key)
+  const sb = (await import("https://esm.sh/@supabase/supabase-js@2.57.2")).createClient(
+    Deno.env.get("SUPABASE_URL") ?? "",
+    Deno.env.get("SUPABASE_ANON_KEY") ?? ""
+  );
+  const { data: { user } } = await sb.auth.getUser(auth.replace("Bearer ", ""));
+  if (!user) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+      status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
+
+  const url = `${Deno.env.get("SUPABASE_URL")}/functions/v1/check-subscription`;
   const apikey = Deno.env.get("SUPABASE_ANON_KEY") ?? "";
   const r = await fetch(url, {
     method: "POST",
