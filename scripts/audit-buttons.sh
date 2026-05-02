@@ -13,7 +13,7 @@ set -u
 SUPABASE_URL="${SUPABASE_URL:-https://jufrdzeonywluwutvyxz.supabase.co}"
 ANON_KEY="${ANON_KEY:-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp1ZnJkemVvbnl3bHV3dXR2eXh6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkxMzU0MTgsImV4cCI6MjA3NDcxMTQxOH0.UOe-_WQoTeBGFmnezRHRcjFJaJd71a7rYlurDkI6h4Q}"
 AUTH_JWT="${AUTH_JWT:-}"
-APP_URL="${APP_URL:-https://uniqueapp.fun}"
+APP_URL="${APP_URL:-https://id-preview--3ea492b4-277a-4b1d-a6dd-ca2a3efd9225.lovable.app}"
 
 PASS=0
 FAIL=0
