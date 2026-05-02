@@ -72,9 +72,16 @@ for fn in \
   generate-past-life-regression \
   generate-gift-message \
   text-to-speech \
+  post-confession \
+  vote-absolution \
+  generate-redemption-plan \
+  verify-confession-payment \
   ; do
   probe_edge "$fn" "400|401|403" '{}' POST anon
 done
+
+echo "── Public read endpoints (expect 200) ──"
+probe_edge get-confessions "200" '{"limit":3}' POST anon
 
 # Admin-only functions may not be publicly deployed; allow 401/403/404
 for fn in admin-stripe-payout admin-stripe-refund; do
@@ -105,6 +112,7 @@ for path in \
   /time-capsule \
   /time-reversal \
   /multiverse \
+  /blockchain-confessions \
   /auth \
   ; do
   probe_route "$path" "200"
