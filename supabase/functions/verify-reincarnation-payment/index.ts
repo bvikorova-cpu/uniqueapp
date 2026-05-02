@@ -18,14 +18,32 @@ serve(async (req) => {
   );
 
   try {
-    const authHeader = req.headers.get("Authorization")!;
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader) {
+      return new Response(
+        JSON.stringify({ error: "Missing authorization header" }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 401 }
+      );
+    }
     const token = authHeader.replace("Bearer ", "");
     const { data } = await supabaseClient.auth.getUser(token);
     const user = data.user;
-    if (!user) throw new Error("User not authenticated");
+    if (!user) {
+      return new Response(
+        JSON.stringify({ error: "User not authenticated" }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 401 }
+      );
+    }
 
-    const { sessionId } = await req.json();
-    if (!sessionId) throw new Error("Session ID is required");
+    let body: any = {};
+    try { body = await req.json(); } catch { /* empty body */ }
+    const sessionId = body?.sessionId;
+    if (!sessionId || typeof sessionId !== "string") {
+      return new Response(
+        JSON.stringify({ error: "Session ID is required" }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400 }
+      );
+    }
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
       apiVersion: "2025-08-27.basil",
