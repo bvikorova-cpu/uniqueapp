@@ -422,7 +422,30 @@
     "fillAllFields": "タイトルとコンテンツの両方を入力してください。",
     "postDeleted": "投稿を削除しました",
     "postDeletedDesc": "あなたの投稿は正常に削除されました",
-    "errorDeletingPost": "投稿の削除に失敗しました"
+    "errorDeletingPost": "投稿の削除に失敗しました",
+    "howItWorks": {
+      "title": "使い方",
+      "browseTitle": "閲覧",
+      "browseDesc": "投稿の無料プレビュー",
+      "interactTitle": "参加",
+      "interactDesc": "投稿・いいね・投票にはログイン",
+      "aiTitle": "AIツール",
+      "aiDesc": "1回3〜5クレジット",
+      "premiumTitle": "プレミアム",
+      "premiumDesc": "サブスクですべて解放"
+    },
+    "paywall": {
+      "title": "会話に参加しよう",
+      "description": "Megaforumで{{action}}するにはアカウントが必要です。閲覧は無料 — 参加したいときだけサインインしてください。",
+      "signIn": "サインイン",
+      "createAccount": "アカウント作成",
+      "keepBrowsing": "閲覧を続ける",
+      "footer": "AIツールは3〜5クレジット • プレミアム機能はサブスクが必要",
+      "actionPost": "投稿を公開",
+      "actionLike": "この投稿にいいね",
+      "actionComment": "表示とコメント",
+      "actionDefault": "参加"
+    }
   },
   "psychologist": {
     "title": "オンライン心理学者",

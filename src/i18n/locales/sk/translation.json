@@ -568,7 +568,30 @@
     "fillAllFields": "Vyplňte prosím názov a obsah.",
     "postDeleted": "Príspevok odstránený",
     "postDeletedDesc": "Váš príspevok bol úspešne odstránený",
-    "errorDeletingPost": "Nepodarilo sa odstrániť príspevok"
+    "errorDeletingPost": "Nepodarilo sa odstrániť príspevok",
+    "howItWorks": {
+      "title": "Ako to funguje",
+      "browseTitle": "Prehliadaj",
+      "browseDesc": "Bezplatný náhľad príspevkov",
+      "interactTitle": "Interakcia",
+      "interactDesc": "Prihlás sa na post, like a hlasovanie",
+      "aiTitle": "AI nástroje",
+      "aiDesc": "3–5 kreditov za použitie",
+      "premiumTitle": "Premium",
+      "premiumDesc": "Predplatné odomyká všetko"
+    },
+    "paywall": {
+      "title": "Zapoj sa do diskusie",
+      "description": "Na {{action}} v Megaforum potrebuješ účet. Prehliadanie je zadarmo — prihlás sa len keď chceš reagovať.",
+      "signIn": "Prihlásiť sa",
+      "createAccount": "Vytvoriť účet",
+      "keepBrowsing": "Pokračovať v prehliadaní",
+      "footer": "AI nástroje stoja 3–5 kreditov • Premium funkcie vyžadujú predplatné",
+      "actionPost": "publikovanie príspevku",
+      "actionLike": "lajknutie príspevku",
+      "actionComment": "zobrazenie a komentovanie",
+      "actionDefault": "interakciu"
+    }
   },
   "psychologist": {
     "title": "Online psychológ",
