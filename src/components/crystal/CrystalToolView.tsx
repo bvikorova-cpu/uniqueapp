@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { motion } from "framer-motion";
@@ -28,6 +29,13 @@ interface CrystalToolViewProps {
 export const CrystalToolView = ({ toolName, onBack }: CrystalToolViewProps) => {
   const navigate = useNavigate();
 
+  // Side-effect navigation for tools that route to standalone pages
+  useEffect(() => {
+    if (toolName === "Crystal Marketplace") {
+      navigate("/crystal-marketplace");
+    }
+  }, [toolName, navigate]);
+
   const renderTool = () => {
     switch (toolName) {
       case "AI Energy Reading":
@@ -39,8 +47,7 @@ export const CrystalToolView = ({ toolName, onBack }: CrystalToolViewProps) => {
       case "Crystal Encyclopedia":
         return <CrystalEncyclopediaTool />;
       case "Crystal Marketplace":
-        navigate("/crystal-marketplace");
-        return null;
+        return <div className="text-center py-8 text-muted-foreground">Opening marketplace…</div>;
       case "Crystal Scanner":
         return <CrystalAIAnalysis toolType="scanner" title="Crystal Scanner" description="Upload a clear photo of any crystal and our AI will instantly identify it, provide detailed properties, healing uses, estimated value, and care instructions." needsImage needsText={false} />;
       case "Crystal Collection":
