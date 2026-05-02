@@ -100,6 +100,12 @@ echo "── Edge functions: dunning is public (200), check-sca needs auth (401)
 probe_edge check-dunning   "200" '{}' POST anon
 probe_edge check-sca       "401" '{}' POST anon
 
+echo "── Multiverse Network edge functions (expect 401 without auth) ──"
+probe_edge multiverse-ai-tool "401" '{"action":"chat","input":"hi"}' POST anon
+probe_edge reality-jump       "401" '{}' POST anon
+probe_edge merge-timelines    "401" '{}' POST anon
+probe_edge reality-lottery    "401" '{}' POST anon
+
 echo "── Edge functions: bad input validation (expect 400/401) ──"
 probe_edge create-checkout "400|401" '{"invalid":true}' POST anon
 probe_edge verify-payment  "400|401" '{}' POST anon
@@ -115,6 +121,7 @@ for path in \
   /time-capsule \
   /time-reversal \
   /multiverse \
+  /multiverse-network \
   /blockchain-confessions \
   /phobia-trading \
   /auth \
