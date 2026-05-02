@@ -422,7 +422,30 @@
     "fillAllFields": "请填写标题和内容。",
     "postDeleted": "帖子已删除",
     "postDeletedDesc": "您的帖子已成功删除",
-    "errorDeletingPost": "删除帖子失败"
+    "errorDeletingPost": "删除帖子失败",
+    "howItWorks": {
+      "title": "使用方法",
+      "browseTitle": "浏览",
+      "browseDesc": "免费预览帖子",
+      "interactTitle": "互动",
+      "interactDesc": "登录后可发帖、点赞、投票",
+      "aiTitle": "AI 工具",
+      "aiDesc": "每次使用 3–5 积分",
+      "premiumTitle": "高级版",
+      "premiumDesc": "订阅解锁全部功能"
+    },
+    "paywall": {
+      "title": "加入讨论",
+      "description": "在 Megaforum {{action}} 需要账户。浏览免费 — 想要参与时再登录。",
+      "signIn": "登录",
+      "createAccount": "创建账户",
+      "keepBrowsing": "继续浏览",
+      "footer": "AI 工具消耗 3–5 积分 • 高级功能需要订阅",
+      "actionPost": "发布帖子",
+      "actionLike": "点赞此帖",
+      "actionComment": "查看和评论",
+      "actionDefault": "互动"
+    }
   },
   "psychologist": {
     "title": "在线心理学家",

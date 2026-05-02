@@ -553,7 +553,30 @@
     "fillAllFields": "Bitte füllen Sie sowohl Titel als auch Inhalt aus.",
     "postDeleted": "Beitrag gelöscht",
     "postDeletedDesc": "Ihr Beitrag wurde erfolgreich gelöscht",
-    "errorDeletingPost": "Beitrag konnte nicht gelöscht werden"
+    "errorDeletingPost": "Beitrag konnte nicht gelöscht werden",
+    "howItWorks": {
+      "title": "So funktioniert's",
+      "browseTitle": "Stöbern",
+      "browseDesc": "Kostenlose Vorschau der Beiträge",
+      "interactTitle": "Interagieren",
+      "interactDesc": "Anmelden zum Posten, Liken & Abstimmen",
+      "aiTitle": "KI-Tools",
+      "aiDesc": "3–5 Credits pro Nutzung",
+      "premiumTitle": "Premium",
+      "premiumDesc": "Abo schaltet alles frei"
+    },
+    "paywall": {
+      "title": "Mach mit bei der Diskussion",
+      "description": "Um {{action}} im Megaforum brauchst du ein Konto. Stöbern bleibt kostenlos — melde dich nur an, wenn du mitmachen willst.",
+      "signIn": "Anmelden",
+      "createAccount": "Konto erstellen",
+      "keepBrowsing": "Weiter stöbern",
+      "footer": "KI-Tools kosten 3–5 Credits • Premium-Funktionen erfordern ein Abo",
+      "actionPost": "einen Beitrag zu veröffentlichen",
+      "actionLike": "diesen Beitrag zu liken",
+      "actionComment": "anzusehen & zu kommentieren",
+      "actionDefault": "zu interagieren"
+    }
   },
   "psychologist": {
     "title": "Online Psychologe",

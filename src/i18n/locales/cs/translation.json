@@ -553,7 +553,30 @@
     "fillAllFields": "Vyplňte prosím jak název, tak obsah.",
     "postDeleted": "Příspěvek smazán",
     "postDeletedDesc": "Váš příspěvek byl úspěšně smazán",
-    "errorDeletingPost": "Nepodařilo se smazat příspěvek"
+    "errorDeletingPost": "Nepodařilo se smazat příspěvek",
+    "howItWorks": {
+      "title": "Jak to funguje",
+      "browseTitle": "Prohlížej",
+      "browseDesc": "Bezplatný náhled příspěvků",
+      "interactTitle": "Interakce",
+      "interactDesc": "Přihlaš se pro post, like a hlasování",
+      "aiTitle": "AI nástroje",
+      "aiDesc": "3–5 kreditů za použití",
+      "premiumTitle": "Premium",
+      "premiumDesc": "Předplatné odemyká vše"
+    },
+    "paywall": {
+      "title": "Zapoj se do diskuse",
+      "description": "Pro {{action}} v Megaforum potřebuješ účet. Prohlížení je zdarma — přihlas se jen když chceš reagovat.",
+      "signIn": "Přihlásit se",
+      "createAccount": "Vytvořit účet",
+      "keepBrowsing": "Pokračovat v prohlížení",
+      "footer": "AI nástroje stojí 3–5 kreditů • Premium funkce vyžadují předplatné",
+      "actionPost": "publikování příspěvku",
+      "actionLike": "lajknutí příspěvku",
+      "actionComment": "zobrazení a komentování",
+      "actionDefault": "interakci"
+    }
   },
   "psychologist": {
     "title": "Online Psycholog",

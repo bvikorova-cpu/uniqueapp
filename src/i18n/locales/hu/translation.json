@@ -422,7 +422,30 @@
     "fillAllFields": "Kérjük, töltse ki a címet és a tartalmat is.",
     "postDeleted": "Bejegyzés törölve",
     "postDeletedDesc": "A bejegyzésed sikeresen törölve",
-    "errorDeletingPost": "Bejegyzés törlése sikertelen"
+    "errorDeletingPost": "Bejegyzés törlése sikertelen",
+    "howItWorks": {
+      "title": "Hogyan működik",
+      "browseTitle": "Böngészés",
+      "browseDesc": "Ingyenes előnézet a posztokról",
+      "interactTitle": "Interakció",
+      "interactDesc": "Jelentkezz be posztoláshoz, lájkoláshoz és szavazáshoz",
+      "aiTitle": "AI eszközök",
+      "aiDesc": "3–5 kredit használatonként",
+      "premiumTitle": "Prémium",
+      "premiumDesc": "Az előfizetés mindent feloldoz"
+    },
+    "paywall": {
+      "title": "Csatlakozz a beszélgetéshez",
+      "description": "A(z) {{action}} a Megaforumon fiókot igényel. A böngészés ingyenes — csak akkor jelentkezz be, ha részt akarsz venni.",
+      "signIn": "Bejelentkezés",
+      "createAccount": "Fiók létrehozása",
+      "keepBrowsing": "Tovább böngészés",
+      "footer": "Az AI eszközök 3–5 kreditbe kerülnek • A prémium funkciók előfizetést igényelnek",
+      "actionPost": "poszt közzététele",
+      "actionLike": "poszt lájkolása",
+      "actionComment": "megtekintés és kommentelés",
+      "actionDefault": "interakció"
+    }
   },
   "psychologist": {
     "title": "Online Pszichológus",

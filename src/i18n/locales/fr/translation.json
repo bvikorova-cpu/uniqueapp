@@ -553,7 +553,30 @@
     "fillAllFields": "Veuillez remplir à la fois le titre et le contenu.",
     "postDeleted": "Post supprimé",
     "postDeletedDesc": "Votre post a été supprimé avec succès",
-    "errorDeletingPost": "Échec de la suppression du post"
+    "errorDeletingPost": "Échec de la suppression du post",
+    "howItWorks": {
+      "title": "Comment ça marche",
+      "browseTitle": "Parcourir",
+      "browseDesc": "Aperçu gratuit des publications",
+      "interactTitle": "Interagir",
+      "interactDesc": "Connecte-toi pour publier, aimer & voter",
+      "aiTitle": "Outils IA",
+      "aiDesc": "3–5 crédits par utilisation",
+      "premiumTitle": "Premium",
+      "premiumDesc": "L'abonnement débloque tout"
+    },
+    "paywall": {
+      "title": "Rejoins la conversation",
+      "description": "Pour {{action}} sur Megaforum tu as besoin d'un compte. Parcourir reste gratuit — connecte-toi seulement quand tu veux participer.",
+      "signIn": "Se connecter",
+      "createAccount": "Créer un compte",
+      "keepBrowsing": "Continuer à parcourir",
+      "footer": "Les outils IA coûtent 3–5 crédits • Les fonctionnalités Premium nécessitent un abonnement",
+      "actionPost": "publier un message",
+      "actionLike": "aimer ce message",
+      "actionComment": "voir et commenter",
+      "actionDefault": "interagir"
+    }
   },
   "psychologist": {
     "title": "Psychologue en ligne",
