@@ -316,25 +316,34 @@ const PricingCards = () => {
   const [loading, setLoading] = useState<string | null>(null);
 
   const services = [
-    { id: "dna_analysis", title: "DNA Analysis", price: "€99", type: "one-time", icon: Dna, features: ["Complete genetic sequencing", "AI ancestral memories", "Heritage insights", "Interactive family tree"], highlighted: false },
-    { id: "ancestral_memories", title: "Ancestral Memories", price: "€12", type: "/month", icon: Sparkles, features: ["Monthly story updates", "Photo restoration", "Voice synthesis", "Historical context"], highlighted: true },
-    { id: "genetic_dating", title: "Genetic Dating", price: "€15", type: "/month", icon: Heart, features: ["DNA compatibility matching", "Health trait analysis", "Personality alignment", "Offspring predictions"], highlighted: true },
-    { id: "digital_offspring", title: "Digital Offspring", price: "€149", type: "one-time", icon: Baby, features: ["Interactive AI personality", "Genetic trait inheritance", "Voice & appearance", "Lifetime access"], highlighted: false },
+    { id: "dna_analysis",           title: "DNA Analysis",        price: "€99",  type: "one-time", icon: Dna,       features: ["Complete genetic sequencing", "AI ancestral memories", "Heritage insights", "Interactive family tree"], highlighted: false },
+    { id: "dna_ancestral_memories", title: "Ancestral Memories",  price: "€12",  type: "/month",   icon: Sparkles,  features: ["Monthly story updates", "Photo restoration", "Voice synthesis", "Historical context"], highlighted: true },
+    { id: "dna_genetic_dating",     title: "Genetic Dating",      price: "€15",  type: "/month",   icon: Heart,     features: ["DNA compatibility matching", "Health trait analysis", "Personality alignment", "Offspring predictions"], highlighted: true },
+    { id: "dna_digital_offspring",  title: "Digital Offspring",   price: "€149", type: "one-time", icon: Baby,      features: ["Interactive AI personality", "Genetic trait inheritance", "Voice & appearance", "Lifetime access"], highlighted: false },
   ];
 
-  const handlePurchase = async (serviceType: string) => {
+  const handlePurchase = async (productKey: string) => {
     try {
-      setLoading(serviceType);
+      setLoading(productKey);
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
         toast({ title: "Authentication Required", description: "Please sign in to purchase", variant: "destructive" });
         return;
       }
-      const { data, error } = await supabase.functions.invoke('create-dna-memory-checkout', { body: { serviceType } });
+      // Route through universal create-checkout with the per-service product key
+      // so each tier is billed at its correct €/mode (one-time vs subscription).
+      const { data, error } = await supabase.functions.invoke('create-checkout', {
+        body: { product: productKey, module: 'dna_memory' },
+      });
       if (error) throw error;
-      if (data?.url) { const __w = window.open(data.url, "_blank", "noopener,noreferrer"); if (!__w) { const __w = window.open(data.url, "_blank", "noopener,noreferrer"); if (!__w) window.location.href = data.url; } }
+      if (data?.url) {
+        const w = window.open(data.url, "_blank", "noopener,noreferrer");
+        if (!w) window.location.href = data.url;
+      } else {
+        throw new Error("No checkout URL returned");
+      }
     } catch (error) {
-      console.error('Error:', error);
+      console.error('DNA checkout error:', error);
       toast({ title: "Error", description: "Failed to process purchase", variant: "destructive" });
     } finally {
       setLoading(null);
