@@ -86,9 +86,9 @@ for fn in create-checkout verify-payment generate-gift-message check-dunning che
   probe_cors "$fn"
 done
 
-echo "── Edge functions: public/no-auth-required (expect 200) ──"
+echo "── Edge functions: dunning is public (200), check-sca needs auth (401) ──"
 probe_edge check-dunning   "200" '{}' POST anon
-probe_edge check-sca       "200" '{}' POST anon
+probe_edge check-sca       "401" '{}' POST anon
 
 echo "── Edge functions: bad input validation (expect 400/401) ──"
 probe_edge create-checkout "400|401" '{"invalid":true}' POST anon
