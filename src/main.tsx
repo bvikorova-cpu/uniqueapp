@@ -2,13 +2,36 @@ import { createRoot } from "react-dom/client";
 import { Component, lazy, ReactNode, Suspense } from "react";
 import "./index.css";
 
-const App = lazy(() => import("./App"));
+// Eagerly start fetching the chunks in parallel so the spinner is short.
+// `lazy()` still wraps the same promise, so React Suspense works as before,
+// but the network round-trips for App + GDPR + PWA banner overlap with the
+// initial paint instead of waiting until React mounts.
+const appPromise = import("./App");
+const cookieBannerPromise = import("./components/gdpr/CookieConsentBanner");
+const installBannerPromise = import("./components/pwa/InstallPromptBanner");
+
+const App = lazy(() => appPromise);
 const CookieConsentBanner = lazy(() =>
-  import("./components/gdpr/CookieConsentBanner").then((module) => ({ default: module.CookieConsentBanner }))
+  cookieBannerPromise.then((module) => ({ default: module.CookieConsentBanner }))
 );
 const InstallPromptBanner = lazy(() =>
-  import("./components/pwa/InstallPromptBanner").then((module) => ({ default: module.InstallPromptBanner }))
+  installBannerPromise.then((module) => ({ default: module.InstallPromptBanner }))
 );
+
+// Warm up heavy shared chunks in the background so first navigation inside
+// the app feels instant. These are fire-and-forget; failures are harmless.
+if (typeof window !== "undefined") {
+  const warmup = () => {
+    import("react-router-dom").catch(() => {});
+    import("@tanstack/react-query").catch(() => {});
+    import("@/integrations/supabase/client").catch(() => {});
+  };
+  if ("requestIdleCallback" in window) {
+    (window as any).requestIdleCallback(warmup, { timeout: 2000 });
+  } else {
+    setTimeout(warmup, 200);
+  }
+}
 
 declare global {
   interface Window {
