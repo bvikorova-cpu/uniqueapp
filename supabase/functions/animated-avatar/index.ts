@@ -20,13 +20,23 @@ Deno.serve(async (req) => {
     const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
     const authHeader = req.headers.get("Authorization");
-    if (!authHeader) throw new Error("Missing auth");
+    if (!authHeader?.startsWith("Bearer ")) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
 
     const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
       global: { headers: { Authorization: authHeader } },
     });
     const { data: { user } } = await sb.auth.getUser();
-    if (!user) throw new Error("Unauthorized");
+    if (!user) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
 
     const { description, text, voiceId = "EXAVITQu4vr4xnSDxMaL" } = await req.json();
     if (!description || !text) throw new Error("description and text required");
@@ -99,8 +109,11 @@ Deno.serve(async (req) => {
     }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e) {
     console.error("[animated-avatar]", e);
-    return new Response(JSON.stringify({ error: (e as Error).message }), {
-      status: 400,
+    const msg = (e as Error).message ?? "Unknown error";
+    const status = /unauthorized|not authenticated|missing auth/i.test(msg) ? 401
+                 : /required|missing|too long|invalid/i.test(msg) ? 400 : 500;
+    return new Response(JSON.stringify({ error: msg }), {
+      status,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }

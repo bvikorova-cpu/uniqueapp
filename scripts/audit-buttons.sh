@@ -88,6 +88,11 @@ for fn in \
   send-gift-payment \
   send-comedy-tip \
   check-tipster-subscription \
+  create-holographic-avatar-checkout \
+  check-holographic-access \
+  generate-avatar \
+  animated-avatar \
+  shadow-nightmare-avatar \
   ; do
   probe_edge "$fn" "400|401|403" '{}' POST anon
 done
