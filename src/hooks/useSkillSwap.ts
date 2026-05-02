@@ -34,9 +34,11 @@ export const useSkillSwap = () => {
 
       if (error) throw error;
 
+      // check-subscription edge function vracia { subscribed, subscription_end, ... }
+      // Akceptujeme aj legacy { hasSubscription, subscriptionEnd } pre forward-compat.
       setSubscription({
-        hasSubscription: data?.hasSubscription || false,
-        subscriptionEnd: data?.subscriptionEnd,
+        hasSubscription: Boolean(data?.subscribed ?? data?.hasSubscription),
+        subscriptionEnd: data?.subscription_end ?? data?.subscriptionEnd,
         loading: false,
       });
     } catch (error: any) {
