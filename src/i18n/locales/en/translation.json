@@ -422,7 +422,30 @@
     "fillAllFields": "Please fill in both title and content.",
     "postDeleted": "Post deleted",
     "postDeletedDesc": "Your post was successfully deleted",
-    "errorDeletingPost": "Failed to delete post"
+    "errorDeletingPost": "Failed to delete post",
+    "howItWorks": {
+      "title": "How it works",
+      "browseTitle": "Browse",
+      "browseDesc": "Free preview of posts",
+      "interactTitle": "Interact",
+      "interactDesc": "Login to post, like & vote",
+      "aiTitle": "AI Tools",
+      "aiDesc": "3–5 credits per use",
+      "premiumTitle": "Premium",
+      "premiumDesc": "Subscription unlocks all"
+    },
+    "paywall": {
+      "title": "Join the conversation",
+      "description": "To {{action}} on Megaforum you need an account. Browsing stays free — sign in only when you want to engage.",
+      "signIn": "Sign In",
+      "createAccount": "Create Account",
+      "keepBrowsing": "Keep Browsing",
+      "footer": "AI tools cost 3–5 credits • Premium features require subscription",
+      "actionPost": "publish a post",
+      "actionLike": "like this post",
+      "actionComment": "view & comment",
+      "actionDefault": "interact"
+    }
   },
   "psychologist": {
     "title": "Online Psychologist",
