@@ -109,8 +109,11 @@ Deno.serve(async (req) => {
     }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e) {
     console.error("[animated-avatar]", e);
-    return new Response(JSON.stringify({ error: (e as Error).message }), {
-      status: 400,
+    const msg = (e as Error).message ?? "Unknown error";
+    const status = /unauthorized|not authenticated|missing auth/i.test(msg) ? 401
+                 : /required|missing|too long|invalid/i.test(msg) ? 400 : 500;
+    return new Response(JSON.stringify({ error: msg }), {
+      status,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }
