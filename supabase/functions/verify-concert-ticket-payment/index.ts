@@ -13,8 +13,12 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { sessionId } = await req.json();
-    if (!sessionId) throw new Error("sessionId required");
+    const { sessionId } = await req.json().catch(() => ({}));
+    if (!sessionId) {
+      return new Response(JSON.stringify({ error: "sessionId required" }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400,
+      });
+    }
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
       apiVersion: "2025-08-27.basil",

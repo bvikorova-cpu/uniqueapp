@@ -25,11 +25,20 @@ serve(async (req) => {
   );
 
   try {
-    const authHeader = req.headers.get("Authorization")!;
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader?.startsWith("Bearer ")) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 401,
+      });
+    }
     const token = authHeader.replace("Bearer ", "");
-    const { data } = await supabase.auth.getUser(token);
+    const { data, error: authErr } = await supabase.auth.getUser(token);
     const user = data.user;
-    if (!user?.email) throw new Error("User not authenticated");
+    if (authErr || !user?.email) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 401,
+      });
+    }
 
     const validation = GiftRequestSchema.safeParse(await req.json());
     if (!validation.success) {
@@ -101,9 +110,12 @@ serve(async (req) => {
     });
   } catch (error) {
     console.error("Error creating influencer gift payment:", error);
-    return new Response(
-      JSON.stringify({ error: error instanceof Error ? error.message : String(error) }),
-      { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 500 },
-    );
+    const msg = error instanceof Error ? error.message : String(error);
+    const status = /not authenticated|unauthorized/i.test(msg) ? 401
+      : /missing|not found|already have|unsupported|required/i.test(msg) ? 400
+      : 500;
+    return new Response(JSON.stringify({ error: msg }), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" }, status,
+    });
   }
 });
