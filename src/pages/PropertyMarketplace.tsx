@@ -168,20 +168,35 @@ export default function PropertyMarketplace() {
     if (serviceId === "lead_boost") { setLeadBoostDialogOpen(true); return; }
     try {
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) { toast({ title: "Please sign in", variant: "destructive" }); navigate("/auth"); return; }
+      if (!session) {
+        toast({ title: "Sign in required", description: "Please sign in to continue with the purchase.", variant: "destructive" });
+        navigate("/auth");
+        return;
+      }
+      // Map UI service id → backend product key (+ optional package).
+      const isPackage = ["basic", "premium", "featured"].includes(serviceId);
+      const body: Record<string, unknown> = isPackage
+        ? { product: "property_listing", packageType: serviceId }
+        : serviceId === "virtual_tour"
+        ? { product: "virtual_tour" }
+        : { product: serviceId };
+
       const { data, error } = await supabase.functions.invoke("create-checkout", {
         body: {
-          priceId: `property_${serviceId}`,
-          mode: "payment",
-          successUrl: `${window.location.origin}/property-marketplace?success=true`,
-          cancelUrl: `${window.location.origin}/property-marketplace?canceled=true`,
+          ...body,
+          successUrl: `${window.location.origin}/property-marketplace?payment=success`,
+          cancelUrl: `${window.location.origin}/property-marketplace?payment=canceled`,
         },
       });
       if (error) throw error;
-      if (data?.url) window.open(data.url, "_blank");
-      else toast({ title: "Payment", description: "Checkout is being set up. Please try again." });
-    } catch {
-      toast({ title: "Error", description: "Payment service unavailable. Please try again later.", variant: "destructive" });
+      if (data?.url) {
+        window.open(data.url, "_blank");
+      } else {
+        toast({ title: "Payment", description: "Checkout is being set up. Please try again.", variant: "destructive" });
+      }
+    } catch (err) {
+      console.error("Property checkout error:", err);
+      toast({ title: "Payment unavailable", description: "Could not start checkout. Please try again.", variant: "destructive" });
     }
   };
 
