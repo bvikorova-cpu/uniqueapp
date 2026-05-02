@@ -81,6 +81,47 @@ test.describe("Crystal Energy Network — buttons + redirects", () => {
     await back.click();
     await expect(page.getByText("AI Energy Reading", { exact: true }).first()).toBeVisible();
   });
+
+  // Sequentially click EVERY crystal tool, assert it either opens its tool
+  // view (Back-to-Hub button visible) or redirects (Crystal Marketplace),
+  // verify no JS errors fired, then return to the hub and continue.
+  test("clicks every crystal tool sequentially without errors", async ({ page }) => {
+    const errors = (page as any)._jsErrors as string[];
+    const failures: string[] = [];
+
+    for (const name of CRYSTAL_TOOLS) {
+      const before = errors.length;
+      await page.getByText(name, { exact: true }).first().click();
+
+      try {
+        if (name === "Crystal Marketplace") {
+          await page.waitForURL(/\/crystal-marketplace/, { timeout: 8_000 });
+          await page.goBack();
+          await expect(
+            page.getByText("AI Energy Reading", { exact: true }).first(),
+          ).toBeVisible({ timeout: 8_000 });
+        } else {
+          const back = page.getByRole("button", { name: /back to hub/i });
+          await expect(back).toBeVisible({ timeout: 8_000 });
+          await back.click();
+          await expect(
+            page.getByText("AI Energy Reading", { exact: true }).first(),
+          ).toBeVisible({ timeout: 8_000 });
+        }
+      } catch (e: any) {
+        failures.push(`${name}: ${e.message?.split("\n")[0] ?? e}`);
+        // Recover: navigate back to hub for the next iteration
+        await page.goto("/crystal-energy-network", { waitUntil: "domcontentloaded" });
+      }
+
+      const newErrors = errors.slice(before);
+      if (newErrors.length) {
+        failures.push(`${name} JS errors: ${newErrors.join(" | ")}`);
+      }
+    }
+
+    expect(failures, `Per-tool failures:\n${failures.join("\n")}`).toEqual([]);
+  });
 });
 
 test.describe("Crystal edge functions — anonymous calls must be rejected", () => {
