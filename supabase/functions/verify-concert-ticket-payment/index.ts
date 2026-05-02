@@ -55,9 +55,18 @@ serve(async (req) => {
     );
   } catch (error) {
     console.error("verify-concert-ticket-payment error:", error);
+    const message = error instanceof Error ? error.message : "Unknown";
+    // Stripe rejects invalid/unknown session IDs with StripeInvalidRequestError —
+    // surface those as 400 (client error) instead of 500 (server fault).
+    const isStripeBadRequest =
+      (error as { type?: string })?.type === "StripeInvalidRequestError" ||
+      /No such checkout\.session|Invalid.*sessionId|Missing required param/i.test(message);
     return new Response(
-      JSON.stringify({ error: error instanceof Error ? error.message : "Unknown" }),
-      { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 500 },
+      JSON.stringify({ error: message }),
+      {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: isStripeBadRequest ? 400 : 500,
+      },
     );
   }
 });
