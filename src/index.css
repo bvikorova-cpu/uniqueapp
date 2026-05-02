@@ -435,8 +435,12 @@ All colors MUST be HSL.
     @apply border-border;
   }
 
+  html {
+    background: hsl(var(--background));
+  }
+
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground min-h-screen;
   }
 
   /* Glassmorphism Effect */
