@@ -54,9 +54,10 @@ serve(async (req) => {
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     log("ERROR", { message: errorMessage });
+    const status = /unauth|jwt|token|missing auth/i.test(errorMessage) ? 401 : 500;
     return new Response(JSON.stringify({ error: errorMessage }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 500,
+      status,
     });
   }
 });
