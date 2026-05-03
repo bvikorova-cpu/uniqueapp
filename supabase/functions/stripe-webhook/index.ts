@@ -17,6 +17,113 @@ const log = (step: string, details?: unknown) => {
   console.log(`[STRIPE-WEBHOOK] ${step}${details ? " " + JSON.stringify(details) : ""}`);
 };
 
+// ─── Megatalent: price → tier mapping (mirrors check-megatalent-subscription) ──
+const MEGATALENT_PRICE_TO_TIER: Record<string, "premium" | "top_premium"> = {
+  price_1TOvuRGaXSfGtYFt6sfpt2Dy: "premium",
+  price_1TOvuTGaXSfGtYFtIheCgIzQ: "top_premium",
+};
+const MEGATALENT_TIER_PRICE: Record<string, number> = {
+  premium: 10,
+  top_premium: 15,
+};
+
+/**
+ * Upsert megatalent_subscriptions from a Stripe Subscription.
+ * Called on subscription.created / .updated / checkout.session.completed.
+ * Idempotent: safe to call multiple times for the same subscription.
+ */
+async function syncMegatalentSubscription(
+  supabase: ReturnType<typeof createClient>,
+  stripe: Stripe,
+  sub: Stripe.Subscription,
+): Promise<void> {
+  // Detect if this subscription contains a megatalent price.
+  const mtItem = sub.items.data.find((it) => MEGATALENT_PRICE_TO_TIER[it.price.id]);
+  if (!mtItem) return; // not a megatalent sub — ignore
+
+  const tier = MEGATALENT_PRICE_TO_TIER[mtItem.price.id];
+
+  // Resolve user_id: prefer metadata (set on checkout), fallback to email lookup
+  let userId: string | null = (sub.metadata?.user_id as string) || null;
+  const customerId = typeof sub.customer === "string" ? sub.customer : sub.customer?.id;
+  if (!userId && customerId) {
+    try {
+      const cust = await stripe.customers.retrieve(customerId);
+      if (!cust.deleted) {
+        const email = (cust as Stripe.Customer).email;
+        if (email) {
+          const { data: prof } = await supabase
+            .from("profiles").select("id").eq("email", email).maybeSingle();
+          userId = (prof as any)?.id ?? null;
+        }
+      }
+    } catch (e) {
+      log("megatalent: customer lookup failed", { err: (e as Error).message });
+    }
+  }
+  if (!userId) {
+    log("megatalent: no user_id resolvable, skipping", { sub: sub.id });
+    return;
+  }
+
+  const isActive = sub.status === "active" || sub.status === "trialing";
+  const periodEnd = sub.current_period_end
+    ? new Date(sub.current_period_end * 1000).toISOString()
+    : null;
+
+  const payload = {
+    user_id: userId,
+    tier,
+    price: MEGATALENT_TIER_PRICE[tier],
+    bonus_votes: tier === "top_premium" ? 100000 : 0,
+    win_chance_boost: tier === "top_premium" ? 50 : 0,
+    status: isActive ? "active" : "inactive",
+    stripe_customer_id: customerId ?? null,
+    stripe_subscription_id: sub.id,
+    current_period_end: periodEnd,
+    updated_at: new Date().toISOString(),
+  };
+
+  // Upsert by user_id (one row per user)
+  const { data: existing } = await supabase
+    .from("megatalent_subscriptions")
+    .select("id")
+    .eq("user_id", userId)
+    .maybeSingle();
+
+  if (existing) {
+    const { error } = await supabase
+      .from("megatalent_subscriptions")
+      .update(payload)
+      .eq("id", (existing as any).id);
+    if (error) log("megatalent upsert (update) failed", { err: error.message });
+    else log("megatalent subscription synced (update)", { user: userId, tier, status: payload.status });
+  } else {
+    const { error } = await supabase
+      .from("megatalent_subscriptions")
+      .insert({ ...payload, started_at: new Date().toISOString() });
+    if (error) log("megatalent upsert (insert) failed", { err: error.message });
+    else log("megatalent subscription synced (insert)", { user: userId, tier });
+  }
+
+  // Notify the user that premium is unlocked (only on first activation).
+  if (isActive && !existing) {
+    try {
+      await supabase.from("notifications").insert({
+        user_id: userId,
+        type: "megatalent_premium_unlocked",
+        title: tier === "top_premium" ? "Top Premium aktivovaný 🚀" : "Premium aktivovaný ⭐",
+        message: tier === "top_premium"
+          ? "Tvoje Megatalent Top Premium funkcie sú odomknuté: 100 000 bonusových hlasov + 50% boost."
+          : "Tvoje Megatalent Premium funkcie sú odomknuté.",
+        is_read: false,
+      });
+    } catch (e) {
+      log("megatalent unlock notification failed", { err: (e as Error).message });
+    }
+  }
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
