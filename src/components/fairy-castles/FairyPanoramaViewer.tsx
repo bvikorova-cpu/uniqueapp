@@ -819,13 +819,23 @@ export function FairyPanoramaViewer({
     if (ambientSound && !audioRef.current) {
       const audio = new Audio(ambientSound);
       audio.loop = true;
-      audio.volume = ambientVolume;
+      audio.preload = 'auto';
+      audio.volume = isAmbientMuted ? 0 : ambientVolume;
       audioRef.current = audio;
-      
-      // Auto-play ambient sound
-      audio.play().catch(error => {
-        console.log("Ambient sound autoplay prevented:", error);
-      });
+
+      audio.play()
+        .then(() => {
+          // Re-apply volume after play() resolves (Safari quirk)
+          audio.volume = isAmbientMuted ? 0 : ambientVolume;
+        })
+        .catch((err: any) => {
+          if (err?.name === 'NotAllowedError' && !audioUnlockedRef.current) {
+            // Will auto-resume after first user gesture (handled in unlock effect)
+            setNeedsGesture(true);
+          } else {
+            console.log('Ambient sound autoplay prevented:', err);
+          }
+        });
     }
 
     return () => {
