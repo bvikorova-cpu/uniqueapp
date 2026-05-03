@@ -1162,6 +1162,20 @@ export function FairyPanoramaViewer({
             <span className="text-[10px] font-semibold text-gray-600 uppercase tracking-wider w-14 text-right">Hotspot</span>
           </div>
         )}
+
+        {/* Reset audio prefs */}
+        <div className="border-t border-gray-200 pt-2 flex justify-end">
+          <Button
+            onClick={handleResetAudio}
+            variant="ghost"
+            size="sm"
+            className="h-7 text-[11px] text-gray-600 hover:text-gray-900 gap-1.5"
+            title="Reset Guide, Hotspot and Ambient volumes to defaults"
+          >
+            <RotateCcw className="h-3.5 w-3.5" />
+            Reset audio
+          </Button>
+        </div>
       </div>
 
       {/* Help Overlay */}
