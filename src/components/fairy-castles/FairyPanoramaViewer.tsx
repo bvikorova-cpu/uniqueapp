@@ -1276,6 +1276,20 @@ export function FairyPanoramaViewer({
         </div>
       </div>
 
+      {/* Audio gesture banner — required by iOS/Android to allow autoplay */}
+      {needsGesture && !audioUnlocked && (
+        <button
+          onClick={() => {
+            // The unlock effect's listeners will fire from this very click and resume queued audio
+            setNeedsGesture(false);
+          }}
+          className="fixed bottom-44 left-1/2 -translate-x-1/2 z-30 bg-gradient-to-r from-purple-600 to-blue-600 text-white px-5 py-3 rounded-full shadow-2xl flex items-center gap-2 animate-pulse"
+        >
+          <Volume2 className="h-5 w-5" />
+          <span className="text-sm font-semibold">Tap to enable audio</span>
+        </button>
+      )}
+
       {/* Help Overlay */}
       {showInfo && (
         <div className="absolute top-24 left-1/2 -translate-x-1/2 bg-white/95 backdrop-blur-sm p-6 rounded-2xl shadow-2xl max-w-md animate-fade-in">
