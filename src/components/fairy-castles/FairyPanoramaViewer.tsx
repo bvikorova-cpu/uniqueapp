@@ -88,6 +88,7 @@ interface FairyPanoramaViewerProps {
   imageUrl: string;
   audioGuideText?: string;
   ambientSound?: string;
+  roomName?: string;
   collectibles?: Array<{
     id: string;
     position_x: number;
