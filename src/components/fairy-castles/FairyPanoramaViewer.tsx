@@ -3,7 +3,7 @@ import { Canvas, useThree, useFrame } from "@react-three/fiber";
 import { OrbitControls, Html } from "@react-three/drei";
 import * as THREE from "three";
 import { Button } from "@/components/ui/button";
-import { Info, Volume2, VolumeX, Sparkles, Languages, Crosshair, BookOpen, Crown, Gem, Wand2, MapPin } from "lucide-react";
+import { Info, Volume2, VolumeX, Sparkles, Languages, Crosshair, BookOpen, Crown, Gem, Wand2, MapPin, RotateCcw } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -625,6 +625,29 @@ export function FairyPanoramaViewer({
     }
   }, [poiVolume, isPoiMuted]);
 
+  // Reset all audio preferences to defaults (and persist immediately)
+  const handleResetAudio = () => {
+    setAmbientVolume(0.3);
+    setIsAmbientMuted(false);
+    setGuideVolume(1);
+    setIsGuideMuted(false);
+    setPoiVolume(1);
+    setIsPoiMuted(false);
+    // Apply immediately to live audio (effects also handle this on next tick)
+    if (audioRef.current) audioRef.current.volume = 0.3;
+    if (elevenLabsAudioRef.current) elevenLabsAudioRef.current.volume = 1;
+    if (poiAudioRef.current) poiAudioRef.current.volume = 1;
+    // Persist immediately (effects will also write, but be safe if user navigates)
+    try {
+      localStorage.setItem('fairy.ambientVolume', '0.3');
+      localStorage.setItem('fairy.ambientMuted', '0');
+      localStorage.setItem('fairy.guideVolume', '1');
+      localStorage.setItem('fairy.guideMuted', '0');
+      localStorage.setItem('fairy.poiVolume', '1');
+      localStorage.setItem('fairy.poiMuted', '0');
+    } catch {}
+  };
+
   // Reset POIs when room changes
   useEffect(() => {
     setActivePoiId(null);
@@ -1139,6 +1162,20 @@ export function FairyPanoramaViewer({
             <span className="text-[10px] font-semibold text-gray-600 uppercase tracking-wider w-14 text-right">Hotspot</span>
           </div>
         )}
+
+        {/* Reset audio prefs */}
+        <div className="border-t border-gray-200 pt-2 flex justify-end">
+          <Button
+            onClick={handleResetAudio}
+            variant="ghost"
+            size="sm"
+            className="h-7 text-[11px] text-gray-600 hover:text-gray-900 gap-1.5"
+            title="Reset Guide, Hotspot and Ambient volumes to defaults"
+          >
+            <RotateCcw className="h-3.5 w-3.5" />
+            Reset audio
+          </Button>
+        </div>
       </div>
 
       {/* Help Overlay */}
