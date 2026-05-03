@@ -1017,7 +1017,34 @@ export function FairyPanoramaViewer({
             </DropdownMenu>
           </div>
 
-          {/* Audio Progress & Sound Wave */}
+          {/* Guide volume + mute */}
+          <div className="bg-white/90 backdrop-blur-sm rounded-xl px-3 py-2 shadow-lg flex items-center gap-2">
+            <Button
+              onClick={() => setIsGuideMuted((m) => !m)}
+              variant="ghost"
+              size="icon"
+              className="h-7 w-7"
+              aria-label={isGuideMuted ? 'Unmute guide' : 'Mute guide'}
+              title={isGuideMuted ? 'Unmute guide' : 'Mute guide'}
+            >
+              {isGuideMuted || guideVolume === 0 ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
+            </Button>
+            <input
+              type="range"
+              min="0"
+              max="1"
+              step="0.05"
+              value={isGuideMuted ? 0 : guideVolume}
+              onChange={(e) => {
+                const v = parseFloat(e.target.value);
+                setGuideVolume(v);
+                if (v > 0 && isGuideMuted) setIsGuideMuted(false);
+              }}
+              className="w-28 accent-purple-600"
+              aria-label="Guide volume"
+            />
+            <span className="text-[10px] font-semibold text-gray-600 uppercase tracking-wider">Guide</span>
+          </div>
           {isPlaying && (
             <div className="bg-white/90 backdrop-blur-sm rounded-xl p-3 shadow-lg max-w-xs">
               <div className="flex items-center gap-2 mb-2">
