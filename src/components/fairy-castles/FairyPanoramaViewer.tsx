@@ -1,9 +1,9 @@
-import { useRef, useEffect, useState } from "react";
-import { Canvas, useThree } from "@react-three/fiber";
+import { useRef, useEffect, useState, useMemo } from "react";
+import { Canvas, useThree, useFrame } from "@react-three/fiber";
 import { OrbitControls, Html } from "@react-three/drei";
 import * as THREE from "three";
 import { Button } from "@/components/ui/button";
-import { Info, Volume2, VolumeX, Sparkles, Languages } from "lucide-react";
+import { Info, Volume2, VolumeX, Sparkles, Languages, Crosshair, BookOpen, Crown, Gem, Wand2, MapPin } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
