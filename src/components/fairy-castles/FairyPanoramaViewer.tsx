@@ -680,7 +680,7 @@ export function FairyPanoramaViewer({
 
     if (!url) return;
     const audio = new Audio(url);
-    audio.volume = 1;
+    audio.volume = isPoiMuted ? 0 : poiVolume;
     poiAudioRef.current = audio;
     audio.play().catch(() => {});
   };
