@@ -411,6 +411,10 @@ serve(async (req) => {
       case "customer.subscription.created":
       case "customer.subscription.updated": {
         const sub = event.data.object as Stripe.Subscription;
+
+        // ── Megatalent: instantly sync subscription state so premium unlocks ──
+        await syncMegatalentSubscription(supabase, stripe, sub);
+
         if (sub.status !== "active" && sub.status !== "trialing") break;
 
         // Win-back claim detection via metadata
