@@ -483,6 +483,10 @@ serve(async (req) => {
       // ─── SUBSCRIPTION CANCELLED → create win-back campaign ──────────
       case "customer.subscription.deleted": {
         const sub = event.data.object as Stripe.Subscription;
+
+        // ── Megatalent: deactivate subscription row immediately ─────────────
+        await syncMegatalentSubscription(supabase, stripe, sub);
+
         const customerId = typeof sub.customer === "string" ? sub.customer : sub.customer?.id;
         if (!customerId) break;
         let email: string | null = null;
