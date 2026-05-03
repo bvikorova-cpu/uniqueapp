@@ -901,13 +901,34 @@ export function FairyPanoramaViewer({
     }
 
     const audio = new Audio(audioUrl);
+    audio.preload = 'auto';
     audio.volume = isGuideMuted ? 0 : guideVolume;
     audio.onended = () => setIsPlaying(false);
     audio.onerror = () => setIsPlaying(false);
-    audio.play();
     elevenLabsAudioRef.current = audio;
     setIsPlaying(true);
+
+    audio.play()
+      .then(() => {
+        audio.volume = isGuideMuted ? 0 : guideVolume;
+      })
+      .catch((err: any) => {
+        if (err?.name === 'NotAllowedError') {
+          pendingGuideUrlRef.current = audioUrl;
+          setNeedsGesture(true);
+          setIsPlaying(false);
+        } else {
+          console.warn('Guide audio play failed:', err);
+          setIsPlaying(false);
+        }
+      });
   };
+
+  // Wire refs for unlock effect to call after first user gesture
+  useEffect(() => {
+    playAudioRef.current = playAudio;
+    playPoiAudioRef.current = playPoiAudio;
+  });
 
   return (
     <div className="relative w-full h-screen">
