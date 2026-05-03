@@ -808,8 +808,103 @@ export function FairyPanoramaViewer({
             />
           );
         })}
+
+        {/* Story / Info / Treasure POIs */}
+        {pois.map((poi) => (
+          <PoiMarker
+            key={poi.id}
+            poi={poi}
+            isActive={activePoiId === poi.id}
+            isVisited={visitedPois.has(poi.id)}
+            onClick={() => handlePoiClick(poi)}
+            onGazeEnter={() => { /* hover hint only */ }}
+            onGazeLeave={() => { /* hover hint only */ }}
+          />
+        ))}
+
+        <GazeTracker
+          pois={pois}
+          onGazeStart={handleGazeStart}
+          onGazeEnd={handleGazeEnd}
+        />
+
         <CameraController />
       </Canvas>
+
+      {/* Centered gaze reticle (helps user aim at hotspots) */}
+      <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
+        <div className={`relative transition-all duration-300 ${activePoi ? 'scale-125' : 'scale-100'}`}>
+          <Crosshair
+            className={`h-6 w-6 drop-shadow-lg transition-colors ${
+              activePoi ? 'text-amber-300' : 'text-white/60'
+            }`}
+          />
+          {activePoi && (
+            <div className="absolute -inset-3 rounded-full border-2 border-amber-300/70 animate-ping" />
+          )}
+        </div>
+      </div>
+
+      {/* POI counter chip */}
+      {pois.length > 0 && (
+        <div className="absolute top-44 right-6 z-10 bg-black/60 backdrop-blur-sm text-white text-xs px-3 py-1.5 rounded-full border border-white/20 flex items-center gap-1.5">
+          <MapPin className="h-3.5 w-3.5 text-amber-300" />
+          <span className="font-semibold">{visitedPois.size}/{pois.length}</span>
+          <span className="opacity-70">discovered</span>
+        </div>
+      )}
+
+      {/* POI Info Panel — gaze or click triggered */}
+      {activePoi && !poiPanelDismissed && (
+        <div className="absolute bottom-28 left-1/2 -translate-x-1/2 z-20 max-w-md w-[calc(100%-2rem)] animate-fade-in">
+          <div className="bg-card/95 backdrop-blur-md rounded-2xl shadow-2xl border border-border/60 p-5">
+            <div className="flex items-start gap-3">
+              <div
+                className="flex-shrink-0 h-10 w-10 rounded-xl flex items-center justify-center"
+                style={{ backgroundColor: POI_ICON[activePoi.kind].color + '33' }}
+              >
+                {activePoi.kind === 'story' && <BookOpen className="h-5 w-5 text-purple-500" />}
+                {activePoi.kind === 'info' && <Info className="h-5 w-5 text-blue-500" />}
+                {activePoi.kind === 'treasure' && <Gem className="h-5 w-5 text-amber-500" />}
+                {activePoi.kind === 'character' && <Crown className="h-5 w-5 text-pink-500" />}
+                {activePoi.kind === 'landmark' && <Wand2 className="h-5 w-5 text-emerald-500" />}
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between gap-2 mb-1">
+                  <h4 className="font-bold text-base">{activePoi.title}</h4>
+                  <button
+                    onClick={() => setPoiPanelDismissed(true)}
+                    className="text-muted-foreground hover:text-foreground text-xs"
+                    aria-label="Close hotspot info"
+                  >
+                    ✕
+                  </button>
+                </div>
+                <p className="text-sm text-muted-foreground leading-relaxed">{activePoi.narrative}</p>
+                <div className="flex items-center gap-2 mt-3">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => playPoiAudio(activePoi)}
+                    className="h-8 text-xs"
+                  >
+                    <Volume2 className="mr-1 h-3.5 w-3.5" /> Replay
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => setAutoGazeAudio((v) => !v)}
+                    className="h-8 text-xs"
+                    title="Toggle automatic audio when you look at hotspots"
+                  >
+                    {autoGazeAudio ? '🎧 Auto-play: On' : '🔇 Auto-play: Off'}
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Audio Guide Control */}
       {audioGuideText && (
