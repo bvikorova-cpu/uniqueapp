@@ -63,11 +63,21 @@ serve(async (req) => {
     const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
     if (!OPENAI_API_KEY) throw new Error("OPENAI_API_KEY not configured");
 
+    // Equirectangular 360° panorama prompts (2:1 aspect, full spherical projection)
+    // Key terms: "equirectangular projection", "360 degree spherical panorama",
+    // "seamless edges" — these guide gpt-image-1 toward VR-ready output.
+    const basePrompt = (scene: string) =>
+      `Equirectangular 360-degree spherical panorama, full VR-ready projection (2:1 aspect ratio), ` +
+      `seamless left and right edges that wrap continuously, horizon perfectly centered, ` +
+      `no visible distortion at the equator, photorealistic 8K HDR quality, captured with Insta360 Pro 2 camera, ` +
+      `natural lighting, sharp focus, ultra-detailed textures, no people in foreground, no watermarks, no text. ` +
+      `SCENE: ${scene}`;
+
     const scenes = [
-      `Stunning 360-degree panoramic view of ${destination}, golden hour, ultra wide, photorealistic`,
-      `Iconic landmark of ${destination}, daytime, vibrant, photorealistic, ultra wide`,
-      `Local street scene in ${destination}, atmospheric, cinematic, photorealistic`,
-      `${destination} at night, neon lights, cinematic, photorealistic, ultra wide`,
+      basePrompt(`Stunning aerial vista of ${destination} during golden hour sunset, warm cinematic lighting, dramatic clouds`),
+      basePrompt(`Most iconic landmark of ${destination}, bright daytime, blue sky, vibrant colors, tourist viewpoint`),
+      basePrompt(`Authentic local street in ${destination}, atmospheric ambiance, cultural details, market or plaza scene`),
+      basePrompt(`${destination} skyline at twilight blue hour, illuminated buildings, neon signs reflecting, magical atmosphere`),
     ];
 
     const imageUrls: string[] = [];
@@ -84,6 +94,7 @@ serve(async (req) => {
           prompt,
           n: 1,
           size: "1536x1024",
+          quality: "high",
         }),
       });
       if (!aiResp.ok) {
