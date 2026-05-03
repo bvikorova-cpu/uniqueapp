@@ -273,24 +273,6 @@ serve(async (req) => {
               .eq("status", "awaiting_payment");
             if (escErr) log("escrow flip failed", { error: escErr.message });
 
-          // ── Megatalent: instantly fetch & sync subscription on checkout ──
-          // This is the fastest possible unlock — fires within seconds of payment,
-          // before customer.subscription.created may even arrive.
-          if (session.mode === "subscription" && session.metadata?.module === "megatalent") {
-            const subId = typeof session.subscription === "string"
-              ? session.subscription
-              : session.subscription?.id;
-            if (subId) {
-              try {
-                const sub = await stripe.subscriptions.retrieve(subId);
-                await syncMegatalentSubscription(supabase, stripe, sub);
-                log("megatalent unlocked via checkout.completed", { user: session.metadata?.user_id, sub: subId });
-              } catch (e) {
-                log("megatalent checkout sync failed", { err: (e as Error).message });
-              }
-            }
-          }
-
             const applicationId = session.metadata?.application_id;
             if (applicationId) {
               await supabase
@@ -311,6 +293,24 @@ serve(async (req) => {
                   title: "Campaign funded — start the work!",
                   message: `The brand has paid €${(esc.amount_cents / 100).toFixed(2)} into escrow. Deliver the agreed content; you'll be paid out when the brand confirms.`,
                 });
+              }
+            }
+          }
+
+          // ── Megatalent: instantly fetch & sync subscription on checkout ──
+          // This is the fastest possible unlock — fires within seconds of payment,
+          // before customer.subscription.created may even arrive.
+          if (session.mode === "subscription" && session.metadata?.module === "megatalent") {
+            const subId = typeof session.subscription === "string"
+              ? session.subscription
+              : session.subscription?.id;
+            if (subId) {
+              try {
+                const sub = await stripe.subscriptions.retrieve(subId);
+                await syncMegatalentSubscription(supabase, stripe, sub);
+                log("megatalent unlocked via checkout.completed", { user: session.metadata?.user_id, sub: subId });
+              } catch (e) {
+                log("megatalent checkout sync failed", { err: (e as Error).message });
               }
             }
           }
