@@ -15,8 +15,8 @@ const COSTS: Record<Feature, number> = {
   heatmap_analysis: 4,
 };
 
-const LOVABLE_AI_URL = "https://ai.gateway.lovable.dev/v1/chat/completions";
-const MODEL = "google/gemini-2.5-flash";
+const LOVABLE_AI_URL = "https://api.openai.com/v1/chat/completions";
+const MODEL = "gpt-4o-mini";
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -59,8 +59,8 @@ Deno.serve(async (req) => {
       }, 402);
     }
 
-    const apiKey = Deno.env.get("LOVABLE_API_KEY");
-    if (!apiKey) return json({ error: "MISSING_LOVABLE_API_KEY" }, 500);
+    const apiKey = Deno.env.get("OPENAI_API_KEY");
+    if (!apiKey) return json({ error: "MISSING_OPENAI_API_KEY" }, 500);
 
     let output: any = {};
 

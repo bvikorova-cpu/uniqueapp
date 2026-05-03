@@ -80,10 +80,9 @@ serve(async (req) => {
     }
 
     // Generate the AI reading.
-    const lovableKey = Deno.env.get("LOVABLE_API_KEY");
     const openaiKey = Deno.env.get("OPENAI_API_KEY");
-    if (!lovableKey && !openaiKey) {
-      return jsonResponse({ error: "AI service not configured" }, 500);
+    if (!openaiKey) {
+      return jsonResponse({ error: "OPENAI_API_KEY not configured" }, 500);
     }
 
     const userContext = [
@@ -116,12 +115,9 @@ Generate exactly ${livesCount} past ${livesCount === 1 ? "life" : "lives"}. Make
 
     const userPrompt = `Generate a unique past life reading.\n\n${userContext}${partnerContext}`;
 
-    const useLovable = !!lovableKey;
-    const aiUrl = useLovable
-      ? "https://ai.gateway.lovable.dev/v1/chat/completions"
-      : "https://api.openai.com/v1/chat/completions";
-    const aiKey = useLovable ? lovableKey : openaiKey;
-    const model = useLovable ? "google/gemini-2.5-flash" : "gpt-4o-mini";
+    const aiUrl = "https://api.openai.com/v1/chat/completions";
+    const aiKey = openaiKey;
+    const model = "gpt-4o-mini";
 
     const aiResponse = await fetch(aiUrl, {
       method: "POST",
