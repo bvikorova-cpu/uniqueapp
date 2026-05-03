@@ -603,6 +603,58 @@ export function FairyPanoramaViewer({
   const [poiPanelDismissed, setPoiPanelDismissed] = useState(false);
   const [autoGazeAudio, setAutoGazeAudio] = useState(true);
   const poiAudioRef = useRef<HTMLAudioElement | null>(null);
+  const audioUnlockedRef = useRef<boolean>(false);
+  const [audioUnlocked, setAudioUnlocked] = useState(false);
+  const [needsGesture, setNeedsGesture] = useState(false);
+  const pendingPoiRef = useRef<Poi | null>(null);
+  const pendingGuideUrlRef = useRef<string | null>(null);
+
+  // Unlock audio after the first user gesture (required by iOS Safari, Android Chrome).
+  useEffect(() => {
+    if (audioUnlockedRef.current) return;
+    const unlock = async () => {
+      if (audioUnlockedRef.current) return;
+      try {
+        // Play a 1-frame silent audio to unlock the HTMLAudioElement context
+        const silent = new Audio(
+          'data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA//tQxAADB8AhSmxhIIEVCSiJrDCQBTcu3UrAIwUdkRgQbFAZC1CQEwTJ9mjRvBA4UOLD8nKVOWfh+UlK3z/177OXrfOdKl7pyn3Xf//FJAhhEEEDhwAQAYAGzaBWyQI///4AwAAAQA0AAAQAAACgAQQAAAAAAAQAAJAAYBgGAAAAAAAAAAAAAAAAAAA='
+        );
+        silent.volume = 0;
+        await silent.play();
+        silent.pause();
+        audioUnlockedRef.current = true;
+        setAudioUnlocked(true);
+        setNeedsGesture(false);
+
+        // Replay any audio that was queued while locked
+        if (audioRef.current && audioRef.current.paused) {
+          audioRef.current.volume = isAmbientMuted ? 0 : ambientVolume;
+          audioRef.current.play().catch(() => {});
+        }
+        if (pendingGuideUrlRef.current) {
+          const url = pendingGuideUrlRef.current;
+          pendingGuideUrlRef.current = null;
+          // Re-trigger guide playback
+          playAudioRef.current?.(url);
+        }
+        if (pendingPoiRef.current) {
+          const poi = pendingPoiRef.current;
+          pendingPoiRef.current = null;
+          playPoiAudioRef.current?.(poi);
+        }
+      } catch (e) {
+        console.warn('Audio unlock failed:', e);
+      }
+    };
+
+    const events: Array<keyof WindowEventMap> = ['pointerdown', 'touchstart', 'click', 'keydown'];
+    events.forEach((ev) => window.addEventListener(ev, unlock, { once: false, passive: true }));
+    return () => events.forEach((ev) => window.removeEventListener(ev, unlock));
+  }, [ambientVolume, isAmbientMuted]);
+
+  // Refs to playback functions so the unlock effect can call them without dep churn
+  const playAudioRef = useRef<((url: string) => void) | null>(null);
+  const playPoiAudioRef = useRef<((poi: Poi) => Promise<void>) | null>(null);
   const activePoi = pois.find((p) => p.id === activePoiId) || null;
 
   // Persist audio preferences across sessions
