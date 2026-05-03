@@ -1,9 +1,9 @@
-import { useRef, useEffect, useState } from "react";
-import { Canvas, useThree } from "@react-three/fiber";
+import { useRef, useEffect, useState, useMemo } from "react";
+import { Canvas, useThree, useFrame } from "@react-three/fiber";
 import { OrbitControls, Html } from "@react-three/drei";
 import * as THREE from "three";
 import { Button } from "@/components/ui/button";
-import { Info, Volume2, VolumeX, Sparkles, Languages } from "lucide-react";
+import { Info, Volume2, VolumeX, Sparkles, Languages, Crosshair, BookOpen, Crown, Gem, Wand2, MapPin } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -88,6 +88,7 @@ interface FairyPanoramaViewerProps {
   imageUrl: string;
   audioGuideText?: string;
   ambientSound?: string;
+  roomName?: string;
   collectibles?: Array<{
     id: string;
     position_x: number;
@@ -292,6 +293,242 @@ function CollectibleMarker({
   );
 }
 
+// ============ POI HOTSPOTS (story / info / treasure / character) ============
+type PoiKind = "story" | "info" | "treasure" | "character" | "landmark";
+
+interface Poi {
+  id: string;
+  kind: PoiKind;
+  title: string;
+  narrative: string;
+  // Spherical coords on the inside of the sphere (yaw deg, pitch deg)
+  yaw: number;
+  pitch: number;
+}
+
+// Deterministic hash so positions are stable across renders
+function hashStr(s: string): number {
+  let h = 0;
+  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0;
+  return Math.abs(h);
+}
+
+function buildPoisFromRoom(roomKey: string, roomName: string, audioGuideText: string): Poi[] {
+  const name = (roomName || "").toLowerCase();
+  const baseSeed = hashStr(roomKey || roomName);
+
+  // Pick a themed POI palette by room name
+  const palette: Array<Omit<Poi, "id" | "yaw" | "pitch">> = [];
+
+  const push = (p: Omit<Poi, "id" | "yaw" | "pitch">) => palette.push(p);
+
+  if (name.includes("ballroom") || name.includes("dance")) {
+    push({ kind: "landmark", title: "Crystal Chandelier", narrative: "Look up — the chandelier is hand-cut crystal, said to chime when royalty enters the hall." });
+    push({ kind: "story", title: "The Midnight Waltz", narrative: "On this very floor, Cinderella danced until the clock struck twelve." });
+    push({ kind: "info", title: "Marble Pattern", narrative: "The floor uses three different Italian marbles arranged in a perfect star compass." });
+    push({ kind: "character", title: "Court Musician", narrative: "Master Renato played here for forty winters — his violin still rests in the alcove." });
+  } else if (name.includes("library") || name.includes("book")) {
+    push({ kind: "story", title: "The Forbidden Tome", narrative: "Behind the third shelf hides a spellbook nobody dares to open after sunset." });
+    push({ kind: "info", title: "12,000 Volumes", narrative: "Every book is hand-bound; the oldest is from the year 1422." });
+    push({ kind: "treasure", title: "Hidden Quill", narrative: "A magical quill that writes by itself — find it and earn a wisdom badge." });
+    push({ kind: "landmark", title: "Stained Glass", narrative: "The window depicts the seven scholars who founded this library." });
+  } else if (name.includes("garden") || name.includes("enchanted")) {
+    push({ kind: "story", title: "Whispering Roses", narrative: "Lean closer — the red roses whisper secrets to those who listen." });
+    push({ kind: "character", title: "Garden Pixie", narrative: "A tiny pixie tends every flower; you might see her wings flicker." });
+    push({ kind: "info", title: "Ancient Oak", narrative: "This oak is 700 years old — older than the castle itself." });
+    push({ kind: "landmark", title: "Wishing Fountain", narrative: "Drop a coin (in your imagination!) and your kindest wish may come true." });
+  } else if (name.includes("dragon") || name.includes("cave")) {
+    push({ kind: "story", title: "Dragon's Lair", narrative: "Sparkling embers still glow — the dragon left only an hour ago." });
+    push({ kind: "treasure", title: "Gold Hoard", narrative: "Stacks of coins guarded for centuries. Don't take any — it's bad luck." });
+    push({ kind: "info", title: "Cave Crystals", narrative: "These purple crystals only grow in places touched by dragon-fire." });
+    push({ kind: "landmark", title: "Claw Marks", narrative: "Three deep grooves on the wall — proof a real dragon once napped here." });
+  } else if (name.includes("tower")) {
+    push({ kind: "story", title: "The Long Wait", narrative: "A princess once sat by this window, watching the stars for a hundred nights." });
+    push({ kind: "landmark", title: "Spiral Staircase", narrative: "Exactly 247 steps — every guardian had to memorize them in the dark." });
+    push({ kind: "info", title: "Watchman's View", narrative: "From here you can see seven kingdoms on a clear day." });
+    push({ kind: "treasure", title: "Hidden Compass", narrative: "An old brass compass that always points to home." });
+  } else if (name.includes("chapel") || name.includes("royal") || name.includes("throne")) {
+    push({ kind: "landmark", title: "Royal Throne", narrative: "Carved from a single oak that fell during the coronation storm." });
+    push({ kind: "story", title: "The Vow", narrative: "Every monarch swears an oath here — to protect the realm and its children." });
+    push({ kind: "info", title: "Gold Leaf Ceiling", narrative: "The ceiling is covered with 24-carat gold, applied leaf by leaf." });
+    push({ kind: "character", title: "Old Bishop", narrative: "Bishop Aldo blessed three generations of kings in this very spot." });
+  } else if (name.includes("gallery") || name.includes("hall")) {
+    push({ kind: "info", title: "Royal Portraits", narrative: "Twelve generations of rulers — see if you can spot the family resemblance." });
+    push({ kind: "story", title: "The Missing Painting", narrative: "One frame is empty — the portrait vanished one stormy night and was never seen again." });
+    push({ kind: "landmark", title: "Vaulted Ceiling", narrative: "The arches above you were built without a single nail." });
+    push({ kind: "treasure", title: "Hidden Insignia", narrative: "Look closely — a tiny royal crest is hidden in every painting." });
+  } else {
+    // Generic fallback palette
+    push({ kind: "info", title: "Architectural Detail", narrative: "Every stone here was cut by hand — notice the marks left by the masons." });
+    push({ kind: "story", title: "Castle Legend", narrative: "Locals say a friendly ghost still walks these halls at midnight." });
+    push({ kind: "landmark", title: "Royal Crest", narrative: "The royal seal of this castle — three stars and a crown." });
+    push({ kind: "treasure", title: "Hidden Symbol", narrative: "A secret rune is carved here for those who look carefully." });
+  }
+
+  // If we have audio guide text, use the FIRST sentence as a featured story POI
+  if (audioGuideText) {
+    const firstSentence = audioGuideText.split(/[.!?]/)[0]?.trim();
+    if (firstSentence && firstSentence.length > 10) {
+      palette.unshift({
+        kind: "story",
+        title: "Begin the Story",
+        narrative: firstSentence + ".",
+      });
+    }
+  }
+
+  // Distribute POIs around the sphere — spread yaw evenly, vary pitch slightly
+  return palette.slice(0, 5).map((p, i) => {
+    const yawStep = 360 / Math.max(palette.length, 5);
+    const yaw = (i * yawStep + (baseSeed % 40)) % 360;
+    const pitchSeed = (baseSeed >> (i + 1)) % 30;
+    const pitch = (i % 2 === 0 ? 1 : -1) * (5 + pitchSeed); // -25..+25 deg
+    return {
+      ...p,
+      id: `${roomKey}-poi-${i}`,
+      yaw,
+      pitch,
+    };
+  });
+}
+
+function poiToVec3(yawDeg: number, pitchDeg: number, radius = 470): [number, number, number] {
+  const theta = (yawDeg * Math.PI) / 180;
+  const phi = ((90 - pitchDeg) * Math.PI) / 180;
+  return [
+    radius * Math.sin(phi) * Math.cos(theta),
+    radius * Math.cos(phi),
+    radius * Math.sin(phi) * Math.sin(theta),
+  ];
+}
+
+const POI_ICON: Record<PoiKind, { color: string; emissive: string; emoji: string }> = {
+  story: { color: "#a855f7", emissive: "#c084fc", emoji: "📖" },
+  info: { color: "#3b82f6", emissive: "#60a5fa", emoji: "ℹ️" },
+  treasure: { color: "#f59e0b", emissive: "#fbbf24", emoji: "💎" },
+  character: { color: "#ec4899", emissive: "#f472b6", emoji: "👤" },
+  landmark: { color: "#10b981", emissive: "#34d399", emoji: "🏛️" },
+};
+
+function PoiMarker({
+  poi,
+  onClick,
+  onGazeEnter,
+  onGazeLeave,
+  isActive,
+  isVisited,
+}: {
+  poi: Poi;
+  onClick: () => void;
+  onGazeEnter: () => void;
+  onGazeLeave: () => void;
+  isActive: boolean;
+  isVisited: boolean;
+}) {
+  const meshRef = useRef<THREE.Mesh>(null);
+  const [hovered, setHovered] = useState(false);
+  const position = useMemo(() => poiToVec3(poi.yaw, poi.pitch), [poi.yaw, poi.pitch]);
+  const style = POI_ICON[poi.kind];
+
+  // Pulsing animation
+  useFrame(({ clock }) => {
+    if (!meshRef.current) return;
+    const t = clock.getElapsedTime();
+    const base = isActive ? 1.6 : isVisited ? 0.85 : 1;
+    meshRef.current.scale.setScalar(base + Math.sin(t * 2 + poi.yaw) * 0.08);
+  });
+
+  return (
+    <group position={position}>
+      {/* Outer halo */}
+      <mesh>
+        <sphereGeometry args={[10, 24, 24]} />
+        <meshBasicMaterial color={style.emissive} transparent opacity={isActive ? 0.35 : 0.18} />
+      </mesh>
+      {/* Core marker */}
+      <mesh
+        ref={meshRef}
+        onPointerOver={(e) => { e.stopPropagation(); setHovered(true); onGazeEnter(); }}
+        onPointerOut={() => { setHovered(false); onGazeLeave(); }}
+        onClick={(e) => { e.stopPropagation(); onClick(); }}
+      >
+        <sphereGeometry args={[5, 24, 24]} />
+        <meshStandardMaterial
+          color={style.color}
+          emissive={style.emissive}
+          emissiveIntensity={isActive ? 1.4 : isVisited ? 0.4 : 0.9}
+        />
+      </mesh>
+      {(hovered || isActive) && (
+        <Html center distanceFactor={120} zIndexRange={[100, 0]}>
+          <div className="pointer-events-none select-none bg-black/85 text-white px-3 py-1.5 rounded-lg text-xs whitespace-nowrap shadow-xl border border-white/20">
+            <span className="mr-1">{style.emoji}</span>
+            <span className="font-semibold">{poi.title}</span>
+          </div>
+        </Html>
+      )}
+    </group>
+  );
+}
+
+// Tracks where the camera is looking and reports the closest POI within an angular threshold.
+function GazeTracker({
+  pois,
+  onGazeStart,
+  onGazeEnd,
+  thresholdDeg = 14,
+}: {
+  pois: Poi[];
+  onGazeStart: (poiId: string) => void;
+  onGazeEnd: (poiId: string) => void;
+  thresholdDeg?: number;
+}) {
+  const { camera } = useThree();
+  const currentRef = useRef<string | null>(null);
+  const dwellRef = useRef<{ id: string | null; since: number }>({ id: null, since: 0 });
+  const DWELL_MS = 900;
+
+  useFrame(() => {
+    const camDir = new THREE.Vector3();
+    camera.getWorldDirection(camDir);
+    camDir.normalize();
+
+    let bestId: string | null = null;
+    let bestDot = Math.cos((thresholdDeg * Math.PI) / 180);
+
+    for (const poi of pois) {
+      const [x, y, z] = poiToVec3(poi.yaw, poi.pitch, 1);
+      const v = new THREE.Vector3(x, y, z).normalize();
+      const dot = v.dot(camDir);
+      if (dot > bestDot) {
+        bestDot = dot;
+        bestId = poi.id;
+      }
+    }
+
+    const now = performance.now();
+    if (bestId !== dwellRef.current.id) {
+      dwellRef.current = { id: bestId, since: now };
+    }
+
+    // Has the user been looking at this POI long enough?
+    if (
+      bestId &&
+      bestId !== currentRef.current &&
+      now - dwellRef.current.since > DWELL_MS
+    ) {
+      if (currentRef.current) onGazeEnd(currentRef.current);
+      currentRef.current = bestId;
+      onGazeStart(bestId);
+    } else if (!bestId && currentRef.current) {
+      onGazeEnd(currentRef.current);
+      currentRef.current = null;
+    }
+  });
+
+  return null;
+}
+
 const LANGUAGES = [
   { code: 'en', name: 'English', flag: '🇬🇧' },
   { code: 'de', name: 'Deutsch', flag: '🇩🇪' },
@@ -314,6 +551,7 @@ export function FairyPanoramaViewer({
   imageUrl, 
   audioGuideText,
   ambientSound,
+  roomName,
   collectibles = [],
   onCollectItem,
   collectedIds = []
@@ -328,6 +566,112 @@ export function FairyPanoramaViewer({
   const [audioCache, setAudioCache] = useState<Record<string, string>>({});
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const elevenLabsAudioRef = useRef<HTMLAudioElement | null>(null);
+
+  // ===== POI HOTSPOTS =====
+  const pois = useMemo(
+    () => buildPoisFromRoom(imageUrl, roomName || "", audioGuideText || ""),
+    [imageUrl, roomName, audioGuideText]
+  );
+  const [activePoiId, setActivePoiId] = useState<string | null>(null);
+  const [visitedPois, setVisitedPois] = useState<Set<string>>(new Set());
+  const [poiAudioCache, setPoiAudioCache] = useState<Record<string, string>>({});
+  const [poiPanelDismissed, setPoiPanelDismissed] = useState(false);
+  const [autoGazeAudio, setAutoGazeAudio] = useState(true);
+  const poiAudioRef = useRef<HTMLAudioElement | null>(null);
+  const activePoi = pois.find((p) => p.id === activePoiId) || null;
+
+  // Reset POIs when room changes
+  useEffect(() => {
+    setActivePoiId(null);
+    setVisitedPois(new Set());
+    setPoiPanelDismissed(false);
+    if (poiAudioRef.current) {
+      poiAudioRef.current.pause();
+      poiAudioRef.current = null;
+    }
+  }, [imageUrl]);
+
+  const playPoiAudio = async (poi: Poi) => {
+    // Stop any existing POI audio + main audio guide to avoid overlap
+    if (poiAudioRef.current) {
+      poiAudioRef.current.pause();
+      poiAudioRef.current = null;
+    }
+    if (elevenLabsAudioRef.current && isPlaying) {
+      elevenLabsAudioRef.current.pause();
+      setIsPlaying(false);
+    }
+
+    const cacheKey = `${poi.id}-${selectedLanguage}`;
+    let url = poiAudioCache[cacheKey];
+
+    if (!url) {
+      try {
+        const { data, error } = await supabase.functions.invoke('translate-and-generate-audio', {
+          body: { text: `${poi.title}. ${poi.narrative}`, language: selectedLanguage },
+        });
+        if (error) throw error;
+        if (data?.audioContent) {
+          const binaryString = atob(data.audioContent);
+          const bytes = new Uint8Array(binaryString.length);
+          for (let i = 0; i < binaryString.length; i++) bytes[i] = binaryString.charCodeAt(i);
+          const blob = new Blob([bytes], { type: 'audio/mpeg' });
+          url = URL.createObjectURL(blob);
+          setPoiAudioCache((prev) => ({ ...prev, [cacheKey]: url! }));
+        }
+      } catch (e) {
+        console.error('POI audio generation failed:', e);
+        // Browser TTS fallback so the experience still works
+        if ('speechSynthesis' in window) {
+          const u = new SpeechSynthesisUtterance(`${poi.title}. ${poi.narrative}`);
+          u.lang = selectedLanguage;
+          u.rate = 0.95;
+          window.speechSynthesis.cancel();
+          window.speechSynthesis.speak(u);
+        }
+        return;
+      }
+    }
+
+    if (!url) return;
+    const audio = new Audio(url);
+    audio.volume = 1;
+    poiAudioRef.current = audio;
+    audio.play().catch(() => {});
+  };
+
+  const handleGazeStart = (poiId: string) => {
+    const poi = pois.find((p) => p.id === poiId);
+    if (!poi) return;
+    setActivePoiId(poiId);
+    setPoiPanelDismissed(false);
+    setVisitedPois((prev) => new Set(prev).add(poiId));
+    if (autoGazeAudio) playPoiAudio(poi);
+  };
+
+  const handleGazeEnd = (_poiId: string) => {
+    // We keep the panel open until user moves to another POI or dismisses it.
+    // (No-op intentionally.)
+  };
+
+  const handlePoiClick = (poi: Poi) => {
+    setActivePoiId(poi.id);
+    setPoiPanelDismissed(false);
+    setVisitedPois((prev) => new Set(prev).add(poi.id));
+    playPoiAudio(poi);
+  };
+
+  // Stop POI audio on unmount
+  useEffect(() => {
+    return () => {
+      if (poiAudioRef.current) {
+        poiAudioRef.current.pause();
+        poiAudioRef.current = null;
+      }
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+    };
+  }, []);
+
 
   useEffect(() => {
     // Auto-hide info after 5 seconds
@@ -464,8 +808,103 @@ export function FairyPanoramaViewer({
             />
           );
         })}
+
+        {/* Story / Info / Treasure POIs */}
+        {pois.map((poi) => (
+          <PoiMarker
+            key={poi.id}
+            poi={poi}
+            isActive={activePoiId === poi.id}
+            isVisited={visitedPois.has(poi.id)}
+            onClick={() => handlePoiClick(poi)}
+            onGazeEnter={() => { /* hover hint only */ }}
+            onGazeLeave={() => { /* hover hint only */ }}
+          />
+        ))}
+
+        <GazeTracker
+          pois={pois}
+          onGazeStart={handleGazeStart}
+          onGazeEnd={handleGazeEnd}
+        />
+
         <CameraController />
       </Canvas>
+
+      {/* Centered gaze reticle (helps user aim at hotspots) */}
+      <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
+        <div className={`relative transition-all duration-300 ${activePoi ? 'scale-125' : 'scale-100'}`}>
+          <Crosshair
+            className={`h-6 w-6 drop-shadow-lg transition-colors ${
+              activePoi ? 'text-amber-300' : 'text-white/60'
+            }`}
+          />
+          {activePoi && (
+            <div className="absolute -inset-3 rounded-full border-2 border-amber-300/70 animate-ping" />
+          )}
+        </div>
+      </div>
+
+      {/* POI counter chip */}
+      {pois.length > 0 && (
+        <div className="absolute top-44 right-6 z-10 bg-black/60 backdrop-blur-sm text-white text-xs px-3 py-1.5 rounded-full border border-white/20 flex items-center gap-1.5">
+          <MapPin className="h-3.5 w-3.5 text-amber-300" />
+          <span className="font-semibold">{visitedPois.size}/{pois.length}</span>
+          <span className="opacity-70">discovered</span>
+        </div>
+      )}
+
+      {/* POI Info Panel — gaze or click triggered */}
+      {activePoi && !poiPanelDismissed && (
+        <div className="absolute bottom-28 left-1/2 -translate-x-1/2 z-20 max-w-md w-[calc(100%-2rem)] animate-fade-in">
+          <div className="bg-card/95 backdrop-blur-md rounded-2xl shadow-2xl border border-border/60 p-5">
+            <div className="flex items-start gap-3">
+              <div
+                className="flex-shrink-0 h-10 w-10 rounded-xl flex items-center justify-center"
+                style={{ backgroundColor: POI_ICON[activePoi.kind].color + '33' }}
+              >
+                {activePoi.kind === 'story' && <BookOpen className="h-5 w-5 text-purple-500" />}
+                {activePoi.kind === 'info' && <Info className="h-5 w-5 text-blue-500" />}
+                {activePoi.kind === 'treasure' && <Gem className="h-5 w-5 text-amber-500" />}
+                {activePoi.kind === 'character' && <Crown className="h-5 w-5 text-pink-500" />}
+                {activePoi.kind === 'landmark' && <Wand2 className="h-5 w-5 text-emerald-500" />}
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between gap-2 mb-1">
+                  <h4 className="font-bold text-base">{activePoi.title}</h4>
+                  <button
+                    onClick={() => setPoiPanelDismissed(true)}
+                    className="text-muted-foreground hover:text-foreground text-xs"
+                    aria-label="Close hotspot info"
+                  >
+                    ✕
+                  </button>
+                </div>
+                <p className="text-sm text-muted-foreground leading-relaxed">{activePoi.narrative}</p>
+                <div className="flex items-center gap-2 mt-3">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => playPoiAudio(activePoi)}
+                    className="h-8 text-xs"
+                  >
+                    <Volume2 className="mr-1 h-3.5 w-3.5" /> Replay
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => setAutoGazeAudio((v) => !v)}
+                    className="h-8 text-xs"
+                    title="Toggle automatic audio when you look at hotspots"
+                  >
+                    {autoGazeAudio ? '🎧 Auto-play: On' : '🔇 Auto-play: Off'}
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Audio Guide Control */}
       {audioGuideText && (

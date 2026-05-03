@@ -266,6 +266,7 @@ export default function FairyCastleTour() {
           imageUrl={panoramaUrl}
           audioGuideText={currentRoom.audio_guide_text || ""}
           ambientSound={ambientSound}
+          roomName={currentRoom.room_name}
           collectibles={roomCollectibles || []}
           onCollectItem={handleCollectItem}
           collectedIds={collectedIds}
