@@ -1072,35 +1072,74 @@ export function FairyPanoramaViewer({
         </div>
       )}
 
-      {/* Ambient Sound Controls */}
-      {ambientSound && (
-        <div className="absolute top-24 right-6 bg-white/90 backdrop-blur-sm p-4 rounded-xl shadow-lg">
-          <div className="flex items-center gap-3">
+      {/* Audio Mixer (Ambient + POI) */}
+      <div className="absolute top-24 right-6 bg-white/90 backdrop-blur-sm p-3 rounded-xl shadow-lg space-y-2 min-w-[180px]">
+        {ambientSound && (
+          <div className="flex items-center gap-2">
             <Button
               onClick={() => setIsAmbientMuted(!isAmbientMuted)}
               variant="ghost"
               size="icon"
-              className="h-8 w-8"
+              className="h-7 w-7 flex-shrink-0"
+              aria-label={isAmbientMuted ? 'Unmute ambient' : 'Mute ambient'}
+              title={isAmbientMuted ? 'Unmute ambient' : 'Mute ambient'}
             >
-              {isAmbientMuted ? (
-                <VolumeX className="h-4 w-4" />
-              ) : (
-                <Volume2 className="h-4 w-4" />
-              )}
+              {isAmbientMuted || ambientVolume === 0 ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
             </Button>
             <input
               type="range"
               min="0"
               max="1"
-              step="0.1"
-              value={ambientVolume}
-              onChange={(e) => setAmbientVolume(parseFloat(e.target.value))}
-              className="w-20 accent-blue-600"
+              step="0.05"
+              value={isAmbientMuted ? 0 : ambientVolume}
+              onChange={(e) => {
+                const v = parseFloat(e.target.value);
+                setAmbientVolume(v);
+                if (v > 0 && isAmbientMuted) setIsAmbientMuted(false);
+              }}
+              className="w-24 accent-blue-600"
+              aria-label="Ambient volume"
             />
+            <span className="text-[10px] font-semibold text-gray-600 uppercase tracking-wider w-14 text-right">Ambient</span>
           </div>
-          <p className="text-xs text-gray-600 mt-1 text-center">Ambient</p>
-        </div>
-      )}
+        )}
+
+        {pois.length > 0 && (
+          <div className="flex items-center gap-2 border-t border-gray-200 pt-2">
+            <Button
+              onClick={() => {
+                const next = !isPoiMuted;
+                setIsPoiMuted(next);
+                if (next && poiAudioRef.current) {
+                  poiAudioRef.current.volume = 0;
+                }
+              }}
+              variant="ghost"
+              size="icon"
+              className="h-7 w-7 flex-shrink-0"
+              aria-label={isPoiMuted ? 'Unmute hotspot audio' : 'Mute hotspot audio'}
+              title={isPoiMuted ? 'Unmute hotspot audio' : 'Mute hotspot audio'}
+            >
+              {isPoiMuted || poiVolume === 0 ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
+            </Button>
+            <input
+              type="range"
+              min="0"
+              max="1"
+              step="0.05"
+              value={isPoiMuted ? 0 : poiVolume}
+              onChange={(e) => {
+                const v = parseFloat(e.target.value);
+                setPoiVolume(v);
+                if (v > 0 && isPoiMuted) setIsPoiMuted(false);
+              }}
+              className="w-24 accent-amber-500"
+              aria-label="Hotspot audio volume"
+            />
+            <span className="text-[10px] font-semibold text-gray-600 uppercase tracking-wider w-14 text-right">Hotspot</span>
+          </div>
+        )}
+      </div>
 
       {/* Help Overlay */}
       {showInfo && (
