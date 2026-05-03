@@ -25,6 +25,29 @@ const PREMIUM_ALIASES: Record<string, string> = {
   "/payments": "/subscription",
 };
 
+// Any path containing one of these tokens (as a path segment) will fall back
+// to /subscription instead of showing a 404. This catches nested aliases like
+// /pricing/pro, /billing/invoice/123, /plans/annual, etc.
+const PREMIUM_TOKENS = [
+  "pricing",
+  "prices",
+  "price",
+  "plans",
+  "plan",
+  "upgrade",
+  "subscribe",
+  "subscriptions",
+  "billing",
+  "membership",
+  "memberships",
+  "checkout",
+  "buy",
+  "payment",
+  "payments",
+];
+
+const PREMIUM_PAGE_TOKENS = ["premium", "pro", "vip"];
+
 const NotFound = () => {
   const location = useLocation();
 
@@ -34,7 +57,17 @@ const NotFound = () => {
     return p.length > 1 && p.endsWith("/") ? p.slice(0, -1) : p;
   }, [location.pathname]);
 
-  const redirectTo = PREMIUM_ALIASES[normalized];
+  const redirectTo = useMemo(() => {
+    // 1. Exact alias hit
+    if (PREMIUM_ALIASES[normalized]) return PREMIUM_ALIASES[normalized];
+
+    // 2. Segment-based fallback: scan path segments for known tokens
+    const segments = normalized.split("/").filter(Boolean);
+    if (segments.some((s) => PREMIUM_PAGE_TOKENS.includes(s))) return "/premium";
+    if (segments.some((s) => PREMIUM_TOKENS.includes(s))) return "/subscription";
+
+    return null;
+  }, [normalized]);
 
   useEffect(() => {
     if (redirectTo) {
