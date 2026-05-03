@@ -25,6 +25,11 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_ANON_KEY") ?? "",
     );
+    const admin = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+    );
+
     const token = authHeader.replace("Bearer ", "");
     const { data: { user } } = await supabase.auth.getUser(token);
     if (!user) {
@@ -42,8 +47,7 @@ serve(async (req) => {
       });
     }
 
-    // Check & deduct credits
-    const { data: credits } = await supabase
+    const { data: credits } = await admin
       .from("ai_credits")
       .select("credits_remaining")
       .eq("user_id", user.id)
@@ -56,10 +60,9 @@ serve(async (req) => {
       );
     }
 
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
+    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
+    if (!OPENAI_API_KEY) throw new Error("OPENAI_API_KEY not configured");
 
-    // Generate 4 panoramic scenes using Lovable AI Gateway
     const scenes = [
       `Stunning 360-degree panoramic view of ${destination}, golden hour, ultra wide, photorealistic`,
       `Iconic landmark of ${destination}, daytime, vibrant, photorealistic, ultra wide`,
@@ -68,27 +71,48 @@ serve(async (req) => {
     ];
 
     const imageUrls: string[] = [];
-    for (const prompt of scenes) {
-      const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    for (let i = 0; i < scenes.length; i++) {
+      const prompt = scenes[i];
+      const aiResp = await fetch("https://api.openai.com/v1/images/generations", {
         method: "POST",
         headers: {
-          "Authorization": `Bearer ${LOVABLE_API_KEY}`,
+          "Authorization": `Bearer ${OPENAI_API_KEY}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          model: "google/gemini-2.5-flash-image-preview",
-          messages: [{ role: "user", content: prompt }],
-          modalities: ["image", "text"],
+          model: "gpt-image-1",
+          prompt,
+          n: 1,
+          size: "1536x1024",
         }),
       });
       if (!aiResp.ok) {
         const t = await aiResp.text();
-        console.error("AI gateway error:", aiResp.status, t);
+        console.error("OpenAI error:", aiResp.status, t);
+        if (aiResp.status === 429) {
+          return new Response(JSON.stringify({ error: "Rate limited. Try again shortly." }), {
+            status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
         continue;
       }
       const aiData = await aiResp.json();
-      const url = aiData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
-      if (url) imageUrls.push(url);
+      const b64 = aiData?.data?.[0]?.b64_json;
+      if (!b64) continue;
+
+      // Upload to storage
+      const bytes = Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
+      const path = `virtual-tours/${user.id}/${Date.now()}-${i}.png`;
+      const { error: upErr } = await admin.storage.from("ai-studio").upload(path, bytes, {
+        contentType: "image/png",
+        upsert: false,
+      });
+      if (upErr) {
+        console.error("Upload error:", upErr);
+        continue;
+      }
+      const { data: pub } = admin.storage.from("ai-studio").getPublicUrl(path);
+      if (pub?.publicUrl) imageUrls.push(pub.publicUrl);
     }
 
     if (imageUrls.length === 0) {
@@ -98,8 +122,7 @@ serve(async (req) => {
       });
     }
 
-    // Deduct credits
-    await supabase
+    await admin
       .from("ai_credits")
       .update({
         credits_remaining: credits.credits_remaining - COST,
@@ -107,8 +130,7 @@ serve(async (req) => {
       })
       .eq("user_id", user.id);
 
-    // Save tour
-    const { data: tour, error: insertError } = await supabase
+    const { data: tour, error: insertError } = await admin
       .from("virtual_tours")
       .insert({
         user_id: user.id,
@@ -122,7 +144,7 @@ serve(async (req) => {
 
     if (insertError) throw insertError;
 
-    await supabase.from("ai_usage_history").insert({
+    await admin.from("ai_usage_history").insert({
       user_id: user.id,
       usage_type: "virtual_tour",
       credits_used: COST,

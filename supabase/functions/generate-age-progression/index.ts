@@ -25,6 +25,11 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_ANON_KEY") ?? "",
     );
+    const admin = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+    );
+
     const token = authHeader.replace("Bearer ", "");
     const { data: { user } } = await supabase.auth.getUser(token);
     if (!user) {
@@ -43,7 +48,7 @@ serve(async (req) => {
     }
     const years = Math.max(1, Math.min(80, parseInt(String(yearsForward ?? 20), 10) || 20));
 
-    const { data: credits } = await supabase
+    const { data: credits } = await admin
       .from("ai_credits")
       .select("credits_remaining")
       .eq("user_id", user.id)
@@ -56,43 +61,61 @@ serve(async (req) => {
       );
     }
 
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
+    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
+    if (!OPENAI_API_KEY) throw new Error("OPENAI_API_KEY not configured");
 
     const prompt = `Create a realistic age-progressed portrait showing how this person would look ${years} years from now. Maintain identity, facial structure and ethnicity. Add age-appropriate wrinkles, hair changes, and skin texture. Photorealistic, natural lighting.`;
 
-    const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    // Fetch source image as bytes for OpenAI image edit
+    const srcResp = await fetch(imageUrl);
+    if (!srcResp.ok) {
+      return new Response(JSON.stringify({ error: "Failed to fetch source image" }), {
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    const srcBytes = new Uint8Array(await srcResp.arrayBuffer());
+    const srcType = srcResp.headers.get("content-type") || "image/png";
+
+    const form = new FormData();
+    form.append("model", "gpt-image-1");
+    form.append("prompt", prompt);
+    form.append("n", "1");
+    form.append("size", "1024x1024");
+    form.append("image", new Blob([srcBytes], { type: srcType }), "source.png");
+
+    const aiResp = await fetch("https://api.openai.com/v1/images/edits", {
       method: "POST",
-      headers: {
-        "Authorization": `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "google/gemini-2.5-flash-image-preview",
-        messages: [
-          {
-            role: "user",
-            content: [
-              { type: "text", text: prompt },
-              { type: "image_url", image_url: { url: imageUrl } },
-            ],
-          },
-        ],
-        modalities: ["image", "text"],
-      }),
+      headers: { "Authorization": `Bearer ${OPENAI_API_KEY}` },
+      body: form,
     });
 
     if (!aiResp.ok) {
       const t = await aiResp.text();
-      console.error("AI gateway error:", aiResp.status, t);
+      console.error("OpenAI error:", aiResp.status, t);
+      if (aiResp.status === 429) {
+        return new Response(JSON.stringify({ error: "Rate limited. Try again shortly." }), {
+          status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
       throw new Error("AI generation failed");
     }
 
     const aiData = await aiResp.json();
-    const agedUrl = aiData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
-    if (!agedUrl) throw new Error("No image returned");
+    const b64 = aiData?.data?.[0]?.b64_json;
+    if (!b64) throw new Error("No image returned");
 
-    await supabase
+    // Upload result to storage
+    const outBytes = Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
+    const path = `age-progressions/${user.id}/${Date.now()}.png`;
+    const { error: upErr } = await admin.storage.from("ai-studio").upload(path, outBytes, {
+      contentType: "image/png",
+      upsert: false,
+    });
+    if (upErr) throw upErr;
+    const { data: pub } = admin.storage.from("ai-studio").getPublicUrl(path);
+    const agedUrl = pub.publicUrl;
+
+    await admin
       .from("ai_credits")
       .update({
         credits_remaining: credits.credits_remaining - COST,
@@ -100,7 +123,7 @@ serve(async (req) => {
       })
       .eq("user_id", user.id);
 
-    const { data: progression, error: insertError } = await supabase
+    const { data: progression, error: insertError } = await admin
       .from("age_progressions")
       .insert({
         user_id: user.id,
@@ -115,7 +138,7 @@ serve(async (req) => {
 
     if (insertError) throw insertError;
 
-    await supabase.from("ai_usage_history").insert({
+    await admin.from("ai_usage_history").insert({
       user_id: user.id,
       usage_type: "age_progression",
       credits_used: COST,
