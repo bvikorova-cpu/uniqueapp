@@ -542,6 +542,13 @@ const App = () => {
                         <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
                         <Route path="/subscription" element={<Subscription />} />
                         <Route path="/pricing" element={<Navigate to="/subscription" replace />} />
+                        <Route path="/plans" element={<Navigate to="/subscription" replace />} />
+                        <Route path="/upgrade" element={<Navigate to="/subscription" replace />} />
+                        <Route path="/subscriptions" element={<Navigate to="/subscription" replace />} />
+                        <Route path="/prices" element={<Navigate to="/subscription" replace />} />
+                        <Route path="/billing" element={<Navigate to="/subscription" replace />} />
+                        <Route path="/membership" element={<Navigate to="/subscription" replace />} />
+                        <Route path="/premium-plans" element={<Navigate to="/premium" replace />} />
                         <Route path="/ai-credits-store" element={<AICreditsStore />} />
                         <Route path="/ai-credits" element={<AICreditsStore />} />
                         <Route path="/admin/transactions" element={<ProtectedRoute requireAdmin={true}><AdminTransactions /></ProtectedRoute>} />
