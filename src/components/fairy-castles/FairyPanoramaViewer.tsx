@@ -811,6 +811,7 @@ export function FairyPanoramaViewer({
     }
 
     const audio = new Audio(audioUrl);
+    audio.volume = isGuideMuted ? 0 : guideVolume;
     audio.onended = () => setIsPlaying(false);
     audio.onerror = () => setIsPlaying(false);
     audio.play();
