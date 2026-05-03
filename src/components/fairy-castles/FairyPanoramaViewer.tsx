@@ -558,8 +558,33 @@ export function FairyPanoramaViewer({
 }: FairyPanoramaViewerProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [showInfo, setShowInfo] = useState(true);
-  const [ambientVolume, setAmbientVolume] = useState(0.3);
-  const [isAmbientMuted, setIsAmbientMuted] = useState(false);
+  const [ambientVolume, setAmbientVolume] = useState<number>(() => {
+    if (typeof window === 'undefined') return 0.3;
+    const v = parseFloat(localStorage.getItem('fairy.ambientVolume') || '0.3');
+    return isNaN(v) ? 0.3 : Math.min(1, Math.max(0, v));
+  });
+  const [isAmbientMuted, setIsAmbientMuted] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return false;
+    return localStorage.getItem('fairy.ambientMuted') === '1';
+  });
+  const [guideVolume, setGuideVolume] = useState<number>(() => {
+    if (typeof window === 'undefined') return 1;
+    const v = parseFloat(localStorage.getItem('fairy.guideVolume') || '1');
+    return isNaN(v) ? 1 : Math.min(1, Math.max(0, v));
+  });
+  const [isGuideMuted, setIsGuideMuted] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return false;
+    return localStorage.getItem('fairy.guideMuted') === '1';
+  });
+  const [poiVolume, setPoiVolume] = useState<number>(() => {
+    if (typeof window === 'undefined') return 1;
+    const v = parseFloat(localStorage.getItem('fairy.poiVolume') || '1');
+    return isNaN(v) ? 1 : Math.min(1, Math.max(0, v));
+  });
+  const [isPoiMuted, setIsPoiMuted] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return false;
+    return localStorage.getItem('fairy.poiMuted') === '1';
+  });
   const [hoveredCollectible, setHoveredCollectible] = useState<string | null>(null);
   const [selectedLanguage, setSelectedLanguage] = useState<string>(getDefaultLanguage);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -579,6 +604,26 @@ export function FairyPanoramaViewer({
   const [autoGazeAudio, setAutoGazeAudio] = useState(true);
   const poiAudioRef = useRef<HTMLAudioElement | null>(null);
   const activePoi = pois.find((p) => p.id === activePoiId) || null;
+
+  // Persist audio preferences across sessions
+  useEffect(() => { localStorage.setItem('fairy.ambientVolume', String(ambientVolume)); }, [ambientVolume]);
+  useEffect(() => { localStorage.setItem('fairy.ambientMuted', isAmbientMuted ? '1' : '0'); }, [isAmbientMuted]);
+  useEffect(() => { localStorage.setItem('fairy.guideVolume', String(guideVolume)); }, [guideVolume]);
+  useEffect(() => { localStorage.setItem('fairy.guideMuted', isGuideMuted ? '1' : '0'); }, [isGuideMuted]);
+  useEffect(() => { localStorage.setItem('fairy.poiVolume', String(poiVolume)); }, [poiVolume]);
+  useEffect(() => { localStorage.setItem('fairy.poiMuted', isPoiMuted ? '1' : '0'); }, [isPoiMuted]);
+
+  // Live-apply volume/mute to currently playing audio elements
+  useEffect(() => {
+    if (elevenLabsAudioRef.current) {
+      elevenLabsAudioRef.current.volume = isGuideMuted ? 0 : guideVolume;
+    }
+  }, [guideVolume, isGuideMuted]);
+  useEffect(() => {
+    if (poiAudioRef.current) {
+      poiAudioRef.current.volume = isPoiMuted ? 0 : poiVolume;
+    }
+  }, [poiVolume, isPoiMuted]);
 
   // Reset POIs when room changes
   useEffect(() => {
@@ -635,7 +680,7 @@ export function FairyPanoramaViewer({
 
     if (!url) return;
     const audio = new Audio(url);
-    audio.volume = 1;
+    audio.volume = isPoiMuted ? 0 : poiVolume;
     poiAudioRef.current = audio;
     audio.play().catch(() => {});
   };
@@ -766,6 +811,7 @@ export function FairyPanoramaViewer({
     }
 
     const audio = new Audio(audioUrl);
+    audio.volume = isGuideMuted ? 0 : guideVolume;
     audio.onended = () => setIsPlaying(false);
     audio.onerror = () => setIsPlaying(false);
     audio.play();
@@ -971,7 +1017,34 @@ export function FairyPanoramaViewer({
             </DropdownMenu>
           </div>
 
-          {/* Audio Progress & Sound Wave */}
+          {/* Guide volume + mute */}
+          <div className="bg-white/90 backdrop-blur-sm rounded-xl px-3 py-2 shadow-lg flex items-center gap-2">
+            <Button
+              onClick={() => setIsGuideMuted((m) => !m)}
+              variant="ghost"
+              size="icon"
+              className="h-7 w-7"
+              aria-label={isGuideMuted ? 'Unmute guide' : 'Mute guide'}
+              title={isGuideMuted ? 'Unmute guide' : 'Mute guide'}
+            >
+              {isGuideMuted || guideVolume === 0 ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
+            </Button>
+            <input
+              type="range"
+              min="0"
+              max="1"
+              step="0.05"
+              value={isGuideMuted ? 0 : guideVolume}
+              onChange={(e) => {
+                const v = parseFloat(e.target.value);
+                setGuideVolume(v);
+                if (v > 0 && isGuideMuted) setIsGuideMuted(false);
+              }}
+              className="w-28 accent-purple-600"
+              aria-label="Guide volume"
+            />
+            <span className="text-[10px] font-semibold text-gray-600 uppercase tracking-wider">Guide</span>
+          </div>
           {isPlaying && (
             <div className="bg-white/90 backdrop-blur-sm rounded-xl p-3 shadow-lg max-w-xs">
               <div className="flex items-center gap-2 mb-2">
@@ -999,35 +1072,74 @@ export function FairyPanoramaViewer({
         </div>
       )}
 
-      {/* Ambient Sound Controls */}
-      {ambientSound && (
-        <div className="absolute top-24 right-6 bg-white/90 backdrop-blur-sm p-4 rounded-xl shadow-lg">
-          <div className="flex items-center gap-3">
+      {/* Audio Mixer (Ambient + POI) */}
+      <div className="absolute top-24 right-6 bg-white/90 backdrop-blur-sm p-3 rounded-xl shadow-lg space-y-2 min-w-[180px]">
+        {ambientSound && (
+          <div className="flex items-center gap-2">
             <Button
               onClick={() => setIsAmbientMuted(!isAmbientMuted)}
               variant="ghost"
               size="icon"
-              className="h-8 w-8"
+              className="h-7 w-7 flex-shrink-0"
+              aria-label={isAmbientMuted ? 'Unmute ambient' : 'Mute ambient'}
+              title={isAmbientMuted ? 'Unmute ambient' : 'Mute ambient'}
             >
-              {isAmbientMuted ? (
-                <VolumeX className="h-4 w-4" />
-              ) : (
-                <Volume2 className="h-4 w-4" />
-              )}
+              {isAmbientMuted || ambientVolume === 0 ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
             </Button>
             <input
               type="range"
               min="0"
               max="1"
-              step="0.1"
-              value={ambientVolume}
-              onChange={(e) => setAmbientVolume(parseFloat(e.target.value))}
-              className="w-20 accent-blue-600"
+              step="0.05"
+              value={isAmbientMuted ? 0 : ambientVolume}
+              onChange={(e) => {
+                const v = parseFloat(e.target.value);
+                setAmbientVolume(v);
+                if (v > 0 && isAmbientMuted) setIsAmbientMuted(false);
+              }}
+              className="w-24 accent-blue-600"
+              aria-label="Ambient volume"
             />
+            <span className="text-[10px] font-semibold text-gray-600 uppercase tracking-wider w-14 text-right">Ambient</span>
           </div>
-          <p className="text-xs text-gray-600 mt-1 text-center">Ambient</p>
-        </div>
-      )}
+        )}
+
+        {pois.length > 0 && (
+          <div className="flex items-center gap-2 border-t border-gray-200 pt-2">
+            <Button
+              onClick={() => {
+                const next = !isPoiMuted;
+                setIsPoiMuted(next);
+                if (next && poiAudioRef.current) {
+                  poiAudioRef.current.volume = 0;
+                }
+              }}
+              variant="ghost"
+              size="icon"
+              className="h-7 w-7 flex-shrink-0"
+              aria-label={isPoiMuted ? 'Unmute hotspot audio' : 'Mute hotspot audio'}
+              title={isPoiMuted ? 'Unmute hotspot audio' : 'Mute hotspot audio'}
+            >
+              {isPoiMuted || poiVolume === 0 ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
+            </Button>
+            <input
+              type="range"
+              min="0"
+              max="1"
+              step="0.05"
+              value={isPoiMuted ? 0 : poiVolume}
+              onChange={(e) => {
+                const v = parseFloat(e.target.value);
+                setPoiVolume(v);
+                if (v > 0 && isPoiMuted) setIsPoiMuted(false);
+              }}
+              className="w-24 accent-amber-500"
+              aria-label="Hotspot audio volume"
+            />
+            <span className="text-[10px] font-semibold text-gray-600 uppercase tracking-wider w-14 text-right">Hotspot</span>
+          </div>
+        )}
+      </div>
 
       {/* Help Overlay */}
       {showInfo && (
