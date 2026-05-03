@@ -1,14 +1,52 @@
-import { useLocation, Link } from "react-router-dom";
-import { useEffect } from "react";
+import { useLocation, Link, Navigate } from "react-router-dom";
+import { useEffect, useMemo } from "react";
 import { Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
+
+// Legacy / alias paths that should redirect to the canonical premium page
+// instead of showing a 404. Keep keys lowercase.
+const PREMIUM_ALIASES: Record<string, string> = {
+  "/pricing": "/subscription",
+  "/price": "/subscription",
+  "/prices": "/subscription",
+  "/plans": "/subscription",
+  "/plan": "/subscription",
+  "/upgrade": "/subscription",
+  "/subscriptions": "/subscription",
+  "/billing": "/subscription",
+  "/membership": "/subscription",
+  "/memberships": "/subscription",
+  "/premium-plans": "/premium",
+  "/pro": "/premium",
+  "/vip": "/premium",
+  "/checkout": "/subscription",
+  "/buy": "/subscription",
+  "/payment": "/subscription",
+  "/payments": "/subscription",
+};
 
 const NotFound = () => {
   const location = useLocation();
 
-  useEffect(() => {
-    console.error("404 Error: User attempted to access non-existent route:", location.pathname);
+  // Normalize path: lowercase + strip trailing slash (but keep root "/")
+  const normalized = useMemo(() => {
+    const p = location.pathname.toLowerCase();
+    return p.length > 1 && p.endsWith("/") ? p.slice(0, -1) : p;
   }, [location.pathname]);
+
+  const redirectTo = PREMIUM_ALIASES[normalized];
+
+  useEffect(() => {
+    if (redirectTo) {
+      console.info(`Redirecting legacy path ${location.pathname} → ${redirectTo}`);
+    } else {
+      console.error("404 Error: User attempted to access non-existent route:", location.pathname);
+    }
+  }, [location.pathname, redirectTo]);
+
+  if (redirectTo) {
+    return <Navigate to={redirectTo} replace />;
+  }
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background">
