@@ -558,8 +558,33 @@ export function FairyPanoramaViewer({
 }: FairyPanoramaViewerProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [showInfo, setShowInfo] = useState(true);
-  const [ambientVolume, setAmbientVolume] = useState(0.3);
-  const [isAmbientMuted, setIsAmbientMuted] = useState(false);
+  const [ambientVolume, setAmbientVolume] = useState<number>(() => {
+    if (typeof window === 'undefined') return 0.3;
+    const v = parseFloat(localStorage.getItem('fairy.ambientVolume') || '0.3');
+    return isNaN(v) ? 0.3 : Math.min(1, Math.max(0, v));
+  });
+  const [isAmbientMuted, setIsAmbientMuted] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return false;
+    return localStorage.getItem('fairy.ambientMuted') === '1';
+  });
+  const [guideVolume, setGuideVolume] = useState<number>(() => {
+    if (typeof window === 'undefined') return 1;
+    const v = parseFloat(localStorage.getItem('fairy.guideVolume') || '1');
+    return isNaN(v) ? 1 : Math.min(1, Math.max(0, v));
+  });
+  const [isGuideMuted, setIsGuideMuted] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return false;
+    return localStorage.getItem('fairy.guideMuted') === '1';
+  });
+  const [poiVolume, setPoiVolume] = useState<number>(() => {
+    if (typeof window === 'undefined') return 1;
+    const v = parseFloat(localStorage.getItem('fairy.poiVolume') || '1');
+    return isNaN(v) ? 1 : Math.min(1, Math.max(0, v));
+  });
+  const [isPoiMuted, setIsPoiMuted] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return false;
+    return localStorage.getItem('fairy.poiMuted') === '1';
+  });
   const [hoveredCollectible, setHoveredCollectible] = useState<string | null>(null);
   const [selectedLanguage, setSelectedLanguage] = useState<string>(getDefaultLanguage);
   const [isGenerating, setIsGenerating] = useState(false);
