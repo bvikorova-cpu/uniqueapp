@@ -603,6 +603,58 @@ export function FairyPanoramaViewer({
   const [poiPanelDismissed, setPoiPanelDismissed] = useState(false);
   const [autoGazeAudio, setAutoGazeAudio] = useState(true);
   const poiAudioRef = useRef<HTMLAudioElement | null>(null);
+  const audioUnlockedRef = useRef<boolean>(false);
+  const [audioUnlocked, setAudioUnlocked] = useState(false);
+  const [needsGesture, setNeedsGesture] = useState(false);
+  const pendingPoiRef = useRef<Poi | null>(null);
+  const pendingGuideUrlRef = useRef<string | null>(null);
+
+  // Unlock audio after the first user gesture (required by iOS Safari, Android Chrome).
+  useEffect(() => {
+    if (audioUnlockedRef.current) return;
+    const unlock = async () => {
+      if (audioUnlockedRef.current) return;
+      try {
+        // Play a 1-frame silent audio to unlock the HTMLAudioElement context
+        const silent = new Audio(
+          'data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA//tQxAADB8AhSmxhIIEVCSiJrDCQBTcu3UrAIwUdkRgQbFAZC1CQEwTJ9mjRvBA4UOLD8nKVOWfh+UlK3z/177OXrfOdKl7pyn3Xf//FJAhhEEEDhwAQAYAGzaBWyQI///4AwAAAQA0AAAQAAACgAQQAAAAAAAQAAJAAYBgGAAAAAAAAAAAAAAAAAAA='
+        );
+        silent.volume = 0;
+        await silent.play();
+        silent.pause();
+        audioUnlockedRef.current = true;
+        setAudioUnlocked(true);
+        setNeedsGesture(false);
+
+        // Replay any audio that was queued while locked
+        if (audioRef.current && audioRef.current.paused) {
+          audioRef.current.volume = isAmbientMuted ? 0 : ambientVolume;
+          audioRef.current.play().catch(() => {});
+        }
+        if (pendingGuideUrlRef.current) {
+          const url = pendingGuideUrlRef.current;
+          pendingGuideUrlRef.current = null;
+          // Re-trigger guide playback
+          playAudioRef.current?.(url);
+        }
+        if (pendingPoiRef.current) {
+          const poi = pendingPoiRef.current;
+          pendingPoiRef.current = null;
+          playPoiAudioRef.current?.(poi);
+        }
+      } catch (e) {
+        console.warn('Audio unlock failed:', e);
+      }
+    };
+
+    const events: Array<keyof WindowEventMap> = ['pointerdown', 'touchstart', 'click', 'keydown'];
+    events.forEach((ev) => window.addEventListener(ev, unlock, { once: false, passive: true }));
+    return () => events.forEach((ev) => window.removeEventListener(ev, unlock));
+  }, [ambientVolume, isAmbientMuted]);
+
+  // Refs to playback functions so the unlock effect can call them without dep churn
+  const playAudioRef = useRef<((url: string) => void) | null>(null);
+  const playPoiAudioRef = useRef<((poi: Poi) => Promise<void>) | null>(null);
   const activePoi = pois.find((p) => p.id === activePoiId) || null;
 
   // Persist audio preferences across sessions
@@ -703,9 +755,24 @@ export function FairyPanoramaViewer({
 
     if (!url) return;
     const audio = new Audio(url);
+    audio.preload = 'auto';
+    // iOS sometimes ignores volume set before play() — set both before and after.
     audio.volume = isPoiMuted ? 0 : poiVolume;
     poiAudioRef.current = audio;
-    audio.play().catch(() => {});
+
+    try {
+      await audio.play();
+      // Re-apply volume after play() resolves (Safari quirk)
+      audio.volume = isPoiMuted ? 0 : poiVolume;
+    } catch (err: any) {
+      // NotAllowedError = no user gesture yet → queue and prompt
+      if (err?.name === 'NotAllowedError') {
+        pendingPoiRef.current = poi;
+        setNeedsGesture(true);
+      } else {
+        console.warn('POI audio play failed:', err);
+      }
+    }
   };
 
   const handleGazeStart = (poiId: string) => {
@@ -752,13 +819,23 @@ export function FairyPanoramaViewer({
     if (ambientSound && !audioRef.current) {
       const audio = new Audio(ambientSound);
       audio.loop = true;
-      audio.volume = ambientVolume;
+      audio.preload = 'auto';
+      audio.volume = isAmbientMuted ? 0 : ambientVolume;
       audioRef.current = audio;
-      
-      // Auto-play ambient sound
-      audio.play().catch(error => {
-        console.log("Ambient sound autoplay prevented:", error);
-      });
+
+      audio.play()
+        .then(() => {
+          // Re-apply volume after play() resolves (Safari quirk)
+          audio.volume = isAmbientMuted ? 0 : ambientVolume;
+        })
+        .catch((err: any) => {
+          if (err?.name === 'NotAllowedError' && !audioUnlockedRef.current) {
+            // Will auto-resume after first user gesture (handled in unlock effect)
+            setNeedsGesture(true);
+          } else {
+            console.log('Ambient sound autoplay prevented:', err);
+          }
+        });
     }
 
     return () => {
@@ -834,13 +911,34 @@ export function FairyPanoramaViewer({
     }
 
     const audio = new Audio(audioUrl);
+    audio.preload = 'auto';
     audio.volume = isGuideMuted ? 0 : guideVolume;
     audio.onended = () => setIsPlaying(false);
     audio.onerror = () => setIsPlaying(false);
-    audio.play();
     elevenLabsAudioRef.current = audio;
     setIsPlaying(true);
+
+    audio.play()
+      .then(() => {
+        audio.volume = isGuideMuted ? 0 : guideVolume;
+      })
+      .catch((err: any) => {
+        if (err?.name === 'NotAllowedError') {
+          pendingGuideUrlRef.current = audioUrl;
+          setNeedsGesture(true);
+          setIsPlaying(false);
+        } else {
+          console.warn('Guide audio play failed:', err);
+          setIsPlaying(false);
+        }
+      });
   };
+
+  // Wire refs for unlock effect to call after first user gesture
+  useEffect(() => {
+    playAudioRef.current = playAudio;
+    playPoiAudioRef.current = playPoiAudio;
+  });
 
   return (
     <div className="relative w-full h-screen">
@@ -1177,6 +1275,20 @@ export function FairyPanoramaViewer({
           </Button>
         </div>
       </div>
+
+      {/* Audio gesture banner — required by iOS/Android to allow autoplay */}
+      {needsGesture && !audioUnlocked && (
+        <button
+          onClick={() => {
+            // The unlock effect's listeners will fire from this very click and resume queued audio
+            setNeedsGesture(false);
+          }}
+          className="fixed bottom-44 left-1/2 -translate-x-1/2 z-30 bg-gradient-to-r from-purple-600 to-blue-600 text-white px-5 py-3 rounded-full shadow-2xl flex items-center gap-2 animate-pulse"
+        >
+          <Volume2 className="h-5 w-5" />
+          <span className="text-sm font-semibold">Tap to enable audio</span>
+        </button>
+      )}
 
       {/* Help Overlay */}
       {showInfo && (
