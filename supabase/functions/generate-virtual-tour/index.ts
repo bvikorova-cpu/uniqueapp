@@ -94,6 +94,7 @@ serve(async (req) => {
           prompt,
           n: 1,
           size: "1536x1024",
+          quality: "high",
         }),
       });
       if (!aiResp.ok) {
