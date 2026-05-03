@@ -625,6 +625,29 @@ export function FairyPanoramaViewer({
     }
   }, [poiVolume, isPoiMuted]);
 
+  // Reset all audio preferences to defaults (and persist immediately)
+  const handleResetAudio = () => {
+    setAmbientVolume(0.3);
+    setIsAmbientMuted(false);
+    setGuideVolume(1);
+    setIsGuideMuted(false);
+    setPoiVolume(1);
+    setIsPoiMuted(false);
+    // Apply immediately to live audio (effects also handle this on next tick)
+    if (audioRef.current) audioRef.current.volume = 0.3;
+    if (elevenLabsAudioRef.current) elevenLabsAudioRef.current.volume = 1;
+    if (poiAudioRef.current) poiAudioRef.current.volume = 1;
+    // Persist immediately (effects will also write, but be safe if user navigates)
+    try {
+      localStorage.setItem('fairy.ambientVolume', '0.3');
+      localStorage.setItem('fairy.ambientMuted', '0');
+      localStorage.setItem('fairy.guideVolume', '1');
+      localStorage.setItem('fairy.guideMuted', '0');
+      localStorage.setItem('fairy.poiVolume', '1');
+      localStorage.setItem('fairy.poiMuted', '0');
+    } catch {}
+  };
+
   // Reset POIs when room changes
   useEffect(() => {
     setActivePoiId(null);
