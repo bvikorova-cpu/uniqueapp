@@ -755,9 +755,24 @@ export function FairyPanoramaViewer({
 
     if (!url) return;
     const audio = new Audio(url);
+    audio.preload = 'auto';
+    // iOS sometimes ignores volume set before play() — set both before and after.
     audio.volume = isPoiMuted ? 0 : poiVolume;
     poiAudioRef.current = audio;
-    audio.play().catch(() => {});
+
+    try {
+      await audio.play();
+      // Re-apply volume after play() resolves (Safari quirk)
+      audio.volume = isPoiMuted ? 0 : poiVolume;
+    } catch (err: any) {
+      // NotAllowedError = no user gesture yet → queue and prompt
+      if (err?.name === 'NotAllowedError') {
+        pendingPoiRef.current = poi;
+        setNeedsGesture(true);
+      } else {
+        console.warn('POI audio play failed:', err);
+      }
+    }
   };
 
   const handleGazeStart = (poiId: string) => {
