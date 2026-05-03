@@ -605,6 +605,26 @@ export function FairyPanoramaViewer({
   const poiAudioRef = useRef<HTMLAudioElement | null>(null);
   const activePoi = pois.find((p) => p.id === activePoiId) || null;
 
+  // Persist audio preferences across sessions
+  useEffect(() => { localStorage.setItem('fairy.ambientVolume', String(ambientVolume)); }, [ambientVolume]);
+  useEffect(() => { localStorage.setItem('fairy.ambientMuted', isAmbientMuted ? '1' : '0'); }, [isAmbientMuted]);
+  useEffect(() => { localStorage.setItem('fairy.guideVolume', String(guideVolume)); }, [guideVolume]);
+  useEffect(() => { localStorage.setItem('fairy.guideMuted', isGuideMuted ? '1' : '0'); }, [isGuideMuted]);
+  useEffect(() => { localStorage.setItem('fairy.poiVolume', String(poiVolume)); }, [poiVolume]);
+  useEffect(() => { localStorage.setItem('fairy.poiMuted', isPoiMuted ? '1' : '0'); }, [isPoiMuted]);
+
+  // Live-apply volume/mute to currently playing audio elements
+  useEffect(() => {
+    if (elevenLabsAudioRef.current) {
+      elevenLabsAudioRef.current.volume = isGuideMuted ? 0 : guideVolume;
+    }
+  }, [guideVolume, isGuideMuted]);
+  useEffect(() => {
+    if (poiAudioRef.current) {
+      poiAudioRef.current.volume = isPoiMuted ? 0 : poiVolume;
+    }
+  }, [poiVolume, isPoiMuted]);
+
   // Reset POIs when room changes
   useEffect(() => {
     setActivePoiId(null);
