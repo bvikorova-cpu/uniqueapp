@@ -551,6 +551,7 @@ export function FairyPanoramaViewer({
   imageUrl, 
   audioGuideText,
   ambientSound,
+  roomName,
   collectibles = [],
   onCollectItem,
   collectedIds = []
@@ -565,6 +566,112 @@ export function FairyPanoramaViewer({
   const [audioCache, setAudioCache] = useState<Record<string, string>>({});
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const elevenLabsAudioRef = useRef<HTMLAudioElement | null>(null);
+
+  // ===== POI HOTSPOTS =====
+  const pois = useMemo(
+    () => buildPoisFromRoom(imageUrl, roomName || "", audioGuideText || ""),
+    [imageUrl, roomName, audioGuideText]
+  );
+  const [activePoiId, setActivePoiId] = useState<string | null>(null);
+  const [visitedPois, setVisitedPois] = useState<Set<string>>(new Set());
+  const [poiAudioCache, setPoiAudioCache] = useState<Record<string, string>>({});
+  const [poiPanelDismissed, setPoiPanelDismissed] = useState(false);
+  const [autoGazeAudio, setAutoGazeAudio] = useState(true);
+  const poiAudioRef = useRef<HTMLAudioElement | null>(null);
+  const activePoi = pois.find((p) => p.id === activePoiId) || null;
+
+  // Reset POIs when room changes
+  useEffect(() => {
+    setActivePoiId(null);
+    setVisitedPois(new Set());
+    setPoiPanelDismissed(false);
+    if (poiAudioRef.current) {
+      poiAudioRef.current.pause();
+      poiAudioRef.current = null;
+    }
+  }, [imageUrl]);
+
+  const playPoiAudio = async (poi: Poi) => {
+    // Stop any existing POI audio + main audio guide to avoid overlap
+    if (poiAudioRef.current) {
+      poiAudioRef.current.pause();
+      poiAudioRef.current = null;
+    }
+    if (elevenLabsAudioRef.current && isPlaying) {
+      elevenLabsAudioRef.current.pause();
+      setIsPlaying(false);
+    }
+
+    const cacheKey = `${poi.id}-${selectedLanguage}`;
+    let url = poiAudioCache[cacheKey];
+
+    if (!url) {
+      try {
+        const { data, error } = await supabase.functions.invoke('translate-and-generate-audio', {
+          body: { text: `${poi.title}. ${poi.narrative}`, language: selectedLanguage },
+        });
+        if (error) throw error;
+        if (data?.audioContent) {
+          const binaryString = atob(data.audioContent);
+          const bytes = new Uint8Array(binaryString.length);
+          for (let i = 0; i < binaryString.length; i++) bytes[i] = binaryString.charCodeAt(i);
+          const blob = new Blob([bytes], { type: 'audio/mpeg' });
+          url = URL.createObjectURL(blob);
+          setPoiAudioCache((prev) => ({ ...prev, [cacheKey]: url! }));
+        }
+      } catch (e) {
+        console.error('POI audio generation failed:', e);
+        // Browser TTS fallback so the experience still works
+        if ('speechSynthesis' in window) {
+          const u = new SpeechSynthesisUtterance(`${poi.title}. ${poi.narrative}`);
+          u.lang = selectedLanguage;
+          u.rate = 0.95;
+          window.speechSynthesis.cancel();
+          window.speechSynthesis.speak(u);
+        }
+        return;
+      }
+    }
+
+    if (!url) return;
+    const audio = new Audio(url);
+    audio.volume = 1;
+    poiAudioRef.current = audio;
+    audio.play().catch(() => {});
+  };
+
+  const handleGazeStart = (poiId: string) => {
+    const poi = pois.find((p) => p.id === poiId);
+    if (!poi) return;
+    setActivePoiId(poiId);
+    setPoiPanelDismissed(false);
+    setVisitedPois((prev) => new Set(prev).add(poiId));
+    if (autoGazeAudio) playPoiAudio(poi);
+  };
+
+  const handleGazeEnd = (_poiId: string) => {
+    // We keep the panel open until user moves to another POI or dismisses it.
+    // (No-op intentionally.)
+  };
+
+  const handlePoiClick = (poi: Poi) => {
+    setActivePoiId(poi.id);
+    setPoiPanelDismissed(false);
+    setVisitedPois((prev) => new Set(prev).add(poi.id));
+    playPoiAudio(poi);
+  };
+
+  // Stop POI audio on unmount
+  useEffect(() => {
+    return () => {
+      if (poiAudioRef.current) {
+        poiAudioRef.current.pause();
+        poiAudioRef.current = null;
+      }
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+    };
+  }, []);
+
 
   useEffect(() => {
     // Auto-hide info after 5 seconds
