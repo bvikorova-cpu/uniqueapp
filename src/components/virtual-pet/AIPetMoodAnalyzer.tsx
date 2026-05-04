@@ -7,6 +7,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ArrowLeft, SmilePlus, Loader2, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { useAICredits } from "@/hooks/useAICredits";
+import { handleEdgeError } from "@/lib/handleEdgeError";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 
 interface Props { onBack: () => void; }
@@ -15,7 +17,8 @@ export const AIPetMoodAnalyzer = ({ onBack }: Props) => {
   const [selectedPetId, setSelectedPetId] = useState("");
   const [result, setResult] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const { credits, useCredit } = useAICredits();
+  const { credits } = useAICredits();
+  const navigate = useNavigate();
 
   const { data: pets } = useQuery({
     queryKey: ['my-pets'],
@@ -41,9 +44,8 @@ export const AIPetMoodAnalyzer = ({ onBack }: Props) => {
         }
       });
       if (error) throw error;
-      for (let i = 0; i < 4; i++) await useCredit("custom_generation", "AI Pet Mood Analyzer");
       setResult(data.result);
-    } catch (e: any) { toast.error(e.message); }
+    } catch (e: any) { handleEdgeError(e, { navigate, context: "AI Pet" }); }
     finally { setLoading(false); }
   };
 

@@ -6,6 +6,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ArrowLeft, Wand2, Loader2, Copy, Check } from "lucide-react";
 import { toast } from "sonner";
 import { useAICredits } from "@/hooks/useAICredits";
+import { handleEdgeError } from "@/lib/handleEdgeError";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { motion } from "framer-motion";
 
@@ -20,7 +22,8 @@ export const AIPetNameGenerator = ({ onBack }: Props) => {
   const [names, setNames] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [copiedIdx, setCopiedIdx] = useState<number | null>(null);
-  const { credits, useCredit } = useAICredits();
+  const { credits } = useAICredits();
+  const navigate = useNavigate();
 
   const generate = async () => {
     if (!species) return toast.error("Enter a species");
@@ -31,9 +34,8 @@ export const AIPetNameGenerator = ({ onBack }: Props) => {
         body: { species, theme, personality }
       });
       if (error) throw error;
-      for (let i = 0; i < 3; i++) await useCredit("custom_generation", "AI Pet Name Generator");
       setNames(data.names || []);
-    } catch (e: any) { toast.error(e.message); }
+    } catch (e: any) { handleEdgeError(e, { navigate, context: "AI Pet" }); }
     finally { setLoading(false); }
   };
 

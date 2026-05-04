@@ -8,6 +8,8 @@ import { Input } from "@/components/ui/input";
 import { ArrowLeft, BookOpen, Loader2, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { useAICredits } from "@/hooks/useAICredits";
+import { handleEdgeError } from "@/lib/handleEdgeError";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 
 interface Props { onBack: () => void; }
@@ -20,7 +22,8 @@ export const AIPetStoryGenerator = ({ onBack }: Props) => {
   const [setting, setSetting] = useState("");
   const [result, setResult] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const { credits, useCredit } = useAICredits();
+  const { credits } = useAICredits();
+  const navigate = useNavigate();
 
   const { data: pets } = useQuery({
     queryKey: ['my-pets'],
@@ -50,9 +53,8 @@ export const AIPetStoryGenerator = ({ onBack }: Props) => {
         body: { pets: selectedPets, genre, setting }
       });
       if (error) throw error;
-      for (let i = 0; i < 6; i++) await useCredit("custom_generation", "AI Pet Story Generator");
       setResult(data.result);
-    } catch (e: any) { toast.error(e.message); }
+    } catch (e: any) { handleEdgeError(e, { navigate, context: "AI Pet" }); }
     finally { setLoading(false); }
   };
 

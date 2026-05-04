@@ -56,49 +56,36 @@ export const PetShop = () => {
 
   const purchaseMutation = useMutation({
     mutationFn: async (accessory: any) => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('Not authenticated');
-      await supabase.from('ai_credits').update({
-        credits_remaining: credits.credits_remaining - accessory.price, last_used_at: new Date().toISOString(),
-      }).eq('user_id', user.id);
-      await supabase.from('ai_usage_history').insert({
-        user_id: user.id, usage_type: 'custom_generation', credits_used: accessory.price,
-        description: `Purchased ${accessory.name}`,
+      const { data, error } = await supabase.functions.invoke('pet-purchase-item', {
+        body: { itemType: 'accessory', itemId: accessory.id },
       });
-      const { data, error } = await supabase.from('user_pet_accessories').insert([{
-        user_id: user.id, accessory_id: accessory.id
-      }]).select().single();
       if (error) throw error;
-      return data;
+      if (data?.error) throw new Error(data.error);
+      return { data, accessory };
     },
-    onSuccess: (_, accessory) => {
+    onSuccess: ({ accessory }) => {
       queryClient.invalidateQueries({ queryKey: ['owned-accessories'] });
       queryClient.invalidateQueries({ queryKey: ['ai-credits'] });
       toast.success(`Purchased ${accessory.name}! 🛍️`);
     },
-    onError: (error: any) => toast.error(error.message || 'Failed to purchase')
+    onError: (error: any) => toast.error(error.message || 'Failed to purchase'),
   });
 
   const openMysteryBoxMutation = useMutation({
     mutationFn: async (box: any) => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('Not authenticated');
-      await supabase.from('ai_credits').update({
-        credits_remaining: credits.credits_remaining - box.price, last_used_at: new Date().toISOString(),
-      }).eq('user_id', user.id);
-      const rewards = box.possible_rewards as string[];
-      const reward = rewards[Math.floor(Math.random() * rewards.length)];
-      await supabase.from('ai_usage_history').insert({
-        user_id: user.id, usage_type: 'custom_generation', credits_used: box.price,
-        description: `Opened ${box.name} - Got: ${reward}`,
+      const { data, error } = await supabase.functions.invoke('pet-purchase-item', {
+        body: { itemType: 'mystery', itemId: box.id },
       });
-      return { box, reward };
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      return { data, box };
     },
-    onSuccess: ({ box, reward }) => {
+    onSuccess: ({ data, box }) => {
       queryClient.invalidateQueries({ queryKey: ['ai-credits'] });
-      toast.success(`🎉 Opened ${box.name}! You got: ${reward.replace('_', ' ')}`);
+      const reward = data?.reward?.reward ?? 'a surprise';
+      toast.success(`🎉 Opened ${box.name}! You got: ${String(reward).replace(/_/g, ' ')}`);
     },
-    onError: (error: any) => toast.error(error.message || 'Failed to open box')
+    onError: (error: any) => toast.error(error.message || 'Failed to open box'),
   });
 
   const battleItems = accessories?.filter(a => getBattlePower(a.effect) > 0) || [];
