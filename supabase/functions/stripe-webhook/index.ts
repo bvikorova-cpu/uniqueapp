@@ -241,6 +241,41 @@ serve(async (req) => {
             log("tutoring credit webhook handler error", { err: (tcErr as Error).message });
           }
 
+          // ── Horse Racing currency purchase fulfillment ──
+          try {
+            if (session.metadata?.feature === "horse_racing_currency") {
+              const userId = session.metadata.user_id;
+              const coins = parseInt(session.metadata.coins || "0", 10);
+              const gems = parseInt(session.metadata.gems || "0", 10);
+
+              const { data: existing } = await supabase
+                .from("horse_currency_purchases")
+                .select("id,status").eq("stripe_session_id", session.id).maybeSingle();
+
+              if (userId && existing && existing.status !== "fulfilled") {
+                const { data: cur } = await supabase
+                  .from("horse_currency").select("coins,gems")
+                  .eq("user_id", userId).maybeSingle();
+                if (cur) {
+                  await supabase.from("horse_currency").update({
+                    coins: (cur.coins || 0) + coins,
+                    gems: (cur.gems || 0) + gems,
+                  }).eq("user_id", userId);
+                } else {
+                  await supabase.from("horse_currency").insert({
+                    user_id: userId, coins, gems,
+                  });
+                }
+                await supabase.from("horse_currency_purchases").update({
+                  status: "fulfilled", fulfilled_at: new Date().toISOString(),
+                }).eq("stripe_session_id", session.id);
+                log("horse currency fulfilled", { userId, coins, gems });
+              }
+            }
+          } catch (hcErr) {
+            log("horse currency webhook error", { err: (hcErr as Error).message });
+          }
+
           const { error } = await supabase
             .from("payment_records")
             .update({

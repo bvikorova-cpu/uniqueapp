@@ -3,8 +3,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 export const useHorseCurrency = () => {
-  const queryClient = useQueryClient();
-
   const { data: currency, isLoading } = useQuery({
     queryKey: ["horse-currency"],
     queryFn: async () => {
@@ -18,37 +16,8 @@ export const useHorseCurrency = () => {
         .maybeSingle();
 
       if (error) throw error;
-
-      // Force everyone to start at 0/0 (no starter balance)
-      if (data && (data.coins !== 0 || data.gems !== 0)) {
-        const { data: resetData, error: resetError } = await supabase
-          .from("horse_currency")
-          .update({ coins: 0, gems: 0 })
-          .eq("user_id", user.id)
-          .select()
-          .single();
-
-        if (resetError) throw resetError;
-        return resetData;
-      }
-
-      if (!data) {
-        // Create new user with 0/0 balance - everything must be purchased
-        const { data: newData, error: insertError } = await supabase
-          .from("horse_currency")
-          .insert({
-            user_id: user.id,
-            coins: 0,
-            gems: 0,
-          })
-          .select()
-          .single();
-
-        if (insertError) throw insertError;
-        return newData;
-      }
-
-      return data;
+      // Row is created server-side; show zero-balance placeholder until webhook fulfills
+      return data ?? { user_id: user.id, coins: 0, gems: 0 };
     },
   });
 
@@ -103,64 +72,22 @@ export const useUserHorses = () => {
   });
 
   const createHorse = useMutation({
-    mutationFn: async ({ name, breed, color, costCoins }: { 
-      name: string; 
-      breed: string; 
-      color: string;
-      costCoins: number;
+    mutationFn: async ({ name, breed, color, costCoins }: {
+      name: string; breed: string; color: string; costCoins: number;
     }) => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Not authenticated");
-
-      // Deduct coins
-      const { data: currency } = await supabase
-        .from("horse_currency")
-        .select("coins")
-        .eq("user_id", user.id)
-        .single();
-
-      if (!currency || currency.coins < costCoins) {
-        throw new Error("Insufficient coins");
-      }
-
-      // Create horse with random stats based on rarity
-      const stats = {
-        speed_stat: Math.floor(Math.random() * 30) + 40,
-        stamina_stat: Math.floor(Math.random() * 30) + 40,
-        acceleration_stat: Math.floor(Math.random() * 30) + 40,
-        temperament_stat: Math.floor(Math.random() * 30) + 40,
-      };
-
-      const { data, error } = await supabase
-        .from("horses")
-        .insert({
-          user_id: user.id,
-          name,
-          breed,
-          color,
-          ...stats,
-        })
-        .select()
-        .single();
-
+      const { data, error } = await supabase.functions.invoke("horse-create", {
+        body: { name, breed, color, costCoins },
+      });
       if (error) throw error;
-
-      // Update currency
-      await supabase
-        .from("horse_currency")
-        .update({ coins: currency.coins - costCoins })
-        .eq("user_id", user.id);
-
-      return data;
+      if (data?.error) throw new Error(data.error);
+      return data.horse;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["user-horses"] });
       queryClient.invalidateQueries({ queryKey: ["horse-currency"] });
       toast.success("Horse acquired!");
     },
-    onError: (error: Error) => {
-      toast.error(error.message);
-    },
+    onError: (error: Error) => toast.error(error.message),
   });
 
   return { horses, isLoading, createHorse };
@@ -199,64 +126,22 @@ export const useJoinRace = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ raceId, horseId, strategy }: { 
-      raceId: string; 
-      horseId: string; 
-      strategy: string;
+    mutationFn: async ({ raceId, horseId, strategy }: {
+      raceId: string; horseId: string; strategy: string;
     }) => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Not authenticated");
-
-      // Get race entry fee
-      const { data: race } = await supabase
-        .from("races")
-        .select("entry_fee_coins")
-        .eq("id", raceId)
-        .single();
-
-      if (!race) throw new Error("Race not found");
-
-      // Check coins
-      const { data: currency } = await supabase
-        .from("horse_currency")
-        .select("coins")
-        .eq("user_id", user.id)
-        .single();
-
-      if (!currency || currency.coins < race.entry_fee_coins) {
-        throw new Error("Insufficient coins");
-      }
-
-      // Join race
-      const { data, error } = await supabase
-        .from("race_participants")
-        .insert({
-          race_id: raceId,
-          horse_id: horseId,
-          user_id: user.id,
-          strategy,
-        })
-        .select()
-        .single();
-
+      const { data, error } = await supabase.functions.invoke("horse-join-race", {
+        body: { raceId, horseId, strategy },
+      });
       if (error) throw error;
-
-      // Deduct entry fee
-      await supabase
-        .from("horse_currency")
-        .update({ coins: currency.coins - race.entry_fee_coins })
-        .eq("user_id", user.id);
-
-      return data;
+      if (data?.error) throw new Error(data.error);
+      return data.participant;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["active-races"] });
       queryClient.invalidateQueries({ queryKey: ["horse-currency"] });
       toast.success("Joined race!");
     },
-    onError: (error: Error) => {
-      toast.error(error.message);
-    },
+    onError: (error: Error) => toast.error(error.message),
   });
 };
 
@@ -265,64 +150,23 @@ export const useTrainHorse = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ horseId, statType }: { horseId: string; statType: 'speed' | 'stamina' | 'acceleration' | 'temperament' }) => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Not authenticated");
-
-      const TRAINING_COST = 20;
-      const STAT_INCREASE = 5;
-
-      // Check coins
-      const { data: currency } = await supabase
-        .from("horse_currency")
-        .select("coins")
-        .eq("user_id", user.id)
-        .single();
-
-      if (!currency || currency.coins < TRAINING_COST) {
-        throw new Error("Insufficient coins for training");
-      }
-
-      // Get current horse stats
-      const { data: horse } = await supabase
-        .from("horses")
-        .select("*")
-        .eq("id", horseId)
-        .single();
-
-      if (!horse) throw new Error("Horse not found");
-
-      // Update stat
-      const statField = `${statType}_stat`;
-      const newStatValue = Math.min((horse[statField] || 0) + STAT_INCREASE, 100);
-      const newXP = (horse.experience || 0) + 10;
-      const newLevel = Math.floor(newXP / 100) + 1;
-
-      await supabase
-        .from("horses")
-        .update({
-          [statField]: newStatValue,
-          experience: newXP,
-          level: newLevel,
-        } as any)
-        .eq("id", horseId);
-
-      // Deduct coins
-      await supabase
-        .from("horse_currency")
-        .update({ coins: currency.coins - TRAINING_COST })
-        .eq("user_id", user.id);
-
-      return { statType, newValue: newStatValue };
+    mutationFn: async ({ horseId, statType }: {
+      horseId: string;
+      statType: 'speed' | 'stamina' | 'acceleration' | 'temperament';
+    }) => {
+      const { data, error } = await supabase.functions.invoke("horse-train", {
+        body: { horseId, statType },
+      });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      return { statType: data.statType, newValue: data.newValue };
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["user-horses"] });
       queryClient.invalidateQueries({ queryKey: ["horse-currency"] });
       toast.success(`${data.statType} increased to ${data.newValue}!`);
     },
-    onError: (error: Error) => {
-      toast.error(error.message);
-    },
+    onError: (error: Error) => toast.error(error.message),
   });
 };
 

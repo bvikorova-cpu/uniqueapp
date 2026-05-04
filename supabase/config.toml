@@ -908,6 +908,15 @@ verify_jwt = false
 [functions.create-horse-currency-checkout]
 verify_jwt = true
 
+[functions.horse-create]
+verify_jwt = true
+
+[functions.horse-join-race]
+verify_jwt = true
+
+[functions.horse-train]
+verify_jwt = true
+
 [functions.send-gift-payment]
 verify_jwt = true
 
