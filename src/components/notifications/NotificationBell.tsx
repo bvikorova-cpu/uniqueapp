@@ -279,7 +279,7 @@ const NotificationBell = () => {
     ) {
       navigate(`/admin/withdrawal-requests`);
     } else if (notification.type === "weekly_xp_winner" || notification.type === "weekly_xp_leaderboard") {
-      navigate(`/leaderboard`);
+      navigate(`/rewards`);
     } else if (notification.type === "follow" && notification.actor_id) {
       navigate(`/profile/${notification.actor_id}`);
     } else if (notification.post_id) {
