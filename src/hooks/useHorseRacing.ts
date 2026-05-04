@@ -3,8 +3,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 export const useHorseCurrency = () => {
-  const queryClient = useQueryClient();
-
   const { data: currency, isLoading } = useQuery({
     queryKey: ["horse-currency"],
     queryFn: async () => {
@@ -18,37 +16,8 @@ export const useHorseCurrency = () => {
         .maybeSingle();
 
       if (error) throw error;
-
-      // Force everyone to start at 0/0 (no starter balance)
-      if (data && (data.coins !== 0 || data.gems !== 0)) {
-        const { data: resetData, error: resetError } = await supabase
-          .from("horse_currency")
-          .update({ coins: 0, gems: 0 })
-          .eq("user_id", user.id)
-          .select()
-          .single();
-
-        if (resetError) throw resetError;
-        return resetData;
-      }
-
-      if (!data) {
-        // Create new user with 0/0 balance - everything must be purchased
-        const { data: newData, error: insertError } = await supabase
-          .from("horse_currency")
-          .insert({
-            user_id: user.id,
-            coins: 0,
-            gems: 0,
-          })
-          .select()
-          .single();
-
-        if (insertError) throw insertError;
-        return newData;
-      }
-
-      return data;
+      // Row is created server-side; show zero-balance placeholder until webhook fulfills
+      return data ?? { user_id: user.id, coins: 0, gems: 0 };
     },
   });
 
