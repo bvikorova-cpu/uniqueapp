@@ -15,8 +15,9 @@ interface Message { role: "user" | "assistant"; content: string; }
 
 const CREDIT_PACKAGES = [
   { id: "10", credits: 10, price: 5, label: "10 Credits" },
-  { id: "30", credits: 30, price: 12, label: "30 Credits" },
-  { id: "100", credits: 100, price: 35, label: "100 Credits", popular: true },
+  { id: "25", credits: 25, price: 12.5, label: "25 Credits", popular: true },
+  { id: "50", credits: 50, price: 25, label: "50 Credits" },
+  { id: "100", credits: 100, price: 50, label: "100 Credits" },
 ];
 
 export const LiveChatWithAI = () => {
