@@ -82,7 +82,23 @@ serve(async (req) => {
 
     log("Stripe result", { isPaid, type: detectedType, amount });
 
-    // Record the payment (idempotent via unique stripe_session_id)
+    // ---- IDEMPOTENCY GUARD ----
+    // Check if this Stripe session was ALREADY verified & credited.
+    // payment_records.stripe_session_id has a UNIQUE constraint, and verified_at is set
+    // only after successful credit application. If verified_at is already populated,
+    // we treat this as a duplicate (page refresh, double-click, retry) and skip
+    // applyPurchase / donation processing entirely.
+    const { data: existingRecord } = await supabaseAdmin
+      .from("payment_records")
+      .select("id, verified_at, status")
+      .eq("stripe_session_id", session.id)
+      .maybeSingle();
+
+    const alreadyCredited = !!existingRecord?.verified_at;
+    log("Idempotency check", { existing: !!existingRecord, alreadyCredited });
+
+    // Record the payment (idempotent via unique stripe_session_id).
+    // IMPORTANT: do NOT overwrite verified_at if it was already set — preserves audit trail.
     if (userId) {
       const { error: upsertErr } = await supabaseAdmin
         .from("payment_records")
@@ -98,24 +114,27 @@ serve(async (req) => {
             stripe_payment_intent_id: result.payment_intent_id ?? null,
             stripe_customer_id: typeof session.customer === "string" ? session.customer : null,
             metadata: result.metadata,
-            verified_at: isPaid ? new Date().toISOString() : null,
+            verified_at: existingRecord?.verified_at ?? (isPaid ? new Date().toISOString() : null),
           },
           { onConflict: "stripe_session_id" }
         );
       if (upsertErr) log("upsert error", upsertErr);
     }
 
-    // Apply business logic per product type
-    if (isPaid && userId) {
+    // Apply business logic per product type — ONLY if not already credited
+    if (isPaid && userId && !alreadyCredited) {
       try {
         await applyPurchase(supabaseAdmin, userId, detectedType, result);
       } catch (e) {
         log("applyPurchase error", e instanceof Error ? e.message : e);
       }
+    } else if (alreadyCredited) {
+      log("Skipping applyPurchase — session already credited", { session_id: session.id });
     }
 
     // Donation processing — runs even for guest checkouts (no userId required)
-    if (isPaid && (detectedType === "donation" || result.metadata?.type === "campaign_donation")) {
+    // Also guarded by alreadyCredited to prevent duplicate donation entries on refresh.
+    if (isPaid && !alreadyCredited && (detectedType === "donation" || result.metadata?.type === "campaign_donation")) {
       try {
         const md = result.metadata || {};
         const campaignId = md.campaign_id;
