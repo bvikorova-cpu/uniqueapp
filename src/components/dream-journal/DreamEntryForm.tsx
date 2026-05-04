@@ -7,6 +7,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Sparkles } from "lucide-react";
 import { useAICredits } from "@/hooks/useAICredits";
+import { useNavigate } from "react-router-dom";
+import { handleEdgeError, throwIfInvokeError } from "@/lib/handleEdgeError";
 
 interface DreamEntryFormProps {
   onSuccess: () => void;
@@ -14,6 +16,7 @@ interface DreamEntryFormProps {
 
 const DreamEntryForm = ({ onSuccess }: DreamEntryFormProps) => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const { credits, useCredit } = useAICredits();
   const [loading, setLoading] = useState(false);
   const [title, setTitle] = useState("");
@@ -22,28 +25,33 @@ const DreamEntryForm = ({ onSuccess }: DreamEntryFormProps) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!content.trim()) {
       toast({ title: "Error", description: "Please describe your dream", variant: "destructive" });
       return;
     }
 
+    if ((credits?.credits_remaining || 0) < 1) {
+      handleEdgeError({ status: 402 }, { navigate, context: "Dream Analysis" });
+      return;
+    }
+
     setLoading(true);
     try {
-      await useCredit("effect");
-
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Not authenticated");
+      if (!user) {
+        handleEdgeError({ status: 401 }, { navigate, context: "Dream Analysis" });
+        return;
+      }
+
+      await useCredit("effect");
 
       const { data: { session } } = await supabase.auth.getSession();
       const analysisResponse = await supabase.functions.invoke("analyze-dream", {
         body: { dreamContent: content },
         headers: { Authorization: `Bearer ${session?.access_token}` }
       });
-
-      if (analysisResponse.error) throw analysisResponse.error;
-
-      const analysis = analysisResponse.data;
+      const analysis = throwIfInvokeError(analysisResponse);
 
       const { error: insertError } = await supabase.from("dream_entries").insert([{
         title: title || "Dream Entry",
@@ -63,7 +71,9 @@ const DreamEntryForm = ({ onSuccess }: DreamEntryFormProps) => {
       setContent("");
       onSuccess();
     } catch (error: any) {
-      toast({ title: "Error", description: error.message, variant: "destructive" });
+      if (!handleEdgeError(error, { navigate, context: "Dream Analysis" })) {
+        toast({ title: "Error", description: error.message, variant: "destructive" });
+      }
     } finally {
       setLoading(false);
     }

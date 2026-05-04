@@ -7,19 +7,22 @@ import { toast } from "sonner";
 import { Loader2, Map, ArrowLeft, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 import ReactMarkdown from "react-markdown";
+import { useNavigate } from "react-router-dom";
+import { handleEdgeError, throwIfInvokeError } from "@/lib/handleEdgeError";
 
 interface DreamMoodCorrelationProps {
   onBack: () => void;
 }
 
 const DreamMoodCorrelation = ({ onBack }: DreamMoodCorrelationProps) => {
+  const navigate = useNavigate();
   const { credits, useCredit } = useAICredits();
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<string | null>(null);
 
   const handleAnalyze = async () => {
     if ((credits?.credits_remaining || 0) < 1) {
-      toast.error("Insufficient credits. Please purchase more.");
+      handleEdgeError({ status: 402 }, { navigate, context: "Dream-Mood Correlation" });
       return;
     }
     setLoading(true);
@@ -28,9 +31,11 @@ const DreamMoodCorrelation = ({ onBack }: DreamMoodCorrelationProps) => {
       if (!used) throw new Error("Failed to use credit");
 
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) throw new Error("Not authenticated");
+      if (!session) {
+        handleEdgeError({ status: 401 }, { navigate, context: "Dream-Mood Correlation" });
+        return;
+      }
 
-      // Fetch user's dream entries and mood data
       const [dreamsRes, moodsRes] = await Promise.all([
         (supabase as any).from("dream_entries").select("*").eq("user_id", session.user.id).order("created_at", { ascending: false }).limit(50),
         (supabase as any).from("dream_mood_entries").select("*").eq("user_id", session.user.id).order("created_at", { ascending: false }).limit(50),
@@ -45,15 +50,17 @@ const DreamMoodCorrelation = ({ onBack }: DreamMoodCorrelationProps) => {
         return;
       }
 
-      const { data, error } = await supabase.functions.invoke("dream-ai", {
+      const res = await supabase.functions.invoke("dream-ai", {
         body: { action: "mood-correlation", dreams, moods },
-        headers: { Authorization: `Bearer ${session?.access_token}` },
+        headers: { Authorization: `Bearer ${session.access_token}` },
       });
-      if (error) throw error;
+      const data = throwIfInvokeError(res);
       setResult(data.analysis);
       toast.success("Correlation analysis ready!");
     } catch (err: any) {
-      toast.error(err.message || "Error generating analysis");
+      if (!handleEdgeError(err, { navigate, context: "Dream-Mood Correlation" })) {
+        toast.error(err.message || "Error generating analysis");
+      }
     } finally {
       setLoading(false);
     }
