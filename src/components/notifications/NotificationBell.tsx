@@ -179,8 +179,11 @@ const NotificationBell = () => {
         return notification.message || "New Instructor withdrawal request";
       case "campaign_withdrawal":
         return notification.message || "New Campaign withdrawal request";
+      case "weekly_xp_winner":
+      case "weekly_xp_leaderboard":
+        return notification.message || notification.title || "You won the Weekly XP Leaderboard!";
       default:
-        return `${actorName} interacted with your content`;
+        return notification.message || notification.title || `${actorName} interacted with your content`;
     }
   };
 
@@ -209,6 +212,9 @@ const NotificationBell = () => {
       case "instructor_withdrawal":
       case "campaign_withdrawal":
         return "💰";
+      case "weekly_xp_winner":
+      case "weekly_xp_leaderboard":
+        return "👑";
       default:
         return "🔔";
     }
@@ -272,8 +278,18 @@ const NotificationBell = () => {
       notification.type === "campaign_withdrawal"
     ) {
       navigate(`/admin/withdrawal-requests`);
+    } else if (notification.type === "weekly_xp_winner" || notification.type === "weekly_xp_leaderboard") {
+      navigate(`/leaderboard`);
+    } else if (notification.type === "follow" && notification.actor_id) {
+      navigate(`/profile/${notification.actor_id}`);
     } else if (notification.post_id) {
       navigate(`/post/${notification.post_id}`);
+    } else if (notification.related_id) {
+      // Generic fallback — try wall as a sensible default for content interactions
+      navigate(`/wall`);
+    } else {
+      // Final fallback — open notifications center so click always does *something*
+      navigate(`/wall`);
     }
   };
 

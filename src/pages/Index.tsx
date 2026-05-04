@@ -239,7 +239,7 @@ const Index = () => {
           muted
           loop
           playsInline
-          preload="metadata"
+          preload="none"
           poster="/unique-hero-poster-hd.jpg"
           className="absolute inset-0 w-full h-full object-cover object-center"
           style={{ objectPosition: "center 35%" }}

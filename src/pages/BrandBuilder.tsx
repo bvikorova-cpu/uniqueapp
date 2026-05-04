@@ -54,7 +54,14 @@ const BrandBuilder = () => {
   };
 
   const loadBrandKits = async () => {
-    const { data } = await supabase.from("brand_kits").select("*").order("created_at", { ascending: false }).limit(10);
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+    const { data } = await supabase
+      .from("brand_kits")
+      .select("*")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false })
+      .limit(10);
     if (data) setBrandKits(data);
   };
 
@@ -267,12 +274,17 @@ const BrandBuilder = () => {
       <div className="container mx-auto px-3 sm:px-4 pt-16 sm:pt-20 pb-8 max-w-7xl">
 
         {/* ====== CINEMATIC VIDEO HERO ====== */}
-        <div className="relative w-full h-[76svh] min-h-[500px] sm:min-h-[540px] rounded-2xl sm:rounded-3xl overflow-hidden mb-8 border border-border/40">
+        <div
+          className="relative w-full rounded-2xl sm:rounded-3xl overflow-hidden mb-8 border border-border/40 bg-black"
+          style={{ aspectRatio: "16/10", maxHeight: "76svh", minHeight: "500px" }}
+        >
           <video
             ref={videoRef}
             src={heroVideo.url}
             autoPlay loop muted={isMuted} playsInline
+            preload="metadata"
             className="absolute inset-0 w-full h-full object-cover brightness-[1.4] saturate-[1.15] contrast-[1.05]"
+            style={{ willChange: "transform" }}
           />
           <div className="absolute inset-0 bg-black/30" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent" />
