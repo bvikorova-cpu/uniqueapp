@@ -30,6 +30,21 @@ serve(async (req) => {
     const rateLimitResponse = await withRateLimit(req, RATE_LIMITS.ai_generation, corsHeaders, user.id);
     if (rateLimitResponse) return rateLimitResponse;
 
+    // Credit check (1 credit) — service role for atomic decrement
+    const adminClient = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+      { auth: { persistSession: false } },
+    );
+    const { data: creditsRow } = await adminClient
+      .from("ai_credits").select("credits_remaining").eq("user_id", user.id).maybeSingle();
+    const remaining = creditsRow?.credits_remaining ?? 0;
+    if (remaining < 1) {
+      return new Response(JSON.stringify({ error: "Insufficient credits", required: 1, remaining }), {
+        status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const { dreamContent } = await req.json();
 
     const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
@@ -94,8 +109,14 @@ Odpovedaj ako JSON s týmito kľúčmi:
       };
     }
 
+    // Deduct credit after successful analysis
+    await adminClient.from("ai_credits").update({
+      credits_remaining: remaining - 1,
+      last_used_at: new Date().toISOString(),
+    }).eq("user_id", user.id);
+
     return new Response(
-      JSON.stringify(analysisData),
+      JSON.stringify({ ...analysisData, credits_remaining: remaining - 1 }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (error: any) {
