@@ -92,12 +92,51 @@ export default function KitchenStarsBattles() {
     load();
   };
 
-  const validateFile = (file: File): { ok: true; type: "image" | "video" } | { ok: false; error: string } => {
+  const formatBytes = (b: number) => b < 1024 * 1024 ? `${(b / 1024).toFixed(0)} KB` : `${(b / 1024 / 1024).toFixed(2)} MB`;
+
+  const validateFile = (file: File):
+    | { ok: true; type: "image" | "video" }
+    | { ok: false; title: string; reason: string; suggestion: string } => {
     const isImage = ALLOWED_IMAGE.includes(file.type);
     const isVideo = ALLOWED_VIDEO.includes(file.type);
-    if (!isImage && !isVideo) return { ok: false, error: "Only JPG/PNG/WEBP images or MP4/WEBM/MOV videos allowed" };
+    const ext = file.name.split(".").pop()?.toUpperCase() || "unknown";
+
+    if (!isImage && !isVideo) {
+      const looksLikeImage = file.type.startsWith("image/");
+      const looksLikeVideo = file.type.startsWith("video/");
+      return {
+        ok: false,
+        title: "Unsupported file format",
+        reason: looksLikeImage
+          ? `Image type ${file.type} (${ext}) is not allowed.`
+          : looksLikeVideo
+          ? `Video type ${file.type} (${ext}) is not allowed.`
+          : `File "${file.name}" has type "${file.type || "unknown"}", which is neither image nor video.`,
+        suggestion: looksLikeImage
+          ? "Convert to JPG, PNG or WEBP before uploading."
+          : looksLikeVideo
+          ? "Convert to MP4, WEBM or MOV (H.264) before uploading."
+          : "Upload an image (JPG/PNG/WEBP, ≤8 MB) or a video (MP4/WEBM/MOV, ≤50 MB).",
+      };
+    }
+
     const max = isImage ? MAX_IMAGE : MAX_VIDEO;
-    if (file.size > max) return { ok: false, error: `File too large (max ${isImage ? "8MB" : "50MB"})` };
+    if (file.size > max) {
+      const overBy = file.size - max;
+      return {
+        ok: false,
+        title: isImage ? "Image too large" : "Video too large",
+        reason: `Your ${isImage ? "image" : "video"} is ${formatBytes(file.size)} — that's ${formatBytes(overBy)} over the ${isImage ? "8 MB" : "50 MB"} limit.`,
+        suggestion: isImage
+          ? "Compress with squoosh.app or tinypng.com, or resize to ≤2000px on the long edge."
+          : "Trim length, lower resolution to 720p, or re-encode at a lower bitrate (e.g. with HandBrake).",
+      };
+    }
+
+    if (file.size === 0) {
+      return { ok: false, title: "Empty file", reason: "The selected file is 0 bytes.", suggestion: "Pick a different file and try again." };
+    }
+
     return { ok: true, type: isImage ? "image" : "video" };
   };
 
