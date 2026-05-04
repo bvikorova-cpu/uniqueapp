@@ -23,7 +23,7 @@ export const AI_PROXY_MAP: Record<string, string> = {
   "antique-museum-display": "antique_museum_display",
   "antique-price-alert": "antique_price_alert",
   "antique-provenance": "antique_provenance",
-  "battle-characters": "battle_characters",
+  // "battle-characters": real edge function, not proxied
   "battle-pets": "battle_pets",
   "beauty-celebrity-match": "beauty_celebrity_match",
   "beauty-nail-art": "beauty_nail_art",

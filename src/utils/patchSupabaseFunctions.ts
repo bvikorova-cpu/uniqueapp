@@ -242,7 +242,7 @@ const FUNCTION_ALIASES: Record<string, AliasEntry> = {
   // ─────────────────────────────────────────────────────────────────────
   "create-shadow-battle":               { target: "create-checkout", bodyExtras: { product: "shadow_battle" } },
   "join-shadow-battle":                 { target: "create-checkout", bodyExtras: { product: "shadow_battle_join" } },
-  "battle-characters":                  { target: "create-checkout", bodyExtras: { product: "battle_characters" } },
+  // battle-characters: NOT proxied — calls real edge function with credit deduction
   "battle-pets":                        { target: "create-checkout", bodyExtras: { product: "battle_pets" } },
   "purchase-shadow-gift":               { target: "create-checkout", bodyExtras: { product: "shadow_gift" } },
   "purchase-best-friend-messages":      { target: "create-checkout", bodyExtras: { product: "best_friend_messages" } },
