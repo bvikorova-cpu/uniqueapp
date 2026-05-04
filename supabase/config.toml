@@ -1289,3 +1289,15 @@ verify_jwt = false
 
 [functions.vitals-ingest]
 verify_jwt = false
+
+[functions.clone-battle]
+verify_jwt = false
+
+[functions.dream-battle-vote]
+verify_jwt = false
+
+[functions.fashion-battle-vote]
+verify_jwt = false
+
+[functions.comedy-battle-vote]
+verify_jwt = false

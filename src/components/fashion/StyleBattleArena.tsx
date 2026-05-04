@@ -108,21 +108,15 @@ export default function StyleBattleArena() {
 
   const vote = useMutation({
     mutationFn: async (entryId: string) => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) throw new Error("Not authenticated");
-      const { error } = await supabase.from("fashion_battle_votes").insert({
-        entry_id: entryId, voter_id: session.user.id,
-      });
+      const { data, error } = await supabase.functions.invoke("fashion-battle-vote", { body: { entryId } });
       if (error) throw error;
-      await supabase.from("fashion_battle_entries").update({
-        vote_count: ((entries?.find(e => e.id === entryId)?.vote_count) || 0) + 1,
-      }).eq("id", entryId);
+      if (data?.error) throw new Error(data.error);
     },
     onSuccess: () => {
       toast.success("Vote cast!");
       queryClient.invalidateQueries({ queryKey: ["fashion-battle-entries"] });
     },
-    onError: () => toast.error("Already voted or error"),
+    onError: (e: any) => toast.error(e.message || "Vote failed"),
   });
 
   return (

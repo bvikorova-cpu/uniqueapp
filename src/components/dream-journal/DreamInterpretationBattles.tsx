@@ -111,17 +111,16 @@ const DreamInterpretationBattles = ({ onBack }: DreamInterpretationBattlesProps)
     }
   };
 
-  const voteInterpretation = async (interpId: string, currentVotes: number) => {
+  const voteInterpretation = async (interpId: string, _currentVotes: number) => {
     try {
-      const { error } = await supabase
-        .from("dream_battle_interpretations" as any)
-        .update({ votes: currentVotes + 1 })
-        .eq("id", interpId);
-
+      const { data, error } = await supabase.functions.invoke("dream-battle-vote", {
+        body: { interpretationId: interpId },
+      });
       if (error) throw error;
+      if (data?.error) throw new Error(data.error);
       queryClient.invalidateQueries({ queryKey: ["dream-battles"] });
     } catch (err: any) {
-      toast.error("Error voting");
+      toast.error(err.message || "Error voting");
     }
   };
 
