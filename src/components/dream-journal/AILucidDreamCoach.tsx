@@ -9,6 +9,8 @@ import { toast } from "sonner";
 import { Loader2, Brain, Sparkles, ArrowLeft } from "lucide-react";
 import { motion } from "framer-motion";
 import ReactMarkdown from "react-markdown";
+import { useNavigate } from "react-router-dom";
+import { handleEdgeError, throwIfInvokeError } from "@/lib/handleEdgeError";
 
 interface AILucidDreamCoachProps {
   onBack: () => void;
