@@ -187,7 +187,7 @@ async function applyPurchase(
       astrology_credits: "astrology_credits",
       handwriting_credits: "handwriting_credits",
       messenger_ai_credits: "messenger_ai_credits",
-      photo_credits: "ai_credits",
+      photo_credits: "photo_credits",
       character_credits: "ai_credits",
       emotion_credits: "ai_credits",
       video_ad_credits: "ai_credits",

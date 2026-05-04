@@ -77,8 +77,18 @@ export const usePhotoCredits = () => {
         return;
       }
 
+      // Send `amount` (in cents) + metadata.credits so create-checkout uses the
+      // product path with our package price instead of falling into the credits/CREDIT_PACKS branch.
+      const origin = window.location.origin;
       const { data, error } = await supabase.functions.invoke('create-photo-credits-payment', {
-        body: { credits }
+        body: {
+          product: 'photo_credits',
+          amount: Math.round(price * 100),
+          productName: `Photo Restoration Credits (${credits})`,
+          metadata: { credits: String(credits), credit_type: 'photo' },
+          successUrl: `${origin}/photo-restoration?payment=success&product_type=photo_credits&session_id={CHECKOUT_SESSION_ID}`,
+          cancelUrl: `${origin}/photo-restoration?payment=canceled`,
+        },
       });
 
       if (error) throw error;
