@@ -23349,6 +23349,128 @@ export type Database = {
           },
         ]
       }
+      kitchen_battle_participants: {
+        Row: {
+          battle_id: string
+          created_at: string
+          description: string | null
+          dish_title: string
+          id: string
+          image_url: string | null
+          user_id: string
+          video_url: string | null
+          vote_count: number
+        }
+        Insert: {
+          battle_id: string
+          created_at?: string
+          description?: string | null
+          dish_title: string
+          id?: string
+          image_url?: string | null
+          user_id: string
+          video_url?: string | null
+          vote_count?: number
+        }
+        Update: {
+          battle_id?: string
+          created_at?: string
+          description?: string | null
+          dish_title?: string
+          id?: string
+          image_url?: string | null
+          user_id?: string
+          video_url?: string | null
+          vote_count?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "kitchen_battle_participants_battle_id_fkey"
+            columns: ["battle_id"]
+            isOneToOne: false
+            referencedRelation: "kitchen_battles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      kitchen_battle_votes: {
+        Row: {
+          battle_id: string
+          created_at: string
+          id: string
+          participant_id: string
+          voter_id: string
+        }
+        Insert: {
+          battle_id: string
+          created_at?: string
+          id?: string
+          participant_id: string
+          voter_id: string
+        }
+        Update: {
+          battle_id?: string
+          created_at?: string
+          id?: string
+          participant_id?: string
+          voter_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "kitchen_battle_votes_battle_id_fkey"
+            columns: ["battle_id"]
+            isOneToOne: false
+            referencedRelation: "kitchen_battles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "kitchen_battle_votes_participant_id_fkey"
+            columns: ["participant_id"]
+            isOneToOne: false
+            referencedRelation: "kitchen_battle_participants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      kitchen_battles: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          deadline: string
+          description: string | null
+          id: string
+          prize_pool: number
+          status: string
+          theme: string
+          updated_at: string
+          winner_participant_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          deadline?: string
+          description?: string | null
+          id?: string
+          prize_pool?: number
+          status?: string
+          theme: string
+          updated_at?: string
+          winner_participant_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          deadline?: string
+          description?: string | null
+          id?: string
+          prize_pool?: number
+          status?: string
+          theme?: string
+          updated_at?: string
+          winner_participant_id?: string | null
+        }
+        Relationships: []
+      }
       learning_certificates: {
         Row: {
           certificate_number: string | null
