@@ -277,7 +277,7 @@ const NotificationBell = () => {
       notification.type === "instructor_withdrawal" ||
       notification.type === "campaign_withdrawal"
     ) {
-      navigate(`/admin/withdrawal-requests`);
+      navigate(notification.type === "campaign_withdrawal" ? `/admin/campaign-withdrawals` : `/admin/withdrawals`);
     } else if (notification.type === "weekly_xp_winner" || notification.type === "weekly_xp_leaderboard") {
       navigate(`/rewards`);
     } else if (notification.type === "follow" && notification.actor_id) {
