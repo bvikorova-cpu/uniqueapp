@@ -141,6 +141,18 @@ export default function KitchenStarsBattles() {
   };
 
   const submitEntry = async (battleId: string) => {
+    // Hard limit: one entry per user per battle
+    const existing = (participants[battleId] || []).find(p => p.user_id === userId);
+    if (existing) {
+      toast({
+        title: "You already entered this battle",
+        description: `Your dish "${existing.dish_title}" is already submitted. Each chef can submit only ONE dish per battle to keep voting fair. Wait for the next battle to compete again.`,
+        variant: "destructive",
+      });
+      setEntryFor(null);
+      return;
+    }
+
     if (!dishTitle.trim() || dishTitle.length > 120) {
       toast({ title: "Dish title required (max 120 chars)", variant: "destructive" }); return;
     }
