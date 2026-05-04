@@ -28,6 +28,13 @@ export default function KitchenStarsBattles() {
   const [dishTitle, setDishTitle] = useState("");
   const [dishDesc, setDishDesc] = useState("");
   const [dishImage, setDishImage] = useState("");
+  const [dishFile, setDishFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
+
+  const ALLOWED_IMAGE = ["image/jpeg", "image/png", "image/webp"];
+  const ALLOWED_VIDEO = ["video/mp4", "video/webm", "video/quicktime"];
+  const MAX_IMAGE = 8 * 1024 * 1024;   // 8 MB
+  const MAX_VIDEO = 50 * 1024 * 1024;  // 50 MB
   const [commentDraft, setCommentDraft] = useState<Record<string, string>>({});
   const [showComments, setShowComments] = useState<Record<string, boolean>>({});
 
@@ -85,14 +92,55 @@ export default function KitchenStarsBattles() {
     load();
   };
 
+  const validateFile = (file: File): { ok: true; type: "image" | "video" } | { ok: false; error: string } => {
+    const isImage = ALLOWED_IMAGE.includes(file.type);
+    const isVideo = ALLOWED_VIDEO.includes(file.type);
+    if (!isImage && !isVideo) return { ok: false, error: "Only JPG/PNG/WEBP images or MP4/WEBM/MOV videos allowed" };
+    const max = isImage ? MAX_IMAGE : MAX_VIDEO;
+    if (file.size > max) return { ok: false, error: `File too large (max ${isImage ? "8MB" : "50MB"})` };
+    return { ok: true, type: isImage ? "image" : "video" };
+  };
+
   const submitEntry = async (battleId: string) => {
-    if (!dishTitle.trim()) { toast({ title: "Add dish title", variant: "destructive" }); return; }
+    if (!dishTitle.trim() || dishTitle.length > 120) {
+      toast({ title: "Dish title required (max 120 chars)", variant: "destructive" }); return;
+    }
+    if (dishDesc.length > 500) {
+      toast({ title: "Description too long (max 500)", variant: "destructive" }); return;
+    }
+
+    let imageUrl: string | null = dishImage || null;
+    let videoUrl: string | null = null;
+    let mediaType: "image" | "video" | null = null;
+    let mediaSize: number | null = null;
+    let mediaMime: string | null = null;
+
+    if (dishFile) {
+      const v = validateFile(dishFile);
+      if (!v.ok) { toast({ title: "Invalid file", description: v.error, variant: "destructive" }); return; }
+      setUploading(true);
+      const ext = dishFile.name.split(".").pop()?.toLowerCase() || "bin";
+      const path = `${userId}/${battleId}/${crypto.randomUUID()}.${ext}`;
+      const { error: ue } = await supabase.storage.from("kitchen-battles")
+        .upload(path, dishFile, { contentType: dishFile.type, upsert: false });
+      if (ue) {
+        setUploading(false);
+        toast({ title: "Upload failed", description: ue.message, variant: "destructive" }); return;
+      }
+      const { data: pub } = supabase.storage.from("kitchen-battles").getPublicUrl(path);
+      mediaType = v.type; mediaSize = dishFile.size; mediaMime = dishFile.type;
+      if (v.type === "image") imageUrl = pub.publicUrl;
+      else videoUrl = pub.publicUrl;
+      setUploading(false);
+    }
+
     const { error } = await supabase.from("kitchen_battle_participants").insert({
-      battle_id: battleId, user_id: userId, dish_title: dishTitle,
-      description: dishDesc || null, image_url: dishImage || null,
+      battle_id: battleId, user_id: userId, dish_title: dishTitle.trim(),
+      description: dishDesc.trim() || null, image_url: imageUrl, video_url: videoUrl,
+      media_type: mediaType, media_size: mediaSize, media_mime: mediaMime,
     });
     if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); return; }
-    setEntryFor(null); setDishTitle(""); setDishDesc(""); setDishImage("");
+    setEntryFor(null); setDishTitle(""); setDishDesc(""); setDishImage(""); setDishFile(null);
     toast({ title: "Entry submitted!" });
     load();
   };
