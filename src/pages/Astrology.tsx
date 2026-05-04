@@ -41,6 +41,7 @@ const TOOLS = [
 
 const Astrology = () => {
   const [activeView, setActiveView] = useState<ActiveView>("dashboard");
+  usePaymentVerification();
 
   const renderToolView = () => {
     switch (activeView) {
