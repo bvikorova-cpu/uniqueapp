@@ -17,43 +17,13 @@ export function BattleVoting({ battle, onVoteSuccess }: BattleVotingProps) {
   const handleVote = async (participantId: string) => {
     setIsVoting(true);
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Not authenticated");
-
-      // Check if user has enough coins
-      const { data: currency } = await supabase
-        .from("comedy_currency")
-        .select("coins")
-        .eq("user_id", user.id)
-        .single();
-
-      if (!currency || currency.coins < 10) {
-        throw new Error("Insufficient coins. You need 10 coins to vote.");
-      }
-
-      // Cast vote
-      const { error: voteError } = await supabase
-        .from("battle_votes")
-        .insert({
-          battle_id: battle.id,
-          participant_id: participantId,
-          user_id: user.id,
-          vote_cost_coins: 10,
-        } as any);
-
-      if (voteError) throw voteError;
-
-      // Deduct coins
-      await supabase
-        .from("comedy_currency")
-        .update({ coins: currency.coins - 10 })
-        .eq("user_id", user.id);
-
-      toast({
-        title: "Vote Cast!",
-        description: "Your vote has been counted. Good luck to your favorite!",
+      const { data, error } = await supabase.functions.invoke("comedy-battle-vote", {
+        body: { battleId: battle.id, participantId },
       });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
 
+      toast({ title: "Vote Cast!", description: "Your vote has been counted." });
       onVoteSuccess();
     } catch (error: any) {
       console.error(error);

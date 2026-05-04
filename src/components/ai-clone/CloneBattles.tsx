@@ -23,42 +23,10 @@ export function CloneBattles() {
     setIsMatching(true);
     setBattleResult(null);
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        toast({ title: "Sign in required", variant: "destructive" });
-        return;
-      }
-
-      const { data: userClones } = await supabase
-        .from("personality_clones")
-        .select("clone_name, personality_data")
-        .eq("user_id", user.id)
-        .eq("is_active", true)
-        .limit(1);
-
-      if (!userClones?.length) {
-        toast({ title: "No Active Clone", description: "Create and activate a clone first", variant: "destructive" });
-        return;
-      }
-
-      const { data: opponents } = await supabase
-        .from("personality_clones")
-        .select("clone_name")
-        .neq("user_id", user.id)
-        .eq("is_active", true)
-        .limit(1);
-
-      const opponentName = opponents?.[0]?.clone_name || "Mystery Bot";
-      const yourClone = userClones[0];
-
-      // Simulate battle locally
-      await new Promise(resolve => setTimeout(resolve, 2000 + Math.random() * 1500));
-      
-      const script = BATTLE_SCRIPTS[Math.floor(Math.random() * BATTLE_SCRIPTS.length)];
-      setBattleResult({
-        winner: script.winner === "yours" ? yourClone.clone_name : opponentName,
-        analysis: script.analysis
-      });
+      const { data, error } = await supabase.functions.invoke("clone-battle", { body: {} });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      setBattleResult({ winner: data.winner, analysis: data.analysis });
     } catch (err: any) {
       toast({ title: "Error", description: err.message || "Battle failed", variant: "destructive" });
     } finally {

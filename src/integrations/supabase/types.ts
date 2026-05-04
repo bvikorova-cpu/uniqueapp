@@ -7507,6 +7507,42 @@ export type Database = {
           },
         ]
       }
+      clone_battles: {
+        Row: {
+          analysis: string | null
+          created_at: string
+          id: string
+          opponent_clone_id: string | null
+          opponent_clone_name: string | null
+          user_clone_id: string | null
+          user_clone_name: string | null
+          user_id: string
+          winner: string
+        }
+        Insert: {
+          analysis?: string | null
+          created_at?: string
+          id?: string
+          opponent_clone_id?: string | null
+          opponent_clone_name?: string | null
+          user_clone_id?: string | null
+          user_clone_name?: string | null
+          user_id: string
+          winner: string
+        }
+        Update: {
+          analysis?: string | null
+          created_at?: string
+          id?: string
+          opponent_clone_id?: string | null
+          opponent_clone_name?: string | null
+          user_clone_id?: string | null
+          user_clone_name?: string | null
+          user_id?: string
+          winner?: string
+        }
+        Relationships: []
+      }
       clone_chat_daily_limits: {
         Row: {
           created_at: string
@@ -14216,6 +14252,27 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      dream_battle_votes: {
+        Row: {
+          created_at: string
+          id: string
+          interpretation_id: string
+          voter_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          interpretation_id: string
+          voter_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          interpretation_id?: string
+          voter_id?: string
+        }
+        Relationships: []
       }
       dream_campaigns: {
         Row: {
