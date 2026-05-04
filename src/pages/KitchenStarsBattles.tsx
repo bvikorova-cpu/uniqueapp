@@ -330,6 +330,11 @@ export default function KitchenStarsBattles() {
                     );
                   })}
 
+                  {myEntry && (
+                    <div className="p-3 rounded-lg border border-primary/30 bg-primary/5 text-sm">
+                      ✅ You've already submitted "<strong>{myEntry.dish_title}</strong>" to this battle. Only one entry per chef is allowed.
+                    </div>
+                  )}
                   {isOpen && !myEntry && (
                     entryFor === battle.id ? (
                       <div className="space-y-2 p-3 rounded-lg border border-primary/20">
