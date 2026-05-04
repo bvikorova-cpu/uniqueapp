@@ -109,8 +109,14 @@ Odpovedaj ako JSON s týmito kľúčmi:
       };
     }
 
+    // Deduct credit after successful analysis
+    await adminClient.from("ai_credits").update({
+      credits_remaining: remaining - 1,
+      last_used_at: new Date().toISOString(),
+    }).eq("user_id", user.id);
+
     return new Response(
-      JSON.stringify(analysisData),
+      JSON.stringify({ ...analysisData, credits_remaining: remaining - 1 }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (error: any) {
