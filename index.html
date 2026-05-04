@@ -126,7 +126,19 @@
 
   <body translate="yes">
     <div id="root" translate="yes"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <script>
+      (function () {
+        var script = document.createElement("script");
+        var params = new URLSearchParams(window.location.search);
+        var token = params.get("__lovable_token");
+        script.type = "module";
+        script.src = "/src/main.tsx" + (token ? "?__lovable_token=" + encodeURIComponent(token) : "");
+        script.onerror = function () {
+          window.__UNIQUE_MAIN_LOAD_FAILED__ = true;
+        };
+        document.body.appendChild(script);
+      })();
+    </script>
     <script>
       (function () {
         var retryKey = "unique_boot_retry_v2";
