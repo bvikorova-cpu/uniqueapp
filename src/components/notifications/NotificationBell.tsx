@@ -179,8 +179,11 @@ const NotificationBell = () => {
         return notification.message || "New Instructor withdrawal request";
       case "campaign_withdrawal":
         return notification.message || "New Campaign withdrawal request";
+      case "weekly_xp_winner":
+      case "weekly_xp_leaderboard":
+        return notification.message || notification.title || "You won the Weekly XP Leaderboard!";
       default:
-        return `${actorName} interacted with your content`;
+        return notification.message || notification.title || `${actorName} interacted with your content`;
     }
   };
 
