@@ -15,8 +15,9 @@ import {
 
 const CREDIT_PACKAGES = [
   { id: "10", credits: 10, price: "€5", popular: false },
-  { id: "30", credits: 30, price: "€12", popular: true },
-  { id: "100", credits: 100, price: "€35", popular: false, bestValue: true },
+  { id: "25", credits: 25, price: "€12.50", popular: true },
+  { id: "50", credits: 50, price: "€25", popular: false },
+  { id: "100", credits: 100, price: "€50", popular: false, bestValue: true },
 ];
 
 export const AstrologyCreditsDisplay = () => {
@@ -28,8 +29,8 @@ export const AstrologyCreditsDisplay = () => {
   const handlePurchase = async (packageId: string) => {
     setPurchasing(packageId);
     try {
-      const { data, error } = await supabase.functions.invoke('create-astrology-checkout', {
-        body: { packageId },
+      const { data, error } = await supabase.functions.invoke('create-checkout', {
+        body: { creditType: 'astrology', credits: Number(packageId) },
       });
 
       if (error) throw error;
