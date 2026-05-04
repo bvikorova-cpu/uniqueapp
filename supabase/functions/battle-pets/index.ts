@@ -69,15 +69,18 @@ serve(async (req) => {
       await admin.from("pets").update(updates).eq("id", p.id);
     }
 
-    // Log battle
+    // Log battle (schema: challenger_id/opponent_id, challenger_pets, *_power, winner_id, xp_earned, battle_log)
     await admin.from("pet_battles").insert({
-      user_id: user.id,
+      challenger_id: user.id,
+      opponent_id: null, // AI opponent
+      challenger_pets: myPetIds,
+      opponent_pets: [],
+      challenger_power: teamPower,
+      opponent_power: aiPower,
+      winner_id: isWinner ? user.id : null,
       battle_type: battleType,
-      pet_ids: myPetIds,
-      team_power: teamPower,
-      ai_power: aiPower,
-      is_winner: isWinner,
       xp_earned: xpEarned,
+      battle_log: { ai: true, winChance: Number((teamPower / (teamPower + aiPower)).toFixed(3)) },
     });
 
     return jsonResponse({
