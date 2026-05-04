@@ -212,6 +212,9 @@ const NotificationBell = () => {
       case "instructor_withdrawal":
       case "campaign_withdrawal":
         return "💰";
+      case "weekly_xp_winner":
+      case "weekly_xp_leaderboard":
+        return "👑";
       default:
         return "🔔";
     }
