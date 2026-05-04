@@ -157,7 +157,7 @@ export const CHECKOUT_PROXY_MAP: Record<string, { product: string; module: strin
   "create-psychology-checkout": { product: "psychology", module: "psychology" },
   "create-reincarnation-checkout": { product: "reincarnation", module: "reincarnation" },
   "create-science-checkout": { product: "science", module: "science" },
-  "create-shadow-battle": { product: "shadow_battle", module: "shadow_battle" },
+  // "create-shadow-battle": REAL edge function — do not proxy
   "create-shadow-subscription": { product: "shadow_subscription", module: "shadow_subscription" },
   "create-skill-swap-checkout": { product: "skill_swap", module: "skill_swap" },
   "create-sports-checkout": { product: "sports", module: "sports" },
@@ -171,7 +171,7 @@ export const CHECKOUT_PROXY_MAP: Record<string, { product: string; module: strin
   "purchase-content-pack": { product: "content_pack", module: "content_pack" },
   "purchase-premium-course": { product: "premium_course", module: "premium_course" },
   "purchase-psychology-messages": { product: "psychology_messages", module: "psychology_messages" },
-  "purchase-shadow-gift": { product: "shadow_gift", module: "shadow_gift" },
+  // "purchase-shadow-gift": REAL edge function — do not proxy
   "purchase-stock-content": { product: "stock_content", module: "stock_content" },
   "purchase-tip": { product: "tip", module: "tip" },
 };
