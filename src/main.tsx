@@ -36,6 +36,7 @@ if (typeof window !== "undefined") {
 declare global {
   interface Window {
     __UNIQUE_MAIN_EXECUTED__?: boolean;
+    __UNIQUE_MAIN_LOAD_FAILED__?: boolean;
     __UNIQUE_REACT_RENDERED__?: boolean;
     __UNIQUE_ROOT__?: ReturnType<typeof createRoot>;
   }
