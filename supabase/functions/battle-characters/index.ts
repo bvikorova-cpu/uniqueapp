@@ -72,9 +72,10 @@ serve(async (req) => {
       character1_id: c1.id,
       character2_id: c2.id,
       winner_id: winner.id,
-      battle_log: { rounds, score1: s1, score2: s2 },
-      created_by: user.id,
-    }).select().maybeSingle();
+      battle_type: "1v1",
+      battle_commentary: rounds.map(r => `Round ${r.round}: ${r.attacker} hits for ${r.damage}`).join("\n"),
+      status: "completed",
+    });
 
     // Deduct credits (optimistic)
     await admin
