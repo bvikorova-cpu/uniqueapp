@@ -20483,6 +20483,45 @@ export type Database = {
         }
         Relationships: []
       }
+      horse_currency_purchases: {
+        Row: {
+          amount_eur: number
+          coins_added: number
+          created_at: string
+          fulfilled_at: string | null
+          gems_added: number
+          id: string
+          package_type: string
+          status: string
+          stripe_session_id: string
+          user_id: string
+        }
+        Insert: {
+          amount_eur: number
+          coins_added?: number
+          created_at?: string
+          fulfilled_at?: string | null
+          gems_added?: number
+          id?: string
+          package_type: string
+          status?: string
+          stripe_session_id: string
+          user_id: string
+        }
+        Update: {
+          amount_eur?: number
+          coins_added?: number
+          created_at?: string
+          fulfilled_at?: string | null
+          gems_added?: number
+          id?: string
+          package_type?: string
+          status?: string
+          stripe_session_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       horse_market_listings: {
         Row: {
           buyer_id: string | null
