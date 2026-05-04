@@ -103,6 +103,12 @@ const CREDIT_PACKS: Record<string, { prices: Record<number, string>; successPath
     successPath: "/astrology?payment=success&session_id={CHECKOUT_SESSION_ID}",
     cancelPath: "/astrology?payment=canceled",
   },
+  // Character Arena credits — dynamic price_data. 50 → €9.99, 200 → €29.99
+  character_arena: {
+    prices: {},
+    successPath: "/character-arena?payment=success&session_id={CHECKOUT_SESSION_ID}",
+    cancelPath: "/character-arena?payment=canceled",
+  },
   // Science Lab credits — dynamic price_data fallback (€0.50/credit) until fixed prices created
   science: {
     prices: {},
