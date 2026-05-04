@@ -103,6 +103,12 @@ const CREDIT_PACKS: Record<string, { prices: Record<number, string>; successPath
     successPath: "/astrology?payment=success&session_id={CHECKOUT_SESSION_ID}",
     cancelPath: "/astrology?payment=canceled",
   },
+  // Character Arena credits — dynamic price_data. 50 → €9.99, 200 → €29.99
+  character_arena: {
+    prices: {},
+    successPath: "/character-arena?payment=success&session_id={CHECKOUT_SESSION_ID}",
+    cancelPath: "/character-arena?payment=canceled",
+  },
   // Science Lab credits — dynamic price_data fallback (€0.50/credit) until fixed prices created
   science: {
     prices: {},
@@ -562,16 +568,21 @@ serve(async (req) => {
       const SHADOW_ARENA_TOTALS: Record<number, number> = {
         30: 499, 100: 1299, 280: 2999,
       };
+      // Character Arena: 50 → €9.99, 200 → €29.99
+      const CHARACTER_ARENA_TOTALS: Record<number, number> = {
+        50: 999, 200: 2999,
+      };
       const unitAmount = creditType === "chat" ? 10 : 50;
       const minTotal = creditType === "chat" ? 99 : 99; // €0.99 minimum
       const cfTotal = creditType === "creative_forge" ? CREATIVE_FORGE_TOTALS[credits] : undefined;
       const saTotal = creditType === "shadow_arena" ? SHADOW_ARENA_TOTALS[credits] : undefined;
+      const caTotal = creditType === "character_arena" ? CHARACTER_ARENA_TOTALS[credits] : undefined;
       const lineItems = priceId
         ? [{ price: priceId, quantity: 1 }]
         : [{
             price_data: {
               currency: "eur" as const,
-              unit_amount: cfTotal ?? saTotal ?? Math.max(minTotal, credits * unitAmount),
+              unit_amount: cfTotal ?? saTotal ?? caTotal ?? Math.max(minTotal, credits * unitAmount),
               product_data: { name: `${creditType} Credits - ${credits} Pack` },
             },
             quantity: 1,
@@ -601,6 +612,7 @@ serve(async (req) => {
             : creditType === "creative_forge" ? "creative_forge_credits"
             : creditType === "shadow_arena" ? "shadow_arena_credits"
             : creditType === "collectibles" ? "collectibles_credits"
+            : creditType === "character_arena" ? "character_credits"
             : creditType,
         },
       });
