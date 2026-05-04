@@ -72,64 +72,22 @@ export const useUserHorses = () => {
   });
 
   const createHorse = useMutation({
-    mutationFn: async ({ name, breed, color, costCoins }: { 
-      name: string; 
-      breed: string; 
-      color: string;
-      costCoins: number;
+    mutationFn: async ({ name, breed, color, costCoins }: {
+      name: string; breed: string; color: string; costCoins: number;
     }) => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Not authenticated");
-
-      // Deduct coins
-      const { data: currency } = await supabase
-        .from("horse_currency")
-        .select("coins")
-        .eq("user_id", user.id)
-        .single();
-
-      if (!currency || currency.coins < costCoins) {
-        throw new Error("Insufficient coins");
-      }
-
-      // Create horse with random stats based on rarity
-      const stats = {
-        speed_stat: Math.floor(Math.random() * 30) + 40,
-        stamina_stat: Math.floor(Math.random() * 30) + 40,
-        acceleration_stat: Math.floor(Math.random() * 30) + 40,
-        temperament_stat: Math.floor(Math.random() * 30) + 40,
-      };
-
-      const { data, error } = await supabase
-        .from("horses")
-        .insert({
-          user_id: user.id,
-          name,
-          breed,
-          color,
-          ...stats,
-        })
-        .select()
-        .single();
-
+      const { data, error } = await supabase.functions.invoke("horse-create", {
+        body: { name, breed, color, costCoins },
+      });
       if (error) throw error;
-
-      // Update currency
-      await supabase
-        .from("horse_currency")
-        .update({ coins: currency.coins - costCoins })
-        .eq("user_id", user.id);
-
-      return data;
+      if (data?.error) throw new Error(data.error);
+      return data.horse;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["user-horses"] });
       queryClient.invalidateQueries({ queryKey: ["horse-currency"] });
       toast.success("Horse acquired!");
     },
-    onError: (error: Error) => {
-      toast.error(error.message);
-    },
+    onError: (error: Error) => toast.error(error.message),
   });
 
   return { horses, isLoading, createHorse };
