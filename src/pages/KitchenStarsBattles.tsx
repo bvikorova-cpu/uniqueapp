@@ -92,12 +92,51 @@ export default function KitchenStarsBattles() {
     load();
   };
 
-  const validateFile = (file: File): { ok: true; type: "image" | "video" } | { ok: false; error: string } => {
+  const formatBytes = (b: number) => b < 1024 * 1024 ? `${(b / 1024).toFixed(0)} KB` : `${(b / 1024 / 1024).toFixed(2)} MB`;
+
+  const validateFile = (file: File):
+    | { ok: true; type: "image" | "video" }
+    | { ok: false; title: string; reason: string; suggestion: string } => {
     const isImage = ALLOWED_IMAGE.includes(file.type);
     const isVideo = ALLOWED_VIDEO.includes(file.type);
-    if (!isImage && !isVideo) return { ok: false, error: "Only JPG/PNG/WEBP images or MP4/WEBM/MOV videos allowed" };
+    const ext = file.name.split(".").pop()?.toUpperCase() || "unknown";
+
+    if (!isImage && !isVideo) {
+      const looksLikeImage = file.type.startsWith("image/");
+      const looksLikeVideo = file.type.startsWith("video/");
+      return {
+        ok: false,
+        title: "Unsupported file format",
+        reason: looksLikeImage
+          ? `Image type ${file.type} (${ext}) is not allowed.`
+          : looksLikeVideo
+          ? `Video type ${file.type} (${ext}) is not allowed.`
+          : `File "${file.name}" has type "${file.type || "unknown"}", which is neither image nor video.`,
+        suggestion: looksLikeImage
+          ? "Convert to JPG, PNG or WEBP before uploading."
+          : looksLikeVideo
+          ? "Convert to MP4, WEBM or MOV (H.264) before uploading."
+          : "Upload an image (JPG/PNG/WEBP, ≤8 MB) or a video (MP4/WEBM/MOV, ≤50 MB).",
+      };
+    }
+
     const max = isImage ? MAX_IMAGE : MAX_VIDEO;
-    if (file.size > max) return { ok: false, error: `File too large (max ${isImage ? "8MB" : "50MB"})` };
+    if (file.size > max) {
+      const overBy = file.size - max;
+      return {
+        ok: false,
+        title: isImage ? "Image too large" : "Video too large",
+        reason: `Your ${isImage ? "image" : "video"} is ${formatBytes(file.size)} — that's ${formatBytes(overBy)} over the ${isImage ? "8 MB" : "50 MB"} limit.`,
+        suggestion: isImage
+          ? "Compress with squoosh.app or tinypng.com, or resize to ≤2000px on the long edge."
+          : "Trim length, lower resolution to 720p, or re-encode at a lower bitrate (e.g. with HandBrake).",
+      };
+    }
+
+    if (file.size === 0) {
+      return { ok: false, title: "Empty file", reason: "The selected file is 0 bytes.", suggestion: "Pick a different file and try again." };
+    }
+
     return { ok: true, type: isImage ? "image" : "video" };
   };
 
@@ -117,7 +156,10 @@ export default function KitchenStarsBattles() {
 
     if (dishFile) {
       const v = validateFile(dishFile);
-      if (!v.ok) { toast({ title: "Invalid file", description: (v as { error: string }).error, variant: "destructive" }); return; }
+      if (v.ok === false) {
+        toast({ title: v.title, description: `${v.reason} ${v.suggestion}`, variant: "destructive" });
+        return;
+      }
       setUploading(true);
       const ext = dishFile.name.split(".").pop()?.toLowerCase() || "bin";
       const path = `${userId}/${battleId}/${crypto.randomUUID()}.${ext}`;
@@ -125,7 +167,13 @@ export default function KitchenStarsBattles() {
         .upload(path, dishFile, { contentType: dishFile.type, upsert: false });
       if (ue) {
         setUploading(false);
-        toast({ title: "Upload failed", description: ue.message, variant: "destructive" }); return;
+        const msg = /exceeded|too large|payload/i.test(ue.message)
+          ? "Server rejected the file (too large for the storage bucket). Try a smaller file."
+          : /duplicate|already exists/i.test(ue.message)
+          ? "A file with this name already exists. Try renaming and re-uploading."
+          : ue.message;
+        toast({ title: "Upload failed", description: msg, variant: "destructive" });
+        return;
       }
       const { data: pub } = supabase.storage.from("kitchen-battles").getPublicUrl(path);
       mediaType = v.type; mediaSize = dishFile.size; mediaMime = dishFile.type;
@@ -268,7 +316,19 @@ export default function KitchenStarsBattles() {
                         <div className="space-y-1">
                           <label className="text-xs text-muted-foreground">Or upload image (≤8MB JPG/PNG/WEBP) or video (≤50MB MP4/WEBM/MOV)</label>
                           <Input type="file" accept="image/jpeg,image/png,image/webp,video/mp4,video/webm,video/quicktime"
-                            onChange={e => setDishFile(e.target.files?.[0] || null)} />
+                            onChange={e => {
+                              const f = e.target.files?.[0] || null;
+                              if (f) {
+                                const v = validateFile(f);
+                                if (v.ok === false) {
+                                  toast({ title: v.title, description: `${v.reason} ${v.suggestion}`, variant: "destructive" });
+                                  e.target.value = "";
+                                  setDishFile(null);
+                                  return;
+                                }
+                              }
+                              setDishFile(f);
+                            }} />
                           {dishFile && <p className="text-xs text-muted-foreground">{dishFile.name} ({(dishFile.size/1024/1024).toFixed(2)} MB)</p>}
                         </div>
                         <div className="flex gap-2">
