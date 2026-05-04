@@ -117,7 +117,7 @@ export default function KitchenStarsBattles() {
 
     if (dishFile) {
       const v = validateFile(dishFile);
-      if (!v.ok) { toast({ title: "Invalid file", description: v.error, variant: "destructive" }); return; }
+      if (!v.ok) { toast({ title: "Invalid file", description: (v as { error: string }).error, variant: "destructive" }); return; }
       setUploading(true);
       const ext = dishFile.name.split(".").pop()?.toLowerCase() || "bin";
       const path = `${userId}/${battleId}/${crypto.randomUUID()}.${ext}`;
