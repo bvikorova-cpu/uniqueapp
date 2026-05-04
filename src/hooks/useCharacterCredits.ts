@@ -54,7 +54,7 @@ export const useCharacterCredits = () => {
   const purchaseCredits = async (credits: number): Promise<string | null> => {
     try {
       const { data, error } = await supabase.functions.invoke('create-checkout', {
-        body: { creditType: 'character', credits }
+        body: { creditType: 'character_arena', credits }
       });
       
       if (error) throw error;
