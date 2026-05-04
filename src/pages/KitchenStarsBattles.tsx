@@ -259,6 +259,12 @@ export default function KitchenStarsBattles() {
                         <Input placeholder="Dish title" value={dishTitle} onChange={e => setDishTitle(e.target.value)} />
                         <Textarea placeholder="Short description (optional)" value={dishDesc} onChange={e => setDishDesc(e.target.value)} />
                         <Input placeholder="Image URL (optional)" value={dishImage} onChange={e => setDishImage(e.target.value)} />
+                        <div className="space-y-1">
+                          <label className="text-xs text-muted-foreground">Or upload image (≤8MB JPG/PNG/WEBP) or video (≤50MB MP4/WEBM/MOV)</label>
+                          <Input type="file" accept="image/jpeg,image/png,image/webp,video/mp4,video/webm,video/quicktime"
+                            onChange={e => setDishFile(e.target.files?.[0] || null)} />
+                          {dishFile && <p className="text-xs text-muted-foreground">{dishFile.name} ({(dishFile.size/1024/1024).toFixed(2)} MB)</p>}
+                        </div>
                         <div className="flex gap-2">
                           <Button size="sm" onClick={() => submitEntry(battle.id)}>Submit</Button>
                           <Button size="sm" variant="ghost" onClick={() => setEntryFor(null)}>Cancel</Button>
