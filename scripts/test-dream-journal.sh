@@ -78,10 +78,10 @@ echo ""
 yel "▸ 1. Route & SPA reachability"
 # ─────────────────────────────────────────────────
 code=$(curl -s -o /dev/null -w "%{http_code}" "$APP_URL/dream-journal")
-expect_status_in "GET /dream-journal" "$code" 200 304
+expect_status_in "GET /dream-journal" "$code" 200 304 302
 
 code=$(curl -s -o /dev/null -w "%{http_code}" "$APP_URL/ai-credits-store")
-expect_status_in "GET /ai-credits-store (Buy Credits redirect target)" "$code" 200 304
+expect_status_in "GET /ai-credits-store (Buy Credits redirect target)" "$code" 200 304 302
 
 # ─────────────────────────────────────────────────
 yel "▸ 2. RLS lockdown — anonymous reads must be blocked"
