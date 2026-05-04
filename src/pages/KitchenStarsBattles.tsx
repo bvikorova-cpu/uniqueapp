@@ -156,7 +156,7 @@ export default function KitchenStarsBattles() {
 
     if (dishFile) {
       const v = validateFile(dishFile);
-      if (!v.ok) {
+      if (v.ok === false) {
         toast({ title: v.title, description: `${v.reason} ${v.suggestion}`, variant: "destructive" });
         return;
       }
