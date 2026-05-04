@@ -136,28 +136,14 @@
           root.innerHTML = '<div style="min-height:100vh;display:grid;place-items:center;background:hsl(250 25% 97%);padding:20px;font-family:system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif;color:hsl(240 15% 8%);"><div style="max-width:360px;text-align:center;background:#fff;border:1px solid hsl(250 10% 90%);border-radius:18px;padding:20px;box-shadow:0 14px 34px hsl(270 91% 58% / .14);"><strong style="display:block;font-size:16px;margin-bottom:8px;">Unique sa nenačítal</strong><p style="margin:0 0 14px;color:hsl(240 5% 42%);font-size:13px;line-height:1.45;">Obnov stránku. Ak si na mobile v Lovable preview, použi tlačidlo refresh dole.</p><button onclick="window.location.reload()" style="border:0;border-radius:9999px;background:hsl(270 91% 58%);color:#fff;padding:10px 16px;font-weight:700;cursor:pointer;">Obnoviť</button></div></div>';
         };
 
+        // Only show the fallback message after a long grace period.
+        // Do NOT auto-reload or wipe caches here — that previously aborted
+        // in-flight main.tsx fetches on slow networks and caused a perpetual
+        // "Unique sa nenačítal" loop. main.tsx has its own crash overlay.
         window.setTimeout(function () {
           if (window.__UNIQUE_MAIN_EXECUTED__) return;
-          try {
-            var alreadyRetried = sessionStorage.getItem(retryKey) === "1";
-            if (!alreadyRetried) {
-              sessionStorage.setItem(retryKey, "1");
-              var clearCaches = typeof caches !== "undefined" && caches.keys
-                ? caches.keys().then(function (keys) { return Promise.all(keys.map(function (k) { return caches.delete(k).catch(function () {}); })); })
-                : Promise.resolve();
-              var clearWorkers = "serviceWorker" in navigator
-                ? navigator.serviceWorker.getRegistrations().then(function (regs) { return Promise.all(regs.map(function (r) { return r.unregister().catch(function () {}); })); })
-                : Promise.resolve();
-              Promise.all([clearCaches, clearWorkers]).finally(function () {
-                var url = new URL(window.location.href);
-                url.searchParams.set("unique_boot_retry", Date.now().toString());
-                window.location.replace(url.toString());
-              });
-              return;
-            }
-          } catch (e) {}
           showBootFailure();
-        }, 8000);
+        }, 20000);
       })();
     </script>
   </body>
