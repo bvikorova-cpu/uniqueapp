@@ -23403,6 +23403,9 @@ export type Database = {
           dislike_count: number
           id: string
           image_url: string | null
+          media_mime: string | null
+          media_size: number | null
+          media_type: string | null
           user_id: string
           video_url: string | null
           vote_count: number
@@ -23415,6 +23418,9 @@ export type Database = {
           dislike_count?: number
           id?: string
           image_url?: string | null
+          media_mime?: string | null
+          media_size?: number | null
+          media_type?: string | null
           user_id: string
           video_url?: string | null
           vote_count?: number
@@ -23427,6 +23433,9 @@ export type Database = {
           dislike_count?: number
           id?: string
           image_url?: string | null
+          media_mime?: string | null
+          media_size?: number | null
+          media_type?: string | null
           user_id?: string
           video_url?: string | null
           vote_count?: number
