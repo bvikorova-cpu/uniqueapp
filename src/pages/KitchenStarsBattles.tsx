@@ -10,7 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
 type Battle = { id: string; theme: string; description: string | null; status: string; deadline: string; prize_pool: number };
-type Participant = { id: string; battle_id: string; user_id: string; dish_title: string; description: string | null; image_url: string | null; vote_count: number; dislike_count: number };
+type Participant = { id: string; battle_id: string; user_id: string; dish_title: string; description: string | null; image_url: string | null; video_url: string | null; media_type: string | null; vote_count: number; dislike_count: number };
 type Comment = { id: string; battle_id: string; participant_id: string | null; user_id: string; content: string; created_at: string };
 type MyVote = { participant_id: string; vote_type: string };
 
@@ -221,6 +221,12 @@ export default function KitchenStarsBattles() {
                     const score = p.vote_count - p.dislike_count;
                     return (
                       <div key={p.id} className="p-3 rounded-lg bg-secondary/30 space-y-2">
+                        {p.video_url && (
+                          <video src={p.video_url} controls className="w-full max-h-64 rounded" />
+                        )}
+                        {!p.video_url && p.image_url && (
+                          <img src={p.image_url} alt={p.dish_title} loading="lazy" className="w-full max-h-64 object-cover rounded" />
+                        )}
                         <div className="flex items-center justify-between flex-wrap gap-2">
                           <div className="flex items-center gap-3">
                             {i === 0 && score > 0 && <Trophy className="h-5 w-5 text-yellow-500" />}
