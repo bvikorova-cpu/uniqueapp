@@ -10,7 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
 type Battle = { id: string; theme: string; description: string | null; status: string; deadline: string; prize_pool: number };
-type Participant = { id: string; battle_id: string; user_id: string; dish_title: string; description: string | null; image_url: string | null; vote_count: number; dislike_count: number };
+type Participant = { id: string; battle_id: string; user_id: string; dish_title: string; description: string | null; image_url: string | null; video_url: string | null; media_type: string | null; vote_count: number; dislike_count: number };
 type Comment = { id: string; battle_id: string; participant_id: string | null; user_id: string; content: string; created_at: string };
 type MyVote = { participant_id: string; vote_type: string };
 
@@ -28,6 +28,13 @@ export default function KitchenStarsBattles() {
   const [dishTitle, setDishTitle] = useState("");
   const [dishDesc, setDishDesc] = useState("");
   const [dishImage, setDishImage] = useState("");
+  const [dishFile, setDishFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
+
+  const ALLOWED_IMAGE = ["image/jpeg", "image/png", "image/webp"];
+  const ALLOWED_VIDEO = ["video/mp4", "video/webm", "video/quicktime"];
+  const MAX_IMAGE = 8 * 1024 * 1024;   // 8 MB
+  const MAX_VIDEO = 50 * 1024 * 1024;  // 50 MB
   const [commentDraft, setCommentDraft] = useState<Record<string, string>>({});
   const [showComments, setShowComments] = useState<Record<string, boolean>>({});
 
@@ -85,14 +92,55 @@ export default function KitchenStarsBattles() {
     load();
   };
 
+  const validateFile = (file: File): { ok: true; type: "image" | "video" } | { ok: false; error: string } => {
+    const isImage = ALLOWED_IMAGE.includes(file.type);
+    const isVideo = ALLOWED_VIDEO.includes(file.type);
+    if (!isImage && !isVideo) return { ok: false, error: "Only JPG/PNG/WEBP images or MP4/WEBM/MOV videos allowed" };
+    const max = isImage ? MAX_IMAGE : MAX_VIDEO;
+    if (file.size > max) return { ok: false, error: `File too large (max ${isImage ? "8MB" : "50MB"})` };
+    return { ok: true, type: isImage ? "image" : "video" };
+  };
+
   const submitEntry = async (battleId: string) => {
-    if (!dishTitle.trim()) { toast({ title: "Add dish title", variant: "destructive" }); return; }
+    if (!dishTitle.trim() || dishTitle.length > 120) {
+      toast({ title: "Dish title required (max 120 chars)", variant: "destructive" }); return;
+    }
+    if (dishDesc.length > 500) {
+      toast({ title: "Description too long (max 500)", variant: "destructive" }); return;
+    }
+
+    let imageUrl: string | null = dishImage || null;
+    let videoUrl: string | null = null;
+    let mediaType: "image" | "video" | null = null;
+    let mediaSize: number | null = null;
+    let mediaMime: string | null = null;
+
+    if (dishFile) {
+      const v = validateFile(dishFile);
+      if (!v.ok) { toast({ title: "Invalid file", description: (v as { error: string }).error, variant: "destructive" }); return; }
+      setUploading(true);
+      const ext = dishFile.name.split(".").pop()?.toLowerCase() || "bin";
+      const path = `${userId}/${battleId}/${crypto.randomUUID()}.${ext}`;
+      const { error: ue } = await supabase.storage.from("kitchen-battles")
+        .upload(path, dishFile, { contentType: dishFile.type, upsert: false });
+      if (ue) {
+        setUploading(false);
+        toast({ title: "Upload failed", description: ue.message, variant: "destructive" }); return;
+      }
+      const { data: pub } = supabase.storage.from("kitchen-battles").getPublicUrl(path);
+      mediaType = v.type; mediaSize = dishFile.size; mediaMime = dishFile.type;
+      if (v.type === "image") imageUrl = pub.publicUrl;
+      else videoUrl = pub.publicUrl;
+      setUploading(false);
+    }
+
     const { error } = await supabase.from("kitchen_battle_participants").insert({
-      battle_id: battleId, user_id: userId, dish_title: dishTitle,
-      description: dishDesc || null, image_url: dishImage || null,
+      battle_id: battleId, user_id: userId, dish_title: dishTitle.trim(),
+      description: dishDesc.trim() || null, image_url: imageUrl, video_url: videoUrl,
+      media_type: mediaType, media_size: mediaSize, media_mime: mediaMime,
     });
     if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); return; }
-    setEntryFor(null); setDishTitle(""); setDishDesc(""); setDishImage("");
+    setEntryFor(null); setDishTitle(""); setDishDesc(""); setDishImage(""); setDishFile(null);
     toast({ title: "Entry submitted!" });
     load();
   };
@@ -173,6 +221,12 @@ export default function KitchenStarsBattles() {
                     const score = p.vote_count - p.dislike_count;
                     return (
                       <div key={p.id} className="p-3 rounded-lg bg-secondary/30 space-y-2">
+                        {p.video_url && (
+                          <video src={p.video_url} controls className="w-full max-h-64 rounded" />
+                        )}
+                        {!p.video_url && p.image_url && (
+                          <img src={p.image_url} alt={p.dish_title} loading="lazy" className="w-full max-h-64 object-cover rounded" />
+                        )}
                         <div className="flex items-center justify-between flex-wrap gap-2">
                           <div className="flex items-center gap-3">
                             {i === 0 && score > 0 && <Trophy className="h-5 w-5 text-yellow-500" />}
@@ -211,8 +265,14 @@ export default function KitchenStarsBattles() {
                         <Input placeholder="Dish title" value={dishTitle} onChange={e => setDishTitle(e.target.value)} />
                         <Textarea placeholder="Short description (optional)" value={dishDesc} onChange={e => setDishDesc(e.target.value)} />
                         <Input placeholder="Image URL (optional)" value={dishImage} onChange={e => setDishImage(e.target.value)} />
+                        <div className="space-y-1">
+                          <label className="text-xs text-muted-foreground">Or upload image (≤8MB JPG/PNG/WEBP) or video (≤50MB MP4/WEBM/MOV)</label>
+                          <Input type="file" accept="image/jpeg,image/png,image/webp,video/mp4,video/webm,video/quicktime"
+                            onChange={e => setDishFile(e.target.files?.[0] || null)} />
+                          {dishFile && <p className="text-xs text-muted-foreground">{dishFile.name} ({(dishFile.size/1024/1024).toFixed(2)} MB)</p>}
+                        </div>
                         <div className="flex gap-2">
-                          <Button size="sm" onClick={() => submitEntry(battle.id)}>Submit</Button>
+                          <Button size="sm" onClick={() => submitEntry(battle.id)} disabled={uploading}>{uploading ? "Uploading..." : "Submit"}</Button>
                           <Button size="sm" variant="ghost" onClick={() => setEntryFor(null)}>Cancel</Button>
                         </div>
                       </div>
