@@ -21,6 +21,7 @@ import {
   MessageCircle, ChevronLeft, Flame, Zap, Trophy, TrendingUp
 } from "lucide-react";
 import { CREDIT_COSTS } from "@/hooks/useAstrologyCredits";
+import { usePaymentVerification } from "@/hooks/usePaymentVerification";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 type ActiveView = "dashboard" | "horoscope" | "tarot" | "dream" | "numerology" | "palmistry" | "compatibility" | "yesno" | "rune" | "birthchart" | "livechat";
@@ -40,6 +41,7 @@ const TOOLS = [
 
 const Astrology = () => {
   const [activeView, setActiveView] = useState<ActiveView>("dashboard");
+  usePaymentVerification();
 
   const renderToolView = () => {
     switch (activeView) {

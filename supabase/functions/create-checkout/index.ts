@@ -97,12 +97,9 @@ const CREDIT_PACKS: Record<string, { prices: Record<number, string>; successPath
     cancelPath: "/video-ad-creator?payment=canceled",
   },
   astrology: {
-    prices: {
-      10: "price_1TPJM7GaXSfGtYFtFM0wnBlx",
-      25: "price_1TPJM7GaXSfGtYFtoSp6pbJo",
-      50: "price_1TPJM8GaXSfGtYFtPLrK4IAj",
-      100: "price_1TPJM9GaXSfGtYFtXh9bup4F",
-    },
+    // Stale fixed price IDs were not present in Stripe — use dynamic price_data
+    // (€0.50/credit fallback in the credits branch). 10→€5, 25→€12.50, 50→€25, 100→€50.
+    prices: {},
     successPath: "/astrology?payment=success&session_id={CHECKOUT_SESSION_ID}",
     cancelPath: "/astrology?payment=canceled",
   },
