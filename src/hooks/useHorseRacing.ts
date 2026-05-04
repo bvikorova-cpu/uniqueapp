@@ -1,8 +1,11 @@
+import { useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 export const useHorseCurrency = () => {
+  const queryClient = useQueryClient();
+
   const { data: currency, isLoading } = useQuery({
     queryKey: ["horse-currency"],
     queryFn: async () => {
@@ -20,6 +23,66 @@ export const useHorseCurrency = () => {
       return data ?? { user_id: user.id, coins: 0, gems: 0 };
     },
   });
+
+  // Realtime: react when webhook fulfills a Stripe purchase
+  useEffect(() => {
+    let cancelled = false;
+    let channel: ReturnType<typeof supabase.channel> | null = null;
+
+    (async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user || cancelled) return;
+
+      channel = supabase
+        .channel(`horse-currency-${user.id}`)
+        .on(
+          "postgres_changes",
+          {
+            event: "UPDATE",
+            schema: "public",
+            table: "horse_currency_purchases",
+            filter: `user_id=eq.${user.id}`,
+          },
+          (payload) => {
+            const row = payload.new as {
+              status?: string;
+              coins_added?: number;
+              gems_added?: number;
+              package_type?: string;
+            };
+            if (row?.status === "completed") {
+              const parts: string[] = [];
+              if (row.coins_added) parts.push(`+${row.coins_added} coins`);
+              if (row.gems_added) parts.push(`+${row.gems_added} gems`);
+              toast.success("Payment confirmed!", {
+                description: parts.length
+                  ? `${parts.join(" · ")} added to your balance.`
+                  : "Your balance has been updated.",
+              });
+              queryClient.invalidateQueries({ queryKey: ["horse-currency"] });
+            }
+          }
+        )
+        .on(
+          "postgres_changes",
+          {
+            event: "*",
+            schema: "public",
+            table: "horse_currency",
+            filter: `user_id=eq.${user.id}`,
+          },
+          () => {
+            queryClient.invalidateQueries({ queryKey: ["horse-currency"] });
+          }
+        )
+        .subscribe();
+    })();
+
+    return () => {
+      cancelled = true;
+      if (channel) supabase.removeChannel(channel);
+    };
+  }, [queryClient]);
 
   return { currency, isLoading };
 };
