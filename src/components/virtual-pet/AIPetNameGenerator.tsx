@@ -21,6 +21,7 @@ export const AIPetNameGenerator = ({ onBack }: Props) => {
   const [loading, setLoading] = useState(false);
   const [copiedIdx, setCopiedIdx] = useState<number | null>(null);
   const { credits } = useAICredits();
+  const navigate = useNavigate();
 
   const generate = async () => {
     if (!species) return toast.error("Enter a species");

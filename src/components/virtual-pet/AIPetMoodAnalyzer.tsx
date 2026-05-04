@@ -16,6 +16,7 @@ export const AIPetMoodAnalyzer = ({ onBack }: Props) => {
   const [result, setResult] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const { credits } = useAICredits();
+  const navigate = useNavigate();
 
   const { data: pets } = useQuery({
     queryKey: ['my-pets'],
