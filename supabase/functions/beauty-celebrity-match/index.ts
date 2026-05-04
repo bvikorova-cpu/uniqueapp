@@ -6,18 +6,19 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
   try {
+    // Auth FIRST — never leak validation errors to anonymous callers
+    const auth = await requireAiCredits(req, corsHeaders, {
+      credits: 10, usageType: "beauty_celebrity_match",
+    });
+    if (auth.errorResponse) return auth.errorResponse;
+    const { user, supabase, deduct } = auth;
+
     const { imageUrl, gender, style } = await req.json();
     if (!imageUrl) {
       return new Response(JSON.stringify({ error: "imageUrl required" }), {
         status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
-
-    const auth = await requireAiCredits(req, corsHeaders, {
-      credits: 10, usageType: "beauty_celebrity_match",
-    });
-    if (auth.errorResponse) return auth.errorResponse;
-    const { user, supabase, deduct } = auth;
 
     const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
     if (!OPENAI_API_KEY) throw new Error("AI service not configured");
