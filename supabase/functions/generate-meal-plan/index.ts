@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 import { callOpenAI, corsHeaders, errorResponse, jsonResponse } from "../_shared/openai.ts";
+import { deductAICredits } from "../_shared/credits.ts";
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -14,6 +15,8 @@ serve(async (req) => {
     );
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return errorResponse("Not authenticated", 401);
+    const creditDenied = await deductAICredits(user.id, 5, "generate-meal-plan");
+    if (creditDenied) return creditDenied;
 
     const body = await req.json();
     const { goal = "balanced", calories = 2000, days = 7, diet = "standard", allergies = [], preferences = "" } = body;
