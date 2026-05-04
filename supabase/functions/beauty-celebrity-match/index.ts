@@ -19,8 +19,8 @@ serve(async (req) => {
     if (auth.errorResponse) return auth.errorResponse;
     const { user, supabase, deduct } = auth;
 
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) throw new Error("AI gateway not configured");
+    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
+    if (!OPENAI_API_KEY) throw new Error("AI service not configured");
 
     const prompt = `Analyze this person's facial features and match them to 3 ${gender || "any"} celebrities with a ${style || "any"} style. For entertainment only — no claims of identity. Return STRICT JSON:
 {
@@ -30,11 +30,11 @@ serve(async (req) => {
   "products": [""]
 }`;
 
-    const aiRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const aiRes = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
-      headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+      headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
+        model: "gpt-5",
         messages: [{
           role: "user",
           content: [
@@ -42,19 +42,21 @@ serve(async (req) => {
             { type: "image_url", image_url: { url: imageUrl } },
           ],
         }],
+        max_completion_tokens: 2000,
+        response_format: { type: "json_object" },
       }),
     });
 
     if (!aiRes.ok) {
       const t = await aiRes.text();
+      console.error("OpenAI error:", aiRes.status, t);
       if (aiRes.status === 429) return new Response(JSON.stringify({ error: "Rate limit exceeded" }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-      if (aiRes.status === 402) return new Response(JSON.stringify({ error: "Platform AI credits depleted" }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       throw new Error(`AI failed: ${t.slice(0, 200)}`);
     }
     const data = await aiRes.json();
     const text = data.choices?.[0]?.message?.content || "{}";
     let result: any = {};
-    try { result = JSON.parse(text.replace(/```json|```/g, "").trim()); } catch { result = { raw: text }; }
+    try { result = JSON.parse(text); } catch { result = { raw: text }; }
 
     await deduct!();
     await supabase!.from("beauty_celebrity_matches").insert({

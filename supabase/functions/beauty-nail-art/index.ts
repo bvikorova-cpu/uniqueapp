@@ -14,8 +14,8 @@ serve(async (req) => {
     if (auth.errorResponse) return auth.errorResponse;
     const { user, supabase, deduct } = auth;
 
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) throw new Error("AI gateway not configured");
+    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
+    if (!OPENAI_API_KEY) throw new Error("AI service not configured");
 
     const textPrompt = `Design a nail-art set. Style: ${style}. Occasion: ${occasion}. Shape: ${shape}. Return STRICT JSON:
 {
@@ -29,40 +29,46 @@ serve(async (req) => {
 }`;
 
     // Text plan
-    const txtRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const txtRes = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
-      headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+      headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
+        model: "gpt-5",
         messages: [{ role: "user", content: textPrompt }],
+        max_completion_tokens: 1500,
+        response_format: { type: "json_object" },
       }),
     });
     if (!txtRes.ok) {
       const t = await txtRes.text();
+      console.error("OpenAI text error:", txtRes.status, t);
       if (txtRes.status === 429) return new Response(JSON.stringify({ error: "Rate limit exceeded" }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-      if (txtRes.status === 402) return new Response(JSON.stringify({ error: "Platform AI credits depleted" }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       throw new Error(`AI failed: ${t.slice(0, 200)}`);
     }
     const txtData = await txtRes.json();
     const text = txtData.choices?.[0]?.message?.content || "{}";
     let plan: any = {};
-    try { plan = JSON.parse(text.replace(/```json|```/g, "").trim()); } catch { plan = { raw: text }; }
+    try { plan = JSON.parse(text); } catch { plan = { raw: text }; }
 
     // Image
     let previewImage: string | null = null;
     try {
-      const imgRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      const imgRes = await fetch("https://api.openai.com/v1/images/generations", {
         method: "POST",
-        headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+        headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: "google/gemini-2.5-flash-image-preview",
-          messages: [{ role: "user", content: `Photorealistic close-up of a hand with ${shape}-shaped ${style} nail art for ${occasion}. Studio lighting, magazine quality.` }],
-          modalities: ["image", "text"],
+          model: "gpt-image-1",
+          prompt: `Photorealistic close-up of a hand with ${shape}-shaped ${style} nail art for ${occasion}. Studio lighting, magazine quality.`,
+          n: 1,
+          size: "1024x1024",
         }),
       });
       if (imgRes.ok) {
         const d = await imgRes.json();
-        previewImage = d.choices?.[0]?.message?.images?.[0]?.image_url?.url || null;
+        const b64 = d.data?.[0]?.b64_json;
+        previewImage = b64 ? `data:image/png;base64,${b64}` : (d.data?.[0]?.url || null);
+      } else {
+        console.warn("nail image gen failed status:", imgRes.status);
       }
     } catch (e) { console.warn("nail image gen failed:", e); }
 
