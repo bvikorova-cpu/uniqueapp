@@ -52,54 +52,48 @@ const NotificationBell = () => {
       channelRef.current = null;
     }
 
-    const init = async () => {
-      const currentUser = user;
-      if (cancelled || !currentUser) return;
-      fetchNotifications(currentUser.id);
+    const currentUser = user;
+    if (!currentUser) return;
+    fetchNotifications(currentUser.id);
 
-      const channelName = `notifications-${currentUser.id}-${Date.now()}`;
-      const ch = supabase
-        .channel(channelName)
-        .on(
-          "postgres_changes",
-          {
-            event: "INSERT",
-            schema: "public",
-            table: "notifications",
-            filter: `user_id=eq.${currentUser.id}`,
-          },
-          async (payload) => {
-            if (cancelled) return;
-            if (payload.new.actor_id) {
-              const { data: profile } = await supabase
-                .from("profiles")
-                .select("id, full_name, avatar_url")
-                .eq("id", payload.new.actor_id)
-                .single();
+    const channelName = `notifications-${currentUser.id}`;
+    const ch = supabase
+      .channel(channelName)
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "notifications",
+          filter: `user_id=eq.${currentUser.id}`,
+        },
+        async (payload) => {
+          if (cancelled) return;
+          if (payload.new.actor_id) {
+            const { data: profile } = await supabase
+              .from("profiles")
+              .select("id, full_name, avatar_url")
+              .eq("id", payload.new.actor_id)
+              .single();
 
-              const newNotification = {
-                ...payload.new,
-                actor: profile || {
-                  id: payload.new.actor_id,
-                  full_name: null,
-                  avatar_url: null,
-                },
-              };
+            const newNotification = {
+              ...payload.new,
+              actor: profile || {
+                id: payload.new.actor_id,
+                full_name: null,
+                avatar_url: null,
+              },
+            };
 
-              setNotifications(prev => [newNotification as Notification, ...prev].slice(0, 20));
-              setUnreadCount(prev => prev + 1);
-            }
+            setNotifications(prev => [newNotification as Notification, ...prev].slice(0, 20));
+            setUnreadCount(prev => prev + 1);
           }
-        )
-        .subscribe();
+        }
+      )
+      .subscribe();
 
-      if (!cancelled) {
-        channelRef.current = ch;
-      } else {
-        supabase.removeChannel(ch);
-      }
-    };
-    init();
+    channelRef.current = ch;
+
     return () => {
       cancelled = true;
       if (channelRef.current) {
