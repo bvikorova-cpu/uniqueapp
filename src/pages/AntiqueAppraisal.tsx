@@ -38,9 +38,25 @@ const AntiqueAppraisal = () => {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const paymentStatus = params.get('payment');
-    if (paymentStatus === 'success') {
-      toast.success("Payment successful! Your credits have been added.");
-      window.history.replaceState({}, '', '/antique-appraisal');
+    const sessionId = params.get('session_id');
+    if (paymentStatus === 'success' && sessionId) {
+      (async () => {
+        try {
+          const { data, error } = await supabase.functions.invoke('verify-payment', {
+            body: { session_id: sessionId, product_type: 'antique_credits' },
+          });
+          if (error) throw error;
+          if (data?.paid) {
+            toast.success("Payment successful! Your credits have been added.");
+          } else {
+            toast.error("Payment verification pending. Please refresh in a moment.");
+          }
+        } catch (e: any) {
+          toast.error("Could not verify payment: " + (e?.message ?? "unknown error"));
+        } finally {
+          window.history.replaceState({}, '', '/antique-appraisal');
+        }
+      })();
     } else if (paymentStatus === 'canceled') {
       toast.error("Payment was canceled.");
       window.history.replaceState({}, '', '/antique-appraisal');
