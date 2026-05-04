@@ -15,7 +15,7 @@ export const AIPetBattleStrategy = ({ onBack }: Props) => {
   const [selectedPetIds, setSelectedPetIds] = useState<string[]>([]);
   const [result, setResult] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const { credits, useCredit } = useAICredits();
+  const { credits } = useAICredits();
 
   const { data: pets } = useQuery({
     queryKey: ['my-pets'],
@@ -43,9 +43,8 @@ export const AIPetBattleStrategy = ({ onBack }: Props) => {
         body: { pets: selectedPets }
       });
       if (error) throw error;
-      for (let i = 0; i < 4; i++) await useCredit("custom_generation", "AI Pet Battle Strategy");
       setResult(data.result);
-    } catch (e: any) { toast.error(e.message); }
+    } catch (e: any) { handleEdgeError(e, { navigate, context: "AI Pet" }); }
     finally { setLoading(false); }
   };
 

@@ -16,7 +16,7 @@ export const AIPetHealthPredictor = ({ onBack }: Props) => {
   const [timeframe, setTimeframe] = useState("7");
   const [result, setResult] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const { credits, useCredit } = useAICredits();
+  const { credits } = useAICredits();
 
   const { data: pets } = useQuery({
     queryKey: ['my-pets'],
@@ -37,9 +37,8 @@ export const AIPetHealthPredictor = ({ onBack }: Props) => {
         body: { petName: pet?.name, species: pet?.pet_types?.species, level: pet?.level, happiness: pet?.happiness, energy: pet?.energy, hunger: pet?.hunger, experience: pet?.experience, timeframeDays: parseInt(timeframe) }
       });
       if (error) throw error;
-      for (let i = 0; i < 8; i++) await useCredit("custom_generation", "AI Pet Health Predictor");
       setResult(data.result);
-    } catch (e: any) { toast.error(e.message); }
+    } catch (e: any) { handleEdgeError(e, { navigate, context: "AI Pet" }); }
     finally { setLoading(false); }
   };
 
