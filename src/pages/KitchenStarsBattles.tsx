@@ -199,7 +199,18 @@ export default function KitchenStarsBattles() {
       description: dishDesc.trim() || null, image_url: imageUrl, video_url: videoUrl,
       media_type: mediaType, media_size: mediaSize, media_mime: mediaMime,
     });
-    if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); return; }
+    if (error) {
+      const isDup = (error as any).code === "23505" || /duplicate|unique/i.test(error.message);
+      toast({
+        title: isDup ? "You already entered this battle" : "Error",
+        description: isDup
+          ? "Each chef can submit only ONE dish per battle. Refresh to see your existing entry."
+          : error.message,
+        variant: "destructive",
+      });
+      if (isDup) { setEntryFor(null); load(); }
+      return;
+    }
     setEntryFor(null); setDishTitle(""); setDishDesc(""); setDishImage(""); setDishFile(null);
     toast({ title: "Entry submitted!" });
     load();
