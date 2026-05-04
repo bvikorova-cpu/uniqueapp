@@ -35,6 +35,7 @@ const TOOLS = [
 ];
 
 const CharacterArena = () => {
+  usePaymentVerification();
   const [activeView, setActiveView] = useState<ActiveView>("dashboard");
 
   const { data: stats } = useQuery({
