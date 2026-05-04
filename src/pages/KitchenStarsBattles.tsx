@@ -156,7 +156,10 @@ export default function KitchenStarsBattles() {
 
     if (dishFile) {
       const v = validateFile(dishFile);
-      if (!v.ok) { toast({ title: "Invalid file", description: (v as { error: string }).error, variant: "destructive" }); return; }
+      if (!v.ok) {
+        toast({ title: v.title, description: `${v.reason} ${v.suggestion}`, variant: "destructive" });
+        return;
+      }
       setUploading(true);
       const ext = dishFile.name.split(".").pop()?.toLowerCase() || "bin";
       const path = `${userId}/${battleId}/${crypto.randomUUID()}.${ext}`;
@@ -164,7 +167,13 @@ export default function KitchenStarsBattles() {
         .upload(path, dishFile, { contentType: dishFile.type, upsert: false });
       if (ue) {
         setUploading(false);
-        toast({ title: "Upload failed", description: ue.message, variant: "destructive" }); return;
+        const msg = /exceeded|too large|payload/i.test(ue.message)
+          ? "Server rejected the file (too large for the storage bucket). Try a smaller file."
+          : /duplicate|already exists/i.test(ue.message)
+          ? "A file with this name already exists. Try renaming and re-uploading."
+          : ue.message;
+        toast({ title: "Upload failed", description: msg, variant: "destructive" });
+        return;
       }
       const { data: pub } = supabase.storage.from("kitchen-battles").getPublicUrl(path);
       mediaType = v.type; mediaSize = dishFile.size; mediaMime = dishFile.type;
