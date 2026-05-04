@@ -280,7 +280,12 @@ export default function KitchenStarsBattles() {
                 <CardHeader>
                   <CardTitle className="flex items-center justify-between">
                     <span className="flex items-center gap-2"><ChefHat className="h-5 w-5 text-orange-500" /> {battle.theme}</span>
-                    <Badge variant={isOpen ? "default" : "secondary"}>{isOpen ? "OPEN" : "CLOSED"}</Badge>
+                    <div className="flex items-center gap-2">
+                      <Badge variant={myEntry ? "default" : "outline"} className={myEntry ? "bg-green-600 hover:bg-green-700" : "text-muted-foreground"}>
+                        {myEntry ? "✓ Entered" : "Not entered"}
+                      </Badge>
+                      <Badge variant={isOpen ? "default" : "secondary"}>{isOpen ? "OPEN" : "CLOSED"}</Badge>
+                    </div>
                   </CardTitle>
                   {battle.description && <p className="text-sm text-muted-foreground">{battle.description}</p>}
                   <p className="text-xs text-muted-foreground">Deadline: {new Date(battle.deadline).toLocaleString()}</p>
