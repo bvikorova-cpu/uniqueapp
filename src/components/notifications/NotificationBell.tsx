@@ -56,7 +56,7 @@ const NotificationBell = () => {
     if (!currentUser) return;
     fetchNotifications(currentUser.id);
 
-    const channelName = `notifications-${currentUser.id}`;
+    const channelName = `notifications-${currentUser.id}-${Math.random().toString(36).slice(2, 10)}`;
     const ch = supabase
       .channel(channelName)
       .on(
