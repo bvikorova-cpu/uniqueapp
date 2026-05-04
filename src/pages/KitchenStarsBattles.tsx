@@ -8,6 +8,7 @@ import { ChefHat, Trophy, ThumbsUp, ThumbsDown, Plus, Flame, MessageCircle, Send
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { DropZone } from "@/components/kitchen-battles/DropZone";
 
 type Battle = { id: string; theme: string; description: string | null; status: string; deadline: string; prize_pool: number };
 type Participant = { id: string; battle_id: string; user_id: string; dish_title: string; description: string | null; image_url: string | null; video_url: string | null; media_type: string | null; vote_count: number; dislike_count: number };
@@ -341,24 +342,13 @@ export default function KitchenStarsBattles() {
                         <Input placeholder="Dish title" value={dishTitle} onChange={e => setDishTitle(e.target.value)} />
                         <Textarea placeholder="Short description (optional)" value={dishDesc} onChange={e => setDishDesc(e.target.value)} />
                         <Input placeholder="Image URL (optional)" value={dishImage} onChange={e => setDishImage(e.target.value)} />
-                        <div className="space-y-1">
-                          <label className="text-xs text-muted-foreground">Or upload image (≤8MB JPG/PNG/WEBP) or video (≤50MB MP4/WEBM/MOV)</label>
-                          <Input type="file" accept="image/jpeg,image/png,image/webp,video/mp4,video/webm,video/quicktime"
-                            onChange={e => {
-                              const f = e.target.files?.[0] || null;
-                              if (f) {
-                                const v = validateFile(f);
-                                if (v.ok === false) {
-                                  toast({ title: v.title, description: `${v.reason} ${v.suggestion}`, variant: "destructive" });
-                                  e.target.value = "";
-                                  setDishFile(null);
-                                  return;
-                                }
-                              }
-                              setDishFile(f);
-                            }} />
-                          {dishFile && <p className="text-xs text-muted-foreground">{dishFile.name} ({(dishFile.size/1024/1024).toFixed(2)} MB)</p>}
-                        </div>
+                        <DropZone
+                          file={dishFile}
+                          onChange={setDishFile}
+                          validate={validateFile}
+                          accept="image/jpeg,image/png,image/webp,video/mp4,video/webm,video/quicktime"
+                          hint="Images: JPG/PNG/WEBP ≤ 8 MB · Videos: MP4/WEBM/MOV ≤ 50 MB"
+                        />
                         <div className="flex gap-2">
                           <Button size="sm" onClick={() => submitEntry(battle.id)} disabled={uploading}>{uploading ? "Uploading..." : "Submit"}</Button>
                           <Button size="sm" variant="ghost" onClick={() => setEntryFor(null)}>Cancel</Button>
