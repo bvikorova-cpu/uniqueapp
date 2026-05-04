@@ -8,6 +8,8 @@ import { Input } from "@/components/ui/input";
 import { ArrowLeft, BookOpen, Loader2, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { useAICredits } from "@/hooks/useAICredits";
+import { handleEdgeError } from "@/lib/handleEdgeError";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 
 interface Props { onBack: () => void; }
