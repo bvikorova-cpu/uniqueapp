@@ -73,7 +73,7 @@ export default function BuyCreditsDialog({ open, onOpenChange }: BuyCreditsDialo
       }
 
       const { data, error } = await supabase.functions.invoke('create-credits-payment', {
-        body: { credits, price }
+        body: { credits, price, creditType: 'collectibles' }
       });
 
       if (error) throw error;

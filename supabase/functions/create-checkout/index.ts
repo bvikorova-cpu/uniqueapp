@@ -40,6 +40,13 @@ const CREDIT_PACKS: Record<string, { prices: Record<number, string>; successPath
     successPath: "/antique-appraisal?payment=success&session_id={CHECKOUT_SESSION_ID}",
     cancelPath: "/antique-appraisal?payment=canceled",
   },
+  collectibles: {
+    // Reuses antique price IDs (same pack sizes 10/25/60/150 at €5/€10/€20/€40).
+    // Credits land in `ai_credits` via verify-payment mapping.
+    prices: ANTIQUE_PRICE_IDS,
+    successPath: "/collectibles?payment=success&session_id={CHECKOUT_SESSION_ID}",
+    cancelPath: "/collectibles?payment=canceled",
+  },
   handwriting: {
     prices: {
       10: "price_1SZppoGaXSfGtYFt9LcYpN4i",
@@ -596,6 +603,7 @@ serve(async (req) => {
             : creditType === "coloring" ? "coloring_credits"
             : creditType === "creative_forge" ? "creative_forge_credits"
             : creditType === "shadow_arena" ? "shadow_arena_credits"
+            : creditType === "collectibles" ? "collectibles_credits"
             : creditType,
         },
       });

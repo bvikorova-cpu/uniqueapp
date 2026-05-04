@@ -211,6 +211,7 @@ async function applyPurchase(
       emotion_credits: "ai_credits",
       video_ad_credits: "ai_credits",
       lie_detector_credits: "ai_credits",
+      collectibles_credits: "ai_credits",
     };
     const table = tableMap[productType];
     if (table) {
