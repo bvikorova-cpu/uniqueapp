@@ -3594,6 +3594,39 @@ export type Database = {
           },
         ]
       }
+      beauty_celebrity_matches: {
+        Row: {
+          created_at: string
+          credits_used: number | null
+          gender: string | null
+          id: string
+          match_result: Json | null
+          source_image_url: string | null
+          style: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_used?: number | null
+          gender?: string | null
+          id?: string
+          match_result?: Json | null
+          source_image_url?: string | null
+          style?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_used?: number | null
+          gender?: string | null
+          id?: string
+          match_result?: Json | null
+          source_image_url?: string | null
+          style?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       beauty_gallery: {
         Row: {
           after_image_url: string
@@ -3633,6 +3666,39 @@ export type Database = {
         }
         Relationships: []
       }
+      beauty_nail_designs: {
+        Row: {
+          created_at: string
+          credits_used: number | null
+          design: Json | null
+          id: string
+          occasion: string | null
+          shape: string | null
+          style: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_used?: number | null
+          design?: Json | null
+          id?: string
+          occasion?: string | null
+          shape?: string | null
+          style?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_used?: number | null
+          design?: Json | null
+          id?: string
+          occasion?: string | null
+          shape?: string | null
+          style?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       beauty_product_recommendations: {
         Row: {
           concerns: string[] | null
@@ -3659,6 +3725,42 @@ export type Database = {
           created_at?: string | null
           credits_used?: number | null
           hair_type?: string | null
+          id?: string
+          recommendations?: Json | null
+          skin_type?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      beauty_skin_analyses: {
+        Row: {
+          age: string | null
+          concerns: string[] | null
+          created_at: string
+          credits_used: number | null
+          current_routine: string | null
+          id: string
+          recommendations: Json | null
+          skin_type: string | null
+          user_id: string
+        }
+        Insert: {
+          age?: string | null
+          concerns?: string[] | null
+          created_at?: string
+          credits_used?: number | null
+          current_routine?: string | null
+          id?: string
+          recommendations?: Json | null
+          skin_type?: string | null
+          user_id: string
+        }
+        Update: {
+          age?: string | null
+          concerns?: string[] | null
+          created_at?: string
+          credits_used?: number | null
+          current_routine?: string | null
           id?: string
           recommendations?: Json | null
           skin_type?: string | null
