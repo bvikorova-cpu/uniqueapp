@@ -240,11 +240,10 @@ const FUNCTION_ALIASES: Record<string, AliasEntry> = {
   // ─────────────────────────────────────────────────────────────────────
   // SHADOW / BATTLE / GAME ACTIONS → create-checkout (game actions)
   // ─────────────────────────────────────────────────────────────────────
-  "create-shadow-battle":               { target: "create-checkout", bodyExtras: { product: "shadow_battle" } },
+  // create-shadow-battle: REAL edge function (inserts shadow_battles row)
+  // purchase-shadow-gift: REAL edge function (Stripe checkout + shadow_gifts row)
+  // battle-characters / battle-pets: REAL edge functions with credit deduction
   "join-shadow-battle":                 { target: "create-checkout", bodyExtras: { product: "shadow_battle_join" } },
-  // battle-characters: NOT proxied — calls real edge function with credit deduction
-  "battle-pets":                        { target: "create-checkout", bodyExtras: { product: "battle_pets" } },
-  "purchase-shadow-gift":               { target: "create-checkout", bodyExtras: { product: "shadow_gift" } },
   "purchase-best-friend-messages":      { target: "create-checkout", bodyExtras: { product: "best_friend_messages" } },
   "purchase-psychology-messages":       { target: "create-checkout", bodyExtras: { product: "psychology_messages" } },
   "purchase-content-pack":              { target: "create-checkout", bodyExtras: { product: "content_pack" } },
