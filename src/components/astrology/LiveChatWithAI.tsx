@@ -42,7 +42,7 @@ export const LiveChatWithAI = () => {
     if (!user) { toast.error("Please log in"); return; }
     setIsPurchasing(true);
     try {
-      const { data, error } = await supabase.functions.invoke('create-astrology-checkout', { body: { packageId } });
+      const { data, error } = await supabase.functions.invoke('create-checkout', { body: { creditType: 'astrology', credits: Number(packageId) } });
       if (error) throw error;
       if (data?.url) { window.open(data.url, '_blank'); setShowShop(false); }
     } catch (error: any) { toast.error(error.message || "Failed to create checkout"); }
