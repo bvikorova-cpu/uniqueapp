@@ -71,9 +71,12 @@ const tools: { id: ActiveView; icon: any; title: string; desc: string; cost?: st
 
 export default function Collectibles() {
   const navigate = useNavigate();
+  const { toast } = useToast();
+  const [searchParams] = useSearchParams();
   const [user, setUser] = useState<any>(null);
   const [activeView, setActiveView] = useState<ActiveView>("hub");
   const [showBuyDialog, setShowBuyDialog] = useState(false);
+  const verifyRanRef = useRef(false);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
@@ -81,6 +84,35 @@ export default function Collectibles() {
       else setUser(data.user);
     });
   }, [navigate]);
+
+  // Verify Stripe credits payment after success redirect (idempotent — guarded against refresh)
+  useEffect(() => {
+    const payment = searchParams.get("payment");
+    const sessionId = searchParams.get("session_id");
+    if (payment === "success" && sessionId && !verifyRanRef.current) {
+      verifyRanRef.current = true;
+      supabase.functions
+        .invoke("verify-payment", { body: { sessionId, product_type: "collectibles_credits" } })
+        .then(({ error }) => {
+          if (error) {
+            toast({ title: "Verification failed", description: error.message, variant: "destructive" });
+          } else {
+            toast({ title: "Payment successful!", description: "Your credits have been added." });
+          }
+        })
+        .finally(() => {
+          const url = new URL(window.location.href);
+          url.searchParams.delete("payment");
+          url.searchParams.delete("session_id");
+          window.history.replaceState({}, "", url.pathname + url.search);
+        });
+    } else if (payment === "canceled") {
+      toast({ title: "Payment canceled", description: "No charge was made." });
+      const url = new URL(window.location.href);
+      url.searchParams.delete("payment");
+      window.history.replaceState({}, "", url.pathname + url.search);
+    }
+  }, [searchParams, toast]);
 
   if (!user) {
     return (
