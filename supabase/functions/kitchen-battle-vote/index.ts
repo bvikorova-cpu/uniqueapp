@@ -17,8 +17,9 @@ Deno.serve(async (req) => {
     const { data: { user } } = await supabase.auth.getUser(auth.replace("Bearer ", ""));
     if (!user) throw new Error("Unauthorized");
 
-    const { battleId, participantId } = await req.json();
+    const { battleId, participantId, voteType } = await req.json();
     if (!battleId || !participantId) throw new Error("battleId and participantId required");
+    const vt = voteType === "dislike" ? "dislike" : "like";
 
     const { data: battle, error: be } = await supabase
       .from("kitchen_battles").select("id, status, deadline").eq("id", battleId).single();
@@ -28,25 +29,47 @@ Deno.serve(async (req) => {
 
     const { data: part, error: pe } = await supabase
       .from("kitchen_battle_participants")
-      .select("id, user_id, vote_count, battle_id")
+      .select("id, user_id, vote_count, dislike_count, battle_id")
       .eq("id", participantId).single();
     if (pe || !part) throw new Error("Participant not found");
     if (part.battle_id !== battleId) throw new Error("Mismatch");
     if (part.user_id === user.id) throw new Error("Cannot vote for yourself");
 
-    const { error: ve } = await supabase.from("kitchen_battle_votes").insert({
-      battle_id: battleId, participant_id: participantId, voter_id: user.id,
-    });
-    if (ve) {
-      if (ve.code === "23505") throw new Error("You already voted in this battle");
-      throw ve;
+    const { data: existing } = await supabase
+      .from("kitchen_battle_votes")
+      .select("id, participant_id, vote_type")
+      .eq("battle_id", battleId).eq("voter_id", user.id).maybeSingle();
+
+    if (existing && existing.participant_id === participantId && existing.vote_type === vt) {
+      throw new Error("You already cast this vote");
     }
 
+    // Decrement previous vote if any
+    if (existing) {
+      const prevField = existing.vote_type === "like" ? "vote_count" : "dislike_count";
+      const { data: prevPart } = await supabase
+        .from("kitchen_battle_participants")
+        .select(`id, ${prevField}`).eq("id", existing.participant_id).single();
+      if (prevPart) {
+        await supabase.from("kitchen_battle_participants")
+          .update({ [prevField]: Math.max(0, ((prevPart as any)[prevField] || 0) - 1) })
+          .eq("id", existing.participant_id);
+      }
+      await supabase.from("kitchen_battle_votes").delete().eq("id", existing.id);
+    }
+
+    const { error: ve } = await supabase.from("kitchen_battle_votes").insert({
+      battle_id: battleId, participant_id: participantId, voter_id: user.id, vote_type: vt,
+    });
+    if (ve) throw ve;
+
+    const field = vt === "like" ? "vote_count" : "dislike_count";
+    const current = vt === "like" ? part.vote_count : part.dislike_count;
     await supabase.from("kitchen_battle_participants")
-      .update({ vote_count: (part.vote_count || 0) + 1 })
+      .update({ [field]: (current || 0) + 1 })
       .eq("id", participantId);
 
-    return new Response(JSON.stringify({ success: true }), {
+    return new Response(JSON.stringify({ success: true, voteType: vt }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200,
     });
   } catch (e) {

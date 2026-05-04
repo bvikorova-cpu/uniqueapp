@@ -4,19 +4,23 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { ChefHat, Trophy, Heart, Plus, Flame } from "lucide-react";
+import { ChefHat, Trophy, ThumbsUp, ThumbsDown, Plus, Flame, MessageCircle, Send, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
 type Battle = { id: string; theme: string; description: string | null; status: string; deadline: string; prize_pool: number };
-type Participant = { id: string; battle_id: string; user_id: string; dish_title: string; description: string | null; image_url: string | null; vote_count: number };
+type Participant = { id: string; battle_id: string; user_id: string; dish_title: string; description: string | null; image_url: string | null; vote_count: number; dislike_count: number };
+type Comment = { id: string; battle_id: string; participant_id: string | null; user_id: string; content: string; created_at: string };
+type MyVote = { participant_id: string; vote_type: string };
 
 export default function KitchenStarsBattles() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [battles, setBattles] = useState<Battle[]>([]);
   const [participants, setParticipants] = useState<Record<string, Participant[]>>({});
+  const [comments, setComments] = useState<Record<string, Comment[]>>({});
+  const [myVotes, setMyVotes] = useState<Record<string, MyVote>>({});
   const [userId, setUserId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
@@ -24,6 +28,8 @@ export default function KitchenStarsBattles() {
   const [dishTitle, setDishTitle] = useState("");
   const [dishDesc, setDishDesc] = useState("");
   const [dishImage, setDishImage] = useState("");
+  const [commentDraft, setCommentDraft] = useState<Record<string, string>>({});
+  const [showComments, setShowComments] = useState<Record<string, boolean>>({});
 
   const load = async () => {
     setLoading(true);
@@ -36,15 +42,31 @@ export default function KitchenStarsBattles() {
     setBattles(bs || []);
 
     if (bs && bs.length) {
-      const { data: ps } = await supabase.from("kitchen_battle_participants")
-        .select("*").in("battle_id", bs.map(b => b.id));
+      const ids = bs.map(b => b.id);
+      const [{ data: ps }, { data: cs }, { data: vs }] = await Promise.all([
+        supabase.from("kitchen_battle_participants").select("*").in("battle_id", ids),
+        supabase.from("kitchen_battle_comments").select("*").in("battle_id", ids).order("created_at", { ascending: true }),
+        supabase.from("kitchen_battle_votes").select("battle_id, participant_id, vote_type").eq("voter_id", session.user.id).in("battle_id", ids),
+      ]);
+
       const grouped: Record<string, Participant[]> = {};
-      (ps || []).forEach(p => {
+      (ps || []).forEach((p: any) => {
         grouped[p.battle_id] = grouped[p.battle_id] || [];
         grouped[p.battle_id].push(p);
       });
-      Object.values(grouped).forEach(arr => arr.sort((a, b) => b.vote_count - a.vote_count));
+      Object.values(grouped).forEach(arr => arr.sort((a, b) => (b.vote_count - b.dislike_count) - (a.vote_count - a.dislike_count)));
       setParticipants(grouped);
+
+      const cgrouped: Record<string, Comment[]> = {};
+      (cs || []).forEach((c: any) => {
+        cgrouped[c.battle_id] = cgrouped[c.battle_id] || [];
+        cgrouped[c.battle_id].push(c);
+      });
+      setComments(cgrouped);
+
+      const mv: Record<string, MyVote> = {};
+      (vs || []).forEach((v: any) => { mv[v.battle_id] = { participant_id: v.participant_id, vote_type: v.vote_type }; });
+      setMyVotes(mv);
     }
     setLoading(false);
   };
@@ -59,35 +81,49 @@ export default function KitchenStarsBattles() {
       toast({ title: "Error", description: error?.message || data?.error, variant: "destructive" });
       return;
     }
-    toast({ title: "Battle created!", description: "Now invite chefs to submit dishes." });
+    toast({ title: "Battle created!" });
     load();
   };
 
   const submitEntry = async (battleId: string) => {
-    if (!dishTitle.trim()) {
-      toast({ title: "Add dish title", variant: "destructive" }); return;
-    }
+    if (!dishTitle.trim()) { toast({ title: "Add dish title", variant: "destructive" }); return; }
     const { error } = await supabase.from("kitchen_battle_participants").insert({
       battle_id: battleId, user_id: userId, dish_title: dishTitle,
       description: dishDesc || null, image_url: dishImage || null,
     });
-    if (error) {
-      toast({ title: "Error", description: error.message, variant: "destructive" }); return;
-    }
+    if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); return; }
     setEntryFor(null); setDishTitle(""); setDishDesc(""); setDishImage("");
     toast({ title: "Entry submitted!" });
     load();
   };
 
-  const vote = async (battleId: string, participantId: string) => {
+  const vote = async (battleId: string, participantId: string, voteType: "like" | "dislike") => {
     const { data, error } = await supabase.functions.invoke("kitchen-battle-vote", {
-      body: { battleId, participantId },
+      body: { battleId, participantId, voteType },
     });
     if (error || data?.error) {
       toast({ title: "Vote failed", description: error?.message || data?.error, variant: "destructive" });
       return;
     }
-    toast({ title: "Vote counted! 🔥" });
+    toast({ title: voteType === "like" ? "👍 Liked!" : "👎 Disliked" });
+    load();
+  };
+
+  const postComment = async (battleId: string, participantId?: string) => {
+    const key = `${battleId}:${participantId || ""}`;
+    const content = (commentDraft[key] || "").trim();
+    if (!content) return;
+    const { error } = await supabase.from("kitchen_battle_comments").insert({
+      battle_id: battleId, participant_id: participantId || null, user_id: userId, content,
+    });
+    if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); return; }
+    setCommentDraft(prev => ({ ...prev, [key]: "" }));
+    load();
+  };
+
+  const deleteComment = async (id: string) => {
+    const { error } = await supabase.from("kitchen_battle_comments").delete().eq("id", id);
+    if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); return; }
     load();
   };
 
@@ -114,8 +150,11 @@ export default function KitchenStarsBattles() {
         ) : (
           battles.map(battle => {
             const parts = participants[battle.id] || [];
+            const allComments = comments[battle.id] || [];
             const myEntry = parts.find(p => p.user_id === userId);
             const isOpen = battle.status === "open" && new Date(battle.deadline) > new Date();
+            const myVote = myVotes[battle.id];
+            const showCs = showComments[battle.id];
             return (
               <Card key={battle.id} className="border-orange-500/20">
                 <CardHeader>
@@ -128,25 +167,43 @@ export default function KitchenStarsBattles() {
                 </CardHeader>
                 <CardContent className="space-y-3">
                   {parts.length === 0 && <p className="text-sm text-muted-foreground italic">No entries yet.</p>}
-                  {parts.map((p, i) => (
-                    <div key={p.id} className="flex items-center justify-between p-3 rounded-lg bg-secondary/30">
-                      <div className="flex items-center gap-3">
-                        {i === 0 && p.vote_count > 0 && <Trophy className="h-5 w-5 text-yellow-500" />}
-                        <div>
-                          <p className="font-semibold">{p.dish_title}</p>
-                          {p.description && <p className="text-xs text-muted-foreground">{p.description}</p>}
+                  {parts.map((p, i) => {
+                    const liked = myVote?.participant_id === p.id && myVote.vote_type === "like";
+                    const disliked = myVote?.participant_id === p.id && myVote.vote_type === "dislike";
+                    const score = p.vote_count - p.dislike_count;
+                    return (
+                      <div key={p.id} className="p-3 rounded-lg bg-secondary/30 space-y-2">
+                        <div className="flex items-center justify-between flex-wrap gap-2">
+                          <div className="flex items-center gap-3">
+                            {i === 0 && score > 0 && <Trophy className="h-5 w-5 text-yellow-500" />}
+                            <div>
+                              <p className="font-semibold">{p.dish_title}</p>
+                              {p.description && <p className="text-xs text-muted-foreground">{p.description}</p>}
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <Badge variant="outline"><Flame className="h-3 w-3 mr-1" />{score}</Badge>
+                            {isOpen && p.user_id !== userId && (
+                              <>
+                                <Button size="sm" variant={liked ? "default" : "outline"} onClick={() => vote(battle.id, p.id, "like")}>
+                                  <ThumbsUp className="h-3 w-3 mr-1" /> {p.vote_count}
+                                </Button>
+                                <Button size="sm" variant={disliked ? "destructive" : "outline"} onClick={() => vote(battle.id, p.id, "dislike")}>
+                                  <ThumbsDown className="h-3 w-3 mr-1" /> {p.dislike_count}
+                                </Button>
+                              </>
+                            )}
+                            {(!isOpen || p.user_id === userId) && (
+                              <>
+                                <Badge variant="outline"><ThumbsUp className="h-3 w-3 mr-1" />{p.vote_count}</Badge>
+                                <Badge variant="outline"><ThumbsDown className="h-3 w-3 mr-1" />{p.dislike_count}</Badge>
+                              </>
+                            )}
+                          </div>
                         </div>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <Badge variant="outline"><Flame className="h-3 w-3 mr-1" />{p.vote_count}</Badge>
-                        {isOpen && p.user_id !== userId && (
-                          <Button size="sm" variant="outline" onClick={() => vote(battle.id, p.id)}>
-                            <Heart className="h-3 w-3 mr-1" /> Vote
-                          </Button>
-                        )}
-                      </div>
-                    </div>
-                  ))}
+                    );
+                  })}
 
                   {isOpen && !myEntry && (
                     entryFor === battle.id ? (
@@ -164,6 +221,40 @@ export default function KitchenStarsBattles() {
                         <Plus className="h-4 w-4 mr-2" /> Submit Your Dish
                       </Button>
                     )
+                  )}
+
+                  <Button variant="ghost" size="sm" className="w-full" onClick={() => setShowComments(s => ({ ...s, [battle.id]: !s[battle.id] }))}>
+                    <MessageCircle className="h-4 w-4 mr-2" /> {showCs ? "Hide" : "Show"} Comments ({allComments.length})
+                  </Button>
+
+                  {showCs && (
+                    <div className="space-y-2 pt-2 border-t border-border">
+                      {allComments.length === 0 && <p className="text-xs text-muted-foreground italic">No comments yet.</p>}
+                      {allComments.map(c => (
+                        <div key={c.id} className="flex items-start justify-between gap-2 p-2 rounded bg-background/50">
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm">{c.content}</p>
+                            <p className="text-[10px] text-muted-foreground">{new Date(c.created_at).toLocaleString()}</p>
+                          </div>
+                          {c.user_id === userId && (
+                            <Button size="icon" variant="ghost" onClick={() => deleteComment(c.id)}>
+                              <Trash2 className="h-3 w-3" />
+                            </Button>
+                          )}
+                        </div>
+                      ))}
+                      <div className="flex gap-2">
+                        <Input
+                          placeholder="Write a comment..."
+                          value={commentDraft[`${battle.id}:`] || ""}
+                          onChange={e => setCommentDraft(prev => ({ ...prev, [`${battle.id}:`]: e.target.value }))}
+                          onKeyDown={e => { if (e.key === "Enter") postComment(battle.id); }}
+                        />
+                        <Button size="icon" onClick={() => postComment(battle.id)}>
+                          <Send className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
                   )}
                 </CardContent>
               </Card>

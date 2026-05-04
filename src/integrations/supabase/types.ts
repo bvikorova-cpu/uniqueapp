@@ -23349,12 +23349,58 @@ export type Database = {
           },
         ]
       }
+      kitchen_battle_comments: {
+        Row: {
+          battle_id: string
+          content: string
+          created_at: string
+          id: string
+          participant_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          battle_id: string
+          content: string
+          created_at?: string
+          id?: string
+          participant_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          battle_id?: string
+          content?: string
+          created_at?: string
+          id?: string
+          participant_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "kitchen_battle_comments_battle_id_fkey"
+            columns: ["battle_id"]
+            isOneToOne: false
+            referencedRelation: "kitchen_battles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "kitchen_battle_comments_participant_id_fkey"
+            columns: ["participant_id"]
+            isOneToOne: false
+            referencedRelation: "kitchen_battle_participants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       kitchen_battle_participants: {
         Row: {
           battle_id: string
           created_at: string
           description: string | null
           dish_title: string
+          dislike_count: number
           id: string
           image_url: string | null
           user_id: string
@@ -23366,6 +23412,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           dish_title: string
+          dislike_count?: number
           id?: string
           image_url?: string | null
           user_id: string
@@ -23377,6 +23424,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           dish_title?: string
+          dislike_count?: number
           id?: string
           image_url?: string | null
           user_id?: string
@@ -23399,6 +23447,7 @@ export type Database = {
           created_at: string
           id: string
           participant_id: string
+          vote_type: string
           voter_id: string
         }
         Insert: {
@@ -23406,6 +23455,7 @@ export type Database = {
           created_at?: string
           id?: string
           participant_id: string
+          vote_type?: string
           voter_id: string
         }
         Update: {
@@ -23413,6 +23463,7 @@ export type Database = {
           created_at?: string
           id?: string
           participant_id?: string
+          vote_type?: string
           voter_id?: string
         }
         Relationships: [
