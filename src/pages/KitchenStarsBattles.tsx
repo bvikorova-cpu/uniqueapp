@@ -266,7 +266,7 @@ export default function KitchenStarsBattles() {
                           {dishFile && <p className="text-xs text-muted-foreground">{dishFile.name} ({(dishFile.size/1024/1024).toFixed(2)} MB)</p>}
                         </div>
                         <div className="flex gap-2">
-                          <Button size="sm" onClick={() => submitEntry(battle.id)}>Submit</Button>
+                          <Button size="sm" onClick={() => submitEntry(battle.id)} disabled={uploading}>{uploading ? "Uploading..." : "Submit"}</Button>
                           <Button size="sm" variant="ghost" onClick={() => setEntryFor(null)}>Cancel</Button>
                         </div>
                       </div>
