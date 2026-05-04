@@ -314,6 +314,44 @@ serve(async (req) => {
               }
             }
           }
+
+          // ── Shadow Arena gift fulfilment ──
+          if (session.metadata?.type === "shadow_gift" && session.metadata?.gift_id) {
+            const giftId = session.metadata.gift_id;
+            const battleId = session.metadata.battle_id;
+            const amountEur = (session.amount_total || 0) / 100;
+            const { error: gErr } = await supabase
+              .from("shadow_gifts")
+              .update({ status: "completed", stripe_payment_id: session.id })
+              .eq("id", giftId);
+            if (gErr) log("shadow_gift update failed", { error: gErr.message });
+
+            // Bump participant total_gifts_received & battle prize pool
+            if (session.metadata.participant_id) {
+              const { data: p } = await supabase
+                .from("shadow_battle_participants")
+                .select("total_gifts_received")
+                .eq("id", session.metadata.participant_id)
+                .maybeSingle();
+              if (p) {
+                await supabase.from("shadow_battle_participants")
+                  .update({ total_gifts_received: Number(p.total_gifts_received || 0) + amountEur })
+                  .eq("id", session.metadata.participant_id);
+              }
+            }
+            if (battleId) {
+              const { data: b } = await supabase
+                .from("shadow_battles")
+                .select("total_prize_pool")
+                .eq("id", battleId)
+                .maybeSingle();
+              if (b) {
+                await supabase.from("shadow_battles")
+                  .update({ total_prize_pool: Number(b.total_prize_pool || 0) + amountEur })
+                  .eq("id", battleId);
+              }
+            }
+          }
         }
         break;
       }
