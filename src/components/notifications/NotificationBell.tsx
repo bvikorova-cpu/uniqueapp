@@ -272,8 +272,18 @@ const NotificationBell = () => {
       notification.type === "campaign_withdrawal"
     ) {
       navigate(`/admin/withdrawal-requests`);
+    } else if (notification.type === "weekly_xp_winner" || notification.type === "weekly_xp_leaderboard") {
+      navigate(`/leaderboard`);
+    } else if (notification.type === "follow" && notification.actor_id) {
+      navigate(`/profile/${notification.actor_id}`);
     } else if (notification.post_id) {
       navigate(`/post/${notification.post_id}`);
+    } else if (notification.related_id) {
+      // Generic fallback — try wall as a sensible default for content interactions
+      navigate(`/wall`);
+    } else {
+      // Final fallback — open notifications center so click always does *something*
+      navigate(`/wall`);
     }
   };
 
