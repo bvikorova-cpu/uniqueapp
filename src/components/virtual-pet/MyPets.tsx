@@ -84,22 +84,27 @@ export const MyPets = ({ onSelectPet }: MyPetsProps) => {
       const selectedType = petTypes?.find(pt => pt.id === selectedTypeId);
       if (!selectedType) throw new Error('Pet type not found');
       const price = selectedType.price || 0;
-      if (price > 0) {
-        if (credits.credits_remaining < price) throw new Error('INSUFFICIENT_CREDITS');
-        const { error: creditError } = await supabase.from('ai_credits').update({
-          credits_remaining: credits.credits_remaining - price, last_used_at: new Date().toISOString(),
-        }).eq('user_id', user.id);
-        if (creditError) throw creditError;
-        await supabase.from('ai_usage_history').insert({
-          user_id: user.id, usage_type: 'pet_adoption', credits_used: price,
-          description: `Adopted ${selectedType.name}`,
-        });
+
+      // Free pets can be inserted directly (RLS allows owner inserts).
+      if (price <= 0) {
+        const { data, error } = await supabase.from('pets').insert([{
+          user_id: user.id, pet_type_id: selectedTypeId, name: newPetName,
+        }]).select().single();
+        if (error) throw error;
+        return data;
       }
-      const { data, error } = await supabase.from('pets').insert([{
-        user_id: user.id, pet_type_id: selectedTypeId, name: newPetName
-      }]).select().single();
+
+      // Paid adoption: server-side credit deduction + insert (atomic).
+      if (credits.credits_remaining < price) throw new Error('INSUFFICIENT_CREDITS');
+      const { data, error } = await supabase.functions.invoke('pet-purchase-item', {
+        body: { itemType: 'pet_type', itemId: selectedTypeId, petName: newPetName },
+      });
       if (error) throw error;
-      return data;
+      if (data?.error) {
+        if (data.code === 'INSUFFICIENT_CREDITS') throw new Error('INSUFFICIENT_CREDITS');
+        throw new Error(data.error);
+      }
+      return data?.reward?.pet;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['my-pets'] });
