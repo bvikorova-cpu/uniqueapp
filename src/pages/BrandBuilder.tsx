@@ -54,7 +54,14 @@ const BrandBuilder = () => {
   };
 
   const loadBrandKits = async () => {
-    const { data } = await supabase.from("brand_kits").select("*").order("created_at", { ascending: false }).limit(10);
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+    const { data } = await supabase
+      .from("brand_kits")
+      .select("*")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false })
+      .limit(10);
     if (data) setBrandKits(data);
   };
 
