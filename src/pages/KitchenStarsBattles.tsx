@@ -141,6 +141,18 @@ export default function KitchenStarsBattles() {
   };
 
   const submitEntry = async (battleId: string) => {
+    // Hard limit: one entry per user per battle
+    const existing = (participants[battleId] || []).find(p => p.user_id === userId);
+    if (existing) {
+      toast({
+        title: "You already entered this battle",
+        description: `Your dish "${existing.dish_title}" is already submitted. Each chef can submit only ONE dish per battle to keep voting fair. Wait for the next battle to compete again.`,
+        variant: "destructive",
+      });
+      setEntryFor(null);
+      return;
+    }
+
     if (!dishTitle.trim() || dishTitle.length > 120) {
       toast({ title: "Dish title required (max 120 chars)", variant: "destructive" }); return;
     }
@@ -187,7 +199,18 @@ export default function KitchenStarsBattles() {
       description: dishDesc.trim() || null, image_url: imageUrl, video_url: videoUrl,
       media_type: mediaType, media_size: mediaSize, media_mime: mediaMime,
     });
-    if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); return; }
+    if (error) {
+      const isDup = (error as any).code === "23505" || /duplicate|unique/i.test(error.message);
+      toast({
+        title: isDup ? "You already entered this battle" : "Error",
+        description: isDup
+          ? "Each chef can submit only ONE dish per battle. Refresh to see your existing entry."
+          : error.message,
+        variant: "destructive",
+      });
+      if (isDup) { setEntryFor(null); load(); }
+      return;
+    }
     setEntryFor(null); setDishTitle(""); setDishDesc(""); setDishImage(""); setDishFile(null);
     toast({ title: "Entry submitted!" });
     load();
@@ -307,6 +330,11 @@ export default function KitchenStarsBattles() {
                     );
                   })}
 
+                  {myEntry && (
+                    <div className="p-3 rounded-lg border border-primary/30 bg-primary/5 text-sm">
+                      ✅ You've already submitted "<strong>{myEntry.dish_title}</strong>" to this battle. Only one entry per chef is allowed.
+                    </div>
+                  )}
                   {isOpen && !myEntry && (
                     entryFor === battle.id ? (
                       <div className="space-y-2 p-3 rounded-lg border border-primary/20">
