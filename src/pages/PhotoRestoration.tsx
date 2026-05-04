@@ -39,6 +39,33 @@ const PhotoRestoration = () => {
   const [restoredUrl, setRestoredUrl] = useState("");
   const { restorePhoto, isRestoring } = usePhotoCredits();
 
+  // Photo credits payment verification (after Stripe redirect)
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    const sessionId = url.searchParams.get("session_id");
+    const productType = url.searchParams.get("product_type");
+    const status = url.searchParams.get("payment");
+    if (status === "success" && sessionId && productType === "photo_credits") {
+      (async () => {
+        try {
+          const { data, error } = await supabase.functions.invoke("verify-payment", {
+            body: { session_id: sessionId, product_type: "photo_credits" },
+          });
+          if (error) throw error;
+          if ((data as any)?.success || (data as any)?.status === "paid") {
+            toast.success("Photo credits added to your account!");
+          }
+        } catch (e: any) {
+          console.error("verify-payment error", e);
+          toast.error("Could not verify payment. Contact support if credits are missing.");
+        } finally {
+          ["session_id", "product_type", "payment"].forEach((k) => url.searchParams.delete(k));
+          window.history.replaceState({}, "", url.toString());
+        }
+      })();
+    }
+  }, []);
+
   useEffect(() => {
     const loadStats = async () => {
       const { data: { user } } = await supabase.auth.getUser();
