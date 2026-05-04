@@ -108,8 +108,14 @@ Return ONLY a valid JSON object:
       };
     }
 
+    // Deduct credit after successful analysis
+    await adminClient.from("ai_credits").update({
+      credits_remaining: remaining - 1,
+      last_used_at: new Date().toISOString(),
+    }).eq("user_id", user.id);
+
     return new Response(
-      JSON.stringify(insightsData),
+      JSON.stringify({ ...insightsData, credits_remaining: remaining - 1 }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (error: any) {
