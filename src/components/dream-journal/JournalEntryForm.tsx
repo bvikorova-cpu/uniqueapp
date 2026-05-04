@@ -17,6 +17,7 @@ interface JournalEntryFormProps {
 
 const JournalEntryForm = ({ onSuccess }: JournalEntryFormProps) => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const { credits, useCredit } = useAICredits();
   const [loading, setLoading] = useState(false);
   const [title, setTitle] = useState("");
@@ -25,28 +26,33 @@ const JournalEntryForm = ({ onSuccess }: JournalEntryFormProps) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!content.trim()) {
       toast({ title: "Error", description: "Please write your journal entry", variant: "destructive" });
       return;
     }
 
+    if ((credits?.credits_remaining || 0) < 1) {
+      handleEdgeError({ status: 402 }, { navigate, context: "Journal Analysis" });
+      return;
+    }
+
     setLoading(true);
     try {
-      await useCredit("effect");
-
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Not authenticated");
+      if (!user) {
+        handleEdgeError({ status: 401 }, { navigate, context: "Journal Analysis" });
+        return;
+      }
+
+      await useCredit("effect");
 
       const { data: { session } } = await supabase.auth.getSession();
       const insightsResponse = await supabase.functions.invoke("analyze-journal", {
         body: { journalContent: content, mood },
         headers: { Authorization: `Bearer ${session?.access_token}` }
       });
-
-      if (insightsResponse.error) throw insightsResponse.error;
-
-      const insights = insightsResponse.data;
+      const insights = throwIfInvokeError(insightsResponse);
 
       const { error: insertError } = await supabase.from("journal_entries").insert([{
         title: title || "Journal Entry",
@@ -66,7 +72,9 @@ const JournalEntryForm = ({ onSuccess }: JournalEntryFormProps) => {
       setMood("neutral");
       onSuccess();
     } catch (error: any) {
-      toast({ title: "Error", description: error.message, variant: "destructive" });
+      if (!handleEdgeError(error, { navigate, context: "Journal Analysis" })) {
+        toast({ title: "Error", description: error.message, variant: "destructive" });
+      }
     } finally {
       setLoading(false);
     }
