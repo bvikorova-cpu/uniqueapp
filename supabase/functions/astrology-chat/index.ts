@@ -52,10 +52,7 @@ serve(async (req) => {
     if (deductCredit && row) {
       await adminClient
         .from("astrology_credits")
-        .update({
-          credits_remaining: remaining - COST,
-          total_credits_used: (row.total_credits_used ?? 0) + COST,
-        })
+        .update({ credits_remaining: remaining - COST })
         .eq("user_id", user.id);
     }
 
