@@ -20,9 +20,8 @@ export function LeagueSystem({ onBack }: { onBack: () => void }) {
     const { data: team } = await supabase.from("basketball_teams").select("*").eq("user_id", user.id).single();
     if (!team) { toast.error("Create a team first!"); return; }
     if (league.entry_fee > 0) {
-      const { data: coins } = await supabase.from("basketball_coins").select("*").eq("user_id", user.id).single();
-      if (!coins || coins.balance < league.entry_fee) { toast.error("Not enough coins for entry fee!"); return; }
-      await supabase.from("basketball_coins").update({ balance: coins.balance - league.entry_fee, total_spent: coins.total_spent + league.entry_fee }).eq("user_id", user.id);
+      const spendRes = await spendSportCoins("basketball_coins", league.entry_fee);
+      if (!spendRes.ok) { toast.error("Not enough coins for entry fee!"); return; }
     }
     await supabase.from("basketball_league_standings").insert({ league_id: league.id, team_id: team.id });
     toast.success(`Joined ${league.name}!`);
