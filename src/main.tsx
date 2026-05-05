@@ -2,20 +2,15 @@ import { createRoot } from "react-dom/client";
 import { Component, lazy, ReactNode, Suspense } from "react";
 import "./index.css";
 
-// Eagerly start fetching the chunks in parallel so the spinner is short.
-// `lazy()` still wraps the same promise, so React Suspense works as before,
-// but the network round-trips for App + GDPR + PWA banner overlap with the
-// initial paint instead of waiting until React mounts.
-const appPromise = import("./App");
-const cookieBannerPromise = import("./components/gdpr/CookieConsentBanner");
-const installBannerPromise = import("./components/pwa/InstallPromptBanner");
-
-const App = lazy(() => appPromise);
+// Keep dynamic imports inside React.lazy. Starting them at module top-level
+// delays execution of this whole file on slow mobile networks, leaving #root
+// empty/white before React can render the fallback.
+const App = lazy(() => import("./App"));
 const CookieConsentBanner = lazy(() =>
-  cookieBannerPromise.then((module) => ({ default: module.CookieConsentBanner }))
+  import("./components/gdpr/CookieConsentBanner").then((module) => ({ default: module.CookieConsentBanner }))
 );
 const InstallPromptBanner = lazy(() =>
-  installBannerPromise.then((module) => ({ default: module.InstallPromptBanner }))
+  import("./components/pwa/InstallPromptBanner").then((module) => ({ default: module.InstallPromptBanner }))
 );
 
 // Warm up heavy shared chunks in the background so first navigation inside
@@ -111,8 +106,9 @@ function installBlankScreenWatchdog(rootEl: HTMLElement) {
 let reactRendered = false;
 
 const BootFallback = () => (
-  <div className="min-h-screen flex items-center justify-center bg-background text-foreground">
+  <div className="min-h-screen flex flex-col items-center justify-center gap-3 bg-background text-foreground">
     <div className="h-10 w-10 rounded-full border-2 border-primary/30 border-t-primary animate-spin" />
+    <p className="text-sm font-semibold text-muted-foreground">Načítava sa Unique…</p>
   </div>
 );
 
