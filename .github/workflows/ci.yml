@@ -39,10 +39,39 @@ jobs:
         env:
           NODE_OPTIONS: --max-old-space-size=4096
 
+      - name: Install Playwright system dependencies
+        # Explicitly install the shared libs Chromium needs (libglib-2.0, nss, nspr,
+        # atk, cups, libdrm, xkbcommon, X libs, etc.). `playwright install --with-deps`
+        # also tries to do this, but on stripped-down runners/sandboxes it can silently
+        # skip packages, so we install them up-front to guarantee headless Chromium runs.
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            libglib2.0-0 libnss3 libnspr4 libatk1.0-0 libatk-bridge2.0-0 \
+            libcups2 libdrm2 libdbus-1-3 libxkbcommon0 libxcomposite1 \
+            libxdamage1 libxfixes3 libxrandr2 libgbm1 libpango-1.0-0 \
+            libcairo2 libasound2t64 libatspi2.0-0 libwayland-client0 \
+            fonts-liberation || \
+          sudo apt-get install -y --no-install-recommends libasound2
+
       - name: Install Playwright browsers
         run: bunx playwright install --with-deps chromium
+
+      - name: Verify Chromium dependencies
+        # Fails fast with a clear message if any required shared lib is still missing
+        # (e.g. libglib-2.0.so.0) so we don't waste time on opaque test failures.
+        run: |
+          CHROME_BIN="$(bunx playwright install --dry-run chromium 2>/dev/null | awk '/Install location/ {print $3}' | head -n1)/chrome-linux/chrome"
+          if [ ! -x "$CHROME_BIN" ]; then
+            CHROME_BIN="$(find "$HOME/.cache/ms-playwright" -type f -name chrome | head -n1)"
+          fi
+          echo "Chromium binary: $CHROME_BIN"
+          if [ -x "$CHROME_BIN" ]; then
+            ldd "$CHROME_BIN" | (grep "not found" && exit 1) || echo "All shared libs resolved."
+          fi
 
       - name: E2E tests
         run: bun run e2e
         env:
           NODE_OPTIONS: --max-old-space-size=4096
+          CI: "true"
