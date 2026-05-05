@@ -77,8 +77,86 @@ export function BattleResult({ result, homeName }: BattleResultProps) {
     ? bucketHighlights(result.highlights, periods)
     : null;
 
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [exporting, setExporting] = useState<null | "png" | "pdf">(null);
+
+  const baseFilename = () => {
+    const verdict = result.won ? "victory" : "defeat";
+    const slug = `${homeName}-vs-${result.opponent_name}`
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "");
+    return `battle-${verdict}-${slug}`.slice(0, 80);
+  };
+
+  const captureCanvas = async () => {
+    if (!cardRef.current) throw new Error("Nothing to export");
+    const html2canvas = (await import("html2canvas")).default;
+    return html2canvas(cardRef.current, {
+      backgroundColor: "#0b0b0f",
+      scale: 2,
+      useCORS: true,
+      logging: false,
+    });
+  };
+
+  const exportPNG = async () => {
+    setExporting("png");
+    try {
+      const canvas = await captureCanvas();
+      const link = document.createElement("a");
+      link.download = `${baseFilename()}.png`;
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+      toast.success("PNG exported");
+    } catch (e: any) {
+      toast.error(e.message || "Export failed");
+    } finally {
+      setExporting(null);
+    }
+  };
+
+  const exportPDF = async () => {
+    setExporting("pdf");
+    try {
+      const canvas = await captureCanvas();
+      const { jsPDF } = await import("jspdf");
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF({ orientation: "portrait", unit: "pt", format: "a4" });
+      const pageW = pdf.internal.pageSize.getWidth();
+      const pageH = pdf.internal.pageSize.getHeight();
+      const margin = 32;
+      const maxW = pageW - margin * 2;
+      const ratio = canvas.height / canvas.width;
+      const imgW = maxW;
+      const imgH = Math.min(maxW * ratio, pageH - margin * 2 - 40);
+      pdf.setFillColor(11, 11, 15);
+      pdf.rect(0, 0, pageW, pageH, "F");
+      pdf.setTextColor(255, 255, 255);
+      pdf.setFontSize(14);
+      pdf.text(`${homeName} vs ${result.opponent_name}`, margin, margin);
+      pdf.setFontSize(10);
+      pdf.setTextColor(180, 180, 190);
+      pdf.text(
+        `${result.won ? "VICTORY" : "DEFEAT"}  •  ${result.home_score}-${result.away_score}  •  +${result.coins_reward} coins${
+          rewardPeriod ? ` (decisive in ${rewardPeriod})` : ""
+        }${result.mvp ? `  •  MVP: ${result.mvp}${mvpPeriod ? ` (${mvpPeriod})` : ""}` : ""}`,
+        margin,
+        margin + 14
+      );
+      pdf.addImage(imgData, "PNG", margin, margin + 28, imgW, imgH);
+      pdf.save(`${baseFilename()}.pdf`);
+      toast.success("PDF exported");
+    } catch (e: any) {
+      toast.error(e.message || "Export failed");
+    } finally {
+      setExporting(null);
+    }
+  };
+
   return (
     <motion.div
+      ref={cardRef}
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.4 }}
@@ -88,6 +166,26 @@ export function BattleResult({ result, homeName }: BattleResultProps) {
           : "bg-gradient-to-br from-red-500/15 via-background to-zinc-900/40 border-red-500/40"
       }`}
     >
+      {/* Export button */}
+      <div className="absolute top-2 right-2 z-10" data-html2canvas-ignore="true">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button size="sm" variant="ghost" className="h-7 px-2 text-xs gap-1" disabled={!!exporting}>
+              {exporting ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Download className="h-3.5 w-3.5" />}
+              Export
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={exportPNG} disabled={!!exporting}>
+              <FileImage className="h-4 w-4 mr-2" /> Save as PNG
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={exportPDF} disabled={!!exporting}>
+              <FileText className="h-4 w-4 mr-2" /> Save as PDF
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+
       {/* Verdict banner */}
       <div className="text-center mb-4">
         <motion.div
