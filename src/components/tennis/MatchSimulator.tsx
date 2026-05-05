@@ -5,6 +5,8 @@ import { ArrowLeft, Loader2, Swords } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { BattleResult } from "@/components/sports/BattleResult";
+import { computeBattlePower, opponentPower } from "@/lib/battlePower";
 
 export function MatchSimulator({ onBack }: { onBack: () => void }) {
   const { user } = useAuth();
