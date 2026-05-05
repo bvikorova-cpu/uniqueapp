@@ -26,6 +26,8 @@ interface BattleResultProps {
     breakdown?: { label: string; home: number; away: number }[];
   };
   homeName: string;
+  /** Watermark / contest name shown in exports (default: "Megatalent") */
+  watermark?: string;
 }
 
 /**
@@ -55,7 +57,7 @@ function bucketHighlights(
   return buckets;
 }
 
-export function BattleResult({ result, homeName }: BattleResultProps) {
+export function BattleResult({ result, homeName, watermark = "Megatalent" }: BattleResultProps) {
   const totalPower = Math.max(result.home_power + result.away_power, 1);
   const homePct = Math.round((result.home_power / totalPower) * 100);
   const awayPct = 100 - homePct;
@@ -89,8 +91,11 @@ export function BattleResult({ result, homeName }: BattleResultProps) {
     return `battle-${verdict}-${slug}`.slice(0, 80);
   };
 
-  const captureCanvas = async () => {
+  const captureCanvas = async (timestamp: string) => {
     if (!cardRef.current) throw new Error("Nothing to export");
+    // Wait one paint so the watermark/footer becomes visible in the DOM
+    await new Promise((r) => requestAnimationFrame(() => r(null)));
+    await new Promise((r) => setTimeout(r, 30));
     const html2canvas = (await import("html2canvas")).default;
     return html2canvas(cardRef.current, {
       backgroundColor: "#0b0b0f",
@@ -100,10 +105,20 @@ export function BattleResult({ result, homeName }: BattleResultProps) {
     });
   };
 
+  const formatTimestamp = () =>
+    new Date().toLocaleString(undefined, {
+      year: "numeric",
+      month: "short",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+
   const exportPNG = async () => {
     setExporting("png");
     try {
-      const canvas = await captureCanvas();
+      const ts = formatTimestamp();
+      const canvas = await captureCanvas(ts);
       const link = document.createElement("a");
       link.download = `${baseFilename()}.png`;
       link.href = canvas.toDataURL("image/png");
@@ -119,7 +134,8 @@ export function BattleResult({ result, homeName }: BattleResultProps) {
   const exportPDF = async () => {
     setExporting("pdf");
     try {
-      const canvas = await captureCanvas();
+      const ts = formatTimestamp();
+      const canvas = await captureCanvas(ts);
       const { jsPDF } = await import("jspdf");
       const imgData = canvas.toDataURL("image/png");
       const pdf = new jsPDF({ orientation: "portrait", unit: "pt", format: "a4" });
@@ -129,9 +145,11 @@ export function BattleResult({ result, homeName }: BattleResultProps) {
       const maxW = pageW - margin * 2;
       const ratio = canvas.height / canvas.width;
       const imgW = maxW;
-      const imgH = Math.min(maxW * ratio, pageH - margin * 2 - 40);
+      const imgH = Math.min(maxW * ratio, pageH - margin * 2 - 80);
       pdf.setFillColor(11, 11, 15);
       pdf.rect(0, 0, pageW, pageH, "F");
+
+      // Header
       pdf.setTextColor(255, 255, 255);
       pdf.setFontSize(14);
       pdf.text(`${homeName} vs ${result.opponent_name}`, margin, margin);
@@ -144,7 +162,38 @@ export function BattleResult({ result, homeName }: BattleResultProps) {
         margin,
         margin + 14
       );
+
       pdf.addImage(imgData, "PNG", margin, margin + 28, imgW, imgH);
+
+      // Diagonal watermark across page
+      pdf.setTextColor(120, 120, 140);
+      pdf.setFontSize(60);
+      const anyPdf = pdf as any;
+      if (anyPdf.GState) {
+        try {
+          anyPdf.setGState(new anyPdf.GState({ opacity: 0.08 }));
+        } catch {
+          /* noop */
+        }
+      }
+      pdf.text(watermark.toUpperCase(), pageW / 2, pageH / 2, {
+        align: "center",
+        angle: -30,
+      } as any);
+      if (anyPdf.GState) {
+        try {
+          anyPdf.setGState(new anyPdf.GState({ opacity: 1 }));
+        } catch {
+          /* noop */
+        }
+      }
+
+      // Footer
+      pdf.setFontSize(9);
+      pdf.setTextColor(150, 150, 160);
+      pdf.text(`${watermark} • Generated ${ts}`, margin, pageH - margin / 2);
+      pdf.text("uniqueapp.fun", pageW - margin, pageH - margin / 2, { align: "right" });
+
       pdf.save(`${baseFilename()}.pdf`);
       toast.success("PDF exported");
     } catch (e: any) {
@@ -397,6 +446,27 @@ export function BattleResult({ result, homeName }: BattleResultProps) {
           </p>
         )}
       </div>
+
+      {/* Watermark + footer (visible only during export to keep UI clean) */}
+      {exporting && (
+        <>
+          <div
+            className="pointer-events-none absolute inset-0 flex items-center justify-center"
+            aria-hidden
+          >
+            <span
+              className="font-black tracking-widest text-foreground/[0.06] select-none"
+              style={{ fontSize: "5rem", transform: "rotate(-25deg)" }}
+            >
+              {watermark.toUpperCase()}
+            </span>
+          </div>
+          <div className="mt-3 pt-2 border-t border-border/40 flex items-center justify-between text-[10px] text-muted-foreground tracking-wider">
+            <span className="font-bold">{watermark}</span>
+            <span>Generated {formatTimestamp()}</span>
+          </div>
+        </>
+      )}
     </motion.div>
   );
 }
