@@ -238,6 +238,8 @@ const DEFAULT_PATHS: Record<string, { success: string; cancel: string }> = {
   af_coins: { success: "/american-football-arena?payment=success&session_id={CHECKOUT_SESSION_ID}", cancel: "/american-football-arena?payment=canceled" },
   clone_subscription: { success: "/ai-clone?payment=success&session_id={CHECKOUT_SESSION_ID}", cancel: "/ai-clone?payment=canceled" },
   clone_dating: { success: "/ai-clone?payment=success&session_id={CHECKOUT_SESSION_ID}", cancel: "/ai-clone?payment=canceled" },
+  dating_monthly: { success: "/dating?payment=success&session_id={CHECKOUT_SESSION_ID}", cancel: "/dating?payment=canceled" },
+  dating_yearly: { success: "/dating?payment=success&session_id={CHECKOUT_SESSION_ID}", cancel: "/dating?payment=canceled" },
   crystal_energy: { success: "/crystal-energy-network?success=true&session_id={CHECKOUT_SESSION_ID}", cancel: "/crystal-energy-network?canceled=true" },
   shadow_subscription: { success: "/shadow-arena/dashboard?subscription=success&session_id={CHECKOUT_SESSION_ID}", cancel: "/shadow-arena/dashboard?subscription=canceled" },
   property_listing: { success: "/property-marketplace?payment=success&session_id={CHECKOUT_SESSION_ID}", cancel: "/property-marketplace?payment=canceled" },
