@@ -184,6 +184,8 @@ const Dating = () => {
 
   const handleSubscribe = async (planType: 'monthly' | 'yearly') => {
     if (!user) { toast({ title: "Login Required", description: "You must log in to access", variant: "destructive" }); return; }
+    if (subscribing) return; // double-submit guard
+    setSubscribing(true);
     try {
       const { data, error } = await supabase.functions.invoke('create-checkout', {
         body: { product: planType === 'monthly' ? 'dating_monthly' : 'dating_yearly' },
@@ -192,6 +194,7 @@ const Dating = () => {
       window.location.href = data.url;
     } catch (e: any) {
       toast({ title: "Error", description: e?.message || "Failed to start checkout", variant: "destructive" });
+      setSubscribing(false);
     }
   };
 
