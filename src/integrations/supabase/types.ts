@@ -44102,6 +44102,10 @@ export type Database = {
         Args: { _amount: number; _purchased?: boolean; _user_id: string }
         Returns: number
       }
+      add_secret_santa_credits: {
+        Args: { p_amount: number; p_user_id: string }
+        Returns: boolean
+      }
       add_user_points: {
         Args: { p_activity_type: string; p_points: number; p_user_id: string }
         Returns: undefined
@@ -44224,6 +44228,10 @@ export type Database = {
       deduct_comedian_balance: {
         Args: { p_amount: number; p_comedian_id: string }
         Returns: undefined
+      }
+      deduct_secret_santa_credits: {
+        Args: { p_amount: number; p_user_id: string }
+        Returns: boolean
       }
       evaluate_xp_bets: { Args: never; Returns: number }
       expire_featured_listings: { Args: never; Returns: undefined }
@@ -44661,6 +44669,18 @@ export type Database = {
       reset_psychology_monthly_messages: { Args: never; Returns: undefined }
       rotate_mystery_events: { Args: never; Returns: undefined }
       rotate_seasonal_missions: { Args: never; Returns: Json }
+      send_secret_santa_gift: {
+        Args: {
+          p_animation_type?: string
+          p_gift_emoji: string
+          p_gift_type: string
+          p_gift_value: number
+          p_is_anonymous?: boolean
+          p_message?: string
+          p_recipient_id: string
+        }
+        Returns: string
+      }
       snapshot_weekly_xp_winners: { Args: never; Returns: number }
       spend_brain_duel_credits: {
         Args: { p_amount: number; p_user_id: string }
