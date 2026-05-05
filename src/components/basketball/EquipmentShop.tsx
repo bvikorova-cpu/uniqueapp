@@ -5,6 +5,7 @@ import { ArrowLeft, ShoppingBag } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { spendSportCoins } from "@/lib/sportCoins";
 
 const SHOP_ITEMS = [
   { name: "Pro Basketball Shoes", type: "shoes", rarity: "common", shooting_boost: 2, speed_boost: 3, defense_boost: 0, stamina_boost: 1, price: 300 },
