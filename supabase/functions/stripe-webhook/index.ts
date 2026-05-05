@@ -431,6 +431,36 @@ serve(async (req) => {
           } catch (gcErr) {
             log("glamour coin webhook error", { err: (gcErr as Error).message });
           }
+
+          // ── Secret Santa 365 credit purchase fulfillment ──
+          try {
+            if (session.metadata?.type === "secret_santa_credits") {
+              const userId = session.metadata.user_id;
+              const credits = parseInt(session.metadata.credits || "0", 10);
+              if (userId && credits > 0) {
+                const { data: pr } = await supabase
+                  .from("payment_records")
+                  .select("id, metadata")
+                  .eq("stripe_session_id", session.id)
+                  .maybeSingle();
+                const alreadyCredited = (pr?.metadata as any)?.santa_credited === true;
+                if (!alreadyCredited) {
+                  await supabase.rpc("add_secret_santa_credits", {
+                    p_user_id: userId,
+                    p_amount: credits,
+                  });
+                  if (pr?.id) {
+                    await supabase.from("payment_records").update({
+                      metadata: { ...(pr.metadata as any || {}), santa_credited: true },
+                    }).eq("id", pr.id);
+                  }
+                  log("secret santa credits credited", { userId, credits, sessionId: session.id });
+                }
+              }
+            }
+          } catch (ssErr) {
+            log("secret santa webhook error", { err: (ssErr as Error).message });
+          }
         }
         break;
       }
