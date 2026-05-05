@@ -24,8 +24,8 @@ export function PlayerCreator({ onBack }: { onBack: () => void }) {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) { toast.error("Please sign in"); return; }
-      const { data: coins } = await supabase.from("basketball_coins").select("*").eq("user_id", user.id).single();
-      if (!coins || coins.balance < 500) { toast.error("Need 500 coins to create a player. Buy coins first!"); return; }
+      const balance = await getSportCoinsBalance("basketball_coins");
+      if (balance < 500) { toast.error("Need 500 coins to create a player. Buy coins first!"); return; }
 
       const { data, error } = await supabase.functions.invoke("generate-gift-message", {
         headers: { Authorization: `Bearer ${session.access_token}` },
