@@ -67,7 +67,22 @@ export const MatchSimulator = ({ onBack }: { onBack: () => void }) => {
         setMatchLog(prev => [...prev, log[i]]);
       }
 
-      const matchResult = { homeTeam: team.name, awayTeam: opponentName, homeScore, awayScore };
+      const home_power = computeBattlePower(squadPlayers || [], team, homeScore);
+      const away_power = opponentPower(awayScore);
+      const won_eval = homeScore > awayScore;
+      const reward = won_eval ? 200 : homeScore === awayScore ? 50 : 10;
+      const matchResult = {
+        opponent_name: opponentName,
+        home_score: homeScore,
+        away_score: awayScore,
+        won: won_eval,
+        home_power,
+        away_power,
+        coins_reward: reward,
+        highlights: log.slice(0, 4),
+        mvp: squadPlayers && squadPlayers.length > 0 ? squadPlayers.sort((a, b) => b.overall_rating - a.overall_rating)[0]?.name : undefined,
+        mvp_stats: `Squad rating ${squadRating} vs ${opponentRating}`,
+      };
       setResult(matchResult);
 
       const won = homeScore > awayScore;
