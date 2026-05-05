@@ -5,6 +5,7 @@ import { ArrowLeft, ShoppingBag } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { spendSportCoins } from "@/lib/sportCoins";
 
 const SHOP_ITEMS = [
   { name: "Pro Hockey Skates", type: "skates", rarity: "common", skating_boost: 3, shooting_boost: 0, defense_boost: 0, speed_boost: 2, price: 300 },

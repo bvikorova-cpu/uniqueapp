@@ -5,6 +5,7 @@ import { ArrowLeft, BarChart3, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { spendSportCoins } from "@/lib/sportCoins";
 
 export function MatchAnalysis({ onBack }: { onBack: () => void }) {
   const { user } = useAuth();
@@ -29,7 +30,8 @@ export function MatchAnalysis({ onBack }: { onBack: () => void }) {
         }
       });
       if (error) throw error;
-      await supabase.from("hockey_coins").update({ balance: coins.balance - 400, total_spent: coins.total_spent + 400 }).eq("user_id", user.id);
+      const spendRes = await spendSportCoins("hockey_coins", 400);
+      if (!spendRes.ok) { toast.error("Need 400 coins!"); return; }
       setAnalysis(data.response || "No analysis generated");
       toast.success("Match analysis ready! (-400 coins)");
     } catch (e: any) { toast.error(e.message); } finally { setLoading(false); }

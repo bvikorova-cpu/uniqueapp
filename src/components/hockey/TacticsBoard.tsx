@@ -5,6 +5,7 @@ import { ArrowLeft, Map, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { spendSportCoins } from "@/lib/sportCoins";
 
 export function TacticsBoard({ onBack }: { onBack: () => void }) {
   const { user } = useAuth();
@@ -30,7 +31,8 @@ export function TacticsBoard({ onBack }: { onBack: () => void }) {
         }
       });
       if (error) throw error;
-      await supabase.from("hockey_coins").update({ balance: coins.balance - 300, total_spent: coins.total_spent + 300 }).eq("user_id", user.id);
+      const spendRes = await spendSportCoins("hockey_coins", 300);
+      if (!spendRes.ok) { toast.error("Need 300 coins!"); return; }
       setAnalysis(data.response || "No analysis generated");
       toast.success("Tactical analysis ready! (-300 coins)");
     } catch (e: any) { toast.error(e.message); } finally { setLoading(false); }

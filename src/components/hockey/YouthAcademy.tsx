@@ -5,6 +5,7 @@ import { ArrowLeft, GraduationCap, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { spendSportCoins } from "@/lib/sportCoins";
 
 export function YouthAcademy({ onBack }: { onBack: () => void }) {
   const { user } = useAuth();
@@ -17,9 +18,6 @@ export function YouthAcademy({ onBack }: { onBack: () => void }) {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) throw new Error("Not authenticated");
-      const { data: coins } = await supabase.from("hockey_coins").select("*").eq("user_id", user.id).single();
-      if (!coins || coins.balance < 350) { toast.error("Need 350 coins!"); return; }
-
       const { data, error } = await supabase.functions.invoke("generate-gift-message", {
         headers: { Authorization: `Bearer ${session.access_token}` },
         body: {
@@ -30,7 +28,8 @@ export function YouthAcademy({ onBack }: { onBack: () => void }) {
       if (error) throw error;
       const jsonMatch = data.response?.match(/\[[\s\S]*\]/);
       if (!jsonMatch) throw new Error("Discovery failed");
-      await supabase.from("hockey_coins").update({ balance: coins.balance - 350, total_spent: coins.total_spent + 350 }).eq("user_id", user.id);
+      const spendRes = await spendSportCoins("hockey_coins", 350);
+      if (!spendRes.ok) { toast.error("Need 350 coins!"); return; }
       setProspects(JSON.parse(jsonMatch[0]));
       toast.success("Youth prospects found! (-350 coins)");
     } catch (e: any) { toast.error(e.message); } finally { setLoading(false); }
