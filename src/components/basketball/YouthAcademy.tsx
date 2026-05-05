@@ -41,7 +41,7 @@ export function YouthAcademy({ onBack }: { onBack: () => void }) {
   const signProspect = async (p: any) => {
     if (!user) return;
     const spendRes = await spendSportCoins("basketball_coins", p.development_cost);
-    if (!spendRes.ok) { toast.error(spendRes.error === "insufficient_balance" ? "Not enough coins!" : "Coin deduction failed"); return; }
+    if (!spendRes.ok) { toast.error("Not enough coins!"); return; }
     await supabase.from("basketball_players").insert({ user_id: user.id, name: p.name, position: p.position, overall_rating: p.overall_rating, shooting: p.shooting, speed: p.speed, defense: p.defense, three_point: p.three_point, passing: 35 + Math.floor(Math.random() * 30), rebounding: 35 + Math.floor(Math.random() * 30), stamina: 40 + Math.floor(Math.random() * 30), dunking: 30 + Math.floor(Math.random() * 40), market_value: p.development_cost * 2 });
     toast.success(`Signed ${p.name} to academy!`);
     setProspects(prev => prev.filter(x => x.name !== p.name));
