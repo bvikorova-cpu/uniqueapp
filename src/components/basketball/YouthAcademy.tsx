@@ -5,6 +5,7 @@ import { ArrowLeft, GraduationCap, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { spendSportCoins, getSportCoinsBalance } from "@/lib/sportCoins";
 
 export function YouthAcademy({ onBack }: { onBack: () => void }) {
   const { user } = useAuth();
