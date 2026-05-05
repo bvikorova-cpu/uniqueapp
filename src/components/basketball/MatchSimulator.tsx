@@ -67,19 +67,7 @@ export function MatchSimulator({ onBack }: { onBack: () => void }) {
           <Button className="w-full" onClick={simulate} disabled={loading || !team}>
             {loading ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" />Simulating...</> : "Play Match (300 coins)"}
           </Button>
-          {result && (
-            <div className={`p-4 rounded-lg border ${result.won ? "bg-emerald-500/10 border-emerald-500/30" : "bg-red-500/10 border-red-500/30"}`}>
-              <div className="text-center mb-3">
-                <span className="text-2xl font-black">{result.home_score} - {result.away_score}</span>
-                <p className="text-sm text-muted-foreground">vs {result.opponent_name}</p>
-                <p className={`font-bold ${result.won ? "text-emerald-400" : "text-red-400"}`}>{result.won ? "VICTORY" : "DEFEAT"}</p>
-              </div>
-              {result.quarters && <div className="flex justify-center gap-4 text-xs mb-3">{result.quarters.map((q: any, i: number) => <span key={i}>Q{q.q}: {q.home}-{q.away}</span>)}</div>}
-              <p className="text-sm text-center">🏅 MVP: {result.mvp} ({result.mvp_stats})</p>
-              <div className="mt-2 space-y-1">{result.highlights?.map((h: string, i: number) => <p key={i} className="text-xs text-muted-foreground">• {h}</p>)}</div>
-              <p className="text-center text-sm mt-2 text-primary">+{result.coins_reward} coins earned!</p>
-            </div>
-          )}
+          {result && <BattleResult result={result} homeName={team?.name || "Your Team"} />}
         </CardContent>
       </Card>
     </div>
