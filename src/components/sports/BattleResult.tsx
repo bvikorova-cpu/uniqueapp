@@ -148,22 +148,29 @@ export function BattleResult({ result, homeName }: BattleResultProps) {
       </div>
 
       {/* Breakdown */}
-      {result.breakdown && result.breakdown.length > 0 && (
+      {periods.length > 0 && (
         <div className="grid grid-cols-4 gap-2 mb-4">
-          {result.breakdown.map((b, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 + i * 0.08 }}
-              className="text-center p-2 rounded bg-muted/30 border border-border/40"
-            >
-              <p className="text-[10px] text-muted-foreground">{b.label}</p>
-              <p className="text-sm font-bold">
-                {b.home}-{b.away}
-              </p>
-            </motion.div>
-          ))}
+          {periods.map((b, i) => {
+            const isBest = bestPeriod && b.label === bestPeriod.label;
+            return (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 + i * 0.08 }}
+                className={`text-center p-2 rounded border ${
+                  isBest
+                    ? "bg-amber-500/15 border-amber-500/50 shadow-[0_0_12px_-2px_rgba(251,191,36,0.4)]"
+                    : "bg-muted/30 border-border/40"
+                }`}
+              >
+                <p className="text-[10px] text-muted-foreground">{b.label}</p>
+                <p className="text-sm font-bold">
+                  {b.home}-{b.away}
+                </p>
+              </motion.div>
+            );
+          })}
         </div>
       )}
 
@@ -176,35 +183,103 @@ export function BattleResult({ result, homeName }: BattleResultProps) {
           className="flex items-start gap-2 p-3 rounded-lg bg-amber-500/10 border border-amber-500/30 mb-3"
         >
           <Star className="h-4 w-4 text-amber-400 flex-shrink-0 mt-0.5" />
-          <div className="text-xs">
-            <p className="font-bold text-amber-300">MVP: {result.mvp}</p>
-            {result.mvp_stats && <p className="text-muted-foreground">{result.mvp_stats}</p>}
+          <div className="text-xs flex-1">
+            <div className="flex items-center gap-2 flex-wrap">
+              <p className="font-bold text-amber-300">MVP: {result.mvp}</p>
+              {mvpPeriod && (
+                <Badge
+                  variant="outline"
+                  className="text-[9px] tracking-wider border-amber-500/40 text-amber-300"
+                >
+                  <Clock className="h-2.5 w-2.5 mr-1" />
+                  PEAKED IN {mvpPeriod.toUpperCase()}
+                </Badge>
+              )}
+            </div>
+            {result.mvp_stats && <p className="text-muted-foreground mt-0.5">{result.mvp_stats}</p>}
           </div>
         </motion.div>
       )}
 
-      {/* Highlights */}
-      {result.highlights && result.highlights.length > 0 && (
-        <div className="space-y-1 mb-3">
-          <p className="text-[11px] font-semibold text-muted-foreground tracking-wider">HIGHLIGHTS</p>
-          {result.highlights.map((h, i) => (
-            <motion.p
-              key={i}
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.8 + i * 0.1 }}
-              className="text-xs text-muted-foreground"
-            >
-              ⚡ {h}
-            </motion.p>
-          ))}
+      {/* Timeline of highlights per period */}
+      {timeline && timeline.some((b) => b.items.length > 0) ? (
+        <div className="mb-3">
+          <p className="text-[11px] font-semibold text-muted-foreground tracking-wider mb-2">
+            HIGHLIGHT TIMELINE
+          </p>
+          <div className="relative pl-3 space-y-3 border-l-2 border-border/40">
+            {timeline.map((bucket, bi) => {
+              if (bucket.items.length === 0) return null;
+              const period = periods.find((p) => p.label === bucket.label);
+              const homeWon = period ? period.home > period.away : false;
+              return (
+                <motion.div
+                  key={bi}
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.8 + bi * 0.1 }}
+                  className="relative"
+                >
+                  <span
+                    className={`absolute -left-[17px] top-1 h-3 w-3 rounded-full border-2 ${
+                      homeWon
+                        ? "bg-emerald-500 border-emerald-300"
+                        : "bg-red-500 border-red-300"
+                    }`}
+                  />
+                  <p className="text-[11px] font-bold text-foreground/90 flex items-center gap-2">
+                    {bucket.label}
+                    {period && (
+                      <span className="text-[10px] font-normal text-muted-foreground">
+                        {period.home}-{period.away}
+                      </span>
+                    )}
+                  </p>
+                  <div className="space-y-0.5 mt-1">
+                    {bucket.items.map((h, hi) => (
+                      <p key={hi} className="text-xs text-muted-foreground">
+                        ⚡ {h}
+                      </p>
+                    ))}
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
         </div>
+      ) : (
+        result.highlights && result.highlights.length > 0 && (
+          <div className="space-y-1 mb-3">
+            <p className="text-[11px] font-semibold text-muted-foreground tracking-wider">HIGHLIGHTS</p>
+            {result.highlights.map((h, i) => (
+              <motion.p
+                key={i}
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.8 + i * 0.1 }}
+                className="text-xs text-muted-foreground"
+              >
+                ⚡ {h}
+              </motion.p>
+            ))}
+          </div>
+        )
       )}
 
-      <div className="flex items-center justify-center gap-1 pt-2 border-t border-border/40 text-primary font-bold">
-        <Coins className="h-4 w-4" />
-        <span>+{result.coins_reward} coins earned</span>
+      <div className="pt-2 border-t border-border/40">
+        <div className="flex items-center justify-center gap-1 text-primary font-bold">
+          <Coins className="h-4 w-4" />
+          <span>+{result.coins_reward} coins earned</span>
+        </div>
+        {rewardPeriod && (
+          <p className="text-center text-[10px] text-muted-foreground mt-0.5 tracking-wider">
+            DECISIVE MOMENT IN {rewardPeriod.toUpperCase()}
+          </p>
+        )}
       </div>
+    </motion.div>
+  );
+}
     </motion.div>
   );
 }
