@@ -30,7 +30,8 @@ export function MatchAnalysis({ onBack }: { onBack: () => void }) {
         }
       });
       if (error) throw error;
-      await supabase.from("basketball_coins").update({ balance: coins.balance - 400, total_spent: coins.total_spent + 400 }).eq("user_id", user.id);
+      const spendRes = await spendSportCoins("basketball_coins", 400);
+      if (!spendRes.ok) { toast.error("Coin deduction failed"); return; }
       setAnalysis(data.response || "No analysis generated");
       toast.success("Match analysis ready! (-400 coins)");
     } catch (e: any) { toast.error(e.message); } finally { setLoading(false); }
