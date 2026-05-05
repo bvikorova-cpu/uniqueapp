@@ -334,6 +334,7 @@ const Dating = () => {
 
   const handleCancelSubscription = async () => {
     if (!user) return;
+    if (cancelingSubscription) return; // double-submit guard
     setCancelingSubscription(true);
     try {
       const { data, error } = await supabase.functions.invoke('cancel-subscription', { body: { subscriptionType: 'dating' } });
