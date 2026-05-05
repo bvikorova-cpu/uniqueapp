@@ -238,6 +238,8 @@ const DEFAULT_PATHS: Record<string, { success: string; cancel: string }> = {
   af_coins: { success: "/american-football-arena?payment=success&session_id={CHECKOUT_SESSION_ID}", cancel: "/american-football-arena?payment=canceled" },
   clone_subscription: { success: "/ai-clone?payment=success&session_id={CHECKOUT_SESSION_ID}", cancel: "/ai-clone?payment=canceled" },
   clone_dating: { success: "/ai-clone?payment=success&session_id={CHECKOUT_SESSION_ID}", cancel: "/ai-clone?payment=canceled" },
+  dating_monthly: { success: "/dating?payment=success&session_id={CHECKOUT_SESSION_ID}", cancel: "/dating?payment=canceled" },
+  dating_yearly: { success: "/dating?payment=success&session_id={CHECKOUT_SESSION_ID}", cancel: "/dating?payment=canceled" },
   crystal_energy: { success: "/crystal-energy-network?success=true&session_id={CHECKOUT_SESSION_ID}", cancel: "/crystal-energy-network?canceled=true" },
   shadow_subscription: { success: "/shadow-arena/dashboard?subscription=success&session_id={CHECKOUT_SESSION_ID}", cancel: "/shadow-arena/dashboard?subscription=canceled" },
   property_listing: { success: "/property-marketplace?payment=success&session_id={CHECKOUT_SESSION_ID}", cancel: "/property-marketplace?payment=canceled" },
@@ -501,6 +503,8 @@ serve(async (req) => {
         phobia_trade:            { amount: 199,  mode: "payment",      name: "Phobia Trade" },
         course_enroll:           { amount: 4999, mode: "payment",      name: "Course Enrollment" },
         coupon_marketplace:      { amount: 999,  mode: "subscription", name: "Coupon Marketplace Access" },
+        dating_monthly:          { amount: 200,  mode: "subscription", name: "Dating Premium (Monthly)" },
+        dating_yearly:           { amount: 2000, mode: "subscription", name: "Dating Premium (Yearly)" },
       };
 
       const def = PRODUCT_DEFAULTS[productKey];
@@ -529,7 +533,7 @@ serve(async (req) => {
             currency: "eur",
             unit_amount: amount,
             product_data: { name: productName },
-            ...(mode === "subscription" ? { recurring: { interval: "month" as const } } : {}),
+            ...(mode === "subscription" ? { recurring: { interval: (productKey === "dating_yearly" ? "year" : "month") as "month" | "year" } } : {}),
           },
           quantity: 1,
         }],

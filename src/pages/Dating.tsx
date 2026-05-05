@@ -103,6 +103,25 @@ const Dating = () => {
 
   useEffect(() => { checkAuth(); }, []);
   useEffect(() => { chatEndRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages]);
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('payment') === 'success') {
+      toast({ title: "Payment received 🎉", description: "Activating your subscription..." });
+      // Webhook activates async — poll briefly
+      const poll = async () => {
+        for (let i = 0; i < 6; i++) {
+          await new Promise(r => setTimeout(r, 1500));
+          const { data: { user: u } } = await supabase.auth.getUser();
+          if (u) { await checkSubscription(u.id); }
+        }
+        window.history.replaceState({}, '', '/dating');
+      };
+      poll();
+    } else if (params.get('payment') === 'canceled') {
+      toast({ title: "Payment canceled", variant: "destructive" });
+      window.history.replaceState({}, '', '/dating');
+    }
+  }, []);
 
   const checkAuth = async () => {
     const { data: { user } } = await supabase.auth.getUser();
@@ -164,11 +183,15 @@ const Dating = () => {
 
   const handleSubscribe = async (planType: 'monthly' | 'yearly') => {
     if (!user) { toast({ title: "Login Required", description: "You must log in to access", variant: "destructive" }); return; }
-    const price = planType === 'monthly' ? 2.00 : 20.00;
-    const expiresAt = planType === 'monthly' ? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) : new Date(Date.now() + 365 * 24 * 60 * 60 * 1000);
-    const { error } = await supabase.from("dating_subscriptions").insert([{ user_id: user.id, price, subscription_type: planType, expires_at: expiresAt.toISOString() }]);
-    if (error) { toast({ title: "Error", description: "Failed to activate subscription", variant: "destructive" }); }
-    else { toast({ title: "Success", description: "Subscription has been activated" }); setIsSubscribed(true); setShowProfileDialog(true); }
+    try {
+      const { data, error } = await supabase.functions.invoke('create-checkout', {
+        body: { product: planType === 'monthly' ? 'dating_monthly' : 'dating_yearly' },
+      });
+      if (error || !data?.url) throw error || new Error("No checkout URL");
+      window.location.href = data.url;
+    } catch (e: any) {
+      toast({ title: "Error", description: e?.message || "Failed to start checkout", variant: "destructive" });
+    }
   };
 
   const handleCreateProfile = async () => {

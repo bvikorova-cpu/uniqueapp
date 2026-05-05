@@ -13575,6 +13575,7 @@ export type Database = {
           price: number
           started_at: string
           status: string | null
+          stripe_subscription_id: string | null
           subscription_type: string | null
           updated_at: string
           user_id: string
@@ -13586,6 +13587,7 @@ export type Database = {
           price?: number
           started_at?: string
           status?: string | null
+          stripe_subscription_id?: string | null
           subscription_type?: string | null
           updated_at?: string
           user_id: string
@@ -13597,6 +13599,7 @@ export type Database = {
           price?: number
           started_at?: string
           status?: string | null
+          stripe_subscription_id?: string | null
           subscription_type?: string | null
           updated_at?: string
           user_id?: string
