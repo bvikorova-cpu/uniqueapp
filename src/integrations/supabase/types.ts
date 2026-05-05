@@ -9406,6 +9406,33 @@ export type Database = {
           },
         ]
       }
+      comedy_coin_purchases: {
+        Row: {
+          amount_cents: number
+          coins: number
+          created_at: string
+          id: string
+          stripe_session_id: string
+          user_id: string
+        }
+        Insert: {
+          amount_cents?: number
+          coins: number
+          created_at?: string
+          id?: string
+          stripe_session_id: string
+          user_id: string
+        }
+        Update: {
+          amount_cents?: number
+          coins?: number
+          created_at?: string
+          id?: string
+          stripe_session_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       comedy_currency: {
         Row: {
           coins: number
@@ -44067,6 +44094,10 @@ export type Database = {
         Args: { p_theme_id: string; p_user_id: string }
         Returns: undefined
       }
+      add_comedy_coins: {
+        Args: { _amount: number; _purchased?: boolean; _user_id: string }
+        Returns: number
+      }
       add_user_points: {
         Args: { p_activity_type: string; p_points: number; p_user_id: string }
         Returns: undefined
@@ -44617,6 +44648,7 @@ export type Database = {
         Args: { p_amount: number; p_user_id: string }
         Returns: undefined
       }
+      spend_comedy_coins: { Args: { _amount: number }; Returns: number }
       spend_glamour_coins: { Args: { _amount: number }; Returns: number }
       spin_lucky_wheel: { Args: never; Returns: Json }
       update_battle_stats: {
