@@ -31,7 +31,8 @@ export function TacticsBoard({ onBack }: { onBack: () => void }) {
         }
       });
       if (error) throw error;
-      await supabase.from("basketball_coins").update({ balance: coins.balance - 300, total_spent: coins.total_spent + 300 }).eq("user_id", user.id);
+      const spendRes = await spendSportCoins("basketball_coins", 300);
+      if (!spendRes.ok) { toast.error("Coin deduction failed"); return; }
       setAnalysis(data.response || "No analysis generated");
       toast.success("Tactical analysis ready! (-300 coins)");
     } catch (e: any) { toast.error(e.message); } finally { setLoading(false); }
