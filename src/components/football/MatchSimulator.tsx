@@ -132,18 +132,7 @@ export const MatchSimulator = ({ onBack }: { onBack: () => void }) => {
               </CardContent>
             </Card>
           )}
-          {result && (
-            <Card className="border-emerald-500/30 bg-gradient-to-br from-emerald-500/10 to-transparent">
-              <CardContent className="pt-6 text-center">
-                <p className="text-sm text-muted-foreground mb-2">Full Time</p>
-                <div className="flex items-center justify-center gap-6">
-                  <div><p className="font-bold">{result.homeTeam}</p><p className="text-4xl font-black">{result.homeScore}</p></div>
-                  <p className="text-2xl text-muted-foreground">-</p>
-                  <div><p className="font-bold">{result.awayTeam}</p><p className="text-4xl font-black">{result.awayScore}</p></div>
-                </div>
-              </CardContent>
-            </Card>
-          )}
+          {result && <BattleResult result={result} homeName={team.name} />}
         </>
       )}
     </div>
