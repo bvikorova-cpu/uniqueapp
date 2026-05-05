@@ -18,8 +18,8 @@ export function YouthAcademy({ onBack }: { onBack: () => void }) {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) throw new Error("Not authenticated");
-      const { data: coins } = await supabase.from("basketball_coins").select("*").eq("user_id", user.id).single();
-      if (!coins || coins.balance < 350) { toast.error("Need 350 coins!"); return; }
+      const balance = await getSportCoinsBalance("basketball_coins");
+      if (balance < 350) { toast.error("Need 350 coins!"); return; }
 
       const { data, error } = await supabase.functions.invoke("generate-gift-message", {
         headers: { Authorization: `Bearer ${session.access_token}` },
