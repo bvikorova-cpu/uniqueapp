@@ -18,8 +18,8 @@ export function MatchAnalysis({ onBack }: { onBack: () => void }) {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) throw new Error("Not authenticated");
-      const { data: coins } = await supabase.from("basketball_coins").select("*").eq("user_id", user.id).single();
-      if (!coins || coins.balance < 400) { toast.error("Need 400 coins!"); return; }
+      const balance = await getSportCoinsBalance("basketball_coins");
+      if (balance < 400) { toast.error("Need 400 coins!"); return; }
 
       const { data: team } = await supabase.from("basketball_teams").select("*").eq("user_id", user.id).single();
       const { data, error } = await supabase.functions.invoke("generate-gift-message", {
