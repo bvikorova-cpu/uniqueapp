@@ -5,6 +5,7 @@ import { ArrowLeft, Trophy } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { spendSportCoins } from "@/lib/sportCoins";
 
 export function LeagueSystem({ onBack }: { onBack: () => void }) {
   const { user } = useAuth();
