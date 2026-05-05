@@ -1,9 +1,11 @@
 import { lazyWithRetry as lazy } from "@/utils/lazyWithRetry";
 
-// Core pages - loaded immediately
-export { default as Home } from "@/pages/Home";
-export { default as Auth } from "@/pages/Auth";
-export { default as NotFound } from "@/pages/NotFound";
+// Core pages must stay lazy too. Importing them synchronously from this shared
+// route registry pulls a large homepage/auth graph into the initial App boot,
+// which can leave preview/mobile users staring at the global "Načítava sa Unique…" fallback.
+export const Home = lazy(() => import("@/pages/Home"));
+export const Auth = lazy(() => import("@/pages/Auth"));
+export const NotFound = lazy(() => import("@/pages/NotFound"));
 
 // Lazy loaded pages - grouped by feature
 export const Wall = lazy(() => import("@/pages/Wall"));
