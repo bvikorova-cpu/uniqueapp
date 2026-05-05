@@ -91,8 +91,11 @@ export function BattleResult({ result, homeName, watermark = "Megatalent" }: Bat
     return `battle-${verdict}-${slug}`.slice(0, 80);
   };
 
-  const captureCanvas = async () => {
+  const captureCanvas = async (timestamp: string) => {
     if (!cardRef.current) throw new Error("Nothing to export");
+    // Wait one paint so the watermark/footer becomes visible in the DOM
+    await new Promise((r) => requestAnimationFrame(() => r(null)));
+    await new Promise((r) => setTimeout(r, 30));
     const html2canvas = (await import("html2canvas")).default;
     return html2canvas(cardRef.current, {
       backgroundColor: "#0b0b0f",
@@ -101,6 +104,15 @@ export function BattleResult({ result, homeName, watermark = "Megatalent" }: Bat
       logging: false,
     });
   };
+
+  const formatTimestamp = () =>
+    new Date().toLocaleString(undefined, {
+      year: "numeric",
+      month: "short",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
 
   const exportPNG = async () => {
     setExporting("png");
