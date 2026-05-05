@@ -18,8 +18,8 @@ export function TacticsBoard({ onBack }: { onBack: () => void }) {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) throw new Error("Not authenticated");
-      const { data: coins } = await supabase.from("basketball_coins").select("*").eq("user_id", user.id).single();
-      if (!coins || coins.balance < 300) { toast.error("Need 300 coins!"); return; }
+      const balance = await getSportCoinsBalance("basketball_coins");
+      if (balance < 300) { toast.error("Need 300 coins!"); return; }
 
       const { data: team } = await supabase.from("basketball_teams").select("*").eq("user_id", user.id).single();
       const { data: players } = await supabase.from("basketball_players").select("*").eq("user_id", user.id);
