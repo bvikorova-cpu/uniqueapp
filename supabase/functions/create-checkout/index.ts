@@ -501,6 +501,8 @@ serve(async (req) => {
         phobia_trade:            { amount: 199,  mode: "payment",      name: "Phobia Trade" },
         course_enroll:           { amount: 4999, mode: "payment",      name: "Course Enrollment" },
         coupon_marketplace:      { amount: 999,  mode: "subscription", name: "Coupon Marketplace Access" },
+        dating_monthly:          { amount: 200,  mode: "subscription", name: "Dating Premium (Monthly)" },
+        dating_yearly:           { amount: 2000, mode: "subscription", name: "Dating Premium (Yearly)" },
       };
 
       const def = PRODUCT_DEFAULTS[productKey];
