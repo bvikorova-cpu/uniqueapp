@@ -495,9 +495,9 @@ const Dating = () => {
               </Card>
             </div>
             <div className="text-center mt-8 space-y-4">
-              <Button onClick={() => handleSubscribe(selectedPlan)} size="lg" className="w-full max-w-md mx-auto text-base py-6 bg-gradient-to-r from-primary to-accent hover:opacity-90 text-white shadow-lg">
+              <Button onClick={() => handleSubscribe(selectedPlan)} disabled={subscribing} size="lg" className="w-full max-w-md mx-auto text-base py-6 bg-gradient-to-r from-primary to-accent hover:opacity-90 text-white shadow-lg disabled:opacity-60">
                 <Heart className="mr-2 h-5 w-5" />
-                Get Started — {selectedPlan === 'monthly' ? '€2/month' : '€20/year'}
+                {subscribing ? "Redirecting to Stripe…" : `Get Started — ${selectedPlan === 'monthly' ? '€2/month' : '€20/year'}`}
               </Button>
               <p className="text-xs text-muted-foreground">Cancel anytime • Secure payment • 100% satisfaction guarantee</p>
             </div>
