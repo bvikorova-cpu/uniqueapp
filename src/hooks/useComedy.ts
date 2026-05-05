@@ -143,39 +143,14 @@ export const useSendTip = () => {
       showId?: string;
       message?: string;
     }) => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Not authenticated");
-
-      const { data: currency } = await supabase
-        .from("comedy_currency")
-        .select("coins")
-        .eq("user_id", user.id)
-        .single();
-
-      if (!currency || currency.coins < amount) {
-        throw new Error("Insufficient coins");
+      const { data, error } = await supabase.functions.invoke("send-comedy-tip", {
+        body: { comedianId, amount, tipType, showId, message },
+      });
+      if (error) {
+        const status = (error as any)?.context?.status;
+        if (status === 402) throw new Error("Insufficient coins");
+        throw error;
       }
-
-      const { data, error } = await supabase
-        .from("comedy_tips")
-        .insert({
-          from_user_id: user.id,
-          to_comedian_id: comedianId,
-          show_id: showId,
-          amount_coins: amount,
-          tip_type: tipType,
-          message,
-        })
-        .select()
-        .single();
-
-      if (error) throw error;
-
-      await supabase
-        .from("comedy_currency")
-        .update({ coins: currency.coins - amount })
-        .eq("user_id", user.id);
-
       return data;
     },
     onSuccess: () => {
