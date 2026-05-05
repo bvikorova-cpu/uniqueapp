@@ -134,7 +134,8 @@ export function BattleResult({ result, homeName, watermark = "Megatalent" }: Bat
   const exportPDF = async () => {
     setExporting("pdf");
     try {
-      const canvas = await captureCanvas();
+      const ts = formatTimestamp();
+      const canvas = await captureCanvas(ts);
       const { jsPDF } = await import("jspdf");
       const imgData = canvas.toDataURL("image/png");
       const pdf = new jsPDF({ orientation: "portrait", unit: "pt", format: "a4" });
@@ -144,9 +145,11 @@ export function BattleResult({ result, homeName, watermark = "Megatalent" }: Bat
       const maxW = pageW - margin * 2;
       const ratio = canvas.height / canvas.width;
       const imgW = maxW;
-      const imgH = Math.min(maxW * ratio, pageH - margin * 2 - 40);
+      const imgH = Math.min(maxW * ratio, pageH - margin * 2 - 80);
       pdf.setFillColor(11, 11, 15);
       pdf.rect(0, 0, pageW, pageH, "F");
+
+      // Header
       pdf.setTextColor(255, 255, 255);
       pdf.setFontSize(14);
       pdf.text(`${homeName} vs ${result.opponent_name}`, margin, margin);
@@ -159,7 +162,38 @@ export function BattleResult({ result, homeName, watermark = "Megatalent" }: Bat
         margin,
         margin + 14
       );
+
       pdf.addImage(imgData, "PNG", margin, margin + 28, imgW, imgH);
+
+      // Diagonal watermark across page
+      pdf.setTextColor(120, 120, 140);
+      pdf.setFontSize(60);
+      const anyPdf = pdf as any;
+      if (anyPdf.GState) {
+        try {
+          anyPdf.setGState(new anyPdf.GState({ opacity: 0.08 }));
+        } catch {
+          /* noop */
+        }
+      }
+      pdf.text(watermark.toUpperCase(), pageW / 2, pageH / 2, {
+        align: "center",
+        angle: -30,
+      } as any);
+      if (anyPdf.GState) {
+        try {
+          anyPdf.setGState(new anyPdf.GState({ opacity: 1 }));
+        } catch {
+          /* noop */
+        }
+      }
+
+      // Footer
+      pdf.setFontSize(9);
+      pdf.setTextColor(150, 150, 160);
+      pdf.text(`${watermark} • Generated ${ts}`, margin, pageH - margin / 2);
+      pdf.text("uniqueapp.fun", pageW - margin, pageH - margin / 2, { align: "right" });
+
       pdf.save(`${baseFilename()}.pdf`);
       toast.success("PDF exported");
     } catch (e: any) {
