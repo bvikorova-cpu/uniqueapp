@@ -68,32 +68,24 @@ export const useBuyTicket = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      const { data: currency } = await supabase
-        .from("comedy_currency")
-        .select("coins")
-        .eq("user_id", user.id)
-        .single();
-
-      if (!currency || currency.coins < price) {
-        throw new Error("Insufficient coins");
+      // Atomic spend (server-side balance check, race-safe)
+      const { error: spendErr } = await supabase.rpc("spend_comedy_coins", { _amount: price });
+      if (spendErr) {
+        if (/insufficient/i.test(spendErr.message)) throw new Error("Insufficient coins");
+        throw spendErr;
       }
 
       const { data, error } = await supabase
         .from("comedy_tickets")
-        .insert({
-          show_id: showId,
-          user_id: user.id,
-          price_paid: price,
-        })
+        .insert({ show_id: showId, user_id: user.id, price_paid: price })
         .select()
         .single();
 
-      if (error) throw error;
-
-      await supabase
-        .from("comedy_currency")
-        .update({ coins: currency.coins - price })
-        .eq("user_id", user.id);
+      if (error) {
+        // Refund on failure
+        await supabase.rpc("add_comedy_coins", { _user_id: user.id, _amount: price, _purchased: false });
+        throw error;
+      }
 
       return data;
     },
