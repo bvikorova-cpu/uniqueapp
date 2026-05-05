@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
+import megatalentLogo from "@/assets/megatalent-logo.png";
 
 interface BattleResultProps {
   result: {
@@ -28,6 +29,8 @@ interface BattleResultProps {
   homeName: string;
   /** Watermark / contest name shown in exports (default: "Megatalent") */
   watermark?: string;
+  /** Logo image URL used as visual watermark in PNG/PDF exports */
+  watermarkLogo?: string;
 }
 
 /**
@@ -57,7 +60,7 @@ function bucketHighlights(
   return buckets;
 }
 
-export function BattleResult({ result, homeName, watermark = "Megatalent" }: BattleResultProps) {
+export function BattleResult({ result, homeName, watermark = "Megatalent", watermarkLogo = megatalentLogo }: BattleResultProps) {
   const totalPower = Math.max(result.home_power + result.away_power, 1);
   const homePct = Math.round((result.home_power / totalPower) * 100);
   const awayPct = 100 - homePct;
@@ -165,33 +168,48 @@ export function BattleResult({ result, homeName, watermark = "Megatalent" }: Bat
 
       pdf.addImage(imgData, "PNG", margin, margin + 28, imgW, imgH);
 
-      // Diagonal watermark across page
-      pdf.setTextColor(120, 120, 140);
-      pdf.setFontSize(60);
+      // Diagonal logo + text watermark across page
       const anyPdf = pdf as any;
-      if (anyPdf.GState) {
-        try {
-          anyPdf.setGState(new anyPdf.GState({ opacity: 0.08 }));
-        } catch {
-          /* noop */
+      const setOpacity = (o: number) => {
+        if (anyPdf.GState) {
+          try { anyPdf.setGState(new anyPdf.GState({ opacity: o })); } catch { /* noop */ }
         }
+      };
+      if (watermarkLogo) {
+        try {
+          setOpacity(0.07);
+          const logoSize = Math.min(pageW, pageH) * 0.55;
+          pdf.addImage(
+            watermarkLogo,
+            "PNG",
+            (pageW - logoSize) / 2,
+            (pageH - logoSize) / 2,
+            logoSize,
+            logoSize,
+            undefined,
+            "FAST"
+          );
+          setOpacity(1);
+        } catch { /* noop */ }
       }
-      pdf.text(watermark.toUpperCase(), pageW / 2, pageH / 2, {
+      setOpacity(0.08);
+      pdf.setTextColor(120, 120, 140);
+      pdf.setFontSize(48);
+      pdf.text(watermark.toUpperCase(), pageW / 2, pageH / 2 + 70, {
         align: "center",
-        angle: -30,
+        angle: -20,
       } as any);
-      if (anyPdf.GState) {
-        try {
-          anyPdf.setGState(new anyPdf.GState({ opacity: 1 }));
-        } catch {
-          /* noop */
-        }
-      }
+      setOpacity(1);
 
-      // Footer
+      // Footer with small logo
+      if (watermarkLogo) {
+        try {
+          pdf.addImage(watermarkLogo, "PNG", margin, pageH - margin / 2 - 14, 16, 16, undefined, "FAST");
+        } catch { /* noop */ }
+      }
       pdf.setFontSize(9);
       pdf.setTextColor(150, 150, 160);
-      pdf.text(`${watermark} • Generated ${ts}`, margin, pageH - margin / 2);
+      pdf.text(`${watermark} • Generated ${ts}`, margin + (watermarkLogo ? 22 : 0), pageH - margin / 2);
       pdf.text("uniqueapp.fun", pageW - margin, pageH - margin / 2, { align: "right" });
 
       pdf.save(`${baseFilename()}.pdf`);
@@ -454,15 +472,27 @@ export function BattleResult({ result, homeName, watermark = "Megatalent" }: Bat
             className="pointer-events-none absolute inset-0 flex items-center justify-center"
             aria-hidden
           >
+            {watermarkLogo && (
+              <img
+                src={watermarkLogo}
+                alt=""
+                crossOrigin="anonymous"
+                className="absolute select-none"
+                style={{ width: "55%", opacity: 0.07, transform: "rotate(-15deg)" }}
+              />
+            )}
             <span
-              className="font-black tracking-widest text-foreground/[0.06] select-none"
-              style={{ fontSize: "5rem", transform: "rotate(-25deg)" }}
+              className="font-black tracking-widest text-foreground/[0.06] select-none relative"
+              style={{ fontSize: "4rem", transform: "rotate(-25deg)" }}
             >
               {watermark.toUpperCase()}
             </span>
           </div>
           <div className="mt-3 pt-2 border-t border-border/40 flex items-center justify-between text-[10px] text-muted-foreground tracking-wider">
-            <span className="font-bold">{watermark}</span>
+            <span className="font-bold flex items-center gap-1.5">
+              {watermarkLogo && <img src={watermarkLogo} alt="" crossOrigin="anonymous" className="h-3.5 w-3.5 object-contain" />}
+              {watermark}
+            </span>
             <span>Generated {formatTimestamp()}</span>
           </div>
         </>
