@@ -5,6 +5,7 @@ import { ArrowLeft, GraduationCap, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { spendSportCoins, getSportCoinsBalance } from "@/lib/sportCoins";
 
 export function YouthAcademy({ onBack }: { onBack: () => void }) {
   const { user } = useAuth();
@@ -17,8 +18,8 @@ export function YouthAcademy({ onBack }: { onBack: () => void }) {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) throw new Error("Not authenticated");
-      const { data: coins } = await supabase.from("basketball_coins").select("*").eq("user_id", user.id).single();
-      if (!coins || coins.balance < 350) { toast.error("Need 350 coins!"); return; }
+      const balance = await getSportCoinsBalance("basketball_coins");
+      if (balance < 350) { toast.error("Need 350 coins!"); return; }
 
       const { data, error } = await supabase.functions.invoke("generate-gift-message", {
         headers: { Authorization: `Bearer ${session.access_token}` },
@@ -30,7 +31,8 @@ export function YouthAcademy({ onBack }: { onBack: () => void }) {
       if (error) throw error;
       const jsonMatch = data.response?.match(/\[[\s\S]*\]/);
       if (!jsonMatch) throw new Error("Discovery failed");
-      await supabase.from("basketball_coins").update({ balance: coins.balance - 350, total_spent: coins.total_spent + 350 }).eq("user_id", user.id);
+      const spendRes = await spendSportCoins("basketball_coins", 350);
+      if (!spendRes.ok) { toast.error("Coin deduction failed"); return; }
       setProspects(JSON.parse(jsonMatch[0]));
       toast.success("Youth prospects found! (-350 coins)");
     } catch (e: any) { toast.error(e.message); } finally { setLoading(false); }
@@ -38,9 +40,8 @@ export function YouthAcademy({ onBack }: { onBack: () => void }) {
 
   const signProspect = async (p: any) => {
     if (!user) return;
-    const { data: coins } = await supabase.from("basketball_coins").select("*").eq("user_id", user.id).single();
-    if (!coins || coins.balance < p.development_cost) { toast.error("Not enough coins!"); return; }
-    await supabase.from("basketball_coins").update({ balance: coins.balance - p.development_cost, total_spent: coins.total_spent + p.development_cost }).eq("user_id", user.id);
+    const spendRes = await spendSportCoins("basketball_coins", p.development_cost);
+    if (!spendRes.ok) { toast.error("Not enough coins!"); return; }
     await supabase.from("basketball_players").insert({ user_id: user.id, name: p.name, position: p.position, overall_rating: p.overall_rating, shooting: p.shooting, speed: p.speed, defense: p.defense, three_point: p.three_point, passing: 35 + Math.floor(Math.random() * 30), rebounding: 35 + Math.floor(Math.random() * 30), stamina: 40 + Math.floor(Math.random() * 30), dunking: 30 + Math.floor(Math.random() * 40), market_value: p.development_cost * 2 });
     toast.success(`Signed ${p.name} to academy!`);
     setProspects(prev => prev.filter(x => x.name !== p.name));

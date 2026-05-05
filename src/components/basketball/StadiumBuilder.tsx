@@ -5,6 +5,7 @@ import { ArrowLeft, Building } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { spendSportCoins } from "@/lib/sportCoins";
 
 const UPGRADES = [
   { name: "Expand Seating", field: "capacity", add: 2000, cost: 1000, desc: "+2,000 seats" },
@@ -30,9 +31,8 @@ export function StadiumBuilder({ onBack }: { onBack: () => void }) {
 
   const upgrade = async (upg: typeof UPGRADES[0]) => {
     if (!user || !stadium) return;
-    const { data: coins } = await supabase.from("basketball_coins").select("*").eq("user_id", user.id).single();
-    if (!coins || coins.balance < upg.cost) { toast.error("Not enough coins!"); return; }
-    await supabase.from("basketball_coins").update({ balance: coins.balance - upg.cost, total_spent: coins.total_spent + upg.cost }).eq("user_id", user.id);
+    const spendRes = await spendSportCoins("basketball_coins", upg.cost);
+    if (!spendRes.ok) { toast.error("Not enough coins!"); return; }
 
     let updates: any = { total_upgrades: stadium.total_upgrades + 1 };
     if (upg.field === "court_type") {

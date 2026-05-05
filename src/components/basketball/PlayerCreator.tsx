@@ -7,6 +7,7 @@ import { ArrowLeft, Loader2, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { spendSportCoins, getSportCoinsBalance } from "@/lib/sportCoins";
 
 const POSITIONS = ["PG", "SG", "SF", "PF", "C"];
 
@@ -23,8 +24,8 @@ export function PlayerCreator({ onBack }: { onBack: () => void }) {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) { toast.error("Please sign in"); return; }
-      const { data: coins } = await supabase.from("basketball_coins").select("*").eq("user_id", user.id).single();
-      if (!coins || coins.balance < 500) { toast.error("Need 500 coins to create a player. Buy coins first!"); return; }
+      const balance = await getSportCoinsBalance("basketball_coins");
+      if (balance < 500) { toast.error("Need 500 coins to create a player. Buy coins first!"); return; }
 
       const { data, error } = await supabase.functions.invoke("generate-gift-message", {
         headers: { Authorization: `Bearer ${session.access_token}` },
@@ -39,7 +40,8 @@ export function PlayerCreator({ onBack }: { onBack: () => void }) {
       if (!jsonMatch) throw new Error("Failed to generate player");
       const player = JSON.parse(jsonMatch[0]);
 
-      await supabase.from("basketball_coins").update({ balance: coins.balance - 500, total_spent: coins.total_spent + 500 }).eq("user_id", user.id);
+      const spendRes = await spendSportCoins("basketball_coins", 500);
+      if (!spendRes.ok) { toast.error("Coin deduction failed"); return; }
       const { data: inserted } = await supabase.from("basketball_players").insert({ user_id: user.id, name: player.name, position: player.position, overall_rating: player.overall_rating, shooting: player.shooting, passing: player.passing, defense: player.defense, speed: player.speed, rebounding: player.rebounding, stamina: player.stamina, three_point: player.three_point, dunking: player.dunking, market_value: player.market_value }).select().single();
       setCreated(inserted);
       toast.success(`${player.name} created! (-500 coins)`);

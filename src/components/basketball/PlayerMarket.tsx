@@ -5,6 +5,7 @@ import { ArrowLeft, ShoppingCart } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { spendSportCoins } from "@/lib/sportCoins";
 
 export function PlayerMarket({ onBack }: { onBack: () => void }) {
   const { user } = useAuth();
@@ -17,9 +18,8 @@ export function PlayerMarket({ onBack }: { onBack: () => void }) {
   const buyPlayer = async (player: any) => {
     if (!user) return;
     const price = player.sale_price || player.market_value;
-    const { data: coins } = await supabase.from("basketball_coins").select("*").eq("user_id", user.id).single();
-    if (!coins || coins.balance < price) { toast.error("Not enough coins!"); return; }
-    await supabase.from("basketball_coins").update({ balance: coins.balance - price, total_spent: coins.total_spent + price }).eq("user_id", user.id);
+    const spendRes = await spendSportCoins("basketball_coins", price);
+    if (!spendRes.ok) { toast.error("Not enough coins!"); return; }
     await supabase.from("basketball_players").update({ user_id: user.id, is_for_sale: false, sale_price: null }).eq("id", player.id);
     await supabase.from("basketball_transfers").insert({ seller_id: player.user_id, buyer_id: user.id, player_id: player.id, price, status: "completed" });
     setListings(prev => prev.filter(p => p.id !== player.id));

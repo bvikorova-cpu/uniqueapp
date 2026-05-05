@@ -5,6 +5,7 @@ import { ArrowLeft, Map, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { spendSportCoins, getSportCoinsBalance } from "@/lib/sportCoins";
 
 export function TacticsBoard({ onBack }: { onBack: () => void }) {
   const { user } = useAuth();
@@ -17,8 +18,8 @@ export function TacticsBoard({ onBack }: { onBack: () => void }) {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) throw new Error("Not authenticated");
-      const { data: coins } = await supabase.from("basketball_coins").select("*").eq("user_id", user.id).single();
-      if (!coins || coins.balance < 300) { toast.error("Need 300 coins!"); return; }
+      const balance = await getSportCoinsBalance("basketball_coins");
+      if (balance < 300) { toast.error("Need 300 coins!"); return; }
 
       const { data: team } = await supabase.from("basketball_teams").select("*").eq("user_id", user.id).single();
       const { data: players } = await supabase.from("basketball_players").select("*").eq("user_id", user.id);
@@ -30,7 +31,8 @@ export function TacticsBoard({ onBack }: { onBack: () => void }) {
         }
       });
       if (error) throw error;
-      await supabase.from("basketball_coins").update({ balance: coins.balance - 300, total_spent: coins.total_spent + 300 }).eq("user_id", user.id);
+      const spendRes = await spendSportCoins("basketball_coins", 300);
+      if (!spendRes.ok) { toast.error("Coin deduction failed"); return; }
       setAnalysis(data.response || "No analysis generated");
       toast.success("Tactical analysis ready! (-300 coins)");
     } catch (e: any) { toast.error(e.message); } finally { setLoading(false); }

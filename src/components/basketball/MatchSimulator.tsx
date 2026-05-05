@@ -5,6 +5,7 @@ import { ArrowLeft, Loader2, Swords } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { spendSportCoins, getSportCoinsBalance } from "@/lib/sportCoins";
 
 export function MatchSimulator({ onBack }: { onBack: () => void }) {
   const { user } = useAuth();
@@ -23,8 +24,8 @@ export function MatchSimulator({ onBack }: { onBack: () => void }) {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) throw new Error("Not authenticated");
-      const { data: coins } = await supabase.from("basketball_coins").select("*").eq("user_id", user.id).single();
-      if (!coins || coins.balance < 300) { toast.error("Need 300 coins!"); return; }
+      const balance = await getSportCoinsBalance("basketball_coins");
+      if (balance < 300) { toast.error("Need 300 coins!"); return; }
 
       const { data: players } = await supabase.from("basketball_players").select("*").eq("user_id", user.id).eq("is_starter", true);
       const { data, error } = await supabase.functions.invoke("generate-gift-message", {
@@ -41,7 +42,8 @@ export function MatchSimulator({ onBack }: { onBack: () => void }) {
       const matchResult = JSON.parse(jsonMatch[0]);
 
       const won = matchResult.home_score > matchResult.away_score;
-      await supabase.from("basketball_coins").update({ balance: coins.balance - 300 + matchResult.coins_reward, total_spent: coins.total_spent + 300 }).eq("user_id", user.id);
+      const spendRes = await spendSportCoins("basketball_coins", 300, matchResult.coins_reward || 0);
+      if (!spendRes.ok) { toast.error("Coin deduction failed"); return; }
       await supabase.from("basketball_teams").update({ wins: team.wins + (won ? 1 : 0), losses: team.losses + (won ? 0 : 1) }).eq("id", team.id);
       await supabase.from("basketball_matches").insert({ home_team_id: team.id, home_score: matchResult.home_score, away_score: matchResult.away_score, quarter_scores: matchResult.quarters, coins_reward: matchResult.coins_reward });
 

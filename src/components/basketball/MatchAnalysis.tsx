@@ -5,6 +5,7 @@ import { ArrowLeft, BarChart3, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { spendSportCoins, getSportCoinsBalance } from "@/lib/sportCoins";
 
 export function MatchAnalysis({ onBack }: { onBack: () => void }) {
   const { user } = useAuth();
@@ -17,8 +18,8 @@ export function MatchAnalysis({ onBack }: { onBack: () => void }) {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) throw new Error("Not authenticated");
-      const { data: coins } = await supabase.from("basketball_coins").select("*").eq("user_id", user.id).single();
-      if (!coins || coins.balance < 400) { toast.error("Need 400 coins!"); return; }
+      const balance = await getSportCoinsBalance("basketball_coins");
+      if (balance < 400) { toast.error("Need 400 coins!"); return; }
 
       const { data: team } = await supabase.from("basketball_teams").select("*").eq("user_id", user.id).single();
       const { data, error } = await supabase.functions.invoke("generate-gift-message", {
@@ -29,7 +30,8 @@ export function MatchAnalysis({ onBack }: { onBack: () => void }) {
         }
       });
       if (error) throw error;
-      await supabase.from("basketball_coins").update({ balance: coins.balance - 400, total_spent: coins.total_spent + 400 }).eq("user_id", user.id);
+      const spendRes = await spendSportCoins("basketball_coins", 400);
+      if (!spendRes.ok) { toast.error("Coin deduction failed"); return; }
       setAnalysis(data.response || "No analysis generated");
       toast.success("Match analysis ready! (-400 coins)");
     } catch (e: any) { toast.error(e.message); } finally { setLoading(false); }

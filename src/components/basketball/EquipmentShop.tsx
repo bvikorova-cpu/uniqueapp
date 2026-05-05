@@ -5,6 +5,7 @@ import { ArrowLeft, ShoppingBag } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { spendSportCoins } from "@/lib/sportCoins";
 
 const SHOP_ITEMS = [
   { name: "Pro Basketball Shoes", type: "shoes", rarity: "common", shooting_boost: 2, speed_boost: 3, defense_boost: 0, stamina_boost: 1, price: 300 },
@@ -23,9 +24,8 @@ export function EquipmentShop({ onBack }: { onBack: () => void }) {
     if (!user) return;
     setLoading(item.name);
     try {
-      const { data: coins } = await supabase.from("basketball_coins").select("*").eq("user_id", user.id).single();
-      if (!coins || coins.balance < item.price) { toast.error("Not enough coins!"); return; }
-      await supabase.from("basketball_coins").update({ balance: coins.balance - item.price, total_spent: coins.total_spent + item.price }).eq("user_id", user.id);
+      const spendRes = await spendSportCoins("basketball_coins", item.price);
+      if (!spendRes.ok) { toast.error("Not enough coins!"); return; }
       await supabase.from("basketball_equipment").insert({ user_id: user.id, name: item.name, type: item.type, rarity: item.rarity, shooting_boost: item.shooting_boost, speed_boost: item.speed_boost, defense_boost: item.defense_boost, stamina_boost: item.stamina_boost, price: item.price });
       toast.success(`Bought ${item.name}!`);
     } catch (e: any) { toast.error(e.message); } finally { setLoading(null); }

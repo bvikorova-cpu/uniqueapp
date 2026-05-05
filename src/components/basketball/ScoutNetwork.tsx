@@ -5,6 +5,7 @@ import { ArrowLeft, Search, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { spendSportCoins, getSportCoinsBalance } from "@/lib/sportCoins";
 
 export function ScoutNetwork({ onBack }: { onBack: () => void }) {
   const { user } = useAuth();
@@ -17,8 +18,8 @@ export function ScoutNetwork({ onBack }: { onBack: () => void }) {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) throw new Error("Not authenticated");
-      const { data: coins } = await supabase.from("basketball_coins").select("*").eq("user_id", user.id).single();
-      if (!coins || coins.balance < 400) { toast.error("Need 400 coins!"); return; }
+      const balance = await getSportCoinsBalance("basketball_coins");
+      if (balance < 400) { toast.error("Need 400 coins!"); return; }
 
       const { data, error } = await supabase.functions.invoke("generate-gift-message", {
         headers: { Authorization: `Bearer ${session.access_token}` },
@@ -30,7 +31,8 @@ export function ScoutNetwork({ onBack }: { onBack: () => void }) {
       if (error) throw error;
       const jsonMatch = data.response?.match(/\[[\s\S]*\]/);
       if (!jsonMatch) throw new Error("Scout failed");
-      await supabase.from("basketball_coins").update({ balance: coins.balance - 400, total_spent: coins.total_spent + 400 }).eq("user_id", user.id);
+      const spendRes = await spendSportCoins("basketball_coins", 400);
+      if (!spendRes.ok) { toast.error("Coin deduction failed"); return; }
       setScoutResult(JSON.parse(jsonMatch[0]));
       toast.success("Scouting report ready! (-400 coins)");
     } catch (e: any) { toast.error(e.message); } finally { setLoading(false); }
@@ -38,9 +40,8 @@ export function ScoutNetwork({ onBack }: { onBack: () => void }) {
 
   const signPlayer = async (player: any) => {
     if (!user) return;
-    const { data: coins } = await supabase.from("basketball_coins").select("*").eq("user_id", user.id).single();
-    if (!coins || coins.balance < player.price) { toast.error("Not enough coins!"); return; }
-    await supabase.from("basketball_coins").update({ balance: coins.balance - player.price, total_spent: coins.total_spent + player.price }).eq("user_id", user.id);
+    const spendRes = await spendSportCoins("basketball_coins", player.price);
+    if (!spendRes.ok) { toast.error("Not enough coins!"); return; }
     await supabase.from("basketball_players").insert({ user_id: user.id, name: player.name, position: player.position, overall_rating: player.overall_rating, shooting: player.shooting, speed: player.speed, defense: player.defense, three_point: player.three_point, passing: 40 + Math.floor(Math.random() * 40), rebounding: 40 + Math.floor(Math.random() * 40), stamina: 40 + Math.floor(Math.random() * 40), dunking: 40 + Math.floor(Math.random() * 40), market_value: player.price });
     toast.success(`Signed ${player.name}!`);
     setScoutResult(prev => prev.filter(p => p.name !== player.name));

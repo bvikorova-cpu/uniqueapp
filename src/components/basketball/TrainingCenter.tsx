@@ -6,6 +6,7 @@ import { ArrowLeft, Dumbbell, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { spendSportCoins } from "@/lib/sportCoins";
 
 const DRILLS = [
   { type: "Shooting Drills", stat: "shooting", cost: 200 },
@@ -33,15 +34,14 @@ export function TrainingCenter({ onBack }: { onBack: () => void }) {
     if (!user || !selectedPlayer) { toast.error("Select a player!"); return; }
     setLoading(true);
     try {
-      const { data: coins } = await supabase.from("basketball_coins").select("*").eq("user_id", user.id).single();
-      if (!coins || coins.balance < drill.cost) { toast.error(`Need ${drill.cost} coins!`); return; }
       const player = players.find(p => p.id === selectedPlayer);
       if (!player) return;
       const improvement = Math.floor(Math.random() * 3) + 1;
       const newVal = Math.min(99, (player[drill.stat] || 50) + improvement);
       const newOvr = Math.min(99, player.overall_rating + (improvement > 2 ? 1 : 0));
 
-      await supabase.from("basketball_coins").update({ balance: coins.balance - drill.cost, total_spent: coins.total_spent + drill.cost }).eq("user_id", user.id);
+      const spendRes = await spendSportCoins("basketball_coins", drill.cost);
+      if (!spendRes.ok) { toast.error(`Need ${drill.cost} coins!`); return; }
       await supabase.from("basketball_players").update({ [drill.stat]: newVal, overall_rating: newOvr } as any).eq("id", selectedPlayer);
       await supabase.from("basketball_training_sessions").insert({ user_id: user.id, player_id: selectedPlayer, training_type: drill.type, stat_improved: drill.stat, improvement_amount: improvement, coins_spent: drill.cost });
 
