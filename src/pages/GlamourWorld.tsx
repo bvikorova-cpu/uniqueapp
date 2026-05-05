@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useToast } from "@/hooks/use-toast";
+import { useQueryClient } from "@tanstack/react-query";
 import { GlamourHero } from "@/components/glamour-world/GlamourHero";
 import { GlamourEngagement } from "@/components/glamour-world/GlamourEngagement";
 import { GlamourToolCard } from "@/components/glamour-world/GlamourToolCard";
@@ -66,6 +68,26 @@ const tools: { id: ViewType; icon: any; title: string; description: string; badg
 const GlamourWorld = () => {
   const [activeView, setActiveView] = useState<ViewType>("hub");
   const back = () => setActiveView("hub");
+  const { toast } = useToast();
+  const qc = useQueryClient();
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const payment = params.get("payment");
+    if (payment === "success") {
+      toast({ title: "💰 Payment successful", description: "Your coins will appear in a few seconds." });
+      setActiveView("coins");
+      // Refresh balance after webhook fulfilment
+      const t1 = setTimeout(() => qc.invalidateQueries({ queryKey: ["glamour-coins"] }), 2500);
+      const t2 = setTimeout(() => qc.invalidateQueries({ queryKey: ["glamour-coins"] }), 6000);
+      window.history.replaceState({}, "", "/glamour-world");
+      return () => { clearTimeout(t1); clearTimeout(t2); };
+    }
+    if (payment === "canceled") {
+      toast({ title: "Payment canceled", variant: "destructive" });
+      window.history.replaceState({}, "", "/glamour-world");
+    }
+  }, [toast, qc]);
 
   const viewMap: Record<string, JSX.Element> = {
     "dream-house": <DreamHouseBuilder onBack={back} />,

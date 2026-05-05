@@ -38,11 +38,16 @@ export function CoinShop({ onBack }: { onBack: () => void }) {
         body: {
           productName: `Glamour World - ${pkg.label}`,
           amount: Math.round(pkg.price * 100),
+          successUrl: `${window.location.origin}/glamour-world?payment=success&session_id={CHECKOUT_SESSION_ID}`,
+          cancelUrl: `${window.location.origin}/glamour-world?payment=canceled`,
           metadata: { type: "glamour_coins", coins: pkg.coins },
         },
       });
       if (error) throw error;
-      if (data?.url) window.open(data.url, "_blank");
+      if (data?.url) {
+        // Use direct navigation — mobile WebViews block window.open popups
+        window.location.href = data.url;
+      }
     } catch (e: any) {
       toast({ title: "Error", description: e.message, variant: "destructive" });
     } finally { setLoading(null); }

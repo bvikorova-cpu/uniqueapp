@@ -387,6 +387,50 @@ serve(async (req) => {
               }
             }
           }
+
+          // ── Glamour World coin purchase fulfillment ──
+          try {
+            if (session.metadata?.type === "glamour_coins") {
+              const userId = session.metadata.user_id;
+              const coins = parseInt(session.metadata.coins || "0", 10);
+              if (userId && coins > 0) {
+                // Idempotency via payment_records.stripe_session_id (already updated above to 'paid').
+                // Use a marker on payment_records to avoid double-credit on webhook retries.
+                const { data: pr } = await supabase
+                  .from("payment_records")
+                  .select("id, metadata")
+                  .eq("stripe_session_id", session.id)
+                  .maybeSingle();
+                const alreadyCredited = (pr?.metadata as any)?.glamour_credited === true;
+                if (!alreadyCredited) {
+                  const { data: cur } = await supabase
+                    .from("glamour_coins").select("balance")
+                    .eq("user_id", userId).maybeSingle();
+                  if (cur) {
+                    await supabase.from("glamour_coins")
+                      .update({
+                        balance: (cur.balance || 0) + coins,
+                        total_purchased: ((cur as any).total_purchased || 0) + coins,
+                        updated_at: new Date().toISOString(),
+                      })
+                      .eq("user_id", userId);
+                  } else {
+                    await supabase.from("glamour_coins").insert({
+                      user_id: userId, balance: coins, total_purchased: coins,
+                    });
+                  }
+                  if (pr?.id) {
+                    await supabase.from("payment_records").update({
+                      metadata: { ...(pr.metadata as any || {}), glamour_credited: true },
+                    }).eq("id", pr.id);
+                  }
+                  log("glamour coins credited", { userId, coins, sessionId: session.id });
+                }
+              }
+            }
+          } catch (gcErr) {
+            log("glamour coin webhook error", { err: (gcErr as Error).message });
+          }
         }
         break;
       }
