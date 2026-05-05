@@ -1,6 +1,10 @@
+import { useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { Trophy, Skull, Swords, Star, Zap, Coins, Clock } from "lucide-react";
+import { Trophy, Skull, Swords, Star, Zap, Coins, Clock, Download, FileImage, FileText, Loader2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { toast } from "sonner";
 
 interface BattleResultProps {
   result: {
