@@ -461,6 +461,35 @@ serve(async (req) => {
           } catch (ssErr) {
             log("secret santa webhook error", { err: (ssErr as Error).message });
           }
+
+          // ── Dating Premium subscription fulfillment ──
+          try {
+            const dt = session.metadata?.type;
+            if (dt === "dating_monthly" || dt === "dating_yearly") {
+              const userId = session.metadata?.user_id;
+              if (userId && session.mode === "subscription") {
+                const isYearly = dt === "dating_yearly";
+                const expiresAt = new Date(
+                  Date.now() + (isYearly ? 365 : 30) * 24 * 60 * 60 * 1000
+                ).toISOString();
+                const subId = typeof session.subscription === "string"
+                  ? session.subscription
+                  : (session.subscription as any)?.id ?? null;
+                await supabase.from("dating_subscriptions").upsert({
+                  user_id: userId,
+                  status: "active",
+                  subscription_type: isYearly ? "yearly" : "monthly",
+                  price: isYearly ? 20.00 : 2.00,
+                  expires_at: expiresAt,
+                  stripe_subscription_id: subId,
+                  updated_at: new Date().toISOString(),
+                }, { onConflict: "user_id" });
+                log("dating subscription activated", { userId, type: dt, sessionId: session.id });
+              }
+            }
+          } catch (dErr) {
+            log("dating webhook error", { err: (dErr as Error).message });
+          }
         }
         break;
       }
