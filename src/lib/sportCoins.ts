@@ -27,12 +27,11 @@ export async function spendSportCoins(
     body: { table, amount, reward },
   });
   if (error) {
-    // Try to read structured error from response
     const msg = (data as any)?.error || error.message || "spend_failed";
-    return { ok: false, error: msg, balance: (data as any)?.balance };
+    return { ok: false as const, error: msg, balance: (data as any)?.balance };
   }
   if ((data as any)?.success) {
-    return { ok: true, balance: (data as any).balance };
+    return { ok: true as const, balance: (data as any).balance };
   }
-  return { ok: false, error: (data as any)?.error || "spend_failed", balance: (data as any)?.balance };
+  return { ok: false as const, error: (data as any)?.error || "spend_failed", balance: (data as any)?.balance };
 }
