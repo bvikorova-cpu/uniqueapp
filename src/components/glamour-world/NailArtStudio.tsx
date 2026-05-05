@@ -22,7 +22,7 @@ export function NailArtStudio({ onBack }: { onBack: () => void }) {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Please sign in");
       const { data, error } = await supabase.functions.invoke("glamour-ai-generate", {
-        body: { type: "nail_art", prompt: `Design a ${style} nail art look. ${details}. Include: color palette, step-by-step guide, tools needed, and tips for each finger.` },
+        body: { type: "nail_art", prompt: `Design a ${style} nail art look. ${details}. Include: color palette, step-by-step guide, tools needed, and tips for each finger.`, coins: 3 },
       });
       if (error) throw error;
       setResult(data.result);

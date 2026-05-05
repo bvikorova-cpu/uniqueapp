@@ -22,7 +22,7 @@ export function DanceStudio({ onBack }: { onBack: () => void }) {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Please sign in");
       const { data, error } = await supabase.functions.invoke("glamour-ai-generate", {
-        body: { type: "dance", prompt: `Create a ${style} dance choreography for ${level || "beginners"}. Include: warm-up, step-by-step moves, counts, music suggestion, outfit recommendation, and cool-down stretches.` },
+        body: { type: "dance", prompt: `Create a ${style} dance choreography for ${level || "beginners"}. Include: warm-up, step-by-step moves, counts, music suggestion, outfit recommendation, and cool-down stretches.`, coins: 4 },
       });
       if (error) throw error;
       setResult(data.result);

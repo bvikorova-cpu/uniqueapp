@@ -22,7 +22,7 @@ export function AccessoryDesigner({ onBack }: { onBack: () => void }) {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Please sign in");
       const { data, error } = await supabase.functions.invoke("glamour-ai-generate", {
-        body: { type: "accessory", prompt: `Design a beautiful ${type}. Style: ${description}. Include materials, colors, gems, and styling tips.` },
+        body: { type: "accessory", prompt: `Design a beautiful ${type}. Style: ${description}. Include materials, colors, gems, and styling tips.`, coins: 3 },
       });
       if (error) throw error;
       setResult(data.result);

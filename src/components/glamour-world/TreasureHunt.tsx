@@ -22,7 +22,7 @@ export function TreasureHunt({ onBack }: { onBack: () => void }) {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Please sign in");
       const { data, error } = await supabase.functions.invoke("glamour-ai-generate", {
-        body: { type: "treasure_hunt", prompt: `Create a magical treasure hunt for ${location}. ${details}. Include: 10 clues with riddles, hiding spots, a treasure map description, prize ideas, and theme decorations.` },
+        body: { type: "treasure_hunt", prompt: `Create a magical treasure hunt for ${location}. ${details}. Include: 10 clues with riddles, hiding spots, a treasure map description, prize ideas, and theme decorations.`, coins: 4 },
       });
       if (error) throw error;
       setResult(data.result);

@@ -22,7 +22,7 @@ export function MakeupStudio({ onBack }: { onBack: () => void }) {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Please sign in");
       const { data, error } = await supabase.functions.invoke("glamour-ai-generate", {
-        body: { type: "makeup", prompt: `Create a ${look} makeup tutorial. ${details}. Include step-by-step instructions, product suggestions, and tips.` },
+        body: { type: "makeup", prompt: `Create a ${look} makeup tutorial. ${details}. Include step-by-step instructions, product suggestions, and tips.`, coins: 4 },
       });
       if (error) throw error;
       setResult(data.result);

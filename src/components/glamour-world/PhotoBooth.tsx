@@ -22,7 +22,7 @@ export function PhotoBooth({ onBack }: { onBack: () => void }) {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Please sign in");
       const { data, error } = await supabase.functions.invoke("glamour-ai-generate", {
-        body: { type: "photo_booth", prompt: `Create a magical ${filter} photo booth concept. ${description}. Include: backdrop design, props list, pose suggestions, lighting tips, and Instagram caption ideas.` },
+        body: { type: "photo_booth", prompt: `Create a magical ${filter} photo booth concept. ${description}. Include: backdrop design, props list, pose suggestions, lighting tips, and Instagram caption ideas.`, coins: 3 },
       });
       if (error) throw error;
       setResult(data.result);

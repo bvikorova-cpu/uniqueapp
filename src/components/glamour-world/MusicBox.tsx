@@ -22,7 +22,7 @@ export function MusicBox({ onBack }: { onBack: () => void }) {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Please sign in");
       const { data, error } = await supabase.functions.invoke("glamour-ai-generate", {
-        body: { type: "music", prompt: `Write a ${genre} song. Theme: ${theme || "being yourself"}. Include: song title, verse 1, chorus, verse 2, bridge, final chorus, and performance notes.` },
+        body: { type: "music", prompt: `Write a ${genre} song. Theme: ${theme || "being yourself"}. Include: song title, verse 1, chorus, verse 2, bridge, final chorus, and performance notes.`, coins: 4 },
       });
       if (error) throw error;
       setResult(data.result);

@@ -25,7 +25,7 @@ export function DreamHouseBuilder({ onBack }: { onBack: () => void }) {
       if (!user) throw new Error("Please sign in");
 
       const { data, error } = await supabase.functions.invoke("glamour-ai-generate", {
-        body: { type: "dream_house", prompt: `Design a ${style} style ${room}. Details: ${details}` },
+        body: { type: "dream_house", prompt: `Design a ${style} style ${room}. Details: ${details}`, coins: 5 },
       });
       if (error) throw error;
 

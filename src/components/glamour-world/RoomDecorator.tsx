@@ -22,7 +22,7 @@ export function RoomDecorator({ onBack }: { onBack: () => void }) {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Please sign in");
       const { data, error } = await supabase.functions.invoke("glamour-ai-generate", {
-        body: { type: "room_decor", prompt: `Design a ${theme} themed bedroom. ${details}. Include: wall colors, furniture, decorations, lighting, bedding, rugs, and DIY ideas.` },
+        body: { type: "room_decor", prompt: `Design a ${theme} themed bedroom. ${details}. Include: wall colors, furniture, decorations, lighting, bedding, rugs, and DIY ideas.`, coins: 4 },
       });
       if (error) throw error;
       setResult(data.result);

@@ -35,7 +35,7 @@ export function StoryCreator({ onBack }: { onBack: () => void }) {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Please sign in");
       const { data, error } = await supabase.functions.invoke("glamour-ai-generate", {
-        body: { type: "story", prompt: `Write a magical ${genre} story titled "${title}". Characters: ${characters || "a brave princess"}. Make it enchanting, fun, and with a happy ending. Include dialogue and vivid descriptions.` },
+        body: { type: "story", prompt: `Write a magical ${genre} story titled "${title}". Characters: ${characters || "a brave princess"}. Make it enchanting, fun, and with a happy ending. Include dialogue and vivid descriptions.`, coins: 5 },
       });
       if (error) throw error;
       setResult(data.result);

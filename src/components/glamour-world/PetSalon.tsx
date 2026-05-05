@@ -49,7 +49,7 @@ export function PetSalon({ onBack }: { onBack: () => void }) {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Please sign in");
       const { data, error } = await supabase.functions.invoke("glamour-ai-generate", {
-        body: { type: "pet_grooming", prompt: `Groom a pet in ${groomStyle} style. Describe the new look, accessories, and how the pet feels.` },
+        body: { type: "pet_grooming", prompt: `Groom a pet in ${groomStyle} style. Describe the new look, accessories, and how the pet feels.`, coins: 3 },
       });
       if (error) throw error;
       setResult(data.result);

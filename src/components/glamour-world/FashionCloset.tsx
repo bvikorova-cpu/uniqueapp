@@ -24,7 +24,7 @@ export function FashionCloset({ onBack }: { onBack: () => void }) {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Please sign in");
       const { data, error } = await supabase.functions.invoke("glamour-ai-generate", {
-        body: { type: "outfit", prompt: `Create a perfect ${season} outfit for a ${occasion}. Preferences: ${preferences}. Include: top, bottom, shoes, accessories, hairstyle suggestion, and color palette.` },
+        body: { type: "outfit", prompt: `Create a perfect ${season} outfit for a ${occasion}. Preferences: ${preferences}. Include: top, bottom, shoes, accessories, hairstyle suggestion, and color palette.`, coins: 4 },
       });
       if (error) throw error;
       setResult(data.result);

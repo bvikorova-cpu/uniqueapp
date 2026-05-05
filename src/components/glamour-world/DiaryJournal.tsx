@@ -22,7 +22,7 @@ export function DiaryJournal({ onBack }: { onBack: () => void }) {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Please sign in");
       const { data, error } = await supabase.functions.invoke("glamour-ai-generate", {
-        body: { type: "diary", prompt: `Respond to this diary entry as a magical AI best friend. Mood: ${mood}. Entry: "${entry}". Give encouragement, fun advice, a motivational quote, and suggest a fun activity for the day.` },
+        body: { type: "diary", prompt: `Respond to this diary entry as a magical AI best friend. Mood: ${mood}. Entry: "${entry}". Give encouragement, fun advice, a motivational quote, and suggest a fun activity for the day.`, coins: 3 },
       });
       if (error) throw error;
       setResult(data.result);

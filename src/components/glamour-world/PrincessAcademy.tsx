@@ -22,7 +22,7 @@ export function PrincessAcademy({ onBack }: { onBack: () => void }) {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Please sign in");
       const { data, error } = await supabase.functions.invoke("glamour-ai-generate", {
-        body: { type: "academy", prompt: `Teach a fun ${course} lesson at the Princess Academy. ${question}. Include: key rules, fun facts, practice exercises, and a mini quiz at the end.` },
+        body: { type: "academy", prompt: `Teach a fun ${course} lesson at the Princess Academy. ${question}. Include: key rules, fun facts, practice exercises, and a mini quiz at the end.`, coins: 4 },
       });
       if (error) throw error;
       setResult(data.result);

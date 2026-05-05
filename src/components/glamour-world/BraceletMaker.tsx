@@ -22,7 +22,7 @@ export function BraceletMaker({ onBack }: { onBack: () => void }) {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Please sign in");
       const { data, error } = await supabase.functions.invoke("glamour-ai-generate", {
-        body: { type: "bracelet", prompt: `Design a ${type}. ${details}. Include: materials list, color pattern, step-by-step instructions, and personalization ideas.` },
+        body: { type: "bracelet", prompt: `Design a ${type}. ${details}. Include: materials list, color pattern, step-by-step instructions, and personalization ideas.`, coins: 3 },
       });
       if (error) throw error;
       setResult(data.result);

@@ -22,7 +22,7 @@ export function RecipeBaker({ onBack }: { onBack: () => void }) {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Please sign in");
       const { data, error } = await supabase.functions.invoke("glamour-ai-generate", {
-        body: { type: "recipe", prompt: `Create a magical ${category} recipe. ${details}. Include: ingredients, step-by-step instructions, decoration ideas, presentation tips, and a fun name for the creation.` },
+        body: { type: "recipe", prompt: `Create a magical ${category} recipe. ${details}. Include: ingredients, step-by-step instructions, decoration ideas, presentation tips, and a fun name for the creation.`, coins: 3 },
       });
       if (error) throw error;
       setResult(data.result);

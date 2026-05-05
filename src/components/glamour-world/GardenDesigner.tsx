@@ -22,7 +22,7 @@ export function GardenDesigner({ onBack }: { onBack: () => void }) {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Please sign in");
       const { data, error } = await supabase.functions.invoke("glamour-ai-generate", {
-        body: { type: "garden", prompt: `Design a ${type}. ${details}. Include: plant list, layout plan, decorations, care schedule, and seasonal tips.` },
+        body: { type: "garden", prompt: `Design a ${type}. ${details}. Include: plant list, layout plan, decorations, care schedule, and seasonal tips.`, coins: 3 },
       });
       if (error) throw error;
       setResult(data.result);

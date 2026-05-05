@@ -24,7 +24,7 @@ export function HairStylist({ onBack }: { onBack: () => void }) {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Please sign in");
       const { data, error } = await supabase.functions.invoke("glamour-ai-generate", {
-        body: { type: "hair", prompt: `Create a ${style} hairstyle tutorial for ${hairType || "any"} hair. ${details}. Include: tools needed, step-by-step instructions, accessory suggestions, and how to maintain the style.` },
+        body: { type: "hair", prompt: `Create a ${style} hairstyle tutorial for ${hairType || "any"} hair. ${details}. Include: tools needed, step-by-step instructions, accessory suggestions, and how to maintain the style.`, coins: 3 },
       });
       if (error) throw error;
       setResult(data.result);
