@@ -59,6 +59,20 @@ export function BattleResult({ result, homeName }: BattleResultProps) {
   const dominance =
     margin === 0 ? "DRAW" : margin <= 2 ? "CLOSE FIGHT" : margin <= 6 ? "SOLID WIN" : "DOMINATION";
 
+  const periods = result.breakdown ?? [];
+  // Best period for the home side (largest positive home-away delta)
+  const bestPeriod =
+    periods.length > 0
+      ? periods.reduce((best, p) =>
+          p.home - p.away > best.home - best.away ? p : best
+        )
+      : null;
+  const mvpPeriod = result.mvp_period ?? bestPeriod?.label;
+  const rewardPeriod = result.reward_period ?? bestPeriod?.label;
+  const timeline = result.highlights && periods.length > 0
+    ? bucketHighlights(result.highlights, periods)
+    : null;
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
