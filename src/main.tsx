@@ -141,6 +141,28 @@ class BootErrorBoundary extends Component<{ children: ReactNode }, { error: Erro
   }
 }
 
+// Vite emits "vite:preloadError" when a dynamically-imported chunk 404s
+// (typical after a fresh deploy invalidates old chunk hashes). Force a
+// one-time hard reload with cache-bust so the user gets the new manifest.
+const VITE_RELOAD_KEY = "unique_vite_preload_reload_v1";
+window.addEventListener("vite:preloadError", (event) => {
+  try {
+    event.preventDefault();
+    if (sessionStorage.getItem(VITE_RELOAD_KEY)) return;
+    sessionStorage.setItem(VITE_RELOAD_KEY, String(Date.now()));
+    const url = new URL(window.location.href);
+    url.searchParams.set("__r", String(Date.now()));
+    window.location.replace(url.toString());
+  } catch {
+    /* noop */
+  }
+});
+window.addEventListener("load", () => {
+  setTimeout(() => {
+    try { sessionStorage.removeItem(VITE_RELOAD_KEY); } catch { /* noop */ }
+  }, 5000);
+});
+
 window.addEventListener("error", (e) => {
   console.error("[GlobalError]", e.error || e.message);
   if (!reactRendered) {

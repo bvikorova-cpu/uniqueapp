@@ -1,4 +1,4 @@
-import { lazy } from "react";
+import { lazyWithRetry as lazy } from "@/utils/lazyWithRetry";
 
 // Core pages - loaded immediately
 export { default as Home } from "@/pages/Home";
