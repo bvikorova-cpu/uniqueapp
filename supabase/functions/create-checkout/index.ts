@@ -679,8 +679,16 @@ serve(async (req) => {
       return successResponse({ url: session.url, session_id: session.id });
     }
 
-    if (productKey && SPORTS_PACKS[productKey]?.[rawPriceId]) {
-      const selectedPack = SPORTS_PACKS[productKey][rawPriceId];
+    if (productKey && SPORTS_PACKS[productKey]) {
+      // Match by priceId key OR fallback to metadata.coins lookup (frontend may send real Stripe price IDs)
+      const packs = SPORTS_PACKS[productKey];
+      const requestedCoins = Number(requestMetadata.coins) || 0;
+      const selectedPack =
+        (rawPriceId && packs[rawPriceId]) ||
+        Object.values(packs).find((p) => p.coins === requestedCoins);
+      if (!selectedPack) {
+        return errorResponse(`No matching pack for ${productKey} (priceId=${rawPriceId}, coins=${requestedCoins})`, 400);
+      }
       const { successUrl, cancelUrl } = resolveUrls(origin, body.successUrl, body.cancelUrl, productKey);
 
       const session = await stripe.checkout.sessions.create({
