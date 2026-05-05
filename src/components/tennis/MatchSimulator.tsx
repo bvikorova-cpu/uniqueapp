@@ -43,11 +43,14 @@ export function MatchSimulator({ onBack }: { onBack: () => void }) {
       const matchResult = JSON.parse(jsonMatch[0]);
 
       const won = matchResult.home_score > matchResult.away_score;
+      const home_power = computeBattlePower(players || [], team, matchResult.home_score);
+      const away_power = opponentPower(matchResult.away_score);
       await supabase.from("tennis_coins").update({ balance: coins.balance - 300 + matchResult.coins_reward, total_spent: coins.total_spent + 300 }).eq("user_id", user.id);
       await supabase.from("tennis_teams").update({ wins: team.wins + (won ? 1 : 0), losses: team.losses + (won ? 0 : 1) }).eq("id", team.id);
       await supabase.from("tennis_matches").insert({ home_team_id: team.id, home_score: matchResult.home_score, away_score: matchResult.away_score, set_scores: matchResult.sets, coins_reward: matchResult.coins_reward, status: "completed" });
 
-      setResult({ ...matchResult, won });
+      const breakdown = (matchResult.sets || []).map((s: any) => ({ label: `Set ${s.set}`, home: s.home, away: s.away }));
+      setResult({ ...matchResult, won, home_power, away_power, breakdown });
       toast.success(won ? "Victory! 🏆" : "Defeat! Better luck next time.");
     } catch (e: any) { toast.error(e.message); } finally { setLoading(false); }
   };
