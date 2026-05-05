@@ -306,7 +306,7 @@ export const GIFT_CATALOG = [
   { type: "merida", emoji: "🏹", label: "Merida", value: 55, category: "disney", description: "Brave archer", image: characterImages.merida },
   { type: "pocahontas", emoji: "🍂", label: "Pocahontas", value: 50, category: "disney", description: "Colors of wind" },
   { type: "aladdin", emoji: "🪔", label: "Aladdin", value: 45, category: "disney", description: "Street rat hero", image: characterImages.aladdin },
-  { type: "genie", emoji: "🧞‍♂️", label: "Genie", value: 80, category: "disney", description: "3 wishes granted", image: characterImages.genie },
+  { type: "disney_genie", emoji: "🧞‍♂️", label: "Genie", value: 80, category: "disney", description: "3 wishes granted", image: characterImages.genie },
   { type: "stitch", emoji: "👽", label: "Stitch", value: 70, category: "disney", description: "Ohana means family" },
   { type: "dumbo", emoji: "🐘", label: "Dumbo", value: 40, category: "disney", description: "Flying elephant" },
   { type: "bambi", emoji: "🦌", label: "Bambi", value: 35, category: "disney", description: "Forest prince" },
