@@ -9406,6 +9406,33 @@ export type Database = {
           },
         ]
       }
+      comedy_coin_purchases: {
+        Row: {
+          amount_cents: number
+          coins: number
+          created_at: string
+          id: string
+          stripe_session_id: string
+          user_id: string
+        }
+        Insert: {
+          amount_cents?: number
+          coins: number
+          created_at?: string
+          id?: string
+          stripe_session_id: string
+          user_id: string
+        }
+        Update: {
+          amount_cents?: number
+          coins?: number
+          created_at?: string
+          id?: string
+          stripe_session_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       comedy_currency: {
         Row: {
           coins: number
