@@ -673,50 +673,16 @@ export const useSecretSanta = () => {
       const gift = GIFT_CATALOG.find(g => g.type === giftType);
       if (!gift) throw new Error("Invalid gift type");
 
-      // Check credits
-      const currentCredits = credits?.credits_remaining || 0;
-      if (currentCredits < gift.value) {
-        throw new Error("Not enough credits");
-      }
-
-      // Deduct credits
-      const { error: creditError } = await supabase
-        .from("secret_santa_credits")
-        .update({ credits_remaining: currentCredits - gift.value })
-        .eq("user_id", user.id);
-
-      if (creditError) throw creditError;
-
-      // Send gift
-      const { data: giftData, error: giftError } = await supabase.from("secret_santa_gifts").insert({
-        sender_id: user.id,
-        recipient_id: recipientId,
-        gift_type: giftType,
-        gift_emoji: gift.emoji,
-        gift_value: gift.value,
-        message,
-        is_anonymous: isAnonymous,
-      }).select().single();
-
-      if (giftError) throw giftError;
-
-      // Get sender profile for notification
-      const { data: senderProfile } = await supabase
-        .from("profiles")
-        .select("full_name")
-        .eq("id", user.id)
-        .single();
-
-      // Create notification for recipient
-      const senderName = isAnonymous ? "Secret Santa" : (senderProfile?.full_name || "Someone");
-      await supabase.from("notifications").insert({
-        user_id: recipientId,
-        type: "secret_santa_gift",
-        title: `${gift.emoji} New Gift Received!`,
-        message: `${senderName} sent you a ${gift.label}!`,
-        related_id: giftData.id,
-        actor_id: isAnonymous ? null : user.id,
+      const { error } = await supabase.rpc("send_secret_santa_gift", {
+        p_recipient_id: recipientId,
+        p_gift_type: giftType,
+        p_gift_emoji: gift.emoji,
+        p_gift_value: gift.value,
+        p_message: message ?? null,
+        p_is_anonymous: isAnonymous,
+        p_animation_type: null,
       });
+      if (error) throw error;
     },
     onSuccess: () => {
       toast({ title: "Gift sent successfully! 🎁" });

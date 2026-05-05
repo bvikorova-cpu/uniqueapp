@@ -62,25 +62,25 @@ export const GiftRoulette = () => {
       // Pick random gift
       const randomGift = eligibleGifts[Math.floor(Math.random() * eligibleGifts.length)];
 
-      // Deduct credits
-      const { error: creditError } = await supabase
-        .from("secret_santa_credits")
-        .update({ credits_remaining: credits - tier.cost })
-        .eq("user_id", user.id);
-      if (creditError) throw creditError;
-
-      // Send gift to matched user
+      // Send gift atomically (deducts credits + inserts gift + notifies)
       if (matchedUser) {
-        await supabase.from("secret_santa_gifts").insert({
-          sender_id: user.id,
-          recipient_id: matchedUser.id,
-          gift_type: randomGift.type,
-          gift_emoji: randomGift.emoji,
-          gift_value: randomGift.value,
-          message: `🎲 Gift Roulette surprise! You received a ${randomGift.label}!`,
-          is_anonymous: true,
-          animation_type: "roulette",
+        const { error: rpcErr } = await supabase.rpc("send_secret_santa_gift", {
+          p_recipient_id: matchedUser.id,
+          p_gift_type: randomGift.type,
+          p_gift_emoji: randomGift.emoji,
+          p_gift_value: tier.cost,
+          p_message: `🎲 Gift Roulette surprise! You received a ${randomGift.label}!`,
+          p_is_anonymous: true,
+          p_animation_type: "roulette",
         });
+        if (rpcErr) throw rpcErr;
+      } else {
+        // No match — just deduct cost (still pays for the spin)
+        const { error: dedErr } = await supabase.rpc("deduct_secret_santa_credits", {
+          p_user_id: user.id,
+          p_amount: tier.cost,
+        });
+        if (dedErr) throw dedErr;
       }
 
       // Stop animation after delay
