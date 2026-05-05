@@ -446,6 +446,27 @@ export function BattleResult({ result, homeName, watermark = "Megatalent" }: Bat
           </p>
         )}
       </div>
+
+      {/* Watermark + footer (visible only during export to keep UI clean) */}
+      {exporting && (
+        <>
+          <div
+            className="pointer-events-none absolute inset-0 flex items-center justify-center"
+            aria-hidden
+          >
+            <span
+              className="font-black tracking-widest text-foreground/[0.06] select-none"
+              style={{ fontSize: "5rem", transform: "rotate(-25deg)" }}
+            >
+              {watermark.toUpperCase()}
+            </span>
+          </div>
+          <div className="mt-3 pt-2 border-t border-border/40 flex items-center justify-between text-[10px] text-muted-foreground tracking-wider">
+            <span className="font-bold">{watermark}</span>
+            <span>Generated {formatTimestamp()}</span>
+          </div>
+        </>
+      )}
     </motion.div>
   );
 }
