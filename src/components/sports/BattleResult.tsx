@@ -29,6 +29,8 @@ interface BattleResultProps {
   homeName: string;
   /** Watermark / contest name shown in exports (default: "Megatalent") */
   watermark?: string;
+  /** Logo image URL used as visual watermark in PNG/PDF exports */
+  watermarkLogo?: string;
 }
 
 /**
