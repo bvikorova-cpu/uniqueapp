@@ -71,8 +71,3 @@ export function MatchSimulator({ onBack }: { onBack: () => void }) {
     </div>
   );
 }
-        </CardContent>
-      </Card>
-    </div>
-  );
-}
