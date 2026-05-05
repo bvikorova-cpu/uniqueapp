@@ -408,11 +408,15 @@ serve(async (req) => {
                     .eq("user_id", userId).maybeSingle();
                   if (cur) {
                     await supabase.from("glamour_coins")
-                      .update({ balance: (cur.balance || 0) + coins, updated_at: new Date().toISOString() })
+                      .update({
+                        balance: (cur.balance || 0) + coins,
+                        total_purchased: ((cur as any).total_purchased || 0) + coins,
+                        updated_at: new Date().toISOString(),
+                      })
                       .eq("user_id", userId);
                   } else {
                     await supabase.from("glamour_coins").insert({
-                      user_id: userId, balance: coins,
+                      user_id: userId, balance: coins, total_purchased: coins,
                     });
                   }
                   if (pr?.id) {
