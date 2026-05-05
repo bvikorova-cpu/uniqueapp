@@ -100,7 +100,9 @@ const HockeyArena = () => {
       <div className="min-h-screen bg-background">
         <div className="container mx-auto px-4 pt-20 pb-8">
           <ArenaAuthGuard onBack={() => setActiveView("hub")} sportName="Hockey Arena">
-            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>{renderView()}</motion.div>
+            <Suspense fallback={<PageLoader />}>
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>{renderView()}</motion.div>
+            </Suspense>
           </ArenaAuthGuard>
         </div>
       </div>
