@@ -96,6 +96,7 @@ const Dating = () => {
   const [likesYouCount, setLikesYouCount] = useState(0);
   const [superLikesRemaining, setSuperLikesRemaining] = useState(5);
   const [cancelingSubscription, setCancelingSubscription] = useState(false);
+  const [subscribing, setSubscribing] = useState(false);
   const [swipeDirection, setSwipeDirection] = useState<"left" | "right" | "up" | null>(null);
   const [activePhotoIndex, setActivePhotoIndex] = useState(0);
   const [activeView, setActiveView] = useState<string>("hub");
