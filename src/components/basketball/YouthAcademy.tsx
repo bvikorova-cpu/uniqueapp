@@ -31,7 +31,8 @@ export function YouthAcademy({ onBack }: { onBack: () => void }) {
       if (error) throw error;
       const jsonMatch = data.response?.match(/\[[\s\S]*\]/);
       if (!jsonMatch) throw new Error("Discovery failed");
-      await supabase.from("basketball_coins").update({ balance: coins.balance - 350, total_spent: coins.total_spent + 350 }).eq("user_id", user.id);
+      const spendRes = await spendSportCoins("basketball_coins", 350);
+      if (!spendRes.ok) { toast.error("Coin deduction failed"); return; }
       setProspects(JSON.parse(jsonMatch[0]));
       toast.success("Youth prospects found! (-350 coins)");
     } catch (e: any) { toast.error(e.message); } finally { setLoading(false); }
