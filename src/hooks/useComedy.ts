@@ -324,32 +324,22 @@ export const useBuyClip = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      const { data: currency } = await supabase
-        .from("comedy_currency")
-        .select("coins")
-        .eq("user_id", user.id)
-        .single();
-
-      if (!currency || currency.coins < price) {
-        throw new Error("Insufficient coins");
+      const { error: spendErr } = await supabase.rpc("spend_comedy_coins", { _amount: price });
+      if (spendErr) {
+        if (/insufficient/i.test(spendErr.message)) throw new Error("Insufficient coins");
+        throw spendErr;
       }
 
       const { data, error } = await supabase
         .from("clip_purchases")
-        .insert({
-          clip_id: clipId,
-          user_id: user.id,
-          price_paid: price,
-        })
+        .insert({ clip_id: clipId, user_id: user.id, price_paid: price })
         .select()
         .single();
 
-      if (error) throw error;
-
-      await supabase
-        .from("comedy_currency")
-        .update({ coins: currency.coins - price })
-        .eq("user_id", user.id);
+      if (error) {
+        await supabase.rpc("add_comedy_coins", { _user_id: user.id, _amount: price, _purchased: false });
+        throw error;
+      }
 
       return data;
     },
