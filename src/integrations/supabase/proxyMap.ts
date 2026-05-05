@@ -200,6 +200,16 @@ export function resolveProxy(
 ): { target: string; body: Record<string, unknown> } | null {
   const b = body && typeof body === "object" ? { ...body } : {};
 
+  // Battle aliases — route to the real `battle-characters` edge function so
+  // legacy callers (`football-simulate-match`, `character-battle`) get the
+  // same payout/RLS behavior without separate functions existing.
+  if (functionName === "character-battle" || functionName === "football-simulate-match") {
+    return {
+      target: "battle-characters",
+      body: { ...b, source: (b as any).source ?? functionName },
+    };
+  }
+
   const aiType = AI_PROXY_MAP[functionName];
   if (aiType) {
     return { target: "generate-gift-message", body: { ...b, type: (b as any).type ?? aiType } };
