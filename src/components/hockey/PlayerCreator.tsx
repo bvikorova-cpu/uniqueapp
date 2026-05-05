@@ -7,6 +7,7 @@ import { ArrowLeft, Loader2, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { spendSportCoins } from "@/lib/sportCoins";
 
 const POSITIONS = [
   { value: "C", label: "Center" },
@@ -29,9 +30,6 @@ export function PlayerCreator({ onBack }: { onBack: () => void }) {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) { toast.error("Please sign in"); return; }
-      const { data: coins } = await supabase.from("hockey_coins").select("*").eq("user_id", user.id).single();
-      if (!coins || coins.balance < 500) { toast.error("Need 500 coins to create a player. Buy coins first!"); return; }
-
       const { data, error } = await supabase.functions.invoke("generate-gift-message", {
         headers: { Authorization: `Bearer ${session.access_token}` },
         body: {

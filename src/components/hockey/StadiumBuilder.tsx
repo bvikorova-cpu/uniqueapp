@@ -5,6 +5,7 @@ import { ArrowLeft, Building } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { spendSportCoins } from "@/lib/sportCoins";
 
 const UPGRADES = [
   { name: "Expand Seating", field: "capacity", add: 2000, cost: 1000, desc: "+2,000 seats" },
