@@ -168,33 +168,48 @@ export function BattleResult({ result, homeName, watermark = "Megatalent", water
 
       pdf.addImage(imgData, "PNG", margin, margin + 28, imgW, imgH);
 
-      // Diagonal watermark across page
-      pdf.setTextColor(120, 120, 140);
-      pdf.setFontSize(60);
+      // Diagonal logo + text watermark across page
       const anyPdf = pdf as any;
-      if (anyPdf.GState) {
-        try {
-          anyPdf.setGState(new anyPdf.GState({ opacity: 0.08 }));
-        } catch {
-          /* noop */
+      const setOpacity = (o: number) => {
+        if (anyPdf.GState) {
+          try { anyPdf.setGState(new anyPdf.GState({ opacity: o })); } catch { /* noop */ }
         }
+      };
+      if (watermarkLogo) {
+        try {
+          setOpacity(0.07);
+          const logoSize = Math.min(pageW, pageH) * 0.55;
+          pdf.addImage(
+            watermarkLogo,
+            "PNG",
+            (pageW - logoSize) / 2,
+            (pageH - logoSize) / 2,
+            logoSize,
+            logoSize,
+            undefined,
+            "FAST"
+          );
+          setOpacity(1);
+        } catch { /* noop */ }
       }
-      pdf.text(watermark.toUpperCase(), pageW / 2, pageH / 2, {
+      setOpacity(0.08);
+      pdf.setTextColor(120, 120, 140);
+      pdf.setFontSize(48);
+      pdf.text(watermark.toUpperCase(), pageW / 2, pageH / 2 + 70, {
         align: "center",
-        angle: -30,
+        angle: -20,
       } as any);
-      if (anyPdf.GState) {
-        try {
-          anyPdf.setGState(new anyPdf.GState({ opacity: 1 }));
-        } catch {
-          /* noop */
-        }
-      }
+      setOpacity(1);
 
-      // Footer
+      // Footer with small logo
+      if (watermarkLogo) {
+        try {
+          pdf.addImage(watermarkLogo, "PNG", margin, pageH - margin / 2 - 14, 16, 16, undefined, "FAST");
+        } catch { /* noop */ }
+      }
       pdf.setFontSize(9);
       pdf.setTextColor(150, 150, 160);
-      pdf.text(`${watermark} • Generated ${ts}`, margin, pageH - margin / 2);
+      pdf.text(`${watermark} • Generated ${ts}`, margin + (watermarkLogo ? 22 : 0), pageH - margin / 2);
       pdf.text("uniqueapp.fun", pageW - margin, pageH - margin / 2, { align: "right" });
 
       pdf.save(`${baseFilename()}.pdf`);
