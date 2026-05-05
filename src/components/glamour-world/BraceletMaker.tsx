@@ -22,7 +22,7 @@ export function BraceletMaker({ onBack }: { onBack: () => void }) {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Please sign in");
       const { data, error } = await supabase.functions.invoke("glamour-ai-generate", {
-        body: { type: "bracelet", prompt: `Design a ${type}. ${details}. Include: materials list, color pattern, step-by-step instructions, and personalization ideas.` },
+        body: { type: "bracelet", prompt: `Design a ${type}. ${details}. Include: materials list, color pattern, step-by-step instructions, and personalization ideas.`, coins: 3 },
       });
       if (error) throw error;
       setResult(data.result);
@@ -31,7 +31,12 @@ export function BraceletMaker({ onBack }: { onBack: () => void }) {
         prompt: details, result_text: data.result, credits_used: 3,
       });
     } catch (e: any) {
-      toast({ title: "Error", description: e.message, variant: "destructive" });
+      const isCoinsErr = e?.context?.status === 402 || (typeof e?.message === "string" && e.message.includes("insufficient_glamour_coins"));
+        if (isCoinsErr) {
+          toast({ title: "Not enough Glamour Coins ✨", description: "Buy more coins in the Coin Shop to keep creating!", variant: "destructive" });
+        } else {
+          toast({ title: "Error", description: e.message, variant: "destructive" });
+        }
     } finally { setLoading(false); }
   };
 

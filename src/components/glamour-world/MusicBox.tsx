@@ -22,7 +22,7 @@ export function MusicBox({ onBack }: { onBack: () => void }) {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Please sign in");
       const { data, error } = await supabase.functions.invoke("glamour-ai-generate", {
-        body: { type: "music", prompt: `Write a ${genre} song. Theme: ${theme || "being yourself"}. Include: song title, verse 1, chorus, verse 2, bridge, final chorus, and performance notes.` },
+        body: { type: "music", prompt: `Write a ${genre} song. Theme: ${theme || "being yourself"}. Include: song title, verse 1, chorus, verse 2, bridge, final chorus, and performance notes.`, coins: 4 },
       });
       if (error) throw error;
       setResult(data.result);
@@ -31,7 +31,12 @@ export function MusicBox({ onBack }: { onBack: () => void }) {
         prompt: theme, result_text: data.result, credits_used: 4,
       });
     } catch (e: any) {
-      toast({ title: "Error", description: e.message, variant: "destructive" });
+      const isCoinsErr = e?.context?.status === 402 || (typeof e?.message === "string" && e.message.includes("insufficient_glamour_coins"));
+        if (isCoinsErr) {
+          toast({ title: "Not enough Glamour Coins ✨", description: "Buy more coins in the Coin Shop to keep creating!", variant: "destructive" });
+        } else {
+          toast({ title: "Error", description: e.message, variant: "destructive" });
+        }
     } finally { setLoading(false); }
   };
 

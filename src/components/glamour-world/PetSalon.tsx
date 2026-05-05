@@ -38,7 +38,12 @@ export function PetSalon({ onBack }: { onBack: () => void }) {
       setPetName(""); setPetSpecies("");
       refetch();
     } catch (e: any) {
-      toast({ title: "Error", description: e.message, variant: "destructive" });
+      const isCoinsErr = e?.context?.status === 402 || (typeof e?.message === "string" && e.message.includes("insufficient_glamour_coins"));
+        if (isCoinsErr) {
+          toast({ title: "Not enough Glamour Coins ✨", description: "Buy more coins in the Coin Shop to keep creating!", variant: "destructive" });
+        } else {
+          toast({ title: "Error", description: e.message, variant: "destructive" });
+        }
     }
   };
 
@@ -49,7 +54,7 @@ export function PetSalon({ onBack }: { onBack: () => void }) {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Please sign in");
       const { data, error } = await supabase.functions.invoke("glamour-ai-generate", {
-        body: { type: "pet_grooming", prompt: `Groom a pet in ${groomStyle} style. Describe the new look, accessories, and how the pet feels.` },
+        body: { type: "pet_grooming", prompt: `Groom a pet in ${groomStyle} style. Describe the new look, accessories, and how the pet feels.`, coins: 3 },
       });
       if (error) throw error;
       setResult(data.result);

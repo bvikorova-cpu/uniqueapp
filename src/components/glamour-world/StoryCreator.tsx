@@ -35,7 +35,7 @@ export function StoryCreator({ onBack }: { onBack: () => void }) {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Please sign in");
       const { data, error } = await supabase.functions.invoke("glamour-ai-generate", {
-        body: { type: "story", prompt: `Write a magical ${genre} story titled "${title}". Characters: ${characters || "a brave princess"}. Make it enchanting, fun, and with a happy ending. Include dialogue and vivid descriptions.` },
+        body: { type: "story", prompt: `Write a magical ${genre} story titled "${title}". Characters: ${characters || "a brave princess"}. Make it enchanting, fun, and with a happy ending. Include dialogue and vivid descriptions.`, coins: 5 },
       });
       if (error) throw error;
       setResult(data.result);
@@ -44,7 +44,12 @@ export function StoryCreator({ onBack }: { onBack: () => void }) {
         story_text: data.result, credits_used: 5,
       });
     } catch (e: any) {
-      toast({ title: "Error", description: e.message, variant: "destructive" });
+      const isCoinsErr = e?.context?.status === 402 || (typeof e?.message === "string" && e.message.includes("insufficient_glamour_coins"));
+        if (isCoinsErr) {
+          toast({ title: "Not enough Glamour Coins ✨", description: "Buy more coins in the Coin Shop to keep creating!", variant: "destructive" });
+        } else {
+          toast({ title: "Error", description: e.message, variant: "destructive" });
+        }
     } finally { setLoading(false); }
   };
 

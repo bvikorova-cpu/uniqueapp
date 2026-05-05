@@ -22,7 +22,7 @@ export function DanceStudio({ onBack }: { onBack: () => void }) {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Please sign in");
       const { data, error } = await supabase.functions.invoke("glamour-ai-generate", {
-        body: { type: "dance", prompt: `Create a ${style} dance choreography for ${level || "beginners"}. Include: warm-up, step-by-step moves, counts, music suggestion, outfit recommendation, and cool-down stretches.` },
+        body: { type: "dance", prompt: `Create a ${style} dance choreography for ${level || "beginners"}. Include: warm-up, step-by-step moves, counts, music suggestion, outfit recommendation, and cool-down stretches.`, coins: 4 },
       });
       if (error) throw error;
       setResult(data.result);
@@ -31,7 +31,12 @@ export function DanceStudio({ onBack }: { onBack: () => void }) {
         prompt: level, result_text: data.result, credits_used: 4,
       });
     } catch (e: any) {
-      toast({ title: "Error", description: e.message, variant: "destructive" });
+      const isCoinsErr = e?.context?.status === 402 || (typeof e?.message === "string" && e.message.includes("insufficient_glamour_coins"));
+        if (isCoinsErr) {
+          toast({ title: "Not enough Glamour Coins ✨", description: "Buy more coins in the Coin Shop to keep creating!", variant: "destructive" });
+        } else {
+          toast({ title: "Error", description: e.message, variant: "destructive" });
+        }
     } finally { setLoading(false); }
   };
 

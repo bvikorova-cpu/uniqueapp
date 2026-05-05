@@ -44617,6 +44617,7 @@ export type Database = {
         Args: { p_amount: number; p_user_id: string }
         Returns: undefined
       }
+      spend_glamour_coins: { Args: { _amount: number }; Returns: number }
       spin_lucky_wheel: { Args: never; Returns: Json }
       update_battle_stats: {
         Args: { loser_id: string; winner_id: string }

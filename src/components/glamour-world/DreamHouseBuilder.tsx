@@ -25,7 +25,7 @@ export function DreamHouseBuilder({ onBack }: { onBack: () => void }) {
       if (!user) throw new Error("Please sign in");
 
       const { data, error } = await supabase.functions.invoke("glamour-ai-generate", {
-        body: { type: "dream_house", prompt: `Design a ${style} style ${room}. Details: ${details}` },
+        body: { type: "dream_house", prompt: `Design a ${style} style ${room}. Details: ${details}`, coins: 5 },
       });
       if (error) throw error;
 
@@ -35,7 +35,12 @@ export function DreamHouseBuilder({ onBack }: { onBack: () => void }) {
         prompt: details, result_text: data.result, credits_used: 5,
       });
     } catch (e: any) {
-      toast({ title: "Error", description: e.message, variant: "destructive" });
+      const isCoinsErr = e?.context?.status === 402 || (typeof e?.message === "string" && e.message.includes("insufficient_glamour_coins"));
+        if (isCoinsErr) {
+          toast({ title: "Not enough Glamour Coins ✨", description: "Buy more coins in the Coin Shop to keep creating!", variant: "destructive" });
+        } else {
+          toast({ title: "Error", description: e.message, variant: "destructive" });
+        }
     } finally {
       setLoading(false);
     }

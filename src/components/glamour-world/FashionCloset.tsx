@@ -24,7 +24,7 @@ export function FashionCloset({ onBack }: { onBack: () => void }) {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Please sign in");
       const { data, error } = await supabase.functions.invoke("glamour-ai-generate", {
-        body: { type: "outfit", prompt: `Create a perfect ${season} outfit for a ${occasion}. Preferences: ${preferences}. Include: top, bottom, shoes, accessories, hairstyle suggestion, and color palette.` },
+        body: { type: "outfit", prompt: `Create a perfect ${season} outfit for a ${occasion}. Preferences: ${preferences}. Include: top, bottom, shoes, accessories, hairstyle suggestion, and color palette.`, coins: 4 },
       });
       if (error) throw error;
       setResult(data.result);
@@ -33,7 +33,12 @@ export function FashionCloset({ onBack }: { onBack: () => void }) {
         prompt: preferences, result_text: data.result, credits_used: 4,
       });
     } catch (e: any) {
-      toast({ title: "Error", description: e.message, variant: "destructive" });
+      const isCoinsErr = e?.context?.status === 402 || (typeof e?.message === "string" && e.message.includes("insufficient_glamour_coins"));
+        if (isCoinsErr) {
+          toast({ title: "Not enough Glamour Coins ✨", description: "Buy more coins in the Coin Shop to keep creating!", variant: "destructive" });
+        } else {
+          toast({ title: "Error", description: e.message, variant: "destructive" });
+        }
     } finally { setLoading(false); }
   };
 
