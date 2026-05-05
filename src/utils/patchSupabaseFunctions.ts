@@ -253,7 +253,7 @@ const FUNCTION_ALIASES: Record<string, AliasEntry> = {
   "send-dating-gift":                   { target: "create-checkout", bodyExtras: { product: "dating_gift" } },
   "submit-fashion-challenge":           { target: "create-checkout", bodyExtras: { product: "fashion_challenge_submit" } },
   "vote-fashion-challenge":             { target: "create-checkout", bodyExtras: { product: "fashion_challenge_vote" } },
-  "open-mystery-box":                   { target: "create-checkout", bodyExtras: { product: "mystery_box_open" } },
+  
   "trade-phobia":                       { target: "create-checkout", bodyExtras: { product: "phobia_trade" } },
   "enroll-premium-course":              { target: "create-checkout", bodyExtras: { product: "course_enroll" } },
   "coupon-marketplace-access":          { target: "create-checkout", bodyExtras: { product: "coupon_marketplace" } },

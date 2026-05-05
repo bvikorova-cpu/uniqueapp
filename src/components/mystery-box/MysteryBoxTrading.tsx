@@ -45,33 +45,12 @@ export const MysteryBoxTrading = ({ onBack }: Props) => {
 
     setLoading(true);
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Not authenticated");
-
-      const { data: profiles } = await supabase.from('profiles').select('id').eq('email', recipientEmail).maybeSingle();
-      if (!profiles) {
-        toast.error("User not found. Check the email address.");
-        setLoading(false);
-        return;
-      }
-
-      await supabase.from('ai_credits').update({
-        credits_remaining: credits.credits_remaining - giftCredits
-      }).eq('user_id', user.id);
-
-      const { data: recipientCredits } = await supabase.from('ai_credits').select('credits_remaining').eq('user_id', profiles.id).single();
-      if (recipientCredits) {
-        await supabase.from('ai_credits').update({
-          credits_remaining: recipientCredits.credits_remaining + giftCredits
-        }).eq('user_id', profiles.id);
-      }
-
-      await supabase.from('ai_usage_history').insert({
-        user_id: user.id,
-        usage_type: 'gift_credits',
-        credits_used: giftCredits,
-        description: `Gifted ${giftCredits} credits to ${recipientEmail}${giftMessage ? ` — "${giftMessage}"` : ''}`
+      const { error } = await supabase.rpc('gift_ai_credits', {
+        p_recipient_email: recipientEmail,
+        p_amount: giftCredits,
+        p_message: giftMessage || null,
       });
+      if (error) throw error;
 
       await Promise.all([refresh(), loadData()]);
       toast.success(`🎁 ${giftCredits} credits sent to ${recipientEmail}!`);

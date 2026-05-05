@@ -72,9 +72,8 @@ export const MysteryBoxShop = ({ onBack, onOpenBox }: Props) => {
     }
     setPurchasing(box.id);
     try {
-      await supabase.from('ai_credits').update({ credits_remaining: credits.credits_remaining - box.price }).eq('user_id', user.id);
-      await supabase.from('user_mystery_boxes').insert({ user_id: user.id, box_id: box.id });
-      await supabase.from('ai_usage_history').insert({ user_id: user.id, usage_type: 'mystery_box_purchase', credits_used: box.price, description: `Purchased ${box.name}` });
+      const { error } = await supabase.rpc('purchase_mystery_box', { p_box_id: box.id });
+      if (error) throw error;
       toast.success(`${box.name} purchased!`);
       await Promise.all([loadData(), refresh()]);
     } catch (e: any) {
@@ -96,9 +95,7 @@ export const MysteryBoxShop = ({ onBack, onOpenBox }: Props) => {
     await new Promise(r => setTimeout(r, 800));
 
     try {
-      const { data, error } = await supabase.functions.invoke('open-mystery-box', {
-        body: { boxId: userBox.box_id },
-      });
+      const { data, error } = await supabase.rpc('open_mystery_box', { p_user_box_id: userBox.id });
       if (error) throw error;
 
       setOpeningPhase("reveal");
