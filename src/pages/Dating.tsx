@@ -96,6 +96,7 @@ const Dating = () => {
   const [likesYouCount, setLikesYouCount] = useState(0);
   const [superLikesRemaining, setSuperLikesRemaining] = useState(5);
   const [cancelingSubscription, setCancelingSubscription] = useState(false);
+  const [subscribing, setSubscribing] = useState(false);
   const [swipeDirection, setSwipeDirection] = useState<"left" | "right" | "up" | null>(null);
   const [activePhotoIndex, setActivePhotoIndex] = useState(0);
   const [activeView, setActiveView] = useState<string>("hub");
@@ -183,6 +184,8 @@ const Dating = () => {
 
   const handleSubscribe = async (planType: 'monthly' | 'yearly') => {
     if (!user) { toast({ title: "Login Required", description: "You must log in to access", variant: "destructive" }); return; }
+    if (subscribing) return; // double-submit guard
+    setSubscribing(true);
     try {
       const { data, error } = await supabase.functions.invoke('create-checkout', {
         body: { product: planType === 'monthly' ? 'dating_monthly' : 'dating_yearly' },
@@ -191,6 +194,7 @@ const Dating = () => {
       window.location.href = data.url;
     } catch (e: any) {
       toast({ title: "Error", description: e?.message || "Failed to start checkout", variant: "destructive" });
+      setSubscribing(false);
     }
   };
 
@@ -330,6 +334,7 @@ const Dating = () => {
 
   const handleCancelSubscription = async () => {
     if (!user) return;
+    if (cancelingSubscription) return; // double-submit guard
     setCancelingSubscription(true);
     try {
       const { data, error } = await supabase.functions.invoke('cancel-subscription', { body: { subscriptionType: 'dating' } });
@@ -491,9 +496,9 @@ const Dating = () => {
               </Card>
             </div>
             <div className="text-center mt-8 space-y-4">
-              <Button onClick={() => handleSubscribe(selectedPlan)} size="lg" className="w-full max-w-md mx-auto text-base py-6 bg-gradient-to-r from-primary to-accent hover:opacity-90 text-white shadow-lg">
+              <Button onClick={() => handleSubscribe(selectedPlan)} disabled={subscribing} size="lg" className="w-full max-w-md mx-auto text-base py-6 bg-gradient-to-r from-primary to-accent hover:opacity-90 text-white shadow-lg disabled:opacity-60">
                 <Heart className="mr-2 h-5 w-5" />
-                Get Started — {selectedPlan === 'monthly' ? '€2/month' : '€20/year'}
+                {subscribing ? "Redirecting to Stripe…" : `Get Started — ${selectedPlan === 'monthly' ? '€2/month' : '€20/year'}`}
               </Button>
               <p className="text-xs text-muted-foreground">Cancel anytime • Secure payment • 100% satisfaction guarantee</p>
             </div>
