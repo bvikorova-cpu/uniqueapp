@@ -6,6 +6,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { spendSportCoins } from "@/lib/sportCoins";
+import { BattleResult } from "@/components/sports/BattleResult";
+import { computeBattlePower, opponentPower } from "@/lib/battlePower";
 
 export function MatchSimulator({ onBack }: { onBack: () => void }) {
   const { user } = useAuth();
