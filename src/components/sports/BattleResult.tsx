@@ -1,6 +1,5 @@
 import { motion } from "framer-motion";
-import { Trophy, Skull, Swords, Star, Zap, Coins } from "lucide-react";
-import { Progress } from "@/components/ui/progress";
+import { Trophy, Skull, Swords, Star, Zap, Coins, Clock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 interface BattleResultProps {
@@ -11,6 +10,10 @@ interface BattleResultProps {
     opponent_name: string;
     mvp?: string;
     mvp_stats?: string;
+    /** Optional label of the period where MVP shined (e.g. "Q3", "Set 2") */
+    mvp_period?: string;
+    /** Optional label of the period where the biggest coin reward was earned */
+    reward_period?: string;
     highlights?: string[];
     coins_reward: number;
     home_power: number;
@@ -19,6 +22,33 @@ interface BattleResultProps {
     breakdown?: { label: string; home: number; away: number }[];
   };
   homeName: string;
+}
+
+/**
+ * Bucket highlight strings into period buckets. If the highlight starts with
+ * a period token (e.g. "Q2:", "Set 1 -", "P3 ") it is assigned there; otherwise
+ * highlights are distributed evenly across the available periods.
+ */
+function bucketHighlights(
+  highlights: string[],
+  periods: { label: string }[]
+): { label: string; items: string[] }[] {
+  const buckets = periods.map((p) => ({ label: p.label, items: [] as string[] }));
+  if (buckets.length === 0) return [];
+  const remaining: string[] = [];
+  highlights.forEach((h) => {
+    const match = buckets.find((b) =>
+      new RegExp(`^\\s*${b.label.replace(/\s+/g, "\\s*")}\\b`, "i").test(h)
+    );
+    if (match) {
+      match.items.push(h.replace(new RegExp(`^\\s*${match.label}\\s*[:\\-–]?\\s*`, "i"), ""));
+    } else {
+      remaining.push(h);
+    }
+  });
+  // Distribute the rest round-robin
+  remaining.forEach((h, i) => buckets[i % buckets.length].items.push(h));
+  return buckets;
 }
 
 export function BattleResult({ result, homeName }: BattleResultProps) {
