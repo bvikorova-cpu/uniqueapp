@@ -5,6 +5,8 @@ import { ArrowLeft, Loader2, Swords } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { BattleResult } from "@/components/sports/BattleResult";
+import { computeBattlePower, opponentPower } from "@/lib/battlePower";
 
 export function MatchSimulator({ onBack }: { onBack: () => void }) {
   const { user } = useAuth();
@@ -41,11 +43,14 @@ export function MatchSimulator({ onBack }: { onBack: () => void }) {
       const matchResult = JSON.parse(jsonMatch[0]);
 
       const won = matchResult.home_score > matchResult.away_score;
+      const home_power = computeBattlePower(players || [], team, matchResult.home_score);
+      const away_power = opponentPower(matchResult.away_score);
       await supabase.from("american_football_coins").update({ balance: coins.balance - 300 + matchResult.coins_reward, total_spent: coins.total_spent + 300 }).eq("user_id", user.id);
       await supabase.from("american_football_teams").update({ wins: team.wins + (won ? 1 : 0), losses: team.losses + (won ? 0 : 1) }).eq("id", team.id);
       await supabase.from("american_football_matches").insert({ home_team_id: team.id, home_score: matchResult.home_score, away_score: matchResult.away_score, quarter_scores: matchResult.quarters, coins_reward: matchResult.coins_reward, status: "completed" });
 
-      setResult({ ...matchResult, won });
+      const breakdown = (matchResult.quarters || []).map((q: any) => ({ label: `Q${q.q}`, home: q.home, away: q.away }));
+      setResult({ ...matchResult, won, home_power, away_power, breakdown });
       toast.success(won ? "Victory! 🏆" : "Defeat! Better luck next game.");
     } catch (e: any) { toast.error(e.message); } finally { setLoading(false); }
   };
@@ -60,19 +65,7 @@ export function MatchSimulator({ onBack }: { onBack: () => void }) {
           <Button className="w-full" onClick={simulate} disabled={loading || !team}>
             {loading ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" />Simulating...</> : "Play Game (300 coins)"}
           </Button>
-          {result && (
-            <div className={`p-4 rounded-lg border ${result.won ? "bg-emerald-500/10 border-emerald-500/30" : "bg-red-500/10 border-red-500/30"}`}>
-              <div className="text-center mb-3">
-                <span className="text-2xl font-black">{result.home_score} - {result.away_score}</span>
-                <p className="text-sm text-muted-foreground">vs {result.opponent_name}</p>
-                <p className={`font-bold ${result.won ? "text-emerald-400" : "text-red-400"}`}>{result.won ? "VICTORY" : "DEFEAT"}</p>
-              </div>
-              {result.quarters && <div className="flex justify-center gap-4 text-xs mb-3">{result.quarters.map((q: any, i: number) => <span key={i}>Q{q.q}: {q.home}-{q.away}</span>)}</div>}
-              <p className="text-sm text-center">🏅 MVP: {result.mvp} ({result.mvp_stats})</p>
-              <div className="mt-2 space-y-1">{result.highlights?.map((h: string, i: number) => <p key={i} className="text-xs text-muted-foreground">• {h}</p>)}</div>
-              <p className="text-center text-sm mt-2 text-primary">+{result.coins_reward} coins earned!</p>
-            </div>
-          )}
+          {result && <BattleResult result={result} homeName={team?.name || "Your Team"} />}
         </CardContent>
       </Card>
     </div>

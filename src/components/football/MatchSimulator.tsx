@@ -6,6 +6,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
+import { BattleResult } from "@/components/sports/BattleResult";
+import { computeBattlePower, opponentPower } from "@/lib/battlePower";
 
 const events = ["⚽ GOAL!", "🎯 Shot on target", "🛡️ Great save!", "🔄 Substitution", "⚠️ Yellow card", "🏃 Counter attack", "📐 Corner kick", "🎯 Free kick"];
 
@@ -65,7 +67,22 @@ export const MatchSimulator = ({ onBack }: { onBack: () => void }) => {
         setMatchLog(prev => [...prev, log[i]]);
       }
 
-      const matchResult = { homeTeam: team.name, awayTeam: opponentName, homeScore, awayScore };
+      const home_power = computeBattlePower(squadPlayers || [], team, homeScore);
+      const away_power = opponentPower(awayScore);
+      const won_eval = homeScore > awayScore;
+      const reward = won_eval ? 200 : homeScore === awayScore ? 50 : 10;
+      const matchResult = {
+        opponent_name: opponentName,
+        home_score: homeScore,
+        away_score: awayScore,
+        won: won_eval,
+        home_power,
+        away_power,
+        coins_reward: reward,
+        highlights: log.slice(0, 4),
+        mvp: squadPlayers && squadPlayers.length > 0 ? squadPlayers.sort((a, b) => b.overall_rating - a.overall_rating)[0]?.name : undefined,
+        mvp_stats: `Squad rating ${squadRating} vs ${opponentRating}`,
+      };
       setResult(matchResult);
 
       const won = homeScore > awayScore;
@@ -115,18 +132,7 @@ export const MatchSimulator = ({ onBack }: { onBack: () => void }) => {
               </CardContent>
             </Card>
           )}
-          {result && (
-            <Card className="border-emerald-500/30 bg-gradient-to-br from-emerald-500/10 to-transparent">
-              <CardContent className="pt-6 text-center">
-                <p className="text-sm text-muted-foreground mb-2">Full Time</p>
-                <div className="flex items-center justify-center gap-6">
-                  <div><p className="font-bold">{result.homeTeam}</p><p className="text-4xl font-black">{result.homeScore}</p></div>
-                  <p className="text-2xl text-muted-foreground">-</p>
-                  <div><p className="font-bold">{result.awayTeam}</p><p className="text-4xl font-black">{result.awayScore}</p></div>
-                </div>
-              </CardContent>
-            </Card>
-          )}
+          {result && <BattleResult result={result} homeName={team.name} />}
         </>
       )}
     </div>
