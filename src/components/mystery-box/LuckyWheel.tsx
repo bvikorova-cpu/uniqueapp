@@ -47,15 +47,24 @@ export const LuckyWheel = ({ onBack }: Props) => {
     setSpinning(true);
     setResult(null);
 
-    await supabase.from('ai_credits').update({ credits_remaining: credits.credits_remaining - SPIN_COST }).eq('user_id', user.id);
-    await supabase.from('ai_usage_history').insert({ user_id: user.id, usage_type: 'lucky_wheel_spin', credits_used: SPIN_COST, description: 'Lucky Wheel spin' });
-
     const rand = Math.random() * 100;
     let cumulative = 0;
     let prizeIndex = 0;
     for (let i = 0; i < PRIZES.length; i++) {
       cumulative += PRIZES[i].chance;
       if (rand <= cumulative) { prizeIndex = i; break; }
+    }
+    const prize = PRIZES[prizeIndex];
+
+    const { error: spinError } = await supabase.rpc('lucky_wheel_spin', {
+      p_cost: SPIN_COST,
+      p_prize: prize.value,
+      p_label: prize.label,
+    });
+    if (spinError) {
+      setSpinning(false);
+      toast.error(spinError.message || "Spin failed");
+      return;
     }
 
     const targetAngle = 360 - (prizeIndex * segmentAngle + segmentAngle / 2);
@@ -64,20 +73,11 @@ export const LuckyWheel = ({ onBack }: Props) => {
     setRotation(newRotation);
 
     setTimeout(async () => {
-      const prize = PRIZES[prizeIndex];
       setResult(prize.label);
-
-      if (prize.value > 0) {
-        await supabase.from('ai_credits').update({
-          credits_remaining: credits.credits_remaining - SPIN_COST + prize.value
-        }).eq('user_id', user.id);
-        setTotalWon(t => t + prize.value);
-      }
-
+      if (prize.value > 0) setTotalWon(t => t + prize.value);
       if (prize.value >= 100) {
         confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 }, colors: ['#FFD700', '#FFA500', '#FF4500'] });
       }
-
       await refresh();
       setSpinsToday(s => s + 1);
       setSpinning(false);

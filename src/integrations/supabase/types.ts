@@ -44094,6 +44094,10 @@ export type Database = {
         Args: { p_theme_id: string; p_user_id: string }
         Returns: undefined
       }
+      add_ai_credits: {
+        Args: { p_amount: number; p_user_id: string }
+        Returns: boolean
+      }
       add_comedy_coins: {
         Args: { _amount: number; _purchased?: boolean; _user_id: string }
         Returns: number
@@ -44454,6 +44458,14 @@ export type Database = {
           weekly_xp: number
         }[]
       }
+      gift_ai_credits: {
+        Args: {
+          p_amount: number
+          p_message?: string
+          p_recipient_email: string
+        }
+        Returns: boolean
+      }
       gift_xp: {
         Args: { _amount: number; _message?: string; _recipient: string }
         Returns: Json
@@ -44554,6 +44566,11 @@ export type Database = {
         }
         Returns: string
       }
+      lucky_wheel_spin: {
+        Args: { p_cost: number; p_label: string; p_prize: number }
+        Returns: boolean
+      }
+      open_mystery_box: { Args: { p_user_box_id: string }; Returns: Json }
       payout_requires_review: {
         Args: {
           _amount_cents: number
@@ -44634,6 +44651,7 @@ export type Database = {
         Args: { buyer_id: string; listing_id: string }
         Returns: undefined
       }
+      purchase_mystery_box: { Args: { p_box_id: string }; Returns: string }
       recompute_affiliate_tier: {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["affiliate_tier"]
