@@ -280,6 +280,3 @@ export function BattleResult({ result, homeName }: BattleResultProps) {
     </motion.div>
   );
 }
-    </motion.div>
-  );
-}
