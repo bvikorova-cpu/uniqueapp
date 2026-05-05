@@ -6,6 +6,7 @@ import { ArrowLeft, Dumbbell, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { spendSportCoins } from "@/lib/sportCoins";
 
 const DRILLS = [
   { type: "Shooting Drills", stat: "shooting", cost: 200 },
