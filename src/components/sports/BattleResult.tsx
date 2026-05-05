@@ -313,7 +313,15 @@ export function BattleResult({ result, homeName }: BattleResultProps) {
             {timeline.map((bucket, bi) => {
               if (bucket.items.length === 0) return null;
               const period = periods.find((p) => p.label === bucket.label);
+              const draw = period ? period.home === period.away : false;
               const homeWon = period ? period.home > period.away : false;
+              const winnerBadge = !period
+                ? null
+                : draw
+                  ? { text: "DRAW", cls: "border-muted-foreground/40 text-muted-foreground bg-muted/30" }
+                  : homeWon
+                    ? { text: `${homeName.toUpperCase()} WON`, cls: "border-emerald-500/50 text-emerald-300 bg-emerald-500/10" }
+                    : { text: `${result.opponent_name.toUpperCase()} WON`, cls: "border-red-500/50 text-red-300 bg-red-500/10" };
               return (
                 <motion.div
                   key={bi}
@@ -324,19 +332,29 @@ export function BattleResult({ result, homeName }: BattleResultProps) {
                 >
                   <span
                     className={`absolute -left-[17px] top-1 h-3 w-3 rounded-full border-2 ${
-                      homeWon
-                        ? "bg-emerald-500 border-emerald-300"
-                        : "bg-red-500 border-red-300"
+                      draw
+                        ? "bg-muted border-muted-foreground/50"
+                        : homeWon
+                          ? "bg-emerald-500 border-emerald-300"
+                          : "bg-red-500 border-red-300"
                     }`}
                   />
-                  <p className="text-[11px] font-bold text-foreground/90 flex items-center gap-2">
-                    {bucket.label}
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <p className="text-[11px] font-bold text-foreground/90">{bucket.label}</p>
                     {period && (
                       <span className="text-[10px] font-normal text-muted-foreground">
                         {period.home}-{period.away}
                       </span>
                     )}
-                  </p>
+                    {winnerBadge && (
+                      <Badge
+                        variant="outline"
+                        className={`text-[9px] px-1.5 py-0 h-4 tracking-wider ${winnerBadge.cls}`}
+                      >
+                        {winnerBadge.text}
+                      </Badge>
+                    )}
+                  </div>
                   <div className="space-y-0.5 mt-1">
                     {bucket.items.map((h, hi) => (
                       <p key={hi} className="text-xs text-muted-foreground">
