@@ -1,31 +1,33 @@
-import { useState, useEffect } from "react";
+import { lazy, Suspense, useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { UserPlus, ShoppingCart, Shield, Dumbbell, ShoppingBag, Swords, Trophy, Map, Search, Building, ArrowUpDown, Medal, GraduationCap, BarChart3, Coins, Crosshair, Gamepad2 } from "lucide-react";
 import { ArenaAuthGuard } from "@/components/arena/ArenaAuthGuard";
 import { HockeyArenaHero } from "@/components/hockey/HockeyArenaHero";
 import { HockeyEngagement } from "@/components/hockey/HockeyEngagement";
 import { HockeyToolCard } from "@/components/hockey/HockeyToolCard";
-import { PlayerCreator } from "@/components/hockey/PlayerCreator";
-import { PlayerMarket } from "@/components/hockey/PlayerMarket";
-import { TeamBuilder } from "@/components/hockey/TeamBuilder";
-import { TrainingCenter } from "@/components/hockey/TrainingCenter";
-import { EquipmentShop } from "@/components/hockey/EquipmentShop";
-import { MatchSimulator } from "@/components/hockey/MatchSimulator";
-import { LeagueSystem } from "@/components/hockey/LeagueSystem";
-import { TacticsBoard } from "@/components/hockey/TacticsBoard";
-import { ScoutNetwork } from "@/components/hockey/ScoutNetwork";
-import { StadiumBuilder } from "@/components/hockey/StadiumBuilder";
-import { TransferMarket } from "@/components/hockey/TransferMarket";
-import { TrophyRoom } from "@/components/hockey/TrophyRoom";
-import { YouthAcademy } from "@/components/hockey/YouthAcademy";
-import { MatchAnalysis } from "@/components/hockey/MatchAnalysis";
-import { CoinShop } from "@/components/hockey/CoinShop";
-import { PenaltyShot3D } from "@/components/hockey/PenaltyShot3D";
-import { EmbeddedGame } from "@/components/arena/EmbeddedGame";
+import { PageLoader } from "@/components/ui/PageLoader";
 import { supabase } from "@/integrations/supabase/client";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 type ViewType = "hub" | "player-creator" | "player-market" | "team-builder" | "training" | "equipment" | "match" | "league" | "tactics" | "scout" | "stadium" | "transfers" | "trophies" | "youth" | "analysis" | "coins" | "penalty-shot" | "play-game";
+
+const PlayerCreator = lazy(() => import("@/components/hockey/PlayerCreator").then((m) => ({ default: m.PlayerCreator })));
+const PlayerMarket = lazy(() => import("@/components/hockey/PlayerMarket").then((m) => ({ default: m.PlayerMarket })));
+const TeamBuilder = lazy(() => import("@/components/hockey/TeamBuilder").then((m) => ({ default: m.TeamBuilder })));
+const TrainingCenter = lazy(() => import("@/components/hockey/TrainingCenter").then((m) => ({ default: m.TrainingCenter })));
+const EquipmentShop = lazy(() => import("@/components/hockey/EquipmentShop").then((m) => ({ default: m.EquipmentShop })));
+const MatchSimulator = lazy(() => import("@/components/hockey/MatchSimulator").then((m) => ({ default: m.MatchSimulator })));
+const LeagueSystem = lazy(() => import("@/components/hockey/LeagueSystem").then((m) => ({ default: m.LeagueSystem })));
+const TacticsBoard = lazy(() => import("@/components/hockey/TacticsBoard").then((m) => ({ default: m.TacticsBoard })));
+const ScoutNetwork = lazy(() => import("@/components/hockey/ScoutNetwork").then((m) => ({ default: m.ScoutNetwork })));
+const StadiumBuilder = lazy(() => import("@/components/hockey/StadiumBuilder").then((m) => ({ default: m.StadiumBuilder })));
+const TransferMarket = lazy(() => import("@/components/hockey/TransferMarket").then((m) => ({ default: m.TransferMarket })));
+const TrophyRoom = lazy(() => import("@/components/hockey/TrophyRoom").then((m) => ({ default: m.TrophyRoom })));
+const YouthAcademy = lazy(() => import("@/components/hockey/YouthAcademy").then((m) => ({ default: m.YouthAcademy })));
+const MatchAnalysis = lazy(() => import("@/components/hockey/MatchAnalysis").then((m) => ({ default: m.MatchAnalysis })));
+const CoinShop = lazy(() => import("@/components/hockey/CoinShop").then((m) => ({ default: m.CoinShop })));
+const PenaltyShot3D = lazy(() => import("@/components/hockey/PenaltyShot3D").then((m) => ({ default: m.PenaltyShot3D })));
+const EmbeddedGame = lazy(() => import("@/components/arena/EmbeddedGame").then((m) => ({ default: m.EmbeddedGame })));
 
 const tools = [
   { id: "player-creator" as ViewType, icon: UserPlus, title: "Player Creator", description: "Create custom hockey players with AI-generated stats", badge: "AI", credits: 500, gradient: "from-cyan-500/10 to-cyan-500/5", iconColor: "text-cyan-400" },
@@ -98,7 +100,9 @@ const HockeyArena = () => {
       <div className="min-h-screen bg-background">
         <div className="container mx-auto px-4 pt-20 pb-8">
           <ArenaAuthGuard onBack={() => setActiveView("hub")} sportName="Hockey Arena">
-            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>{renderView()}</motion.div>
+            <Suspense fallback={<PageLoader />}>
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>{renderView()}</motion.div>
+            </Suspense>
           </ArenaAuthGuard>
         </div>
       </div>
