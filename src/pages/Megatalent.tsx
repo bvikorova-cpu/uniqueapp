@@ -393,17 +393,31 @@ const Megatalent = () => {
       });
       return;
     }
+    // Validate file type & size
+    const isImage = type === 'image';
+    const validMime = isImage ? file.type.startsWith('image/') : file.type.startsWith('video/');
+    if (!validMime) { toast({ title: "Invalid file", description: `Please select a ${isImage ? 'photo' : 'video'} file`, variant: "destructive" }); return; }
+    const maxBytes = isImage ? 10 * 1024 * 1024 : 200 * 1024 * 1024; // 10MB / 200MB
+    if (file.size > maxBytes) { toast({ title: "File too large", description: `Max ${isImage ? '10MB' : '200MB'}`, variant: "destructive" }); return; }
     setUploading(true);
     try {
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${user.id}-${Date.now()}.${fileExt}`;
-      const bucket = type === 'image' ? 'media' : 'videos';
-      const { error: uploadError } = await supabase.storage.from(bucket).upload(fileName, file);
+      const fileExt = (file.name.split('.').pop() || (isImage ? 'jpg' : 'mp4')).toLowerCase();
+      // IMPORTANT: path MUST start with `${user.id}/` for storage RLS (foldername[1] = auth.uid())
+      const fileName = `${user.id}/${Date.now()}.${fileExt}`;
+      const bucket = isImage ? 'media' : 'videos';
+      const { error: uploadError } = await supabase.storage.from(bucket).upload(fileName, file, {
+        cacheControl: '3600',
+        upsert: false,
+        contentType: file.type,
+      });
       if (uploadError) throw uploadError;
       const { data: { publicUrl } } = supabase.storage.from(bucket).getPublicUrl(fileName);
       setUploadedFile({ url: publicUrl, type });
-      toast({ title: "Uploaded!", description: `${type === 'image' ? 'Photo' : 'Video'} uploaded successfully` });
-    } catch (error) { console.error('Upload error:', error); toast({ title: "Error", description: "Upload failed", variant: "destructive" }); } finally { setUploading(false); }
+      toast({ title: "Uploaded!", description: `${isImage ? 'Photo' : 'Video'} uploaded successfully` });
+    } catch (error: any) {
+      console.error('Upload error:', error);
+      toast({ title: "Upload failed", description: error?.message || "Please try again", variant: "destructive" });
+    } finally { setUploading(false); }
   };
 
   const handleSubmit = async () => {
