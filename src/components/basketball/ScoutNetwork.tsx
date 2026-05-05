@@ -31,7 +31,8 @@ export function ScoutNetwork({ onBack }: { onBack: () => void }) {
       if (error) throw error;
       const jsonMatch = data.response?.match(/\[[\s\S]*\]/);
       if (!jsonMatch) throw new Error("Scout failed");
-      await supabase.from("basketball_coins").update({ balance: coins.balance - 400, total_spent: coins.total_spent + 400 }).eq("user_id", user.id);
+      const spendRes = await spendSportCoins("basketball_coins", 400);
+      if (!spendRes.ok) { toast.error("Coin deduction failed"); return; }
       setScoutResult(JSON.parse(jsonMatch[0]));
       toast.success("Scouting report ready! (-400 coins)");
     } catch (e: any) { toast.error(e.message); } finally { setLoading(false); }
