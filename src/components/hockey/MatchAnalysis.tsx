@@ -31,7 +31,7 @@ export function MatchAnalysis({ onBack }: { onBack: () => void }) {
       });
       if (error) throw error;
       const spendRes = await spendSportCoins("hockey_coins", 400);
-      if (!spendRes.ok) { toast.error(spendRes.error === "insufficient_balance" ? "Need 400 coins!" : "Transaction failed"); return; }
+      if (!spendRes.ok) { toast.error("Need 400 coins!"); return; }
       setAnalysis(data.response || "No analysis generated");
       toast.success("Match analysis ready! (-400 coins)");
     } catch (e: any) { toast.error(e.message); } finally { setLoading(false); }

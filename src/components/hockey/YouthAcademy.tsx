@@ -29,7 +29,7 @@ export function YouthAcademy({ onBack }: { onBack: () => void }) {
       const jsonMatch = data.response?.match(/\[[\s\S]*\]/);
       if (!jsonMatch) throw new Error("Discovery failed");
       const spendRes = await spendSportCoins("hockey_coins", 350);
-      if (!spendRes.ok) { toast.error(spendRes.error === "insufficient_balance" ? "Need 350 coins!" : "Transaction failed"); return; }
+      if (!spendRes.ok) { toast.error("Need 350 coins!"); return; }
       setProspects(JSON.parse(jsonMatch[0]));
       toast.success("Youth prospects found! (-350 coins)");
     } catch (e: any) { toast.error(e.message); } finally { setLoading(false); }

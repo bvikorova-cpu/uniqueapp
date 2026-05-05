@@ -43,7 +43,7 @@ export function MatchSimulator({ onBack }: { onBack: () => void }) {
 
       const won = matchResult.home_score > matchResult.away_score;
       const spendRes = await spendSportCoins("hockey_coins", 300, matchResult.coins_reward || 0);
-      if (!spendRes.ok) { toast.error(spendRes.error === "insufficient_balance" ? "Need 300 coins!" : "Transaction failed"); return; }
+      if (!spendRes.ok) { toast.error("Need 300 coins!"); return; }
       await supabase.from("hockey_teams").update({ wins: team.wins + (won ? 1 : 0), losses: team.losses + (won ? 0 : 1) }).eq("id", team.id);
       await supabase.from("hockey_matches").insert({ home_team_id: team.id, home_score: matchResult.home_score, away_score: matchResult.away_score, period_scores: matchResult.periods, coins_reward: matchResult.coins_reward, status: "completed" });
 

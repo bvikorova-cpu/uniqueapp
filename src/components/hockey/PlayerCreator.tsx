@@ -44,7 +44,7 @@ export function PlayerCreator({ onBack }: { onBack: () => void }) {
       const player = JSON.parse(jsonMatch[0]);
 
       const spendRes = await spendSportCoins("hockey_coins", 500);
-      if (!spendRes.ok) { toast.error(spendRes.error === "insufficient_balance" ? "Need 500 coins. Buy coins first!" : "Transaction failed"); return; }
+      if (!spendRes.ok) { toast.error("Need 500 coins. Buy coins first!"); return; }
       const { data: inserted } = await supabase.from("hockey_players").insert({ user_id: user.id, name: player.name, position: player.position, overall_rating: player.overall_rating, skating: player.skating, shooting: player.shooting, passing: player.passing, defense: player.defense, physicality: player.physicality, goaltending: player.goaltending, speed: player.speed, stamina: player.stamina, market_value: player.market_value }).select().single();
       setCreated(inserted);
       toast.success(`${player.name} created! (-500 coins)`);

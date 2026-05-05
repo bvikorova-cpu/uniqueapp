@@ -21,7 +21,7 @@ export function LeagueSystem({ onBack }: { onBack: () => void }) {
     if (!team) { toast.error("Create a team first!"); return; }
     if (league.entry_fee > 0) {
       const spendRes = await spendSportCoins("hockey_coins", league.entry_fee);
-      if (!spendRes.ok) { toast.error(spendRes.error === "insufficient_balance" ? "Not enough coins for entry fee!" : "Transaction failed"); return; }
+      if (!spendRes.ok) { toast.error("Not enough coins for entry fee!"); return; }
     }
     await supabase.from("hockey_league_standings").insert({ league_id: league.id, team_id: team.id });
     toast.success(`Joined ${league.name}!`);

@@ -29,7 +29,7 @@ export function ScoutNetwork({ onBack }: { onBack: () => void }) {
       const jsonMatch = data.response?.match(/\[[\s\S]*\]/);
       if (!jsonMatch) throw new Error("Scout failed");
       const spendRes = await spendSportCoins("hockey_coins", 400);
-      if (!spendRes.ok) { toast.error(spendRes.error === "insufficient_balance" ? "Need 400 coins!" : "Transaction failed"); return; }
+      if (!spendRes.ok) { toast.error("Need 400 coins!"); return; }
       setScoutResult(JSON.parse(jsonMatch[0]));
       toast.success("Scouting report ready! (-400 coins)");
     } catch (e: any) { toast.error(e.message); } finally { setLoading(false); }

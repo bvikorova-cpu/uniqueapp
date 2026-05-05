@@ -32,7 +32,7 @@ export function TacticsBoard({ onBack }: { onBack: () => void }) {
       });
       if (error) throw error;
       const spendRes = await spendSportCoins("hockey_coins", 300);
-      if (!spendRes.ok) { toast.error(spendRes.error === "insufficient_balance" ? "Need 300 coins!" : "Transaction failed"); return; }
+      if (!spendRes.ok) { toast.error("Need 300 coins!"); return; }
       setAnalysis(data.response || "No analysis generated");
       toast.success("Tactical analysis ready! (-300 coins)");
     } catch (e: any) { toast.error(e.message); } finally { setLoading(false); }
