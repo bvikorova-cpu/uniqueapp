@@ -7,6 +7,7 @@ import { ArrowLeft, Loader2, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { spendSportCoins, getSportCoinsBalance } from "@/lib/sportCoins";
 
 const POSITIONS = ["PG", "SG", "SF", "PF", "C"];
 
