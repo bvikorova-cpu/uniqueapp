@@ -117,7 +117,8 @@ export function BattleResult({ result, homeName, watermark = "Megatalent" }: Bat
   const exportPNG = async () => {
     setExporting("png");
     try {
-      const canvas = await captureCanvas();
+      const ts = formatTimestamp();
+      const canvas = await captureCanvas(ts);
       const link = document.createElement("a");
       link.download = `${baseFilename()}.png`;
       link.href = canvas.toDataURL("image/png");
