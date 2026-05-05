@@ -5,6 +5,7 @@ import { ArrowLeft, BarChart3, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { spendSportCoins, getSportCoinsBalance } from "@/lib/sportCoins";
 
 export function MatchAnalysis({ onBack }: { onBack: () => void }) {
   const { user } = useAuth();
