@@ -25,6 +25,7 @@ import { MusicBox } from "@/components/glamour-world/MusicBox";
 import { TreasureHunt } from "@/components/glamour-world/TreasureHunt";
 import { HairStylist } from "@/components/glamour-world/HairStylist";
 import { CoinShop } from "@/components/glamour-world/CoinShop";
+import { GlamourCoinsBadge } from "@/components/glamour-world/GlamourCoinsBadge";
 import { BarbieCreator3D } from "@/components/glamour-world/BarbieCreator3D";
 import { GlamourPokiGame } from "@/components/glamour-world/GlamourPokiGame";
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
@@ -121,6 +122,9 @@ const GlamourWorld = () => {
   if (activeView !== "hub" && viewMap[activeView]) {
     return (
       <div className="container mx-auto px-4 py-8 max-w-4xl">
+        <div className="flex justify-end mb-4">
+          <GlamourCoinsBadge onBuyClick={() => setActiveView("coins")} />
+        </div>
         {viewMap[activeView]}
       </div>
     );
@@ -128,6 +132,9 @@ const GlamourWorld = () => {
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
+      <div className="flex justify-end mb-4">
+        <GlamourCoinsBadge onBuyClick={() => setActiveView("coins")} />
+      </div>
       <GlamourHero />
       <HeroRewardedAd sectionKey="page_glamourworld" />
 
