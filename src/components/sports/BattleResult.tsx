@@ -26,6 +26,8 @@ interface BattleResultProps {
     breakdown?: { label: string; home: number; away: number }[];
   };
   homeName: string;
+  /** Watermark / contest name shown in exports (default: "Megatalent") */
+  watermark?: string;
 }
 
 /**
