@@ -57,7 +57,7 @@ function bucketHighlights(
   return buckets;
 }
 
-export function BattleResult({ result, homeName }: BattleResultProps) {
+export function BattleResult({ result, homeName, watermark = "Megatalent" }: BattleResultProps) {
   const totalPower = Math.max(result.home_power + result.away_power, 1);
   const homePct = Math.round((result.home_power / totalPower) * 100);
   const awayPct = 100 - homePct;
