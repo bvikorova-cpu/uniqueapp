@@ -25,6 +25,7 @@ import { MusicBox } from "@/components/glamour-world/MusicBox";
 import { TreasureHunt } from "@/components/glamour-world/TreasureHunt";
 import { HairStylist } from "@/components/glamour-world/HairStylist";
 import { CoinShop } from "@/components/glamour-world/CoinShop";
+import { GlamourCoinsBadge } from "@/components/glamour-world/GlamourCoinsBadge";
 import { BarbieCreator3D } from "@/components/glamour-world/BarbieCreator3D";
 import { GlamourPokiGame } from "@/components/glamour-world/GlamourPokiGame";
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
