@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useToast } from "@/hooks/use-toast";
+import { useQueryClient } from "@tanstack/react-query";
 import { GlamourHero } from "@/components/glamour-world/GlamourHero";
 import { GlamourEngagement } from "@/components/glamour-world/GlamourEngagement";
 import { GlamourToolCard } from "@/components/glamour-world/GlamourToolCard";
