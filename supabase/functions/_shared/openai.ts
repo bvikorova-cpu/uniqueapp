@@ -1,54 +1,81 @@
-// Shared OpenAI helper for hub edge functions
-export const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
-};
+// Centralized OpenAI API wrapper for all edge functions.
+// Handles auth, default model (gpt-4o), error normalization (429/402/5xx),
+// and consistent request/response shape.
+//
+// Usage:
+//   import { callOpenAI, callOpenAIJSON } from "../_shared/openai.ts";
+//   const reply = await callOpenAI({ system: "...", user: "..." });
 
-export async function callOpenAI(opts: {
-  system: string;
-  user: string;
+const OPENAI_URL = "https://api.openai.com/v1/chat/completions";
+export const DEFAULT_MODEL = "gpt-4o";
+
+export type ChatMessage = { role: "system" | "user" | "assistant"; content: string };
+
+export interface CallOptions {
+  messages?: ChatMessage[];
+  system?: string;
+  user?: string;
   model?: string;
-  json?: boolean;
   temperature?: number;
-}): Promise<string> {
+  max_tokens?: number;
+  response_format?: { type: "json_object" } | { type: "text" };
+}
+
+export class OpenAIError extends Error {
+  status: number;
+  constructor(message: string, status: number) {
+    super(message);
+    this.status = status;
+  }
+}
+
+function buildMessages(opts: CallOptions): ChatMessage[] {
+  if (opts.messages?.length) return opts.messages;
+  const m: ChatMessage[] = [];
+  if (opts.system) m.push({ role: "system", content: opts.system });
+  if (opts.user) m.push({ role: "user", content: opts.user });
+  return m;
+}
+
+export async function callOpenAIRaw(opts: CallOptions): Promise<any> {
   const key = Deno.env.get("OPENAI_API_KEY");
-  if (!key) throw new Error("OPENAI_API_KEY not configured");
+  if (!key) throw new OpenAIError("OPENAI_API_KEY is not configured", 500);
 
-  const body: any = {
-    model: opts.model || "gpt-4o-mini",
-    messages: [
-      { role: "system", content: opts.system },
-      { role: "user", content: opts.user },
-    ],
+  const body: Record<string, unknown> = {
+    model: opts.model || DEFAULT_MODEL,
+    messages: buildMessages(opts),
   };
-  if (opts.json) body.response_format = { type: "json_object" };
+  if (opts.temperature !== undefined) body.temperature = opts.temperature;
+  if (opts.max_tokens !== undefined) body.max_tokens = opts.max_tokens;
+  if (opts.response_format) body.response_format = opts.response_format;
 
-  const res = await fetch("https://api.openai.com/v1/chat/completions", {
+  const res = await fetch(OPENAI_URL, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${key}`,
-    },
+    headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
     body: JSON.stringify(body),
   });
 
-  if (!res.ok) {
-    const err = await res.text();
-    throw new Error(`OpenAI error ${res.status}: ${err.slice(0, 200)}`);
+  if (res.status === 429) throw new OpenAIError("Rate limit exceeded, please try again later.", 429);
+  if (res.status === 402 || res.status === 401) {
+    throw new OpenAIError("OpenAI auth/quota issue. Please check your OPENAI_API_KEY or billing.", 402);
   }
-  const data = await res.json();
-  return data.choices?.[0]?.message?.content ?? "";
+  if (!res.ok) {
+    const t = await res.text().catch(() => "");
+    console.error("OpenAI error", res.status, t);
+    throw new OpenAIError(`OpenAI error (${res.status})`, 500);
+  }
+  return await res.json();
 }
 
-export function jsonResponse(data: unknown, status = 200) {
-  return new Response(JSON.stringify(data), {
-    status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
+/** Returns the assistant text content. */
+export async function callOpenAI(opts: CallOptions): Promise<string> {
+  const data = await callOpenAIRaw(opts);
+  return data.choices?.[0]?.message?.content?.trim() || "";
 }
 
-export function errorResponse(message: string, status = 500) {
-  console.error("[edge-error]", message);
-  return jsonResponse({ error: message }, status);
+/** Returns parsed JSON. Forces response_format=json_object. */
+export async function callOpenAIJSON<T = any>(opts: CallOptions): Promise<T> {
+  const text = await callOpenAI({ ...opts, response_format: { type: "json_object" } });
+  const cleaned = text.replace(/^```(?:json)?/i, "").replace(/```$/i, "").trim();
+  return JSON.parse(cleaned) as T;
 }
