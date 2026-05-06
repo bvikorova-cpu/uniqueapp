@@ -174,7 +174,7 @@ const FitSlim = () => {
         body: { planType: selectedPlanType, profileData: { ...profileData, age: parseInt(profileData.age), height_cm: parseInt(profileData.height_cm), weight_kg: parseFloat(profileData.weight_kg), target_weight_kg: profileData.target_weight_kg ? parseFloat(profileData.target_weight_kg) : null } },
       });
       if (error) throw error;
-      if (data?.url) window.open(data.url, "_blank");
+      if (data?.url) window.location.href = data.url;
     } catch (error: any) {
       toast({ title: "Error", description: error.message, variant: "destructive" });
     } finally { setIsCheckingOut(false); }
