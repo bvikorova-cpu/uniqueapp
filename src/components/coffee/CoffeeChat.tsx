@@ -271,22 +271,14 @@ export const CoffeeChat = ({ matchId, open, onOpenChange }: CoffeeChatProps) => 
 
         <div ref={scrollRef} className="flex-1 px-4 overflow-y-auto">
           <div className="py-4 space-y-3">
-            {hasMore && messages.length > 0 && (
-              <div className="flex justify-center">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={loadOlder}
-                  disabled={loadingMore}
-                  className="text-xs text-muted-foreground"
-                >
-                  {loadingMore ? (
-                    <><Loader2 className="h-3 w-3 mr-1 animate-spin" /> Loading...</>
-                  ) : (
-                    'Load older messages'
-                  )}
-                </Button>
+            <div ref={topSentinelRef} aria-hidden="true" />
+            {loadingMore && (
+              <div className="flex justify-center py-2">
+                <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
               </div>
+            )}
+            {!hasMore && messages.length >= PAGE_SIZE && (
+              <p className="text-center text-[10px] text-muted-foreground py-1">Beginning of conversation</p>
             )}
             {isLoading ? (
               <div className="flex justify-center py-8">
