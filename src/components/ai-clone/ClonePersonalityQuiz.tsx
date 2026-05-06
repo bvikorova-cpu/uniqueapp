@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { Brain, Sparkles, Loader2, ArrowRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 const QUESTIONS = [
   { q: "How do you prefer to communicate?", options: ["Short and direct", "Detailed and thoughtful", "Casual with humor", "Formal and professional"] },
@@ -15,7 +15,20 @@ const QUESTIONS = [
   { q: "Pick your ideal conversation setting:", options: ["Quick chat over coffee", "Deep late-night discussion", "Group brainstorm session", "One-on-one heart-to-heart"] },
 ];
 
-import { supabase } from "@/integrations/supabase/client";
+export function ClonePersonalityQuiz() {
+  const { toast } = useToast();
+  const [currentQ, setCurrentQ] = useState(0);
+  const [answers, setAnswers] = useState<number[]>([]);
+  const [result, setResult] = useState<string | null>(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [started, setStarted] = useState(false);
+
+  const handleAnswer = (optionIdx: number) => {
+    const newAnswers = [...answers, optionIdx];
+    setAnswers(newAnswers);
+    if (currentQ < QUESTIONS.length - 1) setCurrentQ(currentQ + 1);
+    else analyzeResults(newAnswers);
+  };
 
   const analyzeResults = async (finalAnswers: number[]) => {
     setIsAnalyzing(true);
@@ -57,9 +70,7 @@ import { supabase } from "@/integrations/supabase/client";
           <div className="text-center py-8">
             <Brain className="h-16 w-16 mx-auto mb-4 text-primary/60" />
             <h3 className="text-lg font-bold mb-2">Discover Your Clone Personality</h3>
-            <p className="text-sm text-muted-foreground mb-6 max-w-md mx-auto">
-              Answer 5 quick questions to generate the perfect personality profile for your clone
-            </p>
+            <p className="text-sm text-muted-foreground mb-6 max-w-md mx-auto">Answer 5 quick questions to generate your AI personality profile.</p>
             <Button onClick={() => setStarted(true)}>
               <Sparkles className="h-4 w-4 mr-2" /> Start Quiz
             </Button>
@@ -67,19 +78,17 @@ import { supabase } from "@/integrations/supabase/client";
         ) : isAnalyzing ? (
           <div className="text-center py-12">
             <Loader2 className="h-12 w-12 mx-auto mb-4 text-primary animate-spin" />
-            <p className="text-muted-foreground">Analyzing your personality...</p>
+            <p className="text-muted-foreground">AI is analyzing your personality...</p>
           </div>
         ) : result ? (
           <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="text-center py-6">
             <Sparkles className="h-10 w-10 mx-auto mb-4 text-primary" />
             <Badge className="mb-4">Your Clone Profile</Badge>
-            <p className="text-sm text-foreground leading-relaxed mb-6 max-w-lg mx-auto bg-background/50 p-4 rounded-xl border border-border/50">{result}</p>
-            <div className="flex gap-3 justify-center">
+            <p className="text-sm text-foreground leading-relaxed mb-6 max-w-lg mx-auto bg-background/50 p-4 rounded-xl border border-border/50 whitespace-pre-wrap">{result}</p>
+            <div className="flex gap-3 justify-center flex-wrap">
               <Button variant="outline" onClick={restart}>Retake Quiz</Button>
               <Button onClick={() => {
-                try {
-                  sessionStorage.setItem("clone_quiz_profile", result || "");
-                } catch {}
+                try { sessionStorage.setItem("clone_quiz_profile", result || ""); } catch {}
                 window.location.href = "/ai-clone?tool=create&profile=quiz";
               }}>
                 <ArrowRight className="h-4 w-4 mr-2" /> Create Clone with Profile
@@ -100,7 +109,7 @@ import { supabase } from "@/integrations/supabase/client";
               <h3 className="text-lg font-bold mb-4">{QUESTIONS[currentQ].q}</h3>
               <div className="grid gap-3">
                 {QUESTIONS[currentQ].options.map((opt, i) => (
-                  <Button key={i} variant="outline" className="justify-start text-left h-auto py-3 px-4" onClick={() => handleAnswer(i)}>
+                  <Button key={i} variant="outline" className="justify-start text-left h-auto py-3 px-4 whitespace-normal" onClick={() => handleAnswer(i)}>
                     {opt}
                   </Button>
                 ))}
