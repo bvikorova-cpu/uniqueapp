@@ -15,53 +15,26 @@ const QUESTIONS = [
   { q: "Pick your ideal conversation setting:", options: ["Quick chat over coffee", "Deep late-night discussion", "Group brainstorm session", "One-on-one heart-to-heart"] },
 ];
 
-const PERSONALITY_PROFILES: Record<string, string> = {
-  "0,0,0,0,0": "The Efficient Innovator — You value speed, directness, and technical prowess. Your clone will be a no-nonsense conversationalist who cuts to the chase and loves exploring cutting-edge ideas.",
-  "1,3,3,3,3": "The Thoughtful Connector — You're a deep thinker who values emotional intelligence and meaningful relationships. Your clone will be empathetic, reflective, and excel at heart-to-heart conversations.",
-  "2,2,2,1,1": "The Creative Maverick — Humor and creativity define your style. Your clone will bring wit, cultural insights, and a fresh perspective to every conversation.",
-  "3,1,1,2,2": "The Strategic Leader — Professional yet approachable, you blend business acumen with calm confidence. Your clone will be a composed, strategic thinker perfect for brainstorming sessions.",
-};
-
-const generateProfile = (answers: number[]): string => {
-  const key = answers.join(",");
-  if (PERSONALITY_PROFILES[key]) return PERSONALITY_PROFILES[key];
-  
-  const traits = [
-    ["direct", "thoughtful", "humorous", "professional"][answers[0]],
-    ["enthusiastic", "calm", "sarcastic", "empathetic"][answers[1]],
-    ["passionate", "diplomatic", "witty", "reflective"][answers[2]],
-    ["tech-savvy", "culturally aware", "business-minded", "emotionally intelligent"][answers[3]],
-    ["efficient", "deep", "collaborative", "intimate"][answers[4]],
-  ];
-  
-  return `Your Unique Profile — You're a ${traits[0]}, ${traits[1]} communicator who handles conflict with a ${traits[2]} approach. Your passion for ${["technology", "arts & culture", "business", "psychology"][answers[3]]} shines through in ${traits[4]} conversations. Your clone will mirror this distinctive personality blend.`;
-};
-
-export function ClonePersonalityQuiz() {
-  const { toast } = useToast();
-  const [currentQ, setCurrentQ] = useState(0);
-  const [answers, setAnswers] = useState<number[]>([]);
-  const [result, setResult] = useState<string | null>(null);
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [started, setStarted] = useState(false);
-
-  const handleAnswer = (optionIdx: number) => {
-    const newAnswers = [...answers, optionIdx];
-    setAnswers(newAnswers);
-
-    if (currentQ < QUESTIONS.length - 1) {
-      setCurrentQ(currentQ + 1);
-    } else {
-      analyzeResults(newAnswers);
-    }
-  };
+import { supabase } from "@/integrations/supabase/client";
 
   const analyzeResults = async (finalAnswers: number[]) => {
     setIsAnalyzing(true);
-    // Simulate brief analysis delay
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    setResult(generateProfile(finalAnswers));
-    setIsAnalyzing(false);
+    try {
+      const qs = QUESTIONS.map(q => q.q);
+      const ans = finalAnswers.map((idx, i) => QUESTIONS[i].options[idx]);
+      const { data, error } = await supabase.functions.invoke("clone-quiz-analyze", {
+        body: { questions: qs, answers: ans },
+      });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      const traits = Array.isArray(data.traits) ? data.traits.join(", ") : "";
+      setResult(`${data.archetype || "Your Profile"} — ${data.summary || ""}${traits ? `\n\nKey traits: ${traits}` : ""}\n\nRecommended clone tone: ${data.recommended_clone_tone || "friendly"}`);
+    } catch (e: any) {
+      toast({ title: "Analysis failed", description: e.message, variant: "destructive" });
+      setResult("Could not analyze right now. Please retake the quiz.");
+    } finally {
+      setIsAnalyzing(false);
+    }
   };
 
   const restart = () => {
