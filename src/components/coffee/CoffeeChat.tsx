@@ -5,7 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Send, Coffee } from 'lucide-react';
+import { Send, Coffee, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface CoffeeChatProps {
@@ -22,34 +22,50 @@ interface Message {
   created_at: string;
 }
 
+const PAGE_SIZE = 50;
+
 export const CoffeeChat = ({ matchId, open, onOpenChange }: CoffeeChatProps) => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [input, setInput] = useState('');
   const [sending, setSending] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
+  const [hasMore, setHasMore] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const initialScrollDone = useRef(false);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setUserId(data.user?.id ?? null));
   }, []);
 
-  const { data: messages = [] } = useQuery({
+  // Reset state when match changes / dialog opens
+  useEffect(() => {
+    if (open && matchId) {
+      setHasMore(true);
+      initialScrollDone.current = false;
+    }
+  }, [matchId, open]);
+
+  const { data: messages = [], isLoading } = useQuery({
     queryKey: ['coffee-messages', matchId],
     queryFn: async (): Promise<Message[]> => {
       if (!matchId) return [];
+      // Fetch last PAGE_SIZE messages (descending), then reverse to ascending
       const { data, error } = await supabase
         .from('coffee_match_messages')
         .select('*')
         .eq('match_id', matchId)
-        .order('created_at', { ascending: true });
+        .order('created_at', { ascending: false })
+        .limit(PAGE_SIZE);
       if (error) throw error;
-      return data as Message[];
+      const list = ((data ?? []) as Message[]).slice().reverse();
+      setHasMore((data?.length ?? 0) === PAGE_SIZE);
+      return list;
     },
     enabled: !!matchId && open,
   });
 
-  // Realtime subscription
   // Dedup helper: merge a message into cache by id (idempotent)
   const upsertMessage = (msg: Message) => {
     queryClient.setQueryData<Message[]>(['coffee-messages', matchId], (prev = []) => {
@@ -60,6 +76,46 @@ export const CoffeeChat = ({ matchId, open, onOpenChange }: CoffeeChatProps) => 
     });
   };
 
+  const loadOlder = async () => {
+    if (!matchId || loadingMore || !hasMore || messages.length === 0) return;
+    setLoadingMore(true);
+    const oldest = messages[0];
+    const scrollEl = scrollRef.current;
+    const prevHeight = scrollEl?.scrollHeight ?? 0;
+    const prevTop = scrollEl?.scrollTop ?? 0;
+
+    const { data, error } = await supabase
+      .from('coffee_match_messages')
+      .select('*')
+      .eq('match_id', matchId)
+      .lt('created_at', oldest.created_at)
+      .order('created_at', { ascending: false })
+      .limit(PAGE_SIZE);
+
+    setLoadingMore(false);
+    if (error) {
+      toast({ title: 'Failed to load older messages', description: error.message, variant: 'destructive' });
+      return;
+    }
+    const older = ((data ?? []) as Message[]).slice().reverse();
+    setHasMore((data?.length ?? 0) === PAGE_SIZE);
+
+    queryClient.setQueryData<Message[]>(['coffee-messages', matchId], (prev = []) => {
+      const seen = new Set(prev.map((m) => m.id));
+      const merged = [...older.filter((m) => !seen.has(m.id)), ...prev];
+      merged.sort((a, b) => a.created_at.localeCompare(b.created_at));
+      return merged;
+    });
+
+    // Preserve scroll position after prepending
+    requestAnimationFrame(() => {
+      if (scrollEl) {
+        scrollEl.scrollTop = prevTop + (scrollEl.scrollHeight - prevHeight);
+      }
+    });
+  };
+
+  // Realtime subscription
   useEffect(() => {
     if (!matchId || !open) return;
     const channel = supabase
@@ -78,9 +134,20 @@ export const CoffeeChat = ({ matchId, open, onOpenChange }: CoffeeChatProps) => 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [matchId, open]);
 
-  // Auto-scroll
+  // Auto-scroll: jump to bottom on initial load, smooth on new messages
   useEffect(() => {
-    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' });
+    const el = scrollRef.current;
+    if (!el || messages.length === 0) return;
+    if (!initialScrollDone.current) {
+      el.scrollTop = el.scrollHeight;
+      initialScrollDone.current = true;
+    } else {
+      // Only auto-scroll if user is near the bottom
+      const nearBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 150;
+      if (nearBottom) {
+        el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
+      }
+    }
   }, [messages.length]);
 
   const handleSend = async () => {
@@ -111,9 +178,30 @@ export const CoffeeChat = ({ matchId, open, onOpenChange }: CoffeeChatProps) => 
           </DialogTitle>
         </DialogHeader>
 
-        <ScrollArea className="flex-1 px-4" ref={scrollRef as any}>
+        <ScrollArea className="flex-1 px-4" viewportRef={scrollRef as any} ref={undefined as any}>
           <div className="py-4 space-y-3">
-            {messages.length === 0 ? (
+            {hasMore && messages.length > 0 && (
+              <div className="flex justify-center">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={loadOlder}
+                  disabled={loadingMore}
+                  className="text-xs text-muted-foreground"
+                >
+                  {loadingMore ? (
+                    <><Loader2 className="h-3 w-3 mr-1 animate-spin" /> Loading...</>
+                  ) : (
+                    'Load older messages'
+                  )}
+                </Button>
+              </div>
+            )}
+            {isLoading ? (
+              <div className="flex justify-center py-8">
+                <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+              </div>
+            ) : messages.length === 0 ? (
               <p className="text-center text-sm text-muted-foreground py-8">
                 Say hi to your coffee buddy ☕
               </p>
