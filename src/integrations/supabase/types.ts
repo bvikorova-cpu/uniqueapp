@@ -44331,6 +44331,7 @@ export type Database = {
         Args: { p_amount: number; p_comedian_id: string }
         Returns: undefined
       }
+      deduct_emotion_credits: { Args: { amount: number }; Returns: boolean }
       deduct_secret_santa_credits: {
         Args: { p_amount: number; p_user_id: string }
         Returns: boolean

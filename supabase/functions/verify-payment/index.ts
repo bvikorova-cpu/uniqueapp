@@ -208,7 +208,7 @@ async function applyPurchase(
       messenger_ai_credits: "messenger_ai_credits",
       photo_credits: "photo_credits",
       character_credits: "character_credits",
-      emotion_credits: "ai_credits",
+      emotion_credits: "emotion_credits",
       video_ad_credits: "ai_credits",
       lie_detector_credits: "ai_credits",
       collectibles_credits: "ai_credits",
