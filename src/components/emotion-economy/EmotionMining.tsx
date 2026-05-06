@@ -30,30 +30,26 @@ export function EmotionMining({ onBack }: { onBack?: () => void }) {
 
   const completeMining = async () => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-
-      const emotionsMined = Math.floor(Math.random() * 20) + 10;
-      const commission = emotionsMined * 0.5;
-
-      const { error } = await supabase
-        .from('emotion_mining_activities')
-        .insert({
-          miner_id: user.id,
-          emotion_type: 'joy',
-          amount_mined: emotionsMined,
-          commission_earned: commission,
-          mining_method: 'content_creation'
-        });
-
+      const { data, error } = await supabase.functions.invoke("emotion-mine", {
+        body: { emotion_type: "joy", mining_method: "content_creation" },
+      });
       if (error) throw error;
+      if ((data as any)?.error) throw new Error((data as any).error);
+
+      const amount = (data as any)?.amount_mined ?? 0;
+      const commission = (data as any)?.commission_earned ?? 0;
 
       toast({
         title: "Mining Complete! ⚡",
-        description: `You mined ${emotionsMined} emotions and earned €${commission.toFixed(2)} commission`
+        description: `You mined ${amount} emotions and earned €${Number(commission).toFixed(2)} commission`,
       });
-    } catch (error) {
-      console.error('Error completing mining:', error);
+    } catch (error: any) {
+      console.error("Error completing mining:", error);
+      toast({
+        title: "Mining failed",
+        description: error?.message || "Try again in a moment",
+        variant: "destructive",
+      });
     } finally {
       setIsMining(false);
       setMiningProgress(0);
