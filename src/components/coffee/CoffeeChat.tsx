@@ -5,7 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
-import { Send, Coffee, Loader2 } from 'lucide-react';
+import { Send, Coffee, Loader2, Check, AlertCircle, RotateCcw } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface CoffeeChatProps {
@@ -14,12 +14,16 @@ interface CoffeeChatProps {
   onOpenChange: (open: boolean) => void;
 }
 
+type SendStatus = 'pending' | 'sent' | 'failed';
+
 interface Message {
   id: string;
   match_id: string;
   sender_id: string;
   message: string;
   created_at: string;
+  status?: SendStatus;
+  tempId?: string;
 }
 
 const PAGE_SIZE = 50;
@@ -66,14 +70,31 @@ export const CoffeeChat = ({ matchId, open, onOpenChange }: CoffeeChatProps) => 
     enabled: !!matchId && open,
   });
 
-  // Dedup helper: merge a message into cache by id (idempotent)
+  // Dedup helper: merge a server message into cache, replacing any matching temp/pending entry
   const upsertMessage = (msg: Message) => {
     queryClient.setQueryData<Message[]>(['coffee-messages', matchId], (prev = []) => {
-      if (prev.some((m) => m.id === msg.id)) return prev;
-      const next = [...prev, msg];
+      // Replace optimistic message with same content from same sender if still pending
+      const withoutTemp = prev.filter(
+        (m) =>
+          !(m.status === 'pending' && m.sender_id === msg.sender_id && m.message === msg.message)
+      );
+      if (withoutTemp.some((m) => m.id === msg.id)) return withoutTemp;
+      const next = [...withoutTemp, { ...msg, status: 'sent' as SendStatus }];
       next.sort((a, b) => a.created_at.localeCompare(b.created_at));
       return next;
     });
+  };
+
+  const updateMessageStatus = (tempId: string, patch: Partial<Message>) => {
+    queryClient.setQueryData<Message[]>(['coffee-messages', matchId], (prev = []) =>
+      prev.map((m) => (m.tempId === tempId ? { ...m, ...patch } : m))
+    );
+  };
+
+  const removeMessage = (tempId: string) => {
+    queryClient.setQueryData<Message[]>(['coffee-messages', matchId], (prev = []) =>
+      prev.filter((m) => m.tempId !== tempId)
+    );
   };
 
   const loadOlder = async () => {
@@ -150,22 +171,68 @@ export const CoffeeChat = ({ matchId, open, onOpenChange }: CoffeeChatProps) => 
     }
   }, [messages.length]);
 
-  const handleSend = async () => {
-    const text = input.trim();
-    if (!text || !matchId || !userId) return;
-    setSending(true);
+  const sendOptimistic = async (text: string, existingTempId?: string) => {
+    if (!matchId || !userId) return;
+    const tempId = existingTempId ?? `temp-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+
+    if (existingTempId) {
+      updateMessageStatus(existingTempId, { status: 'pending' });
+    } else {
+      const optimistic: Message = {
+        id: tempId,
+        tempId,
+        match_id: matchId,
+        sender_id: userId,
+        message: text,
+        created_at: new Date().toISOString(),
+        status: 'pending',
+      };
+      queryClient.setQueryData<Message[]>(['coffee-messages', matchId], (prev = []) => {
+        const next = [...prev, optimistic];
+        next.sort((a, b) => a.created_at.localeCompare(b.created_at));
+        return next;
+      });
+    }
+
     const { data, error } = await supabase
       .from('coffee_match_messages')
       .insert({ match_id: matchId, sender_id: userId, message: text })
       .select()
       .single();
-    setSending(false);
+
     if (error) {
+      updateMessageStatus(tempId, { status: 'failed' });
       toast({ title: 'Failed to send', description: error.message, variant: 'destructive' });
       return;
     }
+    if (data) {
+      // Replace optimistic with server row
+      queryClient.setQueryData<Message[]>(['coffee-messages', matchId], (prev = []) => {
+        const filtered = prev.filter((m) => m.tempId !== tempId);
+        if (filtered.some((m) => m.id === (data as Message).id)) return filtered;
+        const next = [...filtered, { ...(data as Message), status: 'sent' as SendStatus }];
+        next.sort((a, b) => a.created_at.localeCompare(b.created_at));
+        return next;
+      });
+    }
+  };
+
+  const handleSend = async () => {
+    const text = input.trim();
+    if (!text || !matchId || !userId) return;
     setInput('');
-    if (data) upsertMessage(data as Message);
+    setSending(true);
+    await sendOptimistic(text);
+    setSending(false);
+  };
+
+  const retryMessage = async (m: Message) => {
+    if (!m.tempId) return;
+    await sendOptimistic(m.message, m.tempId);
+  };
+
+  const dismissFailed = (m: Message) => {
+    if (m.tempId) removeMessage(m.tempId);
   };
 
   return (
@@ -208,19 +275,55 @@ export const CoffeeChat = ({ matchId, open, onOpenChange }: CoffeeChatProps) => 
             ) : (
               messages.map((m) => {
                 const mine = m.sender_id === userId;
+                const status: SendStatus = m.status ?? 'sent';
+                const failed = mine && status === 'failed';
+                const pending = mine && status === 'pending';
                 return (
-                  <div key={m.id} className={`flex ${mine ? 'justify-end' : 'justify-start'}`}>
-                    <div
-                      className={`max-w-[75%] px-3 py-2 rounded-2xl text-sm ${
-                        mine
-                          ? 'bg-amber-500/90 text-white rounded-br-sm'
-                          : 'bg-muted rounded-bl-sm'
-                      }`}
-                    >
-                      <div>{m.message}</div>
-                      <div className={`text-[10px] mt-1 opacity-70`}>
-                        {new Date(m.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  <div key={m.tempId ?? m.id} className={`flex ${mine ? 'justify-end' : 'justify-start'}`}>
+                    <div className="flex flex-col max-w-[75%]">
+                      <div
+                        className={`px-3 py-2 rounded-2xl text-sm ${
+                          mine
+                            ? failed
+                              ? 'bg-destructive/80 text-destructive-foreground rounded-br-sm'
+                              : 'bg-amber-500/90 text-white rounded-br-sm'
+                            : 'bg-muted rounded-bl-sm'
+                        } ${pending ? 'opacity-70' : ''}`}
+                      >
+                        <div>{m.message}</div>
+                        <div className="text-[10px] mt-1 opacity-70 flex items-center gap-1 justify-end">
+                          <span>
+                            {new Date(m.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                          </span>
+                          {mine && status === 'pending' && (
+                            <Loader2 className="h-3 w-3 animate-spin" aria-label="Sending" />
+                          )}
+                          {mine && status === 'sent' && (
+                            <Check className="h-3 w-3" aria-label="Sent" />
+                          )}
+                          {mine && status === 'failed' && (
+                            <AlertCircle className="h-3 w-3" aria-label="Failed" />
+                          )}
+                        </div>
                       </div>
+                      {failed && (
+                        <div className="flex gap-2 mt-1 justify-end">
+                          <button
+                            type="button"
+                            onClick={() => retryMessage(m)}
+                            className="text-[10px] text-destructive hover:underline flex items-center gap-1"
+                          >
+                            <RotateCcw className="h-3 w-3" /> Retry
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => dismissFailed(m)}
+                            className="text-[10px] text-muted-foreground hover:underline"
+                          >
+                            Dismiss
+                          </button>
+                        </div>
+                      )}
                     </div>
                   </div>
                 );
