@@ -7603,6 +7603,13 @@ export type Database = {
             referencedRelation: "personality_clones"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "clone_chat_messages_clone_id_fkey"
+            columns: ["clone_id"]
+            isOneToOne: false
+            referencedRelation: "public_clones"
+            referencedColumns: ["id"]
+          },
         ]
       }
       clone_conversations: {
@@ -7645,6 +7652,13 @@ export type Database = {
             columns: ["clone_id"]
             isOneToOne: false
             referencedRelation: "personality_clones"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "clone_conversations_clone_id_fkey"
+            columns: ["clone_id"]
+            isOneToOne: false
+            referencedRelation: "public_clones"
             referencedColumns: ["id"]
           },
         ]
@@ -7692,10 +7706,24 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "clone_dating_sessions_clone_1_id_fkey"
+            columns: ["clone_1_id"]
+            isOneToOne: false
+            referencedRelation: "public_clones"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "clone_dating_sessions_clone_2_id_fkey"
             columns: ["clone_2_id"]
             isOneToOne: false
             referencedRelation: "personality_clones"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "clone_dating_sessions_clone_2_id_fkey"
+            columns: ["clone_2_id"]
+            isOneToOne: false
+            referencedRelation: "public_clones"
             referencedColumns: ["id"]
           },
         ]
@@ -7731,6 +7759,13 @@ export type Database = {
             columns: ["clone_id"]
             isOneToOne: false
             referencedRelation: "personality_clones"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "clone_exports_clone_id_fkey"
+            columns: ["clone_id"]
+            isOneToOne: false
+            referencedRelation: "public_clones"
             referencedColumns: ["id"]
           },
         ]
@@ -7775,6 +7810,13 @@ export type Database = {
             columns: ["clone_id"]
             isOneToOne: false
             referencedRelation: "personality_clones"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "clone_subscriptions_clone_id_fkey"
+            columns: ["clone_id"]
+            isOneToOne: false
+            referencedRelation: "public_clones"
             referencedColumns: ["id"]
           },
         ]
@@ -43861,6 +43903,42 @@ export type Database = {
           total_rating?: number | null
           unique_url_slug?: string | null
           updated_at?: string | null
+        }
+        Relationships: []
+      }
+      public_clones: {
+        Row: {
+          clone_name: string | null
+          created_at: string | null
+          id: string | null
+          is_active: boolean | null
+          personality_summary: string | null
+          subscription_tier: string | null
+          tone: string | null
+          total_conversations: number | null
+          training_status: string | null
+        }
+        Insert: {
+          clone_name?: string | null
+          created_at?: string | null
+          id?: string | null
+          is_active?: boolean | null
+          personality_summary?: never
+          subscription_tier?: string | null
+          tone?: never
+          total_conversations?: number | null
+          training_status?: string | null
+        }
+        Update: {
+          clone_name?: string | null
+          created_at?: string | null
+          id?: string | null
+          is_active?: boolean | null
+          personality_summary?: never
+          subscription_tier?: string | null
+          tone?: never
+          total_conversations?: number | null
+          training_status?: string | null
         }
         Relationships: []
       }
