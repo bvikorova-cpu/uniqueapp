@@ -4,7 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { ScrollArea } from '@/components/ui/scroll-area';
+
 import { Send, Coffee, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
@@ -178,7 +178,7 @@ export const CoffeeChat = ({ matchId, open, onOpenChange }: CoffeeChatProps) => 
           </DialogTitle>
         </DialogHeader>
 
-        <ScrollArea className="flex-1 px-4" viewportRef={scrollRef as any} ref={undefined as any}>
+        <div ref={scrollRef} className="flex-1 px-4 overflow-y-auto">
           <div className="py-4 space-y-3">
             {hasMore && messages.length > 0 && (
               <div className="flex justify-center">
