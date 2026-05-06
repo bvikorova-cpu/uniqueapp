@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { Brain, Sparkles, Loader2, ArrowRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 const QUESTIONS = [
   { q: "How do you prefer to communicate?", options: ["Short and direct", "Detailed and thoughtful", "Casual with humor", "Formal and professional"] },
@@ -14,28 +14,6 @@ const QUESTIONS = [
   { q: "What topics excite you most?", options: ["Technology & Science", "Arts & Culture", "Business & Finance", "Relationships & Psychology"] },
   { q: "Pick your ideal conversation setting:", options: ["Quick chat over coffee", "Deep late-night discussion", "Group brainstorm session", "One-on-one heart-to-heart"] },
 ];
-
-const PERSONALITY_PROFILES: Record<string, string> = {
-  "0,0,0,0,0": "The Efficient Innovator — You value speed, directness, and technical prowess. Your clone will be a no-nonsense conversationalist who cuts to the chase and loves exploring cutting-edge ideas.",
-  "1,3,3,3,3": "The Thoughtful Connector — You're a deep thinker who values emotional intelligence and meaningful relationships. Your clone will be empathetic, reflective, and excel at heart-to-heart conversations.",
-  "2,2,2,1,1": "The Creative Maverick — Humor and creativity define your style. Your clone will bring wit, cultural insights, and a fresh perspective to every conversation.",
-  "3,1,1,2,2": "The Strategic Leader — Professional yet approachable, you blend business acumen with calm confidence. Your clone will be a composed, strategic thinker perfect for brainstorming sessions.",
-};
-
-const generateProfile = (answers: number[]): string => {
-  const key = answers.join(",");
-  if (PERSONALITY_PROFILES[key]) return PERSONALITY_PROFILES[key];
-  
-  const traits = [
-    ["direct", "thoughtful", "humorous", "professional"][answers[0]],
-    ["enthusiastic", "calm", "sarcastic", "empathetic"][answers[1]],
-    ["passionate", "diplomatic", "witty", "reflective"][answers[2]],
-    ["tech-savvy", "culturally aware", "business-minded", "emotionally intelligent"][answers[3]],
-    ["efficient", "deep", "collaborative", "intimate"][answers[4]],
-  ];
-  
-  return `Your Unique Profile — You're a ${traits[0]}, ${traits[1]} communicator who handles conflict with a ${traits[2]} approach. Your passion for ${["technology", "arts & culture", "business", "psychology"][answers[3]]} shines through in ${traits[4]} conversations. Your clone will mirror this distinctive personality blend.`;
-};
 
 export function ClonePersonalityQuiz() {
   const { toast } = useToast();
@@ -48,20 +26,28 @@ export function ClonePersonalityQuiz() {
   const handleAnswer = (optionIdx: number) => {
     const newAnswers = [...answers, optionIdx];
     setAnswers(newAnswers);
-
-    if (currentQ < QUESTIONS.length - 1) {
-      setCurrentQ(currentQ + 1);
-    } else {
-      analyzeResults(newAnswers);
-    }
+    if (currentQ < QUESTIONS.length - 1) setCurrentQ(currentQ + 1);
+    else analyzeResults(newAnswers);
   };
 
   const analyzeResults = async (finalAnswers: number[]) => {
     setIsAnalyzing(true);
-    // Simulate brief analysis delay
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    setResult(generateProfile(finalAnswers));
-    setIsAnalyzing(false);
+    try {
+      const qs = QUESTIONS.map(q => q.q);
+      const ans = finalAnswers.map((idx, i) => QUESTIONS[i].options[idx]);
+      const { data, error } = await supabase.functions.invoke("clone-quiz-analyze", {
+        body: { questions: qs, answers: ans },
+      });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      const traits = Array.isArray(data.traits) ? data.traits.join(", ") : "";
+      setResult(`${data.archetype || "Your Profile"} — ${data.summary || ""}${traits ? `\n\nKey traits: ${traits}` : ""}\n\nRecommended clone tone: ${data.recommended_clone_tone || "friendly"}`);
+    } catch (e: any) {
+      toast({ title: "Analysis failed", description: e.message, variant: "destructive" });
+      setResult("Could not analyze right now. Please retake the quiz.");
+    } finally {
+      setIsAnalyzing(false);
+    }
   };
 
   const restart = () => {
@@ -84,9 +70,7 @@ export function ClonePersonalityQuiz() {
           <div className="text-center py-8">
             <Brain className="h-16 w-16 mx-auto mb-4 text-primary/60" />
             <h3 className="text-lg font-bold mb-2">Discover Your Clone Personality</h3>
-            <p className="text-sm text-muted-foreground mb-6 max-w-md mx-auto">
-              Answer 5 quick questions to generate the perfect personality profile for your clone
-            </p>
+            <p className="text-sm text-muted-foreground mb-6 max-w-md mx-auto">Answer 5 quick questions to generate your AI personality profile.</p>
             <Button onClick={() => setStarted(true)}>
               <Sparkles className="h-4 w-4 mr-2" /> Start Quiz
             </Button>
@@ -94,19 +78,17 @@ export function ClonePersonalityQuiz() {
         ) : isAnalyzing ? (
           <div className="text-center py-12">
             <Loader2 className="h-12 w-12 mx-auto mb-4 text-primary animate-spin" />
-            <p className="text-muted-foreground">Analyzing your personality...</p>
+            <p className="text-muted-foreground">AI is analyzing your personality...</p>
           </div>
         ) : result ? (
           <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="text-center py-6">
             <Sparkles className="h-10 w-10 mx-auto mb-4 text-primary" />
             <Badge className="mb-4">Your Clone Profile</Badge>
-            <p className="text-sm text-foreground leading-relaxed mb-6 max-w-lg mx-auto bg-background/50 p-4 rounded-xl border border-border/50">{result}</p>
-            <div className="flex gap-3 justify-center">
+            <p className="text-sm text-foreground leading-relaxed mb-6 max-w-lg mx-auto bg-background/50 p-4 rounded-xl border border-border/50 whitespace-pre-wrap">{result}</p>
+            <div className="flex gap-3 justify-center flex-wrap">
               <Button variant="outline" onClick={restart}>Retake Quiz</Button>
               <Button onClick={() => {
-                try {
-                  sessionStorage.setItem("clone_quiz_profile", result || "");
-                } catch {}
+                try { sessionStorage.setItem("clone_quiz_profile", result || ""); } catch {}
                 window.location.href = "/ai-clone?tool=create&profile=quiz";
               }}>
                 <ArrowRight className="h-4 w-4 mr-2" /> Create Clone with Profile
@@ -127,7 +109,7 @@ export function ClonePersonalityQuiz() {
               <h3 className="text-lg font-bold mb-4">{QUESTIONS[currentQ].q}</h3>
               <div className="grid gap-3">
                 {QUESTIONS[currentQ].options.map((opt, i) => (
-                  <Button key={i} variant="outline" className="justify-start text-left h-auto py-3 px-4" onClick={() => handleAnswer(i)}>
+                  <Button key={i} variant="outline" className="justify-start text-left h-auto py-3 px-4 whitespace-normal" onClick={() => handleAnswer(i)}>
                     {opt}
                   </Button>
                 ))}

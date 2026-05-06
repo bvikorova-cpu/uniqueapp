@@ -22,25 +22,6 @@ interface CloneChatDialogProps {
   } | null;
 }
 
-const generateLocalResponse = (cloneName: string, personality: string, message: string): string => {
-  const greetings = ["hey", "hi", "hello", "hola"];
-  const isGreeting = greetings.some(g => message.toLowerCase().startsWith(g));
-  
-  if (isGreeting) {
-    return `Hey there! I'm ${cloneName}. Great to chat with you! What's on your mind?`;
-  }
-  
-  const responses = [
-    `That's a really interesting thought! As ${cloneName}, I'd say it depends on perspective. Tell me more about what you think?`,
-    `I love that question! Here's my take: life is all about exploring new ideas and connecting with others. What drives your curiosity about this?`,
-    `Hmm, let me think about that... I believe the key is to stay open-minded and keep learning. What's your experience been?`,
-    `Great point! I think there's always more than meets the eye. As ${cloneName}, I'd encourage you to dig deeper into that.`,
-    `That resonates with me! Communication is everything, and I appreciate you sharing that. Want to explore this further?`,
-  ];
-  
-  return responses[Math.floor(Math.random() * responses.length)];
-};
-
 export function CloneChatDialog({ open, onOpenChange, clone }: CloneChatDialogProps) {
   const { toast } = useToast();
   const [messages, setMessages] = useState<Message[]>([]);
@@ -49,59 +30,39 @@ export function CloneChatDialog({ open, onOpenChange, clone }: CloneChatDialogPr
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (open && clone) {
-      loadChatHistory();
-    }
+    if (open && clone) loadChatHistory();
   }, [open, clone]);
 
   useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-    }
+    if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
   }, [messages]);
 
   const loadChatHistory = async () => {
     if (!clone) return;
-    try {
-      const { data, error } = await supabase
-        .from('clone_chat_messages')
-        .select('role, content')
-        .eq('clone_id', clone.id)
-        .order('created_at', { ascending: true });
-      if (error) throw error;
-      setMessages((data || []).map(m => ({
-        role: m.role as 'user' | 'assistant',
-        content: m.content
-      })));
-    } catch (error) {
-      console.error('Error loading chat history:', error);
-    }
+    const { data } = await supabase
+      .from("clone_chat_messages")
+      .select("role, content")
+      .eq("clone_id", clone.id)
+      .order("created_at", { ascending: true });
+    setMessages((data || []).map(m => ({ role: m.role as "user" | "assistant", content: m.content })));
   };
 
   const sendMessage = async () => {
     if (!input.trim() || !clone || isLoading) return;
-
     const userMessage = input.trim();
     setInput("");
-    setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
+    setMessages(prev => [...prev, { role: "user", content: userMessage }]);
     setIsLoading(true);
 
     try {
-      const personality = clone.personality_data?.personality || clone.clone_name;
-      
-      // Generate response locally (no edge function needed)
-      await new Promise(resolve => setTimeout(resolve, 800 + Math.random() * 1200));
-      const response = generateLocalResponse(clone.clone_name, personality, userMessage);
-      
-      setMessages(prev => [...prev, { role: 'assistant', content: response }]);
-
-      // Save to DB
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        await supabase.from('clone_chat_messages').insert([
-          { clone_id: clone.id, user_id: user.id, role: 'user', content: userMessage },
-          { clone_id: clone.id, user_id: user.id, role: 'assistant', content: response },
-        ]);
+      const { data, error } = await supabase.functions.invoke("clone-chat", {
+        body: { cloneId: clone.id, message: userMessage, history: messages },
+      });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      setMessages(prev => [...prev, { role: "assistant", content: data.reply }]);
+      if (typeof data.remaining === "number" && data.remaining <= 3) {
+        toast({ title: `${data.remaining} AI responses left today` });
       }
     } catch (error: any) {
       toast({ title: "Error", description: error.message || "Failed to send message", variant: "destructive" });

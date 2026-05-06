@@ -39,7 +39,7 @@ export function CloneDating() {
 
       if (error) throw error;
       if (data?.url) {
-        window.open(data.url, "_blank");
+        window.location.href = data.url;
       }
     } catch (error: any) {
       toast({ title: "Error", description: error.message || "Failed to start dating session", variant: "destructive" });

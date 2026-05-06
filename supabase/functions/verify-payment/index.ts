@@ -270,6 +270,44 @@ async function applyPurchase(
     return;
   }
 
+  // AI Personality Clone subscriptions — record in clone_subscriptions
+  if (productType === "clone_subscription" && md.tier) {
+    const tierPrices: Record<string, number> = { basic: 9.99, advanced: 29.99, celebrity: 99.0 };
+    await db.from("clone_subscriptions").insert({
+      user_id: userId,
+      tier: md.tier,
+      price: tierPrices[md.tier] ?? 0,
+      status: "active",
+      started_at: new Date().toISOString(),
+      expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+    });
+    return;
+  }
+
+  // AI Personality Clone speed-dating session — create a session row
+  if (productType === "clone_dating") {
+    // Pick the user's most recent active clone as clone_1
+    // @ts-ignore
+    const { data: mine } = await db.from("personality_clones")
+      .select("id").eq("user_id", userId).eq("is_active", true)
+      .order("created_at", { ascending: false }).limit(1);
+    const clone1 = mine?.[0]?.id;
+    if (!clone1) return;
+    // Pick a random opponent
+    // @ts-ignore
+    const { data: opp } = await db.from("personality_clones")
+      .select("id").neq("user_id", userId).eq("is_active", true).limit(20);
+    const clone2 = opp?.length ? opp[Math.floor(Math.random() * opp.length)].id : null;
+    if (!clone2) return;
+    await db.from("clone_dating_sessions").insert({
+      clone_1_id: clone1,
+      clone_2_id: clone2,
+      payment_amount: (result.amount_cents || 0) / 100,
+      status: "active",
+    });
+    return;
+  }
+
   // Subscriptions & other types — no automatic action; tracked via payment_records.
   // Frontend can read payment_records or call check-subscription.
 }

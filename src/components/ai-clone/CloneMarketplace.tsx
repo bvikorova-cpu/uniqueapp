@@ -28,15 +28,19 @@ export function CloneMarketplace() {
 
   const fetchPublicClones = async () => {
     try {
-      const { data, error } = await supabase
-        .from('personality_clones')
-        .select('*')
-        .eq('is_active', true)
-        .eq('training_status', 'active')
+      const { data, error } = await (supabase as any)
+        .from('public_clones')
+        .select('id, clone_name, subscription_tier, total_conversations, personality_summary, tone')
         .order('total_conversations', { ascending: false })
         .limit(20);
       if (error) throw error;
-      setClones(data || []);
+      setClones((data || []).map((c: any) => ({
+        id: c.id,
+        clone_name: c.clone_name,
+        subscription_tier: c.subscription_tier,
+        total_conversations: c.total_conversations,
+        personality_data: { personality: c.personality_summary, tone: c.tone },
+      })));
     } catch (error) {
       console.error('Error fetching clones:', error);
     }

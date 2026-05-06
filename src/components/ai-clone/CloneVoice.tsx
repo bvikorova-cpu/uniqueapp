@@ -14,16 +14,7 @@ const VOICE_STYLES = [
   { value: "authoritative", label: "Authoritative" },
 ];
 
-const transformText = (text: string, style: string): string => {
-  const transforms: Record<string, (t: string) => string> = {
-    warm: (t) => `Hey! ${t} 😊 Would love to hear your thoughts on this!`,
-    professional: (t) => `I'd like to bring to your attention: ${t}. I look forward to discussing this further at your convenience.`,
-    energetic: (t) => `OMG yes! ${t}!! This is SO exciting, let's make it happen! 🚀`,
-    calm: (t) => `Take a moment to consider this... ${t}. There's no rush — let's explore this together when you're ready.`,
-    authoritative: (t) => `Here's what needs to happen: ${t}. This is the direction we're taking, and I'm confident in this approach.`,
-  };
-  return transforms[style]?.(text) || text;
-};
+import { supabase } from "@/integrations/supabase/client";
 
 export function CloneVoice() {
   const { toast } = useToast();
@@ -34,16 +25,23 @@ export function CloneVoice() {
 
   const handleGenerate = async () => {
     if (!text.trim()) {
-      toast({ title: "Enter some text", description: "Provide text for your clone's voice style", variant: "destructive" });
+      toast({ title: "Enter some text", variant: "destructive" });
       return;
     }
-
     setIsGenerating(true);
-    // Simulate processing
-    await new Promise(resolve => setTimeout(resolve, 800 + Math.random() * 700));
-    setGeneratedText(transformText(text.trim(), voiceStyle));
-    toast({ title: "Voice Style Applied!", description: "Your text has been transformed" });
-    setIsGenerating(false);
+    try {
+      const { data, error } = await supabase.functions.invoke("clone-voice-transform", {
+        body: { text: text.trim(), style: voiceStyle },
+      });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      setGeneratedText(data.transformed);
+      toast({ title: "Voice Style Applied!" });
+    } catch (e: any) {
+      toast({ title: "Error", description: e.message || "Failed to transform", variant: "destructive" });
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   return (
