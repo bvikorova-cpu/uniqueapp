@@ -1,8 +1,10 @@
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { Shield, Check, AlertTriangle, ArrowLeft } from "lucide-react";
+import { Shield, Check, AlertTriangle, ArrowLeft, Loader2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const insurancePlans = [
   {
@@ -50,12 +52,57 @@ const insurancePlans = [
 
 export function EmotionInsurance({ onBack }: { onBack?: () => void }) {
   const { toast } = useToast();
+  const [loading, setLoading] = useState<string | null>(null);
 
-  const handleGetProtected = (planName: string, price: string) => {
-    toast({
-      title: `${planName} Selected`,
-      description: `Redirecting to payment... (€${price}/month)`
-    });
+  // Verify Stripe checkout return
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("insurance") !== "success") return;
+    const sessionId = params.get("session_id");
+    if (!sessionId) return;
+    (async () => {
+      try {
+        const { data, error } = await supabase.functions.invoke("verify-emotion-insurance", {
+          body: { sessionId },
+        });
+        if (error) throw error;
+        if (data?.success) {
+          toast({ title: "Insurance activated", description: `Plan: ${data.level}` });
+        }
+      } catch (e: any) {
+        toast({ title: "Verification failed", description: e?.message ?? "", variant: "destructive" });
+      } finally {
+        const url = new URL(window.location.href);
+        url.searchParams.delete("insurance");
+        url.searchParams.delete("level");
+        url.searchParams.delete("session_id");
+        window.history.replaceState({}, "", url.pathname + url.search);
+      }
+    })();
+  }, [toast]);
+
+  const handleGetProtected = async (level: string, planName: string) => {
+    setLoading(level);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast({ title: "Sign in required", description: "Please sign in to subscribe", variant: "destructive" });
+        return;
+      }
+      const { data, error } = await supabase.functions.invoke("create-emotion-insurance-checkout", {
+        body: { level },
+      });
+      if (error) throw error;
+      if (data?.url) {
+        window.location.href = data.url;
+      } else {
+        throw new Error("No checkout URL returned");
+      }
+    } catch (e: any) {
+      toast({ title: "Checkout failed", description: e?.message ?? "Try again", variant: "destructive" });
+    } finally {
+      setLoading(null);
+    }
   };
 
   return (
@@ -122,9 +169,14 @@ export function EmotionInsurance({ onBack }: { onBack?: () => void }) {
               <Button 
                 className="w-full" 
                 variant={plan.popular ? "default" : "outline"}
-                onClick={() => handleGetProtected(plan.name, plan.price)}
+                disabled={loading === plan.level}
+                onClick={() => handleGetProtected(plan.level, plan.name)}
               >
-                Get Protected
+                {loading === plan.level ? (
+                  <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Redirecting…</>
+                ) : (
+                  "Get Protected"
+                )}
               </Button>
             </CardContent>
           </Card>
