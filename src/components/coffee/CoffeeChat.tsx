@@ -171,22 +171,68 @@ export const CoffeeChat = ({ matchId, open, onOpenChange }: CoffeeChatProps) => 
     }
   }, [messages.length]);
 
-  const handleSend = async () => {
-    const text = input.trim();
-    if (!text || !matchId || !userId) return;
-    setSending(true);
+  const sendOptimistic = async (text: string, existingTempId?: string) => {
+    if (!matchId || !userId) return;
+    const tempId = existingTempId ?? `temp-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+
+    if (existingTempId) {
+      updateMessageStatus(existingTempId, { status: 'pending' });
+    } else {
+      const optimistic: Message = {
+        id: tempId,
+        tempId,
+        match_id: matchId,
+        sender_id: userId,
+        message: text,
+        created_at: new Date().toISOString(),
+        status: 'pending',
+      };
+      queryClient.setQueryData<Message[]>(['coffee-messages', matchId], (prev = []) => {
+        const next = [...prev, optimistic];
+        next.sort((a, b) => a.created_at.localeCompare(b.created_at));
+        return next;
+      });
+    }
+
     const { data, error } = await supabase
       .from('coffee_match_messages')
       .insert({ match_id: matchId, sender_id: userId, message: text })
       .select()
       .single();
-    setSending(false);
+
     if (error) {
+      updateMessageStatus(tempId, { status: 'failed' });
       toast({ title: 'Failed to send', description: error.message, variant: 'destructive' });
       return;
     }
+    if (data) {
+      // Replace optimistic with server row
+      queryClient.setQueryData<Message[]>(['coffee-messages', matchId], (prev = []) => {
+        const filtered = prev.filter((m) => m.tempId !== tempId);
+        if (filtered.some((m) => m.id === (data as Message).id)) return filtered;
+        const next = [...filtered, { ...(data as Message), status: 'sent' as SendStatus }];
+        next.sort((a, b) => a.created_at.localeCompare(b.created_at));
+        return next;
+      });
+    }
+  };
+
+  const handleSend = async () => {
+    const text = input.trim();
+    if (!text || !matchId || !userId) return;
     setInput('');
-    if (data) upsertMessage(data as Message);
+    setSending(true);
+    await sendOptimistic(text);
+    setSending(false);
+  };
+
+  const retryMessage = async (m: Message) => {
+    if (!m.tempId) return;
+    await sendOptimistic(m.message, m.tempId);
+  };
+
+  const dismissFailed = (m: Message) => {
+    if (m.tempId) removeMessage(m.tempId);
   };
 
   return (
