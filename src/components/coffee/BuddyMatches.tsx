@@ -1,5 +1,6 @@
-import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { CoffeeChat } from './CoffeeChat';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -9,7 +10,7 @@ import { useToast } from '@/hooks/use-toast';
 export const BuddyMatches = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const navigate = useNavigate();
+  const [chatMatchId, setChatMatchId] = useState<string | null>(null);
 
   const { data: matches } = useQuery({
     queryKey: ['coffee-matches'],
@@ -51,11 +52,11 @@ export const BuddyMatches = () => {
   };
 
   const openChat = (match: any) => {
-    const buddyId = match.user1_id === match.user2_id ? match.user1_id : match.user2_id;
-    navigate(`/messenger?to=${buddyId}`);
+    setChatMatchId(match.id);
   };
 
   return (
+    <>
     <div className="grid md:grid-cols-2 gap-6">
       <Card>
         <CardHeader>
@@ -116,5 +117,11 @@ export const BuddyMatches = () => {
         </CardContent>
       </Card>
     </div>
+    <CoffeeChat
+      matchId={chatMatchId}
+      open={!!chatMatchId}
+      onOpenChange={(o) => { if (!o) setChatMatchId(null); }}
+    />
+    </>
   );
 };
