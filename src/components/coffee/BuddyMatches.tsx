@@ -52,8 +52,7 @@ export const BuddyMatches = () => {
   };
 
   const openChat = (match: any) => {
-    const buddyId = match.user1_id === match.user2_id ? match.user1_id : match.user2_id;
-    navigate(`/messenger?to=${buddyId}`);
+    setChatMatchId(match.id);
   };
 
   return (
