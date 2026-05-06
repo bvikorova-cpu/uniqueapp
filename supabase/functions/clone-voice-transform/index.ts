@@ -1,4 +1,6 @@
-// Transforms text into a chosen voice style via Lovable AI Gateway.
+// Transforms text into a chosen voice style via OpenAI (gpt-4o).
+import { callOpenAI, OpenAIError } from "../_shared/openai.ts";
+
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
@@ -20,26 +22,17 @@ Deno.serve(async (req) => {
     };
     const desc = styleDesc[style] || styleDesc.warm;
 
-    const aiKey = Deno.env.get("LOVABLE_API_KEY");
-    if (!aiKey) return j({ error: "AI not configured" }, 500);
-
-    const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: { Authorization: `Bearer ${aiKey}`, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: "google/gemini-3-flash-preview",
-        messages: [
-          { role: "system", content: `Rewrite the user's text in a ${desc} voice. Keep meaning. Output only the rewritten text, no preamble.` },
-          { role: "user", content: text },
-        ],
-      }),
-    });
-    if (res.status === 429) return j({ error: "Rate limit exceeded" }, 429);
-    if (res.status === 402) return j({ error: "AI credits exhausted" }, 402);
-    if (!res.ok) return j({ error: "AI error" }, 500);
-    const data = await res.json();
-    const transformed = data.choices?.[0]?.message?.content?.trim() || text;
-    return j({ transformed });
+    try {
+      const transformed = (await callOpenAI({
+        system: `Rewrite the user's text in a ${desc} voice. Keep meaning. Output only the rewritten text, no preamble.`,
+        user: text,
+        temperature: 0.7,
+      })) || text;
+      return j({ transformed });
+    } catch (e) {
+      if (e instanceof OpenAIError) return j({ error: e.message }, e.status);
+      throw e;
+    }
   } catch (e: any) {
     return j({ error: e.message }, 500);
   }
