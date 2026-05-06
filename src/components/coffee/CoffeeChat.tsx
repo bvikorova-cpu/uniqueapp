@@ -37,7 +37,9 @@ export const CoffeeChat = ({ matchId, open, onOpenChange }: CoffeeChatProps) => 
   const [hasMore, setHasMore] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const topSentinelRef = useRef<HTMLDivElement>(null);
   const initialScrollDone = useRef(false);
+  const loadingMoreRef = useRef(false);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setUserId(data.user?.id ?? null));
