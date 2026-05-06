@@ -100,7 +100,8 @@ export const CoffeeChat = ({ matchId, open, onOpenChange }: CoffeeChatProps) => 
   };
 
   const loadOlder = async () => {
-    if (!matchId || loadingMore || !hasMore || messages.length === 0) return;
+    if (!matchId || loadingMoreRef.current || !hasMore || messages.length === 0) return;
+    loadingMoreRef.current = true;
     setLoadingMore(true);
     const oldest = messages[0];
     const scrollEl = scrollRef.current;
@@ -117,6 +118,7 @@ export const CoffeeChat = ({ matchId, open, onOpenChange }: CoffeeChatProps) => 
 
     setLoadingMore(false);
     if (error) {
+      loadingMoreRef.current = false;
       toast({ title: 'Failed to load older messages', description: error.message, variant: 'destructive' });
       return;
     }
@@ -135,8 +137,28 @@ export const CoffeeChat = ({ matchId, open, onOpenChange }: CoffeeChatProps) => 
       if (scrollEl) {
         scrollEl.scrollTop = prevTop + (scrollEl.scrollHeight - prevHeight);
       }
+      loadingMoreRef.current = false;
     });
   };
+
+  // Infinite scroll: observe top sentinel to load older messages automatically
+  useEffect(() => {
+    if (!open || !matchId || !hasMore) return;
+    const root = scrollRef.current;
+    const sentinel = topSentinelRef.current;
+    if (!root || !sentinel) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && initialScrollDone.current) {
+          loadOlder();
+        }
+      },
+      { root, rootMargin: '100px 0px 0px 0px', threshold: 0 }
+    );
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, matchId, hasMore, messages.length]);
 
   // Realtime subscription
   useEffect(() => {
