@@ -66,42 +66,43 @@ export function EmotionRoulette({ onBack }: Props) {
     setIsSpinning(true);
     setResult(null);
 
-    // Spin animation
+    // Visual spin animation (server decides outcome)
     const spins = 5 + Math.random() * 3;
-    const resultIndex = Math.floor(Math.random() * EMOTIONS.length);
-    const targetRotation = rotation + spins * 360 + (resultIndex * (360 / EMOTIONS.length));
+    const visualIndex = Math.floor(Math.random() * EMOTIONS.length);
+    const targetRotation = rotation + spins * 360 + (visualIndex * (360 / EMOTIONS.length));
     setRotation(targetRotation);
 
-    // Wait for animation
-    await new Promise((r) => setTimeout(r, 3000));
-
-    const resultEmotion = EMOTIONS[resultIndex];
-    const won = resultEmotion.name.toLowerCase() === selectedEmotion.toLowerCase();
-    const payout = won ? 2 : 0;
-
-    // Record spin
-    await (supabase as any).from("emotion_roulette_spins").insert({
-      user_id: user.id,
-      bet_emotion: selectedEmotion,
-      bet_amount: 1,
-      result_emotion: resultEmotion.name.toLowerCase(),
-      won,
-      payout,
+    const spinPromise = supabase.functions.invoke("emotion-roulette-spin", {
+      body: { bet_emotion: selectedEmotion.toLowerCase() },
     });
+    await new Promise((r) => setTimeout(r, 3000));
+    const { data, error } = await spinPromise;
 
-    // Deduct credit (or add winnings)
-    // Simple: just deduct 1 credit for playing
-    await supabase.rpc("deduct_emotion_credits" as any, { p_user_id: user.id, p_amount: 1 });
+    if (error || (data as any)?.error) {
+      setIsSpinning(false);
+      toast({
+        title: "Spin failed",
+        description: (data as any)?.error || error?.message || "Try again",
+        variant: "destructive",
+      });
+      return;
+    }
 
-    setResult({ emotion: resultEmotion.name, won, payout });
+    const resultEmotionName = String((data as any)?.result_emotion ?? "");
+    const won = !!(data as any)?.won;
+    const payout = Number((data as any)?.payout ?? 0);
+    const displayName =
+      EMOTIONS.find((e) => e.name.toLowerCase() === resultEmotionName)?.name ?? resultEmotionName;
+
+    setResult({ emotion: displayName, won, payout });
     setIsSpinning(false);
     fetchHistory();
 
     toast({
       title: won ? "🎉 You Won!" : "Better luck next time!",
       description: won
-        ? `The wheel landed on ${resultEmotion.name}! You won ${payout} credits!`
-        : `The wheel landed on ${resultEmotion.name}. You bet on ${selectedEmotion}.`,
+        ? `The wheel landed on ${displayName}! You won ${payout} credits!`
+        : `The wheel landed on ${displayName}. You bet on ${selectedEmotion}.`,
     });
   };
 
