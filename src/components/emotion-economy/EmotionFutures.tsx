@@ -41,50 +41,33 @@ export function EmotionFutures({ onBack }: Props) {
   };
 
   const placeBet = async (emotion: string, direction: "up" | "down") => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      toast({ title: "Sign in required", variant: "destructive" });
-      return;
-    }
-
-    // Check credits
-    const { data: credits } = await supabase
-      .from("emotion_credits")
-      .select("credits_remaining")
-      .eq("user_id", user.id)
-      .maybeSingle();
-
-    if (!credits || credits.credits_remaining < 2) {
-      toast({
-        title: "Insufficient Credits",
-        description: "Predictions cost 2 credits each. Purchase more credits first.",
-        variant: "destructive",
-      });
-      return;
-    }
-
     setPlacingBet(emotion);
+    try {
+      const { data, error } = await supabase.functions.invoke("emotion-futures-bet", {
+        body: { emotion_type: emotion.toLowerCase(), direction },
+      });
+      if (error || (data as any)?.error) {
+        const msg = (data as any)?.error || error?.message || "Try again";
+        const insufficient = /insufficient/i.test(msg);
+        toast({
+          title: insufficient ? "Insufficient Credits" : "Prediction failed",
+          description: insufficient
+            ? "Predictions cost 2 credits each. Purchase more credits first."
+            : msg,
+          variant: "destructive",
+        });
+        return;
+      }
 
-    // Deduct credits
-    await supabase.rpc("deduct_emotion_credits" as any, { p_user_id: user.id, p_amount: 2 });
-
-    const resolutionDate = format(addDays(new Date(), 7), "yyyy-MM-dd");
-
-    await (supabase as any).from("emotion_futures_bets").insert({
-      user_id: user.id,
-      emotion_type: emotion.toLowerCase(),
-      direction,
-      amount: 2,
-      resolution_date: resolutionDate,
-    });
-
-    toast({
-      title: "Prediction Placed! 📈",
-      description: `You predicted ${emotion} will go ${direction} by ${resolutionDate}. 2 credits deducted.`,
-    });
-
-    setPlacingBet(null);
-    fetchBets();
+      const resolutionDate = (data as any)?.resolution_date;
+      toast({
+        title: "Prediction Placed! 📈",
+        description: `You predicted ${emotion} will go ${direction} by ${resolutionDate}. 2 credits deducted.`,
+      });
+      fetchBets();
+    } finally {
+      setPlacingBet(null);
+    }
   };
 
   return (
