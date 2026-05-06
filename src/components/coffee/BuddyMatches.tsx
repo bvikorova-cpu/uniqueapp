@@ -10,7 +10,7 @@ import { useToast } from '@/hooks/use-toast';
 export const BuddyMatches = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const navigate = useNavigate();
+  const [chatMatchId, setChatMatchId] = useState<string | null>(null);
 
   const { data: matches } = useQuery({
     queryKey: ['coffee-matches'],
