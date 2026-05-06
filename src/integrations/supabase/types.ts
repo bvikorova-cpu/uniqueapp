@@ -44407,6 +44407,27 @@ export type Database = {
           weekly_xp: number
         }[]
       }
+      get_my_clones: {
+        Args: never
+        Returns: {
+          clone_name: string
+          created_at: string
+          id: string
+          is_active: boolean
+          personality_data: Json
+          subscription_tier: string
+          total_conversations: number
+          training_status: string
+          updated_at: string
+          user_id: string
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "personality_clones"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
       get_my_weekly_xp_rank: {
         Args: never
         Returns: {
