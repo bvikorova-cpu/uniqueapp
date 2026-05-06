@@ -117,5 +117,11 @@ export const BuddyMatches = () => {
         </CardContent>
       </Card>
     </div>
+    <CoffeeChat
+      matchId={chatMatchId}
+      open={!!chatMatchId}
+      onOpenChange={(o) => { if (!o) setChatMatchId(null); }}
+    />
+    </>
   );
 };
