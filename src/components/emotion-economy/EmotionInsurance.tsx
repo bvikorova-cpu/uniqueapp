@@ -169,9 +169,14 @@ export function EmotionInsurance({ onBack }: { onBack?: () => void }) {
               <Button 
                 className="w-full" 
                 variant={plan.popular ? "default" : "outline"}
-                onClick={() => handleGetProtected(plan.name, plan.price)}
+                disabled={loading === plan.level}
+                onClick={() => handleGetProtected(plan.level, plan.name)}
               >
-                Get Protected
+                {loading === plan.level ? (
+                  <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Redirecting…</>
+                ) : (
+                  "Get Protected"
+                )}
               </Button>
             </CardContent>
           </Card>
