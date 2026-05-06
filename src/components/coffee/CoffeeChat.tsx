@@ -5,7 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
-import { Send, Coffee, Loader2 } from 'lucide-react';
+import { Send, Coffee, Loader2, Check, AlertCircle, RotateCcw } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface CoffeeChatProps {
@@ -14,12 +14,16 @@ interface CoffeeChatProps {
   onOpenChange: (open: boolean) => void;
 }
 
+type SendStatus = 'pending' | 'sent' | 'failed';
+
 interface Message {
   id: string;
   match_id: string;
   sender_id: string;
   message: string;
   created_at: string;
+  status?: SendStatus;
+  tempId?: string;
 }
 
 const PAGE_SIZE = 50;
