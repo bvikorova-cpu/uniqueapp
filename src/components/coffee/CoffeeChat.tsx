@@ -50,6 +50,16 @@ export const CoffeeChat = ({ matchId, open, onOpenChange }: CoffeeChatProps) => 
   });
 
   // Realtime subscription
+  // Dedup helper: merge a message into cache by id (idempotent)
+  const upsertMessage = (msg: Message) => {
+    queryClient.setQueryData<Message[]>(['coffee-messages', matchId], (prev = []) => {
+      if (prev.some((m) => m.id === msg.id)) return prev;
+      const next = [...prev, msg];
+      next.sort((a, b) => a.created_at.localeCompare(b.created_at));
+      return next;
+    });
+  };
+
   useEffect(() => {
     if (!matchId || !open) return;
     const channel = supabase
@@ -57,15 +67,16 @@ export const CoffeeChat = ({ matchId, open, onOpenChange }: CoffeeChatProps) => 
       .on(
         'postgres_changes',
         { event: 'INSERT', schema: 'public', table: 'coffee_match_messages', filter: `match_id=eq.${matchId}` },
-        () => {
-          queryClient.invalidateQueries({ queryKey: ['coffee-messages', matchId] });
+        (payload) => {
+          upsertMessage(payload.new as Message);
         }
       )
       .subscribe();
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [matchId, open, queryClient]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [matchId, open]);
 
   // Auto-scroll
   useEffect(() => {
@@ -76,16 +87,18 @@ export const CoffeeChat = ({ matchId, open, onOpenChange }: CoffeeChatProps) => 
     const text = input.trim();
     if (!text || !matchId || !userId) return;
     setSending(true);
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from('coffee_match_messages')
-      .insert({ match_id: matchId, sender_id: userId, message: text });
+      .insert({ match_id: matchId, sender_id: userId, message: text })
+      .select()
+      .single();
     setSending(false);
     if (error) {
       toast({ title: 'Failed to send', description: error.message, variant: 'destructive' });
       return;
     }
     setInput('');
-    queryClient.invalidateQueries({ queryKey: ['coffee-messages', matchId] });
+    if (data) upsertMessage(data as Message);
   };
 
   return (
