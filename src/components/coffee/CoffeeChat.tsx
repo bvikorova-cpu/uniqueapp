@@ -70,14 +70,31 @@ export const CoffeeChat = ({ matchId, open, onOpenChange }: CoffeeChatProps) => 
     enabled: !!matchId && open,
   });
 
-  // Dedup helper: merge a message into cache by id (idempotent)
+  // Dedup helper: merge a server message into cache, replacing any matching temp/pending entry
   const upsertMessage = (msg: Message) => {
     queryClient.setQueryData<Message[]>(['coffee-messages', matchId], (prev = []) => {
-      if (prev.some((m) => m.id === msg.id)) return prev;
-      const next = [...prev, msg];
+      // Replace optimistic message with same content from same sender if still pending
+      const withoutTemp = prev.filter(
+        (m) =>
+          !(m.status === 'pending' && m.sender_id === msg.sender_id && m.message === msg.message)
+      );
+      if (withoutTemp.some((m) => m.id === msg.id)) return withoutTemp;
+      const next = [...withoutTemp, { ...msg, status: 'sent' as SendStatus }];
       next.sort((a, b) => a.created_at.localeCompare(b.created_at));
       return next;
     });
+  };
+
+  const updateMessageStatus = (tempId: string, patch: Partial<Message>) => {
+    queryClient.setQueryData<Message[]>(['coffee-messages', matchId], (prev = []) =>
+      prev.map((m) => (m.tempId === tempId ? { ...m, ...patch } : m))
+    );
+  };
+
+  const removeMessage = (tempId: string) => {
+    queryClient.setQueryData<Message[]>(['coffee-messages', matchId], (prev = []) =>
+      prev.filter((m) => m.tempId !== tempId)
+    );
   };
 
   const loadOlder = async () => {
