@@ -37,7 +37,9 @@ export const CoffeeChat = ({ matchId, open, onOpenChange }: CoffeeChatProps) => 
   const [hasMore, setHasMore] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const topSentinelRef = useRef<HTMLDivElement>(null);
   const initialScrollDone = useRef(false);
+  const loadingMoreRef = useRef(false);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setUserId(data.user?.id ?? null));
@@ -98,7 +100,8 @@ export const CoffeeChat = ({ matchId, open, onOpenChange }: CoffeeChatProps) => 
   };
 
   const loadOlder = async () => {
-    if (!matchId || loadingMore || !hasMore || messages.length === 0) return;
+    if (!matchId || loadingMoreRef.current || !hasMore || messages.length === 0) return;
+    loadingMoreRef.current = true;
     setLoadingMore(true);
     const oldest = messages[0];
     const scrollEl = scrollRef.current;
@@ -115,6 +118,7 @@ export const CoffeeChat = ({ matchId, open, onOpenChange }: CoffeeChatProps) => 
 
     setLoadingMore(false);
     if (error) {
+      loadingMoreRef.current = false;
       toast({ title: 'Failed to load older messages', description: error.message, variant: 'destructive' });
       return;
     }
@@ -133,8 +137,28 @@ export const CoffeeChat = ({ matchId, open, onOpenChange }: CoffeeChatProps) => 
       if (scrollEl) {
         scrollEl.scrollTop = prevTop + (scrollEl.scrollHeight - prevHeight);
       }
+      loadingMoreRef.current = false;
     });
   };
+
+  // Infinite scroll: observe top sentinel to load older messages automatically
+  useEffect(() => {
+    if (!open || !matchId || !hasMore) return;
+    const root = scrollRef.current;
+    const sentinel = topSentinelRef.current;
+    if (!root || !sentinel) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && initialScrollDone.current) {
+          loadOlder();
+        }
+      },
+      { root, rootMargin: '100px 0px 0px 0px', threshold: 0 }
+    );
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, matchId, hasMore, messages.length]);
 
   // Realtime subscription
   useEffect(() => {
@@ -247,22 +271,14 @@ export const CoffeeChat = ({ matchId, open, onOpenChange }: CoffeeChatProps) => 
 
         <div ref={scrollRef} className="flex-1 px-4 overflow-y-auto">
           <div className="py-4 space-y-3">
-            {hasMore && messages.length > 0 && (
-              <div className="flex justify-center">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={loadOlder}
-                  disabled={loadingMore}
-                  className="text-xs text-muted-foreground"
-                >
-                  {loadingMore ? (
-                    <><Loader2 className="h-3 w-3 mr-1 animate-spin" /> Loading...</>
-                  ) : (
-                    'Load older messages'
-                  )}
-                </Button>
+            <div ref={topSentinelRef} aria-hidden="true" />
+            {loadingMore && (
+              <div className="flex justify-center py-2">
+                <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
               </div>
+            )}
+            {!hasMore && messages.length >= PAGE_SIZE && (
+              <p className="text-center text-[10px] text-muted-foreground py-1">Beginning of conversation</p>
             )}
             {isLoading ? (
               <div className="flex justify-center py-8">
