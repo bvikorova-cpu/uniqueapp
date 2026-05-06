@@ -56,6 +56,7 @@ export const BuddyMatches = () => {
   };
 
   return (
+    <>
     <div className="grid md:grid-cols-2 gap-6">
       <Card>
         <CardHeader>
