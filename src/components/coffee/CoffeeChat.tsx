@@ -275,19 +275,55 @@ export const CoffeeChat = ({ matchId, open, onOpenChange }: CoffeeChatProps) => 
             ) : (
               messages.map((m) => {
                 const mine = m.sender_id === userId;
+                const status: SendStatus = m.status ?? 'sent';
+                const failed = mine && status === 'failed';
+                const pending = mine && status === 'pending';
                 return (
-                  <div key={m.id} className={`flex ${mine ? 'justify-end' : 'justify-start'}`}>
-                    <div
-                      className={`max-w-[75%] px-3 py-2 rounded-2xl text-sm ${
-                        mine
-                          ? 'bg-amber-500/90 text-white rounded-br-sm'
-                          : 'bg-muted rounded-bl-sm'
-                      }`}
-                    >
-                      <div>{m.message}</div>
-                      <div className={`text-[10px] mt-1 opacity-70`}>
-                        {new Date(m.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  <div key={m.tempId ?? m.id} className={`flex ${mine ? 'justify-end' : 'justify-start'}`}>
+                    <div className="flex flex-col max-w-[75%]">
+                      <div
+                        className={`px-3 py-2 rounded-2xl text-sm ${
+                          mine
+                            ? failed
+                              ? 'bg-destructive/80 text-destructive-foreground rounded-br-sm'
+                              : 'bg-amber-500/90 text-white rounded-br-sm'
+                            : 'bg-muted rounded-bl-sm'
+                        } ${pending ? 'opacity-70' : ''}`}
+                      >
+                        <div>{m.message}</div>
+                        <div className="text-[10px] mt-1 opacity-70 flex items-center gap-1 justify-end">
+                          <span>
+                            {new Date(m.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                          </span>
+                          {mine && status === 'pending' && (
+                            <Loader2 className="h-3 w-3 animate-spin" aria-label="Sending" />
+                          )}
+                          {mine && status === 'sent' && (
+                            <Check className="h-3 w-3" aria-label="Sent" />
+                          )}
+                          {mine && status === 'failed' && (
+                            <AlertCircle className="h-3 w-3" aria-label="Failed" />
+                          )}
+                        </div>
                       </div>
+                      {failed && (
+                        <div className="flex gap-2 mt-1 justify-end">
+                          <button
+                            type="button"
+                            onClick={() => retryMessage(m)}
+                            className="text-[10px] text-destructive hover:underline flex items-center gap-1"
+                          >
+                            <RotateCcw className="h-3 w-3" /> Retry
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => dismissFailed(m)}
+                            className="text-[10px] text-muted-foreground hover:underline"
+                          >
+                            Dismiss
+                          </button>
+                        </div>
+                      )}
                     </div>
                   </div>
                 );
