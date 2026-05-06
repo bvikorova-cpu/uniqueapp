@@ -227,7 +227,7 @@ export const CoffeeChat = ({ matchId, open, onOpenChange }: CoffeeChatProps) => 
               })
             )}
           </div>
-        </ScrollArea>
+        </div>
 
         <div className="p-3 border-t flex gap-2">
           <Input
