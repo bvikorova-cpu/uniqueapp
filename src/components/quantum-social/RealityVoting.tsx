@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft, Vote, Atom, CheckCircle, TrendingUp } from "lucide-react";
+import { ArrowLeft, Vote, Atom, CheckCircle, TrendingUp, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useQuantumAccess } from "@/hooks/useQuantumAccess";
 
 interface PostWithVersions {
   id: string;
@@ -20,6 +21,8 @@ export function RealityVoting({ onBack }: { onBack: () => void }) {
   const [posts, setPosts] = useState<PostWithVersions[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
+  const access = useQuantumAccess();
+  const canVote = access.hasQuantumProfilesSub || access.hasObserverSub || access.hasEntanglementSub;
 
   useEffect(() => {
     fetchVotablePosts();
@@ -77,6 +80,10 @@ export function RealityVoting({ onBack }: { onBack: () => void }) {
   const castVote = async (postId: string, versionId: string) => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { toast({ title: "Login Required", variant: "destructive" }); return; }
+    if (!canVote) {
+      toast({ title: "Subscription required", description: "Voting requires an active Quantum subscription.", variant: "destructive" });
+      return;
+    }
 
     const { error } = await supabase.from("quantum_reality_votes").insert([{
       post_id: postId,
@@ -110,6 +117,13 @@ export function RealityVoting({ onBack }: { onBack: () => void }) {
           <p className="text-xs text-muted-foreground">Vote to decide which quantum reality survives</p>
         </div>
       </div>
+
+      {!access.loading && access.userId && !canVote && (
+        <div className="rounded-md border border-amber-500/30 bg-amber-500/10 p-3 text-xs text-amber-300 flex gap-2 items-start">
+          <Lock className="h-4 w-4 mt-0.5" />
+          <span>Voting is gated to Quantum subscribers. Activate any plan in Subscriptions to participate.</span>
+        </div>
+      )}
 
       {loading ? (
         <p className="text-muted-foreground">Loading quantum posts...</p>

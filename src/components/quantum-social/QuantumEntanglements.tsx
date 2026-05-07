@@ -4,8 +4,9 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Users, Link as LinkIcon, Zap, ArrowLeft } from "lucide-react";
+import { Users, Link as LinkIcon, Zap, ArrowLeft, Lock, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
+import { useQuantumAccess } from "@/hooks/useQuantumAccess";
 
 interface Entanglement {
   id: string;
@@ -22,8 +23,9 @@ const QuantumEntanglements = ({ onBack }: { onBack: () => void }) => {
   const [targetUserId, setTargetUserId] = useState("");
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
+  const access = useQuantumAccess();
 
-  useEffect(() => { fetchEntanglements(); }, []);
+  useEffect(() => { if (access.userId) fetchEntanglements(); }, [access.userId]);
 
   const fetchEntanglements = async () => {
     setLoading(true);
@@ -67,19 +69,32 @@ const QuantumEntanglements = ({ onBack }: { onBack: () => void }) => {
         <Badge variant="outline" className="border-emerald-500/30 text-emerald-400">€9.99/month each</Badge>
       </div>
 
-      <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-5 space-y-4">
-        <div className="flex items-center gap-2">
-          <LinkIcon className="h-5 w-5 text-emerald-400" />
-          <h3 className="font-semibold">Create New Entanglement</h3>
+      {access.loading ? (
+        <div className="flex items-center justify-center p-6 text-muted-foreground"><Loader2 className="h-5 w-5 animate-spin mr-2" />Checking access…</div>
+      ) : !access.userId ? (
+        <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-6 text-center">
+          <Lock className="h-6 w-6 mx-auto text-emerald-400 mb-2" />
+          <p className="text-sm text-muted-foreground">Sign in to create entanglements</p>
         </div>
-        <p className="text-xs text-muted-foreground">Connect with someone — you'll always see each other's same reality version</p>
-        <div className="flex gap-2">
-          <Input placeholder="Enter user ID to entangle with" value={targetUserId} onChange={(e) => setTargetUserId(e.target.value)} className="border-emerald-500/20" />
-          <Button onClick={createEntanglement} className="bg-emerald-600 hover:bg-emerald-700">
-            <Zap className="h-4 w-4 mr-2" />Entangle (€9.99)
-          </Button>
+      ) : (
+        <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-5 space-y-4">
+          <div className="flex items-center gap-2">
+            <LinkIcon className="h-5 w-5 text-emerald-400" />
+            <h3 className="font-semibold">Create New Entanglement</h3>
+          </div>
+          <p className="text-xs text-muted-foreground">
+            {access.hasEntanglementSub
+              ? "You have an active entanglement subscription — pair instantly with another user."
+              : "Pay €9.99/month to entangle with another user — you'll always see the same reality version."}
+          </p>
+          <div className="flex gap-2">
+            <Input placeholder="Enter user ID to entangle with" value={targetUserId} onChange={(e) => setTargetUserId(e.target.value)} className="border-emerald-500/20" />
+            <Button onClick={createEntanglement} className="bg-emerald-600 hover:bg-emerald-700">
+              <Zap className="h-4 w-4 mr-2" />{access.hasEntanglementSub ? "Entangle" : "Entangle (€9.99)"}
+            </Button>
+          </div>
         </div>
-      </div>
+      )}
 
       <div className="space-y-3">
         <h3 className="font-semibold">Active Entanglements</h3>
