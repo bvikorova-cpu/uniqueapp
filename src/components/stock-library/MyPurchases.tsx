@@ -11,6 +11,8 @@ interface Purchase {
   download_url: string;
   created_at: string;
   price_paid_eur: number;
+  resolution?: string;
+  license_type?: string;
   stock_content_items: {
     id: string;
     title: string;
@@ -19,6 +21,7 @@ interface Purchase {
     file_url: string;
     content_type: string;
     category: string;
+    resolutions?: Record<string, { url?: string; width?: number }> | null;
   };
 }
 
