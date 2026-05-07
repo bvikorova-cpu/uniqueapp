@@ -156,6 +156,13 @@ export function BrowseLibraryView({ onBack }: BrowseLibraryViewProps) {
           ))}
         </div>
       )}
+
+      <LicenseSelectorDialog
+        open={licenseDialogOpen}
+        onOpenChange={setLicenseDialogOpen}
+        item={selectedItem}
+        onSelect={handlePurchase}
+      />
     </div>
   );
 }
