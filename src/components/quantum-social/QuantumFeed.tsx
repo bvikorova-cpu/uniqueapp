@@ -161,7 +161,7 @@ const QuantumFeed = ({ onBack }: { onBack: () => void }) => {
 
   const likePost = async (postId: string) => {
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
+    if (!user) { toast({ title: "Sign in required", variant: "destructive" }); return; }
     const version = postVersions[postId];
     if (!version) return;
 
