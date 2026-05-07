@@ -9,6 +9,7 @@ import { Atom, Heart, Eye, ArrowLeft, Zap, Lock } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { useQuantumAccess } from "@/hooks/useQuantumAccess";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface Post {
   id: string;
