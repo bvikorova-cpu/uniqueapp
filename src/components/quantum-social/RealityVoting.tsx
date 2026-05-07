@@ -177,8 +177,8 @@ export function RealityVoting({ onBack }: { onBack: () => void }) {
                 return (
                   <div
                     key={version.id}
-                    onClick={() => !post.userVoted && castVote(post.id, version.id)}
-                    className={`rounded-lg border p-3 transition-all ${post.userVoted ? 'border-white/10' : 'border-cyan-500/20 cursor-pointer hover:border-cyan-400/40 hover:bg-cyan-500/5'}`}
+                    onClick={() => !post.userVoted && !access.loading && castVote(post.id, version.id)}
+                    className={`rounded-lg border p-3 transition-all ${post.userVoted || access.loading ? 'border-white/10 opacity-70' : 'border-cyan-500/20 cursor-pointer hover:border-cyan-400/40 hover:bg-cyan-500/5'}`}
                   >
                     <div className="flex items-center justify-between mb-1">
                       <p className="text-sm">{version.content}</p>
