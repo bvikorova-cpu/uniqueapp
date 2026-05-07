@@ -24,7 +24,7 @@ export function InfluKingToolCard({ icon: Icon, title, description, badge, credi
       transition={{ delay }}
       whileHover={locked ? undefined : { scale: 1.03, y: -2 }}
       onClick={onClick}
-      className={`${locked ? "cursor-not-allowed opacity-60" : "cursor-pointer"} rounded-xl border border-cyan-500/20 bg-gradient-to-br ${gradient} p-4 hover:border-cyan-400/40 transition-all group relative overflow-hidden`}
+      className={`cursor-pointer ${locked ? "opacity-60" : ""} rounded-xl border border-cyan-500/20 bg-gradient-to-br ${gradient} p-4 hover:border-cyan-400/40 transition-all group relative overflow-hidden`}
     >
       <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/0 to-purple-500/0 group-hover:from-cyan-500/5 group-hover:to-purple-500/5 transition-all duration-300" />
       {locked && (
