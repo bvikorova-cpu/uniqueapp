@@ -22,6 +22,7 @@ import { BackgroundRemoverView } from "@/components/stock-content/views/Backgrou
 import { BulkUploadView } from "@/components/stock-content/views/BulkUploadView";
 import { ContentAnalyticsView } from "@/components/stock-content/views/ContentAnalyticsView";
 import { ContributorPortfoliosView } from "@/components/stock-content/views/ContributorPortfoliosView";
+import { SmartSearchView } from "@/components/stock-content/views/SmartSearchView";
 import { Tags, Palette, Wand2, Star, Eye, Download } from "lucide-react";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
@@ -90,6 +91,8 @@ const StockContentLibrary = () => {
         return <ContentAnalyticsView onBack={() => setActiveView("dashboard")} />;
       case "contributors":
         return <ContributorPortfoliosView onBack={() => setActiveView("dashboard")} />;
+      case "smart-search":
+        return <SmartSearchView onBack={() => setActiveView("dashboard")} />;
       default:
         return (
           <>
