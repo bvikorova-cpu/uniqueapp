@@ -110,6 +110,7 @@ const QuantumFeed = ({ onBack }: { onBack: () => void }) => {
   };
 
   const createPost = async () => {
+    if (access.loading) { toast({ title: "Please wait", description: "Verifying your access…" }); return; }
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { toast({ title: "Authentication Required", description: "Please log in to create posts", variant: "destructive" }); return; }
     if (!access.hasQuantumProfilesSub && newPost.versionsCount > 1) {
