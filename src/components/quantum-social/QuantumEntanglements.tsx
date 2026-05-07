@@ -89,7 +89,7 @@ const QuantumEntanglements = ({ onBack }: { onBack: () => void }) => {
           </p>
           <div className="flex gap-2">
             <Input placeholder="Enter user ID to entangle with" value={targetUserId} onChange={(e) => setTargetUserId(e.target.value)} className="border-emerald-500/20" />
-            <Button onClick={createEntanglement} className="bg-emerald-600 hover:bg-emerald-700">
+            <Button onClick={createEntanglement} disabled={access.loading} className="bg-emerald-600 hover:bg-emerald-700">
               <Zap className="h-4 w-4 mr-2" />{access.hasEntanglementSub ? "Entangle" : "Entangle (€9.99)"}
             </Button>
           </div>
