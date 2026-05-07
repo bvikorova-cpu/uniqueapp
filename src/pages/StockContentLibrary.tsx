@@ -23,6 +23,7 @@ import { BulkUploadView } from "@/components/stock-content/views/BulkUploadView"
 import { ContentAnalyticsView } from "@/components/stock-content/views/ContentAnalyticsView";
 import { ContributorPortfoliosView } from "@/components/stock-content/views/ContributorPortfoliosView";
 import { SmartSearchView } from "@/components/stock-content/views/SmartSearchView";
+import { EditorsPicksView } from "@/components/stock-content/views/EditorsPicksView";
 import { Tags, Palette, Wand2, Star, Eye, Download } from "lucide-react";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
@@ -72,7 +73,7 @@ const StockContentLibrary = () => {
       case "ai-enhance":
         return <GenericToolView onBack={() => setActiveView("dashboard")} title="AI Image Enhancer" description="Upscale resolution, remove noise, enhance colors, and improve overall image quality using AI." icon={Wand2} iconColor="text-violet-500" credits={4} features={["4x upscaling", "Noise reduction", "Color enhancement", "Sharpening", "HDR effect", "Batch processing"]} />;
       case "featured":
-        return <GenericToolView onBack={() => setActiveView("dashboard")} title="Featured Picks" description="Hand-curated editor's choice selections featuring the best and most unique content on the platform." icon={Star} iconColor="text-yellow-500" features={["Weekly editor picks", "Staff favorites", "Category highlights", "Seasonal collections", "New artist spotlight", "Premium exclusives"]} />;
+        return <EditorsPicksView onBack={() => setActiveView("dashboard")} />;
       case "preview":
         return <GenericToolView onBack={() => setActiveView("dashboard")} title="Content Preview" description="Preview content in different contexts before purchasing. See how it looks in various mockups and use cases." icon={Eye} iconColor="text-slate-500" features={["Website mockup preview", "Social media preview", "Print preview", "Device mockups", "Color variation", "Watermark-free preview"]} />;
       case "download-history":
