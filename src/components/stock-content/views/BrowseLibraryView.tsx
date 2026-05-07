@@ -8,6 +8,7 @@ import { Search, Download, Euro, ImageIcon, ArrowLeft, Filter } from "lucide-rea
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { LicenseSelectorDialog } from "../LicenseSelectorDialog";
+import { ResolutionSelectorDialog, type ResolutionKey } from "../ResolutionSelectorDialog";
 
 interface BrowseLibraryViewProps {
   onBack: () => void;
