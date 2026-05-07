@@ -69,7 +69,15 @@ export function useQuantumAccess(): QuantumAccess {
   useEffect(() => {
     load();
     const { data: sub } = supabase.auth.onAuthStateChange(() => load());
-    return () => sub.subscription.unsubscribe();
+    const onRefresh = () => load();
+    const onVisible = () => { if (document.visibilityState === "visible") load(); };
+    window.addEventListener("quantum-access-refresh", onRefresh);
+    document.addEventListener("visibilitychange", onVisible);
+    return () => {
+      sub.subscription.unsubscribe();
+      window.removeEventListener("quantum-access-refresh", onRefresh);
+      document.removeEventListener("visibilitychange", onVisible);
+    };
   }, [load]);
 
   return { ...state, refresh: load };
