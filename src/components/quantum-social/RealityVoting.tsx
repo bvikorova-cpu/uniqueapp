@@ -80,6 +80,10 @@ export function RealityVoting({ onBack }: { onBack: () => void }) {
   const castVote = async (postId: string, versionId: string) => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { toast({ title: "Login Required", variant: "destructive" }); return; }
+    if (!canVote) {
+      toast({ title: "Subscription required", description: "Voting requires an active Quantum subscription.", variant: "destructive" });
+      return;
+    }
 
     const { error } = await supabase.from("quantum_reality_votes").insert([{
       post_id: postId,
