@@ -213,13 +213,21 @@ const QuantumFeed = ({ onBack }: { onBack: () => void }) => {
             Quantum Feed
           </h2>
         </div>
-        <Button onClick={() => setIsCreating(!isCreating)} className="bg-cyan-600 hover:bg-cyan-700">
+        <Button onClick={() => setIsCreating(!isCreating)} disabled={access.loading} className="bg-cyan-600 hover:bg-cyan-700">
           <Atom className="h-4 w-4 mr-2" />
-          {isCreating ? "Cancel" : "Create Post"}
+          {access.loading ? "Checking access…" : (isCreating ? "Cancel" : "Create Post")}
         </Button>
       </div>
 
-      {isCreating && (
+      {access.loading && (
+        <div className="rounded-xl border border-cyan-500/20 bg-cyan-500/5 p-5 space-y-3">
+          <Skeleton className="h-4 w-40" />
+          <Skeleton className="h-20 w-full" />
+          <Skeleton className="h-9 w-full" />
+        </div>
+      )}
+
+      {!access.loading && isCreating && (
         <div className="rounded-xl border border-cyan-500/20 bg-cyan-500/5 p-5 space-y-4">
           <h3 className="font-semibold">Create Quantum Post</h3>
           {!access.hasQuantumProfilesSub && (
@@ -238,7 +246,7 @@ const QuantumFeed = ({ onBack }: { onBack: () => void }) => {
               <SelectItem value="5" disabled={!access.hasQuantumProfilesSub}>5 Versions (Premium) {!access.hasQuantumProfilesSub && "🔒"}</SelectItem>
             </SelectContent>
           </Select>
-          <Button onClick={createPost} className="w-full bg-cyan-600 hover:bg-cyan-700">
+          <Button onClick={createPost} disabled={access.loading} className="w-full bg-cyan-600 hover:bg-cyan-700">
             <Atom className="h-4 w-4 mr-2" />
             Create Quantum Post
           </Button>
