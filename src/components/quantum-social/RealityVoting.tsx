@@ -21,6 +21,8 @@ export function RealityVoting({ onBack }: { onBack: () => void }) {
   const [posts, setPosts] = useState<PostWithVersions[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
+  const access = useQuantumAccess();
+  const canVote = access.hasQuantumProfilesSub || access.hasObserverSub || access.hasEntanglementSub;
 
   useEffect(() => {
     fetchVotablePosts();
