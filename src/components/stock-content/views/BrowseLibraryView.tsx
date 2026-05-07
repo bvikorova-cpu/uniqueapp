@@ -143,6 +143,14 @@ export function BrowseLibraryView({ onBack }: BrowseLibraryViewProps) {
                   <span className="transform rotate-[-25deg] opacity-30 text-3xl font-bold text-white tracking-widest select-none" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}>UNIQUE</span>
                 </div>
                 <Badge className="absolute top-2 right-2" variant="secondary">{item.content_type}</Badge>
+                {item.requires_release && (
+                  <Badge
+                    className={`absolute top-2 left-2 text-[10px] ${item.releases_verified ? 'bg-green-600 text-white' : 'bg-amber-500 text-white'}`}
+                  >
+                    {item.releases_verified ? <ShieldCheck className="w-3 h-3 mr-0.5" /> : <ShieldAlert className="w-3 h-3 mr-0.5" />}
+                    {item.releases_verified ? 'Released' : 'Release pending'}
+                  </Badge>
+                )}
               </div>
               <div className="p-3">
                 <h3 className="font-semibold text-sm mb-1 line-clamp-1">{item.title}</h3>
