@@ -33,6 +33,7 @@ const tools = [
   { id: "bulk-upload", label: "Bulk Upload Manager", desc: "Upload multiple files at once", icon: FolderUp, color: "from-indigo-500 to-blue-700", credits: null },
   { id: "content-analytics", label: "Content Analytics", desc: "Detailed asset performance stats", icon: PieChart, color: "from-sky-500 to-cyan-700", credits: null },
   { id: "contributors", label: "Contributor Portfolios", desc: "Discover top creators & their work", icon: Users, color: "from-fuchsia-500 to-pink-700", credits: null },
+  { id: "smart-search", label: "Smart Search (AI)", desc: "Reverse-image & visual similarity search", icon: Sparkles, color: "from-violet-500 to-purple-700", credits: 4 },
 ];
 
 export function StockContentToolGrid({ onToolSelect }: StockContentToolGridProps) {
