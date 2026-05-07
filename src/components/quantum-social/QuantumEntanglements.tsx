@@ -4,8 +4,9 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Users, Link as LinkIcon, Zap, ArrowLeft } from "lucide-react";
+import { Users, Link as LinkIcon, Zap, ArrowLeft, Lock, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
+import { useQuantumAccess } from "@/hooks/useQuantumAccess";
 
 interface Entanglement {
   id: string;
