@@ -145,11 +145,20 @@ export function EmotionDrops({ onBack }: { onBack?: () => void }) {
               </div>
             </div>
             
-            <Button variant="outline" className="w-full" size="lg" onClick={() => {
-              const subs = JSON.parse(localStorage.getItem("emotion_drop_notify") || "[]");
-              if (!subs.includes("collective_calm")) subs.push("collective_calm");
-              localStorage.setItem("emotion_drop_notify", JSON.stringify(subs));
-              toast({ description: "You'll be notified when Collective Calm starts" });
+            <Button variant="outline" className="w-full" size="lg" onClick={async () => {
+              const { data: { user } } = await supabase.auth.getUser();
+              if (!user) {
+                toast({ title: "Sign in required", description: "Please sign in to get notified", variant: "destructive" });
+                return;
+              }
+              const { error } = await supabase
+                .from('emotion_drop_notifications')
+                .insert({ user_id: user.id, drop_key: 'love_tsunami' });
+              if (error && !String(error.message).includes('duplicate')) {
+                toast({ title: "Error", description: error.message, variant: "destructive" });
+                return;
+              }
+              toast({ description: "You'll be notified when Love Tsunami starts" });
             }}>
               <Clock className="mr-2 h-4 w-4" />
               Notify Me
@@ -185,10 +194,19 @@ export function EmotionDrops({ onBack }: { onBack?: () => void }) {
               </div>
             </div>
             
-            <Button variant="outline" className="w-full" size="lg" onClick={() => {
-              const subs = JSON.parse(localStorage.getItem("emotion_drop_notify") || "[]");
-              if (!subs.includes("joy_explosion")) subs.push("joy_explosion");
-              localStorage.setItem("emotion_drop_notify", JSON.stringify(subs));
+            <Button variant="outline" className="w-full" size="lg" onClick={async () => {
+              const { data: { user } } = await supabase.auth.getUser();
+              if (!user) {
+                toast({ title: "Sign in required", description: "Please sign in to get notified", variant: "destructive" });
+                return;
+              }
+              const { error } = await supabase
+                .from('emotion_drop_notifications')
+                .insert({ user_id: user.id, drop_key: 'joy_explosion' });
+              if (error && !String(error.message).includes('duplicate')) {
+                toast({ title: "Error", description: error.message, variant: "destructive" });
+                return;
+              }
               toast({ description: "You'll be notified when Joy Explosion starts" });
             }}>
               <Clock className="mr-2 h-4 w-4" />
@@ -212,7 +230,7 @@ export function EmotionDrops({ onBack }: { onBack?: () => void }) {
             try {
               const { data, error } = await supabase.functions.invoke("create-checkout", { body: { product_type: "emotion_drop_create", plan_name: name } });
               if (error) throw error;
-              if (data?.url) window.open(data.url, "_blank");
+              if (data?.url) { window.location.href = data.url; return; }
               else toast({ description: `Drop "${name}" queued for review` });
             } catch (e: any) {
               toast({ description: `Drop "${name}" saved as draft` });

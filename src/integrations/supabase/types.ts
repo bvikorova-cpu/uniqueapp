@@ -14760,6 +14760,27 @@ export type Database = {
         }
         Relationships: []
       }
+      emotion_drop_notifications: {
+        Row: {
+          created_at: string
+          drop_key: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          drop_key: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          drop_key?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       emotion_drop_participants: {
         Row: {
           amount_received: number
@@ -14986,6 +15007,35 @@ export type Database = {
           recipient_id?: string | null
         }
         Relationships: []
+      }
+      emotion_post_likes: {
+        Row: {
+          created_at: string
+          id: string
+          post_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          post_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          post_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "emotion_post_likes_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "emotion_posts"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       emotion_posts: {
         Row: {
