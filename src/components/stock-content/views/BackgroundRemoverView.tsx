@@ -5,10 +5,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, Eraser, Loader2, ImageIcon, Download } from "lucide-react";
+import { ArrowLeft, Eraser, Loader2, ImageIcon, Download, Save } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { useAICredits } from "@/hooks/useAICredits";
 
 interface BackgroundRemoverViewProps {
   onBack: () => void;
@@ -16,11 +15,12 @@ interface BackgroundRemoverViewProps {
 
 export function BackgroundRemoverView({ onBack }: BackgroundRemoverViewProps) {
   const { toast } = useToast();
-  const { credits, useCredit } = useAICredits();
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [resultUrl, setResultUrl] = useState<string | null>(null);
+  const [resultPath, setResultPath] = useState<string | null>(null);
   const [processing, setProcessing] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [bgColor, setBgColor] = useState("transparent");
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -29,6 +29,7 @@ export function BackgroundRemoverView({ onBack }: BackgroundRemoverViewProps) {
       setFile(f);
       setPreviewUrl(URL.createObjectURL(f));
       setResultUrl(null);
+      setResultPath(null);
     }
   };
 
@@ -37,38 +38,82 @@ export function BackgroundRemoverView({ onBack }: BackgroundRemoverViewProps) {
       toast({ title: "Error", description: "Please upload an image first", variant: "destructive" });
       return;
     }
-    if (credits.credits_remaining < 3) {
-      toast({ title: "Insufficient Credits", description: "You need 3 credits. Purchase more.", variant: "destructive" });
-      return;
-    }
 
     setProcessing(true);
     try {
-      const success = await useCredit("custom_generation", "AI Background Remover");
-      if (!success) throw new Error("Failed to deduct credits");
-
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Please sign in");
 
-      const filePath = `bg-removal/${user.id}/${Date.now()}-${file.name}`;
-      const { error: uploadError } = await supabase.storage.from("stock-content").upload(filePath, file);
+      const filePath = `bg-removal-src/${user.id}/${Date.now()}-${file.name}`;
+      const { error: uploadError } = await supabase.storage
+        .from("stock-content")
+        .upload(filePath, file);
       if (uploadError) throw uploadError;
-
       const { data: urlData } = supabase.storage.from("stock-content").getPublicUrl(filePath);
 
-      const { data, error } = await supabase.functions.invoke("stock-content-ai", {
-        body: { action: "remove_background", imageUrl: urlData.publicUrl, bgColor },
+      const { data, error } = await supabase.functions.invoke("remove-background", {
+        body: { imageUrl: urlData.publicUrl, bgColor },
       });
       if (error) throw error;
+      if (!data?.resultUrl) throw new Error("No result returned");
 
-      if (data?.resultUrl) {
-        setResultUrl(data.resultUrl);
-        toast({ title: "Background Removed!", description: "Your image is ready to download." });
-      }
+      setResultUrl(data.resultUrl);
+      setResultPath(data.filePath ?? null);
+      toast({ title: "Background Removed!", description: "Your PNG with transparency is ready." });
     } catch (error: any) {
-      toast({ title: "Processing Failed", description: error.message, variant: "destructive" });
+      const msg = error?.message?.includes("402")
+        ? "Insufficient credits (need 3)."
+        : error?.message ?? "Processing failed";
+      toast({ title: "Processing Failed", description: msg, variant: "destructive" });
     } finally {
       setProcessing(false);
+    }
+  };
+
+  const handleDownload = async () => {
+    if (!resultUrl) return;
+    try {
+      const res = await fetch(resultUrl);
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `bg-removed-${Date.now()}.png`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    } catch {
+      window.open(resultUrl, "_blank");
+    }
+  };
+
+  const handleSaveToMyContent = async () => {
+    if (!resultUrl) return;
+    setSaving(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Please sign in");
+
+      const { error } = await supabase.from("stock_content_items").insert([{
+        creator_id: user.id,
+        title: file?.name?.replace(/\.[^.]+$/, "") ?? "Background-removed image",
+        description: `Background removed (${bgColor}) using AI`,
+        content_type: "image",
+        category: "edited",
+        tags: ["bg-removed", bgColor],
+        price_eur: 0,
+        license_type: "standard",
+        file_url: resultUrl,
+        thumbnail_url: resultUrl,
+        is_active: false,
+      }]);
+      if (error) throw error;
+      toast({ title: "Saved", description: "Added to My Content as a draft (inactive)." });
+    } catch (error: any) {
+      toast({ title: "Save Failed", description: error.message, variant: "destructive" });
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -92,7 +137,7 @@ export function BackgroundRemoverView({ onBack }: BackgroundRemoverViewProps) {
             <Select value={bgColor} onValueChange={setBgColor}>
               <SelectTrigger><SelectValue /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="transparent">Transparent</SelectItem>
+                <SelectItem value="transparent">Transparent PNG</SelectItem>
                 <SelectItem value="white">White</SelectItem>
                 <SelectItem value="black">Black</SelectItem>
                 <SelectItem value="gradient-blue">Blue Gradient</SelectItem>
@@ -118,8 +163,8 @@ export function BackgroundRemoverView({ onBack }: BackgroundRemoverViewProps) {
             <ul className="text-xs text-muted-foreground space-y-1">
               <li>• AI-powered precise edge detection</li>
               <li>• Hair and fine detail preservation</li>
-              <li>• Multiple background replacements</li>
-              <li>• High-resolution output</li>
+              <li>• Real transparent PNG output</li>
+              <li>• Instant download or save to library</li>
             </ul>
           </div>
         </Card>
@@ -131,9 +176,15 @@ export function BackgroundRemoverView({ onBack }: BackgroundRemoverViewProps) {
               <div className="bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjZGRkIi8+PHJlY3QgeD0iMTAiIHk9IjEwIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIGZpbGw9IiNkZGQiLz48L3N2Zz4=')] rounded-lg p-2">
                 <img src={resultUrl} alt="Result" className="w-full rounded-lg" />
               </div>
-              <Button className="w-full" variant="outline" onClick={() => window.open(resultUrl, "_blank")}>
-                <Download className="w-4 h-4 mr-2" /> Download Result
-              </Button>
+              <div className="grid grid-cols-2 gap-2">
+                <Button variant="outline" onClick={handleDownload}>
+                  <Download className="w-4 h-4 mr-2" /> Download PNG
+                </Button>
+                <Button variant="default" onClick={handleSaveToMyContent} disabled={saving}>
+                  {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
+                  Save to My Content
+                </Button>
+              </div>
             </div>
           ) : (
             <div className="h-64 bg-secondary/20 rounded-lg flex items-center justify-center">
