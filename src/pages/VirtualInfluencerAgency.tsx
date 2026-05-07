@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { toast } from "sonner";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 type ViewType = "hub" | "create" | "dashboard" | "content-calendar" | "brand-deals" | "trend-analyzer" | "battle-arena" | string;
@@ -87,7 +88,13 @@ const VirtualInfluencerAgency = () => {
   const handleToolClick = (id: string) => {
     if (id === "create") { setShowCreateDialog(true); return; }
     if (id === "dashboard") {
-      if (influencers?.length) { setSelectedInfluencer(influencers[0].id); setActiveView("dashboard"); }
+      if (influencers?.length) {
+        setSelectedInfluencer(influencers[0].id);
+        setActiveView("dashboard");
+      } else {
+        toast.info("Create your first virtual influencer to unlock the dashboard.");
+        setShowCreateDialog(true);
+      }
       return;
     }
     setActiveView(id);
