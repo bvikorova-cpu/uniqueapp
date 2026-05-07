@@ -79,6 +79,7 @@ export function RealityVoting({ onBack }: { onBack: () => void }) {
   };
 
   const castVote = async (postId: string, versionId: string) => {
+    if (access.loading) { toast({ title: "Please wait", description: "Verifying your access…" }); return; }
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { toast({ title: "Login Required", variant: "destructive" }); return; }
     if (!canVote) {
