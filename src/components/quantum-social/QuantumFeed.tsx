@@ -159,14 +159,20 @@ const QuantumFeed = ({ onBack }: { onBack: () => void }) => {
     const version = postVersions[postId];
     if (!version) return;
 
-    const { error } = await supabase.from("quantum_likes").insert([{ post_id: postId, version_id: version.id, user_id: user.id }]);
-    if (!error) {
-      const post = posts.find((p) => p.id === postId);
-      if (post) {
-        await supabase.from("quantum_posts").update({ likes_count: post.likes_count + 1 }).eq("id", postId);
-      }
-      fetchPosts();
+    // Toggle: check if already liked
+    const { data: existing } = await supabase
+      .from("quantum_likes")
+      .select("id")
+      .eq("post_id", postId)
+      .eq("user_id", user.id)
+      .maybeSingle();
+
+    if (existing) {
+      await supabase.from("quantum_likes").delete().eq("id", existing.id);
+    } else {
+      await supabase.from("quantum_likes").insert([{ post_id: postId, version_id: version.id, user_id: user.id }]);
     }
+    fetchPosts();
   };
 
   const collapseReality = async (postId: string) => {
