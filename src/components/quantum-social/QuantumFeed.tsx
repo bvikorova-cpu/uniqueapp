@@ -9,6 +9,7 @@ import { Atom, Heart, Eye, ArrowLeft, Zap, Lock } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { useQuantumAccess } from "@/hooks/useQuantumAccess";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface Post {
   id: string;
@@ -109,6 +110,7 @@ const QuantumFeed = ({ onBack }: { onBack: () => void }) => {
   };
 
   const createPost = async () => {
+    if (access.loading) { toast({ title: "Please wait", description: "Verifying your access…" }); return; }
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { toast({ title: "Authentication Required", description: "Please log in to create posts", variant: "destructive" }); return; }
     if (!access.hasQuantumProfilesSub && newPost.versionsCount > 1) {
@@ -160,6 +162,7 @@ const QuantumFeed = ({ onBack }: { onBack: () => void }) => {
   };
 
   const likePost = async (postId: string) => {
+    if (access.loading) { toast({ title: "Please wait", description: "Verifying your access…" }); return; }
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { toast({ title: "Sign in required", variant: "destructive" }); return; }
     const version = postVersions[postId];
@@ -210,13 +213,21 @@ const QuantumFeed = ({ onBack }: { onBack: () => void }) => {
             Quantum Feed
           </h2>
         </div>
-        <Button onClick={() => setIsCreating(!isCreating)} className="bg-cyan-600 hover:bg-cyan-700">
+        <Button onClick={() => setIsCreating(!isCreating)} disabled={access.loading} className="bg-cyan-600 hover:bg-cyan-700">
           <Atom className="h-4 w-4 mr-2" />
-          {isCreating ? "Cancel" : "Create Post"}
+          {access.loading ? "Checking access…" : (isCreating ? "Cancel" : "Create Post")}
         </Button>
       </div>
 
-      {isCreating && (
+      {access.loading && (
+        <div className="rounded-xl border border-cyan-500/20 bg-cyan-500/5 p-5 space-y-3">
+          <Skeleton className="h-4 w-40" />
+          <Skeleton className="h-20 w-full" />
+          <Skeleton className="h-9 w-full" />
+        </div>
+      )}
+
+      {!access.loading && isCreating && (
         <div className="rounded-xl border border-cyan-500/20 bg-cyan-500/5 p-5 space-y-4">
           <h3 className="font-semibold">Create Quantum Post</h3>
           {!access.hasQuantumProfilesSub && (
@@ -235,7 +246,7 @@ const QuantumFeed = ({ onBack }: { onBack: () => void }) => {
               <SelectItem value="5" disabled={!access.hasQuantumProfilesSub}>5 Versions (Premium) {!access.hasQuantumProfilesSub && "🔒"}</SelectItem>
             </SelectContent>
           </Select>
-          <Button onClick={createPost} className="w-full bg-cyan-600 hover:bg-cyan-700">
+          <Button onClick={createPost} disabled={access.loading} className="w-full bg-cyan-600 hover:bg-cyan-700">
             <Atom className="h-4 w-4 mr-2" />
             Create Quantum Post
           </Button>
@@ -266,7 +277,7 @@ const QuantumFeed = ({ onBack }: { onBack: () => void }) => {
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Button variant="ghost" size="sm" onClick={() => likePost(post.id)} className="text-pink-400 hover:text-pink-300">
+                  <Button variant="ghost" size="sm" onClick={() => likePost(post.id)} disabled={access.loading} className="text-pink-400 hover:text-pink-300">
                     <Heart className="h-4 w-4 mr-1" />{post.likes_count}
                   </Button>
                   <Button variant="ghost" size="sm" className="text-cyan-400" onClick={() => fetchRandomVersion(post.id)}>

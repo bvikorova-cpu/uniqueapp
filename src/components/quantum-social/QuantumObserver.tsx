@@ -70,7 +70,7 @@ const QuantumObserver = ({ onBack }: { onBack: () => void }) => {
           <h3 className="text-xl font-bold">Unlock Observer Mode</h3>
           <p className="text-muted-foreground text-sm">See all reality versions — discover how others experience different quantum states</p>
           <p className="text-2xl font-bold text-blue-400">€19.99/month</p>
-          <Button onClick={activateObserverMode} className="bg-blue-600 hover:bg-blue-700">
+          <Button onClick={activateObserverMode} disabled={access.loading} className="bg-blue-600 hover:bg-blue-700">
             <Eye className="h-5 w-5 mr-2" />
             Activate Observer Mode
           </Button>

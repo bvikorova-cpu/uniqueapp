@@ -7,6 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useQuantumAccess } from "@/hooks/useQuantumAccess";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface PostWithVersions {
   id: string;
@@ -78,6 +79,7 @@ export function RealityVoting({ onBack }: { onBack: () => void }) {
   };
 
   const castVote = async (postId: string, versionId: string) => {
+    if (access.loading) { toast({ title: "Please wait", description: "Verifying your access…" }); return; }
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { toast({ title: "Login Required", variant: "destructive" }); return; }
     if (!canVote) {
@@ -117,6 +119,13 @@ export function RealityVoting({ onBack }: { onBack: () => void }) {
           <p className="text-xs text-muted-foreground">Vote to decide which quantum reality survives</p>
         </div>
       </div>
+
+      {access.loading && (
+        <div className="rounded-md border border-violet-500/20 bg-violet-500/5 p-3 space-y-2">
+          <Skeleton className="h-3 w-48" />
+          <Skeleton className="h-3 w-32" />
+        </div>
+      )}
 
       {!access.loading && access.userId && !canVote && (
         <div className="rounded-md border border-amber-500/30 bg-amber-500/10 p-3 text-xs text-amber-300 flex gap-2 items-start">
@@ -168,8 +177,8 @@ export function RealityVoting({ onBack }: { onBack: () => void }) {
                 return (
                   <div
                     key={version.id}
-                    onClick={() => !post.userVoted && castVote(post.id, version.id)}
-                    className={`rounded-lg border p-3 transition-all ${post.userVoted ? 'border-white/10' : 'border-cyan-500/20 cursor-pointer hover:border-cyan-400/40 hover:bg-cyan-500/5'}`}
+                    onClick={() => !post.userVoted && !access.loading && castVote(post.id, version.id)}
+                    className={`rounded-lg border p-3 transition-all ${post.userVoted || access.loading ? 'border-white/10 opacity-70' : 'border-cyan-500/20 cursor-pointer hover:border-cyan-400/40 hover:bg-cyan-500/5'}`}
                   >
                     <div className="flex items-center justify-between mb-1">
                       <p className="text-sm">{version.content}</p>
