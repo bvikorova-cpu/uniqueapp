@@ -120,6 +120,13 @@ export function RealityVoting({ onBack }: { onBack: () => void }) {
         </div>
       </div>
 
+      {access.loading && (
+        <div className="rounded-md border border-violet-500/20 bg-violet-500/5 p-3 space-y-2">
+          <Skeleton className="h-3 w-48" />
+          <Skeleton className="h-3 w-32" />
+        </div>
+      )}
+
       {!access.loading && access.userId && !canVote && (
         <div className="rounded-md border border-amber-500/30 bg-amber-500/10 p-3 text-xs text-amber-300 flex gap-2 items-start">
           <Lock className="h-4 w-4 mt-0.5" />
