@@ -7,6 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useQuantumAccess } from "@/hooks/useQuantumAccess";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface PostWithVersions {
   id: string;
