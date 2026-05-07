@@ -277,7 +277,7 @@ const QuantumFeed = ({ onBack }: { onBack: () => void }) => {
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Button variant="ghost" size="sm" onClick={() => likePost(post.id)} className="text-pink-400 hover:text-pink-300">
+                  <Button variant="ghost" size="sm" onClick={() => likePost(post.id)} disabled={access.loading} className="text-pink-400 hover:text-pink-300">
                     <Heart className="h-4 w-4 mr-1" />{post.likes_count}
                   </Button>
                   <Button variant="ghost" size="sm" className="text-cyan-400" onClick={() => fetchRandomVersion(post.id)}>
