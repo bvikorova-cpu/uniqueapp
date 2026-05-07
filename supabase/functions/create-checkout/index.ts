@@ -420,6 +420,8 @@ serve(async (req) => {
 
     // ─── PRODUCT-PARAM PATH (used by all create-*-checkout aliases) ───
     // Body: { product: "pet" | "kids" | ..., amount?, productName?, mode?, metadata?, free? }
+    // Accept `product_type` as an alias for `product` (used by quantum-social subs)
+    if (!body.product && body.product_type) body.product = body.product_type;
     if (body.product && !body.priceId && !body.productKey && !body.credits) {
       // Free actions (e.g. create-character, create-universe) just return ok
       if (body.free === true) {
