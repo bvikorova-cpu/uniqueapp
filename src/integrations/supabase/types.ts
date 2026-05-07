@@ -38035,6 +38035,47 @@ export type Database = {
         }
         Relationships: []
       }
+      stock_editors_picks: {
+        Row: {
+          content_item_id: string
+          created_at: string
+          editor_note: string | null
+          featured_by: string
+          id: string
+          position: number
+          updated_at: string
+          week_start: string
+        }
+        Insert: {
+          content_item_id: string
+          created_at?: string
+          editor_note?: string | null
+          featured_by: string
+          id?: string
+          position?: number
+          updated_at?: string
+          week_start?: string
+        }
+        Update: {
+          content_item_id?: string
+          created_at?: string
+          editor_note?: string | null
+          featured_by?: string
+          id?: string
+          position?: number
+          updated_at?: string
+          week_start?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stock_editors_picks_content_item_id_fkey"
+            columns: ["content_item_id"]
+            isOneToOne: false
+            referencedRelation: "stock_content_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       stock_lightbox_items: {
         Row: {
           added_at: string
