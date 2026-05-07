@@ -5,9 +5,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Atom, Heart, Eye, ArrowLeft, Zap } from "lucide-react";
+import { Atom, Heart, Eye, ArrowLeft, Zap, Lock } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
+import { useQuantumAccess } from "@/hooks/useQuantumAccess";
 
 interface Post {
   id: string;
