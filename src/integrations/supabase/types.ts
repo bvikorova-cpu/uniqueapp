@@ -38280,6 +38280,13 @@ export type Database = {
             referencedRelation: "live_streams"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "stream_gifts_stream_id_fkey"
+            columns: ["stream_id"]
+            isOneToOne: false
+            referencedRelation: "public_live_streams"
+            referencedColumns: ["id"]
+          },
         ]
       }
       stream_messages: {
@@ -38312,6 +38319,13 @@ export type Database = {
             referencedRelation: "live_streams"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "stream_messages_stream_id_fkey"
+            columns: ["stream_id"]
+            isOneToOne: false
+            referencedRelation: "public_live_streams"
+            referencedColumns: ["id"]
+          },
         ]
       }
       stream_viewers: {
@@ -38342,6 +38356,13 @@ export type Database = {
             columns: ["stream_id"]
             isOneToOne: false
             referencedRelation: "live_streams"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stream_viewers_stream_id_fkey"
+            columns: ["stream_id"]
+            isOneToOne: false
+            referencedRelation: "public_live_streams"
             referencedColumns: ["id"]
           },
         ]
@@ -40247,6 +40268,13 @@ export type Database = {
             columns: ["stream_id"]
             isOneToOne: false
             referencedRelation: "live_streams"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transactions_stream_id_fkey"
+            columns: ["stream_id"]
+            isOneToOne: false
+            referencedRelation: "public_live_streams"
             referencedColumns: ["id"]
           },
         ]
@@ -43954,6 +43982,59 @@ export type Database = {
           user_id: string | null
         }
         Relationships: []
+      }
+      public_live_streams: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          ended_at: string | null
+          id: string | null
+          influencer_id: string | null
+          is_live: boolean | null
+          started_at: string | null
+          stream_url: string | null
+          thumbnail_url: string | null
+          title: string | null
+          updated_at: string | null
+          viewer_count: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          ended_at?: string | null
+          id?: string | null
+          influencer_id?: string | null
+          is_live?: boolean | null
+          started_at?: string | null
+          stream_url?: string | null
+          thumbnail_url?: string | null
+          title?: string | null
+          updated_at?: string | null
+          viewer_count?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          ended_at?: string | null
+          id?: string | null
+          influencer_id?: string | null
+          is_live?: boolean | null
+          started_at?: string | null
+          stream_url?: string | null
+          thumbnail_url?: string | null
+          title?: string | null
+          updated_at?: string | null
+          viewer_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "live_streams_influencer_id_fkey"
+            columns: ["influencer_id"]
+            isOneToOne: false
+            referencedRelation: "influencer_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       public_profiles_safe: {
         Row: {
