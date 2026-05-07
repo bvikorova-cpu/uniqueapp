@@ -1,0 +1,2 @@
+ALTER TABLE public.stock_editors_picks ADD COLUMN IF NOT EXISTS status TEXT NOT NULL DEFAULT 'draft' CHECK (status IN ('draft','online'));
+CREATE INDEX IF NOT EXISTS idx_stock_editors_picks_status ON public.stock_editors_picks(status);
