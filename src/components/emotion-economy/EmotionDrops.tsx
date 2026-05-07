@@ -230,7 +230,7 @@ export function EmotionDrops({ onBack }: { onBack?: () => void }) {
             try {
               const { data, error } = await supabase.functions.invoke("create-checkout", { body: { product_type: "emotion_drop_create", plan_name: name } });
               if (error) throw error;
-              if (data?.url) window.open(data.url, "_blank");
+              if (data?.url) { window.location.href = data.url; return; }
               else toast({ description: `Drop "${name}" queued for review` });
             } catch (e: any) {
               toast({ description: `Drop "${name}" saved as draft` });
