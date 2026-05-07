@@ -37823,6 +37823,8 @@ export type Database = {
           license_type: string
           preview_url: string | null
           price_eur: number
+          releases_verified: boolean
+          requires_release: boolean
           resolution: string | null
           resolutions: Json
           tags: string[] | null
@@ -37848,6 +37850,8 @@ export type Database = {
           license_type?: string
           preview_url?: string | null
           price_eur?: number
+          releases_verified?: boolean
+          requires_release?: boolean
           resolution?: string | null
           resolutions?: Json
           tags?: string[] | null
@@ -37873,6 +37877,8 @@ export type Database = {
           license_type?: string
           preview_url?: string | null
           price_eur?: number
+          releases_verified?: boolean
+          requires_release?: boolean
           resolution?: string | null
           resolutions?: Json
           tags?: string[] | null
@@ -37883,6 +37889,62 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
+      }
+      stock_content_releases: {
+        Row: {
+          content_item_id: string
+          created_at: string
+          creator_id: string
+          document_url: string | null
+          id: string
+          notes: string | null
+          release_type: string
+          signed_date: string | null
+          signer_email: string | null
+          signer_name: string
+          updated_at: string
+          verified: boolean
+          verified_at: string | null
+        }
+        Insert: {
+          content_item_id: string
+          created_at?: string
+          creator_id: string
+          document_url?: string | null
+          id?: string
+          notes?: string | null
+          release_type: string
+          signed_date?: string | null
+          signer_email?: string | null
+          signer_name: string
+          updated_at?: string
+          verified?: boolean
+          verified_at?: string | null
+        }
+        Update: {
+          content_item_id?: string
+          created_at?: string
+          creator_id?: string
+          document_url?: string | null
+          id?: string
+          notes?: string | null
+          release_type?: string
+          signed_date?: string | null
+          signer_email?: string | null
+          signer_name?: string
+          updated_at?: string
+          verified?: boolean
+          verified_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stock_content_releases_content_item_id_fkey"
+            columns: ["content_item_id"]
+            isOneToOne: false
+            referencedRelation: "stock_content_items"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       stock_content_sales: {
         Row: {
