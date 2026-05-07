@@ -16,6 +16,7 @@ export function MyContentView({ onBack, onUpload }: MyContentViewProps) {
   const { toast } = useToast();
   const [items, setItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [releaseItem, setReleaseItem] = useState<{ id: string; title: string } | null>(null);
 
   useEffect(() => {
     loadContent();
