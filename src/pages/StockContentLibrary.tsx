@@ -24,6 +24,7 @@ import { ContentAnalyticsView } from "@/components/stock-content/views/ContentAn
 import { ContributorPortfoliosView } from "@/components/stock-content/views/ContributorPortfoliosView";
 import { SmartSearchView } from "@/components/stock-content/views/SmartSearchView";
 import { EditorsPicksView } from "@/components/stock-content/views/EditorsPicksView";
+import { AITagSuggesterView } from "@/components/stock-content/views/AITagSuggesterView";
 import { Tags, Palette, Wand2, Star, Eye, Download } from "lucide-react";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
@@ -67,7 +68,7 @@ const StockContentLibrary = () => {
       case "collections":
         return <CollectionsView onBack={() => setActiveView("dashboard")} />;
       case "ai-tags":
-        return <GenericToolView onBack={() => setActiveView("dashboard")} title="AI Tag Suggester" description="Automatically analyze your uploaded content and suggest relevant tags, categories, and keywords to maximize discoverability and sales." icon={Tags} iconColor="text-cyan-500" credits={3} features={["Auto-detect content subject", "Suggest trending tags", "Category recommendations", "SEO-optimized keywords", "Multi-language tag support", "Batch tag processing"]} />;
+        return <AITagSuggesterView onBack={() => setActiveView("dashboard")} />;
       case "color-search":
         return <GenericToolView onBack={() => setActiveView("dashboard")} title="Color Search" description="Find content by dominant colors. Upload a color palette or pick colors to discover matching stock assets." icon={Palette} iconColor="text-pink-500" features={["Color picker search", "Palette matching", "Complementary color suggestions", "Brand color filtering", "Hex/RGB input support", "Visual color wheel"]} />;
       case "ai-enhance":
