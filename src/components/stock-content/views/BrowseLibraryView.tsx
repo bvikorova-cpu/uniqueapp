@@ -4,11 +4,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, Download, Euro, ImageIcon, ArrowLeft, Filter, ShieldCheck, ShieldAlert } from "lucide-react";
+import { Search, Download, Euro, ImageIcon, ArrowLeft, Filter, ShieldCheck, ShieldAlert, FolderHeart } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { LicenseSelectorDialog } from "../LicenseSelectorDialog";
 import { ResolutionSelectorDialog, type ResolutionKey } from "../ResolutionSelectorDialog";
+import { LightboxManagerDialog } from "../LightboxManagerDialog";
 
 interface BrowseLibraryViewProps {
   onBack: () => void;
@@ -25,6 +26,7 @@ export function BrowseLibraryView({ onBack }: BrowseLibraryViewProps) {
   const [licenseDialogOpen, setLicenseDialogOpen] = useState(false);
   const [resolutionDialogOpen, setResolutionDialogOpen] = useState(false);
   const [chosenLicense, setChosenLicense] = useState<{ type: "standard" | "extended" | "editorial"; price: number } | null>(null);
+  const [lightboxItemId, setLightboxItemId] = useState<string | null>(null);
 
   useEffect(() => {
     loadContent();
@@ -166,9 +168,14 @@ export function BrowseLibraryView({ onBack }: BrowseLibraryViewProps) {
                     ))}
                   </div>
                 )}
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between gap-1">
                   <span className="font-bold flex items-center gap-0.5"><Euro className="w-3.5 h-3.5" />{item.price_eur?.toFixed(2)}</span>
-                  <Button size="sm" onClick={() => openLicenseDialog(item)}><Download className="w-3 h-3 mr-1" />Buy</Button>
+                  <div className="flex gap-1">
+                    <Button size="sm" variant="outline" className="px-2" title="Pridať do Lightboxu" onClick={() => setLightboxItemId(item.id)}>
+                      <FolderHeart className="w-3.5 h-3.5" />
+                    </Button>
+                    <Button size="sm" onClick={() => openLicenseDialog(item)}><Download className="w-3 h-3 mr-1" />Buy</Button>
+                  </div>
                 </div>
               </div>
             </Card>
@@ -189,6 +196,12 @@ export function BrowseLibraryView({ onBack }: BrowseLibraryViewProps) {
         basePrice={chosenLicense?.price ?? 0}
         resolutions={selectedItem?.resolutions}
         onSelect={handleResolutionSelected}
+      />
+
+      <LightboxManagerDialog
+        open={!!lightboxItemId}
+        onOpenChange={(o) => { if (!o) setLightboxItemId(null); }}
+        contentItemId={lightboxItemId ?? undefined}
       />
     </div>
   );
