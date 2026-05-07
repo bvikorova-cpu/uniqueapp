@@ -111,6 +111,10 @@ const QuantumFeed = ({ onBack }: { onBack: () => void }) => {
   const createPost = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { toast({ title: "Authentication Required", description: "Please log in to create posts", variant: "destructive" }); return; }
+    if (!access.hasQuantumProfilesSub && newPost.versionsCount > 1) {
+      toast({ title: "Subscription required", description: "Multi-version posts require an active Quantum Profiles subscription (€12.99/month).", variant: "destructive" });
+      return;
+    }
     if (!newPost.content) { toast({ title: "Missing Content", description: "Please enter post content", variant: "destructive" }); return; }
 
     const { data: post, error: postError } = await supabase
