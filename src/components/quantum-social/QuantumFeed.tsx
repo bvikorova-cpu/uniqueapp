@@ -219,14 +219,20 @@ const QuantumFeed = ({ onBack }: { onBack: () => void }) => {
       {isCreating && (
         <div className="rounded-xl border border-cyan-500/20 bg-cyan-500/5 p-5 space-y-4">
           <h3 className="font-semibold">Create Quantum Post</h3>
+          {!access.hasQuantumProfilesSub && (
+            <div className="rounded-md border border-amber-500/30 bg-amber-500/10 p-3 text-xs text-amber-300 flex gap-2 items-start">
+              <Lock className="h-4 w-4 mt-0.5" />
+              <span>Free tier is limited to 1 version per post. Upgrade to Quantum Profiles (€12.99/mo) to unlock 3 or 5 AI-generated versions.</span>
+            </div>
+          )}
           <p className="text-xs text-muted-foreground">AI will generate multiple versions for different viewers</p>
           <Textarea placeholder="Write your post content..." value={newPost.content} onChange={(e) => setNewPost({ ...newPost, content: e.target.value })} rows={4} className="border-cyan-500/20" />
           <Select value={newPost.versionsCount.toString()} onValueChange={(value) => setNewPost({ ...newPost, versionsCount: parseInt(value) })}>
             <SelectTrigger className="border-cyan-500/20"><SelectValue /></SelectTrigger>
             <SelectContent>
               <SelectItem value="1">1 Version (Standard)</SelectItem>
-              <SelectItem value="3">3 Versions (Quantum)</SelectItem>
-              <SelectItem value="5">5 Versions (Premium)</SelectItem>
+              <SelectItem value="3" disabled={!access.hasQuantumProfilesSub}>3 Versions (Quantum) {!access.hasQuantumProfilesSub && "🔒"}</SelectItem>
+              <SelectItem value="5" disabled={!access.hasQuantumProfilesSub}>5 Versions (Premium) {!access.hasQuantumProfilesSub && "🔒"}</SelectItem>
             </SelectContent>
           </Select>
           <Button onClick={createPost} className="w-full bg-cyan-600 hover:bg-cyan-700">
