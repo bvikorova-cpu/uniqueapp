@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Search, Download, Euro, ImageIcon, ArrowLeft, Filter } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { LicenseSelectorDialog } from "../LicenseSelectorDialog";
 
 interface BrowseLibraryViewProps {
   onBack: () => void;
@@ -19,6 +20,8 @@ export function BrowseLibraryView({ onBack }: BrowseLibraryViewProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [category, setCategory] = useState("all");
   const [contentType, setContentType] = useState("all");
+  const [selectedItem, setSelectedItem] = useState<any | null>(null);
+  const [licenseDialogOpen, setLicenseDialogOpen] = useState(false);
 
   useEffect(() => {
     loadContent();
