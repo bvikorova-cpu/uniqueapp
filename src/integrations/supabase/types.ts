@@ -38035,6 +38035,78 @@ export type Database = {
         }
         Relationships: []
       }
+      stock_lightbox_items: {
+        Row: {
+          added_at: string
+          content_item_id: string
+          id: string
+          lightbox_id: string
+          notes: string | null
+        }
+        Insert: {
+          added_at?: string
+          content_item_id: string
+          id?: string
+          lightbox_id: string
+          notes?: string | null
+        }
+        Update: {
+          added_at?: string
+          content_item_id?: string
+          id?: string
+          lightbox_id?: string
+          notes?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stock_lightbox_items_content_item_id_fkey"
+            columns: ["content_item_id"]
+            isOneToOne: false
+            referencedRelation: "stock_content_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stock_lightbox_items_lightbox_id_fkey"
+            columns: ["lightbox_id"]
+            isOneToOne: false
+            referencedRelation: "stock_lightboxes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      stock_lightboxes: {
+        Row: {
+          cover_url: string | null
+          created_at: string
+          description: string | null
+          id: string
+          is_public: boolean
+          name: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          cover_url?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_public?: boolean
+          name: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          cover_url?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_public?: boolean
+          name?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       stock_notifications: {
         Row: {
           created_at: string | null
