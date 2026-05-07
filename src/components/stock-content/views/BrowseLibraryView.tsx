@@ -38,13 +38,30 @@ export function BrowseLibraryView({ onBack }: BrowseLibraryViewProps) {
     setLoading(false);
   };
 
-  const handlePurchase = async (itemId: string) => {
+  const openLicenseDialog = (item: any) => {
+    setSelectedItem(item);
+    setLicenseDialogOpen(true);
+  };
+
+  const handlePurchase = async (licenseType: "standard" | "extended" | "editorial", priceEur: number) => {
+    if (!selectedItem) return;
+    setLicenseDialogOpen(false);
     try {
+      const amountCents = Math.round(priceEur * 100);
       const { data, error } = await supabase.functions.invoke('purchase-stock-content', {
-        body: { contentId: itemId }
+        body: {
+          contentId: selectedItem.id,
+          licenseType,
+          amount: amountCents,
+          productName: `${selectedItem.title} (${licenseType} license)`,
+          metadata: {
+            content_id: selectedItem.id,
+            license_type: licenseType,
+          },
+        },
       });
       if (error) throw error;
-      if (data.url) window.open(data.url, '_blank');
+      if (data?.url) window.open(data.url, '_blank');
     } catch (error: any) {
       toast({ title: "Error", description: error.message || "Failed to initiate purchase", variant: "destructive" });
     }
