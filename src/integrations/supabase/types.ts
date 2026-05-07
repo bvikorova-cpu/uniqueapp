@@ -38043,6 +38043,7 @@ export type Database = {
           featured_by: string
           id: string
           position: number
+          status: string
           updated_at: string
           week_start: string
         }
@@ -38053,6 +38054,7 @@ export type Database = {
           featured_by: string
           id?: string
           position?: number
+          status?: string
           updated_at?: string
           week_start?: string
         }
@@ -38063,6 +38065,7 @@ export type Database = {
           featured_by?: string
           id?: string
           position?: number
+          status?: string
           updated_at?: string
           week_start?: string
         }
