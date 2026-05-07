@@ -37824,6 +37824,7 @@ export type Database = {
           preview_url: string | null
           price_eur: number
           resolution: string | null
+          resolutions: Json
           tags: string[] | null
           thumbnail_url: string | null
           title: string
@@ -37848,6 +37849,7 @@ export type Database = {
           preview_url?: string | null
           price_eur?: number
           resolution?: string | null
+          resolutions?: Json
           tags?: string[] | null
           thumbnail_url?: string | null
           title: string
@@ -37872,6 +37874,7 @@ export type Database = {
           preview_url?: string | null
           price_eur?: number
           resolution?: string | null
+          resolutions?: Json
           tags?: string[] | null
           thumbnail_url?: string | null
           title?: string
@@ -37893,6 +37896,7 @@ export type Database = {
           id: string
           license_type: string
           platform_fee: number
+          resolution: string
           status: string | null
           stripe_payment_intent_id: string | null
           stripe_session_id: string | null
@@ -37908,6 +37912,7 @@ export type Database = {
           id?: string
           license_type?: string
           platform_fee: number
+          resolution?: string
           status?: string | null
           stripe_payment_intent_id?: string | null
           stripe_session_id?: string | null
@@ -37923,6 +37928,7 @@ export type Database = {
           id?: string
           license_type?: string
           platform_fee?: number
+          resolution?: string
           status?: string | null
           stripe_payment_intent_id?: string | null
           stripe_session_id?: string | null
