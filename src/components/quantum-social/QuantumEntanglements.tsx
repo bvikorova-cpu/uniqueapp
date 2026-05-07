@@ -23,8 +23,9 @@ const QuantumEntanglements = ({ onBack }: { onBack: () => void }) => {
   const [targetUserId, setTargetUserId] = useState("");
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
+  const access = useQuantumAccess();
 
-  useEffect(() => { fetchEntanglements(); }, []);
+  useEffect(() => { if (access.userId) fetchEntanglements(); }, [access.userId]);
 
   const fetchEntanglements = async () => {
     setLoading(true);
