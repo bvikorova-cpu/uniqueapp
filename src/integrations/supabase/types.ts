@@ -38079,6 +38079,54 @@ export type Database = {
           },
         ]
       }
+      stock_licenses: {
+        Row: {
+          content_item_id: string
+          created_at: string
+          currency: string
+          id: string
+          license_type: string
+          notes: string | null
+          price_paid: number
+          purchase_reference: string | null
+          status: string
+          updated_at: string
+          user_id: string
+          valid_from: string
+          valid_until: string | null
+        }
+        Insert: {
+          content_item_id: string
+          created_at?: string
+          currency?: string
+          id?: string
+          license_type: string
+          notes?: string | null
+          price_paid?: number
+          purchase_reference?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+          valid_from?: string
+          valid_until?: string | null
+        }
+        Update: {
+          content_item_id?: string
+          created_at?: string
+          currency?: string
+          id?: string
+          license_type?: string
+          notes?: string | null
+          price_paid?: number
+          purchase_reference?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+          valid_from?: string
+          valid_until?: string | null
+        }
+        Relationships: []
+      }
       stock_lightbox_items: {
         Row: {
           added_at: string
