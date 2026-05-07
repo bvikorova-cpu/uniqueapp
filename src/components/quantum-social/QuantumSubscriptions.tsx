@@ -74,7 +74,7 @@ const QuantumSubscriptions = ({ onBack }: { onBack: () => void }) => {
             </div>
             <Button className={`w-full bg-${plan.color}-600 hover:bg-${plan.color}-700`} size="sm" onClick={async () => {
               try {
-                const { data, error } = await supabase.functions.invoke("create-checkout", { body: { product_type: plan.type, plan_name: plan.name } });
+                const { data, error } = await supabase.functions.invoke("create-checkout", { body: { product: plan.type, productName: plan.name } });
                 if (error) throw error;
                 if (data?.url) window.open(data.url, "_blank");
               } catch (e: any) {
