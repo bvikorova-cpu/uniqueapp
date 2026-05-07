@@ -155,12 +155,27 @@ export function EmotionFeed({ onBack }: { onBack?: () => void }) {
         return;
       }
 
-      toast({
-        title: "Liked! ❤️",
-        description: "You earned emotion rewards"
-      });
+      // Toggle like: try insert; if conflict, delete
+      const { error: insertError } = await supabase
+        .from('emotion_post_likes')
+        .insert({ post_id: postId, user_id: user.id });
+
+      if (insertError) {
+        // Likely already liked → unlike
+        const { error: delError } = await supabase
+          .from('emotion_post_likes')
+          .delete()
+          .eq('post_id', postId)
+          .eq('user_id', user.id);
+        if (delError) throw delError;
+        setPosts(prev => prev.map(p => p.id === postId ? { ...p, likes_count: Math.max((p.likes_count || 1) - 1, 0) } : p));
+      } else {
+        setPosts(prev => prev.map(p => p.id === postId ? { ...p, likes_count: (p.likes_count || 0) + 1 } : p));
+        toast({ title: "Liked! ❤️" });
+      }
     } catch (error) {
       console.error('Error liking post:', error);
+      toast({ title: "Error", description: "Failed to like post", variant: "destructive" });
     }
   };
 
