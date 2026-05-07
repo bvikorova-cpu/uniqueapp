@@ -8,6 +8,7 @@ import { Search, Download, Euro, ImageIcon, ArrowLeft, Filter } from "lucide-rea
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { LicenseSelectorDialog } from "../LicenseSelectorDialog";
+import { ResolutionSelectorDialog, type ResolutionKey } from "../ResolutionSelectorDialog";
 
 interface BrowseLibraryViewProps {
   onBack: () => void;
@@ -22,6 +23,8 @@ export function BrowseLibraryView({ onBack }: BrowseLibraryViewProps) {
   const [contentType, setContentType] = useState("all");
   const [selectedItem, setSelectedItem] = useState<any | null>(null);
   const [licenseDialogOpen, setLicenseDialogOpen] = useState(false);
+  const [resolutionDialogOpen, setResolutionDialogOpen] = useState(false);
+  const [chosenLicense, setChosenLicense] = useState<{ type: "standard" | "extended" | "editorial"; price: number } | null>(null);
 
   useEffect(() => {
     loadContent();
@@ -43,20 +46,28 @@ export function BrowseLibraryView({ onBack }: BrowseLibraryViewProps) {
     setLicenseDialogOpen(true);
   };
 
-  const handlePurchase = async (licenseType: "standard" | "extended" | "editorial", priceEur: number) => {
-    if (!selectedItem) return;
+  const handleLicenseSelected = (licenseType: "standard" | "extended" | "editorial", priceEur: number) => {
+    setChosenLicense({ type: licenseType, price: priceEur });
     setLicenseDialogOpen(false);
+    setResolutionDialogOpen(true);
+  };
+
+  const handleResolutionSelected = async (resolution: ResolutionKey, finalPriceEur: number) => {
+    if (!selectedItem || !chosenLicense) return;
+    setResolutionDialogOpen(false);
     try {
-      const amountCents = Math.round(priceEur * 100);
+      const amountCents = Math.round(finalPriceEur * 100);
       const { data, error } = await supabase.functions.invoke('purchase-stock-content', {
         body: {
           contentId: selectedItem.id,
-          licenseType,
+          licenseType: chosenLicense.type,
+          resolution,
           amount: amountCents,
-          productName: `${selectedItem.title} (${licenseType} license)`,
+          productName: `${selectedItem.title} (${chosenLicense.type} · ${resolution})`,
           metadata: {
             content_id: selectedItem.id,
-            license_type: licenseType,
+            license_type: chosenLicense.type,
+            resolution,
           },
         },
       });
@@ -161,7 +172,15 @@ export function BrowseLibraryView({ onBack }: BrowseLibraryViewProps) {
         open={licenseDialogOpen}
         onOpenChange={setLicenseDialogOpen}
         item={selectedItem}
-        onSelect={handlePurchase}
+        onSelect={handleLicenseSelected}
+      />
+
+      <ResolutionSelectorDialog
+        open={resolutionDialogOpen}
+        onOpenChange={setResolutionDialogOpen}
+        basePrice={chosenLicense?.price ?? 0}
+        resolutions={selectedItem?.resolutions}
+        onSelect={handleResolutionSelected}
       />
     </div>
   );

@@ -11,6 +11,8 @@ interface Purchase {
   download_url: string;
   created_at: string;
   price_paid_eur: number;
+  resolution?: string;
+  license_type?: string;
   stock_content_items: {
     id: string;
     title: string;
@@ -19,6 +21,7 @@ interface Purchase {
     file_url: string;
     content_type: string;
     category: string;
+    resolutions?: Record<string, { url?: string; width?: number }> | null;
   };
 }
 
@@ -99,21 +102,27 @@ export const MyPurchases = () => {
           </div>
           <CardContent className="p-4">
             <h3 className="font-semibold mb-1">{purchase.stock_content_items?.title}</h3>
-            <p className="text-sm text-muted-foreground mb-2">
+            <p className="text-sm text-muted-foreground mb-1">
               Purchased: {new Date(purchase.created_at).toLocaleDateString()}
             </p>
+            <div className="flex gap-1 mb-2 flex-wrap">
+              {purchase.license_type && <Badge variant="outline" className="text-[10px] capitalize">{purchase.license_type}</Badge>}
+              {purchase.resolution && <Badge variant="outline" className="text-[10px] capitalize">{purchase.resolution}</Badge>}
+            </div>
             <p className="text-sm text-muted-foreground mb-4">
               Paid: €{purchase.price_paid_eur?.toFixed(2)}
             </p>
-            <Button 
-              className="w-full" 
-              onClick={() => handleDownload(
-                purchase.download_url || purchase.stock_content_items?.file_url,
-                purchase.stock_content_items?.title
-              )}
+            <Button
+              className="w-full"
+              onClick={() => {
+                const res = purchase.resolution || 'original';
+                const resUrl = purchase.stock_content_items?.resolutions?.[res]?.url;
+                const url = purchase.download_url || resUrl || purchase.stock_content_items?.file_url;
+                handleDownload(url, purchase.stock_content_items?.title);
+              }}
             >
               <Download className="w-4 h-4 mr-2" />
-              Download
+              Download {purchase.resolution ? `(${purchase.resolution})` : ''}
             </Button>
           </CardContent>
         </Card>
