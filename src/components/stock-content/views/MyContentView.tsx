@@ -2,9 +2,10 @@ import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, ImageIcon, Download, Euro, Layers, Upload, Trash2 } from "lucide-react";
+import { ArrowLeft, ImageIcon, Download, Euro, Layers, Upload, Trash2, ShieldCheck, ShieldAlert, FileSignature } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { ReleaseManagerDialog } from "../ReleaseManagerDialog";
 
 interface MyContentViewProps {
   onBack: () => void;
