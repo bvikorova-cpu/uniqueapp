@@ -149,7 +149,7 @@ export function BrowseLibraryView({ onBack }: BrowseLibraryViewProps) {
                 )}
                 <div className="flex items-center justify-between">
                   <span className="font-bold flex items-center gap-0.5"><Euro className="w-3.5 h-3.5" />{item.price_eur?.toFixed(2)}</span>
-                  <Button size="sm" onClick={() => handlePurchase(item.id)}><Download className="w-3 h-3 mr-1" />Buy</Button>
+                  <Button size="sm" onClick={() => openLicenseDialog(item)}><Download className="w-3 h-3 mr-1" />Buy</Button>
                 </div>
               </div>
             </Card>
