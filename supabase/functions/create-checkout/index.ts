@@ -245,6 +245,9 @@ const DEFAULT_PATHS: Record<string, { success: string; cancel: string }> = {
   property_listing: { success: "/property-marketplace?payment=success&session_id={CHECKOUT_SESSION_ID}", cancel: "/property-marketplace?payment=canceled" },
   lead_boost: { success: "/my-properties?payment=success&session_id={CHECKOUT_SESSION_ID}", cancel: "/my-properties?payment=canceled" },
   virtual_tour: { success: "/property-marketplace?payment=success&session_id={CHECKOUT_SESSION_ID}", cancel: "/property-marketplace?payment=canceled" },
+  quantum_profiles: { success: "/quantum-social?payment=success&session_id={CHECKOUT_SESSION_ID}", cancel: "/quantum-social?payment=canceled" },
+  observer_mode: { success: "/quantum-social?payment=success&session_id={CHECKOUT_SESSION_ID}", cancel: "/quantum-social?payment=canceled" },
+  quantum_entanglement: { success: "/quantum-social?payment=success&session_id={CHECKOUT_SESSION_ID}", cancel: "/quantum-social?payment=canceled" },
 };
 
 const CLONE_PRODUCTS: Record<string, { amount: number; mode: "payment" | "subscription"; name: string; metadata: Record<string, string> }> = {
