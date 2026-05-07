@@ -32,6 +32,7 @@ const QuantumFeed = ({ onBack }: { onBack: () => void }) => {
   const [isCreating, setIsCreating] = useState(false);
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
+  const access = useQuantumAccess();
 
   const [newPost, setNewPost] = useState({
     content: "",
