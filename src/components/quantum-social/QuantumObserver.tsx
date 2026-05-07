@@ -57,7 +57,14 @@ const QuantumObserver = ({ onBack }: { onBack: () => void }) => {
         </div>
       </div>
 
-      {!hasObserverMode ? (
+      {access.loading ? (
+        <div className="flex items-center justify-center p-8 text-muted-foreground"><Loader2 className="h-5 w-5 animate-spin mr-2" />Checking access…</div>
+      ) : !access.userId ? (
+        <div className="rounded-xl border border-blue-500/20 bg-blue-500/5 p-8 text-center space-y-2">
+          <Lock className="h-8 w-8 mx-auto text-blue-400" />
+          <p className="text-sm text-muted-foreground">Sign in to access Observer Mode</p>
+        </div>
+      ) : !hasObserverMode ? (
         <div className="rounded-xl border border-blue-500/20 bg-gradient-to-br from-blue-500/5 to-violet-500/5 p-8 text-center space-y-4">
           <Sparkles className="h-12 w-12 mx-auto text-blue-400" />
           <h3 className="text-xl font-bold">Unlock Observer Mode</h3>
