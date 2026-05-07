@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { toast } from "sonner";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 type ViewType = "hub" | "create" | "dashboard" | "content-calendar" | "brand-deals" | "trend-analyzer" | "battle-arena" | string;
