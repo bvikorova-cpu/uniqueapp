@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
-import { LucideIcon } from "lucide-react";
+import { Lock, LucideIcon } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface InfluKingToolCardProps {
   icon: LucideIcon;
@@ -11,19 +12,26 @@ interface InfluKingToolCardProps {
   iconColor: string;
   onClick: () => void;
   delay?: number;
+  locked?: boolean;
+  lockedReason?: string;
 }
 
-export function InfluKingToolCard({ icon: Icon, title, description, badge, credits, gradient, iconColor, onClick, delay = 0 }: InfluKingToolCardProps) {
-  return (
+export function InfluKingToolCard({ icon: Icon, title, description, badge, credits, gradient, iconColor, onClick, delay = 0, locked = false, lockedReason }: InfluKingToolCardProps) {
+  const card = (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay }}
-      whileHover={{ scale: 1.03, y: -2 }}
+      whileHover={locked ? undefined : { scale: 1.03, y: -2 }}
       onClick={onClick}
-      className={`cursor-pointer rounded-xl border border-cyan-500/20 bg-gradient-to-br ${gradient} p-4 hover:border-cyan-400/40 transition-all group relative overflow-hidden`}
+      className={`${locked ? "cursor-not-allowed opacity-60" : "cursor-pointer"} rounded-xl border border-cyan-500/20 bg-gradient-to-br ${gradient} p-4 hover:border-cyan-400/40 transition-all group relative overflow-hidden`}
     >
       <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/0 to-purple-500/0 group-hover:from-cyan-500/5 group-hover:to-purple-500/5 transition-all duration-300" />
+      {locked && (
+        <div className="absolute top-2 right-2 z-20 p-1 rounded-full bg-background/70 text-muted-foreground">
+          <Lock className="h-3 w-3" />
+        </div>
+      )}
       <div className="relative z-10">
         <div className={`p-2 rounded-lg bg-background/30 w-fit mb-2 ${iconColor}`}>
           <Icon className="h-5 w-5" />
@@ -37,4 +45,21 @@ export function InfluKingToolCard({ icon: Icon, title, description, badge, credi
       </div>
     </motion.div>
   );
+
+  if (locked && lockedReason) {
+    return (
+      <TooltipProvider delayDuration={150}>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div>{card}</div>
+          </TooltipTrigger>
+          <TooltipContent side="top" className="max-w-xs text-center">
+            {lockedReason}
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    );
+  }
+
+  return card;
 }
