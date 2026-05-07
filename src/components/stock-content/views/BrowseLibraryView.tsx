@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Search, Download, Euro, ImageIcon, ArrowLeft, Filter } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { LicenseSelectorDialog } from "../LicenseSelectorDialog";
 
 interface BrowseLibraryViewProps {
   onBack: () => void;
@@ -19,6 +20,8 @@ export function BrowseLibraryView({ onBack }: BrowseLibraryViewProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [category, setCategory] = useState("all");
   const [contentType, setContentType] = useState("all");
+  const [selectedItem, setSelectedItem] = useState<any | null>(null);
+  const [licenseDialogOpen, setLicenseDialogOpen] = useState(false);
 
   useEffect(() => {
     loadContent();
@@ -35,13 +38,30 @@ export function BrowseLibraryView({ onBack }: BrowseLibraryViewProps) {
     setLoading(false);
   };
 
-  const handlePurchase = async (itemId: string) => {
+  const openLicenseDialog = (item: any) => {
+    setSelectedItem(item);
+    setLicenseDialogOpen(true);
+  };
+
+  const handlePurchase = async (licenseType: "standard" | "extended" | "editorial", priceEur: number) => {
+    if (!selectedItem) return;
+    setLicenseDialogOpen(false);
     try {
+      const amountCents = Math.round(priceEur * 100);
       const { data, error } = await supabase.functions.invoke('purchase-stock-content', {
-        body: { contentId: itemId }
+        body: {
+          contentId: selectedItem.id,
+          licenseType,
+          amount: amountCents,
+          productName: `${selectedItem.title} (${licenseType} license)`,
+          metadata: {
+            content_id: selectedItem.id,
+            license_type: licenseType,
+          },
+        },
       });
       if (error) throw error;
-      if (data.url) window.open(data.url, '_blank');
+      if (data?.url) window.open(data.url, '_blank');
     } catch (error: any) {
       toast({ title: "Error", description: error.message || "Failed to initiate purchase", variant: "destructive" });
     }
@@ -129,13 +149,20 @@ export function BrowseLibraryView({ onBack }: BrowseLibraryViewProps) {
                 )}
                 <div className="flex items-center justify-between">
                   <span className="font-bold flex items-center gap-0.5"><Euro className="w-3.5 h-3.5" />{item.price_eur?.toFixed(2)}</span>
-                  <Button size="sm" onClick={() => handlePurchase(item.id)}><Download className="w-3 h-3 mr-1" />Buy</Button>
+                  <Button size="sm" onClick={() => openLicenseDialog(item)}><Download className="w-3 h-3 mr-1" />Buy</Button>
                 </div>
               </div>
             </Card>
           ))}
         </div>
       )}
+
+      <LicenseSelectorDialog
+        open={licenseDialogOpen}
+        onOpenChange={setLicenseDialogOpen}
+        item={selectedItem}
+        onSelect={handlePurchase}
+      />
     </div>
   );
 }
