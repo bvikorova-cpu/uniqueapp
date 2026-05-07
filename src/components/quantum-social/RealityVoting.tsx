@@ -118,6 +118,13 @@ export function RealityVoting({ onBack }: { onBack: () => void }) {
         </div>
       </div>
 
+      {!access.loading && access.userId && !canVote && (
+        <div className="rounded-md border border-amber-500/30 bg-amber-500/10 p-3 text-xs text-amber-300 flex gap-2 items-start">
+          <Lock className="h-4 w-4 mt-0.5" />
+          <span>Voting is gated to Quantum subscribers. Activate any plan in Subscriptions to participate.</span>
+        </div>
+      )}
+
       {loading ? (
         <p className="text-muted-foreground">Loading quantum posts...</p>
       ) : posts.length === 0 ? (
