@@ -308,6 +308,56 @@ async function applyPurchase(
     return;
   }
 
+  // Quantum Social subscriptions — unlock features in quantum_profiles + insert quantum_subscriptions row
+  if (productType === "quantum_profiles" || productType === "observer_mode" || productType === "quantum_entanglement") {
+    const priceMap: Record<string, number> = {
+      quantum_profiles: 12.99,
+      observer_mode: 19.99,
+      quantum_entanglement: 9.99,
+    };
+    const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
+
+    // Insert subscription row (idempotency guarded by alreadyCredited above)
+    await db.from("quantum_subscriptions").insert({
+      user_id: userId,
+      subscription_type: productType,
+      price: priceMap[productType],
+      status: "active",
+      started_at: new Date().toISOString(),
+      expires_at: expiresAt,
+    });
+
+    // Ensure quantum_profile exists, then unlock relevant flag
+    // @ts-ignore
+    const { data: prof } = await db.from("quantum_profiles").select("id").eq("user_id", userId).maybeSingle();
+    if (!prof) {
+      await db.from("quantum_profiles").insert({
+        user_id: userId,
+        is_premium: productType === "quantum_profiles" ? true : false,
+        observer_mode_active: productType === "observer_mode",
+        reality_versions: productType === "quantum_profiles" ? 3 : 1,
+      });
+    } else {
+      const patch: Record<string, unknown> = {};
+      if (productType === "quantum_profiles") { patch.is_premium = true; patch.reality_versions = 3; }
+      if (productType === "observer_mode") patch.observer_mode_active = true;
+      if (Object.keys(patch).length) await db.from("quantum_profiles").update(patch).eq("user_id", userId);
+    }
+
+    // Entanglement: insert pairing row
+    if (productType === "quantum_entanglement" && md.target_user_id) {
+      await db.from("quantum_entanglements").insert({
+        user_id_1: userId,
+        user_id_2: md.target_user_id,
+        entanglement_strength: 1.0,
+        shared_reality: true,
+        price_paid: 9.99,
+        expires_at: expiresAt,
+      });
+    }
+    return;
+  }
+
   // Subscriptions & other types — no automatic action; tracked via payment_records.
   // Frontend can read payment_records or call check-subscription.
 }
