@@ -3,23 +3,18 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Eye, Sparkles, ArrowLeft, Atom } from "lucide-react";
+import { Eye, Sparkles, ArrowLeft, Atom, Loader2, Lock } from "lucide-react";
 import { motion } from "framer-motion";
+import { useQuantumAccess } from "@/hooks/useQuantumAccess";
 
 const QuantumObserver = ({ onBack }: { onBack: () => void }) => {
-  const [hasObserverMode, setHasObserverMode] = useState(false);
+  const access = useQuantumAccess();
+  const hasObserverMode = access.observerModeActive;
   const [observations, setObservations] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
-  useEffect(() => { checkObserverMode(); fetchObservations(); }, []);
-
-  const checkObserverMode = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
-    const { data } = await supabase.from("quantum_profiles").select("observer_mode_active").eq("user_id", user.id).single();
-    if (data) setHasObserverMode(data.observer_mode_active);
-  };
+  useEffect(() => { if (hasObserverMode) fetchObservations(); }, [hasObserverMode]);
 
   const fetchObservations = async () => {
     setLoading(true);
