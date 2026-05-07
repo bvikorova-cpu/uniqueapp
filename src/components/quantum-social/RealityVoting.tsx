@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft, Vote, Atom, CheckCircle, TrendingUp } from "lucide-react";
+import { ArrowLeft, Vote, Atom, CheckCircle, TrendingUp, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useQuantumAccess } from "@/hooks/useQuantumAccess";
 
 interface PostWithVersions {
   id: string;
