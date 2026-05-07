@@ -163,20 +163,25 @@ const VirtualInfluencerAgency = () => {
           <Badge variant="outline" className="border-cyan-500/30 text-cyan-400">{TOOLS.length} Tools</Badge>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 mb-8">
-          {TOOLS.map((tool, i) => (
-            <InfluKingToolCard
-              key={tool.id}
-              icon={tool.icon}
-              title={tool.title}
-              description={tool.description}
-              badge={tool.badge}
-              credits={tool.credits}
-              gradient={tool.gradient}
-              iconColor={tool.iconColor}
-              onClick={() => handleToolClick(tool.id)}
-              delay={i * 0.03}
-            />
-          ))}
+          {TOOLS.map((tool, i) => {
+            const isDashboardLocked = tool.id === "dashboard" && !influencers?.length;
+            return (
+              <InfluKingToolCard
+                key={tool.id}
+                icon={tool.icon}
+                title={tool.title}
+                description={tool.description}
+                badge={tool.badge}
+                credits={tool.credits}
+                gradient={tool.gradient}
+                iconColor={tool.iconColor}
+                onClick={() => handleToolClick(tool.id)}
+                delay={i * 0.03}
+                locked={isDashboardLocked}
+                lockedReason={isDashboardLocked ? "Najprv vytvorte virtuálneho influencera, aby sa odomkol Dashboard s analytikou a zárobkami." : undefined}
+              />
+            );
+          })}
         </div>
 
         {/* Influencer List */}
