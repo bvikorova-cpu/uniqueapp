@@ -79,7 +79,7 @@ const StockContentLibrary = () => {
       case "preview":
         return <GenericToolView onBack={() => setActiveView("dashboard")} title="Content Preview" description="Preview content in different contexts before purchasing. See how it looks in various mockups and use cases." icon={Eye} iconColor="text-slate-500" features={["Website mockup preview", "Social media preview", "Print preview", "Device mockups", "Color variation", "Watermark-free preview"]} />;
       case "download-history":
-        return <GenericToolView onBack={() => setActiveView("dashboard")} title="Download History" description="View all your past downloads, re-download content, and manage your licensed assets." icon={Download} iconColor="text-orange-500" features={["Full download log", "Re-download anytime", "License management", "Usage tracking", "Export reports", "Bulk re-download"]} />;
+        return <LicenseManagerView onBack={() => setActiveView("dashboard")} />;
       case "plagiarism-scanner":
         return <PlagiarismScannerView onBack={() => setActiveView("dashboard")} />;
       case "subscriptions":
