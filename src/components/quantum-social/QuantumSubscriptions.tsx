@@ -43,15 +43,33 @@ const QuantumSubscriptions = ({ onBack }: { onBack: () => void }) => {
     { type: "quantum_entanglement", name: "Quantum Entanglement", price: "€9.99/month", features: ["Connect with someone", "Shared reality experience", "Always see same versions"], color: "emerald" },
   ];
 
+  const openCustomerPortal = async () => {
+    try {
+      const { data, error } = await supabase.functions.invoke("customer-portal");
+      if (error) throw error;
+      if (data?.url) window.open(data.url, "_blank");
+    } catch (e: any) {
+      toast({ title: "Portal error", description: e.message, variant: "destructive" });
+    }
+  };
+
   return (
     <div className="space-y-6">
-      <div className="flex items-center gap-3">
-        <Button variant="ghost" size="icon" onClick={onBack}><ArrowLeft className="h-5 w-5" /></Button>
-        <h2 className="text-xl font-bold flex items-center gap-2">
-          <Zap className="h-5 w-5 text-pink-400" />
-          Subscriptions
-        </h2>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <Button variant="ghost" size="icon" onClick={onBack}><ArrowLeft className="h-5 w-5" /></Button>
+          <h2 className="text-xl font-bold flex items-center gap-2">
+            <Zap className="h-5 w-5 text-pink-400" />
+            Subscriptions
+          </h2>
+        </div>
+        {subscriptions.some(s => s.status === "active") && (
+          <Button variant="outline" size="sm" onClick={openCustomerPortal}>
+            <Settings className="h-4 w-4 mr-2" />Manage in Stripe
+          </Button>
+        )}
       </div>
+
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {plans.map((plan, i) => (
