@@ -37818,6 +37818,8 @@ export type Database = {
           file_url: string
           id: string
           is_active: boolean | null
+          is_editorial: boolean
+          license_pricing: Json | null
           license_type: string
           preview_url: string | null
           price_eur: number
@@ -37840,6 +37842,8 @@ export type Database = {
           file_url: string
           id?: string
           is_active?: boolean | null
+          is_editorial?: boolean
+          license_pricing?: Json | null
           license_type?: string
           preview_url?: string | null
           price_eur?: number
@@ -37862,6 +37866,8 @@ export type Database = {
           file_url?: string
           id?: string
           is_active?: boolean | null
+          is_editorial?: boolean
+          license_pricing?: Json | null
           license_type?: string
           preview_url?: string | null
           price_eur?: number
@@ -37885,6 +37891,7 @@ export type Database = {
           creator_earning: number
           creator_id: string
           id: string
+          license_type: string
           platform_fee: number
           status: string | null
           stripe_payment_intent_id: string | null
@@ -37899,6 +37906,7 @@ export type Database = {
           creator_earning: number
           creator_id: string
           id?: string
+          license_type?: string
           platform_fee: number
           status?: string | null
           stripe_payment_intent_id?: string | null
@@ -37913,6 +37921,7 @@ export type Database = {
           creator_earning?: number
           creator_id?: string
           id?: string
+          license_type?: string
           platform_fee?: number
           status?: string | null
           stripe_payment_intent_id?: string | null
