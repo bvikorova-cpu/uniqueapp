@@ -172,7 +172,15 @@ export function BrowseLibraryView({ onBack }: BrowseLibraryViewProps) {
         open={licenseDialogOpen}
         onOpenChange={setLicenseDialogOpen}
         item={selectedItem}
-        onSelect={handlePurchase}
+        onSelect={handleLicenseSelected}
+      />
+
+      <ResolutionSelectorDialog
+        open={resolutionDialogOpen}
+        onOpenChange={setResolutionDialogOpen}
+        basePrice={chosenLicense?.price ?? 0}
+        resolutions={selectedItem?.resolutions}
+        onSelect={handleResolutionSelected}
       />
     </div>
   );
