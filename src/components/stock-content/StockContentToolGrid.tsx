@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import {
   ImageIcon, Upload, Download, TrendingUp, Sparkles, Tags,
   FolderOpen, Search, BarChart3, Palette, Wand2, ShoppingBag,
-  Star, Layers, Eye, ShieldCheck, Crown, Trophy, Eraser, FolderUp, PieChart
+  Star, Layers, Eye, ShieldCheck, Crown, Trophy, Eraser, FolderUp, PieChart, Users
 } from "lucide-react";
 
 interface StockContentToolGridProps {
@@ -32,6 +32,7 @@ const tools = [
   { id: "bg-remover", label: "AI Background Remover", desc: "Remove backgrounds instantly", icon: Eraser, color: "from-rose-500 to-pink-700", credits: 3 },
   { id: "bulk-upload", label: "Bulk Upload Manager", desc: "Upload multiple files at once", icon: FolderUp, color: "from-indigo-500 to-blue-700", credits: null },
   { id: "content-analytics", label: "Content Analytics", desc: "Detailed asset performance stats", icon: PieChart, color: "from-sky-500 to-cyan-700", credits: null },
+  { id: "contributors", label: "Contributor Portfolios", desc: "Discover top creators & their work", icon: Users, color: "from-fuchsia-500 to-pink-700", credits: null },
 ];
 
 export function StockContentToolGrid({ onToolSelect }: StockContentToolGridProps) {
