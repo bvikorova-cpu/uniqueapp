@@ -245,6 +245,9 @@ const DEFAULT_PATHS: Record<string, { success: string; cancel: string }> = {
   property_listing: { success: "/property-marketplace?payment=success&session_id={CHECKOUT_SESSION_ID}", cancel: "/property-marketplace?payment=canceled" },
   lead_boost: { success: "/my-properties?payment=success&session_id={CHECKOUT_SESSION_ID}", cancel: "/my-properties?payment=canceled" },
   virtual_tour: { success: "/property-marketplace?payment=success&session_id={CHECKOUT_SESSION_ID}", cancel: "/property-marketplace?payment=canceled" },
+  quantum_profiles: { success: "/quantum-social?payment=success&session_id={CHECKOUT_SESSION_ID}", cancel: "/quantum-social?payment=canceled" },
+  observer_mode: { success: "/quantum-social?payment=success&session_id={CHECKOUT_SESSION_ID}", cancel: "/quantum-social?payment=canceled" },
+  quantum_entanglement: { success: "/quantum-social?payment=success&session_id={CHECKOUT_SESSION_ID}", cancel: "/quantum-social?payment=canceled" },
 };
 
 const CLONE_PRODUCTS: Record<string, { amount: number; mode: "payment" | "subscription"; name: string; metadata: Record<string, string> }> = {
@@ -417,6 +420,8 @@ serve(async (req) => {
 
     // ─── PRODUCT-PARAM PATH (used by all create-*-checkout aliases) ───
     // Body: { product: "pet" | "kids" | ..., amount?, productName?, mode?, metadata?, free? }
+    // Accept `product_type` as an alias for `product` (used by quantum-social subs)
+    if (!body.product && body.product_type) body.product = body.product_type;
     if (body.product && !body.priceId && !body.productKey && !body.credits) {
       // Free actions (e.g. create-character, create-universe) just return ok
       if (body.free === true) {
@@ -483,6 +488,9 @@ serve(async (req) => {
         skill_swap:              { amount: 999,  mode: "subscription", name: "Skill Swap Premium" },
         sports:                  { amount: 999,  mode: "subscription", name: "Sports Premium" },
         subscription:            { amount: 999,  mode: "subscription", name: "Premium Subscription" },
+        quantum_profiles:        { amount: 1299, mode: "subscription", name: "Quantum Profiles" },
+        observer_mode:           { amount: 1999, mode: "subscription", name: "Quantum Observer Mode" },
+        quantum_entanglement:    { amount: 999,  mode: "subscription", name: "Quantum Entanglement" },
         teen_career:             { amount: 499,  mode: "payment",      name: "Teen Career" },
         video_ad_credits:        { amount: 999,  mode: "payment",      name: "Video Ad Credits" },
         vip:                     { amount: 1999, mode: "subscription", name: "VIP" },

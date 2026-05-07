@@ -39,20 +39,18 @@ const QuantumEntanglements = ({ onBack }: { onBack: () => void }) => {
     if (!user) { toast({ title: "Authentication Required", variant: "destructive" }); return; }
     if (!targetUserId) { toast({ title: "Missing Information", description: "Please enter a user ID", variant: "destructive" }); return; }
 
-    const userId1 = user.id < targetUserId ? user.id : targetUserId;
-    const userId2 = user.id < targetUserId ? targetUserId : user.id;
-    const expiresAt = new Date();
-    expiresAt.setMonth(expiresAt.getMonth() + 1);
-
-    const { error } = await supabase.from("quantum_entanglements").insert([{
-      user_id_1: userId1, user_id_2: userId2, entanglement_strength: 1.0, shared_reality: true, price_paid: 9.99, expires_at: expiresAt.toISOString(),
-    }]);
-
-    if (!error) {
-      await supabase.from("quantum_subscriptions").insert([{ user_id: user.id, subscription_type: "quantum_entanglement", price: 9.99, expires_at: expiresAt.toISOString() }]);
-      toast({ title: "Entanglement Created", description: "Quantum connection established (€9.99/month)" });
-      setTargetUserId("");
-      fetchEntanglements();
+    try {
+      const { data, error } = await supabase.functions.invoke("create-checkout", {
+        body: {
+          product: "quantum_entanglement",
+          productName: "Quantum Entanglement",
+          metadata: { target_user_id: targetUserId },
+        },
+      });
+      if (error) throw error;
+      if (data?.url) window.open(data.url, "_blank");
+    } catch (e: any) {
+      toast({ title: "Checkout failed", description: e.message, variant: "destructive" });
     }
   };
 

@@ -37,10 +37,16 @@ const QuantumObserver = ({ onBack }: { onBack: () => void }) => {
 
   const activateObserverMode = async () => {
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
-    await supabase.from("quantum_subscriptions").insert([{ user_id: user.id, subscription_type: "observer_mode", price: 19.99 }]);
-    const { error } = await supabase.from("quantum_profiles").update({ observer_mode_active: true }).eq("user_id", user.id);
-    if (!error) { toast({ title: "Observer Mode Activated", description: "You can now see all versions (€19.99/month)" }); setHasObserverMode(true); }
+    if (!user) { toast({ title: "Sign in required", variant: "destructive" }); return; }
+    try {
+      const { data, error } = await supabase.functions.invoke("create-checkout", {
+        body: { product: "observer_mode", productName: "Quantum Observer Mode" },
+      });
+      if (error) throw error;
+      if (data?.url) window.open(data.url, "_blank");
+    } catch (e: any) {
+      toast({ title: "Checkout failed", description: e.message, variant: "destructive" });
+    }
   };
 
   return (
