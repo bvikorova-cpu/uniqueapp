@@ -74,6 +74,7 @@ const QuantumSocial = () => {
         if (error) throw error;
         if (data?.verified) {
           toast({ title: "Payment confirmed", description: `${data.product_type?.replace(/_/g, " ")} unlocked.` });
+          window.dispatchEvent(new CustomEvent("quantum-access-refresh"));
           setActiveView("subscriptions");
         } else {
           toast({ title: "Payment not confirmed", description: data?.status || "Try again later", variant: "destructive" });
