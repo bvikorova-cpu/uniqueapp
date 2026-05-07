@@ -1,4 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import { useSearchParams } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
 import {
   Atom, FileText, Eye, Users, Zap, Settings,
@@ -47,6 +50,44 @@ const tools = [
 
 const QuantumSocial = () => {
   const [activeView, setActiveView] = useState<ViewType>("hub");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const { toast } = useToast();
+  const verifiedRef = useRef(false);
+
+  useEffect(() => {
+    const sessionId = searchParams.get("session_id");
+    const payment = searchParams.get("payment");
+    if (payment === "canceled") {
+      toast({ title: "Payment canceled", variant: "destructive" });
+      const next = new URLSearchParams(searchParams);
+      next.delete("payment");
+      setSearchParams(next, { replace: true });
+      return;
+    }
+    if (!sessionId || verifiedRef.current) return;
+    verifiedRef.current = true;
+    (async () => {
+      try {
+        const { data, error } = await supabase.functions.invoke("verify-payment", {
+          body: { session_id: sessionId },
+        });
+        if (error) throw error;
+        if (data?.verified) {
+          toast({ title: "Payment confirmed", description: `${data.product_type?.replace(/_/g, " ")} unlocked.` });
+          setActiveView("subscriptions");
+        } else {
+          toast({ title: "Payment not confirmed", description: data?.status || "Try again later", variant: "destructive" });
+        }
+      } catch (e: any) {
+        toast({ title: "Verification failed", description: e.message, variant: "destructive" });
+      } finally {
+        const next = new URLSearchParams(searchParams);
+        next.delete("session_id");
+        next.delete("payment");
+        setSearchParams(next, { replace: true });
+      }
+    })();
+  }, [searchParams, setSearchParams, toast]);
 
   const renderView = () => {
     switch (activeView) {
