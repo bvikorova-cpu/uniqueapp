@@ -166,22 +166,18 @@ serve(async (req) => {
         });
     }
 
-    const apiUrl = useLovable ? "https://api.openai.com/v1/chat/completions" : "https://api.openai.com/v1/chat/completions";
-    const apiKey = useLovable ? OPENAI_API_KEY : openaiKey;
-    const model = useLovable ? "gpt-5" : "gpt-4o-mini";
-
     const fetchBody: any = {
-      model,
+      model: OPENAI_MODEL,
       messages: [{ role: "system", content: systemPrompt }, { role: "user", content: userPrompt }],
       max_completion_tokens: 2000,
     };
-    if (useJsonFormat && !useLovable) {
+    if (useJsonFormat) {
       fetchBody.response_format = { type: "json_object" };
     }
 
-    const response = await fetch(apiUrl, {
+    const response = await fetch(OPENAI_URL, {
       method: "POST",
-      headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
+      headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
       body: JSON.stringify(fetchBody),
     });
 
