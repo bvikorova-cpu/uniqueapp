@@ -19,11 +19,11 @@ export function TutorialHero() {
         className="flex justify-center"
       >
         <div
-          className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-gradient-to-r from-primary to-accent px-4 py-1.5 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/20 drop-shadow-sm"
-          style={{ color: "hsl(var(--primary-foreground))", WebkitTextFillColor: "hsl(var(--primary-foreground))" }}
+          className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-gradient-to-r from-primary to-accent px-4 py-1.5 text-sm font-semibold shadow-lg shadow-primary/20 drop-shadow-sm"
+          style={{ color: "hsl(var(--sidebar-primary-foreground))", WebkitTextFillColor: "hsl(var(--sidebar-primary-foreground))" }}
         >
           <Sparkles className="w-3.5 h-3.5" />
-          <span style={{ color: "hsl(var(--primary-foreground))", WebkitTextFillColor: "hsl(var(--primary-foreground))" }}>
+          <span style={{ color: "hsl(var(--sidebar-primary-foreground))", WebkitTextFillColor: "hsl(var(--sidebar-primary-foreground))" }}>
             AI-Powered Learning Platform
           </span>
         </div>
