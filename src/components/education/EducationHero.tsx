@@ -2,7 +2,6 @@ import { motion } from "framer-motion";
 import { GraduationCap, Trophy, Flame, Zap, BookOpen, Sparkles } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useLiveStats } from "@/hooks/useLiveStats";
-import { Badge } from "@/components/ui/badge";
 import heroVideo from "@/assets/education-hero.mp4.asset.json";
 
 const AnimatedCounter = ({ target, suffix = "" }: { target: number; suffix?: string }) => {
@@ -45,9 +44,12 @@ export const EducationHero = () => {
     <div className="space-y-4 mb-8">
       {/* Badge */}
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex justify-center">
-        <div className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-violet-600 to-purple-600 border border-violet-900 px-4 py-1.5 text-sm font-bold shadow-lg" style={{ color: "#ffffff", textShadow: "0 1px 3px rgba(0,0,0,0.6)" }}>
-          <Sparkles className="w-3.5 h-3.5" style={{ color: "#ffffff" }} />
-          <span style={{ color: "#ffffff" }}>AI-Powered Learning Platform</span>
+        <div
+          className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-violet-600 to-purple-600 border border-violet-900 px-4 py-1.5 text-sm font-bold shadow-lg"
+          style={{ color: "hsl(var(--primary-foreground))", WebkitTextFillColor: "hsl(var(--primary-foreground))", textShadow: "0 1px 3px rgba(0,0,0,0.6)" }}
+        >
+          <Sparkles className="w-3.5 h-3.5" color="hsl(var(--primary-foreground))" />
+          <span style={{ color: "hsl(var(--primary-foreground))", WebkitTextFillColor: "hsl(var(--primary-foreground))" }}>AI-Powered Learning Platform</span>
         </div>
       </motion.div>
 
