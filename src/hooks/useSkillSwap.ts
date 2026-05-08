@@ -71,10 +71,11 @@ export const useSkillSwap = () => {
         return null;
       }
 
-      const { data, error } = await supabase.functions.invoke('create-skill-swap-checkout', {
+      const { data, error } = await supabase.functions.invoke('create-checkout', {
         headers: {
           Authorization: `Bearer ${session.access_token}`,
         },
+        body: { product: 'skill_swap' },
       });
 
       if (error) throw error;
