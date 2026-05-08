@@ -1,7 +1,4 @@
-// AI Tag Suggester for Stock Content
-// Uses Lovable AI Gateway (gemini-2.5-flash) to extract tags, category, and keywords
-// from an uploaded image (data URL) or a text description.
-
+// AI Tag Suggester for Stock Content (OpenAI)
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
@@ -17,9 +14,9 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) {
-      return new Response(JSON.stringify({ error: "LOVABLE_API_KEY not configured" }), {
+    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
+    if (!OPENAI_API_KEY) {
+      return new Response(JSON.stringify({ error: "OPENAI_API_KEY not configured" }), {
         status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
@@ -50,14 +47,15 @@ Output language for human-readable fields: ${language}. Tags & keywords always i
     if (imageDataUrl) userContent.push({ type: "image_url", image_url: { url: imageDataUrl } });
     if (!description) userContent.unshift({ type: "text", text: "Analyze this image:" });
 
-    const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const aiResp = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${LOVABLE_API_KEY}`,
+        "Authorization": `Bearer ${OPENAI_API_KEY}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
+        model: "gpt-4o-mini",
+        response_format: { type: "json_object" },
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: userContent },
@@ -70,24 +68,18 @@ Output language for human-readable fields: ${language}. Tags & keywords always i
         status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
-    if (aiResp.status === 402) {
-      return new Response(JSON.stringify({ error: "AI credits exhausted. Top up your Lovable AI workspace." }), {
-        status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
     if (!aiResp.ok) {
       const txt = await aiResp.text();
-      return new Response(JSON.stringify({ error: `AI gateway error: ${txt}` }), {
+      return new Response(JSON.stringify({ error: `OpenAI error: ${txt}` }), {
         status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
     const aiData = await aiResp.json();
     const raw: string = aiData?.choices?.[0]?.message?.content ?? "";
-    const cleaned = raw.replace(/^```json\s*/i, "").replace(/^```\s*/i, "").replace(/```$/i, "").trim();
     let parsed: any;
-    try { parsed = JSON.parse(cleaned); }
-    catch { parsed = { title: "", category: "photography", tags: [], keywords: [], raw: cleaned }; }
+    try { parsed = JSON.parse(raw); }
+    catch { parsed = { title: "", category: "photography", tags: [], keywords: [], raw }; }
 
     return new Response(JSON.stringify({ result: parsed }), {
       status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" },
