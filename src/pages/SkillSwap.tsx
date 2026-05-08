@@ -212,6 +212,7 @@ const HOW_IT_WORKS = [
 
 export default function SkillSwap() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { subscription, loading, createCheckout } = useSkillSwap();
   const [offerings, setOfferings] = useState<SkillOffering[]>([]);
   const [totalOfferings, setTotalOfferings] = useState(0);
