@@ -314,6 +314,13 @@ export default function SkillSwap() {
     checkUser();
   }, []);
 
+  // Honor ?tab=... or ?view=... so cross-page links can deep-link into a view
+  useEffect(() => {
+    const v = searchParams.get("view") || searchParams.get("tab");
+    const valid: ViewType[] = ["hub","browse","matches","messages","add","skillmap","advisor","progress","lessons","leaderboard","scheduler","valuation","demo","certification","workshops"];
+    if (v && valid.includes(v as ViewType)) setActiveView(v as ViewType);
+  }, [searchParams]);
+
   const handleSubscribe = async () => {
     const url = await createCheckout();
     if (url) { const __w = window.open(url, "_blank", "noopener,noreferrer"); if (!__w) window.location.href = url; }
