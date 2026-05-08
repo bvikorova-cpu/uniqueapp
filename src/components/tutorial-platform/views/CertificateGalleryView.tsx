@@ -141,12 +141,28 @@ export function CertificateGalleryView({ onBack }: Props) {
                       variant="outline"
                       className="flex-1 h-8 text-xs"
                       onClick={() => handlePreview(cert)}
-                      disabled={!hasUrl}
+                      disabled={!hasUrl || previewingId === cert.id || downloadingId === cert.id}
                     >
-                      <Eye className="w-3 h-3 mr-1" />Náhľad
+                      {previewingId === cert.id ? (
+                        <Loader2 className="w-3 h-3 mr-1 animate-spin" />
+                      ) : (
+                        <Eye className="w-3 h-3 mr-1" />
+                      )}
+                      Náhľad
                     </Button>
-                    <Button size="sm" variant="outline" className="flex-1 h-8 text-xs" onClick={() => handleDownload(cert)}>
-                      <Download className="w-3 h-3 mr-1" />Stiahnuť
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="flex-1 h-8 text-xs"
+                      onClick={() => handleDownload(cert)}
+                      disabled={downloadingId === cert.id || previewingId === cert.id}
+                    >
+                      {downloadingId === cert.id ? (
+                        <Loader2 className="w-3 h-3 mr-1 animate-spin" />
+                      ) : (
+                        <Download className="w-3 h-3 mr-1" />
+                      )}
+                      Stiahnuť
                     </Button>
                   </div>
                 </CardContent>
@@ -156,7 +172,7 @@ export function CertificateGalleryView({ onBack }: Props) {
         </div>
       )}
 
-      <Dialog open={!!previewCert} onOpenChange={(open) => !open && setPreviewCert(null)}>
+      <Dialog open={!!previewCert} onOpenChange={(open) => { if (!open) { setPreviewCert(null); setPreviewingId(null); setPreviewLoading(false); } }}>
         <DialogContent className="max-w-3xl">
           <DialogHeader>
             <DialogTitle>{previewCert?.courses?.title || "Certifikát"}</DialogTitle>
