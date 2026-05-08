@@ -25,6 +25,9 @@ export function CertificateGalleryView({ onBack }: Props) {
   const [certificates, setCertificates] = useState<Cert[]>([]);
   const [loading, setLoading] = useState(true);
   const [previewCert, setPreviewCert] = useState<Cert | null>(null);
+  const [downloadingId, setDownloadingId] = useState<string | null>(null);
+  const [previewingId, setPreviewingId] = useState<string | null>(null);
+  const [previewLoading, setPreviewLoading] = useState(false);
 
   useEffect(() => {
     (async () => {
