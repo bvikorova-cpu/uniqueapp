@@ -299,7 +299,17 @@ export function VisualCourseBuilderView({ onBack }: Props) {
                     <Input
                       value={mod.video_url || ""}
                       onChange={(e) => updateModule(mod.id, { video_url: e.target.value })}
-                      placeholder="Video URL (YouTube/Vimeo embed, voliteľné)"
+                      onBlur={(e) => {
+                        const v = e.target.value.trim();
+                        if (!v) return;
+                        const { url, error } = normalizeVideoUrl(v);
+                        if (error) {
+                          toast({ title: error, variant: "destructive" });
+                          return;
+                        }
+                        if (url && url !== v) updateModule(mod.id, { video_url: url });
+                      }}
+                      placeholder="Video URL (YouTube/Vimeo, voliteľné)"
                     />
                     <div className="grid grid-cols-2 gap-2">
                       <Input
