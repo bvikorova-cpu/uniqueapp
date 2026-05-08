@@ -29,6 +29,16 @@ export function CertificateGalleryView({ onBack }: Props) {
   const [previewingId, setPreviewingId] = useState<string | null>(null);
   const [previewLoading, setPreviewLoading] = useState(false);
 
+  // Reset spinner whenever the selected certificate changes or dialog closes
+  useEffect(() => {
+    if (!previewCert) {
+      setPreviewLoading(false);
+      setPreviewingId(null);
+    } else {
+      setPreviewLoading(true);
+    }
+  }, [previewCert?.id]);
+
   useEffect(() => {
     (async () => {
       const { data: { user } } = await supabase.auth.getUser();
