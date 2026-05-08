@@ -25,6 +25,9 @@ export function CertificateGalleryView({ onBack }: Props) {
   const [certificates, setCertificates] = useState<Cert[]>([]);
   const [loading, setLoading] = useState(true);
   const [previewCert, setPreviewCert] = useState<Cert | null>(null);
+  const [downloadingId, setDownloadingId] = useState<string | null>(null);
+  const [previewingId, setPreviewingId] = useState<string | null>(null);
+  const [previewLoading, setPreviewLoading] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -49,29 +52,35 @@ export function CertificateGalleryView({ onBack }: Props) {
     return new Blob([content], { type: "text/plain" });
   };
 
-  const handleDownload = (cert: Cert) => {
-    if (cert.certificate_url) {
-      const a = document.createElement("a");
-      a.href = cert.certificate_url;
-      a.download = `Certificate_${cert.id}`;
-      a.target = "_blank";
-      a.rel = "noopener noreferrer";
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      toast.success("Sťahovanie spustené");
-      return;
+  const handleDownload = async (cert: Cert) => {
+    if (downloadingId) return;
+    setDownloadingId(cert.id);
+    try {
+      if (cert.certificate_url) {
+        const a = document.createElement("a");
+        a.href = cert.certificate_url;
+        a.download = `Certificate_${cert.id}`;
+        a.target = "_blank";
+        a.rel = "noopener noreferrer";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        toast.success("Sťahovanie spustené");
+      } else {
+        toast.warning("Certifikát zatiaľ nebol vygenerovaný — sťahujem textový náhľad.");
+        const blob = generateFallback(cert);
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `Certificate_${cert.id}.txt`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }
+    } finally {
+      setTimeout(() => setDownloadingId(null), 600);
     }
-    toast.warning("Certifikát zatiaľ nebol vygenerovaný — sťahujem textový náhľad.");
-    const blob = generateFallback(cert);
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `Certificate_${cert.id}.txt`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
   };
 
   const handlePreview = (cert: Cert) => {
@@ -79,6 +88,8 @@ export function CertificateGalleryView({ onBack }: Props) {
       toast.warning("Náhľad nie je k dispozícii — pre tento certifikát ešte nebol vygenerovaný súbor.");
       return;
     }
+    setPreviewingId(cert.id);
+    setPreviewLoading(true);
     setPreviewCert(cert);
   };
 
@@ -130,12 +141,28 @@ export function CertificateGalleryView({ onBack }: Props) {
                       variant="outline"
                       className="flex-1 h-8 text-xs"
                       onClick={() => handlePreview(cert)}
-                      disabled={!hasUrl}
+                      disabled={!hasUrl || previewingId === cert.id || downloadingId === cert.id}
                     >
-                      <Eye className="w-3 h-3 mr-1" />Náhľad
+                      {previewingId === cert.id ? (
+                        <Loader2 className="w-3 h-3 mr-1 animate-spin" />
+                      ) : (
+                        <Eye className="w-3 h-3 mr-1" />
+                      )}
+                      Náhľad
                     </Button>
-                    <Button size="sm" variant="outline" className="flex-1 h-8 text-xs" onClick={() => handleDownload(cert)}>
-                      <Download className="w-3 h-3 mr-1" />Stiahnuť
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="flex-1 h-8 text-xs"
+                      onClick={() => handleDownload(cert)}
+                      disabled={downloadingId === cert.id || previewingId === cert.id}
+                    >
+                      {downloadingId === cert.id ? (
+                        <Loader2 className="w-3 h-3 mr-1 animate-spin" />
+                      ) : (
+                        <Download className="w-3 h-3 mr-1" />
+                      )}
+                      Stiahnuť
                     </Button>
                   </div>
                 </CardContent>
@@ -145,21 +172,37 @@ export function CertificateGalleryView({ onBack }: Props) {
         </div>
       )}
 
-      <Dialog open={!!previewCert} onOpenChange={(open) => !open && setPreviewCert(null)}>
+      <Dialog open={!!previewCert} onOpenChange={(open) => { if (!open) { setPreviewCert(null); setPreviewingId(null); setPreviewLoading(false); } }}>
         <DialogContent className="max-w-3xl">
           <DialogHeader>
             <DialogTitle>{previewCert?.courses?.title || "Certifikát"}</DialogTitle>
           </DialogHeader>
           {previewCert?.certificate_url && (
-            <div className="w-full h-[70vh] bg-muted rounded-md overflow-hidden">
+            <div className="w-full h-[70vh] bg-muted rounded-md overflow-hidden relative">
+              {previewLoading && (
+                <div className="absolute inset-0 flex items-center justify-center bg-muted/70 z-10">
+                  <Loader2 className="w-8 h-8 animate-spin" />
+                </div>
+              )}
               {isImageUrl(previewCert.certificate_url) ? (
-                <img src={previewCert.certificate_url} alt="Certificate" className="w-full h-full object-contain" />
+                <img
+                  src={previewCert.certificate_url}
+                  alt="Certificate"
+                  className="w-full h-full object-contain"
+                  onLoad={() => setPreviewLoading(false)}
+                  onError={() => { setPreviewLoading(false); toast.error("Nepodarilo sa načítať náhľad"); }}
+                />
               ) : isPdfUrl(previewCert.certificate_url) ? (
-                <iframe src={previewCert.certificate_url} className="w-full h-full" title="Certificate PDF" />
+                <iframe
+                  src={previewCert.certificate_url}
+                  className="w-full h-full"
+                  title="Certificate PDF"
+                  onLoad={() => setPreviewLoading(false)}
+                />
               ) : (
                 <div className="flex flex-col items-center justify-center h-full gap-3 p-6 text-center">
                   <p className="text-sm text-muted-foreground">Tento formát sa nedá zobraziť priamo.</p>
-                  <Button onClick={() => window.open(previewCert.certificate_url!, "_blank")}>
+                  <Button onClick={() => { setPreviewLoading(false); window.open(previewCert.certificate_url!, "_blank"); }}>
                     Otvoriť v novom okne
                   </Button>
                 </div>
@@ -168,9 +211,14 @@ export function CertificateGalleryView({ onBack }: Props) {
           )}
           {previewCert && (
             <div className="flex justify-end gap-2 pt-2">
-              <Button variant="outline" onClick={() => setPreviewCert(null)}>Zavrieť</Button>
-              <Button onClick={() => handleDownload(previewCert)}>
-                <Download className="w-4 h-4 mr-2" />Stiahnuť
+              <Button variant="outline" onClick={() => { setPreviewCert(null); setPreviewingId(null); setPreviewLoading(false); }}>Zavrieť</Button>
+              <Button onClick={() => handleDownload(previewCert)} disabled={downloadingId === previewCert.id}>
+                {downloadingId === previewCert.id ? (
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                ) : (
+                  <Download className="w-4 h-4 mr-2" />
+                )}
+                Stiahnuť
               </Button>
             </div>
           )}
