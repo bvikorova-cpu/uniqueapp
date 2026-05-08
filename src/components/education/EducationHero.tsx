@@ -46,10 +46,10 @@ export const EducationHero = () => {
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex justify-center">
         <div
           className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-violet-600 to-purple-600 border border-violet-900 px-4 py-1.5 text-sm font-bold shadow-lg"
-          style={{ color: "hsl(var(--primary-foreground))", WebkitTextFillColor: "hsl(var(--primary-foreground))", textShadow: "0 1px 3px rgba(0,0,0,0.6)" }}
+          style={{ color: "#ffffff", WebkitTextFillColor: "#ffffff", textShadow: "0 1px 3px rgba(0,0,0,0.6)" }}
         >
-          <Sparkles className="w-3.5 h-3.5" color="hsl(var(--primary-foreground))" />
-          <span style={{ color: "hsl(var(--primary-foreground))", WebkitTextFillColor: "hsl(var(--primary-foreground))" }}>AI-Powered Learning Platform</span>
+          <Sparkles className="w-3.5 h-3.5" style={{ color: "#ffffff" }} />
+          <span style={{ color: "#ffffff", WebkitTextFillColor: "#ffffff" }}>AI-Powered Learning Platform</span>
         </div>
       </motion.div>
 
