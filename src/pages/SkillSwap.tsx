@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -212,6 +212,7 @@ const HOW_IT_WORKS = [
 
 export default function SkillSwap() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { subscription, loading, createCheckout } = useSkillSwap();
   const [offerings, setOfferings] = useState<SkillOffering[]>([]);
   const [totalOfferings, setTotalOfferings] = useState(0);
@@ -312,6 +313,13 @@ export default function SkillSwap() {
     };
     checkUser();
   }, []);
+
+  // Honor ?tab=... or ?view=... so cross-page links can deep-link into a view
+  useEffect(() => {
+    const v = searchParams.get("view") || searchParams.get("tab");
+    const valid: ViewType[] = ["hub","browse","matches","messages","add","skillmap","advisor","progress","lessons","leaderboard","scheduler","valuation","demo","certification","workshops"];
+    if (v && valid.includes(v as ViewType)) setActiveView(v as ViewType);
+  }, [searchParams]);
 
   const handleSubscribe = async () => {
     const url = await createCheckout();
@@ -751,7 +759,7 @@ export default function SkillSwap() {
                       </div>
                       <div>
                         <h2 className="text-2xl font-black">Unlock Premium</h2>
-                        <div className="text-4xl font-black text-primary mt-2">€4.99<span className="text-base font-medium text-muted-foreground">/month</span></div>
+                        <div className="text-4xl font-black text-primary mt-2">€9.99<span className="text-base font-medium text-muted-foreground">/month</span></div>
                       </div>
                       <div className="grid grid-cols-3 gap-3 max-w-md mx-auto">
                         {[
