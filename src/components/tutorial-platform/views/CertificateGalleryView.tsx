@@ -29,14 +29,22 @@ export function CertificateGalleryView({ onBack }: Props) {
   const [previewingId, setPreviewingId] = useState<string | null>(null);
   const [previewLoading, setPreviewLoading] = useState(false);
 
-  // Reset spinner whenever the selected certificate changes or dialog closes
+  // Reset spinner whenever the selected certificate changes or dialog closes,
+  // with a safety timeout in case the iframe/image never fires onLoad/onError.
   useEffect(() => {
     if (!previewCert) {
       setPreviewLoading(false);
       setPreviewingId(null);
-    } else {
-      setPreviewLoading(true);
+      return;
     }
+    setPreviewLoading(true);
+    const timeout = window.setTimeout(() => {
+      setPreviewLoading(false);
+      toast.message("Náhľad sa načítava dlhšie ako zvyčajne", {
+        description: "Ak sa nezobrazí, skús certifikát stiahnuť.",
+      });
+    }, 10000);
+    return () => window.clearTimeout(timeout);
   }, [previewCert?.id]);
 
   useEffect(() => {
