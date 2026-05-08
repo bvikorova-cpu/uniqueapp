@@ -542,6 +542,7 @@ const Marketplace = () => {
       <div className="container mx-auto px-4 max-w-6xl">
         <MarketplaceHero />
 
+        <HeroRewardedAd sectionKey="page_marketplace" />
 
         {/* AI Tools Grid */}
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }} className="mb-8">
