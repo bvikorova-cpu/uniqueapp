@@ -86,7 +86,7 @@ serve(async (req) => {
 
     const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
     if (!OPENAI_API_KEY) {
-      return jsonResp({ error: "AI gateway not configured" }, 500);
+      return jsonResp({ error: "OpenAI not configured" }, 500);
     }
 
     const ageHint =
@@ -154,12 +154,12 @@ Return:
       return jsonResp({ error: "Rate limit exceeded, please try again later." }, 429);
     }
     if (aiResp.status === 402) {
-      return jsonResp({ error: "AI credits exhausted on the gateway. Please contact support." }, 402);
+      return jsonResp({ error: "OpenAI credits exhausted. Please contact support." }, 402);
     }
     if (!aiResp.ok) {
       const t = await aiResp.text();
-      console.error("AI gateway error", aiResp.status, t);
-      return jsonResp({ error: "AI gateway error" }, 500);
+      console.error("OpenAI API error", aiResp.status, t);
+      return jsonResp({ error: "OpenAI API error" }, 500);
     }
 
     const aiJson = await aiResp.json();

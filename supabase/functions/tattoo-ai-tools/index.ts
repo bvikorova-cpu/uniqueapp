@@ -30,7 +30,7 @@ serve(async (req) => {
           max_completion_tokens: maxTokens,
         }),
       });
-      if (!response.ok) throw new Error(`AI gateway error: ${response.status}`);
+      if (!response.ok) throw new Error(`OpenAI API error: ${response.status}`);
       const data = await response.json();
       return data.choices?.[0]?.message?.content;
     };

@@ -88,7 +88,7 @@ Deno.serve(async (req) => {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     if (aiResp.status === 402)
-      return new Response(JSON.stringify({ error: "Add credits to Lovable AI workspace" }), {
+      return new Response(JSON.stringify({ error: "Add credits to OpenAI workspace" }), {
         status: 402,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });

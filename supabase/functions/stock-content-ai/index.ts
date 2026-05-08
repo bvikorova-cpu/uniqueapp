@@ -12,7 +12,7 @@ serve(async (req) => {
     const body = await req.json();
     const { action, ...params } = body;
     
-    // Try Lovable AI first, fall back to OpenAI
+    // Try OpenAI first, fall back to OpenAI
     const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
     const openaiKey = Deno.env.get("OPENAI_API_KEY");
     

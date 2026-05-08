@@ -135,7 +135,7 @@ IMPORTANT: Generate ALL ${days} days with varied workouts and meals. Include res
 
     if (!aiResponse.ok) {
       const errText = await aiResponse.text();
-      console.error("AI gateway error:", aiResponse.status, errText);
+      console.error("OpenAI API error:", aiResponse.status, errText);
       await serviceClient.from("fitness_plans").update({ status: "failed" }).eq("id", plan_id);
       throw new Error("AI generation failed");
     }

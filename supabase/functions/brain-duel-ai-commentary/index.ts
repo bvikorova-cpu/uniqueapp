@@ -106,7 +106,7 @@ Generate an engaging ${commentaryStyle}-style commentary of this match (200-400 
           status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
-      throw new Error(`AI gateway error: ${status}`);
+      throw new Error(`OpenAI API error: ${status}`);
     }
 
     const aiData = await aiResponse.json();

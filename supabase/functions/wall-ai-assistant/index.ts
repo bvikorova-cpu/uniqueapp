@@ -143,8 +143,8 @@ serve(async (req) => {
         });
       }
       const text = await response.text();
-      console.error("AI gateway error:", response.status, text);
-      throw new Error("AI gateway error");
+      console.error("OpenAI API error:", response.status, text);
+      throw new Error("OpenAI API error");
     }
 
     const data = await response.json();

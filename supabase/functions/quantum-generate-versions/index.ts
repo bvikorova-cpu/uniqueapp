@@ -1,4 +1,4 @@
-// Quantum Social — Generate alternate post versions using Lovable AI Gateway.
+// Quantum Social — Generate alternate post versions using OpenAI.
 // One call per post returns N stylistic rewrites of the same base content.
 
 const corsHeaders = {
@@ -42,7 +42,7 @@ Deno.serve(async (req) => {
     const apiKey = Deno.env.get("OPENAI_API_KEY");
     if (!apiKey) {
       return new Response(
-        JSON.stringify({ error: "AI gateway not configured" }),
+        JSON.stringify({ error: "OpenAI not configured" }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } },
       );
     }
@@ -88,7 +88,7 @@ Deno.serve(async (req) => {
     if (!aiResp.ok) {
       const errText = await aiResp.text();
       return new Response(
-        JSON.stringify({ error: "AI gateway error", detail: errText.slice(0, 300) }),
+        JSON.stringify({ error: "OpenAI API error", detail: errText.slice(0, 300) }),
         { status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" } },
       );
     }

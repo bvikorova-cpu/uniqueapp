@@ -1,4 +1,4 @@
-// Anonymous Date AI - 7 paid AI features via Lovable AI Gateway
+// Anonymous Date AI - 7 paid AI features via OpenAI
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
 const corsHeaders = {

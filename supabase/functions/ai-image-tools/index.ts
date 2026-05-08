@@ -96,7 +96,7 @@ serve(async (req) => {
           headers: { "Authorization": `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
           body: JSON.stringify({ model: "gpt-image-1", prompt, n: 1, size: "1024x1024", quality: "high", output_format: "webp", output_compression: 90 }),
         });
-        if (!response.ok) { console.error("AI gateway error:", await response.text()); throw new Error("Image generation failed"); }
+        if (!response.ok) { console.error("OpenAI API error:", await response.text()); throw new Error("Image generation failed"); }
         const data = await response.json();
         const b64Url = (data.data?.[0]?.b64_json ? `data:image/png;base64,${data.data[0].b64_json}` : null);
         const b64 = b64Url ? b64Url.replace(/^data:image\/\w+;base64,/, "") : null;

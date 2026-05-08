@@ -1,5 +1,5 @@
 // Lottery AI tuning features: dream decoder, numerology, heatmap analysis
-// Uses Lovable AI Gateway. Credits deducted atomically via deduct_ai_credits RPC.
+// Uses OpenAI. Credits deducted atomically via deduct_ai_credits RPC.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
@@ -15,7 +15,7 @@ const COSTS: Record<Feature, number> = {
   heatmap_analysis: 4,
 };
 
-const LOVABLE_AI_URL = "https://api.openai.com/v1/chat/completions";
+const OPENAI_API_URL = "https://api.openai.com/v1/chat/completions";
 const MODEL = "gpt-4o-mini";
 
 Deno.serve(async (req) => {
@@ -70,7 +70,7 @@ Deno.serve(async (req) => {
       const count = Number(payload.count ?? 6);
       if (!dream) return json({ error: "DREAM_REQUIRED" }, 400);
 
-      const resp = await fetch(LOVABLE_AI_URL, {
+      const resp = await fetch(OPENAI_API_URL, {
         method: "POST",
         headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -143,7 +143,7 @@ Deno.serve(async (req) => {
         if (!lucky.includes(c)) lucky.push(c);
       }
 
-      const resp = await fetch(LOVABLE_AI_URL, {
+      const resp = await fetch(OPENAI_API_URL, {
         method: "POST",
         headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
         body: JSON.stringify({

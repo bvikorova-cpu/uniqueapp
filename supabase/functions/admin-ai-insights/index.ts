@@ -119,8 +119,8 @@ Return JSON only.`;
     }
     if (!aiResp.ok) {
       const t = await aiResp.text();
-      console.error("AI gateway error:", aiResp.status, t);
-      throw new Error("AI gateway error");
+      console.error("OpenAI API error:", aiResp.status, t);
+      throw new Error("OpenAI API error");
     }
 
     const aiData = await aiResp.json();

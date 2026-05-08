@@ -94,7 +94,7 @@ serve(async (req) => {
           status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
-      throw new Error("AI gateway error " + aiResp.status);
+      throw new Error("OpenAI API error " + aiResp.status);
     }
 
     const aiData = await aiResp.json();

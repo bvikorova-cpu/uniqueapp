@@ -94,7 +94,7 @@ serve(async (req) => {
         });
       }
       
-      throw new Error("AI gateway error");
+      throw new Error("OpenAI API error");
     }
 
     const aiData = await response.json();

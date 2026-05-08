@@ -57,14 +57,14 @@ Output ONLY the bio text. No quotes, no labels, no markdown.`;
         });
       }
       if (response.status === 402) {
-        return new Response(JSON.stringify({ error: "AI credits exhausted. Add funds in Lovable workspace settings." }), {
+        return new Response(JSON.stringify({ error: "OpenAI credits exhausted. Add funds to your OpenAI account." }), {
           status: 402,
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
       const t = await response.text();
-      console.error("AI gateway error:", response.status, t);
-      throw new Error("AI gateway error");
+      console.error("OpenAI API error:", response.status, t);
+      throw new Error("OpenAI API error");
     }
 
     const data = await response.json();
