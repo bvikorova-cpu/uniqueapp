@@ -181,7 +181,7 @@ export function BrowseCoursesView({ onBack }: Props) {
                     <span className="text-lg font-black bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">
                       {course.price > 0 ? `€${Number(course.price).toFixed(2)}` : 'Free'}
                     </span>
-                    <Button size="sm" className="bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 text-xs" onClick={() => navigate(`/course/${course.id}`)}>
+                    <Button size="sm" className="bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 text-xs" onClick={() => navigate(`/tutorial-course/${course.id}`)}>
                       Enroll Now
                     </Button>
                   </div>
