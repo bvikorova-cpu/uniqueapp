@@ -21,7 +21,7 @@ serve(async (req) => {
       method: "POST",
       headers: { Authorization: `Bearer ${openaiKey}`, "Content-Type": "application/json" },
       body: JSON.stringify({
-        model: "gpt-5",
+        model: "gpt-4o-mini",
         messages: [{ role: "user", content: prompt }],
         max_completion_tokens: 2000,
       }),

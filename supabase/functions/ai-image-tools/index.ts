@@ -208,7 +208,7 @@ serve(async (req) => {
           method: "POST",
           headers: { "Authorization": `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
           body: JSON.stringify({
-            model: "gpt-5",
+            model: "gpt-4o-mini",
             messages: [
               { role: "system", content: "You analyze images and generate detailed prompts that could recreate them. Return JSON with 'prompt' (detailed 30-60 word prompt), 'style' (the art style detected), and 'tags' (array of 5-8 relevant tags)." },
               { role: "user", content: [
@@ -231,7 +231,7 @@ serve(async (req) => {
           method: "POST",
           headers: { "Authorization": `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
           body: JSON.stringify({
-            model: "gpt-5",
+            model: "gpt-4o-mini",
             messages: [
               { role: "system", content: "You are a creative AI image prompt expert. Generate 8 unique, highly detailed image prompts. Return JSON array of objects with 'title' (short 3-5 word title), 'prompt' (detailed 20-40 word prompt), 'category' (one of: Nature, Fantasy, Sci-Fi, Portrait, Abstract, Architecture, Food, Animals), and 'difficulty' (Easy, Medium, Hard)." },
               { role: "user", content: prompt || "Generate diverse trending AI art prompts for various styles" }

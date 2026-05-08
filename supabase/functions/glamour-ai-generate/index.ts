@@ -58,7 +58,7 @@ serve(async (req) => {
       method: "POST",
       headers: { "Authorization": `Bearer ${openaiKey}`, "Content-Type": "application/json" },
       body: JSON.stringify({
-        model: "gpt-5",
+        model: "gpt-4o-mini",
         messages: [
           { role: "system", content: "You are a magical, creative AI assistant for Glamour World - a fun, girly platform. Be enthusiastic, creative, and detailed. Use emojis sparingly. Provide practical, actionable content." },
           { role: "user", content: prompt },

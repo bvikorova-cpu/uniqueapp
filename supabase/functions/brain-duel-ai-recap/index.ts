@@ -106,7 +106,7 @@ Write a 150-200 word recap with sections: Performance Summary, Highlights, Areas
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "gpt-5",
+        model: "gpt-4o-mini",
         messages: [
           { role: "system", content: "You are a competitive gaming coach who writes engaging weekly performance recaps." },
           { role: "user", content: prompt },

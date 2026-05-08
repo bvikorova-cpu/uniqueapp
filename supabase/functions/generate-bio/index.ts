@@ -41,7 +41,7 @@ Output ONLY the bio text. No quotes, no labels, no markdown.`;
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "gpt-5",
+        model: "gpt-4o-mini",
         messages: [
           { role: "system", content: "You are a concise personal-branding copywriter who writes short profile bios." },
           { role: "user", content: prompt },

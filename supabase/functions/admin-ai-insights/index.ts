@@ -69,7 +69,7 @@ Return JSON only.`;
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "gpt-5",
+        model: "gpt-4o-mini",
         messages: [
           { role: "system", content: "You are a senior product/revenue analyst. Output concise, executive-grade insights." },
           { role: "user", content: prompt },

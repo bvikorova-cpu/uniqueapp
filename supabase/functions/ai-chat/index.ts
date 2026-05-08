@@ -25,7 +25,7 @@ serve(async (req) => {
     const res = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: { Authorization: `Bearer ${openaiKey}`, "Content-Type": "application/json" },
-      body: JSON.stringify({ model: "gpt-5", messages: allMessages, max_completion_tokens: 1000 }),
+      body: JSON.stringify({ model: "gpt-4o-mini", messages: allMessages, max_completion_tokens: 1000 }),
     });
 
     const data = await res.json();

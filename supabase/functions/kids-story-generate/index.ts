@@ -21,7 +21,7 @@ serve(async (req) => {
       method: "POST",
       headers: { Authorization: `Bearer ${openaiKey}`, "Content-Type": "application/json" },
       body: JSON.stringify({
-        model: "gpt-5",
+        model: "gpt-4o-mini",
         messages: [
           { role: "system", content: "You are a children's story writer. Write gentle, magical bedtime stories suitable for children ages 3-10. Keep stories warm, positive, and with happy endings. Use simple language." },
           { role: "user", content: `Write a bedtime story titled "${title || 'A Magical Adventure'}". ${prompt || ''}` },

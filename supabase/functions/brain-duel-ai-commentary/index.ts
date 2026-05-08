@@ -86,7 +86,7 @@ Generate an engaging ${commentaryStyle}-style commentary of this match (200-400 
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "gpt-5",
+        model: "gpt-4o-mini",
         messages: [
           { role: "system", content: stylePrompts[commentaryStyle] || stylePrompts.sports },
           { role: "user", content: prompt },
