@@ -45,10 +45,10 @@ export const EducationHero = () => {
     <div className="space-y-4 mb-8">
       {/* Badge */}
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex justify-center">
-        <Badge className="bg-gradient-to-r from-violet-600 to-purple-600 !text-white border border-violet-800 px-4 py-1.5 text-sm font-semibold shadow-lg [&>svg]:text-white drop-shadow-sm">
-          <Sparkles className="w-3.5 h-3.5 mr-1.5 text-white" />
-          <span className="text-white">AI-Powered Learning Platform</span>
-        </Badge>
+        <div className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-violet-600 to-purple-600 border border-violet-900 px-4 py-1.5 text-sm font-bold shadow-lg" style={{ color: "#ffffff", textShadow: "0 1px 3px rgba(0,0,0,0.6)" }}>
+          <Sparkles className="w-3.5 h-3.5" style={{ color: "#ffffff" }} />
+          <span style={{ color: "#ffffff" }}>AI-Powered Learning Platform</span>
+        </div>
       </motion.div>
 
       {/* Title */}
