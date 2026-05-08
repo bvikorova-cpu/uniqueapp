@@ -178,15 +178,31 @@ export function CertificateGalleryView({ onBack }: Props) {
             <DialogTitle>{previewCert?.courses?.title || "Certifikát"}</DialogTitle>
           </DialogHeader>
           {previewCert?.certificate_url && (
-            <div className="w-full h-[70vh] bg-muted rounded-md overflow-hidden">
+            <div className="w-full h-[70vh] bg-muted rounded-md overflow-hidden relative">
+              {previewLoading && (
+                <div className="absolute inset-0 flex items-center justify-center bg-muted/70 z-10">
+                  <Loader2 className="w-8 h-8 animate-spin" />
+                </div>
+              )}
               {isImageUrl(previewCert.certificate_url) ? (
-                <img src={previewCert.certificate_url} alt="Certificate" className="w-full h-full object-contain" />
+                <img
+                  src={previewCert.certificate_url}
+                  alt="Certificate"
+                  className="w-full h-full object-contain"
+                  onLoad={() => setPreviewLoading(false)}
+                  onError={() => { setPreviewLoading(false); toast.error("Nepodarilo sa načítať náhľad"); }}
+                />
               ) : isPdfUrl(previewCert.certificate_url) ? (
-                <iframe src={previewCert.certificate_url} className="w-full h-full" title="Certificate PDF" />
+                <iframe
+                  src={previewCert.certificate_url}
+                  className="w-full h-full"
+                  title="Certificate PDF"
+                  onLoad={() => setPreviewLoading(false)}
+                />
               ) : (
                 <div className="flex flex-col items-center justify-center h-full gap-3 p-6 text-center">
                   <p className="text-sm text-muted-foreground">Tento formát sa nedá zobraziť priamo.</p>
-                  <Button onClick={() => window.open(previewCert.certificate_url!, "_blank")}>
+                  <Button onClick={() => { setPreviewLoading(false); window.open(previewCert.certificate_url!, "_blank"); }}>
                     Otvoriť v novom okne
                   </Button>
                 </div>
@@ -195,9 +211,14 @@ export function CertificateGalleryView({ onBack }: Props) {
           )}
           {previewCert && (
             <div className="flex justify-end gap-2 pt-2">
-              <Button variant="outline" onClick={() => setPreviewCert(null)}>Zavrieť</Button>
-              <Button onClick={() => handleDownload(previewCert)}>
-                <Download className="w-4 h-4 mr-2" />Stiahnuť
+              <Button variant="outline" onClick={() => { setPreviewCert(null); setPreviewingId(null); setPreviewLoading(false); }}>Zavrieť</Button>
+              <Button onClick={() => handleDownload(previewCert)} disabled={downloadingId === previewCert.id}>
+                {downloadingId === previewCert.id ? (
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                ) : (
+                  <Download className="w-4 h-4 mr-2" />
+                )}
+                Stiahnuť
               </Button>
             </div>
           )}
