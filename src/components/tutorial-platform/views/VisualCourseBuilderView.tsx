@@ -311,6 +311,22 @@ export function VisualCourseBuilderView({ onBack }: Props) {
                       }}
                       placeholder="Video URL (YouTube/Vimeo, voliteľné)"
                     />
+                    {(() => {
+                      const { url } = normalizeVideoUrl(mod.video_url || "");
+                      if (!url) return null;
+                      return (
+                        <div className="rounded-md overflow-hidden border bg-black aspect-video">
+                          <iframe
+                            src={url}
+                            title={`Náhľad: ${mod.title}`}
+                            className="w-full h-full"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                            loading="lazy"
+                          />
+                        </div>
+                      );
+                    })()}
                     <div className="grid grid-cols-2 gap-2">
                       <Input
                         value={mod.duration}
