@@ -126,7 +126,7 @@ export default function AnalyzerCollections() {
             {collections.map((collection, i) => (
               <motion.div key={collection.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
                 <Card className="p-6 hover:shadow-lg hover:shadow-cyan-500/10 transition-all cursor-pointer border-cyan-500/10 hover:border-cyan-500/30"
-                  onClick={() => navigate(`/analyzer-collections/${collection.id}`)}>
+                  onClick={() => navigate(`/analyzer/history?collection=${collection.id}`)}>
                   <div className="space-y-4">
                     <div className="flex items-start gap-3">
                       <div className="p-3 bg-cyan-500/10 rounded-xl border border-cyan-500/20">
