@@ -18,7 +18,7 @@ const ACTION_USAGE_TYPES: Record<string, string> = {
   "mood-insight": "mentor_mood_insight",
 };
 
-async function callLovableAI(systemPrompt: string, userPrompt: string, maxTokens = 1000) {
+async function callOpenAI(systemPrompt: string, userPrompt: string, maxTokens = 1000) {
   const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
   if (!OPENAI_API_KEY) throw new Error("OPENAI_API_KEY is not configured");
 
@@ -95,11 +95,11 @@ Format with clear markdown headers and bullet points. Be specific and personaliz
         ? `Here's my recent data:\n${contextParts.join("\n")}\n\nGenerate my personalized weekly action plan for ${area}.`
         : `Generate a starter weekly action plan for ${area} coaching. I'm just getting started.`;
 
-      const response = await callLovableAI(systemPrompt, userPrompt, 1500);
+      const response = await callOpenAI(systemPrompt, userPrompt, 1500);
       if (!response.ok) {
         if (response.status === 429) return new Response(JSON.stringify({ error: "Rate limited. Try again shortly." }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
         if (response.status === 402) return new Response(JSON.stringify({ error: "AI credits exhausted. Top up at Settings → Workspace → Usage." }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-        throw new Error("AI gateway error");
+        throw new Error("OpenAI API error");
       }
 
       const aiData = await response.json();
@@ -132,11 +132,11 @@ Format with clear markdown headers and bullet points. Be specific and personaliz
       const area = (mentorArea || "career").toLowerCase();
       const systemPrompt = `You are a warm, encouraging ${area} coach speaking directly to your client. Give brief, motivational spoken-style advice (2-3 paragraphs max). Sound natural, empathetic, and actionable. Use "you" language. Don't use markdown formatting — write as if speaking aloud.`;
 
-      const response = await callLovableAI(systemPrompt, message.slice(0, 2000), 600);
+      const response = await callOpenAI(systemPrompt, message.slice(0, 2000), 600);
       if (!response.ok) {
         if (response.status === 429) return new Response(JSON.stringify({ error: "Rate limited." }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
         if (response.status === 402) return new Response(JSON.stringify({ error: "AI credits exhausted." }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-        throw new Error("AI gateway error");
+        throw new Error("OpenAI API error");
       }
 
       const aiData = await response.json();
@@ -168,11 +168,11 @@ Format with clear markdown headers and bullet points. Be specific and personaliz
       const systemPrompt = "You are a wellness coach analyzing mood patterns. Give brief, actionable insights about trends, patterns, and recommendations. Be encouraging. Keep it under 200 words.";
       const userPrompt = `Analyze my mood data (last ${moodData.length} entries): ${JSON.stringify(moodData.map((m: any) => ({ date: m.created_at, mood: m.mood_score, energy: m.energy_score, stress: m.stress_score })))}`;
 
-      const response = await callLovableAI(systemPrompt, userPrompt, 500);
+      const response = await callOpenAI(systemPrompt, userPrompt, 500);
       if (!response.ok) {
         if (response.status === 429) return new Response(JSON.stringify({ error: "Rate limited." }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
         if (response.status === 402) return new Response(JSON.stringify({ error: "AI credits exhausted." }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-        throw new Error("AI gateway error");
+        throw new Error("OpenAI API error");
       }
 
       const aiData = await response.json();

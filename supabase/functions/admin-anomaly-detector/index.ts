@@ -40,7 +40,7 @@ Deno.serve(async (req) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "gpt-5",
+        model: "gpt-4o-mini",
         messages: [
           {
             role: "system",
@@ -88,7 +88,7 @@ Deno.serve(async (req) => {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     if (aiResp.status === 402)
-      return new Response(JSON.stringify({ error: "Add credits to Lovable AI workspace" }), {
+      return new Response(JSON.stringify({ error: "Add credits to OpenAI workspace" }), {
         status: 402,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });

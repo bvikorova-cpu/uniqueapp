@@ -25,12 +25,12 @@ serve(async (req) => {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${OPENAI_API_KEY}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: "gpt-5",
+          model: "gpt-4o-mini",
           messages: [{ role: 'system', content: systemPrompt }, { role: 'user', content: userPrompt }],
           max_completion_tokens: maxTokens,
         }),
       });
-      if (!response.ok) throw new Error(`AI gateway error: ${response.status}`);
+      if (!response.ok) throw new Error(`OpenAI API error: ${response.status}`);
       const data = await response.json();
       return data.choices?.[0]?.message?.content;
     };

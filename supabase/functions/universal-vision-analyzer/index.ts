@@ -4,7 +4,7 @@
 // Body: { task: string, imageUrl?: string, prompt?: string, ...extras }
 // The `task` param maps to a system prompt + AI model (vision vs text).
 //
-// Backed by Lovable AI Gateway (OPENAI_API_KEY) — no per-tier secrets.
+// Backed by OpenAI (OPENAI_API_KEY) — no per-tier secrets.
 
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 
@@ -101,7 +101,7 @@ serve(async (req) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "gpt-5",
+        model: "gpt-4o-mini",
         messages: [
           { role: "system", content: cfg.prompt },
           { role: "user", content: userContent },

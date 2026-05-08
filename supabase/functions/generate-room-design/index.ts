@@ -75,7 +75,7 @@ serve(async (req) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "gpt-5",
+        model: "gpt-4o-mini",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: aiPrompt }
@@ -94,7 +94,7 @@ serve(async (req) => {
         });
       }
       
-      throw new Error("AI gateway error");
+      throw new Error("OpenAI API error");
     }
 
     const aiData = await response.json();

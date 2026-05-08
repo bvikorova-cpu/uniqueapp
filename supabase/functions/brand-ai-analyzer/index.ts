@@ -75,7 +75,7 @@ serve(async (req) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "gpt-5",
+        model: "gpt-4o-mini",
         messages: [
           { role: "system", content: "You are a world-class brand intelligence analyst. Output structured, executive-grade reports." },
           { role: "user", content: prompts[insightType] },
@@ -94,7 +94,7 @@ serve(async (req) => {
           status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
-      throw new Error("AI gateway error " + aiResp.status);
+      throw new Error("OpenAI API error " + aiResp.status);
     }
 
     const aiData = await aiResp.json();
@@ -119,7 +119,7 @@ serve(async (req) => {
       insight_type: insightType,
       title: `${titleMap[insightType]} — ${brand.name}`,
       summary,
-      full_report: { generated_at: new Date().toISOString(), model: "gpt-5" },
+      full_report: { generated_at: new Date().toISOString(), model: "gpt-4o-mini" },
       credits_charged: cost,
     }).select().single();
 

@@ -49,7 +49,7 @@ serve(async (req) => {
                 "Content-Type": "application/json",
               },
               body: JSON.stringify({
-                model: "gpt-5",
+                model: "gpt-4o-mini",
                 messages: [
                   { role: "system", content: "Generate a catchy title and description for a daily brain quiz challenge. Reply with JSON: {\"title\": \"...\", \"description\": \"...\"}" },
                   { role: "user", content: `Category: ${category}. Make it exciting and fun!` },

@@ -47,7 +47,7 @@ async function callAI(apiKey: string, apiUrl: string, model: string, messages: a
   });
   if (!response.ok) {
     if (response.status === 429) throw { status: 429, message: "Rate limited" };
-    throw new Error("AI gateway error");
+    throw new Error("OpenAI API error");
   }
   const aiData = await response.json();
   const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];

@@ -151,7 +151,7 @@ Be thorough but encouraging.`;
     }
     if (!response.ok) {
       const errText = await response.text();
-      console.error("Lovable AI Gateway error:", response.status, errText);
+      console.error("OpenAI error:", response.status, errText);
       throw new Error("AI service unavailable");
     }
 

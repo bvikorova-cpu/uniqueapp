@@ -22,8 +22,8 @@ const STYLE_PROMPTS: Record<string, string> = {
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
   try {
-    const lovableKey = Deno.env.get("OPENAI_API_KEY");
-    if (!lovableKey) throw new Error("OPENAI_API_KEY not configured");
+    const openaiKey = Deno.env.get("OPENAI_API_KEY");
+    if (!openaiKey) throw new Error("OPENAI_API_KEY not configured");
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const authHeader = req.headers.get("Authorization");
@@ -45,10 +45,10 @@ Deno.serve(async (req) => {
       return new Response(JSON.stringify({ error: "Insufficient credits", required: AVATAR_COST }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
-    // Edit image via Lovable AI Nano Banana
+    // Edit image via OpenAI gpt-image-1
     const aiResponse = await fetch("https://api.openai.com/v1/images/generations", {
       method: "POST",
-      headers: { Authorization: `Bearer ${lovableKey}`, "Content-Type": "application/json" },
+      headers: { Authorization: `Bearer ${openaiKey}`, "Content-Type": "application/json" },
       body: JSON.stringify({
         model: "gpt-image-1",
         messages: [
@@ -65,7 +65,7 @@ Deno.serve(async (req) => {
 
     if (!aiResponse.ok) {
       const t = await aiResponse.text();
-      console.error("Lovable AI error:", aiResponse.status, t);
+      console.error("OpenAI error:", aiResponse.status, t);
       if (aiResponse.status === 429) return new Response(JSON.stringify({ error: "AI rate limited" }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       if (aiResponse.status === 402) return new Response(JSON.stringify({ error: "AI credits depleted in workspace" }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       throw new Error("AI image error");

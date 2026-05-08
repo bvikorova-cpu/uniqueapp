@@ -12,9 +12,9 @@ serve(async (req) => {
   try {
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-    const lovableKey = Deno.env.get("OPENAI_API_KEY");
+    const openaiKey = Deno.env.get("OPENAI_API_KEY");
 
-    if (!lovableKey) throw new Error("OPENAI_API_KEY not configured");
+    if (!openaiKey) throw new Error("OPENAI_API_KEY not configured");
 
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) throw new Error("No authorization header");
@@ -102,11 +102,11 @@ Write a 150-200 word recap with sections: Performance Summary, Highlights, Areas
     const aiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${lovableKey}`,
+        Authorization: `Bearer ${openaiKey}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "gpt-5",
+        model: "gpt-4o-mini",
         messages: [
           { role: "system", content: "You are a competitive gaming coach who writes engaging weekly performance recaps." },
           { role: "user", content: prompt },
@@ -127,7 +127,7 @@ Write a 150-200 word recap with sections: Performance Summary, Highlights, Areas
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
-      throw new Error("AI gateway error");
+      throw new Error("OpenAI API error");
     }
 
     const aiData = await aiResponse.json();

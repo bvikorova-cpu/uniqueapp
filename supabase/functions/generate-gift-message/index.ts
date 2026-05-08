@@ -276,7 +276,7 @@ serve(async (req) => {
 
     // ─── IMAGE GENERATION BRANCH ───
     // Routes media-generating proxies (paint-image, video-thumbnail, virtual-tryon, etc.)
-    // through Lovable AI Gateway (Nano Banana) and returns base64 data URL.
+    // through OpenAI (gpt-image-1) and returns base64 data URL.
     const IMAGE_TYPES: Record<string, string> = {
       // proxyMap keys (snake_case from kebab-case function names)
       generate_paint_image:        "Detailed acrylic painting, gallery quality, vivid colors, expressive brushwork.",
@@ -445,7 +445,7 @@ ${customPrompt ? `Additional context: ${customPrompt}` : ""}`;
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "gpt-5",
+        model: "gpt-4o-mini",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt },

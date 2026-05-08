@@ -12,12 +12,10 @@ serve(async (req) => {
     const body = await req.json();
     const { action, ...params } = body;
     
-    // Try Lovable AI first, fall back to OpenAI
     const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
-    const openaiKey = Deno.env.get("OPENAI_API_KEY");
-    
-    const useLovable = !!OPENAI_API_KEY;
-    if (!OPENAI_API_KEY && !openaiKey) throw new Error("No AI API key configured");
+    if (!OPENAI_API_KEY) throw new Error("OPENAI_API_KEY not configured");
+    const OPENAI_URL = "https://api.openai.com/v1/chat/completions";
+    const OPENAI_MODEL = "gpt-4o-mini";
 
     let systemPrompt = "";
     let userPrompt = "";
@@ -58,14 +56,10 @@ serve(async (req) => {
         systemPrompt = "You are an expert AI tutor. Help students understand concepts clearly. Use examples, analogies, and step-by-step explanations. Be encouraging and patient. Keep responses concise.";
         const messages = params.messages || [];
         
-        const apiUrl = useLovable ? "https://api.openai.com/v1/chat/completions" : "https://api.openai.com/v1/chat/completions";
-        const apiKey = useLovable ? OPENAI_API_KEY : openaiKey;
-        const model = useLovable ? "gpt-5" : "gpt-4o-mini";
-        
-        const response = await fetch(apiUrl, {
+        const response = await fetch(OPENAI_URL, {
           method: "POST",
-          headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
-          body: JSON.stringify({ model, messages: [{ role: "system", content: systemPrompt }, ...messages] }),
+          headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({ model: OPENAI_MODEL, messages: [{ role: "system", content: systemPrompt }, ...messages] }),
         });
         if (!response.ok) {
           const status = response.status;
@@ -172,22 +166,18 @@ serve(async (req) => {
         });
     }
 
-    const apiUrl = useLovable ? "https://api.openai.com/v1/chat/completions" : "https://api.openai.com/v1/chat/completions";
-    const apiKey = useLovable ? OPENAI_API_KEY : openaiKey;
-    const model = useLovable ? "gpt-5" : "gpt-4o-mini";
-
     const fetchBody: any = {
-      model,
+      model: OPENAI_MODEL,
       messages: [{ role: "system", content: systemPrompt }, { role: "user", content: userPrompt }],
       max_completion_tokens: 2000,
     };
-    if (useJsonFormat && !useLovable) {
+    if (useJsonFormat) {
       fetchBody.response_format = { type: "json_object" };
     }
 
-    const response = await fetch(apiUrl, {
+    const response = await fetch(OPENAI_URL, {
       method: "POST",
-      headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
+      headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
       body: JSON.stringify(fetchBody),
     });
 

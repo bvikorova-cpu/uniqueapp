@@ -171,7 +171,7 @@ Format with clear time slots and priority levels.`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "gpt-5",
+        model: "gpt-4o-mini",
         messages: [
           { role: "system", content: "You are a professional pet care AI assistant. Provide detailed, accurate, and helpful responses in Markdown format. Be warm and caring in tone." },
           { role: "user", content: prompt },

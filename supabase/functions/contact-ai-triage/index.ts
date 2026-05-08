@@ -40,7 +40,7 @@ Deno.serve(async (req) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "gpt-5",
+        model: "gpt-4o-mini",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt },
@@ -92,8 +92,8 @@ Deno.serve(async (req) => {
         });
       }
       const t = await resp.text();
-      console.error("AI gateway error:", resp.status, t);
-      return new Response(JSON.stringify({ error: "AI gateway error" }), {
+      console.error("OpenAI API error:", resp.status, t);
+      return new Response(JSON.stringify({ error: "OpenAI API error" }), {
         status: 500,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });

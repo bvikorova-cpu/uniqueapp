@@ -69,7 +69,7 @@ Return JSON only.`;
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "gpt-5",
+        model: "gpt-4o-mini",
         messages: [
           { role: "system", content: "You are a senior product/revenue analyst. Output concise, executive-grade insights." },
           { role: "user", content: prompt },
@@ -119,8 +119,8 @@ Return JSON only.`;
     }
     if (!aiResp.ok) {
       const t = await aiResp.text();
-      console.error("AI gateway error:", aiResp.status, t);
-      throw new Error("AI gateway error");
+      console.error("OpenAI API error:", aiResp.status, t);
+      throw new Error("OpenAI API error");
     }
 
     const aiData = await aiResp.json();

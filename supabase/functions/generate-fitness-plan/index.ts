@@ -124,7 +124,7 @@ IMPORTANT: Generate ALL ${days} days with varied workouts and meals. Include res
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "gpt-5",
+        model: "gpt-4o-mini",
         messages: [
           { role: "system", content: "You are a professional fitness coach and nutritionist. Always respond with valid JSON only." },
           { role: "user", content: prompt },
@@ -135,7 +135,7 @@ IMPORTANT: Generate ALL ${days} days with varied workouts and meals. Include res
 
     if (!aiResponse.ok) {
       const errText = await aiResponse.text();
-      console.error("AI gateway error:", aiResponse.status, errText);
+      console.error("OpenAI API error:", aiResponse.status, errText);
       await serviceClient.from("fitness_plans").update({ status: "failed" }).eq("id", plan_id);
       throw new Error("AI generation failed");
     }

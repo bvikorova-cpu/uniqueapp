@@ -45,7 +45,7 @@ Keep responses concise, engaging, and use emoji. Format advice with markdown. Be
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: "gpt-5",
+        model: "gpt-4o-mini",
         messages: [systemMessage, ...messages.slice(-10)],
         max_completion_tokens: 500,
       }),

@@ -96,7 +96,7 @@ serve(async (req) => {
           headers: { "Authorization": `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
           body: JSON.stringify({ model: "gpt-image-1", prompt, n: 1, size: "1024x1024", quality: "high", output_format: "webp", output_compression: 90 }),
         });
-        if (!response.ok) { console.error("AI gateway error:", await response.text()); throw new Error("Image generation failed"); }
+        if (!response.ok) { console.error("OpenAI API error:", await response.text()); throw new Error("Image generation failed"); }
         const data = await response.json();
         const b64Url = (data.data?.[0]?.b64_json ? `data:image/png;base64,${data.data[0].b64_json}` : null);
         const b64 = b64Url ? b64Url.replace(/^data:image\/\w+;base64,/, "") : null;
@@ -208,7 +208,7 @@ serve(async (req) => {
           method: "POST",
           headers: { "Authorization": `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
           body: JSON.stringify({
-            model: "gpt-5",
+            model: "gpt-4o-mini",
             messages: [
               { role: "system", content: "You analyze images and generate detailed prompts that could recreate them. Return JSON with 'prompt' (detailed 30-60 word prompt), 'style' (the art style detected), and 'tags' (array of 5-8 relevant tags)." },
               { role: "user", content: [
@@ -231,7 +231,7 @@ serve(async (req) => {
           method: "POST",
           headers: { "Authorization": `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
           body: JSON.stringify({
-            model: "gpt-5",
+            model: "gpt-4o-mini",
             messages: [
               { role: "system", content: "You are a creative AI image prompt expert. Generate 8 unique, highly detailed image prompts. Return JSON array of objects with 'title' (short 3-5 word title), 'prompt' (detailed 20-40 word prompt), 'category' (one of: Nature, Fantasy, Sci-Fi, Portrait, Abstract, Architecture, Food, Animals), and 'difficulty' (Easy, Medium, Hard)." },
               { role: "user", content: prompt || "Generate diverse trending AI art prompts for various styles" }
