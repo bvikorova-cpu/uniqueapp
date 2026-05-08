@@ -12,12 +12,10 @@ serve(async (req) => {
     const body = await req.json();
     const { action, ...params } = body;
     
-    // Try OpenAI first, fall back to OpenAI
     const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
-    const openaiKey = Deno.env.get("OPENAI_API_KEY");
-    
-    const useLovable = !!OPENAI_API_KEY;
-    if (!OPENAI_API_KEY && !openaiKey) throw new Error("No AI API key configured");
+    if (!OPENAI_API_KEY) throw new Error("OPENAI_API_KEY not configured");
+    const OPENAI_URL = "https://api.openai.com/v1/chat/completions";
+    const OPENAI_MODEL = "gpt-4o-mini";
 
     let systemPrompt = "";
     let userPrompt = "";
