@@ -52,7 +52,7 @@ const TutorialPlatform = () => {
 
   const handleToolSelect = (tool: string) => {
     if (tool === "create") {
-      navigate("/course-creator");
+      setActiveView("course-builder");
     } else {
       setActiveView(tool);
     }
