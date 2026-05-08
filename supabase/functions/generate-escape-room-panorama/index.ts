@@ -1,5 +1,4 @@
-// Generate a 360-style panorama image for an escape room scene
-// using the Lovable AI Gateway image model.
+// Generate a panoramic escape room scene using OpenAI gpt-image-1.
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 
 const corsHeaders = {
@@ -13,38 +12,36 @@ serve(async (req) => {
 
   try {
     const { roomName, theme, description } = await req.json();
-    const apiKey = Deno.env.get("LOVABLE_API_KEY");
-    if (!apiKey) throw new Error("LOVABLE_API_KEY not configured");
+    const apiKey = Deno.env.get("OPENAI_API_KEY");
+    if (!apiKey) throw new Error("OPENAI_API_KEY not configured");
 
     const prompt = `Ultra-wide cinematic 360° equirectangular panorama of an immersive escape room scene. Room: "${roomName || "Mystery Room"}". Theme: ${theme || "mystery"}. ${description || ""}. Highly detailed, atmospheric lighting, volumetric fog, dramatic shadows, photo-realistic textures, no people, no text, no watermarks.`;
 
-    const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const resp = await fetch("https://api.openai.com/v1/images/generations", {
       method: "POST",
       headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash-image-preview",
-        messages: [{ role: "user", content: prompt }],
-        modalities: ["image", "text"],
+        model: "gpt-image-1",
+        prompt,
+        size: "1792x1024",
+        n: 1,
       }),
     });
 
     if (!resp.ok) {
       const status = resp.status;
+      const errText = await resp.text();
       if (status === 429) {
         return new Response(JSON.stringify({ error: "Rate limit exceeded" }),
           { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       }
-      if (status === 402) {
-        return new Response(JSON.stringify({ error: "Payment required — add credits in Lovable AI" }),
-          { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-      }
-      const errText = await resp.text();
-      throw new Error(`AI gateway error ${status}: ${errText}`);
+      throw new Error(`OpenAI image error ${status}: ${errText}`);
     }
 
     const data = await resp.json();
-    const imageUrl: string | undefined =
-      data?.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+    const b64: string | undefined = data?.data?.[0]?.b64_json;
+    const url: string | undefined = data?.data?.[0]?.url;
+    const imageUrl = url ?? (b64 ? `data:image/png;base64,${b64}` : undefined);
     if (!imageUrl) throw new Error("No image returned");
 
     return new Response(JSON.stringify({ imageUrl }), {

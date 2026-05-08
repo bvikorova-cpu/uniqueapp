@@ -10,8 +10,8 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not set");
+    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
+    if (!OPENAI_API_KEY) throw new Error("OPENAI_API_KEY not set");
 
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
@@ -26,7 +26,6 @@ serve(async (req) => {
 
     const { imageDataUrl, imageUrl, queryText } = await req.json();
 
-    // Build prompt: extract visual descriptors / keywords
     const userContent: any[] = [];
     if (queryText) {
       userContent.push({ type: "text", text: `Extract 8-12 short visual search keywords (single words, English, lowercase) for: "${queryText}". Return ONLY a comma-separated list, no other text.` });
@@ -35,17 +34,20 @@ serve(async (req) => {
       userContent.push({ type: "image_url", image_url: { url: imageDataUrl || imageUrl } });
     }
 
-    const aiRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const aiRes = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
-      headers: { "Authorization": `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+      headers: { "Authorization": `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
+        model: "gpt-4o-mini",
         messages: [{ role: "user", content: userContent }],
       }),
     });
 
     if (aiRes.status === 429) return new Response(JSON.stringify({ error: "Rate limit. Skús neskôr." }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-    if (aiRes.status === 402) return new Response(JSON.stringify({ error: "Nedostatok kreditov." }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    if (!aiRes.ok) {
+      const t = await aiRes.text();
+      return new Response(JSON.stringify({ error: `OpenAI error: ${t}` }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
 
     const aiData = await aiRes.json();
     const text: string = aiData?.choices?.[0]?.message?.content || "";
@@ -55,7 +57,6 @@ serve(async (req) => {
       return new Response(JSON.stringify({ keywords: [], results: [] }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
-    // Fetch active items and score by keyword overlap
     const { data: items } = await supabase
       .from("stock_content_items")
       .select("*")
