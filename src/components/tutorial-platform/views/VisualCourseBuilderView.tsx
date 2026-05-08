@@ -26,6 +26,58 @@ const initialModules: Module[] = [
 
 interface Props { onBack: () => void; }
 
+/**
+ * Validate & normalize a video URL.
+ * Returns a canonical embed URL for supported providers (YouTube, Vimeo),
+ * null for empty input, or { error } for invalid input.
+ */
+export function normalizeVideoUrl(input: string): { url: string | null; error?: string } {
+  const raw = (input || "").trim();
+  if (!raw) return { url: null };
+
+  let parsed: URL;
+  try {
+    parsed = new URL(raw);
+  } catch {
+    return { url: null, error: "Neplatná URL adresa" };
+  }
+  if (parsed.protocol !== "https:" && parsed.protocol !== "http:") {
+    return { url: null, error: "URL musí používať http(s)" };
+  }
+
+  const host = parsed.hostname.replace(/^www\./, "").toLowerCase();
+
+  // YouTube
+  if (host === "youtube.com" || host === "m.youtube.com" || host === "youtu.be" || host === "youtube-nocookie.com") {
+    let id = "";
+    if (host === "youtu.be") {
+      id = parsed.pathname.slice(1).split("/")[0];
+    } else if (parsed.pathname.startsWith("/embed/")) {
+      id = parsed.pathname.split("/embed/")[1].split("/")[0];
+    } else if (parsed.pathname === "/watch") {
+      id = parsed.searchParams.get("v") || "";
+    } else if (parsed.pathname.startsWith("/shorts/")) {
+      id = parsed.pathname.split("/shorts/")[1].split("/")[0];
+    }
+    if (!/^[A-Za-z0-9_-]{11}$/.test(id)) {
+      return { url: null, error: "Neplatné YouTube video ID" };
+    }
+    return { url: `https://www.youtube.com/embed/${id}` };
+  }
+
+  // Vimeo
+  if (host === "vimeo.com" || host === "player.vimeo.com") {
+    const segments = parsed.pathname.split("/").filter(Boolean);
+    const idSeg = host === "player.vimeo.com" && segments[0] === "video" ? segments[1] : segments[0];
+    if (!idSeg || !/^\d+$/.test(idSeg)) {
+      return { url: null, error: "Neplatné Vimeo video ID" };
+    }
+    return { url: `https://player.vimeo.com/video/${idSeg}` };
+  }
+
+  return { url: null, error: "Podporované sú iba YouTube a Vimeo odkazy" };
+}
+
 export function VisualCourseBuilderView({ onBack }: Props) {
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -129,15 +181,25 @@ export function VisualCourseBuilderView({ onBack }: Props) {
 
       if (courseErr) throw courseErr;
 
-      const lessonRows = modules.map((m, i) => ({
-        course_id: course.id,
-        title: m.title,
-        description: m.description || null,
-        video_url: m.video_url || null,
-        duration_minutes: parseInt(m.duration) || 10,
-        order_index: i,
-        is_preview: i === 0,
-      }));
+      const lessonRows: any[] = [];
+      for (let i = 0; i < modules.length; i++) {
+        const m = modules[i];
+        const { url: normalizedUrl, error: urlErr } = normalizeVideoUrl(m.video_url || "");
+        if (urlErr) {
+          toast({ title: `Modul ${i + 1}: ${urlErr}`, variant: "destructive" });
+          setSaving(false);
+          return;
+        }
+        lessonRows.push({
+          course_id: course.id,
+          title: m.title,
+          description: m.description || null,
+          video_url: normalizedUrl,
+          duration_minutes: parseInt(m.duration) || 10,
+          order_index: i,
+          is_preview: i === 0,
+        });
+      }
       const { error: lessonsErr } = await supabase.from("course_lessons").insert(lessonRows);
       if (lessonsErr) throw lessonsErr;
 
@@ -237,7 +299,17 @@ export function VisualCourseBuilderView({ onBack }: Props) {
                     <Input
                       value={mod.video_url || ""}
                       onChange={(e) => updateModule(mod.id, { video_url: e.target.value })}
-                      placeholder="Video URL (YouTube/Vimeo embed, voliteľné)"
+                      onBlur={(e) => {
+                        const v = e.target.value.trim();
+                        if (!v) return;
+                        const { url, error } = normalizeVideoUrl(v);
+                        if (error) {
+                          toast({ title: error, variant: "destructive" });
+                          return;
+                        }
+                        if (url && url !== v) updateModule(mod.id, { video_url: url });
+                      }}
+                      placeholder="Video URL (YouTube/Vimeo, voliteľné)"
                     />
                     <div className="grid grid-cols-2 gap-2">
                       <Input
