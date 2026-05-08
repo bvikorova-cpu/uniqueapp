@@ -26,6 +26,7 @@ import { SmartSearchView } from "@/components/stock-content/views/SmartSearchVie
 import { EditorsPicksView } from "@/components/stock-content/views/EditorsPicksView";
 import { AITagSuggesterView } from "@/components/stock-content/views/AITagSuggesterView";
 import { LicenseManagerView } from "@/components/stock-content/views/LicenseManagerView";
+import { WatermarkToolView } from "@/components/stock-content/views/WatermarkToolView";
 import { Tags, Palette, Wand2, Star, Eye, Download } from "lucide-react";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
