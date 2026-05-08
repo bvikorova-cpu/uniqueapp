@@ -251,7 +251,7 @@ export default function CourseDetailPage() {
                     <Button
                       className="w-full"
                       size="lg"
-                      onClick={() => navigate(`/course/${courseId}/learn`)}
+                      onClick={() => navigate(`/tutorial-course/${courseId}/learn`)}
                     >
                       <Play className="mr-2 h-5 w-5" />
                       Continue Learning
