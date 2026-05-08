@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Palette, Plus, GripVertical, Video, FileText, BookOpen, Trash2, Copy, Clock, Save, Loader2 } from "lucide-react";
+import { ArrowLeft, Palette, Plus, GripVertical, Video, FileText, BookOpen, Trash2, Copy, Clock, Save, Loader2, ChevronDown, ChevronUp } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
@@ -33,6 +33,38 @@ export function VisualCourseBuilderView({ onBack }: Props) {
   const [newTitle, setNewTitle] = useState("");
   const [newType, setNewType] = useState("video");
   const [saving, setSaving] = useState(false);
+  const [expandedId, setExpandedId] = useState<number | null>(null);
+  const [dragId, setDragId] = useState<number | null>(null);
+
+  const updateModule = (id: number, patch: Partial<Module>) =>
+    setModules(prev => prev.map(m => (m.id === id ? { ...m, ...patch } : m)));
+
+  const onDragStart = (id: number) => setDragId(id);
+  const onDragOver = (e: React.DragEvent, overId: number) => {
+    e.preventDefault();
+    if (dragId === null || dragId === overId) return;
+    setModules(prev => {
+      const from = prev.findIndex(m => m.id === dragId);
+      const to = prev.findIndex(m => m.id === overId);
+      if (from < 0 || to < 0) return prev;
+      const next = [...prev];
+      const [moved] = next.splice(from, 1);
+      next.splice(to, 0, moved);
+      return next;
+    });
+  };
+  const onDragEnd = () => setDragId(null);
+
+  const move = (id: number, dir: -1 | 1) => {
+    setModules(prev => {
+      const i = prev.findIndex(m => m.id === id);
+      const j = i + dir;
+      if (i < 0 || j < 0 || j >= prev.length) return prev;
+      const next = [...prev];
+      [next[i], next[j]] = [next[j], next[i]];
+      return next;
+    });
+  };
 
   // Course meta
   const [title, setTitle] = useState("");
@@ -153,26 +185,81 @@ export function VisualCourseBuilderView({ onBack }: Props) {
         </div>
 
         <div className="space-y-2 mb-4">
-          {modules.map((mod, i) => (
-            <Card key={mod.id} className="p-3 hover:shadow-md transition-all group">
-              <div className="flex items-center gap-3">
-                <GripVertical className="w-4 h-4 text-muted-foreground" />
-                <span className="text-xs font-bold text-muted-foreground w-6">{i + 1}.</span>
-                {getIcon(mod.type)}
-                <span className="font-semibold flex-1 text-sm">{mod.title}</span>
-                <Badge variant="outline" className="text-[10px]">{mod.type}</Badge>
-                <span className="text-xs text-muted-foreground">{mod.duration}</span>
-                <div className="opacity-0 group-hover:opacity-100 flex gap-1">
-                  <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => duplicateModule(mod)}>
-                    <Copy className="w-3 h-3" />
-                  </Button>
-                  <Button variant="ghost" size="icon" className="h-7 w-7 text-red-500" onClick={() => removeModule(mod.id)}>
-                    <Trash2 className="w-3 h-3" />
-                  </Button>
+          {modules.map((mod, i) => {
+            const expanded = expandedId === mod.id;
+            return (
+              <Card
+                key={mod.id}
+                draggable
+                onDragStart={() => onDragStart(mod.id)}
+                onDragOver={(e) => onDragOver(e, mod.id)}
+                onDragEnd={onDragEnd}
+                className={`p-3 hover:shadow-md transition-all group ${dragId === mod.id ? "opacity-50" : ""}`}
+              >
+                <div className="flex items-center gap-3">
+                  <GripVertical className="w-4 h-4 text-muted-foreground cursor-grab active:cursor-grabbing" />
+                  <span className="text-xs font-bold text-muted-foreground w-6">{i + 1}.</span>
+                  {getIcon(mod.type)}
+                  <button onClick={() => setExpandedId(expanded ? null : mod.id)} className="font-semibold flex-1 text-sm text-left truncate">
+                    {mod.title}
+                  </button>
+                  <Badge variant="outline" className="text-[10px]">{mod.type}</Badge>
+                  <span className="text-xs text-muted-foreground">{mod.duration}</span>
+                  <div className="flex gap-1">
+                    <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => move(mod.id, -1)} disabled={i === 0}>
+                      <ChevronUp className="w-3 h-3" />
+                    </Button>
+                    <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => move(mod.id, 1)} disabled={i === modules.length - 1}>
+                      <ChevronDown className="w-3 h-3" />
+                    </Button>
+                    <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => duplicateModule(mod)}>
+                      <Copy className="w-3 h-3" />
+                    </Button>
+                    <Button variant="ghost" size="icon" className="h-7 w-7 text-red-500" onClick={() => removeModule(mod.id)}>
+                      <Trash2 className="w-3 h-3" />
+                    </Button>
+                  </div>
                 </div>
-              </div>
-            </Card>
-          ))}
+
+                {expanded && (
+                  <div className="mt-3 pt-3 border-t space-y-2">
+                    <Input
+                      value={mod.title}
+                      onChange={(e) => updateModule(mod.id, { title: e.target.value })}
+                      placeholder="Názov modulu"
+                    />
+                    <Textarea
+                      value={mod.description || ""}
+                      onChange={(e) => updateModule(mod.id, { description: e.target.value })}
+                      placeholder="Popis modulu (voliteľné)"
+                      rows={2}
+                    />
+                    <Input
+                      value={mod.video_url || ""}
+                      onChange={(e) => updateModule(mod.id, { video_url: e.target.value })}
+                      placeholder="Video URL (YouTube/Vimeo embed, voliteľné)"
+                    />
+                    <div className="grid grid-cols-2 gap-2">
+                      <Input
+                        value={mod.duration}
+                        onChange={(e) => updateModule(mod.id, { duration: e.target.value })}
+                        placeholder="Trvanie (napr. 10 min)"
+                      />
+                      <select
+                        value={mod.type}
+                        onChange={(e) => updateModule(mod.id, { type: e.target.value })}
+                        className="rounded-md border bg-background px-2 text-sm"
+                      >
+                        <option value="video">Video</option>
+                        <option value="document">Document</option>
+                        <option value="quiz">Quiz</option>
+                      </select>
+                    </div>
+                  </div>
+                )}
+              </Card>
+            );
+          })}
         </div>
 
         <Card className="border-dashed border-2 border-emerald-500/30 mb-4">
