@@ -751,7 +751,7 @@ export default function SkillSwap() {
                       </div>
                       <div>
                         <h2 className="text-2xl font-black">Unlock Premium</h2>
-                        <div className="text-4xl font-black text-primary mt-2">€4.99<span className="text-base font-medium text-muted-foreground">/month</span></div>
+                        <div className="text-4xl font-black text-primary mt-2">€9.99<span className="text-base font-medium text-muted-foreground">/month</span></div>
                       </div>
                       <div className="grid grid-cols-3 gap-3 max-w-md mx-auto">
                         {[
