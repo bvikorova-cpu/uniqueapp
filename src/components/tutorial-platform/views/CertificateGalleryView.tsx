@@ -52,29 +52,35 @@ export function CertificateGalleryView({ onBack }: Props) {
     return new Blob([content], { type: "text/plain" });
   };
 
-  const handleDownload = (cert: Cert) => {
-    if (cert.certificate_url) {
-      const a = document.createElement("a");
-      a.href = cert.certificate_url;
-      a.download = `Certificate_${cert.id}`;
-      a.target = "_blank";
-      a.rel = "noopener noreferrer";
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      toast.success("Sťahovanie spustené");
-      return;
+  const handleDownload = async (cert: Cert) => {
+    if (downloadingId) return;
+    setDownloadingId(cert.id);
+    try {
+      if (cert.certificate_url) {
+        const a = document.createElement("a");
+        a.href = cert.certificate_url;
+        a.download = `Certificate_${cert.id}`;
+        a.target = "_blank";
+        a.rel = "noopener noreferrer";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        toast.success("Sťahovanie spustené");
+      } else {
+        toast.warning("Certifikát zatiaľ nebol vygenerovaný — sťahujem textový náhľad.");
+        const blob = generateFallback(cert);
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `Certificate_${cert.id}.txt`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }
+    } finally {
+      setTimeout(() => setDownloadingId(null), 600);
     }
-    toast.warning("Certifikát zatiaľ nebol vygenerovaný — sťahujem textový náhľad.");
-    const blob = generateFallback(cert);
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `Certificate_${cert.id}.txt`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
   };
 
   const handlePreview = (cert: Cert) => {
@@ -82,6 +88,8 @@ export function CertificateGalleryView({ onBack }: Props) {
       toast.warning("Náhľad nie je k dispozícii — pre tento certifikát ešte nebol vygenerovaný súbor.");
       return;
     }
+    setPreviewingId(cert.id);
+    setPreviewLoading(true);
     setPreviewCert(cert);
   };
 
