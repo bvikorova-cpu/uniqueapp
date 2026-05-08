@@ -1,40 +1,56 @@
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Zap, Award, Download, Star, Eye } from "lucide-react";
+import { ArrowLeft, Zap, Award, Download, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
-const certificates = [
-  { id: 1, course: "Complete Web Development Bootcamp", student: "John Doe", date: "Mar 15, 2026", style: "Classic Academic", views: 234 },
-  { id: 2, course: "Machine Learning Fundamentals", student: "Jane Smith", date: "Mar 20, 2026", style: "Tech Professional", views: 189 },
-  { id: 3, course: "Digital Marketing Mastery", student: "Mike Johnson", date: "Apr 1, 2026", style: "Modern Minimal", views: 156 },
-  { id: 4, course: "UX Design Principles", student: "Sarah Wilson", date: "Apr 3, 2026", style: "Elegant Gold", views: 312 },
-  { id: 5, course: "Data Science with Python", student: "Alex Chen", date: "Apr 4, 2026", style: "Classic Academic", views: 98 },
-  { id: 6, course: "Business Strategy", student: "Lisa Park", date: "Apr 5, 2026", style: "Tech Professional", views: 67 },
-];
+interface Cert {
+  id: string;
+  course_id: string;
+  student_name: string | null;
+  certificate_url: string | null;
+  issued_at: string;
+  courses?: { title: string } | null;
+}
 
 interface Props { onBack: () => void; }
 
-const styleColors: Record<string, string> = {
-  "Classic Academic": "from-amber-500/20 to-amber-600/5",
-  "Tech Professional": "from-blue-500/20 to-indigo-600/5",
-  "Modern Minimal": "from-slate-500/20 to-gray-600/5",
-  "Elegant Gold": "from-yellow-500/20 to-amber-600/5",
-};
-
 export function CertificateGalleryView({ onBack }: Props) {
-  const handleDownload = (cert: typeof certificates[0]) => {
-    const content = `===== CERTIFICATE OF COMPLETION =====\n\nAwarded to: ${cert.student}\nCourse: ${cert.course}\nStyle: ${cert.style}\nDate: ${cert.date}\n\nIssued by Unique Tutorial Platform\nVerification ID: CERT-${cert.id}-${Date.now()}\n`;
+  const [certificates, setCertificates] = useState<Cert[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    (async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) { setLoading(false); return; }
+      const { data } = await supabase
+        .from("course_certificates")
+        .select("id,course_id,student_name,certificate_url,issued_at,courses(title)")
+        .eq("user_id", user.id)
+        .order("issued_at", { ascending: false });
+      setCertificates((data as any) || []);
+      setLoading(false);
+    })();
+  }, []);
+
+  const handleDownload = (cert: Cert) => {
+    if (cert.certificate_url) {
+      window.open(cert.certificate_url, "_blank");
+      return;
+    }
+    const content = `===== CERTIFICATE OF COMPLETION =====\n\nAwarded to: ${cert.student_name || "Student"}\nCourse: ${cert.courses?.title || cert.course_id}\nDate: ${new Date(cert.issued_at).toLocaleDateString()}\n\nIssued by Unique Tutorial Platform\nVerification ID: CERT-${cert.id}\n`;
     const blob = new Blob([content], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `Certificate_${cert.student.replace(/\s+/g, "_")}.txt`;
+    a.download = `Certificate_${cert.id}.txt`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-    toast.success("Certificate downloaded");
+    toast.success("Certifikát stiahnutý");
   };
 
   return (
@@ -46,33 +62,35 @@ export function CertificateGalleryView({ onBack }: Props) {
         </div>
         <div>
           <h2 className="text-2xl font-black">Certificate Gallery</h2>
-          <p className="text-sm text-muted-foreground">{certificates.length} certificates issued</p>
+          <p className="text-sm text-muted-foreground">{certificates.length} certifikátov</p>
         </div>
       </div>
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {certificates.map(cert => (
-          <Card key={cert.id} className="overflow-hidden hover:shadow-xl transition-all group">
-            <div className={`h-36 bg-gradient-to-br ${styleColors[cert.style] || "from-amber-500/20 to-amber-600/5"} flex items-center justify-center relative`}>
-              <Award className="w-16 h-16 text-amber-500/30 group-hover:scale-110 transition-transform" />
-              <div className="absolute top-2 right-2 flex items-center gap-1 text-xs text-muted-foreground bg-background/80 backdrop-blur-sm rounded-full px-2 py-1">
-                <Eye className="w-3 h-3" />{cert.views}
+      {loading ? (
+        <div className="flex justify-center py-12"><Loader2 className="w-8 h-8 animate-spin" /></div>
+      ) : certificates.length === 0 ? (
+        <p className="text-center text-muted-foreground py-12">Zatiaľ nemáš žiadne certifikáty. Dokonči kurz a získaj prvý!</p>
+      ) : (
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {certificates.map(cert => (
+            <Card key={cert.id} className="overflow-hidden hover:shadow-xl transition-all group">
+              <div className="h-36 bg-gradient-to-br from-amber-500/20 to-amber-600/5 flex items-center justify-center">
+                <Award className="w-16 h-16 text-amber-500/30 group-hover:scale-110 transition-transform" />
               </div>
-            </div>
-            <CardContent className="pt-4">
-              <h3 className="font-bold text-sm mb-1 line-clamp-1">{cert.course}</h3>
-              <p className="text-sm text-muted-foreground">Awarded to: <strong>{cert.student}</strong></p>
-              <div className="flex items-center gap-2 mt-2 mb-3">
-                <Badge variant="outline" className="text-[10px]">{cert.style}</Badge>
-                <span className="text-xs text-muted-foreground">{cert.date}</span>
-              </div>
-              <Button size="sm" variant="outline" className="w-full h-8 text-xs" onClick={() => handleDownload(cert)}>
-                <Download className="w-3 h-3 mr-1" />Download Certificate
-              </Button>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+              <CardContent className="pt-4">
+                <h3 className="font-bold text-sm mb-1 line-clamp-1">{cert.courses?.title || "Course"}</h3>
+                <p className="text-sm text-muted-foreground">Awarded to: <strong>{cert.student_name || "Student"}</strong></p>
+                <div className="flex items-center gap-2 mt-2 mb-3">
+                  <span className="text-xs text-muted-foreground">{new Date(cert.issued_at).toLocaleDateString()}</span>
+                </div>
+                <Button size="sm" variant="outline" className="w-full h-8 text-xs" onClick={() => handleDownload(cert)}>
+                  <Download className="w-3 h-3 mr-1" />Stiahnuť certifikát
+                </Button>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
