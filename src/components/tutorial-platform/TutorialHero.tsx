@@ -1,8 +1,6 @@
-import { useEffect, useState } from "react";
 import { GraduationCap, Users, BookOpen, Award, Sparkles, Play, Star } from "lucide-react";
 import heroVideo from "@/assets/education-hero.mp4.asset.json";
 import { motion } from "framer-motion";
-import { Badge } from "@/components/ui/badge";
 
 const stats = [
   { label: "Courses", icon: BookOpen, value: "1.8K+", color: "from-violet-500 to-purple-600" },
@@ -20,10 +18,15 @@ export function TutorialHero() {
         animate={{ opacity: 1, y: 0 }}
         className="flex justify-center"
       >
-        <Badge className="bg-gradient-to-r from-violet-500/20 to-purple-500/20 text-violet-600 dark:text-violet-400 border-violet-500/30 px-4 py-1.5 text-sm font-semibold">
-          <Sparkles className="w-3.5 h-3.5 mr-1.5" />
-          AI-Powered Learning Platform
-        </Badge>
+        <div
+          className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-gradient-to-r from-primary to-accent px-4 py-1.5 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/20 drop-shadow-sm"
+          style={{ color: "hsl(var(--primary-foreground))", WebkitTextFillColor: "hsl(var(--primary-foreground))" }}
+        >
+          <Sparkles className="w-3.5 h-3.5" />
+          <span style={{ color: "hsl(var(--primary-foreground))", WebkitTextFillColor: "hsl(var(--primary-foreground))" }}>
+            AI-Powered Learning Platform
+          </span>
+        </div>
       </motion.div>
 
       {/* Title */}
