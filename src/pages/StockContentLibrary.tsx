@@ -26,6 +26,7 @@ import { SmartSearchView } from "@/components/stock-content/views/SmartSearchVie
 import { EditorsPicksView } from "@/components/stock-content/views/EditorsPicksView";
 import { AITagSuggesterView } from "@/components/stock-content/views/AITagSuggesterView";
 import { LicenseManagerView } from "@/components/stock-content/views/LicenseManagerView";
+import { WatermarkToolView } from "@/components/stock-content/views/WatermarkToolView";
 import { Tags, Palette, Wand2, Star, Eye, Download } from "lucide-react";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
@@ -77,7 +78,7 @@ const StockContentLibrary = () => {
       case "featured":
         return <EditorsPicksView onBack={() => setActiveView("dashboard")} />;
       case "preview":
-        return <GenericToolView onBack={() => setActiveView("dashboard")} title="Content Preview" description="Preview content in different contexts before purchasing. See how it looks in various mockups and use cases." icon={Eye} iconColor="text-slate-500" features={["Website mockup preview", "Social media preview", "Print preview", "Device mockups", "Color variation", "Watermark-free preview"]} />;
+        return <WatermarkToolView onBack={() => setActiveView("dashboard")} />;
       case "download-history":
         return <LicenseManagerView onBack={() => setActiveView("dashboard")} />;
       case "plagiarism-scanner":
