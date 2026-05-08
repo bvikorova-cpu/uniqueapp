@@ -181,15 +181,25 @@ export function VisualCourseBuilderView({ onBack }: Props) {
 
       if (courseErr) throw courseErr;
 
-      const lessonRows = modules.map((m, i) => ({
-        course_id: course.id,
-        title: m.title,
-        description: m.description || null,
-        video_url: m.video_url || null,
-        duration_minutes: parseInt(m.duration) || 10,
-        order_index: i,
-        is_preview: i === 0,
-      }));
+      const lessonRows: any[] = [];
+      for (let i = 0; i < modules.length; i++) {
+        const m = modules[i];
+        const { url: normalizedUrl, error: urlErr } = normalizeVideoUrl(m.video_url || "");
+        if (urlErr) {
+          toast({ title: `Modul ${i + 1}: ${urlErr}`, variant: "destructive" });
+          setSaving(false);
+          return;
+        }
+        lessonRows.push({
+          course_id: course.id,
+          title: m.title,
+          description: m.description || null,
+          video_url: normalizedUrl,
+          duration_minutes: parseInt(m.duration) || 10,
+          order_index: i,
+          is_preview: i === 0,
+        });
+      }
       const { error: lessonsErr } = await supabase.from("course_lessons").insert(lessonRows);
       if (lessonsErr) throw lessonsErr;
 
