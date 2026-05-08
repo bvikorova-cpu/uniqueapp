@@ -99,8 +99,15 @@ const VirtualEscapeRoom = () => {
                         const { supabase } = await import("@/integrations/supabase/client");
                         const { data: { session } } = await supabase.auth.getSession();
                         if (!session) { toast({ description: "Najprv sa prihlás" }); return; }
+                        const eur = parseFloat(String(plan.price).replace(/[^0-9.]/g, "")) || 0;
                         const { data, error } = await supabase.functions.invoke("create-checkout", {
-                          body: { product_type: "escape_room_subscription", plan_name: plan.name, amount: parseFloat(String(plan.price).replace(/[^0-9.]/g, "")) || 0 }
+                          body: {
+                            product: "escape_room_corporate",
+                            productName: `Escape Room Corporate — ${plan.name}`,
+                            amount: Math.round(eur * 100),
+                            mode: "subscription",
+                            metadata: { plan_name: plan.name, tier: "corporate" },
+                          }
                         });
                         if (error) throw error;
                         if (data?.url) window.open(data.url, "_blank");
