@@ -26,6 +26,58 @@ const initialModules: Module[] = [
 
 interface Props { onBack: () => void; }
 
+/**
+ * Validate & normalize a video URL.
+ * Returns a canonical embed URL for supported providers (YouTube, Vimeo),
+ * null for empty input, or { error } for invalid input.
+ */
+export function normalizeVideoUrl(input: string): { url: string | null; error?: string } {
+  const raw = (input || "").trim();
+  if (!raw) return { url: null };
+
+  let parsed: URL;
+  try {
+    parsed = new URL(raw);
+  } catch {
+    return { url: null, error: "Neplatná URL adresa" };
+  }
+  if (parsed.protocol !== "https:" && parsed.protocol !== "http:") {
+    return { url: null, error: "URL musí používať http(s)" };
+  }
+
+  const host = parsed.hostname.replace(/^www\./, "").toLowerCase();
+
+  // YouTube
+  if (host === "youtube.com" || host === "m.youtube.com" || host === "youtu.be" || host === "youtube-nocookie.com") {
+    let id = "";
+    if (host === "youtu.be") {
+      id = parsed.pathname.slice(1).split("/")[0];
+    } else if (parsed.pathname.startsWith("/embed/")) {
+      id = parsed.pathname.split("/embed/")[1].split("/")[0];
+    } else if (parsed.pathname === "/watch") {
+      id = parsed.searchParams.get("v") || "";
+    } else if (parsed.pathname.startsWith("/shorts/")) {
+      id = parsed.pathname.split("/shorts/")[1].split("/")[0];
+    }
+    if (!/^[A-Za-z0-9_-]{11}$/.test(id)) {
+      return { url: null, error: "Neplatné YouTube video ID" };
+    }
+    return { url: `https://www.youtube.com/embed/${id}` };
+  }
+
+  // Vimeo
+  if (host === "vimeo.com" || host === "player.vimeo.com") {
+    const segments = parsed.pathname.split("/").filter(Boolean);
+    const idSeg = host === "player.vimeo.com" && segments[0] === "video" ? segments[1] : segments[0];
+    if (!idSeg || !/^\d+$/.test(idSeg)) {
+      return { url: null, error: "Neplatné Vimeo video ID" };
+    }
+    return { url: `https://player.vimeo.com/video/${idSeg}` };
+  }
+
+  return { url: null, error: "Podporované sú iba YouTube a Vimeo odkazy" };
+}
+
 export function VisualCourseBuilderView({ onBack }: Props) {
   const { toast } = useToast();
   const navigate = useNavigate();
