@@ -11,7 +11,7 @@ const COST = 3;
 
 const BG_PROMPTS: Record<string, string> = {
   transparent:
-    "Remove the background completely. Output the foreground subject perfectly cut out on a fully transparent background. Preserve all original detail, edges, and hair. Do not add any new background or color.",
+    "Remove the background completely. Output the foreground subject perfectly cut out on a fully transparent background. Preserve all original detail, edges, and hair.",
   white: "Remove the background and replace it with a clean solid white background. Keep subject sharp.",
   black: "Remove the background and replace it with a clean solid black background. Keep subject sharp.",
   "gradient-blue":
@@ -33,23 +33,20 @@ serve(async (req) => {
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) {
       return new Response(JSON.stringify({ error: "Not authenticated" }), {
-        status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
     const token = authHeader.replace("Bearer ", "");
     const { data: { user } } = await supabase.auth.getUser(token);
     if (!user) {
       return new Response(JSON.stringify({ error: "Not authenticated" }), {
-        status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
     const { imageUrl, bgColor = "transparent" } = await req.json();
     if (!imageUrl) throw new Error("imageUrl is required");
 
-    // Credit check & deduction
     const admin = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
@@ -66,72 +63,44 @@ serve(async (req) => {
       );
     }
 
-    // Fetch the source image and pass as data URL to the AI gateway
+    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
+    if (!OPENAI_API_KEY) throw new Error("OPENAI_API_KEY is not configured");
+
+    // Fetch source image
     const srcRes = await fetch(imageUrl);
     if (!srcRes.ok) throw new Error("Could not fetch source image");
     const srcContentType = srcRes.headers.get("content-type") ?? "image/png";
-    const srcBuf = new Uint8Array(await srcRes.arrayBuffer());
-    let binary = "";
-    for (let i = 0; i < srcBuf.length; i++) binary += String.fromCharCode(srcBuf[i]);
-    const srcBase64 = btoa(binary);
-    const srcDataUrl = `data:${srcContentType};base64,${srcBase64}`;
-
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
+    const srcBlob = new Blob([await srcRes.arrayBuffer()], { type: srcContentType });
 
     const prompt = BG_PROMPTS[bgColor] ?? BG_PROMPTS.transparent;
 
-    const aiRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const form = new FormData();
+    form.append("model", "gpt-image-1");
+    form.append("image", srcBlob, "input.png");
+    form.append("prompt", prompt);
+    form.append("size", "1024x1024");
+    if (bgColor === "transparent") form.append("background", "transparent");
+
+    const aiRes = await fetch("https://api.openai.com/v1/images/edits", {
       method: "POST",
-      headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "google/gemini-2.5-flash-image",
-        messages: [
-          {
-            role: "user",
-            content: [
-              { type: "text", text: prompt },
-              { type: "image_url", image_url: { url: srcDataUrl } },
-            ],
-          },
-        ],
-        modalities: ["image", "text"],
-      }),
+      headers: { Authorization: `Bearer ${OPENAI_API_KEY}` },
+      body: form,
     });
 
     if (!aiRes.ok) {
       const txt = await aiRes.text();
-      console.error("AI gateway error", aiRes.status, txt);
+      console.error("OpenAI image edit error", aiRes.status, txt);
       if (aiRes.status === 429) {
         return new Response(JSON.stringify({ error: "Rate limit exceeded, please try again." }), {
-          status: 429,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
-      if (aiRes.status === 402) {
-        return new Response(
-          JSON.stringify({ error: "AI credits exhausted. Add funds in Lovable workspace." }),
-          { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } },
-        );
-      }
-      throw new Error(`AI gateway error ${aiRes.status}`);
+      throw new Error(`OpenAI error ${aiRes.status}: ${txt}`);
     }
 
     const aiData = await aiRes.json();
-    const message = aiData?.choices?.[0]?.message;
-    const images = message?.images as Array<{ image_url?: { url?: string } }> | undefined;
-    const dataUrl = images?.[0]?.image_url?.url;
-    if (!dataUrl || !dataUrl.startsWith("data:")) {
-      console.error("AI response missing image", JSON.stringify(aiData).slice(0, 500));
-      throw new Error("AI did not return an image");
-    }
-
-    // Decode base64 and upload as PNG
-    const commaIdx = dataUrl.indexOf(",");
-    const b64 = dataUrl.slice(commaIdx + 1);
+    const b64: string | undefined = aiData?.data?.[0]?.b64_json;
+    if (!b64) throw new Error("OpenAI did not return an image");
     const bin = atob(b64);
     const out = new Uint8Array(bin.length);
     for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
@@ -144,7 +113,6 @@ serve(async (req) => {
 
     const { data: urlData } = admin.storage.from("stock-content").getPublicUrl(filePath);
 
-    // Deduct credit + log
     await admin
       .from("ai_credits")
       .update({
