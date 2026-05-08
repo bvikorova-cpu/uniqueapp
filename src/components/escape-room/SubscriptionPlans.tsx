@@ -104,7 +104,13 @@ const SubscriptionPlans = () => {
                      const { data: { session } } = await supabase.auth.getSession();
                      if (!session) { toast.error("Najprv sa prihlás"); return; }
                      const { data, error } = await supabase.functions.invoke("create-checkout", {
-                       body: { product_type: "escape_room_subscription", plan_name: plan.name, amount: plan.price, interval: plan.period }
+                       body: {
+                         product: "escape_room_subscription",
+                         productName: `Escape Room ${plan.name} Plan`,
+                         amount: Math.round(plan.price * 100),
+                         mode: "subscription",
+                         metadata: { plan_name: plan.name, interval: plan.period },
+                       }
                      });
                      if (error) throw error;
                      if (data?.url) window.open(data.url, "_blank");
