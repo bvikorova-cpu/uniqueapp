@@ -33,6 +33,38 @@ export function VisualCourseBuilderView({ onBack }: Props) {
   const [newTitle, setNewTitle] = useState("");
   const [newType, setNewType] = useState("video");
   const [saving, setSaving] = useState(false);
+  const [expandedId, setExpandedId] = useState<number | null>(null);
+  const [dragId, setDragId] = useState<number | null>(null);
+
+  const updateModule = (id: number, patch: Partial<Module>) =>
+    setModules(prev => prev.map(m => (m.id === id ? { ...m, ...patch } : m)));
+
+  const onDragStart = (id: number) => setDragId(id);
+  const onDragOver = (e: React.DragEvent, overId: number) => {
+    e.preventDefault();
+    if (dragId === null || dragId === overId) return;
+    setModules(prev => {
+      const from = prev.findIndex(m => m.id === dragId);
+      const to = prev.findIndex(m => m.id === overId);
+      if (from < 0 || to < 0) return prev;
+      const next = [...prev];
+      const [moved] = next.splice(from, 1);
+      next.splice(to, 0, moved);
+      return next;
+    });
+  };
+  const onDragEnd = () => setDragId(null);
+
+  const move = (id: number, dir: -1 | 1) => {
+    setModules(prev => {
+      const i = prev.findIndex(m => m.id === id);
+      const j = i + dir;
+      if (i < 0 || j < 0 || j >= prev.length) return prev;
+      const next = [...prev];
+      [next[i], next[j]] = [next[j], next[i]];
+      return next;
+    });
+  };
 
   // Course meta
   const [title, setTitle] = useState("");
