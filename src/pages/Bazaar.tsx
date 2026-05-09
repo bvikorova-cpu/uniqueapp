@@ -26,6 +26,8 @@ import { FraudDetectorView } from "@/components/bazaar/views/FraudDetectorView";
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { SEO } from "@/components/SEO";
 import { BazaarFilters, defaultFilters, type BazaarFilterState } from "@/components/bazaar/BazaarFilters";
+import { BazaarPhotoUploader, type PendingPhoto } from "@/components/bazaar/BazaarPhotoUploader";
+import { BazaarPhotoGallery } from "@/components/bazaar/BazaarPhotoGallery";
 interface BazaarItem {
   id: string;
   title: string;
@@ -36,6 +38,7 @@ interface BazaarItem {
   condition: string;
   listing_type: string;
   image_url: string | null;
+  image_urls: string[] | null;
   created_at: string;
   user_id: string;
   is_sold: boolean;
@@ -88,8 +91,7 @@ const Bazaar = () => {
   const selectedCategory = filters.category;
   const setSearchTerm = (v: string) => setFilters((f) => ({ ...f, searchTerm: v }));
   const setSelectedCategory = (v: string) => setFilters((f) => ({ ...f, category: v }));
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string>("");
+  const [photos, setPhotos] = useState<PendingPhoto[]>([]);
   const [uploading, setUploading] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
@@ -172,21 +174,8 @@ const Bazaar = () => {
     setItems(data || []);
   };
 
-  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      if (file.size > 5 * 1024 * 1024) {
-        toast({ title: "File too large", description: "Maximum image size is 5MB", variant: "destructive" });
-        return;
-      }
-      setImageFile(file);
-      const reader = new FileReader();
-      reader.onloadend = () => setImagePreview(reader.result as string);
-      reader.readAsDataURL(file);
-    }
-  };
+  // (multi-photo handling lives in BazaarPhotoUploader)
 
-  const removeImage = () => { setImageFile(null); setImagePreview(""); };
 
   const categories = [
     { id: "all", name: "All" }, { id: "electronics", name: "Electronics" },
@@ -253,22 +242,26 @@ const Bazaar = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { toast({ title: "Error", description: "You must be logged in", variant: "destructive" }); setUploading(false); return; }
 
-      let imageUrl = null;
-      if (imageFile) {
-        const fileExt = imageFile.name.split('.').pop();
-        const fileName = `${user.id}-${Date.now()}.${fileExt}`;
-        const { error: uploadError } = await supabase.storage.from('bazaar_images').upload(fileName, imageFile);
+      // Upload all photos to bazaar_images bucket
+      const uploadedUrls: string[] = [];
+      for (let i = 0; i < photos.length; i++) {
+        const file = photos[i].file;
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${user.id}-${Date.now()}-${i}.${fileExt}`;
+        const { error: uploadError } = await supabase.storage.from('bazaar_images').upload(fileName, file);
         if (uploadError) throw uploadError;
         const { data: { publicUrl } } = supabase.storage.from('bazaar_images').getPublicUrl(fileName);
-        imageUrl = publicUrl;
+        uploadedUrls.push(publicUrl);
       }
+      const coverUrl = uploadedUrls[0] ?? null;
 
       const price = parseFloat(formData.price);
       const commission = calculateCommission(price);
       const { error: insertError } = await supabase.from('bazaar_items').insert({
         user_id: user.id, title: formData.title, price, location: formData.location,
         description: formData.description, category: formData.category,
-        condition: formData.condition, listing_type: formData.listing_type, image_url: imageUrl,
+        condition: formData.condition, listing_type: formData.listing_type,
+        image_url: coverUrl, image_urls: uploadedUrls,
       });
       if (insertError) throw insertError;
 
@@ -277,7 +270,8 @@ const Bazaar = () => {
         description: commission > 0 ? `Listing added. On sale, a ${limits.commissionRate}% commission (€${commission.toFixed(2)}) will be charged` : "Listing added without commission",
       });
       setFormData({ title: "", price: "", location: "", description: "", category: "electronics", condition: "Like New", listing_type: "sell" });
-      setImageFile(null); setImagePreview(""); setIsDialogOpen(false); loadItems();
+      photos.forEach((p) => URL.revokeObjectURL(p.preview));
+      setPhotos([]); setIsDialogOpen(false); loadItems();
     } catch (error) {
       console.error('Error:', error);
       toast({ title: "Error", description: "Failed to add listing", variant: "destructive" });
@@ -484,22 +478,7 @@ const Bazaar = () => {
                       <SelectContent>{conditions.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
                     </Select>
                   </div>
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">Product Image</label>
-                    {imagePreview ? (
-                      <div className="relative">
-                        <img src={imagePreview} alt="Preview" className="w-full h-48 object-cover rounded-lg" />
-                        <Button type="button" variant="destructive" size="icon" className="absolute top-2 right-2" onClick={removeImage}><X className="h-4 w-4" /></Button>
-                      </div>
-                    ) : (
-                      <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-input rounded-lg cursor-pointer hover:bg-accent/50 transition-colors">
-                        <Upload className="h-8 w-8 text-muted-foreground mb-2" />
-                        <p className="text-sm text-muted-foreground">Click to upload image</p>
-                        <p className="text-xs text-muted-foreground mt-1">Max. 5MB (JPG, PNG, WEBP)</p>
-                        <input type="file" className="hidden" accept="image/*" onChange={handleImageSelect} />
-                      </label>
-                    )}
-                  </div>
+                  <BazaarPhotoUploader photos={photos} onChange={setPhotos} max={8} maxSizeMb={5} />
                   <Button variant="hero" className="w-full" disabled={uploading} onClick={handleSubmit}>
                     {uploading ? "Uploading..." : "Publish Listing"}
                   </Button>
@@ -564,10 +543,15 @@ const Bazaar = () => {
                 <CardHeader className="p-0">
                   <div className="relative">
                     <img
-                      src={item.image_url || "https://images.unsplash.com/photo-1581235720704-06d3acfcb36f?w=300&h=300&fit=crop"}
+                      src={(item.image_urls && item.image_urls[0]) || item.image_url || "https://images.unsplash.com/photo-1581235720704-06d3acfcb36f?w=300&h=300&fit=crop"}
                       alt={item.title}
                       className="w-full h-48 object-cover rounded-t-lg"
                     />
+                    {item.image_urls && item.image_urls.length > 1 && (
+                      <Badge className="absolute bottom-2 right-2 bg-background/90 text-foreground text-[10px]">
+                        📷 {item.image_urls.length}
+                      </Badge>
+                    )}
                     <Badge className="absolute top-2 left-2 bg-background/90 text-foreground text-[10px]">{item.condition}</Badge>
                     <Badge className="absolute top-2 right-2 bg-primary/90 text-primary-foreground text-[10px]">
                       {listingTypes.find(t => t.id === item.listing_type)?.name}
@@ -626,7 +610,17 @@ const Bazaar = () => {
             <DialogHeader><DialogTitle>{selectedItem?.title}</DialogTitle></DialogHeader>
             {selectedItem && (
               <div className="space-y-6">
-                {selectedItem.image_url && <img src={selectedItem.image_url} alt={selectedItem.title} className="w-full h-64 object-cover rounded-lg" />}
+                <BazaarPhotoGallery
+                  images={
+                    selectedItem.image_urls && selectedItem.image_urls.length > 0
+                      ? selectedItem.image_urls
+                      : selectedItem.image_url
+                        ? [selectedItem.image_url]
+                        : []
+                  }
+                  alt={selectedItem.title}
+                />
+
                 <div className="space-y-4">
                   <div>
                     <div className="flex items-center gap-2 mb-2">

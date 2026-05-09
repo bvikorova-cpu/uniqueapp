@@ -3254,6 +3254,7 @@ export type Database = {
           description: string | null
           id: string
           image_url: string | null
+          image_urls: string[]
           is_active: boolean | null
           is_sold: boolean
           listing_type: string
@@ -3270,6 +3271,7 @@ export type Database = {
           description?: string | null
           id?: string
           image_url?: string | null
+          image_urls?: string[]
           is_active?: boolean | null
           is_sold?: boolean
           listing_type?: string
@@ -3286,6 +3288,7 @@ export type Database = {
           description?: string | null
           id?: string
           image_url?: string | null
+          image_urls?: string[]
           is_active?: boolean | null
           is_sold?: boolean
           listing_type?: string
