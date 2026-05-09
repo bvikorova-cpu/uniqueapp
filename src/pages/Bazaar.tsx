@@ -129,6 +129,7 @@ const Bazaar = () => {
   const { isFavorite, toggle: toggleFavorite, ids: favoriteIds } = useBazaarFavorites(currentUserId);
   const [showOnlyFavorites, setShowOnlyFavorites] = useState(false);
   const [promoteItem, setPromoteItem] = useState<BazaarItem | null>(null);
+  const [reportItem, setReportItem] = useState<BazaarItem | null>(null);
 
   useEffect(() => {
     loadItems();
