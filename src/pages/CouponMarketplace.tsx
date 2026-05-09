@@ -475,6 +475,12 @@ const CouponMarketplace = () => {
                       {imagePreview ? <div className="relative w-full h-32 mt-2"><img src={imagePreview} alt="Preview" className="w-full h-full object-cover rounded-lg" /><Button variant="destructive" size="icon" className="absolute top-2 right-2 h-6 w-6" onClick={removeImage}><X className="h-4 w-4" /></Button></div>
                       : <label className="flex items-center justify-center w-full h-24 border-2 border-dashed rounded-lg cursor-pointer hover:bg-accent/50 mt-2"><div className="flex flex-col items-center"><Upload className="h-6 w-6 text-muted-foreground" /><span className="text-sm text-muted-foreground">Upload image</span></div><input type="file" accept="image/*" onChange={handleImageSelect} className="hidden" /></label>}
                     </div>
+                    <div className="flex items-start gap-2 rounded-lg border border-emerald-500/30 bg-emerald-500/5 p-3">
+                      <Checkbox id="balance-confirm" checked={balanceConfirmed} onCheckedChange={(v) => setBalanceConfirmed(Boolean(v))} className="mt-0.5" />
+                      <label htmlFor="balance-confirm" className="text-xs leading-snug cursor-pointer">
+                        <strong className="text-emerald-600">I confirm the coupon balance/value is accurate.</strong> False listings are removed and may result in account suspension. Buyers are protected by a 7-day Buyer Guarantee.
+                      </label>
+                    </div>
                     <Button onClick={handleSubmit} className="w-full" disabled={uploading}>{uploading ? "Listing..." : "List Coupon"}</Button>
                   </div>
                 </DialogContent>
@@ -490,11 +496,24 @@ const CouponMarketplace = () => {
                       <Badge className="absolute top-2 right-2 bg-success text-success-foreground">Save {getSavingsPercent(coupon.original_value, coupon.selling_price)}%</Badge>
                     </div>
                     <CardContent className="p-4">
-                      <div className="flex items-center gap-2 mb-1"><Store className="w-3 h-3 text-muted-foreground" /><span className="text-xs font-medium text-muted-foreground">{coupon.store_name}</span></div>
+                      <div className="flex items-center justify-between mb-1">
+                        <div className="flex items-center gap-2"><Store className="w-3 h-3 text-muted-foreground" /><span className="text-xs font-medium text-muted-foreground">{coupon.store_name}</span></div>
+                        {sellerStats[coupon.user_id] ? (
+                          <span className="inline-flex items-center gap-0.5 text-[10px] text-amber-500 font-semibold">
+                            <Star className="w-3 h-3 fill-amber-400" />
+                            {sellerStats[coupon.user_id].avg_rating} <span className="text-muted-foreground">({sellerStats[coupon.user_id].review_count})</span>
+                          </span>
+                        ) : (
+                          <span className="text-[10px] text-muted-foreground">New seller</span>
+                        )}
+                      </div>
                       <h3 className="font-semibold text-sm line-clamp-2 mb-2">{coupon.title}</h3>
                       <div className="flex items-center justify-between mb-2">
                         <div><span className="text-lg font-black text-primary">€{coupon.selling_price.toFixed(2)}</span><span className="text-xs text-muted-foreground line-through ml-1">€{coupon.original_value.toFixed(2)}</span></div>
                       </div>
+                      <Badge variant="outline" className="gap-1 mb-2 border-emerald-500/40 text-emerald-600 text-[10px] px-1.5 py-0">
+                        <Shield className="w-3 h-3" />7-day Buyer Guarantee
+                      </Badge>
                       {coupon.expiry_date && <div className="flex items-center gap-1 text-[10px] text-muted-foreground mb-2"><Calendar className="w-3 h-3" />Expires: {new Date(coupon.expiry_date).toLocaleDateString()}</div>}
                       <div className="flex gap-2">
                         <Button size="sm" className="flex-1" onClick={e => { e.stopPropagation(); handlePurchase(coupon); }} disabled={isPurchasing}>Buy Now</Button>
@@ -523,13 +542,7 @@ const CouponMarketplace = () => {
           <TabsContent value="my-orders" className="mt-6">
             <div className="space-y-4">
               {myOrders.map(order => (
-                <Card key={order.id} className="p-4 bg-card/80 backdrop-blur-xl border-border/50">
-                  <div className="flex items-center gap-4">
-                    <div className="w-16 h-16 bg-gradient-to-br from-primary/20 to-purple-500/20 rounded-lg flex items-center justify-center"><Ticket className="w-8 h-8 text-primary/50" /></div>
-                    <div className="flex-1"><h3 className="font-semibold">{order.coupon_listings?.title}</h3><p className="text-sm text-muted-foreground">{order.coupon_listings?.store_name}</p><div className="flex items-center gap-2 mt-1"><Badge variant={order.status === 'completed' ? 'default' : 'secondary'}>{order.status}</Badge><span className="text-xs text-muted-foreground">{getTimeAgo(order.created_at)}</span></div></div>
-                    <div className="text-right"><p className="text-lg font-black">€{order.amount.toFixed(2)}</p></div>
-                  </div>
-                </Card>
+                <BuyerOrderCard key={order.id} order={order as any} onChanged={loadMyOrders} />
               ))}
               {myOrders.length === 0 && <div className="text-center py-12"><Package className="w-16 h-16 text-muted-foreground mx-auto mb-4" /><h3 className="text-lg font-semibold mb-2">No purchases yet</h3><p className="text-muted-foreground">Browse coupons to find great deals!</p></div>}
             </div>
