@@ -610,7 +610,17 @@ const Bazaar = () => {
             <DialogHeader><DialogTitle>{selectedItem?.title}</DialogTitle></DialogHeader>
             {selectedItem && (
               <div className="space-y-6">
-                {selectedItem.image_url && <img src={selectedItem.image_url} alt={selectedItem.title} className="w-full h-64 object-cover rounded-lg" />}
+                <BazaarPhotoGallery
+                  images={
+                    selectedItem.image_urls && selectedItem.image_urls.length > 0
+                      ? selectedItem.image_urls
+                      : selectedItem.image_url
+                        ? [selectedItem.image_url]
+                        : []
+                  }
+                  alt={selectedItem.title}
+                />
+
                 <div className="space-y-4">
                   <div>
                     <div className="flex items-center gap-2 mb-2">
