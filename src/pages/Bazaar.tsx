@@ -25,6 +25,7 @@ import { FraudDetectorView } from "@/components/bazaar/views/FraudDetectorView";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { SEO } from "@/components/SEO";
+import { BazaarFilters, defaultFilters, type BazaarFilterState } from "@/components/bazaar/BazaarFilters";
 interface BazaarItem {
   id: string;
   title: string;
