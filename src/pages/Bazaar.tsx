@@ -113,6 +113,8 @@ const Bazaar = () => {
   });
   const { toast } = useToast();
   const { limits, canCreateListing, calculateCommission } = useSubscription();
+  const { isFavorite, toggle: toggleFavorite, ids: favoriteIds } = useBazaarFavorites(currentUserId);
+  const [showOnlyFavorites, setShowOnlyFavorites] = useState(false);
 
   useEffect(() => {
     loadItems();
