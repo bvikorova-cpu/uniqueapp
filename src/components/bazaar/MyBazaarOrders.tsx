@@ -303,6 +303,16 @@ export default function MyBazaarOrders({ userId }: MyBazaarOrdersProps) {
           )}
         </DialogContent>
       </Dialog>
+
+      {ratingOrder && (
+        <SellerRatingDialog
+          open={!!ratingOrder}
+          onOpenChange={(v) => !v && setRatingOrder(null)}
+          orderId={ratingOrder.id}
+          sellerId={ratingOrder.seller_id}
+          buyerId={userId}
+        />
+      )}
     </div>
   );
 }
