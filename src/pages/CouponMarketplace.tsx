@@ -670,6 +670,7 @@ const CouponMarketplace = () => {
           </TabsContent>
 
           <TabsContent value="my-listings" className="mt-6">
+            <CouponSellerDashboard userId={currentUserId} />
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {coupons.filter(c => c.user_id === currentUserId).map(coupon => (
                 <Card key={coupon.id} className="overflow-hidden bg-card/80 backdrop-blur-xl border-border/50">
