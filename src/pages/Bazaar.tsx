@@ -32,6 +32,8 @@ import { BazaarItemChat } from "@/components/bazaar/BazaarItemChat";
 import { SellerRatingBadge } from "@/components/bazaar/SellerRatingBadge";
 import { useBazaarFavorites } from "@/hooks/useBazaarFavorites";
 import { Heart } from "lucide-react";
+import { PromoteListingDialog } from "@/components/bazaar/PromoteListingDialog";
+
 interface BazaarItem {
   id: string;
   title: string;
@@ -46,6 +48,8 @@ interface BazaarItem {
   created_at: string;
   user_id: string;
   is_sold: boolean;
+  bumped_until?: string | null;
+  top_until?: string | null;
   profiles?: { full_name: string | null } | null;
 }
 
@@ -115,6 +119,7 @@ const Bazaar = () => {
   const { limits, canCreateListing, calculateCommission } = useSubscription();
   const { isFavorite, toggle: toggleFavorite, ids: favoriteIds } = useBazaarFavorites(currentUserId);
   const [showOnlyFavorites, setShowOnlyFavorites] = useState(false);
+  const [promoteItem, setPromoteItem] = useState<BazaarItem | null>(null);
 
   useEffect(() => {
     loadItems();
@@ -211,6 +216,14 @@ const Bazaar = () => {
       return matchesSearch && matchesCategory && matchesCondition && matchesMin && matchesMax && matchesLocation && matchesFavorite;
     })
     .sort((a, b) => {
+      // Promoted listings always float to the top, regardless of sort.
+      const now = Date.now();
+      const aTop = a.top_until && new Date(a.top_until).getTime() > now ? 2 : 0;
+      const bTop = b.top_until && new Date(b.top_until).getTime() > now ? 2 : 0;
+      const aBump = a.bumped_until && new Date(a.bumped_until).getTime() > now ? 1 : 0;
+      const bBump = b.bumped_until && new Date(b.bumped_until).getTime() > now ? 1 : 0;
+      const promoDiff = (bTop + bBump) - (aTop + aBump);
+      if (promoDiff !== 0) return promoDiff;
       switch (filters.sort) {
         case "price_asc":
           return Number(a.price) - Number(b.price);
@@ -580,6 +593,17 @@ const Bazaar = () => {
                     <Badge className="absolute top-2 right-2 bg-primary/90 text-primary-foreground text-[10px]">
                       {listingTypes.find(t => t.id === item.listing_type)?.name}
                     </Badge>
+                    {item.top_until && new Date(item.top_until).getTime() > Date.now() && (
+                      <Badge className="absolute top-9 left-2 bg-yellow-500 text-black text-[10px] gap-1">
+                        <Crown className="h-3 w-3" /> TOP
+                      </Badge>
+                    )}
+                    {!(item.top_until && new Date(item.top_until).getTime() > Date.now()) &&
+                      item.bumped_until && new Date(item.bumped_until).getTime() > Date.now() && (
+                        <Badge className="absolute top-9 left-2 bg-orange-500 text-white text-[10px] gap-1">
+                          <Flame className="h-3 w-3" /> Bumped
+                        </Badge>
+                      )}
                     {currentUserId && currentUserId !== item.user_id && (
                       <Button
                         type="button"
@@ -605,6 +629,17 @@ const Bazaar = () => {
                     <div className="flex items-center gap-1"><User className="h-3 w-3" />{item.profiles?.full_name || "Anonymous"}</div>
                   </div>
                   <p className="text-xs text-muted-foreground mb-3 line-clamp-2">{item.description}</p>
+                  {currentUserId === item.user_id && (
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="outline"
+                      className="w-full gap-2"
+                      onClick={(e) => { e.stopPropagation(); setPromoteItem(item); }}
+                    >
+                      <Flame className="h-3.5 w-3.5" /> Promote
+                    </Button>
+                  )}
                 </CardContent>
               </Card>
             </motion.div>
@@ -732,6 +767,16 @@ const Bazaar = () => {
 
         {/* Purchase */}
         <BazaarPurchaseDialog item={selectedItem} open={isPurchaseDialogOpen} onOpenChange={setIsPurchaseDialogOpen} />
+
+        {promoteItem && (
+          <PromoteListingDialog
+            open={!!promoteItem}
+            onOpenChange={(v) => !v && setPromoteItem(null)}
+            itemId={promoteItem.id}
+            itemTitle={promoteItem.title}
+            onPromoted={loadItems}
+          />
+        )}
       </div>
     </div>
     </>

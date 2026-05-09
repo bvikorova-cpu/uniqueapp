@@ -3277,6 +3277,7 @@ export type Database = {
       }
       bazaar_items: {
         Row: {
+          bumped_until: string | null
           category: string
           condition: string
           created_at: string | null
@@ -3290,10 +3291,12 @@ export type Database = {
           location: string
           price: number
           title: string
+          top_until: string | null
           updated_at: string | null
           user_id: string
         }
         Insert: {
+          bumped_until?: string | null
           category: string
           condition: string
           created_at?: string | null
@@ -3307,10 +3310,12 @@ export type Database = {
           location: string
           price: number
           title: string
+          top_until?: string | null
           updated_at?: string | null
           user_id: string
         }
         Update: {
+          bumped_until?: string | null
           category?: string
           condition?: string
           created_at?: string | null
@@ -3324,6 +3329,7 @@ export type Database = {
           location?: string
           price?: number
           title?: string
+          top_until?: string | null
           updated_at?: string | null
           user_id?: string
         }
@@ -44764,6 +44770,10 @@ export type Database = {
       award_points_and_log: {
         Args: { p_activity_type: string; p_points: number; p_user_id: string }
         Returns: undefined
+      }
+      bazaar_promote_listing: {
+        Args: { p_item_id: string; p_plan: string }
+        Returns: Json
       }
       bucket_30s: { Args: { ts: string }; Returns: number }
       cache_get: { Args: { p_key: string }; Returns: Json }
