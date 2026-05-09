@@ -568,7 +568,7 @@ const CouponMarketplace = () => {
                     </div>
                     <CardContent className="p-4">
                       <div className="flex items-center justify-between mb-1">
-                        <div className="flex items-center gap-2"><Store className="w-3 h-3 text-muted-foreground" /><span className="text-xs font-medium text-muted-foreground">{coupon.store_name}</span></div>
+                        <Link to={`/coupons/${brandSlug(coupon.store_name)}`} onClick={(e) => e.stopPropagation()} className="flex items-center gap-2 hover:text-primary transition-colors"><Store className="w-3 h-3 text-muted-foreground" /><span className="text-xs font-medium text-muted-foreground hover:text-primary underline-offset-2 hover:underline">{coupon.store_name}</span></Link>
                         {sellerStats[coupon.user_id] ? (
                           <span className="inline-flex items-center gap-0.5 text-[10px] text-amber-500 font-semibold">
                             <Star className="w-3 h-3 fill-amber-400" />
