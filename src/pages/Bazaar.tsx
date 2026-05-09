@@ -83,8 +83,11 @@ const aiTools = [
 
 const Bazaar = () => {
   const [activeView, setActiveView] = useState<string | null>(null);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [filters, setFilters] = useState<BazaarFilterState>(defaultFilters);
+  const searchTerm = filters.searchTerm;
+  const selectedCategory = filters.category;
+  const setSearchTerm = (v: string) => setFilters((f) => ({ ...f, searchTerm: v }));
+  const setSelectedCategory = (v: string) => setFilters((f) => ({ ...f, category: v }));
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string>("");
   const [uploading, setUploading] = useState(false);
