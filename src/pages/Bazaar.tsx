@@ -594,7 +594,7 @@ const Bazaar = () => {
         {filteredItems.length === 0 && (
           <div className="text-center py-12">
             <p className="text-xl text-muted-foreground">No listings found</p>
-            <Button variant="outline" onClick={() => { setSearchTerm(""); setSelectedCategory("all"); }} className="mt-4">Clear filters</Button>
+            <Button variant="outline" onClick={() => setFilters(defaultFilters)} className="mt-4">Clear filters</Button>
           </div>
         )}
 
