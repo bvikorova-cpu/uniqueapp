@@ -543,10 +543,15 @@ const Bazaar = () => {
                 <CardHeader className="p-0">
                   <div className="relative">
                     <img
-                      src={item.image_url || "https://images.unsplash.com/photo-1581235720704-06d3acfcb36f?w=300&h=300&fit=crop"}
+                      src={(item.image_urls && item.image_urls[0]) || item.image_url || "https://images.unsplash.com/photo-1581235720704-06d3acfcb36f?w=300&h=300&fit=crop"}
                       alt={item.title}
                       className="w-full h-48 object-cover rounded-t-lg"
                     />
+                    {item.image_urls && item.image_urls.length > 1 && (
+                      <Badge className="absolute bottom-2 right-2 bg-background/90 text-foreground text-[10px]">
+                        📷 {item.image_urls.length}
+                      </Badge>
+                    )}
                     <Badge className="absolute top-2 left-2 bg-background/90 text-foreground text-[10px]">{item.condition}</Badge>
                     <Badge className="absolute top-2 right-2 bg-primary/90 text-primary-foreground text-[10px]">
                       {listingTypes.find(t => t.id === item.listing_type)?.name}
