@@ -32,6 +32,8 @@ import { BazaarItemChat } from "@/components/bazaar/BazaarItemChat";
 import { SellerRatingBadge } from "@/components/bazaar/SellerRatingBadge";
 import { useBazaarFavorites } from "@/hooks/useBazaarFavorites";
 import { Heart } from "lucide-react";
+import { PromoteListingDialog } from "@/components/bazaar/PromoteListingDialog";
+
 interface BazaarItem {
   id: string;
   title: string;
