@@ -629,6 +629,17 @@ const Bazaar = () => {
                     <div className="flex items-center gap-1"><User className="h-3 w-3" />{item.profiles?.full_name || "Anonymous"}</div>
                   </div>
                   <p className="text-xs text-muted-foreground mb-3 line-clamp-2">{item.description}</p>
+                  {currentUserId === item.user_id && (
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="outline"
+                      className="w-full gap-2"
+                      onClick={(e) => { e.stopPropagation(); setPromoteItem(item); }}
+                    >
+                      <Flame className="h-3.5 w-3.5" /> Promote
+                    </Button>
+                  )}
                 </CardContent>
               </Card>
             </motion.div>
