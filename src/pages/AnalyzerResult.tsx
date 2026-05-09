@@ -73,7 +73,23 @@ export default function AnalyzerResult() {
   );
 
   if (!analysis) return null;
-  const info = analysis.detailed_info;
+  const rawInfo: any = analysis.detailed_info || {};
+  const info: any = {
+    mainIdentification: rawInfo.mainIdentification || analysis.main_identification || "Analysis result",
+    confidence: typeof rawInfo.confidence === "number" ? rawInfo.confidence : (analysis.confidence_score ?? 0),
+    category: rawInfo.category || analysis.category,
+    details: rawInfo.details || {
+      description: rawInfo.result || analysis.main_identification || "",
+      specifications: [],
+      careInstructions: "",
+      safety: "",
+      value: "",
+      whereToFind: "",
+    },
+    tags: rawInfo.tags || [],
+    additionalInfo: rawInfo.additionalInfo || "",
+    shopping: rawInfo.shopping,
+  };
   const confidencePercent = Math.round((info.confidence || 0) * 100);
 
   return (
