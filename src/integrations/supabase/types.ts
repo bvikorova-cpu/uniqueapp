@@ -10992,6 +10992,47 @@ export type Database = {
         }
         Relationships: []
       }
+      coupon_buyer_reviews: {
+        Row: {
+          buyer_id: string
+          comment: string | null
+          created_at: string
+          id: string
+          order_id: string
+          rating: number
+          seller_id: string
+          updated_at: string
+        }
+        Insert: {
+          buyer_id: string
+          comment?: string | null
+          created_at?: string
+          id?: string
+          order_id: string
+          rating: number
+          seller_id: string
+          updated_at?: string
+        }
+        Update: {
+          buyer_id?: string
+          comment?: string | null
+          created_at?: string
+          id?: string
+          order_id?: string
+          rating?: number
+          seller_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coupon_buyer_reviews_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: true
+            referencedRelation: "coupon_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       coupon_escrow: {
         Row: {
           amount: number
@@ -11050,6 +11091,8 @@ export type Database = {
       }
       coupon_listings: {
         Row: {
+          balance_confirmed: boolean
+          balance_confirmed_value: number | null
           category: string
           coupon_type: string
           created_at: string | null
@@ -11070,6 +11113,8 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          balance_confirmed?: boolean
+          balance_confirmed_value?: number | null
           category?: string
           coupon_type?: string
           created_at?: string | null
@@ -11090,6 +11135,8 @@ export type Database = {
           user_id: string
         }
         Update: {
+          balance_confirmed?: boolean
+          balance_confirmed_value?: number | null
           category?: string
           coupon_type?: string
           created_at?: string | null
@@ -11179,14 +11226,20 @@ export type Database = {
       coupon_orders: {
         Row: {
           amount: number
+          auto_release_at: string | null
+          buyer_confirmed_at: string | null
+          buyer_disputed_at: string | null
           buyer_email: string | null
           buyer_id: string
           commission_amount: number
           coupon_id: string
           created_at: string | null
           delivered_at: string | null
+          dispute_reason: string | null
+          escrow_status: string
           id: string
           paid_at: string | null
+          released_at: string | null
           seller_id: string
           seller_payout: number
           status: string
@@ -11195,14 +11248,20 @@ export type Database = {
         }
         Insert: {
           amount: number
+          auto_release_at?: string | null
+          buyer_confirmed_at?: string | null
+          buyer_disputed_at?: string | null
           buyer_email?: string | null
           buyer_id: string
           commission_amount?: number
           coupon_id: string
           created_at?: string | null
           delivered_at?: string | null
+          dispute_reason?: string | null
+          escrow_status?: string
           id?: string
           paid_at?: string | null
+          released_at?: string | null
           seller_id: string
           seller_payout: number
           status?: string
@@ -11211,14 +11270,20 @@ export type Database = {
         }
         Update: {
           amount?: number
+          auto_release_at?: string | null
+          buyer_confirmed_at?: string | null
+          buyer_disputed_at?: string | null
           buyer_email?: string | null
           buyer_id?: string
           commission_amount?: number
           coupon_id?: string
           created_at?: string | null
           delivered_at?: string | null
+          dispute_reason?: string | null
+          escrow_status?: string
           id?: string
           paid_at?: string | null
+          released_at?: string | null
           seller_id?: string
           seller_payout?: number
           status?: string
@@ -44172,6 +44237,14 @@ export type Database = {
         }
         Relationships: []
       }
+      coupon_seller_stats: {
+        Row: {
+          avg_rating: number | null
+          review_count: number | null
+          seller_id: string | null
+        }
+        Relationships: []
+      }
       escape_room_puzzles_public: {
         Row: {
           created_at: string | null
@@ -44856,6 +44929,7 @@ export type Database = {
         }
         Returns: undefined
       }
+      auto_release_coupon_escrow: { Args: never; Returns: number }
       award_points_and_log: {
         Args: { p_activity_type: string; p_points: number; p_user_id: string }
         Returns: undefined

@@ -479,10 +479,14 @@ serve(async (req) => {
 
         if (paid && orderId) {
           const nowIso = new Date().toISOString();
+          // 7-day Buyer Guarantee window
+          const autoReleaseAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
           await supa.from("coupon_orders").update({
             status: "completed",
             paid_at: nowIso,
             delivered_at: nowIso,
+            escrow_status: "held",
+            auto_release_at: autoReleaseAt,
           }).eq("id", orderId);
 
           const { data: ord } = await supa

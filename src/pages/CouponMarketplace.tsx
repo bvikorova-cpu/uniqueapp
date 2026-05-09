@@ -24,6 +24,8 @@ import { StoreReputationView } from "@/components/coupon/views/StoreReputationVi
 import { PriceHistoryView } from "@/components/coupon/views/PriceHistoryView";
 import { NegotiationBotView } from "@/components/coupon/views/NegotiationBotView";
 import { WishlistAlertsView } from "@/components/coupon/views/WishlistAlertsView";
+import { BuyerOrderCard } from "@/components/coupon/BuyerOrderCard";
+import { Checkbox } from "@/components/ui/checkbox";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 interface CouponListing {
@@ -32,8 +34,12 @@ interface CouponListing {
   expiry_date: string | null; category: string; coupon_type: string;
   is_digital: boolean; image_url: string | null; terms_conditions: string | null;
   is_sold: boolean; created_at: string; user_id: string;
+  balance_confirmed?: boolean | null;
   profiles?: { full_name: string | null } | null;
 }
+
+interface SellerStat { seller_id: string; avg_rating: number; review_count: number; }
+
 
 interface CouponOrder {
   id: string; coupon_id: string; amount: number; status: string;
@@ -82,11 +88,13 @@ const CouponMarketplace = () => {
   const [selectedCoupon, setSelectedCoupon] = useState<CouponListing | null>(null);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [coupons, setCoupons] = useState<CouponListing[]>([]);
+  const [sellerStats, setSellerStats] = useState<Record<string, SellerStat>>({});
   const [myOrders, setMyOrders] = useState<CouponOrder[]>([]);
   const [activeTab, setActiveTab] = useState("browse");
   const [hasAccess, setHasAccess] = useState<boolean | null>(null);
   const [isCheckingAccess, setIsCheckingAccess] = useState(true);
   const [isPurchasingAccess, setIsPurchasingAccess] = useState(false);
+  const [balanceConfirmed, setBalanceConfirmed] = useState(false);
   const [formData, setFormData] = useState({
     title: "", description: "", store_name: "", original_value: "", selling_price: "",
     discount_code: "", expiry_date: "", category: "general", coupon_type: "discount_code", terms_conditions: "",
@@ -147,12 +155,28 @@ const CouponMarketplace = () => {
   const loadCoupons = async () => {
     // Use SECURITY DEFINER function so discount_code is never exposed to non-buyers
     const { data, error } = await supabase.rpc('get_public_coupon_listings');
-    if (!error) setCoupons((data as any) || []);
+    if (!error) {
+      const list = ((data as any) || []) as CouponListing[];
+      setCoupons(list);
+      // Fetch seller stats for visible sellers
+      const sellerIds = Array.from(new Set(list.map((c) => c.user_id)));
+      if (sellerIds.length) {
+        const { data: stats } = await supabase
+          .from("coupon_seller_stats" as any)
+          .select("*")
+          .in("seller_id", sellerIds);
+        if (stats) {
+          const map: Record<string, SellerStat> = {};
+          (stats as any[]).forEach((s) => { map[s.seller_id] = s; });
+          setSellerStats(map);
+        }
+      }
+    }
   };
 
   const loadMyOrders = async () => {
     const { data, error } = await supabase.from('coupon_orders').select('*, coupon_listings(*)').eq('buyer_id', currentUserId).order('created_at', { ascending: false });
-    if (!error) setMyOrders(data || []);
+    if (!error) setMyOrders((data as any) || []);
   };
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -173,16 +197,18 @@ const CouponMarketplace = () => {
   const handleSubmit = async () => {
     if (!formData.title || !formData.store_name || !formData.original_value || !formData.selling_price) { toast({ title: "Error", description: "Fill in all required fields", variant: "destructive" }); return; }
     if (parseFloat(formData.selling_price) >= parseFloat(formData.original_value)) { toast({ title: "Error", description: "Selling price must be lower than original value", variant: "destructive" }); return; }
+    if (!balanceConfirmed) { toast({ title: "Confirm balance", description: "Please confirm the coupon's balance/value is accurate.", variant: "destructive" }); return; }
     setUploading(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { toast({ title: "Error", description: "You must be logged in", variant: "destructive" }); setUploading(false); return; }
       let imageUrl = null;
       if (imageFile) { const fileName = `${user.id}/${Date.now()}.${imageFile.name.split('.').pop()}`; const { error: ue } = await supabase.storage.from('coupon_images').upload(fileName, imageFile); if (ue) throw ue; imageUrl = supabase.storage.from('coupon_images').getPublicUrl(fileName).data.publicUrl; }
-      const { error } = await supabase.from('coupon_listings').insert({ user_id: user.id, title: formData.title, description: formData.description || null, store_name: formData.store_name, original_value: parseFloat(formData.original_value), selling_price: parseFloat(formData.selling_price), discount_code: formData.discount_code || null, expiry_date: formData.expiry_date || null, category: formData.category, coupon_type: formData.coupon_type, terms_conditions: formData.terms_conditions || null, image_url: imageUrl });
+      const { error } = await supabase.from('coupon_listings').insert({ user_id: user.id, title: formData.title, description: formData.description || null, store_name: formData.store_name, original_value: parseFloat(formData.original_value), selling_price: parseFloat(formData.selling_price), discount_code: formData.discount_code || null, expiry_date: formData.expiry_date || null, category: formData.category, coupon_type: formData.coupon_type, terms_conditions: formData.terms_conditions || null, image_url: imageUrl, balance_confirmed: true, balance_confirmed_value: parseFloat(formData.original_value) } as any);
       if (error) throw error;
       toast({ title: "Success! 🎉", description: "Your coupon has been listed for sale" });
       setFormData({ title: "", description: "", store_name: "", original_value: "", selling_price: "", discount_code: "", expiry_date: "", category: "general", coupon_type: "discount_code", terms_conditions: "" });
+      setBalanceConfirmed(false);
       setImageFile(null); setImagePreview(""); setIsDialogOpen(false); loadCoupons();
     } catch (error) { toast({ title: "Error", description: "Failed to add listing", variant: "destructive" }); }
     finally { setUploading(false); }
@@ -449,6 +475,12 @@ const CouponMarketplace = () => {
                       {imagePreview ? <div className="relative w-full h-32 mt-2"><img src={imagePreview} alt="Preview" className="w-full h-full object-cover rounded-lg" /><Button variant="destructive" size="icon" className="absolute top-2 right-2 h-6 w-6" onClick={removeImage}><X className="h-4 w-4" /></Button></div>
                       : <label className="flex items-center justify-center w-full h-24 border-2 border-dashed rounded-lg cursor-pointer hover:bg-accent/50 mt-2"><div className="flex flex-col items-center"><Upload className="h-6 w-6 text-muted-foreground" /><span className="text-sm text-muted-foreground">Upload image</span></div><input type="file" accept="image/*" onChange={handleImageSelect} className="hidden" /></label>}
                     </div>
+                    <div className="flex items-start gap-2 rounded-lg border border-emerald-500/30 bg-emerald-500/5 p-3">
+                      <Checkbox id="balance-confirm" checked={balanceConfirmed} onCheckedChange={(v) => setBalanceConfirmed(Boolean(v))} className="mt-0.5" />
+                      <label htmlFor="balance-confirm" className="text-xs leading-snug cursor-pointer">
+                        <strong className="text-emerald-600">I confirm the coupon balance/value is accurate.</strong> False listings are removed and may result in account suspension. Buyers are protected by a 7-day Buyer Guarantee.
+                      </label>
+                    </div>
                     <Button onClick={handleSubmit} className="w-full" disabled={uploading}>{uploading ? "Listing..." : "List Coupon"}</Button>
                   </div>
                 </DialogContent>
@@ -464,11 +496,24 @@ const CouponMarketplace = () => {
                       <Badge className="absolute top-2 right-2 bg-success text-success-foreground">Save {getSavingsPercent(coupon.original_value, coupon.selling_price)}%</Badge>
                     </div>
                     <CardContent className="p-4">
-                      <div className="flex items-center gap-2 mb-1"><Store className="w-3 h-3 text-muted-foreground" /><span className="text-xs font-medium text-muted-foreground">{coupon.store_name}</span></div>
+                      <div className="flex items-center justify-between mb-1">
+                        <div className="flex items-center gap-2"><Store className="w-3 h-3 text-muted-foreground" /><span className="text-xs font-medium text-muted-foreground">{coupon.store_name}</span></div>
+                        {sellerStats[coupon.user_id] ? (
+                          <span className="inline-flex items-center gap-0.5 text-[10px] text-amber-500 font-semibold">
+                            <Star className="w-3 h-3 fill-amber-400" />
+                            {sellerStats[coupon.user_id].avg_rating} <span className="text-muted-foreground">({sellerStats[coupon.user_id].review_count})</span>
+                          </span>
+                        ) : (
+                          <span className="text-[10px] text-muted-foreground">New seller</span>
+                        )}
+                      </div>
                       <h3 className="font-semibold text-sm line-clamp-2 mb-2">{coupon.title}</h3>
                       <div className="flex items-center justify-between mb-2">
                         <div><span className="text-lg font-black text-primary">€{coupon.selling_price.toFixed(2)}</span><span className="text-xs text-muted-foreground line-through ml-1">€{coupon.original_value.toFixed(2)}</span></div>
                       </div>
+                      <Badge variant="outline" className="gap-1 mb-2 border-emerald-500/40 text-emerald-600 text-[10px] px-1.5 py-0">
+                        <Shield className="w-3 h-3" />7-day Buyer Guarantee
+                      </Badge>
                       {coupon.expiry_date && <div className="flex items-center gap-1 text-[10px] text-muted-foreground mb-2"><Calendar className="w-3 h-3" />Expires: {new Date(coupon.expiry_date).toLocaleDateString()}</div>}
                       <div className="flex gap-2">
                         <Button size="sm" className="flex-1" onClick={e => { e.stopPropagation(); handlePurchase(coupon); }} disabled={isPurchasing}>Buy Now</Button>
@@ -497,13 +542,7 @@ const CouponMarketplace = () => {
           <TabsContent value="my-orders" className="mt-6">
             <div className="space-y-4">
               {myOrders.map(order => (
-                <Card key={order.id} className="p-4 bg-card/80 backdrop-blur-xl border-border/50">
-                  <div className="flex items-center gap-4">
-                    <div className="w-16 h-16 bg-gradient-to-br from-primary/20 to-purple-500/20 rounded-lg flex items-center justify-center"><Ticket className="w-8 h-8 text-primary/50" /></div>
-                    <div className="flex-1"><h3 className="font-semibold">{order.coupon_listings?.title}</h3><p className="text-sm text-muted-foreground">{order.coupon_listings?.store_name}</p><div className="flex items-center gap-2 mt-1"><Badge variant={order.status === 'completed' ? 'default' : 'secondary'}>{order.status}</Badge><span className="text-xs text-muted-foreground">{getTimeAgo(order.created_at)}</span></div></div>
-                    <div className="text-right"><p className="text-lg font-black">€{order.amount.toFixed(2)}</p></div>
-                  </div>
-                </Card>
+                <BuyerOrderCard key={order.id} order={order as any} onChanged={loadMyOrders} />
               ))}
               {myOrders.length === 0 && <div className="text-center py-12"><Package className="w-16 h-16 text-muted-foreground mx-auto mb-4" /><h3 className="text-lg font-semibold mb-2">No purchases yet</h3><p className="text-muted-foreground">Browse coupons to find great deals!</p></div>}
             </div>
