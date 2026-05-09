@@ -836,6 +836,16 @@ const Bazaar = () => {
             onPromoted={loadItems}
           />
         )}
+
+        {reportItem && currentUserId && (
+          <ReportListingDialog
+            open={!!reportItem}
+            onOpenChange={(v) => !v && setReportItem(null)}
+            itemId={reportItem.id}
+            itemTitle={reportItem.title}
+            reporterId={currentUserId}
+          />
+        )}
       </div>
     </div>
     </>
