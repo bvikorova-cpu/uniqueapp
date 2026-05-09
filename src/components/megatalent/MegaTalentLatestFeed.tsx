@@ -85,6 +85,10 @@ export default function MegaTalentLatestFeed({ categoryGroups }: Props) {
         if (selected.size > 0) {
           q = q.in("category", Array.from(selected) as any);
         }
+        if (search) {
+          const escaped = search.replace(/[%,]/g, " ");
+          q = q.or(`title.ilike.%${escaped}%,description.ilike.%${escaped}%`);
+        }
         const { data, error } = await q;
         if (error) throw error;
         const rows = (data as any as Submission[]) ?? [];
