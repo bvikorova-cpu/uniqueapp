@@ -775,6 +775,11 @@ const Bazaar = () => {
                     {currentUserId === selectedItem.user_id && (
                       <Button variant="destructive" size="lg" onClick={handleDeleteClick}><Trash2 className="h-5 w-5" /></Button>
                     )}
+                    {currentUserId && currentUserId !== selectedItem.user_id && (
+                      <Button variant="outline" size="lg" onClick={() => setReportItem(selectedItem)} title="Report listing">
+                        <Flag className="h-5 w-5" />
+                      </Button>
+                    )}
                   </div>
                 </div>
               </div>
