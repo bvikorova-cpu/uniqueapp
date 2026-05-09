@@ -11354,6 +11354,7 @@ export type Database = {
           created_at: string | null
           delivered_at: string | null
           dispute_reason: string | null
+          dispute_resolution: string | null
           escrow_status: string
           id: string
           paid_at: string | null
@@ -11376,6 +11377,7 @@ export type Database = {
           created_at?: string | null
           delivered_at?: string | null
           dispute_reason?: string | null
+          dispute_resolution?: string | null
           escrow_status?: string
           id?: string
           paid_at?: string | null
@@ -11398,6 +11400,7 @@ export type Database = {
           created_at?: string | null
           delivered_at?: string | null
           dispute_reason?: string | null
+          dispute_resolution?: string | null
           escrow_status?: string
           id?: string
           paid_at?: string | null
@@ -44447,6 +44450,20 @@ export type Database = {
           perks: Json | null
           tier: string | null
           user_id: string | null
+        }
+        Relationships: []
+      }
+      coupon_seller_analytics: {
+        Row: {
+          avg_rating: number | null
+          dispute_rate_pct: number | null
+          disputes: number | null
+          gross_revenue_eur: number | null
+          listings_active: number | null
+          listings_total: number | null
+          orders_completed: number | null
+          review_count: number | null
+          seller_id: string | null
         }
         Relationships: []
       }

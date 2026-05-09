@@ -65,6 +65,7 @@ export const PropertySubmission = lazy(() => import("@/pages/PropertySubmission"
 export const MyProperties = lazy(() => import("@/pages/MyProperties"));
 export const CouponMarketplace = lazy(() => import("@/pages/CouponMarketplace"));
 export const CouponBrandPage = lazy(() => import("@/pages/CouponBrandPage"));
+export const AdminCouponDisputes = lazy(() => import("@/pages/AdminCouponDisputes"));
 
 // AI & Generation
 export const AIGeneration = lazy(() => import("@/pages/AIGeneration"));

@@ -170,6 +170,7 @@ import {
   StockContentLibrary,
   CouponMarketplace,
   CouponBrandPage,
+  AdminCouponDisputes,
   Education,
   CourseDetail,
   GenerateCourses,
@@ -505,6 +506,7 @@ const App = () => {
                         <Route path="/bazaar" element={<Bazaar />} />
                         <Route path="/coupon-marketplace" element={<CouponMarketplace />} />
                         <Route path="/coupons/:brand" element={<CouponBrandPage />} />
+                        <Route path="/admin/coupon-disputes" element={<AdminCouponDisputes />} />
                         <Route path="/referral" element={<Referral />} />
                         <Route path="/games" element={<Games />} />
                         <Route path="/jobs" element={<Jobs />} />
