@@ -355,6 +355,7 @@ import {
   AdminBrandCampaigns,
   AdminPlatformEarnings,
   AdminVerifications,
+  AdminBazaarTrust,
   AdminWithdrawals,
   AdminImageEditor,
   AdminPaymentDashboard,
@@ -509,6 +510,7 @@ const App = () => {
                         <Route path="/employer-dashboard" element={<ProtectedRoute><EmployerDashboard /></ProtectedRoute>} />
                         <Route path="/employer-verification" element={<ProtectedRoute><EmployerVerification /></ProtectedRoute>} />
                         <Route path="/admin/verifications" element={<ProtectedRoute requireAdmin={true}><AdminVerifications /></ProtectedRoute>} />
+                        <Route path="/admin/bazaar-trust" element={<ProtectedRoute requireAdmin={true}><AdminBazaarTrust /></ProtectedRoute>} />
                         <Route path="/influ-king" element={<InfluKing />} />
                         <Route path="/auction" element={<Auction />} />
                         <Route path="/ai-generation" element={<AIGeneration />} />

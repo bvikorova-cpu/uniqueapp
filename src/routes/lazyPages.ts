@@ -341,6 +341,7 @@ export const AdminInfluencerPayouts = lazy(() => import("@/pages/AdminInfluencer
 export const AdminBrandCampaigns = lazy(() => import("@/pages/AdminBrandCampaigns"));
 export const AdminPlatformEarnings = lazy(() => import("@/pages/AdminPlatformEarnings"));
 export const AdminVerifications = lazy(() => import("@/pages/AdminVerifications"));
+export const AdminBazaarTrust = lazy(() => import("@/pages/AdminBazaarTrust"));
 export const AdminWithdrawals = lazy(() => import("@/pages/AdminWithdrawals"));
 export const AdminImageEditor = lazy(() => import("@/pages/AdminImageEditor"));
 export const AdminPaymentDashboard = lazy(() => import("@/pages/AdminPaymentDashboard"));
