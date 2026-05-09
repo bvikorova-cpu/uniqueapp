@@ -148,7 +148,12 @@ export const BazaarFilters = ({ filters, onChange, conditions, currentUserId }: 
     (filters.minPrice ? 1 : 0) +
     (filters.maxPrice ? 1 : 0) +
     (filters.condition !== "all" ? 1 : 0) +
-    (filters.location ? 1 : 0);
+    (filters.location ? 1 : 0) +
+    (filters.brand ? 1 : 0) +
+    (filters.size !== "all" ? 1 : 0) +
+    (filters.shippingMethod !== "all" ? 1 : 0);
+
+  const isClothing = filters.category === "clothing";
 
   return (
     <div className="flex flex-wrap items-center gap-2">
