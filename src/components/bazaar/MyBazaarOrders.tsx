@@ -62,6 +62,7 @@ export default function MyBazaarOrders({ userId }: MyBazaarOrdersProps) {
   const [sales, setSales] = useState<BazaarOrder[]>([]);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [selectedOrder, setSelectedOrder] = useState<BazaarOrder | null>(null);
+  const [ratingOrder, setRatingOrder] = useState<BazaarOrder | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
