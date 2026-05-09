@@ -10992,6 +10992,44 @@ export type Database = {
         }
         Relationships: []
       }
+      coupon_affiliate_referrals: {
+        Row: {
+          commission_eur: number
+          created_at: string
+          id: string
+          order_id: string | null
+          referred_user_id: string
+          referrer_id: string
+          status: string
+        }
+        Insert: {
+          commission_eur?: number
+          created_at?: string
+          id?: string
+          order_id?: string | null
+          referred_user_id: string
+          referrer_id: string
+          status?: string
+        }
+        Update: {
+          commission_eur?: number
+          created_at?: string
+          id?: string
+          order_id?: string | null
+          referred_user_id?: string
+          referrer_id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coupon_affiliate_referrals_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "coupon_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       coupon_buyer_reviews: {
         Row: {
           buyer_id: string
@@ -11123,6 +11161,51 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      coupon_extension_waitlist: {
+        Row: {
+          browser: string | null
+          created_at: string
+          email: string | null
+          id: string
+          kind: string
+          user_id: string | null
+        }
+        Insert: {
+          browser?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          kind: string
+          user_id?: string | null
+        }
+        Update: {
+          browser?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          kind?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      coupon_gift_card_balance: {
+        Row: {
+          balance_eur: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          balance_eur?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          balance_eur?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       coupon_listings: {
         Row: {
@@ -44355,6 +44438,15 @@ export type Database = {
           status?: string | null
           updated_at?: string | null
           user_id?: never
+        }
+        Relationships: []
+      }
+      coupon_loyalty_tier: {
+        Row: {
+          lifetime_spent_eur: number | null
+          perks: Json | null
+          tier: string | null
+          user_id: string | null
         }
         Relationships: []
       }

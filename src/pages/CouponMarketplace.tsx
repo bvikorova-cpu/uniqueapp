@@ -28,6 +28,7 @@ import { BuyerOrderCard } from "@/components/coupon/BuyerOrderCard";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useCouponWishlist } from "@/hooks/useCouponWishlist";
 import { CouponEngagementPanel } from "@/components/coupon/CouponEngagementPanel";
+import { CouponScalePanel } from "@/components/coupon/CouponScalePanel";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { Link } from "react-router-dom";
@@ -485,6 +486,24 @@ const CouponMarketplace = () => {
               setMaxPrice(p?.maxPrice ?? "");
               setSortBy(p?.sortBy ?? "newest");
               setActiveTab("browse");
+            }}
+          />
+        </div>
+
+        {/* Scale: loyalty, affiliate, gift-card, sell calc, extension, crypto */}
+        <div className="mb-6">
+          <CouponScalePanel
+            userId={currentUserId}
+            wishlistCount={wishlist.items.length}
+            onBulkBuy={async () => {
+              if (!wishlist.items.length) return;
+              const wishedCoupons = coupons.filter(c => wishlist.isWishlisted(c.id) && !c.is_sold && c.user_id !== currentUserId);
+              if (!wishedCoupons.length) { toast({ title: "Nothing to buy", description: "Your wishlist is empty or items are unavailable." }); return; }
+              toast({ title: `Opening ${wishedCoupons.length} checkout(s)...`, description: "We'll open each in a new tab." });
+              for (const c of wishedCoupons) {
+                await handlePurchase(c);
+                await new Promise(r => setTimeout(r, 600));
+              }
             }}
           />
         </div>
