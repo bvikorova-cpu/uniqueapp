@@ -473,10 +473,27 @@ const CouponMarketplace = () => {
           </Card>
         </motion.div>
 
+        {/* Engagement panel: cashback, alerts, saved searches */}
+        <div className="mb-6">
+          <CouponEngagementPanel
+            userId={currentUserId}
+            currentFilters={{ searchTerm, category: selectedCategory, minDiscount, maxPrice, sortBy }}
+            onApplySearch={(p) => {
+              setSearchTerm(p?.searchTerm ?? "");
+              setSelectedCategory(p?.category ?? "all");
+              setMinDiscount(p?.minDiscount ?? "0");
+              setMaxPrice(p?.maxPrice ?? "");
+              setSortBy(p?.sortBy ?? "newest");
+              setActiveTab("browse");
+            }}
+          />
+        </div>
+
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-6">
-          <TabsList className="grid w-full grid-cols-3 max-w-md mx-auto">
+          <TabsList className="grid w-full grid-cols-4 max-w-2xl mx-auto">
             <TabsTrigger value="browse">Browse</TabsTrigger>
+            <TabsTrigger value="wishlist">Wishlist</TabsTrigger>
             <TabsTrigger value="my-listings">My Listings</TabsTrigger>
             <TabsTrigger value="my-orders">My Purchases</TabsTrigger>
           </TabsList>
