@@ -26,6 +26,8 @@ import { FraudDetectorView } from "@/components/bazaar/views/FraudDetectorView";
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { SEO } from "@/components/SEO";
 import { BazaarFilters, defaultFilters, type BazaarFilterState } from "@/components/bazaar/BazaarFilters";
+import { BazaarPhotoUploader, type PendingPhoto } from "@/components/bazaar/BazaarPhotoUploader";
+import { BazaarPhotoGallery } from "@/components/bazaar/BazaarPhotoGallery";
 interface BazaarItem {
   id: string;
   title: string;
@@ -36,6 +38,7 @@ interface BazaarItem {
   condition: string;
   listing_type: string;
   image_url: string | null;
+  image_urls: string[] | null;
   created_at: string;
   user_id: string;
   is_sold: boolean;
