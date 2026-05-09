@@ -290,6 +290,10 @@ const Bazaar = () => {
         description: formData.description, category: formData.category,
         condition: formData.condition, listing_type: formData.listing_type,
         image_url: coverUrl, image_urls: uploadedUrls,
+        brand: formData.brand || null,
+        size: formData.size || null,
+        shipping_method: formData.shipping_method,
+        shipping_price: formData.shipping_price ? Number(formData.shipping_price) : 0,
       });
       if (insertError) throw insertError;
 
@@ -297,7 +301,7 @@ const Bazaar = () => {
         title: "Success",
         description: commission > 0 ? `Listing added. On sale, a ${limits.commissionRate}% commission (€${commission.toFixed(2)}) will be charged` : "Listing added without commission",
       });
-      setFormData({ title: "", price: "", location: "", description: "", category: "electronics", condition: "Like New", listing_type: "sell" });
+      setFormData({ title: "", price: "", location: "", description: "", category: "electronics", condition: "Like New", listing_type: "sell", brand: "", size: "", shipping_method: "personal", shipping_price: "0" });
       photos.forEach((p) => URL.revokeObjectURL(p.preview));
       setPhotos([]); setIsDialogOpen(false); loadItems();
     } catch (error) {
