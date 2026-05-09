@@ -121,8 +121,6 @@ const FUNCTION_ALIASES: Record<string, AliasEntry> = {
   // ─────────────────────────────────────────────────────────────────────
   // PAYMENT VERIFICATION → create-checkout (action=verify)
   // ─────────────────────────────────────────────────────────────────────
-  "verify-bazaar-order-payment":        { target: "create-checkout", action: "verify", bodyExtras: { product: "bazaar_order" } },
-  "verify-bazaar-payment":              { target: "create-checkout", action: "verify", bodyExtras: { product: "bazaar" } },
   "verify-brain-duel-payment":          { target: "create-checkout", action: "verify", bodyExtras: { product: "brain_duel" } },
   "verify-coupon-payment":              { target: "create-checkout", action: "verify", bodyExtras: { product: "coupon" } },
   "verify-donation":                    { target: "create-checkout", action: "verify", bodyExtras: { product: "donation" } },
