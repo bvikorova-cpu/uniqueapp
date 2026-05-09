@@ -510,6 +510,32 @@ const Bazaar = () => {
                       <SelectContent>{conditions.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
                     </Select>
                   </div>
+                  {formData.category === "clothing" && (
+                    <div className="grid grid-cols-2 gap-2">
+                      <Input placeholder="Brand (e.g. Nike)" value={formData.brand} onChange={e => setFormData({ ...formData, brand: e.target.value })} />
+                      <Input placeholder="Size (e.g. M, 42)" value={formData.size} onChange={e => setFormData({ ...formData, size: e.target.value })} />
+                    </div>
+                  )}
+                  <div>
+                    <label className="text-sm font-medium mb-2 block">Shipping method</label>
+                    <Select value={formData.shipping_method} onValueChange={(v) => setFormData({ ...formData, shipping_method: v })}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="personal">Personal pickup</SelectItem>
+                        <SelectItem value="post">Post</SelectItem>
+                        <SelectItem value="packeta">Packeta / Z-Box</SelectItem>
+                        <SelectItem value="courier">Courier</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  {formData.shipping_method !== "personal" && (
+                    <Input
+                      placeholder="Shipping price (€) — included or extra"
+                      type="number"
+                      value={formData.shipping_price}
+                      onChange={e => setFormData({ ...formData, shipping_price: e.target.value })}
+                    />
+                  )}
                   <BazaarPhotoUploader photos={photos} onChange={setPhotos} max={8} maxSizeMb={5} />
                   <Button variant="hero" className="w-full" disabled={uploading} onClick={handleSubmit}>
                     {uploading ? "Uploading..." : "Publish Listing"}
