@@ -197,16 +197,18 @@ const CouponMarketplace = () => {
   const handleSubmit = async () => {
     if (!formData.title || !formData.store_name || !formData.original_value || !formData.selling_price) { toast({ title: "Error", description: "Fill in all required fields", variant: "destructive" }); return; }
     if (parseFloat(formData.selling_price) >= parseFloat(formData.original_value)) { toast({ title: "Error", description: "Selling price must be lower than original value", variant: "destructive" }); return; }
+    if (!balanceConfirmed) { toast({ title: "Confirm balance", description: "Please confirm the coupon's balance/value is accurate.", variant: "destructive" }); return; }
     setUploading(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { toast({ title: "Error", description: "You must be logged in", variant: "destructive" }); setUploading(false); return; }
       let imageUrl = null;
       if (imageFile) { const fileName = `${user.id}/${Date.now()}.${imageFile.name.split('.').pop()}`; const { error: ue } = await supabase.storage.from('coupon_images').upload(fileName, imageFile); if (ue) throw ue; imageUrl = supabase.storage.from('coupon_images').getPublicUrl(fileName).data.publicUrl; }
-      const { error } = await supabase.from('coupon_listings').insert({ user_id: user.id, title: formData.title, description: formData.description || null, store_name: formData.store_name, original_value: parseFloat(formData.original_value), selling_price: parseFloat(formData.selling_price), discount_code: formData.discount_code || null, expiry_date: formData.expiry_date || null, category: formData.category, coupon_type: formData.coupon_type, terms_conditions: formData.terms_conditions || null, image_url: imageUrl });
+      const { error } = await supabase.from('coupon_listings').insert({ user_id: user.id, title: formData.title, description: formData.description || null, store_name: formData.store_name, original_value: parseFloat(formData.original_value), selling_price: parseFloat(formData.selling_price), discount_code: formData.discount_code || null, expiry_date: formData.expiry_date || null, category: formData.category, coupon_type: formData.coupon_type, terms_conditions: formData.terms_conditions || null, image_url: imageUrl, balance_confirmed: true, balance_confirmed_value: parseFloat(formData.original_value) } as any);
       if (error) throw error;
       toast({ title: "Success! 🎉", description: "Your coupon has been listed for sale" });
       setFormData({ title: "", description: "", store_name: "", original_value: "", selling_price: "", discount_code: "", expiry_date: "", category: "general", coupon_type: "discount_code", terms_conditions: "" });
+      setBalanceConfirmed(false);
       setImageFile(null); setImagePreview(""); setIsDialogOpen(false); loadCoupons();
     } catch (error) { toast({ title: "Error", description: "Failed to add listing", variant: "destructive" }); }
     finally { setUploading(false); }
