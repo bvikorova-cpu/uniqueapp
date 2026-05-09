@@ -91,8 +91,7 @@ const Bazaar = () => {
   const selectedCategory = filters.category;
   const setSearchTerm = (v: string) => setFilters((f) => ({ ...f, searchTerm: v }));
   const setSelectedCategory = (v: string) => setFilters((f) => ({ ...f, category: v }));
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string>("");
+  const [photos, setPhotos] = useState<PendingPhoto[]>([]);
   const [uploading, setUploading] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
