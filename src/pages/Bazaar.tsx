@@ -25,6 +25,7 @@ import { FraudDetectorView } from "@/components/bazaar/views/FraudDetectorView";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { SEO } from "@/components/SEO";
+import { BazaarFilters, defaultFilters, type BazaarFilterState } from "@/components/bazaar/BazaarFilters";
 interface BazaarItem {
   id: string;
   title: string;
@@ -82,8 +83,11 @@ const aiTools = [
 
 const Bazaar = () => {
   const [activeView, setActiveView] = useState<string | null>(null);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [filters, setFilters] = useState<BazaarFilterState>(defaultFilters);
+  const searchTerm = filters.searchTerm;
+  const selectedCategory = filters.category;
+  const setSearchTerm = (v: string) => setFilters((f) => ({ ...f, searchTerm: v }));
+  const setSelectedCategory = (v: string) => setFilters((f) => ({ ...f, category: v }));
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string>("");
   const [uploading, setUploading] = useState(false);
@@ -193,11 +197,36 @@ const Bazaar = () => {
   const conditions = ["Like New", "Very Good", "Good", "Used"];
   const listingTypes = [{ id: "sell", name: "Sell" }, { id: "buy", name: "Buy" }];
 
-  const filteredItems = items.filter(item => {
-    const matchesSearch = item.title.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === "all" || item.category === selectedCategory;
-    return matchesSearch && matchesCategory;
-  });
+  const filteredItems = items
+    .filter((item) => {
+      const term = searchTerm.toLowerCase();
+      const matchesSearch =
+        !term ||
+        item.title.toLowerCase().includes(term) ||
+        (item.description ?? "").toLowerCase().includes(term);
+      const matchesCategory = selectedCategory === "all" || item.category === selectedCategory;
+      const matchesCondition = filters.condition === "all" || item.condition === filters.condition;
+      const min = filters.minPrice ? Number(filters.minPrice) : null;
+      const max = filters.maxPrice ? Number(filters.maxPrice) : null;
+      const matchesMin = min == null || Number(item.price) >= min;
+      const matchesMax = max == null || Number(item.price) <= max;
+      const matchesLocation =
+        !filters.location || item.location.toLowerCase().includes(filters.location.toLowerCase());
+      return matchesSearch && matchesCategory && matchesCondition && matchesMin && matchesMax && matchesLocation;
+    })
+    .sort((a, b) => {
+      switch (filters.sort) {
+        case "price_asc":
+          return Number(a.price) - Number(b.price);
+        case "price_desc":
+          return Number(b.price) - Number(a.price);
+        case "oldest":
+          return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+        case "newest":
+        default:
+          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+      }
+    });
 
   const getTimeAgo = (dateString: string) => {
     const diffInMs = new Date().getTime() - new Date(dateString).getTime();
@@ -481,19 +510,38 @@ const Bazaar = () => {
         </div>
 
         {/* Search and Filter */}
-        <div className="flex flex-col md:flex-row gap-4 mb-8">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input placeholder="Search in bazaar..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} className="pl-10" />
+        <div className="flex flex-col gap-4 mb-8">
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search in bazaar..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+            <BazaarFilters
+              filters={filters}
+              onChange={setFilters}
+              conditions={conditions}
+              currentUserId={currentUserId}
+            />
           </div>
           <div className="flex gap-2 overflow-x-auto pb-2">
-            {categories.map(category => (
-              <Button key={category.id} variant={selectedCategory === category.id ? "default" : "outline"} onClick={() => setSelectedCategory(category.id)} className="whitespace-nowrap">
+            {categories.map((category) => (
+              <Button
+                key={category.id}
+                variant={selectedCategory === category.id ? "default" : "outline"}
+                onClick={() => setSelectedCategory(category.id)}
+                className="whitespace-nowrap"
+              >
                 {category.name}
               </Button>
             ))}
           </div>
         </div>
+
 
         {/* Trust Banner */}
         <Card className="mb-8 bg-gradient-secondary border-primary/20">
@@ -546,7 +594,7 @@ const Bazaar = () => {
         {filteredItems.length === 0 && (
           <div className="text-center py-12">
             <p className="text-xl text-muted-foreground">No listings found</p>
-            <Button variant="outline" onClick={() => { setSearchTerm(""); setSelectedCategory("all"); }} className="mt-4">Clear filters</Button>
+            <Button variant="outline" onClick={() => setFilters(defaultFilters)} className="mt-4">Clear filters</Button>
           </div>
         )}
 
