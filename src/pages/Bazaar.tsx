@@ -50,6 +50,10 @@ interface BazaarItem {
   is_sold: boolean;
   bumped_until?: string | null;
   top_until?: string | null;
+  brand?: string | null;
+  size?: string | null;
+  shipping_method?: string | null;
+  shipping_price?: number | null;
   profiles?: { full_name: string | null } | null;
 }
 
@@ -114,6 +118,7 @@ const Bazaar = () => {
   const [formData, setFormData] = useState({
     title: "", price: "", location: "", description: "",
     category: "electronics", condition: "Like New", listing_type: "sell",
+    brand: "", size: "", shipping_method: "personal", shipping_price: "0",
   });
   const { toast } = useToast();
   const { limits, canCreateListing, calculateCommission } = useSubscription();
@@ -213,7 +218,10 @@ const Bazaar = () => {
       const matchesLocation =
         !filters.location || item.location.toLowerCase().includes(filters.location.toLowerCase());
       const matchesFavorite = !showOnlyFavorites || favoriteIds.has(item.id);
-      return matchesSearch && matchesCategory && matchesCondition && matchesMin && matchesMax && matchesLocation && matchesFavorite;
+      const matchesBrand = !filters.brand || (item.brand ?? "").toLowerCase().includes(filters.brand.toLowerCase());
+      const matchesSize = filters.size === "all" || (item.size ?? "") === filters.size;
+      const matchesShipping = filters.shippingMethod === "all" || (item.shipping_method ?? "personal") === filters.shippingMethod;
+      return matchesSearch && matchesCategory && matchesCondition && matchesMin && matchesMax && matchesLocation && matchesFavorite && matchesBrand && matchesSize && matchesShipping;
     })
     .sort((a, b) => {
       // Promoted listings always float to the top, regardless of sort.
@@ -282,6 +290,10 @@ const Bazaar = () => {
         description: formData.description, category: formData.category,
         condition: formData.condition, listing_type: formData.listing_type,
         image_url: coverUrl, image_urls: uploadedUrls,
+        brand: formData.brand || null,
+        size: formData.size || null,
+        shipping_method: formData.shipping_method,
+        shipping_price: formData.shipping_price ? Number(formData.shipping_price) : 0,
       });
       if (insertError) throw insertError;
 
@@ -289,7 +301,7 @@ const Bazaar = () => {
         title: "Success",
         description: commission > 0 ? `Listing added. On sale, a ${limits.commissionRate}% commission (€${commission.toFixed(2)}) will be charged` : "Listing added without commission",
       });
-      setFormData({ title: "", price: "", location: "", description: "", category: "electronics", condition: "Like New", listing_type: "sell" });
+      setFormData({ title: "", price: "", location: "", description: "", category: "electronics", condition: "Like New", listing_type: "sell", brand: "", size: "", shipping_method: "personal", shipping_price: "0" });
       photos.forEach((p) => URL.revokeObjectURL(p.preview));
       setPhotos([]); setIsDialogOpen(false); loadItems();
     } catch (error) {
@@ -498,6 +510,32 @@ const Bazaar = () => {
                       <SelectContent>{conditions.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
                     </Select>
                   </div>
+                  {formData.category === "clothing" && (
+                    <div className="grid grid-cols-2 gap-2">
+                      <Input placeholder="Brand (e.g. Nike)" value={formData.brand} onChange={e => setFormData({ ...formData, brand: e.target.value })} />
+                      <Input placeholder="Size (e.g. M, 42)" value={formData.size} onChange={e => setFormData({ ...formData, size: e.target.value })} />
+                    </div>
+                  )}
+                  <div>
+                    <label className="text-sm font-medium mb-2 block">Shipping method</label>
+                    <Select value={formData.shipping_method} onValueChange={(v) => setFormData({ ...formData, shipping_method: v })}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="personal">Personal pickup</SelectItem>
+                        <SelectItem value="post">Post</SelectItem>
+                        <SelectItem value="packeta">Packeta / Z-Box</SelectItem>
+                        <SelectItem value="courier">Courier</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  {formData.shipping_method !== "personal" && (
+                    <Input
+                      placeholder="Shipping price (€) — included or extra"
+                      type="number"
+                      value={formData.shipping_price}
+                      onChange={e => setFormData({ ...formData, shipping_price: e.target.value })}
+                    />
+                  )}
                   <BazaarPhotoUploader photos={photos} onChange={setPhotos} max={8} maxSizeMb={5} />
                   <Button variant="hero" className="w-full" disabled={uploading} onClick={handleSubmit}>
                     {uploading ? "Uploading..." : "Publish Listing"}
@@ -705,7 +743,18 @@ const Bazaar = () => {
                     <div className="flex items-center gap-2"><Clock className="h-4 w-4 text-muted-foreground" /><span>{getTimeAgo(selectedItem.created_at)}</span></div>
                     <div className="flex items-center gap-2"><User className="h-4 w-4 text-muted-foreground" /><span>{selectedItem.profiles?.full_name || "Anonymous user"}</span></div>
                   </div>
-                  <div><h4 className="font-semibold mb-2">Category</h4><p className="text-muted-foreground">{categories.find(c => c.id === selectedItem.category)?.name}</p></div>
+                  <div className="grid grid-cols-2 gap-3 text-sm">
+                    <div><h4 className="font-semibold mb-1">Category</h4><p className="text-muted-foreground">{categories.find(c => c.id === selectedItem.category)?.name}</p></div>
+                    {selectedItem.brand && <div><h4 className="font-semibold mb-1">Brand</h4><p className="text-muted-foreground">{selectedItem.brand}</p></div>}
+                    {selectedItem.size && <div><h4 className="font-semibold mb-1">Size</h4><p className="text-muted-foreground">{selectedItem.size}</p></div>}
+                    <div>
+                      <h4 className="font-semibold mb-1">Shipping</h4>
+                      <p className="text-muted-foreground capitalize">
+                        {(selectedItem.shipping_method || "personal").replace("_", " ")}
+                        {selectedItem.shipping_price && Number(selectedItem.shipping_price) > 0 ? ` · +€${Number(selectedItem.shipping_price).toFixed(2)}` : selectedItem.shipping_method === "personal" ? "" : " · Free"}
+                      </p>
+                    </div>
+                  </div>
                   {selectedItem.description && <div><h4 className="font-semibold mb-2">Description</h4><p className="text-muted-foreground whitespace-pre-wrap">{selectedItem.description}</p></div>}
                   {selectedItem.listing_type === 'sell' && limits.commissionRate > 0 && currentUserId !== selectedItem.user_id && (
                     <Alert><AlertCircle className="h-4 w-4" /><AlertDescription>

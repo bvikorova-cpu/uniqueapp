@@ -19,6 +19,9 @@ export interface BazaarFilterState {
   maxPrice: string;
   location: string;
   sort: SortOption;
+  brand: string; // free-text contains
+  size: string;  // "all" or specific
+  shippingMethod: string; // "all" | personal | post | packeta | courier
 }
 
 export const defaultFilters: BazaarFilterState = {
@@ -29,7 +32,19 @@ export const defaultFilters: BazaarFilterState = {
   maxPrice: "",
   location: "",
   sort: "newest",
+  brand: "",
+  size: "all",
+  shippingMethod: "all",
 };
+
+export const SHIPPING_METHODS = [
+  { id: "personal", name: "Personal pickup" },
+  { id: "post", name: "Post" },
+  { id: "packeta", name: "Packeta / Z-Box" },
+  { id: "courier", name: "Courier" },
+] as const;
+
+export const CLOTHING_SIZES = ["XS", "S", "M", "L", "XL", "XXL", "34", "36", "38", "40", "42", "44"];
 
 interface SavedSearch {
   id: string;
@@ -133,7 +148,12 @@ export const BazaarFilters = ({ filters, onChange, conditions, currentUserId }: 
     (filters.minPrice ? 1 : 0) +
     (filters.maxPrice ? 1 : 0) +
     (filters.condition !== "all" ? 1 : 0) +
-    (filters.location ? 1 : 0);
+    (filters.location ? 1 : 0) +
+    (filters.brand ? 1 : 0) +
+    (filters.size !== "all" ? 1 : 0) +
+    (filters.shippingMethod !== "all" ? 1 : 0);
+
+  const isClothing = filters.category === "clothing";
 
   return (
     <div className="flex flex-wrap items-center gap-2">
@@ -203,6 +223,42 @@ export const BazaarFilters = ({ filters, onChange, conditions, currentUserId }: 
               onChange={(e) => set("location", e.target.value)}
             />
           </div>
+          <div>
+            <label className="text-xs font-semibold mb-1 block">Shipping</label>
+            <Select value={filters.shippingMethod} onValueChange={(v) => set("shippingMethod", v)}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Any method</SelectItem>
+                {SHIPPING_METHODS.map((m) => (
+                  <SelectItem key={m.id} value={m.id}>{m.name}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          {isClothing && (
+            <>
+              <div>
+                <label className="text-xs font-semibold mb-1 block">Brand contains</label>
+                <Input
+                  placeholder="e.g. Nike, Zara"
+                  value={filters.brand}
+                  onChange={(e) => set("brand", e.target.value)}
+                />
+              </div>
+              <div>
+                <label className="text-xs font-semibold mb-1 block">Size</label>
+                <Select value={filters.size} onValueChange={(v) => set("size", v)}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Any size</SelectItem>
+                    {CLOTHING_SIZES.map((s) => (
+                      <SelectItem key={s} value={s}>{s}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </>
+          )}
           <Button
             variant="ghost"
             size="sm"
