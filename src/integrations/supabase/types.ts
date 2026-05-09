@@ -11033,6 +11033,41 @@ export type Database = {
           },
         ]
       }
+      coupon_cashback_ledger: {
+        Row: {
+          amount_eur: number
+          created_at: string
+          id: string
+          order_id: string
+          rate: number
+          user_id: string
+        }
+        Insert: {
+          amount_eur: number
+          created_at?: string
+          id?: string
+          order_id: string
+          rate?: number
+          user_id: string
+        }
+        Update: {
+          amount_eur?: number
+          created_at?: string
+          id?: string
+          order_id?: string
+          rate?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coupon_cashback_ledger_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: true
+            referencedRelation: "coupon_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       coupon_escrow: {
         Row: {
           amount: number
@@ -11293,6 +11328,92 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "coupon_orders_coupon_id_fkey"
+            columns: ["coupon_id"]
+            isOneToOne: false
+            referencedRelation: "coupon_listings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      coupon_price_alerts: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean
+          last_notified_at: string | null
+          max_price: number
+          min_discount_pct: number
+          store_name: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          last_notified_at?: string | null
+          max_price: number
+          min_discount_pct?: number
+          store_name: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          last_notified_at?: string | null
+          max_price?: number
+          min_discount_pct?: number
+          store_name?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      coupon_saved_searches: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          params: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          params?: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          params?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
+      coupon_wishlist: {
+        Row: {
+          coupon_id: string
+          created_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          coupon_id: string
+          created_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          coupon_id?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coupon_wishlist_coupon_id_fkey"
             columns: ["coupon_id"]
             isOneToOne: false
             referencedRelation: "coupon_listings"
