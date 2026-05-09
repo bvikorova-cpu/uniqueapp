@@ -118,6 +118,7 @@ const Bazaar = () => {
   const [formData, setFormData] = useState({
     title: "", price: "", location: "", description: "",
     category: "electronics", condition: "Like New", listing_type: "sell",
+    brand: "", size: "", shipping_method: "personal", shipping_price: "0",
   });
   const { toast } = useToast();
   const { limits, canCreateListing, calculateCommission } = useSubscription();
