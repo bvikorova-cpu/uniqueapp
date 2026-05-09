@@ -4,7 +4,8 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Heart, ThumbsDown, MessageCircle, Loader2, Filter, X, Clock } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Heart, ThumbsDown, MessageCircle, Loader2, Filter, X, Clock, Search } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { TalentCommentsSheet } from "@/components/megatalent/TalentCommentsSheet";
@@ -46,6 +47,8 @@ export default function MegaTalentLatestFeed({ categoryGroups }: Props) {
   );
 
   const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [searchInput, setSearchInput] = useState("");
+  const [search, setSearch] = useState("");
   const [items, setItems] = useState<Submission[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
@@ -56,6 +59,12 @@ export default function MegaTalentLatestFeed({ categoryGroups }: Props) {
   const [busyVote, setBusyVote] = useState<string | null>(null);
   const [commentCounts, setCommentCounts] = useState<Record<string, number>>({});
   const [openComments, setOpenComments] = useState<string | null>(null);
+
+  // Debounce search input -> actual query term
+  useEffect(() => {
+    const t = setTimeout(() => setSearch(searchInput.trim()), 300);
+    return () => clearTimeout(t);
+  }, [searchInput]);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setUserId(data.user?.id ?? null));
@@ -75,6 +84,10 @@ export default function MegaTalentLatestFeed({ categoryGroups }: Props) {
           .range(from, to);
         if (selected.size > 0) {
           q = q.in("category", Array.from(selected) as any);
+        }
+        if (search) {
+          const escaped = search.replace(/[%,]/g, " ");
+          q = q.or(`title.ilike.%${escaped}%,description.ilike.%${escaped}%`);
         }
         const { data, error } = await q;
         if (error) throw error;
@@ -115,7 +128,7 @@ export default function MegaTalentLatestFeed({ categoryGroups }: Props) {
         setLoadingMore(false);
       }
     },
-    [selected, userId, toast]
+    [selected, search, userId, toast]
   );
 
   useEffect(() => {
@@ -255,6 +268,26 @@ export default function MegaTalentLatestFeed({ categoryGroups }: Props) {
               ))}
               {selected.size > 4 && <Badge variant="outline" className="text-[10px]">+{selected.size - 4}</Badge>}
             </div>
+          )}
+        </div>
+
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+          <Input
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+            placeholder="Search posts by title or description…"
+            className="pl-9 pr-9 h-10"
+          />
+          {searchInput && (
+            <button
+              type="button"
+              onClick={() => setSearchInput("")}
+              className="absolute right-2 top-1/2 -translate-y-1/2 h-6 w-6 inline-flex items-center justify-center rounded-md text-muted-foreground hover:text-foreground hover:bg-muted/50"
+              aria-label="Clear search"
+            >
+              <X className="h-3.5 w-3.5" />
+            </button>
           )}
         </div>
 
