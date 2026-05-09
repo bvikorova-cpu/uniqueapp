@@ -743,7 +743,18 @@ const Bazaar = () => {
                     <div className="flex items-center gap-2"><Clock className="h-4 w-4 text-muted-foreground" /><span>{getTimeAgo(selectedItem.created_at)}</span></div>
                     <div className="flex items-center gap-2"><User className="h-4 w-4 text-muted-foreground" /><span>{selectedItem.profiles?.full_name || "Anonymous user"}</span></div>
                   </div>
-                  <div><h4 className="font-semibold mb-2">Category</h4><p className="text-muted-foreground">{categories.find(c => c.id === selectedItem.category)?.name}</p></div>
+                  <div className="grid grid-cols-2 gap-3 text-sm">
+                    <div><h4 className="font-semibold mb-1">Category</h4><p className="text-muted-foreground">{categories.find(c => c.id === selectedItem.category)?.name}</p></div>
+                    {selectedItem.brand && <div><h4 className="font-semibold mb-1">Brand</h4><p className="text-muted-foreground">{selectedItem.brand}</p></div>}
+                    {selectedItem.size && <div><h4 className="font-semibold mb-1">Size</h4><p className="text-muted-foreground">{selectedItem.size}</p></div>}
+                    <div>
+                      <h4 className="font-semibold mb-1">Shipping</h4>
+                      <p className="text-muted-foreground capitalize">
+                        {(selectedItem.shipping_method || "personal").replace("_", " ")}
+                        {selectedItem.shipping_price && Number(selectedItem.shipping_price) > 0 ? ` · +€${Number(selectedItem.shipping_price).toFixed(2)}` : selectedItem.shipping_method === "personal" ? "" : " · Free"}
+                      </p>
+                    </div>
+                  </div>
                   {selectedItem.description && <div><h4 className="font-semibold mb-2">Description</h4><p className="text-muted-foreground whitespace-pre-wrap">{selectedItem.description}</p></div>}
                   {selectedItem.listing_type === 'sell' && limits.commissionRate > 0 && currentUserId !== selectedItem.user_id && (
                     <Alert><AlertCircle className="h-4 w-4" /><AlertDescription>
