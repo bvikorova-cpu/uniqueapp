@@ -213,6 +213,14 @@ const Bazaar = () => {
       return matchesSearch && matchesCategory && matchesCondition && matchesMin && matchesMax && matchesLocation && matchesFavorite;
     })
     .sort((a, b) => {
+      // Promoted listings always float to the top, regardless of sort.
+      const now = Date.now();
+      const aTop = a.top_until && new Date(a.top_until).getTime() > now ? 2 : 0;
+      const bTop = b.top_until && new Date(b.top_until).getTime() > now ? 2 : 0;
+      const aBump = a.bumped_until && new Date(a.bumped_until).getTime() > now ? 1 : 0;
+      const bBump = b.bumped_until && new Date(b.bumped_until).getTime() > now ? 1 : 0;
+      const promoDiff = (bTop + bBump) - (aTop + aBump);
+      if (promoDiff !== 0) return promoDiff;
       switch (filters.sort) {
         case "price_asc":
           return Number(a.price) - Number(b.price);
