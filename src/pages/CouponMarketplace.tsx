@@ -28,6 +28,9 @@ import { BuyerOrderCard } from "@/components/coupon/BuyerOrderCard";
 import { Checkbox } from "@/components/ui/checkbox";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
+import { Link } from "react-router-dom";
+
+const brandSlug = (s: string) => s.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
 interface CouponListing {
   id: string; title: string; description: string | null; store_name: string;
   original_value: number; selling_price: number; discount_code: string | null;
@@ -95,6 +98,10 @@ const CouponMarketplace = () => {
   const [isCheckingAccess, setIsCheckingAccess] = useState(true);
   const [isPurchasingAccess, setIsPurchasingAccess] = useState(false);
   const [balanceConfirmed, setBalanceConfirmed] = useState(false);
+  const [minDiscount, setMinDiscount] = useState<string>("0");
+  const [maxPrice, setMaxPrice] = useState<string>("");
+  const [hideExpired, setHideExpired] = useState(true);
+  const [sortBy, setSortBy] = useState<string>("newest");
   const [formData, setFormData] = useState({
     title: "", description: "", store_name: "", original_value: "", selling_price: "",
     discount_code: "", expiry_date: "", category: "general", coupon_type: "discount_code", terms_conditions: "",
@@ -186,10 +193,36 @@ const CouponMarketplace = () => {
   };
   const removeImage = () => { setImageFile(null); setImagePreview(""); };
 
-  const filteredCoupons = coupons.filter(c => {
-    const matchesSearch = c.title.toLowerCase().includes(searchTerm.toLowerCase()) || c.store_name.toLowerCase().includes(searchTerm.toLowerCase());
-    return (matchesSearch) && (selectedCategory === "all" || c.category === selectedCategory) && !c.is_sold;
-  });
+  const filteredCoupons = (() => {
+    const md = parseFloat(minDiscount) || 0;
+    const mp = parseFloat(maxPrice);
+    const now = Date.now();
+    let arr = coupons.filter(c => {
+      if (c.is_sold) return false;
+      const matchesSearch = c.title.toLowerCase().includes(searchTerm.toLowerCase()) || c.store_name.toLowerCase().includes(searchTerm.toLowerCase());
+      if (!matchesSearch) return false;
+      if (selectedCategory !== "all" && c.category !== selectedCategory) return false;
+      const disc = ((c.original_value - c.selling_price) / c.original_value) * 100;
+      if (disc < md) return false;
+      if (!isNaN(mp) && c.selling_price > mp) return false;
+      if (hideExpired && c.expiry_date && new Date(c.expiry_date).getTime() < now) return false;
+      return true;
+    });
+    const discPct = (c: CouponListing) => ((c.original_value - c.selling_price) / c.original_value) * 100;
+    switch (sortBy) {
+      case "discount_desc": arr = [...arr].sort((a, b) => discPct(b) - discPct(a)); break;
+      case "price_asc": arr = [...arr].sort((a, b) => a.selling_price - b.selling_price); break;
+      case "price_desc": arr = [...arr].sort((a, b) => b.selling_price - a.selling_price); break;
+      case "expiry_asc": arr = [...arr].sort((a, b) => {
+        const ax = a.expiry_date ? new Date(a.expiry_date).getTime() : Infinity;
+        const bx = b.expiry_date ? new Date(b.expiry_date).getTime() : Infinity;
+        return ax - bx;
+      }); break;
+      case "rating_desc": arr = [...arr].sort((a, b) => (sellerStats[b.user_id]?.avg_rating || 0) - (sellerStats[a.user_id]?.avg_rating || 0)); break;
+      default: arr = [...arr].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+    }
+    return arr;
+  })();
 
   const getTimeAgo = (d: string) => { const h = Math.floor((Date.now() - new Date(d).getTime()) / 3600000); if (h < 1) return "just now"; if (h < 24) return `${h}h ago`; const days = Math.floor(h / 24); return days < 7 ? `${days}d ago` : `${Math.floor(days / 7)}w ago`; };
   const getSavingsPercent = (o: number, s: number) => Math.round(((o - s) / o) * 100);
@@ -446,12 +479,49 @@ const CouponMarketplace = () => {
           </TabsList>
 
           <TabsContent value="browse" className="mt-6">
-            <div className="flex flex-col sm:flex-row gap-4 mb-6">
-              <div className="relative flex-1"><Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" /><Input placeholder="Search coupons or stores..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} className="pl-10" /></div>
-              <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                <SelectTrigger className="w-full sm:w-48"><SelectValue placeholder="Category" /></SelectTrigger>
-                <SelectContent>{categories.map(c => <SelectItem key={c.id} value={c.id}><div className="flex items-center gap-2"><c.icon className="w-4 h-4" />{c.name}</div></SelectItem>)}</SelectContent>
-              </Select>
+            <div className="space-y-3 mb-6">
+              <div className="flex flex-col sm:flex-row gap-3">
+                <div className="relative flex-1"><Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" /><Input placeholder="Search coupons or stores..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} className="pl-10" /></div>
+                <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                  <SelectTrigger className="w-full sm:w-44"><SelectValue placeholder="Category" /></SelectTrigger>
+                  <SelectContent>{categories.map(c => <SelectItem key={c.id} value={c.id}><div className="flex items-center gap-2"><c.icon className="w-4 h-4" />{c.name}</div></SelectItem>)}</SelectContent>
+                </Select>
+                <Select value={sortBy} onValueChange={setSortBy}>
+                  <SelectTrigger className="w-full sm:w-44"><SelectValue placeholder="Sort" /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="newest">Newest first</SelectItem>
+                    <SelectItem value="discount_desc">Highest discount</SelectItem>
+                    <SelectItem value="price_asc">Price: low → high</SelectItem>
+                    <SelectItem value="price_desc">Price: high → low</SelectItem>
+                    <SelectItem value="expiry_asc">Expiring soon</SelectItem>
+                    <SelectItem value="rating_desc">Top-rated sellers</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="flex flex-wrap items-center gap-3 rounded-xl border border-border/50 bg-card/40 p-3">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-semibold text-muted-foreground">Min discount</span>
+                  <Select value={minDiscount} onValueChange={setMinDiscount}>
+                    <SelectTrigger className="h-8 w-24"><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      {["0","10","20","30","40","50","60","70"].map(v => <SelectItem key={v} value={v}>{v}%+</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-semibold text-muted-foreground">Max price</span>
+                  <Input type="number" placeholder="€ any" value={maxPrice} onChange={(e) => setMaxPrice(e.target.value)} className="h-8 w-24" />
+                </div>
+                <label className="flex items-center gap-2 text-xs cursor-pointer">
+                  <Checkbox checked={hideExpired} onCheckedChange={(v) => setHideExpired(Boolean(v))} />
+                  Hide expired
+                </label>
+                {(minDiscount !== "0" || maxPrice || !hideExpired || sortBy !== "newest" || selectedCategory !== "all") && (
+                  <Button variant="ghost" size="sm" className="h-7 text-xs ml-auto" onClick={() => { setMinDiscount("0"); setMaxPrice(""); setHideExpired(true); setSortBy("newest"); setSelectedCategory("all"); }}>Reset</Button>
+                )}
+                <span className="ml-auto text-xs text-muted-foreground">{filteredCoupons.length} results</span>
+              </div>
+              <div className="flex justify-end">
               <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogTrigger asChild><Button className="gap-2"><Plus className="w-4 h-4" />Sell Coupon</Button></DialogTrigger>
                 <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
@@ -485,6 +555,7 @@ const CouponMarketplace = () => {
                   </div>
                 </DialogContent>
               </Dialog>
+              </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
@@ -497,7 +568,7 @@ const CouponMarketplace = () => {
                     </div>
                     <CardContent className="p-4">
                       <div className="flex items-center justify-between mb-1">
-                        <div className="flex items-center gap-2"><Store className="w-3 h-3 text-muted-foreground" /><span className="text-xs font-medium text-muted-foreground">{coupon.store_name}</span></div>
+                        <Link to={`/coupons/${brandSlug(coupon.store_name)}`} onClick={(e) => e.stopPropagation()} className="flex items-center gap-2 hover:text-primary transition-colors"><Store className="w-3 h-3 text-muted-foreground" /><span className="text-xs font-medium text-muted-foreground hover:text-primary underline-offset-2 hover:underline">{coupon.store_name}</span></Link>
                         {sellerStats[coupon.user_id] ? (
                           <span className="inline-flex items-center gap-0.5 text-[10px] text-amber-500 font-semibold">
                             <Star className="w-3 h-3 fill-amber-400" />
