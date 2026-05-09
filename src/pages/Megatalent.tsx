@@ -36,6 +36,7 @@ import MegaTalentCategoryGrid from "@/components/megatalent/MegaTalentCategoryGr
 import ContestStatsSidebar from "@/components/megatalent/ContestStatsSidebar";
 import MegaTalentSubmissionCard from "@/components/megatalent/MegaTalentSubmissionCard";
 import MegaTalentFeedFilters, { type FeedFilter } from "@/components/megatalent/MegaTalentFeedFilters";
+import MegaTalentLatestFeed from "@/components/megatalent/MegaTalentLatestFeed";
 import { MegaTalentOnboarding } from "@/components/megatalent/MegaTalentOnboarding";
 import { motion } from "framer-motion";
 
