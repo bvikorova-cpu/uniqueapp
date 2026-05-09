@@ -242,22 +242,26 @@ const Bazaar = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { toast({ title: "Error", description: "You must be logged in", variant: "destructive" }); setUploading(false); return; }
 
-      let imageUrl = null;
-      if (imageFile) {
-        const fileExt = imageFile.name.split('.').pop();
-        const fileName = `${user.id}-${Date.now()}.${fileExt}`;
-        const { error: uploadError } = await supabase.storage.from('bazaar_images').upload(fileName, imageFile);
+      // Upload all photos to bazaar_images bucket
+      const uploadedUrls: string[] = [];
+      for (let i = 0; i < photos.length; i++) {
+        const file = photos[i].file;
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${user.id}-${Date.now()}-${i}.${fileExt}`;
+        const { error: uploadError } = await supabase.storage.from('bazaar_images').upload(fileName, file);
         if (uploadError) throw uploadError;
         const { data: { publicUrl } } = supabase.storage.from('bazaar_images').getPublicUrl(fileName);
-        imageUrl = publicUrl;
+        uploadedUrls.push(publicUrl);
       }
+      const coverUrl = uploadedUrls[0] ?? null;
 
       const price = parseFloat(formData.price);
       const commission = calculateCommission(price);
       const { error: insertError } = await supabase.from('bazaar_items').insert({
         user_id: user.id, title: formData.title, price, location: formData.location,
         description: formData.description, category: formData.category,
-        condition: formData.condition, listing_type: formData.listing_type, image_url: imageUrl,
+        condition: formData.condition, listing_type: formData.listing_type,
+        image_url: coverUrl, image_urls: uploadedUrls,
       });
       if (insertError) throw insertError;
 
@@ -266,7 +270,8 @@ const Bazaar = () => {
         description: commission > 0 ? `Listing added. On sale, a ${limits.commissionRate}% commission (€${commission.toFixed(2)}) will be charged` : "Listing added without commission",
       });
       setFormData({ title: "", price: "", location: "", description: "", category: "electronics", condition: "Like New", listing_type: "sell" });
-      setImageFile(null); setImagePreview(""); setIsDialogOpen(false); loadItems();
+      photos.forEach((p) => URL.revokeObjectURL(p.preview));
+      setPhotos([]); setIsDialogOpen(false); loadItems();
     } catch (error) {
       console.error('Error:', error);
       toast({ title: "Error", description: "Failed to add listing", variant: "destructive" });
