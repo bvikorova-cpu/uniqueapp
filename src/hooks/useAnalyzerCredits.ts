@@ -42,21 +42,64 @@ export const useAnalyzerCredits = () => {
   });
 
   const analyzeImage = useMutation({
-    mutationFn: async ({ 
-      imageUrl, 
-      category, 
-      analysisType = 'basic' 
-    }: { 
-      imageUrl: string; 
+    mutationFn: async ({
+      imageUrl,
+      category,
+      analysisType = 'basic',
+    }: {
+      imageUrl: string;
       category: string;
       analysisType?: 'basic' | 'expert';
     }) => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Not authenticated");
+
+      // Map category → universal-vision-analyzer task
+      const TASK_BY_CATEGORY: Record<string, string> = {
+        nature: 'plant_identify',
+        objects: 'antique_identify',
+        fashion: 'virtual_tryon',
+        text: 'message',
+        food: 'food_scan',
+        art: 'antique_identify',
+        safety: 'phobia_detect',
+        home: 'home_staging',
+      };
+      const task = TASK_BY_CATEGORY[category] ?? 'plant_identify';
+      const creditsCost = analysisType === 'expert' ? 2 : 1;
+
       const { data, error } = await supabase.functions.invoke('universal-vision-analyzer', {
-        body: { imageUrl, category, analysisType }
+        body: { task, imageUrl, extras: { category, analysisType } },
       });
-      
       if (error) throw error;
-      return data;
+      if (data?.error) throw new Error(data.error);
+
+      const resultText: string = data?.result ?? data?.text ?? '';
+
+      // Persist analysis row (RLS: user_id = auth.uid())
+      const { data: row, error: insErr } = await supabase
+        .from('vision_analyses')
+        .insert({
+          user_id: user.id,
+          image_url: imageUrl,
+          category,
+          analysis_type: analysisType,
+          main_identification: resultText.slice(0, 2000),
+          detailed_info: { result: resultText, task } as any,
+          credits_used: creditsCost,
+        })
+        .select()
+        .single();
+      if (insErr) throw insErr;
+
+      // Decrement credits (RLS: user_id = auth.uid())
+      const remaining = Math.max(0, (credits?.credits_remaining ?? 0) - creditsCost);
+      await supabase
+        .from('analyzer_credits')
+        .update({ credits_remaining: remaining })
+        .eq('user_id', user.id);
+
+      return { analysis: row, result: resultText };
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["analyzer-credits"] });
