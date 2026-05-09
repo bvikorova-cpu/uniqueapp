@@ -510,19 +510,38 @@ const Bazaar = () => {
         </div>
 
         {/* Search and Filter */}
-        <div className="flex flex-col md:flex-row gap-4 mb-8">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input placeholder="Search in bazaar..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} className="pl-10" />
+        <div className="flex flex-col gap-4 mb-8">
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search in bazaar..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+            <BazaarFilters
+              filters={filters}
+              onChange={setFilters}
+              conditions={conditions}
+              currentUserId={currentUserId}
+            />
           </div>
           <div className="flex gap-2 overflow-x-auto pb-2">
-            {categories.map(category => (
-              <Button key={category.id} variant={selectedCategory === category.id ? "default" : "outline"} onClick={() => setSelectedCategory(category.id)} className="whitespace-nowrap">
+            {categories.map((category) => (
+              <Button
+                key={category.id}
+                variant={selectedCategory === category.id ? "default" : "outline"}
+                onClick={() => setSelectedCategory(category.id)}
+                className="whitespace-nowrap"
+              >
                 {category.name}
               </Button>
             ))}
           </div>
         </div>
+
 
         {/* Trust Banner */}
         <Card className="mb-8 bg-gradient-secondary border-primary/20">
