@@ -119,6 +119,7 @@ const Bazaar = () => {
   const { limits, canCreateListing, calculateCommission } = useSubscription();
   const { isFavorite, toggle: toggleFavorite, ids: favoriteIds } = useBazaarFavorites(currentUserId);
   const [showOnlyFavorites, setShowOnlyFavorites] = useState(false);
+  const [promoteItem, setPromoteItem] = useState<BazaarItem | null>(null);
 
   useEffect(() => {
     loadItems();
