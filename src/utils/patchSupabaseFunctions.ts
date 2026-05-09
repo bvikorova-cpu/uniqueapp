@@ -72,7 +72,7 @@ const FUNCTION_ALIASES: Record<string, AliasEntry> = {
   "create-analyzer-subscription":            { target: "create-checkout", bodyExtras: { product: "analyzer_subscription" } },
   "create-ar-preview-checkout":              { target: "create-checkout", bodyExtras: { product: "ar_preview" } },
   "create-astrology-checkout":               { target: "create-checkout", bodyExtras: { product: "astrology" } },
-  "create-bazaar-order-checkout":            { target: "create-checkout", bodyExtras: { product: "bazaar_order" } },
+  
   "create-best-friend-checkout":             { target: "create-checkout", bodyExtras: { product: "best_friend" } },
   "create-brain-duel-payment":               { target: "create-checkout", bodyExtras: { product: "brain_duel" } },
   "create-campaign-donation":                { target: "create-checkout", bodyExtras: { product: "campaign_donation" } },
