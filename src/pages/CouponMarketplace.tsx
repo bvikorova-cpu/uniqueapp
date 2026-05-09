@@ -95,6 +95,10 @@ const CouponMarketplace = () => {
   const [isCheckingAccess, setIsCheckingAccess] = useState(true);
   const [isPurchasingAccess, setIsPurchasingAccess] = useState(false);
   const [balanceConfirmed, setBalanceConfirmed] = useState(false);
+  const [minDiscount, setMinDiscount] = useState<string>("0");
+  const [maxPrice, setMaxPrice] = useState<string>("");
+  const [hideExpired, setHideExpired] = useState(true);
+  const [sortBy, setSortBy] = useState<string>("newest");
   const [formData, setFormData] = useState({
     title: "", description: "", store_name: "", original_value: "", selling_price: "",
     discount_code: "", expiry_date: "", category: "general", coupon_type: "discount_code", terms_conditions: "",
@@ -186,10 +190,36 @@ const CouponMarketplace = () => {
   };
   const removeImage = () => { setImageFile(null); setImagePreview(""); };
 
-  const filteredCoupons = coupons.filter(c => {
-    const matchesSearch = c.title.toLowerCase().includes(searchTerm.toLowerCase()) || c.store_name.toLowerCase().includes(searchTerm.toLowerCase());
-    return (matchesSearch) && (selectedCategory === "all" || c.category === selectedCategory) && !c.is_sold;
-  });
+  const filteredCoupons = (() => {
+    const md = parseFloat(minDiscount) || 0;
+    const mp = parseFloat(maxPrice);
+    const now = Date.now();
+    let arr = coupons.filter(c => {
+      if (c.is_sold) return false;
+      const matchesSearch = c.title.toLowerCase().includes(searchTerm.toLowerCase()) || c.store_name.toLowerCase().includes(searchTerm.toLowerCase());
+      if (!matchesSearch) return false;
+      if (selectedCategory !== "all" && c.category !== selectedCategory) return false;
+      const disc = ((c.original_value - c.selling_price) / c.original_value) * 100;
+      if (disc < md) return false;
+      if (!isNaN(mp) && c.selling_price > mp) return false;
+      if (hideExpired && c.expiry_date && new Date(c.expiry_date).getTime() < now) return false;
+      return true;
+    });
+    const discPct = (c: CouponListing) => ((c.original_value - c.selling_price) / c.original_value) * 100;
+    switch (sortBy) {
+      case "discount_desc": arr = [...arr].sort((a, b) => discPct(b) - discPct(a)); break;
+      case "price_asc": arr = [...arr].sort((a, b) => a.selling_price - b.selling_price); break;
+      case "price_desc": arr = [...arr].sort((a, b) => b.selling_price - a.selling_price); break;
+      case "expiry_asc": arr = [...arr].sort((a, b) => {
+        const ax = a.expiry_date ? new Date(a.expiry_date).getTime() : Infinity;
+        const bx = b.expiry_date ? new Date(b.expiry_date).getTime() : Infinity;
+        return ax - bx;
+      }); break;
+      case "rating_desc": arr = [...arr].sort((a, b) => (sellerStats[b.user_id]?.avg_rating || 0) - (sellerStats[a.user_id]?.avg_rating || 0)); break;
+      default: arr = [...arr].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+    }
+    return arr;
+  })();
 
   const getTimeAgo = (d: string) => { const h = Math.floor((Date.now() - new Date(d).getTime()) / 3600000); if (h < 1) return "just now"; if (h < 24) return `${h}h ago`; const days = Math.floor(h / 24); return days < 7 ? `${days}d ago` : `${Math.floor(days / 7)}w ago`; };
   const getSavingsPercent = (o: number, s: number) => Math.round(((o - s) / o) * 100);
