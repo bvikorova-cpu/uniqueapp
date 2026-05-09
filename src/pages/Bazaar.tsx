@@ -30,6 +30,8 @@ import { BazaarPhotoUploader, type PendingPhoto } from "@/components/bazaar/Baza
 import { BazaarPhotoGallery } from "@/components/bazaar/BazaarPhotoGallery";
 import { BazaarItemChat } from "@/components/bazaar/BazaarItemChat";
 import { SellerRatingBadge } from "@/components/bazaar/SellerRatingBadge";
+import { useBazaarFavorites } from "@/hooks/useBazaarFavorites";
+import { Heart } from "lucide-react";
 interface BazaarItem {
   id: string;
   title: string;
