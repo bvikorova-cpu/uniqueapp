@@ -207,7 +207,8 @@ const Bazaar = () => {
       const matchesMax = max == null || Number(item.price) <= max;
       const matchesLocation =
         !filters.location || item.location.toLowerCase().includes(filters.location.toLowerCase());
-      return matchesSearch && matchesCategory && matchesCondition && matchesMin && matchesMax && matchesLocation;
+      const matchesFavorite = !showOnlyFavorites || favoriteIds.has(item.id);
+      return matchesSearch && matchesCategory && matchesCondition && matchesMin && matchesMax && matchesLocation && matchesFavorite;
     })
     .sort((a, b) => {
       switch (filters.sort) {
