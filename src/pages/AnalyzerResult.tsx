@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, Download, Share2, Heart, MessageCircle, ShoppingBag, Sparkles } from "lucide-react";
+import { ArrowLeft, Download, Share2, Heart, ShoppingBag, FileDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -8,6 +8,8 @@ import { Separator } from "@/components/ui/separator";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
+import { AIChatFollowup } from "@/components/analyzer/AIChatFollowup";
+import { exportAnalysisPDF, shareAnalysisCard } from "@/components/analyzer/exportHelpers";
 
 interface AnalysisData {
   id: string;
@@ -104,13 +106,23 @@ export default function AnalyzerResult() {
               <Heart className={`w-4 h-4 ${analysis.is_favorite ? 'fill-red-500 text-red-500' : ''}`} />
             </Button>
             <Button variant="outline" size="icon" className="border-cyan-500/20" onClick={async () => {
-              const url = window.location.href;
-              const shareData = { title: analysis.main_identification || "Analysis", text: "Check out this analysis", url };
-              try {
-                if (navigator.share) await navigator.share(shareData);
-                else { await navigator.clipboard.writeText(url); toast.success("Link skopírovaný!"); }
-              } catch {}
+              const r = await shareAnalysisCard(analysis.main_identification || "Analysis", window.location.href);
+              if (r === "copied") toast.success("Link skopírovaný!");
             }}><Share2 className="w-4 h-4" /></Button>
+            <Button variant="outline" size="icon" className="border-cyan-500/20" title="Export PDF" onClick={() => {
+              exportAnalysisPDF(
+                info.mainIdentification,
+                analysis.image_url,
+                [
+                  { heading: "Description", body: info.details.description || "" },
+                  ...(info.details.specifications?.length ? [{ heading: "Specifications", body: info.details.specifications.join("\n") }] : []),
+                  ...(info.details.careInstructions ? [{ heading: "Care", body: info.details.careInstructions }] : []),
+                  ...(info.details.safety ? [{ heading: "Safety", body: info.details.safety }] : []),
+                  ...(info.details.value ? [{ heading: "Value", body: info.details.value }] : []),
+                  ...(info.additionalInfo ? [{ heading: "Additional Info", body: info.additionalInfo }] : []),
+                ]
+              );
+            }}><FileDown className="w-4 h-4" /></Button>
             <Button variant="outline" size="icon" className="border-cyan-500/20" onClick={async () => {
               try {
                 const blob = await (await fetch(analysis.image_url)).blob();
@@ -209,19 +221,9 @@ export default function AnalyzerResult() {
               </div>
             </Card>
 
-            <Card className="p-6 border-cyan-500/20 bg-gradient-to-br from-cyan-950/20 to-background">
-              <div className="flex items-center gap-2 mb-4">
-                <MessageCircle className="w-5 h-5 text-cyan-400" />
-                <h2 className="text-lg font-bold">Ask Follow-up Questions</h2>
-                <Badge className="bg-cyan-500/20 text-cyan-400 border-cyan-500/30">Pro Feature</Badge>
-              </div>
-              <p className="text-muted-foreground text-sm mb-4">
-                Upgrade to Pro to chat with AI about this analysis.
-              </p>
-              <Button onClick={() => navigate('/analyzer/pricing')} className="bg-gradient-to-r from-cyan-600 to-blue-600">
-                <Sparkles className="w-4 h-4 mr-2" /> Upgrade to Pro
-              </Button>
-            </Card>
+            <AIChatFollowup
+              context={`Item: ${info.mainIdentification}\nCategory: ${analysis.category}\nDescription: ${info.details.description}\nAdditional: ${info.additionalInfo || ""}`}
+            />
           </motion.div>
         </div>
       </div>
