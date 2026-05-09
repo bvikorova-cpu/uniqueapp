@@ -46,6 +46,8 @@ interface BazaarItem {
   created_at: string;
   user_id: string;
   is_sold: boolean;
+  bumped_until?: string | null;
+  top_until?: string | null;
   profiles?: { full_name: string | null } | null;
 }
 
