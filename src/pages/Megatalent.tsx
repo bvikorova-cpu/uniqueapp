@@ -589,10 +589,15 @@ const Megatalent = () => {
         <MegaTalentGuide />
 
         <Tabs defaultValue="feed" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-6">
+          <TabsList className="grid w-full grid-cols-3 mb-6">
             <TabsTrigger value="feed">Contest Feed</TabsTrigger>
+            <TabsTrigger value="latest">Latest</TabsTrigger>
             <TabsTrigger value="referral">Referral Program</TabsTrigger>
           </TabsList>
+
+          <TabsContent value="latest" className="mt-0">
+            <MegaTalentLatestFeed categoryGroups={categoryGroups} />
+          </TabsContent>
 
           <TabsContent value="feed" className="mt-0">
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
