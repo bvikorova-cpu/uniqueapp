@@ -333,6 +333,176 @@ serve(async (req) => {
     }
     const customerId = await getStripeCustomer(stripe, email);
 
+    // ─── COUPON MARKETPLACE: subscription access (€1/mo) ───
+    if (body.product === "coupon_marketplace") {
+      const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2.57.2");
+      const supa = createClient(
+        Deno.env.get("SUPABASE_URL") ?? "",
+        Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+      );
+
+      if (body.action === "check") {
+        if (!userId) return successResponse({ hasAccess: false });
+        const { data } = await supa
+          .from("coupon_marketplace_access")
+          .select("id")
+          .eq("user_id", userId)
+          .limit(1)
+          .maybeSingle();
+        return successResponse({ hasAccess: !!data });
+      }
+
+      if (body.action === "verify") {
+        const sessionId = body.sessionId || body.session_id;
+        if (!sessionId) return successResponse({ hasAccess: false, verified: false, error: "Missing sessionId" });
+        try {
+          const session = await stripe.checkout.sessions.retrieve(sessionId);
+          const paid = session.payment_status === "paid" || session.status === "complete";
+          if (paid && userId) {
+            await supa.from("coupon_marketplace_access").insert({
+              user_id: userId,
+              amount: (session.amount_total ?? 100) / 100,
+              stripe_session_id: sessionId,
+            });
+          }
+          return successResponse({ verified: paid, hasAccess: paid });
+        } catch (e) {
+          return successResponse({ verified: false, hasAccess: false, error: e instanceof Error ? e.message : String(e) });
+        }
+      }
+
+      // Default: purchase → create subscription checkout
+      const session = await stripe.checkout.sessions.create({
+        customer: customerId || undefined,
+        customer_email: customerId ? undefined : email,
+        line_items: [{
+          price_data: {
+            currency: "eur",
+            unit_amount: 100,
+            recurring: { interval: "month" as const },
+            product_data: { name: "Coupon Marketplace Access" },
+          },
+          quantity: 1,
+        }],
+        mode: "subscription",
+        success_url: `${origin}/coupon-marketplace?access=success&session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${origin}/coupon-marketplace?access=cancelled`,
+        metadata: { user_id: userId ?? "", type: "coupon_marketplace", product: "coupon_marketplace" },
+      });
+      return successResponse({ url: session.url, session_id: session.id });
+    }
+
+    // ─── COUPON PURCHASE: buy individual coupon listing ───
+    if (body.product === "coupon" && body.action !== "verify") {
+      const couponId = String(body.couponId || body.coupon_id || "");
+      if (!couponId) throw new Error("Missing couponId");
+      if (!userId) throw new Error("Login required");
+
+      const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2.57.2");
+      const supa = createClient(
+        Deno.env.get("SUPABASE_URL") ?? "",
+        Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+      );
+
+      const { data: coupon, error: cErr } = await supa
+        .from("coupon_listings")
+        .select("id, user_id, title, selling_price, is_sold")
+        .eq("id", couponId)
+        .maybeSingle();
+      if (cErr || !coupon) throw new Error("Coupon not found");
+      if (coupon.is_sold) throw new Error("Coupon already sold");
+      if (coupon.user_id === userId) throw new Error("You cannot purchase your own coupon");
+
+      const amountCents = Math.round(Number(coupon.selling_price) * 100);
+      const commission = Math.round(amountCents * 0.10);
+      const sellerPayout = amountCents - commission;
+
+      const { data: order, error: oErr } = await supa
+        .from("coupon_orders")
+        .insert({
+          coupon_id: coupon.id,
+          buyer_id: userId,
+          seller_id: coupon.user_id,
+          amount: Number(coupon.selling_price),
+          commission_amount: commission / 100,
+          seller_payout: sellerPayout / 100,
+          status: "pending",
+          buyer_email: email,
+        })
+        .select()
+        .single();
+      if (oErr || !order) throw new Error(oErr?.message || "Failed to create order");
+
+      const session = await stripe.checkout.sessions.create({
+        customer: customerId || undefined,
+        customer_email: customerId ? undefined : email,
+        line_items: [{
+          price_data: {
+            currency: "eur",
+            unit_amount: amountCents,
+            product_data: { name: `Coupon: ${coupon.title}` },
+          },
+          quantity: 1,
+        }],
+        mode: "payment",
+        success_url: `${origin}/coupon-marketplace?payment=success&session_id={CHECKOUT_SESSION_ID}&order_id=${order.id}`,
+        cancel_url: `${origin}/coupon-marketplace?payment=cancelled`,
+        metadata: {
+          user_id: userId,
+          type: "coupon",
+          product: "coupon",
+          coupon_id: coupon.id,
+          order_id: order.id,
+        },
+      });
+
+      await supa.from("coupon_orders").update({ stripe_session_id: session.id }).eq("id", order.id);
+
+      return successResponse({ url: session.url, session_id: session.id });
+    }
+
+    // ─── COUPON VERIFY: confirm payment + mark order/listing sold ───
+    if (body.product === "coupon" && body.action === "verify") {
+      const sessionId = body.sessionId || body.session_id;
+      const orderId = body.orderId || body.order_id;
+      if (!sessionId) return successResponse({ verified: false, error: "Missing sessionId" });
+
+      const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2.57.2");
+      const supa = createClient(
+        Deno.env.get("SUPABASE_URL") ?? "",
+        Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+      );
+
+      try {
+        const session = await stripe.checkout.sessions.retrieve(sessionId);
+        const paid = session.payment_status === "paid" || session.status === "complete";
+
+        if (paid && orderId) {
+          const nowIso = new Date().toISOString();
+          await supa.from("coupon_orders").update({
+            status: "completed",
+            paid_at: nowIso,
+            delivered_at: nowIso,
+          }).eq("id", orderId);
+
+          const { data: ord } = await supa
+            .from("coupon_orders")
+            .select("coupon_id")
+            .eq("id", orderId)
+            .maybeSingle();
+          if (ord?.coupon_id) {
+            await supa.from("coupon_listings")
+              .update({ is_sold: true })
+              .eq("id", ord.coupon_id);
+          }
+        }
+
+        return successResponse({ verified: paid, status: session.status, payment_status: session.payment_status });
+      } catch (e) {
+        return successResponse({ verified: false, error: e instanceof Error ? e.message : String(e) });
+      }
+    }
+
     // ─── ACTION: verify (used by all verify-*-payment aliases) ───
     // Verifies a Stripe Checkout session id and returns its status.
     // Body: { action: "verify", sessionId: string, product?: string }
