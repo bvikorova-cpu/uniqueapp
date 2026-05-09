@@ -593,6 +593,17 @@ const Bazaar = () => {
                     <Badge className="absolute top-2 right-2 bg-primary/90 text-primary-foreground text-[10px]">
                       {listingTypes.find(t => t.id === item.listing_type)?.name}
                     </Badge>
+                    {item.top_until && new Date(item.top_until).getTime() > Date.now() && (
+                      <Badge className="absolute top-9 left-2 bg-yellow-500 text-black text-[10px] gap-1">
+                        <Crown className="h-3 w-3" /> TOP
+                      </Badge>
+                    )}
+                    {!(item.top_until && new Date(item.top_until).getTime() > Date.now()) &&
+                      item.bumped_until && new Date(item.bumped_until).getTime() > Date.now() && (
+                        <Badge className="absolute top-9 left-2 bg-orange-500 text-white text-[10px] gap-1">
+                          <Flame className="h-3 w-3" /> Bumped
+                        </Badge>
+                      )}
                     {currentUserId && currentUserId !== item.user_id && (
                       <Button
                         type="button"
