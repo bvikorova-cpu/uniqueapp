@@ -37,6 +37,32 @@ Deno.serve(async (req) => {
       .eq("id", orderId)
       .maybeSingle();
     if (oErr || !order) throw new Error("Order not found");
+
+    // Admin resolution path
+    if (action === "admin-release" || action === "admin-refund") {
+      const { data: roles } = await supa.from("user_roles").select("role").eq("user_id", user.id);
+      const isAdmin = (roles || []).some((r: any) => r.role === "admin");
+      if (!isAdmin) throw new Error("Admin only");
+      const note = String(body?.note || "").slice(0, 500);
+      if (action === "admin-release") {
+        await supa.from("coupon_orders").update({
+          escrow_status: "released",
+          released_at: new Date().toISOString(),
+          dispute_resolution: `admin_release: ${note}`,
+          updated_at: new Date().toISOString(),
+        }).eq("id", orderId);
+        return json({ ok: true, escrow_status: "released" });
+      } else {
+        await supa.from("coupon_orders").update({
+          escrow_status: "refunded",
+          status: "refunded",
+          dispute_resolution: `admin_refund: ${note}`,
+          updated_at: new Date().toISOString(),
+        }).eq("id", orderId);
+        return json({ ok: true, escrow_status: "refunded" });
+      }
+    }
+
     if (order.buyer_id !== user.id) throw new Error("Not your order");
     if (order.status !== "completed") throw new Error("Order not completed yet");
 
