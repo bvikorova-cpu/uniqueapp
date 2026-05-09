@@ -1,0 +1,1 @@
+ALTER VIEW public.bazaar_seller_rating_summary SET (security_invoker = on);
