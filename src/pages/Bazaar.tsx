@@ -33,6 +33,10 @@ import { SellerRatingBadge } from "@/components/bazaar/SellerRatingBadge";
 import { useBazaarFavorites } from "@/hooks/useBazaarFavorites";
 import { Heart } from "lucide-react";
 import { PromoteListingDialog } from "@/components/bazaar/PromoteListingDialog";
+import { VerifiedSellerBadge } from "@/components/bazaar/VerifiedSellerBadge";
+import { ReportListingDialog } from "@/components/bazaar/ReportListingDialog";
+import { RequestVerificationCard } from "@/components/bazaar/RequestVerificationCard";
+import { Flag } from "lucide-react";
 
 interface BazaarItem {
   id: string;
@@ -125,6 +129,7 @@ const Bazaar = () => {
   const { isFavorite, toggle: toggleFavorite, ids: favoriteIds } = useBazaarFavorites(currentUserId);
   const [showOnlyFavorites, setShowOnlyFavorites] = useState(false);
   const [promoteItem, setPromoteItem] = useState<BazaarItem | null>(null);
+  const [reportItem, setReportItem] = useState<BazaarItem | null>(null);
 
   useEffect(() => {
     loadItems();
@@ -546,6 +551,13 @@ const Bazaar = () => {
           </div>
         </div>
 
+        {/* Seller verification CTA */}
+        {currentUserId && (
+          <div className="mb-6">
+            <RequestVerificationCard userId={currentUserId} />
+          </div>
+        )}
+
         {/* Search and Filter */}
         <div className="flex flex-col gap-4 mb-8">
           <div className="flex flex-col md:flex-row gap-4">
@@ -664,7 +676,7 @@ const Bazaar = () => {
                   <div className="space-y-1 mb-3 text-xs text-muted-foreground">
                     <div className="flex items-center gap-1"><MapPin className="h-3 w-3" />{item.location}</div>
                     <div className="flex items-center gap-1"><Clock className="h-3 w-3" />{getTimeAgo(item.created_at)}</div>
-                    <div className="flex items-center gap-1"><User className="h-3 w-3" />{item.profiles?.full_name || "Anonymous"}</div>
+                    <div className="flex items-center gap-1"><User className="h-3 w-3" />{item.profiles?.full_name || "Anonymous"}<VerifiedSellerBadge sellerId={item.user_id} /></div>
                   </div>
                   <p className="text-xs text-muted-foreground mb-3 line-clamp-2">{item.description}</p>
                   {currentUserId === item.user_id && (
@@ -741,7 +753,7 @@ const Bazaar = () => {
                   <div className="space-y-2 text-sm">
                     <div className="flex items-center gap-2"><MapPin className="h-4 w-4 text-muted-foreground" /><span>{selectedItem.location}</span></div>
                     <div className="flex items-center gap-2"><Clock className="h-4 w-4 text-muted-foreground" /><span>{getTimeAgo(selectedItem.created_at)}</span></div>
-                    <div className="flex items-center gap-2"><User className="h-4 w-4 text-muted-foreground" /><span>{selectedItem.profiles?.full_name || "Anonymous user"}</span></div>
+                    <div className="flex items-center gap-2"><User className="h-4 w-4 text-muted-foreground" /><span>{selectedItem.profiles?.full_name || "Anonymous user"}</span><VerifiedSellerBadge sellerId={selectedItem.user_id} showPending /></div>
                   </div>
                   <div className="grid grid-cols-2 gap-3 text-sm">
                     <div><h4 className="font-semibold mb-1">Category</h4><p className="text-muted-foreground">{categories.find(c => c.id === selectedItem.category)?.name}</p></div>
@@ -769,6 +781,11 @@ const Bazaar = () => {
                     <Button className="flex-1" size="lg" variant="outline" onClick={() => handleContact(selectedItem)}><MessageCircle className="h-5 w-5 mr-2" />Contact</Button>
                     {currentUserId === selectedItem.user_id && (
                       <Button variant="destructive" size="lg" onClick={handleDeleteClick}><Trash2 className="h-5 w-5" /></Button>
+                    )}
+                    {currentUserId && currentUserId !== selectedItem.user_id && (
+                      <Button variant="outline" size="lg" onClick={() => setReportItem(selectedItem)} title="Report listing">
+                        <Flag className="h-5 w-5" />
+                      </Button>
                     )}
                   </div>
                 </div>
@@ -824,6 +841,16 @@ const Bazaar = () => {
             itemId={promoteItem.id}
             itemTitle={promoteItem.title}
             onPromoted={loadItems}
+          />
+        )}
+
+        {reportItem && currentUserId && (
+          <ReportListingDialog
+            open={!!reportItem}
+            onOpenChange={(v) => !v && setReportItem(null)}
+            itemId={reportItem.id}
+            itemTitle={reportItem.title}
+            reporterId={currentUserId}
           />
         )}
       </div>
