@@ -30,6 +30,8 @@ import { BazaarPhotoUploader, type PendingPhoto } from "@/components/bazaar/Baza
 import { BazaarPhotoGallery } from "@/components/bazaar/BazaarPhotoGallery";
 import { BazaarItemChat } from "@/components/bazaar/BazaarItemChat";
 import { SellerRatingBadge } from "@/components/bazaar/SellerRatingBadge";
+import { useBazaarFavorites } from "@/hooks/useBazaarFavorites";
+import { Heart } from "lucide-react";
 interface BazaarItem {
   id: string;
   title: string;
@@ -111,6 +113,8 @@ const Bazaar = () => {
   });
   const { toast } = useToast();
   const { limits, canCreateListing, calculateCommission } = useSubscription();
+  const { isFavorite, toggle: toggleFavorite, ids: favoriteIds } = useBazaarFavorites(currentUserId);
+  const [showOnlyFavorites, setShowOnlyFavorites] = useState(false);
 
   useEffect(() => {
     loadItems();
@@ -203,7 +207,8 @@ const Bazaar = () => {
       const matchesMax = max == null || Number(item.price) <= max;
       const matchesLocation =
         !filters.location || item.location.toLowerCase().includes(filters.location.toLowerCase());
-      return matchesSearch && matchesCategory && matchesCondition && matchesMin && matchesMax && matchesLocation;
+      const matchesFavorite = !showOnlyFavorites || favoriteIds.has(item.id);
+      return matchesSearch && matchesCategory && matchesCondition && matchesMin && matchesMax && matchesLocation && matchesFavorite;
     })
     .sort((a, b) => {
       switch (filters.sort) {
@@ -537,6 +542,23 @@ const Bazaar = () => {
           </CardContent>
         </Card>
 
+        {/* Favorites toggle */}
+        {currentUserId && (
+          <div className="flex justify-end mb-4">
+            <Button
+              type="button"
+              variant={showOnlyFavorites ? "default" : "outline"}
+              size="sm"
+              onClick={() => setShowOnlyFavorites((v) => !v)}
+              className="gap-2"
+            >
+              <Heart className={`h-4 w-4 ${showOnlyFavorites ? "fill-current" : ""}`} />
+              {showOnlyFavorites ? "Showing favorites" : "Show favorites only"}
+              {favoriteIds.size > 0 && <Badge variant="secondary" className="ml-1">{favoriteIds.size}</Badge>}
+            </Button>
+          </div>
+        )}
+
         {/* Items Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
           {filteredItems.map((item, i) => (
@@ -558,6 +580,18 @@ const Bazaar = () => {
                     <Badge className="absolute top-2 right-2 bg-primary/90 text-primary-foreground text-[10px]">
                       {listingTypes.find(t => t.id === item.listing_type)?.name}
                     </Badge>
+                    {currentUserId && currentUserId !== item.user_id && (
+                      <Button
+                        type="button"
+                        size="icon"
+                        variant="secondary"
+                        className="absolute bottom-2 left-2 h-8 w-8 rounded-full bg-background/80 hover:bg-background"
+                        onClick={(e) => { e.stopPropagation(); toggleFavorite(item.id); }}
+                        aria-label={isFavorite(item.id) ? "Remove favorite" : "Add favorite"}
+                      >
+                        <Heart className={`h-4 w-4 ${isFavorite(item.id) ? "fill-red-500 text-red-500" : ""}`} />
+                      </Button>
+                    )}
                   </div>
                 </CardHeader>
                 <CardContent className="p-4">
