@@ -3535,6 +3535,51 @@ export type Database = {
           },
         ]
       }
+      bazaar_saved_searches: {
+        Row: {
+          category: string | null
+          condition: string | null
+          created_at: string
+          id: string
+          location: string | null
+          max_price: number | null
+          min_price: number | null
+          name: string
+          notify: boolean
+          search_term: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          category?: string | null
+          condition?: string | null
+          created_at?: string
+          id?: string
+          location?: string | null
+          max_price?: number | null
+          min_price?: number | null
+          name: string
+          notify?: boolean
+          search_term?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          category?: string | null
+          condition?: string | null
+          created_at?: string
+          id?: string
+          location?: string | null
+          max_price?: number | null
+          min_price?: number | null
+          name?: string
+          notify?: boolean
+          search_term?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       bazaar_transactions: {
         Row: {
           amount: number
