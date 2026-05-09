@@ -174,21 +174,8 @@ const Bazaar = () => {
     setItems(data || []);
   };
 
-  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      if (file.size > 5 * 1024 * 1024) {
-        toast({ title: "File too large", description: "Maximum image size is 5MB", variant: "destructive" });
-        return;
-      }
-      setImageFile(file);
-      const reader = new FileReader();
-      reader.onloadend = () => setImagePreview(reader.result as string);
-      reader.readAsDataURL(file);
-    }
-  };
+  // (multi-photo handling lives in BazaarPhotoUploader)
 
-  const removeImage = () => { setImageFile(null); setImagePreview(""); };
 
   const categories = [
     { id: "all", name: "All" }, { id: "electronics", name: "Electronics" },
