@@ -479,12 +479,51 @@ const CouponMarketplace = () => {
           </TabsList>
 
           <TabsContent value="browse" className="mt-6">
-            <div className="flex flex-col sm:flex-row gap-4 mb-6">
-              <div className="relative flex-1"><Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" /><Input placeholder="Search coupons or stores..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} className="pl-10" /></div>
-              <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                <SelectTrigger className="w-full sm:w-48"><SelectValue placeholder="Category" /></SelectTrigger>
-                <SelectContent>{categories.map(c => <SelectItem key={c.id} value={c.id}><div className="flex items-center gap-2"><c.icon className="w-4 h-4" />{c.name}</div></SelectItem>)}</SelectContent>
-              </Select>
+            <div className="space-y-3 mb-6">
+              <div className="flex flex-col sm:flex-row gap-3">
+                <div className="relative flex-1"><Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" /><Input placeholder="Search coupons or stores..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} className="pl-10" /></div>
+                <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                  <SelectTrigger className="w-full sm:w-44"><SelectValue placeholder="Category" /></SelectTrigger>
+                  <SelectContent>{categories.map(c => <SelectItem key={c.id} value={c.id}><div className="flex items-center gap-2"><c.icon className="w-4 h-4" />{c.name}</div></SelectItem>)}</SelectContent>
+                </Select>
+                <Select value={sortBy} onValueChange={setSortBy}>
+                  <SelectTrigger className="w-full sm:w-44"><SelectValue placeholder="Sort" /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="newest">Newest first</SelectItem>
+                    <SelectItem value="discount_desc">Highest discount</SelectItem>
+                    <SelectItem value="price_asc">Price: low → high</SelectItem>
+                    <SelectItem value="price_desc">Price: high → low</SelectItem>
+                    <SelectItem value="expiry_asc">Expiring soon</SelectItem>
+                    <SelectItem value="rating_desc">Top-rated sellers</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="flex flex-wrap items-center gap-3 rounded-xl border border-border/50 bg-card/40 p-3">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-semibold text-muted-foreground">Min discount</span>
+                  <Select value={minDiscount} onValueChange={setMinDiscount}>
+                    <SelectTrigger className="h-8 w-24"><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      {["0","10","20","30","40","50","60","70"].map(v => <SelectItem key={v} value={v}>{v}%+</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-semibold text-muted-foreground">Max price</span>
+                  <Input type="number" placeholder="€ any" value={maxPrice} onChange={(e) => setMaxPrice(e.target.value)} className="h-8 w-24" />
+                </div>
+                <label className="flex items-center gap-2 text-xs cursor-pointer">
+                  <Checkbox checked={hideExpired} onCheckedChange={(v) => setHideExpired(Boolean(v))} />
+                  Hide expired
+                </label>
+                {(minDiscount !== "0" || maxPrice || !hideExpired || sortBy !== "newest" || selectedCategory !== "all") && (
+                  <Button variant="ghost" size="sm" className="h-7 text-xs ml-auto" onClick={() => { setMinDiscount("0"); setMaxPrice(""); setHideExpired(true); setSortBy("newest"); setSelectedCategory("all"); }}>Reset</Button>
+                )}
+                <span className="ml-auto text-xs text-muted-foreground">{filteredCoupons.length} results</span>
+              </div>
+              <div className="flex justify-end">
+              <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                <DialogTrigger asChild><Button className="gap-2"><Plus className="w-4 h-4" />Sell Coupon</Button></DialogTrigger>
               <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogTrigger asChild><Button className="gap-2"><Plus className="w-4 h-4" />Sell Coupon</Button></DialogTrigger>
                 <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
