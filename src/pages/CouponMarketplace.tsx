@@ -155,12 +155,28 @@ const CouponMarketplace = () => {
   const loadCoupons = async () => {
     // Use SECURITY DEFINER function so discount_code is never exposed to non-buyers
     const { data, error } = await supabase.rpc('get_public_coupon_listings');
-    if (!error) setCoupons((data as any) || []);
+    if (!error) {
+      const list = ((data as any) || []) as CouponListing[];
+      setCoupons(list);
+      // Fetch seller stats for visible sellers
+      const sellerIds = Array.from(new Set(list.map((c) => c.user_id)));
+      if (sellerIds.length) {
+        const { data: stats } = await supabase
+          .from("coupon_seller_stats" as any)
+          .select("*")
+          .in("seller_id", sellerIds);
+        if (stats) {
+          const map: Record<string, SellerStat> = {};
+          (stats as any[]).forEach((s) => { map[s.seller_id] = s; });
+          setSellerStats(map);
+        }
+      }
+    }
   };
 
   const loadMyOrders = async () => {
     const { data, error } = await supabase.from('coupon_orders').select('*, coupon_listings(*)').eq('buyer_id', currentUserId).order('created_at', { ascending: false });
-    if (!error) setMyOrders(data || []);
+    if (!error) setMyOrders((data as any) || []);
   };
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
