@@ -3277,6 +3277,7 @@ export type Database = {
       }
       bazaar_items: {
         Row: {
+          brand: string | null
           bumped_until: string | null
           category: string
           condition: string
@@ -3290,12 +3291,17 @@ export type Database = {
           listing_type: string
           location: string
           price: number
+          shipping_method: string | null
+          shipping_options: Json | null
+          shipping_price: number | null
+          size: string | null
           title: string
           top_until: string | null
           updated_at: string | null
           user_id: string
         }
         Insert: {
+          brand?: string | null
           bumped_until?: string | null
           category: string
           condition: string
@@ -3309,12 +3315,17 @@ export type Database = {
           listing_type?: string
           location: string
           price: number
+          shipping_method?: string | null
+          shipping_options?: Json | null
+          shipping_price?: number | null
+          size?: string | null
           title: string
           top_until?: string | null
           updated_at?: string | null
           user_id: string
         }
         Update: {
+          brand?: string | null
           bumped_until?: string | null
           category?: string
           condition?: string
@@ -3328,6 +3339,10 @@ export type Database = {
           listing_type?: string
           location?: string
           price?: number
+          shipping_method?: string | null
+          shipping_options?: Json | null
+          shipping_price?: number | null
+          size?: string | null
           title?: string
           top_until?: string | null
           updated_at?: string | null
