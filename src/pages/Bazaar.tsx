@@ -669,7 +669,7 @@ const Bazaar = () => {
                   <div className="space-y-1 mb-3 text-xs text-muted-foreground">
                     <div className="flex items-center gap-1"><MapPin className="h-3 w-3" />{item.location}</div>
                     <div className="flex items-center gap-1"><Clock className="h-3 w-3" />{getTimeAgo(item.created_at)}</div>
-                    <div className="flex items-center gap-1"><User className="h-3 w-3" />{item.profiles?.full_name || "Anonymous"}</div>
+                    <div className="flex items-center gap-1"><User className="h-3 w-3" />{item.profiles?.full_name || "Anonymous"}<VerifiedSellerBadge sellerId={item.user_id} /></div>
                   </div>
                   <p className="text-xs text-muted-foreground mb-3 line-clamp-2">{item.description}</p>
                   {currentUserId === item.user_id && (
