@@ -116,7 +116,7 @@ export const AI_PROXY_MAP: Record<string, string> = {
 
 export const CHECKOUT_PROXY_MAP: Record<string, { product: string; module: string }> = {
   "create-analyzer-credits-payment": { product: "analyzer_credits", module: "analyzer_credits" },
-  "create-analyzer-subscription": { product: "analyzer", module: "analyzer" },
+  "create-analyzer-subscription": { product: "analyzer_subscription", module: "analyzer_subscription" },
   "create-ar-preview-checkout": { product: "ar_preview", module: "ar_preview" },
   "create-astrology-checkout": { product: "astrology", module: "astrology" },
   // "create-bazaar-order-checkout": REAL edge function — do not proxy
