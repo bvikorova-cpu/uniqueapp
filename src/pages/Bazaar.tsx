@@ -28,6 +28,8 @@ import { SEO } from "@/components/SEO";
 import { BazaarFilters, defaultFilters, type BazaarFilterState } from "@/components/bazaar/BazaarFilters";
 import { BazaarPhotoUploader, type PendingPhoto } from "@/components/bazaar/BazaarPhotoUploader";
 import { BazaarPhotoGallery } from "@/components/bazaar/BazaarPhotoGallery";
+import { BazaarItemChat } from "@/components/bazaar/BazaarItemChat";
+import { SellerRatingBadge } from "@/components/bazaar/SellerRatingBadge";
 interface BazaarItem {
   id: string;
   title: string;
