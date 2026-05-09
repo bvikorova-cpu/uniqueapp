@@ -197,11 +197,36 @@ const Bazaar = () => {
   const conditions = ["Like New", "Very Good", "Good", "Used"];
   const listingTypes = [{ id: "sell", name: "Sell" }, { id: "buy", name: "Buy" }];
 
-  const filteredItems = items.filter(item => {
-    const matchesSearch = item.title.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === "all" || item.category === selectedCategory;
-    return matchesSearch && matchesCategory;
-  });
+  const filteredItems = items
+    .filter((item) => {
+      const term = searchTerm.toLowerCase();
+      const matchesSearch =
+        !term ||
+        item.title.toLowerCase().includes(term) ||
+        (item.description ?? "").toLowerCase().includes(term);
+      const matchesCategory = selectedCategory === "all" || item.category === selectedCategory;
+      const matchesCondition = filters.condition === "all" || item.condition === filters.condition;
+      const min = filters.minPrice ? Number(filters.minPrice) : null;
+      const max = filters.maxPrice ? Number(filters.maxPrice) : null;
+      const matchesMin = min == null || Number(item.price) >= min;
+      const matchesMax = max == null || Number(item.price) <= max;
+      const matchesLocation =
+        !filters.location || item.location.toLowerCase().includes(filters.location.toLowerCase());
+      return matchesSearch && matchesCategory && matchesCondition && matchesMin && matchesMax && matchesLocation;
+    })
+    .sort((a, b) => {
+      switch (filters.sort) {
+        case "price_asc":
+          return Number(a.price) - Number(b.price);
+        case "price_desc":
+          return Number(b.price) - Number(a.price);
+        case "oldest":
+          return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+        case "newest":
+        default:
+          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+      }
+    });
 
   const getTimeAgo = (dateString: string) => {
     const diffInMs = new Date().getTime() - new Date(dateString).getTime();
