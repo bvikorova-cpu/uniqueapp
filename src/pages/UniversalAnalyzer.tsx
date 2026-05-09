@@ -83,8 +83,10 @@ export default function UniversalAnalyzer() {
   };
 
   const uploadImage = async (file: File): Promise<string> => {
-    const fileExt = file.name.split('.').pop();
-    const fileName = `${Math.random()}.${fileExt}`;
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error("Not authenticated");
+    const fileExt = file.name.split('.').pop() || 'jpg';
+    const fileName = `${user.id}/${Date.now()}-${Math.random().toString(36).slice(2)}.${fileExt}`;
     const { error: uploadError } = await supabase.storage.from('media').upload(fileName, file);
     if (uploadError) throw uploadError;
     const { data: { publicUrl } } = supabase.storage.from('media').getPublicUrl(fileName);
