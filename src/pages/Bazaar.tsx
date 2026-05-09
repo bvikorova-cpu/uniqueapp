@@ -50,6 +50,10 @@ interface BazaarItem {
   is_sold: boolean;
   bumped_until?: string | null;
   top_until?: string | null;
+  brand?: string | null;
+  size?: string | null;
+  shipping_method?: string | null;
+  shipping_price?: number | null;
   profiles?: { full_name: string | null } | null;
 }
 
