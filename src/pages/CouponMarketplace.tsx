@@ -625,6 +625,31 @@ const CouponMarketplace = () => {
             {filteredCoupons.length === 0 && <div className="text-center py-12"><Ticket className="w-16 h-16 text-muted-foreground mx-auto mb-4" /><h3 className="text-lg font-semibold mb-2">No coupons found</h3><p className="text-muted-foreground">Be the first to list a coupon!</p></div>}
           </TabsContent>
 
+          <TabsContent value="wishlist" className="mt-6">
+            {(() => {
+              const wished = coupons.filter(c => wishlist.isWishlisted(c.id) && !c.is_sold);
+              if (wished.length === 0) return <div className="text-center py-12"><Heart className="w-16 h-16 text-muted-foreground mx-auto mb-4" /><h3 className="text-lg font-semibold mb-2">Your wishlist is empty</h3><p className="text-muted-foreground">Tap the heart on any coupon to save it here.</p></div>;
+              return (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                  {wished.map(coupon => (
+                    <Card key={coupon.id} className="overflow-hidden bg-card/80 backdrop-blur-xl border-border/50 cursor-pointer hover:scale-[1.02] transition-all" onClick={() => { setSelectedCoupon(coupon); setIsDetailOpen(true); }}>
+                      <div className="relative">
+                        {coupon.image_url ? <img src={coupon.image_url} alt={coupon.title} className="w-full h-32 object-cover" /> : <div className="w-full h-32 bg-gradient-to-br from-primary/20 to-purple-500/20 flex items-center justify-center"><Ticket className="w-12 h-12 text-primary/50" /></div>}
+                        <Badge className="absolute top-2 right-2 bg-success text-success-foreground">Save {getSavingsPercent(coupon.original_value, coupon.selling_price)}%</Badge>
+                        <button onClick={(e) => { e.stopPropagation(); wishlist.toggle(coupon.id); }} className="absolute top-2 left-2 h-8 w-8 rounded-full bg-background/80 backdrop-blur-sm flex items-center justify-center"><Heart className="w-4 h-4 fill-rose-500 text-rose-500" /></button>
+                      </div>
+                      <CardContent className="p-4">
+                        <p className="text-xs text-muted-foreground mb-1">{coupon.store_name}</p>
+                        <h3 className="font-semibold text-sm line-clamp-2 mb-2">{coupon.title}</h3>
+                        <div className="flex items-center justify-between"><span className="text-lg font-black text-primary">€{coupon.selling_price.toFixed(2)}</span><Button size="sm" onClick={(e) => { e.stopPropagation(); handlePurchase(coupon); }}>Buy</Button></div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              );
+            })()}
+          </TabsContent>
+
           <TabsContent value="my-listings" className="mt-6">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {coupons.filter(c => c.user_id === currentUserId).map(coupon => (
