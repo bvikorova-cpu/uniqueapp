@@ -34,8 +34,12 @@ interface CouponListing {
   expiry_date: string | null; category: string; coupon_type: string;
   is_digital: boolean; image_url: string | null; terms_conditions: string | null;
   is_sold: boolean; created_at: string; user_id: string;
+  balance_confirmed?: boolean | null;
   profiles?: { full_name: string | null } | null;
 }
+
+interface SellerStat { seller_id: string; avg_rating: number; review_count: number; }
+
 
 interface CouponOrder {
   id: string; coupon_id: string; amount: number; status: string;
