@@ -218,7 +218,10 @@ const Bazaar = () => {
       const matchesLocation =
         !filters.location || item.location.toLowerCase().includes(filters.location.toLowerCase());
       const matchesFavorite = !showOnlyFavorites || favoriteIds.has(item.id);
-      return matchesSearch && matchesCategory && matchesCondition && matchesMin && matchesMax && matchesLocation && matchesFavorite;
+      const matchesBrand = !filters.brand || (item.brand ?? "").toLowerCase().includes(filters.brand.toLowerCase());
+      const matchesSize = filters.size === "all" || (item.size ?? "") === filters.size;
+      const matchesShipping = filters.shippingMethod === "all" || (item.shipping_method ?? "personal") === filters.shippingMethod;
+      return matchesSearch && matchesCategory && matchesCondition && matchesMin && matchesMax && matchesLocation && matchesFavorite && matchesBrand && matchesSize && matchesShipping;
     })
     .sort((a, b) => {
       // Promoted listings always float to the top, regardless of sort.
