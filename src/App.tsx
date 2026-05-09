@@ -355,6 +355,7 @@ import {
   AdminBrandCampaigns,
   AdminPlatformEarnings,
   AdminVerifications,
+  AdminBazaarTrust,
   AdminWithdrawals,
   AdminImageEditor,
   AdminPaymentDashboard,
