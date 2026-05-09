@@ -190,9 +190,21 @@ export default function MyBazaarOrders({ userId }: MyBazaarOrdersProps) {
                 </div>
               </div>
             </div>
-            <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); setSelectedOrder(order); }}>
-              <MessageCircle className="h-4 w-4" />
-            </Button>
+            <div className="flex flex-col gap-1">
+              <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); setSelectedOrder(order); }} aria-label="Open chat">
+                <MessageCircle className="h-4 w-4" />
+              </Button>
+              {!isSeller && (order.status === 'delivered' || order.status === 'completed') && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={(e) => { e.stopPropagation(); setRatingOrder(order); }}
+                  aria-label="Rate seller"
+                >
+                  <Star className="h-4 w-4 text-yellow-500" />
+                </Button>
+              )}
+            </div>
           </div>
         </CardContent>
       </Card>
