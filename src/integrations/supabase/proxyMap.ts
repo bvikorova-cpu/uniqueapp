@@ -119,7 +119,7 @@ export const CHECKOUT_PROXY_MAP: Record<string, { product: string; module: strin
   "create-analyzer-subscription": { product: "analyzer", module: "analyzer" },
   "create-ar-preview-checkout": { product: "ar_preview", module: "ar_preview" },
   "create-astrology-checkout": { product: "astrology", module: "astrology" },
-  "create-bazaar-order-checkout": { product: "bazaar_order", module: "bazaar_order" },
+  // "create-bazaar-order-checkout": REAL edge function — do not proxy
   "create-best-friend-checkout": { product: "best_friend", module: "best_friend" },
   "create-brain-duel-payment": { product: "brain_duel", module: "brain_duel" },
   "create-campaign-donation": { product: "campaign_donation", module: "campaign_donation" },
