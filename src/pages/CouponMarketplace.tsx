@@ -524,8 +524,6 @@ const CouponMarketplace = () => {
               <div className="flex justify-end">
               <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogTrigger asChild><Button className="gap-2"><Plus className="w-4 h-4" />Sell Coupon</Button></DialogTrigger>
-              <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                <DialogTrigger asChild><Button className="gap-2"><Plus className="w-4 h-4" />Sell Coupon</Button></DialogTrigger>
                 <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
                   <DialogHeader><DialogTitle>List Your Coupon</DialogTitle></DialogHeader>
                   <div className="space-y-4">
