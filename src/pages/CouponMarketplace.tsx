@@ -28,6 +28,7 @@ import { BuyerOrderCard } from "@/components/coupon/BuyerOrderCard";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useCouponWishlist } from "@/hooks/useCouponWishlist";
 import { CouponEngagementPanel } from "@/components/coupon/CouponEngagementPanel";
+import { CouponScalePanel } from "@/components/coupon/CouponScalePanel";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { Link } from "react-router-dom";
