@@ -580,6 +580,18 @@ const Bazaar = () => {
                     <Badge className="absolute top-2 right-2 bg-primary/90 text-primary-foreground text-[10px]">
                       {listingTypes.find(t => t.id === item.listing_type)?.name}
                     </Badge>
+                    {currentUserId && currentUserId !== item.user_id && (
+                      <Button
+                        type="button"
+                        size="icon"
+                        variant="secondary"
+                        className="absolute bottom-2 left-2 h-8 w-8 rounded-full bg-background/80 hover:bg-background"
+                        onClick={(e) => { e.stopPropagation(); toggleFavorite(item.id); }}
+                        aria-label={isFavorite(item.id) ? "Remove favorite" : "Add favorite"}
+                      >
+                        <Heart className={`h-4 w-4 ${isFavorite(item.id) ? "fill-red-500 text-red-500" : ""}`} />
+                      </Button>
+                    )}
                   </div>
                 </CardHeader>
                 <CardContent className="p-4">
