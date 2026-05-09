@@ -2,7 +2,7 @@ import { useState, useRef } from "react";
 import {
   Camera, Upload, Sparkles, History, Settings, Image as ImageIcon,
   GitCompare, DollarSign, HeartPulse, FileText, Layers, Search,
-  Eye, Zap, Scan
+  Eye, Zap, Scan, ScanBarcode, Calculator, Music, Link2, Apple, GraduationCap
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -19,34 +19,53 @@ import { HealthScannerView } from "@/components/analyzer/views/HealthScannerView
 import { DocumentScannerView } from "@/components/analyzer/views/DocumentScannerView";
 import { BatchAnalyzeView } from "@/components/analyzer/views/BatchAnalyzeView";
 import { SmartSearchView } from "@/components/analyzer/views/SmartSearchView";
+import { ReverseImageView } from "@/components/analyzer/views/ReverseImageView";
+import { BarcodeScannerView } from "@/components/analyzer/views/BarcodeScannerView";
+import { MathSolverView } from "@/components/analyzer/views/MathSolverView";
+import { AudioIdView } from "@/components/analyzer/views/AudioIdView";
+import { URLAnalyzerView } from "@/components/analyzer/views/URLAnalyzerView";
+import { NutritionScanView } from "@/components/analyzer/views/NutritionScanView";
+import { HomeworkHelperView } from "@/components/analyzer/views/HomeworkHelperView";
 import { motion } from "framer-motion";
 
 const CATEGORIES = [
-  { id: 'nature', name: 'Nature & Wildlife', icon: '🌿', description: 'Trees, plants, animals, insects, fungi',
-    details: ['Trees & Plants: Species ID, age, health, diseases, care', 'Animals: Species, breed, age estimate, behavior', 'Insects: Classification, danger level, life cycle', 'Fungi: Edible/poisonous, species, safety'] },
-  { id: 'objects', name: 'Objects & Products', icon: '📦', description: 'Electronics, furniture, cars, general items',
-    details: ['General items: Name, brand, purpose, where to buy', 'Electronics: Model, specs, market price', 'Furniture: Style, period, material, value', 'Cars: Brand, model, year, maintenance'] },
-  { id: 'fashion', name: 'Fashion & Style', icon: '👔', description: 'Clothing, shoes, accessories, outfits',
-    details: ['Clothing: Brand, material, size, styling tips', 'Footwear: Type, brand, authenticity check', 'Accessories: Watches, jewelry, bags - value', 'Outfit: Match recommendations'] },
-  { id: 'text', name: 'Text & Language', icon: '📝', description: 'OCR, translation, handwriting, documents',
-    details: ['OCR: Extract text from images', 'Translation: Auto detection + 190+ languages', 'Handwriting: Convert to digital text', 'Documents: Scan invoices, receipts'] },
-  { id: 'food', name: 'Food & Nutrition', icon: '🍎', description: 'Meals, ingredients, nutrition info',
-    details: ['Food: Dish name, calories, macros', 'Fruits/Vegetables: Ripeness, freshness', 'Packaged: Barcode, allergens, health score', 'Recipes: Based on ingredients'] },
-  { id: 'art', name: 'Art & Culture', icon: '🎨', description: 'Paintings, sculptures, architecture',
-    details: ['Paintings: Style, period, artist, technique', 'Sculptures: Material, period, context', 'Architecture: Style, historical context', 'Artifacts: Age, origin, value'] },
-  { id: 'safety', name: 'Safety & Warnings', icon: '⚠️', description: 'Warning signs, hazards, chemicals',
-    details: ['Warning signs: Meaning, safety measures', 'Chemicals: Hazard level, first aid', 'Health: Skin conditions, allergens', 'Damage: Mold, harmful assessment'] },
-  { id: 'home', name: 'Home & Interior', icon: '🏠', description: 'Design, colors, materials, issues',
-    details: ['Design styles: Identification, suggestions', 'Colors: Matching, palette extraction', 'Materials: Wood, stone, fabrics quality', 'Issues: Cracks, moisture, damage'] },
+  { id: 'nature', name: 'Nature & Plants', icon: '🌿', description: 'Trees, plants, flowers, fungi' },
+  { id: 'insects', name: 'Insects & Bugs', icon: '🦋', description: 'Bug ID, danger level, life cycle' },
+  { id: 'animals', name: 'Animals & Breeds', icon: '🐕', description: 'Pets, wildlife, breed identification' },
+  { id: 'mushrooms', name: 'Mushrooms', icon: '🍄', description: 'Edibility, toxicity, look-alikes' },
+  { id: 'rocks', name: 'Rocks & Crystals', icon: '💎', description: 'Geology, hardness, value' },
+  { id: 'coins', name: 'Coins & Currency', icon: '🪙', description: 'Country, year, collector value' },
+  { id: 'cars', name: 'Cars & Vehicles', icon: '🚗', description: 'Make, model, market value' },
+  { id: 'logos', name: 'Logos & Brands', icon: '🏷️', description: 'Brand identification' },
+  { id: 'landmarks', name: 'Landmarks', icon: '🗺️', description: 'Places, monuments, history' },
+  { id: 'wine', name: 'Wine Labels', icon: '🍷', description: 'Producer, region, tasting notes' },
+  { id: 'objects', name: 'Objects & Antiques', icon: '📦', description: 'Items, electronics, collectibles' },
+  { id: 'fashion', name: 'Fashion & Style', icon: '👔', description: 'Clothing, accessories, virtual try-on' },
+  { id: 'text', name: 'Text & Language', icon: '📝', description: 'OCR, translation, handwriting' },
+  { id: 'food', name: 'Food', icon: '🍎', description: 'Dish ID + nutrition' },
+  { id: 'nutrition', name: 'Calorie Counter', icon: '🥗', description: 'Per-meal calorie & macro scan' },
+  { id: 'art', name: 'Art & Culture', icon: '🎨', description: 'Paintings, sculptures, period' },
+  { id: 'safety', name: 'Safety & Warnings', icon: '⚠️', description: 'Hazards, signs, chemicals' },
+  { id: 'home', name: 'Home & Interior', icon: '🏠', description: 'Design, materials, staging' },
+  { id: 'drawing', name: 'Drawings & Sketches', icon: '✏️', description: 'Style, meaning, skill level' },
+  { id: 'math', name: 'Math from Photo', icon: '🧮', description: 'Solve math problems from image' },
+  { id: 'homework', name: 'Homework Help', icon: '📚', description: 'Step-by-step explanations' },
 ];
 
 const AI_TOOLS = [
-  { id: 'comparison', icon: GitCompare, name: 'AI Comparison', desc: 'Compare two items side-by-side', credits: 4, gradient: 'from-cyan-600 to-teal-600' },
-  { id: 'price-estimator', icon: DollarSign, name: 'Price Estimator', desc: 'AI-powered item valuation', credits: 3, gradient: 'from-emerald-600 to-cyan-600' },
-  { id: 'health-scanner', icon: HeartPulse, name: 'Health Scanner', desc: 'Analyze health-related items', credits: 3, gradient: 'from-red-600 to-pink-600' },
-  { id: 'document-scanner', icon: FileText, name: 'Document Scanner', desc: 'OCR, translate & summarize', credits: 3, gradient: 'from-violet-600 to-indigo-600' },
-  { id: 'batch-analyze', icon: Layers, name: 'Batch Analysis', desc: 'Analyze multiple items at once', credits: 5, gradient: 'from-amber-600 to-orange-600' },
-  { id: 'smart-search', icon: Search, name: 'Smart Search', desc: 'AI shopping recommendations', credits: 3, gradient: 'from-blue-600 to-purple-600' },
+  { id: 'comparison', icon: GitCompare, name: 'AI Comparison', desc: 'Compare two items', credits: 4, gradient: 'from-cyan-600 to-teal-600' },
+  { id: 'price-estimator', icon: DollarSign, name: 'Price Estimator', desc: 'AI valuation', credits: 3, gradient: 'from-emerald-600 to-cyan-600' },
+  { id: 'health-scanner', icon: HeartPulse, name: 'Health Scanner', desc: 'Health insights', credits: 3, gradient: 'from-red-600 to-pink-600' },
+  { id: 'document-scanner', icon: FileText, name: 'Document Scanner', desc: 'OCR & translate', credits: 3, gradient: 'from-violet-600 to-indigo-600' },
+  { id: 'batch-analyze', icon: Layers, name: 'Batch Analysis', desc: 'Multiple items', credits: 5, gradient: 'from-amber-600 to-orange-600' },
+  { id: 'smart-search', icon: Search, name: 'Smart Search', desc: 'Shopping AI', credits: 3, gradient: 'from-blue-600 to-purple-600' },
+  { id: 'reverse-image', icon: Search, name: 'Reverse Image', desc: 'Find image online', credits: 2, gradient: 'from-indigo-600 to-purple-600' },
+  { id: 'barcode-scanner', icon: ScanBarcode, name: 'Barcode / QR', desc: 'Product lookup', credits: 2, gradient: 'from-green-600 to-emerald-600' },
+  { id: 'math-solver', icon: Calculator, name: 'Math Solver', desc: 'Step-by-step', credits: 3, gradient: 'from-fuchsia-600 to-purple-600' },
+  { id: 'audio-id', icon: Music, name: 'Sound / Music ID', desc: 'Identify sounds', credits: 3, gradient: 'from-rose-600 to-orange-600' },
+  { id: 'url-analyzer', icon: Link2, name: 'URL Analyzer', desc: 'Web page insights', credits: 3, gradient: 'from-sky-600 to-cyan-600' },
+  { id: 'nutrition-scan', icon: Apple, name: 'Nutrition Scan', desc: 'Calories & macros', credits: 3, gradient: 'from-lime-600 to-emerald-600' },
+  { id: 'homework-helper', icon: GraduationCap, name: 'Homework Helper', desc: 'Subjects & answers', credits: 3, gradient: 'from-yellow-600 to-amber-600' },
 ];
 
 export default function UniversalAnalyzer() {
@@ -62,12 +81,20 @@ export default function UniversalAnalyzer() {
   const { credits, isLoading, analyzeImage, isAnalyzing } = useAnalyzerCredits();
 
   // Sub-view routing
-  if (activeView === 'comparison') return <ComparisonView onBack={() => setActiveView(null)} />;
-  if (activeView === 'price-estimator') return <PriceEstimatorView onBack={() => setActiveView(null)} />;
-  if (activeView === 'health-scanner') return <HealthScannerView onBack={() => setActiveView(null)} />;
-  if (activeView === 'document-scanner') return <DocumentScannerView onBack={() => setActiveView(null)} />;
-  if (activeView === 'batch-analyze') return <BatchAnalyzeView onBack={() => setActiveView(null)} />;
-  if (activeView === 'smart-search') return <SmartSearchView onBack={() => setActiveView(null)} />;
+  const back = () => setActiveView(null);
+  if (activeView === 'comparison') return <ComparisonView onBack={back} />;
+  if (activeView === 'price-estimator') return <PriceEstimatorView onBack={back} />;
+  if (activeView === 'health-scanner') return <HealthScannerView onBack={back} />;
+  if (activeView === 'document-scanner') return <DocumentScannerView onBack={back} />;
+  if (activeView === 'batch-analyze') return <BatchAnalyzeView onBack={back} />;
+  if (activeView === 'smart-search') return <SmartSearchView onBack={back} />;
+  if (activeView === 'reverse-image') return <ReverseImageView onBack={back} />;
+  if (activeView === 'barcode-scanner') return <BarcodeScannerView onBack={back} />;
+  if (activeView === 'math-solver') return <MathSolverView onBack={back} />;
+  if (activeView === 'audio-id') return <AudioIdView onBack={back} />;
+  if (activeView === 'url-analyzer') return <URLAnalyzerView onBack={back} />;
+  if (activeView === 'nutrition-scan') return <NutritionScanView onBack={back} />;
+  if (activeView === 'homework-helper') return <HomeworkHelperView onBack={back} />;
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -109,26 +136,16 @@ export default function UniversalAnalyzer() {
   return (
     <div className="min-h-screen bg-background p-4 md:p-8">
       <div className="max-w-6xl mx-auto space-y-6">
-        {/* Cinematic Hero */}
-        <AnalyzerHero
-          credits={credits?.credits_remaining || 0}
-          tier={credits?.tier || 'free'}
-        />
+        <AnalyzerHero credits={credits?.credits_remaining || 0} tier={credits?.tier || 'free'} />
 
-        {/* AI Tools Grid */}
         <div>
           <h2 className="text-2xl font-black mb-4 flex items-center gap-2">
             <Zap className="w-6 h-6 text-cyan-400" />
             AI Power Tools
           </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
             {AI_TOOLS.map((tool, i) => (
-              <motion.div
-                key={tool.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.05 }}
-              >
+              <motion.div key={tool.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.03 }}>
                 <Card
                   className="p-4 cursor-pointer border-cyan-500/20 hover:border-cyan-400/40 hover:-translate-y-1 transition-all group bg-card/80 backdrop-blur-sm"
                   onClick={() => setActiveView(tool.id)}
@@ -147,45 +164,36 @@ export default function UniversalAnalyzer() {
           </div>
         </div>
 
-        {/* Category Selection */}
         <div>
           <h2 className="text-2xl font-black mb-4 flex items-center gap-2">
             <Scan className="w-6 h-6 text-cyan-400" />
             Image Analysis Categories
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
             {CATEGORIES.map((category) => (
               <Card
                 key={category.id}
-                className={`p-4 cursor-pointer transition-all hover:scale-[1.02] hover:shadow-lg hover:shadow-cyan-500/10 border-cyan-500/10 ${
+                className={`p-3 cursor-pointer transition-all hover:scale-[1.02] hover:shadow-lg hover:shadow-cyan-500/10 border-cyan-500/10 ${
                   selectedCategory === category.id
                     ? 'border-cyan-400 bg-cyan-500/10 shadow-lg shadow-cyan-500/20'
                     : 'hover:border-cyan-500/30'
                 }`}
                 onClick={() => setSelectedCategory(category.id)}
               >
-                <div className="text-4xl mb-3">{category.icon}</div>
-                <h3 className="font-bold mb-1">{category.name}</h3>
-                <p className="text-xs text-muted-foreground mb-2">{category.description}</p>
-                {category.details && (
-                  <ul className="text-[11px] text-muted-foreground space-y-0.5">
-                    {category.details.map((detail, index) => (
-                      <li key={index} className="leading-tight">• {detail}</li>
-                    ))}
-                  </ul>
-                )}
+                <div className="text-3xl mb-2">{category.icon}</div>
+                <h3 className="font-bold text-sm mb-1 leading-tight">{category.name}</h3>
+                <p className="text-[10px] text-muted-foreground leading-tight">{category.description}</p>
               </Card>
             ))}
           </div>
         </div>
 
-        {/* Image Upload */}
         <Card className="p-6 border-cyan-500/20 bg-card/80 backdrop-blur-sm">
           <h2 className="text-xl font-black mb-4 flex items-center gap-2">
             <Eye className="w-5 h-5 text-cyan-400" />
             Upload or Capture Image
           </h2>
-          
+
           {imagePreview ? (
             <div className="space-y-4">
               <div className="relative aspect-video bg-muted rounded-lg overflow-hidden border border-cyan-500/20">
@@ -230,10 +238,9 @@ export default function UniversalAnalyzer() {
 
         {showCamera && <CameraCapture onCapture={(f) => processFile(f)} onClose={() => setShowCamera(false)} />}
 
-        {/* Quick Actions */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {[
-            { icon: History, label: "View History", desc: "See past analyses", path: "/analyzer/history" },
+            { icon: History, label: "View History", desc: "Search past analyses", path: "/analyzer/history" },
             { icon: ImageIcon, label: "Collections", desc: "Organize analyses", path: "/analyzer/collections" },
             { icon: Settings, label: "Upgrade Plan", desc: "Get more features", path: "/analyzer/pricing" },
           ].map((item) => (

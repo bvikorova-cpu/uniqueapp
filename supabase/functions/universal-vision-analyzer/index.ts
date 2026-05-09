@@ -1,11 +1,4 @@
 // Universal Vision Analyzer — handles all vision/image AI tasks via `task` param.
-// Replaces ~40 individual analyze-* / identify-* / photo-* / beauty-* functions.
-//
-// Body: { task: string, imageUrl?: string, prompt?: string, ...extras }
-// The `task` param maps to a system prompt + AI model (vision vs text).
-//
-// Backed by OpenAI (OPENAI_API_KEY) — no per-tier secrets.
-
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 
 const corsHeaders = {
@@ -17,12 +10,11 @@ const corsHeaders = {
 const log = (s: string, d?: unknown) =>
   console.log(`[VISION] ${s}${d ? ` ${JSON.stringify(d)}` : ""}`);
 
-// Per-task system prompts. Add more as needed.
 const TASK_PROMPTS: Record<string, { prompt: string; visionRequired?: boolean }> = {
   // Analysis (vision)
   crystal_energy:        { prompt: "You are a crystal-energy expert. Analyze the crystal in the image: type, energetic properties, recommended chakra, healing uses. Be concise.", visionRequired: true },
   emotion:               { prompt: "You are an emotion-recognition expert. Detect the dominant emotion(s) in the image and explain visual cues.", visionRequired: true },
-  message:               { prompt: "You analyze written messages for tone, intent, sentiment, and red flags. Provide a structured analysis." },
+  message:               { prompt: "You analyze written messages for tone, intent, sentiment, and red flags." },
   profile:               { prompt: "You analyze dating/social profiles. Provide compatibility insights, personality traits, and conversation starters." },
   restaurant_menu:       { prompt: "You are a nutrition expert. Analyze the menu/dish: estimated calories, macros, healthier alternatives.", visionRequired: true },
   resume:                { prompt: "You are a senior recruiter. Analyze the resume: strengths, weaknesses, ATS-readability, suggested improvements." },
@@ -43,8 +35,6 @@ const TASK_PROMPTS: Record<string, { prompt: string; visionRequired?: boolean }>
   food_scan:             { prompt: "Identify the food and provide nutritional breakdown: calories, protein, carbs, fats.", visionRequired: true },
   beauty_skin:           { prompt: "You are a dermatologist. Analyze skin: type, concerns, recommended routine. Avoid medical claims.", visionRequired: true },
   photo_damage:          { prompt: "Detect damage in old photos: scratches, fading, tears. Suggest restoration steps.", visionRequired: true },
-
-  // Image-generation tasks (delegate to text recommendation if no image gen yet)
   photo_upscale:         { prompt: "Describe upscaling recommendations and ideal output specs for this photo.", visionRequired: true },
   photo_bg_remove:       { prompt: "Confirm subject and describe background-removal output for this photo.", visionRequired: true },
   photo_colorize:        { prompt: "Suggest a realistic colorization palette for this B&W photo.", visionRequired: true },
@@ -57,10 +47,26 @@ const TASK_PROMPTS: Record<string, { prompt: string; visionRequired?: boolean }>
   home_staging:          { prompt: "Suggest virtual-staging recommendations for the room: furniture, lighting, palette.", visionRequired: true },
   home_palette:          { prompt: "Generate a coordinated color palette for this room.", visionRequired: true },
   home_furniture:        { prompt: "Recommend specific furniture pieces that fit the room's style and dimensions.", visionRequired: true },
-  outfit_recommend:      { prompt: "Recommend a complete outfit based on the user's preferences and context.", visionRequired: false },
+  outfit_recommend:      { prompt: "Recommend a complete outfit based on the user's preferences and context." },
   capsule_wardrobe:      { prompt: "Build a capsule wardrobe (10-15 pieces) for the user's lifestyle." },
   beauty_recommend:      { prompt: "Recommend beauty products based on the user's profile and goals." },
   beauty_tutorial:       { prompt: "Write a step-by-step beauty tutorial for the requested look." },
+
+  // NEW specialized identifiers
+  insect_identify:       { prompt: "You are an entomologist. Identify the insect/bug in the image: species, common name, habitat, dangerous? (bites/stings/disease), life cycle, recommended action if found at home.", visionRequired: true },
+  coin_identify:         { prompt: "You are a numismatist. Identify the coin/currency: country, denomination, year (if visible), composition, mint mark, condition (Sheldon scale), estimated collector value range in EUR.", visionRequired: true },
+  animal_breed:          { prompt: "You are a zoologist & breed expert. Identify the animal: species, breed, age estimate, temperament, care needs, common health issues.", visionRequired: true },
+  rock_mineral:          { prompt: "You are a geologist. Identify the rock/mineral/crystal: name, classification (igneous/sedimentary/metamorphic), hardness (Mohs), formation, common locations, value if collectible.", visionRequired: true },
+  mushroom_identify:     { prompt: "You are a mycologist. Identify the mushroom: species, edibility (EDIBLE / INEDIBLE / TOXIC / DEADLY — be cautious), look-alikes, habitat. ALWAYS warn never to eat wild mushrooms based on AI alone.", visionRequired: true },
+  car_identify:          { prompt: "You are an automotive expert. Identify the vehicle: make, model, generation, estimated year range, trim if guessable, original MSRP, current used market value range in EUR.", visionRequired: true },
+  logo_identify:         { prompt: "You are a brand/logo expert. Identify the logo or brand: company name, industry, country of origin, brief brand story, current market position.", visionRequired: true },
+  landmark_identify:     { prompt: "You are a travel & history guide. Identify the landmark/place: name, location (city/country), historical significance, year built, architectural style, visitor info.", visionRequired: true },
+  wine_label:            { prompt: "You are a sommelier. Identify the wine from the label: producer, region, varietal, vintage, style, tasting notes, estimated retail price range, food pairing.", visionRequired: true },
+  calorie_scan:          { prompt: "You are a nutrition AI. Identify all visible foods on the plate. For each: name, portion size estimate, calories, macros (protein/carbs/fats). Provide total meal nutrition and a healthiness score 1-10.", visionRequired: true },
+  drawing_identify:      { prompt: "You analyze sketches/drawings/doodles. Identify what the drawing represents, its style, possible meaning/symbolism, and skill level. Be encouraging.", visionRequired: true },
+  math_solve:            { prompt: "You are a math tutor. Read the math problem from the image (or text) and solve it step-by-step. Show every step clearly using LaTeX-style formatting where useful, then give the final answer. If multiple problems are visible, solve each.", visionRequired: true },
+  homework_help:         { prompt: "You are a patient tutor for any school subject. Read the homework question from the image and: 1) explain what is being asked, 2) walk through the solution step by step, 3) give the final answer, 4) add a brief tip to remember.", visionRequired: true },
+  reverse_image_describe:{ prompt: "Describe this image in extreme detail so it can be used for reverse-image search: main subject, key visual features, colors, style, text/logos visible, likely category. Output 4-6 search-friendly keyword phrases at the end as 'Keywords: ...'.", visionRequired: true },
 };
 
 serve(async (req) => {
@@ -74,20 +80,15 @@ serve(async (req) => {
     const extras = body?.extras as Record<string, unknown> | undefined;
 
     if (!task) return json({ error: "Missing 'task' parameter" }, 400);
-
     const cfg = TASK_PROMPTS[task];
     if (!cfg) return json({ error: `Unknown task: ${task}` }, 400);
-
-    if (cfg.visionRequired && !imageUrl) {
-      return json({ error: `Task '${task}' requires imageUrl` }, 400);
-    }
+    if (cfg.visionRequired && !imageUrl) return json({ error: `Task '${task}' requires imageUrl` }, 400);
 
     const apiKey = Deno.env.get("OPENAI_API_KEY");
     if (!apiKey) return json({ error: "AI service not configured" }, 503);
 
     log("invoke", { task, hasImage: !!imageUrl });
 
-    // Build chat completion payload — vision uses image_url content blocks
     const userContent: any[] = [];
     if (userPrompt) userContent.push({ type: "text", text: userPrompt });
     if (extras) userContent.push({ type: "text", text: `Context: ${JSON.stringify(extras)}` });
@@ -96,21 +97,15 @@ serve(async (req) => {
 
     const aiRes = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-      },
+      headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
       body: JSON.stringify({
         model: "gpt-4o-mini",
-        messages: [
-          { role: "system", content: cfg.prompt },
-          { role: "user", content: userContent },
-        ],
+        messages: [{ role: "system", content: cfg.prompt }, { role: "user", content: userContent }],
       }),
     });
 
     if (aiRes.status === 429) return json({ error: "Rate limit exceeded. Try again shortly." }, 429);
-    if (aiRes.status === 402) return json({ error: "AI credits exhausted. Please add credits to continue." }, 402);
+    if (aiRes.status === 402) return json({ error: "AI credits exhausted." }, 402);
     if (!aiRes.ok) {
       const errText = await aiRes.text();
       log("ai-error", { status: aiRes.status, errText });
@@ -119,7 +114,6 @@ serve(async (req) => {
 
     const data = await aiRes.json();
     const result = data?.choices?.[0]?.message?.content ?? "";
-
     return json({ result, text: result, task });
   } catch (e: any) {
     log("error", { msg: e?.message });
@@ -128,8 +122,5 @@ serve(async (req) => {
 });
 
 function json(body: unknown, status = 200) {
-  return new Response(JSON.stringify(body), {
-    status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
+  return new Response(JSON.stringify(body), { status, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 }

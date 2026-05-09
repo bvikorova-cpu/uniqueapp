@@ -1,0 +1,74 @@
+import { useState } from "react";
+import { ArrowLeft, Loader2, ScanBarcode } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
+import { motion } from "framer-motion";
+
+export const BarcodeScannerView = ({ onBack }: { onBack: () => void }) => {
+  const [code, setCode] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [product, setProduct] = useState<any>(null);
+
+  const lookup = async () => {
+    if (!code.trim()) { toast.error("Enter a barcode/QR code"); return; }
+    setLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("analyzer-barcode", { body: { code: code.trim() } });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      setProduct(data.product);
+    } catch (e: any) { toast.error(e.message || "Lookup failed"); }
+    finally { setLoading(false); }
+  };
+
+  return (
+    <div className="min-h-screen bg-background p-4 md:p-8">
+      <div className="max-w-3xl mx-auto space-y-6">
+        <Button variant="ghost" onClick={onBack}><ArrowLeft className="w-4 h-4 mr-2" /> Back</Button>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+          <div className="bg-gradient-to-r from-green-600 to-emerald-600 p-6 rounded-2xl text-white">
+            <div className="flex items-center gap-3 mb-2"><ScanBarcode className="w-7 h-7" /><h1 className="text-2xl sm:text-3xl font-black">Barcode / QR Scanner</h1></div>
+            <p className="text-white/80 text-sm">Lookup products via Open Food Facts + AI fallback</p>
+            <Badge className="mt-2 bg-white/20 text-white border-0">2 Credits</Badge>
+          </div>
+        </motion.div>
+
+        <Card className="p-6 border-cyan-500/20 bg-card/80 space-y-4">
+          <Input
+            placeholder="Enter barcode (EAN/UPC) or QR text — e.g. 3017620422003"
+            value={code}
+            onChange={(e) => setCode(e.target.value)}
+            className="border-cyan-500/20"
+          />
+          <p className="text-xs text-muted-foreground">Tip: scan with your phone camera app, then paste the result here.</p>
+          <Button onClick={lookup} disabled={loading || !code.trim()} className="w-full bg-gradient-to-r from-green-600 to-emerald-600">
+            {loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Looking up...</> : "Lookup Product"}
+          </Button>
+        </Card>
+
+        {product && (
+          <Card className="p-6 border-cyan-500/20 space-y-3">
+            {product.image_url && <img src={product.image_url} alt={product.name} className="max-h-48 mx-auto rounded-lg" />}
+            <h2 className="text-xl font-bold text-cyan-400">{product.name || "Result"}</h2>
+            {product.brand && <p><b>Brand:</b> {product.brand}</p>}
+            {product.categories && <p className="text-sm"><b>Categories:</b> {product.categories}</p>}
+            {product.ingredients && <p className="text-sm"><b>Ingredients:</b> {product.ingredients}</p>}
+            {product.allergens && <p className="text-sm text-red-400"><b>Allergens:</b> {product.allergens}</p>}
+            <div className="flex gap-2 flex-wrap">
+              {product.nutriscore && <Badge>Nutri-Score: {String(product.nutriscore).toUpperCase()}</Badge>}
+              {product.ecoscore && <Badge variant="outline">Eco-Score: {String(product.ecoscore).toUpperCase()}</Badge>}
+              {product.calories_per_100g != null && <Badge variant="secondary">{product.calories_per_100g} kcal / 100g</Badge>}
+            </div>
+            {product.ai_result && <div className="prose prose-sm dark:prose-invert max-w-none whitespace-pre-wrap">{product.ai_result}</div>}
+            {product.message && <p className="text-muted-foreground text-sm">{product.message}</p>}
+            <p className="text-[10px] text-muted-foreground">Source: {product.source}</p>
+          </Card>
+        )}
+      </div>
+    </div>
+  );
+};
