@@ -585,6 +585,13 @@ const CouponMarketplace = () => {
                     <div className="relative">
                       {coupon.image_url ? <img src={coupon.image_url} alt={coupon.title} className="w-full h-32 object-cover" /> : <div className="w-full h-32 bg-gradient-to-br from-primary/20 to-purple-500/20 flex items-center justify-center"><Ticket className="w-12 h-12 text-primary/50" /></div>}
                       <Badge className="absolute top-2 right-2 bg-success text-success-foreground">Save {getSavingsPercent(coupon.original_value, coupon.selling_price)}%</Badge>
+                      <button
+                        onClick={(e) => { e.stopPropagation(); wishlist.toggle(coupon.id); }}
+                        aria-label={wishlist.isWishlisted(coupon.id) ? "Remove from wishlist" : "Add to wishlist"}
+                        className="absolute top-2 left-2 h-8 w-8 rounded-full bg-background/80 backdrop-blur-sm flex items-center justify-center hover:scale-110 transition-transform"
+                      >
+                        <Heart className={`w-4 h-4 ${wishlist.isWishlisted(coupon.id) ? "fill-rose-500 text-rose-500" : "text-muted-foreground"}`} />
+                      </button>
                     </div>
                     <CardContent className="p-4">
                       <div className="flex items-center justify-between mb-1">
