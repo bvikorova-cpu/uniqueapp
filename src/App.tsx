@@ -170,6 +170,7 @@ import {
   StockContentLibrary,
   CouponMarketplace,
   CouponBrandPage,
+  AdminCouponDisputes,
   Education,
   CourseDetail,
   GenerateCourses,
