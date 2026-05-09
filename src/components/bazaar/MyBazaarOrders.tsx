@@ -5,13 +5,14 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { ShoppingBag, Package, Clock, Truck, CheckCircle, MessageCircle, Shield } from "lucide-react";
+import { ShoppingBag, Package, Clock, Truck, CheckCircle, MessageCircle, Shield, Star } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import BazaarOrderChat from "./BazaarOrderChat";
 import EscrowStatusBadge, { EscrowStatus } from "./EscrowStatusBadge";
 import OrderTracker, { OrderStatus } from "./OrderTracker";
 import OrderActions from "./OrderActions";
+import SellerRatingDialog from "./SellerRatingDialog";
 import { toast } from "sonner";
 
 interface BazaarOrder {
