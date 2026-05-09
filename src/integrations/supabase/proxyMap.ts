@@ -177,8 +177,7 @@ export const CHECKOUT_PROXY_MAP: Record<string, { product: string; module: strin
 };
 
 export const VERIFY_PROXY_MAP: Record<string, string> = {
-  "verify-bazaar-order-payment": "bazaar-order",
-  "verify-bazaar-payment": "bazaar",
+  // "verify-bazaar-order-payment": REAL edge function — do not proxy
   "verify-brain-duel-payment": "brain-duel",
   "verify-coupon-payment": "coupon",
   "verify-donation": "donation",
