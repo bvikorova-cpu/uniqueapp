@@ -64,6 +64,20 @@ export const useAnalyzerCredits = () => {
         art: 'antique_identify',
         safety: 'phobia_detect',
         home: 'home_staging',
+        // NEW specialized identifiers
+        insects: 'insect_identify',
+        coins: 'coin_identify',
+        animals: 'animal_breed',
+        rocks: 'rock_mineral',
+        mushrooms: 'mushroom_identify',
+        cars: 'car_identify',
+        logos: 'logo_identify',
+        landmarks: 'landmark_identify',
+        wine: 'wine_label',
+        nutrition: 'calorie_scan',
+        drawing: 'drawing_identify',
+        math: 'math_solve',
+        homework: 'homework_help',
       };
       const task = TASK_BY_CATEGORY[category] ?? 'plant_identify';
       const creditsCost = analysisType === 'expert' ? 2 : 1;
