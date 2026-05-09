@@ -28,6 +28,9 @@ import { BuyerOrderCard } from "@/components/coupon/BuyerOrderCard";
 import { Checkbox } from "@/components/ui/checkbox";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
+import { Link } from "react-router-dom";
+
+const brandSlug = (s: string) => s.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
 interface CouponListing {
   id: string; title: string; description: string | null; store_name: string;
   original_value: number; selling_price: number; discount_code: string | null;
