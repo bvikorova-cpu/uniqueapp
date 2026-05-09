@@ -28,6 +28,8 @@ import { SEO } from "@/components/SEO";
 import { BazaarFilters, defaultFilters, type BazaarFilterState } from "@/components/bazaar/BazaarFilters";
 import { BazaarPhotoUploader, type PendingPhoto } from "@/components/bazaar/BazaarPhotoUploader";
 import { BazaarPhotoGallery } from "@/components/bazaar/BazaarPhotoGallery";
+import { BazaarItemChat } from "@/components/bazaar/BazaarItemChat";
+import { SellerRatingBadge } from "@/components/bazaar/SellerRatingBadge";
 interface BazaarItem {
   id: string;
   title: string;
@@ -671,19 +673,18 @@ const Bazaar = () => {
           </AlertDialogContent>
         </AlertDialog>
 
-        {/* Contact Seller */}
+        {/* Contact Seller (realtime chat thread) */}
         <Dialog open={isContactDialogOpen} onOpenChange={setIsContactDialogOpen}>
           <DialogContent className="max-w-md">
-            <DialogHeader><DialogTitle>Contact Seller</DialogTitle></DialogHeader>
-            <div className="space-y-4">
-              <div>
-                <p className="text-sm text-muted-foreground mb-2">Send a message regarding: <strong>{selectedItem?.title}</strong></p>
-                <Textarea placeholder="Write your message..." value={contactMessage} onChange={e => setContactMessage(e.target.value)} className="min-h-32" />
-              </div>
-              <Button onClick={handleSendMessage} className="w-full" disabled={!contactMessage.trim()}>
-                <MessageCircle className="h-4 w-4 mr-2" />Send Message
-              </Button>
-            </div>
+            <DialogHeader>
+              <DialogTitle className="flex items-center justify-between gap-2">
+                <span className="truncate">Chat: {selectedItem?.title}</span>
+                {selectedItem && <SellerRatingBadge sellerId={selectedItem.user_id} />}
+              </DialogTitle>
+            </DialogHeader>
+            {selectedItem && currentUserId && (
+              <BazaarItemChat itemId={selectedItem.id} sellerId={selectedItem.user_id} currentUserId={currentUserId} />
+            )}
           </DialogContent>
         </Dialog>
 

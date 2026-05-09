@@ -3583,6 +3583,44 @@ export type Database = {
         }
         Relationships: []
       }
+      bazaar_seller_ratings: {
+        Row: {
+          buyer_id: string
+          comment: string | null
+          created_at: string
+          id: string
+          order_id: string
+          rating: number
+          seller_id: string
+        }
+        Insert: {
+          buyer_id: string
+          comment?: string | null
+          created_at?: string
+          id?: string
+          order_id: string
+          rating: number
+          seller_id: string
+        }
+        Update: {
+          buyer_id?: string
+          comment?: string | null
+          created_at?: string
+          id?: string
+          order_id?: string
+          rating?: number
+          seller_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bazaar_seller_ratings_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "bazaar_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       bazaar_transactions: {
         Row: {
           amount: number
@@ -43767,6 +43805,14 @@ export type Database = {
       }
     }
     Views: {
+      bazaar_seller_rating_summary: {
+        Row: {
+          avg_rating: number | null
+          rating_count: number | null
+          seller_id: string | null
+        }
+        Relationships: []
+      }
       brain_duel_questions_public: {
         Row: {
           category: string | null

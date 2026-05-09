@@ -5,13 +5,14 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { ShoppingBag, Package, Clock, Truck, CheckCircle, MessageCircle, Shield } from "lucide-react";
+import { ShoppingBag, Package, Clock, Truck, CheckCircle, MessageCircle, Shield, Star } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import BazaarOrderChat from "./BazaarOrderChat";
 import EscrowStatusBadge, { EscrowStatus } from "./EscrowStatusBadge";
 import OrderTracker, { OrderStatus } from "./OrderTracker";
 import OrderActions from "./OrderActions";
+import SellerRatingDialog from "./SellerRatingDialog";
 import { toast } from "sonner";
 
 interface BazaarOrder {
@@ -61,6 +62,7 @@ export default function MyBazaarOrders({ userId }: MyBazaarOrdersProps) {
   const [sales, setSales] = useState<BazaarOrder[]>([]);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [selectedOrder, setSelectedOrder] = useState<BazaarOrder | null>(null);
+  const [ratingOrder, setRatingOrder] = useState<BazaarOrder | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -188,9 +190,21 @@ export default function MyBazaarOrders({ userId }: MyBazaarOrdersProps) {
                 </div>
               </div>
             </div>
-            <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); setSelectedOrder(order); }}>
-              <MessageCircle className="h-4 w-4" />
-            </Button>
+            <div className="flex flex-col gap-1">
+              <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); setSelectedOrder(order); }} aria-label="Open chat">
+                <MessageCircle className="h-4 w-4" />
+              </Button>
+              {!isSeller && (order.status === 'delivered' || order.status === 'completed') && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={(e) => { e.stopPropagation(); setRatingOrder(order); }}
+                  aria-label="Rate seller"
+                >
+                  <Star className="h-4 w-4 text-yellow-500" />
+                </Button>
+              )}
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -289,6 +303,16 @@ export default function MyBazaarOrders({ userId }: MyBazaarOrdersProps) {
           )}
         </DialogContent>
       </Dialog>
+
+      {ratingOrder && (
+        <SellerRatingDialog
+          open={!!ratingOrder}
+          onOpenChange={(v) => !v && setRatingOrder(null)}
+          orderId={ratingOrder.id}
+          sellerId={ratingOrder.seller_id}
+          buyerId={userId}
+        />
+      )}
     </div>
   );
 }
