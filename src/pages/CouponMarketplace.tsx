@@ -490,6 +490,24 @@ const CouponMarketplace = () => {
           />
         </div>
 
+        {/* Scale: loyalty, affiliate, gift-card, sell calc, extension, crypto */}
+        <div className="mb-6">
+          <CouponScalePanel
+            userId={currentUserId}
+            wishlistCount={wishlist.items.length}
+            onBulkBuy={async () => {
+              if (!wishlist.items.length) return;
+              const wishedCoupons = coupons.filter(c => wishlist.isWishlisted(c.id) && !c.is_sold && c.user_id !== currentUserId);
+              if (!wishedCoupons.length) { toast({ title: "Nothing to buy", description: "Your wishlist is empty or items are unavailable." }); return; }
+              toast({ title: `Opening ${wishedCoupons.length} checkout(s)...`, description: "We'll open each in a new tab." });
+              for (const c of wishedCoupons) {
+                await handlePurchase(c);
+                await new Promise(r => setTimeout(r, 600));
+              }
+            }}
+          />
+        </div>
+
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-6">
           <TabsList className="grid w-full grid-cols-4 max-w-2xl mx-auto">
