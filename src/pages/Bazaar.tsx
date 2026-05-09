@@ -33,6 +33,10 @@ import { SellerRatingBadge } from "@/components/bazaar/SellerRatingBadge";
 import { useBazaarFavorites } from "@/hooks/useBazaarFavorites";
 import { Heart } from "lucide-react";
 import { PromoteListingDialog } from "@/components/bazaar/PromoteListingDialog";
+import { VerifiedSellerBadge } from "@/components/bazaar/VerifiedSellerBadge";
+import { ReportListingDialog } from "@/components/bazaar/ReportListingDialog";
+import { RequestVerificationCard } from "@/components/bazaar/RequestVerificationCard";
+import { Flag } from "lucide-react";
 
 interface BazaarItem {
   id: string;
