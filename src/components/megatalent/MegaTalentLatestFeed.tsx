@@ -128,7 +128,7 @@ export default function MegaTalentLatestFeed({ categoryGroups }: Props) {
         setLoadingMore(false);
       }
     },
-    [selected, userId, toast]
+    [selected, search, userId, toast]
   );
 
   useEffect(() => {
