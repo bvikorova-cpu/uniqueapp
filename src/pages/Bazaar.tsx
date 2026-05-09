@@ -478,22 +478,7 @@ const Bazaar = () => {
                       <SelectContent>{conditions.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
                     </Select>
                   </div>
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">Product Image</label>
-                    {imagePreview ? (
-                      <div className="relative">
-                        <img src={imagePreview} alt="Preview" className="w-full h-48 object-cover rounded-lg" />
-                        <Button type="button" variant="destructive" size="icon" className="absolute top-2 right-2" onClick={removeImage}><X className="h-4 w-4" /></Button>
-                      </div>
-                    ) : (
-                      <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-input rounded-lg cursor-pointer hover:bg-accent/50 transition-colors">
-                        <Upload className="h-8 w-8 text-muted-foreground mb-2" />
-                        <p className="text-sm text-muted-foreground">Click to upload image</p>
-                        <p className="text-xs text-muted-foreground mt-1">Max. 5MB (JPG, PNG, WEBP)</p>
-                        <input type="file" className="hidden" accept="image/*" onChange={handleImageSelect} />
-                      </label>
-                    )}
-                  </div>
+                  <BazaarPhotoUploader photos={photos} onChange={setPhotos} max={8} maxSizeMb={5} />
                   <Button variant="hero" className="w-full" disabled={uploading} onClick={handleSubmit}>
                     {uploading ? "Uploading..." : "Publish Listing"}
                   </Button>
