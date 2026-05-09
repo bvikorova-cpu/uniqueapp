@@ -551,6 +551,13 @@ const Bazaar = () => {
           </div>
         </div>
 
+        {/* Seller verification CTA */}
+        {currentUserId && (
+          <div className="mb-6">
+            <RequestVerificationCard userId={currentUserId} />
+          </div>
+        )}
+
         {/* Search and Filter */}
         <div className="flex flex-col gap-4 mb-8">
           <div className="flex flex-col md:flex-row gap-4">
