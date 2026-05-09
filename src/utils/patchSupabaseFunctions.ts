@@ -72,7 +72,7 @@ const FUNCTION_ALIASES: Record<string, AliasEntry> = {
   "create-analyzer-subscription":            { target: "create-checkout", bodyExtras: { product: "analyzer_subscription" } },
   "create-ar-preview-checkout":              { target: "create-checkout", bodyExtras: { product: "ar_preview" } },
   "create-astrology-checkout":               { target: "create-checkout", bodyExtras: { product: "astrology" } },
-  "create-bazaar-order-checkout":            { target: "create-checkout", bodyExtras: { product: "bazaar_order" } },
+  
   "create-best-friend-checkout":             { target: "create-checkout", bodyExtras: { product: "best_friend" } },
   "create-brain-duel-payment":               { target: "create-checkout", bodyExtras: { product: "brain_duel" } },
   "create-campaign-donation":                { target: "create-checkout", bodyExtras: { product: "campaign_donation" } },
@@ -121,8 +121,6 @@ const FUNCTION_ALIASES: Record<string, AliasEntry> = {
   // ─────────────────────────────────────────────────────────────────────
   // PAYMENT VERIFICATION → create-checkout (action=verify)
   // ─────────────────────────────────────────────────────────────────────
-  "verify-bazaar-order-payment":        { target: "create-checkout", action: "verify", bodyExtras: { product: "bazaar_order" } },
-  "verify-bazaar-payment":              { target: "create-checkout", action: "verify", bodyExtras: { product: "bazaar" } },
   "verify-brain-duel-payment":          { target: "create-checkout", action: "verify", bodyExtras: { product: "brain_duel" } },
   "verify-coupon-payment":              { target: "create-checkout", action: "verify", bodyExtras: { product: "coupon" } },
   "verify-donation":                    { target: "create-checkout", action: "verify", bodyExtras: { product: "donation" } },
