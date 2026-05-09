@@ -26,6 +26,8 @@ import { NegotiationBotView } from "@/components/coupon/views/NegotiationBotView
 import { WishlistAlertsView } from "@/components/coupon/views/WishlistAlertsView";
 import { BuyerOrderCard } from "@/components/coupon/BuyerOrderCard";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useCouponWishlist } from "@/hooks/useCouponWishlist";
+import { CouponEngagementPanel } from "@/components/coupon/CouponEngagementPanel";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { Link } from "react-router-dom";
@@ -107,6 +109,7 @@ const CouponMarketplace = () => {
     discount_code: "", expiry_date: "", category: "general", coupon_type: "discount_code", terms_conditions: "",
   });
   const { toast } = useToast();
+  const wishlist = useCouponWishlist(currentUserId);
 
   useEffect(() => { checkCurrentUser(); checkAccessStatus(); }, []);
   useEffect(() => { if (hasAccess) { loadCoupons(); checkPaymentStatus(); } }, [hasAccess]);
