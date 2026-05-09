@@ -88,11 +88,13 @@ const CouponMarketplace = () => {
   const [selectedCoupon, setSelectedCoupon] = useState<CouponListing | null>(null);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [coupons, setCoupons] = useState<CouponListing[]>([]);
+  const [sellerStats, setSellerStats] = useState<Record<string, SellerStat>>({});
   const [myOrders, setMyOrders] = useState<CouponOrder[]>([]);
   const [activeTab, setActiveTab] = useState("browse");
   const [hasAccess, setHasAccess] = useState<boolean | null>(null);
   const [isCheckingAccess, setIsCheckingAccess] = useState(true);
   const [isPurchasingAccess, setIsPurchasingAccess] = useState(false);
+  const [balanceConfirmed, setBalanceConfirmed] = useState(false);
   const [formData, setFormData] = useState({
     title: "", description: "", store_name: "", original_value: "", selling_price: "",
     discount_code: "", expiry_date: "", category: "general", coupon_type: "discount_code", terms_conditions: "",
