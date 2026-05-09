@@ -3275,6 +3275,50 @@ export type Database = {
           },
         ]
       }
+      bazaar_item_reports: {
+        Row: {
+          created_at: string
+          details: string | null
+          id: string
+          item_id: string
+          reason: string
+          reporter_id: string
+          resolution_note: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          details?: string | null
+          id?: string
+          item_id: string
+          reason: string
+          reporter_id: string
+          resolution_note?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          details?: string | null
+          id?: string
+          item_id?: string
+          reason?: string
+          reporter_id?: string
+          resolution_note?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bazaar_item_reports_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "bazaar_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       bazaar_items: {
         Row: {
           brand: string | null
@@ -3670,6 +3714,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      bazaar_seller_verifications: {
+        Row: {
+          admin_note: string | null
+          created_at: string
+          id: string
+          status: string
+          updated_at: string
+          user_id: string
+          verified_at: string | null
+        }
+        Insert: {
+          admin_note?: string | null
+          created_at?: string
+          id?: string
+          status?: string
+          updated_at?: string
+          user_id: string
+          verified_at?: string | null
+        }
+        Update: {
+          admin_note?: string | null
+          created_at?: string
+          id?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+          verified_at?: string | null
+        }
+        Relationships: []
       }
       bazaar_transactions: {
         Row: {
