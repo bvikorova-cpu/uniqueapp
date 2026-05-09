@@ -19,6 +19,9 @@ export interface BazaarFilterState {
   maxPrice: string;
   location: string;
   sort: SortOption;
+  brand: string; // free-text contains
+  size: string;  // "all" or specific
+  shippingMethod: string; // "all" | personal | post | packeta | courier
 }
 
 export const defaultFilters: BazaarFilterState = {
@@ -29,7 +32,19 @@ export const defaultFilters: BazaarFilterState = {
   maxPrice: "",
   location: "",
   sort: "newest",
+  brand: "",
+  size: "all",
+  shippingMethod: "all",
 };
+
+export const SHIPPING_METHODS = [
+  { id: "personal", name: "Personal pickup" },
+  { id: "post", name: "Post" },
+  { id: "packeta", name: "Packeta / Z-Box" },
+  { id: "courier", name: "Courier" },
+] as const;
+
+export const CLOTHING_SIZES = ["XS", "S", "M", "L", "XL", "XXL", "34", "36", "38", "40", "42", "44"];
 
 interface SavedSearch {
   id: string;
