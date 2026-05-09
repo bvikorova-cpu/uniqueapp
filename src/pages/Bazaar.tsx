@@ -767,6 +767,16 @@ const Bazaar = () => {
 
         {/* Purchase */}
         <BazaarPurchaseDialog item={selectedItem} open={isPurchaseDialogOpen} onOpenChange={setIsPurchaseDialogOpen} />
+
+        {promoteItem && (
+          <PromoteListingDialog
+            open={!!promoteItem}
+            onOpenChange={(v) => !v && setPromoteItem(null)}
+            itemId={promoteItem.id}
+            itemTitle={promoteItem.title}
+            onPromoted={loadItems}
+          />
+        )}
       </div>
     </div>
     </>
