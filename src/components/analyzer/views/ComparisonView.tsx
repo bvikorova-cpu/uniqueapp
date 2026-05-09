@@ -32,7 +32,13 @@ export const ComparisonView = ({ onBack }: { onBack: () => void }) => {
         body: { action: "comparison", item1, item2 },
       });
       if (error) throw error;
+      if (data?.error) throw new Error(data.error);
       setResult(data.result);
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const remaining = Math.max(0, (credits?.credits_remaining ?? 0) - 4);
+        await supabase.from("analyzer_credits").update({ credits_remaining: remaining }).eq("user_id", user.id);
+      }
     } catch (err: any) {
       toast.error(err.message || "Comparison failed");
     } finally {
