@@ -542,6 +542,23 @@ const Bazaar = () => {
           </CardContent>
         </Card>
 
+        {/* Favorites toggle */}
+        {currentUserId && (
+          <div className="flex justify-end mb-4">
+            <Button
+              type="button"
+              variant={showOnlyFavorites ? "default" : "outline"}
+              size="sm"
+              onClick={() => setShowOnlyFavorites((v) => !v)}
+              className="gap-2"
+            >
+              <Heart className={`h-4 w-4 ${showOnlyFavorites ? "fill-current" : ""}`} />
+              {showOnlyFavorites ? "Showing favorites" : "Show favorites only"}
+              {favoriteIds.size > 0 && <Badge variant="secondary" className="ml-1">{favoriteIds.size}</Badge>}
+            </Button>
+          </div>
+        )}
+
         {/* Items Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
           {filteredItems.map((item, i) => (
