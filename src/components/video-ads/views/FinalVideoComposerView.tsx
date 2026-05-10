@@ -85,6 +85,18 @@ export const FinalVideoComposerView = ({ onBack }: { onBack: () => void }) => {
     } catch {}
   }, [customVoiceId]);
 
+  useEffect(() => {
+    try { localStorage.setItem(VO_VOL_KEY, String(voVolume)); } catch {}
+  }, [voVolume]);
+
+  useEffect(() => {
+    try {
+      const map: Record<string, number> = {};
+      sfxList.forEach(s => { map[s.id] = s.volume; });
+      localStorage.setItem(SFX_VOL_KEY, JSON.stringify(map));
+    } catch {}
+  }, [sfxList]);
+
   const loadFfmpeg = async () => {
     if (ffmpegRef.current) return ffmpegRef.current;
     setLoadingFfmpeg(true);
