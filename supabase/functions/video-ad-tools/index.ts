@@ -53,6 +53,8 @@ serve(async (req) => {
     };
 
     const cost = costs[action] || 1;
+    let refundOnError = false;
+    let prevCredits = 0;
 
     if (!isAdmin) {
       const { data: credits } = await supabase
@@ -60,16 +62,29 @@ serve(async (req) => {
         .eq('user_id', user.id).maybeSingle();
 
       if (!credits || credits.credits_remaining < cost) {
-        throw new Error('Insufficient credits. Please purchase more.');
+        return new Response(JSON.stringify({ error: 'Insufficient credits. Please purchase more.' }), {
+          status: 402, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
       }
+      prevCredits = credits.credits_remaining;
 
       await supabase.from('video_ad_credits')
-        .update({ credits_remaining: credits.credits_remaining - cost })
+        .update({ credits_remaining: prevCredits - cost })
         .eq('user_id', user.id);
+      refundOnError = true;
     }
 
+    const refund = async () => {
+      if (!refundOnError) return;
+      try {
+        await supabase.from('video_ad_credits')
+          .update({ credits_remaining: prevCredits })
+          .eq('user_id', user.id);
+      } catch (_) { /* swallow */ }
+    };
+
     const openaiKey = Deno.env.get('OPENAI_API_KEY');
-    if (!openaiKey) throw new Error('OpenAI not configured');
+    if (!openaiKey) { await refund(); throw new Error('OpenAI not configured'); }
 
     let systemPrompt = '';
     let userPrompt = '';
