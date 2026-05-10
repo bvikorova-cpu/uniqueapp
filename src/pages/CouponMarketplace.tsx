@@ -193,6 +193,13 @@ const CouponMarketplace = () => {
           (stats as any[]).forEach((s) => { map[s.seller_id] = s; });
           setSellerStats(map);
         }
+        // Verified sellers (≥10 orders, <2% disputes, ≥4.5★)
+        const { data: analytics } = await supabase.from("coupon_seller_analytics" as any).select("*").in("seller_id", sellerIds);
+        const verified = new Set<string>();
+        ((analytics as any[]) || []).forEach((s) => {
+          if ((s.orders_completed ?? 0) >= 10 && (s.dispute_rate_pct ?? 0) < 2 && (s.avg_rating ?? 0) >= 4.5) verified.add(s.seller_id);
+        });
+        setVerifiedSellerIds(verified);
       }
     }
   };
