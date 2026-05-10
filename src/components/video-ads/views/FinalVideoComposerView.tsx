@@ -35,6 +35,7 @@ export const FinalVideoComposerView = ({ onBack }: { onBack: () => void }) => {
   const [voUrl, setVoUrl] = useState<string | null>(null);
   const [voLoading, setVoLoading] = useState(false);
   const [sfxList, setSfxList] = useState<Sfx[]>([]);
+  const [voVolume, setVoVolume] = useState(1.0);
   const [rendering, setRendering] = useState(false);
   const [progress, setProgress] = useState(0);
   const [outputUrl, setOutputUrl] = useState<string | null>(null);
