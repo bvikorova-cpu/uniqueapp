@@ -54,6 +54,10 @@ serve(async (req) => {
       hook_analyzer: 3,
       caption_generator: 3,
       winning_ads_recommend: 3,
+      avatar_plan: 3,
+      stock_footage: 3,
+      resize_advice: 3,
+      text_to_video_split: 3,
     };
 
     const cost = costs[action] || 1;
@@ -213,6 +217,26 @@ serve(async (req) => {
         userPrompt = `User product: "${params.product}". Industry: ${params.industry}. Reference winning ads in library: ${JSON.stringify(libraryAds || [])}. Recommend strategy and patterns.`;
         break;
       }
+
+      case 'avatar_plan':
+        systemPrompt = 'You are an expert at designing AI talking-head avatar video ads (Synthesia/HeyGen style). Return JSON with: avatarDescription (detailed visual prompt for image gen: gender, age, ethnicity, attire, background, lighting, mood), voiceCharacter (suggested voice traits), recommendedVoiceId (one of: JBFqnCBsd6RMkjVDRZzb, EXAVITQu4vr4xnSDxMaL, IKne3meq5aSn9XLyUdCD, XrExE9yKIg1WjnnlVkGX, cgSgspJ2msm6clMCkdW9, nPczCjzI2devNBz1zQrb), scriptForAvatar (the talking head VO, 30-60 words), pacing (fast/medium/slow), gestures (array of 3 cue points), backgroundType, dressCode.';
+        userPrompt = `Design AI avatar talking head for this ad. Product: "${params.product}". Audience: ${params.audience || 'general'}. Tone: ${params.tone || 'professional'}. Industry: ${params.industry || 'general'}.`;
+        break;
+
+      case 'stock_footage':
+        systemPrompt = 'You are an expert at matching video ads with stock footage from Pexels and Pixabay. Return JSON with: scenes (array of {sceneNumber, description, keywords (array of 3-5 short search terms), pexelsUrl (https://www.pexels.com/search/videos/{kw1+kw2}/), pixabayUrl (https://pixabay.com/videos/search/{kw1+kw2}/), unsplashUrl (https://unsplash.com/s/photos/{kw1+kw2}), shotType (close-up/wide/medium), motionStyle (static/slow-pan/dynamic), durationSeconds)), generalKeywords (array), avoidKeywords (array), proTips (array of 3 strings).';
+        userPrompt = `Match these script scenes with stock footage searches. Script/scenes: "${params.script}". Platform: ${params.platform || 'all'}. Mood: ${params.mood || 'energetic'}.`;
+        break;
+
+      case 'resize_advice':
+        systemPrompt = 'You are an expert at adapting/resizing video ads across aspect ratios. Return JSON with: source (aspect ratio), targets (array of {ratio, platform (TikTok/Instagram Reels/YouTube Shorts/YouTube Landscape/Square Feed), reframingStrategy, focalPoint (where to keep subject), cropZones (array {scene, instruction}), textRepositioning, ctaPlacement, durationAdjustment}), commonMistakes (array), ffmpegCommandHint (string FFmpeg command template).';
+        userPrompt = `Provide reframing/resizing advice. Source video aspect: ${params.sourceRatio || '16:9'}. Subject focus: ${params.subject || 'center'}. Has on-screen text: ${params.hasText || 'yes'}. Target platforms: ${params.targets || 'TikTok, Instagram Reels, YouTube Shorts, Square'}.`;
+        break;
+
+      case 'text_to_video_split':
+        systemPrompt = 'You are an expert at splitting a video ad script into shootable B-roll scenes. Return JSON with: scenes (array of {sceneNumber, durationSeconds, visualPrompt (detailed cinematic description for AI video/image gen), cameraMove (static/pan/zoom/dolly), lighting, mood, voiceoverLine, textOverlay (optional)}), totalScenes, totalDuration, suggestedAspect (16:9/9:16/1:1), styleGuide.';
+        userPrompt = `Split this script into ${params.sceneCount || 5} cinematic B-roll scenes ready for AI video gen. Script: "${params.script}". Style: ${params.style || 'cinematic modern'}. Aspect: ${params.aspect || '9:16'}.`;
+        break;
 
       default:
         await refund();

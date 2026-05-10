@@ -6,7 +6,7 @@ import { VideoAdHero } from "@/components/video-ads/VideoAdHero";
 import { VideoAdCreditsDisplay } from "@/components/video-ads/VideoAdCreditsDisplay";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Video, Layout, PenTool, Users, BarChart3, Globe, Search, Mic, Music, Target, Calculator, Flame, Trophy, Star, Lightbulb, ImageIcon, CalendarDays, Mic2, BarChart2, Globe2, FlaskConical, Link2, Subtitles, Palette, Award } from "lucide-react";
+import { Video, Layout, PenTool, Users, BarChart3, Globe, Search, Mic, Music, Target, Calculator, Flame, Trophy, Star, Lightbulb, ImageIcon, CalendarDays, Mic2, BarChart2, Globe2, FlaskConical, Link2, Subtitles, Palette, Award, UserCircle2, Film, Library, Crop, Volume2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { StoryboardView } from "@/components/video-ads/views/StoryboardView";
 import { AdCopyView } from "@/components/video-ads/views/AdCopyView";
@@ -30,6 +30,12 @@ import { CaptionsView } from "@/components/video-ads/views/CaptionsView";
 import { HookAnalyzerView } from "@/components/video-ads/views/HookAnalyzerView";
 import { BrandKitView } from "@/components/video-ads/views/BrandKitView";
 import { WinningAdsView } from "@/components/video-ads/views/WinningAdsView";
+import { AvatarTalkingHeadView } from "@/components/video-ads/views/AvatarTalkingHeadView";
+import { TextToVideoScenesView } from "@/components/video-ads/views/TextToVideoScenesView";
+import { StockFootageView } from "@/components/video-ads/views/StockFootageView";
+import { VideoResizerView } from "@/components/video-ads/views/VideoResizerView";
+import { VoiceCloneView } from "@/components/video-ads/views/VoiceCloneView";
+import { SoundEffectsView } from "@/components/video-ads/views/SoundEffectsView";
 import { useVideoAdCredits } from "@/hooks/useVideoAdCredits";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
@@ -168,6 +174,12 @@ const tools = [
   { id: "hook-analyzer", icon: Flame, title: "Hook Analyzer", desc: "Analýza prvých 3 sekúnd", cost: "3 CR", gradient: "from-red-500 to-orange-600" },
   { id: "brand-kit", icon: Palette, title: "Brand Kit", desc: "Logo, fonty, farby, voice", cost: "3 CR", gradient: "from-indigo-500 to-purple-600" },
   { id: "winning-ads", icon: Award, title: "Winning Ads Library", desc: "Top performujúce ad inšpirácie", cost: "3 CR", gradient: "from-yellow-500 to-amber-600" },
+  { id: "avatar", icon: UserCircle2, title: "AI Avatar / Talking Head", desc: "Synthesia/HeyGen-štýl prezenter", cost: "3+5+5 CR", gradient: "from-sky-500 to-indigo-600" },
+  { id: "text-to-video", icon: Film, title: "Text-to-Video Scenes", desc: "Runway/Sora-štýl B-roll", cost: "3+5 CR", gradient: "from-violet-500 to-fuchsia-600" },
+  { id: "stock-footage", icon: Library, title: "Stock Footage Matcher", desc: "Pexels/Pixabay/Unsplash auto-pair", cost: "3 CR", gradient: "from-emerald-500 to-teal-600" },
+  { id: "video-resizer", icon: Crop, title: "Video Resizer / Auto-Crop", desc: "Reframing pre všetky formáty", cost: "3 CR", gradient: "from-orange-500 to-pink-600" },
+  { id: "voice-clone", icon: Mic, title: "Voice Cloning", desc: "Naklonuj vlastný hlas", cost: "10 CR", gradient: "from-rose-500 to-purple-600" },
+  { id: "sfx", icon: Volume2, title: "Sound Effects Library", desc: "AI-generované SFX", cost: "5 CR", gradient: "from-lime-500 to-emerald-600" },
 ];
 
 const VideoAdGenerator = () => {
@@ -227,6 +239,12 @@ const VideoAdGenerator = () => {
       case "hook-analyzer": return <HookAnalyzerView onBack={() => setActiveView("dashboard")} />;
       case "brand-kit": return <BrandKitView onBack={() => setActiveView("dashboard")} />;
       case "winning-ads": return <WinningAdsView onBack={() => setActiveView("dashboard")} />;
+      case "avatar": return <AvatarTalkingHeadView onBack={() => setActiveView("dashboard")} />;
+      case "text-to-video": return <TextToVideoScenesView onBack={() => setActiveView("dashboard")} />;
+      case "stock-footage": return <StockFootageView onBack={() => setActiveView("dashboard")} />;
+      case "video-resizer": return <VideoResizerView onBack={() => setActiveView("dashboard")} />;
+      case "voice-clone": return <VoiceCloneView onBack={() => setActiveView("dashboard")} />;
+      case "sfx": return <SoundEffectsView onBack={() => setActiveView("dashboard")} />;
       default:
         return (
           <>
