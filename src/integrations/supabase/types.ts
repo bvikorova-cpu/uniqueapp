@@ -11030,6 +11030,48 @@ export type Database = {
           },
         ]
       }
+      coupon_battle_votes: {
+        Row: {
+          coupon_a: string
+          coupon_b: string
+          created_at: string
+          id: string
+          user_id: string
+          winner: string
+        }
+        Insert: {
+          coupon_a: string
+          coupon_b: string
+          created_at?: string
+          id?: string
+          user_id: string
+          winner: string
+        }
+        Update: {
+          coupon_a?: string
+          coupon_b?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+          winner?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coupon_battle_votes_coupon_a_fkey"
+            columns: ["coupon_a"]
+            isOneToOne: false
+            referencedRelation: "coupon_listings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "coupon_battle_votes_coupon_b_fkey"
+            columns: ["coupon_b"]
+            isOneToOne: false
+            referencedRelation: "coupon_listings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       coupon_buyer_reviews: {
         Row: {
           buyer_id: string
@@ -11153,6 +11195,24 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      coupon_compare_sessions: {
+        Row: {
+          coupon_ids: string[]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          coupon_ids?: string[]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          coupon_ids?: string[]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       coupon_daily_deal: {
         Row: {
@@ -11555,6 +11615,48 @@ export type Database = {
           name?: string
           params?: Json
           user_id?: string
+        }
+        Relationships: []
+      }
+      coupon_seasonal_hubs: {
+        Row: {
+          accent_color: string | null
+          active_from: string
+          active_to: string | null
+          banner_url: string | null
+          coupon_ids: string[]
+          created_at: string
+          created_by: string | null
+          description: string | null
+          id: string
+          slug: string
+          title: string
+        }
+        Insert: {
+          accent_color?: string | null
+          active_from?: string
+          active_to?: string | null
+          banner_url?: string | null
+          coupon_ids?: string[]
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          slug: string
+          title: string
+        }
+        Update: {
+          accent_color?: string | null
+          active_from?: string
+          active_to?: string | null
+          banner_url?: string | null
+          coupon_ids?: string[]
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          slug?: string
+          title?: string
         }
         Relationships: []
       }
@@ -45436,6 +45538,18 @@ export type Database = {
       }
       compute_donor_badge_tier: { Args: { _total: number }; Returns: string }
       compute_xp_streak: { Args: { p_user_id: string }; Returns: number }
+      coupon_battle_pair: {
+        Args: { p_category?: string }
+        Returns: {
+          category: string
+          id: string
+          image_url: string
+          original_value: number
+          selling_price: number
+          store_name: string
+          title: string
+        }[]
+      }
       coupon_hot_score: { Args: { p_coupon_id: string }; Returns: number }
       coupon_top_hot: {
         Args: { p_limit?: number }
