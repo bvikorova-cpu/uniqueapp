@@ -1,11 +1,15 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Calculator, Sparkles } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useCouponStacking } from "@/hooks/useCouponStacking";
 import { useCouponCompare } from "@/hooks/useCouponCompare";
+import { supabase } from "@/integrations/supabase/client";
 
 export function CouponStackingCalculator() {
-  const { items } = useCouponCompare();
+  const [userId, setUserId] = useState<string | null>(null);
+  useEffect(() => { supabase.auth.getUser().then(({ data }) => setUserId(data.user?.id ?? null)); }, []);
+  const { ids } = useCouponCompare(userId);
   const { loading, result, calculate } = useCouponStacking();
 
   return (
