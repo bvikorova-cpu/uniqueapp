@@ -13,12 +13,15 @@ import { motion } from "framer-motion";
 import heroVideo from "@/assets/megatalent-hero.mp4.asset.json";
 import { ReferralLeaderboard } from "@/components/referral/ReferralLeaderboard";
 import { ReferralMilestones } from "@/components/referral/ReferralMilestones";
+import { ReferralWithdrawalRequest } from "@/components/referral/ReferralWithdrawalRequest";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 const Referral = () => {
   const { stats, loading, refreshStats } = useReferralProgram();
   const { toast } = useToast();
   const navigate = useNavigate();
   const [user, setUser] = useState<any>(null);
+  const [withdrawOpen, setWithdrawOpen] = useState(false);
 
   useEffect(() => {
     const checkUser = async () => {
@@ -197,9 +200,16 @@ const Referral = () => {
                     <div className="text-xl font-semibold text-amber-500">€{stats?.pendingEarnings.toFixed(2) || 0}</div>
                     <p className="text-xs text-muted-foreground">Pending Payout</p>
                   </div>
-                  <Button className="w-full bg-gradient-to-r from-yellow-500 to-amber-600 text-black font-bold" disabled={!stats?.pendingEarnings}>
+                  <Button
+                    onClick={() => setWithdrawOpen(true)}
+                    className="w-full bg-gradient-to-r from-yellow-500 to-amber-600 text-black font-bold"
+                    disabled={!stats?.pendingEarnings || (stats?.pendingEarnings || 0) < 10}
+                  >
                     <Euro className="h-4 w-4 mr-2" /> Withdraw Money
                   </Button>
+                  {(stats?.pendingEarnings || 0) > 0 && (stats?.pendingEarnings || 0) < 10 && (
+                    <p className="text-xs text-center text-muted-foreground">Minimum €10 to withdraw</p>
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -208,6 +218,15 @@ const Referral = () => {
           </div>
         </div>
       </div>
+
+      <Dialog open={withdrawOpen} onOpenChange={setWithdrawOpen}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Withdraw Referral Earnings</DialogTitle>
+          </DialogHeader>
+          <ReferralWithdrawalRequest />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

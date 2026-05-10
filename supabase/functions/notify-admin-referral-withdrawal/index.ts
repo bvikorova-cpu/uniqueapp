@@ -19,10 +19,10 @@ serve(async (req) => {
 
     const { requestId, referrerName, amount } = await req.json();
 
-    // Get all admin users
+    // Get all admin users from user_roles (roles live in user_roles, not profiles)
     const { data: admins, error: adminsError } = await supabaseClient
-      .from('profiles')
-      .select('id')
+      .from('user_roles')
+      .select('user_id')
       .eq('role', 'admin');
 
     if (adminsError || !admins || admins.length === 0) {
@@ -34,12 +34,12 @@ serve(async (req) => {
     }
 
     // Create notification for each admin
-    const notifications = admins.map(admin => ({
-      user_id: admin.id,
+    const notifications = admins.map((a: any) => ({
+      user_id: a.user_id,
       title: 'New Referral Withdrawal Request',
       message: `${referrerName} has requested a withdrawal of €${amount} from referral earnings.`,
       type: 'admin_withdrawal',
-      read: false
+      is_read: false,
     }));
 
     const { error: notificationError } = await supabaseClient
