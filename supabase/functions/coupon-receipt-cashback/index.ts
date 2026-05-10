@@ -28,11 +28,11 @@ Deno.serve(async (req) => {
     }
     await admin.from("ai_credits").update({ credits_remaining: credits.credits_remaining - 5, last_used_at: new Date().toISOString() }).eq("user_id", user.id);
 
-    const aiRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const aiRes = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
-      headers: { "Content-Type": "application/json", "Lovable-API-Key": Deno.env.get("LOVABLE_API_KEY")! },
+      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${Deno.env.get("OPENAI_API_KEY")!}` },
       body: JSON.stringify({
-        model: "google/gemini-3-flash-preview",
+        model: "gpt-4o",
         messages: [{
           role: "user",
           content: [
@@ -44,7 +44,7 @@ Deno.serve(async (req) => {
       }),
     });
     if (aiRes.status === 429) return new Response(JSON.stringify({ error: "rate_limited" }), { status: 429, headers: corsHeaders });
-    if (aiRes.status === 402) return new Response(JSON.stringify({ error: "ai_credits_exhausted" }), { status: 402, headers: corsHeaders });
+    if (aiRes.status === 401 || aiRes.status === 402) return new Response(JSON.stringify({ error: "ai_credits_exhausted" }), { status: 402, headers: corsHeaders });
     const j = await aiRes.json();
     let extracted: any = {};
     try { extracted = JSON.parse(j.choices?.[0]?.message?.content ?? "{}"); } catch {}
