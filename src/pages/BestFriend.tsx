@@ -194,10 +194,10 @@ const BestFriend = () => {
             </div>
             <div className="flex gap-2">
               <Button onClick={() => createCheckout()} size="sm" className="bg-gradient-to-r from-purple-600 to-blue-600">
-                <Crown className="w-4 h-4 mr-1" /> Subscribe €15/mo
+                <Crown className="w-4 h-4 mr-1" /> Subscribe €9.99/mo
               </Button>
               <Button variant="outline" size="sm" onClick={() => purchaseMessages()}>
-                <CreditCard className="w-4 h-4 mr-1" /> +100 msgs €2
+                <CreditCard className="w-4 h-4 mr-1" /> +100 msgs €4.99
               </Button>
             </div>
           </div>
