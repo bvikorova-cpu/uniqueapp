@@ -50,6 +50,10 @@ serve(async (req) => {
       ad_analytics: 3,
       multi_language_translator: 3,
       ab_tester: 4,
+      url_to_video: 5,
+      hook_analyzer: 3,
+      caption_generator: 3,
+      winning_ads_recommend: 3,
     };
 
     const cost = costs[action] || 1;
