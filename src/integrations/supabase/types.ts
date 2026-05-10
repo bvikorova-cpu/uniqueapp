@@ -45250,6 +45250,14 @@ export type Database = {
       cleanup_expired_cache: { Args: never; Returns: number }
       cleanup_old_jobs: { Args: never; Returns: number }
       cleanup_rate_limits: { Args: never; Returns: undefined }
+      complete_auction_buyout: {
+        Args: {
+          p_auction_id: string
+          p_stripe_session_id: string
+          p_winner_id: string
+        }
+        Returns: Json
+      }
       complete_job: {
         Args: { p_job_id: string; p_result?: Json }
         Returns: undefined
@@ -45283,6 +45291,7 @@ export type Database = {
         Returns: boolean
       }
       evaluate_xp_bets: { Args: never; Returns: number }
+      expire_auctions: { Args: never; Returns: number }
       expire_featured_listings: { Args: never; Returns: undefined }
       fail_job: {
         Args: { p_error?: string; p_job_id: string }
@@ -45659,6 +45668,10 @@ export type Database = {
           needs_review: boolean
           reason: string
         }[]
+      }
+      place_auction_bid: {
+        Args: { p_amount: number; p_auction_id: string }
+        Returns: Json
       }
       place_xp_bet: {
         Args: {
