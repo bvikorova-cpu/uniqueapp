@@ -714,9 +714,14 @@ const CouponMarketplace = () => {
               {selectedCoupon.image_url && <img src={selectedCoupon.image_url} alt={selectedCoupon.title} className="w-full h-48 object-cover rounded-lg" />}
               <div className="flex items-center gap-2"><Store className="w-4 h-4" /><span className="font-medium">{selectedCoupon.store_name}</span></div>
               <div className="flex items-center justify-between"><div><span className="text-2xl font-bold text-primary">€{selectedCoupon.selling_price.toFixed(2)}</span><span className="text-lg text-muted-foreground line-through ml-2">€{selectedCoupon.original_value.toFixed(2)}</span></div><Badge className="bg-success text-success-foreground">Save {getSavingsPercent(selectedCoupon.original_value, selectedCoupon.selling_price)}%</Badge></div>
-              {selectedCoupon.expiry_date && <div className="flex items-center gap-2 text-sm"><Calendar className="w-4 h-4" /><span>Expires: {new Date(selectedCoupon.expiry_date).toLocaleDateString()}</span></div>}
+              <div className="flex items-center gap-2 flex-wrap">
+                {selectedCoupon.expiry_date && <CouponExpiryHeatmap expiry={selectedCoupon.expiry_date} />}
+                <VerifiedSellerBadge sellerId={selectedCoupon.user_id} />
+              </div>
+              <CouponVerifyButtons couponId={selectedCoupon.id} userId={currentUserId} />
               {selectedCoupon.description && <p className="text-muted-foreground">{selectedCoupon.description}</p>}
               {selectedCoupon.terms_conditions && <div className="bg-muted p-3 rounded-lg text-sm"><p className="font-medium mb-1">Terms & Conditions:</p><p className="text-muted-foreground">{selectedCoupon.terms_conditions}</p></div>}
+              <CouponComments couponId={selectedCoupon.id} userId={currentUserId} />
               <div className="flex gap-2">
                 {selectedCoupon.user_id !== currentUserId && <><Button className="flex-1" onClick={() => handlePurchase(selectedCoupon)} disabled={isPurchasing}>{isPurchasing ? "Processing..." : "Buy Now"}</Button><Button variant="outline" onClick={() => handleContact(selectedCoupon)}><MessageCircle className="w-4 h-4 mr-2" />Contact</Button></>}
                 {selectedCoupon.user_id === currentUserId && <Button variant="destructive" onClick={() => setIsDeleteDialogOpen(true)}><Trash2 className="w-4 h-4 mr-2" />Delete</Button>}
