@@ -24,12 +24,12 @@ export function CouponStackingCalculator() {
       </p>
       <Button
         size="sm"
-        disabled={loading || items.length < 2}
-        onClick={() => calculate(items.map(i => i.id))}
+        disabled={loading || ids.length < 2}
+        onClick={() => calculate(ids)}
         className="w-full gap-1.5"
       >
         <Sparkles className="w-3.5 h-3.5" />
-        {loading ? "Calculating…" : `Calculate (${items.length} coupons)`}
+        {loading ? "Calculating…" : `Calculate (${ids.length} coupons)`}
       </Button>
       {result?.result && (
         <div className="text-xs space-y-1 p-3 rounded-lg bg-background/60 border">
