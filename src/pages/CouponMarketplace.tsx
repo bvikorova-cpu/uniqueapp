@@ -36,6 +36,10 @@ import { CouponVoteWidget } from "@/components/coupon/CouponVoteWidget";
 import { DailyDealCountdown } from "@/components/coupon/DailyDealCountdown";
 import { TrendingStoresLeaderboard } from "@/components/coupon/TrendingStoresLeaderboard";
 import { CouponFilterChips, type CouponFilterChip } from "@/components/coupon/CouponFilterChips";
+import { CouponBattleWidget } from "@/components/coupon/CouponBattleWidget";
+import { CouponCompareWidget } from "@/components/coupon/CouponCompareWidget";
+import { CouponReferralBanner } from "@/components/coupon/CouponReferralBanner";
+import { SeasonalHubBanner } from "@/components/coupon/SeasonalHubBanner";
 import { CouponScalePanel } from "@/components/coupon/CouponScalePanel";
 import { CouponSellerDashboard } from "@/components/coupon/CouponSellerDashboard";
 
