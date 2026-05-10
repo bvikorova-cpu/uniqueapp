@@ -94,7 +94,7 @@ export default function IQTournaments() {
                     </div>
                     <div className="bg-background/50 rounded-lg p-2">
                       <Users className="h-3 w-3 mx-auto mb-0.5 text-muted-foreground" />
-                      <p className="text-xs font-bold">0/{comp.max_participants}</p>
+                      <p className="text-xs font-bold">{counts[comp.id] ?? 0}/{comp.max_participants}</p>
                       <p className="text-[9px] text-muted-foreground">Players</p>
                     </div>
                     <div className="bg-background/50 rounded-lg p-2">
