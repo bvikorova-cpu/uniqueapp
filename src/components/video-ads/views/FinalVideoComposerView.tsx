@@ -373,7 +373,23 @@ export const FinalVideoComposerView = ({ onBack }: { onBack: () => void }) => {
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle className="text-base">3. Zvukové efekty</CardTitle>
             <div className="flex gap-2">
-              {sfxList.length > 0 && <Button size="sm" variant="ghost" onClick={resetAllSfxVolumes}>Reset volumes</Button>}
+              {sfxList.length > 0 && (
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button size="sm" variant="ghost">Reset volumes</Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Resetovať všetky SFX hlasitosti?</AlertDialogTitle>
+                      <AlertDialogDescription>Hlasitosť každého z {sfxList.length} efektov sa nastaví na predvolených 60%.</AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Zrušiť</AlertDialogCancel>
+                      <AlertDialogAction onClick={resetAllSfxVolumes}>Resetovať</AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              )}
               <Button size="sm" variant="outline" onClick={addSfx}><Plus className="h-4 w-4 mr-1" />Pridať SFX</Button>
             </div>
           </CardHeader>
