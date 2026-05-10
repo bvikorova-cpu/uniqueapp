@@ -357,7 +357,10 @@ export const FinalVideoComposerView = ({ onBack }: { onBack: () => void }) => {
         <Card className="lg:col-span-2">
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle className="text-base">3. Zvukové efekty</CardTitle>
-            <Button size="sm" variant="outline" onClick={addSfx}><Plus className="h-4 w-4 mr-1" />Pridať SFX</Button>
+            <div className="flex gap-2">
+              {sfxList.length > 0 && <Button size="sm" variant="ghost" onClick={resetAllSfxVolumes}>Reset volumes</Button>}
+              <Button size="sm" variant="outline" onClick={addSfx}><Plus className="h-4 w-4 mr-1" />Pridať SFX</Button>
+            </div>
           </CardHeader>
           <CardContent className="space-y-2">
             {sfxList.length === 0 && <p className="text-sm text-muted-foreground text-center py-4">Žiadne SFX. Pridaj efekt (whoosh, applause, ding...)</p>}
