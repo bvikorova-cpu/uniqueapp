@@ -236,6 +236,11 @@ const Auction = () => {
         {/* Cinematic Hero */}
         <AuctionHero />
 
+        <div className="flex justify-end mb-3">
+          <Button variant="outline" size="sm" asChild>
+            <Link to="/my-auctions"><Trophy className="w-4 h-4 mr-2" />My Auctions</Link>
+          </Button>
+        </div>
 
         <HeroRewardedAd sectionKey="page_auction" />
 
