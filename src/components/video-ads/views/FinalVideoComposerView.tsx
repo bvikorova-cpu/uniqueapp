@@ -115,7 +115,7 @@ export const FinalVideoComposerView = ({ onBack }: { onBack: () => void }) => {
     finally { setVoLoading(false); }
   };
 
-  const addSfx = () => setSfxList(l => [...l, { id: crypto.randomUUID(), prompt: "", duration: 3 }]);
+  const addSfx = () => setSfxList(l => [...l, { id: crypto.randomUUID(), prompt: "", duration: 3, volume: 0.6 }]);
   const updateSfx = (id: string, patch: Partial<Sfx>) => setSfxList(l => l.map(s => s.id === id ? { ...s, ...patch } : s));
   const removeSfx = (id: string) => setSfxList(l => l.filter(s => s.id !== id));
 
