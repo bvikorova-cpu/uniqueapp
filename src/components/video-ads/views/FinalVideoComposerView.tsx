@@ -256,8 +256,20 @@ export const FinalVideoComposerView = ({ onBack }: { onBack: () => void }) => {
                 {VOICES.map(v => <option key={v.id} value={v.id}>{v.name}</option>)}
               </select>
             </div>
+            {clonedVoices.length > 0 && (
+              <div>
+                <Label className="text-xs flex items-center justify-between">
+                  <span>🎤 Tvoje cloned voices ({clonedVoices.length})</span>
+                  <button type="button" onClick={() => setCustomVoiceId("")} className="text-xs text-muted-foreground hover:text-foreground underline">Vyčistiť</button>
+                </Label>
+                <select className="w-full p-2 rounded-md border bg-background text-sm" value={customVoiceId} onChange={e => setCustomVoiceId(e.target.value)}>
+                  <option value="">— použiť hlas vyššie —</option>
+                  {clonedVoices.map(v => <option key={v.voiceId} value={v.voiceId}>{v.name}</option>)}
+                </select>
+              </div>
+            )}
             <div>
-              <Label className="text-xs">Vlastný cloned voiceId (voliteľné)</Label>
+              <Label className="text-xs">Vlastný cloned voiceId (manuálne)</Label>
               <Input className="font-mono text-xs" placeholder="z Voice Cloning karty" value={customVoiceId} onChange={e => setCustomVoiceId(e.target.value)} />
             </div>
             <Button onClick={generateVoice} disabled={voLoading} className="w-full bg-gradient-to-r from-pink-500 to-rose-600">
