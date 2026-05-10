@@ -231,6 +231,8 @@ const SPORTS_PACKS: Record<string, Record<string, { amount: number; coins: numbe
 
 const DEFAULT_PATHS: Record<string, { success: string; cancel: string }> = {
   antique_credits: { success: "/antique-appraisal?payment=success&session_id={CHECKOUT_SESSION_ID}", cancel: "/antique-appraisal?payment=canceled" },
+  best_friend: { success: "/best-friend?payment=success&session_id={CHECKOUT_SESSION_ID}", cancel: "/best-friend?payment=canceled" },
+  best_friend_messages: { success: "/best-friend?payment=success&session_id={CHECKOUT_SESSION_ID}&pack=messages", cancel: "/best-friend?payment=canceled" },
   basketball_coins: { success: "/basketball-arena?payment=success&session_id={CHECKOUT_SESSION_ID}", cancel: "/basketball-arena?payment=canceled" },
   football_coins: { success: "/football-arena?payment=success&session_id={CHECKOUT_SESSION_ID}", cancel: "/football-arena?payment=canceled" },
   hockey_coins: { success: "/hockey-arena?payment=success&session_id={CHECKOUT_SESSION_ID}", cancel: "/hockey-arena?payment=canceled" },
