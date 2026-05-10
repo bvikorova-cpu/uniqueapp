@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 
 export default function IQTournaments() {
   const [competitions, setCompetitions] = useState<any[]>([]);
+  const [counts, setCounts] = useState<Record<string, number>>({});
   const { toast } = useToast();
 
   useEffect(() => {
@@ -18,11 +19,18 @@ export default function IQTournaments() {
   }, []);
 
   const loadCompetitions = async () => {
-    const { data } = await supabase
-      .from("iq_competitions")
-      .select("*")
-      .order("created_at", { ascending: false });
-    if (data) setCompetitions(data);
+    const [{ data: comps }, { data: countRows }] = await Promise.all([
+      supabase.from("iq_competitions").select("*").order("created_at", { ascending: false }),
+      supabase.rpc("get_iq_competition_counts"),
+    ]);
+    if (comps) setCompetitions(comps);
+    if (countRows) {
+      const map: Record<string, number> = {};
+      (countRows as Array<{ competition_id: string; participant_count: number }>).forEach((r) => {
+        map[r.competition_id] = Number(r.participant_count);
+      });
+      setCounts(map);
+    }
   };
 
   const getTimeUntilEnd = (endTime: string) => {
