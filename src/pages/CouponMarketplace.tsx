@@ -543,6 +543,16 @@ const CouponMarketplace = () => {
           </TabsList>
 
           <TabsContent value="browse" className="mt-6">
+            <DailyDealCountdown onOpenCoupon={(id) => {
+              const c = coupons.find(x => x.id === id);
+              if (c) { setSelectedCoupon(c); setIsDetailOpen(true); }
+            }} />
+            <TrendingStoresLeaderboard />
+            <CouponFilterChips active={activeChips} onToggle={(id) => {
+              const next = new Set(activeChips);
+              next.has(id) ? next.delete(id) : next.add(id);
+              setActiveChips(next);
+            }} />
             <div className="space-y-3 mb-6">
               <div className="flex flex-col sm:flex-row gap-3">
                 <div className="relative flex-1"><Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" /><Input placeholder="Search coupons or stores..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} className="pl-10" /></div>
