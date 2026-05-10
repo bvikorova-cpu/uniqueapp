@@ -20,7 +20,7 @@ const VOICES = [
 ];
 
 interface SceneImg { id: string; file: File; preview: string; }
-interface Sfx { id: string; prompt: string; duration: number; audio?: Uint8Array; previewUrl?: string; loading?: boolean; }
+interface Sfx { id: string; prompt: string; duration: number; volume: number; audio?: Uint8Array; previewUrl?: string; loading?: boolean; }
 
 interface ClonedVoice { voiceId: string; name: string; description?: string; createdAt: number; }
 
@@ -35,6 +35,7 @@ export const FinalVideoComposerView = ({ onBack }: { onBack: () => void }) => {
   const [voUrl, setVoUrl] = useState<string | null>(null);
   const [voLoading, setVoLoading] = useState(false);
   const [sfxList, setSfxList] = useState<Sfx[]>([]);
+  const [voVolume, setVoVolume] = useState(1.0);
   const [rendering, setRendering] = useState(false);
   const [progress, setProgress] = useState(0);
   const [outputUrl, setOutputUrl] = useState<string | null>(null);
@@ -114,7 +115,7 @@ export const FinalVideoComposerView = ({ onBack }: { onBack: () => void }) => {
     finally { setVoLoading(false); }
   };
 
-  const addSfx = () => setSfxList(l => [...l, { id: crypto.randomUUID(), prompt: "", duration: 3 }]);
+  const addSfx = () => setSfxList(l => [...l, { id: crypto.randomUUID(), prompt: "", duration: 3, volume: 0.6 }]);
   const updateSfx = (id: string, patch: Partial<Sfx>) => setSfxList(l => l.map(s => s.id === id ? { ...s, ...patch } : s));
   const removeSfx = (id: string) => setSfxList(l => l.filter(s => s.id !== id));
 
@@ -177,14 +178,14 @@ export const FinalVideoComposerView = ({ onBack }: { onBack: () => void }) => {
       if (voAudio) {
         await ff.writeFile("vo.mp3", voAudio);
         audioInputs.push("-i", "vo.mp3");
-        filterParts.push(`[${inputIdx}:a]volume=1.0[a${inputIdx}]`);
+        filterParts.push(`[${inputIdx}:a]volume=${voVolume.toFixed(2)}[a${inputIdx}]`);
         inputIdx++;
       }
       const validSfx = sfxList.filter(s => s.audio);
       for (let i = 0; i < validSfx.length; i++) {
         await ff.writeFile(`sfx${i}.mp3`, validSfx[i].audio!);
         audioInputs.push("-i", `sfx${i}.mp3`);
-        filterParts.push(`[${inputIdx}:a]volume=0.6[a${inputIdx}]`);
+        filterParts.push(`[${inputIdx}:a]volume=${(validSfx[i].volume ?? 0.6).toFixed(2)}[a${inputIdx}]`);
         inputIdx++;
       }
 
@@ -276,6 +277,14 @@ export const FinalVideoComposerView = ({ onBack }: { onBack: () => void }) => {
               {voLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <><Wand2 className="mr-2 h-4 w-4" />Generovať VO (5 CR)</>}
             </Button>
             {voUrl && <audio src={voUrl} controls className="w-full" />}
+            <div>
+              <Label className="text-xs flex items-center justify-between">
+                <span>🔊 Hlasitosť voiceoveru</span>
+                <span className="font-mono">{Math.round(voVolume * 100)}%</span>
+              </Label>
+              <input type="range" min={0} max={2} step={0.05} value={voVolume} onChange={e => setVoVolume(Number(e.target.value))} className="w-full accent-pink-500" />
+              <p className="text-[10px] text-muted-foreground">0% = ticho, 100% = originál, 200% = zosilnené</p>
+            </div>
           </CardContent>
         </Card>
 
@@ -288,12 +297,19 @@ export const FinalVideoComposerView = ({ onBack }: { onBack: () => void }) => {
           <CardContent className="space-y-2">
             {sfxList.length === 0 && <p className="text-sm text-muted-foreground text-center py-4">Žiadne SFX. Pridaj efekt (whoosh, applause, ding...)</p>}
             {sfxList.map(s => (
-              <div key={s.id} className="grid grid-cols-12 gap-2 items-center p-2 bg-muted/30 rounded">
-                <Input className="col-span-5" placeholder="napr. cinematic whoosh" value={s.prompt} onChange={e => updateSfx(s.id, { prompt: e.target.value })} />
-                <Input className="col-span-2" type="number" min={0.5} max={22} step={0.5} value={s.duration} onChange={e => updateSfx(s.id, { duration: Number(e.target.value) || 3 })} />
-                <Button size="sm" variant="outline" className="col-span-2" onClick={() => generateSfx(s.id)} disabled={s.loading}>{s.loading ? <Loader2 className="h-3 w-3 animate-spin" /> : "Gen (5 CR)"}</Button>
-                <div className="col-span-2">{s.previewUrl && <audio src={s.previewUrl} controls className="w-full h-8" />}</div>
-                <Button size="sm" variant="ghost" className="col-span-1" onClick={() => removeSfx(s.id)}><Trash2 className="h-3 w-3" /></Button>
+              <div key={s.id} className="p-3 bg-muted/30 rounded space-y-2">
+                <div className="grid grid-cols-12 gap-2 items-center">
+                  <Input className="col-span-5" placeholder="napr. cinematic whoosh" value={s.prompt} onChange={e => updateSfx(s.id, { prompt: e.target.value })} />
+                  <Input className="col-span-2" type="number" min={0.5} max={22} step={0.5} value={s.duration} onChange={e => updateSfx(s.id, { duration: Number(e.target.value) || 3 })} />
+                  <Button size="sm" variant="outline" className="col-span-2" onClick={() => generateSfx(s.id)} disabled={s.loading}>{s.loading ? <Loader2 className="h-3 w-3 animate-spin" /> : "Gen (5 CR)"}</Button>
+                  <div className="col-span-2">{s.previewUrl && <audio src={s.previewUrl} controls className="w-full h-8" />}</div>
+                  <Button size="sm" variant="ghost" className="col-span-1" onClick={() => removeSfx(s.id)}><Trash2 className="h-3 w-3" /></Button>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs w-16">🔊 Vol</span>
+                  <input type="range" min={0} max={2} step={0.05} value={s.volume} onChange={e => updateSfx(s.id, { volume: Number(e.target.value) })} className="flex-1 accent-fuchsia-500" />
+                  <span className="text-xs font-mono w-12 text-right">{Math.round(s.volume * 100)}%</span>
+                </div>
               </div>
             ))}
           </CardContent>
