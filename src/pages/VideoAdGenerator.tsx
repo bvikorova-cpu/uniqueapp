@@ -247,6 +247,7 @@ const VideoAdGenerator = () => {
       case "video-resizer": return <VideoResizerView onBack={() => setActiveView("dashboard")} />;
       case "voice-clone": return <VoiceCloneView onBack={() => setActiveView("dashboard")} />;
       case "sfx": return <SoundEffectsView onBack={() => setActiveView("dashboard")} />;
+      case "final-composer": return <FinalVideoComposerView onBack={() => setActiveView("dashboard")} />;
       default:
         return (
           <>
