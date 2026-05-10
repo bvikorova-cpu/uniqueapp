@@ -44017,6 +44017,54 @@ export type Database = {
         }
         Relationships: []
       }
+      winning_ads_library: {
+        Row: {
+          ad_title: string
+          brand_name: string
+          created_at: string
+          duration_seconds: number | null
+          full_script: string | null
+          hook: string
+          id: string
+          industry: string
+          performance_metrics: Json | null
+          platform: string
+          tags: string[] | null
+          thumbnail_url: string | null
+          why_it_works: string | null
+        }
+        Insert: {
+          ad_title: string
+          brand_name: string
+          created_at?: string
+          duration_seconds?: number | null
+          full_script?: string | null
+          hook: string
+          id?: string
+          industry: string
+          performance_metrics?: Json | null
+          platform: string
+          tags?: string[] | null
+          thumbnail_url?: string | null
+          why_it_works?: string | null
+        }
+        Update: {
+          ad_title?: string
+          brand_name?: string
+          created_at?: string
+          duration_seconds?: number | null
+          full_script?: string | null
+          hook?: string
+          id?: string
+          industry?: string
+          performance_metrics?: Json | null
+          platform?: string
+          tags?: string[] | null
+          thumbnail_url?: string | null
+          why_it_works?: string | null
+        }
+        Relationships: []
+      }
       withdrawal_requests: {
         Row: {
           admin_notes: string | null
