@@ -32,6 +32,10 @@ import { CouponVerifyButtons } from "@/components/coupon/CouponVerifyButtons";
 import { CouponComments } from "@/components/coupon/CouponComments";
 import { CouponExpiryHeatmap } from "@/components/coupon/CouponExpiryHeatmap";
 import { VerifiedSellerBadge } from "@/components/coupon/VerifiedSellerBadge";
+import { CouponVoteWidget } from "@/components/coupon/CouponVoteWidget";
+import { DailyDealCountdown } from "@/components/coupon/DailyDealCountdown";
+import { TrendingStoresLeaderboard } from "@/components/coupon/TrendingStoresLeaderboard";
+import { CouponFilterChips, type CouponFilterChip } from "@/components/coupon/CouponFilterChips";
 import { CouponScalePanel } from "@/components/coupon/CouponScalePanel";
 import { CouponSellerDashboard } from "@/components/coupon/CouponSellerDashboard";
 
@@ -46,6 +50,7 @@ interface CouponListing {
   is_digital: boolean; image_url: string | null; terms_conditions: string | null;
   is_sold: boolean; created_at: string; user_id: string;
   balance_confirmed?: boolean | null;
+  tags?: string[] | null;
   profiles?: { full_name: string | null } | null;
 }
 
