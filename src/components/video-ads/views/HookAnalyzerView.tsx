@@ -38,7 +38,7 @@ export const HookAnalyzerView = ({ onBack }: { onBack: () => void }) => {
       </div>
       <div className="grid lg:grid-cols-3 gap-6">
         <Card><CardHeader><CardTitle>Tvoj hook</CardTitle></CardHeader><CardContent className="space-y-4">
-          <div><Label>Hook (prvé 3s) *</Label><Input value={hook} onChange={e => setHook(e.target.value)} placeholder='napr. "POV: It''s 2am..."' /></div>
+          <div><Label>Hook (prvé 3s) *</Label><Input value={hook} onChange={e => setHook(e.target.value)} placeholder={`napr. "POV: It's 2am..."`} /></div>
           <div><Label>Cieľová skupina</Label><Input value={audience} onChange={e => setAudience(e.target.value)} /></div>
           <Button onClick={go} disabled={loading} className="w-full bg-gradient-to-r from-red-500 to-orange-600">{loading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Analyzovať (3 CR)'}</Button>
         </CardContent></Card>
