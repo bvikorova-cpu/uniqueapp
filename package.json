@@ -24,6 +24,7 @@
     "e2e": "playwright test"
   },
   "dependencies": {
+    "@elevenlabs/react": "^1.6.0",
     "@ffmpeg/ffmpeg": "^0.12.15",
     "@ffmpeg/util": "^0.12.2",
     "@hookform/resolvers": "^3.10.0",
