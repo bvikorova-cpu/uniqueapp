@@ -174,6 +174,12 @@ const tools = [
   { id: "hook-analyzer", icon: Flame, title: "Hook Analyzer", desc: "Analýza prvých 3 sekúnd", cost: "3 CR", gradient: "from-red-500 to-orange-600" },
   { id: "brand-kit", icon: Palette, title: "Brand Kit", desc: "Logo, fonty, farby, voice", cost: "3 CR", gradient: "from-indigo-500 to-purple-600" },
   { id: "winning-ads", icon: Award, title: "Winning Ads Library", desc: "Top performujúce ad inšpirácie", cost: "3 CR", gradient: "from-yellow-500 to-amber-600" },
+  { id: "avatar", icon: UserCircle2, title: "AI Avatar / Talking Head", desc: "Synthesia/HeyGen-štýl prezenter", cost: "3+5+5 CR", gradient: "from-sky-500 to-indigo-600" },
+  { id: "text-to-video", icon: Film, title: "Text-to-Video Scenes", desc: "Runway/Sora-štýl B-roll", cost: "3+5 CR", gradient: "from-violet-500 to-fuchsia-600" },
+  { id: "stock-footage", icon: Library, title: "Stock Footage Matcher", desc: "Pexels/Pixabay/Unsplash auto-pair", cost: "3 CR", gradient: "from-emerald-500 to-teal-600" },
+  { id: "video-resizer", icon: Crop, title: "Video Resizer / Auto-Crop", desc: "Reframing pre všetky formáty", cost: "3 CR", gradient: "from-orange-500 to-pink-600" },
+  { id: "voice-clone", icon: Mic, title: "Voice Cloning", desc: "Naklonuj vlastný hlas", cost: "10 CR", gradient: "from-rose-500 to-purple-600" },
+  { id: "sfx", icon: Volume2, title: "Sound Effects Library", desc: "AI-generované SFX", cost: "5 CR", gradient: "from-lime-500 to-emerald-600" },
 ];
 
 const VideoAdGenerator = () => {
