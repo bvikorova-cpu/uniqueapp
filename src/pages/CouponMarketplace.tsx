@@ -229,6 +229,12 @@ const CouponMarketplace = () => {
       if (disc < md) return false;
       if (!isNaN(mp) && c.selling_price > mp) return false;
       if (hideExpired && c.expiry_date && new Date(c.expiry_date).getTime() < now) return false;
+      const tags = (c.tags || []) as string[];
+      if (activeChips.has("free_shipping") && !tags.includes("free_shipping")) return false;
+      if (activeChips.has("bogo") && !(tags.includes("bogo") || c.coupon_type === "bogo")) return false;
+      if (activeChips.has("percent_off") && !(tags.includes("percent_off") || /%/.test(c.title))) return false;
+      if (activeChips.has("amount_off") && !(tags.includes("amount_off") || /€/.test(c.title))) return false;
+      if (activeChips.has("verified_only") && !verifiedSellerIds.has(c.user_id)) return false;
       return true;
     });
     const discPct = (c: CouponListing) => ((c.original_value - c.selling_price) / c.original_value) * 100;
