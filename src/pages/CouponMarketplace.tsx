@@ -28,6 +28,14 @@ import { BuyerOrderCard } from "@/components/coupon/BuyerOrderCard";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useCouponWishlist } from "@/hooks/useCouponWishlist";
 import { CouponEngagementPanel } from "@/components/coupon/CouponEngagementPanel";
+import { CouponVerifyButtons } from "@/components/coupon/CouponVerifyButtons";
+import { CouponComments } from "@/components/coupon/CouponComments";
+import { CouponExpiryHeatmap } from "@/components/coupon/CouponExpiryHeatmap";
+import { VerifiedSellerBadge } from "@/components/coupon/VerifiedSellerBadge";
+import { CouponVoteWidget } from "@/components/coupon/CouponVoteWidget";
+import { DailyDealCountdown } from "@/components/coupon/DailyDealCountdown";
+import { TrendingStoresLeaderboard } from "@/components/coupon/TrendingStoresLeaderboard";
+import { CouponFilterChips, type CouponFilterChip } from "@/components/coupon/CouponFilterChips";
 import { CouponScalePanel } from "@/components/coupon/CouponScalePanel";
 import { CouponSellerDashboard } from "@/components/coupon/CouponSellerDashboard";
 
@@ -42,6 +50,7 @@ interface CouponListing {
   is_digital: boolean; image_url: string | null; terms_conditions: string | null;
   is_sold: boolean; created_at: string; user_id: string;
   balance_confirmed?: boolean | null;
+  tags?: string[] | null;
   profiles?: { full_name: string | null } | null;
 }
 
@@ -99,6 +108,8 @@ const CouponMarketplace = () => {
   const [myOrders, setMyOrders] = useState<CouponOrder[]>([]);
   const [activeTab, setActiveTab] = useState("browse");
   const [hasAccess, setHasAccess] = useState<boolean | null>(null);
+  const [activeChips, setActiveChips] = useState<Set<CouponFilterChip>>(new Set());
+  const [verifiedSellerIds, setVerifiedSellerIds] = useState<Set<string>>(new Set());
   const [isCheckingAccess, setIsCheckingAccess] = useState(true);
   const [isPurchasingAccess, setIsPurchasingAccess] = useState(false);
   const [balanceConfirmed, setBalanceConfirmed] = useState(false);
@@ -182,6 +193,13 @@ const CouponMarketplace = () => {
           (stats as any[]).forEach((s) => { map[s.seller_id] = s; });
           setSellerStats(map);
         }
+        // Verified sellers (≥10 orders, <2% disputes, ≥4.5★)
+        const { data: analytics } = await supabase.from("coupon_seller_analytics" as any).select("*").in("seller_id", sellerIds);
+        const verified = new Set<string>();
+        ((analytics as any[]) || []).forEach((s) => {
+          if ((s.orders_completed ?? 0) >= 10 && (s.dispute_rate_pct ?? 0) < 2 && (s.avg_rating ?? 0) >= 4.5) verified.add(s.seller_id);
+        });
+        setVerifiedSellerIds(verified);
       }
     }
   };
@@ -211,6 +229,12 @@ const CouponMarketplace = () => {
       if (disc < md) return false;
       if (!isNaN(mp) && c.selling_price > mp) return false;
       if (hideExpired && c.expiry_date && new Date(c.expiry_date).getTime() < now) return false;
+      const tags = (c.tags || []) as string[];
+      if (activeChips.has("free_shipping") && !tags.includes("free_shipping")) return false;
+      if (activeChips.has("bogo") && !(tags.includes("bogo") || c.coupon_type === "bogo")) return false;
+      if (activeChips.has("percent_off") && !(tags.includes("percent_off") || /%/.test(c.title))) return false;
+      if (activeChips.has("amount_off") && !(tags.includes("amount_off") || /€/.test(c.title))) return false;
+      if (activeChips.has("verified_only") && !verifiedSellerIds.has(c.user_id)) return false;
       return true;
     });
     const discPct = (c: CouponListing) => ((c.original_value - c.selling_price) / c.original_value) * 100;
@@ -519,6 +543,16 @@ const CouponMarketplace = () => {
           </TabsList>
 
           <TabsContent value="browse" className="mt-6">
+            <DailyDealCountdown onOpenCoupon={(id) => {
+              const c = coupons.find(x => x.id === id);
+              if (c) { setSelectedCoupon(c); setIsDetailOpen(true); }
+            }} />
+            <TrendingStoresLeaderboard />
+            <CouponFilterChips active={activeChips} onToggle={(id) => {
+              const next = new Set(activeChips);
+              next.has(id) ? next.delete(id) : next.add(id);
+              setActiveChips(next);
+            }} />
             <div className="space-y-3 mb-6">
               <div className="flex flex-col sm:flex-row gap-3">
                 <div className="relative flex-1"><Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" /><Input placeholder="Search coupons or stores..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} className="pl-10" /></div>
@@ -632,8 +666,12 @@ const CouponMarketplace = () => {
                       <Badge variant="outline" className="gap-1 mb-2 border-emerald-500/40 text-emerald-600 text-[10px] px-1.5 py-0">
                         <Shield className="w-3 h-3" />7-day Buyer Guarantee
                       </Badge>
-                      {coupon.expiry_date && <div className="flex items-center gap-1 text-[10px] text-muted-foreground mb-2"><Calendar className="w-3 h-3" />Expires: {new Date(coupon.expiry_date).toLocaleDateString()}</div>}
-                      <div className="flex gap-2">
+                      <div className="flex items-center gap-2 mb-2 flex-wrap">
+                        <CouponExpiryHeatmap expiry={coupon.expiry_date} />
+                        <VerifiedSellerBadge sellerId={coupon.user_id} />
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <CouponVoteWidget couponId={coupon.id} userId={currentUserId} />
                         <Button size="sm" className="flex-1" onClick={e => { e.stopPropagation(); handlePurchase(coupon); }} disabled={isPurchasing}>Buy Now</Button>
                         <Button size="sm" variant="outline" onClick={e => { e.stopPropagation(); handleContact(coupon); }}><MessageCircle className="w-3 h-3" /></Button>
                       </div>
@@ -707,9 +745,14 @@ const CouponMarketplace = () => {
               {selectedCoupon.image_url && <img src={selectedCoupon.image_url} alt={selectedCoupon.title} className="w-full h-48 object-cover rounded-lg" />}
               <div className="flex items-center gap-2"><Store className="w-4 h-4" /><span className="font-medium">{selectedCoupon.store_name}</span></div>
               <div className="flex items-center justify-between"><div><span className="text-2xl font-bold text-primary">€{selectedCoupon.selling_price.toFixed(2)}</span><span className="text-lg text-muted-foreground line-through ml-2">€{selectedCoupon.original_value.toFixed(2)}</span></div><Badge className="bg-success text-success-foreground">Save {getSavingsPercent(selectedCoupon.original_value, selectedCoupon.selling_price)}%</Badge></div>
-              {selectedCoupon.expiry_date && <div className="flex items-center gap-2 text-sm"><Calendar className="w-4 h-4" /><span>Expires: {new Date(selectedCoupon.expiry_date).toLocaleDateString()}</span></div>}
+              <div className="flex items-center gap-2 flex-wrap">
+                {selectedCoupon.expiry_date && <CouponExpiryHeatmap expiry={selectedCoupon.expiry_date} />}
+                <VerifiedSellerBadge sellerId={selectedCoupon.user_id} />
+              </div>
+              <CouponVerifyButtons couponId={selectedCoupon.id} userId={currentUserId} />
               {selectedCoupon.description && <p className="text-muted-foreground">{selectedCoupon.description}</p>}
               {selectedCoupon.terms_conditions && <div className="bg-muted p-3 rounded-lg text-sm"><p className="font-medium mb-1">Terms & Conditions:</p><p className="text-muted-foreground">{selectedCoupon.terms_conditions}</p></div>}
+              <CouponComments couponId={selectedCoupon.id} userId={currentUserId} />
               <div className="flex gap-2">
                 {selectedCoupon.user_id !== currentUserId && <><Button className="flex-1" onClick={() => handlePurchase(selectedCoupon)} disabled={isPurchasing}>{isPurchasing ? "Processing..." : "Buy Now"}</Button><Button variant="outline" onClick={() => handleContact(selectedCoupon)}><MessageCircle className="w-4 h-4 mr-2" />Contact</Button></>}
                 {selectedCoupon.user_id === currentUserId && <Button variant="destructive" onClick={() => setIsDeleteDialogOpen(true)}><Trash2 className="w-4 h-4 mr-2" />Delete</Button>}
