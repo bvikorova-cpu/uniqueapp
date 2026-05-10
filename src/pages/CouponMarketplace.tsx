@@ -108,6 +108,8 @@ const CouponMarketplace = () => {
   const [myOrders, setMyOrders] = useState<CouponOrder[]>([]);
   const [activeTab, setActiveTab] = useState("browse");
   const [hasAccess, setHasAccess] = useState<boolean | null>(null);
+  const [activeChips, setActiveChips] = useState<Set<CouponFilterChip>>(new Set());
+  const [verifiedSellerIds, setVerifiedSellerIds] = useState<Set<string>>(new Set());
   const [isCheckingAccess, setIsCheckingAccess] = useState(true);
   const [isPurchasingAccess, setIsPurchasingAccess] = useState(false);
   const [balanceConfirmed, setBalanceConfirmed] = useState(false);
