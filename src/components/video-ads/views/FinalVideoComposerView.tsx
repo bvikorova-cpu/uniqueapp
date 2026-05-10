@@ -297,12 +297,19 @@ export const FinalVideoComposerView = ({ onBack }: { onBack: () => void }) => {
           <CardContent className="space-y-2">
             {sfxList.length === 0 && <p className="text-sm text-muted-foreground text-center py-4">Žiadne SFX. Pridaj efekt (whoosh, applause, ding...)</p>}
             {sfxList.map(s => (
-              <div key={s.id} className="grid grid-cols-12 gap-2 items-center p-2 bg-muted/30 rounded">
-                <Input className="col-span-5" placeholder="napr. cinematic whoosh" value={s.prompt} onChange={e => updateSfx(s.id, { prompt: e.target.value })} />
-                <Input className="col-span-2" type="number" min={0.5} max={22} step={0.5} value={s.duration} onChange={e => updateSfx(s.id, { duration: Number(e.target.value) || 3 })} />
-                <Button size="sm" variant="outline" className="col-span-2" onClick={() => generateSfx(s.id)} disabled={s.loading}>{s.loading ? <Loader2 className="h-3 w-3 animate-spin" /> : "Gen (5 CR)"}</Button>
-                <div className="col-span-2">{s.previewUrl && <audio src={s.previewUrl} controls className="w-full h-8" />}</div>
-                <Button size="sm" variant="ghost" className="col-span-1" onClick={() => removeSfx(s.id)}><Trash2 className="h-3 w-3" /></Button>
+              <div key={s.id} className="p-3 bg-muted/30 rounded space-y-2">
+                <div className="grid grid-cols-12 gap-2 items-center">
+                  <Input className="col-span-5" placeholder="napr. cinematic whoosh" value={s.prompt} onChange={e => updateSfx(s.id, { prompt: e.target.value })} />
+                  <Input className="col-span-2" type="number" min={0.5} max={22} step={0.5} value={s.duration} onChange={e => updateSfx(s.id, { duration: Number(e.target.value) || 3 })} />
+                  <Button size="sm" variant="outline" className="col-span-2" onClick={() => generateSfx(s.id)} disabled={s.loading}>{s.loading ? <Loader2 className="h-3 w-3 animate-spin" /> : "Gen (5 CR)"}</Button>
+                  <div className="col-span-2">{s.previewUrl && <audio src={s.previewUrl} controls className="w-full h-8" />}</div>
+                  <Button size="sm" variant="ghost" className="col-span-1" onClick={() => removeSfx(s.id)}><Trash2 className="h-3 w-3" /></Button>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs w-16">🔊 Vol</span>
+                  <input type="range" min={0} max={2} step={0.05} value={s.volume} onChange={e => updateSfx(s.id, { volume: Number(e.target.value) })} className="flex-1 accent-fuchsia-500" />
+                  <span className="text-xs font-mono w-12 text-right">{Math.round(s.volume * 100)}%</span>
+                </div>
               </div>
             ))}
           </CardContent>
