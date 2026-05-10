@@ -36,6 +36,7 @@ import { StockFootageView } from "@/components/video-ads/views/StockFootageView"
 import { VideoResizerView } from "@/components/video-ads/views/VideoResizerView";
 import { VoiceCloneView } from "@/components/video-ads/views/VoiceCloneView";
 import { SoundEffectsView } from "@/components/video-ads/views/SoundEffectsView";
+import { FinalVideoComposerView } from "@/components/video-ads/views/FinalVideoComposerView";
 import { useVideoAdCredits } from "@/hooks/useVideoAdCredits";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
@@ -180,6 +181,7 @@ const tools = [
   { id: "video-resizer", icon: Crop, title: "Video Resizer / Auto-Crop", desc: "Reframing pre všetky formáty", cost: "3 CR", gradient: "from-orange-500 to-pink-600" },
   { id: "voice-clone", icon: Mic, title: "Voice Cloning", desc: "Naklonuj vlastný hlas", cost: "10 CR", gradient: "from-rose-500 to-purple-600" },
   { id: "sfx", icon: Volume2, title: "Sound Effects Library", desc: "AI-generované SFX", cost: "5 CR", gradient: "from-lime-500 to-emerald-600" },
+  { id: "final-composer", icon: Film, title: "🎬 Final Video Composer", desc: "Spoj scény + cloned voice + SFX → MP4", cost: "Free render", gradient: "from-fuchsia-500 to-purple-600" },
 ];
 
 const VideoAdGenerator = () => {
@@ -245,6 +247,7 @@ const VideoAdGenerator = () => {
       case "video-resizer": return <VideoResizerView onBack={() => setActiveView("dashboard")} />;
       case "voice-clone": return <VoiceCloneView onBack={() => setActiveView("dashboard")} />;
       case "sfx": return <SoundEffectsView onBack={() => setActiveView("dashboard")} />;
+      case "final-composer": return <FinalVideoComposerView onBack={() => setActiveView("dashboard")} />;
       default:
         return (
           <>

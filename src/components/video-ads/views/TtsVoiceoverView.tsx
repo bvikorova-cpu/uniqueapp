@@ -21,6 +21,7 @@ const VOICES = [
 export const TtsVoiceoverView = ({ onBack }: { onBack: () => void }) => {
   const [text, setText] = useState("");
   const [voiceId, setVoiceId] = useState(VOICES[0].id);
+  const [customVoiceId, setCustomVoiceId] = useState("");
   const [loading, setLoading] = useState(false);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
 
@@ -29,8 +30,9 @@ export const TtsVoiceoverView = ({ onBack }: { onBack: () => void }) => {
     if (text.length > 5000) { toast.error("Max 5000 znakov"); return; }
     setLoading(true); setAudioUrl(null);
     try {
+      const finalVoiceId = customVoiceId.trim() || voiceId;
       const { data, error } = await supabase.functions.invoke('video-ad-tts', {
-        body: { text, voiceId },
+        body: { text, voiceId: finalVoiceId },
       });
       if (error || data?.error) { handleEdgeError(error || data, { context: 'TTS Voiceover' }); return; }
       const url = `data:${data.mimeType};base64,${data.audioBase64}`;
@@ -62,6 +64,10 @@ export const TtsVoiceoverView = ({ onBack }: { onBack: () => void }) => {
               <select className="w-full mt-1 p-2 rounded-md border bg-background" value={voiceId} onChange={e => setVoiceId(e.target.value)}>
                 {VOICES.map(v => <option key={v.id} value={v.id}>{v.name}</option>)}
               </select>
+            </div>
+            <div><Label>Vlastný voiceId (cloned voice — voliteľné)</Label>
+              <input className="w-full mt-1 p-2 rounded-md border bg-background text-sm font-mono" placeholder="napr. z Voice Cloning" value={customVoiceId} onChange={e => setCustomVoiceId(e.target.value)} />
+              <p className="text-xs text-muted-foreground mt-1">Ak vyplníš, prepíše voľbu vyššie.</p>
             </div>
             <Button onClick={generate} disabled={loading} className="w-full bg-gradient-to-r from-pink-500 to-rose-600">
               {loading ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Generujem...</> : <><Play className="mr-2 h-4 w-4" />Generovať hlas (5 CR)</>}
