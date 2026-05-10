@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Heart, Image as ImageIcon, Loader2 } from "lucide-react";
+import { Heart, Image as ImageIcon, Loader2, Wand2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -79,10 +79,16 @@ export const CommunityGalleryView = () => {
                 <p className="text-[10px] text-muted-foreground truncate">{item.prompt}</p>
                 <div className="flex items-center justify-between mt-2">
                   <span className="text-[10px] text-muted-foreground">{item.tool_used}</span>
-                  <Button variant="ghost" size="sm" className="h-6 px-2 gap-1" onClick={() => toggleLike(item.id)} disabled={liking === item.id}>
-                    <Heart className={`w-3 h-3 ${liking === item.id ? 'animate-pulse' : ''}`} />
-                    <span className="text-[10px]">{item.likes_count || 0}</span>
-                  </Button>
+                  <div className="flex gap-1">
+                    <Button variant="ghost" size="sm" className="h-6 px-2 gap-1" title="Remix this prompt"
+                      onClick={() => { navigator.clipboard.writeText(item.prompt || ""); toast.success("Prompt copied — paste into Generate"); }}>
+                      <Wand2 className="w-3 h-3" />
+                    </Button>
+                    <Button variant="ghost" size="sm" className="h-6 px-2 gap-1" onClick={() => toggleLike(item.id)} disabled={liking === item.id}>
+                      <Heart className={`w-3 h-3 ${liking === item.id ? 'animate-pulse' : ''}`} />
+                      <span className="text-[10px]">{item.likes_count || 0}</span>
+                    </Button>
+                  </div>
                 </div>
               </div>
             </motion.div>

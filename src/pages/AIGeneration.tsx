@@ -1,6 +1,12 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Sparkles, Wand2, Pencil, Brush, ArrowUpRight, BookOpen, CreditCard, ArrowLeft, Copy, Globe, Eraser, Layers, History, ScanSearch } from "lucide-react";
+import {
+  Sparkles, Wand2, Pencil, Brush, ArrowUpRight, BookOpen, CreditCard, ArrowLeft, Copy,
+  Globe, Eraser, Layers, History, ScanSearch,
+  Scissors, Image as ImageIcon, Maximize2, Target, Type, PenTool,
+  UserCheck, VenetianMask, PersonStanding, Grid3x3, Users, Film,
+  Folder, Share2, Settings, Zap,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAICredits } from "@/hooks/useAICredits";
 import { useNavigate } from "react-router-dom";
@@ -16,25 +22,71 @@ import { InpaintingView } from "@/components/ai-generation/views/InpaintingView"
 import { BatchGenerationView } from "@/components/ai-generation/views/BatchGenerationView";
 import { PromptHistoryView } from "@/components/ai-generation/views/PromptHistoryView";
 import { ImageToPromptView } from "@/components/ai-generation/views/ImageToPromptView";
+// NEW
+import { BackgroundRemoveView } from "@/components/ai-generation/views/BackgroundRemoveView";
+import { BackgroundReplaceView } from "@/components/ai-generation/views/BackgroundReplaceView";
+import { OutpaintingView } from "@/components/ai-generation/views/OutpaintingView";
+import { ReferenceImageView } from "@/components/ai-generation/views/ReferenceImageView";
+import { LogoTextView } from "@/components/ai-generation/views/LogoTextView";
+import { CharacterConsistencyView } from "@/components/ai-generation/views/CharacterConsistencyView";
+import { SketchToImageView } from "@/components/ai-generation/views/SketchToImageView";
+import { RealtimeView } from "@/components/ai-generation/views/RealtimeView";
+import { FaceSwapView } from "@/components/ai-generation/views/FaceSwapView";
+import { PoseControlView } from "@/components/ai-generation/views/PoseControlView";
+import { TilePatternView } from "@/components/ai-generation/views/TilePatternView";
+import { AvatarPackView } from "@/components/ai-generation/views/AvatarPackView";
+import { AnimateImageView } from "@/components/ai-generation/views/AnimateImageView";
+import { FoldersView } from "@/components/ai-generation/views/FoldersView";
+import { PublicProfileView } from "@/components/ai-generation/views/PublicProfileView";
+import { SettingsApiView } from "@/components/ai-generation/views/SettingsApiView";
+
 import { AICreditsLowBalanceAlert } from "@/components/ai-credits/AICreditsLowBalanceAlert";
 import { AICreditsLiveTicker } from "@/components/ai-credits/AICreditsLiveTicker";
-
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
-type ActiveView = 'hub' | 'generate' | 'editor' | 'style' | 'upscaler' | 'gallery' | 'variations' | 'community' | 'inpainting' | 'batch' | 'history' | 'img2prompt';
 
-const tools = [
-  { id: 'generate' as ActiveView, icon: Wand2, title: "Generate Image", desc: "Create from text", cost: "5 CR", color: "from-primary to-accent" },
-  { id: 'editor' as ActiveView, icon: Pencil, title: "Image Editor", desc: "Edit & transform", cost: "3 CR", color: "from-blue-500 to-cyan-500" },
-  { id: 'style' as ActiveView, icon: Brush, title: "Style Transfer", desc: "Apply art styles", cost: "3 CR", color: "from-purple-500 to-pink-500" },
-  { id: 'upscaler' as ActiveView, icon: ArrowUpRight, title: "AI Upscaler", desc: "Enhance to HD", cost: "2 CR", color: "from-green-500 to-emerald-500" },
-  { id: 'gallery' as ActiveView, icon: BookOpen, title: "Prompt Gallery", desc: "Browse & inspire", cost: "Free", color: "from-amber-500 to-orange-500" },
-  { id: 'variations' as ActiveView, icon: Copy, title: "Image Variations", desc: "4 unique versions", cost: "8 CR", color: "from-rose-500 to-red-500" },
-  { id: 'community' as ActiveView, icon: Globe, title: "Community Gallery", desc: "Share & discover", cost: "Free", color: "from-teal-500 to-cyan-500" },
-  { id: 'inpainting' as ActiveView, icon: Eraser, title: "AI Inpainting", desc: "Edit image areas", cost: "4 CR", color: "from-indigo-500 to-violet-500" },
-  { id: 'batch' as ActiveView, icon: Layers, title: "Batch Generation", desc: "Up to 10 at once", cost: "5 CR/img", color: "from-orange-500 to-yellow-500" },
-  { id: 'history' as ActiveView, icon: History, title: "Prompt History", desc: "Saved & favorites", cost: "Free", color: "from-slate-500 to-gray-500" },
-  { id: 'img2prompt' as ActiveView, icon: ScanSearch, title: "Image-to-Prompt", desc: "Reverse engineer", cost: "3 CR", color: "from-fuchsia-500 to-pink-500" },
+type ActiveView =
+  | 'hub' | 'generate' | 'editor' | 'style' | 'upscaler' | 'gallery' | 'variations'
+  | 'community' | 'inpainting' | 'batch' | 'history' | 'img2prompt'
+  | 'bg_remove' | 'bg_replace' | 'outpainting' | 'reference' | 'logo'
+  | 'character' | 'sketch' | 'realtime' | 'face_swap' | 'pose' | 'tile' | 'avatar' | 'animate'
+  | 'folders' | 'profile' | 'settings';
+
+const tools: { id: ActiveView; icon: any; title: string; desc: string; cost: string; color: string; group: string }[] = [
+  // Core
+  { id: 'generate', icon: Wand2, title: "Generate Image", desc: "Create from text", cost: "5 CR", color: "from-primary to-accent", group: "Core" },
+  { id: 'editor', icon: Pencil, title: "Image Editor", desc: "Edit & transform", cost: "3 CR", color: "from-blue-500 to-cyan-500", group: "Core" },
+  { id: 'variations', icon: Copy, title: "Variations", desc: "4 unique versions", cost: "8 CR", color: "from-rose-500 to-red-500", group: "Core" },
+  { id: 'batch', icon: Layers, title: "Batch", desc: "Up to 10 at once", cost: "5 CR/img", color: "from-orange-500 to-yellow-500", group: "Core" },
+  { id: 'realtime', icon: Zap, title: "Realtime", desc: "Live as you type", cost: "5 CR", color: "from-yellow-500 to-amber-500", group: "Core" },
+  // Editing
+  { id: 'inpainting', icon: Eraser, title: "Inpainting", desc: "Edit image areas", cost: "4 CR", color: "from-indigo-500 to-violet-500", group: "Editing" },
+  { id: 'outpainting', icon: Maximize2, title: "Outpainting", desc: "Expand the canvas", cost: "4 CR", color: "from-violet-500 to-purple-500", group: "Editing" },
+  { id: 'bg_remove', icon: Scissors, title: "BG Remove", desc: "Isolate subject", cost: "2 CR", color: "from-emerald-500 to-teal-500", group: "Editing" },
+  { id: 'bg_replace', icon: ImageIcon, title: "BG Replace", desc: "New background", cost: "3 CR", color: "from-teal-500 to-cyan-500", group: "Editing" },
+  { id: 'upscaler', icon: ArrowUpRight, title: "Upscaler", desc: "Enhance to HD", cost: "2 CR", color: "from-green-500 to-emerald-500", group: "Editing" },
+  { id: 'style', icon: Brush, title: "Style Transfer", desc: "Apply art styles", cost: "3 CR", color: "from-purple-500 to-pink-500", group: "Editing" },
+  // Pro
+  { id: 'reference', icon: Target, title: "Reference Img", desc: "Match a style", cost: "4 CR", color: "from-fuchsia-500 to-purple-500", group: "Pro" },
+  { id: 'character', icon: UserCheck, title: "Character Lock", desc: "Same face, new scenes", cost: "5 CR", color: "from-pink-500 to-rose-500", group: "Pro" },
+  { id: 'face_swap', icon: VenetianMask, title: "Face Swap", desc: "Swap a face", cost: "4 CR", color: "from-red-500 to-orange-500", group: "Pro" },
+  { id: 'pose', icon: PersonStanding, title: "Pose Control", desc: "Specific pose", cost: "4 CR", color: "from-orange-500 to-red-500", group: "Pro" },
+  { id: 'sketch', icon: PenTool, title: "Sketch → Image", desc: "From rough idea", cost: "4 CR", color: "from-amber-500 to-yellow-500", group: "Pro" },
+  { id: 'logo', icon: Type, title: "Logo & Text", desc: "Legible typography", cost: "4 CR", color: "from-cyan-500 to-blue-500", group: "Pro" },
+  { id: 'avatar', icon: Users, title: "Avatar Pack", desc: "Headshot bundle", cost: "8 CR", color: "from-blue-500 to-indigo-500", group: "Pro" },
+  { id: 'tile', icon: Grid3x3, title: "Seamless Tile", desc: "Repeating pattern", cost: "3 CR", color: "from-indigo-500 to-blue-500", group: "Pro" },
+  { id: 'animate', icon: Film, title: "Animate", desc: "Motion keyframe", cost: "6 CR", color: "from-purple-500 to-pink-500", group: "Pro" },
+  // Inspiration
+  { id: 'gallery', icon: BookOpen, title: "Prompt Gallery", desc: "Browse & inspire", cost: "Free", color: "from-amber-500 to-orange-500", group: "Inspiration" },
+  { id: 'community', icon: Globe, title: "Community", desc: "Share & discover", cost: "Free", color: "from-teal-500 to-cyan-500", group: "Inspiration" },
+  { id: 'history', icon: History, title: "Prompt History", desc: "Saved prompts", cost: "Free", color: "from-slate-500 to-gray-500", group: "Inspiration" },
+  { id: 'img2prompt', icon: ScanSearch, title: "Image→Prompt", desc: "Reverse engineer", cost: "3 CR", color: "from-fuchsia-500 to-pink-500", group: "Inspiration" },
+  // Organize
+  { id: 'folders', icon: Folder, title: "Folders & Tags", desc: "Organize work", cost: "Free", color: "from-stone-500 to-amber-600", group: "Organize" },
+  { id: 'profile', icon: Share2, title: "Public Profile", desc: "Share gallery", cost: "Free", color: "from-sky-500 to-blue-500", group: "Organize" },
+  { id: 'settings', icon: Settings, title: "Settings & API", desc: "Watermark, EXIF, API", cost: "Free", color: "from-gray-500 to-slate-600", group: "Organize" },
 ];
+
+const GROUPS = ["Core", "Editing", "Pro", "Inspiration", "Organize"];
 
 const AIGeneration = () => {
   const [activeView, setActiveView] = useState<ActiveView>('hub');
@@ -54,6 +106,22 @@ const AIGeneration = () => {
       case 'batch': return <BatchGenerationView onCreditsUsed={refresh} />;
       case 'history': return <PromptHistoryView onSelectPrompt={() => setActiveView('generate')} />;
       case 'img2prompt': return <ImageToPromptView onCreditsUsed={refresh} onUsePrompt={() => setActiveView('generate')} />;
+      case 'bg_remove': return <BackgroundRemoveView onCreditsUsed={refresh} />;
+      case 'bg_replace': return <BackgroundReplaceView onCreditsUsed={refresh} />;
+      case 'outpainting': return <OutpaintingView onCreditsUsed={refresh} />;
+      case 'reference': return <ReferenceImageView onCreditsUsed={refresh} />;
+      case 'logo': return <LogoTextView onCreditsUsed={refresh} />;
+      case 'character': return <CharacterConsistencyView onCreditsUsed={refresh} />;
+      case 'sketch': return <SketchToImageView onCreditsUsed={refresh} />;
+      case 'realtime': return <RealtimeView onCreditsUsed={refresh} />;
+      case 'face_swap': return <FaceSwapView onCreditsUsed={refresh} />;
+      case 'pose': return <PoseControlView onCreditsUsed={refresh} />;
+      case 'tile': return <TilePatternView onCreditsUsed={refresh} />;
+      case 'avatar': return <AvatarPackView onCreditsUsed={refresh} />;
+      case 'animate': return <AnimateImageView onCreditsUsed={refresh} />;
+      case 'folders': return <FoldersView />;
+      case 'profile': return <PublicProfileView />;
+      case 'settings': return <SettingsApiView />;
       default: return null;
     }
   };
@@ -71,13 +139,10 @@ const AIGeneration = () => {
         ) : (
           <>
             <AIGenHero credits={credits.credits_remaining} />
-
             <HeroRewardedAd sectionKey="page_aigeneration" />
-
             <AICreditsLowBalanceAlert credits={credits.credits_remaining} />
             <AICreditsLiveTicker />
 
-            {/* Engagement Row */}
             <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-8">
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}
                 className="bg-card/80 border border-border rounded-xl p-3 sm:p-4 text-center cursor-pointer hover:border-primary/40 transition-all"
@@ -89,7 +154,7 @@ const AIGeneration = () => {
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55 }}
                 className="bg-card/80 border border-border rounded-xl p-3 sm:p-4 text-center">
                 <Sparkles className="h-5 w-5 text-primary mx-auto mb-1" />
-                <p className="text-lg sm:text-xl font-black">11</p>
+                <p className="text-lg sm:text-xl font-black">{tools.length}</p>
                 <p className="text-[10px] sm:text-xs text-muted-foreground">AI Tools</p>
               </motion.div>
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }}
@@ -100,41 +165,40 @@ const AIGeneration = () => {
               </motion.div>
             </div>
 
-            {/* Tool Grid */}
-            <div className="mb-8">
-              <h2 className="text-xl sm:text-2xl font-black mb-4 flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-primary" />
-                Creative AI Tools
-              </h2>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                {tools.map((tool, i) => (
-                  <motion.div key={tool.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 + i * 0.05 }}
-                    onClick={() => setActiveView(tool.id)}
-                    className="group cursor-pointer rounded-xl border border-border bg-card/80 p-4 hover:border-primary/40 hover:shadow-lg transition-all">
-                    <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${tool.color} flex items-center justify-center mb-3 group-hover:scale-110 transition-transform`}>
-                      <tool.icon className="w-5 h-5 text-white" />
-                    </div>
-                    <h3 className="font-bold text-sm mb-0.5">{tool.title}</h3>
-                    <p className="text-[11px] text-muted-foreground mb-2">{tool.desc}</p>
-                    <span className="inline-block text-[10px] font-bold px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20">
-                      {tool.cost}
-                    </span>
-                  </motion.div>
-                ))}
+            {GROUPS.map(group => (
+              <div key={group} className="mb-8">
+                <h2 className="text-xl sm:text-2xl font-black mb-4 flex items-center gap-2">
+                  <Sparkles className="w-5 h-5 text-primary" /> {group}
+                </h2>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                  {tools.filter(t => t.group === group).map((tool, i) => (
+                    <motion.div key={tool.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }}
+                      onClick={() => setActiveView(tool.id)}
+                      className="group cursor-pointer rounded-xl border border-border bg-card/80 p-4 hover:border-primary/40 hover:shadow-lg transition-all">
+                      <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${tool.color} flex items-center justify-center mb-3 group-hover:scale-110 transition-transform`}>
+                        <tool.icon className="w-5 h-5 text-white" />
+                      </div>
+                      <h3 className="font-bold text-sm mb-0.5">{tool.title}</h3>
+                      <p className="text-[11px] text-muted-foreground mb-2">{tool.desc}</p>
+                      <span className="inline-block text-[10px] font-bold px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20">
+                        {tool.cost}
+                      </span>
+                    </motion.div>
+                  ))}
+                </div>
               </div>
-            </div>
+            ))}
 
-            {/* Tips Section */}
             <div className="mb-8">
               <h2 className="text-xl sm:text-2xl font-black mb-4">💡 Tips for Better Results</h2>
               <div className="grid sm:grid-cols-2 gap-3">
                 {[
                   { title: "Be Specific", tip: "Instead of 'a cat', try 'a fluffy orange tabby cat sitting on a windowsill at sunset, photorealistic'" },
-                  { title: "Include Art Style", tip: "Mention styles like watercolor, oil painting, digital art, anime, or 3D render" },
-                  { title: "Add Lighting", tip: "Describe lighting: golden hour, studio lighting, neon lights, or dramatic shadows" },
-                  { title: "Specify Quality", tip: "Add terms like 'high quality', '4K', 'ultra detailed' for better results" },
+                  { title: "Use Negative Prompts", tip: "Add 'blurry, deformed, low quality' to the negative field to avoid common artifacts" },
+                  { title: "Set Aspect Ratio", tip: "Pick 16:9 for cinematic, 9:16 for stories, 1:1 for social posts" },
+                  { title: "Try Magic Enhance", tip: "Click ✨ Magic Enhance to expand any short prompt with style/lighting/composition keywords" },
                 ].map((item, i) => (
-                  <motion.div key={i} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 + i * 0.1 }}
+                  <motion.div key={i} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 + i * 0.1 }}
                     className="p-4 rounded-xl border bg-card/60">
                     <p className="font-bold text-sm mb-1">{item.title}</p>
                     <p className="text-xs text-muted-foreground">{item.tip}</p>
