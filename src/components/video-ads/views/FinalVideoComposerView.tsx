@@ -184,7 +184,7 @@ export const FinalVideoComposerView = ({ onBack }: { onBack: () => void }) => {
       }
 
       const out = await ff.readFile("final.mp4");
-      const blob = new Blob([out as Uint8Array], { type: "video/mp4" });
+      const blob = new Blob([(out as Uint8Array).buffer as ArrayBuffer], { type: "video/mp4" });
       setOutputUrl(URL.createObjectURL(blob));
       toast.success("Finálne video hotové!");
     } catch (e: any) {
