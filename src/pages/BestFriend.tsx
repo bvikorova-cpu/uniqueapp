@@ -10,7 +10,7 @@ import {
   BookHeart, MessageSquarePlus, HeartHandshake, Target, MessageCircle,
   TrendingUp, Music, Sunrise, Gamepad2, Moon, Camera,
   Flower2, Stars, Scale, Map, Leaf,
-  User, Brain, Drama, Mic, Phone, FileText, Clock, AlertTriangle,
+  User, Brain, Drama, Mic, FileText, Clock, AlertTriangle,
 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -42,7 +42,7 @@ import { VoiceJournalView } from "@/components/best-friend/VoiceJournalView";
 import { PhotoShareView } from "@/components/best-friend/PhotoShareView";
 import { YearReportView } from "@/components/best-friend/YearReportView";
 import { MemoryTimelineView } from "@/components/best-friend/MemoryTimelineView";
-import { VoiceCallView } from "@/components/best-friend/VoiceCallView";
+
 import { CrisisResourcesView } from "@/components/best-friend/CrisisResourcesView";
 import { FriendshipHUD } from "@/components/best-friend/FriendshipHUD";
 import ReactMarkdown from "react-markdown";
@@ -70,7 +70,7 @@ const tools = [
   { id: "dream_companion", icon: Moon, title: "Dream Companion", description: "Dream sharing & interpretation", badge: "AI", credits: 4, gradient: "from-indigo-500/10 to-violet-500/5" },
   { id: "memory_scrapbook", icon: Camera, title: "Memory Scrapbook", description: "Digital scrapbook of memories", badge: "AI", credits: 3, gradient: "from-rose-500/10 to-red-500/5" },
   { id: "persona", icon: User, title: "Customize Friend", description: "Name, gender, personality, language", badge: "Setup", credits: 0, gradient: "from-purple-500/10 to-pink-500/5" },
-  { id: "voice_call", icon: Phone, title: "Voice Call", description: "Talk in real time", badge: "Premium", credits: 0, gradient: "from-emerald-500/10 to-teal-500/5" },
+  
   { id: "voice_journal", icon: Mic, title: "Voice Journal", description: "Speak, AI analyzes", badge: "AI", credits: 3, gradient: "from-rose-500/10 to-pink-500/5" },
   { id: "photo_share", icon: Camera, title: "Share a Photo", description: "AI reacts to your photos", badge: "AI", credits: 2, gradient: "from-fuchsia-500/10 to-pink-500/5" },
   { id: "memory_vault", icon: Brain, title: "Memory Vault", description: "What AI remembers about you", badge: "AI", credits: 0, gradient: "from-violet-500/10 to-purple-500/5" },
@@ -192,7 +192,7 @@ const BestFriend = () => {
       case "memory_vault": return <MemoryVaultView />;
       case "roleplay": return <RoleplayScenariosView />;
       case "voice_journal": return <VoiceJournalView />;
-      case "voice_call": return <VoiceCallView />;
+      
       case "photo_share": return <PhotoShareView />;
       case "year_report": return <YearReportView />;
       case "memory_timeline": return <MemoryTimelineView />;
