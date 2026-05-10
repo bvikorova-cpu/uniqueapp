@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { motion } from "framer-motion";
 import {
   Sparkles, Wand2, Pencil, Brush, ArrowUpRight, BookOpen, CreditCard, ArrowLeft, Copy,
@@ -10,35 +10,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { useAICredits } from "@/hooks/useAICredits";
 import { useNavigate } from "react-router-dom";
+import { lazyWithRetry as lazy } from "@/utils/lazyWithRetry";
 import { AIGenHero } from "@/components/ai-generation/AIGenHero";
-import { GenerateView } from "@/components/ai-generation/views/GenerateView";
-import { ImageEditorView } from "@/components/ai-generation/views/ImageEditorView";
-import { StyleTransferView } from "@/components/ai-generation/views/StyleTransferView";
-import { UpscalerView } from "@/components/ai-generation/views/UpscalerView";
-import { PromptGalleryView } from "@/components/ai-generation/views/PromptGalleryView";
-import { VariationsView } from "@/components/ai-generation/views/VariationsView";
-import { CommunityGalleryView } from "@/components/ai-generation/views/CommunityGalleryView";
-import { InpaintingView } from "@/components/ai-generation/views/InpaintingView";
-import { BatchGenerationView } from "@/components/ai-generation/views/BatchGenerationView";
-import { PromptHistoryView } from "@/components/ai-generation/views/PromptHistoryView";
-import { ImageToPromptView } from "@/components/ai-generation/views/ImageToPromptView";
-// NEW
-import { BackgroundRemoveView } from "@/components/ai-generation/views/BackgroundRemoveView";
-import { BackgroundReplaceView } from "@/components/ai-generation/views/BackgroundReplaceView";
-import { OutpaintingView } from "@/components/ai-generation/views/OutpaintingView";
-import { ReferenceImageView } from "@/components/ai-generation/views/ReferenceImageView";
-import { LogoTextView } from "@/components/ai-generation/views/LogoTextView";
-import { CharacterConsistencyView } from "@/components/ai-generation/views/CharacterConsistencyView";
-import { SketchToImageView } from "@/components/ai-generation/views/SketchToImageView";
-import { RealtimeView } from "@/components/ai-generation/views/RealtimeView";
-import { FaceSwapView } from "@/components/ai-generation/views/FaceSwapView";
-import { PoseControlView } from "@/components/ai-generation/views/PoseControlView";
-import { TilePatternView } from "@/components/ai-generation/views/TilePatternView";
-import { AvatarPackView } from "@/components/ai-generation/views/AvatarPackView";
-import { AnimateImageView } from "@/components/ai-generation/views/AnimateImageView";
-import { FoldersView } from "@/components/ai-generation/views/FoldersView";
-import { PublicProfileView } from "@/components/ai-generation/views/PublicProfileView";
-import { SettingsApiView } from "@/components/ai-generation/views/SettingsApiView";
+import { PageLoader } from "@/components/ui/PageLoader";
 
 import { AICreditsLowBalanceAlert } from "@/components/ai-credits/AICreditsLowBalanceAlert";
 import { AICreditsLiveTicker } from "@/components/ai-credits/AICreditsLiveTicker";
