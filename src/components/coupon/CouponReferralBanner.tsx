@@ -7,11 +7,11 @@ import { useToast } from "@/hooks/use-toast";
 
 export function CouponReferralBanner({ userId }: { userId: string | null }) {
   const { toast } = useToast();
-  const { referralCode, stats, loading } = useReferralProgram() as any;
+  const { stats, loading } = useReferralProgram();
   const [copied, setCopied] = useState(false);
 
-  if (!userId || loading || !referralCode) return null;
-  const link = `${window.location.origin}/coupons?ref=${referralCode}`;
+  if (!userId || loading || !stats?.code) return null;
+  const link = `${window.location.origin}/coupons?ref=${stats.code}`;
 
   const copy = () => {
     navigator.clipboard.writeText(link);
@@ -27,7 +27,7 @@ export function CouponReferralBanner({ userId }: { userId: string | null }) {
           <Gift className="w-5 h-5 text-emerald-500" />
           <div>
             <h3 className="font-bold text-sm">Invite friends — earn €2 each</h3>
-            <p className="text-xs text-muted-foreground">{stats?.total_referrals ?? 0} friends invited · €{Number(stats?.total_earned_eur ?? 0).toFixed(2)} earned</p>
+            <p className="text-xs text-muted-foreground">{stats?.totalReferrals ?? 0} friends invited · €{Number(stats?.totalEarnings ?? 0).toFixed(2)} earned</p>
           </div>
         </div>
         <div className="flex-1 w-full sm:w-auto flex gap-2">
