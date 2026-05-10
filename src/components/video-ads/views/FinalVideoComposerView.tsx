@@ -22,12 +22,15 @@ const VOICES = [
 interface SceneImg { id: string; file: File; preview: string; }
 interface Sfx { id: string; prompt: string; duration: number; audio?: Uint8Array; previewUrl?: string; loading?: boolean; }
 
+interface ClonedVoice { voiceId: string; name: string; description?: string; createdAt: number; }
+
 export const FinalVideoComposerView = ({ onBack }: { onBack: () => void }) => {
   const [scenes, setScenes] = useState<SceneImg[]>([]);
   const [perScene, setPerScene] = useState(3);
   const [voText, setVoText] = useState("");
   const [voiceId, setVoiceId] = useState(VOICES[0].id);
   const [customVoiceId, setCustomVoiceId] = useState("");
+  const [clonedVoices, setClonedVoices] = useState<ClonedVoice[]>([]);
   const [voAudio, setVoAudio] = useState<Uint8Array | null>(null);
   const [voUrl, setVoUrl] = useState<string | null>(null);
   const [voLoading, setVoLoading] = useState(false);
@@ -39,6 +42,24 @@ export const FinalVideoComposerView = ({ onBack }: { onBack: () => void }) => {
   const [loadingFfmpeg, setLoadingFfmpeg] = useState(false);
   const ffmpegRef = useRef<FFmpeg | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const KEY = 'video-ad:cloned-voices';
+    const load = () => {
+      try {
+        const list: ClonedVoice[] = JSON.parse(localStorage.getItem(KEY) || '[]');
+        setClonedVoices(list);
+        if (list.length > 0 && !customVoiceId) setCustomVoiceId(list[0].voiceId);
+      } catch {}
+    };
+    load();
+    window.addEventListener('cloned-voices-updated', load);
+    window.addEventListener('storage', load);
+    return () => {
+      window.removeEventListener('cloned-voices-updated', load);
+      window.removeEventListener('storage', load);
+    };
+  }, []);
 
   const loadFfmpeg = async () => {
     if (ffmpegRef.current) return ffmpegRef.current;
