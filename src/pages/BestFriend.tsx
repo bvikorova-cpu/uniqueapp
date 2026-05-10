@@ -10,6 +10,7 @@ import {
   BookHeart, MessageSquarePlus, HeartHandshake, Target, MessageCircle,
   TrendingUp, Music, Sunrise, Gamepad2, Moon, Camera,
   Flower2, Stars, Scale, Map, Leaf,
+  User, Brain, Drama, Mic, Phone, FileText, Clock, AlertTriangle,
 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
