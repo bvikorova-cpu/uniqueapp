@@ -11,9 +11,21 @@ const ACTIONS = [
 ];
 
 const NAMES = [
-  "Anna K.", "Marek S.", "Lucia P.", "Tomáš H.", "Eva M.",
-  "Filip D.", "Jana V.", "Peter N.", "Barbora Z.", "Adam L.",
-  "Nina K.", "Roman T.", "Karol B.", "Sofia G.", "Matúš P.",
+  // Europe
+  "Emma L.", "Liam B.", "Sofia R.", "Noah K.", "Mia F.",
+  "Lucas M.", "Olivia T.", "Hugo D.", "Chloé P.", "Matteo R.",
+  "Giulia C.", "Hans M.", "Greta S.", "Pavel N.", "Zofia W.",
+  // Americas
+  "Ethan W.", "Ava J.", "Mason H.", "Isabella G.", "Diego A.",
+  "Camila V.", "Lucas S.", "Valentina O.", "Mateo F.", "Sophia D.",
+  // Asia
+  "Hiroshi T.", "Yuki S.", "Wei L.", "Mei C.", "Aarav P.",
+  "Priya S.", "Min-jun K.", "Ji-woo L.", "Aisha R.", "Ravi K.",
+  // Middle East / Africa
+  "Omar H.", "Layla A.", "Fatima Z.", "Youssef B.", "Amara O.",
+  "Kwame A.", "Zainab M.", "Idris N.",
+  // Oceania
+  "Jack W.", "Ruby T.", "Aroha N.", "Tane M.",
 ];
 
 /**
