@@ -239,6 +239,12 @@ const VideoAdGenerator = () => {
       case "hook-analyzer": return <HookAnalyzerView onBack={() => setActiveView("dashboard")} />;
       case "brand-kit": return <BrandKitView onBack={() => setActiveView("dashboard")} />;
       case "winning-ads": return <WinningAdsView onBack={() => setActiveView("dashboard")} />;
+      case "avatar": return <AvatarTalkingHeadView onBack={() => setActiveView("dashboard")} />;
+      case "text-to-video": return <TextToVideoScenesView onBack={() => setActiveView("dashboard")} />;
+      case "stock-footage": return <StockFootageView onBack={() => setActiveView("dashboard")} />;
+      case "video-resizer": return <VideoResizerView onBack={() => setActiveView("dashboard")} />;
+      case "voice-clone": return <VoiceCloneView onBack={() => setActiveView("dashboard")} />;
+      case "sfx": return <SoundEffectsView onBack={() => setActiveView("dashboard")} />;
       default:
         return (
           <>
