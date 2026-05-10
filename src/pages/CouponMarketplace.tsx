@@ -41,6 +41,11 @@ import { CouponCompareWidget } from "@/components/coupon/CouponCompareWidget";
 import { CouponReferralBanner } from "@/components/coupon/CouponReferralBanner";
 import { SeasonalHubBanner } from "@/components/coupon/SeasonalHubBanner";
 import { CouponScalePanel } from "@/components/coupon/CouponScalePanel";
+import { CouponStackingCalculator } from "@/components/coupon/CouponStackingCalculator";
+import { CouponReceiptCashback } from "@/components/coupon/CouponReceiptCashback";
+import { CouponGeoDeals } from "@/components/coupon/CouponGeoDeals";
+import { CouponExtensionTeaser } from "@/components/coupon/CouponExtensionTeaser";
+import { CouponApiKeysPanel } from "@/components/coupon/CouponApiKeysPanel";
 import { CouponSellerDashboard } from "@/components/coupon/CouponSellerDashboard";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
