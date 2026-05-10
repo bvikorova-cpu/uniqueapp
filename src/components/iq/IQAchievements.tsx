@@ -28,10 +28,10 @@ export default function IQAchievements() {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) return;
       const { data } = await supabase
-        .from("user_achievements")
-        .select("achievement_id")
+        .from("iq_user_badges")
+        .select("code")
         .eq("user_id", session.user.id);
-      if (data) setUnlockedIds(data.map((a: any) => a.achievement_id));
+      if (data) setUnlockedIds(data.map((a: { code: string }) => a.code));
     };
     loadAchievements();
   }, []);

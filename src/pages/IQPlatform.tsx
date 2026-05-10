@@ -12,6 +12,7 @@ import IQDuels from "@/components/iq/IQDuels";
 import IQProgressCharts from "@/components/iq/IQProgressCharts";
 import IQAchievements from "@/components/iq/IQAchievements";
 import IQGlobalLeaderboard from "@/components/iq/IQGlobalLeaderboard";
+import IQTrainingPlan from "@/components/iq/IQTrainingPlan";
 import IQDailyChallenge from "@/components/iq/IQDailyChallenge";
 import IQCertificate from "@/components/iq/IQCertificate";
 import { Button } from "@/components/ui/button";
@@ -88,6 +89,7 @@ const IQPlatform = () => {
           <IQDailyChallenge />
           <IQLeaguesSection userIQ={stats?.best_iq ?? null} />
           <IQBrainStreaks currentStreak={stats?.current_streak ?? 0} />
+          <IQTrainingPlan />
           <IQAchievements />
           <IQCertificate />
           <IQToolsGrid />

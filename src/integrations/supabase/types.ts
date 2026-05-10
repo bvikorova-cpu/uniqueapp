@@ -23017,6 +23017,27 @@ export type Database = {
         }
         Relationships: []
       }
+      iq_streak_claims: {
+        Row: {
+          claimed_at: string | null
+          credits_awarded: number
+          day_milestone: number
+          user_id: string
+        }
+        Insert: {
+          claimed_at?: string | null
+          credits_awarded: number
+          day_milestone: number
+          user_id: string
+        }
+        Update: {
+          claimed_at?: string | null
+          credits_awarded?: number
+          day_milestone?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
       iq_test_questions: {
         Row: {
           correct_answer: string
@@ -23150,6 +23171,24 @@ export type Database = {
           time_limit?: number
           title?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      iq_user_badges: {
+        Row: {
+          code: string
+          earned_at: string | null
+          user_id: string
+        }
+        Insert: {
+          code: string
+          earned_at?: string | null
+          user_id: string
+        }
+        Update: {
+          code?: string
+          earned_at?: string | null
+          user_id?: string
         }
         Relationships: []
       }
@@ -45916,6 +45955,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      claim_iq_streak_reward: { Args: { _day: number }; Returns: Json }
       claim_mission_reward: { Args: { _mission_id: string }; Returns: Json }
       cleanup_expired_cache: { Args: never; Returns: number }
       cleanup_old_jobs: { Args: never; Returns: number }
@@ -46137,6 +46177,14 @@ export type Database = {
           completed_at: string
           iq_score: number
           percentile: number
+        }[]
+      }
+      get_iq_training_plan: {
+        Args: never
+        Returns: {
+          domain: string
+          recommendation: string
+          score: number
         }[]
       }
       get_last_week_xp_winners: {
@@ -46400,7 +46448,15 @@ export type Database = {
         Args: { p_collection_id: string }
         Returns: undefined
       }
+      iq_award_badge: {
+        Args: { _code: string; _user: string }
+        Returns: undefined
+      }
       iq_percentile: { Args: { _iq: number }; Returns: number }
+      iq_test_cooldown_remaining: {
+        Args: { _category: string }
+        Returns: number
+      }
       iq_tier_from_score: { Args: { _iq: number }; Returns: string }
       is_age_verified: { Args: { p_user_id: string }; Returns: boolean }
       is_campaign_owner: {
