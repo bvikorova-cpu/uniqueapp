@@ -28,6 +28,10 @@ import { BuyerOrderCard } from "@/components/coupon/BuyerOrderCard";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useCouponWishlist } from "@/hooks/useCouponWishlist";
 import { CouponEngagementPanel } from "@/components/coupon/CouponEngagementPanel";
+import { CouponVerifyButtons } from "@/components/coupon/CouponVerifyButtons";
+import { CouponComments } from "@/components/coupon/CouponComments";
+import { CouponExpiryHeatmap } from "@/components/coupon/CouponExpiryHeatmap";
+import { VerifiedSellerBadge } from "@/components/coupon/VerifiedSellerBadge";
 import { CouponScalePanel } from "@/components/coupon/CouponScalePanel";
 import { CouponSellerDashboard } from "@/components/coupon/CouponSellerDashboard";
 
@@ -632,7 +636,10 @@ const CouponMarketplace = () => {
                       <Badge variant="outline" className="gap-1 mb-2 border-emerald-500/40 text-emerald-600 text-[10px] px-1.5 py-0">
                         <Shield className="w-3 h-3" />7-day Buyer Guarantee
                       </Badge>
-                      {coupon.expiry_date && <div className="flex items-center gap-1 text-[10px] text-muted-foreground mb-2"><Calendar className="w-3 h-3" />Expires: {new Date(coupon.expiry_date).toLocaleDateString()}</div>}
+                      <div className="flex items-center gap-2 mb-2 flex-wrap">
+                        <CouponExpiryHeatmap expiry={coupon.expiry_date} />
+                        <VerifiedSellerBadge sellerId={coupon.user_id} />
+                      </div>
                       <div className="flex gap-2">
                         <Button size="sm" className="flex-1" onClick={e => { e.stopPropagation(); handlePurchase(coupon); }} disabled={isPurchasing}>Buy Now</Button>
                         <Button size="sm" variant="outline" onClick={e => { e.stopPropagation(); handleContact(coupon); }}><MessageCircle className="w-3 h-3" /></Button>
