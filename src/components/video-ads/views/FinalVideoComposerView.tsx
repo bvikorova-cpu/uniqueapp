@@ -277,6 +277,14 @@ export const FinalVideoComposerView = ({ onBack }: { onBack: () => void }) => {
               {voLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <><Wand2 className="mr-2 h-4 w-4" />Generovať VO (5 CR)</>}
             </Button>
             {voUrl && <audio src={voUrl} controls className="w-full" />}
+            <div>
+              <Label className="text-xs flex items-center justify-between">
+                <span>🔊 Hlasitosť voiceoveru</span>
+                <span className="font-mono">{Math.round(voVolume * 100)}%</span>
+              </Label>
+              <input type="range" min={0} max={2} step={0.05} value={voVolume} onChange={e => setVoVolume(Number(e.target.value))} className="w-full accent-pink-500" />
+              <p className="text-[10px] text-muted-foreground">0% = ticho, 100% = originál, 200% = zosilnené</p>
+            </div>
           </CardContent>
         </Card>
 
