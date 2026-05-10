@@ -11,22 +11,31 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
-  const supabaseClient = createClient(
+  // Auth client (verifies the caller's JWT)
+  const supabaseAuth = createClient(
     Deno.env.get("SUPABASE_URL") ?? "",
     Deno.env.get("SUPABASE_ANON_KEY") ?? ""
+  );
+  // Service-role client (bypasses RLS for the credit deduction & insert)
+  const supabaseAdmin = createClient(
+    Deno.env.get("SUPABASE_URL") ?? "",
+    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
   );
 
   try {
     const authHeader = req.headers.get("Authorization")!;
     const token = authHeader.replace("Bearer ", "");
-    const { data } = await supabaseClient.auth.getUser(token);
+    const { data } = await supabaseAuth.auth.getUser(token);
     const user = data.user;
     if (!user) throw new Error("User not authenticated");
 
     const { competitionId } = await req.json();
+    if (!competitionId || typeof competitionId !== "string") {
+      throw new Error("competitionId is required");
+    }
 
     // Get competition details
-    const { data: competition, error: compError } = await supabaseClient
+    const { data: competition, error: compError } = await supabaseAdmin
       .from("iq_competitions")
       .select("*")
       .eq("id", competitionId)
@@ -38,7 +47,7 @@ serve(async (req) => {
     }
 
     // Check if already joined
-    const { data: existingEntry } = await supabaseClient
+    const { data: existingEntry } = await supabaseAdmin
       .from("iq_competition_participants")
       .select("id")
       .eq("competition_id", competitionId)
@@ -50,7 +59,7 @@ serve(async (req) => {
     }
 
     // Count current participants
-    const { count } = await supabaseClient
+    const { count } = await supabaseAdmin
       .from("iq_competition_participants")
       .select("*", { count: "exact", head: true })
       .eq("competition_id", competitionId);
@@ -59,46 +68,44 @@ serve(async (req) => {
       throw new Error("Competition is full");
     }
 
-    // Check user credits
-    const { data: creditsData, error: creditsError } = await supabaseClient
+    // Check user credits (correct column: balance)
+    const { data: creditsData } = await supabaseAdmin
       .from("iq_credits")
-      .select("credits_remaining")
+      .select("balance")
       .eq("user_id", user.id)
-      .single();
+      .maybeSingle();
 
-    if (creditsError && creditsError.code !== "PGRST116") throw creditsError;
-
-    const currentCredits = creditsData?.credits_remaining || 0;
+    const currentCredits = creditsData?.balance ?? 0;
     if (currentCredits < competition.entry_fee) {
       throw new Error("Insufficient credits");
     }
 
-    // Join competition
-    const { data: participation, error: participationError } = await supabaseClient
+    // Join competition (uses caller JWT so the RLS policy
+    // `auth.uid() = user_id` is satisfied)
+    const supabaseUser = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_ANON_KEY") ?? "",
+      { global: { headers: { Authorization: `Bearer ${token}` } } }
+    );
+    const { data: participation, error: participationError } = await supabaseUser
       .from("iq_competition_participants")
-      .insert({
-        competition_id: competitionId,
-        user_id: user.id,
-      })
+      .insert({ competition_id: competitionId, user_id: user.id })
       .select()
       .single();
 
     if (participationError) throw participationError;
 
-    // Deduct entry fee
+    // Deduct entry fee via service role (clients can no longer write balance)
     if (creditsData) {
-      await supabaseClient
+      await supabaseAdmin
         .from("iq_credits")
-        .update({ credits_remaining: currentCredits - competition.entry_fee })
+        .update({ balance: currentCredits - competition.entry_fee })
         .eq("user_id", user.id);
     } else {
-      await supabaseClient
+      await supabaseAdmin
         .from("iq_credits")
-        .insert({
-          user_id: user.id,
-          credits_remaining: -competition.entry_fee,
-          total_credits_purchased: 0,
-        });
+        .insert({ user_id: user.id, balance: 0 });
+      // (would-be-deduction blocked because user has no balance yet)
     }
 
     return new Response(

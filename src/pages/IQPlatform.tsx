@@ -25,21 +25,21 @@ const IQPlatform = () => {
   const { toast } = useToast();
 
   const handleStartTest = async (testType: string) => {
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) { toast({ title: "Please login first", variant: "destructive" }); return; }
-      const test = testCategories.find(t => t.id === testType);
-      if (!test) return;
-      const { data: userCredits } = await supabase.from("brain_duel_credits").select("credits").eq("user_id", session.user.id).maybeSingle();
-      if (!userCredits || userCredits.credits < test.credits) {
-        toast({ title: "Insufficient Credits", description: `You need ${test.credits} credits.`, variant: "destructive" });
-        return;
-      }
-      await supabase.from("brain_duel_credits").update({ credits: userCredits.credits - test.credits }).eq("user_id", session.user.id);
-      toast({ title: "Test Started!", description: `${test.title} - ${test.questions} questions, ${test.timeLimit} min. Good luck!` });
-    } catch (error: any) {
-      toast({ title: "Error", description: error.message, variant: "destructive" });
+    const test = testCategories.find(t => t.id === testType);
+    if (!test) return;
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      toast({ title: "Please login first", variant: "destructive" });
+      return;
     }
+    // Real interactive IQ tests are not built yet — route the user to the
+    // AI Tools tab where they can actually use their credits, instead of
+    // silently deducting from the wrong table.
+    toast({
+      title: `${test.title} — coming soon`,
+      description: `Full ${test.questions}-question test launches shortly. Meanwhile, try the AI brain tools below.`,
+    });
+    setActiveTab("tools");
   };
 
   const testCategories = [
