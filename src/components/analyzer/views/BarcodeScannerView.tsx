@@ -7,6 +7,9 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
+import { reserveAnalyzerCredits } from "../creditUtils";
+
+const CREDIT_COST = 2;
 
 export const BarcodeScannerView = ({ onBack }: { onBack: () => void }) => {
   const [code, setCode] = useState("");
@@ -15,12 +18,15 @@ export const BarcodeScannerView = ({ onBack }: { onBack: () => void }) => {
 
   const lookup = async () => {
     if (!code.trim()) { toast.error("Enter a barcode/QR code"); return; }
+    if (loading) return;
     setLoading(true);
     try {
+      const reservation = await reserveAnalyzerCredits(CREDIT_COST);
       const { data, error } = await supabase.functions.invoke("analyzer-barcode", { body: { code: code.trim() } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       setProduct(data.product);
+      await reservation.commit();
     } catch (e: any) { toast.error(e.message || "Lookup failed"); }
     finally { setLoading(false); }
   };

@@ -6,6 +6,9 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
+import { reserveAnalyzerCredits } from "../creditUtils";
+
+const CREDIT_COST = 2;
 
 export const ReverseImageView = ({ onBack }: { onBack: () => void }) => {
   const [file, setFile] = useState<File | null>(null);
@@ -33,13 +36,17 @@ export const ReverseImageView = ({ onBack }: { onBack: () => void }) => {
 
   const handleSearch = async () => {
     if (!file) { toast.error("Upload an image first"); return; }
+    if (loading) return;
     setLoading(true);
     try {
+      // Reserve credits BEFORE upload so we don't waste storage on insufficient balance.
+      const reservation = await reserveAnalyzerCredits(CREDIT_COST);
       const imageUrl = await upload(file);
       const { data, error } = await supabase.functions.invoke("analyzer-reverse-image", { body: { imageUrl } });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       setResult(data);
+      await reservation.commit();
     } catch (e: any) { toast.error(e.message || "Reverse search failed"); }
     finally { setLoading(false); }
   };
