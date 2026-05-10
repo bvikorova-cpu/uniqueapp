@@ -34,8 +34,17 @@ export const FinalVideoComposerView = ({ onBack }: { onBack: () => void }) => {
   const [voAudio, setVoAudio] = useState<Uint8Array | null>(null);
   const [voUrl, setVoUrl] = useState<string | null>(null);
   const [voLoading, setVoLoading] = useState(false);
+  const VO_VOL_KEY = 'video-ad:vo-volume';
+  const SFX_VOL_KEY = 'video-ad:sfx-volumes';
+  const SFX_DEFAULT_VOL_KEY = 'video-ad:sfx-default-volume';
+  const readVolMap = (): Record<string, number> => {
+    try { return JSON.parse(localStorage.getItem(SFX_VOL_KEY) || '{}'); } catch { return {}; }
+  };
   const [sfxList, setSfxList] = useState<Sfx[]>([]);
-  const [voVolume, setVoVolume] = useState(1.0);
+  const [voVolume, setVoVolume] = useState<number>(() => {
+    const v = parseFloat(localStorage.getItem(VO_VOL_KEY) || '');
+    return isNaN(v) ? 1.0 : v;
+  });
   const [rendering, setRendering] = useState(false);
   const [progress, setProgress] = useState(0);
   const [outputUrl, setOutputUrl] = useState<string | null>(null);
@@ -75,6 +84,18 @@ export const FinalVideoComposerView = ({ onBack }: { onBack: () => void }) => {
       else localStorage.removeItem(LAST_VOICE_KEY);
     } catch {}
   }, [customVoiceId]);
+
+  useEffect(() => {
+    try { localStorage.setItem(VO_VOL_KEY, String(voVolume)); } catch {}
+  }, [voVolume]);
+
+  useEffect(() => {
+    try {
+      const map: Record<string, number> = {};
+      sfxList.forEach(s => { map[s.id] = s.volume; });
+      localStorage.setItem(SFX_VOL_KEY, JSON.stringify(map));
+    } catch {}
+  }, [sfxList]);
 
   const loadFfmpeg = async () => {
     if (ffmpegRef.current) return ffmpegRef.current;
@@ -129,8 +150,19 @@ export const FinalVideoComposerView = ({ onBack }: { onBack: () => void }) => {
     finally { setVoLoading(false); }
   };
 
-  const addSfx = () => setSfxList(l => [...l, { id: crypto.randomUUID(), prompt: "", duration: 3, volume: 0.6 }]);
-  const updateSfx = (id: string, patch: Partial<Sfx>) => setSfxList(l => l.map(s => s.id === id ? { ...s, ...patch } : s));
+  const addSfx = () => {
+    const id = crypto.randomUUID();
+    const map = readVolMap();
+    const def = parseFloat(localStorage.getItem(SFX_DEFAULT_VOL_KEY) || '');
+    const volume = map[id] ?? (isNaN(def) ? 0.6 : def);
+    setSfxList(l => [...l, { id, prompt: "", duration: 3, volume }]);
+  };
+  const updateSfx = (id: string, patch: Partial<Sfx>) => {
+    if (typeof patch.volume === 'number') {
+      try { localStorage.setItem(SFX_DEFAULT_VOL_KEY, String(patch.volume)); } catch {}
+    }
+    setSfxList(l => l.map(s => s.id === id ? { ...s, ...patch } : s));
+  };
   const removeSfx = (id: string) => setSfxList(l => l.filter(s => s.id !== id));
 
   const generateSfx = async (id: string) => {
