@@ -722,6 +722,7 @@ const App = () => {
                         <Route path="/admin/disputes" element={<ProtectedRoute requireAdmin={true}><AdminDisputes /></ProtectedRoute>} />
                         <Route path="/admin/reconciliation" element={<ProtectedRoute requireAdmin={true}><AdminReconciliation /></ProtectedRoute>} />
                         <Route path="/admin/referral-fraud" element={<ProtectedRoute requireAdmin={true}><AdminReferralFraud /></ProtectedRoute>} />
+                        <Route path="/admin/referral-funnel" element={<ProtectedRoute requireAdmin={true}><AdminReferralFunnel /></ProtectedRoute>} />
                         <Route path="/referrals/leaderboard" element={<ReferralLeaderboard />} />
                         <Route path="/admin/subscription-analytics" element={<ProtectedRoute requireAdmin={true}><AdminSubscriptionAnalytics /></ProtectedRoute>} />
                         <Route path="/admin/cohort-retention" element={<ProtectedRoute requireAdmin={true}><AdminCohortRetention /></ProtectedRoute>} />
