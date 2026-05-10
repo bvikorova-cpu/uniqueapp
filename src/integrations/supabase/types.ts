@@ -22918,6 +22918,63 @@ export type Database = {
         }
         Relationships: []
       }
+      iq_duels: {
+        Row: {
+          created_at: string
+          entry_fee: number
+          finished_at: string | null
+          host_finished: boolean
+          host_id: string
+          host_score: number
+          id: string
+          mode: string
+          opponent_finished: boolean
+          opponent_id: string | null
+          opponent_score: number
+          prize: number
+          questions: Json
+          started_at: string | null
+          status: string
+          winner_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          entry_fee?: number
+          finished_at?: string | null
+          host_finished?: boolean
+          host_id: string
+          host_score?: number
+          id?: string
+          mode: string
+          opponent_finished?: boolean
+          opponent_id?: string | null
+          opponent_score?: number
+          prize?: number
+          questions?: Json
+          started_at?: string | null
+          status?: string
+          winner_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          entry_fee?: number
+          finished_at?: string | null
+          host_finished?: boolean
+          host_id?: string
+          host_score?: number
+          id?: string
+          mode?: string
+          opponent_finished?: boolean
+          opponent_id?: string | null
+          opponent_score?: number
+          prize?: number
+          questions?: Json
+          started_at?: string | null
+          status?: string
+          winner_id?: string | null
+        }
+        Relationships: []
+      }
       iq_questions: {
         Row: {
           category: string
@@ -45981,6 +46038,22 @@ export type Database = {
       get_engagement_metrics: { Args: { p_days?: number }; Returns: Json }
       get_follower_count: { Args: { user_id: string }; Returns: number }
       get_following_count: { Args: { user_id: string }; Returns: number }
+      get_iq_competition_counts: {
+        Args: never
+        Returns: {
+          competition_id: string
+          participant_count: number
+        }[]
+      }
+      get_iq_global_leaderboard: {
+        Args: never
+        Returns: {
+          best_iq: number
+          tests_taken: number
+          user_id: string
+          username: string
+        }[]
+      }
       get_last_week_xp_winners: {
         Args: never
         Returns: {
