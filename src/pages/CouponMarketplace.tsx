@@ -670,7 +670,8 @@ const CouponMarketplace = () => {
                         <CouponExpiryHeatmap expiry={coupon.expiry_date} />
                         <VerifiedSellerBadge sellerId={coupon.user_id} />
                       </div>
-                      <div className="flex gap-2">
+                      <div className="flex items-center gap-2">
+                        <CouponVoteWidget couponId={coupon.id} userId={currentUserId} />
                         <Button size="sm" className="flex-1" onClick={e => { e.stopPropagation(); handlePurchase(coupon); }} disabled={isPurchasing}>Buy Now</Button>
                         <Button size="sm" variant="outline" onClick={e => { e.stopPropagation(); handleContact(coupon); }}><MessageCircle className="w-3 h-3" /></Button>
                       </div>
