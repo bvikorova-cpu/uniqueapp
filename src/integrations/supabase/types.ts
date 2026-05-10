@@ -4047,6 +4047,36 @@ export type Database = {
         }
         Relationships: []
       }
+      best_friend_check_ins: {
+        Row: {
+          created_at: string
+          enabled: boolean
+          id: string
+          last_sent_at: string | null
+          preferred_hour: number
+          timezone: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          last_sent_at?: string | null
+          preferred_hour?: number
+          timezone?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          last_sent_at?: string | null
+          preferred_hour?: number
+          timezone?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       best_friend_conversations: {
         Row: {
           content: string
@@ -4067,6 +4097,63 @@ export type Database = {
           created_at?: string
           id?: string
           role?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      best_friend_crisis_events: {
+        Row: {
+          acknowledged: boolean
+          created_at: string
+          id: string
+          matched_terms: string[]
+          message_excerpt: string | null
+          user_id: string
+        }
+        Insert: {
+          acknowledged?: boolean
+          created_at?: string
+          id?: string
+          matched_terms?: string[]
+          message_excerpt?: string | null
+          user_id: string
+        }
+        Update: {
+          acknowledged?: boolean
+          created_at?: string
+          id?: string
+          matched_terms?: string[]
+          message_excerpt?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      best_friend_memories: {
+        Row: {
+          category: string
+          content: string
+          created_at: string
+          expires_at: string | null
+          id: string
+          importance: number
+          user_id: string
+        }
+        Insert: {
+          category?: string
+          content: string
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          importance?: number
+          user_id: string
+        }
+        Update: {
+          category?: string
+          content?: string
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          importance?: number
           user_id?: string
         }
         Relationships: []
@@ -4104,6 +4191,114 @@ export type Database = {
           tags?: string[] | null
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      best_friend_persona: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          friend_gender: string
+          friend_name: string
+          id: string
+          language: string
+          personality: string
+          updated_at: string
+          user_id: string
+          user_nickname: string | null
+          voice_id: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          friend_gender?: string
+          friend_name?: string
+          id?: string
+          language?: string
+          personality?: string
+          updated_at?: string
+          user_id: string
+          user_nickname?: string | null
+          voice_id?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          friend_gender?: string
+          friend_name?: string
+          id?: string
+          language?: string
+          personality?: string
+          updated_at?: string
+          user_id?: string
+          user_nickname?: string | null
+          voice_id?: string | null
+        }
+        Relationships: []
+      }
+      best_friend_photos: {
+        Row: {
+          ai_reaction: string | null
+          caption: string | null
+          created_at: string
+          id: string
+          image_url: string
+          user_id: string
+        }
+        Insert: {
+          ai_reaction?: string | null
+          caption?: string | null
+          created_at?: string
+          id?: string
+          image_url: string
+          user_id: string
+        }
+        Update: {
+          ai_reaction?: string | null
+          caption?: string | null
+          created_at?: string
+          id?: string
+          image_url?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      best_friend_progress: {
+        Row: {
+          created_at: string
+          current_streak: number
+          id: string
+          last_interaction_date: string | null
+          level: number
+          longest_streak: number
+          total_messages: number
+          updated_at: string
+          user_id: string
+          xp: number
+        }
+        Insert: {
+          created_at?: string
+          current_streak?: number
+          id?: string
+          last_interaction_date?: string | null
+          level?: number
+          longest_streak?: number
+          total_messages?: number
+          updated_at?: string
+          user_id: string
+          xp?: number
+        }
+        Update: {
+          created_at?: string
+          current_streak?: number
+          id?: string
+          last_interaction_date?: string | null
+          level?: number
+          longest_streak?: number
+          total_messages?: number
+          updated_at?: string
+          user_id?: string
+          xp?: number
         }
         Relationships: []
       }
