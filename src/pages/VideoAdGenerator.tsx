@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import Navbar from "@/components/Navbar";
 import { VideoAdHero } from "@/components/video-ads/VideoAdHero";
 import { VideoAdCreditsDisplay } from "@/components/video-ads/VideoAdCreditsDisplay";
