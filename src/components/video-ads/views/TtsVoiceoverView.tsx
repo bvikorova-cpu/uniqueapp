@@ -21,6 +21,7 @@ const VOICES = [
 export const TtsVoiceoverView = ({ onBack }: { onBack: () => void }) => {
   const [text, setText] = useState("");
   const [voiceId, setVoiceId] = useState(VOICES[0].id);
+  const [customVoiceId, setCustomVoiceId] = useState("");
   const [loading, setLoading] = useState(false);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
 
