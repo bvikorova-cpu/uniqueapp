@@ -18,11 +18,14 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useIQUserStats, useIQGlobalCounts } from "@/hooks/useIQUserStats";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 const IQPlatform = () => {
   const [activeTab, setActiveTab] = useState("overview");
   const { toast } = useToast();
+  const { data: stats } = useIQUserStats();
+  const { data: counts } = useIQGlobalCounts();
 
   const handleStartTest = async (testType: string) => {
     const test = testCategories.find(t => t.id === testType);
@@ -51,7 +54,12 @@ const IQPlatform = () => {
 
   return (
     <div className="container mx-auto p-3 sm:p-4 md:p-6 space-y-6 mt-16 sm:mt-20">
-      <IQPlatformHero totalTests={0} totalUsers={0} userIQ={null} streak={0} />
+      <IQPlatformHero
+        totalTests={counts?.totalTests ?? 0}
+        totalUsers={counts?.totalUsers ?? 0}
+        userIQ={stats?.best_iq ?? null}
+        streak={stats?.current_streak ?? 0}
+      />
       <HeroRewardedAd sectionKey="page_iqplatform" />
 
       <IQCreditsDisplay />
@@ -78,8 +86,8 @@ const IQPlatform = () => {
 
         <TabsContent value="overview" className="space-y-6">
           <IQDailyChallenge />
-          <IQLeaguesSection userIQ={null} />
-          <IQBrainStreaks currentStreak={0} />
+          <IQLeaguesSection userIQ={stats?.best_iq ?? null} />
+          <IQBrainStreaks currentStreak={stats?.current_streak ?? 0} />
           <IQAchievements />
           <IQCertificate />
           <IQToolsGrid />
