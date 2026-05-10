@@ -16,6 +16,7 @@ import { LanguageSelector } from "@/components/LanguageSelector";
 import { Age16Badge } from "@/components/Age16Badge";
 import { format, differenceInYears } from "date-fns";
 import { cn } from "@/lib/utils";
+import { AuthReferralBanner } from "@/components/referral/AuthReferralBanner";
 
 const MIN_AGE = 16;
 
