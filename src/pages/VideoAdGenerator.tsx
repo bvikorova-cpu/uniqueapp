@@ -221,6 +221,12 @@ const VideoAdGenerator = () => {
       case "ad-analytics": return <AdAnalyticsDashboardView onBack={() => setActiveView("dashboard")} />;
       case "multi-language": return <MultiLanguageView onBack={() => setActiveView("dashboard")} />;
       case "ab-tester": return <ABTesterView onBack={() => setActiveView("dashboard")} />;
+      case "url-to-video": return <UrlToVideoView onBack={() => setActiveView("dashboard")} />;
+      case "tts": return <TtsVoiceoverView onBack={() => setActiveView("dashboard")} />;
+      case "captions": return <CaptionsView onBack={() => setActiveView("dashboard")} />;
+      case "hook-analyzer": return <HookAnalyzerView onBack={() => setActiveView("dashboard")} />;
+      case "brand-kit": return <BrandKitView onBack={() => setActiveView("dashboard")} />;
+      case "winning-ads": return <WinningAdsView onBack={() => setActiveView("dashboard")} />;
       default:
         return (
           <>
