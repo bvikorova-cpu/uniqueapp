@@ -16,6 +16,7 @@ import { LanguageSelector } from "@/components/LanguageSelector";
 import { Age16Badge } from "@/components/Age16Badge";
 import { format, differenceInYears } from "date-fns";
 import { cn } from "@/lib/utils";
+import { AuthReferralBanner } from "@/components/referral/AuthReferralBanner";
 
 const MIN_AGE = 16;
 
@@ -255,7 +256,9 @@ const Auth = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
-      <Card className="w-full max-w-md">
+      <div className="w-full max-w-md">
+        <AuthReferralBanner />
+      <Card className="w-full">
         <CardHeader>
           <div className="flex items-start justify-between gap-2">
             <div className="flex-1">
@@ -514,6 +517,7 @@ const Auth = () => {
           )}
         </CardContent>
       </Card>
+      </div>
     </div>
   );
 };

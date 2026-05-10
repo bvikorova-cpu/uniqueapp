@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Copy, Share2, Users, Euro, Gift, TrendingUp, Loader2, Crown, ArrowLeft, MessageCircle, Send } from "lucide-react";
+import { Copy, Share2, Users, Euro, Gift, TrendingUp, Loader2, Crown, ArrowLeft, MessageCircle, Send, QrCode } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useReferralProgram } from "@/hooks/useReferralProgram";
 import { supabase } from "@/integrations/supabase/client";
@@ -14,6 +14,8 @@ import heroVideo from "@/assets/megatalent-hero.mp4.asset.json";
 import { ReferralLeaderboard } from "@/components/referral/ReferralLeaderboard";
 import { ReferralMilestones } from "@/components/referral/ReferralMilestones";
 import { ReferralWithdrawalRequest } from "@/components/referral/ReferralWithdrawalRequest";
+import { ReferralQRDialog } from "@/components/referral/ReferralQRDialog";
+import { ReferralEarningsCalculator } from "@/components/referral/ReferralEarningsCalculator";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 const Referral = () => {
@@ -22,6 +24,7 @@ const Referral = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState<any>(null);
   const [withdrawOpen, setWithdrawOpen] = useState(false);
+  const [qrOpen, setQrOpen] = useState(false);
 
   useEffect(() => {
     const checkUser = async () => {
@@ -112,11 +115,12 @@ const Referral = () => {
                   </div>
                   <Button variant="secondary" onClick={copyReferralCode} className="px-6"><Copy className="h-4 w-4 mr-2" /> Copy</Button>
                 </div>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
                   <Button variant="secondary" onClick={shareReferral} className="w-full"><Share2 className="h-4 w-4 mr-1.5" /> Share</Button>
                   <Button variant="secondary" onClick={shareWhatsApp} className="w-full bg-[#25D366]/90 hover:bg-[#25D366] text-white"><MessageCircle className="h-4 w-4 mr-1.5" /> WhatsApp</Button>
                   <Button variant="secondary" onClick={shareTelegram} className="w-full bg-[#0088cc]/90 hover:bg-[#0088cc] text-white"><Send className="h-4 w-4 mr-1.5" /> Telegram</Button>
                   <Button variant="secondary" onClick={inviteByEmail} className="w-full"><Users className="h-4 w-4 mr-1.5" /> Email</Button>
+                  <Button variant="secondary" onClick={() => setQrOpen(true)} className="w-full"><QrCode className="h-4 w-4 mr-1.5" /> QR</Button>
                 </div>
               </CardContent>
             </Card>
@@ -214,6 +218,7 @@ const Referral = () => {
               </CardContent>
             </Card>
 
+            <ReferralEarningsCalculator />
             <ReferralLeaderboard currentUserId={user?.id} />
           </div>
         </div>
@@ -227,6 +232,15 @@ const Referral = () => {
           <ReferralWithdrawalRequest />
         </DialogContent>
       </Dialog>
+
+      {stats?.code && (
+        <ReferralQRDialog
+          open={qrOpen}
+          onOpenChange={setQrOpen}
+          url={`${window.location.origin}/auth?ref=${stats.code}`}
+          code={stats.code}
+        />
+      )}
     </div>
   );
 };
