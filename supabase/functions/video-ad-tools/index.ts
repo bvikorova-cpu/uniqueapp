@@ -179,6 +179,41 @@ serve(async (req) => {
         userPrompt = `A/B test analysis for "${params.product}". Variant A: "${params.scriptA}". ${params.scriptB ? `Variant B: "${params.scriptB}"` : 'Generate an optimized Variant B.'}. Target audience: ${params.audience || 'general'}. Platform: ${params.platform || 'all platforms'}.`;
         break;
 
+      case 'url_to_video': {
+        // Fetch URL content first
+        let pageText = '';
+        try {
+          const r = await fetch(params.url, { headers: { 'User-Agent': 'Mozilla/5.0 LovableBot' } });
+          const html = await r.text();
+          pageText = html.replace(/<script[\s\S]*?<\/script>/gi, '').replace(/<style[\s\S]*?<\/style>/gi, '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').slice(0, 6000);
+        } catch (_) { pageText = params.url; }
+        systemPrompt = 'You are an expert at converting product/landing pages into ready-to-shoot video ads. Return JSON with: productName, valueProposition, targetAudience, suggestedPlatform, suggestedDuration (15/30/60), script (full voiceover), scenes (array of 5-8 {duration, description, voiceover, visuals, textOverlay}), callToAction, hooks (array of 3 alternative opening hooks), musicSuggestion, brandTone.';
+        userPrompt = `Convert this URL/page into a complete video ad. URL: ${params.url}. Page content: ${pageText}. Platform preference: ${params.platform || 'auto'}. Tone: ${params.tone || 'auto'}.`;
+        break;
+      }
+
+      case 'hook_analyzer':
+        systemPrompt = 'You are an expert at analyzing the first 3 seconds of video ads (the "hook"). Return JSON with: hookScore (0-100), attentionGrab (1-10), clarity (1-10), curiosityGap (1-10), emotionalImpact (1-10), strengths (array), weaknesses (array), improvedHooks (array of 5 better alternatives), bestHook (string), patternsUsed (array of techniques like "shock","question","contrast","fomo","stat"), platformFit (object with tiktok/youtube/instagram/facebook scores 0-100), retention3sEstimate (percentage string), recommendation (string).';
+        userPrompt = `Analyze this video ad hook (first 3 seconds): "${params.hook}". Full context: ${params.context || 'general ad'}. Platform: ${params.platform || 'all'}. Target: ${params.audience || 'general'}.`;
+        break;
+
+      case 'caption_generator':
+        systemPrompt = 'You are an expert at generating animated video captions/subtitles in CapCut style. Return JSON with: captions (array of {startTime (seconds), endTime (seconds), text, style (highlight/normal/emphasis), position (top/middle/bottom), animation (pop/fade/slide/typewriter), color (hex), emoji (optional)}), totalDuration, recommendedFont, srtFormat (full SRT formatted string), styleGuide (object with rules), engagementTips (array).';
+        userPrompt = `Generate animated captions for this video script/voiceover: "${params.script}". Total duration: ${params.duration || 30}s. Style: ${params.style || 'modern bold'}. Language: ${params.language || 'English'}. Platform: ${params.platform || 'tiktok'}.`;
+        break;
+
+      case 'winning_ads_recommend': {
+        // Pull from library + AI-generated suggestions
+        const { data: libraryAds } = await supabase
+          .from('winning_ads_library')
+          .select('*')
+          .eq('industry', params.industry || 'saas')
+          .limit(5);
+        systemPrompt = 'You are an ad strategist. Given winning ad examples and a user product, return JSON with: matches (array of 5 inspiration objects {brand, hook, whyItWorks, applyToYou, score}), customStrategy (string), patternsToSteal (array of 5 techniques), avoidMistakes (array), nextSteps (array).';
+        userPrompt = `User product: "${params.product}". Industry: ${params.industry}. Reference winning ads in library: ${JSON.stringify(libraryAds || [])}. Recommend strategy and patterns.`;
+        break;
+      }
+
       default:
         await refund();
         return new Response(JSON.stringify({ error: `Unknown action: ${action}` }), {
