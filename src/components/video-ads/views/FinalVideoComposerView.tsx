@@ -165,6 +165,22 @@ export const FinalVideoComposerView = ({ onBack }: { onBack: () => void }) => {
   };
   const removeSfx = (id: string) => setSfxList(l => l.filter(s => s.id !== id));
 
+  const DEFAULT_VO_VOL = 1.0;
+  const DEFAULT_SFX_VOL = 0.6;
+  const resetVoVolume = () => {
+    setVoVolume(DEFAULT_VO_VOL);
+    toast.success("Hlasitosť VO obnovená na 100%");
+  };
+  const resetSfxVolume = (id: string) => {
+    setSfxList(l => l.map(s => s.id === id ? { ...s, volume: DEFAULT_SFX_VOL } : s));
+    try { localStorage.setItem(SFX_DEFAULT_VOL_KEY, String(DEFAULT_SFX_VOL)); } catch {}
+  };
+  const resetAllSfxVolumes = () => {
+    setSfxList(l => l.map(s => ({ ...s, volume: DEFAULT_SFX_VOL })));
+    try { localStorage.setItem(SFX_DEFAULT_VOL_KEY, String(DEFAULT_SFX_VOL)); } catch {}
+    toast.success("Hlasitosti SFX obnovené na 60%");
+  };
+
   const generateSfx = async (id: string) => {
     const sfx = sfxList.find(s => s.id === id);
     if (!sfx || !sfx.prompt.trim()) { toast.error("Zadaj popis SFX"); return; }
@@ -326,7 +342,10 @@ export const FinalVideoComposerView = ({ onBack }: { onBack: () => void }) => {
             <div>
               <Label className="text-xs flex items-center justify-between">
                 <span>🔊 Hlasitosť voiceoveru</span>
-                <span className="font-mono">{Math.round(voVolume * 100)}%</span>
+                <span className="flex items-center gap-2">
+                  <span className="font-mono">{Math.round(voVolume * 100)}%</span>
+                  <button type="button" onClick={resetVoVolume} className="text-[10px] underline text-muted-foreground hover:text-foreground">Reset</button>
+                </span>
               </Label>
               <input type="range" min={0} max={2} step={0.05} value={voVolume} onChange={e => setVoVolume(Number(e.target.value))} className="w-full accent-pink-500" />
               <p className="text-[10px] text-muted-foreground">0% = ticho, 100% = originál, 200% = zosilnené</p>
@@ -338,7 +357,10 @@ export const FinalVideoComposerView = ({ onBack }: { onBack: () => void }) => {
         <Card className="lg:col-span-2">
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle className="text-base">3. Zvukové efekty</CardTitle>
-            <Button size="sm" variant="outline" onClick={addSfx}><Plus className="h-4 w-4 mr-1" />Pridať SFX</Button>
+            <div className="flex gap-2">
+              {sfxList.length > 0 && <Button size="sm" variant="ghost" onClick={resetAllSfxVolumes}>Reset volumes</Button>}
+              <Button size="sm" variant="outline" onClick={addSfx}><Plus className="h-4 w-4 mr-1" />Pridať SFX</Button>
+            </div>
           </CardHeader>
           <CardContent className="space-y-2">
             {sfxList.length === 0 && <p className="text-sm text-muted-foreground text-center py-4">Žiadne SFX. Pridaj efekt (whoosh, applause, ding...)</p>}
@@ -355,6 +377,7 @@ export const FinalVideoComposerView = ({ onBack }: { onBack: () => void }) => {
                   <span className="text-xs w-16">🔊 Vol</span>
                   <input type="range" min={0} max={2} step={0.05} value={s.volume} onChange={e => updateSfx(s.id, { volume: Number(e.target.value) })} className="flex-1 accent-fuchsia-500" />
                   <span className="text-xs font-mono w-12 text-right">{Math.round(s.volume * 100)}%</span>
+                  <button type="button" onClick={() => resetSfxVolume(s.id)} className="text-[10px] underline text-muted-foreground hover:text-foreground">Reset</button>
                 </div>
               </div>
             ))}
