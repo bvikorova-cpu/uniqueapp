@@ -42,7 +42,7 @@ import { VoiceJournalView } from "@/components/best-friend/VoiceJournalView";
 import { PhotoShareView } from "@/components/best-friend/PhotoShareView";
 import { YearReportView } from "@/components/best-friend/YearReportView";
 import { MemoryTimelineView } from "@/components/best-friend/MemoryTimelineView";
-import { VoiceCallView } from "@/components/best-friend/VoiceCallView";
+
 import { CrisisResourcesView } from "@/components/best-friend/CrisisResourcesView";
 import { FriendshipHUD } from "@/components/best-friend/FriendshipHUD";
 import ReactMarkdown from "react-markdown";
