@@ -162,6 +162,12 @@ const tools = [
   { id: "ad-analytics", icon: BarChart2, title: "Ad Analytics Dashboard", desc: "Campaign insights & stats", cost: "3 CR", gradient: "from-emerald-500 to-green-600" },
   { id: "multi-language", icon: Globe2, title: "Multi-Language Translator", desc: "Localize for global markets", cost: "3 CR", gradient: "from-cyan-500 to-blue-600" },
   { id: "ab-tester", icon: FlaskConical, title: "Ad A/B Tester", desc: "Compare ad variants", cost: "4 CR", gradient: "from-purple-500 to-violet-600" },
+  { id: "url-to-video", icon: Link2, title: "URL to Video", desc: "Product link → full ad storyboard", cost: "5 CR", gradient: "from-fuchsia-500 to-purple-600" },
+  { id: "tts", icon: Mic2, title: "AI Voiceover (Real)", desc: "ElevenLabs profesionálny hlas", cost: "5 CR", gradient: "from-pink-500 to-rose-600" },
+  { id: "captions", icon: Subtitles, title: "Auto Captions", desc: "Animované titulky + SRT", cost: "3 CR", gradient: "from-amber-500 to-orange-600" },
+  { id: "hook-analyzer", icon: Flame, title: "Hook Analyzer", desc: "Analýza prvých 3 sekúnd", cost: "3 CR", gradient: "from-red-500 to-orange-600" },
+  { id: "brand-kit", icon: Palette, title: "Brand Kit", desc: "Logo, fonty, farby, voice", cost: "3 CR", gradient: "from-indigo-500 to-purple-600" },
+  { id: "winning-ads", icon: Award, title: "Winning Ads Library", desc: "Top performujúce ad inšpirácie", cost: "3 CR", gradient: "from-yellow-500 to-amber-600" },
 ];
 
 const VideoAdGenerator = () => {
