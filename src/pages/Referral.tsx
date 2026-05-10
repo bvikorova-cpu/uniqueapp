@@ -21,6 +21,7 @@ const Referral = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [user, setUser] = useState<any>(null);
+  const [withdrawOpen, setWithdrawOpen] = useState(false);
 
   useEffect(() => {
     const checkUser = async () => {
