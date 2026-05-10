@@ -30,8 +30,9 @@ export const TtsVoiceoverView = ({ onBack }: { onBack: () => void }) => {
     if (text.length > 5000) { toast.error("Max 5000 znakov"); return; }
     setLoading(true); setAudioUrl(null);
     try {
+      const finalVoiceId = customVoiceId.trim() || voiceId;
       const { data, error } = await supabase.functions.invoke('video-ad-tts', {
-        body: { text, voiceId },
+        body: { text, voiceId: finalVoiceId },
       });
       if (error || data?.error) { handleEdgeError(error || data, { context: 'TTS Voiceover' }); return; }
       const url = `data:${data.mimeType};base64,${data.audioBase64}`;
