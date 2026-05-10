@@ -162,6 +162,7 @@ import {
   Marketplace,
   Bazaar,
   Auction,
+  MyAuctions,
   PropertyMarketplace,
   PropertySubmission,
   MyProperties,
@@ -524,6 +525,7 @@ const App = () => {
                         <Route path="/admin/bazaar-trust" element={<ProtectedRoute requireAdmin={true}><AdminBazaarTrust /></ProtectedRoute>} />
                         <Route path="/influ-king" element={<InfluKing />} />
                         <Route path="/auction" element={<Auction />} />
+                        <Route path="/my-auctions" element={<ProtectedRoute><MyAuctions /></ProtectedRoute>} />
                         <Route path="/ai-generation" element={<AIGeneration />} />
                         <Route path="/best-friend" element={<BestFriend />} />
                         <Route path="/cooking" element={<Cooking />} />
