@@ -65,6 +65,10 @@ export const TtsVoiceoverView = ({ onBack }: { onBack: () => void }) => {
                 {VOICES.map(v => <option key={v.id} value={v.id}>{v.name}</option>)}
               </select>
             </div>
+            <div><Label>Vlastný voiceId (cloned voice — voliteľné)</Label>
+              <input className="w-full mt-1 p-2 rounded-md border bg-background text-sm font-mono" placeholder="napr. z Voice Cloning" value={customVoiceId} onChange={e => setCustomVoiceId(e.target.value)} />
+              <p className="text-xs text-muted-foreground mt-1">Ak vyplníš, prepíše voľbu vyššie.</p>
+            </div>
             <Button onClick={generate} disabled={loading} className="w-full bg-gradient-to-r from-pink-500 to-rose-600">
               {loading ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Generujem...</> : <><Play className="mr-2 h-4 w-4" />Generovať hlas (5 CR)</>}
             </Button>
