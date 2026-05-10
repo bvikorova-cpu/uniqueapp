@@ -34,25 +34,24 @@ import { AnimationProvider } from "@/contexts/AnimationContext";
 import { CurrencyProvider } from "@/contexts/CurrencyContext";
 import { useEffect } from "react";
 import i18n from "@/i18n/config";
-import { ProtectedRoute } from "@/components/ProtectedRoute";
-import { SubscriptionGuard } from "@/components/SubscriptionGuard";
-import { MegatalentGuard } from "@/components/megatalent/MegatalentGuard";
-import Footer from "./components/Footer";
 import SkipLink from "./components/SkipLink";
-import ProgressiveOnboarding from "./components/onboarding/ProgressiveOnboarding";
 import { PageLoader } from "@/components/ui/PageLoader";
-import { GlobalAnnouncementBanner } from "./components/GlobalAnnouncementBanner";
-import { GlobalRewardedAd } from "./components/ads/GlobalRewardedAd";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { installGlobalErrorHandlers } from "@/utils/logger";
 import { installImagePerformancePatch } from "@/utils/imagePerformance";
 import { HelmetProvider } from "react-helmet-async";
-import { ReferralCaptureMount } from "@/components/referral/ReferralCaptureMount";
-import { LanguagePreferenceMount } from "@/components/LanguagePreferenceMount";
-import { DunningBanner } from "@/components/billing/DunningBanner";
-import { SCABanner } from "@/components/billing/SCABanner";
 
 const Navbar = lazy(() => import("./components/Navbar"));
+const Footer = lazy(() => import("./components/Footer"));
+const ProtectedRoute = lazy(() => import("@/components/ProtectedRoute").then((module) => ({ default: module.ProtectedRoute })));
+const SubscriptionGuard = lazy(() => import("@/components/SubscriptionGuard").then((module) => ({ default: module.SubscriptionGuard })));
+const MegatalentGuard = lazy(() => import("@/components/megatalent/MegatalentGuard").then((module) => ({ default: module.MegatalentGuard })));
+const ProgressiveOnboarding = lazy(() => import("./components/onboarding/ProgressiveOnboarding"));
+const GlobalAnnouncementBanner = lazy(() => import("./components/GlobalAnnouncementBanner").then((module) => ({ default: module.GlobalAnnouncementBanner })));
+const ReferralCaptureMount = lazy(() => import("@/components/referral/ReferralCaptureMount").then((module) => ({ default: module.ReferralCaptureMount })));
+const LanguagePreferenceMount = lazy(() => import("@/components/LanguagePreferenceMount").then((module) => ({ default: module.LanguagePreferenceMount })));
+const DunningBanner = lazy(() => import("@/components/billing/DunningBanner").then((module) => ({ default: module.DunningBanner })));
+const SCABanner = lazy(() => import("@/components/billing/SCABanner").then((module) => ({ default: module.SCABanner })));
 const Index = lazy(() => import("./pages/Index"));
 const Auth = lazy(() => import("./pages/Auth"));
 const Download = lazy(() => import("./pages/Download"));
@@ -449,15 +448,19 @@ const App = () => {
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
         <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
           <AuthProvider>
-            <ReferralCaptureMount />
-            <LanguagePreferenceMount />
-            <DunningBanner />
-            <SCABanner />
+            <Suspense fallback={null}>
+              <ReferralCaptureMount />
+              <LanguagePreferenceMount />
+              <DunningBanner />
+              <SCABanner />
+            </Suspense>
             <AnimationProvider>
               <CurrencyProvider>
               <TooltipProvider delayDuration={0}>
                 <SkipLink />
-                <ProgressiveOnboarding />
+                <Suspense fallback={null}>
+                  <ProgressiveOnboarding />
+                </Suspense>
                 <Toaster />
                 <Sonner />
                 <div className="flex flex-col min-h-screen">
@@ -466,7 +469,9 @@ const App = () => {
                       <Navbar />
                     </Suspense>
                   </ErrorBoundary>
-                  <GlobalAnnouncementBanner />
+                  <Suspense fallback={null}>
+                    <GlobalAnnouncementBanner />
+                  </Suspense>
                   <main id="main-content" className="flex-1">
                     <ErrorBoundary>
                       <Suspense fallback={<PageLoader />}>
@@ -923,7 +928,9 @@ const App = () => {
                     </Suspense>
                     </ErrorBoundary>
                   </main>
-                  <Footer />
+                  <Suspense fallback={null}>
+                    <Footer />
+                  </Suspense>
                 </div>
               </TooltipProvider>
               </CurrencyProvider>

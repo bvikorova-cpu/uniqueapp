@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { motion } from "framer-motion";
 import {
   Sparkles, Wand2, Pencil, Brush, ArrowUpRight, BookOpen, CreditCard, ArrowLeft, Copy,
@@ -10,39 +10,41 @@ import {
 import { Button } from "@/components/ui/button";
 import { useAICredits } from "@/hooks/useAICredits";
 import { useNavigate } from "react-router-dom";
+import { lazyWithRetry as lazy } from "@/utils/lazyWithRetry";
 import { AIGenHero } from "@/components/ai-generation/AIGenHero";
-import { GenerateView } from "@/components/ai-generation/views/GenerateView";
-import { ImageEditorView } from "@/components/ai-generation/views/ImageEditorView";
-import { StyleTransferView } from "@/components/ai-generation/views/StyleTransferView";
-import { UpscalerView } from "@/components/ai-generation/views/UpscalerView";
-import { PromptGalleryView } from "@/components/ai-generation/views/PromptGalleryView";
-import { VariationsView } from "@/components/ai-generation/views/VariationsView";
-import { CommunityGalleryView } from "@/components/ai-generation/views/CommunityGalleryView";
-import { InpaintingView } from "@/components/ai-generation/views/InpaintingView";
-import { BatchGenerationView } from "@/components/ai-generation/views/BatchGenerationView";
-import { PromptHistoryView } from "@/components/ai-generation/views/PromptHistoryView";
-import { ImageToPromptView } from "@/components/ai-generation/views/ImageToPromptView";
-// NEW
-import { BackgroundRemoveView } from "@/components/ai-generation/views/BackgroundRemoveView";
-import { BackgroundReplaceView } from "@/components/ai-generation/views/BackgroundReplaceView";
-import { OutpaintingView } from "@/components/ai-generation/views/OutpaintingView";
-import { ReferenceImageView } from "@/components/ai-generation/views/ReferenceImageView";
-import { LogoTextView } from "@/components/ai-generation/views/LogoTextView";
-import { CharacterConsistencyView } from "@/components/ai-generation/views/CharacterConsistencyView";
-import { SketchToImageView } from "@/components/ai-generation/views/SketchToImageView";
-import { RealtimeView } from "@/components/ai-generation/views/RealtimeView";
-import { FaceSwapView } from "@/components/ai-generation/views/FaceSwapView";
-import { PoseControlView } from "@/components/ai-generation/views/PoseControlView";
-import { TilePatternView } from "@/components/ai-generation/views/TilePatternView";
-import { AvatarPackView } from "@/components/ai-generation/views/AvatarPackView";
-import { AnimateImageView } from "@/components/ai-generation/views/AnimateImageView";
-import { FoldersView } from "@/components/ai-generation/views/FoldersView";
-import { PublicProfileView } from "@/components/ai-generation/views/PublicProfileView";
-import { SettingsApiView } from "@/components/ai-generation/views/SettingsApiView";
+import { PageLoader } from "@/components/ui/PageLoader";
 
 import { AICreditsLowBalanceAlert } from "@/components/ai-credits/AICreditsLowBalanceAlert";
 import { AICreditsLiveTicker } from "@/components/ai-credits/AICreditsLiveTicker";
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
+
+const GenerateView = lazy(() => import("@/components/ai-generation/views/GenerateView").then((module) => ({ default: module.GenerateView })));
+const ImageEditorView = lazy(() => import("@/components/ai-generation/views/ImageEditorView").then((module) => ({ default: module.ImageEditorView })));
+const StyleTransferView = lazy(() => import("@/components/ai-generation/views/StyleTransferView").then((module) => ({ default: module.StyleTransferView })));
+const UpscalerView = lazy(() => import("@/components/ai-generation/views/UpscalerView").then((module) => ({ default: module.UpscalerView })));
+const PromptGalleryView = lazy(() => import("@/components/ai-generation/views/PromptGalleryView").then((module) => ({ default: module.PromptGalleryView })));
+const VariationsView = lazy(() => import("@/components/ai-generation/views/VariationsView").then((module) => ({ default: module.VariationsView })));
+const CommunityGalleryView = lazy(() => import("@/components/ai-generation/views/CommunityGalleryView").then((module) => ({ default: module.CommunityGalleryView })));
+const InpaintingView = lazy(() => import("@/components/ai-generation/views/InpaintingView").then((module) => ({ default: module.InpaintingView })));
+const BatchGenerationView = lazy(() => import("@/components/ai-generation/views/BatchGenerationView").then((module) => ({ default: module.BatchGenerationView })));
+const PromptHistoryView = lazy(() => import("@/components/ai-generation/views/PromptHistoryView").then((module) => ({ default: module.PromptHistoryView })));
+const ImageToPromptView = lazy(() => import("@/components/ai-generation/views/ImageToPromptView").then((module) => ({ default: module.ImageToPromptView })));
+const BackgroundRemoveView = lazy(() => import("@/components/ai-generation/views/BackgroundRemoveView").then((module) => ({ default: module.BackgroundRemoveView })));
+const BackgroundReplaceView = lazy(() => import("@/components/ai-generation/views/BackgroundReplaceView").then((module) => ({ default: module.BackgroundReplaceView })));
+const OutpaintingView = lazy(() => import("@/components/ai-generation/views/OutpaintingView").then((module) => ({ default: module.OutpaintingView })));
+const ReferenceImageView = lazy(() => import("@/components/ai-generation/views/ReferenceImageView").then((module) => ({ default: module.ReferenceImageView })));
+const LogoTextView = lazy(() => import("@/components/ai-generation/views/LogoTextView").then((module) => ({ default: module.LogoTextView })));
+const CharacterConsistencyView = lazy(() => import("@/components/ai-generation/views/CharacterConsistencyView").then((module) => ({ default: module.CharacterConsistencyView })));
+const SketchToImageView = lazy(() => import("@/components/ai-generation/views/SketchToImageView").then((module) => ({ default: module.SketchToImageView })));
+const RealtimeView = lazy(() => import("@/components/ai-generation/views/RealtimeView").then((module) => ({ default: module.RealtimeView })));
+const FaceSwapView = lazy(() => import("@/components/ai-generation/views/FaceSwapView").then((module) => ({ default: module.FaceSwapView })));
+const PoseControlView = lazy(() => import("@/components/ai-generation/views/PoseControlView").then((module) => ({ default: module.PoseControlView })));
+const TilePatternView = lazy(() => import("@/components/ai-generation/views/TilePatternView").then((module) => ({ default: module.TilePatternView })));
+const AvatarPackView = lazy(() => import("@/components/ai-generation/views/AvatarPackView").then((module) => ({ default: module.AvatarPackView })));
+const AnimateImageView = lazy(() => import("@/components/ai-generation/views/AnimateImageView").then((module) => ({ default: module.AnimateImageView })));
+const FoldersView = lazy(() => import("@/components/ai-generation/views/FoldersView").then((module) => ({ default: module.FoldersView })));
+const PublicProfileView = lazy(() => import("@/components/ai-generation/views/PublicProfileView").then((module) => ({ default: module.PublicProfileView })));
+const SettingsApiView = lazy(() => import("@/components/ai-generation/views/SettingsApiView").then((module) => ({ default: module.SettingsApiView })));
 
 type ActiveView =
   | 'hub' | 'generate' | 'editor' | 'style' | 'upscaler' | 'gallery' | 'variations'
@@ -134,7 +136,9 @@ const AIGeneration = () => {
             <Button variant="ghost" size="sm" onClick={() => setActiveView('hub')} className="gap-2">
               <ArrowLeft className="w-4 h-4" /> Back to Studio
             </Button>
-            {renderView()}
+            <Suspense fallback={<PageLoader />}>
+              {renderView()}
+            </Suspense>
           </div>
         ) : (
           <>
