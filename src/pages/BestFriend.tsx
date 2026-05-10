@@ -309,6 +309,7 @@ const BestFriend = () => {
         ) : (
           <>
             <BestFriendHero />
+            <div className="mb-6"><FriendshipHUD /></div>
 
             <HeroRewardedAd sectionKey="page_bestfriend" />
 
