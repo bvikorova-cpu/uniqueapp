@@ -490,6 +490,52 @@ serve(async (req) => {
           } catch (dErr) {
             log("dating webhook error", { err: (dErr as Error).message });
           }
+
+          // ── Best Friend message pack fulfillment (+100 bonus messages) ──
+          try {
+            if (session.metadata?.type === "best_friend_messages" || session.metadata?.product === "best_friend_messages") {
+              const userId = session.metadata?.user_id;
+              if (userId) {
+                const { data: pr } = await supabase
+                  .from("payment_records")
+                  .select("id, metadata")
+                  .eq("stripe_session_id", session.id)
+                  .maybeSingle();
+                const alreadyCredited = (pr?.metadata as any)?.best_friend_messages_credited === true;
+                if (!alreadyCredited) {
+                  const { data: cur } = await supabase
+                    .from("best_friend_subscriptions")
+                    .select("bonus_messages")
+                    .eq("user_id", userId)
+                    .maybeSingle();
+                  if (cur) {
+                    await supabase.from("best_friend_subscriptions")
+                      .update({
+                        bonus_messages: (cur.bonus_messages || 0) + 100,
+                        updated_at: new Date().toISOString(),
+                      })
+                      .eq("user_id", userId);
+                  } else {
+                    await supabase.from("best_friend_subscriptions").insert({
+                      user_id: userId,
+                      subscription_status: "free",
+                      free_messages_used: 0,
+                      monthly_messages_used: 0,
+                      bonus_messages: 100,
+                    });
+                  }
+                  if (pr?.id) {
+                    await supabase.from("payment_records").update({
+                      metadata: { ...(pr.metadata as any || {}), best_friend_messages_credited: true },
+                    }).eq("id", pr.id);
+                  }
+                  log("best friend bonus messages credited", { userId, amount: 100, sessionId: session.id });
+                }
+              }
+            }
+          } catch (bfErr) {
+            log("best friend messages webhook error", { err: (bfErr as Error).message });
+          }
         }
         break;
       }
