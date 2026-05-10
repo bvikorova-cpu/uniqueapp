@@ -162,6 +162,7 @@ import {
   Marketplace,
   Bazaar,
   Auction,
+  MyAuctions,
   PropertyMarketplace,
   PropertySubmission,
   MyProperties,
