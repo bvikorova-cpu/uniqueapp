@@ -18,6 +18,14 @@ export function AuthReferralBanner() {
 
   useEffect(() => {
     if (!code) return;
+    // Fire-and-forget click tracking
+    try {
+      const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
+      fetch(`https://${projectId}.supabase.co/functions/v1/track-referral-click?code=${encodeURIComponent(code)}`, {
+        method: "POST",
+        headers: { apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY },
+      }).catch(() => {});
+    } catch { /* ignore */ }
     (async () => {
       try {
         const { data } = await supabase.functions.invoke("get-referrer-info", {
