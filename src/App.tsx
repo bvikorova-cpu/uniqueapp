@@ -374,6 +374,7 @@ const AdminRefunds = lazy(() => import("@/pages/admin/AdminRefunds"));
 const AdminDisputes = lazy(() => import("@/pages/admin/AdminDisputes"));
 const AdminReconciliation = lazy(() => import("@/pages/admin/AdminReconciliation"));
 const AdminReferralFraud = lazy(() => import("@/pages/admin/AdminReferralFraud"));
+const AdminReferralFunnel = lazy(() => import("@/pages/admin/AdminReferralFunnel"));
 const ReferralLeaderboard = lazy(() => import("@/pages/ReferralLeaderboard"));
 const AdminSubscriptionAnalytics = lazy(() => import("@/pages/admin/AdminSubscriptionAnalytics"));
 const AdminCohortRetention = lazy(() => import("@/pages/admin/AdminCohortRetention"));
@@ -721,6 +722,7 @@ const App = () => {
                         <Route path="/admin/disputes" element={<ProtectedRoute requireAdmin={true}><AdminDisputes /></ProtectedRoute>} />
                         <Route path="/admin/reconciliation" element={<ProtectedRoute requireAdmin={true}><AdminReconciliation /></ProtectedRoute>} />
                         <Route path="/admin/referral-fraud" element={<ProtectedRoute requireAdmin={true}><AdminReferralFraud /></ProtectedRoute>} />
+                        <Route path="/admin/referral-funnel" element={<ProtectedRoute requireAdmin={true}><AdminReferralFunnel /></ProtectedRoute>} />
                         <Route path="/referrals/leaderboard" element={<ReferralLeaderboard />} />
                         <Route path="/admin/subscription-analytics" element={<ProtectedRoute requireAdmin={true}><AdminSubscriptionAnalytics /></ProtectedRoute>} />
                         <Route path="/admin/cohort-retention" element={<ProtectedRoute requireAdmin={true}><AdminCohortRetention /></ProtectedRoute>} />
