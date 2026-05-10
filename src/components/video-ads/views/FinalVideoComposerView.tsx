@@ -342,7 +342,10 @@ export const FinalVideoComposerView = ({ onBack }: { onBack: () => void }) => {
             <div>
               <Label className="text-xs flex items-center justify-between">
                 <span>🔊 Hlasitosť voiceoveru</span>
-                <span className="font-mono">{Math.round(voVolume * 100)}%</span>
+                <span className="flex items-center gap-2">
+                  <span className="font-mono">{Math.round(voVolume * 100)}%</span>
+                  <button type="button" onClick={resetVoVolume} className="text-[10px] underline text-muted-foreground hover:text-foreground">Reset</button>
+                </span>
               </Label>
               <input type="range" min={0} max={2} step={0.05} value={voVolume} onChange={e => setVoVolume(Number(e.target.value))} className="w-full accent-pink-500" />
               <p className="text-[10px] text-muted-foreground">0% = ticho, 100% = originál, 200% = zosilnené</p>
