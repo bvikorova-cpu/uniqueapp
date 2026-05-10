@@ -44,13 +44,20 @@ export const FinalVideoComposerView = ({ onBack }: { onBack: () => void }) => {
   const ffmpegRef = useRef<FFmpeg | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const LAST_VOICE_KEY = 'video-ad:last-voice-id';
+
   useEffect(() => {
     const KEY = 'video-ad:cloned-voices';
     const load = () => {
       try {
         const list: ClonedVoice[] = JSON.parse(localStorage.getItem(KEY) || '[]');
         setClonedVoices(list);
-        if (list.length > 0 && !customVoiceId) setCustomVoiceId(list[0].voiceId);
+        const saved = localStorage.getItem(LAST_VOICE_KEY) || '';
+        setCustomVoiceId(prev => {
+          if (prev) return prev;
+          if (saved && list.find(v => v.voiceId === saved)) return saved;
+          return list[0]?.voiceId || '';
+        });
       } catch {}
     };
     load();
@@ -61,6 +68,13 @@ export const FinalVideoComposerView = ({ onBack }: { onBack: () => void }) => {
       window.removeEventListener('storage', load);
     };
   }, []);
+
+  useEffect(() => {
+    try {
+      if (customVoiceId) localStorage.setItem(LAST_VOICE_KEY, customVoiceId);
+      else localStorage.removeItem(LAST_VOICE_KEY);
+    } catch {}
+  }, [customVoiceId]);
 
   const loadFfmpeg = async () => {
     if (ffmpegRef.current) return ffmpegRef.current;
