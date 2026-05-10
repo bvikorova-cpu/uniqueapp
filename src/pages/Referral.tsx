@@ -218,6 +218,15 @@ const Referral = () => {
           </div>
         </div>
       </div>
+
+      <Dialog open={withdrawOpen} onOpenChange={setWithdrawOpen}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Withdraw Referral Earnings</DialogTitle>
+          </DialogHeader>
+          <ReferralWithdrawalRequest />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
