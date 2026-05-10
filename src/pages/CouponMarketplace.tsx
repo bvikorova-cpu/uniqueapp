@@ -547,10 +547,14 @@ const CouponMarketplace = () => {
           </TabsList>
 
           <TabsContent value="browse" className="mt-6">
+            <SeasonalHubBanner />
+            <CouponReferralBanner userId={currentUserId} />
             <DailyDealCountdown onOpenCoupon={(id) => {
               const c = coupons.find(x => x.id === id);
               if (c) { setSelectedCoupon(c); setIsDetailOpen(true); }
             }} />
+            <CouponBattleWidget userId={currentUserId} />
+            <CouponCompareWidget userId={currentUserId} />
             <TrendingStoresLeaderboard />
             <CouponFilterChips active={activeChips} onToggle={(id) => {
               const next = new Set(activeChips);
