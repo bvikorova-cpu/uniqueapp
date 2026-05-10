@@ -43,6 +43,7 @@ import { PhotoShareView } from "@/components/best-friend/PhotoShareView";
 import { YearReportView } from "@/components/best-friend/YearReportView";
 import { MemoryTimelineView } from "@/components/best-friend/MemoryTimelineView";
 import { VoiceCallView } from "@/components/best-friend/VoiceCallView";
+import { CrisisResourcesView } from "@/components/best-friend/CrisisResourcesView";
 import { FriendshipHUD } from "@/components/best-friend/FriendshipHUD";
 import ReactMarkdown from "react-markdown";
 
@@ -76,6 +77,7 @@ const tools = [
   { id: "roleplay", icon: Drama, title: "Roleplay Scenarios", description: "Practice tough conversations", badge: "AI", credits: 0, gradient: "from-orange-500/10 to-red-500/5" },
   { id: "memory_timeline", icon: Clock, title: "Our Timeline", description: "Every shared moment", badge: "View", credits: 0, gradient: "from-cyan-500/10 to-blue-500/5" },
   { id: "year_report", icon: FileText, title: "Year in Review", description: "AI-generated summary", badge: "AI", credits: 5, gradient: "from-amber-500/10 to-orange-500/5" },
+  { id: "crisis_help", icon: AlertTriangle, title: "Crisis Help", description: "Hotlines & safety resources", badge: "Free", credits: 0, gradient: "from-red-500/10 to-rose-500/5" },
 ];
 
 const BestFriend = () => {
@@ -194,6 +196,7 @@ const BestFriend = () => {
       case "photo_share": return <PhotoShareView />;
       case "year_report": return <YearReportView />;
       case "memory_timeline": return <MemoryTimelineView />;
+      case "crisis_help": return <CrisisResourcesView />;
       case "chat": return renderChat();
       default: return null;
     }
