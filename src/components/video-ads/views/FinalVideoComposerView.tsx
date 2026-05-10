@@ -34,8 +34,17 @@ export const FinalVideoComposerView = ({ onBack }: { onBack: () => void }) => {
   const [voAudio, setVoAudio] = useState<Uint8Array | null>(null);
   const [voUrl, setVoUrl] = useState<string | null>(null);
   const [voLoading, setVoLoading] = useState(false);
+  const VO_VOL_KEY = 'video-ad:vo-volume';
+  const SFX_VOL_KEY = 'video-ad:sfx-volumes';
+  const SFX_DEFAULT_VOL_KEY = 'video-ad:sfx-default-volume';
+  const readVolMap = (): Record<string, number> => {
+    try { return JSON.parse(localStorage.getItem(SFX_VOL_KEY) || '{}'); } catch { return {}; }
+  };
   const [sfxList, setSfxList] = useState<Sfx[]>([]);
-  const [voVolume, setVoVolume] = useState(1.0);
+  const [voVolume, setVoVolume] = useState<number>(() => {
+    const v = parseFloat(localStorage.getItem(VO_VOL_KEY) || '');
+    return isNaN(v) ? 1.0 : v;
+  });
   const [rendering, setRendering] = useState(false);
   const [progress, setProgress] = useState(0);
   const [outputUrl, setOutputUrl] = useState<string | null>(null);
