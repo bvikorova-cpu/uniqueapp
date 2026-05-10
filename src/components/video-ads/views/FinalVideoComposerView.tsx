@@ -20,7 +20,7 @@ const VOICES = [
 ];
 
 interface SceneImg { id: string; file: File; preview: string; }
-interface Sfx { id: string; prompt: string; duration: number; audio?: Uint8Array; previewUrl?: string; loading?: boolean; }
+interface Sfx { id: string; prompt: string; duration: number; volume: number; audio?: Uint8Array; previewUrl?: string; loading?: boolean; }
 
 interface ClonedVoice { voiceId: string; name: string; description?: string; createdAt: number; }
 
