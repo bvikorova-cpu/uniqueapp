@@ -192,7 +192,7 @@ const BestFriend = () => {
       case "memory_vault": return <MemoryVaultView />;
       case "roleplay": return <RoleplayScenariosView />;
       case "voice_journal": return <VoiceJournalView />;
-      case "voice_call": return <VoiceCallView />;
+      
       case "photo_share": return <PhotoShareView />;
       case "year_report": return <YearReportView />;
       case "memory_timeline": return <MemoryTimelineView />;
