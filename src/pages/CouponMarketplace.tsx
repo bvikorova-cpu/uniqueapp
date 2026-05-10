@@ -558,6 +558,13 @@ const CouponMarketplace = () => {
               const c = coupons.find(x => x.id === id);
               if (c) { setSelectedCoupon(c); setIsDetailOpen(true); }
             }} />
+            <CouponExtensionTeaser />
+            <div className="grid md:grid-cols-2 gap-4 my-4">
+              <CouponGeoDeals />
+              <CouponStackingCalculator />
+              <CouponReceiptCashback />
+              <CouponApiKeysPanel />
+            </div>
             <CouponBattleWidget userId={currentUserId} />
             <CouponCompareWidget userId={currentUserId} />
             <TrendingStoresLeaderboard />
