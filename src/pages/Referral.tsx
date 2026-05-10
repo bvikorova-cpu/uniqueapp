@@ -13,6 +13,8 @@ import { motion } from "framer-motion";
 import heroVideo from "@/assets/megatalent-hero.mp4.asset.json";
 import { ReferralLeaderboard } from "@/components/referral/ReferralLeaderboard";
 import { ReferralMilestones } from "@/components/referral/ReferralMilestones";
+import { ReferralWithdrawalRequest } from "@/components/referral/ReferralWithdrawalRequest";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 const Referral = () => {
   const { stats, loading, refreshStats } = useReferralProgram();
