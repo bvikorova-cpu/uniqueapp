@@ -448,15 +448,19 @@ const App = () => {
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
         <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
           <AuthProvider>
-            <ReferralCaptureMount />
-            <LanguagePreferenceMount />
-            <DunningBanner />
-            <SCABanner />
+            <Suspense fallback={null}>
+              <ReferralCaptureMount />
+              <LanguagePreferenceMount />
+              <DunningBanner />
+              <SCABanner />
+            </Suspense>
             <AnimationProvider>
               <CurrencyProvider>
               <TooltipProvider delayDuration={0}>
                 <SkipLink />
-                <ProgressiveOnboarding />
+                <Suspense fallback={null}>
+                  <ProgressiveOnboarding />
+                </Suspense>
                 <Toaster />
                 <Sonner />
                 <div className="flex flex-col min-h-screen">
@@ -465,7 +469,9 @@ const App = () => {
                       <Navbar />
                     </Suspense>
                   </ErrorBoundary>
-                  <GlobalAnnouncementBanner />
+                  <Suspense fallback={null}>
+                    <GlobalAnnouncementBanner />
+                  </Suspense>
                   <main id="main-content" className="flex-1">
                     <ErrorBoundary>
                       <Suspense fallback={<PageLoader />}>
@@ -922,7 +928,9 @@ const App = () => {
                     </Suspense>
                     </ErrorBoundary>
                   </main>
-                  <Footer />
+                  <Suspense fallback={null}>
+                    <Footer />
+                  </Suspense>
                 </div>
               </TooltipProvider>
               </CurrencyProvider>
