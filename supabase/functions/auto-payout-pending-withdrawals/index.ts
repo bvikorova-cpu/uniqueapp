@@ -106,6 +106,29 @@ serve(async (req) => {
           };
           await admin.from(cfg.table).update(updateData).eq("id", wd.id);
 
+          // For referral kind, mark earnings as paid FIFO up to the withdrawn amount
+          if (kind === "referral") {
+            const { data: unpaid } = await admin
+              .from("megatalent_referral_earnings")
+              .select("id, amount")
+              .eq("referrer_id", creatorId)
+              .eq("paid", false)
+              .order("created_at", { ascending: true });
+            let remaining = Number(wd.amount);
+            const idsToMark: string[] = [];
+            for (const row of unpaid || []) {
+              if (remaining <= 0) break;
+              idsToMark.push(row.id);
+              remaining -= Number(row.amount);
+            }
+            if (idsToMark.length > 0) {
+              await admin
+                .from("megatalent_referral_earnings")
+                .update({ paid: true })
+                .in("id", idsToMark);
+            }
+          }
+
           await admin.from("admin_audit_log").insert({
             admin_id: "00000000-0000-0000-0000-000000000000",
             action: "withdrawal_auto_paid",
