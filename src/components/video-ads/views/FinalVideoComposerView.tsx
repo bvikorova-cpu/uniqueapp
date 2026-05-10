@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Loader2, Film, Download, Plus, Trash2, Upload, Wand2 } from "lucide-react";
 import { toast } from "sonner";
 import { handleEdgeError } from "@/lib/handleEdgeError";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { FFmpeg } from "@ffmpeg/ffmpeg";
 import { fetchFile, toBlobURL } from "@ffmpeg/util";
 
@@ -344,7 +345,21 @@ export const FinalVideoComposerView = ({ onBack }: { onBack: () => void }) => {
                 <span>🔊 Hlasitosť voiceoveru</span>
                 <span className="flex items-center gap-2">
                   <span className="font-mono">{Math.round(voVolume * 100)}%</span>
-                  <button type="button" onClick={resetVoVolume} className="text-[10px] underline text-muted-foreground hover:text-foreground">Reset</button>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <button type="button" className="text-[10px] underline text-muted-foreground hover:text-foreground">Reset</button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Resetovať hlasitosť voiceoveru?</AlertDialogTitle>
+                        <AlertDialogDescription>Hlasitosť VO sa nastaví späť na predvolených 100%.</AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Zrušiť</AlertDialogCancel>
+                        <AlertDialogAction onClick={resetVoVolume}>Resetovať</AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
                 </span>
               </Label>
               <input type="range" min={0} max={2} step={0.05} value={voVolume} onChange={e => setVoVolume(Number(e.target.value))} className="w-full accent-pink-500" />
@@ -358,7 +373,23 @@ export const FinalVideoComposerView = ({ onBack }: { onBack: () => void }) => {
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle className="text-base">3. Zvukové efekty</CardTitle>
             <div className="flex gap-2">
-              {sfxList.length > 0 && <Button size="sm" variant="ghost" onClick={resetAllSfxVolumes}>Reset volumes</Button>}
+              {sfxList.length > 0 && (
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button size="sm" variant="ghost">Reset volumes</Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Resetovať všetky SFX hlasitosti?</AlertDialogTitle>
+                      <AlertDialogDescription>Hlasitosť každého z {sfxList.length} efektov sa nastaví na predvolených 60%.</AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Zrušiť</AlertDialogCancel>
+                      <AlertDialogAction onClick={resetAllSfxVolumes}>Resetovať</AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              )}
               <Button size="sm" variant="outline" onClick={addSfx}><Plus className="h-4 w-4 mr-1" />Pridať SFX</Button>
             </div>
           </CardHeader>
