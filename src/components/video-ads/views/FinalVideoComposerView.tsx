@@ -165,6 +165,22 @@ export const FinalVideoComposerView = ({ onBack }: { onBack: () => void }) => {
   };
   const removeSfx = (id: string) => setSfxList(l => l.filter(s => s.id !== id));
 
+  const DEFAULT_VO_VOL = 1.0;
+  const DEFAULT_SFX_VOL = 0.6;
+  const resetVoVolume = () => {
+    setVoVolume(DEFAULT_VO_VOL);
+    toast.success("Hlasitosť VO obnovená na 100%");
+  };
+  const resetSfxVolume = (id: string) => {
+    setSfxList(l => l.map(s => s.id === id ? { ...s, volume: DEFAULT_SFX_VOL } : s));
+    try { localStorage.setItem(SFX_DEFAULT_VOL_KEY, String(DEFAULT_SFX_VOL)); } catch {}
+  };
+  const resetAllSfxVolumes = () => {
+    setSfxList(l => l.map(s => ({ ...s, volume: DEFAULT_SFX_VOL })));
+    try { localStorage.setItem(SFX_DEFAULT_VOL_KEY, String(DEFAULT_SFX_VOL)); } catch {}
+    toast.success("Hlasitosti SFX obnovené na 60%");
+  };
+
   const generateSfx = async (id: string) => {
     const sfx = sfxList.find(s => s.id === id);
     if (!sfx || !sfx.prompt.trim()) { toast.error("Zadaj popis SFX"); return; }
