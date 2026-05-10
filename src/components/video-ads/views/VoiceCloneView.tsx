@@ -35,7 +35,16 @@ export const VoiceCloneView = ({ onBack }: { onBack: () => void }) => {
       });
       if (error || data?.error) { handleEdgeError(error || data, { context: 'Voice Clone' }); return; }
       setVoiceId(data.voiceId);
-      toast.success(`Hlas naklonovaný (${data.credits_used} CR)`);
+      try {
+        const KEY = 'video-ad:cloned-voices';
+        const list = JSON.parse(localStorage.getItem(KEY) || '[]');
+        if (!list.find((v: any) => v.voiceId === data.voiceId)) {
+          list.unshift({ voiceId: data.voiceId, name, description, createdAt: Date.now() });
+          localStorage.setItem(KEY, JSON.stringify(list.slice(0, 20)));
+          window.dispatchEvent(new Event('cloned-voices-updated'));
+        }
+      } catch {}
+      toast.success(`Hlas naklonovaný (${data.credits_used} CR) — automaticky dostupný v Final Composer`);
     } catch (e) { handleEdgeError(e, { context: 'Voice Clone' }); }
     finally { setLoading(false); }
   };
