@@ -98,7 +98,7 @@ const Auction = () => {
       try {
         const { data: { session } } = await supabase.auth.getSession();
         await supabase.functions.invoke('verify-payment', {
-          body: { session_id: sessionId },
+          body: { session_id: sessionId, product_type: 'auction_buyout' },
           headers: session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : undefined
         });
         toast.success("Payment successful!");
