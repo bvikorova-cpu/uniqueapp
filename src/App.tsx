@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { lazyWithRetry as lazy } from "@/utils/lazyWithRetry";
+const CouponSeasonalHub = lazy(() => import("@/pages/CouponSeasonalHub"));
 
 // Redirect /kitchenstars/<sub-path> -> /masterchef/<sub-path> for brand aliases
 const KitchenStarsRedirect = () => {
@@ -510,6 +511,7 @@ const App = () => {
                         <Route path="/marketplace" element={<Marketplace />} />
                         <Route path="/bazaar" element={<Bazaar />} />
                         <Route path="/coupon-marketplace" element={<CouponMarketplace />} />
+                        <Route path="/coupons/season/:slug" element={<CouponSeasonalHub />} />
                         <Route path="/coupons/:brand" element={<CouponBrandPage />} />
                         <Route path="/admin/coupon-disputes" element={<AdminCouponDisputes />} />
                         <Route path="/referral" element={<Referral />} />
