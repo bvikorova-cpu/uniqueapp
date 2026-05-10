@@ -345,7 +345,21 @@ export const FinalVideoComposerView = ({ onBack }: { onBack: () => void }) => {
                 <span>🔊 Hlasitosť voiceoveru</span>
                 <span className="flex items-center gap-2">
                   <span className="font-mono">{Math.round(voVolume * 100)}%</span>
-                  <button type="button" onClick={resetVoVolume} className="text-[10px] underline text-muted-foreground hover:text-foreground">Reset</button>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <button type="button" className="text-[10px] underline text-muted-foreground hover:text-foreground">Reset</button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Resetovať hlasitosť voiceoveru?</AlertDialogTitle>
+                        <AlertDialogDescription>Hlasitosť VO sa nastaví späť na predvolených 100%.</AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Zrušiť</AlertDialogCancel>
+                        <AlertDialogAction onClick={resetVoVolume}>Resetovať</AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
                 </span>
               </Label>
               <input type="range" min={0} max={2} step={0.05} value={voVolume} onChange={e => setVoVolume(Number(e.target.value))} className="w-full accent-pink-500" />
