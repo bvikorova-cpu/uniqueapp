@@ -70,7 +70,7 @@ const tools = [
   { id: "dream_companion", icon: Moon, title: "Dream Companion", description: "Dream sharing & interpretation", badge: "AI", credits: 4, gradient: "from-indigo-500/10 to-violet-500/5" },
   { id: "memory_scrapbook", icon: Camera, title: "Memory Scrapbook", description: "Digital scrapbook of memories", badge: "AI", credits: 3, gradient: "from-rose-500/10 to-red-500/5" },
   { id: "persona", icon: User, title: "Customize Friend", description: "Name, gender, personality, language", badge: "Setup", credits: 0, gradient: "from-purple-500/10 to-pink-500/5" },
-  { id: "voice_call", icon: Phone, title: "Voice Call", description: "Talk in real time", badge: "Premium", credits: 0, gradient: "from-emerald-500/10 to-teal-500/5" },
+  
   { id: "voice_journal", icon: Mic, title: "Voice Journal", description: "Speak, AI analyzes", badge: "AI", credits: 3, gradient: "from-rose-500/10 to-pink-500/5" },
   { id: "photo_share", icon: Camera, title: "Share a Photo", description: "AI reacts to your photos", badge: "AI", credits: 2, gradient: "from-fuchsia-500/10 to-pink-500/5" },
   { id: "memory_vault", icon: Brain, title: "Memory Vault", description: "What AI remembers about you", badge: "AI", credits: 0, gradient: "from-violet-500/10 to-purple-500/5" },
