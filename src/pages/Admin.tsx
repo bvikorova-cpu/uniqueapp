@@ -455,6 +455,53 @@ const Admin = () => {
           </Card>
         </div>
 
+        {/* Referral Tools */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <Card
+            className="cursor-pointer hover:shadow-lg transition-shadow border-2 border-emerald-500/30 bg-gradient-to-br from-emerald-500/5 to-cyan-500/5"
+            onClick={() => navigate('/admin/referral-funnel')}
+          >
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="p-3 rounded-lg bg-emerald-500/20">
+                    <TrendingUp className="h-6 w-6 text-emerald-500" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-xl">Referral Funnel</CardTitle>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      Clicks → signups → paid → payouts
+                    </p>
+                  </div>
+                </div>
+                <ChevronRight className="h-6 w-6 text-muted-foreground" />
+              </div>
+            </CardHeader>
+          </Card>
+
+          <Card
+            className="cursor-pointer hover:shadow-lg transition-shadow border-2 border-red-500/30 bg-gradient-to-br from-red-500/5 to-orange-500/5"
+            onClick={() => navigate('/admin/referral-fraud')}
+          >
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="p-3 rounded-lg bg-red-500/20">
+                    <Shield className="h-6 w-6 text-red-500" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-xl">Referral Fraud Review</CardTitle>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      Flagged attributions awaiting decision
+                    </p>
+                  </div>
+                </div>
+                <ChevronRight className="h-6 w-6 text-muted-foreground" />
+              </div>
+            </CardHeader>
+          </Card>
+        </div>
+
         {/* Search */}
         <div className="mb-6">
           <div className="relative">
