@@ -23061,32 +23061,47 @@ export type Database = {
       iq_test_results: {
         Row: {
           answers: Json
+          category: string | null
           completed_at: string
+          correct_count: number | null
           id: string
           iq_score: number
+          percentile: number | null
           score: number
+          sub_scores: Json | null
           test_id: string
           time_taken: number
+          total_questions: number | null
           user_id: string
         }
         Insert: {
           answers: Json
+          category?: string | null
           completed_at?: string
+          correct_count?: number | null
           id?: string
           iq_score: number
+          percentile?: number | null
           score: number
+          sub_scores?: Json | null
           test_id: string
           time_taken: number
+          total_questions?: number | null
           user_id: string
         }
         Update: {
           answers?: Json
+          category?: string | null
           completed_at?: string
+          correct_count?: number | null
           id?: string
           iq_score?: number
+          percentile?: number | null
           score?: number
+          sub_scores?: Json | null
           test_id?: string
           time_taken?: number
+          total_questions?: number | null
           user_id?: string
         }
         Relationships: [
@@ -23135,6 +23150,57 @@ export type Database = {
           time_limit?: number
           title?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      iq_user_stats: {
+        Row: {
+          best_iq: number | null
+          country_code: string | null
+          created_at: string | null
+          current_streak: number | null
+          last_test_date: string | null
+          latest_iq: number | null
+          longest_streak: number | null
+          sub_scores: Json | null
+          tier: string | null
+          total_correct: number | null
+          total_questions: number | null
+          total_tests: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          best_iq?: number | null
+          country_code?: string | null
+          created_at?: string | null
+          current_streak?: number | null
+          last_test_date?: string | null
+          latest_iq?: number | null
+          longest_streak?: number | null
+          sub_scores?: Json | null
+          tier?: string | null
+          total_correct?: number | null
+          total_questions?: number | null
+          total_tests?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          best_iq?: number | null
+          country_code?: string | null
+          created_at?: string | null
+          current_streak?: number | null
+          last_test_date?: string | null
+          latest_iq?: number | null
+          longest_streak?: number | null
+          sub_scores?: Json | null
+          tier?: string | null
+          total_correct?: number | null
+          total_questions?: number | null
+          total_tests?: number | null
+          updated_at?: string | null
+          user_id?: string
         }
         Relationships: []
       }
@@ -46045,6 +46111,16 @@ export type Database = {
           participant_count: number
         }[]
       }
+      get_iq_country_leaderboard: {
+        Args: { _country: string }
+        Returns: {
+          best_iq: number
+          tier: string
+          total_tests: number
+          user_id: string
+          username: string
+        }[]
+      }
       get_iq_global_leaderboard: {
         Args: never
         Returns: {
@@ -46052,6 +46128,15 @@ export type Database = {
           tests_taken: number
           user_id: string
           username: string
+        }[]
+      }
+      get_iq_progress: {
+        Args: { _user?: string }
+        Returns: {
+          category: string
+          completed_at: string
+          iq_score: number
+          percentile: number
         }[]
       }
       get_last_week_xp_winners: {
@@ -46315,6 +46400,8 @@ export type Database = {
         Args: { p_collection_id: string }
         Returns: undefined
       }
+      iq_percentile: { Args: { _iq: number }; Returns: number }
+      iq_tier_from_score: { Args: { _iq: number }; Returns: string }
       is_age_verified: { Args: { p_user_id: string }; Returns: boolean }
       is_campaign_owner: {
         Args: { _campaign_id: string; _campaign_type: string; _user_id: string }
