@@ -29,6 +29,10 @@ serve(async (req) => {
       if (!error) results[table] = count ?? 0;
     }
 
+    // Auction House (auction_items uses is_active + ends_at, not status/expires_at)
+    const { data: expiredAuctions } = await supabase.rpc("expire_auctions" as any);
+    results["auction_items"] = (expiredAuctions as number) ?? 0;
+
     return new Response(JSON.stringify({ success: true, expired: results }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });

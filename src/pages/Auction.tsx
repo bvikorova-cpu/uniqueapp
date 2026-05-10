@@ -98,7 +98,7 @@ const Auction = () => {
       try {
         const { data: { session } } = await supabase.auth.getSession();
         await supabase.functions.invoke('verify-payment', {
-          body: { session_id: sessionId },
+          body: { session_id: sessionId, product_type: 'auction_buyout' },
           headers: session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : undefined
         });
         toast.success("Payment successful!");
@@ -168,13 +168,19 @@ const Auction = () => {
   const handleBuyout = async (auction: AuctionItem) => {
     if (!user) { toast.error("You must be logged in"); navigate("/auth"); return; }
     if (!auction.buyout_price) return;
+    if (auction.user_id === user.id) { toast.error("Cannot buy your own auction"); return; }
     try {
-      await supabase.from("auction_bids").insert({ auction_id: auction.id, user_id: user.id, bid_amount: auction.buyout_price });
-      await supabase.from("auction_items").update({ is_active: false, winner_id: user.id }).eq("id", auction.id);
-      const { data: profileData } = await supabase.from("profiles").select("full_name").eq("id", user.id).single();
-      await supabase.from("notifications").insert({ user_id: auction.user_id, title: "Product purchased", message: `${profileData?.full_name || "User"} bought "${auction.title}" for €${auction.buyout_price}`, type: "auction_buyout", related_id: auction.id });
-      toast.success("Product purchased!"); fetchAuctions();
-    } catch { toast.error("Failed to purchase"); }
+      const { data: { session } } = await supabase.auth.getSession();
+      const { data, error } = await supabase.functions.invoke("create-auction-buyout", {
+        body: { auction_id: auction.id },
+        headers: session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : undefined,
+      });
+      if (error) throw error;
+      if (!data?.url) throw new Error("No checkout URL");
+      window.location.href = data.url;
+    } catch (e: any) {
+      toast.error(e?.message || "Failed to start checkout");
+    }
   };
 
   const submitBid = async () => {
@@ -182,11 +188,13 @@ const Auction = () => {
     const amount = parseFloat(bidAmount);
     if (amount <= selectedAuction.current_price) { toast.error("Bid must be higher than current price"); return; }
     try {
-      await supabase.from("auction_bids").insert({ auction_id: selectedAuction.id, user_id: user.id, bid_amount: amount });
-      const { data: profileData } = await supabase.from("profiles").select("full_name").eq("id", user.id).single();
-      await supabase.from("notifications").insert({ user_id: selectedAuction.user_id, title: "New bid", message: `${profileData?.full_name || "User"} bid €${amount} on "${selectedAuction.title}"`, type: "auction_bid", related_id: selectedAuction.id });
+      const { error } = await supabase.rpc("place_auction_bid" as any, {
+        p_auction_id: selectedAuction.id,
+        p_amount: amount,
+      });
+      if (error) throw error;
       toast.success("Bid placed!"); setBidDialogOpen(false); setBidAmount(""); setSelectedAuction(null); fetchAuctions();
-    } catch { toast.error("Failed to place bid"); }
+    } catch (e: any) { toast.error(e?.message || "Failed to place bid"); }
   };
 
   const handleDeleteAuction = async (auctionId: string) => {
