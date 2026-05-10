@@ -36,20 +36,20 @@ Deno.serve(async (req) => {
 
     const prompt = `You are a coupon stacking expert. Given these coupons: ${JSON.stringify(coupons)} and cart total ${cart_total ?? "unknown"} EUR, compute final price, identify conflicts (e.g. only one % discount allowed per order, gift cards stack with codes, BOGO can't combine with %), and return JSON: { final_price, total_savings, order: [coupon_id...], warnings: [string] }. Use EUR.`;
 
-    const aiRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const aiRes = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Lovable-API-Key": Deno.env.get("LOVABLE_API_KEY")!,
+        "Authorization": `Bearer ${Deno.env.get("OPENAI_API_KEY")!}`,
       },
       body: JSON.stringify({
-        model: "google/gemini-3-flash-preview",
+        model: "gpt-4o",
         messages: [{ role: "user", content: prompt }],
         response_format: { type: "json_object" },
       }),
     });
     if (aiRes.status === 429) return new Response(JSON.stringify({ error: "rate_limited" }), { status: 429, headers: corsHeaders });
-    if (aiRes.status === 402) return new Response(JSON.stringify({ error: "ai_credits_exhausted" }), { status: 402, headers: corsHeaders });
+    if (aiRes.status === 401 || aiRes.status === 402) return new Response(JSON.stringify({ error: "ai_credits_exhausted" }), { status: 402, headers: corsHeaders });
     const j = await aiRes.json();
     const content = j.choices?.[0]?.message?.content ?? "{}";
     let parsed: any = {};
