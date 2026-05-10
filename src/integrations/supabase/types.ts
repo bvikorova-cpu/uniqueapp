@@ -34699,6 +34699,36 @@ export type Database = {
           },
         ]
       }
+      referral_link_clicks: {
+        Row: {
+          code: string
+          country: string | null
+          created_at: string
+          id: string
+          ip_hash: string | null
+          referrer_url: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          code: string
+          country?: string | null
+          created_at?: string
+          id?: string
+          ip_hash?: string | null
+          referrer_url?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          code?: string
+          country?: string | null
+          created_at?: string
+          id?: string
+          ip_hash?: string | null
+          referrer_url?: string | null
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       referral_withdrawal_requests: {
         Row: {
           admin_notes: string | null
@@ -46084,6 +46114,7 @@ export type Database = {
           isSetofReturn: true
         }
       }
+      get_referral_funnel: { Args: { _period?: string }; Returns: Json }
       get_referral_leaderboard: {
         Args: { period?: string }
         Returns: {
