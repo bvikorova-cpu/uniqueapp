@@ -18,11 +18,14 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useIQUserStats, useIQGlobalCounts } from "@/hooks/useIQUserStats";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 const IQPlatform = () => {
   const [activeTab, setActiveTab] = useState("overview");
   const { toast } = useToast();
+  const { data: stats } = useIQUserStats();
+  const { data: counts } = useIQGlobalCounts();
 
   const handleStartTest = async (testType: string) => {
     const test = testCategories.find(t => t.id === testType);
