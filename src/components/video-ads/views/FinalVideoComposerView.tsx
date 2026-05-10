@@ -178,14 +178,14 @@ export const FinalVideoComposerView = ({ onBack }: { onBack: () => void }) => {
       if (voAudio) {
         await ff.writeFile("vo.mp3", voAudio);
         audioInputs.push("-i", "vo.mp3");
-        filterParts.push(`[${inputIdx}:a]volume=1.0[a${inputIdx}]`);
+        filterParts.push(`[${inputIdx}:a]volume=${voVolume.toFixed(2)}[a${inputIdx}]`);
         inputIdx++;
       }
       const validSfx = sfxList.filter(s => s.audio);
       for (let i = 0; i < validSfx.length; i++) {
         await ff.writeFile(`sfx${i}.mp3`, validSfx[i].audio!);
         audioInputs.push("-i", `sfx${i}.mp3`);
-        filterParts.push(`[${inputIdx}:a]volume=0.6[a${inputIdx}]`);
+        filterParts.push(`[${inputIdx}:a]volume=${(validSfx[i].volume ?? 0.6).toFixed(2)}[a${inputIdx}]`);
         inputIdx++;
       }
 
