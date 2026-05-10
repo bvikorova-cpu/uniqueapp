@@ -36,6 +36,7 @@ import { StockFootageView } from "@/components/video-ads/views/StockFootageView"
 import { VideoResizerView } from "@/components/video-ads/views/VideoResizerView";
 import { VoiceCloneView } from "@/components/video-ads/views/VoiceCloneView";
 import { SoundEffectsView } from "@/components/video-ads/views/SoundEffectsView";
+import { FinalVideoComposerView } from "@/components/video-ads/views/FinalVideoComposerView";
 import { useVideoAdCredits } from "@/hooks/useVideoAdCredits";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
