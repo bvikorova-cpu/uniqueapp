@@ -150,8 +150,19 @@ export const FinalVideoComposerView = ({ onBack }: { onBack: () => void }) => {
     finally { setVoLoading(false); }
   };
 
-  const addSfx = () => setSfxList(l => [...l, { id: crypto.randomUUID(), prompt: "", duration: 3, volume: 0.6 }]);
-  const updateSfx = (id: string, patch: Partial<Sfx>) => setSfxList(l => l.map(s => s.id === id ? { ...s, ...patch } : s));
+  const addSfx = () => {
+    const id = crypto.randomUUID();
+    const map = readVolMap();
+    const def = parseFloat(localStorage.getItem(SFX_DEFAULT_VOL_KEY) || '');
+    const volume = map[id] ?? (isNaN(def) ? 0.6 : def);
+    setSfxList(l => [...l, { id, prompt: "", duration: 3, volume }]);
+  };
+  const updateSfx = (id: string, patch: Partial<Sfx>) => {
+    if (typeof patch.volume === 'number') {
+      try { localStorage.setItem(SFX_DEFAULT_VOL_KEY, String(patch.volume)); } catch {}
+    }
+    setSfxList(l => l.map(s => s.id === id ? { ...s, ...patch } : s));
+  };
   const removeSfx = (id: string) => setSfxList(l => l.filter(s => s.id !== id));
 
   const generateSfx = async (id: string) => {
