@@ -176,30 +176,48 @@ serve(async (req) => {
         break;
 
       default:
-        throw new Error(`Unknown action: ${action}`);
+        await refund();
+        return new Response(JSON.stringify({ error: `Unknown action: ${action}` }), {
+          status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
     }
 
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: { 'Authorization': `Bearer ${openaiKey}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'gpt-4o-mini',
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: userPrompt }
-        ],
-        response_format: { type: 'json_object' },
-      }),
-    });
-
-    const aiData = await response.json();
-    const result = JSON.parse(aiData.choices[0].message.content);
+    let result: unknown;
+    try {
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${openaiKey}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'gpt-4o-mini',
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: userPrompt }
+          ],
+          response_format: { type: 'json_object' },
+        }),
+      });
+      if (!response.ok) {
+        const txt = await response.text();
+        throw new Error(`AI gateway error ${response.status}: ${txt.slice(0, 200)}`);
+      }
+      const aiData = await response.json();
+      result = JSON.parse(aiData.choices[0].message.content);
+    } catch (aiErr) {
+      await refund();
+      const msg = aiErr instanceof Error ? aiErr.message : String(aiErr);
+      console.error('[video-ad-tools] AI error:', msg);
+      return new Response(JSON.stringify({ error: msg }), {
+        status: 502, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
 
     return new Response(JSON.stringify({ result, credits_used: cost }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   } catch (error) {
-    return new Response(JSON.stringify({ error: error.message }), {
+    const msg = error instanceof Error ? error.message : String(error);
+    console.error('[video-ad-tools] error:', msg);
+    return new Response(JSON.stringify({ error: msg }), {
       status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   }
