@@ -200,9 +200,16 @@ const Referral = () => {
                     <div className="text-xl font-semibold text-amber-500">€{stats?.pendingEarnings.toFixed(2) || 0}</div>
                     <p className="text-xs text-muted-foreground">Pending Payout</p>
                   </div>
-                  <Button className="w-full bg-gradient-to-r from-yellow-500 to-amber-600 text-black font-bold" disabled={!stats?.pendingEarnings}>
+                  <Button
+                    onClick={() => setWithdrawOpen(true)}
+                    className="w-full bg-gradient-to-r from-yellow-500 to-amber-600 text-black font-bold"
+                    disabled={!stats?.pendingEarnings || (stats?.pendingEarnings || 0) < 10}
+                  >
                     <Euro className="h-4 w-4 mr-2" /> Withdraw Money
                   </Button>
+                  {(stats?.pendingEarnings || 0) > 0 && (stats?.pendingEarnings || 0) < 10 && (
+                    <p className="text-xs text-center text-muted-foreground">Minimum €10 to withdraw</p>
+                  )}
                 </div>
               </CardContent>
             </Card>
