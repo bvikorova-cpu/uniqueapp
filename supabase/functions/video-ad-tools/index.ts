@@ -54,6 +54,10 @@ serve(async (req) => {
       hook_analyzer: 3,
       caption_generator: 3,
       winning_ads_recommend: 3,
+      avatar_plan: 3,
+      stock_footage: 3,
+      resize_advice: 3,
+      text_to_video_split: 3,
     };
 
     const cost = costs[action] || 1;
