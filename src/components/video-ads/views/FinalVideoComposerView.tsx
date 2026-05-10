@@ -377,6 +377,7 @@ export const FinalVideoComposerView = ({ onBack }: { onBack: () => void }) => {
                   <span className="text-xs w-16">🔊 Vol</span>
                   <input type="range" min={0} max={2} step={0.05} value={s.volume} onChange={e => updateSfx(s.id, { volume: Number(e.target.value) })} className="flex-1 accent-fuchsia-500" />
                   <span className="text-xs font-mono w-12 text-right">{Math.round(s.volume * 100)}%</span>
+                  <button type="button" onClick={() => resetSfxVolume(s.id)} className="text-[10px] underline text-muted-foreground hover:text-foreground">Reset</button>
                 </div>
               </div>
             ))}
