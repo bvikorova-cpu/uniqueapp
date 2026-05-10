@@ -81,12 +81,14 @@ export const useVideoAdCredits = () => {
 
   const generateVideoAd = useMutation({
     mutationFn: async (params: GenerateVideoAdParams) => {
-      const { data, error } = await supabase.functions.invoke('generate-video-ad', {
-        body: params
+      const { data, error } = await supabase.functions.invoke('video-ad-tools', {
+        body: { action: 'generate_script', ...params },
       });
-      
+
       if (error) throw error;
-      return data;
+      if (data?.error) throw new Error(data.error);
+      // Edge function returns { result, credits_used } — unwrap to the script object
+      return data?.result ?? data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["video-ad-credits"] });

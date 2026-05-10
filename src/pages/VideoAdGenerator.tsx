@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import Navbar from "@/components/Navbar";
 import { VideoAdHero } from "@/components/video-ads/VideoAdHero";
 import { VideoAdCreditsDisplay } from "@/components/video-ads/VideoAdCreditsDisplay";
@@ -158,6 +160,35 @@ const tools = [
 
 const VideoAdGenerator = () => {
   const [activeView, setActiveView] = useState("dashboard");
+  const queryClient = useQueryClient();
+
+  // Auto-verify Stripe credits payment on redirect back from Checkout
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    const sessionId = url.searchParams.get("session_id");
+    const payment = url.searchParams.get("payment");
+    if (payment === "success" && sessionId) {
+      (async () => {
+        const { data, error } = await supabase.functions.invoke("verify-credits-payment", {
+          body: { session_id: sessionId },
+        });
+        if (error || data?.error) {
+          toast.error("Could not verify payment — please contact support");
+        } else if (data?.success) {
+          toast.success(`✅ ${data.credits_added ?? ""} credits added to your account!`);
+          queryClient.invalidateQueries({ queryKey: ["video-ad-credits"] });
+        }
+        url.searchParams.delete("session_id");
+        url.searchParams.delete("payment");
+        url.searchParams.delete("credits");
+        window.history.replaceState({}, "", url.pathname + (url.search || ""));
+      })();
+    } else if (payment === "canceled") {
+      toast.info("Payment canceled");
+      url.searchParams.delete("payment");
+      window.history.replaceState({}, "", url.pathname);
+    }
+  }, [queryClient]);
 
   const renderView = () => {
     switch (activeView) {
