@@ -11030,6 +11030,42 @@ export type Database = {
           },
         ]
       }
+      coupon_api_keys: {
+        Row: {
+          created_at: string
+          id: string
+          key_hash: string
+          label: string | null
+          last_used_at: string | null
+          rate_limit_per_min: number
+          revoked: boolean
+          scope: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          key_hash: string
+          label?: string | null
+          last_used_at?: string | null
+          rate_limit_per_min?: number
+          revoked?: boolean
+          scope?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          key_hash?: string
+          label?: string | null
+          last_used_at?: string | null
+          rate_limit_per_min?: number
+          revoked?: boolean
+          scope?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       coupon_battle_votes: {
         Row: {
           coupon_a: string
@@ -11354,6 +11390,10 @@ export type Database = {
           description: string | null
           discount_code: string | null
           expiry_date: string | null
+          geo_city: string | null
+          geo_lat: number | null
+          geo_lon: number | null
+          geo_radius_km: number | null
           id: string
           image_url: string | null
           is_active: boolean | null
@@ -11377,6 +11417,10 @@ export type Database = {
           description?: string | null
           discount_code?: string | null
           expiry_date?: string | null
+          geo_city?: string | null
+          geo_lat?: number | null
+          geo_lon?: number | null
+          geo_radius_km?: number | null
           id?: string
           image_url?: string | null
           is_active?: boolean | null
@@ -11400,6 +11444,10 @@ export type Database = {
           description?: string | null
           discount_code?: string | null
           expiry_date?: string | null
+          geo_city?: string | null
+          geo_lat?: number | null
+          geo_lon?: number | null
+          geo_radius_km?: number | null
           id?: string
           image_url?: string | null
           is_active?: boolean | null
@@ -45550,7 +45598,53 @@ export type Database = {
           title: string
         }[]
       }
+      coupon_geo_nearby: {
+        Args: { _lat: number; _lon: number; _radius_km?: number }
+        Returns: {
+          balance_confirmed: boolean
+          balance_confirmed_value: number | null
+          category: string
+          coupon_type: string
+          created_at: string | null
+          description: string | null
+          discount_code: string | null
+          expiry_date: string | null
+          geo_city: string | null
+          geo_lat: number | null
+          geo_lon: number | null
+          geo_radius_km: number | null
+          id: string
+          image_url: string | null
+          is_active: boolean | null
+          is_digital: boolean | null
+          is_sold: boolean | null
+          original_value: number
+          selling_price: number
+          store_name: string
+          tags: string[]
+          terms_conditions: string | null
+          title: string
+          updated_at: string | null
+          user_id: string
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "coupon_listings"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
       coupon_hot_score: { Args: { p_coupon_id: string }; Returns: number }
+      coupon_stacking_check: {
+        Args: { _ids: string[] }
+        Returns: {
+          coupon_id: string
+          coupon_type: string
+          original_value: number
+          selling_price: number
+          store_name: string
+        }[]
+      }
       coupon_top_hot: {
         Args: { p_limit?: number }
         Returns: {
