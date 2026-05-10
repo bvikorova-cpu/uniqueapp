@@ -358,6 +358,21 @@ async function applyPurchase(
     return;
   }
 
+  // Auction House — buyout completion.
+  if (productType === "auction_buyout") {
+    const auctionId = md.auction_id;
+    const winnerId = md.winner_id || userId;
+    if (auctionId) {
+      const { error } = await db.rpc("complete_auction_buyout" as any, {
+        p_auction_id: auctionId,
+        p_winner_id: winnerId,
+        p_stripe_session_id: result.metadata?.session_id ?? "",
+      });
+      if (error) console.log("[VERIFY-PAYMENT] auction_buyout RPC err", error.message);
+    }
+    return;
+  }
+
   // Subscriptions & other types — no automatic action; tracked via payment_records.
   // Frontend can read payment_records or call check-subscription.
 }
