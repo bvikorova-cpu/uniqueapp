@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ArrowLeft, Loader2, ScanBarcode } from "lucide-react";
+import { ArrowLeft, Coins, Loader2, ScanBarcode } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -7,6 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
+import { useQueryClient } from "@tanstack/react-query";
+import { useAnalyzerCredits } from "@/hooks/useAnalyzerCredits";
 import { reserveAnalyzerCredits } from "../creditUtils";
 
 const CREDIT_COST = 2;
@@ -15,6 +17,11 @@ export const BarcodeScannerView = ({ onBack }: { onBack: () => void }) => {
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
   const [product, setProduct] = useState<any>(null);
+  const { credits, isLoading: creditsLoading } = useAnalyzerCredits();
+  const queryClient = useQueryClient();
+
+  const remaining = credits?.credits_remaining ?? 0;
+  const insufficient = !creditsLoading && remaining < CREDIT_COST;
 
   const lookup = async () => {
     if (!code.trim()) { toast.error("Enter a barcode/QR code"); return; }
@@ -27,6 +34,7 @@ export const BarcodeScannerView = ({ onBack }: { onBack: () => void }) => {
       if (data?.error) throw new Error(data.error);
       setProduct(data.product);
       await reservation.commit();
+      queryClient.invalidateQueries({ queryKey: ["analyzer-credits"] });
     } catch (e: any) { toast.error(e.message || "Lookup failed"); }
     finally { setLoading(false); }
   };
@@ -34,12 +42,18 @@ export const BarcodeScannerView = ({ onBack }: { onBack: () => void }) => {
   return (
     <div className="min-h-screen bg-background p-4 md:p-8">
       <div className="max-w-3xl mx-auto space-y-6">
-        <Button variant="ghost" onClick={onBack}><ArrowLeft className="w-4 h-4 mr-2" /> Back</Button>
+        <div className="flex items-center justify-between">
+          <Button variant="ghost" onClick={onBack}><ArrowLeft className="w-4 h-4 mr-2" /> Back</Button>
+          <Badge variant="outline" className="bg-cyan-500/10 border-cyan-500/30 text-cyan-400 gap-1.5">
+            <Coins className="w-3.5 h-3.5" />
+            {creditsLoading ? "..." : `${remaining} credits`}
+          </Badge>
+        </div>
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
           <div className="bg-gradient-to-r from-green-600 to-emerald-600 p-6 rounded-2xl text-white">
             <div className="flex items-center gap-3 mb-2"><ScanBarcode className="w-7 h-7" /><h1 className="text-2xl sm:text-3xl font-black">Barcode / QR Scanner</h1></div>
             <p className="text-white/80 text-sm">Lookup products via Open Food Facts + AI fallback</p>
-            <Badge className="mt-2 bg-white/20 text-white border-0">2 Credits</Badge>
+            <Badge className="mt-2 bg-white/20 text-white border-0">{CREDIT_COST} credits per lookup</Badge>
           </div>
         </motion.div>
 
@@ -50,9 +64,17 @@ export const BarcodeScannerView = ({ onBack }: { onBack: () => void }) => {
             onChange={(e) => setCode(e.target.value)}
             className="border-cyan-500/20"
           />
-          <p className="text-xs text-muted-foreground">Tip: scan with your phone camera app, then paste the result here.</p>
-          <Button onClick={lookup} disabled={loading || !code.trim()} className="w-full bg-gradient-to-r from-green-600 to-emerald-600">
-            {loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Looking up...</> : "Lookup Product"}
+          <div className="flex items-center justify-between text-xs">
+            <span className="text-muted-foreground">Tip: scan with your phone camera app, then paste here.</span>
+            <span className={insufficient ? "text-red-400 font-semibold" : "text-muted-foreground"}>
+              Cost: {CREDIT_COST} • You have: {creditsLoading ? "…" : remaining}
+            </span>
+          </div>
+          {insufficient && (
+            <p className="text-xs text-red-400">Not enough credits — top up to continue.</p>
+          )}
+          <Button onClick={lookup} disabled={loading || !code.trim() || insufficient} className="w-full bg-gradient-to-r from-green-600 to-emerald-600">
+            {loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Looking up...</> : `Lookup Product (${CREDIT_COST} credits)`}
           </Button>
         </Card>
 
