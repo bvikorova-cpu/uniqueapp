@@ -161,6 +161,7 @@ export default function IQDuelGame({
             </div>
             {won && <Badge className="bg-green-500">+{duel.prize} credits</Badge>}
             <Button onClick={onClose} className="w-full">Close</Button>
+            <IQDuelChat duelId={duelId} myUserId={myUserId} myName="You" />
           </div>
         </DialogContent>
       </Dialog>
