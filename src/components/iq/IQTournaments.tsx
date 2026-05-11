@@ -3,9 +3,10 @@ import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Trophy, Clock, Users, Coins, Swords } from "lucide-react";
+import { Trophy, Clock, Users, Coins, Swords, ChevronDown, ChevronUp } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import IQTournamentBracket from "./IQTournamentBracket";
 
 export default function IQTournaments() {
   const [competitions, setCompetitions] = useState<any[]>([]);
