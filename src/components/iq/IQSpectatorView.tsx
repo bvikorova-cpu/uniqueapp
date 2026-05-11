@@ -122,7 +122,11 @@ export default function IQSpectatorView({
                     }`}
                   >
                     <div className="text-xs text-muted-foreground truncate">
-                      {side.p?.full_name ?? (side.id ? "Player" : "Waiting…")}
+                      {side.id ? (
+                        <Link to={`/iq-platform/profile/${side.id}`} className="hover:underline hover:text-primary">
+                          {side.p?.full_name ?? "Player"}
+                        </Link>
+                      ) : "Waiting…"}
                     </div>
                     <div className="text-3xl font-black mt-1">
                       {side.score}
