@@ -156,6 +156,7 @@ const IQPlatform = () => {
           <div className="grid md:grid-cols-2 gap-4">
             <IQDailyChallenge />
             <IQFriends />
+            <IQNotificationSettings />
             <IQDailyStreak />
           </div>
           <IQGlobalEventFeed />
