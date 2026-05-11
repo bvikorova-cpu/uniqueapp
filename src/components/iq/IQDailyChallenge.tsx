@@ -23,12 +23,12 @@ export default function IQDailyChallenge() {
 
   const submit = useMutation({
     mutationFn: async (idx: number) => {
-      const { data, error } = await supabase.rpc("submit_iq_daily", {
+      const { data: res, error } = await supabase.rpc("submit_iq_daily", {
         _challenge_id: data!.id,
         _answer_index: idx,
       } as any);
       if (error) throw error;
-      return data?.[0];
+      return res?.[0];
     },
     onSuccess: (res: any) => {
       toast({
