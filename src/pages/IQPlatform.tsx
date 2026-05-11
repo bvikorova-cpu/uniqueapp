@@ -160,6 +160,7 @@ const IQPlatform = () => {
         <TabsContent value="leaderboard"><IQGlobalLeaderboard /></TabsContent>
         <TabsContent value="progress">
           <IQProgressCharts />
+          <IQShareableCard />
           <IQAchievements />
           <IQCertificate />
         </TabsContent>
