@@ -203,6 +203,10 @@ export default function IQTournamentBracket({ competitionId, bracketSize, finali
           })}
         </div>
       </div>
+
+      <div className="mt-6 pt-6 border-t border-border/50">
+        <IQMatchBetting competitionId={competitionId} />
+      </div>
     </div>
   );
 }
