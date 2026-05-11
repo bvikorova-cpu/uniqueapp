@@ -11,6 +11,7 @@ import IQTournamentBracket from "./IQTournamentBracket";
 export default function IQTournaments() {
   const [competitions, setCompetitions] = useState<any[]>([]);
   const [counts, setCounts] = useState<Record<string, number>>({});
+  const [expanded, setExpanded] = useState<string | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
