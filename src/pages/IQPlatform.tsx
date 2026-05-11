@@ -29,6 +29,7 @@ import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 const IQPlatform = () => {
   const [activeTab, setActiveTab] = useState("overview");
   const [cooldowns, setCooldowns] = useState<Record<string, number>>({});
+  const [runner, setRunner] = useState<{ category: string; title: string; timeLimit: number } | null>(null);
   const { toast } = useToast();
   const { data: stats } = useIQUserStats();
   const { data: counts } = useIQGlobalCounts();
