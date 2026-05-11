@@ -23281,6 +23281,42 @@ export type Database = {
           },
         ]
       }
+      iq_public_profiles: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          created_at: string
+          display_name: string | null
+          id: string
+          is_public: boolean
+          share_slug: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          is_public?: boolean
+          share_slug: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          is_public?: boolean
+          share_slug?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       iq_questions: {
         Row: {
           category: string
@@ -46757,6 +46793,22 @@ export type Database = {
           completed_at: string
           iq_score: number
           percentile: number
+        }[]
+      }
+      get_iq_public_profile: {
+        Args: { _slug: string }
+        Returns: {
+          avatar_url: string
+          best_iq: number
+          bio: string
+          current_streak: number
+          display_name: string
+          latest_iq: number
+          longest_streak: number
+          share_slug: string
+          tier: string
+          total_tests: number
+          user_id: string
         }[]
       }
       get_iq_training_plan: {

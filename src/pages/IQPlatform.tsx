@@ -22,6 +22,7 @@ import IQHallOfFame from "@/components/iq/IQHallOfFame";
 import IQReferral from "@/components/iq/IQReferral";
 import IQPromoCode from "@/components/iq/IQPromoCode";
 import IQSubscription from "@/components/iq/IQSubscription";
+import IQPublicProfileSettings from "@/components/iq/IQPublicProfileSettings";
 import IQNotificationsBell from "@/components/iq/IQNotificationsBell";
 import { trackIQEvent } from "@/lib/iqAnalytics";
 import IQCertificate from "@/components/iq/IQCertificate";
@@ -160,6 +161,7 @@ const IQPlatform = () => {
           <IQReferral />
           <IQPromoCode />
           <IQSubscription />
+          <IQPublicProfileSettings />
           <IQLeaguesSection userIQ={stats?.best_iq ?? null} />
           <IQBrainStreaks currentStreak={stats?.current_streak ?? 0} />
           <IQTrainingPlan />
