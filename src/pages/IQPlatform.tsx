@@ -18,6 +18,7 @@ import IQGoals from "@/components/iq/IQGoals";
 import IQWeeklyRecap from "@/components/iq/IQWeeklyRecap";
 import IQMilestones from "@/components/iq/IQMilestones";
 import IQFriendCompare from "@/components/iq/IQFriendCompare";
+import IQFocusTimer from "@/components/iq/IQFocusTimer";
 import IQTrainingPlan from "@/components/iq/IQTrainingPlan";
 import IQDailyChallenge from "@/components/iq/IQDailyChallenge";
 import IQFriends from "@/components/iq/IQFriends";
@@ -161,6 +162,7 @@ const IQPlatform = () => {
 
         <TabsContent value="overview" className="space-y-6">
           <IQQuickLauncher />
+          <IQFocusTimer />
           <div className="grid md:grid-cols-2 gap-4">
             <div id="iq-daily-section"><IQDailyChallenge /></div>
             <div id="iq-friends-section"><IQFriends /></div>
