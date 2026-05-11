@@ -22927,6 +22927,8 @@ export type Database = {
           host_id: string
           host_score: number
           id: string
+          invite_code: string | null
+          is_friend_challenge: boolean
           mode: string
           opponent_finished: boolean
           opponent_id: string | null
@@ -22945,6 +22947,8 @@ export type Database = {
           host_id: string
           host_score?: number
           id?: string
+          invite_code?: string | null
+          is_friend_challenge?: boolean
           mode: string
           opponent_finished?: boolean
           opponent_id?: string | null
@@ -22963,6 +22967,8 @@ export type Database = {
           host_id?: string
           host_score?: number
           id?: string
+          invite_code?: string | null
+          is_friend_challenge?: boolean
           mode?: string
           opponent_finished?: boolean
           opponent_id?: string | null
@@ -45842,6 +45848,12 @@ export type Database = {
         }
         Returns: undefined
       }
+      accept_iq_friend_challenge: {
+        Args: { _code: string }
+        Returns: {
+          duel_id: string
+        }[]
+      }
       activate_user_theme: {
         Args: { p_theme_id: string; p_user_id: string }
         Returns: undefined
@@ -46058,6 +46070,13 @@ export type Database = {
           worked: number
         }[]
       }
+      create_iq_friend_challenge: {
+        Args: { _mode: string }
+        Returns: {
+          duel_id: string
+          invite_code: string
+        }[]
+      }
       create_notification: {
         Args: {
           p_actor_id: string
@@ -46149,6 +46168,13 @@ export type Database = {
         Returns: {
           competition_id: string
           participant_count: number
+        }[]
+      }
+      get_iq_countries_with_players: {
+        Args: never
+        Returns: {
+          country_code: string
+          player_count: number
         }[]
       }
       get_iq_country_leaderboard: {
