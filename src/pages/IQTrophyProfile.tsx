@@ -30,11 +30,7 @@ interface DuelWin {
 interface TourneyWin {
   id: string;
   round: number;
-  player1_id: string | null;
-  player2_id: string | null;
-  player1_score: number | null;
-  player2_score: number | null;
-  finished_at: string | null;
+  completed_at: string | null;
 }
 
 const tierColor: Record<string, string> = {
