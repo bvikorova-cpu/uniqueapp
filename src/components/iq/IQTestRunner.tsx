@@ -116,7 +116,7 @@ export default function IQTestRunner({ open, onClose, category, title, timeLimit
 
     // Battle Pass — award Season XP based on IQ score (capped server-side at 500)
     const xp = Math.min(500, Math.max(50, Math.round((row?.iq_score ?? 100) * 1.5)));
-    const { error: xpErr } = await supabase.rpc("award_iq_season_xp", { _amount: xp });
+    const { error: xpErr } = await supabase.rpc("award_iq_season_xp", { amount: xp });
     if (!xpErr) {
       toast({ title: `+${xp} Season XP`, description: "Battle Pass progress updated" });
       qc.invalidateQueries({ queryKey: ["iq-battle-pass"] });
