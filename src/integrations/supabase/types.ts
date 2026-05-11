@@ -23183,6 +23183,57 @@ export type Database = {
         }
         Relationships: []
       }
+      iq_referral_codes: {
+        Row: {
+          code: string
+          created_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      iq_referrals: {
+        Row: {
+          code: string
+          created_at: string
+          id: string
+          referee_credits: number
+          referee_id: string
+          referrer_credits: number
+          referrer_id: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          id?: string
+          referee_credits?: number
+          referee_id: string
+          referrer_credits?: number
+          referrer_id: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          id?: string
+          referee_credits?: number
+          referee_id?: string
+          referrer_credits?: number
+          referrer_id?: string
+        }
+        Relationships: []
+      }
       iq_streak_claims: {
         Row: {
           claimed_at: string | null
@@ -46569,6 +46620,7 @@ export type Database = {
           payload: Json
         }[]
       }
+      get_or_create_iq_referral_code: { Args: never; Returns: string }
       get_or_pick_daily_deal: { Args: never; Returns: string }
       get_psychology_stats: {
         Args: never
@@ -46937,6 +46989,7 @@ export type Database = {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["affiliate_tier"]
       }
+      redeem_iq_referral_code: { Args: { _code: string }; Returns: Json }
       redeem_shop_item: { Args: { _item_code: string }; Returns: Json }
       reset_best_friend_monthly_messages: { Args: never; Returns: undefined }
       reset_psychology_monthly_messages: { Args: never; Returns: undefined }
