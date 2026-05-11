@@ -23141,6 +23141,42 @@ export type Database = {
           },
         ]
       }
+      iq_notifications: {
+        Row: {
+          body: string | null
+          created_at: string
+          id: string
+          is_read: boolean
+          link: string | null
+          metadata: Json
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          link?: string | null
+          metadata?: Json
+          title: string
+          type: string
+          user_id: string
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          link?: string | null
+          metadata?: Json
+          title?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       iq_promo_codes: {
         Row: {
           code: string
@@ -46497,6 +46533,17 @@ export type Database = {
           invite_code: string
         }[]
       }
+      create_iq_notification: {
+        Args: {
+          _body?: string
+          _link?: string
+          _metadata?: Json
+          _title: string
+          _type: string
+          _user_id: string
+        }
+        Returns: string
+      }
       create_notification: {
         Args: {
           p_actor_id: string
@@ -46964,6 +47011,7 @@ export type Database = {
         Args: { p_cost: number; p_label: string; p_prize: number }
         Returns: boolean
       }
+      mark_iq_notifications_read: { Args: { _ids?: string[] }; Returns: number }
       open_mystery_box: { Args: { p_user_box_id: string }; Returns: Json }
       payout_requires_review: {
         Args: {

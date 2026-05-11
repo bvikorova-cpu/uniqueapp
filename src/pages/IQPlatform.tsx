@@ -21,6 +21,7 @@ import IQAICoach from "@/components/iq/IQAICoach";
 import IQHallOfFame from "@/components/iq/IQHallOfFame";
 import IQReferral from "@/components/iq/IQReferral";
 import IQPromoCode from "@/components/iq/IQPromoCode";
+import IQNotificationsBell from "@/components/iq/IQNotificationsBell";
 import IQCertificate from "@/components/iq/IQCertificate";
 import IQFriendChallenge from "@/components/iq/IQFriendChallenge";
 import IQShareableCard from "@/components/iq/IQShareableCard";
@@ -119,7 +120,10 @@ const IQPlatform = () => {
       />
       <HeroRewardedAd sectionKey="page_iqplatform" />
 
-      <IQCreditsDisplay />
+      <div className="flex items-center justify-between gap-2">
+        <IQCreditsDisplay />
+        <IQNotificationsBell />
+      </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
         <TabsList className="grid w-full grid-cols-4 sm:grid-cols-8 gap-1 h-auto p-1.5 bg-muted/50 rounded-xl">
