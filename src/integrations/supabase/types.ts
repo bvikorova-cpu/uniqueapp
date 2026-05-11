@@ -47053,6 +47053,20 @@ export type Database = {
           user_id: string
         }[]
       }
+      get_iq_milestones: {
+        Args: never
+        Returns: {
+          best_iq: number
+          best_iq_at: string
+          categories_tried: number
+          first_120_at: string
+          first_130_at: string
+          first_140_at: string
+          first_test_at: string
+          longest_daily_streak: number
+          total_tests: number
+        }[]
+      }
       get_iq_performance_insights: { Args: never; Returns: Json }
       get_iq_progress: {
         Args: { _user?: string }
