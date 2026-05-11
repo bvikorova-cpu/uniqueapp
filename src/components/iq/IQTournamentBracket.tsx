@@ -52,12 +52,12 @@ export default function IQTournamentBracket({ competitionId, bracketSize, finali
     ]);
     if (m) {
       setMatches(m as any);
-      const ids = Array.from(new Set(m.flatMap((x: any) => [x.player1_id, x.player2_id]).filter(Boolean)));
+      const ids = Array.from(new Set(m.flatMap((x: any) => [x.player1_id, x.player2_id]).filter(Boolean))) as string[];
       if (ids.length) {
-        const { data: profs } = await supabase
+        const { data: profs } = await (supabase as any)
           .from("profiles")
           .select("user_id, full_name, username, avatar_url")
-          .in("user_id", ids as string[]);
+          .in("user_id", ids);
         const map: Record<string, any> = {};
         profs?.forEach((p: any) => {
           map[p.user_id] = { name: p.full_name || p.username || "Player", avatar: p.avatar_url };
