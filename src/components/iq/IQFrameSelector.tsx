@@ -8,7 +8,7 @@ const KEY = "iq_frame";
 
 export default function IQFrameSelector() {
   const [current, setCurrent] = useState<string>("none");
-  useEffect(() { setCurrent(localStorage.getItem(KEY) || "none"); }, []);
+  useEffect(() => { setCurrent(localStorage.getItem(KEY) || "none"); }, []);
   const choose = (f: string) => {
     const next = current === f ? "none" : f;
     setCurrent(next);

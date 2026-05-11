@@ -9,8 +9,8 @@ const KEY = "iq_bio";
 
 export default function IQBioEditor() {
   const [bio, setBio] = useState("");
-  useEffect(() { setBio(localStorage.getItem(KEY) || ""); }, []);
-  const save = () {
+  useEffect(() => { setBio(localStorage.getItem(KEY) || ""); }, []);
+  const save = () => {
     localStorage.setItem(KEY, bio.slice(0, 200));
     toast.success("Bio saved");
   };
