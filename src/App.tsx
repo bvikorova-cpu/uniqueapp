@@ -323,6 +323,7 @@ import {
   AnonymousDate,
   LieDetector,
   IQPlatform,
+  IQTrophyProfile,
   CertificateGallery,
   FundraisingHub,
   MedicalFundraising,
@@ -892,6 +893,7 @@ const App = () => {
                         <Route path="/shop" element={<Shop />} />
                         <Route path="/product/:handle" element={<ProductDetail />} />
                         <Route path="/iq-platform" element={<IQPlatform />} />
+                        <Route path="/iq-platform/profile/:userId" element={<IQTrophyProfile />} />
                         
                         {/* Fundraising Routes */}
                         <Route path="/fundraising" element={<FundraisingHub />} />
