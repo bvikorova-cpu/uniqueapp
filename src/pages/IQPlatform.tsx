@@ -18,6 +18,7 @@ import IQGoals from "@/components/iq/IQGoals";
 import IQWeeklyRecap from "@/components/iq/IQWeeklyRecap";
 import IQMilestones from "@/components/iq/IQMilestones";
 import IQFriendCompare from "@/components/iq/IQFriendCompare";
+import IQFocusTimer from "@/components/iq/IQFocusTimer";
 import IQTrainingPlan from "@/components/iq/IQTrainingPlan";
 import IQDailyChallenge from "@/components/iq/IQDailyChallenge";
 import IQFriends from "@/components/iq/IQFriends";
