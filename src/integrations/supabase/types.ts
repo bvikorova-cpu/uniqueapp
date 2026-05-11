@@ -23204,6 +23204,78 @@ export type Database = {
         }
         Relationships: []
       }
+      iq_friend_challenges: {
+        Row: {
+          challenger_id: string
+          challenger_score: number | null
+          created_at: string
+          expires_at: string
+          id: string
+          opponent_id: string
+          opponent_score: number | null
+          question_count: number
+          stake_credits: number
+          status: string
+          updated_at: string
+          winner_id: string | null
+        }
+        Insert: {
+          challenger_id: string
+          challenger_score?: number | null
+          created_at?: string
+          expires_at?: string
+          id?: string
+          opponent_id: string
+          opponent_score?: number | null
+          question_count?: number
+          stake_credits?: number
+          status?: string
+          updated_at?: string
+          winner_id?: string | null
+        }
+        Update: {
+          challenger_id?: string
+          challenger_score?: number | null
+          created_at?: string
+          expires_at?: string
+          id?: string
+          opponent_id?: string
+          opponent_score?: number | null
+          question_count?: number
+          stake_credits?: number
+          status?: string
+          updated_at?: string
+          winner_id?: string | null
+        }
+        Relationships: []
+      }
+      iq_friendships: {
+        Row: {
+          addressee_id: string
+          created_at: string
+          id: string
+          requester_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          addressee_id: string
+          created_at?: string
+          id?: string
+          requester_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          addressee_id?: string
+          created_at?: string
+          id?: string
+          requester_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       iq_match_bets: {
         Row: {
           created_at: string
@@ -46481,6 +46553,7 @@ export type Database = {
         }
         Returns: undefined
       }
+      accept_iq_friend: { Args: { _friendship_id: string }; Returns: boolean }
       accept_iq_friend_challenge: {
         Args: { _code: string }
         Returns: {
