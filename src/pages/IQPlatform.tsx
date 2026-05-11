@@ -21,6 +21,7 @@ import IQAICoach from "@/components/iq/IQAICoach";
 import IQHallOfFame from "@/components/iq/IQHallOfFame";
 import IQReferral from "@/components/iq/IQReferral";
 import IQPromoCode from "@/components/iq/IQPromoCode";
+import IQNotificationsBell from "@/components/iq/IQNotificationsBell";
 import IQCertificate from "@/components/iq/IQCertificate";
 import IQFriendChallenge from "@/components/iq/IQFriendChallenge";
 import IQShareableCard from "@/components/iq/IQShareableCard";
