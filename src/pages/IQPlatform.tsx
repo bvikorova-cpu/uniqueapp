@@ -19,6 +19,7 @@ import IQGlobalEventFeed from "@/components/iq/IQGlobalEventFeed";
 import IQBattlePass from "@/components/iq/IQBattlePass";
 import IQAICoach from "@/components/iq/IQAICoach";
 import IQHallOfFame from "@/components/iq/IQHallOfFame";
+import IQReferral from "@/components/iq/IQReferral";
 import IQCertificate from "@/components/iq/IQCertificate";
 import IQFriendChallenge from "@/components/iq/IQFriendChallenge";
 import IQShareableCard from "@/components/iq/IQShareableCard";
