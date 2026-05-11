@@ -296,6 +296,7 @@ const IQPlatform = () => {
           <IQCountryLeaderboard />
         </TabsContent>
         <TabsContent value="progress">
+          <IQPerformanceInsights />
           <IQProgressCharts />
           <IQShareableCard />
           <IQAchievements />
