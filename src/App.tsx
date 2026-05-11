@@ -325,6 +325,7 @@ import {
   LieDetector,
   IQPlatform,
   IQTrophyProfile,
+  IQPublicProfile,
   CertificateGallery,
   FundraisingHub,
   MedicalFundraising,
@@ -900,6 +901,7 @@ const App = () => {
                         <Route path="/product/:handle" element={<ProductDetail />} />
                         <Route path="/iq-platform" element={<IQPlatform />} />
                         <Route path="/iq-platform/profile/:userId" element={<IQTrophyProfile />} />
+                        <Route path="/iq/u/:slug" element={<IQPublicProfile />} />
                         
                         {/* Fundraising Routes */}
                         <Route path="/fundraising" element={<FundraisingHub />} />
