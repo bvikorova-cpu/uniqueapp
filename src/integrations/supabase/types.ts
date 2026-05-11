@@ -47004,6 +47004,7 @@ export type Database = {
           user_id: string
         }[]
       }
+      get_iq_performance_insights: { Args: never; Returns: Json }
       get_iq_progress: {
         Args: { _user?: string }
         Returns: {
