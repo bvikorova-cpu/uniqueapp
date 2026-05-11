@@ -224,6 +224,11 @@ const IQPlatform = () => {
           <IQMastermind />
           <IQBlockSlide />
           <IQNonogram5 />
+          <IQKakuro4 />
+          <IQFlowConnect />
+          <IQPipesRotate />
+          <IQMagicSquare />
+          <IQKnightTour />
           <div className="grid md:grid-cols-2 gap-4">
             <div id="iq-daily-section"><IQDailyChallenge /></div>
             <div id="iq-friends-section"><IQFriends /></div>
