@@ -22933,6 +22933,36 @@ export type Database = {
         }
         Relationships: []
       }
+      iq_daily_streaks: {
+        Row: {
+          created_at: string
+          current_streak: number
+          last_claim_date: string | null
+          longest_streak: number
+          total_credits_earned: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          current_streak?: number
+          last_claim_date?: string | null
+          longest_streak?: number
+          total_credits_earned?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          current_streak?: number
+          last_claim_date?: string | null
+          longest_streak?: number
+          total_credits_earned?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       iq_duels: {
         Row: {
           created_at: string
@@ -46159,6 +46189,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      claim_iq_daily_streak: { Args: never; Returns: Json }
       claim_iq_streak_reward: { Args: { _day: number }; Returns: Json }
       claim_mission_reward: { Args: { _mission_id: string }; Returns: Json }
       cleanup_expired_cache: { Args: never; Returns: number }
