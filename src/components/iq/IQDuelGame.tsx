@@ -212,6 +212,7 @@ export default function IQDuelGame({
               </Button>
             ))}
           </div>
+          <IQDuelChat duelId={duelId} myUserId={myUserId} myName="You" />
         </div>
       </DialogContent>
     </Dialog>
