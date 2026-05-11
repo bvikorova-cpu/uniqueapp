@@ -122,6 +122,11 @@ import IQMilestoneTracker from "@/components/iq/IQMilestoneTracker";
 import IQHabitTracker from "@/components/iq/IQHabitTracker";
 import IQJournal from "@/components/iq/IQJournal";
 import IQGoalSummary from "@/components/iq/IQGoalSummary";
+import IQDataExport from "@/components/iq/IQDataExport";
+import IQDataImport from "@/components/iq/IQDataImport";
+import IQDataReset from "@/components/iq/IQDataReset";
+import IQShareProfile from "@/components/iq/IQShareProfile";
+import IQFinalSummary from "@/components/iq/IQFinalSummary";
 import IQTrainingPlan from "@/components/iq/IQTrainingPlan";
 import IQDailyChallenge from "@/components/iq/IQDailyChallenge";
 import IQFriends from "@/components/iq/IQFriends";
@@ -369,6 +374,11 @@ const IQPlatform = () => {
           <IQHabitTracker />
           <IQJournal />
           <IQGoalSummary />
+          <IQDataExport />
+          <IQDataImport />
+          <IQDataReset />
+          <IQShareProfile />
+          <IQFinalSummary />
           <div className="grid md:grid-cols-2 gap-4">
             <div id="iq-daily-section"><IQDailyChallenge /></div>
             <div id="iq-friends-section"><IQFriends /></div>
