@@ -23141,6 +23141,39 @@ export type Database = {
           },
         ]
       }
+      iq_test_sessions: {
+        Row: {
+          category: string
+          completed_at: string | null
+          credits_spent: number
+          id: string
+          question_ids: string[]
+          started_at: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          category: string
+          completed_at?: string | null
+          credits_spent?: number
+          id?: string
+          question_ids: string[]
+          started_at?: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          category?: string
+          completed_at?: string | null
+          credits_spent?: number
+          id?: string
+          question_ids?: string[]
+          started_at?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       iq_tests: {
         Row: {
           created_at: string
@@ -45838,6 +45871,15 @@ export type Database = {
         Args: { _delta?: number; _metric: string; _user_id: string }
         Returns: undefined
       }
+      _iq_test_config: {
+        Args: { _category: string }
+        Returns: {
+          credits: number
+          diff: string
+          only_category: string
+          qcount: number
+        }[]
+      }
       _log_activity: {
         Args: {
           p_activity_type: string
@@ -46103,6 +46145,7 @@ export type Database = {
         Args: { p_amount: number; p_user_id: string }
         Returns: boolean
       }
+      erf: { Args: { x: number }; Returns: number }
       evaluate_xp_bets: { Args: never; Returns: number }
       expire_auctions: { Args: never; Returns: number }
       expire_featured_listings: { Args: never; Returns: undefined }
@@ -46651,6 +46694,24 @@ export type Database = {
       spend_comedy_coins: { Args: { _amount: number }; Returns: number }
       spend_glamour_coins: { Args: { _amount: number }; Returns: number }
       spin_lucky_wheel: { Args: never; Returns: Json }
+      start_iq_test: {
+        Args: { _category: string }
+        Returns: {
+          credits_spent: number
+          questions: Json
+          session_id: string
+        }[]
+      }
+      submit_iq_test: {
+        Args: { _answers: Json; _session_id: string; _time_taken?: number }
+        Returns: {
+          correct: number
+          iq_score: number
+          percentile: number
+          sub_scores: Json
+          total: number
+        }[]
+      }
       update_battle_stats: {
         Args: { loser_id: string; winner_id: string }
         Returns: undefined

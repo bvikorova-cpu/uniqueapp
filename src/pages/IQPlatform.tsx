@@ -18,6 +18,7 @@ import IQCertificate from "@/components/iq/IQCertificate";
 import IQFriendChallenge from "@/components/iq/IQFriendChallenge";
 import IQShareableCard from "@/components/iq/IQShareableCard";
 import IQTestHistory from "@/components/iq/IQTestHistory";
+import IQTestRunner from "@/components/iq/IQTestRunner";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
@@ -28,6 +29,7 @@ import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 const IQPlatform = () => {
   const [activeTab, setActiveTab] = useState("overview");
   const [cooldowns, setCooldowns] = useState<Record<string, number>>({});
+  const [runner, setRunner] = useState<{ category: string; title: string; timeLimit: number } | null>(null);
   const { toast } = useToast();
   const { data: stats } = useIQUserStats();
   const { data: counts } = useIQGlobalCounts();
@@ -95,11 +97,8 @@ const IQPlatform = () => {
       toast({ title: "Cooldown active", description: `Try again in ${formatCooldown(cooldowns[testType])}.`, variant: "destructive" });
       return;
     }
-    toast({
-      title: `${(test as any).title} — coming soon`,
-      description: `Full interactive test launches shortly. Meanwhile, try the AI brain tools.`,
-    });
-    setActiveTab("tools");
+    const tl = (test as any).timeLimit ?? 15;
+    setRunner({ category: testType, title: (test as any).title ?? (test as any).desc ?? testType, timeLimit: tl });
   };
 
   return (
@@ -290,6 +289,16 @@ const IQPlatform = () => {
           </div>
         </CardContent>
       </Card>
+
+      {runner && (
+        <IQTestRunner
+          open={!!runner}
+          onClose={() => { setRunner(null); setCooldowns(prev => ({ ...prev, [runner.category]: 24 * 3600 })); }}
+          category={runner.category}
+          title={runner.title}
+          timeLimitMinutes={runner.timeLimit}
+        />
+      )}
     </div>
   );
 };
