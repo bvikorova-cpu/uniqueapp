@@ -136,7 +136,10 @@ const IQPlatform = () => {
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6">
-          <IQDailyChallenge />
+          <div className="grid md:grid-cols-2 gap-4">
+            <IQDailyChallenge />
+            <IQDailyStreak />
+          </div>
           <IQLeaguesSection userIQ={stats?.best_iq ?? null} />
           <IQBrainStreaks currentStreak={stats?.current_streak ?? 0} />
           <IQTrainingPlan />
