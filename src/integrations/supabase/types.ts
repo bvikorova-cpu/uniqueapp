@@ -23927,6 +23927,42 @@ export type Database = {
         }
         Relationships: []
       }
+      iq_user_goals: {
+        Row: {
+          achieved_at: string | null
+          created_at: string
+          id: string
+          note: string | null
+          starting_iq: number | null
+          target_date: string | null
+          target_iq: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          achieved_at?: string | null
+          created_at?: string
+          id?: string
+          note?: string | null
+          starting_iq?: number | null
+          target_date?: string | null
+          target_iq: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          achieved_at?: string | null
+          created_at?: string
+          id?: string
+          note?: string | null
+          starting_iq?: number | null
+          target_date?: string | null
+          target_iq?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       iq_user_stats: {
         Row: {
           best_iq: number | null
@@ -46989,6 +47025,19 @@ export type Database = {
           tests_taken: number
           user_id: string
           username: string
+        }[]
+      }
+      get_iq_goal_progress: {
+        Args: never
+        Returns: {
+          achieved: boolean
+          current_best: number
+          days_remaining: number
+          note: string
+          progress_pct: number
+          starting_iq: number
+          target_date: string
+          target_iq: number
         }[]
       }
       get_iq_leaderboard: {
