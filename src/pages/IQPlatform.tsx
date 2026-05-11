@@ -97,11 +97,8 @@ const IQPlatform = () => {
       toast({ title: "Cooldown active", description: `Try again in ${formatCooldown(cooldowns[testType])}.`, variant: "destructive" });
       return;
     }
-    toast({
-      title: `${(test as any).title} — coming soon`,
-      description: `Full interactive test launches shortly. Meanwhile, try the AI brain tools.`,
-    });
-    setActiveTab("tools");
+    const tl = (test as any).timeLimit ?? 15;
+    setRunner({ category: testType, title: (test as any).title ?? (test as any).desc ?? testType, timeLimit: tl });
   };
 
   return (
