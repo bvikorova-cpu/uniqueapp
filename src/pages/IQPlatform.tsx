@@ -16,6 +16,7 @@ import IQTrainingPlan from "@/components/iq/IQTrainingPlan";
 import IQDailyChallenge from "@/components/iq/IQDailyChallenge";
 import IQFriends from "@/components/iq/IQFriends";
 import IQNotificationSettings from "@/components/iq/IQNotificationSettings";
+import IQQuickLauncher from "@/components/iq/IQQuickLauncher";
 import IQDailyStreak from "@/components/iq/IQDailyStreak";
 import IQGlobalEventFeed from "@/components/iq/IQGlobalEventFeed";
 import IQBattlePass from "@/components/iq/IQBattlePass";
