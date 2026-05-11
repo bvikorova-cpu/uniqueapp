@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Trophy, Crown, Medal, Loader2, Swords, Gift } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import IQMatchBetting from "./IQMatchBetting";
 
 interface Match {
   id: string;
@@ -201,6 +202,10 @@ export default function IQTournamentBracket({ competitionId, bracketSize, finali
             );
           })}
         </div>
+      </div>
+
+      <div className="mt-6 pt-6 border-t border-border/50">
+        <IQMatchBetting competitionId={competitionId} />
       </div>
     </div>
   );

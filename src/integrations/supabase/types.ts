@@ -22996,6 +22996,50 @@ export type Database = {
         }
         Relationships: []
       }
+      iq_match_bets: {
+        Row: {
+          created_at: string
+          id: string
+          match_id: string
+          payout_credits: number
+          predicted_winner_id: string
+          settled_at: string | null
+          stake_credits: number
+          status: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          match_id: string
+          payout_credits?: number
+          predicted_winner_id: string
+          settled_at?: string | null
+          stake_credits: number
+          status?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          match_id?: string
+          payout_credits?: number
+          predicted_winner_id?: string
+          settled_at?: string | null
+          stake_credits?: number
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "iq_match_bets_match_id_fkey"
+            columns: ["match_id"]
+            isOneToOne: false
+            referencedRelation: "iq_tournament_matches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       iq_questions: {
         Row: {
           category: string
@@ -46704,6 +46748,14 @@ export type Database = {
       place_auction_bid: {
         Args: { p_amount: number; p_auction_id: string }
         Returns: Json
+      }
+      place_iq_match_bet: {
+        Args: {
+          _match_id: string
+          _predicted_winner_id: string
+          _stake: number
+        }
+        Returns: string
       }
       place_xp_bet: {
         Args: {
