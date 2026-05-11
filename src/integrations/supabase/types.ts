@@ -23141,6 +23141,77 @@ export type Database = {
           },
         ]
       }
+      iq_promo_codes: {
+        Row: {
+          code: string
+          created_at: string
+          created_by: string | null
+          credits: number
+          expires_at: string | null
+          id: string
+          is_active: boolean
+          max_redemptions: number | null
+          notes: string | null
+          redemption_count: number
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          created_by?: string | null
+          credits: number
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          max_redemptions?: number | null
+          notes?: string | null
+          redemption_count?: number
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          created_by?: string | null
+          credits?: number
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          max_redemptions?: number | null
+          notes?: string | null
+          redemption_count?: number
+        }
+        Relationships: []
+      }
+      iq_promo_redemptions: {
+        Row: {
+          credits_awarded: number
+          id: string
+          promo_code_id: string
+          redeemed_at: string
+          user_id: string
+        }
+        Insert: {
+          credits_awarded: number
+          id?: string
+          promo_code_id: string
+          redeemed_at?: string
+          user_id: string
+        }
+        Update: {
+          credits_awarded?: number
+          id?: string
+          promo_code_id?: string
+          redeemed_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "iq_promo_redemptions_promo_code_id_fkey"
+            columns: ["promo_code_id"]
+            isOneToOne: false
+            referencedRelation: "iq_promo_codes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       iq_questions: {
         Row: {
           category: string
@@ -46989,6 +47060,7 @@ export type Database = {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["affiliate_tier"]
       }
+      redeem_iq_promo_code: { Args: { _code: string }; Returns: Json }
       redeem_iq_referral_code: { Args: { _code: string }; Returns: Json }
       redeem_shop_item: { Args: { _item_code: string }; Returns: Json }
       reset_best_friend_monthly_messages: { Args: never; Returns: undefined }
