@@ -152,7 +152,10 @@ const IQPlatform = () => {
         </TabsContent>
 
         <TabsContent value="tools"><IQToolsGrid /></TabsContent>
-        <TabsContent value="duels"><IQDuels /></TabsContent>
+        <TabsContent value="duels" className="space-y-6">
+          <IQFriendChallenge />
+          <IQDuels />
+        </TabsContent>
         <TabsContent value="tournaments"><IQTournaments /></TabsContent>
         <TabsContent value="leaderboard"><IQGlobalLeaderboard /></TabsContent>
         <TabsContent value="progress">
