@@ -22,6 +22,11 @@ import IQFocusTimer from "@/components/iq/IQFocusTimer";
 import IQReactionTime from "@/components/iq/IQReactionTime";
 import IQNumberSpan from "@/components/iq/IQNumberSpan";
 import IQMentalMath from "@/components/iq/IQMentalMath";
+import IQVisualMemory from "@/components/iq/IQVisualMemory";
+import IQWordScramble from "@/components/iq/IQWordScramble";
+import IQStroop from "@/components/iq/IQStroop";
+import IQPatternSequence from "@/components/iq/IQPatternSequence";
+import IQTypingSpeed from "@/components/iq/IQTypingSpeed";
 import IQTrainingPlan from "@/components/iq/IQTrainingPlan";
 import IQDailyChallenge from "@/components/iq/IQDailyChallenge";
 import IQFriends from "@/components/iq/IQFriends";
@@ -169,6 +174,11 @@ const IQPlatform = () => {
           <IQReactionTime />
           <IQNumberSpan />
           <IQMentalMath />
+          <IQVisualMemory />
+          <IQWordScramble />
+          <IQStroop />
+          <IQPatternSequence />
+          <IQTypingSpeed />
           <div className="grid md:grid-cols-2 gap-4">
             <div id="iq-daily-section"><IQDailyChallenge /></div>
             <div id="iq-friends-section"><IQFriends /></div>
