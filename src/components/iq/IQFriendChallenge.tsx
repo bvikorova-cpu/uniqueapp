@@ -70,9 +70,16 @@ export default function IQFriendChallenge() {
     const row = (data as { duel_id: string; invite_code: string }[])?.[0];
     if (!row) return;
     setCode(row.invite_code);
+    setPendingDuelId(row.duel_id);
     const url = `${window.location.origin}${window.location.pathname}?iq_invite=${row.invite_code}`;
     setShareUrl(url);
     toast({ title: "Challenge ready", description: "Share the link with a friend." });
+  };
+
+  const handleCancelWaiting = () => {
+    setPendingDuelId(null);
+    setCode("");
+    setShareUrl("");
   };
 
   const handleCopy = () => {
