@@ -3,13 +3,15 @@ import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Trophy, Clock, Users, Coins, Swords } from "lucide-react";
+import { Trophy, Clock, Users, Coins, Swords, ChevronDown, ChevronUp } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import IQTournamentBracket from "./IQTournamentBracket";
 
 export default function IQTournaments() {
   const [competitions, setCompetitions] = useState<any[]>([]);
   const [counts, setCounts] = useState<Record<string, number>>({});
+  const [expanded, setExpanded] = useState<string | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -103,16 +105,35 @@ export default function IQTournaments() {
                       <p className="text-[9px] text-muted-foreground">Left</p>
                     </div>
                   </div>
-                  <Button
-                    size="sm"
-                    className="w-full bg-gradient-to-r from-blue-600 to-indigo-600"
-                    disabled={comp.status !== "active"}
-                    onClick={() => handleJoin(comp.id)}
-                  >
-                    Join Tournament
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button
+                      size="sm"
+                      className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600"
+                      disabled={comp.status !== "active" || !!comp.finalized_at}
+                      onClick={() => handleJoin(comp.id)}
+                    >
+                      Join Tournament
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => setExpanded(expanded === comp.id ? null : comp.id)}
+                    >
+                      {expanded === comp.id ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+                      <span className="ml-1 text-xs">Bracket</span>
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
+              {expanded === comp.id && (
+                <div className="mt-3">
+                  <IQTournamentBracket
+                    competitionId={comp.id}
+                    bracketSize={comp.bracket_size ?? 8}
+                    finalizedAt={comp.finalized_at ?? null}
+                  />
+                </div>
+              )}
             </motion.div>
           ))}
         </div>

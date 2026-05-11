@@ -22854,10 +22854,15 @@ export type Database = {
       }
       iq_competitions: {
         Row: {
+          bracket_size: number
+          bracket_started_at: string | null
           created_at: string
+          current_round: number
           description: string | null
           end_time: string
           entry_fee: number
+          finalized_at: string | null
+          format: string
           id: string
           max_participants: number | null
           prize_pool: number
@@ -22867,10 +22872,15 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          bracket_size?: number
+          bracket_started_at?: string | null
           created_at?: string
+          current_round?: number
           description?: string | null
           end_time: string
           entry_fee: number
+          finalized_at?: string | null
+          format?: string
           id?: string
           max_participants?: number | null
           prize_pool?: number
@@ -22880,10 +22890,15 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          bracket_size?: number
+          bracket_started_at?: string | null
           created_at?: string
+          current_round?: number
           description?: string | null
           end_time?: string
           entry_fee?: number
+          finalized_at?: string | null
+          format?: string
           id?: string
           max_participants?: number | null
           prize_pool?: number
@@ -23212,6 +23227,97 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      iq_tournament_matches: {
+        Row: {
+          competition_id: string
+          completed_at: string | null
+          created_at: string
+          id: string
+          player1_id: string | null
+          player1_score: number | null
+          player2_id: string | null
+          player2_score: number | null
+          round: number
+          scheduled_at: string
+          slot: number
+          status: string
+          winner_id: string | null
+        }
+        Insert: {
+          competition_id: string
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          player1_id?: string | null
+          player1_score?: number | null
+          player2_id?: string | null
+          player2_score?: number | null
+          round: number
+          scheduled_at?: string
+          slot: number
+          status?: string
+          winner_id?: string | null
+        }
+        Update: {
+          competition_id?: string
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          player1_id?: string | null
+          player1_score?: number | null
+          player2_id?: string | null
+          player2_score?: number | null
+          round?: number
+          scheduled_at?: string
+          slot?: number
+          status?: string
+          winner_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "iq_tournament_matches_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "iq_competitions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      iq_tournament_payouts: {
+        Row: {
+          competition_id: string
+          created_at: string
+          credits_awarded: number
+          id: string
+          rank: number
+          user_id: string
+        }
+        Insert: {
+          competition_id: string
+          created_at?: string
+          credits_awarded: number
+          id?: string
+          rank: number
+          user_id: string
+        }
+        Update: {
+          competition_id?: string
+          created_at?: string
+          credits_awarded?: number
+          id?: string
+          rank?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "iq_tournament_payouts_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "iq_competitions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       iq_user_badges: {
         Row: {
@@ -46153,6 +46259,10 @@ export type Database = {
         Args: { p_error?: string; p_job_id: string }
         Returns: undefined
       }
+      finalize_iq_tournament: {
+        Args: { _competition_id: string }
+        Returns: Json
+      }
       find_skill_matches: { Args: { p_user_id: string }; Returns: undefined }
       gdpr_purge_user_data: { Args: { _user_id: string }; Returns: Json }
       generate_certificate_number: { Args: never; Returns: string }
@@ -46702,6 +46812,7 @@ export type Database = {
           session_id: string
         }[]
       }
+      start_iq_tournament: { Args: { _competition_id: string }; Returns: Json }
       submit_iq_test: {
         Args: { _answers: Json; _session_id: string; _time_taken?: number }
         Returns: {
@@ -46711,6 +46822,10 @@ export type Database = {
           sub_scores: Json
           total: number
         }[]
+      }
+      submit_iq_tournament_match_score: {
+        Args: { _match_id: string; _score: number }
+        Returns: Json
       }
       update_battle_stats: {
         Args: { loser_id: string; winner_id: string }
