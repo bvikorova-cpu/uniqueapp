@@ -289,6 +289,16 @@ const IQPlatform = () => {
           </div>
         </CardContent>
       </Card>
+
+      {runner && (
+        <IQTestRunner
+          open={!!runner}
+          onClose={() => { setRunner(null); setCooldowns(prev => ({ ...prev, [runner.category]: 24 * 3600 })); }}
+          category={runner.category}
+          title={runner.title}
+          timeLimitMinutes={runner.timeLimit}
+        />
+      )}
     </div>
   );
 };
