@@ -50,6 +50,7 @@ const MegatalentGuard = lazy(() => import("@/components/megatalent/MegatalentGua
 const ProgressiveOnboarding = lazy(() => import("./components/onboarding/ProgressiveOnboarding"));
 const GlobalAnnouncementBanner = lazy(() => import("./components/GlobalAnnouncementBanner").then((module) => ({ default: module.GlobalAnnouncementBanner })));
 const ReferralCaptureMount = lazy(() => import("@/components/referral/ReferralCaptureMount").then((module) => ({ default: module.ReferralCaptureMount })));
+const IQReferralCaptureMount = lazy(() => import("@/components/iq/IQReferralCaptureMount"));
 const LanguagePreferenceMount = lazy(() => import("@/components/LanguagePreferenceMount").then((module) => ({ default: module.LanguagePreferenceMount })));
 const DunningBanner = lazy(() => import("@/components/billing/DunningBanner").then((module) => ({ default: module.DunningBanner })));
 const SCABanner = lazy(() => import("@/components/billing/SCABanner").then((module) => ({ default: module.SCABanner })));
