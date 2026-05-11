@@ -16,6 +16,7 @@ import IQTrainingPlan from "@/components/iq/IQTrainingPlan";
 import IQDailyChallenge from "@/components/iq/IQDailyChallenge";
 import IQDailyStreak from "@/components/iq/IQDailyStreak";
 import IQGlobalEventFeed from "@/components/iq/IQGlobalEventFeed";
+import IQBattlePass from "@/components/iq/IQBattlePass";
 import IQCertificate from "@/components/iq/IQCertificate";
 import IQFriendChallenge from "@/components/iq/IQFriendChallenge";
 import IQShareableCard from "@/components/iq/IQShareableCard";
@@ -142,6 +143,7 @@ const IQPlatform = () => {
             <IQDailyStreak />
           </div>
           <IQGlobalEventFeed />
+          <IQBattlePass />
           <IQLeaguesSection userIQ={stats?.best_iq ?? null} />
           <IQBrainStreaks currentStreak={stats?.current_streak ?? 0} />
           <IQTrainingPlan />
