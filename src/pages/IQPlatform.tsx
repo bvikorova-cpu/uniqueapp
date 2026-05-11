@@ -27,6 +27,11 @@ import IQWordScramble from "@/components/iq/IQWordScramble";
 import IQStroop from "@/components/iq/IQStroop";
 import IQPatternSequence from "@/components/iq/IQPatternSequence";
 import IQTypingSpeed from "@/components/iq/IQTypingSpeed";
+import IQSchulte from "@/components/iq/IQSchulte";
+import IQOddOneOut from "@/components/iq/IQOddOneOut";
+import IQReverseSpan from "@/components/iq/IQReverseSpan";
+import IQLogicGates from "@/components/iq/IQLogicGates";
+import IQRotation from "@/components/iq/IQRotation";
 import IQTrainingPlan from "@/components/iq/IQTrainingPlan";
 import IQDailyChallenge from "@/components/iq/IQDailyChallenge";
 import IQFriends from "@/components/iq/IQFriends";
@@ -179,6 +184,11 @@ const IQPlatform = () => {
           <IQStroop />
           <IQPatternSequence />
           <IQTypingSpeed />
+          <IQSchulte />
+          <IQOddOneOut />
+          <IQReverseSpan />
+          <IQLogicGates />
+          <IQRotation />
           <div className="grid md:grid-cols-2 gap-4">
             <div id="iq-daily-section"><IQDailyChallenge /></div>
             <div id="iq-friends-section"><IQFriends /></div>
