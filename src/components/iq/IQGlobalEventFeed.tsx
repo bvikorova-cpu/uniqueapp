@@ -77,9 +77,9 @@ export default function IQGlobalEventFeed() {
     (async () => {
       const { data } = await supabase
         .from("iq_duels")
-        .select("id,winner_id,host_id,opponent_id,status,updated_at")
+        .select("id,winner_id,host_id,opponent_id,status,created_at")
         .eq("status", "finished")
-        .order("updated_at", { ascending: false })
+        .order("created_at", { ascending: false })
         .limit(5);
       if (!mounted || !data) return;
       for (const d of data) {
