@@ -27,27 +27,10 @@ import { useIQUserStats, useIQGlobalCounts } from "@/hooks/useIQUserStats";
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 const IQPlatform = () => {
   const [activeTab, setActiveTab] = useState("overview");
+  const [cooldowns, setCooldowns] = useState<Record<string, number>>({});
   const { toast } = useToast();
   const { data: stats } = useIQUserStats();
   const { data: counts } = useIQGlobalCounts();
-
-  const handleStartTest = async (testType: string) => {
-    const test = testCategories.find(t => t.id === testType);
-    if (!test) return;
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) {
-      toast({ title: "Please login first", variant: "destructive" });
-      return;
-    }
-    // Real interactive IQ tests are not built yet — route the user to the
-    // AI Tools tab where they can actually use their credits, instead of
-    // silently deducting from the wrong table.
-    toast({
-      title: `${test.title} — coming soon`,
-      description: `Full ${test.questions}-question test launches shortly. Meanwhile, try the AI brain tools below.`,
-    });
-    setActiveTab("tools");
-  };
 
   const testCategories = [
     { id: "beginner", title: "Beginner IQ Test", description: "Perfect for first-time test takers", difficulty: "Beginner", questions: 30, timeLimit: 30, credits: 10, icon: Target },
@@ -55,6 +38,69 @@ const IQPlatform = () => {
     { id: "advanced", title: "Advanced IQ Test", description: "Challenging cognitive assessment", difficulty: "Advanced", questions: 50, timeLimit: 60, credits: 20, icon: Zap },
     { id: "expert", title: "Expert IQ Test", description: "Mensa-level difficulty", difficulty: "Expert", questions: 60, timeLimit: 75, credits: 25, icon: Trophy },
   ];
+
+  const specializedCategories = [
+    { id: "logical",   title: "Logical Reasoning",   desc: "Syllogisms & deduction",  icon: Brain,     credits: 8 },
+    { id: "spatial",   title: "Spatial Awareness",   desc: "3D rotation, mental maps", icon: Target,   credits: 8 },
+    { id: "verbal",    title: "Verbal Reasoning",    desc: "Analogies & vocabulary",   icon: Medal,    credits: 8 },
+    { id: "numerical", title: "Numerical Reasoning", desc: "Sequences & arithmetic",   icon: BarChart3, credits: 8 },
+    { id: "memory",    title: "Working Memory",      desc: "Recall & sequencing",      icon: Zap,      credits: 8 },
+    { id: "pattern",   title: "Pattern Recognition", desc: "Visual abstract logic",    icon: LineChart, credits: 8 },
+  ];
+
+  useEffect(() => {
+    if (activeTab !== "tests") return;
+    let cancelled = false;
+    (async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) return;
+      const ids = [...testCategories.map(t => t.id), ...specializedCategories.map(t => t.id)];
+      const results = await Promise.all(ids.map(async (id) => {
+        const { data } = await supabase.rpc("iq_test_cooldown_remaining", { _category: id });
+        return [id, Number(data ?? 0)] as const;
+      }));
+      if (!cancelled) setCooldowns(Object.fromEntries(results));
+    })();
+    return () => { cancelled = true; };
+  }, [activeTab]);
+
+  useEffect(() => {
+    if (Object.values(cooldowns).every(v => v <= 0)) return;
+    const t = setInterval(() => {
+      setCooldowns(prev => {
+        const next: Record<string, number> = {};
+        for (const k in prev) next[k] = Math.max(0, prev[k] - 1);
+        return next;
+      });
+    }, 1000);
+    return () => clearInterval(t);
+  }, [cooldowns]);
+
+  const formatCooldown = (s: number) => {
+    if (s <= 0) return null;
+    const h = Math.floor(s / 3600);
+    const m = Math.floor((s % 3600) / 60);
+    return h > 0 ? `${h}h ${m}m` : `${m}m`;
+  };
+
+  const handleStartTest = async (testType: string) => {
+    const test = [...testCategories, ...specializedCategories].find(t => t.id === testType);
+    if (!test) return;
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      toast({ title: "Please login first", variant: "destructive" });
+      return;
+    }
+    if ((cooldowns[testType] ?? 0) > 0) {
+      toast({ title: "Cooldown active", description: `Try again in ${formatCooldown(cooldowns[testType])}.`, variant: "destructive" });
+      return;
+    }
+    toast({
+      title: `${(test as any).title} — coming soon`,
+      description: `Full interactive test launches shortly. Meanwhile, try the AI brain tools.`,
+    });
+    setActiveTab("tools");
+  };
 
   return (
     <div className="container mx-auto p-3 sm:p-4 md:p-6 space-y-6 mt-16 sm:mt-20">
