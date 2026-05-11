@@ -23097,6 +23097,39 @@ export type Database = {
         }
         Relationships: []
       }
+      iq_events: {
+        Row: {
+          created_at: string
+          event_name: string
+          id: number
+          path: string | null
+          properties: Json
+          referrer: string | null
+          session_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          event_name: string
+          id?: number
+          path?: string | null
+          properties?: Json
+          referrer?: string | null
+          session_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          event_name?: string
+          id?: number
+          path?: string | null
+          properties?: Json
+          referrer?: string | null
+          session_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       iq_match_bets: {
         Row: {
           created_at: string
@@ -46659,6 +46692,14 @@ export type Database = {
           total_tests: number
           user_id: string
           username: string
+        }[]
+      }
+      get_iq_funnel: {
+        Args: { _from?: string; _to?: string }
+        Returns: {
+          event_name: string
+          total: number
+          unique_users: number
         }[]
       }
       get_iq_global_leaderboard: {
