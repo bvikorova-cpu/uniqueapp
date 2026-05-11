@@ -15,6 +15,7 @@ import IQGlobalLeaderboard from "@/components/iq/IQGlobalLeaderboard";
 import IQTrainingPlan from "@/components/iq/IQTrainingPlan";
 import IQDailyChallenge from "@/components/iq/IQDailyChallenge";
 import IQDailyStreak from "@/components/iq/IQDailyStreak";
+import IQGlobalEventFeed from "@/components/iq/IQGlobalEventFeed";
 import IQCertificate from "@/components/iq/IQCertificate";
 import IQFriendChallenge from "@/components/iq/IQFriendChallenge";
 import IQShareableCard from "@/components/iq/IQShareableCard";
