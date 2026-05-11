@@ -19,6 +19,7 @@ import IQFriendChallenge from "@/components/iq/IQFriendChallenge";
 import IQShareableCard from "@/components/iq/IQShareableCard";
 import IQTestHistory from "@/components/iq/IQTestHistory";
 import IQTestRunner from "@/components/iq/IQTestRunner";
+import IQLiveSpectatorLobby from "@/components/iq/IQLiveSpectatorLobby";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
@@ -249,6 +250,7 @@ const IQPlatform = () => {
 
         <TabsContent value="tools"><IQToolsGrid /></TabsContent>
         <TabsContent value="duels" className="space-y-6">
+          <IQLiveSpectatorLobby />
           <IQFriendChallenge />
           <IQDuels />
         </TabsContent>
