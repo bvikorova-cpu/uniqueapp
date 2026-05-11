@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Loader2, Trophy, X, Clock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import IQDuelChat from "./IQDuelChat";
 
 interface Question {
   id: string;
@@ -160,6 +161,7 @@ export default function IQDuelGame({
             </div>
             {won && <Badge className="bg-green-500">+{duel.prize} credits</Badge>}
             <Button onClick={onClose} className="w-full">Close</Button>
+            <IQDuelChat duelId={duelId} myUserId={myUserId} myName="You" />
           </div>
         </DialogContent>
       </Dialog>
@@ -210,6 +212,7 @@ export default function IQDuelGame({
               </Button>
             ))}
           </div>
+          <IQDuelChat duelId={duelId} myUserId={myUserId} myName="You" />
         </div>
       </DialogContent>
     </Dialog>
