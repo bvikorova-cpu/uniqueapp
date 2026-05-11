@@ -102,6 +102,11 @@ import IQForumThreads from "@/components/iq/IQForumThreads";
 import IQMentorChat from "@/components/iq/IQMentorChat";
 import IQFriendInvite from "@/components/iq/IQFriendInvite";
 import IQSocialSummary from "@/components/iq/IQSocialSummary";
+import IQAvatarPicker from "@/components/iq/IQAvatarPicker";
+import IQThemeSelector from "@/components/iq/IQThemeSelector";
+import IQBadgeShowcase from "@/components/iq/IQBadgeShowcase";
+import IQTitleSelector from "@/components/iq/IQTitleSelector";
+import IQProfileBanner from "@/components/iq/IQProfileBanner";
 import IQTrainingPlan from "@/components/iq/IQTrainingPlan";
 import IQDailyChallenge from "@/components/iq/IQDailyChallenge";
 import IQFriends from "@/components/iq/IQFriends";
@@ -329,6 +334,11 @@ const IQPlatform = () => {
           <IQMentorChat />
           <IQFriendInvite />
           <IQSocialSummary />
+          <IQAvatarPicker />
+          <IQThemeSelector />
+          <IQBadgeShowcase />
+          <IQTitleSelector />
+          <IQProfileBanner />
           <div className="grid md:grid-cols-2 gap-4">
             <div id="iq-daily-section"><IQDailyChallenge /></div>
             <div id="iq-friends-section"><IQFriends /></div>
