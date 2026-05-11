@@ -183,7 +183,7 @@ export default function IQTrophyProfile() {
                   <div key={m.id} className="p-2 rounded bg-muted/30 text-center text-xs">
                     <div className="font-bold">Round {m.round}</div>
                     <div className="text-muted-foreground">
-                      {m.finished_at ? new Date(m.finished_at).toLocaleDateString() : ""}
+                      {m.completed_at ? new Date(m.completed_at).toLocaleDateString() : ""}
                     </div>
                   </div>
                 ))}
