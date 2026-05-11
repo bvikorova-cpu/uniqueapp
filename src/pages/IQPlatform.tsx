@@ -15,6 +15,7 @@ import IQGlobalLeaderboard from "@/components/iq/IQGlobalLeaderboard";
 import IQTrainingPlan from "@/components/iq/IQTrainingPlan";
 import IQDailyChallenge from "@/components/iq/IQDailyChallenge";
 import IQFriends from "@/components/iq/IQFriends";
+import IQNotificationSettings from "@/components/iq/IQNotificationSettings";
 import IQDailyStreak from "@/components/iq/IQDailyStreak";
 import IQGlobalEventFeed from "@/components/iq/IQGlobalEventFeed";
 import IQBattlePass from "@/components/iq/IQBattlePass";
@@ -155,6 +156,7 @@ const IQPlatform = () => {
           <div className="grid md:grid-cols-2 gap-4">
             <IQDailyChallenge />
             <IQFriends />
+            <IQNotificationSettings />
             <IQDailyStreak />
           </div>
           <IQGlobalEventFeed />
