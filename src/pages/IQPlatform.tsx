@@ -120,7 +120,10 @@ const IQPlatform = () => {
       />
       <HeroRewardedAd sectionKey="page_iqplatform" />
 
-      <IQCreditsDisplay />
+      <div className="flex items-center justify-between gap-2">
+        <IQCreditsDisplay />
+        <IQNotificationsBell />
+      </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
         <TabsList className="grid w-full grid-cols-4 sm:grid-cols-8 gap-1 h-auto p-1.5 bg-muted/50 rounded-xl">
