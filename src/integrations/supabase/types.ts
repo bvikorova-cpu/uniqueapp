@@ -23320,6 +23320,39 @@ export type Database = {
           },
         ]
       }
+      iq_notification_prefs: {
+        Row: {
+          created_at: string
+          daily_challenge: boolean
+          duel_invite: boolean
+          preferred_hour: number
+          streak_reminder: boolean
+          updated_at: string
+          user_id: string
+          weekly_digest: boolean
+        }
+        Insert: {
+          created_at?: string
+          daily_challenge?: boolean
+          duel_invite?: boolean
+          preferred_hour?: number
+          streak_reminder?: boolean
+          updated_at?: string
+          user_id: string
+          weekly_digest?: boolean
+        }
+        Update: {
+          created_at?: string
+          daily_challenge?: boolean
+          duel_invite?: boolean
+          preferred_hour?: number
+          streak_reminder?: boolean
+          updated_at?: string
+          user_id?: string
+          weekly_digest?: boolean
+        }
+        Relationships: []
+      }
       iq_notifications: {
         Row: {
           body: string | null
