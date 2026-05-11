@@ -47010,6 +47010,20 @@ export type Database = {
           user_id: string
         }[]
       }
+      get_iq_friend_comparison: {
+        Args: { _friend_id: string }
+        Returns: {
+          avatar_url: string
+          avg_iq: number
+          best_iq: number
+          country_code: string
+          display_name: string
+          is_me: boolean
+          tier: string
+          total_tests: number
+          user_id: string
+        }[]
+      }
       get_iq_funnel: {
         Args: { _from?: string; _to?: string }
         Returns: {
