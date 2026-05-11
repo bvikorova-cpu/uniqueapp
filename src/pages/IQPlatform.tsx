@@ -153,9 +153,10 @@ const IQPlatform = () => {
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6">
+          <IQQuickLauncher />
           <div className="grid md:grid-cols-2 gap-4">
-            <IQDailyChallenge />
-            <IQFriends />
+            <div id="iq-daily-section"><IQDailyChallenge /></div>
+            <div id="iq-friends-section"><IQFriends /></div>
             <IQNotificationSettings />
             <IQDailyStreak />
           </div>
