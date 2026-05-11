@@ -134,7 +134,11 @@ export default function IQFriendChallenge() {
                     {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
                   </Button>
                 </div>
-                <p className="text-[10px] text-muted-foreground">Waiting for opponent to join…</p>
+                <div className="flex items-center gap-2">
+                  <Loader2 className="h-3.5 w-3.5 animate-spin text-pink-500" />
+                  <p className="text-[10px] text-muted-foreground flex-1">Waiting for opponent to join… duel auto-starts on accept.</p>
+                  <Button size="sm" variant="ghost" className="h-6 text-[10px]" onClick={handleCancelWaiting}>Cancel</Button>
+                </div>
               </div>
             )}
           </CardContent>
