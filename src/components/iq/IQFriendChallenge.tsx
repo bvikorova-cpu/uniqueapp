@@ -27,8 +27,32 @@ export default function IQFriendChallenge() {
   const [shareUrl, setShareUrl] = useState("");
   const [copied, setCopied] = useState(false);
   const [activeDuelId, setActiveDuelId] = useState<string | null>(null);
+  const [pendingDuelId, setPendingDuelId] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
   const { toast } = useToast();
+
+  // Realtime: when opponent joins our waiting duel, auto-launch the game
+  useEffect(() => {
+    if (!pendingDuelId) return;
+    const channel = supabase
+      .channel(`iq-friend-${pendingDuelId}`)
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "iq_duels", filter: `id=eq.${pendingDuelId}` },
+        (payload) => {
+          const row = payload.new as { status?: string; opponent_id?: string | null };
+          if (row.status === "active" && row.opponent_id) {
+            toast({ title: "Opponent joined!", description: "Starting duel." });
+            setActiveDuelId(pendingDuelId);
+            setPendingDuelId(null);
+            setCode("");
+            setShareUrl("");
+          }
+        },
+      )
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [pendingDuelId, toast]);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setUserId(data.user?.id ?? null));
