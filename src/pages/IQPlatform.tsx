@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Brain, Trophy, LineChart, Zap, Users, Target, BarChart3, Medal, Gift } from "lucide-react";
@@ -17,6 +17,7 @@ import IQDailyChallenge from "@/components/iq/IQDailyChallenge";
 import IQCertificate from "@/components/iq/IQCertificate";
 import IQFriendChallenge from "@/components/iq/IQFriendChallenge";
 import IQShareableCard from "@/components/iq/IQShareableCard";
+import IQTestHistory from "@/components/iq/IQTestHistory";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
@@ -26,27 +27,10 @@ import { useIQUserStats, useIQGlobalCounts } from "@/hooks/useIQUserStats";
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 const IQPlatform = () => {
   const [activeTab, setActiveTab] = useState("overview");
+  const [cooldowns, setCooldowns] = useState<Record<string, number>>({});
   const { toast } = useToast();
   const { data: stats } = useIQUserStats();
   const { data: counts } = useIQGlobalCounts();
-
-  const handleStartTest = async (testType: string) => {
-    const test = testCategories.find(t => t.id === testType);
-    if (!test) return;
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) {
-      toast({ title: "Please login first", variant: "destructive" });
-      return;
-    }
-    // Real interactive IQ tests are not built yet — route the user to the
-    // AI Tools tab where they can actually use their credits, instead of
-    // silently deducting from the wrong table.
-    toast({
-      title: `${test.title} — coming soon`,
-      description: `Full ${test.questions}-question test launches shortly. Meanwhile, try the AI brain tools below.`,
-    });
-    setActiveTab("tools");
-  };
 
   const testCategories = [
     { id: "beginner", title: "Beginner IQ Test", description: "Perfect for first-time test takers", difficulty: "Beginner", questions: 30, timeLimit: 30, credits: 10, icon: Target },
@@ -54,6 +38,69 @@ const IQPlatform = () => {
     { id: "advanced", title: "Advanced IQ Test", description: "Challenging cognitive assessment", difficulty: "Advanced", questions: 50, timeLimit: 60, credits: 20, icon: Zap },
     { id: "expert", title: "Expert IQ Test", description: "Mensa-level difficulty", difficulty: "Expert", questions: 60, timeLimit: 75, credits: 25, icon: Trophy },
   ];
+
+  const specializedCategories = [
+    { id: "logical",   title: "Logical Reasoning",   desc: "Syllogisms & deduction",  icon: Brain,     credits: 8 },
+    { id: "spatial",   title: "Spatial Awareness",   desc: "3D rotation, mental maps", icon: Target,   credits: 8 },
+    { id: "verbal",    title: "Verbal Reasoning",    desc: "Analogies & vocabulary",   icon: Medal,    credits: 8 },
+    { id: "numerical", title: "Numerical Reasoning", desc: "Sequences & arithmetic",   icon: BarChart3, credits: 8 },
+    { id: "memory",    title: "Working Memory",      desc: "Recall & sequencing",      icon: Zap,      credits: 8 },
+    { id: "pattern",   title: "Pattern Recognition", desc: "Visual abstract logic",    icon: LineChart, credits: 8 },
+  ];
+
+  useEffect(() => {
+    if (activeTab !== "tests") return;
+    let cancelled = false;
+    (async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) return;
+      const ids = [...testCategories.map(t => t.id), ...specializedCategories.map(t => t.id)];
+      const results = await Promise.all(ids.map(async (id) => {
+        const { data } = await supabase.rpc("iq_test_cooldown_remaining", { _category: id });
+        return [id, Number(data ?? 0)] as const;
+      }));
+      if (!cancelled) setCooldowns(Object.fromEntries(results));
+    })();
+    return () => { cancelled = true; };
+  }, [activeTab]);
+
+  useEffect(() => {
+    if (Object.values(cooldowns).every(v => v <= 0)) return;
+    const t = setInterval(() => {
+      setCooldowns(prev => {
+        const next: Record<string, number> = {};
+        for (const k in prev) next[k] = Math.max(0, prev[k] - 1);
+        return next;
+      });
+    }, 1000);
+    return () => clearInterval(t);
+  }, [cooldowns]);
+
+  const formatCooldown = (s: number) => {
+    if (s <= 0) return null;
+    const h = Math.floor(s / 3600);
+    const m = Math.floor((s % 3600) / 60);
+    return h > 0 ? `${h}h ${m}m` : `${m}m`;
+  };
+
+  const handleStartTest = async (testType: string) => {
+    const test = [...testCategories, ...specializedCategories].find(t => t.id === testType);
+    if (!test) return;
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      toast({ title: "Please login first", variant: "destructive" });
+      return;
+    }
+    if ((cooldowns[testType] ?? 0) > 0) {
+      toast({ title: "Cooldown active", description: `Try again in ${formatCooldown(cooldowns[testType])}.`, variant: "destructive" });
+      return;
+    }
+    toast({
+      title: `${(test as any).title} — coming soon`,
+      description: `Full interactive test launches shortly. Meanwhile, try the AI brain tools.`,
+    });
+    setActiveTab("tools");
+  };
 
   return (
     <div className="container mx-auto p-3 sm:p-4 md:p-6 space-y-6 mt-16 sm:mt-20">
@@ -121,33 +168,83 @@ const IQPlatform = () => {
         </TabsContent>
 
         <TabsContent value="tests" className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {testCategories.map((test) => (
-              <Card key={test.id} className="hover:shadow-lg transition-shadow border-blue-500/10">
-                <CardHeader className="p-4 sm:p-6">
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-500 text-white">
-                        <test.icon className="h-5 w-5" />
+          <div>
+            <h3 className="text-lg font-bold mb-3">Standard difficulty</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {testCategories.map((test) => {
+                const cd = cooldowns[test.id] ?? 0;
+                const locked = cd > 0;
+                return (
+                  <Card key={test.id} className="hover:shadow-lg transition-shadow border-blue-500/10">
+                    <CardHeader className="p-4 sm:p-6">
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="flex items-center gap-3">
+                          <div className="p-2 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-500 text-white">
+                            <test.icon className="h-5 w-5" />
+                          </div>
+                          <div>
+                            <CardTitle className="text-base">{test.title}</CardTitle>
+                            <CardDescription className="text-xs">{test.description}</CardDescription>
+                          </div>
+                        </div>
+                        <Badge variant="outline" className="text-xs">{test.difficulty}</Badge>
                       </div>
-                      <div>
-                        <CardTitle className="text-base">{test.title}</CardTitle>
-                        <CardDescription className="text-xs">{test.description}</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-3 p-4 sm:p-6">
+                      <div className="grid grid-cols-3 gap-4 text-sm">
+                        <div><p className="text-muted-foreground text-xs">Questions</p><p className="font-bold">{test.questions}</p></div>
+                        <div><p className="text-muted-foreground text-xs">Time</p><p className="font-bold">{test.timeLimit} min</p></div>
+                        <div><p className="text-muted-foreground text-xs">Credits</p><p className="font-bold">{test.credits}</p></div>
                       </div>
-                    </div>
-                    <Badge variant="outline" className="text-xs">{test.difficulty}</Badge>
-                  </div>
-                </CardHeader>
-                <CardContent className="space-y-3 p-4 sm:p-6">
-                  <div className="grid grid-cols-3 gap-4 text-sm">
-                    <div><p className="text-muted-foreground text-xs">Questions</p><p className="font-bold">{test.questions}</p></div>
-                    <div><p className="text-muted-foreground text-xs">Time</p><p className="font-bold">{test.timeLimit} min</p></div>
-                    <div><p className="text-muted-foreground text-xs">Credits</p><p className="font-bold">{test.credits}</p></div>
-                  </div>
-                  <Button className="w-full bg-gradient-to-r from-blue-600 to-indigo-600" onClick={() => handleStartTest(test.id)}>Start Test</Button>
-                </CardContent>
-              </Card>
-            ))}
+                      <Button
+                        className="w-full bg-gradient-to-r from-blue-600 to-indigo-600"
+                        disabled={locked}
+                        onClick={() => handleStartTest(test.id)}
+                      >
+                        {locked ? `Cooldown · ${formatCooldown(cd)}` : "Start Test"}
+                      </Button>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+          </div>
+
+          <div>
+            <h3 className="text-lg font-bold mb-3">Specialized cognitive tests</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {specializedCategories.map((t) => {
+                const cd = cooldowns[t.id] ?? 0;
+                const locked = cd > 0;
+                return (
+                  <Card key={t.id} className="hover:shadow-md transition border-purple-500/15 bg-gradient-to-br from-purple-500/5 to-pink-500/5">
+                    <CardContent className="p-4 space-y-2">
+                      <div className="flex items-center gap-2">
+                        <div className="p-2 rounded-md bg-gradient-to-br from-purple-500 to-pink-500 text-white">
+                          <t.icon className="h-4 w-4" />
+                        </div>
+                        <div>
+                          <p className="font-bold text-sm">{t.title}</p>
+                          <p className="text-[10px] text-muted-foreground">{t.desc}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-between text-[10px] text-muted-foreground">
+                        <span>{t.credits} credits</span>
+                        <span>20 questions · 15 min</span>
+                      </div>
+                      <Button
+                        size="sm"
+                        className="w-full bg-gradient-to-r from-purple-600 to-pink-600"
+                        disabled={locked}
+                        onClick={() => handleStartTest(t.id)}
+                      >
+                        {locked ? `Cooldown · ${formatCooldown(cd)}` : "Start"}
+                      </Button>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
           </div>
         </TabsContent>
 
@@ -167,13 +264,7 @@ const IQPlatform = () => {
 
         <TabsContent value="results" className="space-y-4">
           <IQProgressCharts />
-          <Card>
-            <CardHeader><CardTitle>Your IQ Journey</CardTitle><CardDescription>Track your progress</CardDescription></CardHeader>
-            <CardContent className="text-center py-12">
-              <Brain className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-              <p className="text-sm text-muted-foreground">Take your first IQ test to see your results here</p>
-            </CardContent>
-          </Card>
+          <IQTestHistory />
         </TabsContent>
       </Tabs>
 
