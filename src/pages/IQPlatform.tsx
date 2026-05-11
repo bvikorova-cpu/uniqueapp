@@ -87,6 +87,11 @@ import IQCodeBreak from "@/components/iq/IQCodeBreak";
 import IQBinaryConvert from "@/components/iq/IQBinaryConvert";
 import IQHexConvert from "@/components/iq/IQHexConvert";
 import IQMathSummary from "@/components/iq/IQMathSummary";
+import IQDuelInvite from "@/components/iq/IQDuelInvite";
+import IQDuelLobby from "@/components/iq/IQDuelLobby";
+import IQDuelMatch from "@/components/iq/IQDuelMatch";
+import IQDuelHistory from "@/components/iq/IQDuelHistory";
+import IQClanCreate from "@/components/iq/IQClanCreate";
 import IQTrainingPlan from "@/components/iq/IQTrainingPlan";
 import IQDailyChallenge from "@/components/iq/IQDailyChallenge";
 import IQFriends from "@/components/iq/IQFriends";
@@ -299,6 +304,11 @@ const IQPlatform = () => {
           <IQBinaryConvert />
           <IQHexConvert />
           <IQMathSummary />
+          <IQDuelInvite />
+          <IQDuelLobby />
+          <IQDuelMatch />
+          <IQDuelHistory />
+          <IQClanCreate />
           <div className="grid md:grid-cols-2 gap-4">
             <div id="iq-daily-section"><IQDailyChallenge /></div>
             <div id="iq-friends-section"><IQFriends /></div>
