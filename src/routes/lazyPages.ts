@@ -266,6 +266,7 @@ export const Quiz = lazy(() => import("@/pages/Quiz"));
 export const IQPlatform = lazy(() => import("@/pages/IQPlatform"));
 export const IQTrophyProfile = lazy(() => import("@/pages/IQTrophyProfile"));
 export const IQPublicProfile = lazy(() => import("@/pages/IQPublicProfile"));
+export const IQLeaderboard = lazy(() => import("@/pages/IQLeaderboard"));
 export const LieDetector = lazy(() => import("@/pages/LieDetector"));
 
 // Shadow Arena

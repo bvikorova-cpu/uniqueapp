@@ -326,6 +326,7 @@ import {
   IQPlatform,
   IQTrophyProfile,
   IQPublicProfile,
+  IQLeaderboard,
   CertificateGallery,
   FundraisingHub,
   MedicalFundraising,
@@ -902,6 +903,7 @@ const App = () => {
                         <Route path="/iq-platform" element={<IQPlatform />} />
                         <Route path="/iq-platform/profile/:userId" element={<IQTrophyProfile />} />
                         <Route path="/iq/u/:slug" element={<IQPublicProfile />} />
+                        <Route path="/iq/leaderboard" element={<IQLeaderboard />} />
                         
                         {/* Fundraising Routes */}
                         <Route path="/fundraising" element={<FundraisingHub />} />
