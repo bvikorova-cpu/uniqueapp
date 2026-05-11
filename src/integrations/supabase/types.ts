@@ -46563,6 +46563,7 @@ export type Database = {
       }
       auto_release_coupon_escrow: { Args: never; Returns: number }
       award_iq_badge: { Args: { _code: string }; Returns: boolean }
+      award_iq_badges: { Args: never; Returns: string[] }
       award_iq_season_xp: { Args: { amount: number }; Returns: Json }
       award_points_and_log: {
         Args: { p_activity_type: string; p_points: number; p_user_id: string }
