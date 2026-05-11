@@ -42,6 +42,11 @@ import IQSudoku4 from "@/components/iq/IQSudoku4";
 import IQMemoryCards from "@/components/iq/IQMemoryCards";
 import IQ24Game from "@/components/iq/IQ24Game";
 import IQ15Puzzle from "@/components/iq/IQ15Puzzle";
+import IQMinesweeper from "@/components/iq/IQMinesweeper";
+import IQLightsOut from "@/components/iq/IQLightsOut";
+import IQMastermind from "@/components/iq/IQMastermind";
+import IQBlockSlide from "@/components/iq/IQBlockSlide";
+import IQNonogram5 from "@/components/iq/IQNonogram5";
 import IQTrainingPlan from "@/components/iq/IQTrainingPlan";
 import IQDailyChallenge from "@/components/iq/IQDailyChallenge";
 import IQFriends from "@/components/iq/IQFriends";
@@ -209,6 +214,11 @@ const IQPlatform = () => {
           <IQMemoryCards />
           <IQ24Game />
           <IQ15Puzzle />
+          <IQMinesweeper />
+          <IQLightsOut />
+          <IQMastermind />
+          <IQBlockSlide />
+          <IQNonogram5 />
           <div className="grid md:grid-cols-2 gap-4">
             <div id="iq-daily-section"><IQDailyChallenge /></div>
             <div id="iq-friends-section"><IQFriends /></div>
