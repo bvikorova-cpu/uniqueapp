@@ -61,12 +61,22 @@ const IQFriendCompare = () => {
     (async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) return;
-      const { data } = await supabase.rpc("list_iq_friends" as any);
-      const accepted = (data as any[] | null)?.filter(f => f.status === "accepted") ?? [];
-      setFriends(accepted.map(f => ({
-        friend_id: f.friend_id,
-        display_name: f.display_name,
-        avatar_url: f.avatar_url,
+      const uid = session.user.id;
+      const { data: links } = await supabase
+        .from("iq_friendships")
+        .select("requester_id,addressee_id,status")
+        .eq("status", "accepted")
+        .or(`requester_id.eq.${uid},addressee_id.eq.${uid}`);
+      const ids = (links ?? []).map(l => l.requester_id === uid ? l.addressee_id : l.requester_id);
+      if (ids.length === 0) { setFriends([]); return; }
+      const { data: profs } = await supabase
+        .from("iq_public_profiles")
+        .select("user_id,display_name,avatar_url")
+        .in("user_id", ids);
+      setFriends((profs ?? []).map(p => ({
+        friend_id: p.user_id,
+        display_name: p.display_name,
+        avatar_url: p.avatar_url,
       })));
     })();
   }, []);
