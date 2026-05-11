@@ -7,7 +7,7 @@ import { toast } from "sonner";
 
 const KEY = "iq_bio";
 
-export const IQBioEditor = () => {
+export default function IQBioEditor() => {
   const [bio, setBio] = useState("");
   useEffect(() => { setBio(localStorage.getItem(KEY) || ""); }, []);
   const save = () => {
@@ -26,4 +26,4 @@ export const IQBioEditor = () => {
       </CardContent>
     </Card>
   );
-};
+}

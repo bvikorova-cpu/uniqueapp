@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Sparkles } from "lucide-react";
 
-export const IQCustomSummary = () => {
+export default function IQCustomSummary() => {
   const [data, setData] = useState({ avatar: "", theme: "", title: "", banner: "", frame: "", nick: "", bio: "", sound: true });
   useEffect(() => {
     setData({
@@ -36,4 +36,4 @@ export const IQCustomSummary = () => {
       </CardContent>
     </Card>
   );
-};
+}

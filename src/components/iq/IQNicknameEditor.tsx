@@ -7,7 +7,7 @@ import { toast } from "sonner";
 
 const KEY = "iq_nickname";
 
-export const IQNicknameEditor = () => {
+export default function IQNicknameEditor() => {
   const [name, setName] = useState("");
   const [current, setCurrent] = useState("");
   useEffect(() => { setCurrent(localStorage.getItem(KEY) || ""); }, []);
@@ -31,4 +31,4 @@ export const IQNicknameEditor = () => {
       </CardContent>
     </Card>
   );
-};
+}

@@ -6,7 +6,7 @@ import { Frame } from "lucide-react";
 const FRAMES = ["none", "gold", "neon", "fire", "ice", "shadow"];
 const KEY = "iq_frame";
 
-export const IQFrameSelector = () => {
+export default function IQFrameSelector() => {
   const [current, setCurrent] = useState<string>("none");
   useEffect(() => { setCurrent(localStorage.getItem(KEY) || "none"); }, []);
   const choose = (f: string) => {
@@ -26,4 +26,4 @@ export const IQFrameSelector = () => {
       </CardContent>
     </Card>
   );
-};
+}

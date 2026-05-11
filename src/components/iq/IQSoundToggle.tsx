@@ -5,7 +5,7 @@ import { Volume2 } from "lucide-react";
 
 const KEY = "iq_sound_enabled";
 
-export const IQSoundToggle = () => {
+export default function IQSoundToggle() => {
   const [on, setOn] = useState(true);
   useEffect(() => { setOn(localStorage.getItem(KEY) !== "0"); }, []);
   const toggle = (v: boolean) => {
@@ -21,4 +21,4 @@ export const IQSoundToggle = () => {
       </CardContent>
     </Card>
   );
-};
+}
