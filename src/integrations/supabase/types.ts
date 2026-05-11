@@ -22814,6 +22814,77 @@ export type Database = {
         }
         Relationships: []
       }
+      iq_battle_pass_progress: {
+        Row: {
+          claimed_tiers: number[]
+          created_at: string
+          id: string
+          premium_unlocked: boolean
+          season_id: string
+          updated_at: string
+          user_id: string
+          xp: number
+        }
+        Insert: {
+          claimed_tiers?: number[]
+          created_at?: string
+          id?: string
+          premium_unlocked?: boolean
+          season_id: string
+          updated_at?: string
+          user_id: string
+          xp?: number
+        }
+        Update: {
+          claimed_tiers?: number[]
+          created_at?: string
+          id?: string
+          premium_unlocked?: boolean
+          season_id?: string
+          updated_at?: string
+          user_id?: string
+          xp?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "iq_battle_pass_progress_season_id_fkey"
+            columns: ["season_id"]
+            isOneToOne: false
+            referencedRelation: "iq_battle_pass_seasons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      iq_battle_pass_seasons: {
+        Row: {
+          created_at: string
+          ends_at: string
+          id: string
+          is_active: boolean
+          name: string
+          season_number: number
+          starts_at: string
+        }
+        Insert: {
+          created_at?: string
+          ends_at: string
+          id?: string
+          is_active?: boolean
+          name: string
+          season_number: number
+          starts_at?: string
+        }
+        Update: {
+          created_at?: string
+          ends_at?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+          season_number?: number
+          starts_at?: string
+        }
+        Relationships: []
+      }
       iq_competition_participants: {
         Row: {
           competition_id: string
@@ -46151,6 +46222,7 @@ export type Database = {
         Returns: undefined
       }
       auto_release_coupon_escrow: { Args: never; Returns: number }
+      award_iq_season_xp: { Args: { amount: number }; Returns: Json }
       award_points_and_log: {
         Args: { p_activity_type: string; p_points: number; p_user_id: string }
         Returns: undefined
@@ -46189,6 +46261,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      claim_iq_battle_pass_tier: { Args: { _tier: number }; Returns: Json }
       claim_iq_daily_streak: { Args: never; Returns: Json }
       claim_iq_streak_reward: { Args: { _day: number }; Returns: Json }
       claim_mission_reward: { Args: { _mission_id: string }; Returns: Json }
