@@ -14,6 +14,7 @@ import IQAchievements from "@/components/iq/IQAchievements";
 import IQGlobalLeaderboard from "@/components/iq/IQGlobalLeaderboard";
 import IQTrainingPlan from "@/components/iq/IQTrainingPlan";
 import IQDailyChallenge from "@/components/iq/IQDailyChallenge";
+import IQDailyStreak from "@/components/iq/IQDailyStreak";
 import IQCertificate from "@/components/iq/IQCertificate";
 import IQFriendChallenge from "@/components/iq/IQFriendChallenge";
 import IQShareableCard from "@/components/iq/IQShareableCard";
@@ -135,7 +136,10 @@ const IQPlatform = () => {
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6">
-          <IQDailyChallenge />
+          <div className="grid md:grid-cols-2 gap-4">
+            <IQDailyChallenge />
+            <IQDailyStreak />
+          </div>
           <IQLeaguesSection userIQ={stats?.best_iq ?? null} />
           <IQBrainStreaks currentStreak={stats?.current_streak ?? 0} />
           <IQTrainingPlan />
