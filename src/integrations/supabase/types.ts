@@ -23004,6 +23004,80 @@ export type Database = {
         }
         Relationships: []
       }
+      iq_daily_attempts: {
+        Row: {
+          answer_index: number
+          challenge_date: string
+          challenge_id: string
+          created_at: string
+          id: string
+          is_correct: boolean
+          reward_granted: number
+          user_id: string
+        }
+        Insert: {
+          answer_index: number
+          challenge_date: string
+          challenge_id: string
+          created_at?: string
+          id?: string
+          is_correct: boolean
+          reward_granted?: number
+          user_id: string
+        }
+        Update: {
+          answer_index?: number
+          challenge_date?: string
+          challenge_id?: string
+          created_at?: string
+          id?: string
+          is_correct?: boolean
+          reward_granted?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "iq_daily_attempts_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "iq_daily_challenges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      iq_daily_challenges: {
+        Row: {
+          challenge_date: string
+          correct_index: number
+          created_at: string
+          difficulty: string
+          id: string
+          options: Json
+          question: string
+          reward_credits: number
+        }
+        Insert: {
+          challenge_date: string
+          correct_index: number
+          created_at?: string
+          difficulty?: string
+          id?: string
+          options: Json
+          question: string
+          reward_credits?: number
+        }
+        Update: {
+          challenge_date?: string
+          correct_index?: number
+          created_at?: string
+          difficulty?: string
+          id?: string
+          options?: Json
+          question?: string
+          reward_credits?: number
+        }
+        Relationships: []
+      }
       iq_daily_streaks: {
         Row: {
           created_at: string
@@ -46979,6 +47053,19 @@ export type Database = {
         }[]
       }
       get_rls_ref: { Args: never; Returns: string }
+      get_today_iq_challenge: {
+        Args: never
+        Returns: {
+          already_attempted: boolean
+          challenge_date: string
+          difficulty: string
+          id: string
+          options: Json
+          question: string
+          reward_credits: number
+          was_correct: boolean
+        }[]
+      }
       get_user_mission_progress: {
         Args: never
         Returns: {
@@ -47292,6 +47379,15 @@ export type Database = {
         }[]
       }
       start_iq_tournament: { Args: { _competition_id: string }; Returns: Json }
+      submit_iq_daily: {
+        Args: { _answer_index: number; _challenge_id: string }
+        Returns: {
+          is_correct: boolean
+          message: string
+          reward: number
+          success: boolean
+        }[]
+      }
       submit_iq_test: {
         Args: { _answers: Json; _session_id: string; _time_taken?: number }
         Returns: {
