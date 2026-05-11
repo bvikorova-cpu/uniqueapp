@@ -67,6 +67,11 @@ import IQDualTask from "@/components/iq/IQDualTask";
 import IQDivideAttention from "@/components/iq/IQDivideAttention";
 import IQVisualSearch from "@/components/iq/IQVisualSearch";
 import IQChangeBlind from "@/components/iq/IQChangeBlind";
+import IQTrailMaking from "@/components/iq/IQTrailMaking";
+import IQDigitSymbol from "@/components/iq/IQDigitSymbol";
+import IQBackwardCount from "@/components/iq/IQBackwardCount";
+import IQGoNoGo from "@/components/iq/IQGoNoGo";
+import IQAttentionSummary from "@/components/iq/IQAttentionSummary";
 import IQTrainingPlan from "@/components/iq/IQTrainingPlan";
 import IQDailyChallenge from "@/components/iq/IQDailyChallenge";
 import IQFriends from "@/components/iq/IQFriends";
@@ -259,6 +264,11 @@ const IQPlatform = () => {
           <IQDivideAttention />
           <IQVisualSearch />
           <IQChangeBlind />
+          <IQTrailMaking />
+          <IQDigitSymbol />
+          <IQBackwardCount />
+          <IQGoNoGo />
+          <IQAttentionSummary />
           <div className="grid md:grid-cols-2 gap-4">
             <div id="iq-daily-section"><IQDailyChallenge /></div>
             <div id="iq-friends-section"><IQFriends /></div>
