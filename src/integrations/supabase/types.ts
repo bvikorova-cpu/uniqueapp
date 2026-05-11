@@ -47087,6 +47087,19 @@ export type Database = {
           score: number
         }[]
       }
+      get_iq_weekly_recap: {
+        Args: never
+        Returns: {
+          avg_iq_this_week: number
+          best_iq_this_week: number
+          iq_delta: number
+          tests_last_week: number
+          tests_this_week: number
+          top_category: string
+          total_time_seconds: number
+          week_start: string
+        }[]
+      }
       get_last_week_xp_winners: {
         Args: never
         Returns: {
