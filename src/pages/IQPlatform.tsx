@@ -20,6 +20,7 @@ import IQMilestones from "@/components/iq/IQMilestones";
 import IQFriendCompare from "@/components/iq/IQFriendCompare";
 import IQFocusTimer from "@/components/iq/IQFocusTimer";
 import IQReactionTime from "@/components/iq/IQReactionTime";
+import IQNumberSpan from "@/components/iq/IQNumberSpan";
 import IQTrainingPlan from "@/components/iq/IQTrainingPlan";
 import IQDailyChallenge from "@/components/iq/IQDailyChallenge";
 import IQFriends from "@/components/iq/IQFriends";
@@ -165,6 +166,7 @@ const IQPlatform = () => {
           <IQQuickLauncher />
           <IQFocusTimer />
           <IQReactionTime />
+          <IQNumberSpan />
           <div className="grid md:grid-cols-2 gap-4">
             <div id="iq-daily-section"><IQDailyChallenge /></div>
             <div id="iq-friends-section"><IQFriends /></div>
