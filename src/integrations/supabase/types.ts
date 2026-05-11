@@ -46786,6 +46786,19 @@ export type Database = {
           username: string
         }[]
       }
+      get_iq_leaderboard: {
+        Args: { _limit?: number }
+        Returns: {
+          avatar_url: string
+          best_iq: number
+          display_name: string
+          rank: number
+          share_slug: string
+          tier: string
+          total_tests: number
+          user_id: string
+        }[]
+      }
       get_iq_progress: {
         Args: { _user?: string }
         Returns: {
