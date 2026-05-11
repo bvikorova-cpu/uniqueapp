@@ -454,6 +454,7 @@ const App = () => {
           <AuthProvider>
             <Suspense fallback={null}>
               <ReferralCaptureMount />
+              <IQReferralCaptureMount />
               <LanguagePreferenceMount />
               <DunningBanner />
               <SCABanner />
