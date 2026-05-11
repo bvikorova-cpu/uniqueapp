@@ -264,6 +264,7 @@ export const Referral = lazy(() => import("@/pages/Referral"));
 // Quiz & Challenges
 export const Quiz = lazy(() => import("@/pages/Quiz"));
 export const IQPlatform = lazy(() => import("@/pages/IQPlatform"));
+export const IQTrophyProfile = lazy(() => import("@/pages/IQTrophyProfile"));
 export const LieDetector = lazy(() => import("@/pages/LieDetector"));
 
 // Shadow Arena
