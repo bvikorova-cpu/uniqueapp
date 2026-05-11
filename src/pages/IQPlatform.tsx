@@ -145,6 +145,7 @@ const IQPlatform = () => {
           </div>
           <IQGlobalEventFeed />
           <IQBattlePass />
+          <IQAICoach />
           <IQLeaguesSection userIQ={stats?.best_iq ?? null} />
           <IQBrainStreaks currentStreak={stats?.current_streak ?? 0} />
           <IQTrainingPlan />
