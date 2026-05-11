@@ -73,6 +73,19 @@ export default function IQDuelGame({
     };
   }, [duelId]);
 
+  // Battle Pass — award Season XP once when duel finishes (winner=300, draw=150, loser=75)
+  const xpAwardedRef = useRef(false);
+  useEffect(() => {
+    if (!duel || duel.status !== "finished" || xpAwardedRef.current) return;
+    xpAwardedRef.current = true;
+    const won = duel.winner_id === myUserId;
+    const tie = duel.winner_id === null;
+    const xp = won ? 300 : tie ? 150 : 75;
+    supabase.rpc("award_iq_season_xp", { amount: xp }).then(({ error }) => {
+      if (!error) toast({ title: `+${xp} Season XP`, description: "Battle Pass progress updated" });
+    });
+  }, [duel?.status, duel?.winner_id, myUserId, toast]);
+
   // Timer
   const q = duel?.questions?.[currentIdx];
   useEffect(() => {
