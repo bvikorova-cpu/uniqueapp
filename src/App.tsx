@@ -322,7 +322,6 @@ import {
   SkillSwapDashboard,
   AnonymousDate,
   LieDetector,
-  IPPlaceholder_unused: undefined as never,
   IQPlatform,
   IQTrophyProfile,
   CertificateGallery,
