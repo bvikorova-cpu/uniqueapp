@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Sparkles } from "lucide-react";
 
-export default function IQCustomSummary() => {
+export default function IQCustomSummary() {
   const [data, setData] = useState({ avatar: "", theme: "", title: "", banner: "", frame: "", nick: "", bio: "", sound: true });
-  useEffect(() => {
+  useEffect(() {
     setData({
       avatar: localStorage.getItem("iq_avatar") || "—",
       theme: localStorage.getItem("iq_theme_accent") || "—",

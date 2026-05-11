@@ -7,11 +7,11 @@ import { toast } from "sonner";
 
 const KEY = "iq_nickname";
 
-export default function IQNicknameEditor() => {
+export default function IQNicknameEditor() {
   const [name, setName] = useState("");
   const [current, setCurrent] = useState("");
-  useEffect(() => { setCurrent(localStorage.getItem(KEY) || ""); }, []);
-  const save = () => {
+  useEffect(() { setCurrent(localStorage.getItem(KEY) || ""); }, []);
+  const save = () {
     const v = name.trim().slice(0, 20);
     if (!v) return;
     localStorage.setItem(KEY, v);
