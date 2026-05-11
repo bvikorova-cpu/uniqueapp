@@ -46940,14 +46940,38 @@ export type Database = {
           player_count: number
         }[]
       }
-      get_iq_country_leaderboard: {
-        Args: { _country: string }
+      get_iq_country_leaderboard:
+        | {
+            Args: never
+            Returns: {
+              avg_best_iq: number
+              country_code: string
+              player_count: number
+              rank: number
+              top_iq: number
+            }[]
+          }
+        | {
+            Args: { _country: string }
+            Returns: {
+              best_iq: number
+              tier: string
+              total_tests: number
+              user_id: string
+              username: string
+            }[]
+          }
+      get_iq_country_top_players: {
+        Args: { _country_code: string; _limit?: number }
         Returns: {
+          avatar_url: string
           best_iq: number
+          display_name: string
+          rank: number
+          share_slug: string
           tier: string
           total_tests: number
           user_id: string
-          username: string
         }[]
       }
       get_iq_funnel: {

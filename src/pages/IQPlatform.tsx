@@ -12,6 +12,7 @@ import IQDuels from "@/components/iq/IQDuels";
 import IQProgressCharts from "@/components/iq/IQProgressCharts";
 import IQAchievements from "@/components/iq/IQAchievements";
 import IQGlobalLeaderboard from "@/components/iq/IQGlobalLeaderboard";
+import IQCountryLeaderboard from "@/components/iq/IQCountryLeaderboard";
 import IQTrainingPlan from "@/components/iq/IQTrainingPlan";
 import IQDailyChallenge from "@/components/iq/IQDailyChallenge";
 import IQFriends from "@/components/iq/IQFriends";
@@ -290,7 +291,10 @@ const IQPlatform = () => {
           <IQTournaments />
           <IQHallOfFame />
         </TabsContent>
-        <TabsContent value="leaderboard"><IQGlobalLeaderboard /></TabsContent>
+        <TabsContent value="leaderboard" className="space-y-6">
+          <IQGlobalLeaderboard />
+          <IQCountryLeaderboard />
+        </TabsContent>
         <TabsContent value="progress">
           <IQProgressCharts />
           <IQShareableCard />
