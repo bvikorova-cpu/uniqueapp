@@ -14,6 +14,7 @@ import IQAchievements from "@/components/iq/IQAchievements";
 import IQGlobalLeaderboard from "@/components/iq/IQGlobalLeaderboard";
 import IQCountryLeaderboard from "@/components/iq/IQCountryLeaderboard";
 import IQPerformanceInsights from "@/components/iq/IQPerformanceInsights";
+import IQGoals from "@/components/iq/IQGoals";
 import IQTrainingPlan from "@/components/iq/IQTrainingPlan";
 import IQDailyChallenge from "@/components/iq/IQDailyChallenge";
 import IQFriends from "@/components/iq/IQFriends";
@@ -296,7 +297,8 @@ const IQPlatform = () => {
           <IQGlobalLeaderboard />
           <IQCountryLeaderboard />
         </TabsContent>
-        <TabsContent value="progress">
+        <TabsContent value="progress" className="space-y-6">
+          <IQGoals />
           <IQPerformanceInsights />
           <IQProgressCharts />
           <IQShareableCard />
