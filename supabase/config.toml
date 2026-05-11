@@ -1310,3 +1310,9 @@ verify_jwt = false
 
 [functions.comedy-battle-vote]
 verify_jwt = false
+
+[functions.iq-create-subscription]
+verify_jwt = true
+
+[functions.iq-check-subscription]
+verify_jwt = true
