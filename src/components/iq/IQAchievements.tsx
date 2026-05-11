@@ -50,6 +50,20 @@ export default function IQAchievements() {
     (async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) return;
+
+      // Try awarding any newly-earned badges first
+      try {
+        const { data: newly } = await supabase.rpc("award_iq_badges");
+        if (Array.isArray(newly) && newly.length > 0) {
+          const names = newly
+            .map((code: string) => achievements.find(a => a.id === code)?.name || code)
+            .join(", ");
+          toast.success(`🏆 Achievement unlocked: ${names}`);
+        }
+      } catch {
+        // ignore
+      }
+
       const { data } = await supabase
         .from("iq_user_badges")
         .select("code")
