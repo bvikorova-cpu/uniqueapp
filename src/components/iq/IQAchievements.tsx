@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Trophy, Brain, Zap, Target, Flame, Crown, Star, Medal, Swords, Lightbulb, GraduationCap } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 type Rarity = "common" | "rare" | "epic" | "legendary";
 
