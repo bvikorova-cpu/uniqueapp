@@ -284,6 +284,11 @@ const IQPlatform = () => {
           <IQSequenceMath />
           <IQPrimeSpot />
           <IQGeometry />
+          <IQProbability />
+          <IQVennLogic />
+          <IQSyllogism />
+          <IQMatrixReasoning />
+          <IQAnalogies />
           <div className="grid md:grid-cols-2 gap-4">
             <div id="iq-daily-section"><IQDailyChallenge /></div>
             <div id="iq-friends-section"><IQFriends /></div>
