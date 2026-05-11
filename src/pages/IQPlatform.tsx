@@ -21,6 +21,7 @@ import IQFriendCompare from "@/components/iq/IQFriendCompare";
 import IQFocusTimer from "@/components/iq/IQFocusTimer";
 import IQReactionTime from "@/components/iq/IQReactionTime";
 import IQNumberSpan from "@/components/iq/IQNumberSpan";
+import IQMentalMath from "@/components/iq/IQMentalMath";
 import IQTrainingPlan from "@/components/iq/IQTrainingPlan";
 import IQDailyChallenge from "@/components/iq/IQDailyChallenge";
 import IQFriends from "@/components/iq/IQFriends";
