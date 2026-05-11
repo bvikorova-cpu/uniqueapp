@@ -60,6 +60,8 @@ const IQPlatform = () => {
     { id: "pattern",   title: "Pattern Recognition", desc: "Visual abstract logic",    icon: LineChart, credits: 8 },
   ];
 
+  useEffect(() => { trackIQEvent("iq_view"); }, []);
+
   useEffect(() => {
     if (activeTab !== "tests") return;
     let cancelled = false;
