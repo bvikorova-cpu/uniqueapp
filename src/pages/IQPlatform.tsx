@@ -168,33 +168,83 @@ const IQPlatform = () => {
         </TabsContent>
 
         <TabsContent value="tests" className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {testCategories.map((test) => (
-              <Card key={test.id} className="hover:shadow-lg transition-shadow border-blue-500/10">
-                <CardHeader className="p-4 sm:p-6">
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-500 text-white">
-                        <test.icon className="h-5 w-5" />
+          <div>
+            <h3 className="text-lg font-bold mb-3">Standard difficulty</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {testCategories.map((test) => {
+                const cd = cooldowns[test.id] ?? 0;
+                const locked = cd > 0;
+                return (
+                  <Card key={test.id} className="hover:shadow-lg transition-shadow border-blue-500/10">
+                    <CardHeader className="p-4 sm:p-6">
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="flex items-center gap-3">
+                          <div className="p-2 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-500 text-white">
+                            <test.icon className="h-5 w-5" />
+                          </div>
+                          <div>
+                            <CardTitle className="text-base">{test.title}</CardTitle>
+                            <CardDescription className="text-xs">{test.description}</CardDescription>
+                          </div>
+                        </div>
+                        <Badge variant="outline" className="text-xs">{test.difficulty}</Badge>
                       </div>
-                      <div>
-                        <CardTitle className="text-base">{test.title}</CardTitle>
-                        <CardDescription className="text-xs">{test.description}</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-3 p-4 sm:p-6">
+                      <div className="grid grid-cols-3 gap-4 text-sm">
+                        <div><p className="text-muted-foreground text-xs">Questions</p><p className="font-bold">{test.questions}</p></div>
+                        <div><p className="text-muted-foreground text-xs">Time</p><p className="font-bold">{test.timeLimit} min</p></div>
+                        <div><p className="text-muted-foreground text-xs">Credits</p><p className="font-bold">{test.credits}</p></div>
                       </div>
-                    </div>
-                    <Badge variant="outline" className="text-xs">{test.difficulty}</Badge>
-                  </div>
-                </CardHeader>
-                <CardContent className="space-y-3 p-4 sm:p-6">
-                  <div className="grid grid-cols-3 gap-4 text-sm">
-                    <div><p className="text-muted-foreground text-xs">Questions</p><p className="font-bold">{test.questions}</p></div>
-                    <div><p className="text-muted-foreground text-xs">Time</p><p className="font-bold">{test.timeLimit} min</p></div>
-                    <div><p className="text-muted-foreground text-xs">Credits</p><p className="font-bold">{test.credits}</p></div>
-                  </div>
-                  <Button className="w-full bg-gradient-to-r from-blue-600 to-indigo-600" onClick={() => handleStartTest(test.id)}>Start Test</Button>
-                </CardContent>
-              </Card>
-            ))}
+                      <Button
+                        className="w-full bg-gradient-to-r from-blue-600 to-indigo-600"
+                        disabled={locked}
+                        onClick={() => handleStartTest(test.id)}
+                      >
+                        {locked ? `Cooldown · ${formatCooldown(cd)}` : "Start Test"}
+                      </Button>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+          </div>
+
+          <div>
+            <h3 className="text-lg font-bold mb-3">Specialized cognitive tests</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {specializedCategories.map((t) => {
+                const cd = cooldowns[t.id] ?? 0;
+                const locked = cd > 0;
+                return (
+                  <Card key={t.id} className="hover:shadow-md transition border-purple-500/15 bg-gradient-to-br from-purple-500/5 to-pink-500/5">
+                    <CardContent className="p-4 space-y-2">
+                      <div className="flex items-center gap-2">
+                        <div className="p-2 rounded-md bg-gradient-to-br from-purple-500 to-pink-500 text-white">
+                          <t.icon className="h-4 w-4" />
+                        </div>
+                        <div>
+                          <p className="font-bold text-sm">{t.title}</p>
+                          <p className="text-[10px] text-muted-foreground">{t.desc}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-between text-[10px] text-muted-foreground">
+                        <span>{t.credits} credits</span>
+                        <span>20 questions · 15 min</span>
+                      </div>
+                      <Button
+                        size="sm"
+                        className="w-full bg-gradient-to-r from-purple-600 to-pink-600"
+                        disabled={locked}
+                        onClick={() => handleStartTest(t.id)}
+                      >
+                        {locked ? `Cooldown · ${formatCooldown(cd)}` : "Start"}
+                      </Button>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
           </div>
         </TabsContent>
 
@@ -214,13 +264,7 @@ const IQPlatform = () => {
 
         <TabsContent value="results" className="space-y-4">
           <IQProgressCharts />
-          <Card>
-            <CardHeader><CardTitle>Your IQ Journey</CardTitle><CardDescription>Track your progress</CardDescription></CardHeader>
-            <CardContent className="text-center py-12">
-              <Brain className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-              <p className="text-sm text-muted-foreground">Take your first IQ test to see your results here</p>
-            </CardContent>
-          </Card>
+          <IQTestHistory />
         </TabsContent>
       </Tabs>
 
