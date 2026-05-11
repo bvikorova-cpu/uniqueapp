@@ -360,6 +360,7 @@ import {
   AdminBrandCampaigns,
   AdminPlatformEarnings,
   AdminIQDashboard,
+  AdminIQAnalytics,
   AdminVerifications,
   AdminBazaarTrust,
   AdminWithdrawals,
