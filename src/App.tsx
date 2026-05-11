@@ -359,6 +359,7 @@ import {
   AdminInfluencerPayouts,
   AdminBrandCampaigns,
   AdminPlatformEarnings,
+  AdminIQDashboard,
   AdminVerifications,
   AdminBazaarTrust,
   AdminWithdrawals,
