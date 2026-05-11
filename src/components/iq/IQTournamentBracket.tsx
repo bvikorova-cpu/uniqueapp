@@ -57,7 +57,7 @@ export default function IQTournamentBracket({ competitionId, bracketSize, finali
         const { data: profs } = await supabase
           .from("profiles")
           .select("user_id, full_name, username, avatar_url")
-          .in("user_id", ids);
+          .in("user_id", ids as string[]);
         const map: Record<string, any> = {};
         profs?.forEach((p: any) => {
           map[p.user_id] = { name: p.full_name || p.username || "Player", avatar: p.avatar_url };
