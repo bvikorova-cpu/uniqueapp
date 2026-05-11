@@ -63,7 +63,7 @@ export default function IQTrophyProfile() {
         supabase.from("iq_user_stats").select("best_iq,latest_iq,total_tests,current_streak,longest_streak,tier,country_code").eq("user_id", userId).maybeSingle(),
         supabase.from("iq_duels").select("id,mode,finished_at,host_id,opponent_id,host_score,opponent_score").eq("status", "finished").eq("winner_id", userId).order("finished_at", { ascending: false }).limit(10),
         supabase.from("iq_duels").select("id", { count: "exact", head: true }).eq("status", "finished").or(`host_id.eq.${userId},opponent_id.eq.${userId}`),
-        supabase.from("iq_tournament_matches").select("id,round,player1_id,player2_id,player1_score,player2_score,finished_at").or(`player1_id.eq.${userId},player2_id.eq.${userId}`).eq("status", "finished").order("finished_at", { ascending: false }).limit(10),
+        supabase.from("iq_tournament_matches").select("id,round,completed_at").eq("winner_id", userId).eq("status", "finished").order("completed_at", { ascending: false }).limit(10),
       ]);
 
       if (!alive) return;
@@ -72,13 +72,7 @@ export default function IQTrophyProfile() {
       setStats((statsRes.data as Stats) ?? null);
       setDuelWins((winsRes.data ?? []) as DuelWin[]);
       setDuelsPlayed(playedRes.count ?? 0);
-
-      const tw = (tourneyRes.data ?? []) as TourneyWin[];
-      const wonTourney = tw.filter((m) => {
-        if (m.player1_id === userId) return (m.player1_score ?? 0) > (m.player2_score ?? 0);
-        return (m.player2_score ?? 0) > (m.player1_score ?? 0);
-      });
-      setTourneyWins(wonTourney);
+      setTourneyWins(((tourneyRes.data ?? []) as TourneyWin[]));
       setLoading(false);
     })();
     return () => { alive = false; };
