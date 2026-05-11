@@ -57,6 +57,11 @@ import IQNQueens4 from "@/components/iq/IQNQueens4";
 import IQTangram from "@/components/iq/IQTangram";
 import IQMazeRunner from "@/components/iq/IQMazeRunner";
 import IQPuzzleSummary from "@/components/iq/IQPuzzleSummary";
+import IQAudioMemory from "@/components/iq/IQAudioMemory";
+import IQColorRecall from "@/components/iq/IQColorRecall";
+import IQFaceMemory from "@/components/iq/IQFaceMemory";
+import IQMapMemory from "@/components/iq/IQMapMemory";
+import IQSpotDifference from "@/components/iq/IQSpotDifference";
 import IQTrainingPlan from "@/components/iq/IQTrainingPlan";
 import IQDailyChallenge from "@/components/iq/IQDailyChallenge";
 import IQFriends from "@/components/iq/IQFriends";
@@ -239,6 +244,11 @@ const IQPlatform = () => {
           <IQTangram />
           <IQMazeRunner />
           <IQPuzzleSummary />
+          <IQAudioMemory />
+          <IQColorRecall />
+          <IQFaceMemory />
+          <IQMapMemory />
+          <IQSpotDifference />
           <div className="grid md:grid-cols-2 gap-4">
             <div id="iq-daily-section"><IQDailyChallenge /></div>
             <div id="iq-friends-section"><IQFriends /></div>
