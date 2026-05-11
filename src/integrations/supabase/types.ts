@@ -46412,6 +46412,7 @@ export type Database = {
         Args: { _competition_id: string }
         Returns: Json
       }
+      finalize_iq_tournaments: { Args: never; Returns: number }
       find_skill_matches: { Args: { p_user_id: string }; Returns: undefined }
       gdpr_purge_user_data: { Args: { _user_id: string }; Returns: Json }
       generate_certificate_number: { Args: never; Returns: string }
