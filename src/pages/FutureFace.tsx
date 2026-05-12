@@ -15,6 +15,8 @@ import FutureFace3D from "@/components/future-face/FutureFace3D";
 import FutureFaceShop from "@/components/future-face/FutureFaceShop";
 import FutureFaceMonthlyReport from "@/components/future-face/FutureFaceMonthlyReport";
 import FutureFaceDermChat from "@/components/future-face/FutureFaceDermChat";
+import FutureFaceGeneticTwin from "@/components/future-face/FutureFaceGeneticTwin";
+import FutureFaceMoodEmotion from "@/components/future-face/FutureFaceMoodEmotion";
 import FutureFaceHero from "@/components/future-face/FutureFaceHero";
 import FutureFaceToolsGrid from "@/components/future-face/FutureFaceToolsGrid";
 import FutureFaceSelfieStreaks from "@/components/future-face/FutureFaceSelfieStreaks";
