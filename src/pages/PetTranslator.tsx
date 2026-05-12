@@ -135,6 +135,7 @@ const PetTranslator = () => {
                 <PetLanguageSelector />
               </div>
             </div>
+            <div className="mb-4"><PetCrossPromo side="translator" /></div>
             <TabsList className="w-full flex flex-wrap h-auto gap-1 bg-card/50 p-1 mb-6">
               {[
                 { key: "tools", label: "🧬 AI Tools" },
