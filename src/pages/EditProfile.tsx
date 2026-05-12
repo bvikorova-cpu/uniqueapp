@@ -457,6 +457,29 @@ const EditProfile = () => {
 
             <ProfileAnalytics userId={profile.id} />
 
+            <OpenToWorkEditor
+              enabled={profile.open_to_work}
+              details={profile.open_to_work_details}
+              onChange={(enabled, details) => setProfile({ ...profile, open_to_work: enabled, open_to_work_details: details })}
+            />
+
+            <ProfileMusicEditor
+              userId={profile.id}
+              url={profile.profile_music_url}
+              title={profile.profile_music_title}
+              onChange={(url, title) => setProfile({ ...profile, profile_music_url: url, profile_music_title: title })}
+            />
+
+            <SeoPreview
+              title={profile.seo_title}
+              description={profile.seo_description}
+              fallbackTitle={profile.headline ? `${profile.full_name || "Profile"} — ${profile.headline}` : (profile.full_name || "Profile")}
+              fallbackDescription={profile.bio || ""}
+              url={`${typeof window !== "undefined" ? window.location.origin : ""}/profile/${profile.id}`}
+              onTitleChange={(v) => setProfile({ ...profile, seo_title: v })}
+              onDescriptionChange={(v) => setProfile({ ...profile, seo_description: v })}
+            />
+
             <Card className="p-5 sm:p-6 bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl border-border/50">
               <Tabs defaultValue="identity" className="w-full">
                 <TabsList className="grid grid-cols-5 mb-6 h-auto">
