@@ -20,6 +20,7 @@ import {
   EarningsGoalTracker,
   EarningsTipsBanner,
   PayoutMethodsManager,
+  StripeConnectBanner,
 } from "@/components/earnings";
 
 interface Transaction {
@@ -173,6 +174,10 @@ const Earnings = () => {
       <div className="flex items-center justify-between mb-6 gap-4 flex-wrap">
         <EarningsLiveTicker />
         <EarningsExport rows={exportRows} filename="my-earnings" />
+      </div>
+
+      <div className="mb-6">
+        <StripeConnectBanner />
       </div>
 
       <div className="mb-6">
