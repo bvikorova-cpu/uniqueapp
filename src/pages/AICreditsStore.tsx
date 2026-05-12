@@ -15,6 +15,7 @@ import { AICreditsLowBalanceAlert } from "@/components/ai-credits/AICreditsLowBa
 import { AICreditsRecommendation } from "@/components/ai-credits/AICreditsRecommendation";
 import { AIUsageAnalytics } from "@/components/ai-credits/AIUsageAnalytics";
 import { AICommunityGalleryStrip } from "@/components/ai-credits/AICommunityGalleryStrip";
+import { AutoRechargeCard } from "@/components/ai-credits/AutoRechargeCard";
 import { SEO } from "@/components/SEO";
 
 const AICreditsStore = () => {
