@@ -94,7 +94,10 @@ serve(async (req) => {
       const errText = await response.text();
       console.error("OpenAI error:", errText);
       // Refund credits on AI failure
-      await supabase.rpc("increment_ai_credits" as any, { p_user_id: user.id, p_amount: cost }).catch(() => {});
+      try {
+        const { data: cur } = await supabase.from("ai_credits").select("credits_remaining").eq("user_id", user.id).single();
+        await supabase.from("ai_credits").update({ credits_remaining: (cur?.credits_remaining || 0) + cost }).eq("user_id", user.id);
+      } catch (_) { /* best-effort */ }
       return json({ error: "AI processing failed. Credits refunded." }, 502);
     }
 
