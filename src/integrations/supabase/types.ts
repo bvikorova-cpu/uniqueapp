@@ -30704,6 +30704,83 @@ export type Database = {
         }
         Relationships: []
       }
+      pet_profiles: {
+        Row: {
+          age_years: number | null
+          breed: string | null
+          created_at: string
+          gender: string | null
+          id: string
+          is_indoor: boolean | null
+          name: string
+          personality: string | null
+          photo_url: string | null
+          species: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          age_years?: number | null
+          breed?: string | null
+          created_at?: string
+          gender?: string | null
+          id?: string
+          is_indoor?: boolean | null
+          name: string
+          personality?: string | null
+          photo_url?: string | null
+          species?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          age_years?: number | null
+          breed?: string | null
+          created_at?: string
+          gender?: string | null
+          id?: string
+          is_indoor?: boolean | null
+          name?: string
+          personality?: string | null
+          photo_url?: string | null
+          species?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      pet_quiz_responses: {
+        Row: {
+          answers: Json
+          created_at: string
+          id: string
+          pet_id: string | null
+          user_id: string
+        }
+        Insert: {
+          answers?: Json
+          created_at?: string
+          id?: string
+          pet_id?: string | null
+          user_id: string
+        }
+        Update: {
+          answers?: Json
+          created_at?: string
+          id?: string
+          pet_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pet_quiz_responses_pet_id_fkey"
+            columns: ["pet_id"]
+            isOneToOne: false
+            referencedRelation: "pet_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       pet_rescue_campaigns: {
         Row: {
           created_at: string | null
@@ -30776,6 +30853,80 @@ export type Database = {
         }
         Relationships: []
       }
+      pet_sound_wall: {
+        Row: {
+          audio_url: string
+          caption: string | null
+          created_at: string
+          emotion: string | null
+          id: string
+          pet_name: string | null
+          species: string | null
+          user_id: string
+          votes: number
+        }
+        Insert: {
+          audio_url: string
+          caption?: string | null
+          created_at?: string
+          emotion?: string | null
+          id?: string
+          pet_name?: string | null
+          species?: string | null
+          user_id: string
+          votes?: number
+        }
+        Update: {
+          audio_url?: string
+          caption?: string | null
+          created_at?: string
+          emotion?: string | null
+          id?: string
+          pet_name?: string | null
+          species?: string | null
+          user_id?: string
+          votes?: number
+        }
+        Relationships: []
+      }
+      pet_symptoms_log: {
+        Row: {
+          ai_assessment: string | null
+          created_at: string
+          id: string
+          pet_id: string | null
+          symptoms: Json
+          urgency: string | null
+          user_id: string
+        }
+        Insert: {
+          ai_assessment?: string | null
+          created_at?: string
+          id?: string
+          pet_id?: string | null
+          symptoms?: Json
+          urgency?: string | null
+          user_id: string
+        }
+        Update: {
+          ai_assessment?: string | null
+          created_at?: string
+          id?: string
+          pet_id?: string | null
+          symptoms?: Json
+          urgency?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pet_symptoms_log_pet_id_fkey"
+            columns: ["pet_id"]
+            isOneToOne: false
+            referencedRelation: "pet_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       pet_trades: {
         Row: {
           accepted_at: string | null
@@ -30832,6 +30983,56 @@ export type Database = {
             columns: ["requested_pet_id"]
             isOneToOne: false
             referencedRelation: "pets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pet_translations: {
+        Row: {
+          audio_url: string | null
+          confidence: number | null
+          created_at: string
+          emotion: string | null
+          id: string
+          is_favorite: boolean | null
+          kind: string
+          pet_id: string | null
+          photo_url: string | null
+          text_result: string | null
+          user_id: string
+        }
+        Insert: {
+          audio_url?: string | null
+          confidence?: number | null
+          created_at?: string
+          emotion?: string | null
+          id?: string
+          is_favorite?: boolean | null
+          kind?: string
+          pet_id?: string | null
+          photo_url?: string | null
+          text_result?: string | null
+          user_id: string
+        }
+        Update: {
+          audio_url?: string | null
+          confidence?: number | null
+          created_at?: string
+          emotion?: string | null
+          id?: string
+          is_favorite?: boolean | null
+          kind?: string
+          pet_id?: string | null
+          photo_url?: string | null
+          text_result?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pet_translations_pet_id_fkey"
+            columns: ["pet_id"]
+            isOneToOne: false
+            referencedRelation: "pet_profiles"
             referencedColumns: ["id"]
           },
         ]

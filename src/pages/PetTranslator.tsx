@@ -16,8 +16,22 @@ import PetAudioRecorder from '@/components/pet-translator/PetAudioRecorder';
 import PetHealthCertificate from '@/components/pet-translator/PetHealthCertificate';
 import PetSocialNetwork from '@/components/pet-translator/PetSocialNetwork';
 import PetSmartReminders from '@/components/pet-translator/PetSmartReminders';
+import PetProfileManager from '@/components/pet-translator/PetProfileManager';
+import PetReverseTranslator from '@/components/pet-translator/PetReverseTranslator';
+import PetOnboardingQuiz from '@/components/pet-translator/PetOnboardingQuiz';
+import PetTranslationHistory from '@/components/pet-translator/PetTranslationHistory';
+import PetLiveListenMode from '@/components/pet-translator/PetLiveListenMode';
+import PetVideoAnalysis from '@/components/pet-translator/PetVideoAnalysis';
+import PetVetReferral from '@/components/pet-translator/PetVetReferral';
+import PetBreedIdentifier from '@/components/pet-translator/PetBreedIdentifier';
+import PetDailyTip from '@/components/pet-translator/PetDailyTip';
+import PetSoundWall from '@/components/pet-translator/PetSoundWall';
+import PetTrainingCourses from '@/components/pet-translator/PetTrainingCourses';
+import PetSymptomChecker from '@/components/pet-translator/PetSymptomChecker';
+import PetWearableTeaser from '@/components/pet-translator/PetWearableTeaser';
+import PetLanguageSelector from '@/components/pet-translator/PetLanguageSelector';
 import { Card } from '@/components/ui/card';
-import { Crown, Sparkles, PawPrint, Heart, Stethoscope, GraduationCap } from 'lucide-react';
+import { Crown, Sparkles, PawPrint, Heart, Stethoscope, GraduationCap, MessageSquareText, History, Radio, Video, Search, Users, Watch, BookOpen } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
@@ -47,6 +61,17 @@ const PetTranslator = () => {
       case "audio_recorder": return <PetAudioRecorder onBack={() => setActiveView(null)} />;
       case "health_certificate": return <PetHealthCertificate onBack={() => setActiveView(null)} />;
       case "smart_reminders": return <PetSmartReminders onBack={() => setActiveView(null)} />;
+      case "reverse": return <PetReverseTranslator onBack={() => setActiveView(null)} />;
+      case "history": return <PetTranslationHistory onBack={() => setActiveView(null)} />;
+      case "live": return <PetLiveListenMode onBack={() => setActiveView(null)} />;
+      case "video": return <PetVideoAnalysis onBack={() => setActiveView(null)} />;
+      case "vet": return <PetVetReferral onBack={() => setActiveView(null)} />;
+      case "breed": return <PetBreedIdentifier onBack={() => setActiveView(null)} />;
+      case "soundwall": return <PetSoundWall onBack={() => setActiveView(null)} />;
+      case "courses": return <PetTrainingCourses onBack={() => setActiveView(null)} />;
+      case "symptoms": return <PetSymptomChecker onBack={() => setActiveView(null)} />;
+      case "wearable": return <PetWearableTeaser onBack={() => setActiveView(null)} />;
+      case "quiz": return <PetOnboardingQuiz onDone={() => setActiveView(null)} />;
       default: return null;
     }
   };
@@ -99,9 +124,15 @@ const PetTranslator = () => {
           specialView
         ) : (
           <Tabs defaultValue="tools" className="w-full">
+            <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
+              <PetDailyTip />
+              <PetLanguageSelector />
+            </div>
             <TabsList className="w-full flex flex-wrap h-auto gap-1 bg-card/50 p-1 mb-6">
               {[
                 { key: "tools", label: "🧬 AI Tools" },
+                { key: "pets", label: "🐾 My Pets" },
+                { key: "more", label: "✨ More" },
                 { key: "dashboard", label: "📊 Dashboard" },
                 { key: "social", label: "🌍 Social" },
                 { key: "streaks", label: "🔥 Streaks" },
@@ -117,6 +148,32 @@ const PetTranslator = () => {
 
             <TabsContent value="tools">
               <PetToolsGrid activeView={activeView} setActiveView={setActiveView} />
+            </TabsContent>
+            <TabsContent value="pets">
+              <PetProfileManager />
+            </TabsContent>
+            <TabsContent value="more">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                {[
+                  { k: "reverse", icon: MessageSquareText, label: "Speak Pet" },
+                  { k: "history", icon: History, label: "History" },
+                  { k: "live", icon: Radio, label: "Live Listen" },
+                  { k: "video", icon: Video, label: "Video Analysis" },
+                  { k: "breed", icon: Search, label: "Breed ID" },
+                  { k: "symptoms", icon: Stethoscope, label: "Symptom Check" },
+                  { k: "vet", icon: Stethoscope, label: "Talk to Vet" },
+                  { k: "courses", icon: BookOpen, label: "Training Courses" },
+                  { k: "soundwall", icon: Users, label: "Sound Wall" },
+                  { k: "quiz", icon: Sparkles, label: "Onboarding Quiz" },
+                  { k: "wearable", icon: Watch, label: "Smart Collar" },
+                ].map(t => (
+                  <button key={t.k} onClick={() => setActiveView(t.k)}
+                    className="p-4 rounded-xl border border-border/40 bg-card/50 hover:border-primary/40 hover:bg-primary/5 transition-all text-left">
+                    <t.icon className="w-5 h-5 text-primary mb-2" />
+                    <div className="text-sm font-semibold">{t.label}</div>
+                  </button>
+                ))}
+              </div>
             </TabsContent>
             <TabsContent value="dashboard">
               <PetHealthDashboard />
