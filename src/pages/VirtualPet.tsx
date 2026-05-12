@@ -99,6 +99,8 @@ const VirtualPet = () => {
 
               <HeroRewardedAd sectionKey="page_virtualpet" />
 
+              <div className="mb-6"><PetCrossPromo side="virtual" /></div>
+
               {/* Engagement Row */}
               <div className="grid grid-cols-3 gap-3 mb-8">
                 {[
