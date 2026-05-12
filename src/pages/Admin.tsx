@@ -386,9 +386,10 @@ const Admin = () => {
           <TopUsersLeaderboard />
         </div>
 
-        {/* Audit Log */}
-        <div className="mb-8">
+        {/* Audit Log + Impersonation */}
+        <div className="grid lg:grid-cols-2 gap-4 mb-8">
           <AuditLogPanel />
+          <ImpersonationPanel />
         </div>
 
         <QuickActionsDock />
