@@ -742,10 +742,12 @@ const Admin = () => {
                             <Button
                               size="sm"
                               onClick={async () => {
-                                await supabase
-                                  .from('contact_messages')
-                                  .update({ is_read: true })
-                                  .eq('id', msg.id);
+                                const src = (msg as any)._source || 'contact_messages';
+                                if (src === 'support_tickets') {
+                                  await supabase.from('support_tickets').update({ status: 'resolved', resolved_at: new Date().toISOString() }).eq('id', msg.id);
+                                } else {
+                                  await supabase.from('contact_messages').update({ is_read: true }).eq('id', msg.id);
+                                }
                                 await loadData();
                               }}
                             >
