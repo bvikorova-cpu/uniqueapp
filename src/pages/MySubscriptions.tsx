@@ -71,7 +71,17 @@ export default function MySubscriptions() {
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
   const [subs, setSubs] = useState<Sub[]>([]);
+  const [invoices, setInvoices] = useState<Invoice[]>([]);
+  const [invoicesLoading, setInvoicesLoading] = useState(false);
   const [busy, setBusy] = useState<string | null>(null);
+
+  // Proration preview dialog state
+  const [pvOpen, setPvOpen] = useState(false);
+  const [pvSub, setPvSub] = useState<Sub | null>(null);
+  const [pvPriceId, setPvPriceId] = useState("");
+  const [pvLoading, setPvLoading] = useState(false);
+  const [pvData, setPvData] = useState<Proration | null>(null);
+  const [pvError, setPvError] = useState<string | null>(null);
 
   const load = async () => {
     setLoading(true);
@@ -86,7 +96,47 @@ export default function MySubscriptions() {
     }
   };
 
-  useEffect(() => { load(); }, []);
+  const loadInvoices = async () => {
+    setInvoicesLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("list-user-subscriptions", {
+        body: { action: "list_invoices", limit: 24 },
+      });
+      if (error) throw error;
+      setInvoices(data?.invoices || []);
+    } catch (e: any) {
+      toast({ title: "Failed to load invoices", description: e.message, variant: "destructive" });
+    } finally {
+      setInvoicesLoading(false);
+    }
+  };
+
+  useEffect(() => { load(); loadInvoices(); }, []);
+
+  const openPreview = (s: Sub) => {
+    setPvSub(s); setPvPriceId(""); setPvData(null); setPvError(null); setPvOpen(true);
+  };
+
+  const runPreview = async () => {
+    if (!pvSub || !pvPriceId.trim()) return;
+    setPvLoading(true); setPvError(null); setPvData(null);
+    try {
+      const { data, error } = await supabase.functions.invoke("list-user-subscriptions", {
+        body: {
+          action: "proration_preview",
+          subscription_id: pvSub.id,
+          new_price_id: pvPriceId.trim(),
+        },
+      });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      setPvData(data as Proration);
+    } catch (e: any) {
+      setPvError(e.message || "Preview failed");
+    } finally {
+      setPvLoading(false);
+    }
+  };
 
   const openPortal = async () => {
     try {
