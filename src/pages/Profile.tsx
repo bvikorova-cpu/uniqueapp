@@ -57,7 +57,7 @@ interface Profile {
   open_to_work_details?: any;
   profile_music_url?: string | null;
   profile_music_title?: string | null;
-  bio_translations?: Record<string, string> | null;
+  bio_translations?: any;
 }
 
 interface Post {
