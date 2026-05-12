@@ -978,6 +978,42 @@ serve(async (req) => {
         break;
       }
 
+      // ── Connect account state changes (verification, capabilities, payouts) ──
+      case "account.updated": {
+        const acct = event.data.object as Stripe.Account;
+        const reqs = (acct.requirements ?? {}) as Stripe.Account.Requirements;
+        const caps = (acct.capabilities ?? {}) as Record<string, string>;
+        const sched = (acct.settings?.payouts?.schedule ?? null) as any;
+        const { error } = await supabase.from("profiles").update({
+          stripe_connect_charges_enabled: !!acct.charges_enabled,
+          stripe_connect_payouts_enabled: !!acct.payouts_enabled,
+          stripe_connect_onboarding_complete: !!acct.details_submitted,
+          stripe_connect_details_submitted: !!acct.details_submitted,
+          stripe_connect_disabled_reason: reqs.disabled_reason ?? null,
+          stripe_connect_currently_due: reqs.currently_due ?? [],
+          stripe_connect_past_due: reqs.past_due ?? [],
+          stripe_connect_eventually_due: reqs.eventually_due ?? [],
+          stripe_connect_default_currency: acct.default_currency ?? null,
+          stripe_connect_payout_schedule: sched,
+          stripe_connect_country: acct.country ?? null,
+          stripe_connect_capabilities: caps,
+          stripe_connect_account_type: acct.type ?? null,
+          stripe_connect_synced_at: new Date().toISOString(),
+        }).eq("stripe_connect_account_id", acct.id);
+        if (error) log("account.updated sync failed", { err: error.message });
+        else log("account.updated synced", { acct: acct.id, payouts: acct.payouts_enabled });
+        break;
+      }
+
+      // Payout lifecycle — useful for showing pending/paid transfers in UI
+      case "payout.created":
+      case "payout.paid":
+      case "payout.failed": {
+        const p = event.data.object as Stripe.Payout;
+        log("payout event", { type: event.type, id: p.id, status: p.status, amount: p.amount });
+        break;
+      }
+
       default:
         log("ignored event type", { type: event.type });
     }

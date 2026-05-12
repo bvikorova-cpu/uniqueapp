@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Banknote, ArrowRight, Lock } from "lucide-react";
+import { Banknote, ArrowRight, Lock, ShieldAlert } from "lucide-react";
 import { motion } from "framer-motion";
 
 interface EarningsPayoutCardProps {
@@ -10,6 +10,10 @@ interface EarningsPayoutCardProps {
   onRequest: () => void;
   onSetupMethod: () => void;
   methodLabel?: string;
+  /** Live Stripe payouts capability — when false, withdraw is blocked. */
+  stripePayoutsEnabled?: boolean;
+  /** Reason payouts are disabled (currently_due field, disabled_reason). */
+  payoutsBlockReason?: string | null;
 }
 
 /**
@@ -22,8 +26,10 @@ export const EarningsPayoutCard = ({
   onRequest,
   onSetupMethod,
   methodLabel = "IBAN / Stripe Connect",
+  stripePayoutsEnabled = true,
+  payoutsBlockReason = null,
 }: EarningsPayoutCardProps) => {
-  const canPayout = available >= minimum && hasPayoutMethod;
+  const canPayout = available >= minimum && hasPayoutMethod && stripePayoutsEnabled;
   const progress = Math.min(100, (available / minimum) * 100);
 
   return (
@@ -78,6 +84,17 @@ export const EarningsPayoutCard = ({
           >
             <Lock className="h-4 w-4 mr-2" /> Set up payout method
           </Button>
+        ) : !stripePayoutsEnabled ? (
+          <div className="space-y-2">
+            <Button disabled className="w-full bg-muted text-muted-foreground font-bold">
+              <ShieldAlert className="h-4 w-4 mr-2" /> Stripe payouts not enabled
+            </Button>
+            {payoutsBlockReason && (
+              <p className="text-[11px] text-muted-foreground text-center">
+                {payoutsBlockReason}
+              </p>
+            )}
+          </div>
         ) : (
           <Button
             onClick={onRequest}
