@@ -158,6 +158,48 @@ Create a detailed smart care schedule:
 8. **Emergency Preparedness**: Signs to watch for that need immediate attention
 
 Format with clear time slots and priority levels.`,
+
+      reverse_translate: `You are a pet language reverse-translator. The human wants to say to their ${params.pet_type || "pet"}: "${params.message || ""}".
+Generate exactly:
+1. **Sound to make** (e.g., "soft 'meow-meow', high pitch, 2 seconds")
+2. **Body language** the human should use (posture, eyes, hand position)
+3. **Phonetic guide** the human can mimic (e.g., "Mrrrr-ow")
+4. **What your pet will likely understand**
+5. **Tip** to make it more convincing
+Keep it short, fun, and actionable.`,
+
+      symptom_check: `You are a veterinary triage assistant (NOT a vet replacement).
+Pet: ${params.species || "dog"}, breed ${params.breed || "unknown"}, age ${params.age || "unknown"}.
+Selected symptoms: ${(params.symptoms || []).join(", ")}.
+Duration: ${params.duration || "unknown"}.
+
+Provide:
+1. **Most likely conditions** (top 3, plain language)
+2. **Urgency** — return one of: 🟢 LOW (monitor at home), 🟡 MEDIUM (vet within 48h), 🔴 HIGH (urgent vet today)
+3. **Immediate home care steps**
+4. **Red-flag symptoms** that mean go to ER NOW
+5. **Disclaimer** — AI guidance only`,
+
+      breed_identify: `You are a pet breed identification expert. Based on this photo description: "${params.photo_description || params.description || ""}" of a ${params.species || "dog"}.
+Provide:
+1. **Most likely breed(s)** (top 3 with confidence %)
+2. **Mix indicators** if mixed
+3. **Typical traits** (size, temperament, energy)
+4. **Common health concerns** for this breed
+5. **Care tips** specific to the breed`,
+
+      video_analyze: `You are an animal behavior video analyst. The user uploaded a ${params.duration || "10"}s video of their ${params.species || "pet"} described as: "${params.description || ""}".
+Provide:
+1. **Behavioral classification**
+2. **Body language reading** (head, ears, tail, posture, eyes — frame by frame summary)
+3. **Emotional state**
+4. **Trigger analysis** (what likely caused this)
+5. **Recommended response**
+6. **Concern level** 🟢🟡🔴`,
+
+      daily_tip: `Generate ONE concise (max 280 chars), actionable, fun daily care tip for a ${params.species || "pet"} owner. Include 1 emoji. No intro, no markdown.`,
+
+      onboarding_personalize: `Based on quiz answers ${JSON.stringify(params.answers || {})}, write a 2-sentence personalized welcome for this pet owner and recommend the FIRST tool they should try (translate / emotion / health / training). Markdown OK.`,
     };
 
     const prompt = prompts[action];
