@@ -24,7 +24,7 @@ serve(async (req) => {
 
     const since = new Date(Date.now() - 30 * 86400000).toISOString();
     const [aiUsage, listings, currentSub] = await Promise.all([
-      supabase.from("ai_usage_logs").select("id", { count: "exact", head: true }).eq("user_id", userId).gte("created_at", since),
+      supabase.from("ai_usage_history").select("id", { count: "exact", head: true }).eq("user_id", userId).gte("created_at", since),
       supabase.from("bazaar_items").select("id", { count: "exact", head: true }).eq("user_id", userId).gte("created_at", since),
       supabase.from("subscriptions").select("tier").eq("user_id", userId).eq("status", "active").maybeSingle(),
     ]);

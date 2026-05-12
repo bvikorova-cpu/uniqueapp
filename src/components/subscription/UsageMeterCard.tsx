@@ -16,7 +16,7 @@ export const UsageMeterCard = () => {
       if (!user) return;
       const monthStart = new Date(); monthStart.setDate(1); monthStart.setHours(0,0,0,0);
       const [ai, l] = await Promise.all([
-        supabase.from("ai_usage_logs").select("id", { count: "exact", head: true }).eq("user_id", user.id).gte("created_at", monthStart.toISOString()),
+        supabase.from("ai_usage_history").select("id", { count: "exact", head: true }).eq("user_id", user.id).gte("created_at", monthStart.toISOString()),
         supabase.from("bazaar_items").select("id", { count: "exact", head: true }).eq("user_id", user.id).gte("created_at", monthStart.toISOString()),
       ]);
       setAiUsed(ai.count ?? 0);
