@@ -69,11 +69,39 @@ export default function PetProfileManager() {
     reload();
   };
 
+  const importFromVirtual = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return toast.error("Sign in first");
+    const { data: vps, error } = await supabase
+      .from("pets")
+      .select("id, name")
+      .eq("user_id", user.id);
+    if (error) return toast.error(error.message);
+    if (!vps?.length) return toast.info("No Virtual Pets found to import");
+
+    const existing = new Set(pets.map((p) => p.name.toLowerCase()));
+    const toImport = vps.filter((v) => !existing.has((v.name || "").toLowerCase()));
+    if (!toImport.length) return toast.info("All Virtual Pets already imported");
+
+    const rows = toImport.map((v) => ({
+      user_id: user.id, name: v.name || "Pet", species: "other",
+    }));
+    const { error: insErr } = await supabase.from("pet_profiles").insert(rows);
+    if (insErr) return toast.error(insErr.message);
+    toast.success(`Imported ${rows.length} pet${rows.length > 1 ? "s" : ""}`);
+    reload();
+  };
+
   return (
     <Card className="p-6 border-primary/20 bg-card/80 backdrop-blur-sm">
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-4 gap-2 flex-wrap">
         <h2 className="text-xl font-bold flex items-center gap-2"><PawPrint className="w-5 h-5 text-primary" /> My Pets</h2>
-        <Button size="sm" onClick={openCreate}><Plus className="w-4 h-4 mr-1" /> Add</Button>
+        <div className="flex gap-2">
+          <Button size="sm" variant="outline" onClick={importFromVirtual} title="Copy your Virtual Pets here">
+            <Gamepad2 className="w-4 h-4 mr-1" /> Import
+          </Button>
+          <Button size="sm" onClick={openCreate}><Plus className="w-4 h-4 mr-1" /> Add</Button>
+        </div>
       </div>
 
       {editing && (
