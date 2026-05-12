@@ -23,7 +23,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const PetTranslator = () => {
   const [activeView, setActiveView] = useState<string | null>(null);
+  const [stats, setStats] = useState({ total_translations: 0, total_users: 0 });
   const { subscription, loading: subLoading } = usePetSubscription();
+
+  useEffect(() => {
+    supabase.functions.invoke('pet-translator-stats').then(({ data }) => {
+      if (data?.total_translations !== undefined) setStats(data);
+    });
+  }, []);
 
   if (subLoading) {
     return (
