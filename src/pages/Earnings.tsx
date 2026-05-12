@@ -261,6 +261,11 @@ const Earnings = () => {
         <EarningsTaxEstimator totalEarnings={stats.totalEarnings} />
       </div>
 
+      <div className="grid lg:grid-cols-2 gap-4 mb-6">
+        <PayoutSchedulePicker />
+        <TaxDocsButton />
+      </div>
+
       <Card className="border-amber-500/20">
         <CardHeader>
           <CardTitle>Transaction History</CardTitle>
