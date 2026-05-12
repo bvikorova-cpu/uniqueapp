@@ -59,6 +59,16 @@ interface ProfileData {
   tone_of_voice: string | null;
   is_verified: boolean | null;
   stripe_connect_charges_enabled: boolean | null;
+  open_to_work: boolean;
+  open_to_work_details: OpenToWorkDetails;
+  profile_music_url: string | null;
+  profile_music_title: string | null;
+  bio_score: number | null;
+  bio_score_feedback: string | null;
+  bio_variants: string[];
+  bio_translations: Record<string, string>;
+  seo_title: string;
+  seo_description: string;
 }
 
 const EditProfile = () => {
