@@ -47,8 +47,16 @@ const AICreditsStore = () => {
         setLoading(false);
         return;
       }
-      const { data, error } = await supabase.functions.invoke('create-credits-payment', {
-        body: { credits: pkg.credits, price: pkg.price }
+      const { data, error } = await supabase.functions.invoke('create-checkout', {
+        body: {
+          product: "ai_credits",
+          amount: pkg.price * 100,
+          productName: `${pkg.credits} AI Credits`,
+          mode: "payment",
+          metadata: { credits: String(pkg.credits) },
+          successUrl: `${window.location.origin}/ai-credits-store?payment=success&session_id={CHECKOUT_SESSION_ID}`,
+          cancelUrl: `${window.location.origin}/ai-credits-store?payment=canceled`,
+        },
       });
       if (error) throw error;
       if (data?.url) window.open(data.url, '_blank');
