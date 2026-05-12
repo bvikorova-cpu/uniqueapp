@@ -138,13 +138,28 @@ const Admin = () => {
 
       setTransactions(trans || []);
 
-      // Load contact messages
-      const { data: msgs } = await supabase
-        .from('contact_messages')
-        .select('*')
-        .order('created_at', { ascending: false });
+      // Load contact messages from BOTH tables (legacy contact_messages + new support_tickets)
+      const [legacyMsgs, ticketMsgs] = await Promise.all([
+        supabase.from('contact_messages').select('*').order('created_at', { ascending: false }),
+        supabase.from('support_tickets').select('*').order('created_at', { ascending: false }),
+      ]);
 
-      setMessages(msgs || []);
+      const merged = [
+        ...((legacyMsgs.data as any[]) || []).map((m) => ({ ...m, _source: 'contact_messages' as const })),
+        ...((ticketMsgs.data as any[]) || []).map((t: any) => ({
+          id: t.id,
+          name: t.name,
+          email: t.email,
+          subject: t.subject || `[${t.category || 'general'}] ticket #${t.ticket_number || ''}`,
+          message: t.message,
+          is_read: t.status === 'resolved' || t.status === 'closed',
+          created_at: t.created_at,
+          _source: 'support_tickets' as const,
+          _status: t.status,
+        })),
+      ].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+
+      setMessages(merged);
 
       // Load users for user management
       const { data: usersData } = await supabase
@@ -424,7 +439,7 @@ const Admin = () => {
                   <div className="text-3xl font-bold text-orange-500">
                     €{stats.masterchefEarnings.toFixed(2)}
                   </div>
-                  <Button variant="outline" size="sm" className="mt-2" onClick={() => { window.location.href = "/admin?tab=payouts"; }}>
+                  <Button variant="outline" size="sm" className="mt-2" onClick={() => navigate('/admin/campaign-withdrawals')}>
                     Manage Payouts →
                   </Button>
                 </div>
@@ -727,10 +742,12 @@ const Admin = () => {
                             <Button
                               size="sm"
                               onClick={async () => {
-                                await supabase
-                                  .from('contact_messages')
-                                  .update({ is_read: true })
-                                  .eq('id', msg.id);
+                                const src = (msg as any)._source || 'contact_messages';
+                                if (src === 'support_tickets') {
+                                  await supabase.from('support_tickets').update({ status: 'resolved', resolved_at: new Date().toISOString() }).eq('id', msg.id);
+                                } else {
+                                  await supabase.from('contact_messages').update({ is_read: true }).eq('id', msg.id);
+                                }
                                 await loadData();
                               }}
                             >

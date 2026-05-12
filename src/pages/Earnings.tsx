@@ -121,7 +121,18 @@ const Earnings = () => {
   const getItemTypeName = (t: string) => t === 'bazaar' ? 'Bazaar' : t === 'auction' ? 'Auction' : t;
 
   const handlePayout = async () => {
-    toast({ title: "Payout requested", description: `€${stats.available.toFixed(2)} will be processed within 3-5 business days.` });
+    if (stats.available < 25) {
+      toast({ title: "Below minimum", description: "Minimum payout is €25.", variant: "destructive" });
+      return;
+    }
+    if (!hasPayoutMethod) {
+      toast({ title: "No payout method", description: "Add a payout method first.", variant: "destructive" });
+      return;
+    }
+    toast({
+      title: "Use your hub-specific dashboard",
+      description: "Withdrawals are processed per vertical (Auctions, Musicians, Chefs, Influencers, Instructors). Open the matching earnings page to request a payout.",
+    });
   };
 
   const exportRows = transactions.map(t => ({
