@@ -730,6 +730,7 @@ serve(async (req) => {
       const mode = (body.mode || def?.mode || "payment") as "payment" | "subscription";
       const { successUrl, cancelUrl } = resolveUrls(origin, body.successUrl, body.cancelUrl, productKey);
 
+      const isSubscription = mode === "subscription";
       const session = await stripe.checkout.sessions.create({
         customer: customerId || undefined,
         customer_email: customerId ? undefined : email,
@@ -738,13 +739,21 @@ serve(async (req) => {
             currency: "eur",
             unit_amount: amount,
             product_data: { name: productName },
-            ...(mode === "subscription" ? { recurring: { interval: ((body.interval as "month" | "year") || (productKey === "dating_yearly" ? "year" : "month")) as "month" | "year" } } : {}),
+            ...(isSubscription ? { recurring: { interval: ((body.interval as "month" | "year") || (productKey === "dating_yearly" ? "year" : "month")) as "month" | "year" } } : {}),
           },
           quantity: 1,
         }],
         mode,
         success_url: successUrl,
         cancel_url: cancelUrl,
+        // Collect VAT / tax ID + billing address for B2B subscriptions (EU compliance)
+        ...(isSubscription
+          ? {
+              tax_id_collection: { enabled: true },
+              billing_address_collection: "required" as const,
+              customer_update: customerId ? { address: "auto" as const, name: "auto" as const } : undefined,
+            }
+          : {}),
         metadata: {
           user_id: userId,
           type: productKey,
