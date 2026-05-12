@@ -38,7 +38,9 @@ export function useStripeConnect() {
   const openDashboard = async () => {
     setLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke('create-connect-login-link');
+      const { data, error } = await supabase.functions.invoke('check-connect-status', {
+        body: { action: 'connect_login' },
+      });
       if (error) throw error;
       if (data?.url) {
         window.open(data.url, '_blank');
