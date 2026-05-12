@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import { Card, CardContent } from "@/components/ui/card";
@@ -28,6 +28,8 @@ import { useAICredits } from "@/hooks/useAICredits";
 import { motion } from "framer-motion";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
+import PetCrossPromo from "@/components/pet-translator/PetCrossPromo";
+import { trackPetActivity } from "@/lib/petLover";
 type ActiveView = "dashboard" | "pets" | "battle" | "shop" | "customize" | "trading" | "games" | "breeding" |
   "personality-coach" | "name-generator" | "health-predictor" | "story-generator" |
   "mood-analyzer" | "training-planner" | "compatibility-checker" | "battle-strategy";
@@ -57,6 +59,8 @@ const VirtualPet = () => {
   const navigate = useNavigate();
 
   const goBack = () => setActiveView("dashboard");
+
+  useEffect(() => { trackPetActivity('virtual'); }, []);
 
   const renderView = () => {
     switch (activeView) {
@@ -94,6 +98,8 @@ const VirtualPet = () => {
               <VirtualPetHero />
 
               <HeroRewardedAd sectionKey="page_virtualpet" />
+
+              <div className="mb-6"><PetCrossPromo side="virtual" /></div>
 
               {/* Engagement Row */}
               <div className="grid grid-cols-3 gap-3 mb-8">

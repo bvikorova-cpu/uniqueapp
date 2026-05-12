@@ -183,6 +183,7 @@ export const Astrology = lazy(() => import("@/pages/Astrology"));
 export const SecretSanta = lazy(() => import("@/pages/SecretSanta"));
 export const PetTranslator = lazy(() => import("@/pages/PetTranslator"));
 export const PetTranslatorPricing = lazy(() => import("@/pages/PetTranslatorPricing"));
+export const PetsHub = lazy(() => import("@/pages/PetsHub"));
 export const PlantCare = lazy(() => import("@/pages/PlantCare"));
 export const Coffee = lazy(() => import("@/pages/Coffee"));
 export const CoffeeCheckins = lazy(() => import("@/pages/CoffeeCheckins"));
