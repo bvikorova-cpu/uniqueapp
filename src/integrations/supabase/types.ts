@@ -213,6 +213,36 @@ export type Database = {
         }
         Relationships: []
       }
+      admin_impersonation_sessions: {
+        Row: {
+          admin_id: string
+          ended_at: string | null
+          id: string
+          ip_address: string | null
+          reason: string
+          started_at: string
+          target_user_id: string
+        }
+        Insert: {
+          admin_id: string
+          ended_at?: string | null
+          id?: string
+          ip_address?: string | null
+          reason: string
+          started_at?: string
+          target_user_id: string
+        }
+        Update: {
+          admin_id?: string
+          ended_at?: string | null
+          id?: string
+          ip_address?: string | null
+          reason?: string
+          started_at?: string
+          target_user_id?: string
+        }
+        Relationships: []
+      }
       affiliate_tier_config: {
         Row: {
           label: string
@@ -14253,6 +14283,36 @@ export type Database = {
         }
         Relationships: []
       }
+      csat_ratings: {
+        Row: {
+          channel: string
+          comment: string | null
+          created_at: string
+          id: string
+          rating: number
+          ticket_id: string | null
+          user_id: string
+        }
+        Insert: {
+          channel?: string
+          comment?: string | null
+          created_at?: string
+          id?: string
+          rating: number
+          ticket_id?: string | null
+          user_id: string
+        }
+        Update: {
+          channel?: string
+          comment?: string | null
+          created_at?: string
+          id?: string
+          rating?: number
+          ticket_id?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       cv_documents: {
         Row: {
           ai_suggestions: Json | null
@@ -16368,6 +16428,33 @@ export type Database = {
           submitted_at?: string
           updated_at?: string
           verification_status?: Database["public"]["Enums"]["verification_status"]
+        }
+        Relationships: []
+      }
+      endorsements: {
+        Row: {
+          created_at: string
+          endorsed_user_id: string
+          endorser_id: string
+          id: string
+          message: string | null
+          skill: string
+        }
+        Insert: {
+          created_at?: string
+          endorsed_user_id: string
+          endorser_id: string
+          id?: string
+          message?: string | null
+          skill: string
+        }
+        Update: {
+          created_at?: string
+          endorsed_user_id?: string
+          endorser_id?: string
+          id?: string
+          message?: string | null
+          skill?: string
         }
         Relationships: []
       }
