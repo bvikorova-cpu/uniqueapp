@@ -21,29 +21,31 @@ export default function FutureFaceHero() {
           loop
           muted
           playsInline
-          className="w-full h-full object-cover brightness-[0.7] saturate-[1.2]"
+          className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+        {/* Subtle vignette only at the bottom so the video stays visible */}
+        <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/70 to-transparent pointer-events-none" />
+        <div className="absolute inset-x-0 top-0 h-1/4 bg-gradient-to-b from-black/40 to-transparent pointer-events-none" />
 
-        {/* Content */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
-          <Badge className="bg-cyan-500/20 text-cyan-300 border-cyan-500/40 mb-3">
+        {/* Top: badge + title (compact, doesn't cover video) */}
+        <div className="absolute top-3 left-3 right-3 flex flex-col items-center text-center">
+          <Badge className="bg-cyan-500/20 text-cyan-300 border-cyan-500/40 mb-2">
             <Gem className="h-3 w-3 mr-1" />
             Crystal Future Technology
           </Badge>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
+          <motion.h1
+            initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="border-2 border-white/20 bg-black/40 backdrop-blur-lg rounded-2xl px-6 py-4 max-w-[90%] sm:max-w-[70%]"
+            className="text-xl sm:text-3xl md:text-5xl font-black text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]"
           >
-            <h1 className="text-2xl sm:text-4xl md:text-6xl font-black text-white">
-              Future <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">Face</span>
-            </h1>
-          </motion.div>
-          <p className="text-white/80 text-sm sm:text-lg mt-3 max-w-2xl font-semibold drop-shadow-lg">
-            AI-powered age progression with crystal clarity. See your future through the lens of science.
-          </p>
+            Future <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">Face</span>
+          </motion.h1>
         </div>
+
+        {/* Bottom: subtitle */}
+        <p className="absolute bottom-3 left-3 right-3 text-center text-white/90 text-xs sm:text-base font-semibold drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
+          AI-powered age progression with crystal clarity.
+        </p>
       </div>
 
       {/* Stats Grid */}
