@@ -177,6 +177,10 @@ const Earnings = () => {
       </div>
 
       <div className="mb-6">
+        <StripeConnectBanner />
+      </div>
+
+      <div className="mb-6">
         <PayoutMethodsManager onChange={setHasPayoutMethod} />
       </div>
 
