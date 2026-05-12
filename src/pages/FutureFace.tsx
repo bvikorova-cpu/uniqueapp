@@ -15,6 +15,8 @@ import FutureFace3D from "@/components/future-face/FutureFace3D";
 import FutureFaceShop from "@/components/future-face/FutureFaceShop";
 import FutureFaceMonthlyReport from "@/components/future-face/FutureFaceMonthlyReport";
 import FutureFaceDermChat from "@/components/future-face/FutureFaceDermChat";
+import FutureFaceGeneticTwin from "@/components/future-face/FutureFaceGeneticTwin";
+import FutureFaceMoodEmotion from "@/components/future-face/FutureFaceMoodEmotion";
 import FutureFaceHero from "@/components/future-face/FutureFaceHero";
 import FutureFaceToolsGrid from "@/components/future-face/FutureFaceToolsGrid";
 import FutureFaceSelfieStreaks from "@/components/future-face/FutureFaceSelfieStreaks";
@@ -128,7 +130,9 @@ const FutureFace = () => {
         {/* Advanced features (second tab strip) */}
         <Tabs defaultValue="livear" className="w-full mt-8">
           <h3 className="text-sm font-bold uppercase text-muted-foreground mb-3">🆕 Advanced features</h3>
-          <TabsList className="grid w-full grid-cols-3 sm:grid-cols-[repeat(10,minmax(0,1fr))] mb-6 h-auto">
+          <TabsList className="grid w-full grid-cols-3 sm:grid-cols-[repeat(12,minmax(0,1fr))] mb-6 h-auto">
+            <TabsTrigger value="twin" className="text-[10px] sm:text-xs"><Dna className="h-3 w-3 sm:mr-1" /><span className="hidden sm:inline">Twin</span></TabsTrigger>
+            <TabsTrigger value="mood" className="text-[10px] sm:text-xs"><Activity className="h-3 w-3 sm:mr-1" /><span className="hidden sm:inline">Mood</span></TabsTrigger>
             <TabsTrigger value="livear" className="text-[10px] sm:text-xs"><Video className="h-3 w-3 sm:mr-1" /><span className="hidden sm:inline">Live AR</span></TabsTrigger>
             <TabsTrigger value="3d" className="text-[10px] sm:text-xs"><Box className="h-3 w-3 sm:mr-1" /><span className="hidden sm:inline">3D</span></TabsTrigger>
             <TabsTrigger value="dermchat" className="text-[10px] sm:text-xs"><MessageSquare className="h-3 w-3 sm:mr-1" /><span className="hidden sm:inline">Chat</span></TabsTrigger>
@@ -141,6 +145,8 @@ const FutureFace = () => {
             <TabsTrigger value="shop" className="text-[10px] sm:text-xs"><ShoppingBag className="h-3 w-3 sm:mr-1" /><span className="hidden sm:inline">Shop</span></TabsTrigger>
           </TabsList>
           <TabsContent value="livear"><FutureFaceLiveAR /></TabsContent>
+          <TabsContent value="twin"><FutureFaceGeneticTwin /></TabsContent>
+          <TabsContent value="mood"><FutureFaceMoodEmotion /></TabsContent>
           <TabsContent value="3d"><FutureFace3D /></TabsContent>
           <TabsContent value="dermchat"><FutureFaceDermChat /></TabsContent>
           <TabsContent value="skinscore"><FutureFaceSkinScore /></TabsContent>
