@@ -35,6 +35,8 @@ serve(async (req) => {
     const costMap: Record<string, number> = {
       translate: 4, emotion: 4, health: 5, training: 4, diet: 4, behavior: 5,
       photo_emotion: 5, audio_translate: 5, health_certificate: 6, smart_reminders: 4,
+      reverse_translate: 3, symptom_check: 5, breed_identify: 4, video_analyze: 6,
+      daily_tip: 1, onboarding_personalize: 2,
     };
     const cost = costMap[action] || 4;
 
