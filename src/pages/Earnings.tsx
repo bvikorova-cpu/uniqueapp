@@ -20,6 +20,7 @@ import {
   EarningsGoalTracker,
   EarningsTipsBanner,
   PayoutMethodsManager,
+  StripeConnectBanner,
 } from "@/components/earnings";
 
 interface Transaction {
