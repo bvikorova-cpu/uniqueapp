@@ -66,8 +66,25 @@ const Earnings = () => {
       .select('id', { count: 'exact', head: true })
       .eq('user_id', user.id);
     setHasPayoutMethod((count || 0) > 0);
+
+    // Read cached Stripe Connect status to gate withdraw button
+    const { data: prof } = await supabase
+      .from('profiles')
+      .select('stripe_connect_payouts_enabled, stripe_connect_disabled_reason, stripe_connect_currently_due, stripe_connect_account_id')
+      .eq('id', user.id)
+      .maybeSingle();
+    const p: any = prof || {};
+    const enabled = !!p.stripe_connect_payouts_enabled;
+    const reason = !p.stripe_connect_account_id
+      ? "Connect your Stripe account first."
+      : p.stripe_connect_disabled_reason
+        ? `Stripe: ${String(p.stripe_connect_disabled_reason).replace(/_/g, ' ')}`
+        : (p.stripe_connect_currently_due?.length
+            ? `Stripe needs ${p.stripe_connect_currently_due.length} more verification field(s).`
+            : null);
+    setStripeConnect({ enabled, reason });
+
     loadTransactions(user.id);
-  };
 
   const loadTransactions = async (userId: string) => {
     try {
