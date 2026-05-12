@@ -27,6 +27,14 @@ export function useStripeConnect() {
     return data;
   };
 
+  const liveStatus = async () => {
+    const { data, error } = await supabase.functions.invoke('check-connect-status', {
+      body: { action: 'live_status' },
+    });
+    if (error) throw error;
+    return data;
+  };
+
   const openDashboard = async () => {
     setLoading(true);
     try {
