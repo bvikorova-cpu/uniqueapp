@@ -480,6 +480,8 @@ const EditProfile = () => {
               onDescriptionChange={(v) => setProfile({ ...profile, seo_description: v })}
             />
 
+            <CustomDomainNotice />
+
             <Card className="p-5 sm:p-6 bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl border-border/50">
               <Tabs defaultValue="identity" className="w-full">
                 <TabsList className="grid grid-cols-5 mb-6 h-auto">
