@@ -130,9 +130,10 @@ const EditProfile = () => {
         stripe_connect_charges_enabled: !!p.stripe_connect_charges_enabled,
       });
 
-      // verified state
+      // verified state — read real email_confirmed_at from auth user
+      const { data: { user: authUser } } = await supabase.auth.getUser();
       setVerifiedState({
-        email: true, // session user is always email-verified after login
+        email: !!authUser?.email_confirmed_at,
         phone: !!p.phone?.trim(),
         id: !!p.is_verified,
         payment: !!p.stripe_connect_charges_enabled,
@@ -177,7 +178,7 @@ const EditProfile = () => {
       } as any).eq("id", user.id);
       if (error) throw error;
       toast({ title: "Profile saved", description: "Your changes are live." });
-      navigate("/wall");
+      navigate(`/profile/${user.id}`);
     } catch (error: any) {
       toast({ title: "Error saving profile", description: error.message, variant: "destructive" });
     } finally {
@@ -287,12 +288,7 @@ const EditProfile = () => {
 
   // Username availability check
   const checkUsername = async (uname: string): Promise<boolean> => {
-    try {
-      const { data, error } = await supabase.functions.invoke("check-username", {
-        body: null,
-      } as any);
-      // invoke doesn't pass query, fall back to fetch
-    } catch {}
+    if (!uname?.trim()) return false;
     try {
       const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
       const res = await fetch(
