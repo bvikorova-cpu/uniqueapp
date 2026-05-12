@@ -127,7 +127,7 @@ export const CHECKOUT_PROXY_MAP: Record<string, { product: string; module: strin
   "create-character-credits-payment": { product: "character_credits", module: "character_credits" },
   "create-companions-checkout": { product: "companions", module: "companions" },
   "create-confession-checkout": { product: "confession", module: "confession" },
-  "create-connect-login-link": { product: "connect_login_link", module: "connect_login_link" },
+  // "create-connect-login-link": handled directly by check-connect-status (action: "connect_login")
   "create-consultation-checkout": { product: "consultation", module: "consultation" },
   "create-coupon-checkout": { product: "coupon", module: "coupon" },
   "create-creator-subscription": { product: "creator", module: "creator" },
