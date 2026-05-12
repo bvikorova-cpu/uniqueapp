@@ -84,7 +84,7 @@ const FutureFace = () => {
 
         {/* Tabs */}
         <Tabs defaultValue="tools" className="w-full">
-          <TabsList className="grid w-full grid-cols-5 sm:grid-cols-13 mb-6 h-auto">
+          <TabsList className="grid w-full grid-cols-4 sm:grid-cols-[repeat(13,minmax(0,1fr))] mb-6 h-auto">
             <TabsTrigger value="photo" className="text-[10px] sm:text-xs"><Camera className="h-3 w-3 sm:mr-1" /><span className="hidden sm:inline">Photo</span></TabsTrigger>
             <TabsTrigger value="multiage" className="text-[10px] sm:text-xs"><CalendarDays className="h-3 w-3 sm:mr-1" /><span className="hidden sm:inline">Ages</span></TabsTrigger>
             <TabsTrigger value="tools" className="text-[10px] sm:text-xs"><Wrench className="h-3 w-3 sm:mr-1" /><span className="hidden sm:inline">Tools</span></TabsTrigger>
