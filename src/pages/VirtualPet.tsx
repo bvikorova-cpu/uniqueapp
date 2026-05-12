@@ -28,6 +28,8 @@ import { useAICredits } from "@/hooks/useAICredits";
 import { motion } from "framer-motion";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
+import PetCrossPromo from "@/components/pet-translator/PetCrossPromo";
+import { trackPetActivity } from "@/lib/petLover";
 type ActiveView = "dashboard" | "pets" | "battle" | "shop" | "customize" | "trading" | "games" | "breeding" |
   "personality-coach" | "name-generator" | "health-predictor" | "story-generator" |
   "mood-analyzer" | "training-planner" | "compatibility-checker" | "battle-strategy";
