@@ -130,7 +130,9 @@ const FutureFace = () => {
         {/* Advanced features (second tab strip) */}
         <Tabs defaultValue="livear" className="w-full mt-8">
           <h3 className="text-sm font-bold uppercase text-muted-foreground mb-3">🆕 Advanced features</h3>
-          <TabsList className="grid w-full grid-cols-3 sm:grid-cols-[repeat(10,minmax(0,1fr))] mb-6 h-auto">
+          <TabsList className="grid w-full grid-cols-3 sm:grid-cols-[repeat(12,minmax(0,1fr))] mb-6 h-auto">
+            <TabsTrigger value="twin" className="text-[10px] sm:text-xs"><Dna className="h-3 w-3 sm:mr-1" /><span className="hidden sm:inline">Twin</span></TabsTrigger>
+            <TabsTrigger value="mood" className="text-[10px] sm:text-xs"><Activity className="h-3 w-3 sm:mr-1" /><span className="hidden sm:inline">Mood</span></TabsTrigger>
             <TabsTrigger value="livear" className="text-[10px] sm:text-xs"><Video className="h-3 w-3 sm:mr-1" /><span className="hidden sm:inline">Live AR</span></TabsTrigger>
             <TabsTrigger value="3d" className="text-[10px] sm:text-xs"><Box className="h-3 w-3 sm:mr-1" /><span className="hidden sm:inline">3D</span></TabsTrigger>
             <TabsTrigger value="dermchat" className="text-[10px] sm:text-xs"><MessageSquare className="h-3 w-3 sm:mr-1" /><span className="hidden sm:inline">Chat</span></TabsTrigger>
