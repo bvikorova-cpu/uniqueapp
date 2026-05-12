@@ -145,6 +145,8 @@ const FutureFace = () => {
             <TabsTrigger value="shop" className="text-[10px] sm:text-xs"><ShoppingBag className="h-3 w-3 sm:mr-1" /><span className="hidden sm:inline">Shop</span></TabsTrigger>
           </TabsList>
           <TabsContent value="livear"><FutureFaceLiveAR /></TabsContent>
+          <TabsContent value="twin"><FutureFaceGeneticTwin /></TabsContent>
+          <TabsContent value="mood"><FutureFaceMoodEmotion /></TabsContent>
           <TabsContent value="3d"><FutureFace3D /></TabsContent>
           <TabsContent value="dermchat"><FutureFaceDermChat /></TabsContent>
           <TabsContent value="skinscore"><FutureFaceSkinScore /></TabsContent>
