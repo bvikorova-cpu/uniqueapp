@@ -193,6 +193,14 @@ Format with clear time slots and priority levels.`,
       credits_remaining: remaining - cost,
     }).eq("user_id", user.id);
 
+    // Log usage for stats / leaderboards
+    await supabase.from("ai_usage_history").insert({
+      user_id: user.id,
+      usage_type: `pet_${action}`,
+      credits_used: cost,
+      description: `Pet Translator: ${action}`,
+    });
+
     return new Response(JSON.stringify({ result, credits_used: cost, credits_remaining: remaining - cost }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });

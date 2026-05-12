@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
 import { usePetSubscription } from '@/hooks/usePetSubscription';
@@ -22,7 +23,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const PetTranslator = () => {
   const [activeView, setActiveView] = useState<string | null>(null);
+  const [stats, setStats] = useState({ total_translations: 0, total_users: 0 });
   const { subscription, loading: subLoading } = usePetSubscription();
+
+  useEffect(() => {
+    supabase.functions.invoke('pet-translator-stats').then(({ data }) => {
+      if (data?.total_translations !== undefined) setStats(data);
+    });
+  }, []);
 
   if (subLoading) {
     return (
@@ -49,8 +57,8 @@ const PetTranslator = () => {
     <div className="min-h-screen bg-background pt-20 pb-12 px-4">
       <div className="max-w-7xl mx-auto">
         <PetTranslatorHero
-          totalTranslations={1247}
-          totalUsers={3892}
+          totalTranslations={stats.total_translations}
+          totalUsers={stats.total_users}
           streak={0}
           isSubscribed={subscription.subscribed}
         />

@@ -1316,3 +1316,6 @@ verify_jwt = true
 
 [functions.iq-check-subscription]
 verify_jwt = true
+
+[functions.pet-translator-stats]
+verify_jwt = false
