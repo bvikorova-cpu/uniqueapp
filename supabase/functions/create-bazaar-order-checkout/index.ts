@@ -50,6 +50,23 @@ serve(async (req) => {
       .eq("id", itemId)
       .maybeSingle();
 
+    // Look up seller's Stripe Connect account for automatic split payout
+    let sellerConnectId: string | null = null;
+    if (item?.user_id) {
+      const { data: sellerProfile } = await admin
+        .from("profiles")
+        .select("stripe_connect_account_id, stripe_connect_charges_enabled, stripe_connect_payouts_enabled")
+        .eq("id", item.user_id)
+        .maybeSingle();
+      if (
+        sellerProfile?.stripe_connect_account_id &&
+        sellerProfile?.stripe_connect_charges_enabled &&
+        sellerProfile?.stripe_connect_payouts_enabled
+      ) {
+        sellerConnectId = sellerProfile.stripe_connect_account_id as string;
+      }
+    }
+
     if (itemErr || !item) return json({ error: "Item not found" }, 404);
     if (item.is_sold) return json({ error: "Item already sold" }, 400);
     if (!item.is_active) return json({ error: "Item not available" }, 400);
