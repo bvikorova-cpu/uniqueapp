@@ -5,7 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Trophy, Sparkles, Gamepad2, History as HistoryIcon, ArrowLeft, PawPrint, Filter } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Trophy, Sparkles, Gamepad2, History as HistoryIcon, ArrowLeft, PawPrint, Filter, Search, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import SEO from "@/components/SEO";
 import { formatDistanceToNow } from "date-fns";
@@ -164,6 +165,7 @@ function FilterableAchievements({ items }: { items: UA[] }) {
   const [category, setCategory] = useState<string>("all");
   const [bucket, setBucket] = useState<string>("any");
   const [sort, setSort] = useState<string>("recent");
+  const [query, setQuery] = useState<string>("");
 
   const categories = useMemo(() => {
     const set = new Set<string>();
@@ -181,19 +183,23 @@ function FilterableAchievements({ items }: { items: UA[] }) {
 
   const filtered = useMemo(() => {
     const [min, max] = buckets[bucket];
+    const q = query.trim().toLowerCase();
     let out = items.filter(i => {
       const cat = i.achievements?.category || "uncategorized";
       const pts = i.achievements?.points || 0;
+      const name = (i.achievements?.name || "").toLowerCase();
+      const icon = (i.achievements?.icon || "").toLowerCase();
       const catOk = category === "all" || cat === category;
       const ptsOk = pts >= min && pts <= max;
-      return catOk && ptsOk;
+      const qOk = !q || name.includes(q) || icon.includes(q);
+      return catOk && ptsOk && qOk;
     });
     if (sort === "recent") out = [...out].sort((a, b) => +new Date(b.unlocked_at) - +new Date(a.unlocked_at));
     if (sort === "points-desc") out = [...out].sort((a, b) => (b.achievements?.points || 0) - (a.achievements?.points || 0));
     if (sort === "points-asc") out = [...out].sort((a, b) => (a.achievements?.points || 0) - (b.achievements?.points || 0));
     if (sort === "name") out = [...out].sort((a, b) => (a.achievements?.name || "").localeCompare(b.achievements?.name || ""));
     return out;
-  }, [items, category, bucket, sort]);
+  }, [items, category, bucket, sort, query]);
 
   const totalPts = filtered.reduce((s, a) => s + (a.achievements?.points || 0), 0);
 
