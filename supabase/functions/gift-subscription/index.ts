@@ -82,8 +82,9 @@ serve(async (req) => {
         user_id: u.user.id,
         tier: gift.tier,
         status: "active",
-        current_period_end: subEnd.toISOString(),
-        source: "gift",
+        price: gift.amount_cents / 100,
+        started_at: new Date().toISOString(),
+        expires_at: subEnd.toISOString(),
       });
       await supabase.from("subscription_gifts").update({
         status: "redeemed",
