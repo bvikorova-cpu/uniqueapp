@@ -23,14 +23,15 @@ export const StripeConnectBanner = () => {
     if (!user) { setLoading(false); return; }
     const { data } = await supabase
       .from('profiles')
-      .select('stripe_connect_account_id, stripe_connect_charges_enabled, stripe_connect_payouts_enabled, stripe_connect_details_submitted')
+      .select('stripe_connect_account_id, stripe_connect_charges_enabled, stripe_connect_payouts_enabled')
       .eq('id', user.id)
       .maybeSingle();
+    const d: any = data || {};
     setStatus({
-      account_id: data?.stripe_connect_account_id ?? null,
-      charges_enabled: !!data?.stripe_connect_charges_enabled,
-      payouts_enabled: !!data?.stripe_connect_payouts_enabled,
-      details_submitted: !!data?.stripe_connect_details_submitted,
+      account_id: d.stripe_connect_account_id ?? null,
+      charges_enabled: !!d.stripe_connect_charges_enabled,
+      payouts_enabled: !!d.stripe_connect_payouts_enabled,
+      details_submitted: !!d.stripe_connect_account_id,
     });
     setLoading(false);
   };
