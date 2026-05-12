@@ -84,6 +84,17 @@ export const EarningsPayoutCard = ({
           >
             <Lock className="h-4 w-4 mr-2" /> Set up payout method
           </Button>
+        ) : !stripePayoutsEnabled ? (
+          <div className="space-y-2">
+            <Button disabled className="w-full bg-muted text-muted-foreground font-bold">
+              <ShieldAlert className="h-4 w-4 mr-2" /> Stripe payouts not enabled
+            </Button>
+            {payoutsBlockReason && (
+              <p className="text-[11px] text-muted-foreground text-center">
+                {payoutsBlockReason}
+              </p>
+            )}
+          </div>
         ) : (
           <Button
             onClick={onRequest}
