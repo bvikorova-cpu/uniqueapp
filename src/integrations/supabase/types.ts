@@ -30711,6 +30711,7 @@ export type Database = {
           created_at: string
           gender: string | null
           id: string
+          is_active: boolean
           is_indoor: boolean | null
           name: string
           personality: string | null
@@ -30725,6 +30726,7 @@ export type Database = {
           created_at?: string
           gender?: string | null
           id?: string
+          is_active?: boolean
           is_indoor?: boolean | null
           name: string
           personality?: string | null
@@ -30739,6 +30741,7 @@ export type Database = {
           created_at?: string
           gender?: string | null
           id?: string
+          is_active?: boolean
           is_indoor?: boolean | null
           name?: string
           personality?: string | null
