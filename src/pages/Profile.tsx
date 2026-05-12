@@ -50,6 +50,14 @@ interface Profile {
   interests: string[] | null;
   occupation: string | null;
   company: string | null;
+  headline?: string | null;
+  username?: string | null;
+  social_links?: Record<string, string | undefined> | null;
+  open_to_work?: boolean | null;
+  open_to_work_details?: any;
+  profile_music_url?: string | null;
+  profile_music_title?: string | null;
+  bio_translations?: Record<string, string> | null;
 }
 
 interface Post {
