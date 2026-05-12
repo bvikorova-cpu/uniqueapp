@@ -330,6 +330,13 @@ export default function MySubscriptions() {
                       </Button>
                     )}
 
+                    {isActive && (
+                      <Button size="sm" variant="outline" onClick={() => openPreview(s)}>
+                        <ArrowUpRight className="h-4 w-4 mr-1.5" />
+                        Preview plan change
+                      </Button>
+                    )}
+
                     {busy === s.id && <Loader2 className="h-4 w-4 animate-spin self-center ml-1" />}
                   </div>
                 </CardContent>
@@ -338,6 +345,118 @@ export default function MySubscriptions() {
           })}
         </div>
       )}
+
+      {/* Invoices section */}
+      <div className="mt-10">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-xl font-bold flex items-center gap-2">
+            <FileText className="h-5 w-5" /> Invoices
+          </h2>
+          <Button size="sm" variant="ghost" onClick={loadInvoices} disabled={invoicesLoading}>
+            <RefreshCw className={`h-4 w-4 mr-1.5 ${invoicesLoading ? "animate-spin" : ""}`} />
+            Refresh
+          </Button>
+        </div>
+        <Card>
+          <CardContent className="p-0">
+            {invoicesLoading ? (
+              <div className="py-10 flex justify-center"><Loader2 className="h-5 w-5 animate-spin text-muted-foreground" /></div>
+            ) : invoices.length === 0 ? (
+              <div className="py-8 text-center text-sm text-muted-foreground">No invoices yet.</div>
+            ) : (
+              <ul className="divide-y">
+                {invoices.map((inv) => (
+                  <li key={inv.id} className="flex items-center justify-between gap-3 px-4 py-3 flex-wrap">
+                    <div className="min-w-0">
+                      <div className="text-sm font-medium truncate">
+                        {inv.number || inv.id}
+                        <Badge variant={inv.status === "paid" ? "default" : "outline"} className="ml-2 capitalize text-[10px]">
+                          {inv.status}
+                        </Badge>
+                      </div>
+                      <div className="text-xs text-muted-foreground">
+                        {fmtDate(inv.created)} · {fmtMoney(inv.amount_paid || inv.amount_due, inv.currency)}
+                        {inv.description ? ` · ${inv.description}` : ""}
+                      </div>
+                    </div>
+                    <div className="flex gap-2">
+                      {inv.invoice_pdf && (
+                        <Button asChild size="sm" variant="outline">
+                          <a href={inv.invoice_pdf} target="_blank" rel="noopener noreferrer">
+                            <Download className="h-3.5 w-3.5 mr-1.5" /> PDF
+                          </a>
+                        </Button>
+                      )}
+                      {inv.hosted_invoice_url && (
+                        <Button asChild size="sm" variant="ghost">
+                          <a href={inv.hosted_invoice_url} target="_blank" rel="noopener noreferrer">
+                            <ExternalLink className="h-3.5 w-3.5 mr-1.5" /> View
+                          </a>
+                        </Button>
+                      )}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Proration preview dialog */}
+      <Dialog open={pvOpen} onOpenChange={setPvOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Preview plan change</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-3">
+            <p className="text-sm text-muted-foreground">
+              Enter the Stripe price ID of the plan you want to switch <span className="font-medium">{pvSub?.product_name}</span> to.
+              We'll show the prorated amount due today.
+            </p>
+            <div>
+              <Label htmlFor="newPriceId" className="text-xs">New price ID</Label>
+              <Input
+                id="newPriceId"
+                placeholder="price_..."
+                value={pvPriceId}
+                onChange={(e) => setPvPriceId(e.target.value)}
+                className="font-mono"
+              />
+              {pvSub?.price_id && (
+                <p className="text-[11px] text-muted-foreground mt-1">Current: <span className="font-mono">{pvSub.price_id}</span></p>
+              )}
+            </div>
+            {pvError && <p className="text-sm text-destructive">{pvError}</p>}
+            {pvData && (
+              <div className="rounded-lg border p-3 bg-muted/30 space-y-1.5">
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted-foreground">Proration</span>
+                  <span className="font-medium">{fmtMoney(pvData.proration_total, pvData.currency)}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted-foreground">Total upcoming invoice</span>
+                  <span className="font-medium">{fmtMoney(pvData.total, pvData.currency)}</span>
+                </div>
+                <div className="flex justify-between text-base pt-1.5 border-t">
+                  <span className="font-semibold">Charged today</span>
+                  <span className="font-bold">{fmtMoney(pvData.amount_due_now, pvData.currency)}</span>
+                </div>
+                {pvData.period_end && (
+                  <p className="text-[11px] text-muted-foreground">Next billing: {fmtDate(pvData.period_end)}</p>
+                )}
+              </div>
+            )}
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setPvOpen(false)}>Close</Button>
+            <Button onClick={runPreview} disabled={pvLoading || !pvPriceId.trim()}>
+              {pvLoading ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : null}
+              Preview
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
