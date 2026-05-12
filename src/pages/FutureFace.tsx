@@ -17,6 +17,8 @@ import FutureFaceDermatologist from "@/components/future-face/FutureFaceDermatol
 import FutureFaceDNAAging from "@/components/future-face/FutureFaceDNAAging";
 import FutureFaceSocialShare from "@/components/future-face/FutureFaceSocialShare";
 import FutureFaceSeasonalReport from "@/components/future-face/FutureFaceSeasonalReport";
+import FutureFacePhotoStudio from "@/components/future-face/FutureFacePhotoStudio";
+import FutureFaceMultiAgeTimeline from "@/components/future-face/FutureFaceMultiAgeTimeline";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 const FutureFace = () => {
@@ -82,7 +84,9 @@ const FutureFace = () => {
 
         {/* Tabs */}
         <Tabs defaultValue="tools" className="w-full">
-          <TabsList className="grid w-full grid-cols-5 sm:grid-cols-11 mb-6 h-auto">
+          <TabsList className="grid w-full grid-cols-5 sm:grid-cols-13 mb-6 h-auto">
+            <TabsTrigger value="photo" className="text-[10px] sm:text-xs"><Camera className="h-3 w-3 sm:mr-1" /><span className="hidden sm:inline">Photo</span></TabsTrigger>
+            <TabsTrigger value="multiage" className="text-[10px] sm:text-xs"><CalendarDays className="h-3 w-3 sm:mr-1" /><span className="hidden sm:inline">Ages</span></TabsTrigger>
             <TabsTrigger value="tools" className="text-[10px] sm:text-xs"><Wrench className="h-3 w-3 sm:mr-1" /><span className="hidden sm:inline">Tools</span></TabsTrigger>
             <TabsTrigger value="ar" className="text-[10px] sm:text-xs"><ScanFace className="h-3 w-3 sm:mr-1" /><span className="hidden sm:inline">AR</span></TabsTrigger>
             <TabsTrigger value="timeline" className="text-[10px] sm:text-xs"><CalendarDays className="h-3 w-3 sm:mr-1" /><span className="hidden sm:inline">Timeline</span></TabsTrigger>
@@ -96,6 +100,8 @@ const FutureFace = () => {
             <TabsTrigger value="achievements" className="text-[10px] sm:text-xs"><Medal className="h-3 w-3 sm:mr-1" /><span className="hidden sm:inline">Badges</span></TabsTrigger>
           </TabsList>
 
+          <TabsContent value="photo"><FutureFacePhotoStudio /></TabsContent>
+          <TabsContent value="multiage"><FutureFaceMultiAgeTimeline /></TabsContent>
           <TabsContent value="tools"><FutureFaceToolsGrid /></TabsContent>
           <TabsContent value="ar"><FutureFaceARPreview /></TabsContent>
           <TabsContent value="timeline"><FutureFaceTimeline /></TabsContent>
